@@ -1,6 +1,6 @@
-import { Layout } from '../components';
-import Link from 'next/link';
-import { getConfig, getAllPosts } from '../api';
+import Layout from '@components/Layout'
+import Link from 'next/link'
+import { getConfig, getAllPosts } from '@api'
 
 export default function Blog(props) {
   return (

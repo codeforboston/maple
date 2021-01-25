@@ -1,5 +1,5 @@
-import { Blog } from '../../components/Blog';
-import { getPostBySlug, getAllPosts } from '../api';
+import { Blog } from '@components/Blog';
+import { getPostBySlug, getAllPosts } from '@api';
 
 export default function Post(props) {
   return <Blog title={props.title} content={props.content}/>;
