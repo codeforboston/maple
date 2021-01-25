@@ -3,7 +3,7 @@ import marked from 'marked';
 import yaml from 'js-yaml';
 
 export async function getConfig() {
-  const config = await import(`../config.yml`);
+  const config = await import(`../blogConfig.yml`);
   return yaml.safeLoad(config.default);
 }
 
