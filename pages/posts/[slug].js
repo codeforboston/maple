@@ -1,5 +1,5 @@
-import { Layout } from "../components";
-import { getPostBySlug, getAllPosts } from "../api";
+import { Layout } from "../../components";
+import { getPostBySlug, getAllPosts } from "../../api";
 
 export default function Post(props) {
   return <Layout title={props.title} content={props.content}/>;
