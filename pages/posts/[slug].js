@@ -1,9 +1,10 @@
-//import { Blog } from '../../components/Blog';
-import { Layout } from "../../components";
+//import { BlogPost } from '../../components/Blog';
+//import { Layout } from "../../components";
 import { getPostBySlug, getAllPosts } from '@api';
+import BlogPost from "@components/BlogPost/BlogPost";
 
 export default function Post(props) {
-  return <Layout title={props.title} content={props.content}/>;
+  return <BlogPost title={props.title} content={props.content}/>;
 };
 
 export async function getStaticProps(context) {
