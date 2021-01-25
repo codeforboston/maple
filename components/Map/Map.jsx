@@ -2,15 +2,16 @@ import { Component, Fragment } from "react";
 import Head from "next/head";
 import L from "leaflet";
 import Papa from "papaparse";
+import PropTypes from "prop-types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
-const districtStyle = (rep) => ({
-  className: `district district--${rep.commitments ? "committed" : "join"}`,
+const districtStyle = rep => ({
+  className: `district district--${rep.commitments ? "committed" : "join"}`
 });
 
-const callToAction = (rep) => `
+const callToAction = rep => `
   <a class="map-link"
     href="https://actonmass.org/the-campaign/?your_state_representative=${
       rep.first_name
@@ -21,7 +22,7 @@ const callToAction = (rep) => `
   </a>
 `;
 
-const repCommitments = (rep) =>
+const repCommitments = rep =>
   rep.commitments
     ? `
 		<p>
@@ -48,7 +49,7 @@ const repCommitments = (rep) =>
   `
     : "";
 
-const districtPopup = (rep) => `
+const districtPopup = rep => `
 	<p>
 		<strong>${rep.first_name} ${rep.last_name}</strong>
 		${rep.url ? `(<a href="${rep.url}">contact</a>)` : ""}
@@ -60,7 +61,7 @@ const districtPopup = (rep) => `
 	${callToAction(rep)}
 `;
 
-const onPopup = (e) => {
+const onPopup = e => {
   const active = e.type === "popupopen";
   e.target.getElement().classList.toggle("district--active", active);
 };
@@ -72,23 +73,21 @@ const districtLegend = () => `
 
 const style = {
   width: "100%",
-  height: "50vh",
+  height: "50vh"
 };
 
 class Map extends Component {
   componentDidMount() {
     Promise.all([
-      fetch(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4l7bRcBIgwsEPGM_s9zF9csIeTgE2No_4tA6MuDCBUbfmWY_e9mAfzPpCJTsIK_hUzOyJ8CmdGMsX/pub?gid=641305740&single=true&output=csv"
-      )
-        .then((response) => response.text())
-        .then((csv) => {
+      fetch(this.props.url)
+        .then(response => response.text())
+        .then(csv => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
       fetch(
         "https://raw.githubusercontent.com/bhrutledge/ma-legislature/main/dist/ma_house.geojson"
-      ).then((response) => response.json()),
+      ).then(response => response.json())
     ]).then(([supporters, houseFeatures]) => {
       const supportersByDistrict = supporters.reduce((acc, cur) => {
         acc[cur.district] = cur;
@@ -101,14 +100,14 @@ class Map extends Component {
       }
 
       const houseLayer = L.geoJson(houseFeatures, {
-        style: (feature) => districtStyle(repProperties(feature)),
+        style: feature => districtStyle(repProperties(feature)),
         onEachFeature: (feature, layer) => {
           const rep = repProperties(feature);
           layer.bindPopup(districtPopup(rep));
           layer.on("popupopen", onPopup);
           layer.on("popupclose", onPopup);
           feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
-        },
+        }
       });
 
       const searchControl = new L.Control.Search({
@@ -120,7 +119,7 @@ class Map extends Component {
         moveToLocation(latlng, title, map) {
           map.fitBounds(latlng.layer.getBounds());
           latlng.layer.openPopup();
-        },
+        }
       });
 
       const legendControl = L.control({ position: "topright" });
@@ -133,7 +132,7 @@ class Map extends Component {
         "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
         {
           attribution:
-            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         }
       );
 
@@ -166,5 +165,9 @@ class Map extends Component {
     );
   }
 }
+
+Map.propTypes = {
+  url: PropTypes.string
+};
 
 export default Map;
