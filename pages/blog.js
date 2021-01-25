@@ -1,4 +1,4 @@
-import Layout from '@components/Layout'
+import { Layout } from "../components";
 import Link from 'next/link'
 import { getConfig, getAllPosts } from '@api'
 
