@@ -1,6 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # advocacy-maps
+=======
 =======
 # Getting Started with Create React App
 
@@ -72,9 +71,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
->>>>>>> 02716c0aa6f35890b7a19741a781eaf9d97c09a5
 =======
 To Run Locally
 `yarn install`
 `yarn dev`
->>>>>>> d0b19135372d638ae49af30212f8f1b69e944a6e
+=======
