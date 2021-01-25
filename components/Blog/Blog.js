@@ -1,8 +1,8 @@
-import { Layout } from 'Layout/default'
-import Head from 'next/head'
-import Link from 'next/link'
+import { Layout } from '@components/Layout';
+import Head from 'next/head';
+import Link from 'next/link';
 
-export default function PostLayout(props) {
+export default function Blog(props) {
   return (
     <Layout>
       <Head>
@@ -14,5 +14,5 @@ export default function PostLayout(props) {
         <div><Link href='/'><a>Home</a></Link></div> 
       </article>
     </Layout>
-  )
+  );
 }
