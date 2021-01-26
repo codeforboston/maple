@@ -2,6 +2,8 @@ import { Layout } from "../components";
 import Link from 'next/link'
 import { getConfig, getAllPosts } from '@api'
 
+// I was getting some inconsistent results when using relative path and the @path format so it's inconsistent
+
 export default function Blog(props) {
   return (
     <Layout title={props.title} description={props.description}>
