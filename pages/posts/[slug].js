@@ -1,5 +1,3 @@
-//import { BlogPost } from '../../components/Blog';
-//import { Layout } from "../../components";
 import { getPostBySlug, getAllPosts } from '@api';
 import BlogPost from "@components/BlogPost/BlogPost";
 
