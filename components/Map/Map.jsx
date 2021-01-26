@@ -99,33 +99,55 @@ class Map extends Component {
       }, {});
 
       function repProperties(feature) {
-        const supporter = supportersByDistrict[feature.properties.district];
-        return supporter;
-      }
+        const data = supportersByDistrict[feature.properties.district] || {};
+        return { ...feature.properties, ...data };
+    }
 
-      const houseLayer = L.geoJson(houseFeatures, {
+      const districtLayer = (features) => L.geoJson(features, {
         style: (feature) => districtStyle(repProperties(feature)),
         onEachFeature: (feature, layer) => {
           const rep = repProperties(feature);
           layer.bindPopup(districtPopup(rep));
-          layer.on("popupopen", onPopup);
-          layer.on("popupclose", onPopup);
+          layer.on('popupopen', onPopup);
+          layer.on('popupclose', onPopup);
+
+          // Enable searching by name or district; inspired by:
+          // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+          // eslint-disable-next-line no-param-reassign
           feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
         },
       });
 
-      const searchControl = new L.Control.Search({
-        layer: houseLayer,
-        propertyName: "index",
+      this.layers = {
+        House: districtLayer(houseFeatures),
+        Senate: districtLayer(senateFeatures),
+      }
+
+      const districtSearch = (layer) => new L.Control.Search({
+        layer,
+        propertyName: 'index',
         initial: false,
         marker: false,
-        textPlaceholder: "Search reps and districts",
+        textPlaceholder: 'Search legislators and districts',
         moveToLocation(latlng, title, map) {
           map.fitBounds(latlng.layer.getBounds());
           latlng.layer.openPopup();
         },
       });
 
+      Object.keys(this.layers).forEach((chamber) => {
+        this.layers[chamber]
+          .on('add', () => searchControls[chamber].addTo(this.map))
+          .on('remove', () => searchControls[chamber].remove());
+      });
+
+      /* Map controls */
+      
+      const layerControl = L.control.layers(this.layers, {}, { collapsed: false });
+      const searchControls = {
+        House: districtSearch(this.layers.House),
+        Senate: districtSearch(this.layers.Senate),
+      };
       const legendControl = L.control({ position: "topright" });
       legendControl.onAdd = () => {
         const div = L.DomUtil.create("div", "legend");
@@ -142,10 +164,11 @@ class Map extends Component {
 
       this.map = L.map("map")
         .addLayer(baseLayer)
-        .addLayer(houseLayer)
-        .addControl(searchControl)
         .addControl(legendControl)
-        .fitBounds(houseLayer.getBounds());
+        .addControl(layerControl);
+
+      this.map.addLayer(this.layers.House)
+        .fitBounds(this.layers.House.getBounds());
 
       // Avoid accidental excessive zoom out
       this.map.setMinZoom(this.map.getZoom());
