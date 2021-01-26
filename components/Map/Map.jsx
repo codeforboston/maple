@@ -89,7 +89,10 @@ class Map extends Component {
       fetch(
         "https://raw.githubusercontent.com/bhrutledge/ma-legislature/main/dist/ma_house.geojson"
       ).then((response) => response.json()),
-    ]).then(([supporters, houseFeatures]) => {
+      fetch(
+        "https://raw.githubusercontent.com/bhrutledge/ma-legislature/main/dist/ma_senate.geojson"
+      ).then((response) => response.json()),
+    ]).then(([supporters, houseFeatures, senateFeatures]) => {
       const supportersByDistrict = supporters.reduce((acc, cur) => {
         acc[cur.district] = cur;
         return acc;
