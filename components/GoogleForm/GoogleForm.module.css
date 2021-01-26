@@ -1,8 +1,15 @@
-/* Testing */
+.header {
+    margin-top: 20px;
+}
+
+.blurb {
+    margin-bottom: 20px;
+}
+
 .form {
     margin-top: 20px;
     padding-top: 20px;
-    background-color: #e0e0e0;
+    background-color: #f6f6f6;
 
     display: flex;
     flex-direction: column;
@@ -16,5 +23,4 @@
 /* Not sure how to make this work with modules, but not sure we even need to add further styling */
 .freebirdFormviewerViewFormCard {
     width: 100px;
-    background-color: red;
 }
