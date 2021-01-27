@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src
+        working-directory: /
 
     steps:
       - name: Checkout 🛎️
@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-node@v1
       - run: npm install
       - run: npm run build
-      - run: npm run export
       - run: touch out/.nojekyll
         env:
             CI: true
@@ -32,6 +31,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: master # The branch the action should deploy to.
-          FOLDER: src/out # The folder the action should deploy.
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: /out # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
