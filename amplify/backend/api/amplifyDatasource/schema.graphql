@@ -1,7 +1,0 @@
-type Bill @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  description: String
-  dateIntiated: AWSTimestamp
-  supporter: AWSJSON
-}
