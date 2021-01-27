@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v1
       - run: npm install
       - run: npm run build
-      - run: touch .nojekyll
+      - run: touch out/.nojekyll
         env:
             CI: true
 
