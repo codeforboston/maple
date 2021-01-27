@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /
+        working-directory: ./advocacy-maps
 
     steps:
       - name: Checkout 🛎️
@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v1
       - run: npm install
       - run: npm run export
-      - run: touch out/.nojekyll
+      - run: out/.nojekyll
         env:
             CI: true
 
@@ -32,5 +32,5 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: /out # The folder the action should deploy.
+          FOLDER: advocacy-maps/out # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
