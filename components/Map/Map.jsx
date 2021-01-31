@@ -146,7 +146,9 @@ class Map extends Component {
   render() {
     return (
       <Fragment>
-        <div id="map" style={{ width: "100%", height: "50vh"}}></div>
+        <div id="map-wrapper">
+          <div id="map"></div>
+        </div>
       </Fragment>
     );
   }
