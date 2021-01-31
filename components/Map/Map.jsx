@@ -1,10 +1,12 @@
 import { Component, Fragment } from "react";
-import Head from "next/head";
 import L from "leaflet";
-// import Papa from "papaparse";
 import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import "leaflet-providers";
+import "leaflet-search";
+import "leaflet-search/dist/leaflet-search.min.css";
 import "leaflet-defaulticon-compatibility";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+// import Papa from "papaparse";
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -143,19 +145,8 @@ class Map extends Component {
 
   render() {
     return (
-      // TODO: Replace the CSS and JS with imports
       <Fragment>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet-search@2.9.9/dist/leaflet-search.min.css"
-          />
-        </Head>
         <div id="map" style={{ width: "100%", height: "50vh"}}></div>
-        <Head>
-          <script src="https://unpkg.com/leaflet-providers@1.11.0/leaflet-providers.js"></script>
-          <script src="https://unpkg.com/leaflet-search@2.9.9/dist/leaflet-search.min.js"></script>
-        </Head>
       </Fragment>
     );
   }
