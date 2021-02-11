@@ -181,9 +181,16 @@ class Map extends Component {
 
           debugger;
           // return L.geoJSON( test );
-          return L.geoJSON({"type": "FeatureCollection", 
-            "features": features
-          });
+          return L.geoJSON(
+            {
+              "type": "FeatureCollection", 
+              "features": features
+            }, {
+              onEachFeature: (feature) => {
+                console.log(feature)
+              }
+            }
+            );
         }
 
         const districtSearch = (layer) => new L.Control.Search({
