@@ -1,5 +1,9 @@
 import { Layout } from "../components";
 
+const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
+  ssr: false,
+});
+
 function ElectionDayRegistration() {
   return (
     <Layout pageTitle="Election Day Registration">
@@ -13,9 +17,10 @@ function ElectionDayRegistration() {
         promote participation, and make it easier to vote, not maintain
         arbitrary hoops. Read our full letter here.
         <br />
-        <b>Advocacy Map (Insert Full Advocacy Map)</b>
+        <b>Advocacy Map</b>
+        <MapWithNoSSR />
         <br />
-        Overview: (5 sentance summary)
+        Overview: (5 sentence summary)
         <br />
       </p>
     </Layout>
