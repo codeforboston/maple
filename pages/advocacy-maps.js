@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { Layout } from "../components";
 
 function AdvocacyMap() {

@@ -1,4 +1,5 @@
 import { Layout } from "../components";
+import dynamic from "next/dynamic";
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
   ssr: false,
