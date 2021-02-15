@@ -200,7 +200,18 @@ class Map extends Component {
           marker: false,
           textPlaceholder: 'Search legislators and districts',
           moveToLocation(latlng, title, map) {
-            map.fitBounds(latlng.layer.getBounds());
+
+            // try catch to get bounds to zoom to in both cases
+            try { 
+              map.fitBounds( latlng.layer.getBounds() );
+            } catch ( err ) {
+              var dist = 0.005;
+              map.fitBounds([
+                [ latlng.lat - dist, latlng.lng - dist ],
+                [ latlng.lat + dist, latlng.lng + dist ]
+               ]); 
+            }
+
             latlng.layer.openPopup();
           },
         });
