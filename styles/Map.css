@@ -1,10 +1,13 @@
 :root {
     --color--district: rgba(0, 0, 0, 0.2);
     --color--district--active: rgba(0, 0, 0, 0.4);
-    --color--Democrat: rgba(0, 0, 255, 0.5);
-    --color--Democrat--active: rgba(0, 0, 255, 0.9);
-    --color--Republican: rgba(255, 0, 0, 0.5);
-    --color--Republican--active: rgba(255, 0, 0, 0.9);
+    /* https://colorbrewer2.org/#type=sequential&scheme=Greens&n=5 */
+    --color--grade-1: rgba(0, 109, 44, 0.5);
+    --color--grade-1--active: rgba(0, 109, 44, 0.9);
+    --color--grade-2: rgba(49, 163, 84, 0.5);
+    --color--grade-2--active: rgba(49, 163, 84, 0.9);
+    --color--grade-3: rgba(116, 196, 118, 0.5);
+    --color--grade-3--active: rgba(116, 196, 118, 0.9);
 }
 
 /* Give the map a responsive 64% aspect ratio (same as Massachusetts) */
@@ -57,12 +60,16 @@
     width: 1rem;
 }
 
-.legend__item--Democrat::before {
-    background: var(--color--Democrat);
+.legend__item--grade-1::before {
+    background: var(--color--grade-1);
 }
 
-.legend__item--Republican::before {
-    background: var(--color--Republican);
+.legend__item--grade-2::before {
+    background: var(--color--grade-2);
+}
+
+.legend__item--grade-3::before {
+    background: var(--color--grade-3);
 }
 
 .district {
@@ -80,20 +87,28 @@
     fill: var(--color--district--active);
 }
 
-.district--Democrat {
-    fill: var(--color--Democrat);
+.district--grade-1 {
+    fill: var(--color--grade-1);
 }
 
-.district--Democrat.district--active {
-    fill: var(--color--Democrat--active);
+.district--grade-1.district--active {
+    fill: var(--color--grade-1--active);
 }
 
-.district--Republican {
-    fill: var(--color--Republican);
+.district--grade-2 {
+    fill: var(--color--grade-2);
 }
 
-.district--Republican.district--active {
-    fill: var(--color--Republican--active);
+.district--grade-2.district--active {
+    fill: var(--color--grade-2--active);
+}
+
+.district--grade-3 {
+    fill: var(--color--grade-3);
+}
+
+.district--grade-3.district--active {
+    fill: var(--color--grade-3--active);
 }
 
 .leaflet-control-search .search-input {
