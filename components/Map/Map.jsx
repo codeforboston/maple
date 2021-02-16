@@ -17,26 +17,37 @@ class Map extends Component {
 
     Promise.all([
       /* The GeoJSON contains basic contact information for each rep */
-      fetch('https://bhrutledge.com/ma-legislature/dist/ma_house.geojson').then((response) => response.json()),
-      fetch('https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson').then((response) => response.json()),
+      fetch(
+        "https://bhrutledge.com/ma-legislature/dist/ma_house.geojson"
+      ).then((response) => response.json()),
+      fetch(
+        "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
+      ).then((response) => response.json()),
       /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
-      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv')
+      fetch(
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv"
+      )
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
       /* URL via Third Party Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
-       fetch(
+      fetch(
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
-       )
+      )
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
-    ])
-      .then(([houseFeatures, senateFeatures, repData = [], thirdPartyParticipants = []]) => {
+    ]).then(
+      ([
+        houseFeatures,
+        senateFeatures,
+        repData = [],
+        thirdPartyParticipants = [],
+      ]) => {
         /* Build a rep info object, e.g. `rep.first_name`, `rep.extra_data` */
 
         const repDataByURL = repData.reduce((acc, cur) => {
@@ -52,7 +63,7 @@ class Map extends Component {
         };
 
         /* Templates for map elements */
-        const districtLegend = () => /* html */`
+        const districtLegend = () => /* html */ `
           <strong>Grade of support for bill</strong>
           <div class="legend__item legend__item--grade-1">
             1: Committed to vote
@@ -72,7 +83,7 @@ class Map extends Component {
           className: `district district--${rep.party} district--grade-${rep.grade}`,
         });
 
-        const districtPopup = (rep) => /* html */`
+        const districtPopup = (rep) => /* html */ `
           <p>
             <strong>${rep.first_name} ${rep.last_name}</strong>
             ${rep.party ? `<br />${rep.party}` : ""}
@@ -192,7 +203,16 @@ class Map extends Component {
             marker: false,
             textPlaceholder: "Search legislators and districts",
             moveToLocation(latlng, title, map) {
-              map.fitBounds(latlng.layer.getBounds());
+              // try catch to get bounds to zoom to in both cases
+              try {
+                map.fitBounds(latlng.layer.getBounds());
+              } catch (err) {
+                var dist = 0.005;
+                map.fitBounds([
+                  [latlng.lat - dist, latlng.lng - dist],
+                  [latlng.lat + dist, latlng.lng + dist],
+                ]);
+              }
               latlng.layer.openPopup();
             },
           });
@@ -239,7 +259,7 @@ class Map extends Component {
         );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: 'bottomleft' });
+        const legendControl = L.control({ position: "bottomleft" });
         legendControl.onAdd = () => {
           const div = L.DomUtil.create("div", "legend");
           div.innerHTML = districtLegend();
@@ -262,4 +282,3 @@ class Map extends Component {
 }
 
 export default Map;
-
