@@ -186,7 +186,6 @@ class Map extends Component {
             },
             {
               onEachFeature: (feature, layer) => {
-                console.log("FEAT", feature);
                 layer.bindPopup(thirdPartyPopup(feature));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
@@ -245,8 +244,6 @@ class Map extends Component {
           .fitBounds(layers.House.getBounds())
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
-
-        map.layerGroup;
 
         map.addLayer(thirdPartyLayer(thirdPartyParticipants));
 
