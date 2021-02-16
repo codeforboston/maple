@@ -17,70 +17,74 @@ class Map extends Component {
 
     Promise.all([
       /* The GeoJSON contains basic contact information for each rep */
-      fetch(
-        "https://bhrutledge.com/ma-legislature/dist/ma_house.geojson"
-      ).then((response) => response.json()),
-      fetch(
-        "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
-      ).then((response) => response.json()),
-      fetch(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
-      )
+      fetch('https://bhrutledge.com/ma-legislature/dist/ma_house.geojson').then((response) => response.json()),
+      fetch('https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson').then((response) => response.json()),
+      /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv')
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
-      /**
-       * To add additional data about each rep/district, uncomment this `fetch`
-       * and set the URL to a JSON data source with a `district` field.
-       *
-       * For a CSV, use https://www.papaparse.com/; see an example at:
-       * https://github.com/actonmass/campaign-map/blob/main/index.html
-       */
-      // fetch('https://example.com/rep_data.json').then((response) => response.json()),
-    ]).then(
-      ([
-        houseFeatures,
-        senateFeatures,
-        thirdPartyParticipants,
-        repData = [],
-      ]) => {
+      /* URL via Third Party Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+       fetch(
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
+       )
+        .then((response) => response.text())
+        .then((csv) => {
+          const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
+          return Promise.resolve(parsed.data);
+        }),
+    ])
+      .then(([houseFeatures, senateFeatures, repData = [], thirdPartyParticipants = []]) => {
         /* Build a rep info object, e.g. `rep.first_name`, `rep.extra_data` */
-        const repDataByDistrict = repData.reduce((acc, cur) => {
-          acc[cur.district] = cur;
+
+        const repDataByURL = repData.reduce((acc, cur) => {
+          acc[cur.url] = cur;
           return acc;
         }, {});
 
+        console.log(repDataByURL);
+
         const repProperties = (feature) => {
-          const data = repDataByDistrict[feature.properties.district] || {};
+          const data = repDataByURL[feature.properties.url] || {};
           return { ...feature.properties, ...data };
         };
 
         /* Templates for map elements */
-
-        const districtLegend = () => /* html */ `
-          <div class="legend__item legend__item--Democrat">
-            Democrat
+        const districtLegend = () => /* html */`
+          <strong>Grade of support for bill</strong>
+          <div class="legend__item legend__item--grade-1">
+            1: Committed to vote
           </div>
-          <div class="legend__item legend__item--Republican">
-            Republican
+          <div class="legend__item legend__item--grade-2">
+            2: Substantial past advocacy
           </div>
-          <div class="legend__item legend__item">
-            Other
+          <div class="legend__item legend__item--grade-3">
+            3: Some past advocacy
+          </div>
+          <div class="legend__item legend__item--grade-4">
+            4: No support
           </div>
         `;
 
         const districtStyle = (rep) => ({
-          className: `district district--${rep.party}`,
+          className: `district district--${rep.party} district--grade-${rep.grade}`,
         });
 
-        const districtPopup = (rep) => `
+        const districtPopup = (rep) => /* html */`
           <p>
             <strong>${rep.first_name} ${rep.last_name}</strong>
             ${rep.party ? `<br />${rep.party}` : ""}
             <br />${rep.district}
             ${rep.url ? `<br /><a href="${rep.url}">Contact</a>` : ""}
+          </p>
+          <p>
+            <!-- TODO: Show textual description of grade? -->
+            Grade: ${rep.grade}
+            <!-- TODO: Display individual bills, but keep it generic.
+            This probably means using a regex to match keys like "191/H685".
+            -->
           </p>
         `;
 
@@ -235,7 +239,7 @@ class Map extends Component {
         );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: "topright" });
+        const legendControl = L.control({ position: 'bottomleft' });
         legendControl.onAdd = () => {
           const div = L.DomUtil.create("div", "legend");
           div.innerHTML = districtLegend();
