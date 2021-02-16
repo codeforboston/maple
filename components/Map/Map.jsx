@@ -17,14 +17,20 @@ class Map extends Component {
 
     Promise.all([
       /* The GeoJSON contains basic contact information for each rep */
-      fetch('https://bhrutledge.com/ma-legislature/dist/ma_house.geojson').then((response) => response.json()),
-      fetch('https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson').then((response) => response.json()),
-      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv')
-        .then(( response ) => response.text())
-        .then(( csv ) => {
-          const parsed = Papa.parse( csv, { header: true, dynamicTyping: true });
-          return Promise.resolve( parsed.data )
-      }),
+      fetch(
+        "https://bhrutledge.com/ma-legislature/dist/ma_house.geojson"
+      ).then((response) => response.json()),
+      fetch(
+        "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
+      ).then((response) => response.json()),
+      fetch(
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
+      )
+        .then((response) => response.text())
+        .then((csv) => {
+          const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
+          return Promise.resolve(parsed.data);
+        }),
       /**
        * To add additional data about each rep/district, uncomment this `fetch`
        * and set the URL to a JSON data source with a `district` field.
@@ -33,9 +39,13 @@ class Map extends Component {
        * https://github.com/actonmass/campaign-map/blob/main/index.html
        */
       // fetch('https://example.com/rep_data.json').then((response) => response.json()),
-    ])
-      .then(([houseFeatures, senateFeatures, thirdPartyParticipants, repData = []]) => {
-        debugger;
+    ]).then(
+      ([
+        houseFeatures,
+        senateFeatures,
+        thirdPartyParticipants,
+        repData = [],
+      ]) => {
         /* Build a rep info object, e.g. `rep.first_name`, `rep.extra_data` */
         const repDataByDistrict = repData.reduce((acc, cur) => {
           acc[cur.district] = cur;
@@ -49,7 +59,7 @@ class Map extends Component {
 
         /* Templates for map elements */
 
-        const districtLegend = () => /* html */`
+        const districtLegend = () => /* html */ `
           <div class="legend__item legend__item--Democrat">
             Democrat
           </div>
@@ -68,190 +78,170 @@ class Map extends Component {
         const districtPopup = (rep) => `
           <p>
             <strong>${rep.first_name} ${rep.last_name}</strong>
-            ${rep.party ? `<br />${rep.party}` : ''}
+            ${rep.party ? `<br />${rep.party}` : ""}
             <br />${rep.district}
-            ${rep.url ? `<br /><a href="${rep.url}">Contact</a>` : ''}
+            ${rep.url ? `<br /><a href="${rep.url}">Contact</a>` : ""}
           </p>
         `;
 
-        const thirdPartyPopup = org => `
-          <p>
-            <strong>${org.Organization}</strong>
-            <div>Sub Orgs</div>
-            ${(org.subOrgs || []).map(org => {
-              return `<div>
-                <strong>${org.Name}</strong>
-                <div>EDR Stance: ${org.EDR}</div>  
-                <div>EDR Comments: ${org.EDRComment}</div>  
-                <div>PFC Stance: ${org.PFC}</div>  
-                <div>PFC Comments: ${org.PFCComment}</div>  
-                <div>EV Stance: ${org.EV}</div>  
-                <div>EV Comments: ${org.EVComment}</div>  
-              </div>`
-            })}
-          </p>`;
+        const thirdPartyPopup = (org) => {
+          const columns = {
+            EDR: "EDR (Y/N)",
+            EDRComment: "EDR Comment",
+            EV: "EV (Y/N)",
+            EVComment: "EV Comment",
+            PFC: "PFC (Y/N)",
+            PFCComment: "PFC Comment",
+          };
+          return `
+							<p>
+								<strong>${org.properties.index}</strong>
+								<div>Sub Orgs</div>
+								${(org.subOrgs || []).map((org) => {
+                  return `<div>
+										<strong>${org.Name}</strong>
+										<div>EDR Stance: ${org[columns.EDR]}</div>
+										<div>EDR Comments: ${org[columns.EDRComment]}</div>
+										<div>PFC Stance: ${org[columns.PFC]}</div>
+										<div>PFC Comments: ${org[columns.PFCComment]}</div>
+										<div>EV Stance: ${org[columns.EV]}</div>
+										<div>EV Comments: ${org[columns.EVComment]}</div>
+									</div>`;
+                })}
+							</p>`;
+        };
 
         const onPopup = (e) => {
-          const active = e.type === 'popupopen';
-          e.target.getElement().classList.toggle('district--active', active);
+          const active = e.type === "popupopen";
+          e.target.getElement().classList.toggle("district--active", active);
         };
 
         /* Build the district layers */
 
-        const districtLayer = (features) => L.geoJson(features, {
-          style: (feature) => districtStyle(repProperties(feature)),
-          onEachFeature: (feature, layer) => {
-            const rep = repProperties(feature);
+        const districtLayer = (features) =>
+          L.geoJson(features, {
+            style: (feature) => districtStyle(repProperties(feature)),
+            onEachFeature: (feature, layer) => {
+              const rep = repProperties(feature);
 
-            layer.bindPopup(districtPopup(rep));
-            layer.on('popupopen', onPopup);
-            layer.on('popupclose', onPopup);
+              layer.bindPopup(districtPopup(rep));
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
 
-            // Enable searching by name or district; inspired by:
-            // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
-            // eslint-disable-next-line no-param-reassign
-            feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
-          },
-        });
+              // Enable searching by name or district; inspired by:
+              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+              // eslint-disable-next-line no-param-reassign
+              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+            },
+          });
 
-        const thirdPartyLayer = thirdPartyParticipants => {
-          // L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
-          // var seen = [];
-          // var subOrgMap = {};
-
+        const thirdPartyLayer = (thirdPartyParticipants) => {
           let orgs = {};
 
-          thirdPartyParticipants.map(row => {
+          thirdPartyParticipants.map((row) => {
             if (orgs[row.Organization]) {
-              orgs[row.Organization].subOrgs.push(row)
+              orgs[row.Organization].subOrgs.push(row);
               return;
             }
             orgs[row.Organization] = {
-              "type": "Feature",
-              "properties": {
-                "capacity" : "10", 
-                "type" : "U-Rack",
-                "mount" : "Surface",
-                "index": row.Organization
+              type: "Feature",
+              properties: {
+                capacity: "10",
+                type: "U-Rack",
+                mount: "Surface",
+                index: row.Organization,
               },
-              "geometry": {
-                "type": "Point",
-                "coordinates": [ row.Longitude, row.Latitude ]
+              geometry: {
+                type: "Point",
+                coordinates: [row.Longitude, row.Latitude],
               },
-              "subOrgs": [row],
-            }
+              subOrgs: [row],
+            };
           });
 
-          const test = {
-            "type" : "FeatureCollection",
-            "features" : [
-              { 
-              "type" : "Feature", 
-              "properties" : {  
-                "capacity" : "10", 
-                "type" : "U-Rack",
-                "mount" : "Surface",
-                "index": "Common Cause"
-              }, 
-              "geometry" : { 
-                "type" : "Point", 
-                "coordinates" : [ -71.111, 42.332 ] 
-              }
-            },
-              { 
-                "type" : "Feature", 
-                "properties" : {  
-                  "capacity" : "10", 
-                  "type" : "U-Rack",
-                  "mount" : "Surface",
-                  "index": "Search Me"
-                }, 
-                "geometry" : { 
-                  "type" : "Point", 
-                  "coordinates" : [ -71.121, 42.332 ] 
-                }
-            }]
-          }
-          const features = Object.keys(orgs).map(org => orgs[org])
+          const features = Object.keys(orgs).map((org) => orgs[org]);
 
-          const features2 = {
-            "type": "FeatureCollection",
-            "features" : features
-          }
-
-          debugger;
           // return L.geoJSON( test );
           return L.geoJSON(
             {
-              "type": "FeatureCollection", 
-              "features": features
-            }, {
-              onEachFeature: (feature) => {
-                console.log(feature)
-              }
+              type: "FeatureCollection",
+              features: features,
+            },
+            {
+              onEachFeature: (feature, layer) => {
+                console.log("FEAT", feature);
+                layer.bindPopup(thirdPartyPopup(feature));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
+              },
             }
-            );
-        }
+          );
+        };
 
-        const districtSearch = (layer) => new L.Control.Search({
-          layer,
-          propertyName: 'index',
-          initial: false,
-          marker: false,
-          textPlaceholder: 'Search legislators and districts',
-          moveToLocation(latlng, title, map) {
-            map.fitBounds(latlng.layer.getBounds());
-            latlng.layer.openPopup();
-          },
-        });
-
-    
+        const districtSearch = (layer) =>
+          new L.Control.Search({
+            layer,
+            propertyName: "index",
+            initial: false,
+            marker: false,
+            textPlaceholder: "Search legislators and districts",
+            moveToLocation(latlng, title, map) {
+              map.fitBounds(latlng.layer.getBounds());
+              latlng.layer.openPopup();
+            },
+          });
 
         const layers = {
           House: districtLayer(houseFeatures),
           Senate: districtLayer(senateFeatures),
-          Third: thirdPartyLayer(thirdPartyParticipants)
+          Third: thirdPartyLayer(thirdPartyParticipants),
         };
-        debugger;
+
         const searchControls = {
           House: districtSearch(layers.House),
           Senate: districtSearch(layers.Senate),
-          Third: districtSearch(layers.Third)
+          Third: districtSearch(layers.Third),
         };
 
         /* Build the map */
-
-        const map = L.map('map').addLayer(L.tileLayer.provider('CartoDB.Positron'));
+        const map = L.map("map").addLayer(
+          L.tileLayer.provider("CartoDB.Positron")
+        );
 
         Object.keys(layers).forEach((chamber) => {
           layers[chamber]
-            .on('add', () => searchControls[chamber].addTo(map))
-            .on('remove', () => searchControls[chamber].remove());
+            .on("add", () => searchControls[chamber].addTo(map))
+            .on("remove", () => searchControls[chamber].remove());
         });
 
-        map.addLayer(layers.House)
+        map
+          .addLayer(layers.House)
           .fitBounds(layers.House.getBounds())
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
-        
-        map.layerGroup
 
-        map.addLayer(thirdPartyLayer(thirdPartyParticipants))
-        // map.addLayer(L.layerGroup([L.marker([42.332, -71.111]).bindPopup(thirdPartyPopup())]))
+        map.layerGroup;
 
-        const layerControl = L.control.layers(layers, {}, {
-          collapsed: false,
-        });
+        map.addLayer(thirdPartyLayer(thirdPartyParticipants));
+
+        const layerControl = L.control.layers(
+          layers,
+          {},
+          {
+            collapsed: false,
+          }
+        );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: 'topright' });
+        const legendControl = L.control({ position: "topright" });
         legendControl.onAdd = () => {
-          const div = L.DomUtil.create('div', 'legend');
+          const div = L.DomUtil.create("div", "legend");
           div.innerHTML = districtLegend();
           return div;
         };
         legendControl.addTo(map);
-      });
+      }
+    );
   }
 
   render() {
@@ -266,3 +256,4 @@ class Map extends Component {
 }
 
 export default Map;
+
