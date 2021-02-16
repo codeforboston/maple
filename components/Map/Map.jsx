@@ -97,8 +97,9 @@ class Map extends Component {
 							<p>
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
-								${(org.subOrgs || []).map((org) => {
-                  return `<div>
+								${(org.subOrgs || [])
+                  .map((org) => {
+                    return `<div>
 										<strong>${org.Name}</strong>
 										<div>EDR Stance: ${org[columns.EDR]}</div>
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
@@ -106,8 +107,10 @@ class Map extends Component {
 										<div>PFC Comments: ${org[columns.PFCComment]}</div>
 										<div>EV Stance: ${org[columns.EV]}</div>
 										<div>EV Comments: ${org[columns.EVComment]}</div>
-									</div>`;
-                })}
+									</div>
+								  <br />`;
+                  })
+                  .join("")}
 							</p>`;
         };
 
@@ -161,7 +164,6 @@ class Map extends Component {
 
           const features = Object.keys(orgs).map((org) => orgs[org]);
 
-          // return L.geoJSON( test );
           return L.geoJSON(
             {
               type: "FeatureCollection",
