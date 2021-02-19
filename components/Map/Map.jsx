@@ -129,9 +129,10 @@ class Map extends Component {
 							</p>`;
         };
 
+        // TODO target.getElement() is trying something weird
         const onPopup = (e) => {
           const active = e.type === "popupopen";
-          e.target.getElement().classList.toggle("district--active", active);
+          // e.target.getElement().classList.toggle("district--active", active);
         };
 
         /* Build the district layers */
@@ -140,20 +141,74 @@ class Map extends Component {
           L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
             onEachFeature: (feature, layer) => {
-              const rep = repProperties(feature);
+              // something like: 
+              //debugger;
+              if (feature.category === "ThirdParty") {
+                //debugger;
+                layer.bindPopup( thirdPartyPopup( feature ));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
+              } else {
+                const rep = repProperties(feature);
 
-              layer.bindPopup(districtPopup(rep));
-              layer.on("popupopen", onPopup);
-              layer.on("popupclose", onPopup);
-
-              // Enable searching by name or district; inspired by:
-              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
-              // eslint-disable-next-line no-param-reassign
-              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+                layer.bindPopup(districtPopup(rep));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
+  
+                // Enable searching by name or district; inspired by:
+                // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+                // eslint-disable-next-line no-param-reassign
+                feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+              }
+              
             },
           });
 
-        const thirdPartyLayer = (thirdPartyParticipants) => {
+        // const thirdPartyLayer = (thirdPartyParticipants) => {
+        //   let orgs = {};
+
+        //   thirdPartyParticipants.map((row) => {
+        //     if (orgs[row.Organization]) {
+        //       orgs[row.Organization].subOrgs.push(row);
+        //       return;
+        //     }
+        //     orgs[row.Organization] = {
+        //       type: "Feature",
+        //       category: "ThirdParty",
+        //       properties: {
+        //         capacity: "10",
+        //         type: "U-Rack",
+        //         mount: "Surface",
+        //         category: "Third Party",
+        //         index: row.Organization,
+        //       },
+        //       geometry: {
+        //         type: "Point",
+        //         coordinates: [row.Longitude, row.Latitude],
+        //       },
+        //       subOrgs: [row],
+        //     };
+        //   });
+
+        //   const features = Object.keys(orgs).map((org) => orgs[org]);
+
+        //   return L.geoJSON(
+        //     {
+        //       type: "FeatureCollection",
+        //       features: features,
+        //     },
+        //     {
+        //       onEachFeature: (feature, layer) => {
+        //         layer.bindPopup(thirdPartyPopup(feature));
+        //         layer.on("popupopen", onPopup);
+        //         layer.on("popupclose", onPopup);
+        //       },
+        //     }
+        //   );
+        // };
+
+
+        const thirdPartyGeoJSON = (thirdPartyParticipants) => {
           let orgs = {};
 
           thirdPartyParticipants.map((row) => {
@@ -163,6 +218,7 @@ class Map extends Component {
             }
             orgs[row.Organization] = {
               type: "Feature",
+              category: "ThirdParty",
               properties: {
                 capacity: "10",
                 type: "U-Rack",
@@ -178,21 +234,9 @@ class Map extends Component {
           });
 
           const features = Object.keys(orgs).map((org) => orgs[org]);
+          return features;
+        }
 
-          return L.geoJSON(
-            {
-              type: "FeatureCollection",
-              features: features,
-            },
-            {
-              onEachFeature: (feature, layer) => {
-                layer.bindPopup(thirdPartyPopup(feature));
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
-              },
-            }
-          );
-        };
 
         const districtSearch = (layer) =>
           new L.Control.Search({
@@ -218,14 +262,19 @@ class Map extends Component {
 
         const layers = {
           House: districtLayer(houseFeatures),
-          Senate: districtLayer(senateFeatures),
-          Third: thirdPartyLayer(thirdPartyParticipants),
+          Senate: districtLayer(senateFeatures)
+          //Third: thirdPartyLayer(thirdPartyParticipants),
         };
+
+        const thirdPartyLayer2 = thirdPartyGeoJSON( thirdPartyParticipants );
+        debugger;
+        layers.House.addData( thirdPartyLayer2 );
+        layers.Senate.addData( thirdPartyLayer2 );
 
         const searchControls = {
           House: districtSearch(layers.House),
-          Senate: districtSearch(layers.Senate),
-          Third: districtSearch(layers.Third),
+          Senate: districtSearch(layers.Senate)
+          //Third: districtSearch(layers.Third)
         };
 
         /* Build the map */
@@ -245,7 +294,9 @@ class Map extends Component {
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
 
-        map.addLayer(thirdPartyLayer(thirdPartyParticipants));
+        //map.addLayer(thirdPartyLayer(thirdPartyParticipants));
+        //searchControls.Third.addTo( map );
+
 
         const layerControl = L.control.layers(
           layers,
