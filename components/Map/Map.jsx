@@ -113,8 +113,8 @@ class Map extends Component {
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
 								${(org.subOrgs || [])
-                  .map((org) => {
-                    return `<div>
+              .map((org) => {
+                return `<div>
 										<strong>${org.Name}</strong>
 										<div>EDR Stance: ${org[columns.EDR]}</div>
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
@@ -124,28 +124,55 @@ class Map extends Component {
 										<div>EV Comments: ${org[columns.EVComment]}</div>
 									</div>
 								  <br />`;
-                  })
-                  .join("")}
+              })
+              .join("")}
 							</p>`;
         };
 
-        // TODO target.getElement() is trying something weird
+        // TODO: target.getElement() is trying something weird
         const onPopup = (e) => {
           const active = e.type === "popupopen";
           // e.target.getElement().classList.toggle("district--active", active);
         };
+
+
+        // TODO: Make these link up to actual new marker icons
+        const thirdPartyPoints = ( feature, latlng ) => {
+          switch( feature.properties.type ) {
+            case "studentGroup":
+              return L.marker( latlng, geojsonMarkerOptions );
+            case "professor":
+              return L.marker( latlng, geojsonMarkerOptions2 );
+            default:
+              return L.marker( latlng );
+            }
+        }
+
+        // TODO: these can all be contained within one object, prolly way easier to handle
+        //   but honestly, it'll be an object that contains a bunch of markers instead
+        var geojsonMarkerOptions = {
+          // icon: TODO,
+          opacity: 0.5,
+          riseOnHover: true
+        };
+
+        var geojsonMarkerOptions2 = {
+          // icon: TODO,
+          opacity: 0.2,
+          riseOnHover: true
+        };
+
 
         /* Build the district layers */
 
         const districtLayer = (features) =>
           L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
+            //TODO: edit thirdPartyPoints to do what we want it to
+            pointToLayer: thirdPartyPoints,
             onEachFeature: (feature, layer) => {
-              // something like: 
-              //debugger;
-              if (feature.category === "ThirdParty") {
-                //debugger;
-                layer.bindPopup( thirdPartyPopup( feature ));
+              if (feature.properties.category === "thirdParty") {
+                layer.bindPopup(thirdPartyPopup(feature));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
               } else {
@@ -154,58 +181,16 @@ class Map extends Component {
                 layer.bindPopup(districtPopup(rep));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
-  
+
                 // Enable searching by name or district; inspired by:
                 // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
                 // eslint-disable-next-line no-param-reassign
                 feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
               }
-              
+
             },
           });
 
-        // const thirdPartyLayer = (thirdPartyParticipants) => {
-        //   let orgs = {};
-
-        //   thirdPartyParticipants.map((row) => {
-        //     if (orgs[row.Organization]) {
-        //       orgs[row.Organization].subOrgs.push(row);
-        //       return;
-        //     }
-        //     orgs[row.Organization] = {
-        //       type: "Feature",
-        //       category: "ThirdParty",
-        //       properties: {
-        //         capacity: "10",
-        //         type: "U-Rack",
-        //         mount: "Surface",
-        //         category: "Third Party",
-        //         index: row.Organization,
-        //       },
-        //       geometry: {
-        //         type: "Point",
-        //         coordinates: [row.Longitude, row.Latitude],
-        //       },
-        //       subOrgs: [row],
-        //     };
-        //   });
-
-        //   const features = Object.keys(orgs).map((org) => orgs[org]);
-
-        //   return L.geoJSON(
-        //     {
-        //       type: "FeatureCollection",
-        //       features: features,
-        //     },
-        //     {
-        //       onEachFeature: (feature, layer) => {
-        //         layer.bindPopup(thirdPartyPopup(feature));
-        //         layer.on("popupopen", onPopup);
-        //         layer.on("popupclose", onPopup);
-        //       },
-        //     }
-        //   );
-        // };
 
 
         const thirdPartyGeoJSON = (thirdPartyParticipants) => {
@@ -218,12 +203,11 @@ class Map extends Component {
             }
             orgs[row.Organization] = {
               type: "Feature",
-              category: "ThirdParty",
               properties: {
-                capacity: "10",
-                type: "U-Rack",
-                mount: "Surface",
                 index: row.Organization,
+                category: "thirdParty",
+                // TODO: change this away from student group. make 'subtype' consistent with whatever google sheets stores it as.
+                type: [row.subtype]
               },
               geometry: {
                 type: "Point",
@@ -246,7 +230,7 @@ class Map extends Component {
             marker: false,
             textPlaceholder: "Search legislators and districts",
             moveToLocation(latlng, title, map) {
-              // try catch to get bounds to zoom to in both cases
+              // try catch statement to get bounds to zoom to in both cases
               try {
                 map.fitBounds(latlng.layer.getBounds());
               } catch (err) {
@@ -263,18 +247,16 @@ class Map extends Component {
         const layers = {
           House: districtLayer(houseFeatures),
           Senate: districtLayer(senateFeatures)
-          //Third: thirdPartyLayer(thirdPartyParticipants),
         };
 
-        const thirdPartyLayer2 = thirdPartyGeoJSON( thirdPartyParticipants );
-        debugger;
-        layers.House.addData( thirdPartyLayer2 );
-        layers.Senate.addData( thirdPartyLayer2 );
+        // add the GeoJSON features from the thirdParty data to both the House and Senate variables
+        const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
+        layers.House.addData(thirdPartyLayer2);
+        layers.Senate.addData(thirdPartyLayer2);
 
         const searchControls = {
           House: districtSearch(layers.House),
           Senate: districtSearch(layers.Senate)
-          //Third: districtSearch(layers.Third)
         };
 
         /* Build the map */
@@ -294,8 +276,6 @@ class Map extends Component {
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
 
-        //map.addLayer(thirdPartyLayer(thirdPartyParticipants));
-        //searchControls.Third.addTo( map );
 
 
         const layerControl = L.control.layers(
