@@ -29,11 +29,12 @@
 		align-items: center;
 		justify-content: center;
 		background-color: #e2e1d2;
-		height: 50vh;
+		min-height: 50vh;
 }
 
 .content {
-		padding: 20px;
+    margin: 20px;
+    padding: 20px;
 		width: 50vw;
 		background-color: #FFFFFF;
 		border-radius: 5px;

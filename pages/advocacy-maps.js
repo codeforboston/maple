@@ -1,14 +1,14 @@
-import dynamic from "next/dynamic";
 import { Layout } from "../components";
-
-const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
-  ssr: false,
-});
 
 function AdvocacyMap() {
   return (
     <Layout pageTitle="Advocacy Maps">
-      <MapWithNoSSR />
+    <p>
+      <b>Info about Advocacy Maps</b>
+      <br />
+      Insert info on how to read/interact with advocacy maps.
+      <br />
+    </p>
     </Layout>
   );
 }

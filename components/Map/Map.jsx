@@ -1,167 +1,278 @@
 import { Component, Fragment } from "react";
-import Head from "next/head";
 import L from "leaflet";
-import Papa from "papaparse";
 import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import "leaflet-providers";
+import "leaflet-search";
+import "leaflet-search/dist/leaflet-search.min.css";
 import "leaflet-defaulticon-compatibility";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import Papa from "papaparse";
 
-const districtStyle = (rep) => ({
-  className: `district district--${rep.commitments ? "committed" : "join"}`,
-});
-
-const callToAction = (rep) => `
-  <a class="map-link"
-    href="https://actonmass.org/the-campaign/?your_state_representative=${
-      rep.first_name
-    } ${rep.last_name}#join-your-district-team"
-    target="_parent"
-  >
-    <strong>Join ${rep.commitments ? "the Campaign" : "District Team"}</strong>
-  </a>
-`;
-
-const repCommitments = (rep) =>
-  rep.commitments
-    ? `
-		<p>
-      <table>
-        <tr>
-          <th colspan="2">
-            <strong>Committed to vote for:</strong>
-          </th>
-        </tr>
-        <tr>
-          <td class="commitment">${rep.committee_votes ? "✓" : ""}</td>
-          <td>Committee votes made public</td>
-        </tr>
-        <tr>
-          <td class="commitment">${rep.public_bills ? "✓" : ""}</td>
-          <td>Bills made public for 72 hours</td>
-        </tr>
-        <tr>
-          <td class="commitment">${rep.roll_call ? "✓" : ""}</td>
-          <td>Lower threshold for public roll call</td>
-        </tr>
-      </table>
-    </p>
-  `
-    : "";
-
-const districtPopup = (rep) => `
-	<p>
-		<strong>${rep.first_name} ${rep.last_name}</strong>
-		${rep.url ? `(<a href="${rep.url}">contact</a>)` : ""}
-		<br />${rep.party ? `${rep.party},` : ""}
-		${rep.district}
-		${rep.elect ? "(Elect)" : ""}
-	</p>
-	${repCommitments(rep)}
-	${callToAction(rep)}
-`;
-
-const onPopup = (e) => {
-  const active = e.type === "popupopen";
-  e.target.getElement().classList.toggle("district--active", active);
-};
-
-const districtLegend = () => `
-		<div class="legend__item legend__item--committed">Committed to Vote</div>
-    <div class="legend__item legend__item--join">Join District Team</div>
-`;
-
-const style = {
-  width: "100%",
-  height: "50vh",
-};
-
+/**
+ * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
+ */
 class Map extends Component {
   componentDidMount() {
+    /* Load the legislative district boundaries and rep data */
+
     Promise.all([
+      /* The GeoJSON contains basic contact information for each rep */
       fetch(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4l7bRcBIgwsEPGM_s9zF9csIeTgE2No_4tA6MuDCBUbfmWY_e9mAfzPpCJTsIK_hUzOyJ8CmdGMsX/pub?gid=641305740&single=true&output=csv"
+        "https://bhrutledge.com/ma-legislature/dist/ma_house.geojson"
+      ).then((response) => response.json()),
+      fetch(
+        "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
+      ).then((response) => response.json()),
+      /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+      fetch(
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv"
       )
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
+      /* URL via Third Party Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
       fetch(
-        "https://raw.githubusercontent.com/bhrutledge/ma-legislature/main/dist/ma_house.geojson"
-      ).then((response) => response.json()),
-    ]).then(([supporters, houseFeatures]) => {
-      const supportersByDistrict = supporters.reduce((acc, cur) => {
-        acc[cur.district] = cur;
-        return acc;
-      }, {});
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
+      )
+        .then((response) => response.text())
+        .then((csv) => {
+          const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
+          return Promise.resolve(parsed.data);
+        }),
+    ]).then(
+      ([
+        houseFeatures,
+        senateFeatures,
+        repData = [],
+        thirdPartyParticipants = [],
+      ]) => {
+        /* Build a rep info object, e.g. `rep.first_name`, `rep.extra_data` */
 
-      function repProperties(feature) {
-        const supporter = supportersByDistrict[feature.properties.district];
-        return supporter;
+        const repDataByURL = repData.reduce((acc, cur) => {
+          acc[cur.url] = cur;
+          return acc;
+        }, {});
+
+        console.log(repDataByURL);
+
+        const repProperties = (feature) => {
+          const data = repDataByURL[feature.properties.url] || {};
+          return { ...feature.properties, ...data };
+        };
+
+        /* Templates for map elements */
+        const districtLegend = () => /* html */ `
+          <strong>Grade of support for bill</strong>
+          <div class="legend__item legend__item--grade-1">
+            1: Committed to vote
+          </div>
+          <div class="legend__item legend__item--grade-2">
+            2: Substantial past advocacy
+          </div>
+          <div class="legend__item legend__item--grade-3">
+            3: Some past advocacy
+          </div>
+          <div class="legend__item legend__item--grade-4">
+            4: No support
+          </div>
+        `;
+
+        const districtStyle = (rep) => ({
+          className: `district district--${rep.party} district--grade-${rep.grade}`,
+        });
+
+        const districtPopup = (rep) => /* html */ `
+          <p>
+            <strong>${rep.first_name} ${rep.last_name}</strong>
+            ${rep.party ? `<br />${rep.party}` : ""}
+            <br />${rep.district}
+            ${rep.url ? `<br /><a href="${rep.url}">Contact</a>` : ""}
+          </p>
+          <p>
+            <!-- TODO: Show textual description of grade? -->
+            Grade: ${rep.grade}
+            <!-- TODO: Display individual bills, but keep it generic.
+            This probably means using a regex to match keys like "191/H685".
+            -->
+          </p>
+        `;
+
+        const thirdPartyPopup = (org) => {
+          const columns = {
+            EDR: "EDR (Y/N)",
+            EDRComment: "EDR Comment",
+            EV: "EV (Y/N)",
+            EVComment: "EV Comment",
+            PFC: "PFC (Y/N)",
+            PFCComment: "PFC Comment",
+          };
+          return `
+							<p>
+								<strong>${org.properties.index}</strong>
+								<div>Sub Orgs</div>
+								${(org.subOrgs || [])
+                  .map((org) => {
+                    return `<div>
+										<strong>${org.Name}</strong>
+										<div>EDR Stance: ${org[columns.EDR]}</div>
+										<div>EDR Comments: ${org[columns.EDRComment]}</div>
+										<div>PFC Stance: ${org[columns.PFC]}</div>
+										<div>PFC Comments: ${org[columns.PFCComment]}</div>
+										<div>EV Stance: ${org[columns.EV]}</div>
+										<div>EV Comments: ${org[columns.EVComment]}</div>
+									</div>
+								  <br />`;
+                  })
+                  .join("")}
+							</p>`;
+        };
+
+        const onPopup = (e) => {
+          const active = e.type === "popupopen";
+          e.target.getElement().classList.toggle("district--active", active);
+        };
+
+        /* Build the district layers */
+
+        const districtLayer = (features) =>
+          L.geoJson(features, {
+            style: (feature) => districtStyle(repProperties(feature)),
+            onEachFeature: (feature, layer) => {
+              const rep = repProperties(feature);
+
+              layer.bindPopup(districtPopup(rep));
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
+
+              // Enable searching by name or district; inspired by:
+              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+              // eslint-disable-next-line no-param-reassign
+              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+            },
+          });
+
+        const thirdPartyLayer = (thirdPartyParticipants) => {
+          let orgs = {};
+
+          thirdPartyParticipants.map((row) => {
+            if (orgs[row.Organization]) {
+              orgs[row.Organization].subOrgs.push(row);
+              return;
+            }
+            orgs[row.Organization] = {
+              type: "Feature",
+              properties: {
+                capacity: "10",
+                type: "U-Rack",
+                mount: "Surface",
+                index: row.Organization,
+              },
+              geometry: {
+                type: "Point",
+                coordinates: [row.Longitude, row.Latitude],
+              },
+              subOrgs: [row],
+            };
+          });
+
+          const features = Object.keys(orgs).map((org) => orgs[org]);
+
+          return L.geoJSON(
+            {
+              type: "FeatureCollection",
+              features: features,
+            },
+            {
+              onEachFeature: (feature, layer) => {
+                layer.bindPopup(thirdPartyPopup(feature));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
+              },
+            }
+          );
+        };
+
+        const districtSearch = (layer) =>
+          new L.Control.Search({
+            layer,
+            propertyName: "index",
+            initial: false,
+            marker: false,
+            textPlaceholder: "Search legislators and districts",
+            moveToLocation(latlng, title, map) {
+              // try catch to get bounds to zoom to in both cases
+              try {
+                map.fitBounds(latlng.layer.getBounds());
+              } catch (err) {
+                var dist = 0.005;
+                map.fitBounds([
+                  [latlng.lat - dist, latlng.lng - dist],
+                  [latlng.lat + dist, latlng.lng + dist],
+                ]);
+              }
+              latlng.layer.openPopup();
+            },
+          });
+
+        const layers = {
+          House: districtLayer(houseFeatures),
+          Senate: districtLayer(senateFeatures),
+          Third: thirdPartyLayer(thirdPartyParticipants),
+        };
+
+        const searchControls = {
+          House: districtSearch(layers.House),
+          Senate: districtSearch(layers.Senate),
+          Third: districtSearch(layers.Third),
+        };
+
+        /* Build the map */
+        const map = L.map("map").addLayer(
+          L.tileLayer.provider("CartoDB.Positron")
+        );
+
+        Object.keys(layers).forEach((chamber) => {
+          layers[chamber]
+            .on("add", () => searchControls[chamber].addTo(map))
+            .on("remove", () => searchControls[chamber].remove());
+        });
+
+        map
+          .addLayer(layers.House)
+          .fitBounds(layers.House.getBounds())
+          // Avoid accidental excessive zoom out
+          .setMinZoom(map.getZoom());
+
+        map.addLayer(thirdPartyLayer(thirdPartyParticipants));
+
+        const layerControl = L.control.layers(
+          layers,
+          {},
+          {
+            collapsed: false,
+          }
+        );
+        layerControl.addTo(map);
+
+        const legendControl = L.control({ position: "bottomleft" });
+        legendControl.onAdd = () => {
+          const div = L.DomUtil.create("div", "legend");
+          div.innerHTML = districtLegend();
+          return div;
+        };
+        legendControl.addTo(map);
       }
-
-      const houseLayer = L.geoJson(houseFeatures, {
-        style: (feature) => districtStyle(repProperties(feature)),
-        onEachFeature: (feature, layer) => {
-          const rep = repProperties(feature);
-          layer.bindPopup(districtPopup(rep));
-          layer.on("popupopen", onPopup);
-          layer.on("popupclose", onPopup);
-          feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
-        },
-      });
-
-      const searchControl = new L.Control.Search({
-        layer: houseLayer,
-        propertyName: "index",
-        initial: false,
-        marker: false,
-        textPlaceholder: "Search reps and districts",
-        moveToLocation(latlng, title, map) {
-          map.fitBounds(latlng.layer.getBounds());
-          latlng.layer.openPopup();
-        },
-      });
-
-      const legendControl = L.control({ position: "topright" });
-      legendControl.onAdd = () => {
-        const div = L.DomUtil.create("div", "legend");
-        div.innerHTML = districtLegend();
-        return div;
-      };
-      const baseLayer = L.tileLayer(
-        "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        {
-          attribution:
-            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        }
-      );
-
-      this.map = L.map("map")
-        .addLayer(baseLayer)
-        .addLayer(houseLayer)
-        .addControl(searchControl)
-        .addControl(legendControl)
-        .fitBounds(houseLayer.getBounds());
-
-      // Avoid accidental excessive zoom out
-      this.map.setMinZoom(this.map.getZoom());
-    });
+    );
   }
 
   render() {
     return (
       <Fragment>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet-search@2.9.9/dist/leaflet-search.min.css"
-          />
-        </Head>
-        <div id="map" style={style}></div>
-        <Head>
-          <script src="https://unpkg.com/leaflet-search@2.9.9/dist/leaflet-search.min.js"></script>
-        </Head>
+        <div id="map-wrapper">
+          <div id="map"></div>
+        </div>
       </Fragment>
     );
   }
