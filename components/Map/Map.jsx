@@ -107,6 +107,7 @@ class Map extends Component {
             EVComment: "EV Comment",
             PFC: "PFC (Y/N)",
             PFCComment: "PFC Comment",
+            Category: "Category"
           };
           return `
 							<p>
@@ -122,6 +123,7 @@ class Map extends Component {
 										<div>PFC Comments: ${org[columns.PFCComment]}</div>
 										<div>EV Stance: ${org[columns.EV]}</div>
 										<div>EV Comments: ${org[columns.EVComment]}</div>
+                    <div>Category: ${org[columns.Category]}
 									</div>
 								  <br />`;
               })
@@ -138,29 +140,58 @@ class Map extends Component {
 
         // TODO: Make these link up to actual new marker icons
         const thirdPartyPoints = ( feature, latlng ) => {
+
+          // TODO: change these to actual new icons, for now they are differing
+          var geoJsonMarkers = {
+            markerStudentGroup: {
+              opacity: 0.5,
+              riseOnHover: true
+            },
+            markerProfessor: {
+              opacity: 0.1,
+              riseOnHover: true
+            },
+            markerNonprofit: {
+              opacity: 0.9,
+              riseOnHover: true
+            }
+          }
+
+          // var nonProfitImg = require( './icons8-non-profit-organisation-32.png');
+          // var nonProfitImg = '%PUBLIC_URL%/logo192.png'
+
+          var nonProfitIcon = L.icon({
+            // TODO: I can't currently load png's from elsewhere, seems like webpack doesn't have the right loader?
+            // iconUrl:   testing,
+            iconUrl:   './icons/icons8-non-profit-organisation-32.png',
+            // shadowUrl: nonProfitImg,
+            shadowUrl: './icons/icons8-non-profit-organisation-32.png',
+
+
+            iconSize:     [32, 32], // size of the icon
+            shadowSize:   [32, 32], // size of the shadow
+            iconAnchor:   [16, 30], // point of the icon which will correspond to marker's location
+            shadowAnchor: [16, 30],  // the same for the shadow
+            popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+          })
+          
+          // switch statement to determine which marker to use
           switch( feature.properties.type ) {
-            case "studentGroup":
-              return L.marker( latlng, geojsonMarkerOptions );
-            case "professor":
-              return L.marker( latlng, geojsonMarkerOptions2 );
+            case "Student Group":
+              return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
+              // return L.marker( latlng, {icon: nonProfitIcon} );
+            case "Professor":
+              return L.marker( latlng, geoJsonMarkers.markerProfessor );
+              // return L.marker( latlng, {icon: nonProfitIcon} );
+            case "Non-Profit Organization":
+              return L.marker( latlng, {icon: nonProfitIcon} );
             default:
               return L.marker( latlng );
             }
         }
 
-        // TODO: these can all be contained within one object, prolly way easier to handle
-        //   but honestly, it'll be an object that contains a bunch of markers instead
-        var geojsonMarkerOptions = {
-          // icon: TODO,
-          opacity: 0.5,
-          riseOnHover: true
-        };
-
-        var geojsonMarkerOptions2 = {
-          // icon: TODO,
-          opacity: 0.2,
-          riseOnHover: true
-        };
+        
+  
 
 
         /* Build the district layers */
@@ -206,8 +237,9 @@ class Map extends Component {
               properties: {
                 index: row.Organization,
                 category: "thirdParty",
-                // TODO: change this away from student group. make 'subtype' consistent with whatever google sheets stores it as.
-                type: [row.subtype]
+                // TODO: kinda janky with the 'toString()' call, also make sure 'Category' is consistent with
+                //   the google sheets backend
+                type: [row.Category].toString()
               },
               geometry: {
                 type: "Point",
