@@ -113,43 +113,112 @@ class Map extends Component {
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
 								${(org.subOrgs || [])
-                  .map((org) => {
-                    return `<div>
+              .map((org) => {
+                return `<div>
 										<strong>${org.Name}</strong>
 										<div>EDR Stance: ${org[columns.EDR]}</div>
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
 									</div>
 								  <br />`;
-                  })
-                  .join("")}
+              })
+              .join("")}
 							</p>`;
         };
 
+        // TODO: target.getElement() is trying something weird
         const onPopup = (e) => {
           const active = e.type === "popupopen";
-          e.target.getElement().classList.toggle("district--active", active);
+          // e.target.getElement().classList.toggle("district--active", active);
         };
+
+
+        // TODO: Make these link up to actual new marker icons
+        const thirdPartyPoints = ( feature, latlng ) => {
+
+          // TODO: change these to actual new icons, for now they are differing
+          var geoJsonMarkers = {
+            markerStudentGroup: {
+              opacity: 0.5,
+              riseOnHover: true
+            },
+            markerProfessor: {
+              opacity: 0.1,
+              riseOnHover: true
+            },
+            markerNonprofit: {
+              opacity: 0.9,
+              riseOnHover: true
+            }
+          }
+
+          // var nonProfitImg = require( './icons8-non-profit-organisation-32.png');
+          // var nonProfitImg = '%PUBLIC_URL%/logo192.png'
+
+          var nonProfitIcon = L.icon({
+            // TODO: I can't currently load png's from elsewhere, seems like webpack doesn't have the right loader?
+            // iconUrl:   testing,
+            iconUrl:   './icons/icons8-non-profit-organisation-32.png',
+            // shadowUrl: nonProfitImg,
+            shadowUrl: './icons/icons8-non-profit-organisation-32.png',
+
+
+            iconSize:     [32, 32], // size of the icon
+            shadowSize:   [32, 32], // size of the shadow
+            iconAnchor:   [16, 30], // point of the icon which will correspond to marker's location
+            shadowAnchor: [16, 30],  // the same for the shadow
+            popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+          })
+          
+          // switch statement to determine which marker to use
+          switch( feature.properties.type ) {
+            case "Student Group":
+              return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
+              // return L.marker( latlng, {icon: nonProfitIcon} );
+            case "Professor":
+              return L.marker( latlng, geoJsonMarkers.markerProfessor );
+              // return L.marker( latlng, {icon: nonProfitIcon} );
+            case "Non-Profit Organization":
+              return L.marker( latlng, {icon: nonProfitIcon} );
+            default:
+              return L.marker( latlng );
+            }
+        }
+
+        
+  
+
 
         /* Build the district layers */
 
         const districtLayer = (features) =>
           L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
+            //TODO: edit thirdPartyPoints to do what we want it to
+            pointToLayer: thirdPartyPoints,
             onEachFeature: (feature, layer) => {
-              const rep = repProperties(feature);
+              if (feature.properties.category === "thirdParty") {
+                layer.bindPopup(thirdPartyPopup(feature));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
+              } else {
+                const rep = repProperties(feature);
 
-              layer.bindPopup(districtPopup(rep));
-              layer.on("popupopen", onPopup);
-              layer.on("popupclose", onPopup);
+                layer.bindPopup(districtPopup(rep));
+                layer.on("popupopen", onPopup);
+                layer.on("popupclose", onPopup);
 
-              // Enable searching by name or district; inspired by:
-              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
-              // eslint-disable-next-line no-param-reassign
-              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+                // Enable searching by name or district; inspired by:
+                // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+                // eslint-disable-next-line no-param-reassign
+                feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+              }
+
             },
           });
 
-        const thirdPartyLayer = (thirdPartyParticipants) => {
+
+
+        const thirdPartyGeoJSON = (thirdPartyParticipants) => {
           let orgs = {};
 
           thirdPartyParticipants.map((row) => {
@@ -160,10 +229,11 @@ class Map extends Component {
             orgs[row.Organization] = {
               type: "Feature",
               properties: {
-                capacity: "10",
-                type: "U-Rack",
-                mount: "Surface",
                 index: row.Organization,
+                category: "thirdParty",
+                // TODO: kinda janky with the 'toString()' call, also make sure 'Category' is consistent with
+                //   the google sheets backend
+                type: [row.Category].toString()
               },
               geometry: {
                 type: "Point",
@@ -174,21 +244,9 @@ class Map extends Component {
           });
 
           const features = Object.keys(orgs).map((org) => orgs[org]);
+          return features;
+        }
 
-          return L.geoJSON(
-            {
-              type: "FeatureCollection",
-              features: features,
-            },
-            {
-              onEachFeature: (feature, layer) => {
-                layer.bindPopup(thirdPartyPopup(feature));
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
-              },
-            }
-          );
-        };
 
         const districtSearch = (layer) =>
           new L.Control.Search({
@@ -198,7 +256,7 @@ class Map extends Component {
             marker: false,
             textPlaceholder: "Search legislators and districts",
             moveToLocation(latlng, title, map) {
-              // try catch to get bounds to zoom to in both cases
+              // try catch statement to get bounds to zoom to in both cases
               try {
                 map.fitBounds(latlng.layer.getBounds());
               } catch (err) {
@@ -214,14 +272,17 @@ class Map extends Component {
 
         const layers = {
           House: districtLayer(houseFeatures),
-          Senate: districtLayer(senateFeatures),
-          Third: thirdPartyLayer(thirdPartyParticipants),
+          Senate: districtLayer(senateFeatures)
         };
+
+        // add the GeoJSON features from the thirdParty data to both the House and Senate variables
+        const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
+        layers.House.addData(thirdPartyLayer2);
+        layers.Senate.addData(thirdPartyLayer2);
 
         const searchControls = {
           House: districtSearch(layers.House),
-          Senate: districtSearch(layers.Senate),
-          Third: districtSearch(layers.Third),
+          Senate: districtSearch(layers.Senate)
         };
 
         /* Build the map */
@@ -241,7 +302,7 @@ class Map extends Component {
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
 
-        map.addLayer(thirdPartyLayer(thirdPartyParticipants));
+
 
         const layerControl = L.control.layers(
           layers,
