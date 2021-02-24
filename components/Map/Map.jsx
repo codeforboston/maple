@@ -103,11 +103,10 @@ class Map extends Component {
           const columns = {
             EDR: "EDR (Y/N)",
             EDRComment: "EDR Comment",
-            EV: "EV (Y/N)",
-            EVComment: "EV Comment",
-            PFC: "PFC (Y/N)",
-            PFCComment: "PFC Comment",
-            Category: "Category"
+            //EV: "EV (Y/N)",
+            //EVComment: "EV Comment",
+            //PFC: "PFC (Y/N)",
+            //PFCComment: "PFC Comment",
           };
           return `
 							<p>
@@ -119,11 +118,6 @@ class Map extends Component {
 										<strong>${org.Name}</strong>
 										<div>EDR Stance: ${org[columns.EDR]}</div>
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
-										<div>PFC Stance: ${org[columns.PFC]}</div>
-										<div>PFC Comments: ${org[columns.PFCComment]}</div>
-										<div>EV Stance: ${org[columns.EV]}</div>
-										<div>EV Comments: ${org[columns.EVComment]}</div>
-                    <div>Category: ${org[columns.Category]}
 									</div>
 								  <br />`;
               })
