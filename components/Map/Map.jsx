@@ -144,11 +144,11 @@ class Map extends Component {
           // TODO: change these to actual new icons, for now they are differing
           var geoJsonMarkers = {
             markerStudentGroup: {
-              opacity: 0.5,
+              opacity: 0.9,
               riseOnHover: true
             },
             markerProfessor: {
-              opacity: 0.1,
+              opacity: 0.9,
               riseOnHover: true
             },
             markerNonprofit: {
@@ -184,7 +184,8 @@ class Map extends Component {
               return L.marker( latlng, geoJsonMarkers.markerProfessor );
               // return L.marker( latlng, {icon: nonProfitIcon} );
             case "Non-Profit Organization":
-              return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker( latlng, geoJsonMarkers.markerNonprofit );
+              // return L.marker( latlng, {icon: nonProfitIcon} );
             default:
               return L.marker( latlng );
             }
