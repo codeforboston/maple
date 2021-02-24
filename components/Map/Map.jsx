@@ -7,6 +7,7 @@ import "leaflet-search/dist/leaflet-search.min.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import Papa from "papaparse";
+import "./L.Control.Sidebar";
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -109,7 +110,7 @@ class Map extends Component {
             PFCComment: "PFC Comment",
           };
           return `
-							<p>
+							<span>
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
 								${(org.subOrgs || [])
@@ -126,7 +127,7 @@ class Map extends Component {
 								  <br />`;
                   })
                   .join("")}
-							</p>`;
+							</span>`;
         };
 
         const onPopup = (e) => {
@@ -189,6 +190,10 @@ class Map extends Component {
                 layer.bindPopup(thirdPartyPopup(feature));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
+                layer.on("click", function () {
+                  sidebar.setContent("test <b>test</b> test");
+                  sidebar.toggle();
+                });
               },
             }
           );
@@ -233,12 +238,41 @@ class Map extends Component {
           L.tileLayer.provider("CartoDB.Positron")
         );
 
-        Object.keys(layers).forEach((chamber) => {
-          layers[chamber]
-            .on("add", () => searchControls[chamber].addTo(map))
-            .on("remove", () => searchControls[chamber].remove());
+        var sidebar = L.control.sidebar("sidebar", {
+          closeButton: true,
+          position: "left",
+        });
+        map.addControl(sidebar);
+
+        var marker = L.marker([51.2, 7])
+          .addTo(map)
+          .on("click", function () {
+            sidebar.toggle();
+          });
+
+        map.on("click", function () {
+          sidebar.hide();
         });
 
+        sidebar.on("show", function () {
+          console.log("Sidebar will be visible.");
+        });
+
+        sidebar.on("shown", function () {
+          console.log("Sidebar is visible.");
+        });
+
+        sidebar.on("hide", function () {
+          console.log("Sidebar will be hidden.");
+        });
+
+        sidebar.on("hidden", function () {
+          console.log("Sidebar is hidden.");
+        });
+
+        L.DomEvent.on(sidebar.getCloseButton(), "click", function () {
+          console.log("Close button clicked.");
+        });
         map
           .addLayer(layers.House)
           .fitBounds(layers.House.getBounds())
@@ -270,6 +304,9 @@ class Map extends Component {
   render() {
     return (
       <Fragment>
+        <div id="sidebar">
+          <h1>Check me out</h1>
+        </div>
         <div id="map-wrapper">
           <div id="map"></div>
         </div>
