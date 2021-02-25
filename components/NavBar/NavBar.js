@@ -21,23 +21,26 @@ function NavBar({ pageTitle = "" }) {
           <Nav className="mr-auto"></Nav>
           <Nav>
             <Nav.Link href="/about">About GGP</Nav.Link>
-            <Nav.Link href="/democracy-in-ma">
+            {/*<Nav.Link href="/democracy-in-ma">
               Democracy in MA - Overview
-            </Nav.Link>
+            </Nav.Link> */}
             <NavDropdown title="2021 Priorities" id="basic-nav-dropdown">
               <NavDropdown.Item href="/election-day-registration">
                 Election Day Registration
               </NavDropdown.Item>
               <NavDropdown.Item href="/campaign-finance">
-                Campaign Finance - Constitutional Amendment
+                Early/Mail Voting
               </NavDropdown.Item>
               <NavDropdown.Item href="/political-advertisements">
-                Political Advertisement Disclosure
+                Publicly Financed Campaigns
+              </NavDropdown.Item>
+              <NavDropdown.Item href="/political-advertisements">
+                Other Legislative Endorsements
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/advocacy-maps">Advocacy Maps</Nav.Link>
+            <Nav.Link href="/advocacy-maps">Democracy Maps</Nav.Link>
             <Nav.Link href="/contact">Contact Us</Nav.Link>
-            <Nav.Link href="/blog">GGP Blog</Nav.Link>
+            {/*<Nav.Link href="/blog">GGP Blog</Nav.Link>*/}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
