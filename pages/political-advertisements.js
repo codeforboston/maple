@@ -16,6 +16,8 @@ function PoliticalAdvertisements() {
         to disclose the details of their purchase. This will increase
         transparency in our electoral processes, and dissuade foreign actors.
         <br />
+        You can read our full letter on this issue, <a href="/early-mail-voting-letter">here</a>.
+        <br />
         <b>Advocacy Map</b>
       </p>
     </Layout>

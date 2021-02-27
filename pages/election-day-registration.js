@@ -16,7 +16,7 @@ function ElectionDayRegistration() {
         to register until 20 days before the election. This is a Jim Crowe era
         law, which continues to have harmful effects today. Democracies should
         promote participation, and make it easier to vote, not maintain
-        arbitrary hoops. Read our full letter here.
+        arbitrary hoops. You can read our full letter on this issue, <a href="/edr-letter">here</a>.
         <br />
         <b>Advocacy Map</b>
         <MapWithNoSSR />
