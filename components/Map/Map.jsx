@@ -9,7 +9,16 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import Papa from "papaparse";
 import "./L.Control.Sidebar";
 
-import test from '../../public/logo192.png'
+// import markerBuildingBlue from '../../public/marker-building-blue.png'
+// import markerSchoolBlue from '../../public/marker-school-blue.png'
+import shad from '../../public/shad-64.png'
+import schlBlu from '../../public/schl-64-blu.png'
+import schlYel from '../../public/schl-64-yel.png'
+import schlRed from '../../public/schl-64-red.png'
+import bldgBlu from '../../public/bldg-64-blu.png'
+import bldgYel from '../../public/bldg-64-yel.png'
+import bldgRed from '../../public/bldg-64-red.png'
+
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -135,54 +144,49 @@ class Map extends Component {
         };
 
 
-        // TODO: Make these link up to actual new marker icons
-        const thirdPartyPoints = ( feature, latlng ) => {
+       // THIRD PARTY ICONS 
+       // class for third party icons
+        var thirdPartyIcon = L.Icon.extend({
+          options: {
+            shadowUrl: shad,
+            iconSize:     [28, 28],
+            shadowSize:   [28, 28],
+            iconAnchor:   [16, 30],
+            shadowAnchor: [16, 30],
+            popupAnchor:  [0, 0]
+          }
+        })
 
-          // TODO: change these to actual new icons, for now they are differing
+        // make a variable for each of the icons
+        var markerSchlBlu = new thirdPartyIcon( {iconUrl: schlBlu});
+        var markerSchlYel = new thirdPartyIcon( {iconUrl: schlYel});
+        var markerSchlRed = new thirdPartyIcon( {iconUrl: schlRed});
+        var markerBldgBlu = new thirdPartyIcon( {iconUrl: bldgBlu});
+        var markerBldgYel = new thirdPartyIcon( {iconUrl: bldgYel});
+        var markerBldgRed = new thirdPartyIcon( {iconUrl: bldgRed});
+
+        // put these into a consant to hold all of the icons
+        const thirdPartyPoints = ( feature, latlng ) => {
           var geoJsonMarkers = {
-            markerStudentGroup: {
-              opacity: 0.9,
-              riseOnHover: true
-            },
-            markerProfessor: {
-              opacity: 0.9,
-              riseOnHover: true
-            },
-            markerNonprofit: {
-              opacity: 0.9,
-              riseOnHover: true
-            }
+            markerSchlAye: { icon: markerSchlBlu, riseOnHover: true },
+            markerSchlMix: { icon: markerSchlYel, riseOnHover: true },
+            markerSchlNay: { icon: markerSchlRed, riseOnHover: true },
+            markerBldgAye: { icon: markerBldgBlu, riseOnHover: true },
+            markerBldgMix: { icon: markerBldgYel, riseOnHover: true },
+            markerBldgNay: { icon: markerBldgRed, riseOnHover: true }
           }
 
-          // var nonProfitImg = require( './icons8-non-profit-organisation-32.png');
-          // var nonProfitImg = '%PUBLIC_URL%/logo192.png'
-
-          var nonProfitIcon = L.icon({
-            // TODO: I can't currently load png's from elsewhere, seems like webpack doesn't have the right loader?
-            iconUrl:   test,
-            // iconUrl:   './icons/icons8-non-profit-organisation-32.png',
-            // shadowUrl: nonProfitImg,
-            shadowUrl: './icons/icons8-non-profit-organisation-32.png',
-
-
-            iconSize:     [32, 32], // size of the icon
-            shadowSize:   [32, 32], // size of the shadow
-            iconAnchor:   [16, 30], // point of the icon which will correspond to marker's location
-            shadowAnchor: [16, 30],  // the same for the shadow
-            popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
-          })
           
           // switch statement to determine which marker to use
+          // TODO: add logic to actually color them
+          //   need ifs within the switches? might get ugly
+          //   loop through all the 'sub orgs', if all Ayes - return blue icon, etc, etc
           switch( feature.properties.type ) {
             case "Student Group":
-              // return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
-              return L.marker( latlng, {icon: nonProfitIcon} );
             case "Professor":
-              return L.marker( latlng, geoJsonMarkers.markerProfessor );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker( latlng, geoJsonMarkers.markerSchlAye );
             case "Non-Profit Organization":
-              return L.marker( latlng, geoJsonMarkers.markerNonprofit );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker( latlng, geoJsonMarkers.markerBldgNay );
             default:
               return L.marker( latlng );
             }
