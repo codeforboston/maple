@@ -8,6 +8,8 @@ import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import Papa from "papaparse";
 
+import test from '../../public/logo192.png'
+
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
  */
@@ -156,8 +158,8 @@ class Map extends Component {
 
           var nonProfitIcon = L.icon({
             // TODO: I can't currently load png's from elsewhere, seems like webpack doesn't have the right loader?
-            // iconUrl:   testing,
-            iconUrl:   './icons/icons8-non-profit-organisation-32.png',
+            iconUrl:   test,
+            // iconUrl:   './icons/icons8-non-profit-organisation-32.png',
             // shadowUrl: nonProfitImg,
             shadowUrl: './icons/icons8-non-profit-organisation-32.png',
 
@@ -172,8 +174,8 @@ class Map extends Component {
           // switch statement to determine which marker to use
           switch( feature.properties.type ) {
             case "Student Group":
-              return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              // return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
+              return L.marker( latlng, {icon: nonProfitIcon} );
             case "Professor":
               return L.marker( latlng, geoJsonMarkers.markerProfessor );
               // return L.marker( latlng, {icon: nonProfitIcon} );
@@ -219,6 +221,11 @@ class Map extends Component {
 
 
 
+        // so we have access to some things here
+        //   we are mapping everything into the 'suborgs' object of 
+        //
+        // what needs to happen, for every 'organization', if its the first time you've seen it
+        
         const thirdPartyGeoJSON = (thirdPartyParticipants) => {
           let orgs = {};
 
