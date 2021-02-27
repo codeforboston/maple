@@ -12173,6 +12173,11 @@ side-channel@^1.0.3, side-channel@^1.0.4:
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
 
+sidebar-v2@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/sidebar-v2/-/sidebar-v2-0.4.0.tgz#c01bad3d264acb482972d86f90a99f95091b5ff7"
+  integrity sha512-YM+655PjRbF45n3r+lkpKkZlZz3pdjyaIqG2IQ4XXVfuSTB9WJTY2WCV1LunOteVCFy/iyYURVuJOkoyodtkgQ==
+
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
