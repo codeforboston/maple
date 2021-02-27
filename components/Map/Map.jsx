@@ -187,11 +187,11 @@ class Map extends Component {
             },
             {
               onEachFeature: (feature, layer) => {
-                layer.bindPopup(thirdPartyPopup(feature));
+                // layer.bindPopup(thirdPartyPopup(feature));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
                 layer.on("click", function () {
-                  sidebar.setContent("test <b>test</b> test");
+                  sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
                   sidebar.toggle();
                 });
               },
@@ -254,25 +254,6 @@ class Map extends Component {
           sidebar.hide();
         });
 
-        sidebar.on("show", function () {
-          console.log("Sidebar will be visible.");
-        });
-
-        sidebar.on("shown", function () {
-          console.log("Sidebar is visible.");
-        });
-
-        sidebar.on("hide", function () {
-          console.log("Sidebar will be hidden.");
-        });
-
-        sidebar.on("hidden", function () {
-          console.log("Sidebar is hidden.");
-        });
-
-        L.DomEvent.on(sidebar.getCloseButton(), "click", function () {
-          console.log("Close button clicked.");
-        });
         map
           .addLayer(layers.House)
           .fitBounds(layers.House.getBounds())
@@ -304,9 +285,7 @@ class Map extends Component {
   render() {
     return (
       <Fragment>
-        <div id="sidebar">
-          <h1>Check me out</h1>
-        </div>
+        <div id="sidebar"></div>
         <div id="map-wrapper">
           <div id="map"></div>
         </div>
