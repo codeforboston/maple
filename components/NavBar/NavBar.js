@@ -34,9 +34,6 @@ function NavBar({ pageTitle = "" }) {
               <NavDropdown.Item href="/political-advertisements">
                 Publicly Financed Campaigns
               </NavDropdown.Item>
-              <NavDropdown.Item href="/political-advertisements">
-                Other Legislative Endorsements
-              </NavDropdown.Item>
               <NavDropdown.Item href="/other-legislative-endorsements">
                 Other Legislative Endorsements
               </NavDropdown.Item>
