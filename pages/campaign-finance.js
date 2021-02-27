@@ -19,6 +19,8 @@ function CampaignFinance() {
         will be the 6th state to call for a Constitutional Convention to propose
         the amendment.
         <br />
+        <a href="/campaign-finance-letter">Publicly Financed Campaigns</a>
+        <br />
         <b>Advocacy Map</b>
       </p>
     </Layout>

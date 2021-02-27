@@ -18,6 +18,8 @@ function ElectionDayRegistration() {
         promote participation, and make it easier to vote, not maintain
         arbitrary hoops. Read our full letter here.
         <br />
+        <a href="/edr-letter">Election Day Registration</a>
+        <br />
         <b>Advocacy Map</b>
         <MapWithNoSSR />
         <br />
