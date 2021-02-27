@@ -34,6 +34,9 @@ function NavBar({ pageTitle = "" }) {
               <NavDropdown.Item href="/political-advertisements">
                 Political Advertisement Disclosure
               </NavDropdown.Item>
+              <NavDropdown.Item href="/other-legislative-endorsements">
+                Other Legislative Endorsements
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="/advocacy-maps">Advocacy Maps</Nav.Link>
             <Nav.Link href="/contact">Contact Us</Nav.Link>
