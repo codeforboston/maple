@@ -7,6 +7,7 @@ import "leaflet-search/dist/leaflet-search.min.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import Papa from "papaparse";
+import "./L.Control.Sidebar";
 
 import test from '../../public/logo192.png'
 
@@ -111,7 +112,7 @@ class Map extends Component {
             //PFCComment: "PFC Comment",
           };
           return `
-							<p>
+							<span>
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
 								${(org.subOrgs || [])
@@ -122,9 +123,9 @@ class Map extends Component {
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
 									</div>
 								  <br />`;
-              })
-              .join("")}
-							</p>`;
+                  })
+                  .join("")}
+							</span>`;
         };
 
         // TODO: target.getElement() is trying something weird
@@ -200,7 +201,10 @@ class Map extends Component {
             pointToLayer: thirdPartyPoints,
             onEachFeature: (feature, layer) => {
               if (feature.properties.category === "thirdParty") {
-                layer.bindPopup(thirdPartyPopup(feature));
+                layer.on("click", function () {
+                  sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
+                  sidebar.toggle();
+                });
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
               } else {
@@ -253,8 +257,7 @@ class Map extends Component {
 
           const features = Object.keys(orgs).map((org) => orgs[org]);
           return features;
-        }
-
+        };
 
         const districtSearch = (layer) =>
           new L.Control.Search({
@@ -298,6 +301,22 @@ class Map extends Component {
           L.tileLayer.provider("CartoDB.Positron")
         );
 
+        var sidebar = L.control.sidebar("sidebar", {
+          closeButton: true,
+          position: "left",
+        });
+        map.addControl(sidebar);
+
+        var marker = L.marker([51.2, 7])
+          .addTo(map)
+          .on("click", function () {
+            sidebar.toggle();
+          });
+
+        map.on("click", function () {
+          sidebar.hide();
+        });
+
         Object.keys(layers).forEach((chamber) => {
           layers[chamber]
             .on("add", () => searchControls[chamber].addTo(map))
@@ -335,6 +354,7 @@ class Map extends Component {
   render() {
     return (
       <Fragment>
+        <div id="sidebar"></div>
         <div id="map-wrapper">
           <div id="map"></div>
         </div>
