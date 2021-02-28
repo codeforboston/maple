@@ -144,8 +144,8 @@ class Map extends Component {
         };
 
 
-        // === THIRD PARTY ICONS 
-        // =======================
+        // === THIRD PARTY ICONS ===
+        // =========================
 
         // class for third party icons
         var thirdPartyIcon = L.Icon.extend({
