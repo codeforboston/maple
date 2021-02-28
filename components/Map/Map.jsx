@@ -144,8 +144,10 @@ class Map extends Component {
         };
 
 
-       // THIRD PARTY ICONS 
-       // class for third party icons
+        // === THIRD PARTY ICONS 
+        // =======================
+
+        // class for third party icons
         var thirdPartyIcon = L.Icon.extend({
           options: {
             shadowUrl: shad,
@@ -157,7 +159,7 @@ class Map extends Component {
           }
         })
 
-        // make a variable for each of the icons
+        // make a variable for each of the icon flavors
         var markerSchlBlu = new thirdPartyIcon( {iconUrl: schlBlu});
         var markerSchlYel = new thirdPartyIcon( {iconUrl: schlYel});
         var markerSchlRed = new thirdPartyIcon( {iconUrl: schlRed});
@@ -165,7 +167,7 @@ class Map extends Component {
         var markerBldgYel = new thirdPartyIcon( {iconUrl: bldgYel});
         var markerBldgRed = new thirdPartyIcon( {iconUrl: bldgRed});
 
-        // put these into a consant to hold all of the icons
+        // put these into a constant to namespace and give them rise on hover
         const thirdPartyPoints = ( feature, latlng ) => {
           var geoJsonMarkers = {
             markerSchlAye: { icon: markerSchlBlu, riseOnHover: true },
@@ -176,17 +178,47 @@ class Map extends Component {
             markerBldgNay: { icon: markerBldgRed, riseOnHover: true }
           }
 
-          
-          // switch statement to determine which marker to use
-          // TODO: add logic to actually color them
-          //   need ifs within the switches? might get ugly
-          //   loop through all the 'sub orgs', if all Ayes - return blue icon, etc, etc
+          // get all of the stances for any child of this icon
+          var myKeys = Object.keys( feature.subOrgs );
+          var myValues = myKeys.map( (key) => feature.subOrgs[key]["EDR (Y/N)"] );
+
+          // use a reduce to see if its all ayes, all nays, or a mixed bag
+          const countOccurances = ( arr, check ) => arr.reduce(( a, c ) => ( c === check ? a + 1 : a ), 0 );
+          const countAyes = countOccurances( myValues, "In Favor Of" );
+          const countNays = countOccurances( myValues, "Against")
+
+          // check what color this variable should be
+          var color = "yel";
+          if ( myKeys.length === countAyes ) {
+            color = "blu";
+          } else if ( myKeys.length === countNays ) {
+            color = "red";
+          }
+
+        
+          // TODO: this is definitely very ugly, nesting ifs in a switch statement
+          //   to be revised maybe in the future. I couldn't think of a more 
+          //   clever way to achieve this in the moment
           switch( feature.properties.type ) {
             case "Student Group":
             case "Professor":
-              return L.marker( latlng, geoJsonMarkers.markerSchlAye );
+              if (color === "blu") {
+                return L.marker( latlng, geoJsonMarkers.markerSchlAye );
+              } else if (color === "red" ) {
+                return L.marker( latlng, geoJsonMarkers.markerSchlNay );
+              } else {
+                return L.marker( latlng, geoJsonMarkers.markerSchlMix );
+              }
+            case "For-Profit Organization":
             case "Non-Profit Organization":
-              return L.marker( latlng, geoJsonMarkers.markerBldgNay );
+              if (color === "blu") {
+                return L.marker( latlng, geoJsonMarkers.markerBldgAye );
+              } else if (color === "red") {
+                return L.marker( latlng, geoJsonMarkers.markerBldgNay );
+              } else {
+                return L.marker( latlng, geoJsonMarkers.markerBldgMix );
+              }
+              
             default:
               return L.marker( latlng );
             }
