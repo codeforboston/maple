@@ -67,22 +67,29 @@ class Map extends Component {
         const districtLegend = () => /* html */ `
           <strong>Grade of support for bill</strong>
           <div class="legend__item legend__item--grade-1">
-            1: Committed to vote
+            Committed to vote
           </div>
           <div class="legend__item legend__item--grade-2">
-            2: Substantial past advocacy
+            Substantial past advocacy
           </div>
           <div class="legend__item legend__item--grade-3">
-            3: Some past advocacy
+            Some past advocacy
           </div>
           <div class="legend__item legend__item--grade-4">
-            4: No support
+            No support
           </div>
         `;
 
         const districtStyle = (rep) => ({
           className: `district district--${rep.party} district--grade-${rep.grade}`,
         });
+
+        const grades = {
+          1: "committed to vote",
+          2: "substantial past advocacy",
+          3: "some past advocacy",
+          4: "no support",
+        };
 
         const districtPopup = (rep) => /* html */ `
           <p>
@@ -93,7 +100,32 @@ class Map extends Component {
           </p>
           <p>
             <!-- TODO: Show textual description of grade? -->
-            Grade: ${rep.grade}
+						<strong>${rep.first_name} ${rep.last_name}</strong> has
+						<strong>${grades[rep.grade]}</strong> for this issue.
+            <br />
+						Co-Sponsored:
+						${Object.keys(rep)
+              .map((key) => {
+                if (key.includes("/") && rep[key] === "C") {
+                  return `<br /><a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
+                }
+              })
+              .join("")}
+						<br />
+						Voted:
+						${Object.keys(rep)
+              .map((key) => {
+                if (
+                  key.includes("/") &&
+                  (rep[key] === "Y" || rep[key] === "N")
+                ) {
+                  return `<br /><strong>${
+                    rep[key] === "Y" ? "Yes" : "No"
+                  }</strong> on <a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
+                }
+              })
+              .join("")}
+
             <!-- TODO: Display individual bills, but keep it generic.
             This probably means using a regex to match keys like "191/H685".
             -->
@@ -114,8 +146,8 @@ class Map extends Component {
 								<strong>${org.properties.index}</strong>
 								<div>Sub Orgs</div>
 								${(org.subOrgs || [])
-              .map((org) => {
-                return `<div>
+                  .map((org) => {
+                    return `<div>
 										<strong>${org.Name}</strong>
 										<div>EDR Stance: ${org[columns.EDR]}</div>
 										<div>EDR Comments: ${org[columns.EDRComment]}</div>
@@ -132,25 +164,23 @@ class Map extends Component {
           // e.target.getElement().classList.toggle("district--active", active);
         };
 
-
         // TODO: Make these link up to actual new marker icons
-        const thirdPartyPoints = ( feature, latlng ) => {
-
+        const thirdPartyPoints = (feature, latlng) => {
           // TODO: change these to actual new icons, for now they are differing
           var geoJsonMarkers = {
             markerStudentGroup: {
               opacity: 0.9,
-              riseOnHover: true
+              riseOnHover: true,
             },
             markerProfessor: {
               opacity: 0.9,
-              riseOnHover: true
+              riseOnHover: true,
             },
             markerNonprofit: {
               opacity: 0.9,
-              riseOnHover: true
-            }
-          }
+              riseOnHover: true,
+            },
+          };
 
           // var nonProfitImg = require( './icons8-non-profit-organisation-32.png');
           // var nonProfitImg = '%PUBLIC_URL%/logo192.png'
@@ -158,37 +188,32 @@ class Map extends Component {
           var nonProfitIcon = L.icon({
             // TODO: I can't currently load png's from elsewhere, seems like webpack doesn't have the right loader?
             // iconUrl:   testing,
-            iconUrl:   './icons/icons8-non-profit-organisation-32.png',
+            iconUrl: "./icons/icons8-non-profit-organisation-32.png",
             // shadowUrl: nonProfitImg,
-            shadowUrl: './icons/icons8-non-profit-organisation-32.png',
+            shadowUrl: "./icons/icons8-non-profit-organisation-32.png",
 
+            iconSize: [32, 32], // size of the icon
+            shadowSize: [32, 32], // size of the shadow
+            iconAnchor: [16, 30], // point of the icon which will correspond to marker's location
+            shadowAnchor: [16, 30], // the same for the shadow
+            popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+          });
 
-            iconSize:     [32, 32], // size of the icon
-            shadowSize:   [32, 32], // size of the shadow
-            iconAnchor:   [16, 30], // point of the icon which will correspond to marker's location
-            shadowAnchor: [16, 30],  // the same for the shadow
-            popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
-          })
-          
           // switch statement to determine which marker to use
-          switch( feature.properties.type ) {
+          switch (feature.properties.type) {
             case "Student Group":
-              return L.marker( latlng, geoJsonMarkers.markerStudentGroup );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker(latlng, geoJsonMarkers.markerStudentGroup);
+            // return L.marker( latlng, {icon: nonProfitIcon} );
             case "Professor":
-              return L.marker( latlng, geoJsonMarkers.markerProfessor );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker(latlng, geoJsonMarkers.markerProfessor);
+            // return L.marker( latlng, {icon: nonProfitIcon} );
             case "Non-Profit Organization":
-              return L.marker( latlng, geoJsonMarkers.markerNonprofit );
-              // return L.marker( latlng, {icon: nonProfitIcon} );
+              return L.marker(latlng, geoJsonMarkers.markerNonprofit);
+            // return L.marker( latlng, {icon: nonProfitIcon} );
             default:
-              return L.marker( latlng );
-            }
-        }
-
-        
-  
-
+              return L.marker(latlng);
+          }
+        };
 
         /* Build the district layers */
 
@@ -207,7 +232,7 @@ class Map extends Component {
                 layer.on("popupclose", onPopup);
               } else {
                 const rep = repProperties(feature);
-
+                debugger;
                 layer.bindPopup(districtPopup(rep));
                 layer.on("popupopen", onPopup);
                 layer.on("popupclose", onPopup);
@@ -217,11 +242,8 @@ class Map extends Component {
                 // eslint-disable-next-line no-param-reassign
                 feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
               }
-
             },
           });
-
-
 
         const thirdPartyGeoJSON = (thirdPartyParticipants) => {
           let orgs = {};
@@ -238,7 +260,7 @@ class Map extends Component {
                 category: "thirdParty",
                 // TODO: kinda janky with the 'toString()' call, also make sure 'Category' is consistent with
                 //   the google sheets backend
-                type: [row.Category].toString()
+                type: [row.Category].toString(),
               },
               geometry: {
                 type: "Point",
@@ -276,7 +298,7 @@ class Map extends Component {
 
         const layers = {
           House: districtLayer(houseFeatures),
-          Senate: districtLayer(senateFeatures)
+          Senate: districtLayer(senateFeatures),
         };
 
         // add the GeoJSON features from the thirdParty data to both the House and Senate variables
@@ -286,7 +308,7 @@ class Map extends Component {
 
         const searchControls = {
           House: districtSearch(layers.House),
-          Senate: districtSearch(layers.Senate)
+          Senate: districtSearch(layers.Senate),
         };
 
         /* Build the map */
@@ -321,8 +343,6 @@ class Map extends Component {
           .fitBounds(layers.House.getBounds())
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
-
-
 
         const layerControl = L.control.layers(
           layers,
