@@ -22,7 +22,7 @@ function CampaignFinanceLetter() {
         Signed,
       </p>
       <p Style="text-indent:1cm">
-        The Good Governance Project
+        <i>The Good Governance Project</i>
       </p>
     </Layout>
   );
