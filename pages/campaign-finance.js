@@ -1,4 +1,12 @@
 import { Layout } from "../components";
+import dynamic from "next/dynamic";
+
+const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
+  ssr: false,
+});
+/* URL via PFC Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+const PFC_LEGISLATOR_DATA_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTz02R3xU_Ebt0zqadcs6NSJWzUgufX61i7hUFstj6xnG1k2qR_o1CE56a6NGwcVTXzTVazqQtCCYEl/pub?gid=0&single=true&output=csv";
+const PFC_THIRD_PARTY_DATA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?gid=58233927&single=true&output=csv";
 
 function CampaignFinance() {
   return (
@@ -24,6 +32,7 @@ function CampaignFinance() {
         You can read our full letter on this issue, <a href="/campaign-finance-letter">here</a>.
         <br />
         <b>Advocacy Map</b>
+        <MapWithNoSSR legislator_data={PFC_LEGISLATOR_DATA_LINK} third_party_data={PFC_THIRD_PARTY_DATA}/>
       </p>
     </Layout>
   );
