@@ -34,7 +34,6 @@ class Map extends Component {
       fetch(
         "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
       ).then((response) => response.json()),
-      /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
       fetch(
         this.props.legislator_data
       )
@@ -43,7 +42,6 @@ class Map extends Component {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
-      /* URL via Third Party Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
       fetch(
         this.props.third_party_data
       )
