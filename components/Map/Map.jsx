@@ -146,19 +146,16 @@ class Map extends Component {
             position: "Position",
             comment: "Comment",
           };
-          console.log(org);
+          // Make a dictionary to store the suborg data by category
           var subOrgsByCategory = {};
           for(let subOrg in org.subOrgs){
             subOrg = org.subOrgs[subOrg];
-            console.log(subOrg);
-            console.log("category: " , subOrg[columns.category]);
             if(subOrg[columns.category] in subOrgsByCategory){
               subOrgsByCategory[subOrg[columns.category]].push(subOrg);
             }else{
               subOrgsByCategory[subOrg[columns.category]] = [subOrg];
             }
           }
-          console.log(subOrgsByCategory);
           return `
 							<span>
 								<center><h3><strong>${org.properties.index}</strong></h3></center>
