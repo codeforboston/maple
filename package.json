@@ -15,6 +15,7 @@
     "leaflet-search": "^2.9.9",
     "next": "10.0.4",
     "next-images": "^1.7.0",
+    "next-on-netlify": "^2.9.0",
     "papaparse": "^5.3.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
@@ -29,7 +30,8 @@
     "dev": "next dev",
     "build": "next build",
     "export": "npm run build && next export -o _static",
-    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
+    "start": "next start",
+    "postbuild": "next-on-netlify",
     "eject": "react-scripts eject",
     "amplify-modelgen": "node amplify/scripts/amplify-modelgen.js",
     "amplify-push": "node amplify/scripts/amplify-push.js"
