@@ -142,12 +142,8 @@ class Map extends Component {
 
         const thirdPartyPopup = (org) => {
           const columns = {
-            EDR: "EDR (Y/N)",
-            EDRComment: "EDR Comment",
-            //EV: "EV (Y/N)",
-            //EVComment: "EV Comment",
-            //PFC: "PFC (Y/N)",
-            //PFCComment: "PFC Comment",
+            position: "Position",
+            comment: "Comment",
           };
           return `
 							<span>
@@ -157,8 +153,8 @@ class Map extends Component {
                   .map((org) => {
                     return `<div>
 										<strong>${org.Name}</strong>
-										<div>EDR Stance: ${org[columns.EDR]}</div>
-										<div>EDR Comments: ${org[columns.EDRComment]}</div>
+										<div>Position: ${org[columns.position]}</div>
+										<div>Comment: ${org[columns.comment]}</div>
 									</div>
 								  <br />`;
                   })
@@ -208,7 +204,7 @@ class Map extends Component {
 
           // get all of the stances for any child of this icon
           var myKeys = Object.keys(feature.subOrgs);
-          var myValues = myKeys.map((key) => feature.subOrgs[key]["EDR (Y/N)"]);
+          var myValues = myKeys.map((key) => feature.subOrgs[key]["Position"]);
 
           // use a reduce to see if its all ayes, all nays, or a mixed bag
           const countOccurances = (arr, check) =>
