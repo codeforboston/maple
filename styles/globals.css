@@ -126,3 +126,17 @@ a {
 
 .leaflet-right {
   transition: right 0.5s; }
+
+
+.issue-solution-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.transparency-issue {
+  width: 48%
+}
+
+.transparency-solution {
+  width: 48%
+}
