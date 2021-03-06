@@ -28,10 +28,10 @@ function NavBar({ pageTitle = "" }) {
               <NavDropdown.Item href="/election-day-registration">
                 Election Day Registration
               </NavDropdown.Item>
-              <NavDropdown.Item href="/campaign-finance">
+              <NavDropdown.Item href="/early-mail-voting">
                 Early/Mail Voting
               </NavDropdown.Item>
-              <NavDropdown.Item href="/political-advertisements">
+              <NavDropdown.Item href="/campaign-finance">
                 Publicly Financed Campaigns
               </NavDropdown.Item>
               <NavDropdown.Item href="/other-legislative-endorsements">

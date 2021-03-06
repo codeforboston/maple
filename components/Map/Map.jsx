@@ -34,18 +34,16 @@ class Map extends Component {
       fetch(
         "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
       ).then((response) => response.json()),
-      /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
       fetch(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv"
+        this.props.legislator_data
       )
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
-      /* URL via Third Party Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
       fetch(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
+        this.props.third_party_data
       )
         .then((response) => response.text())
         .then((csv) => {

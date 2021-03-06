@@ -4,6 +4,10 @@ import dynamic from "next/dynamic";
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
   ssr: false,
 });
+/* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+const EDR_LEGISLATOR_DATA_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv";
+/* URL via Third Party Data > File > Publish to the web > Link > EDR > CSV > Publish */
+const EDR_THIRD_PARTY_DATA_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv";
 
 function ElectionDayRegistration() {
   return (
@@ -26,7 +30,7 @@ function ElectionDayRegistration() {
         of the current process.You can read our full letter on this issue, <a href="/edr-letter">here</a>.
         <br />
         <b>Advocacy Map</b>
-        <MapWithNoSSR />
+        <MapWithNoSSR legislator_data={EDR_LEGISLATOR_DATA_LINK} third_party_data={EDR_THIRD_PARTY_DATA_LINK}/>
         <br />
         Overview: (5 sentence summary)
         <br />
