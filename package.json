@@ -31,7 +31,6 @@
     "build": "next build",
     "export": "npm run build && next export -o _static",
     "start": "next start",
-    "postbuild": "next-on-netlify",
     "eject": "react-scripts eject",
     "amplify-modelgen": "node amplify/scripts/amplify-modelgen.js",
     "amplify-push": "node amplify/scripts/amplify-push.js"
