@@ -10,6 +10,7 @@
 
 .next/
 .eslintcache
+_static
 
 # production
 /build

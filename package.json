@@ -28,7 +28,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "npm run build && next export",
+    "export": "npm run build && next export -o _static",
     "start": "next start",
     "eject": "react-scripts eject",
     "amplify-modelgen": "node amplify/scripts/amplify-modelgen.js",
