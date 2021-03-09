@@ -12,6 +12,7 @@
     "leaflet-geosearch": "^3.2.1",
     "leaflet-providers": "^1.11.0",
     "leaflet-search": "2.9.8",
+    "leaflet.markercluster": "^1.4.1",
     "next": "10.0.4",
     "next-images": "^1.7.0",
     "next-on-netlify": "^2.9.0",
