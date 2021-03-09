@@ -292,13 +292,13 @@ class Map extends Component {
                 layer.on("popupclose", onPopup);
 
                 // only add to the cluster if you haven't seen it before
-                const countId = (arr, val ) => arr.reduce( (a, v) => ( v === val? a + 1 : a ), 0);
-                const countThisId = countId( seenOrgsCluster, feature.properties.index );
+                const countId = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+                const countThisId = countId(seenOrgsCluster, feature.properties.index);
                 if (countThisId === 0) {
-                  iconClusters.addLayer( layer );
-                  seenOrgsCluster.push( feature.properties.index )
+                  iconClusters.addLayer(layer);
+                  seenOrgsCluster.push(feature.properties.index)
                 }
-                
+
 
               } else {
                 const rep = repProperties(feature);
@@ -347,8 +347,9 @@ class Map extends Component {
           return features;
         };
 
-        const districtSearch = (layer) =>
-          new L.Control.Search({
+        const districtSearch = (layer) => {
+
+          return (new L.Control.Search({
             layer,
             propertyName: "index",
             initial: false,
@@ -367,17 +368,25 @@ class Map extends Component {
               }
               latlng.layer.openPopup();
             },
-          });
+          }))
+        }
 
+        // TODO: this is awful, district layer is only being called to populate 'iconClusters' with data
+        const thirdPartyLayer = districtLayer( thirdPartyGeoJSON( thirdPartyParticipants ));
+        // now i have access to that stupid ass layer
+
+        // Now when defining layers, just wrap both the house AND the clustering icons in a feature group
+        //   searchable, and everything renders as expected
         const layers = {
-          House: districtLayer(houseFeatures),
-          Senate: districtLayer(senateFeatures),
+          House: new L.FeatureGroup([districtLayer(houseFeatures), iconClusters]),
+          Senate: new L.FeatureGroup([districtLayer(senateFeatures), iconClusters]),
         };
 
+        // Keeping this commented out - this was the old way, the geoJson data was stitched directly into the layers
         // add the GeoJSON features from the thirdParty data to both the House and Senate variables
-        const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
-        layers.House.addData(thirdPartyLayer2);
-        layers.Senate.addData(thirdPartyLayer2);
+        // const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
+        // layers.House.addData(thirdPartyLayer2);
+        // layers.Senate.addData(thirdPartyLayer2);
 
         const searchControls = {
           House: districtSearch(layers.House),
@@ -412,7 +421,7 @@ class Map extends Component {
         });
 
 
-        
+
 
         map
           .addLayer(layers.House)
@@ -420,8 +429,6 @@ class Map extends Component {
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
 
-        // testing adding of the marker clusters
-        map.addLayer( iconClusters );
 
         const layerControl = L.control.layers(
           layers,
