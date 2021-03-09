@@ -106,13 +106,13 @@ class Map extends Component {
             For profit
           </div>
           <div class="legend__item legend__item--in-fave">
-            In Favor Of
+            Endorses
           </div>
           <div class="legend__item legend__item--mixed">
-            Mixed Opinions
+            Mixed
           </div>
           <div class="legend__item legend__item--against">
-            Against
+            Opposes
           </div>
 
         `;
@@ -239,6 +239,10 @@ class Map extends Component {
         var markerBldgBlu = new thirdPartyIcon({ iconUrl: bldgBlu });
         var markerBldgYel = new thirdPartyIcon({ iconUrl: bldgYel });
         var markerBldgRed = new thirdPartyIcon({ iconUrl: bldgRed });
+        var markerNprfBlu = new thirdPartyIcon({ iconUrl: nprfBlu });
+        var markerNprfYel = new thirdPartyIcon({ iconUrl: nprfYel });
+        var markerNprfRed = new thirdPartyIcon({ iconUrl: nprfRed });
+
 
         // put these into a constant to namespace and give them rise on hover
         const thirdPartyPoints = (feature, latlng) => {
@@ -249,6 +253,9 @@ class Map extends Component {
             markerBldgAye: { icon: markerBldgBlu, riseOnHover: true },
             markerBldgMix: { icon: markerBldgYel, riseOnHover: true },
             markerBldgNay: { icon: markerBldgRed, riseOnHover: true },
+            markerNprfAye: { icon: markerNprfBlu, riseOnHover: true },
+            markerNprfMix: { icon: markerNprfYel, riseOnHover: true },
+            markerNprfNay: { icon: markerNprfRed, riseOnHover: true },
           };
 
           // get all of the stances for any child of this icon
@@ -273,6 +280,7 @@ class Map extends Component {
           //   to be revised maybe in the future. I couldn't think of a more
           //   clever way to achieve this in the moment
           switch (feature.properties.type) {
+            
             case "Student Group":
             case "Professor":
               if (color === "blu") {
@@ -282,14 +290,23 @@ class Map extends Component {
               } else {
                 return L.marker(latlng, geoJsonMarkers.markerSchlMix);
               }
+
             case "For-Profit Organization":
-            case "Non-Profit Organization":
               if (color === "blu") {
                 return L.marker(latlng, geoJsonMarkers.markerBldgAye);
               } else if (color === "red") {
                 return L.marker(latlng, geoJsonMarkers.markerBldgNay);
               } else {
                 return L.marker(latlng, geoJsonMarkers.markerBldgMix);
+              }
+
+            case "Non-Profit Organization":
+              if (color === "blu") {
+                return L.marker(latlng, geoJsonMarkers.markerNprfAye);
+              } else if (color === "red") {
+                return L.marker(latlng, geoJsonMarkers.markerNprfNay);
+              } else {
+                return L.marker(latlng, geoJsonMarkers.markerNprfMix);
               }
 
             default:
