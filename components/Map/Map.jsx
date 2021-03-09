@@ -270,52 +270,56 @@ class Map extends Component {
           }
         };
 
+
         /* Build the district layers */
-
-        var iconClusters = L.markerClusterGroup();
-        var seenOrgsCluster = []
-
         const districtLayer = (features) => {
 
           return (L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
-            //TODO: edit thirdPartyPoints to do what we want it to
-            pointToLayer: thirdPartyPoints,
             onEachFeature: (feature, layer) => {
 
-              if (feature.properties.category === "thirdParty") {
-                layer.on("click", function () {
-                  sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
-                  sidebar.toggle();
-                });
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
+              const rep = repProperties(feature);
+              layer.bindPopup(districtPopup(rep));
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
 
-                // only add to the cluster if you haven't seen it before
-                const countId = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
-                const countThisId = countId(seenOrgsCluster, feature.properties.index);
-                if (countThisId === 0) {
-                  iconClusters.addLayer(layer);
-                  seenOrgsCluster.push(feature.properties.index)
-                }
-
-
-              } else {
-                const rep = repProperties(feature);
-                // debugger;
-                layer.bindPopup(districtPopup(rep));
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
-
-                // Enable searching by name or district; inspired by:
-                // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
-                // eslint-disable-next-line no-param-reassign
-                feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
-              }
+              // Enable searching by name or district; inspired by:
+              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+              // eslint-disable-next-line no-param-reassign
+              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
             },
           })
           )
         };
+
+        /* given third party features, create a MarkerClusterGroup */
+        const thirdPartyIconCluster = (features) => {
+
+          // setup clustering, initialize seen cluster 
+          var iconClusters = L.markerClusterGroup();
+
+          // loop over the features to add all the icons and popup logic
+          //   add the layers to the clusterGroup along the way
+          L.geoJson(features, {
+            style: (feature) => districtStyle(repProperties(feature)),
+            pointToLayer: thirdPartyPoints,
+            onEachFeature: (feature, layer) => {
+              layer.on("click", function () {
+                sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
+                sidebar.toggle();
+              });
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
+
+              // add this layer with popup and icon to the cluster
+              iconClusters.addLayer(layer);
+
+            },
+          })
+
+          // return just the clusters
+          return iconClusters
+        }
 
 
         /* Turn data from google sheet into a geoJSON layer*/
@@ -347,6 +351,8 @@ class Map extends Component {
           return features;
         };
 
+
+
         const districtSearch = (layer) => {
 
           return (new L.Control.Search({
@@ -371,22 +377,16 @@ class Map extends Component {
           }))
         }
 
-        // TODO: this is awful, district layer is only being called to populate 'iconClusters' with data
-        const thirdPartyLayer = districtLayer( thirdPartyGeoJSON( thirdPartyParticipants ));
-        // now i have access to that stupid ass layer
+
+        // get the third party cluster layer to add to both house and senate feature group
+        const testingPls = thirdPartyIconCluster(thirdPartyGeoJSON(thirdPartyParticipants));
 
         // Now when defining layers, just wrap both the house AND the clustering icons in a feature group
         //   searchable, and everything renders as expected
         const layers = {
-          House: new L.FeatureGroup([districtLayer(houseFeatures), iconClusters]),
-          Senate: new L.FeatureGroup([districtLayer(senateFeatures), iconClusters]),
+          House: new L.FeatureGroup([districtLayer(houseFeatures), testingPls]),
+          Senate: new L.FeatureGroup([districtLayer(senateFeatures), testingPls]),
         };
-
-        // Keeping this commented out - this was the old way, the geoJson data was stitched directly into the layers
-        // add the GeoJSON features from the thirdParty data to both the House and Senate variables
-        // const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
-        // layers.House.addData(thirdPartyLayer2);
-        // layers.Senate.addData(thirdPartyLayer2);
 
         const searchControls = {
           House: districtSearch(layers.House),
@@ -404,11 +404,11 @@ class Map extends Component {
         });
         map.addControl(sidebar);
 
-        var marker = L.marker([51.2, 7])
-          .addTo(map)
-          .on("click", function () {
-            sidebar.toggle();
-          });
+        // var marker = L.marker([51.2, 7])
+        //   .addTo(map)
+        //   .on("click", function () {
+        //     sidebar.toggle();
+        //   });
 
         map.on("click", function () {
           sidebar.hide();
