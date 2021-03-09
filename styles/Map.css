@@ -8,6 +8,10 @@
     --color--grade-2--active: rgba(49, 163, 84, 0.9);
     --color--grade-3: rgba(116, 196, 118, 0.5);
     --color--grade-3--active: rgba(116, 196, 118, 0.9);
+    --color-in-fave: rgba(47, 110, 234, 0.9);
+    --color-mixed: rgba(213, 211, 40, 0.9);
+    --color-against: rgba(234, 47, 82, 0.9);
+
 }
 
 /* Give the map a responsive 64% aspect ratio (same as Massachusetts) */
@@ -71,6 +75,19 @@
 .legend__item--grade-3::before {
     background: var(--color--grade-3);
 }
+
+.legend__item--in-fave::before {
+    background: var(--color-in-fave);
+}
+
+.legend__item--mixed::before {
+    background: var(--color-mixed);
+}
+
+.legend__item--against::before {
+    background: var(--color-against);
+}
+
 
 .district {
     fill: var(--color--district);

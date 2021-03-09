@@ -9,15 +9,20 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import Papa from "papaparse";
 import "./L.Control.Sidebar";
 
-// import markerBuildingBlue from "../../public/marker-building-blue.png";
-// import markerSchoolBlue from "../../public/marker-school-blue.png";
 import shad from "../../public/shad-64.png";
 import schlBlu from "../../public/schl-64-blu.png";
 import schlYel from "../../public/schl-64-yel.png";
 import schlRed from "../../public/schl-64-red.png";
+import schlGra from "../../public/schl-64-gra.png";
 import bldgBlu from "../../public/bldg-64-blu.png";
 import bldgYel from "../../public/bldg-64-yel.png";
 import bldgRed from "../../public/bldg-64-red.png";
+import bldgGra from "../../public/bldg-64-gra.png";
+import nprfBlu from "../../public/nprf-64-blu.png";
+import nprfYel from "../../public/nprf-64-yel.png";
+import nprfRed from "../../public/nprf-64-red.png";
+import nprfGra from "../../public/nprf-64-gra.png";
+
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -86,6 +91,30 @@ class Map extends Component {
           <div class="legend__item legend__item--grade-4">
             No support
           </div>
+
+          <strong>Icons</strong>
+          <div>
+            <img src="${schlGra}" alt="test" style="width:20px;height:20px">
+            Schools
+          </div>
+          <div>
+            <img src="${nprfGra}" alt="test" style="width:20px;height:20px">
+            Non-profit
+          </div>
+          <div>
+            <img src="${bldgGra}" alt="test" style="width:20px;height:20px">
+            For profit
+          </div>
+          <div class="legend__item legend__item--in-fave">
+            In Favor Of
+          </div>
+          <div class="legend__item legend__item--mixed">
+            Mixed Opinions
+          </div>
+          <div class="legend__item legend__item--against">
+            Against
+          </div>
+
         `;
 
         const districtStyle = (rep) => ({
