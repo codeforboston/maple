@@ -142,25 +142,41 @@ class Map extends Component {
 
         const thirdPartyPopup = (org) => {
           const columns = {
-            EDR: "EDR (Y/N)",
-            EDRComment: "EDR Comment",
-            //EV: "EV (Y/N)",
-            //EVComment: "EV Comment",
-            //PFC: "PFC (Y/N)",
-            //PFCComment: "PFC Comment",
+            category: "Category",
+            position: "Position",
+            comment: "Comment",
           };
+          // Make a dictionary to store the suborg data by category
+          var subOrgsByCategory = {};
+          for(let subOrg in org.subOrgs){
+            subOrg = org.subOrgs[subOrg];
+            if(subOrg[columns.category] in subOrgsByCategory){
+              subOrgsByCategory[subOrg[columns.category]].push(subOrg);
+            }else{
+              subOrgsByCategory[subOrg[columns.category]] = [subOrg];
+            }
+          }
           return `
 							<span>
-								<strong>${org.properties.index}</strong>
-								<div>Sub Orgs</div>
-								${(org.subOrgs || [])
-                  .map((org) => {
-                    return `<div>
-										<strong>${org.Name}</strong>
-										<div>EDR Stance: ${org[columns.EDR]}</div>
-										<div>EDR Comments: ${org[columns.EDRComment]}</div>
-									</div>
-								  <br />`;
+								<center><h3><strong>${org.properties.index}</strong></h3></center>
+								<div><h3>Sub Organizations</h3></div>
+								${(Object.keys(subOrgsByCategory))
+                  .map((category) => {
+                    return `<strong><u>${category}s</u></strong>
+
+                    ${subOrgsByCategory[category].map((subOrg)=>{
+                        const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
+                        const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
+                        return `<div>
+                      	<strong>${subOrg.Name}</strong>
+                      	<div><p style="color:${color};">${subOrg[columns.position]} ${checkOrX} </p></div>
+                      	<blockquote><i>"${subOrg[columns.comment]}"</i></blockquote>
+                      </div>
+                      <br />`;
+
+                    }).join("")
+                  }
+                    <br />`;
                   })
                   .join("")}
 							</span>`;
@@ -208,13 +224,13 @@ class Map extends Component {
 
           // get all of the stances for any child of this icon
           var myKeys = Object.keys(feature.subOrgs);
-          var myValues = myKeys.map((key) => feature.subOrgs[key]["EDR (Y/N)"]);
+          var myValues = myKeys.map((key) => feature.subOrgs[key]["Position"]);
 
           // use a reduce to see if its all ayes, all nays, or a mixed bag
           const countOccurances = (arr, check) =>
             arr.reduce((a, c) => (c === check ? a + 1 : a), 0);
-          const countAyes = countOccurances(myValues, "In Favor Of");
-          const countNays = countOccurances(myValues, "Against");
+          const countAyes = countOccurances(myValues, "Endorse");
+          const countNays = countOccurances(myValues, "Oppose");
 
           // check what color this variable should be
           var color = "yel";
