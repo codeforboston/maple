@@ -1,4 +1,4 @@
-import { Layout } from "../components";
+import { PriorityPageLayout } from "../components";
 import dynamic from "next/dynamic";
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
@@ -11,7 +11,11 @@ const PFC_THIRD_PARTY_DATA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT
 
 function CampaignFinance() {
   return (
-    <Layout pageTitle="Campaign Finance – Constitutional Amendment">
+    <PriorityPageLayout
+      pageTitle="Campaign Finance – Constitutional Amendment"
+      legislator_data={PFC_LEGISLATOR_DATA_LINK}
+      third_party_data={PFC_THIRD_PARTY_DATA}
+    >
       <p>
         <b>
           Why do we need to amend the Consitution for campaign finance
@@ -33,9 +37,8 @@ function CampaignFinance() {
         You can read our full letter on this issue, <a href="/campaign-finance-letter">here</a>.
         <br />
         <b>Advocacy Map</b>
-        <MapWithNoSSR legislator_data={PFC_LEGISLATOR_DATA_LINK} third_party_data={PFC_THIRD_PARTY_DATA}/>
       </p>
-    </Layout>
+    </PriorityPageLayout>
   );
 }
 
