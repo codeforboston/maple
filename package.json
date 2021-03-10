@@ -6,13 +6,13 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "aws-amplify": "^3.3.14",
     "bootstrap": "^4.5.3",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "leaflet-geosearch": "^3.2.1",
     "leaflet-providers": "^1.11.0",
-    "leaflet-search": "^2.9.9",
+    "leaflet-search": "2.9.8",
+    "leaflet.markercluster": "^1.4.1",
     "next": "10.0.4",
     "next-images": "^1.7.0",
     "next-on-netlify": "^2.9.0",
@@ -31,9 +31,7 @@
     "build": "next build",
     "export": "npm run build && next export",
     "start": "next start",
-    "eject": "react-scripts eject",
-    "amplify-modelgen": "node amplify/scripts/amplify-modelgen.js",
-    "amplify-push": "node amplify/scripts/amplify-push.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
