@@ -9,8 +9,11 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import Papa from "papaparse";
 import "./L.Control.Sidebar";
 
-// import markerBuildingBlue from "../../public/marker-building-blue.png";
-// import markerSchoolBlue from "../../public/marker-school-blue.png";
+import "leaflet.markercluster/dist/leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
+
 import shad from "../../public/shad-64.png";
 import schlBlu from "../../public/schl-64-blu.png";
 import schlYel from "../../public/schl-64-yel.png";
@@ -113,26 +116,25 @@ class Map extends Component {
             <br />
 						Co-Sponsored:
 						${Object.keys(rep)
-              .map((key) => {
-                if (key.includes("/") && rep[key] === "C") {
-                  return `<br /><a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
-                }
-              })
-              .join("")}
+            .map((key) => {
+              if (key.includes("/") && rep[key] === "C") {
+                return `<br /><a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
+              }
+            })
+            .join("")}
 						<br />
 						Voted:
 						${Object.keys(rep)
-              .map((key) => {
-                if (
-                  key.includes("/") &&
-                  (rep[key] === "Y" || rep[key] === "N")
-                ) {
-                  return `<br /><strong>${
-                    rep[key] === "Y" ? "Yes" : "No"
+            .map((key) => {
+              if (
+                key.includes("/") &&
+                (rep[key] === "Y" || rep[key] === "N")
+              ) {
+                return `<br /><strong>${rep[key] === "Y" ? "Yes" : "No"
                   }</strong> on <a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
-                }
-              })
-              .join("")}
+              }
+            })
+            .join("")}
 
             <!-- TODO: Display individual bills, but keep it generic.
             This probably means using a regex to match keys like "191/H685".
@@ -148,11 +150,11 @@ class Map extends Component {
           };
           // Make a dictionary to store the suborg data by category
           var subOrgsByCategory = {};
-          for(let subOrg in org.subOrgs){
+          for (let subOrg in org.subOrgs) {
             subOrg = org.subOrgs[subOrg];
-            if(subOrg[columns.category] in subOrgsByCategory){
+            if (subOrg[columns.category] in subOrgsByCategory) {
               subOrgsByCategory[subOrg[columns.category]].push(subOrg);
-            }else{
+            } else {
               subOrgsByCategory[subOrg[columns.category]] = [subOrg];
             }
           }
@@ -161,24 +163,24 @@ class Map extends Component {
 								<center><h3><strong>${org.properties.index}</strong></h3></center>
 								<div><h3>Sub Organizations</h3></div>
 								${(Object.keys(subOrgsByCategory))
-                  .map((category) => {
-                    return `<strong><u>${category}s</u></strong>
+              .map((category) => {
+                return `<strong><u>${category}s</u></strong>
 
-                    ${subOrgsByCategory[category].map((subOrg)=>{
-                        const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
-                        const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
-                        return `<div>
+                    ${subOrgsByCategory[category].map((subOrg) => {
+                  const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
+                  const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
+                  return `<div>
                       	<strong>${subOrg.Name}</strong>
                       	<div><p style="color:${color};">${subOrg[columns.position]} ${checkOrX} </p></div>
                       	<blockquote><i>"${subOrg[columns.comment]}"</i></blockquote>
                       </div>
                       <br />`;
 
-                    }).join("")
+                }).join("")
                   }
                     <br />`;
-                  })
-                  .join("")}
+              })
+              .join("")}
 							</span>`;
         };
 
@@ -268,41 +270,59 @@ class Map extends Component {
           }
         };
 
-        /* Build the district layers */
 
-        const districtLayer = (features) =>
+        /* Build the district layers */
+        const districtLayer = (features) => {
+
+          return (L.geoJson(features, {
+            style: (feature) => districtStyle(repProperties(feature)),
+            onEachFeature: (feature, layer) => {
+
+              const rep = repProperties(feature);
+              layer.bindPopup(districtPopup(rep));
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
+
+              // Enable searching by name or district; inspired by:
+              // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
+              // eslint-disable-next-line no-param-reassign
+              feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
+            },
+          })
+          )
+        };
+
+        /* given third party features, create a MarkerClusterGroup */
+        const thirdPartyIconCluster = (features) => {
+
+          // setup clustering, initialize seen cluster 
+          var iconClusters = L.markerClusterGroup();
+
+          // loop over the features to add all the icons and popup logic
+          //   add the layers to the clusterGroup along the way
           L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
-            //TODO: edit thirdPartyPoints to do what we want it to
             pointToLayer: thirdPartyPoints,
             onEachFeature: (feature, layer) => {
-              if (feature.properties.category === "thirdParty") {
-                layer.on("click", function () {
-                  sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
-                  sidebar.toggle();
-                });
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
-              } else {
-                const rep = repProperties(feature);
-                debugger;
-                layer.bindPopup(districtPopup(rep));
-                layer.on("popupopen", onPopup);
-                layer.on("popupclose", onPopup);
+              layer.on("click", function () {
+                sidebar.setContent(`<div>${thirdPartyPopup(feature)}</div>`);
+                sidebar.toggle();
+              });
+              layer.on("popupopen", onPopup);
+              layer.on("popupclose", onPopup);
 
-                // Enable searching by name or district; inspired by:
-                // https://github.com/stefanocudini/leaflet-search/issues/52#issuecomment-266168224
-                // eslint-disable-next-line no-param-reassign
-                feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
-              }
+              // add this layer with popup and icon to the cluster
+              iconClusters.addLayer(layer);
+
             },
-          });
+          })
 
-        // so we have access to some things here
-        //   we are mapping everything into the 'suborgs' object of
-        //
-        // what needs to happen, for every 'organization', if its the first time you've seen it
+          // return just the clusters
+          return iconClusters
+        }
 
+
+        /* Turn data from google sheet into a geoJSON layer*/
         const thirdPartyGeoJSON = (thirdPartyParticipants) => {
           let orgs = {};
 
@@ -316,8 +336,7 @@ class Map extends Component {
               properties: {
                 index: row.Organization,
                 category: "thirdParty",
-                // TODO: kinda janky with the 'toString()' call, also make sure 'Category' is consistent with
-                //   the google sheets backend
+                // TODO: toString() call is maybe a little janky
                 type: [row.Category].toString(),
               },
               geometry: {
@@ -332,8 +351,11 @@ class Map extends Component {
           return features;
         };
 
-        const districtSearch = (layer) =>
-          new L.Control.Search({
+
+
+        const districtSearch = (layer) => {
+
+          return (new L.Control.Search({
             layer,
             propertyName: "index",
             initial: false,
@@ -352,17 +374,19 @@ class Map extends Component {
               }
               latlng.layer.openPopup();
             },
-          });
+          }))
+        }
 
+
+        // get the third party cluster layer to add to both house and senate feature group
+        const testingPls = thirdPartyIconCluster(thirdPartyGeoJSON(thirdPartyParticipants));
+
+        // Now when defining layers, just wrap both the house AND the clustering icons in a feature group
+        //   searchable, and everything renders as expected
         const layers = {
-          House: districtLayer(houseFeatures),
-          Senate: districtLayer(senateFeatures),
+          House: new L.FeatureGroup([districtLayer(houseFeatures), testingPls]),
+          Senate: new L.FeatureGroup([districtLayer(senateFeatures), testingPls]),
         };
-
-        // add the GeoJSON features from the thirdParty data to both the House and Senate variables
-        const thirdPartyLayer2 = thirdPartyGeoJSON(thirdPartyParticipants);
-        layers.House.addData(thirdPartyLayer2);
-        layers.Senate.addData(thirdPartyLayer2);
 
         const searchControls = {
           House: districtSearch(layers.House),
@@ -380,11 +404,11 @@ class Map extends Component {
         });
         map.addControl(sidebar);
 
-        var marker = L.marker([51.2, 7])
-          .addTo(map)
-          .on("click", function () {
-            sidebar.toggle();
-          });
+        // var marker = L.marker([51.2, 7])
+        //   .addTo(map)
+        //   .on("click", function () {
+        //     sidebar.toggle();
+        //   });
 
         map.on("click", function () {
           sidebar.hide();
@@ -396,11 +420,15 @@ class Map extends Component {
             .on("remove", () => searchControls[chamber].remove());
         });
 
+
+
+
         map
           .addLayer(layers.House)
           .fitBounds(layers.House.getBounds())
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
+
 
         const layerControl = L.control.layers(
           layers,
