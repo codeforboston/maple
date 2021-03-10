@@ -8,7 +8,6 @@ import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import Papa from "papaparse";
 import "./L.Control.Sidebar";
-
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -18,9 +17,16 @@ import shad from "../../public/shad-64.png";
 import schlBlu from "../../public/schl-64-blu.png";
 import schlYel from "../../public/schl-64-yel.png";
 import schlRed from "../../public/schl-64-red.png";
+import schlGra from "../../public/schl-64-gra.png";
 import bldgBlu from "../../public/bldg-64-blu.png";
 import bldgYel from "../../public/bldg-64-yel.png";
 import bldgRed from "../../public/bldg-64-red.png";
+import bldgGra from "../../public/bldg-64-gra.png";
+import nprfBlu from "../../public/nprf-64-blu.png";
+import nprfYel from "../../public/nprf-64-yel.png";
+import nprfRed from "../../public/nprf-64-red.png";
+import nprfGra from "../../public/nprf-64-gra.png";
+
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -89,6 +95,30 @@ class Map extends Component {
           <div class="legend__item legend__item--grade-4">
             No support
           </div>
+
+          <strong>Icons</strong>
+          <div>
+            <img src="${schlGra}" alt="test" style="width:20px;height:20px">
+            Schools
+          </div>
+          <div>
+            <img src="${nprfGra}" alt="test" style="width:20px;height:20px">
+            Non-profit
+          </div>
+          <div>
+            <img src="${bldgGra}" alt="test" style="width:20px;height:20px">
+            For profit
+          </div>
+          <div class="legend__item legend__item--in-fave">
+            Endorses
+          </div>
+          <div class="legend__item legend__item--mixed">
+            Mixed
+          </div>
+          <div class="legend__item legend__item--against">
+            Opposes
+          </div>
+
         `;
 
         const districtStyle = (rep) => ({
@@ -212,6 +242,10 @@ class Map extends Component {
         var markerBldgBlu = new thirdPartyIcon({ iconUrl: bldgBlu });
         var markerBldgYel = new thirdPartyIcon({ iconUrl: bldgYel });
         var markerBldgRed = new thirdPartyIcon({ iconUrl: bldgRed });
+        var markerNprfBlu = new thirdPartyIcon({ iconUrl: nprfBlu });
+        var markerNprfYel = new thirdPartyIcon({ iconUrl: nprfYel });
+        var markerNprfRed = new thirdPartyIcon({ iconUrl: nprfRed });
+
 
         // put these into a constant to namespace and give them rise on hover
         const thirdPartyPoints = (feature, latlng) => {
@@ -222,6 +256,9 @@ class Map extends Component {
             markerBldgAye: { icon: markerBldgBlu, riseOnHover: true },
             markerBldgMix: { icon: markerBldgYel, riseOnHover: true },
             markerBldgNay: { icon: markerBldgRed, riseOnHover: true },
+            markerNprfAye: { icon: markerNprfBlu, riseOnHover: true },
+            markerNprfMix: { icon: markerNprfYel, riseOnHover: true },
+            markerNprfNay: { icon: markerNprfRed, riseOnHover: true },
           };
 
           // get all of the stances for any child of this icon
@@ -246,6 +283,7 @@ class Map extends Component {
           //   to be revised maybe in the future. I couldn't think of a more
           //   clever way to achieve this in the moment
           switch (feature.properties.type) {
+            
             case "Student Group":
             case "Professor":
               if (color === "blu") {
@@ -255,14 +293,23 @@ class Map extends Component {
               } else {
                 return L.marker(latlng, geoJsonMarkers.markerSchlMix);
               }
+
             case "For-Profit Organization":
-            case "Non-Profit Organization":
               if (color === "blu") {
                 return L.marker(latlng, geoJsonMarkers.markerBldgAye);
               } else if (color === "red") {
                 return L.marker(latlng, geoJsonMarkers.markerBldgNay);
               } else {
                 return L.marker(latlng, geoJsonMarkers.markerBldgMix);
+              }
+
+            case "Non-Profit Organization":
+              if (color === "blu") {
+                return L.marker(latlng, geoJsonMarkers.markerNprfAye);
+              } else if (color === "red") {
+                return L.marker(latlng, geoJsonMarkers.markerNprfNay);
+              } else {
+                return L.marker(latlng, geoJsonMarkers.markerNprfMix);
               }
 
             default:
