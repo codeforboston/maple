@@ -32,8 +32,6 @@ function ElectionDayRegistration() {
         <b>Advocacy Map</b>
         <MapWithNoSSR legislator_data={EDR_LEGISLATOR_DATA_LINK} third_party_data={EDR_THIRD_PARTY_DATA_LINK}/>
         <br />
-        Overview: (5 sentence summary)
-        <br />
       </p>
     </Layout>
   );
