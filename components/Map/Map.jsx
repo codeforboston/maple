@@ -191,10 +191,9 @@ class Map extends Component {
           return `
 							<span>
 								<center><h3><strong>${org.properties.index}</strong></h3></center>
-								<div><h3>Sub Organizations</h3></div>
 								${(Object.keys(subOrgsByCategory))
-              .map((category) => {
-                return `<strong><u>${category}s</u></strong>
+                  .map((category) => {
+                    return `<h4><strong><u>${category}s</u></strong></h4>
 
                     ${subOrgsByCategory[category].map((subOrg) => {
                   const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
