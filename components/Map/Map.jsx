@@ -80,47 +80,6 @@ class Map extends Component {
           return { ...feature.properties, ...data };
         };
 
-        /* Templates for map elements */
-        const districtLegend = () => /* html */ `
-          <strong>Grade of support for bill</strong>
-          <div class="legend__item legend__item--grade-1">
-            Committed to vote
-          </div>
-          <div class="legend__item legend__item--grade-2">
-            Substantial past advocacy
-          </div>
-          <div class="legend__item legend__item--grade-3">
-            Some past advocacy
-          </div>
-          <div class="legend__item legend__item--grade-4">
-            No support
-          </div>
-
-          <strong>Icons</strong>
-          <div>
-            <img src="${schlGra}" alt="test" style="width:20px;height:20px">
-            Schools
-          </div>
-          <div>
-            <img src="${nprfGra}" alt="test" style="width:20px;height:20px">
-            Non-profit
-          </div>
-          <div>
-            <img src="${bldgGra}" alt="test" style="width:20px;height:20px">
-            For profit
-          </div>
-          <div class="legend__item legend__item--in-fave">
-            Endorses
-          </div>
-          <div class="legend__item legend__item--mixed">
-            Mixed
-          </div>
-          <div class="legend__item legend__item--against">
-            Opposes
-          </div>
-
-        `;
-
         const districtStyle = (rep) => ({
           className: `district district--${rep.party} district--grade-${rep.grade}`,
         });
@@ -192,8 +151,8 @@ class Map extends Component {
 							<span>
 								<center><h3><strong>${org.properties.index}</strong></h3></center>
 								${(Object.keys(subOrgsByCategory))
-                  .map((category) => {
-                    return `<h4><strong><u>${category}s</u></strong></h4>
+              .map((category) => {
+                return `<h4><strong><u>${category}s</u></strong></h4>
 
                     ${subOrgsByCategory[category].map((subOrg) => {
                   const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
@@ -282,7 +241,7 @@ class Map extends Component {
           //   to be revised maybe in the future. I couldn't think of a more
           //   clever way to achieve this in the moment
           switch (feature.properties.type) {
-            
+
             case "Student Group":
             case "Professor":
               if (color === "blu") {
@@ -425,13 +384,13 @@ class Map extends Component {
 
 
         // get the third party cluster layer to add to both house and senate feature group
-        const testingPls = thirdPartyIconCluster(thirdPartyGeoJSON(thirdPartyParticipants));
+        const thirdPartyClusteredIcons = thirdPartyIconCluster(thirdPartyGeoJSON(thirdPartyParticipants));
 
         // Now when defining layers, just wrap both the house AND the clustering icons in a feature group
         //   searchable, and everything renders as expected
         const layers = {
-          House: new L.FeatureGroup([districtLayer(houseFeatures), testingPls]),
-          Senate: new L.FeatureGroup([districtLayer(senateFeatures), testingPls]),
+          House: new L.FeatureGroup([districtLayer(houseFeatures), thirdPartyClusteredIcons]),
+          Senate: new L.FeatureGroup([districtLayer(senateFeatures), thirdPartyClusteredIcons]),
         };
 
         const searchControls = {
@@ -449,12 +408,6 @@ class Map extends Component {
           position: "left",
         });
         map.addControl(sidebar);
-
-        // var marker = L.marker([51.2, 7])
-        //   .addTo(map)
-        //   .on("click", function () {
-        //     sidebar.toggle();
-        //   });
 
         map.on("click", function () {
           sidebar.hide();
@@ -485,23 +438,57 @@ class Map extends Component {
         );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: "bottomleft" });
-        legendControl.onAdd = () => {
-          const div = L.DomUtil.create("div", "legend");
-          div.innerHTML = districtLegend();
-          return div;
-        };
-        legendControl.addTo(map);
       }
     );
   }
 
+  /* Render now returns the map fragment, and the legend below it */
   render() {
+
     return (
       <Fragment>
         <div id="sidebar"></div>
         <div id="map-wrapper">
           <div id="map"></div>
+        </div>
+
+        {/* Div to put the legend directly below the map instead of on the it */}
+        <div className="map__legend">
+          <h5>Legend</h5>
+          <div className="map__legend map__legend-info">
+            <div className="map__legend-item--grade">
+              <strong>Grade of support for bill</strong>
+              <div class="legend__item legend__item--grade-1">
+                Committed to vote</div>
+              <div class="legend__item legend__item--grade-2">
+                Substantial past advocacy</div>
+              <div class="legend__item legend__item--grade-3">
+                Some past advocacy</div>
+              <div class="legend__item legend__item--grade-4">
+                No support</div>
+            </div>
+            <div className="map__legend-item--icons">
+              <strong>Icons</strong>
+              <div class="legend__item legend__item--null">
+                <img src={schlGra} alt="test" style={{ width: "20px", height: "20px" }}></img>
+                &nbsp; Schools</div>
+              <div class="legend__item legend__item--null">
+                <img src={nprfGra} alt="test" style={{ width: "20px", height: "20px" }}></img>
+                &nbsp; Non-profit</div>
+              <div class="legend__item legend__item--null">
+                <img src={bldgGra} alt="test" style={{ width: "20px", height: "20px" }}></img>
+                &nbsp; For profit</div>
+            </div>
+            <div className="map__legend-item--colors">
+              <strong>Third Party Support</strong>
+              <div class="legend__item legend__item--in-fave">
+                Endorses</div>
+              <div class="legend__item legend__item--mixed">
+                Mixed</div>
+              <div class="legend__item legend__item--against">
+                Opposes</div>
+            </div>
+          </div>
         </div>
       </Fragment>
     );

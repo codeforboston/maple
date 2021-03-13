@@ -88,6 +88,11 @@
     background: var(--color-against);
 }
 
+.legend__item--null::before {
+    width: 0rem;
+    margin-right: 0px;
+}
+
 
 .district {
     fill: var(--color--district);
@@ -142,4 +147,28 @@
 .leaflet-control-search .search-tip {
     margin: 0;
     border-radius: 0;
+}
+
+.map__legend {
+    padding-top: 1rem;
+    background-color: white;
+    font-size: 0.75rem;
+}
+
+.map__legend-info {
+    padding-top: 0rem;
+    display: flex;
+    /* justify-content: space-between; */
+}
+
+.map__legend-item--grade {
+    flex-basis: 40%;
+}
+
+.map__legend-item--icons {
+    flex-basis: 25%;
+}
+
+.map__legend-item--color {
+    flex-basis: 30%;
 }
