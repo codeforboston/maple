@@ -12,7 +12,7 @@ const EMV_THIRD_PARTY_DATA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT
 function EarlyMailVoting() {
   return (
     <PriorityPageLayout
-      pageTitle="Early/Mail Voting – Constitutional Amendment"
+      pageTitle="Early/Mail (Absentee) Voting"
       legislator_data={EMV_LEGISLATOR_DATA_LINK}
       third_party_data={EMV_THIRD_PARTY_DATA}
     >

@@ -12,14 +12,13 @@ const PFC_THIRD_PARTY_DATA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT
 function CampaignFinance() {
   return (
     <PriorityPageLayout
-      pageTitle="Campaign Finance – Constitutional Amendment"
+      pageTitle="Citizen Funded Campaigns"
       legislator_data={PFC_LEGISLATOR_DATA_LINK}
       third_party_data={PFC_THIRD_PARTY_DATA}
     >
       <p>
         <b>
-          Why do we need to amend the Consitution for campaign finance
-          regulation?
+          Why should we have publicly funded campaigns?
         </b>
         <br />
         In 1998, the voters of Massachusetts
