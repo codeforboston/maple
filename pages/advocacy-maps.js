@@ -14,7 +14,7 @@ function AdvocacyMap() {
       We created three maps, one for each <a href="/about">priority</a>, and overlaid our senate and 
       representative districts over each map. We then graded our legislators' previous votes and co-sponsorships relevant 
       to our priorities, and color-coded the districts accordingly. While this information is not perfectly indicative 
-      of our legislator's views and actions <a href="">(read our disclaimer here)</a>(link the disclaimer), it is the entirety of 
+      of our legislator's views and actions <a href="pages/disclaimer.js">(read our disclaimer here)</a>, it is the entirety of 
       what is publicly available. We firmly believe that improving public access to such information, 
       and embracing innovation as a means to do so, is critical for a healthy democracy in the digital age – 
       which is why that is the subject of <a href="/transparency-ma">our main 2021 initiative</a>. 
