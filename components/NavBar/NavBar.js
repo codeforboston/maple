@@ -39,7 +39,7 @@ function NavBar({ pageTitle = "" }) {
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="/advocacy-maps">Democracy Maps</Nav.Link>
-            <Nav.Link href="/contact">Contact Us</Nav.Link>
+            <Nav.Link href="mailto: GGP.BCLaw@gmail.com">Contact Us</Nav.Link>
             {/*<Nav.Link href="/blog">GGP Blog</Nav.Link>*/}
           </Nav>
         </Navbar.Collapse>

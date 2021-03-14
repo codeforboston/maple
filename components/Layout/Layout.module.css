@@ -24,6 +24,12 @@
   align-items: center;
 }
 
+.footerinfo {
+	width: 90%;
+	display: flex;
+	justify-content: space-between;
+}
+
 .content-container {
 		display: flex;
 		align-items: center;
@@ -47,4 +53,3 @@
     margin: 0;
     padding: 1rem;
 }
-
