@@ -37,6 +37,16 @@ class PriorityLayout extends Component {
             <LayoutWrapper pageTitle={this.props.pageTitle}>
                 <div className={styles.container}>
 
+                    <aside className={styles.sidebar}>
+                        <b>Disclaimer</b>
+                        <p className={styles.disclaimer}>
+                        The legislative information we aggregated and display on the map does not - and cannot - fully reflect 
+                        the views and actions of state legislators. For more, read our <a href="/disclaimer">full disclaimer</a>.
+                        </p>
+                        <b>Further Reading</b>
+                        {this.props.further_reading}
+                    </aside>
+
                     <article className={styles.map}>
                         {this.props.children}
                         <MapWithNoSSR
