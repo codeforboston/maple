@@ -30,6 +30,7 @@
 		justify-content: center;
 		background-color: #e2e1d2;
 		min-height: 50vh;
+    padding: 2rem;
 }
 
 .content {
@@ -38,3 +39,12 @@
 		width: 90vw;
 		background-color: transparent;
 }
+
+.content-article {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    box-shadow: 0 8px 6px -6px grey;
+    margin: 0;
+    padding: 1rem;
+}
+

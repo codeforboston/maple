@@ -1,5 +1,5 @@
 import NavBar from "./NavBar/NavBar";
 import PriorityPageLayout from "./PriorityPageLayout/PriorityPageLayout";
-import Layout from "./Layout/Layout";
+import Layout, { LayoutWrapper } from "./Layout/Layout";
 
-export { NavBar, Layout, PriorityPageLayout };
+export { NavBar, Layout, LayoutWrapper, PriorityPageLayout };
