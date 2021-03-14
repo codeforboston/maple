@@ -172,3 +172,13 @@
 .map__legend-item--color {
     flex-basis: 30%;
 }
+
+.thirdPartyCluster {
+    font-size: 1.1rem;
+    color: white;
+    background-color: rgba(100, 100, 100, 0.8);
+    border-radius: 50%;
+    /* Janky way to center the text, eek */
+    padding-top: 5px;
+    padding-left: 13px;
+}
