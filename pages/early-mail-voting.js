@@ -1,4 +1,4 @@
-import { Layout } from "../components";
+import { PriorityPageLayout } from "../components";
 import dynamic from "next/dynamic";
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
@@ -11,7 +11,11 @@ const EMV_THIRD_PARTY_DATA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT
 
 function EarlyMailVoting() {
   return (
-    <Layout pageTitle="Early/Mail Voting – Constitutional Amendment">
+    <PriorityPageLayout
+      pageTitle="Early/Mail (Absentee) Voting"
+      legislator_data={EMV_LEGISLATOR_DATA_LINK}
+      third_party_data={EMV_THIRD_PARTY_DATA}
+    >
       <p>
         <b>
           Why do we need Early/ Mail Voting?
@@ -35,9 +39,8 @@ function EarlyMailVoting() {
         You can read our full letter on this issue, <a href="/early-mail-voting-letter">here</a>.
         <br />
         <b>Advocacy Map</b>
-        <MapWithNoSSR legislator_data={EMV_LEGISLATOR_DATA_LINK} third_party_data={EMV_THIRD_PARTY_DATA}/>
       </p>
-    </Layout>
+    </PriorityPageLayout>
   );
 }
 
