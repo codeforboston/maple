@@ -26,6 +26,40 @@
 		width: 100%;
 }
 
+.flexdiv{
+  display: flex;
+}
+
+/* Box styles */
+.twitter {
+  border: none;
+  padding: 5px;
+  font: 24px/36px sans-serif;
+  width: 350px;
+  height: 500vh;
+  overflow: scroll;
+  }
+  
+  /* Scrollbar styles */
+  .twitter::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  }
+  
+  .twitter::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+  }
+  
+  .twitter::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #ccc;  
+  }
+  
+  .twitter::-webkit-scrollbar-thumb:hover {
+  background: #999;  
+  }
+
 
 @media (max-width: 600px) {
   .grid {
