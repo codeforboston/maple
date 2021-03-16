@@ -60,6 +60,11 @@
   background: #999;  
   }
 
+  .childDiv {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
 
 @media (max-width: 600px) {
   .grid {
