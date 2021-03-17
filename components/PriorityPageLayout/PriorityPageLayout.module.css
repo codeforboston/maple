@@ -20,3 +20,6 @@
 .sidebar {
     flex: 1 0 220px;
 }
+.sidebar ul {
+    padding-left: 1em;
+}
