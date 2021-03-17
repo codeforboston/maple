@@ -37,6 +37,16 @@ class PriorityLayout extends Component {
             <LayoutWrapper pageTitle={this.props.pageTitle}>
                 <div className={styles.container}>
 
+                    <aside className={styles.sidebar}>
+                        <b>Disclaimer</b>
+                        <p className={styles.disclaimer}>
+                        The legislative information we aggregated and display on the map does not - and cannot - fully reflect 
+                        the views and actions of state legislators. For more, read our <a href="/disclaimer">full disclaimer</a>.
+                        </p>
+                        <b>Further Reading</b>
+                        {this.props.further_reading}
+                    </aside>
+
                     <article className={styles.map}>
                         {this.props.children}
                         <MapWithNoSSR
@@ -50,7 +60,7 @@ class PriorityLayout extends Component {
                         <p>If you are a professor, student group, or business, you can add your position to our map using <a href="https://docs.google.com/forms/d/e/1FAIpQLSfhfGLP9Tjy9P49vyv-yk706pOISFH0ED8uImrlaqRRDBS8hg/viewform">this form</a></p>
                         <b>Currently introduced bills</b>
                         <ul>
-                            {this.state.currentBills.map(bill => <li>{bill}</li>)}
+                            {this.state.currentBills.map(bill => <li><a href={"https://malegislature.gov/Bills/"+bill}>{bill.split("/")[1]}</a></li>)}
                         </ul>
                     </aside>
 
