@@ -38,7 +38,7 @@ function NavBar({ pageTitle = "" }) {
                 Other Legislative Endorsements
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/advocacy-maps">Democracy Maps</Nav.Link>
+            <Nav.Link href="/democracy-maps">Democracy Maps</Nav.Link>
             <Nav.Link href="mailto: GGP.BCLaw@gmail.com">Contact Us</Nav.Link>
             {/*<Nav.Link href="/blog">GGP Blog</Nav.Link>*/}
           </Nav>
