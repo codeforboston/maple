@@ -342,7 +342,17 @@ class Map extends Component {
         const thirdPartyIconCluster = (features) => {
 
           // setup clustering, initialize seen cluster 
-          var iconClusters = L.markerClusterGroup();
+          var iconClusters = L.markerClusterGroup({
+            iconCreateFunction: function(cluster) {
+              return L.divIcon({ 
+                html: '<b>' + cluster.getChildCount() + '</b>',
+                className:'thirdPartyCluster',
+                iconSize: L.point(36, 36)
+              });
+            }
+          });
+
+          // var iconClusters = L.markerClusterGroup();
 
           // loop over the features to add all the icons and popup logic
           //   add the layers to the clusterGroup along the way
