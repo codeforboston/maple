@@ -15,6 +15,8 @@ export default function Home() {
 
         <div className={styles.flexdiv}>
           <div className={styles.childDiv}>
+            <div><a href="/working-new-home">To New Home</a></div>
+            <br />
             The GGP identified <b>3 legislative priorities</b> to improve the quality of democracy in Massachusetts. 
             <br />
             1. <a href="pages/election-day-registration.js">Election Day Registration</a>

@@ -1,0 +1,17 @@
+.newLayoutFlex {
+  display: flex;
+}
+
+.newLayoutSideNav {
+  padding: 1rem;
+  flex-basis: 20%;
+}
+
+.newLayoutContent {
+  padding: 1rem;
+  flex-basis: 80%;
+}
+
+/* .container {
+
+} */

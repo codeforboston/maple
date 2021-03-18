@@ -1,0 +1,11 @@
+/* GLOBAL CARD PROPERTIES */
+/* ====================== */
+.sideNavBar {
+  background-color: red;
+  border: 1px solid grey;
+  border-radius: 7px;
+  padding: 1rem;
+  /* width: 20%; */
+  /* TODO: get this to be height of screen?? */
+  min-height: 105%;
+}

@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+
+
+
+/* GLOBAL COLORS */
+/* :root {
+  --brand-maroon:#89110C;
+  --brand-
+} */
+
+/* GLOBAL FONTS */
+/* 
+H1: Noto Sans, 600, 48px
+H2: Noto Sans, 600, 32px
+Nav: Noto Sans, 400, 18px
+  SubNav: Noto Sans, 400, 12
+
+*/
+
+
+/* GLOBAL CARD PROPERTIES */
+/* ====================== */
+.priorityCard {
+  /* background-color: red; */
+  border: 1px solid grey;
+  border-radius: 7px;
+  padding: 1rem;
+  margin: 1rem;
+  font-family: 'Noto Sans';
+  /* font-family: 'Noto Sans'; */
+  /* font-family:'Times New Roman', Times, serif */
+}
+
+
+/* HEADER PROPERTIES */
+/* ================= */
+.priorityCardHeader {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Noto Sans';
+}
+
+.priorityCardHeaderTitle {
+  flex-basis: 60%;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.priorityCardHeaderButton {
+  font-family: Noto Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  /* identical to box height */
+  
+  text-transform: uppercase;
+  
+  color: #FFFFFF;
+
+
+  flex-basis: 20%;
+  background-color: #89110C;
+  /* color: white; */
+  border-radius: 7px;
+  /* margin: auto; */
+  /* padding: auto; */
+}
+
+.priorityCardHeaderButton:hover {
+  color: white;
+}
+
+/* TODO: add the ::before hover for a square thing? */
+
+
+
+/* BODY PROPERTIES */
+/* =============== */
+.priorityCardBody {
+  margin-top: 1rem;
+}
