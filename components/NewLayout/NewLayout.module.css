@@ -1,17 +1,86 @@
+/* TODO: I could not for the life of me get root variables working
+  in these modules, so without that and without sass, idk man */
+/* GLOBAL COLORS */
+/* :root {
+  --brand-maroon:  #89110C, 100%
+  --brand-tan:     #B29D6C, 100%
+  --brand-black:   #141414, 100%
+  --brand-grey:    #F2F2F2, 100%
+} */
+
+
+.container {
+  background-color: #F2F2F2;
+}
+
+
+.imageHeader {
+  color: white;
+  font-weight: 700px;
+  font-size: 2rem;
+  background-color: grey;
+  height: 10rem;
+  
+  /* Flex box to push text to bottom, kind jank eek */
+  display: flex;
+  flex-direction: column;
+  justify-content:flex-end;
+
+  padding: 1rem;
+}
+
+.imageText {
+  /* background-color: red; */
+
+  /* VERY JANK way to get it to the right side eek eek! */
+  margin-left: 70%;
+  width: 30%;
+  text-align: center;
+  background-color: rgba( 0, 0, 0, 0.3 );
+  text-transform: uppercase;
+}
+
+
+
 .newLayoutFlex {
   display: flex;
 }
 
 .newLayoutSideNav {
-  padding: 1rem;
+  /* padding: 1rem; */
   flex-basis: 20%;
 }
 
 .newLayoutContent {
-  padding: 1rem;
+  /* padding: 1rem; */
   flex-basis: 80%;
+  /* background-color: blue; */
 }
 
-/* .container {
 
-} */
+/* 
+By the powers of fire, earth, wind
+  water, heart, and democracy
+*/
+.democracyPower {
+  height: 5rem;
+  line-height: 100%;
+  white-space: nowrap;
+  font-size: 1.3rem;
+
+  color: white;
+  background-color: #89110C;
+
+  text-transform: uppercase;
+  margin-left: 0;
+  padding-left: 0;
+
+  /* non-janky horizontal centering */
+  text-align: center;
+
+  /* Janky vertical centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
