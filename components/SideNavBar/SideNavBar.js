@@ -8,6 +8,7 @@ const SideNavBar = ({
   return (
     <div className={styles.sideNavBar}>
 
+      {/* TODO: Make this whole thing into an HREF that links to home, not just GGP */}
       <div className={styles.sideNavBarLogo}>
         <a className={styles.sideNavBarLogoHeader} href="/working-new-home">GGP</a>
         <div className={styles.sideNavBarLogoText}>Boston College Clough Center for Constitutional Democracy</div>

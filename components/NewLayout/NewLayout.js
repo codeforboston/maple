@@ -23,6 +23,7 @@ const NewLayout = ({
         Honestly, I poked around various stack overflow things for ~30 minutes on how to get the damb fontawesome I 
         added via yarn to directly load, but for whatever reason it just didn't want to work, i basically know
         one specific tech stack and how to make it work there lmao 
+        Also the ones from the CDN look like dodo, the local package (right term? idk) fontawesome icons are nicer
           - riley
          */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -44,6 +45,7 @@ const NewLayout = ({
 
           {/* Static head with variable title */}
           <div className={styles.imageHeader}>
+            {/* Easy To Do Good */}
             <div className={styles.imageText}>{pageTitle}</div>
           </div>
 

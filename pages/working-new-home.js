@@ -68,6 +68,7 @@ const newHome = () => {
 
       <NewLayout pageTitle="2021 Priorities">
         <div>
+          
           {/* A card for each priority, using props defined above */}
           <PriorityCard
             title={edrTitle}

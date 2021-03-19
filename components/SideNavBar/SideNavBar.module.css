@@ -127,5 +127,6 @@
   text-transform: uppercase;
   font-size: 0.75rem; 
   padding-left: 0;
-  margin-left: 0;
+  /* Kinda janky, but these are inherting a margin and I can't fix it in other ways */
+  margin-left: -1.5rem;
 }
