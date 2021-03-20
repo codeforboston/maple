@@ -1,4 +1,6 @@
-import { PriorityPageLayout } from "../components";
+// import { PriorityPageLayout } from "../components";
+import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
+
 
 /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
 const EDR_LEGISLATOR_DATA_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv";
@@ -19,7 +21,7 @@ const EDR_FURTHER_READING = (
 
 function ElectionDayRegistration() {
   return (
-    <PriorityPageLayout
+    <NewLayoutPriorityPage
         pageTitle="Election Day Registration"
         legislator_data={EDR_LEGISLATOR_DATA_LINK}
         third_party_data={EDR_THIRD_PARTY_DATA_LINK}
@@ -44,7 +46,7 @@ function ElectionDayRegistration() {
         <br />
         <b>Advocacy Map</b>
       </p>
-    </PriorityPageLayout>
+    </NewLayoutPriorityPage>
   );
 }
 

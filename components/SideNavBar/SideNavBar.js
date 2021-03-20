@@ -15,7 +15,7 @@ const SideNavBar = ({
       </div> */}
 
       <div className={styles.sideNavBarLogo}>
-        <a className={styles.sideNavBarLogoHeader} href="/working-new-home">
+        <a className={styles.sideNavBarLogoHeader} href="/">
           <div>GGP</div>
           <div className={styles.sideNavBarLogoText}>Boston College Clough Center for Constitutional Democracy</div>
         </a>
@@ -25,34 +25,39 @@ const SideNavBar = ({
       <div className={styles.sideNavBarAllItems}>
 
         {/* 2021 Section, headers, links to all maps, etc */}
-        <div className={styles.sideNavBarItemAccent}>2021 Priorities</div>
-        <div className={styles.sideNavBarItem}>Democracy Maps</div>
+  
+        <div className={styles.sideNavBarItem}>
+          <a href="/democracy-maps">Democracy Maps</a>
+        </div>
+        <div className={styles.sideNavBarItemAccent}>
+          <a href="/">2021 Priorities</a>
+        </div>
         <ul className={styles.sideNavBarItemsList}>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/">Election Day Registration</a>
+            <a href="/election-day-registration">Election Day Registration</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/">Early Mail Voting</a>
+            <a href="/early-mail-voting">Early Mail Voting</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/">Publically Financed Campaigns</a>
+            <a href="/campaign-finance">Publically Financed Campaigns</a>
           </li>
         </ul>
         <div className={styles.sideNavBarItem}>
-          <a href="/">Other Endorsements</a>
+          <a href="/other-legislative-endorsements">Other Endorsements</a>
         </div>
 
         <br/>
 
         {/* About, FAQ, Contact */}
         <div className={styles.sideNavBarItem}>
-          <a href="/">About</a>
+          <a href="/about">About</a>
         </div>
         <div className={styles.sideNavBarItem}>
-          <a href="/">FAQ</a>
+          <a href="/disclaimer">Disclaimer</a>
         </div>
         <div className={styles.sideNavBarItem}>
-          <a href="/">Contact</a>
+          <a href="mailto: GGP.BCLaw@gmail.com">Contact Us</a>
         </div>
 
       </div>

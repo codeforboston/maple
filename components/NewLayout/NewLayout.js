@@ -50,7 +50,9 @@ const NewLayout = ({
           </div>
 
           {/* Pop all the children in, only variable content */}
-          {children}
+          <div className={styles.children}>
+            {children}
+          </div>
 
           {/* GGPs favorite footer */}
           <div className={styles.democracyPower}>Powered By Democracy</div>          

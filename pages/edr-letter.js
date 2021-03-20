@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function EDRLetter() {
   return (
-    <Layout pageTitle="Election Day Registration – Letter">
+    <NewLayout pageTitle="Election Day Registration – Letter">
       <p>
         Dear elected officials,
       </p>
@@ -28,7 +30,7 @@ function EDRLetter() {
       <p Style="text-indent:1cm">
         <i>The Good Governance Project</i>
       </p>
-    </Layout>
+    </NewLayout>
   );
 }
 

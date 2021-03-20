@@ -7,8 +7,8 @@ const newHome = () => {
 
   // Constats to pass to PriorityCards
   const edrTitle = "Election Day Registration";
-  const edrPathMap = "/election-day-registration-new";
-  const edrPathLetter = "/";
+  const edrPathMap = "/election-day-registration";
+  const edrPathLetter = "/edr-letter";
   const edrSubHeader = "Why should we have it?";
   const edrBlurb =
     `Currently, MA voters must register twenty days before an election 
@@ -26,8 +26,8 @@ const newHome = () => {
     of the current process.`;
 
   const emvTitle = "Early Mail & Mail Voting";
-  const emvPathMap = "/";
-  const emvPathLetter = "/";
+  const emvPathMap = "/early-mail-voting";
+  const emvPathLetter = "/early-mail-voting-letter";
   const emvSubHeader = "Why do we need it?";
   const emvBlurb =
     `Representative democracy is stronger when more constituents participate in 
@@ -43,8 +43,8 @@ const newHome = () => {
     voting mechanisms.`;
 
   const cfaTitle = "Campaign Finance Amendment";
-  const cfaPathMap = "/";
-  const cfaPathLetter = "/";
+  const cfaPathMap = "/campaign-finance";
+  const cfaPathLetter = "/campaign-finance-letter";
   const cfaSubHeader = "Why do we need to amend the constitution?";
   const cfaBlurb =
     `In 1998, the voters of Massachusetts overwhelmingly approved a ballot measure to 

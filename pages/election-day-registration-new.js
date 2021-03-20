@@ -1,5 +1,5 @@
-import { PriorityPageLayout } from "../components";
-import NewLayout from '../components/NewLayout/NewLayout'
+// import { PriorityPageLayout } from "../components";
+// import NewLayout from '../components/NewLayout/NewLayout'
 import NewPriorityLayout from '../components/NewLayoutPriorityPage/NewLayoutPriorityPage'
 
 /* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */

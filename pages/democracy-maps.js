@@ -1,8 +1,11 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
 
 function AdvocacyMap() {
   return (
-    <Layout pageTitle="Democracy Maps">
+    // <Layout pageTitle="Democracy Maps">
+    <NewLayout pageTitle="Democracy Maps">
+
     <p>
       <b><center>Democracy Maps</center></b>
       <br />
@@ -26,7 +29,8 @@ function AdvocacyMap() {
       by the influence of corporations and wealthy donors, and undervalued by profit-driven algorithms on media platforms.
       We hope this space can be leveraged so that the voices of constituents and stakeholders can be better heard. 
     </p>
-    </Layout>
+    {/* </Layout> */}
+    </NewLayout>
   );
 }
 

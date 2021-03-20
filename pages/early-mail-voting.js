@@ -1,5 +1,7 @@
-import { PriorityPageLayout } from "../components";
+// import { PriorityPageLayout } from "../components";
+import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
 import dynamic from "next/dynamic";
+
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
   ssr: false,
@@ -24,7 +26,7 @@ const EMV_FURTHER_READING = (
 
 function EarlyMailVoting() {
   return (
-    <PriorityPageLayout
+    <NewLayoutPriorityPage
       pageTitle="Early/Mail (Absentee) Voting"
       legislator_data={EMV_LEGISLATOR_DATA_LINK}
       third_party_data={EMV_THIRD_PARTY_DATA}
@@ -54,7 +56,7 @@ function EarlyMailVoting() {
         <br />
         <b>Advocacy Map</b>
       </p>
-    </PriorityPageLayout>
+    </NewLayoutPriorityPage>
   );
 }
 
