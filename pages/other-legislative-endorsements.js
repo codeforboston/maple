@@ -1,8 +1,10 @@
-import { Layout } from '../components'
+// import { Layout } from '../components'
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function OtherLegislativeEndorsments() {
     return (
-        <Layout pageTitle='Other Legislative Endorsements'>
+        <NewLayout pageTitle='Other Legislative Endorsements'>
            <p>
                <h4>
                     <b>
@@ -73,7 +75,7 @@ function OtherLegislativeEndorsments() {
                     Currently, Boston is exempt from redrawing its ward lines, meaning the lines haven’t been redrawn in 100 years. Though population density in different precincts has changed, the number of polling locations has not. This leaves some areas with large populations but few polling locations and creating unreasonably long lines at some polling locations. This creates disproportionate voter experiences and can discourage voters from participating in elections.
                <br/><br/><br/><br/>
            </p>
-        </Layout>
+        </NewLayout>
     )
 }
 export default OtherLegislativeEndorsments

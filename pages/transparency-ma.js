@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function TransparencyInMA() {
   return (
-    <Layout pageTitle="Transparency in MA">
+    <NewLayout pageTitle="Transparency in MA">
       <div className="transparency-in-ma">
         <div className="transparency-project">
           <b>The Project:</b>
@@ -72,7 +74,7 @@ function TransparencyInMA() {
           </p>
         </div>
       </div>
-    </Layout>
+    </NewLayout>
   );
 }
 

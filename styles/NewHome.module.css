@@ -1,0 +1,13 @@
+.newHomeFlex {
+  display: flex;
+}
+
+.newHomeSideNav {
+  padding: 1rem;
+  flex-basis: 20%;
+}
+
+.newHomeContent {
+  padding: 1rem;
+  flex-basis: 80%;
+}

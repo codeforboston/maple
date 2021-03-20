@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function EarlyMailVotingLetter() {
   return (
-    <Layout pageTitle="Early/Mail Voting – Letter">
+    <NewLayout pageTitle="Early/Mail Voting – Letter">
       <p>
         Dear elected officials,
       </p>
@@ -72,7 +74,7 @@ function EarlyMailVotingLetter() {
       <p Style="text-indent:1cm">
         <i>The Good Governance Project</i>
       </p>
-    </Layout>
+    </NewLayout>
   );
 }
 

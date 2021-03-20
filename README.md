@@ -2,10 +2,10 @@
 
 First, fork the branch and clone the repository to your local machine.
 
-Make sure you have yarn installed with:
+Make sure you have yarn installed with the command:
 `yarn install`
 
-Then, to run locally run: 
+Then, to run locally use the command: 
 `yarn dev`
 
 --- 
