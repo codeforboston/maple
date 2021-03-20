@@ -13,6 +13,10 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 
+// This is awful, I'm aware. I really don't know
+//   how to do this better, I had enough trouble getting
+//   then damb pngs to load into this file in the first
+//   place
 import shad from "../../public/shad-64.png";
 import schlBlu from "../../public/schl-64-blu.png";
 import schlYel from "../../public/schl-64-yel.png";
@@ -26,6 +30,11 @@ import nprfBlu from "../../public/nprf-64-blu.png";
 import nprfYel from "../../public/nprf-64-yel.png";
 import nprfRed from "../../public/nprf-64-red.png";
 import nprfGra from "../../public/nprf-64-gra.png";
+import eofcBlu from "../../public/eofc-64-blu.png"
+import eofcYel from "../../public/eofc-64-yel.png"
+import eofcRed from "../../public/eofc-64-red.png"
+import eofcGra from "../../public/eofc-64-gra.png"
+
 
 
 /**
@@ -108,6 +117,10 @@ class Map extends Component {
           <div>
             <img src="${bldgGra}" alt="test" style="width:20px;height:20px">
             For profit
+          </div>
+            <img src="${eofcGra}" alt="test" style="width:20px;height:20px">
+            Public Official
+          <div>
           </div>
           <div class="legend__item legend__item--in-fave">
             Endorses
@@ -244,6 +257,10 @@ class Map extends Component {
         var markerNprfBlu = new thirdPartyIcon({ iconUrl: nprfBlu });
         var markerNprfYel = new thirdPartyIcon({ iconUrl: nprfYel });
         var markerNprfRed = new thirdPartyIcon({ iconUrl: nprfRed });
+        var markerEofcBlu = new thirdPartyIcon({ iconUrl: eofcBlu });
+        var markerEofcYel = new thirdPartyIcon({ iconUrl: eofcYel });
+        var markerEofcRed = new thirdPartyIcon({ iconUrl: eofcRed });
+
 
 
         // put these into a constant to namespace and give them rise on hover
@@ -258,6 +275,10 @@ class Map extends Component {
             markerNprfAye: { icon: markerNprfBlu, riseOnHover: true },
             markerNprfMix: { icon: markerNprfYel, riseOnHover: true },
             markerNprfNay: { icon: markerNprfRed, riseOnHover: true },
+            markerEofcAye: { icon: markerEofcBlu, riseOnHover: true },
+            markerEofcMix: { icon: markerEofcYel, riseOnHover: true },
+            markerEofcNay: { icon: markerEofcRed, riseOnHover: true },
+
           };
 
           // get all of the stances for any child of this icon
@@ -309,6 +330,15 @@ class Map extends Component {
                 return L.marker(latlng, geoJsonMarkers.markerNprfNay);
               } else {
                 return L.marker(latlng, geoJsonMarkers.markerNprfMix);
+              }
+
+            case "Public Official":
+              if (color === "blu") {
+                return L.marker(latlng, geoJsonMarkers.markerEofcAye);
+              } else if (color === "red") {
+                return L.marker(latlng, geoJsonMarkers.markerEofcNay);
+              } else {
+                return L.marker(latlng, geoJsonMarkers.markerEofcMix);
               }
 
             default:
