@@ -5,6 +5,8 @@ export default function Home() {
   return (
     <Layout pageTitle="The Good Governance Project">
       <div className={styles.container}>
+      <div><a className="btn btn-primary" href="/working-new-home">To New Home</a></div>
+      <br />
         <span className={styles["quote-wrapper"]}>
         The Good Governance Project (GGP) advocates for faith in democracy, 
         and for democratic structures worthy of faith. The GGP is a non-partisan,
@@ -15,8 +17,6 @@ export default function Home() {
 
         <div className={styles.flexdiv}>
           <div className={styles.childDiv}>
-            <div><a href="/working-new-home">To New Home</a></div>
-            <br />
             The GGP identified <b>3 legislative priorities</b> to improve the quality of democracy in Massachusetts. 
             <br />
             1. <a href="pages/election-day-registration.js">Election Day Registration</a>

@@ -36,25 +36,35 @@
   font-family:'Times New Roman', Times, serif;
   margin-bottom: 2rem;
   color: #89110C;
-  transition: 0.15s all ease-in-out;
+  /* transition: 0.15s all ease-in-out; */
   max-width: 10rem;
 }
 
 
 /* LOGO HEADER */
 .sideNavBarLogoHeader {
-  font-weight: 300;
-  font-size: 4rem;
+  font-weight: 100;
+  font-size: 5rem;
   color: #89110C;
-  transition: 0.15 all ease-in-out;
+  /* transition: 0.15 all ease-in-out; */
+}
+
+.sideNavBarLogo a {
+  color: #89110C;
+  transition: 0.15s all ease-in-out;
 }
 
 .sideNavBarLogo a:hover {
-  color: #89110C;
-  transition: 0.15 all ease-in-out;
-  filter: brightness( 140% );
+  /* Legit went and picked brighter color, not best practice */
+  color: #cf1913;
+  transition: .15s all ease-in-out;
+  filter: brightness( 20% );
   text-decoration: none;
 }
+/* 
+.sideNavBarLogoHeader a:hover{
+  color: blue;
+} */
 /* 
 .sideNavBarLogoHeader a {
   font-weight: 300;
@@ -87,6 +97,7 @@
 .sideNavBarLogoText {
   font-family:'Times New Roman', Times, serif;
   font-size: 0.75rem;
+  margin-top: -1rem;
 }
 
 
