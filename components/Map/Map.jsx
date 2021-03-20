@@ -119,7 +119,7 @@ class Map extends Component {
             For profit
           </div>
             <img src="${eofcGra}" alt="test" style="width:20px;height:20px">
-            For profit
+            Public Official
           <div>
           </div>
           <div class="legend__item legend__item--in-fave">
