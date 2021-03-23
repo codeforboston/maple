@@ -12,7 +12,6 @@ import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-
 // This is awful, I'm aware. I really don't know
 //   how to do this better, I had enough trouble getting
 //   then damb pngs to load into this file in the first
@@ -30,12 +29,10 @@ import nprfBlu from "../../public/nprf-64-blu.png";
 import nprfYel from "../../public/nprf-64-yel.png";
 import nprfRed from "../../public/nprf-64-red.png";
 import nprfGra from "../../public/nprf-64-gra.png";
-import eofcBlu from "../../public/eofc-64-blu.png"
-import eofcYel from "../../public/eofc-64-yel.png"
-import eofcRed from "../../public/eofc-64-red.png"
-import eofcGra from "../../public/eofc-64-gra.png"
-
-
+import eofcBlu from "../../public/eofc-64-blu.png";
+import eofcYel from "../../public/eofc-64-yel.png";
+import eofcRed from "../../public/eofc-64-red.png";
+import eofcGra from "../../public/eofc-64-gra.png";
 
 /**
  * Based on https://github.com/bhrutledge/ma-legislature/blob/main/index.html
@@ -52,17 +49,13 @@ class Map extends Component {
       fetch(
         "https://bhrutledge.com/ma-legislature/dist/ma_senate.geojson"
       ).then((response) => response.json()),
-      fetch(
-        this.props.legislator_data
-      )
+      fetch(this.props.legislator_data)
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
           return Promise.resolve(parsed.data);
         }),
-      fetch(
-        this.props.third_party_data
-      )
+      fetch(this.props.third_party_data)
         .then((response) => response.text())
         .then((csv) => {
           const parsed = Papa.parse(csv, { header: true, dynamicTyping: true });
@@ -150,7 +143,13 @@ class Map extends Component {
             <strong>${rep.first_name} ${rep.last_name}</strong>
             ${rep.party ? `<br />${rep.party}` : ""}
             <br />${rep.district}
-            ${rep.url ? `<br /><a href="${rep.url}">Contact</a>` : ""}
+						<br /><strong>Email: </strong> ${rep.email}
+						<br /><strong>Phone: </strong> ${rep.phone}
+            ${
+              rep.url
+                ? `<br /><a href="${rep.url}">MA Legislature Profile</a>`
+                : ""
+            }
           </p>
           <p>
             <!-- TODO: Show textual description of grade? -->
@@ -159,25 +158,26 @@ class Map extends Component {
             <br />
 						Co-Sponsored:
 						${Object.keys(rep)
-            .map((key) => {
-              if (key.includes("/") && rep[key] === "C") {
-                return `<br /><a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
-              }
-            })
-            .join("")}
+              .map((key) => {
+                if (key.includes("/") && rep[key] === "C") {
+                  return `<br /><a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
+                }
+              })
+              .join("")}
 						<br />
 						Voted:
 						${Object.keys(rep)
-            .map((key) => {
-              if (
-                key.includes("/") &&
-                (rep[key] === "Y" || rep[key] === "N")
-              ) {
-                return `<br /><strong>${rep[key] === "Y" ? "Yes" : "No"
+              .map((key) => {
+                if (
+                  key.includes("/") &&
+                  (rep[key] === "Y" || rep[key] === "N")
+                ) {
+                  return `<br /><strong>${
+                    rep[key] === "Y" ? "Yes" : "No"
                   }</strong> on <a href='https://malegislature.gov/Bills/${key}'>${key}</a>`;
-              }
-            })
-            .join("")}
+                }
+              })
+              .join("")}
 
             <!-- TODO: Display individual bills, but keep it generic.
             This probably means using a regex to match keys like "191/H685".
@@ -204,25 +204,32 @@ class Map extends Component {
           return `
 							<span>
 								<center><h3><strong>${org.properties.index}</strong></h3></center>
-								${(Object.keys(subOrgsByCategory))
+								${Object.keys(subOrgsByCategory)
                   .map((category) => {
                     return `<h4><strong><u>${category}s</u></strong></h4>
 
-                    ${subOrgsByCategory[category].map((subOrg) => {
-                  const color = subOrg[columns.position] == "Endorse" ? "green" : "red";
-                  const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
-                  return `<div>
+                    ${subOrgsByCategory[category]
+                      .map((subOrg) => {
+                        const color =
+                          subOrg[columns.position] == "Endorse"
+                            ? "green"
+                            : "red";
+                        const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
+                        return `<div>
                       	<strong>${subOrg.Name}</strong>
-                      	<div><p style="color:${color};">${subOrg[columns.position]} ${checkOrX} </p></div>
-                      	<blockquote><i>"${subOrg[columns.comment]}"</i></blockquote>
+                      	<div><p style="color:${color};">${
+                          subOrg[columns.position]
+                        } ${checkOrX} </p></div>
+                      	<blockquote><i>"${
+                          subOrg[columns.comment]
+                        }"</i></blockquote>
                       </div>
                       <br />`;
-
-                }).join("")
-                  }
+                      })
+                      .join("")}
                     <br />`;
-              })
-              .join("")}
+                  })
+                  .join("")}
 							</span>`;
         };
 
@@ -261,8 +268,6 @@ class Map extends Component {
         var markerEofcYel = new thirdPartyIcon({ iconUrl: eofcYel });
         var markerEofcRed = new thirdPartyIcon({ iconUrl: eofcRed });
 
-
-
         // put these into a constant to namespace and give them rise on hover
         const thirdPartyPoints = (feature, latlng) => {
           var geoJsonMarkers = {
@@ -278,7 +283,6 @@ class Map extends Component {
             markerEofcAye: { icon: markerEofcBlu, riseOnHover: true },
             markerEofcMix: { icon: markerEofcYel, riseOnHover: true },
             markerEofcNay: { icon: markerEofcRed, riseOnHover: true },
-
           };
 
           // get all of the stances for any child of this icon
@@ -303,7 +307,6 @@ class Map extends Component {
           //   to be revised maybe in the future. I couldn't think of a more
           //   clever way to achieve this in the moment
           switch (feature.properties.type) {
-            
             case "Student Group":
             case "Professor":
               if (color === "blu") {
@@ -346,14 +349,11 @@ class Map extends Component {
           }
         };
 
-
         /* Build the district layers */
         const districtLayer = (features) => {
-
-          return (L.geoJson(features, {
+          return L.geoJson(features, {
             style: (feature) => districtStyle(repProperties(feature)),
             onEachFeature: (feature, layer) => {
-
               const rep = repProperties(feature);
               layer.bindPopup(districtPopup(rep));
               layer.on("popupopen", onPopup);
@@ -364,22 +364,20 @@ class Map extends Component {
               // eslint-disable-next-line no-param-reassign
               feature.properties.index = `${rep.first_name} ${rep.last_name} - ${rep.district}`;
             },
-          })
-          )
+          });
         };
 
         /* given third party features, create a MarkerClusterGroup */
         const thirdPartyIconCluster = (features) => {
-
-          // setup clustering, initialize seen cluster 
+          // setup clustering, initialize seen cluster
           var iconClusters = L.markerClusterGroup({
-            iconCreateFunction: function(cluster) {
-              return L.divIcon({ 
-                html: '<b>' + cluster.getChildCount() + '</b>',
-                className:'thirdPartyCluster',
-                iconSize: L.point(36, 36)
+            iconCreateFunction: function (cluster) {
+              return L.divIcon({
+                html: "<b>" + cluster.getChildCount() + "</b>",
+                className: "thirdPartyCluster",
+                iconSize: L.point(36, 36),
               });
-            }
+            },
           });
 
           // var iconClusters = L.markerClusterGroup();
@@ -399,14 +397,12 @@ class Map extends Component {
 
               // add this layer with popup and icon to the cluster
               iconClusters.addLayer(layer);
-
             },
-          })
+          });
 
           // return just the clusters
-          return iconClusters
-        }
-
+          return iconClusters;
+        };
 
         /* Turn data from google sheet into a geoJSON layer*/
         const thirdPartyGeoJSON = (thirdPartyParticipants) => {
@@ -437,11 +433,8 @@ class Map extends Component {
           return features;
         };
 
-
-
         const districtSearch = (layer) => {
-
-          return (new L.Control.Search({
+          return new L.Control.Search({
             layer,
             propertyName: "index",
             initial: false,
@@ -460,18 +453,22 @@ class Map extends Component {
               }
               latlng.layer.openPopup();
             },
-          }))
-        }
-
+          });
+        };
 
         // get the third party cluster layer to add to both house and senate feature group
-        const testingPls = thirdPartyIconCluster(thirdPartyGeoJSON(thirdPartyParticipants));
+        const testingPls = thirdPartyIconCluster(
+          thirdPartyGeoJSON(thirdPartyParticipants)
+        );
 
         // Now when defining layers, just wrap both the house AND the clustering icons in a feature group
         //   searchable, and everything renders as expected
         const layers = {
           House: new L.FeatureGroup([districtLayer(houseFeatures), testingPls]),
-          Senate: new L.FeatureGroup([districtLayer(senateFeatures), testingPls]),
+          Senate: new L.FeatureGroup([
+            districtLayer(senateFeatures),
+            testingPls,
+          ]),
         };
 
         const searchControls = {
@@ -506,15 +503,11 @@ class Map extends Component {
             .on("remove", () => searchControls[chamber].remove());
         });
 
-
-
-
         map
           .addLayer(layers.House)
           .fitBounds(layers.House.getBounds())
           // Avoid accidental excessive zoom out
           .setMinZoom(map.getZoom());
-
 
         const layerControl = L.control.layers(
           layers,
