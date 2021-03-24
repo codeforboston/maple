@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function CampaignFinanceLetter() {
   return (
-    <Layout pageTitle="Publicly Financed Campaigns – Letter">
+    <NewLayout pageTitle="Publicly Financed Campaigns – Letter">
       <p>
         Dear elected officials,
       </p>
@@ -24,7 +26,7 @@ function CampaignFinanceLetter() {
       <p Style="text-indent:1cm">
         <i>The Good Governance Project</i>
       </p>
-    </Layout>
+    </NewLayout>
   );
 }
 

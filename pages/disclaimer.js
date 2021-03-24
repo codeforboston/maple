@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
+
 
 function Disclaimer() {
   return (
-    <Layout pageTitle="Democracy Maps Disclaimer">
+    <NewLayout pageTitle="Democracy Maps Disclaimer">
       <p>
 	The legislative information displayed on our Democracy Maps does not,
 	and cannot, reflect a wholly accurate picture of the individual and
@@ -41,7 +43,7 @@ function Disclaimer() {
 	comparative study, and identify best practices for transparency and the
 	use of technology within state governments.
       </p>
-    </Layout>
+    </NewLayout>
   );
 }
 

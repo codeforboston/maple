@@ -1,8 +1,10 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
 
 function About() {
   return (
-    <Layout pageTitle="About The Good Governance Project">
+    // <Layout pageTitle="About The Good Governance Project">
+    <NewLayout pageTitle="About The Good Governance Project">
       <p>
         <b>What is the Good Governance Project [GGP]?</b> 
         <br/>
@@ -26,7 +28,8 @@ function About() {
         these three priorities reflect the impactful, pragmatic, and common ground changes the GGP hopes to advance. 
         
       </p>
-    </Layout>
+    {/* </Layout> */}
+    </NewLayout>
   );
 }
 

@@ -1,8 +1,9 @@
-import { Layout } from "../components";
+// import { Layout } from "../components";
+import NewLayout from "../components/NewLayout/NewLayout";
 
 function DemocracyInMA() {
   return (
-    <Layout pageTitle="Democracy in MA – Overview">
+    <NewLayout pageTitle="Democracy in MA – Overview">
       <p>
         Overview: (5 sentance summary)
         <br />
@@ -27,7 +28,7 @@ function DemocracyInMA() {
         – Legal implications
         <br />
       </p>
-    </Layout>
+    </NewLayout>
   );
 }
 
