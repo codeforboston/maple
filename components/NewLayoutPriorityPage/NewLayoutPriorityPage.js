@@ -51,8 +51,8 @@ class NewPriorityLayout extends Component {
               {this.props.disclaimerText}
             </span>
             <a
-              className={styles.priorityCardHeaderButton}
               href={this.props.letterLink}
+              className={styles.priorityCardHeaderButton}
             >
               <i className="fa fa-map-marker"></i>
               &nbsp; Read Our Full Letter

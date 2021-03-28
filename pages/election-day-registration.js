@@ -59,6 +59,7 @@ function ElectionDayRegistration() {
       third_party_data={EDR_THIRD_PARTY_DATA_LINK}
       further_reading={EDR_FURTHER_READING}
       disclaimerText={DISCLAIMER_TEXT}
+      letterLink="/edr-letter"
     >
       <p>
         <b>Why should we have Election Day Registration?</b>
