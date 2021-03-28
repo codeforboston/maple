@@ -7,9 +7,13 @@ body {
 }
 
 a {
-  color: #007bff;
+  color: #8c1914;
   text-decoration: none;
   background-color: transparent;
+}
+
+.link {
+  color: #8c1914;
 }
 
 * {

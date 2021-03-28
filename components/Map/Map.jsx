@@ -518,13 +518,13 @@ class Map extends Component {
         );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: "bottomleft" });
+        /*const legendControl = L.control({ position: "bottomleft" });
         legendControl.onAdd = () => {
           const div = L.DomUtil.create("div", "legend");
           div.innerHTML = districtLegend();
           return div;
         };
-        legendControl.addTo(map);
+				legendControl.addTo(map); */
       }
     );
   }
