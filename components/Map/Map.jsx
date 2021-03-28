@@ -190,6 +190,8 @@ class Map extends Component {
             category: "Category",
             position: "Position",
             comment: "Comment",
+            academic_focus: "Academic Focus",
+            title: "Title"
           };
           // Make a dictionary to store the suborg data by category
           var subOrgsByCategory = {};
@@ -214,12 +216,16 @@ class Map extends Component {
                           subOrg[columns.position] == "Endorse"
                             ? "green"
                             : "red";
-                        const checkOrX = "Endorse" ? "&#9745;" : "&#9746;";
+                        const checkOrX = subOrg[columns.position] == "Endorse" ? "&#9745;" : "&#9746;";
+                        const academic_focus = subOrg[columns.category] == "Professor" ? subOrg[columns.academic_focus] : null;
+                        const title = subOrg[columns.category] == "Public Official" ? subOrg[columns.title] : null;
                         return `<div>
                       	<strong>${subOrg.Name}</strong>
-                      	<div><p style="color:${color};">${
+                        ${academic_focus ? `<div>Academic Focus: ${academic_focus}</div>` :  `` }
+                        ${title ? `<div>Title: ${title}</div>` :  `` }
+                      	<div style="color:${color};">${
                           subOrg[columns.position]
-                        } ${checkOrX} </p></div>
+                        } ${checkOrX}</div>
                       	<blockquote><i>"${
                           subOrg[columns.comment]
                         }"</i></blockquote>
@@ -518,13 +524,13 @@ class Map extends Component {
         );
         layerControl.addTo(map);
 
-        const legendControl = L.control({ position: "bottomleft" });
+        /*const legendControl = L.control({ position: "bottomleft" });
         legendControl.onAdd = () => {
           const div = L.DomUtil.create("div", "legend");
           div.innerHTML = districtLegend();
           return div;
         };
-        legendControl.addTo(map);
+				legendControl.addTo(map); */
       }
     );
   }
