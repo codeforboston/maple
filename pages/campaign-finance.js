@@ -49,6 +49,8 @@ const PFC_FURTHER_READING = (
   </ul>
 );
 
+const DISCLAIMER_TEXT = "Why Should We Have Publicly Funded Campaigns?";
+
 function CampaignFinance() {
   return (
     <NewLayoutPriorityPage
@@ -56,6 +58,8 @@ function CampaignFinance() {
       legislator_data={PFC_LEGISLATOR_DATA_LINK}
       third_party_data={PFC_THIRD_PARTY_DATA}
       further_reading={PFC_FURTHER_READING}
+      disclaimerText={DISCLAIMER_TEXT}
+      letterLink="/campaign-finance-letter"
     >
       <p>
         <b>Why should we have publicly funded campaigns?</b>
