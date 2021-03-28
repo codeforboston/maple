@@ -68,7 +68,7 @@ const SideNavBar = ({
       <div className={styles.sideNavBarItem}>
 
 
-        <p>Professors, student groups, public officials, for-proits and non-profits can add their position to our map:</p>
+        <p>Professors, student groups, public officials, for-profits and non-profits can add their position to our map:</p>
 
         <p>
           <a className={styles.actionButton} target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfpwQoQV2MpIVbaKdIB2D6DKnrxnU4u_MZbFpXBaQgvmcRclg/viewform?usp=sf_link">
