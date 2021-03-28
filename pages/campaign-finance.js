@@ -1,4 +1,5 @@
-import { PriorityPageLayout } from "../components";
+// import { PriorityPageLayout } from "../components";
+import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
 import dynamic from "next/dynamic";
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
@@ -26,7 +27,7 @@ const PFC_FURTHER_READING = (
 
 function CampaignFinance() {
   return (
-    <PriorityPageLayout
+    <NewLayoutPriorityPage
       pageTitle="Citizen Funded Campaigns"
       legislator_data={PFC_LEGISLATOR_DATA_LINK}
       third_party_data={PFC_THIRD_PARTY_DATA}
@@ -53,7 +54,7 @@ function CampaignFinance() {
         <br />
         <b>Advocacy Map</b>
       </p>
-    </PriorityPageLayout>
+    </NewLayoutPriorityPage>
   );
 }
 
