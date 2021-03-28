@@ -62,6 +62,31 @@ const SideNavBar = ({
 
       </div>
 
+      <br/>
+      <br/>
+
+      <div className={styles.sideNavBarItem}>
+
+
+        <p>Professors, student groups, public officials, for-proits and non-profits can add their position to our map:</p>
+
+        <p>
+          <a className={styles.actionButton} target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfpwQoQV2MpIVbaKdIB2D6DKnrxnU4u_MZbFpXBaQgvmcRclg/viewform?usp=sf_link">
+            Add your voice
+            &nbsp;
+            <i className="fa fa-comment"></i>
+          </a>
+        </p>
+
+        <br/>
+
+        <hr/>
+
+        <p className={styles.betaThoughts}>
+          This platform is in "beta" &ndash; Please provide your thoughts on it via our <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSf8R24Ocv_z8F2pUSu6Pp0JxeJsh0-hA_20gTR4Xgg2LR_BYQ/viewform">feedback form</a>.
+        </p>
+      </div>
+          
 
         
       </div>
