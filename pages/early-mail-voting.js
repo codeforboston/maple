@@ -97,7 +97,7 @@ function EarlyMailVoting() {
         You can read our full letter on this issue,{" "}
         <a href="/early-mail-voting-letter">here</a>.
         <br />
-        <b>Advocacy Map</b>
+        <b>Democracy Map</b>
       </p>
     </NewLayoutPriorityPage>
   );

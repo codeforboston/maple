@@ -94,7 +94,7 @@ function CampaignFinance() {
         You can read our full letter on this issue,{" "}
         <a href="/campaign-finance-letter">here</a>.
         <br />
-        <b>Advocacy Map</b>
+        <b>Democracy Map</b>
       </p>
     </NewLayoutPriorityPage>
   );

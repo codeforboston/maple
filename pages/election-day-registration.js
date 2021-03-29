@@ -85,7 +85,7 @@ function ElectionDayRegistration() {
         registration no different from that of the current process.You can read
         our full letter on this issue, <a href="/edr-letter">here</a>.
         <br />
-        <b>Advocacy Map</b>
+        <b>Democracy Map</b>
       </p>
     </NewLayoutPriorityPage>
   );
