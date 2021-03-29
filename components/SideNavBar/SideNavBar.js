@@ -37,7 +37,7 @@ const SideNavBar = ({
             <a href="/same-day-registration">Same Day Registration</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/early-mail-voting">No-Excuse Absentee Voting</a>
+            <a href="/absentee-voting">No-Excuse Absentee Voting</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
             <a href="/campaign-finance">Publicly Financed Campaigns</a>

@@ -2,7 +2,7 @@
 import NewLayout from "../components/NewLayout/NewLayout";
 
 
-function EarlyMailVotingLetter() {
+function AbsenteeVotingLetter() {
   return (
     <NewLayout pageTitle="No-Excuse Absentee Voting – Letter">
       <p>
@@ -78,4 +78,4 @@ function EarlyMailVotingLetter() {
   );
 }
 
-export default EarlyMailVotingLetter;
+export default AbsenteeVotingLetter;

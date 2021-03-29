@@ -25,8 +25,8 @@ const newHome = () => {
     of the current process.`;
 
   const emvTitle = "No-Excuse Absentee Voting";
-  const emvPathMap = "/early-mail-voting";
-  const emvPathLetter = "/early-mail-voting-letter";
+  const emvPathMap = "/absentee-voting";
+  const emvPathLetter = "/absentee-voting-letter";
   const emvSubHeader = "Why should we have no-excuse absentee voting?";
   const emvBlurb =
     `Representative democracy is stronger when more constituents participate in

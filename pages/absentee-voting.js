@@ -52,7 +52,7 @@ const EMV_FURTHER_READING = (
     </li>
   </ul>
 );
-const DISCLAIMER_TEXT = "Why Should We Have Early Mail & Mail Voting?";
+const DISCLAIMER_TEXT = "Why Should We Have No-Excuse Absentee Voting?";
 
 function EarlyMailVoting() {
   return (
@@ -62,7 +62,7 @@ function EarlyMailVoting() {
       third_party_data={EMV_THIRD_PARTY_DATA}
       further_reading={EMV_FURTHER_READING}
       disclaimerText={DISCLAIMER_TEXT}
-      letterLink="/early-mail-voting-letter"
+      letterLink="/absentee-voting-letter"
     >
       <p>
         <b>
@@ -95,7 +95,7 @@ function EarlyMailVoting() {
         should retain these improved voting mechanisms.
         <br />
         You can read our full letter on this issue,{" "}
-        <a href="/early-mail-voting-letter">here</a>.
+        <a href="/absentee-voting-letter">here</a>.
         <br />
         <b>Democracy Map</b>
       </p>
