@@ -25,7 +25,7 @@ const SideNavBar = ({
       <div className={styles.sideNavBarAllItems}>
 
         {/* 2021 Section, headers, links to all maps, etc */}
-  
+
         <div className={styles.sideNavBarItem}>
           <a href="/democracy-maps">Democracy Maps</a>
         </div>
@@ -34,10 +34,10 @@ const SideNavBar = ({
         </div>
         <ul className={styles.sideNavBarItemsList}>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/election-day-registration">Same Day Registration</a>
+            <a href="/same-day-registration">Same Day Registration</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
-            <a href="/early-mail-voting">No-Excuse Absentee Voting</a>
+            <a href="/absentee-voting">No-Excuse Absentee Voting</a>
           </li>
           <li className={styles.sideNavBarSubItem}>
             <a href="/campaign-finance">Publicly Financed Campaigns</a>
@@ -71,7 +71,7 @@ const SideNavBar = ({
         <p>Professors, student groups, public officials, for-profits and non-profits can add their position to our map:</p>
 
         <p>
-          <a className={styles.actionButton} target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfpwQoQV2MpIVbaKdIB2D6DKnrxnU4u_MZbFpXBaQgvmcRclg/viewform?usp=sf_link">
+          <a className={styles.actionButton} target="_blank" rel="noreferrer" href="https://docs.google.com/forms/d/e/1FAIpQLSfpwQoQV2MpIVbaKdIB2D6DKnrxnU4u_MZbFpXBaQgvmcRclg/viewform?usp=sf_link">
             Add your voice
             &nbsp;
             <i className="fa fa-comment"></i>
@@ -83,12 +83,12 @@ const SideNavBar = ({
         <hr/>
 
         <p className={styles.betaThoughts}>
-          This platform is in "beta" &ndash; Please provide your thoughts on it via our <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSf8R24Ocv_z8F2pUSu6Pp0JxeJsh0-hA_20gTR4Xgg2LR_BYQ/viewform">feedback form</a>.
+          This platform is in "beta" &ndash; Please provide your thoughts on it via our <a target="_blank" rel="noreferrer" href="https://docs.google.com/forms/d/e/1FAIpQLSf8R24Ocv_z8F2pUSu6Pp0JxeJsh0-hA_20gTR4Xgg2LR_BYQ/viewform">feedback form</a>.
         </p>
       </div>
-          
 
-        
+
+
       </div>
 
   );
