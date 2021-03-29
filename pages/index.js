@@ -5,23 +5,23 @@ import PriorityCard from "../components/PriorityCard/PriorityCard";
 
 const newHome = () => {
   // Constats to pass to PriorityCards
-  const edrTitle = "Same Day Registration";
-  const edrPathMap = "/election-day-registration";
-  const edrPathLetter = "/edr-letter";
-  const edrSubHeader = "Why should we have Same Day Registration?";
-  const edrBlurb =
-    `Currently, MA voters must register twenty days before an election 
-    in order to participate. Removing this barrier, and allowing eligible 
-    voters to register up to, and on, election day would allow more 
-    Massachusetts voters to make their voices heard – a critical aspect 
-    of a healthy democracy. Currently, twenty-two states allow EDR in some 
-    form. In those states, voter turnout has increased considerably. Demos, 
-    a non-partisan public policy organization found in a 2009 survey that 
-    implementing EDR created “minimal” costs, as legislators merely reallocated 
-    existing resources, and actually reduced the need for provisional ballots – 
-    saving the time and expense of processing those ballots. Voters registering 
-    on election day would still be required to provide proof of identity and 
-    proof of residence, making the process of registration no different from that 
+  const sdrTitle = "Same Day Registration";
+  const sdrPathMap = "/same-day-registration";
+  const sdrPathLetter = "/sdr-letter";
+  const sdrSubHeader = "Why should we have Same Day Registration?";
+  const sdrBlurb =
+    `Currently, MA voters must register twenty days before an election
+    in order to participate. Removing this barrier, and allowing eligible
+    voters to register up to, and on, election day would allow more
+    Massachusetts voters to make their voices heard – a critical aspect
+    of a healthy democracy. Currently, twenty-two states allow SDR in some
+    form. In those states, voter turnout has increased considerably. Demos,
+    a non-partisan public policy organization found in a 2009 survey that
+    implementing SDR created “minimal” costs, as legislators merely reallocated
+    existing resources, and actually reduced the need for provisional ballots –
+    saving the time and expense of processing those ballots. Voters registering
+    on election day would still be required to provide proof of identity and
+    proof of residence, making the process of registration no different from that
     of the current process.`;
 
   const emvTitle = "No-Excuse Absentee Voting";
@@ -29,16 +29,16 @@ const newHome = () => {
   const emvPathLetter = "/early-mail-voting-letter";
   const emvSubHeader = "Why should we have no-excuse absentee voting?";
   const emvBlurb =
-    `Representative democracy is stronger when more constituents participate in 
-    elections, and turnout is highest when participation is made easy. 
-    Massachusetts participation rates in the most recent elections indicate it 
-    was a success – which stems largely from the emergency acts smartly passed 
-    by the Legislature in response to COVID-19 (see St.2020 c.115 and St.2020 c.255). 
-    Among the temporary changes made to our election systems was a relaxing of 
-    vote-by-mail (absentee ballot) restrictions, allowing individuals from across 
-    the state to vote early and by absentee ballot. 42% of registered voters in the 
-    Commonwealth took advantage of the relatively easy means to vote and would likely 
-    do so again if given the opportunity. Massachusetts should retain these improved 
+    `Representative democracy is stronger when more constituents participate in
+    elections, and turnout is highest when participation is made easy.
+    Massachusetts participation rates in the most recent elections indicate it
+    was a success – which stems largely from the emergency acts smartly passed
+    by the Legislature in response to COVID-19 (see St.2020 c.115 and St.2020 c.255).
+    Among the temporary changes made to our election systems was a relaxing of
+    vote-by-mail (absentee ballot) restrictions, allowing individuals from across
+    the state to vote early and by absentee ballot. 42% of registered voters in the
+    Commonwealth took advantage of the relatively easy means to vote and would likely
+    do so again if given the opportunity. Massachusetts should retain these improved
     voting mechanisms.`;
 
   const cfaTitle = "Publicly Financed Campaigns";
@@ -64,11 +64,11 @@ const newHome = () => {
         <div>
           {/* A card for each priority, using props defined above */}
           <PriorityCard
-            title={edrTitle}
-            pathMap={edrPathMap}
-            pathLetter={edrPathLetter}
-            subHeader={edrSubHeader}
-            text={edrBlurb}
+            title={sdrTitle}
+            pathMap={sdrPathMap}
+            pathLetter={sdrPathLetter}
+            subHeader={sdrSubHeader}
+            text={sdrBlurb}
           />
 
           <PriorityCard
