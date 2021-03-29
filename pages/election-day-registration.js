@@ -54,15 +54,13 @@ const EDR_FURTHER_READING = (
 function ElectionDayRegistration() {
   return (
     <NewLayoutPriorityPage
-      pageTitle="Election Day Registration"
-      legislator_data={EDR_LEGISLATOR_DATA_LINK}
-      third_party_data={EDR_THIRD_PARTY_DATA_LINK}
-      further_reading={EDR_FURTHER_READING}
-      disclaimerText={DISCLAIMER_TEXT}
-      letterLink="/edr-letter"
+        pageTitle="Same Day Registration"
+        legislator_data={EDR_LEGISLATOR_DATA_LINK}
+        third_party_data={EDR_THIRD_PARTY_DATA_LINK}
+        further_reading={EDR_FURTHER_READING}
     >
       <p>
-        <b>Why should we have Election Day Registration?</b>
+        <b>Why should we have Same Day Registration?</b>
         <br />
         Currently, MA voters must register twenty days before an election in
         order to participate. Removing this barrier, and allowing eligible

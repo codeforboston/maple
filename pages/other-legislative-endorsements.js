@@ -4,11 +4,11 @@ import NewLayout from "../components/NewLayout/NewLayout";
 
 function OtherLegislativeEndorsments() {
     return (
-        <NewLayout pageTitle='Other Legislative Endorsements'>
+        <NewLayout pageTitle='Other Endorsements'>
            <p>
                <h4>
                     <b>
-                        In addition to our three legislative priorities, the GGP has identified the following bills and issues as important measures to pass to improve democracy in Massachusetts. 
+                        In addition to our priorities, the GGP identified the following bills as important measures to improve democracy in Massachusetts 
                     </b>
                </h4>
                <br/><br/>

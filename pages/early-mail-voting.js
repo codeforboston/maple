@@ -57,7 +57,7 @@ const DISCLAIMER_TEXT = "Why Should We Have Early Mail & Mail Voting?";
 function EarlyMailVoting() {
   return (
     <NewLayoutPriorityPage
-      pageTitle="Early/Mail (Absentee) Voting"
+      pageTitle="No-Excuse Absentee Voting"
       legislator_data={EMV_LEGISLATOR_DATA_LINK}
       third_party_data={EMV_THIRD_PARTY_DATA}
       further_reading={EMV_FURTHER_READING}
@@ -65,7 +65,9 @@ function EarlyMailVoting() {
       letterLink="/early-mail-voting-letter"
     >
       <p>
-        <b>Why do we need Early / Mail Voting?</b>
+        <b>
+          Why do we need No-Excuse Absentee Voting?
+        </b>
         <br />
         Representative democracy is stronger when more constituents participate
         in elections, and turnout is highest when participation is made easy.

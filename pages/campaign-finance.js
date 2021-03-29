@@ -54,7 +54,7 @@ const DISCLAIMER_TEXT = "Why Should We Have Publicly Funded Campaigns?";
 function CampaignFinance() {
   return (
     <NewLayoutPriorityPage
-      pageTitle="Citizen Funded Campaigns"
+      pageTitle="Publicly Financed Campaigns"
       legislator_data={PFC_LEGISLATOR_DATA_LINK}
       third_party_data={PFC_THIRD_PARTY_DATA}
       further_reading={PFC_FURTHER_READING}

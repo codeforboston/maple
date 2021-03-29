@@ -4,7 +4,7 @@ import NewLayout from "../components/NewLayout/NewLayout";
 
 function EDRLetter() {
   return (
-    <NewLayout pageTitle="Election Day Registration – Letter">
+    <NewLayout pageTitle="Same Day Registration – Letter">
       <p>
         Dear elected officials,
       </p>
