@@ -49,7 +49,7 @@ const PFC_FURTHER_READING = (
   </ul>
 );
 
-const DISCLAIMER_TEXT = "Why Should We Have Publicly Funded Campaigns?";
+const DISCLAIMER_TEXT = "Why Should We Have Publicly Financed Campaigns?";
 
 function CampaignFinance() {
   return (

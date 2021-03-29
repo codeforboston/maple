@@ -25,11 +25,11 @@ function NavBar({ pageTitle = "" }) {
               Democracy in MA - Overview
             </Nav.Link> */}
             <NavDropdown title="2021 Priorities" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/election-day-registration">
+              <NavDropdown.Item href="/same-day-registration">
                 Election Day Registration
               </NavDropdown.Item>
-              <NavDropdown.Item href="/early-mail-voting">
-                Early/Mail Voting
+              <NavDropdown.Item href="/absentee-voting">
+                No-Excuse Absentee Voting
               </NavDropdown.Item>
               <NavDropdown.Item href="/campaign-finance">
                 Publicly Financed Campaigns

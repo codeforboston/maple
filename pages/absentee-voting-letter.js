@@ -2,11 +2,11 @@
 import NewLayout from "../components/NewLayout/NewLayout";
 
 
-function EarlyMailVotingLetter() {
+function AbsenteeVotingLetter() {
   return (
     <NewLayout pageTitle="No-Excuse Absentee Voting – Letter">
       <p>
-        Dear elected officials,
+        Dear Elected Officials,
       </p>
       <p Style="text-indent:1cm">
         We write to you today to in support of establishing permanent mail-in-voting for Massachusetts
@@ -78,4 +78,4 @@ function EarlyMailVotingLetter() {
   );
 }
 
-export default EarlyMailVotingLetter;
+export default AbsenteeVotingLetter;
