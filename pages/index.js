@@ -39,22 +39,21 @@ const newHome = () => {
     do so again if given the opportunity. Massachusetts should retain these improved
     voting mechanisms.`;
 
-  const cfaTitle = "Campaign Finance Amendment";
+  const cfaTitle = "Publicly Financed Campaigns";
   const cfaPathMap = "/campaign-finance";
   const cfaPathLetter = "/campaign-finance-letter";
-  const cfaSubHeader = "Why do we need to amend the constitution?";
-  const cfaBlurb = `In 1998, the voters of Massachusetts overwhelmingly approved a ballot measure to
-    allow candidates who agreed to spending and donation limits access to public funds.
-    But in 2003, the legislature repealed the fair elections law as a last-minute
-    amendment to the state budget. Public funding provisions exist in the Commonwealth
-    for candidates for statewide office, but candidates for state legislature seats have
-    no such support. The data on publicly financed elections is clear. When Connecticut
-    implemented publicly financed elections, legislators were able to spend less time
-    fundraising and spend more time with constituents. More citizens became donors and
-    educated themselves about policy issues. The influence of lobbyists declined, and
-    more bipartisan, publicly supported bills were passed. The people of Massachusetts
-    deserve responsive representation in the state legislature, and adopting public
-    financing would help achieve that goal.`;
+  const cfaSubHeader = "Why should we have publicly funded campaigns?";
+  const cfaBlurb =
+    `We urge the elected officials of Massachusetts to reinstitute public funding
+    for the elections of qualifying state legislators. Under Common Cause’s
+    citizen-funded election proposal, candidates who meet small donor and fundraising
+    benchmarks  will receive matching public funding. This additional funding will
+    allow individuals without large coffers and wealthy private backers to run
+    competitive campaigns. The people of Massachusetts deserve legislators who spend
+    less time fundraising and spend more time talking to their constituents and
+    passing laws on their behalf. Publicly financed elections level the playing field,
+    allowing for broader participation in public office, and ultimately lead to laws
+    that better reflect the policy preferences of voters.`;
 
   // Actually return things
   return (
