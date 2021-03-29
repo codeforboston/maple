@@ -21,7 +21,7 @@
   /* border-radius: 7px; */
   padding: 2rem;
   /* It'll take the heigh of whatevers beside it, + a lil extra */
-  min-height: 100%; 
+  min-height: 100%;
   font-family: 'Noto Sans';
   /* font-family: 'Times'; */
   background-color: white;
@@ -61,11 +61,11 @@
   filter: brightness( 20% );
   text-decoration: none;
 }
-/* 
+/*
 .sideNavBarLogoHeader a:hover{
   color: blue;
 } */
-/* 
+/*
 .sideNavBarLogoHeader a {
   font-weight: 300;
   font-size: 4rem;
@@ -73,7 +73,7 @@
   transition: 0.15 all ease-in-out;
 } */
 
-/* 
+/*
 .sideNavBarLogoHeader:hover {
   filter: brightness( 90% );
   background-color: red;
@@ -136,7 +136,7 @@
   list-style: none;
   color: grey;
   text-transform: uppercase;
-  font-size: 0.75rem; 
+  font-size: 0.75rem;
   padding-left: 0;
   /* Kinda janky, but these are inherting a margin and I can't fix it in other ways */
   margin-left: -1.5rem;
@@ -174,4 +174,9 @@ a.actionButton:hover {
 }
 .betaThoughts {
   font-style: italic;
+}
+
+.betaThoughts a {
+  font-style: italic;
+  color: #89110C;
 }
