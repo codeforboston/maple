@@ -38,8 +38,8 @@ function Disclaimer() {
         The legislative process is confusing. There are many paths through which a
 	bill may become a law. Getting accurate information into this process is 
 	difficult in many states. In Massachusetts, our legislative process is 
-	especially opaque. Through The Good Governance Project 2021 initiative, 
-	<a href="/transparency-ma">Transparency in MA</a>, our students will conduct a 50-state
+	especially opaque. Through The Good Governance Project 2021
+	initiative, <a href="/transparency-ma">Transparency in MA</a>, our students will conduct a 50-state
 	comparative study, and identify best practices for transparency and the
 	use of technology within state governments.
       </p>

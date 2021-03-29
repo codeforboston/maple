@@ -4,7 +4,7 @@ import NewLayout from "../components/NewLayout/NewLayout";
 
 function EarlyMailVotingLetter() {
   return (
-    <NewLayout pageTitle="Early/Mail Voting – Letter">
+    <NewLayout pageTitle="No-Excuse Absentee Voting – Letter">
       <p>
         Dear elected officials,
       </p>
