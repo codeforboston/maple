@@ -54,10 +54,12 @@ const EDR_FURTHER_READING = (
 function ElectionDayRegistration() {
   return (
     <NewLayoutPriorityPage
-        pageTitle="Same Day Registration"
-        legislator_data={EDR_LEGISLATOR_DATA_LINK}
-        third_party_data={EDR_THIRD_PARTY_DATA_LINK}
-        further_reading={EDR_FURTHER_READING}
+      pageTitle="Same Day Registration"
+      legislator_data={EDR_LEGISLATOR_DATA_LINK}
+      third_party_data={EDR_THIRD_PARTY_DATA_LINK}
+      further_reading={EDR_FURTHER_READING}
+      disclaimerText={DISCLAIMER_TEXT}
+      letterLink="/edr-letter"
     >
       <p>
         <b>Why should we have Same Day Registration?</b>
