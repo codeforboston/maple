@@ -88,6 +88,17 @@ By the powers of fire, earth, wind
   justify-content: center;
 }
 
+.jankyFlex {
+  display: flex;
+  justify-content: space-around;
+}
+
+.democracyPower a {
+  /* color: rgba( 137, 17, 12, 0.9 ); */
+  color: #f2524e;
+  /* color: #B29D6C; */
+}
+
 
 .children {
   min-height: 70vh;
