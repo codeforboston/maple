@@ -23,7 +23,7 @@ function AdvocacyMap() {
       <br />
       <br />
       Organizations (for-profit and non-profit), student groups, professors, non-profits) can “plant their flag” on our maps,
-      geotag their location, and make a statement on each priority. Please complete this form to endorse or object 
+      geotag their location, and make a statement on each priority. Please complete <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpwQoQV2MpIVbaKdIB2D6DKnrxnU4u_MZbFpXBaQgvmcRclg/viewform?usp=sf_link">this form</a> to endorse or object 
       to each GGP priority, and to make a statement on one or more of our issues (suggested length, 2-4 sentences). 
       Currently, the voices of thought-leaders and constituent groups are drowned out of the political process 
       by the influence of corporations and wealthy donors, and undervalued by profit-driven algorithms on media platforms.

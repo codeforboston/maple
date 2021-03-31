@@ -1,16 +1,17 @@
 // import { PriorityPageLayout } from "../components";
-import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
+// import NewLayout from '../components/NewLayout/NewLayout'
+import NewPriorityLayout from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
 
-/* URL via EDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
-const EDR_LEGISLATOR_DATA_LINK =
+/* URL via SDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
+const SDR_LEGISLATOR_DATA_LINK =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv";
-/* URL via Third Party Data > File > Publish to the web > Link > EDR > CSV > Publish */
+/* URL via Third Party Data > File > Publish to the web > Link > SDR > CSV > Publish */
 
 const DISCLAIMER_TEXT = "Why Should We Have Same Day Registration?";
-const EDR_THIRD_PARTY_DATA_LINK =
+const SDR_THIRD_PARTY_DATA_LINK =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv";
 
-const EDR_FURTHER_READING = (
+const SDR_FURTHER_READING = (
   <ul>
     <li>
       University of Wisconsin:
@@ -53,13 +54,12 @@ const EDR_FURTHER_READING = (
 
 function ElectionDayRegistration() {
   return (
-    <NewLayoutPriorityPage
-      pageTitle="Same Day Registration"
-      legislator_data={EDR_LEGISLATOR_DATA_LINK}
-      third_party_data={EDR_THIRD_PARTY_DATA_LINK}
-      further_reading={EDR_FURTHER_READING}
-      disclaimerText={DISCLAIMER_TEXT}
-      letterLink="/edr-letter"
+    <NewPriorityLayout
+        pageTitle="Same Day Registration"
+        legislator_data={SDR_LEGISLATOR_DATA_LINK}
+        third_party_data={SDR_THIRD_PARTY_DATA_LINK}
+        further_reading={SDR_FURTHER_READING}disclaimerText={DISCLAIMER_TEXT}
+        letterLink="/sdr-letter"
     >
       <p>
         <b>Why should we have Same Day Registration?</b>
@@ -68,7 +68,7 @@ function ElectionDayRegistration() {
         order to participate. Removing this barrier, and allowing eligible
         voters to register up to, and on, election day would allow more
         Massachusetts voters to make their voices heard – a critical aspect of a
-        healthy democracy. Currently, twenty-two states allow EDR in some form.
+        healthy democracy. Currently, twenty-two states allow SDR in some form.
         In those states, voter
         <a href="https://www.yalelawjournal.org/forum/election-day-registration-and-the-limits-of-litigation">
           {" "}
@@ -79,17 +79,17 @@ function ElectionDayRegistration() {
           {" "}
           found in a 2009 survey{" "}
         </a>{" "}
-        that implementing EDR created “minimal” costs, as legislators merely
+        that implementing SDR created “minimal” costs, as legislators merely
         reallocated existing resources, and actually reduced the need for
         provisional ballots – saving the time and expense of processing those
         ballots. Voters registering on election day would still be required to
         provide proof of identity and proof of residence, making the process of
         registration no different from that of the current process.You can read
-        our full letter on this issue, <a href="/edr-letter">here</a>.
+        our full letter on this issue, <a href="/sdr-letter">here</a>.
         <br />
-        <b>Democracy Map</b>
+        <b>Advocacy Map</b>
       </p>
-    </NewLayoutPriorityPage>
+    </NewPriorityLayout>
   );
 }
 

@@ -56,12 +56,12 @@
 
 .legend__item::before {
     background: var(--color--district);
-    border-radius: 2px;
+    border-radius: 5px;
     content: '';
     display: block;
     margin-right: 0.5rem;
-    height: 1rem;
-    width: 1rem;
+    height: 2rem;
+    width: 4rem;
 }
 
 .legend__item--grade-1::before {
