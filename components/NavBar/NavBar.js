@@ -44,7 +44,6 @@ function NavBar({ pageTitle = "" }) {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <section className={styles.backgroundImg}>{pageTitle}</section>
     </div>
   );
 }

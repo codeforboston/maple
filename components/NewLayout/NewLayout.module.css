@@ -55,6 +55,11 @@
   flex-basis: 20%;
 }
 
+.mobileNav {
+		display: none;
+}
+
+
 .newLayoutContent {
   /* padding: 1rem; */
   flex-basis: 80%;
@@ -62,7 +67,24 @@
 }
 
 
-/* 
+/* Resonsive Attributes */
+@media screen and (max-width: 1050px) {
+		.newLayoutSideNav {
+				display: none;
+		}
+		.newLayoutContent {
+				flex-basis: 100%;
+		}
+		.mobileNav {
+				display: initial;
+		}
+		.imageHeader {
+				height: 35vh;
+		}
+}
+
+
+/*
 By the powers of fire, earth, wind
   water, heart, and democracy
 */
