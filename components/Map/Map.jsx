@@ -226,9 +226,11 @@ class Map extends Component {
                       	<div style="color:${color};">${
                           subOrg[columns.position]
                         } ${checkOrX}</div>
-                      	<blockquote><i>"${
-                          subOrg[columns.comment]
-                        }"</i></blockquote>
+                        ${(subOrg[columns.comment]).trim() !== "" ? 
+                          `<blockquote><i>
+                            ${['"',subOrg[columns.comment],'"'].join('')}
+                          </i></blockquote>`:
+                        ''}
                       </div>
                       <br />`;
                       })
