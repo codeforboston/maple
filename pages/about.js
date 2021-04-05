@@ -5,6 +5,7 @@ import style from "../styles/About.module.css"
 import democracyReform from "../public/democracyReform.png"
 import privacyDemocracy from "../public/privacyDemocracy.png"
 import racialJustice from "../public/racialJustice.png"
+import faithDemocracy from "../public/faithDemocracy.png"
 
 function About() {
   return (
@@ -54,6 +55,23 @@ function About() {
             , these three priorities reflect the impactful, pragmatic, and common
             ground changes the GGP hopes to advance.
           </p>
+          {/* <div className="firstTwoPosters">
+            <div>
+              <h3>Learn with us - click a poster to watch!</h3>
+            </div>
+            <div className={style.learnWithPosters}>
+              <div className="posterImgLink" id="rightPoster">
+                <a href="https://bccte.zoom.us/webinar/register/WN_e-d5HI5zQXusUC6WOsAT2w" target="_blank" rel="noreferrer">
+                  <img src={faithDemocracy} className={style.posterImages} alt="" />
+                </a>
+              </div>
+              <div className="posterImgLink" id="leftPoster">
+                <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
+                  <img src={democracyReform} className={style.posterImages} alt="" />
+                </a>
+              </div>
+            </div>
+            </div> */}
         </div>
 
         <Twitter/>
@@ -64,21 +82,32 @@ function About() {
           <h3>Learn with us - click a poster to watch!</h3>
         </div>
         <div className={style.learnWithPosters}>
-          <div className="posterImgLink" id="leftPoster">
-            <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
-              <img src={democracyReform} className={style.posterImages} alt="" />
-            </a>
+          <div className={style.firstPosterCol}>
+            <div className={style.posterImgLink} id="rightPoster">
+              <a href="https://bccte.zoom.us/webinar/register/WN_e-d5HI5zQXusUC6WOsAT2w" target="_blank" rel="noreferrer">
+                <img src={faithDemocracy} className={style.posterImages} alt="" />
+              </a>
+            </div>
+            <div className={style.posterImgLink} id="leftPoster">
+              <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
+                <img src={democracyReform} className={style.posterImages} alt="" />
+              </a>
+            </div>
           </div>
-          <div className="posterImgLink" id="middlePoster">
-            <a href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s" target="_blank" rel="noreferrer">
-              <img src={racialJustice} className={style.posterImages} alt="" />
-            </a>
+
+          <div className={style.secondPosterCol}>
+            <div className={style.posterImgLink} id="middlePoster1">
+              <a href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s" target="_blank" rel="noreferrer">
+                <img src={racialJustice} className={style.posterImages} alt="" />
+              </a>
+            </div>
+            <div className={style.posterImgLink} id="middlePoster2">
+              <a href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s" target="_blank" rel="noreferrer">
+                <img src={privacyDemocracy} className={style.posterImages} alt="" />
+              </a>
+            </div>
           </div>
-          <div className="posterImgLink" id="rightPoster">
-            <a href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s" target="_blank" rel="noreferrer">
-              <img src={privacyDemocracy} className={style.posterImages} alt="" />
-            </a>
-          </div>
+
         </div>
       </div>
 
