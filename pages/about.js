@@ -34,13 +34,13 @@ function About() {
             After studying our political institutions in the fall and winter, the
             GGP students identified three state legislative priorities to improve
             the quality of democracy in Massachusetts:
-            <a class="link" href="/election-day-registration">
+            <a class="link" href="/same-day-registration">
               {" "}
-              election day registration;
+              same day registration;
             </a>
-            <a class="link" href="/early-mail-voting">
+            <a class="link" href="/absentee-voting">
               {" "}
-              early voting & vote-by-mail;{" "}
+              no-excuse absentee voting;{" "}
             </a>
             and{" "}
             <a class="link" href="/campaign-finance">
