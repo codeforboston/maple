@@ -61,9 +61,9 @@ class NewPriorityLayout extends Component {
           <section className={styles.sidebar}>
             <div className={styles.legendContatiner}>
               <div className={styles.colorKey}>
-                <div class="legend__item legend__item--grade-1">
+                {/* <div class="legend__item legend__item--grade-1">
                   Committed to vote
-                </div>
+                </div> */}
                 <div class="legend__item legend__item--grade-2">
                   Substantial past advocacy
                 </div>
