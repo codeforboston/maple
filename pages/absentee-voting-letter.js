@@ -10,8 +10,9 @@ function AbsenteeVotingLetter() {
       </p>
       <p Style="text-indent:1cm">
         We write to you today to in support of establishing permanent mail-in-voting for Massachusetts
-        residents and to urge you to vote for legislation like
-        <a href="https://malegislature.gov/Bills/192/SD39"> SD. 39, an Act modernizing access and improving laws in voting.</a>
+	residents and to urge you to vote for legislation like 
+	the <a href="https://4da245b5-2040-4b7c-8d3a-890d1f13e948.filesusr.com/ugd/04949f_cc316673ce264efa9e568fadaab13022.pdf">VOTES Act</a> and <a href="https://malegislature.gov/Bills/192/SD39">SD. 39</a>, to 
+	modernize and improve our voting laws.
       </p>
       <p Style="text-indent:1cm">
         Representative democracy requires political participation, but, as our history has taught us and as we have
