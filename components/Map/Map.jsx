@@ -247,6 +247,9 @@ class Map extends Component {
                               '"',
                               linkifyHtml(subOrg[columns.comment], {
                                 defaultProtocol: "https",
+                                format: {
+                                  url: (value) => value + "<br />",
+                                },
                               }),
                               '"',
                             ].join("")}
