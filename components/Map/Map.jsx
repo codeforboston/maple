@@ -1,4 +1,5 @@
 import { Component, Fragment } from "react";
+import linkifyHtml from "linkifyjs/html";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-providers";
@@ -242,7 +243,13 @@ class Map extends Component {
                         ${
                           (subOrg[columns.comment] || "").trim() !== ""
                             ? `<blockquote><i>
-                            ${['"', subOrg[columns.comment], '"'].join("")}
+                            ${[
+                              '"',
+                              linkifyHtml(subOrg[columns.comment], {
+                                defaultProtocol: "https",
+                              }),
+                              '"',
+                            ].join("")}
                           </i></blockquote>`
                             : ""
                         }
