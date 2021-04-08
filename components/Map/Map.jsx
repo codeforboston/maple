@@ -1,4 +1,5 @@
 import { Component, Fragment } from "react";
+import linkifyHtml from "linkifyjs/html";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-providers";
@@ -191,7 +192,7 @@ class Map extends Component {
             position: "Position",
             comment: "Comment",
             academic_focus: "Academic Focus",
-            title: "Title"
+            title: "Title",
           };
           // Make a dictionary to store the suborg data by category
           var subOrgsByCategory = {};
@@ -216,21 +217,45 @@ class Map extends Component {
                           subOrg[columns.position] == "Endorse"
                             ? "green"
                             : "red";
-                        const checkOrX = subOrg[columns.position] == "Endorse" ? "&#9745;" : "&#9746;";
-                        const academic_focus = subOrg[columns.category] == "Professor" ? subOrg[columns.academic_focus] : null;
-                        const title = subOrg[columns.category] == "Public Official" ? subOrg[columns.title] : null;
+                        const checkOrX =
+                          subOrg[columns.position] == "Endorse"
+                            ? "&#9745;"
+                            : "&#9746;";
+                        const academic_focus =
+                          subOrg[columns.category] == "Professor"
+                            ? subOrg[columns.academic_focus]
+                            : null;
+                        const title =
+                          subOrg[columns.category] == "Public Official"
+                            ? subOrg[columns.title]
+                            : null;
                         return `<div>
                       	<strong>${subOrg.Name}</strong>
-                        ${academic_focus ? `<div>Academic Focus: ${academic_focus}</div>` :  `` }
-                        ${title ? `<div>Title: ${title}</div>` :  `` }
+                        ${
+                          academic_focus
+                            ? `<div>Academic Focus: ${academic_focus}</div>`
+                            : ``
+                        }
+                        ${title ? `<div>Title: ${title}</div>` : ``}
                       	<div style="color:${color};">${
                           subOrg[columns.position]
                         } ${checkOrX}</div>
-                        ${(subOrg[columns.comment]).trim() !== "" ? 
-                          `<blockquote><i>
-                            ${['"',subOrg[columns.comment],'"'].join('')}
-                          </i></blockquote>`:
-                        ''}
+                        ${
+                          (subOrg[columns.comment] || "").trim() !== ""
+                            ? `<blockquote><i>
+                            ${[
+                              '"',
+                              linkifyHtml(subOrg[columns.comment], {
+                                defaultProtocol: "https",
+                                format: {
+                                  url: (value) => value + "<br />",
+                                },
+                              }),
+                              '"',
+                            ].join("")}
+                          </i></blockquote>`
+                            : ""
+                        }
                       </div>
                       <br />`;
                       })
