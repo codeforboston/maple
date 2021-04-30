@@ -63,7 +63,7 @@ function About() {
             <div className={style.learnWithPosters}>
               <div className={style.firstPosterCol}>
                 <div className={style.posterImgLink} id="rightPoster">
-                  <a href="https://bccte.zoom.us/webinar/register/WN_e-d5HI5zQXusUC6WOsAT2w" target="_blank" rel="noreferrer">
+                  <a href="https://www.youtube.com/watch?v=XBFWFC2vtiY&t=770s" target="_blank" rel="noreferrer">
                     <img src={faithDemocracy} className={style.posterImages} alt="" />
                   </a>
                 </div>
