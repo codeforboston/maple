@@ -5,11 +5,11 @@ name: Deploy to Firebase Hosting on merge
 'on':
   push:
     branches:
-      - firebase
+      - master
 jobs:
   build_and_deploy:
     # Don't deploy forks, even if actions are enabled
-    if: github.repository_owner == 'alexjball'
+    if: github.repository_owner == 'codeforboston'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
