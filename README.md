@@ -1,26 +1,54 @@
-## Local Development Environment
+# Digital Testimony Platform
 
-First, fork the branch and clone the repository to your local machine.
+Live Site (version 1): https://goodgovproject.com/
 
-Make sure you have yarn installed with the command:
-`yarn install`
+In-Development Site (version 2): https://digital-testimony-dev.web.app
+## Getting Started
 
-Then, to run locally use the command: 
-`yarn dev`
+1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
 
---- 
+2. Clone your fork: 
 
-## Helpful Resources:
-Live Site:
-https://goodgovproject.com/
+```
+git clone https://github.com/YOUR_GITHUB_NAME/advocacy-maps.git
+```
 
-Github Pages Site:
-https://codeforboston.github.io/advocacy-maps/  
+3. Add the main repo to your remotes:
 
-For any link from this GH Pages site, '/advocacy-maps' needs to be added to the url.
+```
+cd advocacy-maps
+git remote add upstream https://github.com/codeforboston/advocacy-maps.git
+git fetch upstream
+```
 
-For example, for the 'election-day-registration' page, the url the link takes you to:
-https://codeforboston.github.io/election-day-registration  
-  
-Should manually be changed to  
-https://codeforboston.github.io/advocacy-maps/election-day-registration
+Now, whenever new code is merged you can pull in changes to your local repository:
+
+```
+git checkout master
+git pull upstream master
+```
+
+4. To contribute a feature, open a feature branch off `master`:
+
+```
+git checkout master
+git checkout -b MY_FEATURE
+git push -u origin MY_FEATURE
+```
+
+Use `git push` to upload your commits to your fork. When you're finished, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/master`
+
+## Developing Locally
+
+1. Make sure that you have `node` and `yarn` installed. You can download Node directly [here](https://nodejs.org/en/download/) or use a tool like [nvm](https://github.com/nvm-sh/nvm). To install yarn, run `npm i -g yarn` after installing node.
+2. Install dependencies with `yarn install`
+3. Start the development server with `yarn dev`
+4. Open the app at http://localhost:3000 in your browser
+
+## Deployment
+
+The site runs on Firebase and is deployed using Github Actions. The site is deployed automatically whenever we push to the `master` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
+
+[Deployment Action](https://github.com/codeforboston/advocacy-maps/actions/workflows/firebase-hosting-merge.yml)
+
+[Firebase console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
