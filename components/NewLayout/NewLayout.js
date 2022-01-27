@@ -4,6 +4,7 @@ import Head from "next/head";
 import styles from "./NewLayout.module.css";
 import SideNavBar from "../SideNavBar/SideNavBar";
 import NavBar from "../NavBar/NavBar";
+import {Account} from "../login";
 
 const NewLayout = ({
   pageTitle = "Easy To Do Good",
@@ -48,6 +49,7 @@ const NewLayout = ({
 
             {/* Static head with variable title */}
             <div className={styles.imageHeader}>
+              <Account className="me-3"/>
               {/* Easy To Do Good */}
               <div className={styles.imageText}>{pageTitle}</div>
             </div>

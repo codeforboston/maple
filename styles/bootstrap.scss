@@ -1,0 +1,7 @@
+// Customize bootstrap variables, in particular the color theme.
+// https://getbootstrap.com/docs/5.1/customize/color/#theme-colors
+// https://nextjs.org/docs/basic-features/built-in-css-support#sass-support
+
+$primary: #89110c;
+
+@import "bootstrap/scss/bootstrap";

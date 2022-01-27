@@ -1,6 +1,6 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { AppProps } from 'next/app'
 import { SSRProvider } from '../components/bootstrap'
+import '../styles/bootstrap.scss'
 import '../styles/globals.css'
 import '../styles/Map.css'
 
