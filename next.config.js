@@ -4,6 +4,9 @@
 const config = {
     images: {
         loader: "custom"
+    },
+    experimental: {
+        styledComponents: true
     }
 }
 
