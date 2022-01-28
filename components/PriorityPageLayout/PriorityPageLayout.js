@@ -60,7 +60,7 @@ class PriorityLayout extends Component {
                         <p>If you are a professor, student group, or business, you can add your position to our map using <a href="https://docs.google.com/forms/d/e/1FAIpQLSfhfGLP9Tjy9P49vyv-yk706pOISFH0ED8uImrlaqRRDBS8hg/viewform">this form</a></p>
                         <b>Currently introduced bills</b>
                         <ul>
-                            {this.state.currentBills.map(bill => <li><a href={"https://malegislature.gov/Bills/"+bill}>{bill.split("/")[1]}</a></li>)}
+                            {this.state.currentBills.map((bill, i) => <li key={i}><a href={"https://malegislature.gov/Bills/"+bill}>{bill.split("/")[1]}</a></li>)}
                         </ul>
                     </aside>
 

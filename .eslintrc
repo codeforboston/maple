@@ -1,0 +1,8 @@
+{
+  "extends": ["next", "next/core-web-vitals", "prettier"],
+  "rules": {
+    // TODO: Fix these warnings and make them errors by removing these overrides.
+    "react/no-unescaped-entities": "warn",
+    "@next/next/no-html-link-for-pages": "warn"
+  }
+}

@@ -63,6 +63,7 @@ const NewLayout = ({
                   <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSdXHbMqo299lCBiR_rgxSuxd5-DgEiWNpDAFjawLh66263YLw/viewform"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     {" "}
                     newsletter
