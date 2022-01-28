@@ -10,9 +10,9 @@ import nprfBlu from "../../public/nprf-64-blu.png";
 import nprfYel from "../../public/nprf-64-yel.png";
 import nprfRed from "../../public/nprf-64-red.png";
 import eofcGra from "../../public/eofc-64-gra.png";
+import Image from '../Image'
 
 const currentLegislativeSession = "192";
-const ICON_DEFAULT_STYLE = { width: "30px", height: "30px" };
 
 const MapWithNoSSR = dynamic(() => import("../Map/Map.jsx"), {
   ssr: false,
@@ -64,45 +64,45 @@ class NewPriorityLayout extends Component {
                 {/* <div class="legend__item legend__item--grade-1">
                   Committed to vote
                 </div> */}
-                <div class="legend__item legend__item--grade-2">
+                <div className="legend__item legend__item--grade-2">
                   Substantial past advocacy
                 </div>
-                <div class="legend__item legend__item--grade-3">
+                <div className="legend__item legend__item--grade-3">
                   Some past advocacy
                 </div>
-                <div class="legend__item legend__item--grade-4">No support</div>
+                <div className="legend__item legend__item--grade-4">No support</div>
               </div>
             </div>
             <div className={styles.iconContainer}>
               <div className={styles.iconsLegend}>
                 <div className={styles.iconAndTitle}>
-                  <img src={schlGra} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={schlGra} alt="test" width={30} height={30} />
                   <span>Schools</span>
                 </div>
                 <div className={styles.iconAndTitle}>
-                  <img src={nprfGra} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={nprfGra} alt="test" width={30} height={30} />
                   <span>Non-profit</span>
                 </div>
                 <div className={styles.iconAndTitle}>
-                  <img src={bldgGra} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={bldgGra} alt="test" width={30} height={30} />
                   <span>For profit</span>
                 </div>
                 <div className={styles.iconAndTitle}>
-                  <img src={eofcGra} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={eofcGra} alt="test" width={30} height={30} />
                   <span>Public Official</span>
                 </div>
               </div>
               <div className={styles.iconColorLegend}>
                 <div className={styles.iconAndTitle}>
-                  <img src={nprfBlu} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={nprfBlu} alt="test" width={30} height={30} />
                   <span>Endorses</span>
                 </div>
                 <div className={styles.iconAndTitle}>
-                  <img src={nprfYel} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={nprfYel} alt="test" width={30} height={30} />
                   <span>Mixed</span>
                 </div>
                 <div className={styles.iconAndTitle}>
-                  <img src={nprfRed} alt="test" style={ICON_DEFAULT_STYLE} />
+                  <Image src={nprfRed} alt="test" width={30} height={30} />
                   <span>Opposes</span>
                 </div>
               </div>
@@ -113,7 +113,7 @@ class NewPriorityLayout extends Component {
                 The legislative information we aggregated and display on the map
                 does not - and cannot - fully reflect the views and actions of
                 state legislators. For more, read our{" "}
-                <a class="link" href="/disclaimer">
+                <a href="/disclaimer">
                   full disclaimer
                 </a>
                 .
@@ -136,8 +136,8 @@ class NewPriorityLayout extends Component {
             <div className={styles.sidebarSection}>
               <b>Currently introduced bills</b>
               <ul>
-                {this.state.currentBills.map((bill) => (
-                  <li>
+                {this.state.currentBills.map((bill, i) => (
+                  <li key={i}>
                     <a
                       className={styles.link}
                       href={"https://malegislature.gov/Bills/" + bill}
