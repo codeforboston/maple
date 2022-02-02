@@ -1,3 +1,6 @@
+// structure based on API response from: 
+// https://malegislature.gov/api/swagger/index.html?url=/api/swagger/v1/swagger.json#/Documents/Documents_GetDocumentsAll
+
 const bills = [
   {
     "title": "An Act fostering voter opportunities, trust, equity and security",

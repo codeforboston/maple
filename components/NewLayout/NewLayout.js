@@ -7,9 +7,9 @@ import NavBar from "../NavBar/NavBar";
 import ViewTestimony from "../ViewTestimony/ViewTestimony";
 
 const NewLayout = ({
-  pageTitle = "Easy To Do Good",
+  pageTitle = "Digital Testimony",
   children,
-  title = "Easy To Do Good",
+  title = "Digital Testimony",
 }) => {
   return (
     <Fragment>
