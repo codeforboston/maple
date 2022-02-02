@@ -2,6 +2,8 @@ name: Build and Deploy
 on: [push]
 jobs:
   build-and-deploy:
+    # Don't deploy forks, even if actions are enabled
+    if: github.repository_owner == 'codeforboston'
     runs-on: ubuntu-latest
     defaults:
       run:
