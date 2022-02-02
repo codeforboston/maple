@@ -1,6 +1,6 @@
 import React from "react";
 import { bills } from "./MockAPIResponse"
-import Table from 'react-bootstrap/Table'
+import { Table, Container } from 'react-bootstrap'
 
 const legislature = "192"
 
@@ -13,14 +13,14 @@ const billsComponent = !bills ? "" :
       <td><a href={url} target="_blank">{bill.billNumber}</a></td>
       <td>{bill.title}</td>
       <td>{bill.primarySponsor.name}</td>
-      <td></td>
+      <td>0</td>
     </tr>
     )
   }
 )
 const ViewTestimony = (props) => {
   return (
-    <>
+    <Container>
       
       <h1>Most Active Bills </h1>
 
@@ -29,15 +29,15 @@ const ViewTestimony = (props) => {
           <tr>
             <th>Bill #</th>
             <th>Bill Name</th>
-            <th>Bill Sponsor</th>
-            <th># of Testimony</th>
+            <th>Lead</th>
+            <th># Testimony</th>
           </tr>
         </thead>
         <tbody>
           {billsComponent}
         </tbody>
       </Table>
-    </>
+    </Container>
   );
 };
 
