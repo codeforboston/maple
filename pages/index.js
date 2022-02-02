@@ -60,7 +60,7 @@ const newHome = () => {
   // Actually return things
   return (
     <>
-      <NewLayout pageTitle="2021 Priorities">
+      <NewLayout pageTitle="Digital Testimony Platform">
         <div>
           {/* A card for each priority, using props defined above */}
           <PriorityCard

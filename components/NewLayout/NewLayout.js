@@ -4,6 +4,7 @@ import Head from "next/head";
 import styles from "./NewLayout.module.css";
 import SideNavBar from "../SideNavBar/SideNavBar";
 import NavBar from "../NavBar/NavBar";
+import ViewTestimony from "../ViewTestimony/ViewTestimony";
 
 const NewLayout = ({
   pageTitle = "Easy To Do Good",
@@ -52,10 +53,8 @@ const NewLayout = ({
               <div className={styles.imageText}>{pageTitle}</div>
             </div>
 
-            {/* Pop all the children in, only variable content */}
-            <div className={styles.children}>{children}</div>
+            <ViewTestimony/>
 
-            {/* GGPs favorite footer */}
             <div className={styles.democracyPower}>
               <div className={styles.jankyFlex}>
                 <div>
