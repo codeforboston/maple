@@ -17,11 +17,9 @@ const SideNavBar = () => {
         <Form>
           <Form.Group>
             <h2 className="text-center">Find a Bill</h2>
-            <Row>
-              <Col><Form.Control type="text" placeholder="Search by bill #"></Form.Control></Col>
-              <Col><Button variant="primary">Search</Button></Col>
-            </Row>
-            <Row className="mt-4"><Button variant="secondary">Advanced Search</Button></Row>
+            <Row><Form.Control type="text" placeholder="Search by bill #"></Form.Control></Row>
+            <Row className="mt-2"><Button variant="primary">Search</Button></Row>
+            <Row className="mt-2"><Button variant="secondary">Advanced Search</Button></Row>
             <Row className="mt-4"><Button variant="secondary">Sign In</Button></Row>
             <Row className="mt-2"><Button variant="secondary">Create a Profile</Button></Row>
           </Form.Group>

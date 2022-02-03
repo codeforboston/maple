@@ -15,6 +15,7 @@ const billsComponent = !bills ? "" :
       <td>{bill.title}</td>
       <td>{bill.primarySponsor.name}</td>
       <td>0</td>
+      <td><ViewBill/></td>
     </tr>
     )
   }
@@ -38,7 +39,6 @@ const ViewBills = (props) => {
           {billsComponent}
         </tbody>
       </Table>
-      {/* <ViewBill/> */}
     </Container>
   );
 };

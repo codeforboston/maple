@@ -1,40 +1,34 @@
-import React, { Fragment } from "react";
+import React, {useState} from "react";
+import { Button, Modal } from 'react-bootstrap'
 
-import SideNavBar from "../SideNavBar/SideNavBar";
-import Footer from "../Footer/Footer"
-import NavBar from "../NavBar/NavBar";
-import styles from "../NewLayout/NewLayout.module.css";
+function ViewBill() {
+  const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
-const ViewBill = ({
-  pageTitle = "View Bill",
-  title = "View Bill",
-}) => {
   return (
-    <Fragment>
-      <title>This is a bill</title>
-
-      <div className={styles.container}>
-        <div className={styles.newLayoutFlex}>
-          <div className={styles.newLayoutSideNav}>
-            <SideNavBar />
-          </div>
-
-          <section className={styles.newLayoutContent}>
-            <div className={styles.mobileNav}>
-              <NavBar />
-            </div>
-
-            <div className={styles.imageHeader}>
-              <div className={styles.imageText}>{pageTitle}</div>
-            </div>
-
-          </section>
-        </div>
+    <>
+      <div className="d-flex justify-content-center">
+        <Button variant="primary" onClick={handleShow}>
+          View Bill
+        </Button>
       </div>
-      <Footer/>
-    </Fragment>
+      <Modal show={show} onHide={handleClose} size="lg">
+        <Modal.Header closeButton onClick={handleClose}>
+          <Modal.Title>Bill H.4359</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <>
+          <h4>192nd (Current)</h4>
+          <b>
+            An Act fostering voter opportunities, trust, equity and security
+            Text of an amendment, recommended by the committee on Ways and Means, to the Senate Bill fostering voter opportunities, trust, equity and security (Senate, No. 2554). January 26, 2022.
+          </b>
+          </>
+        </Modal.Body>
+      </Modal>
+    </>
   );
-};
+}
 
 export default ViewBill;
-
