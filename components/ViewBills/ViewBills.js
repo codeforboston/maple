@@ -1,6 +1,7 @@
 import React from "react";
 import { bills } from "./MockAPIResponse"
 import { Table, Container } from 'react-bootstrap'
+import ViewBill from "../ViewBill/ViewBill"
 
 const legislature = "192"
 
@@ -18,7 +19,7 @@ const billsComponent = !bills ? "" :
     )
   }
 )
-const ViewTestimony = (props) => {
+const ViewBills = (props) => {
   return (
     <Container>
       
@@ -37,9 +38,10 @@ const ViewTestimony = (props) => {
           {billsComponent}
         </tbody>
       </Table>
+      {/* <ViewBill/> */}
     </Container>
   );
 };
 
-export default ViewTestimony;
+export default ViewBills;
 
