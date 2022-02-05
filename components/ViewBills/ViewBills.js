@@ -1,5 +1,5 @@
 import React from "react";
-import { bills } from "./MockAPIResponse"
+import { bills } from "../MockAPIResponse"
 import { Table, Container } from 'react-bootstrap'
 import ViewBill from "../ViewBill/ViewBill"
 
