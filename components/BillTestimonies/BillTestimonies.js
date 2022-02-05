@@ -27,7 +27,7 @@ const Viewtestimonies = (props) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th></th>
+            <th>Support</th>
             <th>Submitter</th>
             <th>Date Submitted</th>
             <th>Text</th>
