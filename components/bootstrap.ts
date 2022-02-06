@@ -1,0 +1,1 @@
+export { default as SSRProvider } from "react-bootstrap/SSRProvider"
