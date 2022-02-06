@@ -15,7 +15,11 @@ const billsComponent = !bills ? "" :
       <td>{bill.title}</td>
       <td>{bill.primarySponsor.name}</td>
       <td>0</td>
-      <td><ViewBill/></td>
+      <td>
+        <ViewBill
+          bill={bill}
+        />
+      </td>
     </tr>
     )
   }

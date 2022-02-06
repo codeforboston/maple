@@ -6,6 +6,7 @@ function ViewBill(props) {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
+  const bill = props.bill
 
   return (
     <>
@@ -16,7 +17,7 @@ function ViewBill(props) {
       </div>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton onClick={handleClose}>
-            <Modal.Title>Bill H.4359</Modal.Title>
+            <Modal.Title>{bill ? bill.billNumber + " - " + bill.title : ""} </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
@@ -30,11 +31,12 @@ function ViewBill(props) {
             </div>
             <h4 className="mt-2">192nd (Current)</h4>
             <p>
-              An Act fostering voter opportunities, trust, equity and security
-              Text of an amendment, recommended by the committee on Ways and Means, to the Senate Bill fostering voter opportunities, trust, equity and security (Senate, No. 2554). January 26, 2022.
+              {bill ? bill.text : ""}
             </p>
 
-            <BillTestimonies/> 
+            <BillTestimonies
+              bill={bill}
+            /> 
           </>
         </Modal.Body>
         <Modal.Footer>
