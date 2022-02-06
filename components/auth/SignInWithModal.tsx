@@ -16,7 +16,7 @@ export default function SignInWithModal() {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="login-modal">Sign In to Post Testimony</Modal.Title>
+          <Modal.Title id="login-modal">Sign In to Testify</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FirebaseAuth borderless />

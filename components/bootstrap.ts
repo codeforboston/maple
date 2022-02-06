@@ -6,8 +6,8 @@ export { default as Button } from "react-bootstrap/Button"
 export { default as Navbar } from "react-bootstrap/Navbar"
 export { default as Nav } from "react-bootstrap/Nav"
 export { default as NavDropdown } from "react-bootstrap/NavDropdown"
+export { default as Container } from "react-bootstrap/Container"
 export { default as SSRProvider } from "react-bootstrap/SSRProvider"
 export { default as OverlayTrigger } from "react-bootstrap/OverlayTrigger"
 export { default as Modal } from "react-bootstrap/Modal"
-
-export type StyledFC<T = {}> = React.FC<T & { className?: string }>
+export { default as Stack } from "react-bootstrap/Stack"

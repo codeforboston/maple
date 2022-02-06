@@ -25,3 +25,9 @@ export function External({
     </a>
   )
 }
+
+export const Wrap: React.FC<{ href: string }> = ({ href, children }) => (
+  <Link href={href} passHref>
+    {children}
+  </Link>
+)

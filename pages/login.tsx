@@ -1,18 +1,22 @@
 import { useRouter } from "next/router"
-import React, { useCallback, useEffect } from "react"
-import { FirebaseAuth, useAuth } from "../components/auth"
-import NewLayout from "../components/NewLayout/NewLayout"
+import React, { useCallback } from "react"
+import { FirebaseAuth } from "../components/auth"
+import { createPage } from "../components/page"
 
-export default function Page() {
-  const onSignIn = useSignIn()
+export default createPage({
+  v2: true,
+  title: "Sign In",
+  Page: () => {
+    const onSignIn = useSignIn()
 
-  return (
-    <NewLayout pageTitle="Sign In">
-      <h1>Sign in to Post Testimony</h1>
-      <FirebaseAuth onSignIn={onSignIn} />
-    </NewLayout>
-  )
-}
+    return (
+      <>
+        <h1>Sign in to Testify</h1>
+        <FirebaseAuth onSignIn={onSignIn} />
+      </>
+    )
+  }
+})
 
 function useSignIn() {
   const router = useRouter(),

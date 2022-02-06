@@ -1,11 +1,12 @@
-import { Button, StyledFC } from "../bootstrap"
+import type { ButtonProps } from "react-bootstrap"
+import { Button } from "../bootstrap"
 import { auth } from "../firebase"
 
 /** Signs out the current user. Pages that are wrapped in `requireAuth` will
  * redirect the user to the login page. */
-const SignOut: StyledFC = ({ className }) => {
+const SignOut: React.FC<ButtonProps> = props => {
   return (
-    <Button className={className} onClick={() => auth.signOut()}>
+    <Button {...props} onClick={() => auth.signOut()}>
       Sign out
     </Button>
   )
