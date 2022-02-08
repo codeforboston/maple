@@ -8,7 +8,7 @@ const Footer = () => {
         <div>
           Subscribe to our{" "}
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSdXHbMqo299lCBiR_rgxSuxd5-DgEiWNpDAFjawLh66263YLw/viewform"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdXHbMqo299lCBiR_rgxSuxd5-DgEiWNpDAFjawLh66263YLw/viewform" rel="noreferrer"
             target="_blank"
           >
             {" "}

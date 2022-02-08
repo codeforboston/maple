@@ -11,7 +11,7 @@ const billsComponent = !bills ? "" :
     const url = `https://malegislature.gov/Bills/${legislature}/${billNumForURL}`
     return (
     <tr key={index}>
-      <td><a href={url} target="_blank">{bill.billNumber}</a></td>
+      <td><a href={url} rel="noreferrer" target="_blank">{bill.billNumber}</a></td>
       <td>{bill.title}</td>
       <td>{bill.primarySponsor.name}</td>
       <td>0</td>
