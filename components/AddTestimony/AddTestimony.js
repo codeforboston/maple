@@ -30,7 +30,7 @@ const AddTestimony = (props) => {
 
         <Modal.Footer>
           <Button variant="primary" onClick={handleShowAddComment}>
-            Add your voice
+            Save
           </Button>
         </Modal.Footer>
       </Modal>

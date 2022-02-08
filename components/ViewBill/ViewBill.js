@@ -24,13 +24,11 @@ function ViewBill(props) {
         </Modal.Header>
         <Modal.Body>
           <>
-            <div className="col-md-12 text-center">
-            <Row>
-              <Button>Name</Button>
-              <Button className="ml-2">History</Button>
-              <Button className="ml-2">Cosponsors</Button>
-              <Button className="ml-2">Status</Button>
-            </Row>
+            <div className="text-center">
+              <Button className="m-1">Name</Button>
+              <Button className="m-1">History</Button>
+              <Button className="m-1">Cosponsors</Button>
+              <Button className="m-1">Status</Button>
             </div>
             <h4 className="mt-2">{bill ? "General Court: "+ bill.generalCourtNumber : ""} </h4>
             <p>

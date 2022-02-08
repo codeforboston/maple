@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './SideNavBar.module.css';
-import { Form, Button, Row, Col, Container } from 'react-bootstrap'
+import { Form, Button, Row, Container } from 'react-bootstrap'
 
 const SideNavBar = () => {
 
