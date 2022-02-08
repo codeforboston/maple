@@ -4,11 +4,12 @@ import Head from "next/head";
 import styles from "./NewLayout.module.css";
 import SideNavBar from "../SideNavBar/SideNavBar";
 import NavBar from "../NavBar/NavBar";
+import ViewTestimony from "../ViewBills/ViewBills";
+import Footer from "../Footer/Footer"
 
 const NewLayout = ({
-  pageTitle = "Easy To Do Good",
-  children,
-  title = "Easy To Do Good",
+  pageTitle = "Digital Testimony",
+  title = "Digital Testimony",
 }) => {
   return (
     <Fragment>
@@ -28,14 +29,11 @@ const NewLayout = ({
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
         ></link>
-
         <meta charSet="utf-8" />
-        {/* TODO: Is there a way to set background color of html? not within a div */}
       </Head>
 
       <div className={styles.container}>
         <div className={styles.newLayoutFlex}>
-          {/* Add sidenav */}
           <div className={styles.newLayoutSideNav}>
             <SideNavBar />
           </div>
@@ -52,30 +50,10 @@ const NewLayout = ({
               <div className={styles.imageText}>{pageTitle}</div>
             </div>
 
-            {/* Pop all the children in, only variable content */}
-            <div className={styles.children}>{children}</div>
+            <ViewTestimony/>
 
-            {/* GGPs favorite footer */}
-            <div className={styles.democracyPower}>
-              <div className={styles.jankyFlex}>
-                <div>
-                  Subscribe to our{" "}
-                  <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSdXHbMqo299lCBiR_rgxSuxd5-DgEiWNpDAFjawLh66263YLw/viewform"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {" "}
-                    newsletter
-                  </a>
-                </div>
-                <div>Powered By Democracy</div>
-                <div>
-                  Contact Us:{" "}
-                  <a href="mailto: GGP.BCLaw@gmail.com"> GGP.BCLaw@gmail.com</a>
-                </div>
-              </div>
-            </div>
+            <Footer/>
+
           </section>
         </div>
       </div>
