@@ -3,7 +3,6 @@ import styles from "./SideNavBar.module.css"
 import { Form, Button, Row, Container } from "react-bootstrap"
 
 const SideNavBar = ({}) => {
-  const { authenticated } = useAuth()
   return (
     <Container>
       <div className={styles.sideNavBar}>
