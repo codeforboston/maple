@@ -46,3 +46,4 @@ amplifytools.xcconfig
 .secret-*
 
 out/
+*debug.log

@@ -33,6 +33,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:emulators": "node scripts/dev-emulators.js",
     "build": "next build",
     "export": "next build && next export",
     "export:nolint": "next build --no-lint && next export",
@@ -40,7 +41,8 @@
     "check-types": "tsc --noEmit",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
-    "fix": "next lint --fix; prettier --write ."
+    "fix": "next lint --fix; prettier --write .",
+    "postinstall": "yarn --cwd functions install"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +64,7 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.21",
+    "concurrently": "^7.0.0",
     "eslint": "^8.7.0",
     "eslint-config-next": "^12.0.9",
     "eslint-config-prettier": "^8.3.0",
