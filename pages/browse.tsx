@@ -1,4 +1,6 @@
 import { createPage } from "../components/page"
+import ViewTestimony from "../components/ViewBills/ViewBills"
+import { Form, Row, Button } from "../components/bootstrap"
 
 export default createPage({
   v2: true,
@@ -6,15 +8,27 @@ export default createPage({
   Page: () => {
     return (
       <>
-        <h1>Browse (TODO)</h1>
-        <p>
-          Eventually this will contain a list of bills and a search bar.
-          Clicking on a bill will navigate to `/browse?bill=$billId` and show
-          the testimony submitted for the bill. From there, you can peruse the
-          testimony. You can also click a "share your voice" button, which will
-          navigate to the form to submit testimony at `/testify?bill=$billId`.
-        </p>
+        <h1>Browse</h1>
+
+        <SearchBar />
+        <ViewTestimony />
       </>
     )
   }
 })
+
+const SearchBar = () => (
+  <Form className="col-lg-5 mx-auto">
+    <Form.Group>
+      <Row>
+        <Form.Control type="text" placeholder="Search by bill #"></Form.Control>
+      </Row>
+      <Row className="mt-2">
+        <Button variant="primary">Search</Button>
+      </Row>
+      <Row className="mt-2">
+        <Button variant="secondary">Advanced Search</Button>
+      </Row>
+    </Form.Group>
+  </Form>
+)
