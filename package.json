@@ -34,9 +34,11 @@
   "scripts": {
     "dev": "next dev",
     "dev:emulators": "node scripts/dev-emulators.js",
+    "serve": "firebase emulators:start --only hosting",
     "build": "next build",
     "export": "next build && next export",
     "export:nolint": "next build --no-lint && next export",
+    "build:functions": "next lint -d functions/src && yarn --cwd functions build",
     "start": "next start",
     "check-types": "tsc --noEmit",
     "lint": "next lint",
