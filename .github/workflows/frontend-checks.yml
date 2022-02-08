@@ -1,0 +1,32 @@
+name: Frontend Checks
+
+on: ['push', 'pull_request']
+
+jobs:
+  check_code_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-frontend
+
+      - name: Linting
+        if: always()
+        run: yarn lint
+
+      # TODO: Format everything once, enable this check, and require it to pass
+      # before merging.
+      #
+      # - name: Formatting
+      #   if: always()
+      #   run: yarn check-formatting
+
+      # TODO: Add tests
+      # - name: Jest Tests
+      #   if: always()
+      #   run: yarn test
+
+      - name: Types
+        if: always()
+        run: yarn check-types

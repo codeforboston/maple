@@ -6,6 +6,7 @@ import democracyReform from "../public/democracyReform.png"
 import privacyDemocracy from "../public/privacyDemocracy.png"
 import racialJustice from "../public/racialJustice.png"
 import faithDemocracy from "../public/faithDemocracy.png"
+import Image from '../components/Image'
 
 function About() {
   return (
@@ -34,22 +35,22 @@ function About() {
             After studying our political institutions in the fall and winter, the
             GGP students identified three state legislative priorities to improve
             the quality of democracy in Massachusetts:
-            <a class="link" href="/same-day-registration">
+            <a href="/same-day-registration">
               {" "}
               same day registration;
             </a>
-            <a class="link" href="/absentee-voting">
+            <a href="/absentee-voting">
               {" "}
               no-excuse absentee voting;{" "}
             </a>
             and{" "}
-            <a class="link" href="/campaign-finance">
+            <a href="/campaign-finance">
               {" "}
               publicly financed campaigns
             </a>
             . While there are many other legislative improvements to make to our
             democracy, which we identify{" "}
-            <a class="link" href="/other-legislative-endorsements">
+            <a href="/other-legislative-endorsements">
               here
             </a>
             , these three priorities reflect the impactful, pragmatic, and common
@@ -64,12 +65,12 @@ function About() {
               <div className={style.firstPosterCol}>
                 <div className={style.posterImgLink} id="rightPoster">
                   <a href="https://www.youtube.com/watch?v=XBFWFC2vtiY&t=770s" target="_blank" rel="noreferrer">
-                    <img src={faithDemocracy} className={style.posterImages} alt="" />
+                    <Image src={faithDemocracy} className={style.posterImages} alt="" />
                   </a>
                 </div>
                 <div className={style.posterImgLink} id="leftPoster">
                   <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
-                    <img src={democracyReform} className={style.posterImages} alt="" />
+                    <Image src={democracyReform} className={style.posterImages} alt="" />
                   </a>
                 </div>
               </div>
@@ -77,12 +78,12 @@ function About() {
               <div className={style.secondPosterCol}>
                 <div className={style.posterImgLink} id="middlePoster1">
                   <a href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s" target="_blank" rel="noreferrer">
-                    <img src={racialJustice} className={style.posterImages} alt="" />
+                    <Image src={racialJustice} className={style.posterImages} alt="" />
                   </a>
                 </div>
                 <div className={style.posterImgLink} id="middlePoster2">
                   <a href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s" target="_blank" rel="noreferrer">
-                    <img src={privacyDemocracy} className={style.posterImages} alt="" />
+                    <Image src={privacyDemocracy} className={style.posterImages} alt="" />
                   </a>
                 </div>
               </div>
@@ -103,12 +104,12 @@ function About() {
           <div className={style.firstPosterCol}>
             <div className={style.posterImgLink} id="rightPoster">
               <a href="https://bccte.zoom.us/webinar/register/WN_e-d5HI5zQXusUC6WOsAT2w" target="_blank" rel="noreferrer">
-                <img src={faithDemocracy} className={style.posterImages} alt="" />
+                <Image src={faithDemocracy} className={style.posterImages} alt="" />
               </a>
             </div>
             <div className={style.posterImgLink} id="leftPoster">
               <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
-                <img src={democracyReform} className={style.posterImages} alt="" />
+                <Image src={democracyReform} className={style.posterImages} alt="" />
               </a>
             </div>
           </div>
@@ -116,12 +117,12 @@ function About() {
           <div className={style.secondPosterCol}>
             <div className={style.posterImgLink} id="middlePoster1">
               <a href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s" target="_blank" rel="noreferrer">
-                <img src={racialJustice} className={style.posterImages} alt="" />
+                <Image src={racialJustice} className={style.posterImages} alt="" />
               </a>
             </div>
             <div className={style.posterImgLink} id="middlePoster2">
               <a href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s" target="_blank" rel="noreferrer">
-                <img src={privacyDemocracy} className={style.posterImages} alt="" />
+                <Image src={privacyDemocracy} className={style.posterImages} alt="" />
               </a>
             </div>
           </div>

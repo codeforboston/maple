@@ -12,6 +12,7 @@ import "./L.Control.Sidebar";
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import Image from '../Image'
 
 // This is awful, I'm aware. I really don't know
 //   how to do this better, I had enough trouble getting
@@ -76,8 +77,6 @@ class Map extends Component {
           return acc;
         }, {});
 
-        console.log(repDataByURL);
-
         const repProperties = (feature) => {
           const data = repDataByURL[feature.properties.url] || {};
           return { ...feature.properties, ...data };
@@ -86,43 +85,43 @@ class Map extends Component {
         /* Templates for map elements */
         const districtLegend = () => /* html */ `
           <strong>Grade of support for bill</strong>
-          <div class="legend__item legend__item--grade-1">
+          <div className="legend__item legend__item--grade-1">
             Committed to vote
           </div>
-          <div class="legend__item legend__item--grade-2">
+          <div className="legend__item legend__item--grade-2">
             Substantial past advocacy
           </div>
-          <div class="legend__item legend__item--grade-3">
+          <div className="legend__item legend__item--grade-3">
             Some past advocacy
           </div>
-          <div class="legend__item legend__item--grade-4">
+          <div className="legend__item legend__item--grade-4">
             No support
           </div>
 
           <strong>Icons</strong>
           <div>
-            <img src="${schlGra}" alt="test" style="width:20px;height:20px">
+            <Image src="${schlGra}" alt="test" style="width:20px;height:20px"/>
             Schools
           </div>
           <div>
-            <img src="${nprfGra}" alt="test" style="width:20px;height:20px">
+            <Image src="${nprfGra}" alt="test" style="width:20px;height:20px"/>
             Non-profit
           </div>
           <div>
-            <img src="${bldgGra}" alt="test" style="width:20px;height:20px">
+            <Image src="${bldgGra}" alt="test" style="width:20px;height:20px"/>
             For profit
           </div>
-            <img src="${eofcGra}" alt="test" style="width:20px;height:20px">
+            <Image src="${eofcGra}" alt="test" style="width:20px;height:20px"/>
             Public Official
           <div>
           </div>
-          <div class="legend__item legend__item--in-fave">
+          <div className="legend__item legend__item--in-fave">
             Endorses
           </div>
-          <div class="legend__item legend__item--mixed">
+          <div className="legend__item legend__item--mixed">
             Mixed
           </div>
-          <div class="legend__item legend__item--against">
+          <div className="legend__item legend__item--against">
             Opposes
           </div>
 
@@ -278,7 +277,7 @@ class Map extends Component {
         // class for third party icons
         var thirdPartyIcon = L.Icon.extend({
           options: {
-            shadowUrl: shad,
+            shadowUrl: shad.src,
             iconSize: [28, 28],
             shadowSize: [28, 28],
             iconAnchor: [16, 30],
@@ -288,18 +287,18 @@ class Map extends Component {
         });
 
         // make a variable for each of the icon flavors
-        var markerSchlBlu = new thirdPartyIcon({ iconUrl: schlBlu });
-        var markerSchlYel = new thirdPartyIcon({ iconUrl: schlYel });
-        var markerSchlRed = new thirdPartyIcon({ iconUrl: schlRed });
-        var markerBldgBlu = new thirdPartyIcon({ iconUrl: bldgBlu });
-        var markerBldgYel = new thirdPartyIcon({ iconUrl: bldgYel });
-        var markerBldgRed = new thirdPartyIcon({ iconUrl: bldgRed });
-        var markerNprfBlu = new thirdPartyIcon({ iconUrl: nprfBlu });
-        var markerNprfYel = new thirdPartyIcon({ iconUrl: nprfYel });
-        var markerNprfRed = new thirdPartyIcon({ iconUrl: nprfRed });
-        var markerEofcBlu = new thirdPartyIcon({ iconUrl: eofcBlu });
-        var markerEofcYel = new thirdPartyIcon({ iconUrl: eofcYel });
-        var markerEofcRed = new thirdPartyIcon({ iconUrl: eofcRed });
+        var markerSchlBlu = new thirdPartyIcon({ iconUrl: schlBlu.src });
+        var markerSchlYel = new thirdPartyIcon({ iconUrl: schlYel.src });
+        var markerSchlRed = new thirdPartyIcon({ iconUrl: schlRed.src });
+        var markerBldgBlu = new thirdPartyIcon({ iconUrl: bldgBlu.src });
+        var markerBldgYel = new thirdPartyIcon({ iconUrl: bldgYel.src });
+        var markerBldgRed = new thirdPartyIcon({ iconUrl: bldgRed.src });
+        var markerNprfBlu = new thirdPartyIcon({ iconUrl: nprfBlu.src });
+        var markerNprfYel = new thirdPartyIcon({ iconUrl: nprfYel.src });
+        var markerNprfRed = new thirdPartyIcon({ iconUrl: nprfRed.src });
+        var markerEofcBlu = new thirdPartyIcon({ iconUrl: eofcBlu.src });
+        var markerEofcYel = new thirdPartyIcon({ iconUrl: eofcYel.src });
+        var markerEofcRed = new thirdPartyIcon({ iconUrl: eofcRed.src });
 
         // put these into a constant to namespace and give them rise on hover
         const thirdPartyPoints = (feature, latlng) => {

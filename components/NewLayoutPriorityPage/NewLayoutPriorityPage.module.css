@@ -132,3 +132,8 @@
 
   border-bottom: 5px solid black;
 }
+
+.icon {
+  width: 30px;
+  height: 30px;
+}
