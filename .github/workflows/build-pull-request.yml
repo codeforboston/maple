@@ -15,7 +15,7 @@ jobs:
       - name: Setup Build Environment
         uses: ./.github/actions/setup-frontend
       - name: Build App
-        run: yarn run export
+        run: yarn export:nolint
       - name: Export App
         uses: actions/upload-artifact@v2
         if: github.event_name == 'pull_request'

@@ -1,14 +1,18 @@
-import React from 'react'
-import styles from './Twitter.module.css'
+import React from "react"
+import styles from "./Twitter.module.css"
+import { TwitterTimelineEmbed } from "react-twitter-embed"
 
 function Twitter() {
-    return (
-        <div className={styles.sidebar}>
-            <div className={styles.twitter}>
-                <a className="twitter-timeline" href="https://twitter.com/GGovernanceProj?ref_src=twsrc%5Etfw">Tweets by GGovernanceProj</a> <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
-            </div>
-        </div>
-    )
+  return (
+    <div className={styles.sidebar}>
+      <div className={styles.twitter}>
+        <TwitterTimelineEmbed
+          screenName="GGovernanceProj"
+          sourceType="profile"
+        />
+      </div>
+    </div>
+  )
 }
 
 export default Twitter

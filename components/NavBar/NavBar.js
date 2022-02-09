@@ -1,6 +1,4 @@
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import {Navbar, Nav, NavDropdown} from "../bootstrap";
 import styles from "./NavBar.module.css";
 
 function NavBar({ pageTitle = "" }) {
