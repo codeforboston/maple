@@ -3,8 +3,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch --preserveWatchOutput",
-    "shell": "firebase functions:shell -p 5002",
-    "start": "yarn shell",
+    "dev": "node dev-functions.js",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -12,12 +11,15 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@google-cloud/firestore": "^5.0.2",
+    "axios": "^0.25.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.17.2"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.3.3",
-    "typescript": "^4.5.5"
+    "firebase-tools": "file:../node_modules/firebase-tools",
+    "typescript": "file:../node_modules/typescript"
   },
   "private": true
 }
