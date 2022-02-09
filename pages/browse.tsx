@@ -1,6 +1,10 @@
 import { createPage } from "../components/page"
-import ViewTestimony from "../components/ViewBills/ViewBills"
+import ViewBills from "../components/ViewBills/ViewBills"
 import { Form, Row, Button } from "../components/bootstrap"
+
+// just to test out ViewBIllPage
+// import ViewBillPage from "../components/ViewBillPage/ViewBillPage"
+// import { bills } from "../components/MockAPIResponse"
 
 export default createPage({
   v2: true,
@@ -11,7 +15,12 @@ export default createPage({
         <h1>Browse</h1>
 
         <SearchBar />
-        <ViewTestimony />
+        <ViewBills />
+
+        {/* just to test out ViewBillPage */}
+        {/* <ViewBillPage
+          bill={bills[0]}
+        /> */}
       </>
     )
   }
