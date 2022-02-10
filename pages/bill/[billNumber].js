@@ -27,14 +27,16 @@ export const getStaticProps = async (context) => {
   const data = await res.json()
 
   return {
-    props: { bill: data }
+    props: { billActions: data }
   }
 }
 
-const BillPage = ({bill}) => {
+const BillPage = ({billActions}) => {
+  console.log("the bill actions")
+  console.log(billActions)
   return ( 
     <div>
-      <h1>hello from {bill.BillNumber}</h1>
+      <h1>hello from </h1>
     </div>
   )
 }

@@ -2,9 +2,7 @@ import React from "react";
 import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 
-// The noun testimony can be countable or uncountable.
-// In more general, commonly used, contexts, the plural form will also be testimony.
-// However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
+// the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
 const ViewTestimonies = (props) => {
   const bill = props.bill
@@ -35,8 +33,7 @@ const ViewTestimonies = (props) => {
           <tr>
             <th>Support</th>
             <th>Submitter</th>
-            <th>Date Submittedxx</th>
-            {/* why isn't this xx showing up on the testimony pop up? */}
+            <th>Date Submitted</th>
             <th>Text</th>
           </tr>
         </thead>
