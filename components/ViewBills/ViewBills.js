@@ -13,7 +13,7 @@ const ViewBills = (props) => {
       const url = `/bill/${billNumForURL}`
       return (
       <tr key={index}>
-        <NavLink href={url}>{bill.billNumber}</NavLink>
+        <td><NavLink href={url}>{bill.billNumber}</NavLink></td>
         <td>{bill.title}</td>
         <td>{bill.primarySponsor.name}</td>
         <td>0</td>

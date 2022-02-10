@@ -1,20 +1,18 @@
-import { bills } from "../../components/MockAPIResponse"
+import { bills } from "../../components/MockAPIResponseBills"
 
 export const getStaticPaths = async () => {
 
-  // for future, when API endpoint set up
+  // in future, hit a different endpoint - this is too slow  (response 27 seconds vs 4 seconds as an imported object)
   // const res = await fetch('https://malegislature.gov/api/Documents')
   // const data = await res.json()
-
-  const paths = bills.map(bill => {
-    const billNumForURL = bill.billNumber.replace('.', '')
-    return {
-      params: { billNumber: billNumForURL }
-    }
-  }) 
+  // and below
+  // const paths = data.map(bill => {
   
-  console.log(paths)
-
+  const paths = bills.map(bill => {  
+    const billNumber = (bill.BillNumber === null) ? bill.DocketNumber : bill.BillNumber
+    return { params: { billNumber: billNumber } }
+  }) 
+ 
   return {
     paths: paths,
     fallback: false
@@ -24,9 +22,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const billNumber = context.params.billNumber
 
-  //for when endpoint is set up - pull data on a bill
-
-  const res = await fetch('https://apiURL/' + billNumber)
+  const res = await fetch(`https://malegislature.gov/api/Documents/${billNumber}/DocumentHistoryActions`)
   const data = await res.json()
 
   return {
@@ -37,7 +33,7 @@ export const getStaticProps = async (context) => {
 const BillPage = ({bill}) => {
   return ( 
     <div>
-      <h1>hello from {bill.billNumber}</h1>
+      <h1>hello from {bill.BillNumber}</h1>
     </div>
   )
 }
