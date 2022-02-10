@@ -1,6 +1,6 @@
 // https://malegislature.gov/api/swagger/index.html?url=/api/swagger/v1/swagger.json#/Documents/Documents_GetDocumentsAll
 
-const bills = 
+const documents = 
 [
 	{
 		"BillNumber": null,
@@ -112632,4 +112632,4 @@ const bills =
 	}
 ]
 
-export { bills }
+export { documents }

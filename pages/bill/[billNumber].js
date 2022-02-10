@@ -1,13 +1,14 @@
-import { bills } from "../../components/MockAPIResponseBills"
+import { documents } from "../../components/MockAPIResponseDocuments"
 
 export const getStaticPaths = async () => {
 
-  // in future, hit a different endpoint - this is too slow  (response 27 seconds vs 4 seconds as an imported object)
+  // in future, hit an endpoint - malegislature.gov is slow  (response 27 seconds vs 4 seconds as an imported object)
   // const res = await fetch('https://malegislature.gov/api/Documents')
   // const data = await res.json()
-  // and below
-  // const paths = data.map(bill => {
-  
+
+  // bills are documents that have a bill number
+  const bills = documents.filter(document => document.BillNumber != null) 
+
   const paths = bills.map(bill => {  
     const billNumber = (bill.BillNumber === null) ? bill.DocketNumber : bill.BillNumber
     return { params: { billNumber: billNumber } }

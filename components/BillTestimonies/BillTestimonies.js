@@ -1,5 +1,5 @@
 import React from "react";
-import { testimonies } from "../MockAPIResponse"
+import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 
 // The noun testimony can be countable or uncountable.

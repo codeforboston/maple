@@ -1,6 +1,6 @@
 import React from "react";
 
-import { bills } from "../MockAPIResponse"
+import { bills } from "../MockTestimonies"
 import { Button, Row } from 'react-bootstrap'
 import BillTestimonies from '../BillTestimonies/BillTestimonies'
 import AddTestimony from '../AddTestimony/AddTestimony'
