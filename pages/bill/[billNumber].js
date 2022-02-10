@@ -20,23 +20,46 @@ export const getStaticPaths = async () => {
   }
 }
 
+// export const getStaticProps = async (context) => {
+//   const billNumber = context.params.billNumber
+
+//   const res = await fetch(`https://malegislature.gov/api/Documents/${billNumber}/DocumentHistoryActions`)
+//   const data = await res.json()
+
+//   return {
+//     props: { billActions: data }
+//   }
+// }
+
+// const BillPage = ({billActions}) => {
+//   return ( 
+//     <div>
+//       <h1>hello from </h1>
+//     </div>
+//   )
+// }
+
 export const getStaticProps = async (context) => {
   const billNumber = context.params.billNumber
 
-  const res = await fetch(`https://malegislature.gov/api/Documents/${billNumber}/DocumentHistoryActions`)
+  const res = await fetch(`https://malegislature.gov/api/Documents/${billNumber}`)
   const data = await res.json()
 
   return {
-    props: { billActions: data }
+    props: { bill: data }
   }
 }
 
-const BillPage = ({billActions}) => {
-  console.log("the bill actions")
-  console.log(billActions)
+const BillPage = ({bill}) => {
   return ( 
     <div>
-      <h1>hello from </h1>
+      <h1>{bill.BillNumber} </h1>
+      <h2>{bill.Title}</h2>
+      <h3>Primary Sponsor: {bill.PrimarySponsor.Name}</h3>
+      <p>
+        {bill.DocumentText}
+      </p>
+
     </div>
   )
 }
