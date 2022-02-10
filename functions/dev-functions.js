@@ -18,14 +18,15 @@ function startBuild() {
       stdio: ["ignore", "pipe", "inherit"]
     })
 
-    child.stdout.pipe(process.stdout)
-    child.stdout.on("data", data => {
-      if (data.toString().includes("Watching for file changes.")) {
-        child.stdout.unpipe()
-        child.stdout.removeAllListeners("data")
+    const safeWord = "Found 0 errors. Watching for file changes."
+    const listener = data => {
+      if (data.toString().includes(safeWord)) {
+        child.stdout.removeListener("data", listener)
         res(child)
       }
-    })
+    }
+    child.stdout.pipe(process.stdout)
+    child.stdout.on("data", listener)
   })
 }
 
@@ -44,14 +45,15 @@ function startEmulators() {
     )
 
     const safeWord = "All emulators ready! It is now safe to connect your app."
-    child.stdout.pipe(process.stdout)
-    child.stdout.on("data", data => {
+    const listener = data => {
       if (data.toString().includes(safeWord)) {
         child.stdout.unpipe()
         child.stdout.removeAllListeners("data")
         res(child)
       }
-    })
+    }
+    child.stdout.pipe(process.stdout)
+    child.stdout.on("data", listener)
   })
 }
 
