@@ -8,10 +8,9 @@ import { Table, Container } from 'react-bootstrap'
 
 const ViewTestimonies = (props) => {
   const bill = props.bill
-
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {
-      if (testimony.billNumber === bill.billNumber) {
+      if (testimony.billNumber === bill.BillNumber || testimony.billNumber === bill.DocketNumber) {
         return (
           <tr key={index}>
             <td>{testimony.support}</td>
@@ -36,7 +35,8 @@ const ViewTestimonies = (props) => {
           <tr>
             <th>Support</th>
             <th>Submitter</th>
-            <th>Date Submitted</th>
+            <th>Date Submittedxx</th>
+            {/* why isn't this xx showing up on the testimony pop up? */}
             <th>Text</th>
           </tr>
         </thead>

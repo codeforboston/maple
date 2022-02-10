@@ -8,6 +8,7 @@ function ViewBill(props) {
   const handleShowBill = () => setShowBill(true);
   const handleCloseBill = () => setShowBill(false);
   const bill = props.bill
+  const billNumber = (bill.BillNumber === null) ? bill.DocketNumber : bill.BillNumber
 
   return (
     <>
@@ -19,7 +20,7 @@ function ViewBill(props) {
       <Modal show={showBill} onHide={handleCloseBill} size="lg">
         <Modal.Header closeButton onClick={handleCloseBill}>
           <Modal.Title>
-            {bill ? bill.billNumber + " - " + bill.title : ""} 
+            {bill ? billNumber + " - " + bill.Title : ""} 
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -30,9 +31,9 @@ function ViewBill(props) {
               <Button className="m-1">Cosponsors</Button>
               <Button className="m-1">Status</Button>
             </div>
-            <h4 className="mt-2">{bill ? "General Court: "+ bill.generalCourtNumber : ""} </h4>
+            <h4 className="mt-2">{bill ? "General Court: "+ bill.GeneralCourtNumber : ""} </h4>
             <p>
-              {bill ? bill.text : ""}
+              {bill ? bill.Title : ""}
             </p>
 
             <BillTestimonies
