@@ -20,25 +20,6 @@ export const getStaticPaths = async () => {
   }
 }
 
-// export const getStaticProps = async (context) => {
-//   const billNumber = context.params.billNumber
-
-//   const res = await fetch(`https://malegislature.gov/api/Documents/${billNumber}/DocumentHistoryActions`)
-//   const data = await res.json()
-
-//   return {
-//     props: { billActions: data }
-//   }
-// }
-
-// const BillPage = ({billActions}) => {
-//   return ( 
-//     <div>
-//       <h1>hello from </h1>
-//     </div>
-//   )
-// }
-
 export const getStaticProps = async (context) => {
   const billNumber = context.params.billNumber
 
