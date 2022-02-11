@@ -1,6 +1,8 @@
 import { documents } from "../../components/MockAPIResponseDocuments"
+import { createPage } from "../../components/page"
 import { Button, Row } from 'react-bootstrap'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import Bill from '../../components/Bill/Bill'
 import BillTestimonies from '../../components/BillTestimonies/BillTestimonies'
 import AddTestimony from '../../components/AddTestimony/AddTestimony'
 
@@ -10,8 +12,7 @@ export const getStaticPaths = async () => {
   // const res = await fetch('https://malegislature.gov/api/Documents')
   // const data = await res.json()
 
-  // bills are documents that have a bill number
-  const bills = documents.filter(document => document.BillNumber != null) 
+  const bills = documents.filter(document => document.BillNumber != null) // documents with bill numbers are bills
 
   const paths = bills.map(bill => {  
     const billNumber = bill.BillNumber
@@ -35,33 +36,15 @@ export const getStaticProps = async (context) => {
   }
 }
 
-const BillPage = ({bill}) => {
-  return (
-    <>
-      <SearchBar/>
-      <Row>
-        <div className="text-center">
-          <Button className="m-1">Name</Button>
-          <Button className="m-1">History</Button>
-          <Button className="m-1">Cosponsors</Button>
-          <Button className="m-1">Status</Button>
-        </div>
-      </Row>
-      <div className="text-center">
-        <h4>{bill ? bill.BillNumber + "  General Court: "+ bill.GeneralCourtNumber : ""} </h4>
-      </div>
-      <div>
-        <p>
-          {bill ? bill.DocumentText : ""}
-        </p>
-      </div>
-      <BillTestimonies
+export default createPage({
+  v2: true,
+  title: "Bill",
+  Page: ({bill}) => {
+    console.log(bill.DocumentText)
+    return (
+      <Bill
         bill={bill}
-      /> 
-      <AddTestimony/>
-
-    </>
-  );
-}
-
-export default BillPage
+      />
+    )
+  }
+})

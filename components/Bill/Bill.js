@@ -1,13 +1,11 @@
 import React from "react";
-
-import { bills } from "../MockTestimonies"
 import { Button, Row } from 'react-bootstrap'
 import BillTestimonies from '../BillTestimonies/BillTestimonies'
 import AddTestimony from '../AddTestimony/AddTestimony'
 
 const ViewBillPage = (props) => {
   const bill = props.bill
-
+  console.log(bill)
   return (
     <>
       <Row>
@@ -18,17 +16,17 @@ const ViewBillPage = (props) => {
           <Button className="m-1">Status</Button>
         </div>
       </Row>
-      <h4 className="mt-2">{bill ? bill.billNumber + "  General Court: "+ bill.generalCourtNumber : ""} </h4>
-      <div className="d-flex justify-content-center">
-
-        <p>
-          {bill ? bill.text : ""}
-        </p>
-
-        <BillTestimonies
-          bill={bill}
-        /> 
+      <div className="text-center">
+        <h4>{bill ? bill.BillNumber + "  General Court: "+ bill.GeneralCourtNumber : ""} </h4>
+        <h4>{bill ? bill.Title : ""}</h4>
       </div>
+      <div>
+        {bill ? bill.DocumentText.substring(1,700)+"..." : ""}
+      </div>
+      <BillTestimonies
+        bill={bill}
+      /> 
+      <AddTestimony/> 
     </>
   );
 };
