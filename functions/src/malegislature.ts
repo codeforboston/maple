@@ -11,24 +11,6 @@ export type DocumentListing = {
   GeneralCourtNumber: number
 }
 
-export type Legislator = {
-  Id: string
-  Name: string
-  Type: number
-}
-
-export type Document = {
-  Title: string
-  BillNumber: string | null
-  DocketNumber: string
-  GeneralCourtNumber: number
-  PrimarySponsor: Legislator
-  Cosponsors: Legislator[]
-  LegislationTypeName: string
-  Pinslip: string
-  DocumentText: string
-}
-
 /** The general court is the name for a session of the legislature, which lasts
  * two years. */
 export const currentGeneralCourt = 192
@@ -51,7 +33,7 @@ export function getDocument({
 }: {
   id: string
   court: number
-}): Promise<Document> {
+}): Promise<any> {
   return request({
     url: `/GeneralCourts/${court}/Documents/${id}`,
     method: "GET",

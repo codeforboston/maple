@@ -7,9 +7,6 @@ import { last } from "lodash"
 admin.initializeApp()
 const db = admin.firestore()
 
-/** The documents in the `/court/_/documents` collection */
-type Document = api.Document & { lastFetch: Date }
-
 /** Batch documents trigger the batch fetch function to scrape `documentIds` */
 type Batch = {
   court: number
