@@ -18,7 +18,7 @@ const AddTestimony = (props) => {
       
       <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
         <Modal.Header closeButton onClick={handleCloseAddComment}>
-            <Modal.Title>{bill ? bill.billNumber + " - " + bill.title : ""}</Modal.Title>
+            <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
