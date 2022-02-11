@@ -20,7 +20,7 @@ const ViewBillPage = (props) => {
         <h4>{bill ? bill.Title : ""}</h4>
       </div>
       <div>
-        {bill ? bill.DocumentText.substring(1,700)+"..." : ""}
+        {(bill && bill.DocumentText != null) ? bill.DocumentText.substring(1,700)+"..." : ""}
       </div>
       <BillTestimonies
         bill={bill}

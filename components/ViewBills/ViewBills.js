@@ -3,7 +3,6 @@ import { useRouter } from "next/router"
 import { documents } from "../MockAPIResponseDocuments"
 import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button } from 'react-bootstrap'
-import ViewBill from "../ViewBill/ViewBill"
 
 const countedTestimonies = testimonies.reduce(function (allTestimonies, testimony) {
   if (testimony.billNumber in allTestimonies) {
@@ -34,9 +33,6 @@ const ViewBills = (props) => {
           <Button variant="primary" onClick={() => router.push(`/bill/${billNumForURL}`)}>
             View Bill
           </Button>
-          {/* <ViewBill
-            bill={bill}
-          /> */}
         </td>
       </tr>
       )
