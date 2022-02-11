@@ -5,7 +5,6 @@ import AddTestimony from '../AddTestimony/AddTestimony'
 
 const ViewBillPage = (props) => {
   const bill = props.bill
-  console.log(bill)
   return (
     <>
       <Row>

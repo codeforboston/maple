@@ -40,7 +40,6 @@ export default createPage({
   v2: true,
   title: "Bill",
   Page: ({bill}) => {
-    console.log(bill.DocumentText)
     return (
       <Bill
         bill={bill}
