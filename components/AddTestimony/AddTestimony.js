@@ -18,12 +18,18 @@ const AddTestimony = (props) => {
       
       <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
         <Modal.Header closeButton onClick={handleCloseAddComment}>
-            <Modal.Title>{bill ? bill.billNumber + " - " + bill.title : ""}</Modal.Title>
+            <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
             <div className="text-center">
-              <textarea className="form-control" rows="20" placeholder="My comments on this bill" required></textarea>
+              <select className="form-control">
+                <option>Endorse</option>
+                <option>Oppose</option>
+                <option>Neutral</option>
+              </select>
+
+              <textarea className="form-control mt-2" rows="20" placeholder="My comments on this bill" required></textarea>
             </div>
           </>
         </Modal.Body>

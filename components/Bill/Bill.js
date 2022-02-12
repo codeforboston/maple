@@ -25,7 +25,9 @@ const ViewBillPage = (props) => {
       <BillTestimonies
         bill={bill}
       /> 
-      <AddTestimony/> 
+      <AddTestimony
+        bill={bill}
+      /> 
     </>
   );
 };
