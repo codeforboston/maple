@@ -8,7 +8,7 @@ const ViewTestimonies = (props) => {
   const bill = props.bill
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {
-      if (testimony.billNumber === bill.BillNumber || testimony.billNumber === bill.DocketNumber) {
+      if (testimony.billNumber === bill.BillNumber) {
         return (
           <tr key={index}>
             <td>{testimony.support}</td>

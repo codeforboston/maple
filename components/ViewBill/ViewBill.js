@@ -20,7 +20,7 @@ function ViewBill(props) {
       <Modal show={showBill} onHide={handleCloseBill} size="lg">
         <Modal.Header closeButton onClick={handleCloseBill}>
           <Modal.Title>
-            {bill ? billNumber + " - " + bill.Title : ""} 
+            {bill ? bill.BillNumber + " - " + bill.Title : ""} 
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -33,7 +33,7 @@ function ViewBill(props) {
             </div>
             <h4 className="mt-2">{bill ? "General Court: "+ bill.GeneralCourtNumber : ""} </h4>
             <p>
-              {bill ? bill.Title : ""}
+              {bill ? bill.Text : ""}
             </p>
 
             <BillTestimonies
