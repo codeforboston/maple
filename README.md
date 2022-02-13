@@ -3,11 +3,12 @@
 Live Site (version 1): https://goodgovproject.com/
 
 In-Development Site (version 2): https://digital-testimony-dev.web.app
+
 ## Getting Started
 
 1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
 
-2. Clone your fork: 
+2. Clone your fork:
 
 ```
 git clone https://github.com/YOUR_GITHUB_NAME/advocacy-maps.git
@@ -52,3 +53,26 @@ The site runs on Firebase and is deployed using Github Actions. The site is depl
 [Deployment Action](https://github.com/codeforboston/advocacy-maps/actions/workflows/firebase-hosting-merge.yml)
 
 [Firebase console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
+
+## Development FAQ
+
+### How do I create a new page?
+
+Take a look at the `pages/browse.tsx` page:
+
+```typescript
+export default createPage({
+  v2: true,
+  title: "Browse",
+  Page: () => {
+    return (
+      <>
+        <h1>Browse</h1>
+        ...
+      </>
+    )
+  }
+})
+```
+
+Your page content goes in `Page`, and will be wrapped in a layout component. Setting `v2` to `true` will use the `V2Layout`, which will render the content inside a bootstrap `Container`. The page is rendered by `_app.tsx`.

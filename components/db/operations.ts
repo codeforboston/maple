@@ -1,5 +1,7 @@
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -25,4 +27,11 @@ export async function listBills(
   }
   const result = await getDocs(q)
   return result.docs.map(d => d.data()) as any
+}
+
+export async function getBill(id: string): Promise<Bill> {
+  const bill = await getDoc(
+    doc(firestore, `/generalCourts/${currentGeneralCourt}/documents/${id}`)
+  )
+  return bill.data() as any
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { listBills } from "."
+import { getBill, listBills } from "./operations"
 import { Bill } from "./types"
 
 export function useBills() {
@@ -21,5 +21,27 @@ export function useBills() {
       loading: bills === undefined
     }),
     [bills]
+  )
+}
+
+export function useBill(id: string) {
+  const [bill, setBill] = useState<Bill | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchBill = async () => {
+      if (bill?.BillNumber !== id) {
+        const fetched = await getBill(id)
+        setBill(fetched)
+      }
+    }
+    fetchBill()
+  }, [bill, id])
+
+  return useMemo(
+    () => ({
+      bill,
+      loading: bill === undefined
+    }),
+    [bill]
   )
 }
