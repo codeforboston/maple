@@ -11,6 +11,11 @@ export type DocumentListing = {
   GeneralCourtNumber: number
 }
 
+export type MemberListing = {
+  GeneralCourtNumber: number
+  MemberCode: string
+}
+
 /** The general court is the name for a session of the legislature, which lasts
  * two years. */
 export const currentGeneralCourt = 192
@@ -41,7 +46,39 @@ export function getDocument({
   })
 }
 
-async function request(config: AxiosRequestConfig) {
+export function listMembers({
+  court
+}: {
+  court: number
+}): Promise<MemberListing[]> {
+  return request({
+    url: `/GeneralCourts/${court}/LegislativeMembers`,
+    method: "GET",
+    timeout: 60_000
+  })
+}
+
+export async function getMember({ id, court }: { id: string; court: number }) {
+  const { SponsoredBills, CoSponsoredBills, ...member } = await request({
+    url: `/GeneralCourts/${court}/LegislativeMembers/${id}`,
+    method: "GET",
+    timeout: 30_000
+  })
+
+  return member
+}
+
+type JSON = any
+async function request(config: AxiosRequestConfig): Promise<JSON> {
   const response = await axios(config)
   return response.data
 }
+
+// /** Strip out bill details and leave just a listing */
+// function stripBills(bills: any) {
+//   return bills.map(({ BillNumber, DocketNumber, GeneralCourtNumber }: any) => ({
+//     BillNumber,
+//     DocketNumber,
+//     GeneralCourtNumber
+//   }))
+// }
