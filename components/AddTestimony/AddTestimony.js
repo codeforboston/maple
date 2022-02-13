@@ -24,9 +24,10 @@ const AddTestimony = (props) => {
           <>
             <div className="text-center">
               <select className="form-control">
-                <option>Endorse</option>
-                <option>Oppose</option>
-                <option>Neutral</option>
+                <option selected disabled>Select my support</option>
+                <option value="Endorse">Endorse</option>
+                <option value="Oppose">Oppose</option>
+                <option value="Neutral">Neutral</option>
               </select>
 
               <textarea className="form-control mt-2" rows="20" placeholder="My comments on this bill" required></textarea>
