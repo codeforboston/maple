@@ -24,7 +24,7 @@ const AddTestimony = (props) => {
           <>
             <div className="text-center">
               <select className="form-control">
-                <option selected disabled>Select my support</option>
+                <option value="DEFAULT">Select my support..</option>
                 <option value="Endorse">Endorse</option>
                 <option value="Oppose">Oppose</option>
                 <option value="Neutral">Neutral</option>

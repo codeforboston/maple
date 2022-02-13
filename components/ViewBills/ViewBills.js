@@ -4,16 +4,18 @@ import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
 
-// const countedTestimonies = testimonies.reduce(function (allTestimonies, testimony) {
-//   if (testimony.billNumber in allTestimonies) {
-//     allTestimonies[testimony.billNumber]++
-//   } else {
-//     allTestimonies[testimony.billNumber] = 1
-//     return allTestimonies
-//   }
-// }) 
-
-const legislature = "192"
+const countedTestimonies = testimonies.reduce(function (
+  allTestimonies,
+  testimony
+) {
+  if (testimony.billNumber in allTestimonies) {
+    allTestimonies[testimony.billNumber]++
+  } else {
+    allTestimonies[testimony.billNumber] = 1
+  }
+  return allTestimonies
+},
+{}) 
 
 const BillRows = ({bills}) => {
   const router = useRouter()
@@ -25,7 +27,7 @@ const BillRows = ({bills}) => {
       <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
       <td>{bill.Title}</td>
       <td>{bill.PrimarySponsor.Name}</td>
-      {/* <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td> */}
+      <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
       <td>
         <Button variant="primary" onClick={() => router.push(`/bill/${billNumForURL}`)}>
           View Bill
