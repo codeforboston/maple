@@ -2,17 +2,21 @@ import React from "react";
 import { Button, Row } from 'react-bootstrap'
 import BillTestimonies from '../BillTestimonies/BillTestimonies'
 import AddTestimony from '../AddTestimony/AddTestimony'
+import BillName from '../BillName/BillName'
+import BillHistory from '../BillHistory/BillHistory'
+import BillCosponsors from '../BillCosponsors/BillCosponsors'
+import BillStatus from '../BillStatus/BillStatus'
 
 const ViewBillPage = (props) => {
   const bill = props.bill
   return (
     <>
       <Row>
-        <div className="text-center">
-          <Button className="m-1">Name</Button>
-          <Button className="m-1">History</Button>
-          <Button className="m-1">Cosponsors</Button>
-          <Button className="m-1">Status</Button>
+        <div className=" d-flex justify-content-center">
+          <BillName bill={bill}/>
+          <BillHistory bill={bill}/>
+          <BillCosponsors bill={bill}/>
+          <BillStatus bill={bill}/>
         </div>
       </Row>
       <div className="text-center">
