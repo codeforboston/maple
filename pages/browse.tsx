@@ -1,5 +1,5 @@
 import { createPage } from "../components/page"
-import ViewTestimony from "../components/ViewBills/ViewBills"
+import ViewBills from "../components/ViewBills/ViewBills"
 import { Form, Row, Button } from "../components/bootstrap"
 
 export default createPage({
@@ -11,7 +11,8 @@ export default createPage({
         <h1>Browse</h1>
 
         <SearchBar />
-        <ViewTestimony />
+        <ViewBills />
+
       </>
     )
   }
