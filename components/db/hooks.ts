@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react"
-import { listBills } from "."
-import { Bill } from "./types"
+import * as ops from "./operations"
+import { BillContent, MemberContent } from "./types"
 
 export function useBills() {
-  const [bills, setBills] = useState<Bill[] | undefined>(undefined)
+  const [bills, setBills] = useState<BillContent[] | undefined>(undefined)
 
   useEffect(() => {
     const fetchBills = async () => {
       if (bills === undefined) {
-        const fetched = await listBills(10)
+        const fetched = await ops.listBills(10)
         setBills(fetched)
       }
     }
@@ -21,5 +21,27 @@ export function useBills() {
       loading: bills === undefined
     }),
     [bills]
+  )
+}
+
+export function useMember(memberCode: string) {
+  const [member, setMember] = useState<MemberContent | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchResource = async () => {
+      if (member?.MemberCode !== memberCode) {
+        const fetched = await ops.getMember(memberCode)
+        setMember(fetched)
+      }
+    }
+    fetchResource()
+  }, [member, memberCode])
+
+  return useMemo(
+    () => ({
+      member,
+      loading: member === undefined
+    }),
+    [member]
   )
 }
