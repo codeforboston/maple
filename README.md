@@ -1,8 +1,8 @@
 # Digital Testimony Platform
 
-Live Site (version 1): https://goodgovproject.com/
+Live Site (version 1, previous project): https://goodgovproject.com/
 
-In-Development Site (version 2): https://digital-testimony-dev.web.app
+In-Development Site (version 2, current project): https://digital-testimony-dev.web.app
 
 ## Getting Started
 
