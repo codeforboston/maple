@@ -38,3 +38,10 @@ export async function getMember(memberCode: string): Promise<MemberContent> {
   )
   return member.data()?.content
 }
+
+export async function getBill(id: string): Promise<Bill> {
+  const bill = await getDoc(
+    doc(firestore, `/generalCourts/${currentGeneralCourt}/documents/${id}`)
+  )
+  return bill.data() as any
+}

@@ -45,3 +45,25 @@ export function useMember(memberCode: string) {
     [member]
   )
 }
+
+export function useBill(id: string) {
+  const [bill, setBill] = useState<BillContent | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchBill = async () => {
+      if (bill?.BillNumber !== id) {
+        const fetched = await ops.getBill(id)
+        setBill(fetched)
+      }
+    }
+    fetchBill()
+  }, [bill, id])
+
+  return useMemo(
+    () => ({
+      bill,
+      loading: bill === undefined
+    }),
+    [bill]
+  )
+}

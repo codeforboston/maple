@@ -1,37 +1,48 @@
 import React from "react";
-import { bills } from "../MockAPIResponse"
-import { Table, Container, Spinner, Row } from 'react-bootstrap'
-import ViewBill from "../ViewBill/ViewBill"
+import { useRouter } from "next/router"
+import { testimonies } from "../MockTestimonies"
+import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
 
-const legislature = "192"
+const countedTestimonies = testimonies.reduce(function (
+  allTestimonies,
+  testimony
+) {
+  if (testimony.billNumber in allTestimonies) {
+    allTestimonies[testimony.billNumber]++
+  } else {
+    allTestimonies[testimony.billNumber] = 1
+  }
+  return allTestimonies
+},
+{}) 
 
-const BillRows = ({bills}) => 
-  bills.map((bill, index) => {
-    const billNumForURL = bill.BillNumber.replace('.', '')
-    const url = `https://malegislature.gov/Bills/${legislature}/${billNumForURL}`
+const BillRows = ({bills}) => {
+  const router = useRouter()
+  return bills.map((bill, index) => {
+  const billNumForURL = bill.BillNumber
+  const url = `/bill?id=${billNumForURL}`
     return (
     <tr key={index}>
-      <td><a href={url} rel="noreferrer" target="_blank">{bill.BillNumber}</a></td>
+      <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
       <td>{bill.Title}</td>
       <td>{bill.PrimarySponsor.Name}</td>
-      <td>0</td>
+      <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
       <td>
-        <ViewBill
-          bill={bill}
-        />
+        <Button variant="primary" onClick={() => router.push(`/bill?id=${billNumForURL}`)}>
+          View Bill
+        </Button>
       </td>
     </tr>
     )
   }
-)
+)}
+
 const ViewBills = (props) => {
   const {bills, loading} = useBills()
   return (
     <Container>
-      
       <h1>Most Active Bills </h1>
-
       <Table striped bordered hover>
         <thead>
           <tr>
