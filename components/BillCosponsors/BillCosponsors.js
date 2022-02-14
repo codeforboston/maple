@@ -13,7 +13,7 @@ const CoSponsorRows = ({ coSponsors }) => {
 
 const BillCosponsors = (props) => {
   const bill = props.bill
-  const coSponsors = bill ? bill.Cosponsors : ""
+  const coSponsors = bill?.CoSponsors ?? []
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
 
   const handleShowBillCosponsors = () => setShowBillCosponsors(true)

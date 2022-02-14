@@ -21,7 +21,7 @@ const BillRows = ({bills}) => {
   const router = useRouter()
   return bills.map((bill, index) => {
   const billNumForURL = bill.BillNumber
-  const url = `/bill/${billNumForURL}`
+  const url = `/bill?id=${billNumForURL}`
     return (
     <tr key={index}>
       <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
@@ -29,7 +29,7 @@ const BillRows = ({bills}) => {
       <td>{bill.PrimarySponsor.Name}</td>
       <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
       <td>
-        <Button variant="primary" onClick={() => router.push(`/bill/${billNumForURL}`)}>
+        <Button variant="primary" onClick={() => router.push(`/bill?id=${billNumForURL}`)}>
           View Bill
         </Button>
       </td>
