@@ -39,9 +39,9 @@ export async function getMember(memberCode: string): Promise<MemberContent> {
   return member.data()?.content
 }
 
-export async function getBill(id: string): Promise<Bill> {
+export async function getBill(id: string): Promise<BillContent> {
   const bill = await getDoc(
-    doc(firestore, `/generalCourts/${currentGeneralCourt}/documents/${id}`)
+    doc(firestore, `/generalCourts/${currentGeneralCourt}/bills/${id}`)
   )
-  return bill.data() as any
+  return bill.data()?.content
 }

@@ -10,7 +10,6 @@ import { useBill } from "../db"
 
 const ViewBillPage = props => {
   const { bill, loading } = useBill(props.billId)
-  console.log(bill)
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
