@@ -5,10 +5,10 @@ import { createScraper } from "./scraper"
  * There are around 200 members, whom we scrape every day.
  */
 export const {
-  fetchBatch: fetchLegislativeMemberBatch,
-  startBatches: startLegislativeMemberBatches
+  fetchBatch: fetchMemberBatch,
+  startBatches: startMemberBatches
 } = createScraper({
-  resourceName: "legislativeMembers",
+  resourceName: "members",
   batchesPerRun: 10,
   resourcesPerBatch: 100,
   startBatchSchedule: "every 24 hours",

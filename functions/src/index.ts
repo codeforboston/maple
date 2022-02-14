@@ -1,6 +1,3 @@
-export { fetchDocumentBatch, startDocumentBatches } from "./documents"
-export {
-  fetchLegislativeMemberBatch,
-  startLegislativeMemberBatches
-} from "./legislativeMembers"
+export { fetchBillBatch, startBillBatches } from "./bills"
+export { fetchMemberBatch, startMemberBatches } from "./members"
 export * from "./triggerScheduledFunction"

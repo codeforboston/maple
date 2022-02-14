@@ -124,7 +124,8 @@ export function createScraper({
             db.doc(`/generalCourts/${court}/${resourceName}/${id}`),
             {
               content: await fetchResource(court, id),
-              lastFetch: new Date()
+              lastFetch: new Date(),
+              id
             },
             { merge: true }
           )
