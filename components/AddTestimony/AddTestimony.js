@@ -23,7 +23,14 @@ const AddTestimony = (props) => {
         <Modal.Body>
           <>
             <div className="text-center">
-              <textarea className="form-control" rows="20" placeholder="My comments on this bill" required></textarea>
+              <select className="form-control">
+                <option value="DEFAULT">Select my support..</option>
+                <option value="Endorse">Endorse</option>
+                <option value="Oppose">Oppose</option>
+                <option value="Neutral">Neutral</option>
+              </select>
+
+              <textarea className="form-control mt-2" rows="20" placeholder="My comments on this bill" required></textarea>
             </div>
           </>
         </Modal.Body>
