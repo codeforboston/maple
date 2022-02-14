@@ -1,10 +1,6 @@
 import { documents } from "../../components/MockAPIResponseDocuments"
 import { createPage } from "../../components/page"
-import { Button, Row } from 'react-bootstrap'
-import SearchBar from '../../components/SearchBar/SearchBar'
 import Bill from '../../components/Bill/Bill'
-import BillTestimonies from '../../components/BillTestimonies/BillTestimonies'
-import AddTestimony from '../../components/AddTestimony/AddTestimony'
 
 export const getStaticPaths = async () => {
 
