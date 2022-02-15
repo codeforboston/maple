@@ -28,8 +28,16 @@ const AddTestimony = (props) => {
                             <table>
                                 <tbody>
                                     <tr><td>
-                                        </td>
-                                    </tr>
+                                       <Form>
+                                           <Form.Group>
+                                               <div class="input-group-addon">
+	                                               <span class="glyphicon glyphicon-search"></span>
+                                               </div>
+                                               <Form.Control type="text" placeholder="Search by bill #"></Form.Control>
+                                           </Form.Group>
+                                       </Form>
+
+                                    </td></tr>
                                     <tr>
                                         <select id = "OpinionList" onchange = "opinionSelection()" >
                                             <option> Endorse/Neutral/Oppose </option>
