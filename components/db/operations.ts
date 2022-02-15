@@ -9,7 +9,7 @@ import {
   startAfter
 } from "firebase/firestore"
 import { firestore } from "../firebase"
-import { BillContent, MemberContent } from "./types"
+import { BillContent, MemberContent, MemberSearchIndex } from "./types"
 
 const currentGeneralCourt = 192
 
@@ -29,19 +29,31 @@ export async function listBills(
   return result.docs.map(d => d.data().content) as any
 }
 
-export async function getMember(memberCode: string): Promise<MemberContent> {
-  const member = await getDoc(
-    doc(
-      firestore,
-      `/generalCourts/${currentGeneralCourt}/members/${memberCode}`
-    )
+export async function getMember(
+  memberCode: string
+): Promise<MemberContent | undefined> {
+  const member = await loadDoc(
+    `/generalCourts/${currentGeneralCourt}/members/${memberCode}`
   )
-  return member.data()?.content
+  return member?.content
 }
 
-export async function getBill(id: string): Promise<BillContent> {
-  const bill = await getDoc(
-    doc(firestore, `/generalCourts/${currentGeneralCourt}/bills/${id}`)
+export async function getBill(id: string): Promise<BillContent | undefined> {
+  const bill = await loadDoc(
+    `/generalCourts/${currentGeneralCourt}/bills/${id}`
   )
-  return bill.data()?.content
+  return bill?.content
+}
+
+export async function getMemberSearchIndex(): Promise<
+  MemberSearchIndex | undefined
+> {
+  return loadDoc(
+    `/generalCourts/${currentGeneralCourt}/indexes/memberSearch`
+  ) as any
+}
+
+async function loadDoc(path: string) {
+  const d = await getDoc(doc(firestore, path))
+  return d.data()
 }

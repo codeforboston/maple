@@ -47,3 +47,13 @@ export type Member = {
   fetchedAt: Date
   id: string
 }
+
+export type MemberSearchIndexItem = Pick<
+  MemberContent,
+  "District" | "EmailAddress" | "MemberCode" | "Name" | "Party"
+>
+
+export type MemberSearchIndex = {
+  representatives: (MemberSearchIndexItem & { Branch: "House" })[]
+  senators: (MemberSearchIndexItem & { Branch: "Senate" })[]
+}

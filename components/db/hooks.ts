@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import * as ops from "./operations"
 import { BillContent, MemberContent } from "./types"
 
@@ -65,5 +65,34 @@ export function useBill(id: string) {
       loading: bill === undefined
     }),
     [bill]
+  )
+}
+
+export function useMemberSearch() {
+  const { resource: index, loading } = useResource(
+    useCallback(() => ops.getMemberSearchIndex(), [])
+  )
+  return { index, loading }
+}
+
+function useResource<T>(getResource: () => Promise<T>) {
+  const [resource, setResource] = useState<T | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchResource = async () => {
+      if (resource === undefined) {
+        const fetched = await getResource()
+        setResource(fetched)
+      }
+    }
+    fetchResource()
+  }, [resource, getResource])
+
+  return useMemo(
+    () => ({
+      resource,
+      loading: resource === undefined
+    }),
+    [resource]
   )
 }
