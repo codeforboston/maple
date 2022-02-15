@@ -17,16 +17,23 @@ const countedTestimonies = testimonies.reduce(function (
 },
 {}) 
 
+const invalidSponsorId = (Id) => {
+  // we will have to learn more about why certain sponsors have invalid ID's
+  return ['GOV7'].includes(Id)
+}
+
 const BillRows = ({bills}) => {
   const router = useRouter()
   return bills.map((bill, index) => {
   const billNumForURL = bill.BillNumber
+  const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
+  
   const url = `/bill?id=${billNumForURL}`
     return (
     <tr key={index}>
       <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
       <td>{bill.Title}</td>
-      <td>{bill.PrimarySponsor.Name}</td>
+      <td><NavLink href={sponsorURL} target="_blank" rel="noreferrer">{bill.PrimarySponsor.Name}</NavLink></td>
       <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
       <td>
         <Button variant="primary" onClick={() => router.push(`/bill?id=${billNumForURL}`)}>
