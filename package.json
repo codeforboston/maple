@@ -50,6 +50,7 @@
     "fix": "next lint --fix; prettier --write .",
     "postinstall": "yarn --cwd functions install",
     "deploy:functions": "firebase deploy --only functions",
+    "deploy:firestore": "firebase deploy --only firestore",
     "export:firebase": "firebase --project demo-dtp emulators:export --only firestore firebase-exports"
   },
   "eslintConfig": {
