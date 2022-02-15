@@ -48,3 +48,4 @@ amplifytools.xcconfig
 out/
 *debug.log
 firebase-exports
+*.tsbuildinfo
