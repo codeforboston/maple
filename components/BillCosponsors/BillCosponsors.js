@@ -6,12 +6,11 @@ const CoSponsorRows = ({ coSponsors }) => {
     const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
     return (
       <tr key={index}>
-        <td>{coSponsor.Name}</td>
-        <td><NavLink href={url} target="_blank" rel="noreferrer">Link</NavLink></td>
+        <td><NavLink href={url} target="_blank" rel="noreferrer">{coSponsor.Name}</NavLink></td>
       </tr>
     )
   })
-}
+} 
 
 const BillCosponsors = (props) => {
   const bill = props.bill

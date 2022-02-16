@@ -30,6 +30,8 @@ const AddTestimony = (props) => {
                 <option value="Neutral">Neutral</option>
               </select>
 
+              <Button className="mt-2">Upload a document</Button>
+
               <textarea className="form-control mt-2" rows="20" placeholder="My comments on this bill" required></textarea>
             </div>
           </>

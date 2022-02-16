@@ -33,7 +33,7 @@ const BillRows = ({bills}) => {
     <tr key={index}>
       <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
       <td>{bill.Title}</td>
-      <td><NavLink href={sponsorURL} target="_blank" rel="noreferrer">{bill.PrimarySponsor.Name}</NavLink></td>
+      <td><NavLink href={sponsorURL}>{bill.PrimarySponsor.Name}</NavLink></td>
       <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
       <td>
         <Button variant="primary" onClick={() => router.push(`/bill?id=${billNumForURL}`)}>
