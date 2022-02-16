@@ -39,12 +39,14 @@ const AddTestimony = (props) => {
 
                                     </td></tr>
                                     <tr>
-                                        <select id = "OpinionList" onchange = "opinionSelection()" >
-                                            <option> Endorse/Neutral/Oppose </option>
-                                            <option>Endorse</option>
-                                            <option>Neutral</option>
-                                            <option>Oppose</option>
-                                        </select>
+                                        <div className="text-center">
+                                            <select className="form-control">
+                                                <option value="DEFAULT">Select my support..</option>
+                                                <option value="Endorse">Endorse</option>
+                                                <option value="Oppose">Oppose</option>
+                                                <option value="Neutral">Neutral</option>
+                                            </select>
+                                        </div>
                                     </tr>
                                     <tr>
                                         <td><div class="form-check">
