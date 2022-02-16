@@ -7,6 +7,8 @@ const env = {
   NEXT_PUBLIC_PROJECT_ID: demoProjectId
 }
 
+const emulatorsStartArgs = process.argv.slice(2).join(" ")
+
 concurrently([
   {
     command: "yarn:build:watch",
@@ -22,7 +24,7 @@ concurrently([
     env
   },
   {
-    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore`,
+    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore ${emulatorsStartArgs}`,
     name: "emulators",
     prefixColor: "blue",
     env

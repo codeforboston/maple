@@ -4,4 +4,5 @@ export {
   startMemberBatches,
   createMemberSearchIndex
 } from "./members"
+export { submitTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"

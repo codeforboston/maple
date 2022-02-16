@@ -17,7 +17,8 @@
     "axios": "^0.25.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.17.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "runtypes": "^6.5.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
