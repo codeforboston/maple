@@ -18,7 +18,7 @@ const AddTestimony = (props) => {
       
       <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
         <Modal.Header closeButton onClick={handleCloseAddComment}>
-            <Modal.Title>{"Add Your Testimony"}</Modal.Title>
+            <Modal.Title>{"Add Your Testimony" + (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <table class="center" border="0" width="100%">
@@ -27,17 +27,6 @@ const AddTestimony = (props) => {
                         <td>
                             <table>
                                 <tbody>
-                                    <tr><td>
-                                       <Form>
-                                           <Form.Group>
-                                               <div class="input-group-addon">
-	                                               <span class="glyphicon glyphicon-search"></span>
-                                               </div>
-                                               <Form.Control type="text" placeholder="Search by bill #"></Form.Control>
-                                           </Form.Group>
-                                       </Form>
-
-                                    </td></tr>
                                     <tr>
                                         <div className="text-center">
                                             <select className="form-control">
@@ -75,9 +64,11 @@ const AddTestimony = (props) => {
                                 </tbody>
                             </table>
                             </td>
-                        <td>
+                        <td width="400px">
                             <textarea className="form-control" resize="none" rows="20" placeholder="My comments on this bill" required></textarea>
                         </td>
+                        <td width="50px"/>
+
                     </tr>
                 </tbody>
             </table>
