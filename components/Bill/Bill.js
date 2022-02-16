@@ -7,6 +7,7 @@ import BillHistory from "../BillHistory/BillHistory"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
 import { useBill } from "../db"
+import BillShow from "../BillShow/BillShow"
 
 const ViewBillPage = props => {
   const { bill, loading } = useBill(props.billId)
@@ -35,7 +36,10 @@ const ViewBillPage = props => {
       </div>
       <div>
         {bill && bill.DocumentText != null
-          ? bill.DocumentText.substring(1, 700) + "..."
+          ? <>
+          <span> {bill.DocumentText.substring(1, 700) + "..." } </span>
+          {bill.DocumentText.length > 700 ? <BillShow bill={bill}/> : null}
+          </>
           : ""}
       </div>
       <BillTestimonies bill={bill} />
