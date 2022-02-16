@@ -16,6 +16,7 @@ const ViewTestimonies = (props) => {
             <td>{testimony.submitter}</td>
             <td>{testimony.dateSubmitted}</td>
             <td>{testimony.text.substring(0,100)}...</td>
+            <td>{testimony.attachment != null ? "Yes" : ""}</td>
             <td>
               <ExpandTestimony
                 bill={bill}
@@ -42,6 +43,7 @@ const ViewTestimonies = (props) => {
             <th>Submitter</th>
             <th>Date Submitted</th>
             <th>Text</th>
+            <th>Attachment?</th>
           </tr>
         </thead>
         <tbody>
