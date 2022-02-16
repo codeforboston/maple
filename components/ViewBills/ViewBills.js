@@ -25,14 +25,13 @@ const invalidSponsorId = (Id) => {
 const BillRows = ({bills}) => {
   const router = useRouter()
   return bills.map((bill, index) => {
-  const billNumForURL = bill.BillNumber
-  const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
-  const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+    const billNumForURL = bill.BillNumber
+    const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
+    const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
   
-  const url = `/bill?id=${billNumForURL}`
     return (
     <tr key={index}>
-      <td><NavLink href={url}>{bill.BillNumber}</NavLink></td>
+      <td>{bill.BillNumber}</td>
       <td>{bill.Title}</td>
       <td><NavLink href={sponsorURL} target="_blank" rel="noreferrer">{bill.PrimarySponsor.Name}</NavLink></td>
       <td>{numCoSponsors}</td>
