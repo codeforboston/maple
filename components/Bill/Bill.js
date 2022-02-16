@@ -2,7 +2,6 @@ import React from "react"
 import { Row, Spinner } from "react-bootstrap"
 import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import AddTestimony from "../AddTestimony/AddTestimony"
-import BillName from "../BillName/BillName"
 import BillHistory from "../BillHistory/BillHistory"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
@@ -19,7 +18,6 @@ const ViewBillPage = props => {
     <>
       <Row>
         <div className=" d-flex justify-content-center">
-          <BillName bill={bill} />
           <BillHistory bill={bill} />
           <BillCosponsors bill={bill} />
           <BillStatus bill={bill} />
