@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react"
-import { getBill, listBills } from "./operations"
-import { Bill } from "./types"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import * as ops from "./operations"
+import { BillContent, MemberContent } from "./types"
 
 export function useBills() {
-  const [bills, setBills] = useState<Bill[] | undefined>(undefined)
+  const [bills, setBills] = useState<BillContent[] | undefined>(undefined)
 
   useEffect(() => {
     const fetchBills = async () => {
       if (bills === undefined) {
-        const fetched = await listBills(10)
+        const fetched = await ops.listBills(10)
         setBills(fetched)
       }
     }
@@ -24,13 +24,35 @@ export function useBills() {
   )
 }
 
+export function useMember(memberCode: string) {
+  const [member, setMember] = useState<MemberContent | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchResource = async () => {
+      if (member?.MemberCode !== memberCode) {
+        const fetched = await ops.getMember(memberCode)
+        setMember(fetched)
+      }
+    }
+    fetchResource()
+  }, [member, memberCode])
+
+  return useMemo(
+    () => ({
+      member,
+      loading: member === undefined
+    }),
+    [member]
+  )
+}
+
 export function useBill(id: string) {
-  const [bill, setBill] = useState<Bill | undefined>(undefined)
+  const [bill, setBill] = useState<BillContent | undefined>(undefined)
 
   useEffect(() => {
     const fetchBill = async () => {
       if (bill?.BillNumber !== id) {
-        const fetched = await getBill(id)
+        const fetched = await ops.getBill(id)
         setBill(fetched)
       }
     }
@@ -43,5 +65,34 @@ export function useBill(id: string) {
       loading: bill === undefined
     }),
     [bill]
+  )
+}
+
+export function useMemberSearch() {
+  const { resource: index, loading } = useResource(
+    useCallback(() => ops.getMemberSearchIndex(), [])
+  )
+  return { index, loading }
+}
+
+function useResource<T>(getResource: () => Promise<T>) {
+  const [resource, setResource] = useState<T | undefined>(undefined)
+
+  useEffect(() => {
+    const fetchResource = async () => {
+      if (resource === undefined) {
+        const fetched = await getResource()
+        setResource(fetched)
+      }
+    }
+    fetchResource()
+  }, [resource, getResource])
+
+  return useMemo(
+    () => ({
+      resource,
+      loading: resource === undefined
+    }),
+    [resource]
   )
 }

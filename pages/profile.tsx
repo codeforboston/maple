@@ -2,6 +2,7 @@ import React from "react"
 import { requireAuth } from "../components/auth"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
+import SelectLegislators from "../components/SelectLegislators"
 
 export default createPage({
   v2: true,
@@ -15,12 +16,9 @@ export default createPage({
           <links.External href="https://malegislature.gov/Search/FindMyLegislator">
             find your legislator
           </links.External>{" "}
-          tool and select your State Representative and Senator below
+          tool and select your State Representative and Senator below.
         </p>
-        <p>
-          (TODO) Add a form for setting/updating your legislators. This will use
-          the legislators listed in the malegislature api.
-        </p>
+        <SelectLegislators />
       </>
     )
   })
