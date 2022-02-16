@@ -40,7 +40,7 @@ const AddTestimony = (props) => {
                                     <tr>
                                         <td><div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label className="form-check-label" for="flexCheckChecked">
+                                            <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Anonymous
                                             </label>
                                         </div></td>
@@ -48,7 +48,7 @@ const AddTestimony = (props) => {
                                     <tr>
                                         <td><div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label className="form-check-label" for="flexCheckChecked">
+                                            <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Send copy to your legislatures
                                             </label>
                                         </div></td>
@@ -56,7 +56,7 @@ const AddTestimony = (props) => {
                                     <tr>
                                         <td><div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label className="form-check-label" for="flexCheckChecked">
+                                            <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Send copy to relevant committee:
                                             </label>
                                         </div></td>
