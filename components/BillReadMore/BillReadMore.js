@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Modal } from 'react-bootstrap'
 
-const BillShow = ({ bill }) => {
+const BillReadMore = ({ bill }) => {
   const [showAddComment, setShowAddComment] = useState(false);
 
   const handleShowAddComment = () => setShowAddComment(true);
@@ -36,4 +36,4 @@ const BillShow = ({ bill }) => {
     )
 }
 
-export default BillShow
+export default BillReadMore
