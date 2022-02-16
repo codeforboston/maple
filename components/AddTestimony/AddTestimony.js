@@ -21,7 +21,7 @@ const AddTestimony = (props) => {
             <Modal.Title>{"Add Your Testimony" + (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <table class="center" border="0" width="100%">
+            <table className="center" border="0" width="100%">
                 <tbody>
                     <tr>
                         <td>
@@ -38,25 +38,25 @@ const AddTestimony = (props) => {
                                         </div>
                                     </tr>
                                     <tr>
-                                        <td><div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label class="form-check-label" for="flexCheckChecked">
+                                        <td><div className="form-check">
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <label className="form-check-label" for="flexCheckChecked">
                                                 Anonymous
                                             </label>
                                         </div></td>
                                     </tr>
                                     <tr>
-                                        <td><div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label class="form-check-label" for="flexCheckChecked">
+                                        <td><div className="form-check">
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <label className="form-check-label" for="flexCheckChecked">
                                                 Send copy to your legislatures
                                             </label>
                                         </div></td>
                                     </tr>
                                     <tr>
-                                        <td><div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                            <label class="form-check-label" for="flexCheckChecked">
+                                        <td><div className="form-check">
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <label className="form-check-label" for="flexCheckChecked">
                                                 Send copy to relevant committee:
                                             </label>
                                         </div></td>
