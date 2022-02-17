@@ -25,7 +25,6 @@ const invalidSponsorId = (Id) => {
 const BillRows = ({bills}) => {
   const router = useRouter()
   return bills.map((bill, index) => {
-    const billNumForURL = bill.BillNumber
     const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
     const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
   
@@ -35,9 +34,9 @@ const BillRows = ({bills}) => {
       <td>{bill.Title}</td>
       <td><NavLink href={sponsorURL} target="_blank" rel="noreferrer">{bill.PrimarySponsor.Name}</NavLink></td>
       <td>{numCoSponsors}</td>
-      <td>{countedTestimonies[billNumForURL] > 0 ? countedTestimonies[billNumForURL] : 0 }</td>
+      <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
       <td>
-        <Button variant="primary" onClick={() => router.push(`/bill?id=${billNumForURL}`)}>
+        <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
           View Bill
         </Button>
       </td>
