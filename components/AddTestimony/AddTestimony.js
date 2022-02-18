@@ -39,7 +39,7 @@ const AddTestimony = (props) => {
                                     </tr>
                                     <tr>
                                         <td><div className="form-check">
-                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
                                             <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Anonymous
                                             </label>
@@ -47,7 +47,7 @@ const AddTestimony = (props) => {
                                     </tr>
                                     <tr>
                                         <td><div className="form-check">
-                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
                                             <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Send copy to your legislatures
                                             </label>
@@ -55,7 +55,7 @@ const AddTestimony = (props) => {
                                     </tr>
                                     <tr>
                                         <td><div className="form-check">
-                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
                                             <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Send copy to relevant committee:
                                             </label>
