@@ -38,5 +38,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup-repo
+      - name: Cache Emulators
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators
       - name: Run Integration Tests
         run: yarn test:integration-ci
