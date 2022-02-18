@@ -1,11 +1,5 @@
 const concurrently = require("concurrently")
-
-const demoProjectId = "demo-dtp"
-const env = {
-  ...process.env,
-  NEXT_PUBLIC_USE_EMULATOR: true,
-  NEXT_PUBLIC_PROJECT_ID: demoProjectId
-}
+const { demoProjectId, env } = require("./common")
 
 const emulatorsStartArgs = process.argv.slice(2).join(" ")
 

@@ -37,7 +37,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:emulators": "node scripts/dev-emulators.js",
-    "dev:emulators-with-data": "node scripts/dev-emulators.js --import firebase-exports",
+    "dev:emulators-with-data": "node scripts/dev-emulators.js --import integrationTests/exportedTestData",
     "dev:functions": "yarn --cwd functions dev",
     "serve": "firebase emulators:start --only hosting",
     "build": "next build",
@@ -52,8 +52,9 @@
     "postinstall": "yarn --cwd functions install",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:firestore": "firebase deploy --only firestore",
-    "export:firebase": "firebase --project demo-dtp emulators:export --only firestore firebase-exports",
-    "test:integration": "jest -c jest.integration.config.js"
+    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore integrationTests/exportedTestData",
+    "test:integration": "jest -c jest.integration.config.js",
+    "test:integration-ci": "node scripts/test-integration-ci.js"
   },
   "eslintConfig": {
     "extends": [

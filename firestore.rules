@@ -12,6 +12,7 @@ service cloud.firestore {
     }
     match /users/{uid} {
       match /draftTestimony/{id} {
+        // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
       match /publishedTestimony/{id} {
@@ -20,7 +21,7 @@ service cloud.firestore {
         allow write: if false
       }
       match /archivedTestimony/{id} {
-        // Not accessible by the application, for record keeping.
+        // Not accessible by users, for record keeping.
         allow read, write: if false
       }
     }
