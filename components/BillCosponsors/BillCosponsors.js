@@ -1,12 +1,17 @@
 import React, {useState} from "react";
 import { Button, Modal, Table, NavLink } from 'react-bootstrap'
+import * as links from "../../components/links.tsx"
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
     const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
     return (
       <tr key={index}>
-        <td><NavLink href={url} target="_blank" rel="noreferrer">{coSponsor.Name}</NavLink></td>
+        <td>
+          <links.External href={url}>
+              {coSponsor.Name}
+            </links.External>
+        </td>
       </tr>
     )
   })

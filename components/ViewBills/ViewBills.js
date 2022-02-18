@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
+import * as links from "../../components/links.tsx"
 
 const countedTestimonies = testimonies.reduce(function (
   allTestimonies,
@@ -27,12 +28,21 @@ const BillRows = ({bills}) => {
   return bills.map((bill, index) => {
     const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
     const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+
+    const SponsorComponent = sponsorURL != "" ?
+        <links.External href={sponsorURL}>
+          {bill.PrimarySponsor.Name}
+        </links.External>
+        :
+        <>
+        {bill.PrimarySponsor.Name}
+        </>
   
     return (
     <tr key={index}>
       <td>{bill.BillNumber}</td>
       <td>{bill.Title}</td>
-      <td><NavLink href={sponsorURL} target="_blank" rel="noreferrer">{bill.PrimarySponsor.Name}</NavLink></td>
+      <td>{SponsorComponent}</td>
       <td>{numCoSponsors}</td>
       <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
       <td>
