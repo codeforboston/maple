@@ -9,7 +9,7 @@ const config = {
     styledComponents: true
   },
   eslint: {
-    dirs: ["pages", "components", "functions/src"]
+    dirs: ["pages", "components", "functions/src", "integrationTests"]
   }
 }
 
