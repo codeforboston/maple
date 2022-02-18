@@ -1,6 +1,7 @@
 import React, {useState} from "react";
-import { Button, Modal, Table, NavLink } from 'react-bootstrap'
+import { Button, Modal, Table } from 'react-bootstrap'
 import * as links from "../../components/links.tsx"
+import {legislativeMember} from '../MockAPIResponseLegislativeMember'
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
@@ -12,6 +13,9 @@ const CoSponsorRows = ({ coSponsors }) => {
               {coSponsor.Name}
             </links.External>
         </td>
+        <td>{legislativeMember.Branch}</td>
+        <td>{legislativeMember.District}</td>
+        <td>{legislativeMember.Party}</td>
       </tr>
     )
   })
