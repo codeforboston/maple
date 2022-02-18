@@ -2,6 +2,46 @@
   "name": "digital-testimony-platform",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "build": "next build",
+    "build:functions": "next lint -d functions/src && yarn --cwd functions build",
+    "check-formatting": "prettier --check .",
+    "check-types": "tsc --noEmit",
+    "deploy:firestore": "firebase deploy --only firestore",
+    "deploy:functions": "firebase deploy --only functions",
+    "dev": "next dev",
+    "dev:emulators": "node scripts/dev-emulators.js",
+    "dev:emulators-with-data": "node scripts/dev-emulators.js --import integrationTests/exportedTestData",
+    "dev:functions": "yarn --cwd functions dev",
+    "export": "next build && next export",
+    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore integrationTests/exportedTestData",
+    "export:nolint": "next build --no-lint && next export",
+    "fix": "next lint --fix; prettier --write .",
+    "postinstall": "yarn --cwd functions install",
+    "lint": "next lint",
+    "serve": "firebase emulators:start --only hosting",
+    "start": "next start",
+    "test:integration": "jest -c jest.integration.config.js",
+    "test:integration-ci": "node scripts/test-integration-ci.js"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
@@ -33,46 +73,6 @@
     "sidebar-v2": "^0.4.0",
     "styled-components": "^5.3.3",
     "web-vitals": "^0.2.4"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "dev:emulators": "node scripts/dev-emulators.js",
-    "dev:emulators-with-data": "node scripts/dev-emulators.js --import integrationTests/exportedTestData",
-    "dev:functions": "yarn --cwd functions dev",
-    "serve": "firebase emulators:start --only hosting",
-    "build": "next build",
-    "export": "next build && next export",
-    "export:nolint": "next build --no-lint && next export",
-    "build:functions": "next lint -d functions/src && yarn --cwd functions build",
-    "start": "next start",
-    "check-types": "tsc --noEmit",
-    "lint": "next lint",
-    "check-formatting": "prettier --check .",
-    "fix": "next lint --fix; prettier --write .",
-    "postinstall": "yarn --cwd functions install",
-    "deploy:functions": "firebase deploy --only functions",
-    "deploy:firestore": "firebase deploy --only firestore",
-    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore integrationTests/exportedTestData",
-    "test:integration": "jest -c jest.integration.config.js",
-    "test:integration-ci": "node scripts/test-integration-ci.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
