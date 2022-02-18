@@ -1,6 +1,6 @@
-name: Frontend Checks
+name: Repo Checks
 
-on: ['push', 'pull_request']
+on: ["push", "pull_request"]
 
 jobs:
   check_code_quality:
@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/setup-frontend
+      - uses: ./.github/actions/setup-repo
 
       - name: Linting
         if: always()
@@ -30,3 +30,13 @@ jobs:
       - name: Types
         if: always()
         run: yarn check-types
+
+  integration_tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-repo
+      - name: Run Integration Tests
+        run: yarn test:integration-ci

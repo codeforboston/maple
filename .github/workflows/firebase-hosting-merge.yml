@@ -2,10 +2,11 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+on:
   push:
     branches:
       - master
+
 jobs:
   build_and_deploy:
     # Don't deploy forks, even if actions are enabled
@@ -15,13 +16,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Setup Build Environment
-        uses: ./.github/actions/setup-frontend
+        uses: ./.github/actions/setup-repo
       - name: Build App
         run: yarn run export
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DIGITAL_TESTIMONY_DEV }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DIGITAL_TESTIMONY_DEV }}"
           channelId: live
           projectId: digital-testimony-dev
