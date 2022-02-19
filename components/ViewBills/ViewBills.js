@@ -60,7 +60,17 @@ const ViewBills = (props) => {
   return (
     <Container>
       <h1>Most Active Bills </h1>
-      <Table striped bordered hover>
+      <div className="col-2">
+        <select className="form-control">
+          <option value="DEFAULT">Sort bills by..</option>
+          <option value="billNum">Bill #</option>
+          <option value="numCosponsors"># CoSponsors</option>
+          <option value="numComments"># Testimony</option>
+          <option value="recentComments">Most recent comments</option>
+          <option value="upcomingHearingDate">Hearing date</option>
+        </select>
+      </div>
+      <Table className="mt-2" striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>
@@ -68,6 +78,7 @@ const ViewBills = (props) => {
             <th>Lead</th>
             <th># CoSponsors</th>
             <th># Testimony</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
