@@ -30,6 +30,7 @@ const ViewBillPage = props => {
             : ""}
         </h4>
         <h4>{bill ? bill.Title : ""}</h4>
+        <h5>{bill ? bill.Pinslip : ""}</h5>
       </div>
       <div>
         {bill && bill.DocumentText != null

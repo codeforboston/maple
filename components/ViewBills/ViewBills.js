@@ -4,6 +4,7 @@ import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
 import * as links from "../../components/links.tsx"
+import {legislativeMember} from '../MockAPIResponseLegislativeMember'
 
 const countedTestimonies = testimonies.reduce(function (
   allTestimonies,
@@ -30,9 +31,12 @@ const BillRows = ({bills}) => {
     const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
 
     const SponsorComponent = sponsorURL != "" ?
+        <>
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
-        </links.External>
+        </links.External> 
+        - {legislativeMember.Branch} - {legislativeMember.District} - {legislativeMember.Party}
+        </>
         :
         <>
         {bill.PrimarySponsor.Name}
