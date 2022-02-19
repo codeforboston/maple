@@ -7,10 +7,12 @@ import SelectLegislators from "../components/SelectLegislators"
 export default createPage({
   v2: true,
   title: "Profile",
-  Page: requireAuth(({ user }) => {
+  Page: requireAuth(({ user: { displayName } }) => {
     return (
       <>
-        <h1>Hello, {user.displayName}!</h1>
+        <h1>
+          Hello, {displayName ? decodeHtmlCharCodes(displayName) : "Anonymous"}!
+        </h1>
         <p>
           Please use the{" "}
           <links.External href="https://malegislature.gov/Search/FindMyLegislator">
@@ -23,3 +25,8 @@ export default createPage({
     )
   })
 })
+
+const decodeHtmlCharCodes = (s: string) =>
+  s.replace(/(&#(\d+);)/g, (match, capture, charCode) =>
+    String.fromCharCode(charCode)
+  )
