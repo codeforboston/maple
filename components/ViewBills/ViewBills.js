@@ -27,15 +27,15 @@ const invalidSponsorId = (Id) => {
 const BillRows = ({bills}) => {
   const router = useRouter()
   return bills.map((bill, index) => {
-    const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}` : ""
+    const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
     const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+    const districtURL = sponsorURL != "" ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/District` : ""
 
     const SponsorComponent = sponsorURL != "" ?
         <>
-        <links.External href={sponsorURL}>
-          {bill.PrimarySponsor.Name}
-        </links.External> 
-        - {legislativeMember.Branch} - {legislativeMember.District} - {legislativeMember.Party}
+        <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
+        <links.External href={districtURL}>- {legislativeMember.Branch} - {legislativeMember.District}</links.External>
+        - {legislativeMember.Party}
         </>
         :
         <>
