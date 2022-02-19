@@ -33,7 +33,7 @@ const testimonies = [
   },
   {
     submitter: "Barb Doe",
-    dateSubmitted: "1/3/2022",
+    dateSubmitted: "2/14/2022",
     billNumber: "H1000",
     support: "Oppose",
     attachment: null,
