@@ -10,7 +10,7 @@ Object.assign(process.env, {
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
   clearMocks: true,
-  roots: ["integrationTests"],
+  roots: ["tests/integration"],
   testEnvironment: "node"
 }
 

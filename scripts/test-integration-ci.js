@@ -10,7 +10,7 @@ runOrExit(
     "--only",
     "auth,functions,pubsub,firestore",
     "--import",
-    "integrationTests/exportedTestData",
+    "tests/integration/exportedTestData",
     "yarn test:integration --forceExit"
   ],
   { stdio: "inherit", env }

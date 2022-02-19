@@ -10,10 +10,10 @@
     "deploy:backend": "firebase deploy --only firestore,functions",
     "dev": "next dev",
     "dev:emulators": "node scripts/dev-emulators.js",
-    "dev:emulators-with-data": "node scripts/dev-emulators.js --import integrationTests/exportedTestData",
+    "dev:emulators-with-data": "node scripts/dev-emulators.js --import tests/integration/exportedTestData",
     "dev:functions": "yarn --cwd functions dev",
     "export": "next build && next export",
-    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore integrationTests/exportedTestData",
+    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore tests/integration/exportedTestData",
     "export:nolint": "next build --no-lint && next export",
     "fix": "next lint --fix; prettier --write .",
     "postinstall": "yarn --cwd functions install",
@@ -21,7 +21,8 @@
     "serve": "firebase emulators:start --only hosting",
     "start": "next start",
     "test:integration": "jest -c jest.integration.config.js",
-    "test:integration-ci": "node scripts/test-integration-ci.js"
+    "test:integration-ci": "node scripts/test-integration-ci.js",
+    "test:system": "jest -c jest.system.config.js"
   },
   "browserslist": {
     "production": [

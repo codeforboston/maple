@@ -1,8 +1,8 @@
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { auth, firestore, functions } from "../components/firebase"
-import { terminateFirebase, testDb } from "./testUtils"
+import { auth, firestore, functions } from "../../components/firebase"
+import { terminateFirebase, testDb } from "../testUtils"
 import { nanoid } from "nanoid"
 
 type BaseTestimony = {
