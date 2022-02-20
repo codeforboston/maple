@@ -1,6 +1,7 @@
 import React from "react";
 import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 
 // the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
@@ -15,6 +16,13 @@ const ViewTestimonies = (props) => {
             <td>{testimony.submitter}</td>
             <td>{testimony.dateSubmitted}</td>
             <td>{testimony.text.substring(0,100)}...</td>
+            <td>{testimony.attachment != null ? "Yes" : ""}</td>
+            <td>
+              <ExpandTestimony
+                bill={bill}
+                testimony={testimony}
+              />
+            </td>
           </tr>
         )
       } else {
@@ -35,6 +43,7 @@ const ViewTestimonies = (props) => {
             <th>Submitter</th>
             <th>Date Submitted</th>
             <th>Text</th>
+            <th>Attachment?</th>
           </tr>
         </thead>
         <tbody>

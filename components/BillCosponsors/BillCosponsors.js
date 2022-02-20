@@ -1,24 +1,29 @@
 import React, {useState} from "react";
 import { Button, Modal, Table, NavLink } from 'react-bootstrap'
+import * as links from "../../components/links.tsx"
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
     const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
     return (
       <tr key={index}>
-        <td>{coSponsor.Name}</td>
-        <td><NavLink href={url} target="_blank" rel="noreferrer">Link</NavLink></td>
+        <td>
+          <links.External href={url}>
+              {coSponsor.Name}
+            </links.External>
+        </td>
       </tr>
     )
   })
-}
+} 
 
 const BillCosponsors = (props) => {
   const bill = props.bill
-  const coSponsors = bill?.Cosponsors ?? []
+  const coSponsors = bill && bill.Cosponsors ? bill.Cosponsors : []
+  const numCoSponsors = coSponsors ? coSponsors.length : 0
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
 
-  const handleShowBillCosponsors = () => setShowBillCosponsors(true)
+  const handleShowBillCosponsors = () => numCoSponsors > 0 ? setShowBillCosponsors(true) : setShowBillCosponsors(false)
   const handleCloseBillCosponsors = () => setShowBillCosponsors(false)
 
   return (
@@ -28,7 +33,7 @@ const BillCosponsors = (props) => {
         className="m-1"
         onClick={handleShowBillCosponsors}
       >
-        Cosponsors
+        Cosponsors {numCoSponsors}
       </Button>
       <Modal
         show={showBillCosponsors}

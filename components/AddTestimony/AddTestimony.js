@@ -66,6 +66,7 @@ const AddTestimony = (props) => {
                             </td>
                         <td width="400px">
                             <textarea className="form-control" resize="none" rows="20" placeholder="My comments on this bill" required></textarea>
+                            <Button className="mt-2">Upload a document</Button>
                         </td>
                         <td width="50px"/>
 
