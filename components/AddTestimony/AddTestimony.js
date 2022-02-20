@@ -57,7 +57,7 @@ const AddTestimony = (props) => {
                                         <td><div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
                                             <label className="form-check-label" htmlFor="flexCheckChecked">
-                                                Send copy to relevant committee:
+                                                Send copy to relevant committee
                                             </label>
                                         </div></td>
                                     </tr>
