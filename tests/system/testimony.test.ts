@@ -1,5 +1,11 @@
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { addDoc, collection, doc, getDoc } from "firebase/firestore"
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentReference,
+  getDoc
+} from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { auth, firestore, functions } from "../../components/firebase"
 import { terminateFirebase } from "../testUtils"
@@ -8,6 +14,11 @@ const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
+
+const deleteTestimony = httpsCallable<
+  { publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimony")
 
 let uid: string
 beforeAll(async () => {
@@ -21,7 +32,13 @@ beforeAll(async () => {
 
 afterAll(terminateFirebase)
 
-it("can publish testimony", async () => {
+it("can publish and delete testimony", async () => {
+  const draft = await expectCreateDraft()
+  const publication = await expectPublish(draft.draft, draft.draftRef)
+  await expectDelete(publication.id)
+})
+
+async function expectCreateDraft() {
   const draft = {
     billId: "H1",
     content: "system test testimony",
@@ -34,6 +51,10 @@ it("can publish testimony", async () => {
     draft
   )
 
+  return { draft, draftRef }
+}
+
+async function expectPublish(draft: any, draftRef: DocumentReference) {
   const result = await publishTestimony({ draftId: draftRef.id })
 
   const publication = await getDoc(
@@ -43,6 +64,17 @@ it("can publish testimony", async () => {
     )
   )
 
-  expect(publication.exists)
+  expect(publication.exists).toBeTruthy()
   expect(publication.data()!.content).toEqual(draft.content)
-})
+
+  return publication
+}
+
+async function expectDelete(publicationId: string) {
+  const result = await deleteTestimony({ publicationId: publicationId })
+  const deletedDoc = await getDoc(
+    doc(firestore, `/users/${uid}/publishedTestimony/${publicationId}`)
+  )
+  expect(result.data.deleted).toBeTruthy()
+  expect(deletedDoc.exists).toBeFalsy()
+}
