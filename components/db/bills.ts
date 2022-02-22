@@ -1,12 +1,17 @@
 import {
-  query,
   collection,
-  orderBy,
+  getDocs,
   limit,
+  orderBy,
+  query,
+  QueryConstraint,
   startAfter,
-  getDocs
+  Timestamp,
+  where
 } from "firebase/firestore"
-import { useState, useEffect, useMemo } from "react"
+import { last } from "lodash"
+import { useMemo, useReducer } from "react"
+import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
 import { currentGeneralCourt, loadDoc } from "./common"
 
@@ -29,74 +34,200 @@ export type BillContent = {
 }
 
 export type Bill = {
-  content: BillContent
-  fetchedAt: Date
   id: string
+  content: BillContent
+  cosponsorCount: number
+  testimonyCount: number
+  nextHearingAt?: Timestamp
+  latestTestimonyAt?: Timestamp
+  latestTestimonyId?: string
+  fetchedAt: Timestamp
+}
+
+type Action =
+  | { type: "nextPage" }
+  | { type: "previousPage" }
+  | { type: "sort"; sort: SortOptions }
+  | { type: "billId"; billId: string | null }
+  | { type: "onSuccess"; page: Bill[] }
+
+type State = {
+  sort: SortOptions
+  billId: string | null
+  pageKeys: unknown[]
+  currentPageKey: unknown | null
+  currentPage: number
+  billsPerPage: number
+}
+
+const initialPage = {
+  pageKeys: [null],
+  currentPage: 0,
+  currentPageKey: null
+}
+
+const initialState: State = {
+  ...initialPage,
+  billsPerPage: 10,
+  billId: null,
+  sort: "id"
+}
+
+function reducer(state: State, action: Action): State {
+  if (action.type === "nextPage" || action.type === "previousPage") {
+    const next = state.currentPage + (action.type === "nextPage" ? 1 : -1),
+      nextKey = state.pageKeys[next]
+    if (nextKey !== undefined) {
+      return { ...state, currentPage: next, currentPageKey: nextKey }
+    } else {
+      return state
+    }
+  } else if (action.type === "sort" && action.sort !== state.sort) {
+    return { ...state, sort: action.sort, ...initialPage }
+  } else if (action.type === "billId" && action.billId !== state.billId) {
+    return { ...state, billId: action.billId, ...initialPage }
+  } else if (action.type === "onSuccess") {
+    const keys = [...state.pageKeys]
+    const bill = last(action.page)
+    keys[state.currentPage + 1] =
+      bill !== undefined ? getPageKey(bill, state.sort) : undefined
+    return { ...state, pageKeys: keys }
+  }
+  return state
+}
+
+/** Compatibility with existing bill pages.
+ *
+ * @deprecated Replace with useBills, which provides testimonyCount and
+ * hearing/testimony dates
+ */
+export function useBillContents() {
+  const { bills, ...rest } = useBills()
+  return { bills: bills?.map(b => b.content), ...rest }
 }
 
 export function useBills() {
-  const [bills, setBills] = useState<BillContent[] | undefined>(undefined)
+  const [
+    { sort, billId, billsPerPage, currentPageKey, currentPage },
+    dispatch
+  ] = useReducer(reducer, initialState)
 
-  useEffect(() => {
-    const fetchBills = async () => {
-      if (bills === undefined) {
-        const fetched = await listBills(10)
-        setBills(fetched)
-      }
+  const bills = useAsync(
+    () => listBills(sort, billId, billsPerPage, currentPageKey),
+    [billId, billsPerPage, currentPageKey, sort],
+    {
+      onSuccess: page => dispatch({ type: "onSuccess", page })
     }
-    fetchBills()
-  }, [bills])
+  )
 
   return useMemo(
     () => ({
-      bills,
-      loading: bills === undefined
+      billsPerPage,
+      currentPage: currentPage + 1,
+      nextPage: () => dispatch({ type: "nextPage" }),
+      previousPage: () => dispatch({ type: "previousPage" }),
+      setSort: (sort: SortOptions) => dispatch({ type: "sort", sort }),
+      setBillId: (billId: string | null) =>
+        dispatch({ type: "billId", billId }),
+      sort,
+      billId,
+      error: bills.error,
+      loading: bills.loading,
+      bills: bills.result
     }),
-    [bills]
+    [
+      billsPerPage,
+      currentPage,
+      sort,
+      billId,
+      bills.error,
+      bills.loading,
+      bills.result
+    ]
   )
+}
+
+/** Compatibility with existing bill pages.
+ *
+ * @deprecated Replace with useBill, which provides testimonyCount and
+ * hearing/testimony dates
+ */
+export function useBillContent(id: string) {
+  const { result, loading, error } = useAsync(getBill, [id])
+
+  return {
+    bill: result?.content,
+    loading,
+    error
+  }
 }
 
 export function useBill(id: string) {
-  const [bill, setBill] = useState<BillContent | undefined>(undefined)
+  return useAsync(getBill, [id])
+}
 
-  useEffect(() => {
-    const fetchBill = async () => {
-      if (bill?.BillNumber !== id) {
-        const fetched = await getBill(id)
-        setBill(fetched)
-      }
-    }
-    fetchBill()
-  }, [bill, id])
+type SortOptions =
+  | "id"
+  | "cosponsorCount"
+  | "testimonyCount"
+  | "latestTestimony"
+  | "hearingDate"
 
-  return useMemo(
-    () => ({
-      bill,
-      loading: bill === undefined
-    }),
-    [bill]
-  )
+function getOrderBy(sort: SortOptions): Parameters<typeof orderBy> {
+  switch (sort) {
+    case "cosponsorCount":
+      return ["cosponsorCount", "desc"]
+    case "hearingDate":
+      // TODO: update bill document from hearing scraper
+      return ["nextHearingDate"]
+    case "id":
+      return ["id"]
+    case "latestTestimony":
+      return ["latestTestimonyAt", "desc"]
+    case "testimonyCount":
+      return ["testimonyCount", "desc"]
+  }
+}
+
+function getPageKey(bill: Bill, sort: SortOptions): unknown {
+  switch (sort) {
+    case "cosponsorCount":
+      return bill.cosponsorCount
+    case "hearingDate":
+      return bill.nextHearingAt
+    case "id":
+      return bill.id
+    case "latestTestimony":
+      return bill.latestTestimonyAt
+    case "testimonyCount":
+      return bill.testimonyCount
+  }
 }
 
 async function listBills(
-  billLimit = 20,
-  startAfterBillNumber?: string
-): Promise<BillContent[]> {
-  let q = query(
-    collection(firestore, `/generalCourts/${currentGeneralCourt}/bills`),
-    orderBy("id"),
-    limit(billLimit)
-  )
-  if (startAfterBillNumber) {
-    q = query(q, startAfter(startAfterBillNumber))
-  }
-  const result = await getDocs(q)
-  return result.docs.map(d => d.data().content) as any
+  sort: SortOptions,
+  billId: string | null,
+  limitCount: number,
+  startAfterKey: unknown | null
+): Promise<Bill[]> {
+  const billsRef = collection(
+      firestore,
+      `/generalCourts/${currentGeneralCourt}/bills`
+    ),
+    constraints: QueryConstraint[] = []
+
+  if (billId) constraints.push(where("id", "==", billId))
+  constraints.push(orderBy(...getOrderBy(sort)))
+  constraints.push(limit(limitCount))
+  if (startAfterKey) constraints.push(startAfter(startAfterKey))
+
+  const result = await getDocs(query(billsRef, ...constraints))
+  return result.docs.map(d => d.data() as Bill)
 }
 
-export async function getBill(id: string): Promise<BillContent | undefined> {
+export async function getBill(id: string): Promise<Bill | undefined> {
   const bill = await loadDoc(
     `/generalCourts/${currentGeneralCourt}/bills/${id}`
   )
-  return bill?.content
+  return bill as any
 }

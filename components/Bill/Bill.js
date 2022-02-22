@@ -5,10 +5,10 @@ import AddTestimony from "../AddTestimony/AddTestimony"
 import BillHistory from "../BillHistory/BillHistory"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
-import { useBill } from "../db"
+import { useBillContent } from "../db"
 
 const ViewBillPage = props => {
-  const { bill, loading } = useBill(props.billId)
+  const { bill, loading } = useBillContent(props.billId)
 
   return loading ? (
     <Row>

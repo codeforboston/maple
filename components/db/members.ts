@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore"
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { currentGeneralCourt, loadDoc } from "./common"
 
@@ -23,7 +24,7 @@ export type MemberContent = {
 
 export type Member = {
   content: MemberContent
-  fetchedAt: Date
+  fetchedAt: Timestamp
   id: string
 }
 
