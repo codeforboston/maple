@@ -2,7 +2,7 @@ import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, fail, Id } from "../common"
+import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, Timestamp } from "../firebase"
 import { currentGeneralCourt } from "../malegislature"
 import { Testimony, DraftTestimony } from "./types"
@@ -18,7 +18,7 @@ export const publishTestimony = https.onCall(async (data, context) => {
   let publicationId: string
   try {
     publicationId = await db.runTransaction(t =>
-      new PublishTransaction(t, draftId, uid).run()
+      new PublishTestimonyTransaction(t, draftId, uid).run()
     )
   } catch (e) {
     logger.info("Publication transaction failed.", e)
@@ -27,11 +27,17 @@ export const publishTestimony = https.onCall(async (data, context) => {
 
   return { publicationId }
 })
-
-class PublishTransaction {
+class PublishTestimonyTransaction {
   private t
   private draftId
   private uid
+
+  private draftSnap!: DocumentSnapshot
+  private draft!: DraftTestimony
+  private billSnap!: DocumentSnapshot
+  private bill!: Bill
+  private publicationRef!: DocumentReference
+  private publicationExists!: boolean
 
   constructor(t: FirebaseFirestore.Transaction, draftId: string, uid: string) {
     this.t = t
@@ -40,74 +46,64 @@ class PublishTransaction {
   }
 
   async run() {
-    const {
-        bill,
-        draft: { ref: draftRef, value: draft }
-      } = await this.resolveDraft(),
-      publication = await this.resolvePublication(draft.billId, draft.court),
-      newVersion = await this.getNextPublicationVersion(
-        draft.billId,
-        draft.court
-      )
+    await this.resolveDraft()
+    await this.resolvePublication()
 
-    // Create a new publication from the draft and increment the version
     const newPublication: Testimony = {
       authorUid: this.uid,
-      billId: draft.billId,
-      content: draft.content,
-      court: draft.court,
-      position: draft.position,
-      version: newVersion,
+      billId: this.draft.billId,
+      content: this.draft.content,
+      court: this.draft.court,
+      position: this.draft.position,
+      version: await this.getNextPublicationVersion(),
       publishedAt: Timestamp.now()
     }
 
-    // Replace the current publication with the new version
-    this.t.set(publication.ref, newPublication)
+    this.setPublication(newPublication)
+    this.createArchive(newPublication)
+    this.updateDraft(newPublication)
+    this.updateBill(newPublication)
 
-    // Mark the draft as published
-    this.t.update(draftRef, { publishedVersion: newPublication.version })
+    return this.publicationRef.id
+  }
 
-    // Add the publication to the archive
+  private setPublication(newPublication: Testimony) {
+    this.t.set(this.publicationRef, newPublication)
+  }
+
+  private createArchive(newPublication: Testimony) {
     this.t.create(
       db.collection(`/users/${this.uid}/archivedTestimony`).doc(),
       newPublication
     )
-
-    // Update testimony fields on the target bill
-    this.updateBill(publication, bill, newPublication)
-
-    return publication.ref.id
   }
 
-  private updateBill(
-    publication: ResolvedPublication,
-    snap: DocumentSnapshot,
-    newPublication: Testimony
-  ) {
-    const billTestimonyFields: any = {
+  private updateDraft(newPublication: Testimony) {
+    const update: DocUpdate<DraftTestimony> = {
+      publishedVersion: newPublication.version
+    }
+    this.t.update(this.draftSnap.ref, update)
+  }
+
+  private updateBill(newPublication: Testimony) {
+    const billTestimonyFields: DocUpdate<Bill> = {
       latestTestimonyAt: newPublication.publishedAt,
-      latestTestimonyId: publication.ref.id
+      latestTestimonyId: this.publicationRef.id
     }
-    const bill = Bill.checkWithDefaults(snap.data())
-    if (!publication.exists) {
-      billTestimonyFields.testimonyCount = bill.testimonyCount + 1
+    if (!this.publicationExists) {
+      billTestimonyFields.testimonyCount = this.bill.testimonyCount + 1
     }
-    this.t.update(snap.ref, billTestimonyFields)
+    this.t.update(this.billSnap.ref, billTestimonyFields)
   }
 
-  private async resolveDraft(): Promise<{
-    bill: DocumentSnapshot
-    draft: {
-      ref: DocumentReference
-      value: DraftTestimony
-    }
-  }> {
+  private async resolveDraft() {
     const ref = db.doc(`/users/${this.uid}/draftTestimony/${this.draftId}`),
-      doc = await this.t.get(ref)
+      draftSnap = await this.t.get(ref)
 
-    if (!doc.exists) throw fail("not-found", "No draft found with id " + doc.id)
+    if (!draftSnap.exists)
+      throw fail("not-found", "No draft found with id " + draftSnap.id)
 
-    const testimony = DraftTestimony.validate(doc.data())
+    const testimony = DraftTestimony.validate(draftSnap.data())
 
     if (!testimony.success)
       throw fail(
@@ -124,17 +120,20 @@ class PublishTransaction {
       )
     }
 
-    const bill = await db
+    const billSnap = await db
       .doc(`/generalCourts/${draft.court}/bills/${draft.billId}`)
       .get()
-    if (!bill.exists) {
+    if (!billSnap.exists) {
       throw fail(
         "failed-precondition",
         `Draft testimony has invalid bill ID ${draft.billId}`
       )
     }
 
-    return { bill, draft: { ref, value: draft } }
+    this.draft = draft
+    this.draftSnap = draftSnap
+    this.billSnap = billSnap
+    this.bill = Bill.checkWithDefaults(billSnap.data())
   }
 
   private async isValidCourt(court: number) {
@@ -144,12 +143,12 @@ class PublishTransaction {
     // return doc.exists
   }
 
-  private async getNextPublicationVersion(billId: string, court: number) {
+  private async getNextPublicationVersion() {
     const archived = await this.t.get(
       db
         .collection(`/users/${this.uid}/archivedTestimony`)
-        .where("billId", "==", billId)
-        .where("court", "==", court)
+        .where("billId", "==", this.draft.billId)
+        .where("court", "==", this.draft.court)
         .orderBy("version", "desc")
         .limit(1)
     )
@@ -162,26 +161,23 @@ class PublishTransaction {
     }
   }
 
-  private async resolvePublication(billId: string, court: number) {
+  private async resolvePublication() {
     const publications = await this.t.get(
       db
         .collection(`/users/${this.uid}/publishedTestimony`)
-        .where("billId", "==", billId)
-        .where("court", "==", court)
+        .where("billId", "==", this.draft.billId)
+        .where("court", "==", this.draft.court)
         .limit(1)
     )
 
     if (publications.size === 0) {
-      return {
-        exists: false,
-        ref: db.collection(`/users/${this.uid}/publishedTestimony`).doc()
-      }
+      this.publicationExists = false
+      this.publicationRef = db
+        .collection(`/users/${this.uid}/publishedTestimony`)
+        .doc()
     } else {
-      return publications.docs[0]
+      this.publicationExists = true
+      this.publicationRef = publications.docs[0].ref
     }
   }
 }
-
-type ResolvedPublication = Awaited<
-  ReturnType<InstanceType<typeof PublishTransaction>["resolvePublication"]>
->
