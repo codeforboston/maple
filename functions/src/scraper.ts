@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { logger, runWith } from "firebase-functions"
 import { last } from "lodash"
-import { db } from "./firebase"
+import { db, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./malegislature"
 
 /** Batch documents trigger the batch fetch function to scrape `ids` */
@@ -14,9 +14,13 @@ type Batch = {
  */
 type ListIds = (court: number) => Promise<(string | undefined | null)[]>
 
-/** Fetch the given resource for the given court. This will be written as-is to
- * the `content` field of the resource document. */
-type FetchResource = (court: number, id: string) => Promise<any>
+/** Fetch the given resource for the given court. The `content` field will be
+ * copied to the `content` field of the resource document, and the `metadata`
+ * field will be merged into the top-level of the document. */
+type FetchResource = (
+  court: number,
+  id: string
+) => Promise<{ content: any; metadata?: any }>
 
 /**
  * ```md
@@ -120,11 +124,14 @@ export function createScraper({
 
       for (const id of batch.ids) {
         try {
+          const { content, metadata } = await fetchResource(court, id)
+
           writer.set(
             db.doc(`/generalCourts/${court}/${resourceName}/${id}`),
             {
-              content: await fetchResource(court, id),
-              lastFetch: new Date(),
+              ...metadata,
+              content,
+              lastFetch: Timestamp.now(),
               id
             },
             { merge: true }

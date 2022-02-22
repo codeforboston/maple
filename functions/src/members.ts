@@ -16,7 +16,9 @@ export const {
   startBatchSchedule: "every 24 hours",
   fetchBatchTimeout: 240,
   startBatchTimeout: 60,
-  fetchResource: (court: number, id: string) => api.getMember({ id, court }),
+  fetchResource: async (court: number, id: string) => ({
+    content: await api.getMember({ id, court })
+  }),
   listIds: (court: number) =>
     api.listMembers({ court }).then(members => members.map(m => m.MemberCode))
 })
