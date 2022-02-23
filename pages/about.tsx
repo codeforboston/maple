@@ -15,22 +15,20 @@ export default createPage({
       <>
         <div className={style.aboutWrapper}>
           <div>
-            <p>
-              <b>Who we are</b>
-              <br />
-              <br />
+              <h1>Who we are</h1>
+              <p>
               The testimony access project is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
-              <br />
-              <br />
+              </p>
+              <p>
               The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global Legal Design movement. 
-              <br />
-              <br />
+              </p>
+              <p>
               Code for Boston addresses local social and civic challenges through creative uses of technology. Despite the name, we are not solely focused on coding! They foster relationships between government, nonprofit, academic, for-profit companies, residents, civic technologists, analysts, designers, and many more. <a href="https://github.com/codeforboston/advocacy-maps/graphs/contributors">Code for Boston's volunteer contributors</a> have led the technical implementation and development of this website and platform as an open source project (<a href="https://github.com/codeforboston/advocacy-maps">see our repository on GitHub</a>).
-              <br />
-              <br />
+              </p>
+              <p>
               The project is developed in partnership between the NuLawLab and scholars at Boston College Law School's Good Governance Project (GGP) and <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
-              <br />
-              <br />
+              </p>
+              <p>
               GGP is a non-partisan, student-driven initiative at Boston College
               Law School and the <a href="https://www.bc.edu/bc-web/centers/clough.html">BC Clough Center for Constitutional Democracy</a>.
               GGP advocates for faith in democracy, and for democratic structures
@@ -39,19 +37,16 @@ export default createPage({
               advance discussion on key governance issues. GGP also provides legal
               support to pro-democracy organizations and legislators, and host
               events to galvanize and encourage faith in democracy.  Project co-founder Matt Victor is a JD student at BC and the founder of GGP.
-              <br />
-              <br />
+              </p>
+              <p>
               The Berkman Klein Center's mission is to explore and understand cyberspace; to study its development, dynamics, norms, and standards; and to assess the need or lack thereof for laws and sanctions. Project co-founder <a href="https://cyber.harvard.edu/people/nathan-sanders">Nathan Sanders</a> is a past Fellow and current Affiliate at BKC.
-              <br />
-              <br />
-              <b>Project History</b>
-              <br />
-              <br />
-              <b>Project Motivations</b>
-              <br />
-              <br />
-            </p>
-
+              </p>
+              <h1>Project History</h1>
+              <p>
+              </p>
+              <h1>Project Motivations</h1>
+              <p>
+              </p>
           </div>
 
           <Twitter />
