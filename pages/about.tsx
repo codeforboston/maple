@@ -17,7 +17,7 @@ export default createPage({
           <div>
               <h1>Who we are</h1>
               <p>
-              The testimony access project is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
+              The Massachusetts Archive of Transparent Testimony platform is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
               </p>
               <p>
               The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global Legal Design movement. 

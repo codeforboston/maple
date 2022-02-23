@@ -12,11 +12,14 @@ export default createPage({
     return (
       <>
         <Head>
-          <title>Digital Testimony Platform</title>
+          <title>Massachusetts Archive of Transparent Testimony</title>
         </Head>
-        <h1>Digital Testimony Platform</h1>
+        <h1>Massachusetts Archive of Transparent Testimony</h1>
         <p>
-          This platform is developed in collaboration between the NuLawLab, Code for Boston, and scholars at the <a href="https://www.bc.edu/bc-web/centers/clough.html">Boston College Clough Center for Constitutional Democracy</a> and  <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
+          MATT is a non-partisan platform that makes it easier for anyone to submit and read written testimony provided by residents and stakeholders to the <a href="https://malegislature.gov">Massachusetts Legislature</a>.
+        </p>
+        <p>
+          <a href="/about">This platform is developed in collaboration</a> between the NuLawLab, Code for Boston, and scholars at the <a href="https://www.bc.edu/bc-web/centers/clough.html">Boston College Clough Center for Constitutional Democracy</a> and  <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
         </p>
 
         <Stack gap={3} className="col-lg-5 mx-auto">
