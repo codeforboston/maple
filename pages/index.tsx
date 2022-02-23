@@ -11,12 +11,8 @@ export default createPage({
     const { authenticated } = useAuth()
     return (
       <>
-        <Head>
-          <title>Massachusetts Archive of Transparent Testimony</title>
-        </Head>
-        <h1>Massachusetts Archive of Transparent Testimony</h1>
         <p>
-          MATT is a non-partisan platform that makes it easier for anyone to submit and read written testimony provided by residents and stakeholders to the <a href="https://malegislature.gov">Massachusetts Legislature</a>.
+          The Massachusetts Archive of Transparent Testimony (MATT) is a non-partisan platform that makes it easier for anyone to submit and read written testimony provided by residents and stakeholders to the <a href="https://malegislature.gov">Massachusetts Legislature</a>.
         </p>
         <p>
         Anyone can use MATT to submit testimony to the legislature about the bills under consideration by our representatives that will shape our future.
