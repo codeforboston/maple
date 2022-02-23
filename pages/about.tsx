@@ -21,7 +21,7 @@ export default createPage({
               </p>
               <h2>NuLawLab</h2>
               <p>
-              The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global Legal Design movement. 
+              The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3644302">Legal Design movement</a>. 
               </p>
               <h2>Code for Boston</h2>
               <p>
