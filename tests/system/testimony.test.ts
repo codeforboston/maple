@@ -20,6 +20,8 @@ const deleteTestimony = httpsCallable<
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
+jest.setTimeout(30000)
+
 let uid: string
 beforeAll(async () => {
   const { user } = await signInWithEmailAndPassword(
@@ -64,7 +66,7 @@ async function expectPublish(draft: any, draftRef: DocumentReference) {
     )
   )
 
-  expect(publication.exists).toBeTruthy()
+  expect(publication.exists()).toBeTruthy()
   expect(publication.data()!.content).toEqual(draft.content)
 
   return publication
@@ -76,5 +78,5 @@ async function expectDelete(publicationId: string) {
     doc(firestore, `/users/${uid}/publishedTestimony/${publicationId}`)
   )
   expect(result.data.deleted).toBeTruthy()
-  expect(deletedDoc.exists).toBeFalsy()
+  expect(deletedDoc.exists()).toBeFalsy()
 }
