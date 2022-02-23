@@ -16,137 +16,46 @@ export default createPage({
         <div className={style.aboutWrapper}>
           <div>
             <p>
-              <b>What is the Good Governance Project [GGP]?</b>
+              <b>Who we are</b>
               <br />
               <br />
-              We are a non-partisan, student-driven initiative at Boston College
-              Law School and the BC Clough Center for Constitutional Democracy.
-              We advocate for faith in democracy, and for democratic structures
+              The testimony access project is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
+              <br />
+              <br />
+              The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global Legal Design movement. 
+              <br />
+              <br />
+              Code for Boston addresses local social and civic challenges through creative uses of technology. Despite the name, we are not solely focused on coding! They foster relationships between government, nonprofit, academic, for-profit companies, residents, civic technologists, analysts, designers, and many more. <a href="https://github.com/codeforboston/advocacy-maps/graphs/contributors">Code for Boston's volunteer contributors</a> have led the technical implementation and development of this website and platform as an open source project (<a href="https://github.com/codeforboston/advocacy-maps">see our repository on GitHub</a>).
+              <br />
+              <br />
+              The project is developed in partnership between the NuLawLab and scholars at Boston College Law School's Good Governance Project (GGP) and <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
+              <br />
+              <br />
+              GGP is a non-partisan, student-driven initiative at Boston College
+              Law School and the <a href="https://www.bc.edu/bc-web/centers/clough.html">BC Clough Center for Constitutional Democracy</a>.
+              GGP advocates for faith in democracy, and for democratic structures
               worth of faith; inclusive, equitable and responsive. Using our
               Democracy Maps, we aggregate voices from across the state to
-              advance discussion on key governance issues. We also provide legal
+              advance discussion on key governance issues. GGP also provides legal
               support to pro-democracy organizations and legislators, and host
-              events to galvanize and encourage faith in democracy.
+              events to galvanize and encourage faith in democracy.  Project co-founder Matt Victor is a JD student at BC and the founder of GGP.
               <br />
               <br />
-              <b>The GGP Priorities</b>
+              The Berkman Klein Center's mission is to explore and understand cyberspace; to study its development, dynamics, norms, and standards; and to assess the need or lack thereof for laws and sanctions. Project co-founder <a href="https://cyber.harvard.edu/people/nathan-sanders">Nathan Sanders</a> is a past Fellow and current Affiliate at BKC.
               <br />
               <br />
-              After studying our political institutions in the fall and winter,
-              the GGP students identified three state legislative priorities to
-              improve the quality of democracy in Massachusetts:
-              <a href="/same-day-registration"> same day registration;</a>
-              <a href="/absentee-voting"> no-excuse absentee voting; </a>
-              and <a href="/campaign-finance"> publicly financed campaigns</a>.
-              While there are many other legislative improvements to make to our
-              democracy, which we identify{" "}
-              <a href="/other-legislative-endorsements">here</a>, these three
-              priorities reflect the impactful, pragmatic, and common ground
-              changes the GGP hopes to advance.
+              <b>Project History</b>
+              <br />
+              <br />
+              <b>Project Motivations</b>
+              <br />
+              <br />
             </p>
 
-            <div className={style.posterContainer}>
-              <div>
-                <h3>Learn with us - click a poster to watch!</h3>
-              </div>
-              <div className={style.learnWithPosters}>
-                <div className={style.firstPosterCol}>
-                  <div className={style.posterImgLink} id="rightPoster">
-                    <a
-                      href="https://www.youtube.com/watch?v=XBFWFC2vtiY&t=770s"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image
-                        src={faithDemocracy}
-                        className={style.posterImages}
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                  <div className={style.posterImgLink} id="leftPoster">
-                    <a
-                      href="https://www.youtube.com/watch?v=XF2IGKopwdk"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image
-                        src={democracyReform}
-                        className={style.posterImages}
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className={style.secondPosterCol}>
-                  <div className={style.posterImgLink} id="middlePoster1">
-                    <a
-                      href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image
-                        src={racialJustice}
-                        className={style.posterImages}
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                  <div className={style.posterImgLink} id="middlePoster2">
-                    <a
-                      href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image
-                        src={privacyDemocracy}
-                        className={style.posterImages}
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <Twitter />
         </div>
-
-        {/* <div className={style.posterContainer}>
-        <div>
-          <h3>Learn with us - click a poster to watch!</h3>
-        </div>
-        <div className={style.learnWithPosters}>
-          <div className={style.firstPosterCol}>
-            <div className={style.posterImgLink} id="rightPoster">
-              <a href="https://bccte.zoom.us/webinar/register/WN_e-d5HI5zQXusUC6WOsAT2w" target="_blank" rel="noreferrer">
-                <Image src={faithDemocracy} className={style.posterImages} alt="" />
-              </a>
-            </div>
-            <div className={style.posterImgLink} id="leftPoster">
-              <a href="https://www.youtube.com/watch?v=XF2IGKopwdk" target="_blank" rel="noreferrer">
-                <Image src={democracyReform} className={style.posterImages} alt="" />
-              </a>
-            </div>
-          </div>
-
-          <div className={style.secondPosterCol}>
-            <div className={style.posterImgLink} id="middlePoster1">
-              <a href="https://www.youtube.com/watch?v=utCYTU3miOg&t=3s" target="_blank" rel="noreferrer">
-                <Image src={racialJustice} className={style.posterImages} alt="" />
-              </a>
-            </div>
-            <div className={style.posterImgLink} id="middlePoster2">
-              <a href="https://www.youtube.com/watch?v=DLjdC8BFlvY&t=34s" target="_blank" rel="noreferrer">
-                <Image src={privacyDemocracy} className={style.posterImages} alt="" />
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </div> */}
 
         <div className={style.sharedValues}>
           <h3>GGP Statement of Shared Values</h3>
