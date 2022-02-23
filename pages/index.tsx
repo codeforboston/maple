@@ -16,7 +16,7 @@ export default createPage({
         </Head>
         <h1>Digital Testimony Platform</h1>
         <p>
-          A collaboration between the Northeastern Law Lab and Code for Boston
+          This platform is developed in collaboration between the NuLawLab, Code for Boston, and scholars at the <a href="https://www.bc.edu/bc-web/centers/clough.html">Boston College Clough Center for Constitutional Democracy</a> and  <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
         </p>
 
         <Stack gap={3} className="col-lg-5 mx-auto">
