@@ -1,5 +1,5 @@
 import Image from "../components/Image"
-import Twitter from "../components/Twitter/Twitter"
+// import Twitter from "../components/Twitter/Twitter"
 import democracyReform from "../public/democracyReform.png"
 import faithDemocracy from "../public/faithDemocracy.png"
 import privacyDemocracy from "../public/privacyDemocracy.png"
@@ -54,7 +54,7 @@ export default createPage({
               </p>
           </div>
 
-          <Twitter />
+          {/* <Twitter /> */}
         </div>
 
         <div className={style.sharedValues}>
