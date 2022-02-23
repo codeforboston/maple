@@ -10,8 +10,12 @@ Object.assign(process.env, {
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
   clearMocks: true,
-  roots: ["tests/integration"],
-  testEnvironment: "node"
+  testEnvironment: "./jest.integration.testEnvironment.js",
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/tests/system",
+    "<rootDir>/functions"
+  ]
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest

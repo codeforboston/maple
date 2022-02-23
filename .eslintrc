@@ -3,6 +3,13 @@
   "rules": {
     // TODO: Fix these warnings and make them errors by removing these overrides.
     "react/no-unescaped-entities": "off",
-    "@next/next/no-html-link-for-pages": "warn"
+    "@next/next/no-html-link-for-pages": "warn",
+    "@next/next/no-img-element": "off",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useAsync|useAsyncCallback)"
+      }
+    ]
   }
 }

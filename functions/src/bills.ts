@@ -14,8 +14,13 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     startBatchSchedule: "every 3 hours",
     fetchBatchTimeout: 240,
     startBatchTimeout: 60,
-    fetchResource: (court: number, id: string) =>
-      api.getDocument({ id, court }),
+    fetchResource: async (court: number, id: string) => {
+      const content = await api.getDocument({ id, court })
+      const metadata = {
+        cosponsorCount: content.Cosponsors.length
+      }
+      return { content, metadata }
+    },
     listIds: (court: number) =>
       api.listDocuments({ court }).then(docs => docs.map(d => d.BillNumber))
   })

@@ -48,5 +48,6 @@ function connectEmulators() {
   connectFirestoreEmulator(firestore, "localhost", 8080)
   connectFunctionsEmulator(functions, "localhost", 5001)
   connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true })
-  console.log("Connected to emulators")
+  if (process.env.NODE_ENV === "development")
+    console.log("Connected to emulators")
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router"
 import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
-import { useBills } from "../db";
+import { useBillContents } from "../db";
 import * as links from "../../components/links.tsx"
 import {legislativeMember} from '../MockAPIResponseLegislativeMember'
 
@@ -81,7 +81,7 @@ const BillRows = ({bills}) => {
 )}
 
 const ViewBills = (props) => {
-  const {bills, loading} = useBills()
+  const {bills, loading} = useBillContents()
   return (
     <Container>
       <h1>Most Active Bills </h1>
