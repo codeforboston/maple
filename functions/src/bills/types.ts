@@ -14,5 +14,9 @@ export const Bill = withDefaults(
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp)
   }),
-  { cosponsorCount: 0, testimonyCount: 0 }
+  {
+    cosponsorCount: 0,
+    testimonyCount: 0,
+    fetchedAt: Timestamp.fromMillis(0)
+  }
 )

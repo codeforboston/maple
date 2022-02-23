@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { logger, runWith } from "firebase-functions"
 import { last } from "lodash"
-import { db, Timestamp } from "./firebase"
+import { db, FieldValue, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./malegislature"
 
 /** Batch documents trigger the batch fetch function to scrape `ids` */
@@ -131,7 +131,8 @@ export function createScraper({
             {
               ...metadata,
               content,
-              lastFetch: Timestamp.now(),
+              fetchedAt: Timestamp.now(),
+              lastFetch: FieldValue.delete(),
               id
             },
             { merge: true }

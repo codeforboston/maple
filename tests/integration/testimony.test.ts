@@ -79,6 +79,13 @@ describe("publishTestimony", () => {
     )
   })
 
+  it("Publishes testimony on scraped bills", async () => {
+    const { draftId } = await createDraft(uid, "H1")
+    const res = await publishTestimony({ draftId })
+    const publication = await getPublication(uid, res.data.publicationId)
+    expect(publication).toBeDefined()
+  })
+
   it("Publishes new testimony", async () => {
     const res = await publishTestimony({ draftId }),
       publicationId = res.data.publicationId
