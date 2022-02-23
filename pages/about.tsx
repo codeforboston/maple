@@ -17,6 +17,9 @@ export default createPage({
           <div>
               <h1>Who we are</h1>
               <p>
+              We are a collective of open source developers, legal scholars, and policy analysts & advocates seeking to make the legislative process in Massachusetts more accessible and transparent.
+              </p>
+              <p>
               The Massachusetts Archive of Transparent Testimony platform is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
               </p>
               <h2>NuLawLab</h2>
