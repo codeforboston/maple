@@ -19,15 +19,19 @@ export default createPage({
               <p>
               The Massachusetts Archive of Transparent Testimony platform is a project of the <a href="https://www.nulawlab.org">NuLawLab</a> developed with <a href="https://www.codeforboston.org">Code for Boston</a>. 
               </p>
+              <h2>NuLawLab</h2>
               <p>
               The NuLawLab is the interdisciplinary innovation laboratory at <a href="https://www.northeastern.edu/law/">Northeastern University School of Law</a>. NuLawLab's researchers are leaders in the emerging global Legal Design movement. 
               </p>
+              <h2>Code for Boston</h2>
               <p>
-              Code for Boston addresses local social and civic challenges through creative uses of technology. Despite the name, we are not solely focused on coding! They foster relationships between government, nonprofit, academic, for-profit companies, residents, civic technologists, analysts, designers, and many more. <a href="https://github.com/codeforboston/advocacy-maps/graphs/contributors">Code for Boston's volunteer contributors</a> have led the technical implementation and development of this website and platform as an open source project (<a href="https://github.com/codeforboston/advocacy-maps">see our repository on GitHub</a>).
+              Code for Boston addresses local social and civic challenges through creative uses of technology. Despite the name, they are not solely focused on coding! They foster relationships between government, nonprofit, academic, for-profit companies, residents, civic technologists, analysts, designers, and many more. <a href="https://github.com/codeforboston/advocacy-maps/graphs/contributors">Code for Boston's volunteer contributors</a> have led the technical implementation and development of this website and platform as an open source project (<a href="https://github.com/codeforboston/advocacy-maps">see our repository on GitHub</a>).
               </p>
+              <h2>Collaborating Institutions</h2>
               <p>
               The project is developed in partnership between the NuLawLab and scholars at Boston College Law School's Good Governance Project (GGP) and <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
               </p>
+              <h3>BC Good Governance Project</h3>
               <p>
               GGP is a non-partisan, student-driven initiative at Boston College
               Law School and the <a href="https://www.bc.edu/bc-web/centers/clough.html">BC Clough Center for Constitutional Democracy</a>.
@@ -38,6 +42,7 @@ export default createPage({
               support to pro-democracy organizations and legislators, and host
               events to galvanize and encourage faith in democracy.  Project co-founder Matt Victor is a JD student at BC and the founder of GGP.
               </p>
+              <h3>Harvard Berkman Klein Center</h3>
               <p>
               The Berkman Klein Center's mission is to explore and understand cyberspace; to study its development, dynamics, norms, and standards; and to assess the need or lack thereof for laws and sanctions. Project co-founder <a href="https://cyber.harvard.edu/people/nathan-sanders">Nathan Sanders</a> is a past Fellow and current Affiliate at BKC.
               </p>
@@ -53,8 +58,8 @@ export default createPage({
         </div>
 
         <div className={style.sharedValues}>
-          <h3>GGP Statement of Shared Values</h3>
-          <h4>Core values: humility, curiousity, compassion</h4>
+          <h1>GGP Statement of Shared Values</h1>
+          <h2>Core values: humility, curiousity, compassion</h2>
           <ul>
             <li>
               We believe a better quality democracy can better serve the public
