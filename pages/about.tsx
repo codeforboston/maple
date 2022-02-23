@@ -59,7 +59,7 @@ export default createPage({
 
         <div className={style.sharedValues}>
           <h1>GGP Statement of Shared Values</h1>
-          <h2>Core values: humility, curiousity, compassion</h2>
+          Our core values are: humility, curiousity, compassion
           <ul>
             <li>
               We believe a better quality democracy can better serve the public
