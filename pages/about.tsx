@@ -15,6 +15,16 @@ export default createPage({
       <>
         <div className={style.aboutWrapper}>
           <div>
+              <h1>Why MATT?</h1>
+              <p>
+              By creating an accessible platform for submitting testimony on legislation in MA via a transparent archive of public testimony, we aim to achieve these goals:
+                <ul>
+                <li>Increase access to the legislative process</li>
+                <li>Engage a wider set of stakeholders and perspectives in policymaking</li>
+                <li>Promote transparency in government</li>
+                <li>Distribute information about pending legislation</li>
+                </ul>
+              </p>
               <h1>Who we are</h1>
               <p>
               We are a collective of open source developers, legal scholars, and policy analysts & advocates seeking to make the legislative process in Massachusetts more accessible and transparent.
@@ -32,7 +42,7 @@ export default createPage({
               </p>
               <h2>Collaborating Institutions</h2>
               <p>
-              The project is developed in partnership between the NuLawLab and scholars at Boston College Law School's Good Governance Project (GGP) and <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
+              The project is developed in partnership between the NuLawLab and scholars at <a href="https://goodgovproject.com">Boston College Law School's Good Governance Project (GGP)</a> and <a href="https://cyber.harvard.edu">Harvard University's Berkman Klein Center for Internet & Society</a>.
               </p>
               <h3>BC Good Governance Project</h3>
               <p>
@@ -51,9 +61,7 @@ export default createPage({
               </p>
               <h1>Project History</h1>
               <p>
-              </p>
-              <h1>Project Motivations</h1>
-              <p>
+              This project builds on top of the GGP's prior work in 202 on the <a href="https://goodgovproject.com/transparency-ma">Transparency in MA project</a>. After studying our political institutions in the fall and winter of 2020-2021, the GGP students identified three state legislative priorities to improve the quality of democracy in Massachusetts: same day registration; no-excuse absentee voting; and publicly financed campaigns. While there are many other legislative improvements to make to our democracy, which we identify here, these three priorities reflect the impactful, pragmatic, and common ground changes the GGP hopes to advance. In 2021, GGP developed online advocacy maps (through collaboration with CfB) allowing legislators and other leaders to register their perspectives on these key issues and also performed a 50 state analysis of transparency practices in state governments.
               </p>
           </div>
 
