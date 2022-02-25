@@ -28,14 +28,16 @@ const AddTestimony = (props) => {
                             <table>
                                 <tbody>
                                     <tr>
-                                        <div className="text-center">
-                                            <select className="form-control">
-                                                <option value="DEFAULT">Select my support..</option>
-                                                <option value="Endorse">Endorse</option>
-                                                <option value="Oppose">Oppose</option>
-                                                <option value="Neutral">Neutral</option>
-                                            </select>
-                                        </div>
+                                        <td>
+                                            <div className="text-center">
+                                                <select className="form-control">
+                                                    <option value="DEFAULT">Select my support..</option>
+                                                    <option value="Endorse">Endorse</option>
+                                                    <option value="Oppose">Oppose</option>
+                                                    <option value="Neutral">Neutral</option>
+                                                </select>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><div className="form-check">
