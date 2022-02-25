@@ -93,14 +93,12 @@ const AddTestimony = (props) => {
         </div>
       
         {/* to force authentication to add comments, add "authenticated &&" in front of modal call below */}
-    
         <CommentModal
             bill={bill}
             showAddComment={showAddComment}
             setShowAddComment={setShowAddComment}
             handleShowAddComment={handleShowAddComment}
         />
-
     </>
     )
 }
