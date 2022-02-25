@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import { Button, Modal, Table } from 'react-bootstrap'
 import * as links from "../../components/links.tsx"
-// import {legislativeMember} from '../MockAPIResponseLegislativeMember'
 import { useMember } from "../db";
 
 const CoSponsorRow = ({coSponsor}) => {
