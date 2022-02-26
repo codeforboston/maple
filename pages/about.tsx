@@ -61,35 +61,33 @@ export default createPage({
               </p>
               <h1>Project History</h1>
               <p>
-              This project builds on top of the GGP's prior work in 202 on the <a href="https://goodgovproject.com/transparency-ma">Transparency in MA project</a>. After studying our political institutions in the fall and winter of 2020-2021, the GGP students identified three state legislative priorities to improve the quality of democracy in Massachusetts: same day registration; no-excuse absentee voting; and publicly financed campaigns. While there are many other legislative improvements to make to our democracy, which we identify here, these three priorities reflect the impactful, pragmatic, and common ground changes the GGP hopes to advance. In 2021, GGP developed online advocacy maps (through collaboration with CfB) allowing legislators and other leaders to register their perspectives on these key issues and also performed a 50 state analysis of transparency practices in state governments.
+              This project builds on top of the GGP's prior work in 2021 on the <a href="https://goodgovproject.com/transparency-ma">Transparency in MA project</a>. After studying our political institutions in the fall and winter of 2020-2021, the GGP students identified three state legislative priorities to improve the quality of democracy in Massachusetts: same day registration; no-excuse absentee voting; and publicly financed campaigns. While there are many other legislative improvements to make to our democracy, which we identify here, these three priorities reflect the impactful, pragmatic, and common ground changes the GGP hopes to advance. In 2021, GGP developed online advocacy maps (through collaboration with CfB) allowing legislators and other leaders to register their perspectives on these key issues and also performed a 50 state analysis of transparency practices in state governments.
               </p>
           </div>
 
           {/* <Twitter /> */}
         </div>
 
-        <div className={style.sharedValues}>
-          <h1>GGP Statement of Shared Values</h1>
-          Our core values are: humility, curiousity, compassion
-          <ul>
-            <li>
-              We believe a better quality democracy can better serve the public
-              interests
-            </li>
-            <li>
-              We focus on non-partisan means of governing - not partisan ends
-            </li>
-            <li>
-              We have a strong preference for diverse membership – including
-              political diversity
-            </li>
-            <li>We strive to give credence to the sincerity of others</li>
-            <li>We know our voice is louder in local and state politics</li>
-            <li>We prefer accurate statements over absolute statements </li>
-            <li>We listen generously </li>
-            <li>We have a responsibility to be our authentic selves</li>
-          </ul>
-        </div>
+        <h1>GGP Statement of Shared Values</h1>
+        Our core values are: humility, curiousity, compassion
+        <ul>
+        <li>
+            We believe a better quality democracy can better serve the public
+            interests
+        </li>
+        <li>
+            We focus on non-partisan means of governing - not partisan ends
+        </li>
+        <li>
+            We have a strong preference for diverse membership – including
+            political diversity
+        </li>
+        <li>We strive to give credence to the sincerity of others</li>
+        <li>We know our voice is louder in local and state politics</li>
+        <li>We prefer accurate statements over absolute statements </li>
+        <li>We listen generously </li>
+        <li>We have a responsibility to be our authentic selves</li>
+        </ul>
         {/* </Layout> */}
       </>
     )
