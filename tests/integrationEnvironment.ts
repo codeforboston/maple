@@ -1,8 +1,9 @@
-const BrowserEnvironment = require("jest-environment-jsdom")
-const timers = require("timers")
+import { Config } from "@jest/types"
+import BrowserEnvironment from "jest-environment-jsdom"
+import timers from "timers"
 
 class IntegrationEnvironment extends BrowserEnvironment {
-  constructor(config) {
+  constructor(config: Config.ProjectConfig) {
     super(
       Object.assign({}, config, {
         globals: Object.assign({}, config.globals, {
@@ -28,4 +29,4 @@ class IntegrationEnvironment extends BrowserEnvironment {
   async teardown() {}
 }
 
-module.exports = IntegrationEnvironment
+export default IntegrationEnvironment
