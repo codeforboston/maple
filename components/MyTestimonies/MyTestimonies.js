@@ -33,7 +33,8 @@ const MyTestimonies = () => {
   const userEmail = authenticated ? user.email : ""
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {
-      if (testimony.submitter === userEmail) {
+      if (true) {  // replace with below line when want to show only the user's testimonies
+      // if (testimony.submitter === userEmail) {
         return (
           <TestimonyRow
             testimony={testimony}
