@@ -3,20 +3,13 @@ import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 import { useAuth } from "../../components/auth"
-import { useBill } from "../db"
-import { useBillContents } from "../db";
+import { useBillContent } from "../db";
 
-// the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
-
-const TestimonyRow = ({testimony}) => {
-  // neither of the below are working - bill remains "undefined"
-  // const {bill, loading} = useBill(testimony.billNumber) 
-  const {bill, loading} = useBillContents(testimony.billNumber)
+const TestimonyRow = ({testimony}) => { 
+  const {bill, loading} = useBillContent(testimony.billNumber)
   if (loading) {
     return null
   } else {
-    console.log("bill# |" + testimony.billNumber+"|")
-    console.log(bill)
     return (
       <tr>
         <td>{testimony.support}</td>
@@ -55,7 +48,7 @@ const MyTestimonies = () => {
 
   return (
     <Container>
-      <h1>My testimonies </h1>
+      <h1>My Testimonies </h1>
       <Table striped bordered hover>
         <thead>
           <tr>
