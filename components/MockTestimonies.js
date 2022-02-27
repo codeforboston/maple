@@ -1,6 +1,6 @@
 const testimonies = [
   {
-    submitter: "j.korenstein@gmail.com",
+    submitter: "sample.user@gmail.com",
     dateSubmitted: "2/3/2022",
     billNumber: "H10",
     support: "Endorse",
@@ -8,7 +8,7 @@ const testimonies = [
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   },
   {
-    submitter: "j.korenstein@gmail.com",
+    submitter: "sample.user@gmail.com",
     dateSubmitted: "1/17/2022",
     billNumber: "H1001",
     support: "Oppose",
@@ -16,7 +16,7 @@ const testimonies = [
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   },
   {
-    submitter: "j.korenstein@gmail.com",
+    submitter: "sample.user@gmail.com",
     dateSubmitted: "2/22/2022",
     billNumber: "H1002",
     support: "Neutral",
