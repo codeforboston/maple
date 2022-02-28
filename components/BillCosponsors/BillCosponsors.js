@@ -1,22 +1,36 @@
 import React, {useState} from "react";
 import { Button, Modal, Table } from 'react-bootstrap'
 import * as links from "../../components/links.tsx"
-import {legislativeMember} from '../MockAPIResponseLegislativeMember'
+import { useMember } from "../db";
+
+const CoSponsorRow = ({coSponsor}) => {
+  const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
+  const {member, loading} = useMember(coSponsor.Id)
+  if (loading) {
+    return null
+  } else {
+    return (
+        <tr>
+          <td>
+            <links.External href={url}>
+                {coSponsor.Name}
+              </links.External>
+          </td>
+          <td>{member.Branch}</td>
+          <td>{member.District}</td>
+          <td>{member.Party}</td>
+        </tr>
+    )
+  }
+}
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
-    const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
     return (
-      <tr key={index}>
-        <td>
-          <links.External href={url}>
-              {coSponsor.Name}
-            </links.External>
-        </td>
-        <td>{legislativeMember.Branch}</td>
-        <td>{legislativeMember.District}</td>
-        <td>{legislativeMember.Party}</td>
-      </tr>
+      <CoSponsorRow
+        coSponsor = {coSponsor}
+        key = {index}
+      />
     )
   })
 } 

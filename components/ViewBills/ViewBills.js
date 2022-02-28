@@ -4,7 +4,7 @@ import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBillContents } from "../db";
 import * as links from "../../components/links.tsx"
-import {legislativeMember} from '../MockAPIResponseLegislativeMember'
+import { useMember } from "../db";
 
 // create a hash of bills and their number of testimonies
 const countedTestimonies = testimonies.reduce(function (
@@ -39,43 +39,54 @@ const mostRecentTestimonies = testimonies.reduce(function (
 },
 {}) 
 
-
-
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
   return ['GOV7'].includes(Id)
 }
 
-const BillRows = ({bills}) => {
+const BillRow = ({bill}) => {
   const router = useRouter()
+  const {member, loading} = useMember(bill.PrimarySponsor.Id)
+  const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
+  const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+  const SponsorComponent = sponsorURL != "" ?   
+    <>
+      <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
+      - {loading ? "" : member.Branch} - {loading ? "" : member.District} - {loading ? "" : member.Party}
+    </>
+    :
+    <>
+      {bill.PrimarySponsor.Name}
+    </>
+    if (loading) {
+      return null
+    } else {
+      return (
+        <tr>
+          <td>{bill.BillNumber}</td>
+          <td>{bill.Title}</td>
+          <td>{SponsorComponent}</td>
+          <td>{numCoSponsors}</td>
+          <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
+          <td></td>
+          <td>{mostRecentTestimonies[bill.BillNumber] != null ? mostRecentTestimonies[bill.BillNumber] : "" }</td>
+          <td>
+            <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
+              View Bill
+            </Button>
+          </td>
+        </tr>
+      )
+    } 
+}
+
+const BillRows = ({bills}) => {
   return bills.map((bill, index) => {
-    const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
-    const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
-    const SponsorComponent = sponsorURL != "" ?
-        <>
-        <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
-        - {legislativeMember.Branch} - {legislativeMember.District} - {legislativeMember.Party}
-        </>
-        :
-        <>
-        {bill.PrimarySponsor.Name}
-        </>
-  
     return (
-    <tr key={index}>
-      <td>{bill.BillNumber}</td>
-      <td>{bill.Title}</td>
-      <td>{SponsorComponent}</td>
-      <td>{numCoSponsors}</td>
-      <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
-      <td></td>
-      <td>{mostRecentTestimonies[bill.BillNumber] != null ? mostRecentTestimonies[bill.BillNumber] : "" }</td>
-      <td>
-        <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
-          View Bill
-        </Button>
-      </td>
-    </tr>
+      <BillRow
+        bill = {bill}
+        key = {index}
+      />
     )
   }
 )}

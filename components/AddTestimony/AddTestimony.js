@@ -1,22 +1,16 @@
 import React, {useState} from "react";
-import { Form, Button, Row, Modal } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
+import { useAuth } from "../../components/auth"
 
-const AddTestimony = (props) => {
-  const bill = props.bill
-  const [showAddComment, setShowAddComment] = useState(false);
-
-  const handleShowAddComment = () => setShowAddComment(true);
-  const handleCloseAddComment = () => setShowAddComment(false);
+const CommentModal = (props) => {
+    const bill=props.bill
+    const showAddComment=props.showAddComment
+    const setShowAddComment=props.setShowAddComment
+    const handleShowAddComment = props.handleShowAddComment
+    const handleCloseAddComment = () => setShowAddComment(false);
 
     return (
-  <>
-      <div className="d-flex justify-content-center">
-        <Button variant="primary" onClick={handleShowAddComment}>
-          Add your voice
-        </Button>
-      </div>
-      
-      <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
+     <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
         <Modal.Header closeButton onClick={handleCloseAddComment}>
             <Modal.Title>{"Add Your Testimony" + (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}</Modal.Title>
         </Modal.Header>
@@ -28,14 +22,16 @@ const AddTestimony = (props) => {
                             <table>
                                 <tbody>
                                     <tr>
-                                        <div className="text-center">
-                                            <select className="form-control">
-                                                <option value="DEFAULT">Select my support..</option>
-                                                <option value="Endorse">Endorse</option>
-                                                <option value="Oppose">Oppose</option>
-                                                <option value="Neutral">Neutral</option>
-                                            </select>
-                                        </div>
+                                        <td>
+                                            <div className="text-center">
+                                                <select className="form-control">
+                                                    <option value="DEFAULT">Select my support..</option>
+                                                    <option value="Endorse">Endorse</option>
+                                                    <option value="Oppose">Oppose</option>
+                                                    <option value="Neutral">Neutral</option>
+                                                </select>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><div className="form-check">
@@ -79,7 +75,30 @@ const AddTestimony = (props) => {
                 Publish
             </Button>
         </Modal.Footer>
-      </Modal>
+    </Modal>
+    )
+} 
+   
+const AddTestimony = (props) => {
+  const bill = props.bill
+  const [showAddComment, setShowAddComment] = useState(false);
+  const handleShowAddComment = () => setShowAddComment(true);
+  const { authenticated } = useAuth()
+    return (
+  <>
+        <div className="d-flex justify-content-center">
+            <Button variant="primary" onClick={handleShowAddComment}>
+                {authenticated ? "Add your voice" : "Login to add your voice"}
+            </Button>
+        </div>
+      
+        {/* to force authentication to add comments, add "authenticated &&" in front of modal call below */}
+        <CommentModal
+            bill={bill}
+            showAddComment={showAddComment}
+            setShowAddComment={setShowAddComment}
+            handleShowAddComment={handleShowAddComment}
+        />
     </>
     )
 }
