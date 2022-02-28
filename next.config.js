@@ -5,7 +5,7 @@ const config = {
   images: {
     loader: "custom"
   },
-  experimental: {
+  compiler: {
     styledComponents: true
   },
   eslint: {

@@ -1,10 +1,9 @@
-import { signInWithEmailAndPassword } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { auth, firestore, functions } from "../../components/firebase"
-import { terminateFirebase, testDb, testTimestamp } from "../testUtils"
-import { nanoid } from "nanoid"
-import { Bill, BillContent } from "../../components/db"
+import { Bill } from "../../components/db"
+import { firestore, functions } from "../../components/firebase"
+import { terminateFirebase, testDb } from "../testUtils"
+import { createFakeBill, signInUser1, signInUser2 } from "./common"
 
 type BaseTestimony = {
   billId: string
@@ -30,7 +29,7 @@ const refs = {
 
 const deleteTestimony = httpsCallable<
   { publicationId: string },
-  { status: "ok" }
+  { deleted: boolean }
 >(functions, "deleteTestimony")
 
 const publishTestimony = httpsCallable<
@@ -233,19 +232,6 @@ async function getBill(id: string): Promise<Bill> {
   return doc.data() as any
 }
 
-async function createFakeBill() {
-  const billId = nanoid()
-  const bill = {
-    content: "fake" as any as BillContent,
-    cosponsorCount: 0,
-    fetchedAt: testTimestamp.now(),
-    id: billId,
-    testimonyCount: 0
-  }
-  await testDb.doc(`/generalCourts/192/bills/${billId}`).create(bill)
-  return billId
-}
-
 async function createDraft(uid: string, billId: string) {
   const draftId = "test-draft-id"
   const draft: DraftTestimony = {
@@ -257,22 +243,4 @@ async function createDraft(uid: string, billId: string) {
 
   await setDoc(refs.draftTestimony(uid, draftId), draft)
   return { draft, draftId }
-}
-
-async function signInUser1() {
-  const { user } = await signInWithEmailAndPassword(
-    auth,
-    "test@example.com",
-    "password"
-  )
-  return user
-}
-
-async function signInUser2() {
-  const { user } = await signInWithEmailAndPassword(
-    auth,
-    "test2@example.com",
-    "password"
-  )
-  return user
 }

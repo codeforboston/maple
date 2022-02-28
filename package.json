@@ -20,9 +20,10 @@
     "lint": "next lint",
     "serve": "firebase emulators:start --only hosting",
     "start": "next start",
-    "test:integration": "jest -c jest.integration.config.js",
+    "test:integration": "jest -c tests/jest.integration.config.ts -w 1",
     "test:integration-ci": "node scripts/test-integration-ci.js",
-    "test:system": "jest -c jest.system.config.js"
+    "test:system": "jest -c tests/jest.system.config.ts",
+    "seed": "jest -c tests/jest.seed.config.ts"
   },
   "browserslist": {
     "production": [
@@ -46,12 +47,12 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
-    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^12.1.10",
     "awesome-debounce-promise": "^2.1.0",
     "bootstrap": "5.1.3",
-    "firebase": "^9.6.4",
+    "firebase": "^9.6.7",
     "fuse.js": "^6.5.3",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",
@@ -61,7 +62,7 @@
     "leaflet.markercluster": "^1.4.1",
     "linkifyjs": "^3.0.0-beta.3",
     "lodash": "^4.17.21",
-    "next": "12",
+    "next": "^12.1.0",
     "next-on-netlify": "^2.9.0",
     "papaparse": "^5.3.0",
     "react": "^17.0.2",
@@ -86,14 +87,16 @@
     "eslint-config-next": "^12.0.9",
     "eslint-config-prettier": "^8.3.0",
     "firebase-admin": "^10.0.2",
-    "firebase-tools": "10.1.2",
+    "firebase-tools": "^10.2.1",
     "ini": "^1.3.5",
     "inquirer": "^6.5.1",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
+    "lorem-ipsum": "^2.0.4",
     "nanoid": "^3.3.1",
     "prettier": "2.5.1",
     "sass": "^1.49.0",
+    "ts-node": "^10.5.0",
     "typescript": "4.5.5"
   }
 }
