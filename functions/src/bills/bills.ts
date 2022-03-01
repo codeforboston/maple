@@ -1,5 +1,5 @@
-import * as api from "./malegislature"
-import { createScraper } from "./scraper"
+import * as api from "../malegislature"
+import { createScraper } from "../scraper"
 
 /**
  * There are around 8000 documents. With 8 batches per day, 10 parallel
