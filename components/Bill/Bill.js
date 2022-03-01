@@ -37,7 +37,9 @@ const ViewBillPage = props => {
       <div>
         {bill && bill.DocumentText != null
           ? <>
-          <span> {bill.DocumentText.substring(1, 700) + "..." } </span>
+          <span style={{ whiteSpace: "pre-wrap" }}> 
+            {bill.DocumentText.substring(0, 700) + "..." } 
+          </span>
           {bill.DocumentText.length > 700 ? <BillReadMore bill={bill}/> : null}
           </>
           : ""}
