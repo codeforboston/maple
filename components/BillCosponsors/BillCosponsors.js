@@ -1,24 +1,47 @@
 import React, {useState} from "react";
-import { Button, Modal, Table, NavLink } from 'react-bootstrap'
+import { Button, Modal, Table } from 'react-bootstrap'
+import * as links from "../../components/links.tsx"
+import { useMember } from "../db";
+
+const CoSponsorRow = ({coSponsor}) => {
+  const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
+  const {member, loading} = useMember(coSponsor.Id)
+  if (loading) {
+    return null
+  } else {
+    return (
+        <tr>
+          <td>
+            <links.External href={url}>
+                {coSponsor.Name}
+              </links.External>
+          </td>
+          <td>{member.Branch}</td>
+          <td>{member.District}</td>
+          <td>{member.Party}</td>
+        </tr>
+    )
+  }
+}
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
-    const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
     return (
-      <tr key={index}>
-        <td>{coSponsor.Name}</td>
-        <td><NavLink href={url} target="_blank" rel="noreferrer">Link</NavLink></td>
-      </tr>
+      <CoSponsorRow
+        coSponsor = {coSponsor}
+        key = {index}
+      />
     )
   })
-}
+} 
 
 const BillCosponsors = (props) => {
   const bill = props.bill
-  const coSponsors = bill?.Cosponsors ?? []
+  const coSponsors = bill && bill.Cosponsors ? bill.Cosponsors : []
+  const numCoSponsors = coSponsors ? coSponsors.length : 0
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
 
-  const handleShowBillCosponsors = () => setShowBillCosponsors(true)
+  const handleShowBillCosponsors = () => numCoSponsors > 0 ? setShowBillCosponsors(true) : setShowBillCosponsors(false)
   const handleCloseBillCosponsors = () => setShowBillCosponsors(false)
 
   return (
@@ -28,7 +51,7 @@ const BillCosponsors = (props) => {
         className="m-1"
         onClick={handleShowBillCosponsors}
       >
-        Cosponsors
+        Cosponsors {numCoSponsors}
       </Button>
       <Modal
         show={showBillCosponsors}

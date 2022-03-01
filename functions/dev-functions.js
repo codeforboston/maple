@@ -1,6 +1,7 @@
 const { spawn } = require("child_process")
 
 const demoProjectId = "demo-dtp"
+const emulatorArgs = process.argv.slice(2)
 
 run()
 
@@ -39,7 +40,8 @@ function startEmulators() {
         demoProjectId,
         "emulators:start",
         "--only",
-        "pubsub,firestore"
+        "pubsub,firestore",
+        ...emulatorArgs
       ],
       { stdio: ["ignore", "pipe", "inherit"] }
     )

@@ -1,11 +1,7 @@
 const concurrently = require("concurrently")
+const { demoProjectId, env } = require("./common")
 
-const demoProjectId = "demo-dtp"
-const env = {
-  ...process.env,
-  NEXT_PUBLIC_USE_EMULATOR: true,
-  NEXT_PUBLIC_PROJECT_ID: demoProjectId
-}
+const emulatorsStartArgs = process.argv.slice(2).join(" ")
 
 concurrently([
   {
@@ -22,7 +18,7 @@ concurrently([
     env
   },
   {
-    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore`,
+    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore ${emulatorsStartArgs}`,
     name: "emulators",
     prefixColor: "blue",
     env

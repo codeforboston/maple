@@ -47,3 +47,4 @@ amplifytools.xcconfig
 
 out/
 *debug.log
+*.tsbuildinfo

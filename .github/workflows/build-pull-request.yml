@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Setup Build Environment
-        uses: ./.github/actions/setup-frontend
+        uses: ./.github/actions/setup-repo
       - name: Build App
         run: yarn export:nolint
       - name: Export App

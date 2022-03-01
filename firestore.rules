@@ -6,5 +6,25 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    match /profiles/{uid} {
+      // private, only accessible by the user
+      allow read, write: if request.auth.uid == uid
+    }
+    // Allow querying publications individually or with a collection group.
+    match /{path=**}/publishedTestimony/{id} {
+      // public, read-only
+      allow read: if true
+      allow write: if false
+    }
+    match /users/{uid} {
+      match /draftTestimony/{id} {
+        // private, only accessible by the user
+        allow read, write: if request.auth.uid == uid
+      }
+      match /archivedTestimony/{id} {
+        // Not accessible by users, for record keeping.
+        allow read, write: if false
+      }
+    }
   }
 }
