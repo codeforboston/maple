@@ -5,6 +5,7 @@ import AddTestimony from "../AddTestimony/AddTestimony"
 import BillHistory from "../BillHistory/BillHistory"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
+import BillReadMore from "../BillReadMore/BillReadMore"
 import { useBillContent } from "../db"
 
 const ViewBillPage = props => {
@@ -34,7 +35,12 @@ const ViewBillPage = props => {
       </div>
       <div>
         {bill && bill.DocumentText != null
-          ? bill.DocumentText.substring(1, 700) + "..."
+          ? <>
+          <span style={{ whiteSpace: "pre-wrap" }}> 
+            {bill.DocumentText.substring(0, 700) + "..." } 
+          </span>
+          {bill.DocumentText.length > 700 ? <BillReadMore bill={bill}/> : null}
+          </>
           : ""}
       </div>
       <BillTestimonies bill={bill} />
