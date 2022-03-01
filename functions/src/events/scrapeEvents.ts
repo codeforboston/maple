@@ -5,6 +5,7 @@ import { db, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
   BaseEvent,
+  BaseEventContent,
   Hearing,
   Session,
   SessionContent,
@@ -77,7 +78,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   /** Return timestamps shared between event types. */
-  timestamps(startsAt: DateTime) {
+  timestamps(content: BaseEventContent) {
+    const startsAt = this.getEventStart(content)
     return {
       fetchedAt: Timestamp.now(),
       startsAt: Timestamp.fromMillis(startsAt.toMillis())
@@ -98,12 +100,11 @@ class SpecialEventsScraper extends EventScraper<
   }
 
   getEvent(content: SpecialEventContent) {
-    const startsAt = this.getEventStart(content)
     const event: SpecialEvent = {
       id: `specialEvent-${content.EventId}`,
       type: "specialEvent",
       content,
-      ...this.timestamps(startsAt)
+      ...this.timestamps(content)
     }
     return Promise.resolve(event)
   }
@@ -121,12 +122,11 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   }
 
   getEvent(content: SessionContent) {
-    const startsAt = this.getEventStart(content)
     const event: Session = {
       id: `session-${this.court}-${content.EventId}`,
       type: "session",
       content,
-      ...this.timestamps(startsAt)
+      ...this.timestamps(content)
     }
     return Promise.resolve(event)
   }
@@ -143,14 +143,11 @@ class HearingScraper extends EventScraper<api.HearingListItem, Hearing> {
 
   async getEvent({ EventId }: api.HearingListItem) {
     const content = await api.getHearing(EventId)
-    const startsAt = this.getEventStart(
-      content.RescheduledHearing ? content.RescheduledHearing : content
-    )
     const event: Hearing = {
       id: `hearing-${content.EventId}`,
       type: "hearing",
       content,
-      ...this.timestamps(startsAt)
+      ...this.timestamps(content)
     }
     return event
   }
