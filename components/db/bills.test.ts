@@ -4,7 +4,7 @@ import { terminateFirebase, testDb } from "../../tests/testUtils"
 
 afterAll(terminateFirebase)
 
-describe("usePaginatedBills", () => {
+describe("useBills", () => {
   it("fetches bills", async () => {
     const { waitFor, result } = renderHook(() => useBills())
 

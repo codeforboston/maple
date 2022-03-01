@@ -3,8 +3,6 @@ import {
   getDocs,
   limit,
   orderBy,
-  query,
-  QueryConstraint,
   startAfter,
   Timestamp,
   where
@@ -13,7 +11,7 @@ import { nth } from "lodash"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
-import { currentGeneralCourt, loadDoc } from "./common"
+import { currentGeneralCourt, loadDoc, nullableQuery } from "./common"
 
 export type MemberReference = {
   Id: string
@@ -50,6 +48,7 @@ type Action =
   | { type: "sort"; sort: SortOptions }
   | { type: "billId"; billId: string | null }
   | { type: "onSuccess"; page: Bill[] }
+  | { type: "error"; error: Error }
 
 type State = {
   sort: SortOptions
@@ -60,6 +59,7 @@ type State = {
   billsPerPage: number
   nextKey?: unknown
   previousKey?: unknown
+  error: Error | null
 }
 
 const initialPage = {
@@ -74,7 +74,8 @@ const initialState: State = {
   ...initialPage,
   billsPerPage: 10,
   billId: null,
-  sort: "id"
+  sort: "id",
+  error: null
 }
 
 function adjacentKeys(keys: unknown[], currentPage: number) {
@@ -109,6 +110,9 @@ function reducer(state: State, action: Action): State {
       pageKeys: keys,
       ...adjacentKeys(keys, state.currentPage)
     }
+  } else if (action.type === "error") {
+    console.warn("Error in useBills", action.error)
+    return { ...state, error: action.error }
   }
   return state
 }
@@ -141,7 +145,8 @@ export function useBills() {
     () => listBills(sort, billId, billsPerPage, currentPageKey),
     [billId, billsPerPage, currentPageKey, sort],
     {
-      onSuccess: page => dispatch({ type: "onSuccess", page })
+      onSuccess: page => dispatch({ type: "onSuccess", page }),
+      onError: error => dispatch({ type: "error", error })
     }
   )
 
@@ -240,17 +245,19 @@ async function listBills(
   startAfterKey: unknown | null
 ): Promise<Bill[]> {
   const billsRef = collection(
-      firestore,
-      `/generalCourts/${currentGeneralCourt}/bills`
-    ),
-    constraints: QueryConstraint[] = []
+    firestore,
+    `/generalCourts/${currentGeneralCourt}/bills`
+  )
 
-  if (billId) constraints.push(where("id", "==", billId))
-  constraints.push(orderBy(...getOrderBy(sort)))
-  constraints.push(limit(limitCount))
-  if (startAfterKey !== null) constraints.push(startAfter(startAfterKey))
-
-  const result = await getDocs(query(billsRef, ...constraints))
+  const result = await getDocs(
+    nullableQuery(
+      billsRef,
+      billId && where("id", "==", billId),
+      orderBy(...getOrderBy(sort)),
+      limit(limitCount),
+      startAfterKey !== null && startAfter(startAfterKey)
+    )
+  )
   return result.docs.map(d => d.data() as Bill)
 }
 
