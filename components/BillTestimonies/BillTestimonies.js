@@ -1,6 +1,4 @@
-//BillTestimonies.js
 import React from "react";
-import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 import { usePublishedTestimonyListing } from "../db";
@@ -11,9 +9,12 @@ import { usePublishedTestimonyListing } from "../db";
 
 const ViewTestimonies = (props) => {
   const bill = props.bill
-  const testimonies = usePublishedTestimonyListing({billId: bill.id})
+  const testimoniesResponse = usePublishedTestimonyListing({billId: bill.id})
+
+  const testimonies = testimoniesResponse.status == "loading" ? [] : testimoniesResponse.result
+
   const testimoniesComponent = testimonies.loading ? "" :
-    testimonies.result.map((testimony, index) => {
+    testimonies.map((testimony, index) => {
       if (testimony.billId === bill.BillNumber) {
         return (
           <tr key={index}>
@@ -36,13 +37,9 @@ const ViewTestimonies = (props) => {
     }
   )
 
-
   return (
     <Container>
-      
       <h1>Submitted testimonies </h1>
-
-
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -60,6 +57,5 @@ const ViewTestimonies = (props) => {
     </Container>
   );
 };
-
 
 export default ViewTestimonies;

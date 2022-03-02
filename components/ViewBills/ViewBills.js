@@ -1,53 +1,15 @@
-// ViewBills.js
 import React from "react";
 import { useRouter } from "next/router"
 import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
-import { useBillContents, useBills } from "../db";
+import { useBills } from "../db";
 import * as links from "../../components/links.tsx"
 import { useMember } from "../db";
-
-
-// create a hash of bills and their number of testimonies
-const countedTestimonies = testimonies.reduce(function (
-  allTestimonies,
-  testimony
-) {
-  if (testimony.billNumber in allTestimonies) {
-    allTestimonies[testimony.billNumber]++
-  } else {
-    allTestimonies[testimony.billNumber] = 1
-  }
-  return allTestimonies
-},
-{}) 
-
-
-// create a hash of bills and their most recent testimony
-const mostRecentTestimonies = testimonies.reduce(function (
-  allTestimonies,
-  testimony
-) {
-  const billNumber = testimony.billNumber
-  if (billNumber in allTestimonies) {
-    // keep the most recent testimony date for each bill
-    if (new Date(testimony.dateSubmitted) > new Date(allTestimonies[billNumber]))
-    { 
-      allTestimonies[billNumber] = testimony.dateSubmitted
-    }
-  } else {
-    allTestimonies[billNumber] = testimony.dateSubmitted
-  }
-  return allTestimonies
-},
-{}) 
-
 
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
   return ['GOV7'].includes(Id)
 }
-
 
 const BillRow = (props) => {
   const fullBill = props.bill
@@ -102,9 +64,7 @@ const BillRows = ({bills}) => {
   }
 )}
 
-
 const ViewBills = (props) => {
-  // const {bills, loading} = useBillContents()
   const {bills, setSort, loading} = useBills()
   return (
     <Container>
