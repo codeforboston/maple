@@ -1,10 +1,12 @@
+// ViewBills.js
 import React from "react";
 import { useRouter } from "next/router"
 import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
-import { useBillContents } from "../db";
+import { useBillContents, useBills } from "../db";
 import * as links from "../../components/links.tsx"
 import { useMember } from "../db";
+
 
 // create a hash of bills and their number of testimonies
 const countedTestimonies = testimonies.reduce(function (
@@ -19,6 +21,7 @@ const countedTestimonies = testimonies.reduce(function (
   return allTestimonies
 },
 {}) 
+
 
 // create a hash of bills and their most recent testimony
 const mostRecentTestimonies = testimonies.reduce(function (
@@ -39,12 +42,16 @@ const mostRecentTestimonies = testimonies.reduce(function (
 },
 {}) 
 
+
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
   return ['GOV7'].includes(Id)
 }
 
-const BillRow = ({bill}) => {
+
+const BillRow = (props) => {
+  const fullBill = props.bill
+  const bill = props.bill.content
   const router = useRouter()
   const {member, loading} = useMember(bill.PrimarySponsor.Id)
   const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
@@ -67,9 +74,12 @@ const BillRow = ({bill}) => {
           <td>{bill.Title}</td>
           <td>{SponsorComponent}</td>
           <td>{numCoSponsors}</td>
-          <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
+          <td>{fullBill.testimonyCount}</td>
           <td></td>
-          <td>{mostRecentTestimonies[bill.BillNumber] != null ? mostRecentTestimonies[bill.BillNumber] : "" }</td>
+          <td>
+            {fullBill.latestTestimonyAt &&
+              fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
+          </td>
           <td>
             <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
               View Bill
@@ -79,6 +89,7 @@ const BillRow = ({bill}) => {
       )
     } 
 }
+
 
 const BillRows = ({bills}) => {
   return bills.map((bill, index) => {
@@ -91,19 +102,27 @@ const BillRows = ({bills}) => {
   }
 )}
 
+
 const ViewBills = (props) => {
-  const {bills, loading} = useBillContents()
+  // const {bills, loading} = useBillContents()
+  const {bills, setSort, loading} = useBills()
   return (
     <Container>
       <h1>Most Active Bills </h1>
       <div className="col-2">
-        <select className="form-control">
+        <select 
+          className="form-control"
+          onChange={e => {
+            const option = e.target.value
+            if (option !== "DEFAULT") setSort(option)
+          }}
+        >
           <option value="DEFAULT">Sort bills by..</option>
-          <option value="billNum">Bill #</option>
-          <option value="numCosponsors"># CoSponsors</option>
-          <option value="numComments"># Testimony</option>
-          <option value="upcomingHearingDate">Hearing date</option>
-          <option value="recentComments">Most recent testimony</option>
+          <option value="id">Bill #</option>
+          <option value="cosponsorCount"># CoSponsors</option>
+          <option value="testimonyCount"># Testimony</option>
+          <option value="hearingDate">Hearing date</option>
+          <option value="latestTestimony">Most recent testimony</option>
         </select>
       </div>
       <Table className="mt-2" striped bordered hover>
@@ -130,5 +149,5 @@ const ViewBills = (props) => {
   );
 };
 
-export default ViewBills;
 
+export default ViewBills;
