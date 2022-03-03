@@ -30,7 +30,7 @@ describe("profile", () => {
         profile = await getProfile(newUser.uid)
         expect(profile).toBeTruthy()
       },
-      { timeout: 1000, interval: 250 }
+      { timeout: 5000, interval: 250 }
     )
     return profile
   }
