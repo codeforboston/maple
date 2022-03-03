@@ -3,6 +3,7 @@ import { requireAuth } from "../components/auth"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
+import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
 
 export default createPage({
   v2: true,
@@ -21,6 +22,7 @@ export default createPage({
           tool and select your State Representative and Senator below.
         </p>
         <SelectLegislators />
+        <MyTestimonies/>
       </>
     )
   })
