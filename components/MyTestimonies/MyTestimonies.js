@@ -1,12 +1,11 @@
 import React from "react";
-// import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 import { useAuth } from "../../components/auth"
-import { useBillContent, useBills, usePublishedTestimonyListing } from "../db";
+import { useBill, usePublishedTestimonyListing } from "../db";
 
 const TestimonyRow = ({testimony}) => { 
-  const {bill, loading} = useBillContent(testimony.billNumber)
+  const { bill, loading } = useBill()
 
   if (loading) {
     return null
@@ -20,7 +19,7 @@ const TestimonyRow = ({testimony}) => {
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
           <ExpandTestimony
-            bill={bill}
+            bill={bill.content}
             testimony={testimony}
           />
         </td>

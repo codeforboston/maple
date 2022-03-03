@@ -9,32 +9,26 @@ import { usePublishedTestimonyListing } from "../db";
 
 const ViewTestimonies = (props) => {
   const bill = props.bill
-  const testimoniesResponse = usePublishedTestimonyListing({billId: bill.id})
+  const testimoniesResponse = usePublishedTestimonyListing({billId: bill.BillNumber})
+  const testimonies = testimoniesResponse.status == "success" ? testimoniesResponse.result : []
 
-  const testimonies = testimoniesResponse.status == "loading" ? [] : testimoniesResponse.result
-
-  const testimoniesComponent = testimonies.loading ? "" :
-    testimonies.map((testimony, index) => {
+  const testimoniesComponent = testimonies.map((testimony, index) => {
       // need to get the author email address (unless it is anonymous)
-      if (testimony.billId === bill.BillNumber) {
-        return (
-          <tr key={index}>
-            <td>{testimony.position}</td>
-            <td>{testimony.authorUid}</td>
-            <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
-            <td>{testimony.content.substring(0,100)}...</td>
-            <td>{testimony.attachment != null ? "Yes" : ""}</td>
-            <td>
-              <ExpandTestimony
-                bill={bill}
-                testimony={testimony}
-              />
-            </td>
-          </tr>
-        )
-      } else {
-        return
-      }
+      return (
+        <tr key={index}>
+          <td>{testimony.position}</td>
+          <td>{testimony.authorUid}</td>
+          <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+          <td>{testimony.content.substring(0,100)}...</td>
+          <td>{testimony.attachment != null ? "Yes" : ""}</td>
+          <td>
+            <ExpandTestimony
+              bill={bill}
+              testimony={testimony}
+            />
+          </td>
+        </tr>
+      )
     }
   )
 
