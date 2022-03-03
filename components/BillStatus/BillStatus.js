@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import { Button, Modal } from 'react-bootstrap'
+import { Button, Modal, Table } from 'react-bootstrap'
+import { documentHistoryActions } from "../MockAPIResponseDocumentHistoryActions";
 
 const BillStatus = (props) => {
   const bill = props.bill
@@ -7,6 +8,8 @@ const BillStatus = (props) => {
 
   const handleShowBillStatus = () => setShowBillStatus(true);
   const handleCloseBillStatus = () => setShowBillStatus(false);
+
+  const documentHistoryAction = documentHistoryActions[documentHistoryActions.length - 1]
 
     return (
   <>
@@ -21,6 +24,26 @@ const BillStatus = (props) => {
           <>
             <div className="text-center">
               Bill Status
+            </div>
+            <div className="text-center">
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Branch</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{documentHistoryAction.Date.substring(0,10)}</td>
+                    <td>{documentHistoryAction.Date.substring(11,19)}</td>
+                    <td>{documentHistoryAction.Branch}</td>
+                    <td>{documentHistoryAction.Action}</td>
+                  </tr>
+                </tbody>
+              </Table>
             </div>
           </>
         </Modal.Body>
