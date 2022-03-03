@@ -9,7 +9,7 @@ const BillStatus = (props) => {
   const handleShowBillStatus = () => setShowBillStatus(true);
   const handleCloseBillStatus = () => setShowBillStatus(false);
 
-  const documentHistoryAction = documentHistoryActions[documentHistoryActions.length - 1]
+  const currentDocumentAction = documentHistoryActions[documentHistoryActions.length - 1]
 
     return (
   <>
@@ -37,10 +37,10 @@ const BillStatus = (props) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{documentHistoryAction.Date.substring(0,10)}</td>
-                    <td>{documentHistoryAction.Date.substring(11,19)}</td>
-                    <td>{documentHistoryAction.Branch}</td>
-                    <td>{documentHistoryAction.Action}</td>
+                    <td>{currentDocumentAction.Date.substring(0,10)}</td>
+                    <td>{currentDocumentAction.Date.substring(11,19)}</td>
+                    <td>{currentDocumentAction.Branch}</td>
+                    <td>{currentDocumentAction.Action}</td>
                   </tr>
                 </tbody>
               </Table>
