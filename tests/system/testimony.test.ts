@@ -7,6 +7,7 @@ import {
   getDoc
 } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
+import { loremIpsum } from "lorem-ipsum"
 import { auth, firestore, functions } from "../../components/firebase"
 import { terminateFirebase } from "../testUtils"
 
@@ -40,8 +41,28 @@ it("can publish and delete testimony", async () => {
   await expectDelete(publication.id)
 })
 
-async function expectCreateDraft() {
+// Publish some testimony for testing purposes
+it.skip("can seed fake testimony", async () => {
+  const billsToSeed = ["H1000", "H1001", "H1002", "H1003"]
+  for (let billId of billsToSeed) {
+    const draft = await expectCreateDraft(createDraft(billId))
+    const publication = await expectPublish(draft.draft, draft.draftRef)
+  }
+})
+
+const positions = ["endorse", "oppose", "neutral"] as const
+const createDraft = (billId: string) => {
   const draft = {
+    billId,
+    court: 192,
+    position: positions[Math.floor(Math.random() * positions.length)],
+    content: loremIpsum({ count: 4, units: "paragraphs" })
+  }
+  return draft
+}
+
+async function expectCreateDraft(draft?: any) {
+  draft = draft ?? {
     billId: "H1",
     content: "system test testimony",
     court: 192,
