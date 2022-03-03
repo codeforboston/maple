@@ -26,3 +26,13 @@ export async function createFakeBill() {
   await testDb.doc(`/generalCourts/192/bills/${billId}`).create(bill)
   return billId
 }
+
+export async function expectPermissionDenied(work: Promise<any>) {
+  const warn = console.warn
+  console.warn = jest.fn()
+  const e = await work
+    .then(() => fail("expected promise to reject"))
+    .catch(e => e)
+  expect(e.code).toBe("permission-denied")
+  console.warn = warn
+}

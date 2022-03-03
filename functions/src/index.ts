@@ -1,8 +1,9 @@
 export { fetchBillBatch, startBillBatches } from "./bills"
 export {
+  createMemberSearchIndex,
   fetchMemberBatch,
-  startMemberBatches,
-  createMemberSearchIndex
+  startMemberBatches
 } from "./members"
-export { publishTestimony, deleteTestimony } from "./testimony"
+export { setUsername } from "./profile"
+export { deleteTestimony, publishTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"

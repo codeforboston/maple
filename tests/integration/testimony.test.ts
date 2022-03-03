@@ -1,9 +1,15 @@
+import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { Bill } from "../../components/db"
 import { firestore, functions } from "../../components/firebase"
 import { terminateFirebase, testDb } from "../testUtils"
-import { createFakeBill, signInUser1, signInUser2 } from "./common"
+import {
+  createFakeBill,
+  expectPermissionDenied,
+  signInUser1,
+  signInUser2
+} from "./common"
 
 type BaseTestimony = {
   billId: string
@@ -18,6 +24,7 @@ type DraftTestimony = BaseTestimony & {
 
 type Testimony = BaseTestimony & {
   authorUid: string
+  authorDisplayName: string
   version: number
   publishedAt: Timestamp
 }
@@ -38,8 +45,10 @@ const publishTestimony = httpsCallable<
 >(functions, "publishTestimony")
 
 let uid: string
+let user: User
 beforeEach(async () => {
-  uid = (await signInUser1()).uid
+  user = await signInUser1()
+  uid = user.uid
 })
 
 afterAll(terminateFirebase)
@@ -96,6 +105,8 @@ describe("publishTestimony", () => {
     expect(publication).toBeDefined()
     expect(publication?.version).toBe(1)
     expect(publication.publishedAt).toBeDefined()
+    expect(publication.authorUid).toEqual(user.uid)
+    expect(publication.authorDisplayName).toEqual(user.displayName)
     expect(publication).toMatchObject(draft)
 
     draft = await getDraft(uid, draftId)
@@ -206,16 +217,6 @@ describe("publishTestimony", () => {
     )
   })
 })
-
-async function expectPermissionDenied(work: Promise<any>) {
-  const warn = console.warn
-  console.warn = jest.fn()
-  const e = await work
-    .then(() => fail("expected promise to reject"))
-    .catch(e => e)
-  expect(e.code).toBe("permission-denied")
-  console.warn = warn
-}
 
 async function getPublication(uid: string, id: string): Promise<Testimony> {
   const doc = await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).get()

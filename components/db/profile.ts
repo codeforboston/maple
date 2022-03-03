@@ -8,10 +8,13 @@ export type ProfileMember = {
   id: string
   name: string
 }
+
 export type Profile = {
+  displayName?: string
   representative?: ProfileMember
   senator?: ProfileMember
 }
+
 export type ProfileHook = ReturnType<typeof useProfile>
 
 type ProfileState = {
