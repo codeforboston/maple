@@ -68,7 +68,6 @@ const BillRow = ({bill}) => {
           <td>{SponsorComponent}</td>
           <td>{numCoSponsors}</td>
           <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
-          <td></td>
           <td>{mostRecentTestimonies[bill.BillNumber] != null ? mostRecentTestimonies[bill.BillNumber] : "" }</td>
           <td>
             <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
@@ -114,7 +113,6 @@ const ViewBills = (props) => {
             <th>Lead</th>
             <th># CoSponsors</th>
             <th># Testimony</th>
-            <th>Hearing date</th>
             <th>Most recent testimony</th>
             <th></th>
           </tr>
