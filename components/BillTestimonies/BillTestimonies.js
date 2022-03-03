@@ -15,6 +15,7 @@ const ViewTestimonies = (props) => {
 
   const testimoniesComponent = testimonies.loading ? "" :
     testimonies.map((testimony, index) => {
+      // need to get the author email address (unless it is anonymous)
       if (testimony.billId === bill.BillNumber) {
         return (
           <tr key={index}>

@@ -1,21 +1,22 @@
 import React from "react";
-import { testimonies } from "../MockTestimonies"
+// import { testimonies } from "../MockTestimonies"
 import { Table, Container } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 import { useAuth } from "../../components/auth"
-import { useBillContent } from "../db";
+import { useBillContent, useBills, usePublishedTestimonyListing } from "../db";
 
 const TestimonyRow = ({testimony}) => { 
   const {bill, loading} = useBillContent(testimony.billNumber)
+
   if (loading) {
     return null
   } else {
     return (
       <tr>
-        <td>{testimony.support}</td>
-        <td>{testimony.billNumber}</td>
-        <td>{testimony.dateSubmitted}</td>
-        <td>{testimony.text.substring(0,100)}...</td>
+        <td>{testimony.position}</td>
+        <td>{testimony.billId}</td>
+        <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+        <td>{testimony.content.substring(0,100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
           <ExpandTestimony
@@ -30,20 +31,19 @@ const TestimonyRow = ({testimony}) => {
 
 const MyTestimonies = () => {
   const { user, authenticated } = useAuth()
-  const userEmail = authenticated ? user.email : ""
+  // change to 2nd line below when sufficient testimony in sample database
+  const userUid = "c8Z3AdZKX0gfEHdQ102AUW14lbG2"  
+  // const userUid = user ? user.uid : null
+  const testimoniesResponse = usePublishedTestimonyListing(userUid)
+  const testimonies = testimoniesResponse.status == "loading" || testimoniesResponse.status == "error" ? [] : testimoniesResponse.result
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {
-      if (testimony.submitter === "sample.user@gmail.com") {  // replace with below line when want to show only the user's testimonies
-      // if (testimony.submitter === userEmail) {
-        return (
-          <TestimonyRow
-            testimony={testimony}
-            key={index}
-          />
-        )
-      } else {
-        return
-      }
+      return (
+        <TestimonyRow
+          testimony={testimony}
+          key={index}
+        />
+      )
     }
   )
 

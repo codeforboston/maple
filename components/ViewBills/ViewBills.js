@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router"
-import { testimonies } from "../MockTestimonies"
 import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
 import * as links from "../../components/links.tsx"
@@ -18,6 +17,9 @@ const BillRow = (props) => {
   const {member, loading} = useMember(bill.PrimarySponsor.Id)
   const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
   const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+
+  // need to get sponsor email
+  
   const SponsorComponent = sponsorURL != "" ?   
     <>
       <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
@@ -51,7 +53,6 @@ const BillRow = (props) => {
       )
     } 
 }
-
 
 const BillRows = ({bills}) => {
   return bills.map((bill, index) => {
