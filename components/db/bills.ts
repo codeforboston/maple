@@ -1,5 +1,7 @@
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -12,6 +14,7 @@ import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
 import { currentGeneralCourt, loadDoc, nullableQuery } from "./common"
+import { listUpcomingBills } from "./events"
 
 export type MemberReference = {
   Id: string
@@ -142,7 +145,13 @@ export function useBills() {
   ] = useReducer(reducer, initialState)
 
   const bills = useAsync(
-    () => listBills(sort, billId, billsPerPage, currentPageKey),
+    () => {
+      if (sort === "hearingDate") {
+        return listBillsByHearingDate(billId, billsPerPage, currentPageKey)
+      } else {
+        return listBills(sort, billId, billsPerPage, currentPageKey)
+      }
+    },
     [billId, billsPerPage, currentPageKey, sort],
     {
       onSuccess: page => dispatch({ type: "onSuccess", page }),
@@ -200,20 +209,17 @@ export function useBill(id: string) {
   return useAsync(getBill, [id])
 }
 
-type SortOptions =
+type ListBillsSortOptions =
   | "id"
   | "cosponsorCount"
   | "testimonyCount"
   | "latestTestimony"
-  | "hearingDate"
+type SortOptions = ListBillsSortOptions | "hearingDate"
 
-function getOrderBy(sort: SortOptions): Parameters<typeof orderBy> {
+function getOrderBy(sort: ListBillsSortOptions): Parameters<typeof orderBy> {
   switch (sort) {
     case "cosponsorCount":
       return ["cosponsorCount", "desc"]
-    case "hearingDate":
-      // TODO: update bill document from hearing scraper
-      return ["nextHearingDate"]
     case "id":
       return ["id"]
     case "latestTestimony":
@@ -228,7 +234,7 @@ function getPageKey(bill: Bill, sort: SortOptions): unknown {
     case "cosponsorCount":
       return bill.cosponsorCount
     case "hearingDate":
-      return bill.nextHearingAt
+      return bill.id
     case "id":
       return bill.id
     case "latestTestimony":
@@ -239,7 +245,7 @@ function getPageKey(bill: Bill, sort: SortOptions): unknown {
 }
 
 async function listBills(
-  sort: SortOptions,
+  sort: ListBillsSortOptions,
   billId: string | null,
   limitCount: number,
   startAfterKey: unknown | null
@@ -266,4 +272,42 @@ export async function getBill(id: string): Promise<Bill | undefined> {
     `/generalCourts/${currentGeneralCourt}/bills/${id}`
   )
   return bill as any
+}
+
+async function listBillsByHearingDate(
+  billId: string | null,
+  limitCount: number,
+  startAfterKey: unknown | null
+): Promise<Bill[]> {
+  // This is pretty inefficient but hopefully firebase caches things...
+  const fullListing = await listUpcomingBills()
+
+  let startIndex: number
+  if (startAfterKey === null) {
+    startIndex = 0
+  } else {
+    const startAfterIndex = fullListing.findIndex(
+      i => i.billId === startAfterKey
+    )
+    if (startAfterIndex === -1) return []
+    startIndex = startAfterIndex + 1
+  }
+  const listing = fullListing
+    .slice(startIndex, startIndex + limitCount)
+    .filter(i => billId === null || billId === i.billId)
+
+  const bills = await Promise.all(
+    listing.map(async item => {
+      const snap = await getDoc(
+        doc(
+          firestore,
+          `/generalCourts/${currentGeneralCourt}/bills/${item.billId}`
+        )
+      )
+      const bill = snap.data() as Bill
+      bill.nextHearingAt = item.startsAt
+      return bill
+    })
+  )
+  return bills
 }
