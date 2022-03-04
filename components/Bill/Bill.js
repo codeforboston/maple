@@ -19,7 +19,6 @@ const ViewBillPage = props => {
     <>
       <Row>
         <div className=" d-flex justify-content-center">
-          <BillHistory bill={bill} />
           <BillCosponsors bill={bill} />
           <BillStatus bill={bill} />
         </div>

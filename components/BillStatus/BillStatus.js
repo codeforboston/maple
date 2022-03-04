@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
+import BillHistory from "../BillHistory/BillHistory";
 
 const BillStatus = (props) => {
   const bill = props.bill
@@ -21,6 +22,9 @@ const BillStatus = (props) => {
           <>
             <div className="text-center">
               Bill Status
+            </div>
+            <div className=" d-flex justify-content-center">
+              <BillHistory bill={bill} />
             </div>
           </>
         </Modal.Body>
