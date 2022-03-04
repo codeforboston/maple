@@ -1,21 +1,7 @@
 import React, {useState} from "react";
 import { Button, Modal, Table } from 'react-bootstrap'
+import BillHistoryTable from "../BillHistoryTable/BillHistoryTable";
 import { documentHistoryActions } from "../MockAPIResponseDocumentHistoryActions";
-
-const DocumentHistoryActionRows = () => {
-  return (
-    documentHistoryActions.map((documentHistoryAction, index) => {
-      return (
-        <tr key={index}>
-          <td>{documentHistoryAction.Date.substring(0,10)}</td>
-          <td>{documentHistoryAction.Date.substring(11,19)}</td>
-          <td>{documentHistoryAction.Branch}</td>
-          <td>{documentHistoryAction.Action}</td>
-        </tr>
-      )
-    }) 
-  )
-}
 
 const BillHistory = (props) => {
   const bill = props.bill
@@ -35,21 +21,7 @@ const BillHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <>
-            <div className="text-center">
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Branch</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <DocumentHistoryActionRows/>
-                </tbody>
-              </Table>
-            </div>
+            <BillHistoryTable documentHistoryActions={documentHistoryActions} />
           </>
         </Modal.Body>
       </Modal>
