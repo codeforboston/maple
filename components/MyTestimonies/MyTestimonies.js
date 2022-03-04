@@ -5,9 +5,9 @@ import { useAuth } from "../../components/auth"
 import { useBill, usePublishedTestimonyListing } from "../db";
 
 const TestimonyRow = ({testimony}) => { 
-  const { bill, loading } = useBill()
+  const { result: bill } = useBill(testimony.billId)
 
-  if (loading) {
+  if (!bill) {
     return null
   } else {
     return (
