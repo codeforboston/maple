@@ -39,7 +39,6 @@ const BillRow = (props) => {
           <td>{SponsorComponent}</td>
           <td>{numCoSponsors}</td>
           <td>{fullBill.testimonyCount}</td>
-          <td></td>
           <td>
             {fullBill.latestTestimonyAt &&
               fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
@@ -94,7 +93,6 @@ const ViewBills = (props) => {
             <th>Lead</th>
             <th># CoSponsors</th>
             <th># Testimony</th>
-            <th>Hearing date</th>
             <th>Most recent testimony</th>
             <th></th>
           </tr>
