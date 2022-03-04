@@ -17,7 +17,6 @@ export default createPage({
           navigate here from a bill page (`/browse?bill=$billId`), the bill will
           be preselected.
         </p>
-        <MyTestimonies/>
       </>
     )
   }
