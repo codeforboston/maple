@@ -3,7 +3,7 @@ import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
-import { db, Timestamp } from "../firebase"
+import { db, Timestamp, auth } from "../firebase"
 import { currentGeneralCourt } from "../malegislature"
 import { Testimony, DraftTestimony } from "./types"
 
@@ -27,6 +27,7 @@ export const publishTestimony = https.onCall(async (data, context) => {
 
   return { publicationId }
 })
+
 class PublishTestimonyTransaction {
   private t
   private draftId
@@ -51,6 +52,7 @@ class PublishTestimonyTransaction {
 
     const newPublication: Testimony = {
       authorUid: this.uid,
+      authorDisplayName: await this.getDisplayName(),
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,
@@ -179,5 +181,10 @@ class PublishTestimonyTransaction {
       this.publicationExists = true
       this.publicationRef = publications.docs[0].ref
     }
+  }
+
+  private async getDisplayName() {
+    const user = await auth.getUser(this.uid)
+    return user.displayName ?? "Anonymous"
   }
 }

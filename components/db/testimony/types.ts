@@ -17,6 +17,7 @@ export type DraftTestimony = BaseTestimony & {
 /** Published testimony */
 export type Testimony = BaseTestimony & {
   authorUid: string
+  authorDisplayName: string
   version: number
   publishedAt: Timestamp
 }

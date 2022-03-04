@@ -7,8 +7,9 @@ service cloud.firestore {
       allow write: if false;
     }
     match /profiles/{uid} {
-      // private, only accessible by the user
-      allow read, write: if request.auth.uid == uid
+      // public, only writeable by the user
+      allow read: if true
+      allow write: if request.auth.uid == uid
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
