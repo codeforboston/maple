@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
 
-const ExpandTestimony = (props) => {
+const EditTestimony = (props) => {
   const bill = props.bill
   const testimony = props.testimony
   const [showTestimony, setShowTestimony] = useState(false);
@@ -11,7 +11,7 @@ const ExpandTestimony = (props) => {
   return (
   <>
     <Button variant="primary" onClick={handleShowTestimony}>
-      Expand
+      Edit
     </Button>
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
       <Modal.Header closeButton onClick={handleCloseTestimony}>
@@ -34,4 +34,4 @@ const ExpandTestimony = (props) => {
   )
 }
 
-export default ExpandTestimony
+export default EditTestimony

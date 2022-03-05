@@ -1,6 +1,8 @@
 import React from "react";
 import { Table, Container } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
+import EditTestimony from "../EditTestimony/EditTestimony";
+import DeleteTestimony from "../DeleteTestimony/DeleteTestimony";
 import { useAuth } from "../../components/auth"
 import { useBill, usePublishedTestimonyListing } from "../db";
 
@@ -18,10 +20,26 @@ const TestimonyRow = ({testimony}) => {
         <td>{testimony.content.substring(0,100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
+
+        <div className="d-flex">
           <ExpandTestimony
             bill={bill.content}
             testimony={testimony}
           />
+          &nbsp;
+          <EditTestimony
+            className="ml-2"
+            bill={bill.content}
+            testimony={testimony}
+          />
+          &nbsp;
+          <DeleteTestimony
+            bill={bill.content}
+            testimony={testimony}
+          />
+        </div>
+
+   
         </td>
       </tr>
     )
