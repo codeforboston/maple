@@ -22,8 +22,9 @@ const CommentModal = (props) => {
     const senatorEmail =  member ? member.EmailAddress : null
     // console.log(senatorEmail)
     const { member2 } = useMember(representativeId)
+    const [testimony, setTestimony] = useState("")
     // console.log(member2 ? member2.EmailAddress : null)
-    const url = `mailto:${senatorEmail}?subject=Testimony on Bill ${bill ? bill.BillNumber : ""}`
+    const url = `mailto:${senatorEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony}`
     
     return (
      <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
@@ -71,21 +72,32 @@ const CommentModal = (props) => {
                                             Send copy to relevant committee
                                         </label>
                                     </div></td> */}
-                                    <tr>
+                                </tbody>
+                            </table>
+                                    <div>
                                         <links.External href={url}>
                                             Send copy to your legislators
                                         </links.External>
-                                    </tr>
+                                    </div>
+                                    <div>
                                         <links.External href={url}>
                                             Send copy to relevant committee
                                         </links.External>
-                                    <tr>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                    </div>
                             </td>
                         <td width="400px">
-                            <textarea className="form-control" resize="none" rows="20" placeholder="My comments on this bill" required></textarea>
+                            <textarea 
+                                className="form-control" 
+                                resize="none" 
+                                rows="20" 
+                                placeholder="My comments on this bill" required
+                                onChange={e => {
+                                    const someText = e.target.value
+                                    setTestimony(someText)
+                                }}    
+                            />
+
+                           
                             <Button className="mt-2">Upload a document</Button>
                         </td>
                         <td width="50px"/>
@@ -106,6 +118,7 @@ const CommentModal = (props) => {
 const AddTestimony = (props) => {
   const bill = props.bill
   const [showAddComment, setShowAddComment] = useState(false);
+
   const handleShowAddComment = () => setShowAddComment(true);
   const { authenticated, user } = useAuth()
     return (
