@@ -1,14 +1,30 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
 import { useAuth } from "../../components/auth"
+import { useProfile, useMember } from "../db"
+import * as links from "../../components/links"
+
+const publishTestimony = (props) => {
+    console.log("publishing..")
+    // save to Firebase
+}
 
 const CommentModal = (props) => {
     const bill=props.bill
     const showAddComment=props.showAddComment
     const setShowAddComment=props.setShowAddComment
-    const handleShowAddComment = props.handleShowAddComment
     const handleCloseAddComment = () => setShowAddComment(false);
-
+    
+    const { profile } = useProfile()
+    const representativeId = profile ? profile.representative.id : null
+    const senatorId = profile ? profile.senator.id : null
+    const { member } = useMember(senatorId)
+    const senatorEmail =  member ? member.EmailAddress : null
+    // console.log(senatorEmail)
+    const { member2 } = useMember(representativeId)
+    // console.log(member2 ? member2.EmailAddress : null)
+    const url = `mailto:${senatorEmail}?subject=Testimony on Bill ${bill ? bill.BillNumber : ""}`
+    
     return (
      <Modal show={showAddComment} onHide={handleCloseAddComment} size="lg">
         <Modal.Header closeButton onClick={handleCloseAddComment}>
@@ -41,21 +57,29 @@ const CommentModal = (props) => {
                                             </label>
                                         </div></td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                         <td><div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
                                             <label className="form-check-label" htmlFor="flexCheckChecked">
                                                 Send copy to your legislatures
                                             </label>
                                         </div></td>
-                                    </tr>
+                                    </tr> */}
+                                    {/* <td><div className="form-check">
+                                        <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
+                                        <label className="form-check-label" htmlFor="flexCheckChecked">
+                                            Send copy to relevant committee
+                                        </label>
+                                    </div></td> */}
                                     <tr>
-                                        <td><div className="form-check">
-                                            <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
-                                            <label className="form-check-label" htmlFor="flexCheckChecked">
-                                                Send copy to relevant committee
-                                            </label>
-                                        </div></td>
+                                        <links.External href={url}>
+                                            Send copy to your legislators
+                                        </links.External>
+                                    </tr>
+                                        <links.External href={url}>
+                                            Send copy to relevant committee
+                                        </links.External>
+                                    <tr>
                                     </tr>
                                 </tbody>
                             </table>
@@ -71,7 +95,7 @@ const CommentModal = (props) => {
             </table>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="primary" onClick={handleShowAddComment}>
+            <Button variant="primary" onClick={publishTestimony}>
                 Publish
             </Button>
         </Modal.Footer>
@@ -83,7 +107,7 @@ const AddTestimony = (props) => {
   const bill = props.bill
   const [showAddComment, setShowAddComment] = useState(false);
   const handleShowAddComment = () => setShowAddComment(true);
-  const { authenticated } = useAuth()
+  const { authenticated, user } = useAuth()
     return (
   <>
         <div className="d-flex justify-content-center">
