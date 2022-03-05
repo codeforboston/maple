@@ -65,7 +65,8 @@ const BillRows = ({bills}) => {
 )}
 
 const ViewBills = (props) => {
-  const {bills, setSort, loading} = useBills()
+  const {bills, setSort, loading, nextPage, previousPage, currentPage} = useBills()
+
   return (
     <Container>
       <h1>Most Active Bills </h1>
@@ -104,6 +105,25 @@ const ViewBills = (props) => {
       <Row>
         {loading && <Spinner animation="border" className="mx-auto"/>}
       </Row>
+      <div className="d-flex justify-content-center" style={{marginBottom: 15}}>
+        <Button 
+        variant="primary" 
+        style={{marginRight: 15}}
+        onClick={previousPage}
+        disabled={currentPage === 1}
+        >
+          {"<"}
+        </Button>
+        <span>Page {currentPage}</span>
+        <Button 
+        variant="primary" 
+        style={{marginLeft: 15}}
+        disabled={false}
+        onClick={nextPage}
+        >
+          {">"}
+        </Button>
+      </div>
     </Container>
   );
 };
