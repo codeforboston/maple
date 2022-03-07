@@ -17,16 +17,15 @@ Why this bill is important to me:
 
 My thoughts:
 `
-    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : "My comments on this bill..")
+    const [testimony, setTestimony] = useState(props.testimony)
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
-    
     const { profile } = useProfile()
     const representativeId = profile ? profile.representative.id : null
     const senatorId = profile ? profile.senator.id : null
     const { member } = useMember(senatorId)
-    const { member2 } = useMember(representativeId) // this doesn't work
+    const { member2 } = useMember(representativeId) // this doesn't work yet
     const senatorEmail =  member ? member.EmailAddress : null
     const representativeEmail =  member2 ? member2.EmailAddress : null
     const url = `mailto:${senatorEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony : ""}`
@@ -34,7 +33,7 @@ My thoughts:
     const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
     const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
     const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
-    const defaultContent = testimony
+    const defaultContent = testimony && testimony.content ? testimony.content : "My comments on this bill.."
     
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
