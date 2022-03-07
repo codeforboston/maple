@@ -10,7 +10,7 @@ const publishTestimony = (props) => {
 }
 
 const CommentModal = (props) => {
-    const [testimony, setTestimony] = useState(props.testimony)
+    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : "My comments on this bill..")
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
@@ -27,7 +27,7 @@ const CommentModal = (props) => {
     const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
     const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
     const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
-    const defaultContent = testimony && testimony.content ? testimony.content : "My comments on this bill.."
+    const defaultContent = testimony
     
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
