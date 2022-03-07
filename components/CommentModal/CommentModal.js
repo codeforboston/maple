@@ -10,7 +10,14 @@ const publishTestimony = (props) => {
 }
 
 const CommentModal = (props) => {
-    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : "My comments on this bill..")
+    const testimonyTemplate = 
+`Why I am qualified to provide testimony:
+
+Why this bill is important to me:
+
+My thoughts:
+`
+    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : testimonyTemplate)
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
