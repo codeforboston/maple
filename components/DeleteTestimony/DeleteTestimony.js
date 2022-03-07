@@ -18,16 +18,7 @@ const DeleteTestimony = (props) => {
           <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-          <h4>{testimony ? testimony.authorUid + " - " + testimony.publishedAt.toDate().toLocaleString() + " - " + testimony.position : ""}</h4>
-          <p>{testimony ? testimony.content : ""}</p>
-          <h4>
-            {testimony && testimony.attachment != null ? 
-            <Button variant="primary">
-              See attachment
-            </Button> 
-            : 
-            ""}
-          </h4>
+          <h4>delete functionality here</h4>
       </Modal.Body>
     </Modal>
   </>

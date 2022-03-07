@@ -23,9 +23,12 @@ const CommentModal = (props) => {
     const senatorEmail =  member ? member.EmailAddress : null
     const representativeEmail =  member2 ? member2.EmailAddress : null
     const url = `mailto:${senatorEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony : ""}`
-    const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
-    const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // needed for test data
 
+    const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
+    const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
+    const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
+    const defaultContent = testimony && testimony.content ? testimony.content : "My comments on this bill.."
+    
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
@@ -44,7 +47,7 @@ const CommentModal = (props) => {
                     <option value="Neutral">Neutral</option>
                 </select>
                 <div className="form-check">
-                  <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked"/>
+                  <input className="form-check-input" type="checkbox" defaultValue={defaultAnonymous} id="flexCheckChecked"/>
                   <label className="form-check-label" htmlFor="flexCheckChecked">
                       Anonymous
                   </label>
@@ -66,7 +69,8 @@ const CommentModal = (props) => {
                     className="form-control col-sm" 
                     resize="none" 
                     rows="20" 
-                    placeholder="My comments on this bill" required
+                    required
+                    defaultValue={defaultContent}
                     onChange={e => {
                         const someText = e.target.value
                         setTestimony(someText)
