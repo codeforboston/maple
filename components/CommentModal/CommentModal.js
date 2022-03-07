@@ -13,7 +13,6 @@ const CommentModal = (props) => {
     const [testimony, setTestimony] = useState(props.testimony)
     const bill=props.bill
     const showTestimony=props.showTestimony
-    const handleShowTestimony=props.handleShowTestimony
     const handleCloseTestimony=props.handleCloseTestimony
     
     const { profile } = useProfile()
@@ -24,21 +23,21 @@ const CommentModal = (props) => {
     const senatorEmail =  member ? member.EmailAddress : null
     const representativeEmail =  member2 ? member2.EmailAddress : null
     const url = `mailto:${senatorEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony : ""}`
-    // const endorseOption = testimony && testimony.position == "endorse" ? 
-    //   <option value="Endorse" selected>Endorse</option>  :
-    //   <option value="Endorse">Endorse</option>
-      
+    const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
+    const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // needed for test data
+
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
             <Modal.Title>{"Add Your Testimony" + (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
 
           <div className="container">
             <div className="row">
               <div className="col-sm align-middle">
-                <select className="form-control">
+                <select className="form-control" defaultValue={defaultPosition}>
                     <option value="DEFAULT">Select my support..</option>
                     <option value="Endorse">Endorse</option>
                     <option value="Oppose">Oppose</option>

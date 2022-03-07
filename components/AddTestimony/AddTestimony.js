@@ -8,6 +8,7 @@ const AddTestimony = (props) => {
   const [showTestimony, setShowTestimony] = useState(false);
 
   const handleShowTestimony = () => setShowTestimony(true);
+  const handleCloseTestimony = () => setShowTestimony(false);
   const { authenticated, user } = useAuth()
     return (
   <>
@@ -23,6 +24,7 @@ const AddTestimony = (props) => {
             showTestimony={showTestimony}
             setShowTestimony={setShowTestimony}
             handleShowTestimony={handleShowTestimony}
+            handleCloseTestimony={handleCloseTestimony}
         />
     </>
     )
