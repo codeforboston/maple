@@ -15,11 +15,19 @@ const DeleteTestimony = (props) => {
     </Button>
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
       <Modal.Header closeButton onClick={handleCloseTestimony}>
-          <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
+        <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-          <h4>delete functionality here</h4>
+        Are you sure you want to delete your testimony for this bill?
       </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary">
+            Delete
+        </Button>
+        <Button>
+            Cancel
+        </Button>
+      </Modal.Footer>
     </Modal>
   </>
   )
