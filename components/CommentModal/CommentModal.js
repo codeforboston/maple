@@ -17,7 +17,7 @@ Why this bill is important to me:
 
 My thoughts:
 `
-    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : testimonyTemplate)
+    const [testimony, setTestimony] = useState(props.testimony ? props.testimony.content : "My comments on this bill..")
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
