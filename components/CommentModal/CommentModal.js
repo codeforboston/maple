@@ -9,6 +9,11 @@ const publishTestimony = (props) => {
     // save to Firebase
 }
 
+const GetMemberEmail = (Id) => {
+  const { member } = useMember(Id)
+  return member ? member.EmailAddress : null
+}
+
 const CommentModal = (props) => {
     const testimonyTemplate = 
 `Why I am qualified to provide testimony:
@@ -21,14 +26,17 @@ My thoughts:
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
+
     const { profile } = useProfile()
     const representativeId = profile ? profile.representative.id : null
     const senatorId = profile ? profile.senator.id : null
-    const { member } = useMember(senatorId)
-    const { member2 } = useMember(representativeId) // this doesn't work yet
-    const senatorEmail =  member ? member.EmailAddress : null
-    const representativeEmail =  member2 ? member2.EmailAddress : null
-    const url = `mailto:${senatorEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony : ""}`
+    const senatorEmail = GetMemberEmail(senatorId)
+    const representativeEmail = GetMemberEmail(representativeId)
+ 
+    // console.log(senatorEmail)
+    // console.log(representativeEmail)
+
+    const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
     const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
     const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
@@ -79,7 +87,8 @@ My thoughts:
                     defaultValue={defaultContent}
                     onChange={e => {
                         const someText = e.target.value
-                        setTestimony(someText)
+                        const testimonyObject = {content: someText}
+                        setTestimony(testimonyObject)
                     }}    
                 />
                 <Button className="mt-2">Upload a document</Button>
