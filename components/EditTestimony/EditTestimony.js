@@ -14,14 +14,14 @@ const EditTestimony = (props) => {
     <Button variant="primary" onClick={handleShowTestimony}>
       Edit
     </Button>
-    <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
-        <CommentModal
-            bill={bill}
-            showAddComment={showTestimony}
-            setShowTestimony={setShowTestimony}
-            handleShowTestimony={handleShowTestimony}
-        />
-    </Modal>
+    <CommentModal
+      bill={bill}
+      showTestimony={showTestimony}
+      setShowTestimony={setShowTestimony}
+      handleShowTestimony={handleShowTestimony}
+      handleCloseTestimony={handleCloseTestimony}
+      testimony={testimony}
+    />
   </>
   )
 }
