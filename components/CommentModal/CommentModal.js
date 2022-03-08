@@ -1,13 +1,9 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
 import { useAuth } from "../../components/auth"
-import { useProfile, useMember } from "../db"
+import { useProfile, useMember, useTestimony } from "../db"
+import { usePublishTestimony } from "../db/testimony/useEditTestimony"
 import * as links from "../../components/links"
-
-const publishTestimony = (props) => {
-    console.log("publishing..")
-    // save to Firebase
-}
 
 const GetMemberEmail = (Id) => {
   const { member } = useMember(Id)
@@ -15,33 +11,44 @@ const GetMemberEmail = (Id) => {
 }
 
 const CommentModal = (props) => {
-    const testimonyTemplate = 
+  const defaultTestimony = "My comments on this bill..."
+  const [testimony, setTestimony] = useState(props.testimony ? props.testimony : {content: defaultTestimony})
+  
+  const publishTestimony = () => {
+      // console.log("publishing..")
+      // console.log(user ? user.uid : "")
+      // console.log(bill ? bill.BillNumber : "")
+      // console.log("testimony")
+      // console.log(testimony)
+      
+      // how to save testimony to Firebase?
+      // useTestimony({uid, billId, draftRef, publicationRef}) ?
+    }
+
+  const testimonyTemplate = 
 `Why I am qualified to provide testimony:
 
 Why this bill is important to me:
 
 My thoughts:
 `
-    const [testimony, setTestimony] = useState(props.testimony)
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
 
+    const { user, authenticated } = useAuth()
     const { profile } = useProfile()
     const representativeId = profile ? profile.representative.id : null
     const senatorId = profile ? profile.senator.id : null
     const senatorEmail = GetMemberEmail(senatorId)
     const representativeEmail = GetMemberEmail(representativeId)
  
-    // console.log(senatorEmail)
-    // console.log(representativeEmail)
-
     const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
     const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
     const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
     const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
-    const defaultContent = testimony && testimony.content ? testimony.content : "My comments on this bill.."
+    const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
     
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
@@ -94,16 +101,18 @@ My thoughts:
                 <Button className="mt-2">Upload a document</Button>
               </div>
             </div>
-          </div>       
+          </div>  
+
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="primary" onClick={publishTestimony}>
               Publish
           </Button>
         </Modal.Footer>
+
     </Modal>
     )
 } 
 
 export default CommentModal 
-
