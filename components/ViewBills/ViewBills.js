@@ -4,6 +4,8 @@ import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap
 import { useBills } from "../db";
 import * as links from "../../components/links.tsx"
 import { useMember } from "../db";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -65,7 +67,7 @@ const BillRows = ({bills}) => {
 )}
 
 const ViewBills = (props) => {
-  const {bills, setSort, loading, nextPage, previousPage, currentPage} = useBills()
+  const {bills, setSort, loading, nextPage, previousPage, currentPage, hasNextPage, hasPreviousPage} = useBills()
 
   return (
     <Container>
@@ -109,9 +111,9 @@ const ViewBills = (props) => {
         variant="primary" 
         style={{marginRight: 15}}
         onClick={previousPage}
-        disabled={currentPage === 1}
+        disabled={!hasPreviousPage}
         >
-          {"<"}
+          <FontAwesomeIcon icon={faAngleLeft} />
         </Button>
         <span>Page {currentPage}</span>
         <Button 
@@ -119,8 +121,9 @@ const ViewBills = (props) => {
         style={{marginLeft: 15}}
         disabled={false}
         onClick={nextPage}
+        disabled={!hasNextPage}
         >
-          {">"}
+          <FontAwesomeIcon icon={faAngleRight} />
         </Button>
       </div>
     </Container>
