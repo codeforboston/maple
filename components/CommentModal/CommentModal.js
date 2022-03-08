@@ -33,6 +33,7 @@ My thoughts:
     const senatorEmail = senatorId ? GetMemberEmail(senatorId) : ""
     const representativeEmail = representativeId ? GetMemberEmail(representativeId) : ""
     const edit = useEditTestimony(user.uid, bill.BillNumber)
+    const positionMessage = "Select my support..(required)"
     
     const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
@@ -42,10 +43,10 @@ My thoughts:
     const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
     
     const publishTestimony = async () => {
+      if (testimony.position == undefined || testimony.position == positionMessage) { return }
       handleCloseTestimony()
       await edit.saveDraft.execute(testimony)
       await edit.publishTestimony.execute()
-      console.log("publishing testimony")
     }
     
     return (
@@ -67,7 +68,7 @@ My thoughts:
                           setTestimony(testimonyObject)
                         }
                     }}>
-                    <option>Select my support..</option>
+                    <option>{positionMessage}</option>
                     <option value="endorse">Endorse</option>
                     <option value="oppose">Oppose</option>
                     <option value="neutral">Neutral</option>
