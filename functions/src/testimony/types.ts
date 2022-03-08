@@ -26,6 +26,7 @@ export type Testimony = Static<typeof Testimony>
 export const Testimony = withDefaults(
   BaseTestimony.extend({
     authorUid: Id,
+    authorDisplayName: RtString,
     version: Number,
     publishedAt: InstanceOf(Timestamp)
   }),

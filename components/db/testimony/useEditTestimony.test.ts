@@ -1,5 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import { act, renderHook } from "@testing-library/react-hooks"
+import { User } from "firebase/auth"
 import { DraftTestimony, Testimony, useEditTestimony } from "."
 import {
   createFakeBill,
@@ -9,8 +10,9 @@ import {
 import { terminateFirebase } from "../../../tests/testUtils"
 
 let uid: string
+let user: User
 beforeEach(async () => {
-  const user = await signInUser1()
+  user = await signInUser1()
   uid = user.uid
 })
 
@@ -34,6 +36,7 @@ beforeEach(() => {
   }
   testimony = {
     authorUid: uid,
+    authorDisplayName: user.displayName!,
     billId,
     content: draft.content,
     court: 192,
