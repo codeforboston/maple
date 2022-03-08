@@ -16,7 +16,7 @@ const BillRow = (props) => {
   const fullBill = props.bill
   const bill = props.bill.content
   const router = useRouter()
-  const {member, loading} = useMember(bill.PrimarySponsor.Id)
+  const {member, loading} = useMember(bill.PrimarySponsor ? bill.PrimarySponsor.Id : null)
   const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
   const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
 
@@ -29,7 +29,7 @@ const BillRow = (props) => {
     </>
     :
     <>
-      {bill.PrimarySponsor.Name}
+      {bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}
     </>
     if (loading) {
       return null
@@ -119,7 +119,6 @@ const ViewBills = (props) => {
         <Button 
         variant="primary" 
         style={{marginLeft: 15}}
-        disabled={false}
         onClick={nextPage}
         disabled={!hasNextPage}
         >
