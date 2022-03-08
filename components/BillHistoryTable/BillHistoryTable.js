@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from 'react-bootstrap'
 
-const DocumentHistoryActionRows = (documentHistoryActions) => {
+const DocumentHistoryActionRows = ({documentHistoryActions}) => {
 	return (
 		documentHistoryActions.map((documentHistoryAction, index) => {
 			return (
