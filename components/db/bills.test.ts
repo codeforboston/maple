@@ -13,6 +13,8 @@ describe("usePaginatedBills", () => {
 
     await waitFor(() => expect(result.current.loading).toBeFalsy())
     expect(result.current.bills).toHaveLength(result.current.billsPerPage)
+    expect(result.current.hasNextPage).toBeTruthy()
+    expect(result.current.hasPreviousPage).toBeFalsy()
   })
 
   it("paginates", async () => {
@@ -24,12 +26,16 @@ describe("usePaginatedBills", () => {
     expect(result.current.currentPage).toBe(2)
     expect(result.current.bills).toBeUndefined()
     await waitFor(() => expect(result.current.bills).toBeDefined())
+    expect(result.current.hasNextPage).toBeTruthy()
+    expect(result.current.hasPreviousPage).toBeTruthy()
 
     // move to the previous page
     act(() => void result.current.previousPage())
     expect(result.current.bills).toBeUndefined()
     expect(result.current.currentPage).toBe(1)
     await waitFor(() => expect(result.current.bills).toBeDefined())
+    expect(result.current.hasNextPage).toBeTruthy()
+    expect(result.current.hasPreviousPage).toBeFalsy()
   })
 
   it("filters by billId", async () => {

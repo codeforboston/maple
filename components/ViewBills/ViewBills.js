@@ -4,6 +4,8 @@ import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap
 import { useBills } from "../db";
 import * as links from "../../components/links.tsx"
 import { useMember } from "../db";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -14,7 +16,7 @@ const BillRow = (props) => {
   const fullBill = props.bill
   const bill = props.bill.content
   const router = useRouter()
-  const {member, loading} = useMember(bill.PrimarySponsor.Id)
+  const {member, loading} = useMember(bill.PrimarySponsor ? bill.PrimarySponsor.Id : null)
   const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
   const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
 
@@ -27,7 +29,7 @@ const BillRow = (props) => {
     </>
     :
     <>
-      {bill.PrimarySponsor.Name}
+      {bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}
     </>
     if (loading) {
       return null
@@ -65,7 +67,8 @@ const BillRows = ({bills}) => {
 )}
 
 const ViewBills = (props) => {
-  const {bills, setSort, loading} = useBills()
+  const {bills, setSort, loading, nextPage, previousPage, currentPage, hasNextPage, hasPreviousPage} = useBills()
+
   return (
     <Container>
       <h1>Most Active Bills </h1>
@@ -103,6 +106,25 @@ const ViewBills = (props) => {
       <Row>
         {loading && <Spinner animation="border" className="mx-auto"/>}
       </Row>
+      <div className="d-flex justify-content-center mb-3">
+        <Button 
+        variant="primary" 
+        style={{marginRight: 15}}
+        onClick={previousPage}
+        disabled={!hasPreviousPage}
+        >
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Button>
+        <span>Page {currentPage}</span>
+        <Button 
+        variant="primary" 
+        style={{marginLeft: 15}}
+        onClick={nextPage}
+        disabled={!hasNextPage}
+        >
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Button>
+      </div>
     </Container>
   );
 };

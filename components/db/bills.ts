@@ -9,7 +9,7 @@ import {
   Timestamp,
   where
 } from "firebase/firestore"
-import { last } from "lodash"
+import { nth } from "lodash"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
@@ -58,12 +58,16 @@ type State = {
   currentPageKey: unknown | null
   currentPage: number
   billsPerPage: number
+  nextKey?: unknown
+  previousKey?: unknown
 }
 
 const initialPage = {
   pageKeys: [null],
   currentPage: 0,
-  currentPageKey: null
+  currentPageKey: null,
+  nextKey: undefined,
+  previousKey: undefined
 }
 
 const initialState: State = {
@@ -73,12 +77,21 @@ const initialState: State = {
   sort: "id"
 }
 
+function adjacentKeys(keys: unknown[], currentPage: number) {
+  return { nextKey: keys[currentPage + 1], previousKey: keys[currentPage - 1] }
+}
+
 function reducer(state: State, action: Action): State {
   if (action.type === "nextPage" || action.type === "previousPage") {
     const next = state.currentPage + (action.type === "nextPage" ? 1 : -1),
       nextKey = state.pageKeys[next]
     if (nextKey !== undefined) {
-      return { ...state, currentPage: next, currentPageKey: nextKey }
+      return {
+        ...state,
+        currentPage: next,
+        currentPageKey: nextKey,
+        ...adjacentKeys(state.pageKeys, next)
+      }
     } else {
       return state
     }
@@ -88,10 +101,14 @@ function reducer(state: State, action: Action): State {
     return { ...state, billId: action.billId, ...initialPage }
   } else if (action.type === "onSuccess") {
     const keys = [...state.pageKeys]
-    const bill = last(action.page)
+    const bill = nth(action.page, state.billsPerPage - 1)
     keys[state.currentPage + 1] =
       bill !== undefined ? getPageKey(bill, state.sort) : undefined
-    return { ...state, pageKeys: keys }
+    return {
+      ...state,
+      pageKeys: keys,
+      ...adjacentKeys(keys, state.currentPage)
+    }
   }
   return state
 }
@@ -108,7 +125,15 @@ export function useBillContents() {
 
 export function useBills() {
   const [
-    { sort, billId, billsPerPage, currentPageKey, currentPage },
+    {
+      sort,
+      billId,
+      billsPerPage,
+      currentPageKey,
+      currentPage,
+      nextKey,
+      previousKey
+    },
     dispatch
   ] = useReducer(reducer, initialState)
 
@@ -126,6 +151,8 @@ export function useBills() {
       currentPage: currentPage + 1,
       nextPage: () => dispatch({ type: "nextPage" }),
       previousPage: () => dispatch({ type: "previousPage" }),
+      hasNextPage: nextKey !== undefined,
+      hasPreviousPage: previousKey !== undefined,
       setSort: (sort: SortOptions) => dispatch({ type: "sort", sort }),
       setBillId: (billId: string | null) =>
         dispatch({ type: "billId", billId }),
@@ -138,6 +165,8 @@ export function useBills() {
     [
       billsPerPage,
       currentPage,
+      nextKey,
+      previousKey,
       sort,
       billId,
       bills.error,
@@ -219,7 +248,7 @@ async function listBills(
   if (billId) constraints.push(where("id", "==", billId))
   constraints.push(orderBy(...getOrderBy(sort)))
   constraints.push(limit(limitCount))
-  if (startAfterKey) constraints.push(startAfter(startAfterKey))
+  if (startAfterKey !== null) constraints.push(startAfter(startAfterKey))
 
   const result = await getDocs(query(billsRef, ...constraints))
   return result.docs.map(d => d.data() as Bill)
