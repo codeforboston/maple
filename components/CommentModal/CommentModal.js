@@ -39,10 +39,10 @@ My thoughts:
 
     const { user, authenticated } = useAuth()
     const { profile } = useProfile()
-    const representativeId = profile ? profile.representative.id : null
-    const senatorId = profile ? profile.senator.id : null
-    const senatorEmail = GetMemberEmail(senatorId)
-    const representativeEmail = GetMemberEmail(representativeId)
+    const representativeId = profile && profile.representative ? profile.representative.id : null
+    const senatorId = profile && profile.senator ? profile.senator.id : null
+    const senatorEmail = senatorId ? GetMemberEmail(senatorId) : ""
+    const representativeEmail = representativeId ? GetMemberEmail(representativeId) : ""
  
     const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
