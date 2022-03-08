@@ -105,7 +105,7 @@ const ViewBills = (props) => {
       <Row>
         {loading && <Spinner animation="border" className="mx-auto"/>}
       </Row>
-      <div className="d-flex justify-content-center" style={{marginBottom: 15}}>
+      <div className="d-flex justify-content-center mb-3">
         <Button 
         variant="primary" 
         style={{marginRight: 15}}
