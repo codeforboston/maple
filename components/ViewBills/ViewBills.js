@@ -81,7 +81,6 @@ const ViewBills = (props) => {
           <option value="id">Bill #</option>
           <option value="cosponsorCount"># CoSponsors</option>
           <option value="testimonyCount"># Testimony</option>
-          <option value="hearingDate">Hearing date</option>
           <option value="latestTestimony">Most recent testimony</option>
         </select>
       </div>
