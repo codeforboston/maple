@@ -9,7 +9,7 @@ import {
   Timestamp,
   where
 } from "firebase/firestore"
-import { last } from "lodash"
+import { nth } from "lodash"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
@@ -101,7 +101,7 @@ function reducer(state: State, action: Action): State {
     return { ...state, billId: action.billId, ...initialPage }
   } else if (action.type === "onSuccess") {
     const keys = [...state.pageKeys]
-    const bill = last(action.page)
+    const bill = nth(action.page, state.billsPerPage - 1)
     keys[state.currentPage + 1] =
       bill !== undefined ? getPageKey(bill, state.sort) : undefined
     return {
@@ -248,7 +248,7 @@ async function listBills(
   if (billId) constraints.push(where("id", "==", billId))
   constraints.push(orderBy(...getOrderBy(sort)))
   constraints.push(limit(limitCount))
-  if (startAfterKey) constraints.push(startAfter(startAfterKey))
+  if (startAfterKey !== null) constraints.push(startAfter(startAfterKey))
 
   const result = await getDocs(query(billsRef, ...constraints))
   return result.docs.map(d => d.data() as Bill)
