@@ -13,6 +13,7 @@ const DeleteTestimony = (props) => {
   const edit = useEditTestimony(user.uid, bill.BillNumber)
 
   const deleteTestimony = async () => {
+    handleCloseTestimony()
     await edit.discardDraft.execute()
     await edit.deleteTestimony.execute()
   }
@@ -33,7 +34,7 @@ const DeleteTestimony = (props) => {
         <Button variant="primary" onClick={deleteTestimony}>
             Delete
         </Button>
-        <Button>
+        <Button onClick={handleCloseTestimony}>
             Cancel
         </Button>
       </Modal.Footer>

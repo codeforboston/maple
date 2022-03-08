@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
 import { useAuth } from "../../components/auth"
-import { useProfile, useMember, useTestimony } from "../db"
+import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import * as links from "../../components/links"
 
@@ -11,7 +11,7 @@ const GetMemberEmail = (Id) => {
 }
 
 const CommentModal = (props) => {
-  const useTestimonyTemplate = false
+  const useTestimonyTemplate = true
   const testimonyTemplate = 
 `Why I am qualified to provide testimony:
 
@@ -34,7 +34,6 @@ My thoughts:
     const representativeEmail = representativeId ? GetMemberEmail(representativeId) : ""
     const edit = useEditTestimony(user.uid, bill.BillNumber)
     
-
     const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
     const defaultPosition = testimony && testimony.position ? testimony.position : undefined
@@ -43,8 +42,10 @@ My thoughts:
     const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
     
     const publishTestimony = async () => {
+      handleCloseTestimony()
       await edit.saveDraft.execute(testimony)
       await edit.publishTestimony.execute()
+      console.log("publishing testimony")
     }
     
     return (
