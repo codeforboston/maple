@@ -1,13 +1,22 @@
 import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
+import { useEditTestimony } from "../db/testimony/useEditTestimony"
+import { useAuth } from "../../components/auth"
 
 const DeleteTestimony = (props) => {
   const bill = props.bill
-  const testimony = props.testimony
   const [showTestimony, setShowTestimony] = useState(false);
-
+  const { user, authenticated } = useAuth()
   const handleShowTestimony = () => setShowTestimony(true);
   const handleCloseTestimony = () => setShowTestimony(false);
+
+  const edit = useEditTestimony(user.uid, bill.BillNumber)
+
+  const deleteTestimony = async () => {
+    await edit.discardDraft.execute()
+    await edit.deleteTestimony.execute()
+  }
+
   return (
   <>
     <Button variant="primary" onClick={handleShowTestimony}>
@@ -21,7 +30,7 @@ const DeleteTestimony = (props) => {
         Are you sure you want to delete your testimony for this bill?
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary">
+        <Button variant="primary" onClick={deleteTestimony}>
             Delete
         </Button>
         <Button>

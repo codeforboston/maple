@@ -9,7 +9,7 @@ import {
   updateDoc
 } from "firebase/firestore"
 import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
-import { useAsyncCallback } from "react-async-hook"
+import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import { firestore } from "../../firebase"
 import { currentGeneralCourt } from "../common"
 import { resolveBillTestimony } from "./resolveTestimony"
@@ -20,14 +20,69 @@ import {
   Testimony
 } from "./types"
 
-export type UseEditTestimony = ReturnType<typeof useEditTestimony>
+interface UseEditTestimony {
+  /** The last hook error produced in loading the `draft` or `publication`. This
+   * is separate from each callback's `error` property, which indicates errors
+   * in that specific operation. */
+  error?: Error
+  /** Whether the hook is loading the `draft` or `publication`. This is separate
+   * from each callback's `loading` property, which indicates whether that
+   * operation is loading */
+  loading: boolean
+
+  /** The current draft version of the testimony, if any.  */
+  draft?: DraftTestimony
+  /** The current published version of the testimony, if any.  */
+  publication?: Testimony
+  
+  /** Saves the given `position` and `content` to the draft version of the
+   * testimony. This should not be called while the hook is `loading` or has an
+   * `error`.
+   *
+   * - `saveDraft.execute({position, content})` Starts the operation
+   * - `saveDraft.loading` Whether the operation is currently running
+   * - `saveDraft.error` Any error produced by the operation
+   */
+  saveDraft: UseAsyncReturn<void, [SaveDraftRequest]>
+  /** Deletes the current draft version of the testimony. Does nothing if there
+   * is no draft. This should not be called while the hook is `loading` or has
+   * an `error`.
+   *
+   * - `discardDraft.execute()` Starts the operation
+   * - `discardDraft.loading` Whether the operation is currently running
+   * - `discardDraft.error` Any error produced by the operation
+   */
+  discardDraft: UseAsyncReturn<void, []>
+  /** Publishes the current draft version of the testimony. This should be
+   * called after `saveDraft` completes, to ensure all content is included in
+   * the publication. This should not be called while the hook is `loading` or
+   * has an `error`.
+   *
+   * - `publishTestimony.execute()` Starts the operation
+   * - `publishTestimony.loading` Whether the operation is currently running
+   * - `publishTestimony.error` Any error produced by the operation
+   */
+  publishTestimony: UseAsyncReturn<void, []>
+  /** Deletes the current published version of the testimony. Does nothing if
+   * nothing's been published yet. This should not be called while the hook is
+   * `loading` or has an `error`.
+   *
+   * - `deleteTestimony.execute()` Starts the operation
+   * - `deleteTestimony.loading` Whether the operation is currently running
+   * - `deleteTestimony.error` Any error produced by the operation
+   */
+  deleteTestimony: UseAsyncReturn<void, []>
+}
 
 /**
  * Load, save, and publish testimony for a particular user and bill.
  *
  * The initial `uid` and `billId` are used for the lifetime of the hook
  */
-export function useEditTestimony(uid: string, billId: string) {
+export function useEditTestimony(
+  uid: string,
+  billId: string
+): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
@@ -110,11 +165,12 @@ function usePublishTestimony(
 ) {
   return useAsyncCallback(
     useCallback(async () => {
-      if (draftRef && draft && !draft.publishedVersion) {
+      // TODO: don't publish again if draft.publishedVersion is defined
+      if (draftRef) {
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }
-    }, [dispatch, draft, draftRef]),
+    }, [dispatch, draftRef]),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
@@ -148,16 +204,14 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
   )
 }
 
+type SaveDraftRequest = Pick<DraftTestimony, "position" | "content">
 function useSaveDraft(
-  { draft, draftRef, draftLoading, billId, uid }: State,
+  { draftRef, draftLoading, billId, uid }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(
-      async ({
-        position,
-        content
-      }: Pick<DraftTestimony, "position" | "content">) => {
+      async ({ position, content }: SaveDraftRequest) => {
         if (draftLoading) {
           return
         } else if (!draftRef) {

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { Button, Modal } from 'react-bootstrap'
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember, useTestimony } from "../db"
-import { usePublishTestimony } from "../db/testimony/useEditTestimony"
+import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import * as links from "../../components/links"
 
 const GetMemberEmail = (Id) => {
@@ -22,17 +22,6 @@ My thoughts:
   const defaultTestimony = useTestimonyTemplate ? testimonyTemplate : "My comments on this bill..."
   const [testimony, setTestimony] = useState(props.testimony ? props.testimony : {content: defaultTestimony})
   
-  const publishTestimony = () => {
-      // console.log("publishing..")
-      // console.log(user ? user.uid : "")
-      // console.log(bill ? bill.BillNumber : "")
-      // console.log("testimony")
-      // console.log(testimony)
-      
-      // how to save testimony to Firebase?
-      // useTestimony({uid, billId, draftRef, publicationRef}) ?
-    }
-
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
@@ -43,13 +32,20 @@ My thoughts:
     const senatorId = profile && profile.senator ? profile.senator.id : null
     const senatorEmail = senatorId ? GetMemberEmail(senatorId) : ""
     const representativeEmail = representativeId ? GetMemberEmail(representativeId) : ""
- 
+    const edit = useEditTestimony(user.uid, bill.BillNumber)
+    
+
     const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
 
-    const defaultPositionlowercase = testimony && testimony.position ? testimony.position : "DEFAULT"
-    const defaultPosition = defaultPositionlowercase.charAt(0).toUpperCase() + defaultPositionlowercase.slice(1) // need to capitalize test data, tool will ultimately store correctly
+    const defaultPosition = testimony && testimony.position ? testimony.position : undefined
+  
     const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
     const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
+    
+    const publishTestimony = async () => {
+      await edit.saveDraft.execute(testimony)
+      await edit.publishTestimony.execute()
+    }
     
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
@@ -62,11 +58,18 @@ My thoughts:
           <div className="container">
             <div className="row">
               <div className="col-sm align-middle">
-                <select className="form-control" defaultValue={defaultPosition}>
-                    <option value="DEFAULT">Select my support..</option>
-                    <option value="Endorse">Endorse</option>
-                    <option value="Oppose">Oppose</option>
-                    <option value="Neutral">Neutral</option>
+                <select className="form-control" defaultValue={defaultPosition} 
+                    onChange={e => {
+                        const newPosition = e.target.value
+                        if (newPosition) {
+                          const testimonyObject = {content: testimony.content, position: newPosition}
+                          setTestimony(testimonyObject)
+                        }
+                    }}>
+                    <option>Select my support..</option>
+                    <option value="endorse">Endorse</option>
+                    <option value="oppose">Oppose</option>
+                    <option value="neutral">Neutral</option>
                 </select>
                 <div className="form-check">
                   <input className="form-check-input" type="checkbox" defaultValue={defaultAnonymous} id="flexCheckChecked"/>
@@ -94,8 +97,8 @@ My thoughts:
                     required
                     defaultValue={defaultContent}
                     onChange={e => {
-                        const someText = e.target.value
-                        const testimonyObject = {content: someText}
+                        const newText = e.target.value
+                        const testimonyObject = {position: testimony.position, content: newText}
                         setTestimony(testimonyObject)
                     }}    
                 />

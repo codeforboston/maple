@@ -21,25 +21,24 @@ const TestimonyRow = ({testimony}) => {
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
 
-        <div className="d-flex">
-          <ExpandTestimony
-            bill={bill.content}
-            testimony={testimony}
-          />
-          &nbsp;
-          <EditTestimony
-            className="ml-2"
-            bill={bill.content}
-            testimony={testimony}
-          />
-          &nbsp;
-          <DeleteTestimony
-            bill={bill.content}
-            testimony={testimony}
-          />
-        </div>
+          <div className="d-flex">
+            <ExpandTestimony
+              bill={bill.content}
+              testimony={testimony}
+            />
+            &nbsp;
+            <EditTestimony
+              className="ml-2"
+              bill={bill.content}
+              testimony={testimony}
+            />
+            &nbsp;
+            <DeleteTestimony
+              bill={bill.content}
+              testimony={testimony}
+            />
+          </div>
 
-   
         </td>
       </tr>
     )
