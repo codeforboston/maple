@@ -13,7 +13,7 @@ const ViewTestimonies = (props) => {
   const testimonies = testimoniesResponse.status == "success" ? testimoniesResponse.result : []
 
   const testimoniesComponent = testimonies.map((testimony, index) => {
-      // need to get the author email address (unless it is anonymous)
+      // need to hide author display name if testimony is anonymous
       return (
         <tr key={index}>
           <td>{testimony.position}</td>
