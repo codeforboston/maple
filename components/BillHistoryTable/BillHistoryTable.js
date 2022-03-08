@@ -1,23 +1,22 @@
 import React from "react";
 import { Table } from 'react-bootstrap'
 
-const BillHistoryTable = (props) => {
-	const { documentHistoryActions } = props
+const DocumentHistoryActionRows = (documentHistoryActions) => {
+	return (
+		documentHistoryActions.map((documentHistoryAction, index) => {
+			return (
+				<tr key={index}>
+					<td>{documentHistoryAction.Date.substring(0,10)}</td>
+					<td>{documentHistoryAction.Date.substring(11,19)}</td>
+					<td>{documentHistoryAction.Branch}</td>
+					<td>{documentHistoryAction.Action}</td>
+				</tr>
+			)
+		}) 
+	)
+}
 
-	const DocumentHistoryActionRows = () => {
-		return (
-			documentHistoryActions.map((documentHistoryAction, index) => {
-				return (
-					<tr key={index}>
-						<td>{documentHistoryAction.Date.substring(0,10)}</td>
-						<td>{documentHistoryAction.Date.substring(11,19)}</td>
-						<td>{documentHistoryAction.Branch}</td>
-						<td>{documentHistoryAction.Action}</td>
-					</tr>
-				)
-			}) 
-		)
-	}
+const BillHistoryTable = ({ documentHistoryActions }) => {
 
 	return (
 		<div className="text-center">
@@ -31,7 +30,7 @@ const BillHistoryTable = (props) => {
 					</tr>
 				</thead>
 				<tbody>
-					<DocumentHistoryActionRows/>
+					<DocumentHistoryActionRows documentHistoryActions={documentHistoryActions}/>
 				</tbody>
 			</Table>
 		</div>
