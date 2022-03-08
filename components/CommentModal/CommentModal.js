@@ -11,7 +11,15 @@ const GetMemberEmail = (Id) => {
 }
 
 const CommentModal = (props) => {
-  const defaultTestimony = "My comments on this bill..."
+  const useTestimonyTemplate = false
+  const testimonyTemplate = 
+`Why I am qualified to provide testimony:
+
+Why this bill is important to me:
+  
+My thoughts:
+  `
+  const defaultTestimony = useTestimonyTemplate ? testimonyTemplate : "My comments on this bill..."
   const [testimony, setTestimony] = useState(props.testimony ? props.testimony : {content: defaultTestimony})
   
   const publishTestimony = () => {
@@ -25,13 +33,6 @@ const CommentModal = (props) => {
       // useTestimony({uid, billId, draftRef, publicationRef}) ?
     }
 
-  const testimonyTemplate = 
-`Why I am qualified to provide testimony:
-
-Why this bill is important to me:
-
-My thoughts:
-`
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
