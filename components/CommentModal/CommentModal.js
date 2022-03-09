@@ -5,11 +5,6 @@ import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import * as links from "../../components/links"
 
-const GetMemberEmail = (Id) => {
-  const { member } = useMember(Id)
-  return member ? member.EmailAddress : null
-}
-
 const CommentModal = (props) => {
   const useTestimonyTemplate = true
   const testimonyTemplate = 
@@ -18,37 +13,61 @@ const CommentModal = (props) => {
 Why this bill is important to me:
   
 My thoughts:
-  `
+`
   const defaultTestimony = useTestimonyTemplate ? testimonyTemplate : "My comments on this bill..."
   const [testimony, setTestimony] = useState(props.testimony ? props.testimony : {content: defaultTestimony})
-  
+  const [isPublishing, setIsPublishing] = useState(false)
+
     const bill=props.bill
     const showTestimony=props.showTestimony
     const handleCloseTestimony=props.handleCloseTestimony
 
     const { user, authenticated } = useAuth()
     const { profile } = useProfile()
-    const representativeId = profile && profile.representative ? profile.representative.id : null
-    const senatorId = profile && profile.senator ? profile.senator.id : null
-    const senatorEmail = senatorId ? GetMemberEmail(senatorId) : ""
-    const representativeEmail = representativeId ? GetMemberEmail(representativeId) : ""
-    const edit = useEditTestimony(user.uid, bill.BillNumber)
+  
+    const senator = useMember(profile?.senator?.id)
+    const representative = useMember(profile?.representative?.id)
+    const senatorEmail = senator.member?.EmailAddress ?? ""
+    const representativeEmail = representative.member?.EmailAddress ?? ""
+
+    const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
+
     const positionMessage = "Select my support..(required)"
-    
-    const url = `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`
+
+    const url = encodeURI(`mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`)
 
     const defaultPosition = testimony && testimony.position ? testimony.position : undefined
   
     const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
     const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
-    
+
+    const EmailToMyLegislators = () => {
+      if (senator.member || representative.member) {
+        return (
+          <links.External href={url}>
+            Send copy to your legislators
+          </links.External>
+        )
+      } else {
+        return (
+          <links.External href="\profile">
+            Add legislators to your profile to share your testimony
+          </links.External>
+        )
+      }
+    }
+
     const publishTestimony = async () => {
       if (testimony.position == undefined || testimony.position == positionMessage) { return }
-      handleCloseTestimony()
+      setIsPublishing(true)
       await edit.saveDraft.execute(testimony)
       await edit.publishTestimony.execute()
+      handleCloseTestimony()
+      setIsPublishing(false)
     }
     
+    const positionChosen = testimony.position != undefined && testimony.position != positionMessage
+
     return (
      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
@@ -80,9 +99,7 @@ My thoughts:
                   </label>
                 </div>
                 <div>
-                  <links.External href={url}>
-                      Send copy to your legislators
-                  </links.External>
+                  <EmailToMyLegislators/>
                 </div>
                 <div>
                   <links.External href={url}>
@@ -113,7 +130,7 @@ My thoughts:
 
         <Modal.Footer>
           <Button variant="primary" onClick={publishTestimony}>
-              Publish
+              {!positionChosen ? "Select your support to publish" : !isPublishing ? "Publish" : "Publishing.."}
           </Button>
         </Modal.Footer>
 
