@@ -27,9 +27,6 @@ const SearchBar = () => (
       <Row className="mt-2">
         <Button variant="primary">Search</Button>
       </Row>
-      <Row className="mt-2">
-        <Button variant="secondary">Advanced Search</Button>
-      </Row>
     </Form.Group>
   </Form>
 )
