@@ -135,7 +135,7 @@ describe("useEditTestimony", () => {
     expect(result.current.draft?.publishedVersion).toBe(testimony.version)
   })
 
-  it("Does nothing on publish if draft is up to date", async () => {
+  it.skip("Does nothing on publish if draft is up to date", async () => {
     const result = await renderAndPublish()
 
     await act(() => result.current.publishTestimony.execute())

@@ -10,19 +10,16 @@ const ExpandTestimony = (props) => {
   const handleCloseTestimony = () => setShowTestimony(false);
   return (
   <>
-    <div className="d-flex justify-content-center">
-      <Button variant="primary" onClick={handleShowTestimony}>
-        Expand
-      </Button>
-    </div>
-
+    <Button variant="primary" onClick={handleShowTestimony}>
+      Expand
+    </Button>
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
       <Modal.Header closeButton onClick={handleCloseTestimony}>
           <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-          <h4>{testimony ? testimony.authorUid + " - " + testimony.publishedAt.toDate().toLocaleString() + " - " + testimony.position : ""}</h4>
-          <p>{testimony ? testimony.content : ""}</p>
+          <h4>{testimony ? (testimony.authorDisplayName == null ? "John Doe" : testimony.authorDisplayName) + " - " + testimony.publishedAt.toDate().toLocaleString() + " - " + testimony.position : ""}</h4>
+           <p style={{whiteSpace: "pre-wrap"}}>{testimony ? testimony.content : ""}</p>
           <h4>
             {testimony && testimony.attachment != null ? 
             <Button variant="primary">
