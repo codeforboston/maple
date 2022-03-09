@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useRouter } from "next/router"
 import { Table, Container, Button, Spinner, Row } from 'react-bootstrap'
 import { useBills } from "../db";
@@ -20,8 +20,6 @@ const BillRow = (props) => {
   const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
   const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
 
-  // need to get sponsor email
-  
   const SponsorComponent = sponsorURL != "" ?   
     <>
       <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
@@ -66,33 +64,66 @@ const BillRows = ({bills}) => {
   }
 )}
 
-const ViewBills = (props) => {
+const ViewBills = () => {
   const {bills, setSort, loading, nextPage, previousPage, currentPage, hasNextPage, hasPreviousPage} = useBills()
+  const [filterBy, setFilterBy] = useState(null)
+  const filterByMessage = filterBy == "leadSponsor" ? "Choose Lead Sponsor.." : "Choose Lead Sponsor District.."
 
   return (
     <Container>
       <h1>Most Active Bills </h1>
-      <div className="col-2">
-        <select 
-          className="form-control"
-          onChange={e => {
-            const option = e.target.value
-            if (option !== "DEFAULT") setSort(option)
-          }}
-        >
-          <option value="DEFAULT">Sort bills by..</option>
-          <option value="id">Bill #</option>
-          <option value="cosponsorCount"># CoSponsors</option>
-          <option value="testimonyCount"># Testimony</option>
-          <option value="latestTestimony">Most recent testimony</option>
-        </select>
-      </div>
+        <div className="row">
+          <div className="col-2">
+            <select 
+              className="form-control"
+              onChange={e => {
+                const option = e.target.value
+                if (option !== "DEFAULT") setSort(option)
+              }}
+            >
+              <option value="DEFAULT">Sort bills by..</option>
+              <option value="id">Bill #</option>
+              <option value="cosponsorCount"># CoSponsors</option>
+              <option value="testimonyCount"># Testimony</option>
+              <option value="latestTestimony">Most recent testimony</option>
+            </select>
+          </div>
+          <div className="col-2">
+            <select 
+              className="form-control"
+              onChange={e => {
+                const option = e.target.value
+                setFilterBy(option)
+              }}
+            >
+              <option value="DEFAULT">Filter bills by..</option>
+              <option value="leadSponsor">Lead Sponsor</option>
+              <option value="leadSponsorDistrict">Lead Sponsor District</option>
+            </select>
+          </div>
+
+          {filterBy && filterBy!="DEFAULT" && <div className="col-4">
+            <select 
+              className="form-control"
+              onChange={e => {
+                const option = e.target.value
+                // if (option !== "DEFAULT") setSort(option)
+              }}
+            >
+              <option value="DEFAULT">{filterByMessage}</option>
+              <option value="john">John Doe</option>
+              <option value="jane">Jane Doe</option>
+              <option value="jim">Jim Doe</option>
+            </select>
+          </div>
+          }
+        </div>
       <Table className="mt-2" striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>
             <th>Bill Name</th>
-            <th>Lead</th>
+            <th>Lead Sponsor</th>
             <th># CoSponsors</th>
             <th># Testimony</th>
             <th>Most recent testimony</th>
@@ -128,6 +159,5 @@ const ViewBills = (props) => {
     </Container>
   );
 };
-
 
 export default ViewBills;
