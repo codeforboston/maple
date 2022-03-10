@@ -1,6 +1,7 @@
 import axiosModule, { AxiosRequestConfig } from "axios"
 import {
   HearingContent,
+  HearingListItem,
   SessionContent,
   SpecialEventContent
 } from "./events/types"
@@ -97,7 +98,6 @@ export async function getSessions(court: number): Promise<SessionContent[]> {
   return data as any
 }
 
-export type HearingListItem = { EventId: number }
 export async function listHearings(): Promise<HearingListItem[]> {
   const data = await request({
     url: `/Hearings`,

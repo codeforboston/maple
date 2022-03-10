@@ -8,7 +8,7 @@ import {
 import { flattenDeep } from "lodash"
 import { DateTime } from "luxon"
 import { firestore } from "../firebase"
-import { nullableQuery } from "./common"
+import { now, nullableQuery } from "./common"
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"
@@ -36,7 +36,11 @@ type SessionContent = BaseContent & {
   Status: string
 }
 
-type SpecialEvent = BaseEvent & { type: "specialEvent" }
+type SpecialEvent = BaseEvent & {
+  type: "specialEvent"
+  content: SpecialEventContent
+}
+type SpecialEventContent = BaseContent
 
 type Hearing = BaseEvent & { type: "hearing"; content: HearingContent }
 type HearingContent = BaseContent & {
@@ -118,13 +122,11 @@ export async function listUpcomingEvents({
   return result.docs.map(d => d.data() as Event)
 }
 
-function midnight() {
-  return DateTime.now()
-    .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    .toJSDate()
+export function midnight() {
+  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
 }
 
-function parseApiDateTime(dateTime: string): Timestamp {
+export function parseApiDateTime(dateTime: string): Timestamp {
   const time = DateTime.fromISO(dateTime, { zone: timeZone })
   return Timestamp.fromMillis(time.toMillis())
 }

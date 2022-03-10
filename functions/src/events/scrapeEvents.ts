@@ -7,6 +7,8 @@ import {
   BaseEvent,
   BaseEventContent,
   Hearing,
+  HearingContent,
+  HearingListItem,
   Session,
   SessionContent,
   SpecialEvent,
@@ -95,8 +97,9 @@ class SpecialEventsScraper extends EventScraper<
     super("every 60 minutes", 60)
   }
 
-  listEvents() {
-    return api.getSpecialEvents()
+  async listEvents() {
+    const events = await api.getSpecialEvents()
+    return events.filter(SpecialEventContent.guard)
   }
 
   getEvent(content: SpecialEventContent) {
@@ -117,8 +120,9 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
     super("every 60 minutes", 60)
   }
 
-  listEvents() {
-    return api.getSessions(this.court)
+  async listEvents() {
+    const events = await api.getSessions(this.court)
+    return events.filter(SessionContent.guard)
   }
 
   getEvent(content: SessionContent) {
@@ -132,17 +136,18 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   }
 }
 
-class HearingScraper extends EventScraper<api.HearingListItem, Hearing> {
+class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
     super("every 60 minutes", 240)
   }
 
-  listEvents() {
-    return api.listHearings()
+  async listEvents() {
+    const events = await api.listHearings()
+    return events.filter(HearingListItem.guard)
   }
 
-  async getEvent({ EventId }: api.HearingListItem) {
-    const content = await api.getHearing(EventId)
+  async getEvent({ EventId }: HearingListItem) {
+    const content = HearingContent.check(await api.getHearing(EventId))
     const event: Hearing = {
       id: `hearing-${content.EventId}`,
       type: "hearing",

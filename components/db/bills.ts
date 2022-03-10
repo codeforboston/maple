@@ -279,7 +279,7 @@ async function listBillsByHearingDate(
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Bill[]> {
-  // This is pretty inefficient but hopefully firebase caches things...
+  // TODO: avoid re-fetching upcoming bills for every page
   const fullListing = await listUpcomingBills()
 
   let startIndex: number

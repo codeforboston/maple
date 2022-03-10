@@ -1,6 +1,10 @@
 import { act, renderHook } from "@testing-library/react-hooks"
+import { DateTime } from "luxon"
 import { useBills } from "."
 import { terminateFirebase, testDb } from "../../tests/testUtils"
+import * as common from "./common"
+
+const mockedNow = jest.spyOn(common, "now")
 
 afterAll(terminateFirebase)
 
@@ -86,6 +90,22 @@ describe("useBills", () => {
 
     const ids = bills.map(b => b.id)
     expect(ids.slice(0, 3)).toEqual(["H1051", "H1018", "H1050"])
+  })
+
+  it("sorts by ascending hearing date", async () => {
+    // Test the seeded events
+    const cutoff = DateTime.utc(2022, 3, 8)
+    mockedNow.mockReturnValue(cutoff)
+
+    const bills = await renderWithSort("hearingDate")
+    const hearingDates = bills.map(b => {
+      expect(b.nextHearingAt).toBeDefined()
+      return b.nextHearingAt!.toMillis()
+    })
+
+    expect(hearingDates).not.toHaveLength(0)
+    expect(hearingDates[0]).toBeGreaterThanOrEqual(cutoff.toMillis())
+    expect(hearingDates).toEqual(hearingDates.slice().sort())
   })
 })
 
