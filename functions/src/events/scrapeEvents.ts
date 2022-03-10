@@ -57,7 +57,7 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
 
       if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
 
-      writer.set(db.doc(`/events/${event.id}`), event)
+      writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
     }
 
     await writer.close()
