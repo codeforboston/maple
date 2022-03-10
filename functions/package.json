@@ -1,8 +1,8 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "rm -r lib && tsc",
-    "build:watch": "rm -r lib && tsc --watch --preserveWatchOutput",
+    "build": "rm -rf lib && tsc",
+    "build:watch": "rm -rf lib && tsc --watch --preserveWatchOutput",
     "dev": "node dev-functions.js",
     "logs": "firebase functions:log",
     "test": "jest"
