@@ -48,9 +48,11 @@ const TestimonyRow = ({testimony}) => {
 const MyTestimonies = () => {
   const { user, authenticated } = useAuth()
   // change to 2nd line below when sufficient testimony in sample database
-  const userUid = "c8Z3AdZKX0gfEHdQ102AUW14lbG2"  
-  // const userUid = user ? user.uid : null
+  // const userUid = "c8Z3AdZKX0gfEHdQ102AUW14lbG2"  
+  const userUid = user ? user.uid : null
   const testimoniesResponse = usePublishedTestimonyListing(userUid)
+  console.log(usePublishedTestimonyListing("c8Z3AdZKX0gfEHdQ102AUW14lbG2"))
+  // console.log(usePublishedTestimonyListing({uid: "c8Z3AdZKX0gfEHdQ102AUW14lbG2"}))
   const testimonies = testimoniesResponse.status == "loading" || testimoniesResponse.status == "error" ? [] : testimoniesResponse.result
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {
