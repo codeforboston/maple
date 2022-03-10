@@ -14,18 +14,20 @@ const AddTestimony = (props) => {
   <>
         <div className="d-flex justify-content-center">
             <Button variant="primary" onClick={handleShowTestimony}>
-                {authenticated ? "Add your voice" : "Login to add your voice"}
+                {authenticated ? "Add your voice" : "Sign in to add your voice"}
             </Button>
         </div>
       
         {/* to force authentication to add comments, add "authenticated &&" in front of modal call below */}
-        <CommentModal
-            bill={bill}
-            showTestimony={showTestimony}
-            setShowTestimony={setShowTestimony}
-            handleShowTestimony={handleShowTestimony}
-            handleCloseTestimony={handleCloseTestimony}
-        />
+        {authenticated && 
+            <CommentModal
+                bill={bill}
+                showTestimony={showTestimony}
+                setShowTestimony={setShowTestimony}
+                handleShowTestimony={handleShowTestimony}
+                handleCloseTestimony={handleCloseTestimony}
+            />
+        }
     </>
     )
 }
