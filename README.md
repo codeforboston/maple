@@ -1,6 +1,6 @@
 # Digital Testimony Platform
 
-Live Site (version 1, previous project): https://goodgovproject.com/
+Live Site (version 1, previous project): https://d-ondrich.github.io/advocacy-maps
 
 In-Development Site (version 2, current project): https://digital-testimony-dev.web.app
 
