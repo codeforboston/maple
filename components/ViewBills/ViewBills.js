@@ -96,9 +96,9 @@ const ViewBills = (props) => {
             <th>Bill Name</th>
             <th>Lead</th>
             <th># CoSponsors</th>
-            <th>Next Hearing Date</th>
+            <th>Hearing Scheduled</th>
             <th># Testimony</th>
-            <th>Most recent testimony</th>
+            <th>Most Recent Testimony</th>
             <th></th>
           </tr>
         </thead>
