@@ -1,8 +1,8 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch --preserveWatchOutput",
+    "build": "rm -rf lib && tsc",
+    "build:watch": "rm -rf lib && tsc --watch --preserveWatchOutput",
     "dev": "node dev-functions.js",
     "logs": "firebase functions:log",
     "test": "jest"
@@ -18,10 +18,12 @@
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.1",
     "lodash": "^4.17.21",
+    "luxon": "^2.3.1",
     "runtypes": "^6.5.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
+    "@types/luxon": "^2.0.9",
     "firebase-functions-test": "^0.3.3",
     "firebase-tools": "^10.2.1",
     "jest": "^27.5.1",

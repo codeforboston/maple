@@ -1,4 +1,5 @@
 import { doc, getDoc, Query, query, QueryConstraint } from "firebase/firestore"
+import { DateTime } from "luxon"
 import { firestore } from "../firebase"
 
 export const currentGeneralCourt = 192
@@ -15,4 +16,9 @@ export function nullableQuery<T>(
 ) {
   const filteredConstraints = constraints.filter(Boolean) as QueryConstraint[]
   return query(base, ...filteredConstraints)
+}
+
+/** Mockable function for the current time. */
+export function now() {
+  return DateTime.now()
 }
