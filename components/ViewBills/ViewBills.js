@@ -73,7 +73,7 @@ const ViewBills = () => {
     <Container>
       <h1>Most Active Bills </h1>
         <div className="row">
-          <div className="col-2">
+          <div className="col-md-2">
             <select 
               className="form-control"
               onChange={e => {
@@ -88,7 +88,7 @@ const ViewBills = () => {
               <option value="latestTestimony">Most recent testimony</option>
             </select>
           </div>
-          <div className="col-2">
+          <div className="col-md-2">
             <select 
               className="form-control"
               onChange={e => {
@@ -102,7 +102,7 @@ const ViewBills = () => {
             </select>
           </div>
 
-          {filterBy && filterBy!="DEFAULT" && <div className="col-4">
+          {filterBy && filterBy!="DEFAULT" && <div className="col-md-4">
             <select 
               className="form-control"
               onChange={e => {
