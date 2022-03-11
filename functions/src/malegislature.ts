@@ -84,7 +84,7 @@ export async function getSpecialEvents(): Promise<SpecialEventContent[]> {
   const data = await request({
     url: `/SpecialEvents`,
     method: "GET",
-    timeout: 30_000
+    timeout: 60_000
   })
   return data as any
 }
@@ -93,7 +93,7 @@ export async function getSessions(court: number): Promise<SessionContent[]> {
   const data = await request({
     url: `/GeneralCourts/${court}/Sessions`,
     method: "GET",
-    timeout: 30_000
+    timeout: 60_000
   })
   return data as any
 }
@@ -102,7 +102,7 @@ export async function listHearings(): Promise<HearingListItem[]> {
   const data = await request({
     url: `/Hearings`,
     method: "GET",
-    timeout: 30_000
+    timeout: 60_000
   })
   return data as any
 }
@@ -111,7 +111,7 @@ export async function getHearing(eventId: number): Promise<HearingContent> {
   const data = await request({
     url: `/Hearings/${eventId}`,
     method: "GET",
-    timeout: 30_000
+    timeout: 60_000
   })
   return data as any
 }

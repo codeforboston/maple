@@ -94,7 +94,7 @@ class SpecialEventsScraper extends EventScraper<
   SpecialEvent
 > {
   constructor() {
-    super("every 60 minutes", 60)
+    super("every 60 minutes", 120)
   }
 
   async listEvents() {
@@ -117,7 +117,7 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   private court = api.currentGeneralCourt
 
   constructor() {
-    super("every 60 minutes", 60)
+    super("every 60 minutes", 120)
   }
 
   async listEvents() {
