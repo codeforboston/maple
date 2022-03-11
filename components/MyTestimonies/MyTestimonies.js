@@ -54,8 +54,6 @@ const TestimonyRow = ({testimony}) => {
 
 const MyTestimonies = () => {
   const { user, authenticated } = useAuth()
-  // change to 2nd line below when sufficient testimony in sample database
-  // const userUid = "c8Z3AdZKX0gfEHdQ102AUW14lbG2"  
   const userUid = user ? user.uid : null
   const testimoniesResponse = usePublishedTestimonyListing({uid: userUid})
   const testimonies = testimoniesResponse.status == "loading" || testimoniesResponse.status == "error" ? [] : testimoniesResponse.result
