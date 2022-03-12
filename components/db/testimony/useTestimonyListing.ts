@@ -24,24 +24,28 @@ export function useTestimonyListing(uid: string) {
   const [{ draftsLoading, publicationsLoading, error, testimony }, dispatch] =
     useReducer(reducer, initialState)
 
-  useEffect(() =>
-    onSnapshot(
-      query(
-        collectionGroup(firestore, "publishedTestimony"),
-        where("authorUid", "==", uid)
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collectionGroup(firestore, "publishedTestimony"),
+          where("authorUid", "==", uid)
+        ),
+        {
+          next: snapshot => dispatch({ type: "updatePublications", snapshot }),
+          error: error => dispatch({ type: "error", error })
+        }
       ),
-      {
-        next: snapshot => dispatch({ type: "updatePublications", snapshot }),
-        error: error => dispatch({ type: "error", error })
-      }
-    )
+    [uid]
   )
 
-  useEffect(() =>
-    onSnapshot(query(collection(firestore, `users/${uid}/draftTestimony`)), {
-      next: snapshot => dispatch({ type: "updateDrafts", snapshot }),
-      error: error => dispatch({ type: "error", error })
-    })
+  useEffect(
+    () =>
+      onSnapshot(query(collection(firestore, `users/${uid}/draftTestimony`)), {
+        next: snapshot => dispatch({ type: "updateDrafts", snapshot }),
+        error: error => dispatch({ type: "error", error })
+      }),
+    [uid]
   )
 
   return useMemo(
