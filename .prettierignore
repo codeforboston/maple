@@ -3,3 +3,7 @@ node_modules
 .next
 public
 out
+lib
+.firebase
+exportedTestData
+.yarn
