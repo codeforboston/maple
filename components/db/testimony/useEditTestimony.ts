@@ -34,7 +34,7 @@ interface UseEditTestimony {
   draft?: DraftTestimony
   /** The current published version of the testimony, if any.  */
   publication?: Testimony
-  
+
   /** Saves the given `position` and `content` to the draft version of the
    * testimony. This should not be called while the hook is `loading` or has an
    * `error`.
@@ -156,7 +156,7 @@ function useTestimony(
           }),
         error: error => dispatch({ type: "error", error })
       })
-  })
+  }, [dispatch, publicationRef])
 }
 
 function usePublishTestimony(
