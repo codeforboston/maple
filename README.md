@@ -46,6 +46,14 @@ Use `git push` to upload your commits to your fork. When you're finished, [open 
 3. Start the development server with `yarn dev`
 4. Open the app at http://localhost:3000 in your browser
 
+## Code Formatting and Linting
+
+We use Prettier and ESLint to check files for consistent formatting and catch common programming errors. When you send out a PR, these run as part of the [`Repo Checks`](https://github.com/codeforboston/advocacy-maps/actions/workflows/repo-checks.yml) workflow.
+
+You can run `yarn fix` locally to lint and format your code. You'll need to do this and commit the changes if the `Linting` and `Formatting` parts of the `Code Quality` check fails on your PR.
+
+If you use VSCode, consider using our [project workspace file](https://github.com/codeforboston/advocacy-maps/blob/master/project.code-workspace) (open it in VSCode and click the "Open Workspace" button in the editor). It will ask you to install ESLint and Prettier extensions, which will show lint errors in your editor and set up Prettier as the default code formatter. You can format the current file from the [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) by typing `Format Document`. You can also set the editor up to format on save: select `Open User Settings` from the command pallet, search for `format on save`, and enable it.
+
 ## Deployment
 
 The site runs on Firebase and is deployed using Github Actions. The site is deployed automatically whenever we push to the `master` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
