@@ -38,6 +38,7 @@ const BillRow = (props) => {
           <td>{bill.Title}</td>
           <td>{SponsorComponent}</td>
           <td>{numCoSponsors}</td>
+          <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
           <td>{fullBill.testimonyCount}</td>
           <td>
             {fullBill.latestTestimonyAt &&
@@ -84,7 +85,8 @@ const ViewBills = () => {
               <option value="DEFAULT">Sort bills by..</option>
               <option value="id">Bill #</option>
               <option value="cosponsorCount"># CoSponsors</option>
-              <option value="testimonyCount"># Testimony</option>
+              <option value="testimonyCount"># Testimony</option> 
+              <option value="hearingDate">Next Hearing Date</option>
               <option value="latestTestimony">Most recent testimony</option>
             </select>
           </div>
@@ -125,13 +127,14 @@ const ViewBills = () => {
             <th>Bill Name</th>
             <th>Lead Sponsor</th>
             <th># CoSponsors</th>
+            <th>Hearing Scheduled</th>
             <th># Testimony</th>
-            <th>Most recent testimony</th>
+            <th>Most Recent Testimony</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {!loading && <BillRows bills={bills}/>}
+          {bills && <BillRows bills={bills}/>}
         </tbody>
       </Table>
       <Row>

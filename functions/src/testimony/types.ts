@@ -30,8 +30,9 @@ export const Testimony = withDefaults(
     version: Number,
     publishedAt: InstanceOf(Timestamp)
   }),
-  { publishedAt: Timestamp.fromMillis(0) }
+  { publishedAt: Timestamp.fromMillis(0), authorDisplayName: "Anonymous" }
 )
+
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
