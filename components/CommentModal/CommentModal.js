@@ -37,8 +37,6 @@ My thoughts:
     const url = encodeURI(`mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${bill ? bill.BillNumber : ""}&body=${testimony ? testimony.content : ""}`)
 
     const defaultPosition = testimony && testimony.position ? testimony.position : undefined
-  
-    const defaultAnonymous = testimony && testimony.anonymous ? testimony.anonymous : false
     const defaultContent = testimony && testimony.content ? testimony.content : defaultTestimony
 
     const EmailToMyLegislators = () => {
@@ -92,12 +90,6 @@ My thoughts:
                     <option value="oppose">Oppose</option>
                     <option value="neutral">Neutral</option>
                 </select>
-                <div className="form-check">
-                  <input className="form-check-input" type="checkbox" defaultValue={defaultAnonymous} id="flexCheckChecked"/>
-                  <label className="form-check-label" htmlFor="flexCheckChecked">
-                      Anonymous
-                  </label>
-                </div>
                 <div>
                   <EmailToMyLegislators/>
                 </div>

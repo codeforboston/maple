@@ -1,13 +1,15 @@
 import React from "react";
-import { Table, Container } from 'react-bootstrap'
+import { Table, Container, Button } from 'react-bootstrap'
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
 import EditTestimony from "../EditTestimony/EditTestimony";
 import DeleteTestimony from "../DeleteTestimony/DeleteTestimony";
 import { useAuth } from "../../components/auth"
 import { useBill, usePublishedTestimonyListing } from "../db";
+import { useRouter } from "next/router"
 
 const TestimonyRow = ({testimony}) => { 
   const { result: bill } = useBill(testimony.billId)
+  const router = useRouter()
 
   if (!bill) {
     return null
@@ -15,7 +17,12 @@ const TestimonyRow = ({testimony}) => {
     return (
       <tr>
         <td>{testimony.position}</td>
-        <td>{testimony.billId}</td>
+        <td>
+          <Button variant="primary" 
+          onClick={() => router.push(`/bill?id=${testimony.billId}`)}>
+            {testimony.billId}
+          </Button>
+        </td>
         <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
         <td>{testimony.content.substring(0,100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
@@ -47,10 +54,8 @@ const TestimonyRow = ({testimony}) => {
 
 const MyTestimonies = () => {
   const { user, authenticated } = useAuth()
-  // change to 2nd line below when sufficient testimony in sample database
-  const userUid = "c8Z3AdZKX0gfEHdQ102AUW14lbG2"  
-  // const userUid = user ? user.uid : null
-  const testimoniesResponse = usePublishedTestimonyListing(userUid)
+  const userUid = user ? user.uid : null
+  const testimoniesResponse = usePublishedTestimonyListing({uid: userUid})
   const testimonies = testimoniesResponse.status == "loading" || testimoniesResponse.status == "error" ? [] : testimoniesResponse.result
   const testimoniesComponent = !testimonies ? "" :
     testimonies.map((testimony, index) => {

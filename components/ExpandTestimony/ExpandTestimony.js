@@ -18,7 +18,7 @@ const ExpandTestimony = (props) => {
           <Modal.Title>{bill ? bill.BillNumber + " - " + bill.Title : ""}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-          <h4>{testimony ? (testimony.authorDisplayName == null ? "John Doe" : testimony.authorDisplayName) + " - " + testimony.publishedAt.toDate().toLocaleString() + " - " + testimony.position : ""}</h4>
+          <h4>{testimony ? (testimony.authorDisplayName == null ? "Test" : testimony.authorDisplayName) + " - " + testimony.publishedAt.toDate().toLocaleString() + " - " + testimony.position : ""}</h4>
            <p style={{whiteSpace: "pre-wrap"}}>{testimony ? testimony.content : ""}</p>
           <h4>
             {testimony && testimony.attachment != null ? 

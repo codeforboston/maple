@@ -13,11 +13,10 @@ const ViewTestimonies = (props) => {
   const testimonies = testimoniesResponse.status == "success" ? testimoniesResponse.result : []
 
   const testimoniesComponent = testimonies.map((testimony, index) => {
-      // need to hide author display name if testimony is anonymous
       return (
         <tr key={index}>
           <td>{testimony.position}</td>
-          <td>{testimony.authorDisplayName == null ? "John Doe" : testimony.authorDisplayName }</td>
+          <td>{testimony.authorDisplayName == null ? "Test" : testimony.authorDisplayName }</td>
           <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
           <td>{testimony.content.substring(0,100)}...</td>
           <td>{testimony.attachment != null ? "Yes" : ""}</td>
