@@ -35,14 +35,8 @@ export const createMemberSearchIndex = pubsub
     const index = members.docs
       .map(d => (d.exists && d.data().content) ?? {})
       .filter(Boolean)
-      .map(({ Branch, District, EmailAddress, MemberCode, Name, Party }) => ({
-        Branch,
-        District,
-        EmailAddress,
-        MemberCode,
-        Name,
-        Party
-      }))
+      // Strip out sponsored and cosponsored bills for size
+      .map(({ SponsoredBills, CoSponsoredBills, ...member }) => member)
       .sort((m1, m2) => (m1.Name < m2.Name ? -1 : 1))
 
     await db
