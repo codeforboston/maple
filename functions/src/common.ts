@@ -1,6 +1,6 @@
 import { FieldValue } from "@google-cloud/firestore"
 import { https } from "firebase-functions"
-import { Record, Result, Runtype, Static, String } from "runtypes"
+import { Null, Record, Result, Runtype, Static, String } from "runtypes"
 
 /** Parse the request and return the result or fail. */
 export function checkRequest<A>(type: Runtype<A>, data: any) {
@@ -35,6 +35,8 @@ export function fail(code: https.FunctionsErrorCode, message: string) {
 const simpleId = /^[A-Za-z0-9-_]+$/
 /** Validates firestore-compatible ID's */
 export const Id = String.withConstraint(s => simpleId.test(s))
+
+export const NullStr = String.Or(Null)
 
 /** Allows specifying defaults that are merged into records before validation.
  * This is useful for compatibility with documents created before adding a field
