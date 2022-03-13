@@ -21,6 +21,7 @@ export const CommitteeListing = Array(CommitteeListItem)
 
 export type CommitteeContent = Static<typeof CommitteeContent>
 export const CommitteeContent = Record({
+  FullName: String,
   CommitteeCode: String,
   DocumentsBeforeCommittee: Array(String),
   ReportedOutDocuments: Array(String)
