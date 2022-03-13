@@ -1,4 +1,5 @@
 import axiosModule, { AxiosRequestConfig } from "axios"
+import { BillHistory } from "./bills/types"
 import {
   HearingContent,
   HearingListItem,
@@ -114,6 +115,18 @@ export async function getHearing(eventId: number): Promise<HearingContent> {
     timeout: 60_000
   })
   return data as any
+}
+
+export async function getBillHistory(
+  court: number,
+  billId: string
+): Promise<BillHistory> {
+  const data = await request({
+    url: `/GeneralCourts/${court}/Documents/${billId}/DocumentHistoryActions`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return BillHistory.check(data)
 }
 
 async function request(config: AxiosRequestConfig): Promise<unknown> {

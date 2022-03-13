@@ -14,13 +14,8 @@ type Batch = {
  */
 type ListIds = (court: number) => Promise<(string | undefined | null)[]>
 
-/** Fetch the given resource for the given court. The `content` field will be
- * copied to the `content` field of the resource document, and the `metadata`
- * field will be merged into the top-level of the document. */
-type FetchResource = (
-  court: number,
-  id: string
-) => Promise<{ content: any; metadata?: any }>
+/** Fetch the given resource for the given court. */
+type FetchResource<T> = (court: number, id: string) => Promise<T>
 
 /**
  * ```md
@@ -60,7 +55,7 @@ type FetchResource = (
  * }
  * ```
  */
-export function createScraper({
+export function createScraper<T>({
   resourceName,
   listIds,
   fetchResource,
@@ -72,7 +67,7 @@ export function createScraper({
 }: {
   resourceName: string
   listIds: ListIds
-  fetchResource: FetchResource
+  fetchResource: FetchResource<T>
   startBatchSchedule: string
   startBatchTimeout: number
   fetchBatchTimeout: number
@@ -124,13 +119,12 @@ export function createScraper({
 
       for (const id of batch.ids) {
         try {
-          const { content, metadata } = await fetchResource(court, id)
+          const resource = await fetchResource(court, id)
 
           writer.set(
             db.doc(`/generalCourts/${court}/${resourceName}/${id}`),
             {
-              ...metadata,
-              content,
+              ...resource,
               fetchedAt: Timestamp.now(),
               lastFetch: FieldValue.delete(),
               id

@@ -16,10 +16,12 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     startBatchTimeout: 60,
     fetchResource: async (court: number, id: string) => {
       const content = await api.getDocument({ id, court })
-      const metadata = {
+      const history = await api.getBillHistory(court, id)
+      return {
+        content,
+        history,
         cosponsorCount: content.Cosponsors.length
       }
-      return { content, metadata }
     },
     listIds: (court: number) =>
       api.listDocuments({ court }).then(docs => docs.map(d => d.BillNumber))
