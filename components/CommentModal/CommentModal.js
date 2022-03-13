@@ -24,7 +24,7 @@ My thoughts:
 
     const { user, authenticated } = useAuth()
     const { profile } = useProfile()
-  
+
     const senator = useMember(profile?.senator?.id)
     const representative = useMember(profile?.representative?.id)
     const senatorEmail = senator.member?.EmailAddress ?? ""
@@ -81,7 +81,14 @@ My thoughts:
                     onChange={e => {
                         const newPosition = e.target.value
                         if (newPosition) {
-                          const testimonyObject = {content: testimony.content, position: newPosition}
+                          const testimonyObject = {
+                              content: testimony.content, 
+                              senatorId: profile?.senator?.id,
+                              representativeId: profile?.representative?.id,
+                              senatorDistrict: profile?.senator?.district,
+                              representativeDistrict: profile?.representative?.district,
+                              position: newPosition,
+                          }
                           setTestimony(testimonyObject)
                         }
                     }}>
@@ -109,7 +116,14 @@ My thoughts:
                     defaultValue={defaultContent}
                     onChange={e => {
                         const newText = e.target.value
-                        const testimonyObject = {position: testimony.position, content: newText}
+                        const testimonyObject = {
+                          position: testimony.position, 
+                          senatorId: profile?.senator?.id,
+                          representativeId: profile?.representative?.id,
+                          senatorDistrict: profile?.senator?.district,
+                          representativeDistrict: profile?.representative?.district,
+                          content: newText,
+                        }
                         setTestimony(testimonyObject)
                     }}    
                 />
@@ -122,7 +136,7 @@ My thoughts:
 
         <Modal.Footer>
           <Button variant="primary" onClick={publishTestimony}>
-              {!positionChosen ? "Select your support to publish" : !isPublishing ? "Publish" : "Publishing.."}
+              {!positionChosen ? "Choose Endorse/Oppose/Neutral to Publish" : !isPublishing ? "Publish" : "Publishing.."}
           </Button>
         </Modal.Footer>
 
