@@ -12,5 +12,6 @@ export {
   startMemberBatches
 } from "./members"
 export { setUsername } from "./profile"
+export { createBillIndex } from "./search"
 export { deleteTestimony, publishTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"
