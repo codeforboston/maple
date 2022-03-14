@@ -33,7 +33,8 @@ export const Bill = withDefaults(
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp),
     history: BillHistory,
-    currentCommittee: Optional(Record({ id: String, name: String }))
+    currentCommittee: Optional(Record({ id: String, name: String })),
+    city: Optional(String)
   }),
   {
     cosponsorCount: 0,
