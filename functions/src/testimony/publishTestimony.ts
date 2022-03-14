@@ -39,6 +39,7 @@ class PublishTestimonyTransaction {
   private bill!: Bill
   private publicationRef!: DocumentReference
   private publicationExists!: boolean
+  private profile?: any
 
   constructor(t: FirebaseFirestore.Transaction, draftId: string, uid: string) {
     this.t = t
@@ -49,6 +50,7 @@ class PublishTestimonyTransaction {
   async run() {
     await this.resolveDraft()
     await this.resolvePublication()
+    await this.resolveProfile()
 
     const newPublication: Testimony = {
       authorUid: this.uid,
@@ -58,7 +60,23 @@ class PublishTestimonyTransaction {
       court: this.draft.court,
       position: this.draft.position,
       version: await this.getNextPublicationVersion(),
-      publishedAt: Timestamp.now()
+      publishedAt: Timestamp.now(),
+      // representativeId: this.profile.representative.Id,
+      // senatorId: this.profile.senator.Id,
+      // senatorDistrict: this.profile.senator.district,
+      // representativeDistict: this.profile.representative.district,
+    }
+    if (this.profile.representative.id) {
+      newPublication.representativeId = this.profile.representative.id
+    }
+    if (this.profile.senator.id) {
+      newPublication.senatorId = this.profile.senator.id
+    }
+    if (this.profile.senatorDistrict) {
+      newPublication.senatorDistrict = this.profile.senator.district
+    }
+    if (this.profile.representativeDistrict) {
+      newPublication.representativeDistrict = this.profile.representative.district
     }
 
     this.setPublication(newPublication)
@@ -136,6 +154,12 @@ class PublishTestimonyTransaction {
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
+  }
+
+  private async resolveProfile() {
+    const ref = db.doc(`/profiles/${this.uid}`),
+      profileSnap = await this.t.get(ref)
+    this.profile = profileSnap.data()
   }
 
   private async isValidCourt(court: number) {
