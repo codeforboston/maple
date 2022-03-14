@@ -8,8 +8,15 @@ import {
   String,
   Array
 } from "runtypes"
-import { Id, withDefaults } from "../common"
+import { Id, NullStr, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
+
+export type BillReference = Static<typeof BillReference>
+export const BillReference = Record({
+  BillNumber: NullStr,
+  DocketNumber: NullStr,
+  GeneralCourtNumber: Number
+})
 
 export type BillHistoryAction = Static<typeof BillHistoryAction>
 export const BillHistoryAction = Record({
@@ -33,6 +40,7 @@ export const Bill = withDefaults(
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp),
     history: BillHistory,
+    similar: Array(Id),
     currentCommittee: Optional(Record({ id: String, name: String })),
     city: Optional(String)
   }),
@@ -40,6 +48,7 @@ export const Bill = withDefaults(
     cosponsorCount: 0,
     testimonyCount: 0,
     fetchedAt: Timestamp.fromMillis(0),
-    history: []
+    history: [],
+    similar: []
   }
 )

@@ -1,8 +1,9 @@
 import axiosModule, { AxiosRequestConfig } from "axios"
 import { isString } from "lodash"
-import { BillHistory } from "./bills/types"
+import { Array } from "runtypes"
+import { BillHistory, BillReference } from "./bills/types"
 import { CityBills, CityListing } from "./cities/types"
-import { CommitteeListing, CommitteeContent } from "./committees/types"
+import { CommitteeContent, CommitteeListing } from "./committees/types"
 import {
   HearingContent,
   HearingListItem,
@@ -191,4 +192,14 @@ export async function getCityBills(court: number, name: string) {
     timeout: 60_000
   })
   return CityBills.check(data)
+}
+
+const SimilarBills = Array(BillReference)
+export async function getSimilarBills(court: number, id: string) {
+  const data = await request({
+    url: `GeneralCourts/${court}/Documents/${id}/Similar`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return SimilarBills.check(data)
 }

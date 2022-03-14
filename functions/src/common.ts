@@ -1,5 +1,6 @@
 import { FieldValue } from "@google-cloud/firestore"
-import { https } from "firebase-functions"
+import axios from "axios"
+import { https, logger } from "firebase-functions"
 import { Null, Record, Result, Runtype, Static, String } from "runtypes"
 
 /** Parse the request and return the result or fail. */
@@ -29,6 +30,16 @@ export function checkAuth(context: https.CallableContext) {
 /** Constructs a new HTTPS error */
 export function fail(code: https.FunctionsErrorCode, message: string) {
   return new https.HttpsError(code, message)
+}
+
+/** Catch handler to log axios errors and return undefined. */
+export const logFetchError = (label: string, id: string) => (e: any) => {
+  if (axios.isAxiosError(e)) {
+    logger.info(`Error fetching ${label} - ${id}: ${e.message}`)
+    return undefined
+  } else {
+    throw e
+  }
 }
 
 // In particular, reject "/" in ID strings
