@@ -1,6 +1,7 @@
 import axiosModule, { AxiosRequestConfig } from "axios"
 import { isString } from "lodash"
 import { BillHistory } from "./bills/types"
+import { CityBills, CityListing } from "./cities/types"
 import { CommitteeListing, CommitteeContent } from "./committees/types"
 import {
   HearingContent,
@@ -172,4 +173,22 @@ export async function getCommittee(
     ReportedOutDocuments: justIds(data.ReportedOutDocuments)
   }
   return CommitteeContent.check(content)
+}
+
+export async function listCities(court: number) {
+  const data = await request({
+    url: `/GeneralCourts/${court}/Documents/SupportedCities`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return CityListing.check(data)
+}
+
+export async function getCityBills(court: number, name: string) {
+  const data = await request({
+    url: `/GeneralCourts/${court}/Cities/${name}/Documents`,
+    method: "GET",
+    timeout: 60_000
+  })
+  return CityBills.check(data)
 }

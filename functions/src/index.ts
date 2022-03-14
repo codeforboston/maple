@@ -3,6 +3,7 @@ export {
   startBillBatches,
   updateBillCommitteeStatus
 } from "./bills"
+export { fetchCityBatch, startCityBatches } from "./cities"
 export {
   fetchCommitteeBatch,
   startCommitteeBatches,
