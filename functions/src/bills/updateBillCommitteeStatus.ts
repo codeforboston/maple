@@ -35,7 +35,7 @@ export const updateBillCommitteeStatus = runWith({ timeoutSeconds: 120 })
     committees.forEach(c =>
       c.content.DocumentsBeforeCommittee.forEach(billId => {
         const update: DocUpdate<Bill> = {
-          currentCommitte: { id: c.id, name: c.content.FullName }
+          currentCommittee: { id: c.id, name: c.content.FullName }
         }
         writer.set(db.doc(billPath(billId)), update, { merge: true })
       })
@@ -44,7 +44,7 @@ export const updateBillCommitteeStatus = runWith({ timeoutSeconds: 120 })
     // Clear the committee on bills not in committee
     billsOutOfCommittee.forEach(id => {
       const update: DocUpdate<Bill> = {
-        currentCommitte: FieldValue.delete()
+        currentCommittee: FieldValue.delete()
       }
       writer.set(db.doc(billPath(id)), update, { merge: true })
     })
