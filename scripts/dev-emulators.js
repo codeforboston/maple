@@ -18,7 +18,7 @@ concurrently([
     env
   },
   {
-    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore ${emulatorsStartArgs}`,
+    command: `firebase --project ${demoProjectId} emulators:start --only auth,functions,pubsub,firestore,storage ${emulatorsStartArgs}`,
     name: "emulators",
     prefixColor: "blue",
     env

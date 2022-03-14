@@ -4,7 +4,8 @@ export function runAgainstEmulators() {
     GCLOUD_PROJECT: "demo-dtp",
     NEXT_PUBLIC_USE_EMULATOR: "true",
     FIRESTORE_EMULATOR_HOST: "localhost:8080",
-    FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099"
+    FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099",
+    FIREBASE_STORAGE_EMULATOR_HOST: "localhost:9199"
   })
 }
 
