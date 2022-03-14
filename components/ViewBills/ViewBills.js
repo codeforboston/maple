@@ -6,6 +6,7 @@ import * as links from "../../components/links.tsx"
 import { useMember } from "../db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import Testimonies from "../Testimonies/Testimonies"
 
 const invalidSponsorId = (Id) => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -158,6 +159,8 @@ const ViewBills = () => {
         >
           <FontAwesomeIcon icon={faAngleRight} />
         </Button>
+          console.log("started mock up of all testimonies table")
+        {/* <Testimonies/> */}
       </div>
     </Container>
   );
