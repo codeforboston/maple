@@ -1,4 +1,11 @@
-export { fetchBillBatch, startBillBatches } from "./bills"
+export { fetchBillBatch, startBillBatches, updateBillReferences } from "./bills"
+export { fetchCityBatch, startCityBatches } from "./cities"
+export {
+  fetchCommitteeBatch,
+  startCommitteeBatches,
+  updateCommitteeRosters
+} from "./committees"
+export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
 export {
   createMemberSearchIndex,
   fetchMemberBatch,
@@ -7,4 +14,3 @@ export {
 export { setUsername } from "./profile"
 export { deleteTestimony, publishTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"
-export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
