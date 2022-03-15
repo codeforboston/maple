@@ -22,7 +22,7 @@ export default createPage({
           tool and select your State Representative and Senator below.
         </p>
         <SelectLegislators />
-        <MyTestimonies/>
+        <MyTestimonies />
       </>
     )
   })

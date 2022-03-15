@@ -29,7 +29,7 @@ export function usePublishedTestimonyListing({
   limitCount?: number
   senatorId?: string
   representativeId?: string
-  senatorDistrict?: string,
+  senatorDistrict?: string
   representativeDistrict?: string
 }) {
   return useAsync(async () => {
@@ -44,7 +44,8 @@ export function usePublishedTestimonyListing({
         senatorId && where("senatorId", "==", senatorId),
         representativeId && where("representativeId", "==", representativeId),
         senatorDistrict && where("senatorDistrict", "==", senatorDistrict),
-        representativeDistrict && where("representativeDistrict", "==", representativeDistrict),
+        representativeDistrict &&
+          where("representativeDistrict", "==", representativeDistrict),
         orderBy("publishedAt", "desc"),
         limit(limitCount)
       )

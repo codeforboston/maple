@@ -1,13 +1,13 @@
-import React from "react";
-import { Table, Container, Button } from 'react-bootstrap'
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony";
-import EditTestimony from "../EditTestimony/EditTestimony";
-import DeleteTestimony from "../DeleteTestimony/DeleteTestimony";
+import React from "react"
+import { Table, Container, Button } from "react-bootstrap"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import EditTestimony from "../EditTestimony/EditTestimony"
+import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import { useAuth } from "../../components/auth"
-import { useBill, usePublishedTestimonyListing } from "../db";
+import { useBill, usePublishedTestimonyListing } from "../db"
 import { useRouter } from "next/router"
 
-const TestimonyRow = ({testimony}) => { 
+const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
   const router = useRouter()
 
@@ -18,21 +18,19 @@ const TestimonyRow = ({testimony}) => {
       <tr>
         <td>{testimony.position}</td>
         <td>
-          <Button variant="primary" 
-          onClick={() => router.push(`/bill?id=${testimony.billId}`)}>
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/bill?id=${testimony.billId}`)}
+          >
             {testimony.billId}
           </Button>
         </td>
         <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
-        <td>{testimony.content.substring(0,100)}...</td>
+        <td>{testimony.content.substring(0, 100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
-
           <div className="d-flex">
-            <ExpandTestimony
-              bill={bill.content}
-              testimony={testimony}
-            />
+            <ExpandTestimony bill={bill.content} testimony={testimony} />
             &nbsp;
             <EditTestimony
               className="ml-2"
@@ -40,12 +38,8 @@ const TestimonyRow = ({testimony}) => {
               testimony={testimony}
             />
             &nbsp;
-            <DeleteTestimony
-              bill={bill.content}
-              testimony={testimony}
-            />
+            <DeleteTestimony bill={bill.content} testimony={testimony} />
           </div>
-
         </td>
       </tr>
     )
@@ -55,18 +49,17 @@ const TestimonyRow = ({testimony}) => {
 const MyTestimonies = () => {
   const { user, authenticated } = useAuth()
   const userUid = user ? user.uid : null
-  const testimoniesResponse = usePublishedTestimonyListing({uid: userUid})
-  const testimonies = testimoniesResponse.status == "loading" || testimoniesResponse.status == "error" ? [] : testimoniesResponse.result
-  const testimoniesComponent = !testimonies ? "" :
-    testimonies.map((testimony, index) => {
-      return (
-        <TestimonyRow
-          testimony={testimony}
-          key={index}
-        />
-      )
-    }
-  )
+  const testimoniesResponse = usePublishedTestimonyListing({ uid: userUid })
+  const testimonies =
+    testimoniesResponse.status == "loading" ||
+    testimoniesResponse.status == "error"
+      ? []
+      : testimoniesResponse.result
+  const testimoniesComponent = !testimonies
+    ? ""
+    : testimonies.map((testimony, index) => {
+        return <TestimonyRow testimony={testimony} key={index} />
+      })
 
   return (
     <Container>
@@ -81,13 +74,10 @@ const MyTestimonies = () => {
             <th>Attachment?</th>
           </tr>
         </thead>
-        <tbody>
-          {testimoniesComponent}
-        </tbody>
+        <tbody>{testimoniesComponent}</tbody>
       </Table>
     </Container>
-  );
-};
+  )
+}
 
-export default MyTestimonies;
-
+export default MyTestimonies

@@ -32,7 +32,7 @@ export const Testimony = withDefaults(
     representativeId: Optional(RtString),
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),
-    representativeDistrict: Optional(RtString),
+    representativeDistrict: Optional(RtString)
   }),
   { publishedAt: Timestamp.fromMillis(0), authorDisplayName: "Anonymous" }
 )

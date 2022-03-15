@@ -1,5 +1,5 @@
 // import { Layout } from "../components";
-import NewLayout from "../components/NewLayout/NewLayout";
+import NewLayout from "../components/NewLayout/NewLayout"
 
 function DemocracyInMA() {
   return (
@@ -29,7 +29,7 @@ function DemocracyInMA() {
         <br />
       </p>
     </NewLayout>
-  );
+  )
 }
 
-export default DemocracyInMA;
+export default DemocracyInMA

@@ -60,7 +60,7 @@ class PublishTestimonyTransaction {
       court: this.draft.court,
       position: this.draft.position,
       version: await this.getNextPublicationVersion(),
-      publishedAt: Timestamp.now(),
+      publishedAt: Timestamp.now()
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -72,7 +72,8 @@ class PublishTestimonyTransaction {
       newPublication.senatorDistrict = this.profile.senator.district
     }
     if (this.profile?.representativeDistrict) {
-      newPublication.representativeDistrict = this.profile.representative.district
+      newPublication.representativeDistrict =
+        this.profile.representative.district
     }
 
     this.setPublication(newPublication)

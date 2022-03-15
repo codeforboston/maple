@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,500,600,700');
-
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans:400,500,600,700");
 
 /* TODO: I could not for the life of me get root variables working
   in these modules, so without that and without sass, idk man */
@@ -20,7 +19,6 @@ Nav: Noto Sans, 400, 18px
 
 */
 
-
 /* GLOBAL CARD PROPERTIES */
 /* ====================== */
 .priorityCard {
@@ -30,29 +28,28 @@ Nav: Noto Sans, 400, 18px
   padding: 1rem;
   margin: 1rem;
   /* margin-left: 0rem; */
-  font-family: 'Noto Sans';
+  font-family: "Noto Sans";
 }
-
 
 /* HEADER PROPERTIES */
 /* ================= */
 .priorityCardHeader {
   display: flex;
   justify-content: space-between;
-  font-family: 'Noto Sans';
+  font-family: "Noto Sans";
 }
 
 .priorityCardHeaderTitle {
   flex-basis: 58%;
-  color: #89110C;
+  color: #89110c;
   font-weight: 500;
   font-size: 2.5rem;
 }
 
 .priorityCardHeaderButton {
   flex-basis: 21%;
-  color: #FFFFFF;
-  background-color: #89110C;
+  color: #ffffff;
+  background-color: #89110c;
   border-radius: 7px;
 
   text-transform: uppercase;
@@ -73,14 +70,12 @@ Nav: Noto Sans, 400, 18px
 
 .priorityCardHeaderButton:hover {
   color: white;
-  filter: brightness( 85% );
+  filter: brightness(85%);
   transition: 0.15s all ease-in-out;
   text-decoration: none;
 }
 
 /* TODO: add the ::before hover for a square thing? */
-
-
 
 /* BODY PROPERTIES */
 /* =============== */
@@ -94,5 +89,4 @@ Nav: Noto Sans, 400, 18px
 }
 
 .priorityCardBodyText {
-
 }
