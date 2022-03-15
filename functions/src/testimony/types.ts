@@ -28,7 +28,11 @@ export const Testimony = withDefaults(
     authorUid: Id,
     authorDisplayName: RtString,
     version: Number,
-    publishedAt: InstanceOf(Timestamp)
+    publishedAt: InstanceOf(Timestamp),
+    representativeId: Optional(RtString),
+    senatorId: Optional(RtString),
+    senatorDistrict: Optional(RtString),
+    representativeDistrict: Optional(RtString),
   }),
   { publishedAt: Timestamp.fromMillis(0), authorDisplayName: "Anonymous" }
 )

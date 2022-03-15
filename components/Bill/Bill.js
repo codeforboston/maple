@@ -33,14 +33,18 @@ const ViewBillPage = props => {
         <h5>{bill ? bill.Pinslip : ""}</h5>
       </div>
       <div>
-        {bill && bill.DocumentText != null
-          ? <>
-          <span style={{ whiteSpace: "pre-wrap" }}> 
-            {bill.DocumentText.substring(0, 700) + "..." } 
-          </span>
-          {bill.DocumentText.length > 700 ? <BillReadMore bill={bill}/> : null}
+        {bill && bill.DocumentText != null ? (
+          <>
+            <span style={{ whiteSpace: "pre-wrap" }}>
+              {bill.DocumentText.substring(0, 700) + "..."}
+            </span>
+            {bill.DocumentText.length > 700 ? (
+              <BillReadMore bill={bill} />
+            ) : null}
           </>
-          : ""}
+        ) : (
+          ""
+        )}
       </div>
       <BillTestimonies bill={bill} />
       <AddTestimony bill={bill} />
