@@ -61,21 +61,17 @@ class PublishTestimonyTransaction {
       position: this.draft.position,
       version: await this.getNextPublicationVersion(),
       publishedAt: Timestamp.now(),
-      // representativeId: this.profile.representative.Id,
-      // senatorId: this.profile.senator.Id,
-      // senatorDistrict: this.profile.senator.district,
-      // representativeDistict: this.profile.representative.district,
     }
-    if (this.profile.representative.id) {
+    if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
     }
-    if (this.profile.senator.id) {
+    if (this.profile?.senator?.id) {
       newPublication.senatorId = this.profile.senator.id
     }
-    if (this.profile.senatorDistrict) {
+    if (this.profile?.senatorDistrict) {
       newPublication.senatorDistrict = this.profile.senator.district
     }
-    if (this.profile.representativeDistrict) {
+    if (this.profile?.representativeDistrict) {
       newPublication.representativeDistrict = this.profile.representative.district
     }
 
