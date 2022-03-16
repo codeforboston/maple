@@ -33,9 +33,9 @@ export function fail(code: https.FunctionsErrorCode, message: string) {
 }
 
 /** Catch handler to log axios errors and return undefined. */
-export const logFetchError = (label: string, id: string) => (e: any) => {
+export const logFetchError = (label: string, id?: string) => (e: any) => {
   if (axios.isAxiosError(e)) {
-    logger.info(`Error fetching ${label} - ${id}: ${e.message}`)
+    logger.info(`Error fetching ${label}${id ? ` - ${id}` : ""}: ${e.message}`)
     return undefined
   } else {
     throw e
