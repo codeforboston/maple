@@ -49,7 +49,7 @@ const BillRow = props => {
         <td>{bill.BillNumber}</td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
-        <td>city</td>
+        <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
         <td>{fullBill.testimonyCount}</td>
@@ -57,6 +57,7 @@ const BillRow = props => {
           {fullBill.latestTestimonyAt &&
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
+        <td>{fullBill.currentCommittee?.name}</td>
         <td>
           <Button
             variant="primary"
@@ -154,6 +155,7 @@ const ViewBills = () => {
             <th>Hearing Scheduled</th>
             <th># Testimony</th>
             <th>Most Recent Testimony</th>
+            <th>Current Committee</th>
             <th></th>
           </tr>
         </thead>
