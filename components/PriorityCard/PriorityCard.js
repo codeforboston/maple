@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./PriorityCard.module.css";
+import React from "react"
+import styles from "./PriorityCard.module.css"
 
 // Okay so as props we need:
 // ===============================
@@ -25,7 +25,7 @@ const PriorityCard = ({
   commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
   velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
   cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-  est laborum.`,
+  est laborum.`
 }) => {
   return (
     <div className={styles.priorityCard}>
@@ -50,8 +50,7 @@ const PriorityCard = ({
         <p className={styles.priorityCardBodyText}>{text}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PriorityCard;
-
+export default PriorityCard
