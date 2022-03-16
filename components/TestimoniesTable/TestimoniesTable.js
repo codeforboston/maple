@@ -14,8 +14,6 @@ const TestimonyRow = ({ testimony }) => {
           ? "(blank)"
           : testimony.authorDisplayName}
       </td>
-      <td>{testimony.senatorId}</td>
-      <td>{testimony.representativeId}</td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
@@ -39,8 +37,6 @@ const TestimonyTable = ({ testimonies }) => {
             <th>Bill</th>
             <th>Support</th>
             <th>Submitter</th>
-            <th>Senator</th>
-            <th>Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
