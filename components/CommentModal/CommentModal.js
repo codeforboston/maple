@@ -42,10 +42,28 @@ My thoughts:
 
   const positionMessage = "Select my support..(required)"
 
-  const url = encodeURI(
-    `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${
+  const mailSubject1 =
+    testimony?.position == "endorse"
+      ? "Support of"
+      : testimony?.position == "oppose"
+      ? "Opposition to"
+      : "Opinion on"
+
+  const mailIntro1 =
+    testimony?.position == "endorse"
+      ? "support"
+      : testimony?.position == "oppose"
+      ? "oppose"
+      : "have thoughts on"
+
+  const mailIntro = `As your constituent, I am writing to let you know I ${mailIntro1} ${bill?.BillNumber}.
+  
+  `
+
+  const mailTo = encodeURI(
+    `mailto:${senatorEmail},${representativeEmail}?subject=${mailSubject1} Bill ${
       bill ? bill.BillNumber : ""
-    }&body=${testimony ? testimony.content : ""}`
+    }&body=${testimony ? mailIntro + testimony.content : ""}`
   )
 
   const defaultPosition =
@@ -115,6 +133,8 @@ My thoughts:
     await edit.publishTestimony.execute()
     handleCloseTestimony()
     setIsPublishing(false)
+
+    window.open(mailTo) // allow user to send a formatted email using their email client
   }
 
   const positionChosen =
