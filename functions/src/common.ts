@@ -48,6 +48,7 @@ const simpleId = /^[A-Za-z0-9-_]+$/
 export const Id = String.withConstraint(s => simpleId.test(s))
 
 export const NullStr = String.Or(Null)
+export const Nullable = <T>(t: Runtype<T>) => Null.Or(t)
 
 /** Allows specifying defaults that are merged into records before validation.
  * This is useful for compatibility with documents created before adding a field

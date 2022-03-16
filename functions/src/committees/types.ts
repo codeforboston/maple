@@ -7,7 +7,7 @@ import {
   InstanceOf,
   Optional
 } from "runtypes"
-import { Id } from "../common"
+import { Id, Nullable } from "../common"
 import { Timestamp } from "../firebase"
 
 export type CommitteeListItem = Static<typeof CommitteeListItem>
@@ -24,7 +24,9 @@ export const CommitteeContent = Record({
   FullName: String,
   CommitteeCode: String,
   DocumentsBeforeCommittee: Array(String),
-  ReportedOutDocuments: Array(String)
+  ReportedOutDocuments: Array(String),
+  HouseChairperson: Nullable(Record({ MemberCode: String })),
+  SenateChairperson: Nullable(Record({ MemberCode: String }))
 })
 
 export type Committee = Static<typeof Committee>
