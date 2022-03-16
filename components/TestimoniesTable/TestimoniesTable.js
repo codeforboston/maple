@@ -33,8 +33,7 @@ const TestimonyTable = ({ testimonies }) => {
 
   return (
     <Container>
-      {/* <h1>Published Testimony</h1> */}
-      <Table className="mt-4" striped bordered hover>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Bill</th>
