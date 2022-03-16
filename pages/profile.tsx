@@ -29,6 +29,17 @@ export default createPage({
           rows="5"
           required
         />
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked="true"
+            id="flexCheckChecked"
+          />
+          <label className="form-check-label" htmlFor="flexCheckChecked">
+            Allow others to see my profile
+          </label>
+        </div>
         <div className="mt-2">
           <MyTestimonies />
         </div>

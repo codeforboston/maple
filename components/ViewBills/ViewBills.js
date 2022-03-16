@@ -41,6 +41,19 @@ const BillRow = props => {
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
     )
+
+  const CommitteeComponent = fullBill.currentCommittee ? (
+    <>
+      <links.External
+        href={`https://malegislature.gov/Committees/Detail/${fullBill.currentCommittee?.id}/Committees`}
+      >
+        {fullBill.currentCommittee?.name}
+      </links.External>
+    </>
+  ) : (
+    <></>
+  )
+
   if (loading) {
     return null
   } else {
@@ -57,7 +70,8 @@ const BillRow = props => {
           {fullBill.latestTestimonyAt &&
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
-        <td>{fullBill.currentCommittee?.name}</td>
+        <td>{CommitteeComponent}</td>
+
         <td>
           <Button
             variant="primary"
