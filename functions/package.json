@@ -16,7 +16,7 @@
     "@google-cloud/pubsub": "^2.19.0",
     "axios": "^0.25.0",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.18.1",
+    "firebase-functions": "^3.19.0",
     "lodash": "^4.17.21",
     "luxon": "^2.3.1",
     "runtypes": "^6.5.0"
