@@ -34,7 +34,7 @@ const TopNav: React.FC = () => {
           <Nav className="me-auto">
             <NavLink href="/">Home</NavLink>
             <NavLink href="/browse">Bills</NavLink>
-            {authenticated && <NavLink href="/testify">Testify</NavLink>}
+            {/* {authenticated && <NavLink href="/testify">Testify</NavLink>} */}
             <NavLink href="/about">About</NavLink>
             <AccountNav authenticated={authenticated} />
           </Nav>

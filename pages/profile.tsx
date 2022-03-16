@@ -22,7 +22,16 @@ export default createPage({
           tool and select your State Representative and Senator below.
         </p>
         <SelectLegislators />
-        <MyTestimonies />
+        About me:
+        <textarea
+          className="form-control col-sm"
+          resize="none"
+          rows="5"
+          required
+        />
+        <div className="mt-2">
+          <MyTestimonies />
+        </div>
       </>
     )
   })

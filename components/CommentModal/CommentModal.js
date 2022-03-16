@@ -1,11 +1,16 @@
 import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
+import { Button, Modal, Checkbox, Form } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import * as links from "../../components/links"
 
 const CommentModal = props => {
+  const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
+    React.useState(true)
+  const [checkedSendToCommittee, setCheckedSendToCommittee] =
+    React.useState(true)
+
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
 
@@ -49,11 +54,24 @@ My thoughts:
     testimony && testimony.content ? testimony.content : defaultTestimony
 
   const EmailToMyLegislators = () => {
+    const handleChangeSendToYourLegislators = () => {
+      setCheckedSendToYourLegislators(!checkedSendToYourLegislators)
+    }
+
     if (senator.member || representative.member) {
       return (
-        <links.External href={url}>
-          Send copy to your legislators
-        </links.External>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={checkedSendToYourLegislators}
+            id="flexCheckChecked"
+            onChange={handleChangeSendToYourLegislators}
+          />
+          <label className="form-check-label">
+            Send copy to your legislatures
+          </label>
+        </div>
       )
     } else {
       return (
@@ -62,6 +80,27 @@ My thoughts:
         </links.External>
       )
     }
+  }
+
+  const EmailToCommittee = () => {
+    const handleChangeSendToCommittee = () => {
+      setCheckedSendToCommittee(!checkedSendToCommittee)
+    }
+
+    return (
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={checkedSendToCommittee}
+          id="flexCheckChecked"
+          onChange={handleChangeSendToCommittee}
+        />
+        <label className="form-check-label" htmlFor="flexCheckChecked">
+          Send copy to relevant committee
+        </label>
+      </div>
+    )
   }
 
   const publishTestimony = async () => {
@@ -109,8 +148,6 @@ My thoughts:
                       position: newPosition
                     }
                     setTestimony(testimonyObject)
-                    console.log(testimonyObject)
-                    // how to get this to persist?
                   }
                 }}
               >
@@ -123,9 +160,7 @@ My thoughts:
                 <EmailToMyLegislators />
               </div>
               <div>
-                <links.External href={url}>
-                  Send copy to relevant committee
-                </links.External>
+                <EmailToCommittee />
               </div>
             </div>
 
