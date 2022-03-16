@@ -46,6 +46,7 @@ const ViewBillPage = props => {
           ""
         )}
       </div>
+      <h1>Published Testimony</h1>
       <BillTestimonies bill={bill} />
       <AddTestimony bill={bill} />
     </>

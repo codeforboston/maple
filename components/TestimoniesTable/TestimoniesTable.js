@@ -7,16 +7,17 @@ const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
   return (
     <tr>
+      <td>{testimony.billId}</td>
       <td>{testimony.position}</td>
       <td>
         {testimony.authorDisplayName == null
           ? "(blank)"
           : testimony.authorDisplayName}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
-      <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.senatorId}</td>
       <td>{testimony.representativeId}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
       <td>
         <ExpandTestimony bill={bill?.content} testimony={testimony} />
@@ -32,16 +33,17 @@ const TestimonyTable = ({ testimonies }) => {
 
   return (
     <Container>
-      <h1>Submitted testimonies </h1>
-      <Table striped bordered hover>
+      {/* <h1>Published Testimony</h1> */}
+      <Table className="mt-4" striped bordered hover>
         <thead>
           <tr>
+            <th>Bill</th>
             <th>Support</th>
             <th>Submitter</th>
-            <th>Date Submitted</th>
-            <th>Text</th>
             <th>Senator</th>
             <th>Representative</th>
+            <th>Date Submitted</th>
+            <th>Text</th>
             <th>Attachment?</th>
           </tr>
         </thead>

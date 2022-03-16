@@ -49,6 +49,7 @@ const BillRow = props => {
         <td>{bill.BillNumber}</td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
+        <td>city</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
         <td>{fullBill.testimonyCount}</td>
@@ -94,8 +95,7 @@ const ViewBills = () => {
 
   return (
     <Container>
-      <h1>Most Active Bills </h1>
-      <div className="row">
+      <div className="row mt-2">
         <div className="col-md-2">
           <select
             className="form-control"
@@ -149,6 +149,7 @@ const ViewBills = () => {
             <th>Bill #</th>
             <th>Bill Name</th>
             <th>Lead Sponsor</th>
+            <th>City</th>
             <th># CoSponsors</th>
             <th>Hearing Scheduled</th>
             <th># Testimony</th>
