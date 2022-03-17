@@ -11,7 +11,7 @@ export default createPage({
         <h1>Published Testimony</h1>
 
         <SearchBar />
-        <Testimonies/>
+        <Testimonies />
       </>
     )
   }
