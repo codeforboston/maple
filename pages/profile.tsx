@@ -25,8 +25,7 @@ export default createPage({
         About me:
         <textarea
           className="form-control col-sm"
-          resize="none"
-          rows="5"
+          rows={5}
           required
         />
         <div className="form-check">
