@@ -1,7 +1,6 @@
 import {
   Array,
   InstanceOf,
-  Nullish,
   Number,
   Optional,
   Record,
@@ -9,7 +8,7 @@ import {
   String,
   Unknown
 } from "runtypes"
-import { Id, NullStr, withDefaults } from "../common"
+import { Id, Maybe, NullStr, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
 export type BillReference = Static<typeof BillReference>
@@ -38,8 +37,8 @@ export const CommitteeMember = Record({
   CurrentCommittee = Record({
     id: String,
     name: String,
-    houseChair: CommitteeMember.Or(Nullish),
-    senateChair: CommitteeMember.Or(Nullish)
+    houseChair: Maybe(CommitteeMember),
+    senateChair: Maybe(CommitteeMember)
   })
 
 export type Bill = Static<typeof Bill>
