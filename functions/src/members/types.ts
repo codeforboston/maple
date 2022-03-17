@@ -1,7 +1,9 @@
-import { Record, Array, String, Number, Static, InstanceOf } from "runtypes"
-import { CommitteeListItem } from "../committees/types"
+import { Array, InstanceOf, Number, Record, Static, String } from "runtypes"
 import { Id, NullStr } from "../common"
 import { Timestamp } from "../firebase"
+
+export type MemberReference = Static<typeof MemberReference>
+export const MemberReference = Record({ MemberCode: String })
 
 export type MemberContent = Static<typeof MemberContent>
 export const MemberContent = Record({
@@ -15,7 +17,7 @@ export const MemberContent = Record({
   PhoneNumber: NullStr,
   FaxNumber: NullStr,
   RoomNumber: NullStr,
-  Committees: Array(CommitteeListItem),
+  Committees: Array(Record({ CommitteeCode: String })),
   SponsoredBills: Array(String),
   CoSponsoredBills: Array(String)
 })

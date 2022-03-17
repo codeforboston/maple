@@ -6,6 +6,7 @@ import { db, FieldValue } from "../firebase"
 import * as api from "../malegislature"
 import { Committee } from "../committees/types"
 import { City } from "../cities/types"
+import { Member, MemberReference } from "../members/types"
 
 type BillUpdates = Map<string, DocUpdate<Bill>>
 
@@ -35,79 +36,129 @@ const billPath = (id?: string) =>
  * other entities, we consolidate the updates across all entities into one read
  * and one write per bill, to minimize database access.
  */
-export const updateBillReferences = runWith({ timeoutSeconds: 120 })
-  .pubsub.schedule("every 24 hours")
-  .onRun(async () => {
-    const billIds = await db
-      .collection(billPath())
-      .select()
-      .get()
-      .then(c => c.docs.filter(d => d.exists).map(d => d.id))
+class UpdateBillReferences {
+  private billIds!: string[]
+  private committees!: Committee[]
+  private members!: Map<string, Member>
+  private cities!: City[]
+
+  get function() {
+    return runWith({ timeoutSeconds: 120 })
+      .pubsub.schedule("every 24 hours")
+      .onRun(() => this.run())
+  }
+
+  async run() {
+    await this.readEntities()
 
     const updates = mergeUpdates(
-      await getCommitteeUpdates(billIds),
-      await getCityUpdates(billIds)
+      this.getCommitteeUpdates(),
+      this.getCityUpdates()
     )
 
+    await this.writeBills(updates)
+  }
+
+  private async writeBills(updates: BillUpdates) {
     const writer = db.bulkWriter()
     updates.forEach((update, id) => {
       writer.set(db.doc(billPath(id)), update, { merge: true })
     })
     await writer.close()
-  })
+  }
 
-async function getCityUpdates(billIds: string[]): Promise<BillUpdates> {
-  const cities = await db
-    .collection(`/generalCourts/${api.currentGeneralCourt}/cities`)
-    .get()
-    .then(c => c.docs.map(d => d.data()).filter(City.guard))
-  const billsWithoutCity = difference(
-    billIds,
-    flatten(cities.map(c => c.bills))
-  )
-  const updates: BillUpdates = new Map()
+  private async readEntities() {
+    this.billIds = await db
+      .collection(billPath())
+      .select()
+      .get()
+      .then(c => c.docs.filter(d => d.exists).map(d => d.id))
 
-  // Update the city for each bill listed in a city
-  cities.forEach(city => {
-    city.bills.forEach(id => {
-      updates.set(id, { city: city.id })
-    })
-  })
+    this.cities = await db
+      .collection(`/generalCourts/${api.currentGeneralCourt}/cities`)
+      .get()
+      .then(c => c.docs.map(d => d.data()).filter(City.guard))
 
-  // Remove the city for bills without a matching city
-  billsWithoutCity.forEach(id => {
-    updates.set(id, { city: FieldValue.delete() })
-  })
+    this.committees = await db
+      .collection(`/generalCourts/${api.currentGeneralCourt}/committees`)
+      .get()
+      .then(c => c.docs.map(d => d.data()).filter(Committee.guard))
 
-  return updates
-}
+    this.members = await db
+      .collection(`/generalCourts/${api.currentGeneralCourt}/members`)
+      .get()
+      .then(c =>
+        c.docs
+          .map(d => d.data())
+          .filter(Member.guard)
+          .map(m => [m.id, m] as const)
+      )
+      .then(entries => new Map(entries))
+  }
 
-async function getCommitteeUpdates(billIds: string[]): Promise<BillUpdates> {
-  const committees = await db
-    .collection(`/generalCourts/${api.currentGeneralCourt}/committees`)
-    .get()
-    .then(c => c.docs.map(d => d.data()).filter(Committee.guard))
-  const billsInCommittee = flatten(
-    committees.map(c => c.content.DocumentsBeforeCommittee)
-  )
-  const billsOutOfCommittee = difference(billIds, billsInCommittee)
-  const updates: BillUpdates = new Map()
+  getCityUpdates(): BillUpdates {
+    const billsWithoutCity = difference(
+      this.billIds,
+      flatten(this.cities.map(c => c.bills))
+    )
+    const updates: BillUpdates = new Map()
 
-  // Set the committee on bills listed in a committee
-  committees.forEach(c =>
-    c.content.DocumentsBeforeCommittee.forEach(billId => {
-      updates.set(billId, {
-        currentCommittee: { id: c.id, name: c.content.FullName }
+    // Update the city for each bill listed in a city
+    this.cities.forEach(city => {
+      city.bills.forEach(id => {
+        updates.set(id, { city: city.id })
       })
     })
-  )
 
-  // Clear the committee on bills not in committee
-  billsOutOfCommittee.forEach(id => {
-    updates.set(id, {
-      currentCommittee: FieldValue.delete()
+    // Remove the city for bills without a matching city
+    billsWithoutCity.forEach(id => {
+      updates.set(id, { city: FieldValue.delete() })
     })
-  })
 
-  return updates
+    return updates
+  }
+
+  getCommitteeUpdates(): BillUpdates {
+    const billsInCommittee = flatten(
+      this.committees.map(c => c.content.DocumentsBeforeCommittee)
+    )
+    const billsOutOfCommittee = difference(this.billIds, billsInCommittee)
+    const updates: BillUpdates = new Map()
+
+    // Set the committee on bills listed in a committee
+    this.committees.forEach(c =>
+      c.content.DocumentsBeforeCommittee.forEach(billId => {
+        updates.set(billId, {
+          currentCommittee: {
+            id: c.id,
+            name: c.content.FullName,
+            houseChair: this.formatChair(c.content.HouseChairperson),
+            senateChair: this.formatChair(c.content.SenateChairperson)
+          }
+        })
+      })
+    )
+
+    // Clear the committee on bills not in committee
+    billsOutOfCommittee.forEach(id => {
+      updates.set(id, {
+        currentCommittee: FieldValue.delete()
+      })
+    })
+
+    return updates
+  }
+
+  formatChair(m: MemberReference | null) {
+    if (m === null) return null
+    const member = this.members.get(m.MemberCode)
+    if (!member) return null
+    return {
+      id: member.id,
+      name: member.content.Name,
+      email: member.content.EmailAddress
+    }
+  }
 }
+
+export const updateBillReferences = new UpdateBillReferences().function

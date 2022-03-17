@@ -1,6 +1,6 @@
-import axios from "axios"
-import { logger, runWith } from "firebase-functions"
+import { runWith } from "firebase-functions"
 import { DateTime } from "luxon"
+import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
@@ -34,27 +34,18 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   abstract getEvent(item: ListItem): Promise<Event>
 
   private async run() {
-    const list = await this.listEvents()
+    const list = await this.listEvents().catch(logFetchError("event list"))
+
+    if (!list) return
+
     const writer = db.bulkWriter()
     const upcomingOrRecentCutoff = DateTime.now().minus({ days: 1 })
 
     for (let item of list) {
-      let event: Event
-      try {
-        event = await this.getEvent(item)
-      } catch (e) {
-        if (axios.isAxiosError(e)) {
-          logger.warn(
-            `Could not fetch event for item ${(item as any)?.EventId}: ${
-              e.message
-            }`
-          )
-          continue
-        } else {
-          throw e
-        }
-      }
+      const id = (item as any)?.EventId,
+        event = await this.getEvent(item).catch(logFetchError("event", id))
 
+      if (!event) continue
       if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })

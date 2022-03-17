@@ -33,9 +33,9 @@ export function fail(code: https.FunctionsErrorCode, message: string) {
 }
 
 /** Catch handler to log axios errors and return undefined. */
-export const logFetchError = (label: string, id: string) => (e: any) => {
+export const logFetchError = (label: string, id?: string) => (e: any) => {
   if (axios.isAxiosError(e)) {
-    logger.info(`Error fetching ${label} - ${id}: ${e.message}`)
+    logger.info(`Error fetching ${label}${id ? ` - ${id}` : ""}: ${e.message}`)
     return undefined
   } else {
     throw e
@@ -48,6 +48,7 @@ const simpleId = /^[A-Za-z0-9-_]+$/
 export const Id = String.withConstraint(s => simpleId.test(s))
 
 export const NullStr = String.Or(Null)
+export const Nullable = <T>(t: Runtype<T>) => Null.Or(t)
 
 /** Allows specifying defaults that are merged into records before validation.
  * This is useful for compatibility with documents created before adding a field
