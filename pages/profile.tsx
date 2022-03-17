@@ -23,11 +23,7 @@ export default createPage({
         </p>
         <SelectLegislators />
         About me:
-        <textarea
-          className="form-control col-sm"
-          rows={5}
-          required
-        />
+        <textarea className="form-control col-sm" rows={5} required />
         <div className="form-check">
           <input
             className="form-check-input"
