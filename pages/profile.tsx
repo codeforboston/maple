@@ -33,7 +33,6 @@ export default createPage({
           <input
             className="form-check-input"
             type="checkbox"
-            checked="true"
             id="flexCheckChecked"
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">

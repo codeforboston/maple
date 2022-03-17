@@ -42,28 +42,38 @@ My thoughts:
 
   const positionMessage = "Select my support..(required)"
 
-  const mailSubject1 =
+  const positionEmailSubject =
     testimony?.position == "endorse"
       ? "Support of"
       : testimony?.position == "oppose"
       ? "Opposition to"
       : "Opinion on"
 
-  const mailIntro1 =
+  const positionWord =
     testimony?.position == "endorse"
       ? "support"
       : testimony?.position == "oppose"
       ? "oppose"
       : "have thoughts on"
 
-  const mailIntro = `As your constituent, I am writing to let you know I ${mailIntro1} ${bill?.BillNumber}.
-  
-  `
-
-  const mailTo = encodeURI(
-    `mailto:${senatorEmail},${representativeEmail}?subject=${mailSubject1} Bill ${
+  const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
+  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
+  const mailToLegislators = encodeURI(
+    `mailto:${senatorEmail},${representativeEmail}?subject=${positionEmailSubject} Bill ${
       bill ? bill.BillNumber : ""
-    }&body=${testimony ? mailIntro + testimony.content : ""}`
+    }&body=${
+      testimony ? mailIntroToLegislator + "\n\n" + testimony.content : ""
+    }`
+  )
+
+  const committeeChairEmail = "test@test.com"
+
+  const mailToCommittee = encodeURI(
+    `mailto:${committeeChairEmail}?subject=${positionEmailSubject} Bill ${
+      bill ? bill.BillNumber : ""
+    }&body=${
+      testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
+    }`
   )
 
   const defaultPosition =
@@ -134,7 +144,13 @@ My thoughts:
     handleCloseTestimony()
     setIsPublishing(false)
 
-    window.open(mailTo) // allow user to send a formatted email using their email client
+    if (checkedSendToYourLegislators) {
+      window.open(mailToLegislators) // allow user to send a formatted email using their email client
+    }
+
+    if (checkedSendToCommittee) {
+      window.open(mailToCommittee) // allow user to send a formatted email using their email client
+    }
   }
 
   const positionChosen =
