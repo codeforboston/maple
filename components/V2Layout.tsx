@@ -33,8 +33,7 @@ const TopNav: React.FC = () => {
         <Navbar.Collapse id="topnav">
           <Nav className="me-auto">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/browse">Bills</NavLink>
-            {/* {authenticated && <NavLink href="/testify">Testify</NavLink>} */}
+            <NavLink href="/bills">Bills</NavLink>
             <NavLink href="/about">About</NavLink>
             <AccountNav authenticated={authenticated} />
           </Nav>

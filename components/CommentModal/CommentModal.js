@@ -1,15 +1,17 @@
 import React, { useState } from "react"
-import { Button, Modal, Checkbox, Form } from "react-bootstrap"
+import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import * as links from "../../components/links"
+import EmailToMyLegislators from "../EmailToMyLegislators/EmailToMyLegislators"
+import EmailToCommittee from "../EmailToCommittee/EmailToCommittee"
 
 const CommentModal = props => {
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
-  const [checkedSendToCommittee, setCheckedSendToCommittee] =
-    React.useState(true)
+  const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
+    props.committeeName
+  ) // only default checkbox to checked if the bill is in a committee
 
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
@@ -27,6 +29,8 @@ My thoughts:
   const [isPublishing, setIsPublishing] = useState(false)
 
   const bill = props.bill
+  const committeeName = props.committeeName
+  const committeeChairEmail = props.committeeChairEmail
   const showTestimony = props.showTestimony
   const handleCloseTestimony = props.handleCloseTestimony
 
@@ -57,7 +61,6 @@ My thoughts:
       : "have thoughts on"
 
   const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
-  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
   const mailToLegislators = encodeURI(
     `mailto:${senatorEmail},${representativeEmail}?subject=${positionEmailSubject} Bill ${
       bill ? bill.BillNumber : ""
@@ -66,10 +69,15 @@ My thoughts:
     }`
   )
 
-  const committeeChairEmail = "test@test.com"
-
+  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${
+    bill?.BillNumber
+  }: ${bill?.Title} ${
+    committeeName ? "that is before the " + committeeName : ""
+  }.`
   const mailToCommittee = encodeURI(
-    `mailto:${committeeChairEmail}?subject=${positionEmailSubject} Bill ${
+    `mailto:${
+      committeeChairEmail ? committeeChairEmail : ""
+    }?subject=${positionEmailSubject} Bill ${
       bill ? bill.BillNumber : ""
     }&body=${
       testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
@@ -81,56 +89,6 @@ My thoughts:
   const defaultContent =
     testimony && testimony.content ? testimony.content : defaultTestimony
 
-  const EmailToMyLegislators = () => {
-    const handleChangeSendToYourLegislators = () => {
-      setCheckedSendToYourLegislators(!checkedSendToYourLegislators)
-    }
-
-    if (senator.member || representative.member) {
-      return (
-        <div className="form-check">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={checkedSendToYourLegislators}
-            id="flexCheckChecked"
-            onChange={handleChangeSendToYourLegislators}
-          />
-          <label className="form-check-label">
-            Send copy to your legislatures
-          </label>
-        </div>
-      )
-    } else {
-      return (
-        <links.External href="\profile">
-          Add legislators to your profile to share your testimony
-        </links.External>
-      )
-    }
-  }
-
-  const EmailToCommittee = () => {
-    const handleChangeSendToCommittee = () => {
-      setCheckedSendToCommittee(!checkedSendToCommittee)
-    }
-
-    return (
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          checked={checkedSendToCommittee}
-          id="flexCheckChecked"
-          onChange={handleChangeSendToCommittee}
-        />
-        <label className="form-check-label" htmlFor="flexCheckChecked">
-          Send copy to relevant committee
-        </label>
-      </div>
-    )
-  }
-
   const publishTestimony = async () => {
     if (
       testimony.position == undefined ||
@@ -141,16 +99,14 @@ My thoughts:
     setIsPublishing(true)
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
-    handleCloseTestimony()
-    setIsPublishing(false)
-
     if (checkedSendToYourLegislators) {
       window.open(mailToLegislators) // allow user to send a formatted email using their email client
     }
-
     if (checkedSendToCommittee) {
       window.open(mailToCommittee) // allow user to send a formatted email using their email client
     }
+    handleCloseTestimony()
+    setIsPublishing(false)
   }
 
   const positionChosen =
@@ -193,10 +149,22 @@ My thoughts:
                 <option value="neutral">Neutral</option>
               </select>
               <div>
-                <EmailToMyLegislators />
+                <EmailToMyLegislators
+                  checkedSendToYourLegislators={checkedSendToYourLegislators}
+                  setCheckedSendToYourLegislators={
+                    setCheckedSendToYourLegislators
+                  }
+                  senator={senator}
+                  representative={representative}
+                />
               </div>
               <div>
-                <EmailToCommittee />
+                <EmailToCommittee
+                  checkedSendToCommittee={checkedSendToCommittee}
+                  setCheckedSendToCommittee={setCheckedSendToCommittee}
+                  committeeName={committeeName}
+                  committeeChairEmail={committeeChairEmail}
+                />
               </div>
             </div>
 

@@ -13,6 +13,7 @@ const ViewBillPage = props => {
 
   const bill = fullBill?.content
   const committeeName = fullBill?.currentCommittee?.name
+  const committeeChairEmail = fullBill?.currentCommittee?.committeeChairEmail
 
   return loading ? (
     <Row>
@@ -52,7 +53,11 @@ const ViewBillPage = props => {
       </div>
       <h1>Published Testimony</h1>
       <BillTestimonies bill={bill} />
-      <AddTestimony bill={bill} />
+      <AddTestimony
+        bill={bill}
+        committeeName={committeeName}
+        committeeChairEmail={committeeChairEmail}
+      />
     </>
   )
 }

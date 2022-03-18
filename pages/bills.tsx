@@ -1,17 +1,17 @@
 import { createPage } from "../components/page"
+import ViewBills from "../components/ViewBills/ViewBills"
 import { Form, Row, Button } from "../components/bootstrap"
-import Testimonies from "../components/Testimonies/Testimonies"
 
 export default createPage({
   v2: true,
-  title: "Browse",
+  title: "Browse Bills",
   Page: () => {
     return (
       <>
-        <h1>Published Testimony</h1>
+        <h1>Bills</h1>
 
         <SearchBar />
-        <Testimonies />
+        <ViewBills />
       </>
     )
   }

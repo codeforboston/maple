@@ -42,7 +42,7 @@ const BillRow = props => {
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
     )
 
-  const CommitteeComponent = fullBill.currentCommittee ? (
+  const committeeCell = fullBill.currentCommittee ? (
     <>
       <links.External
         href={`https://malegislature.gov/Committees/Detail/${fullBill.currentCommittee?.id}/Committees`}
@@ -65,13 +65,14 @@ const BillRow = props => {
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
+        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
+        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
-        <td>{CommitteeComponent}</td>
-
+        <td>{committeeCell}</td>
         <td>
           <Button
             variant="primary"
@@ -158,6 +159,7 @@ const ViewBills = () => {
           </div>
         )}
       </div>
+      {/* something about the table is causing a problem on mobile */}
       <Table className="mt-2" striped bordered hover>
         <thead>
           <tr>
