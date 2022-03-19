@@ -25,9 +25,9 @@ const TopNav: React.FC = () => {
     <Navbar bg="primary" variant="dark" expand="lg">
       <Container>
         <Wrap href="/">
-          <Navbar className="text-light">
-            <h2>Massachusetts Archive of Transparent Testimony</h2>
-          </Navbar>
+          <Navbar.Brand>
+            Massachusetts Archive of Transparent Testimony
+          </Navbar.Brand>
         </Wrap>
         <Navbar.Toggle aria-controls="topnav" />
         <Navbar.Collapse id="topnav">
