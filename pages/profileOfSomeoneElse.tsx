@@ -8,19 +8,10 @@ import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
 export default createPage({
   v2: true,
   title: "Profile",
+  // need a hook to get user info?
   Page: requireAuth(({ user: { displayName } }) => {
     return (
       <>
-        <h1>
-          Hello, {displayName ? decodeHtmlCharCodes(displayName) : "Anonymous"}!
-        </h1>
-        <p>
-          Please use the{" "}
-          <links.External href="https://malegislature.gov/Search/FindMyLegislator">
-            find your legislator
-          </links.External>{" "}
-          tool and select your State Representative and Senator below.
-        </p>
         <SelectLegislators />
         About me:
         <textarea className="form-control col-sm" rows={5} required />
@@ -29,6 +20,9 @@ export default createPage({
             className="form-check-input"
             type="checkbox"
             id="flexCheckChecked"
+            // checked={checkedSendToCommittee}
+            // checked={true}
+            // onChange={handleChangeSendToCommittee}
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">
             Allow others to see my profile

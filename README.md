@@ -66,7 +66,7 @@ The site runs on Firebase and is deployed using Github Actions. The site is depl
 
 ### How do I create a new page?
 
-Take a look at the `pages/browse.tsx` page:
+Take a look at the `pages/bills.tsx` page:
 
 ```typescript
 export default createPage({

@@ -4,11 +4,11 @@ import { Form, Row, Button } from "../components/bootstrap"
 
 export default createPage({
   v2: true,
-  title: "Browse",
+  title: "Browse Bills",
   Page: () => {
     return (
       <>
-        <h1>Browse</h1>
+        <h1>Bills</h1>
 
         <SearchBar />
         <ViewBills />
