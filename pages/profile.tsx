@@ -4,6 +4,7 @@ import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
+import { Row, Col, FormControl } from "react-bootstrap"
 
 export default createPage({
   v2: true,
@@ -21,7 +22,13 @@ export default createPage({
           </links.External>{" "}
           tool and select your State Representative and Senator below.
         </p>
-        <SelectLegislators />
+        <Row>
+          <Col>
+            {" "}
+            <SelectLegislators />
+          </Col>
+          <Col></Col>
+        </Row>
         About me:
         <textarea className="form-control col-sm" rows={5} required />
         <div className="form-check">
@@ -34,9 +41,18 @@ export default createPage({
             Allow others to see my profile
           </label>
         </div>
-        <div className="mt-2">
-          <MyTestimonies />
-        </div>
+        <Row className="mt-2">
+          <Col>
+            <FormControl
+              placeholder="Twitter username"
+              aria-label="Twitter username"
+              aria-describedby="basic-addon1"
+            />
+          </Col>
+          <Col></Col>
+          <Col></Col>
+        </Row>
+        <MyTestimonies />
       </>
     )
   })
