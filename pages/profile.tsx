@@ -31,17 +31,7 @@ export default createPage({
         </Row>
         About me:
         <textarea className="form-control col-sm" rows={5} required />
-        <div className="form-check">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="flexCheckChecked"
-          />
-          <label className="form-check-label" htmlFor="flexCheckChecked">
-            Allow others to see my profile
-          </label>
-        </div>
-        <Row className="mt-2">
+        <Row className="mt-3">
           <Col>
             <FormControl
               placeholder="Twitter username"
@@ -52,6 +42,17 @@ export default createPage({
           <Col></Col>
           <Col></Col>
         </Row>
+        <div className="form-check mt-3 mb-2">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="flexCheckChecked"
+            checked={true}
+          />
+          <label className="form-check-label" htmlFor="flexCheckChecked">
+            Allow others to see my profile
+          </label>
+        </div>
         <MyTestimonies />
       </>
     )
