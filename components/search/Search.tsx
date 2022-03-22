@@ -97,7 +97,7 @@ function getItemSearchProps(
       return asProps({
         placeholder: "Search for bills...",
         getOptionLabel: o =>
-          `${formatBillId(o.id)} | ${o.title} | ${o.pinslip}`,
+          [formatBillId(o.id), o.title, o.pinslip].filter(Boolean).join(" | "),
         getOptionValue: o => o.id,
         getFilterOption: i => ({ type: "bill", id: i.id }),
         loadOptions: search.bills
