@@ -49,13 +49,14 @@ type Action =
   | { type: "nextPage" }
   | { type: "previousPage" }
   | { type: "sort"; sort: SortOptions }
+  | { type: "filter"; filter: FilterOptions | null }
   | { type: "billId"; billId: string | null }
   | { type: "onSuccess"; page: Bill[] }
   | { type: "error"; error: Error }
 
 type State = {
   sort: SortOptions
-  billId: string | null
+  filter: FilterOptions | null
   pageKeys: unknown[]
   currentPageKey: unknown | null
   currentPage: number
@@ -76,8 +77,8 @@ const initialPage = {
 const initialState: State = {
   ...initialPage,
   billsPerPage: 10,
-  billId: null,
   sort: "id",
+  filter: null,
   error: null
 }
 
@@ -101,8 +102,6 @@ function reducer(state: State, action: Action): State {
     }
   } else if (action.type === "sort" && action.sort !== state.sort) {
     return { ...state, sort: action.sort, ...initialPage }
-  } else if (action.type === "billId" && action.billId !== state.billId) {
-    return { ...state, billId: action.billId, ...initialPage }
   } else if (action.type === "onSuccess") {
     const keys = [...state.pageKeys]
     const bill = nth(action.page, state.billsPerPage - 1)
@@ -116,25 +115,17 @@ function reducer(state: State, action: Action): State {
   } else if (action.type === "error") {
     console.warn("Error in useBills", action.error)
     return { ...state, error: action.error }
+  } else if (action.type === "filter") {
+    return { ...state, filter: action.filter, ...initialPage }
   }
   return state
-}
-
-/** Compatibility with existing bill pages.
- *
- * @deprecated Replace with useBills, which provides testimonyCount and
- * hearing/testimony dates
- */
-export function useBillContents() {
-  const { bills, ...rest } = useBills()
-  return { bills: bills?.map(b => b.content), ...rest }
 }
 
 export function useBills() {
   const [
     {
       sort,
-      billId,
+      filter,
       billsPerPage,
       currentPageKey,
       currentPage,
@@ -147,12 +138,12 @@ export function useBills() {
   const bills = useAsync(
     () => {
       if (sort === "hearingDate") {
-        return listBillsByHearingDate(billId, billsPerPage, currentPageKey)
+        return listBillsByHearingDate(filter, billsPerPage, currentPageKey)
       } else {
-        return listBills(sort, billId, billsPerPage, currentPageKey)
+        return listBills(sort, filter, billsPerPage, currentPageKey)
       }
     },
-    [billId, billsPerPage, currentPageKey, sort],
+    [billsPerPage, currentPageKey, filter, sort],
     {
       onSuccess: page => dispatch({ type: "onSuccess", page }),
       onError: error => dispatch({ type: "error", error })
@@ -168,10 +159,11 @@ export function useBills() {
       hasNextPage: nextKey !== undefined,
       hasPreviousPage: previousKey !== undefined,
       setSort: (sort: SortOptions) => dispatch({ type: "sort", sort }),
+      setFilter: (filter: FilterOptions | null) =>
+        dispatch({ type: "filter", filter }),
       setBillId: (billId: string | null) =>
         dispatch({ type: "billId", billId }),
       sort,
-      billId,
       error: bills.error,
       loading: bills.loading,
       bills: bills.result
@@ -182,7 +174,6 @@ export function useBills() {
       nextKey,
       previousKey,
       sort,
-      billId,
       bills.error,
       bills.loading,
       bills.result
@@ -214,7 +205,7 @@ type ListBillsSortOptions =
   | "cosponsorCount"
   | "testimonyCount"
   | "latestTestimony"
-type SortOptions = ListBillsSortOptions | "hearingDate"
+export type SortOptions = ListBillsSortOptions | "hearingDate"
 
 function getOrderBy(sort: ListBillsSortOptions): Parameters<typeof orderBy> {
   switch (sort) {
@@ -244,9 +235,29 @@ function getPageKey(bill: Bill, sort: SortOptions): unknown {
   }
 }
 
+export type FilterType = FilterOptions["type"]
+export type FilterOptions =
+  | { type: "bill"; id: string }
+  | { type: "primarySponsor"; id: string }
+  | { type: "committee"; id: string }
+  | { type: "city"; name: string }
+
+function getFilter(filter: FilterOptions): Parameters<typeof where> {
+  switch (filter.type) {
+    case "bill":
+      return ["id", "==", filter.id]
+    case "primarySponsor":
+      return ["content.PrimarySponsor.Id", "==", filter.id]
+    case "committee":
+      return ["currentCommittee.id", "==", filter.id]
+    case "city":
+      return ["city", "==", filter.name]
+  }
+}
+
 async function listBills(
   sort: ListBillsSortOptions,
-  billId: string | null,
+  filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Bill[]> {
@@ -255,11 +266,14 @@ async function listBills(
     `/generalCourts/${currentGeneralCourt}/bills`
   )
 
+  // Don't use an orderBy clause if filtering AND sorting on bill ID's
+  const useOrderBy = !(filter?.type === "bill" && sort === "id")
+
   const result = await getDocs(
     nullableQuery(
       billsRef,
-      billId && where("id", "==", billId),
-      orderBy(...getOrderBy(sort)),
+      filter && where(...getFilter(filter)),
+      useOrderBy && orderBy(...getOrderBy(sort)),
       limit(limitCount),
       startAfterKey !== null && startAfter(startAfterKey)
     )
@@ -275,7 +289,7 @@ export async function getBill(id: string): Promise<Bill | undefined> {
 }
 
 async function listBillsByHearingDate(
-  billId: string | null,
+  filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Bill[]> {
@@ -294,7 +308,10 @@ async function listBillsByHearingDate(
   }
   const listing = fullListing
     .slice(startIndex, startIndex + limitCount)
-    .filter(i => billId === null || billId === i.billId)
+    // TODO: support other filter types
+    .filter(
+      i => filter === null || filter.type !== "bill" || filter.id === i.billId
+    )
 
   const bills = await Promise.all(
     listing.map(async item => {
