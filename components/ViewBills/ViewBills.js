@@ -1,12 +1,12 @@
-import React, { useState } from "react"
-import { useRouter } from "next/router"
-import { Table, Container, Button, Spinner, Row } from "react-bootstrap"
-import { useBills } from "../db"
-import * as links from "../../components/links.tsx"
-import { useMember } from "../db"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
-import Testimonies from "../Testimonies/Testimonies"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useRouter } from "next/router"
+import React from "react"
+import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
+import * as links from "../../components/links.tsx"
+import { useBills, useMember } from "../db"
+import { formatBillId } from "../formatting"
+import { Search } from "../search"
 
 const invalidSponsorId = Id => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -59,7 +59,7 @@ const BillRow = props => {
   } else {
     return (
       <tr>
-        <td>{bill.BillNumber}</td>
+        <td>{formatBillId(bill.BillNumber)}</td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
@@ -96,6 +96,7 @@ const ViewBills = () => {
   const {
     bills,
     setSort,
+    setFilter,
     loading,
     nextPage,
     previousPage,
@@ -103,64 +104,12 @@ const ViewBills = () => {
     hasNextPage,
     hasPreviousPage
   } = useBills()
-  const [filterBy, setFilterBy] = useState(null)
-  const filterByMessage =
-    filterBy == "leadSponsor"
-      ? "Choose Lead Sponsor.."
-      : "Choose Lead Sponsor District.."
 
   return (
     <Container>
-      <div className="row mt-2">
-        <div className="col-md-2">
-          <select
-            className="form-control"
-            onChange={e => {
-              const option = e.target.value
-              if (option !== "DEFAULT") setSort(option)
-            }}
-          >
-            <option value="DEFAULT">Sort bills by..</option>
-            <option value="id">Bill #</option>
-            <option value="cosponsorCount"># CoSponsors</option>
-            <option value="testimonyCount"># Testimony</option>
-            <option value="hearingDate">Next Hearing Date</option>
-            <option value="latestTestimony">Most recent testimony</option>
-          </select>
-        </div>
-        <div className="col-md-2">
-          <select
-            className="form-control"
-            onChange={e => {
-              const option = e.target.value
-              setFilterBy(option)
-            }}
-          >
-            <option value="DEFAULT">Filter bills by..</option>
-            <option value="leadSponsor">Lead Sponsor</option>
-            <option value="leadSponsorDistrict">Lead Sponsor District</option>
-          </select>
-        </div>
-
-        {filterBy && filterBy != "DEFAULT" && (
-          <div className="col-md-4">
-            <select
-              className="form-control"
-              onChange={e => {
-                const option = e.target.value
-                // if (option !== "DEFAULT") setSort(option)
-              }}
-            >
-              <option value="DEFAULT">{filterByMessage}</option>
-              <option value="john">John Doe</option>
-              <option value="jane">Jane Doe</option>
-              <option value="jim">Jim Doe</option>
-            </select>
-          </div>
-        )}
-      </div>
+      <Search setSort={setSort} setFilter={setFilter} />
       {/* something about the table is causing a problem on mobile */}
-      <Table className="mt-2" striped bordered hover>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>

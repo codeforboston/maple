@@ -1,5 +1,3 @@
-import React from "react"
-
 // re-exports of all the bootstrap components we use. This ensures we only pull
 // in the components we use and makes it easy to reuse across the app.
 export { default as Button } from "react-bootstrap/Button"
@@ -13,4 +11,5 @@ export { default as Modal } from "react-bootstrap/Modal"
 export { default as Stack } from "react-bootstrap/Stack"
 export { default as Form } from "react-bootstrap/Form"
 export { default as Row } from "react-bootstrap/Row"
+export { default as Col } from "react-bootstrap/Col"
 export { default as Spinner } from "react-bootstrap/Spinner"

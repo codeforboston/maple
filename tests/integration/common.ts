@@ -17,7 +17,11 @@ export const signInUser4 = () => signInUser("test4@example.com")
 export async function createFakeBill() {
   const billId = nanoid()
   const bill = {
-    content: "fake" as any as BillContent,
+    content: {
+      Pinslip: null,
+      Title: "fake",
+      PrimarySponsor: null
+    } as any as BillContent,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,

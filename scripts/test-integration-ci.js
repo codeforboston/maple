@@ -8,7 +8,7 @@ runOrExit(
     demoProjectId,
     "emulators:exec",
     "--only",
-    "auth,functions,pubsub,firestore",
+    "auth,functions,pubsub,firestore,storage",
     "--import",
     "tests/integration/exportedTestData",
     "yarn test:integration --forceExit"

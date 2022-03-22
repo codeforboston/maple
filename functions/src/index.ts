@@ -1,4 +1,9 @@
-export { fetchBillBatch, startBillBatches, updateBillReferences } from "./bills"
+export {
+  fetchBillBatch,
+  startBillBatches,
+  updateBillReferences,
+  updateBillSearchIndex
+} from "./bills"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
   fetchCommitteeBatch,

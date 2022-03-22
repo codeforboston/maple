@@ -5,10 +5,9 @@ import {
   Optional,
   Record,
   Static,
-  String,
-  Unknown
+  String
 } from "runtypes"
-import { Id, Maybe, NullStr, withDefaults } from "../common"
+import { Id, Maybe, Nullable, NullStr, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
 export type BillReference = Static<typeof BillReference>
@@ -41,11 +40,18 @@ export const CommitteeMember = Record({
     senateChair: Maybe(CommitteeMember)
   })
 
+export type BillContent = Static<typeof BillContent>
+export const BillContent = Record({
+  Pinslip: Nullable(String),
+  Title: String,
+  PrimarySponsor: Nullable(Record({ Name: String }))
+})
+
 export type Bill = Static<typeof Bill>
 export const Bill = withDefaults(
   Record({
     id: Id,
-    content: Unknown,
+    content: BillContent,
     cosponsorCount: Number,
     testimonyCount: Number,
     nextHearingAt: Optional(InstanceOf(Timestamp)),
