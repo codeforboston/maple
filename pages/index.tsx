@@ -29,6 +29,9 @@ export default createPage({
 
         <Stack gap={3} className="col-lg-5 mx-auto">
           <Wrap href="/bills">
+            <Button size="lg">View Bills</Button>
+          </Wrap>
+          <Wrap href="/testimonies">
             <Button size="lg">View Testimony</Button>
           </Wrap>
           {!authenticated && (
