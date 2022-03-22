@@ -1,4 +1,9 @@
-export { fetchBillBatch, startBillBatches, updateBillReferences } from "./bills"
+export {
+  fetchBillBatch,
+  startBillBatches,
+  updateBillReferences,
+  updateBillSearchIndex
+} from "./bills"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
   fetchCommitteeBatch,
@@ -12,6 +17,5 @@ export {
   startMemberBatches
 } from "./members"
 export { setUsername } from "./profile"
-export { createBillIndex } from "./search"
 export { deleteTestimony, publishTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"

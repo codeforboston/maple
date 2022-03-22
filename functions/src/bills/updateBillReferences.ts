@@ -1,28 +1,11 @@
-import { runWith } from "firebase-functions"
 import { difference, flatten } from "lodash"
-import { Bill } from "./types"
 import { DocUpdate } from "../common"
 import { db, FieldValue } from "../firebase"
-import * as api from "../malegislature"
-import { Committee } from "../committees/types"
-import { City } from "../cities/types"
 import { Member, MemberReference } from "../members/types"
+import BillProcessor from "./BillProcessor"
+import { Bill } from "./types"
 
 type BillUpdates = Map<string, DocUpdate<Bill>>
-
-function mergeUpdates(...updates: BillUpdates[]): BillUpdates {
-  const merged: BillUpdates = new Map()
-  updates.forEach(update => {
-    update.forEach((docUpdate, billId) => {
-      if (!merged.has(billId)) merged.set(billId, {})
-      Object.assign(merged.get(billId), docUpdate)
-    })
-  })
-  return merged
-}
-
-const billPath = (id?: string) =>
-  `/generalCourts/${api.currentGeneralCourt}/bills${id ? `/${id}` : ""}`
 
 /**
  * Updates references to other entities for each bill.
@@ -36,22 +19,15 @@ const billPath = (id?: string) =>
  * other entities, we consolidate the updates across all entities into one read
  * and one write per bill, to minimize database access.
  */
-class UpdateBillReferences {
+class UpdateBillReferences extends BillProcessor {
+  private membersById!: Map<string, Member>
   private billIds!: string[]
-  private committees!: Committee[]
-  private members!: Map<string, Member>
-  private cities!: City[]
 
-  get function() {
-    return runWith({ timeoutSeconds: 120 })
-      .pubsub.schedule("every 24 hours")
-      .onRun(() => this.run())
-  }
+  async process() {
+    this.membersById = new Map(this.members.map(m => [m.id, m] as const))
+    this.billIds = this.bills.map(b => b.id)
 
-  async run() {
-    await this.readEntities()
-
-    const updates = mergeUpdates(
+    const updates = this.mergeUpdates(
       this.getCommitteeUpdates(),
       this.getCityUpdates()
     )
@@ -62,38 +38,9 @@ class UpdateBillReferences {
   private async writeBills(updates: BillUpdates) {
     const writer = db.bulkWriter()
     updates.forEach((update, id) => {
-      writer.set(db.doc(billPath(id)), update, { merge: true })
+      writer.set(db.doc(this.billPath(id)), update, { merge: true })
     })
     await writer.close()
-  }
-
-  private async readEntities() {
-    this.billIds = await db
-      .collection(billPath())
-      .select()
-      .get()
-      .then(c => c.docs.filter(d => d.exists).map(d => d.id))
-
-    this.cities = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/cities`)
-      .get()
-      .then(c => c.docs.map(d => d.data()).filter(City.guard))
-
-    this.committees = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/committees`)
-      .get()
-      .then(c => c.docs.map(d => d.data()).filter(Committee.guard))
-
-    this.members = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/members`)
-      .get()
-      .then(c =>
-        c.docs
-          .map(d => d.data())
-          .filter(Member.guard)
-          .map(m => [m.id, m] as const)
-      )
-      .then(entries => new Map(entries))
   }
 
   getCityUpdates(): BillUpdates {
@@ -151,7 +98,7 @@ class UpdateBillReferences {
 
   formatChair(m: MemberReference | null) {
     if (m === null) return null
-    const member = this.members.get(m.MemberCode)
+    const member = this.membersById.get(m.MemberCode)
     if (!member) return null
     return {
       id: member.id,
@@ -159,6 +106,17 @@ class UpdateBillReferences {
       email: member.content.EmailAddress
     }
   }
+
+  private mergeUpdates(...updates: BillUpdates[]): BillUpdates {
+    const merged: BillUpdates = new Map()
+    updates.forEach(update => {
+      update.forEach((docUpdate, billId) => {
+        if (!merged.has(billId)) merged.set(billId, {})
+        Object.assign(merged.get(billId), docUpdate)
+      })
+    })
+    return merged
+  }
 }
 
-export const updateBillReferences = new UpdateBillReferences().function
+export const updateBillReferences = BillProcessor.for(UpdateBillReferences)
