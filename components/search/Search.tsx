@@ -1,5 +1,5 @@
 import AwesomeDebouncePromise from "awesome-debounce-promise"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { GroupBase } from "react-select"
 import AsyncSelect, { AsyncProps } from "react-select/async"
 import { Col, Form, Row } from "../bootstrap"
@@ -16,12 +16,19 @@ export const Search: React.FC<{
   setFilter: SetFilter
 }> = ({ setSort, setFilter }) => {
   const [filterType, setFilterType] = useState<null | FilterType>(null)
+  const onFilterTypeChange: SetFilterType = useCallback(
+    t => {
+      setFilterType(t)
+      setFilter(null)
+    },
+    [setFilter]
+  )
 
   return (
     <Form>
       <Row>
         <SortSelect setSort={setSort} />
-        <SearchTypeSelect setFilterType={setFilterType} />
+        <SearchTypeSelect setFilterType={onFilterTypeChange} />
       </Row>
       <Row>
         <SearchBox filterType={filterType} setFilter={setFilter} />
