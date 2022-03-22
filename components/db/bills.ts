@@ -50,7 +50,6 @@ type Action =
   | { type: "previousPage" }
   | { type: "sort"; sort: SortOptions }
   | { type: "filter"; filter: FilterOptions | null }
-  | { type: "billId"; billId: string | null }
   | { type: "onSuccess"; page: Bill[] }
   | { type: "error"; error: Error }
 
@@ -161,8 +160,6 @@ export function useBills() {
       setSort: (sort: SortOptions) => dispatch({ type: "sort", sort }),
       setFilter: (filter: FilterOptions | null) =>
         dispatch({ type: "filter", filter }),
-      setBillId: (billId: string | null) =>
-        dispatch({ type: "billId", billId }),
       sort,
       error: bills.error,
       loading: bills.loading,

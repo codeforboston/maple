@@ -47,7 +47,7 @@ describe("useBills", () => {
 
     await waitFor(() => expect(result.current.loading).toBeFalsy())
 
-    act(() => void result.current.setBillId("H1"))
+    act(() => void result.current.setFilter({ type: "bill", id: "H1" }))
     await waitFor(() => expect(result.current.bills).toHaveLength(1))
     expect(result.current.bills?.[0].content.BillNumber).toBe("H1")
   })
