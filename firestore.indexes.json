@@ -65,6 +65,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "content.PrimarySponsor.Id",
           "order": "ASCENDING"
         },
@@ -107,6 +121,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "currentCommittee.id",
           "order": "ASCENDING"
         },
@@ -140,6 +168,20 @@
         },
         {
           "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
           "order": "DESCENDING"
         }
       ]
