@@ -106,10 +106,10 @@ const ViewBills = () => {
   } = useBills()
 
   return (
-    <Container className="mt-2">
+    <Container>
       <Search setSort={setSort} setFilter={setFilter} />
       {/* something about the table is causing a problem on mobile */}
-      <Table className="mt-2" striped bordered hover>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>

@@ -82,6 +82,7 @@ const SearchBox: React.FC<{
 
   return filterType ? (
     <ItemSearch
+      className="mb-3"
       key={filterType}
       {...getItemSearchProps(search, filterType)}
       setFilter={setFilter}
