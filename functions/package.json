@@ -5,7 +5,8 @@
     "build:watch": "rm -rf lib && tsc --watch --preserveWatchOutput",
     "dev": "node dev-functions.js",
     "logs": "firebase functions:log",
-    "test": "jest"
+    "test": "jest",
+    "enable-cors-dev": "gsutil cors set cors.json gs://digital-testimony-dev.appspot.com"
   },
   "engines": {
     "node": "16"
