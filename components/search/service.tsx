@@ -12,7 +12,7 @@ export const { Provider, useServiceChecked } = createService(() => {
 
 class BillSearch {
   service = {
-    initialize: () => void this.getIndex(),
+    initialize: () => this.getIndex().then(() => {}),
     bills: this.createSearch(
       i => i.bills,
       {

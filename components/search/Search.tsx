@@ -78,13 +78,11 @@ const SearchBox: React.FC<{
 }> = ({ filterType, setFilter }) => {
   const search = useServiceChecked()
 
-  useEffect(() => void search.initialize(), [search])
-
   return filterType ? (
     <ItemSearch
-      className="mb-3"
       key={filterType}
       {...getItemSearchProps(search, filterType)}
+      search={search}
       setFilter={setFilter}
     />
   ) : null
@@ -93,7 +91,7 @@ const SearchBox: React.FC<{
 function getItemSearchProps(
   search: SearchService,
   filterType: FilterType
-): any {
+): FilterProps<any> {
   switch (filterType) {
     case "bill":
       return asProps({
@@ -131,35 +129,71 @@ function getItemSearchProps(
   }
 }
 
-const asProps = <T,>(props: Omit<ItemSearchProps<T>, "setFilter">) => props
+type FilterProps<T> = Pick<
+  ItemSearchProps<T>,
+  | "placeholder"
+  | "getOptionLabel"
+  | "getOptionValue"
+  | "getFilterOption"
+  | "loadOptions"
+>
+const asProps = <T,>(props: FilterProps<T>) => props
 
 type ItemSearchProps<T> = AsyncProps<T, false, GroupBase<T>> & {
   loadOptions: (value: string) => Promise<T[]>
   getFilterOption: (i: T) => FilterOptions
   setFilter: SetFilter
+  search: SearchService
 }
 
 function ItemSearch<T>({
   loadOptions,
   getFilterOption,
   setFilter,
+  search,
   ...props
 }: ItemSearchProps<T>) {
+  const error = useInitializeSearch(search)
   const debouncedLoadOptions = useMemo(
     () =>
-      AwesomeDebouncePromise(async (value: string) => {
-        return loadOptions(value)
-      }, 100),
+      AwesomeDebouncePromise(async (value: string) => loadOptions(value), 100),
     [loadOptions]
   )
   return (
-    <AsyncSelect
-      {...props}
-      isClearable
-      defaultOptions
-      blurInputOnSelect
-      loadOptions={debouncedLoadOptions}
-      onChange={i => setFilter(i ? getFilterOption(i) : null)}
-    />
+    <div className="mb-3">
+      <AsyncSelect
+        {...props}
+        isClearable
+        defaultOptions
+        blurInputOnSelect
+        loadOptions={debouncedLoadOptions}
+        onChange={i => setFilter(i ? getFilterOption(i) : null)}
+      />
+      {error && (
+        <Form.Text className="text-danger">
+          Search error. Please try again.
+        </Form.Text>
+      )}
+    </div>
   )
+}
+
+function useInitializeSearch(search: SearchService) {
+  const [error, setError] = useState(false)
+
+  useEffect(
+    () =>
+      void search
+        .initialize()
+        .then(() => {
+          setError(false)
+        })
+        .catch(e => {
+          console.warn("Error initializing search", e)
+          setError(true)
+        }),
+    [search]
+  )
+
+  return error
 }
