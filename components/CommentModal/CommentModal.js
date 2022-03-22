@@ -3,8 +3,8 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import EmailToMyLegislators from "../EmailToMyLegislators/EmailToMyLegislators"
-import EmailToCommittee from "../EmailToCommittee/EmailToCommittee"
+import EmailToMyLegislators from "./EmailToMyLegislators"
+import EmailToCommittee from "./EmailToCommittee"
 
 const CommentModal = props => {
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
