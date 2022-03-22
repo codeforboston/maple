@@ -4,6 +4,7 @@ import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
+import { Row, Col, FormControl } from "react-bootstrap"
 
 export default createPage({
   v2: true,
@@ -21,7 +22,37 @@ export default createPage({
           </links.External>{" "}
           tool and select your State Representative and Senator below.
         </p>
-        <SelectLegislators />
+        <Row>
+          <Col>
+            {" "}
+            <SelectLegislators />
+          </Col>
+          <Col></Col>
+        </Row>
+        About me:
+        <textarea className="form-control col-sm" rows={5} required />
+        <Row className="mt-3">
+          <Col>
+            <FormControl
+              placeholder="Twitter username"
+              aria-label="Twitter username"
+              aria-describedby="basic-addon1"
+            />
+          </Col>
+          <Col></Col>
+          <Col></Col>
+        </Row>
+        <div className="form-check mt-3 mb-2">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="flexCheckChecked"
+            checked={true}
+          />
+          <label className="form-check-label" htmlFor="flexCheckChecked">
+            Allow others to see my profile
+          </label>
+        </div>
         <MyTestimonies />
       </>
     )

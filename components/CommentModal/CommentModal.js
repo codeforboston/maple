@@ -3,9 +3,16 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import * as links from "../../components/links"
+import EmailToMyLegislators from "./EmailToMyLegislators"
+import EmailToCommittee from "./EmailToCommittee"
 
 const CommentModal = props => {
+  const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
+    React.useState(true)
+  const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
+    props.committeeName
+  ) // only default checkbox to checked if the bill is in a committee
+
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
 
@@ -22,6 +29,8 @@ My thoughts:
   const [isPublishing, setIsPublishing] = useState(false)
 
   const bill = props.bill
+  const committeeName = props.committeeName
+  const committeeChairEmail = props.committeeChairEmail
   const showTestimony = props.showTestimony
   const handleCloseTestimony = props.handleCloseTestimony
 
@@ -37,32 +46,48 @@ My thoughts:
 
   const positionMessage = "Select my support..(required)"
 
-  const url = encodeURI(
-    `mailto:${senatorEmail},${representativeEmail}?subject=My testimony on Bill ${
+  const positionEmailSubject =
+    testimony?.position == "endorse"
+      ? "Support of"
+      : testimony?.position == "oppose"
+      ? "Opposition to"
+      : "Opinion on"
+
+  const positionWord =
+    testimony?.position == "endorse"
+      ? "support"
+      : testimony?.position == "oppose"
+      ? "oppose"
+      : "have thoughts on"
+
+  const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
+  const mailToLegislators = encodeURI(
+    `mailto:${senatorEmail},${representativeEmail}?subject=${positionEmailSubject} Bill ${
       bill ? bill.BillNumber : ""
-    }&body=${testimony ? testimony.content : ""}`
+    }&body=${
+      testimony ? mailIntroToLegislator + "\n\n" + testimony.content : ""
+    }`
+  )
+
+  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${
+    bill?.BillNumber
+  }: ${bill?.Title} ${
+    committeeName ? "that is before the " + committeeName : ""
+  }.`
+  const mailToCommittee = encodeURI(
+    `mailto:${
+      committeeChairEmail ? committeeChairEmail : ""
+    }?subject=${positionEmailSubject} Bill ${
+      bill ? bill.BillNumber : ""
+    }&body=${
+      testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
+    }`
   )
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
   const defaultContent =
     testimony && testimony.content ? testimony.content : defaultTestimony
-
-  const EmailToMyLegislators = () => {
-    if (senator.member || representative.member) {
-      return (
-        <links.External href={url}>
-          Send copy to your legislators
-        </links.External>
-      )
-    } else {
-      return (
-        <links.External href="\profile">
-          Add legislators to your profile to share your testimony
-        </links.External>
-      )
-    }
-  }
 
   const publishTestimony = async () => {
     if (
@@ -74,6 +99,12 @@ My thoughts:
     setIsPublishing(true)
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
+    if (checkedSendToYourLegislators) {
+      window.open(mailToLegislators) // allow user to send a formatted email using their email client
+    }
+    if (checkedSendToCommittee) {
+      window.open(mailToCommittee) // allow user to send a formatted email using their email client
+    }
     handleCloseTestimony()
     setIsPublishing(false)
   }
@@ -109,8 +140,6 @@ My thoughts:
                       position: newPosition
                     }
                     setTestimony(testimonyObject)
-                    console.log(testimonyObject)
-                    // how to get this to persist?
                   }
                 }}
               >
@@ -120,12 +149,22 @@ My thoughts:
                 <option value="neutral">Neutral</option>
               </select>
               <div>
-                <EmailToMyLegislators />
+                <EmailToMyLegislators
+                  checkedSendToYourLegislators={checkedSendToYourLegislators}
+                  setCheckedSendToYourLegislators={
+                    setCheckedSendToYourLegislators
+                  }
+                  senator={senator}
+                  representative={representative}
+                />
               </div>
               <div>
-                <links.External href={url}>
-                  Send copy to relevant committee
-                </links.External>
+                <EmailToCommittee
+                  checkedSendToCommittee={checkedSendToCommittee}
+                  setCheckedSendToCommittee={setCheckedSendToCommittee}
+                  committeeName={committeeName}
+                  committeeChairEmail={committeeChairEmail}
+                />
               </div>
             </div>
 

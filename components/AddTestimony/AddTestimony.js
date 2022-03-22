@@ -3,8 +3,7 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 
-const AddTestimony = props => {
-  const bill = props.bill
+const AddTestimony = ({ bill, committeeName, committeeChairEmail }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const handleShowTestimony = () => setShowTestimony(true)
@@ -25,6 +24,8 @@ const AddTestimony = props => {
           setShowTestimony={setShowTestimony}
           handleShowTestimony={handleShowTestimony}
           handleCloseTestimony={handleCloseTestimony}
+          committeeName={committeeName}
+          committeeChairEmail={committeeChairEmail}
         />
       )}
     </>

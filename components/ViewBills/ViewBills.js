@@ -41,6 +41,19 @@ const BillRow = props => {
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
     )
+
+  const committeeCell = fullBill.currentCommittee ? (
+    <>
+      <links.External
+        href={`https://malegislature.gov/Committees/Detail/${fullBill.currentCommittee?.id}/Committees`}
+      >
+        {fullBill.currentCommittee?.name}
+      </links.External>
+    </>
+  ) : (
+    <></>
+  )
+
   if (loading) {
     return null
   } else {
@@ -49,13 +62,17 @@ const BillRow = props => {
         <td>{formatBillId(bill.BillNumber)}</td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
+        <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
+        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
+        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
+        <td>{committeeCell}</td>
         <td>
           <Button
             variant="primary"
@@ -89,19 +106,21 @@ const ViewBills = () => {
   } = useBills()
 
   return (
-    <Container>
-      <h1>Most Active Bills </h1>
+    <Container className="mt-2">
       <Search setSort={setSort} setFilter={setFilter} />
+      {/* something about the table is causing a problem on mobile */}
       <Table className="mt-2" striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>
             <th>Bill Name</th>
             <th>Lead Sponsor</th>
+            <th>City</th>
             <th># CoSponsors</th>
             <th>Hearing Scheduled</th>
             <th># Testimony</th>
             <th>Most Recent Testimony</th>
+            <th>Current Committee</th>
             <th></th>
           </tr>
         </thead>
