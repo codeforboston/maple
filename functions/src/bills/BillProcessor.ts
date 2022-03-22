@@ -1,16 +1,15 @@
+import { QuerySnapshot } from "@google-cloud/firestore"
+import { runWith } from "firebase-functions"
+import { Runtype } from "runtypes"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { db } from "../firebase"
 import * as api from "../malegislature"
 import { Member } from "../members/types"
-import { runWith } from "firebase-functions"
-import { Bill } from "./types"
-import { Runtype } from "runtypes"
-import { QuerySnapshot } from "@google-cloud/firestore"
 
 /** Base class for jobs that need to process all bills. */
 export default abstract class BillProcessor {
-  protected bills!: Bill[]
+  protected bills!: any[]
   protected committees!: Committee[]
   protected members!: Member[]
   protected cities!: City[]
@@ -25,9 +24,15 @@ export default abstract class BillProcessor {
       .onRun(() => new Processor().run())
   }
 
-  async run() {
+  private async run() {
     await this.readEntities()
     await this.process()
+  }
+
+  /** The fields to retrieve for each bill, useful to exclude the bill text in
+   * particular. */
+  protected get billFields(): string[] {
+    return []
   }
 
   abstract process(): Promise<void>
@@ -41,8 +46,9 @@ export default abstract class BillProcessor {
   private async readEntities() {
     this.bills = await db
       .collection(this.billPath())
+      .select(...this.billFields)
       .get()
-      .then(snap => snap.docs.map(d => Bill.checkWithDefaults(d.data())))
+      .then(snap => snap.docs.map(d => d.data()))
     this.cities = await db
       .collection(`/generalCourts/${api.currentGeneralCourt}/cities`)
       .get()

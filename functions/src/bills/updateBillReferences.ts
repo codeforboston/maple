@@ -43,6 +43,10 @@ class UpdateBillReferences extends BillProcessor {
     await writer.close()
   }
 
+  override get billFields() {
+    return ["id"]
+  }
+
   getCityUpdates(): BillUpdates {
     const billsWithoutCity = difference(
       this.billIds,

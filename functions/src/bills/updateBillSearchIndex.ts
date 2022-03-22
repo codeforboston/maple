@@ -53,6 +53,10 @@ class UpdateBillSearchIndex extends BillProcessor {
     await this.saveIndex(index)
   }
 
+  override get billFields() {
+    return ["id", "content.Pinslip", "content.Title", "content.PrimarySponsor"]
+  }
+
   private indexItems<T extends {}>(items: T[]) {
     const keys = Object.keys(items[0])
     return { items, index: Fuse.createIndex(keys, items).toJSON() }
