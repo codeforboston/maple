@@ -1,7 +1,7 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /searchIndexes/{allPaths=**} {
+    match /search/{allPaths=**} {
       // Publicly readable, only written by the admin SDK
       allow read: if true;
       allow write: if false;

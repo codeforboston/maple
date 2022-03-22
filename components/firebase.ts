@@ -9,17 +9,14 @@ import { getStorage, connectStorageEmulator } from "firebase/storage"
 //
 // TODO: Replace with production config before v2 release. Do not check in
 // production config.
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID ?? "digital-testimony-dev"
 const config: FirebaseOptions = {
   apiKey: "AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo",
   authDomain: "digital-testimony-dev.firebaseapp.com",
-  projectId: "digital-testimony-dev",
-  storageBucket: "digital-testimony-dev.appspot.com",
+  projectId,
+  storageBucket: `${projectId}.appspot.com`,
   messagingSenderId: "313437920642",
   appId: "1:313437920642:web:42723233282dbcac37439b"
-}
-
-if (process.env.NEXT_PUBLIC_PROJECT_ID) {
-  config.projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 }
 
 export const app = initializeApp(config)
