@@ -13,8 +13,14 @@ const BillStatus = props => {
 
   return (
     <>
-      <Button variant="primary" className="m-1 text-truncate" style={{width: "18em"}} onClick={handleShowBillStatus}>
-        Status - { documentHistoryActions[documentHistoryActions.length - 1].Action}
+      <Button
+        variant="primary"
+        className="m-1 text-truncate"
+        style={{ width: "18em" }}
+        onClick={handleShowBillStatus}
+      >
+        Status -{" "}
+        {documentHistoryActions[documentHistoryActions.length - 1].Action}
       </Button>
       <Modal show={showBillStatus} onHide={handleCloseBillStatus} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillStatus}>
