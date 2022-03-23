@@ -34,6 +34,7 @@ const TopNav: React.FC = () => {
           <Nav className="me-auto">
             <NavLink href="/">Home</NavLink>
             <NavLink href="/bills">Bills</NavLink>
+            <NavLink href="/testimonies">Testimony</NavLink>
             <NavLink href="/about">About</NavLink>
             <AccountNav authenticated={authenticated} />
           </Nav>
