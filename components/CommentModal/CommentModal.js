@@ -30,7 +30,8 @@ My thoughts:
 
   const bill = props.bill
   const committeeName = props.committeeName
-  const committeeChairEmail = props.committeeChairEmail
+  const houseChairEmail = props.houseChairEmail
+  const senateChairEmail = props.senateChairEmail
   const showTestimony = props.showTestimony
   const handleCloseTestimony = props.handleCloseTestimony
 
@@ -69,20 +70,28 @@ My thoughts:
     }`
   )
 
+  const mailTo =
+    houseChairEmail && senateChairEmail
+      ? houseChairEmail + "," + senateChairEmail
+      : houseChairEmail
+      ? houseChairEmail
+      : senateChairEmail
+      ? senateChairEmail
+      : null
   const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${
     bill?.BillNumber
   }: ${bill?.Title} ${
     committeeName ? "that is before the " + committeeName : ""
   }.`
-  const mailToCommittee = encodeURI(
-    `mailto:${
-      committeeChairEmail ? committeeChairEmail : ""
-    }?subject=${positionEmailSubject} Bill ${
-      bill ? bill.BillNumber : ""
-    }&body=${
-      testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
-    }`
-  )
+  const mailToCommittee = !mailTo
+    ? null
+    : encodeURI(
+        `mailto:${mailTo}?subject=${positionEmailSubject} Bill ${
+          bill ? bill.BillNumber : ""
+        }&body=${
+          testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
+        }`
+      )
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
@@ -102,7 +111,7 @@ My thoughts:
     if (checkedSendToYourLegislators) {
       window.open(mailToLegislators) // allow user to send a formatted email using their email client
     }
-    if (checkedSendToCommittee) {
+    if (checkedSendToCommittee && mailToCommittee) {
       window.open(mailToCommittee) // allow user to send a formatted email using their email client
     }
     handleCloseTestimony()
@@ -163,7 +172,6 @@ My thoughts:
                   checkedSendToCommittee={checkedSendToCommittee}
                   setCheckedSendToCommittee={setCheckedSendToCommittee}
                   committeeName={committeeName}
-                  committeeChairEmail={committeeChairEmail}
                 />
               </div>
             </div>

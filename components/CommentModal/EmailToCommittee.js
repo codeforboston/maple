@@ -3,8 +3,7 @@ import React from "react"
 const EmailToCommittee = ({
   checkedSendToCommittee,
   setCheckedSendToCommittee,
-  committeeName,
-  committeeChairEmail
+  committeeName
 }) => {
   const handleChangeSendToCommittee = () => {
     setCheckedSendToCommittee(!checkedSendToCommittee)

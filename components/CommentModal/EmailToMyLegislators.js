@@ -23,7 +23,7 @@ const EmailToMyLegislators = ({
           onChange={handleChangeSendToYourLegislators}
         />
         <label className="form-check-label">
-          Send copy to your legislatures
+          Send copy to your legislators
         </label>
       </div>
     )

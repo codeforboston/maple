@@ -12,8 +12,8 @@ const ViewBillPage = props => {
 
   const bill = fullBill?.content
   const committeeName = fullBill?.currentCommittee?.name
-  const committeeChairEmail = fullBill?.currentCommittee?.committeeChairEmail
-
+  const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
+  const senateChairEmail = fullBill?.currentCommittee?.senateChair?.email
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -55,7 +55,8 @@ const ViewBillPage = props => {
       <AddTestimony
         bill={bill}
         committeeName={committeeName}
-        committeeChairEmail={committeeChairEmail}
+        houseChairEmail={houseChairEmail}
+        senateChairEmail={senateChairEmail}
       />
     </>
   )
