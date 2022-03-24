@@ -13,7 +13,6 @@ const BillHistoryActionRows = ({ billHistory }) => {
             {billHistoryItem.Date.substring(5, 10)}-
             {billHistoryItem.Date.substring(0, 4)}
           </td>
-          <td>{billHistoryItem.Date.substring(11, 16)}</td>
           <td>{billHistoryItem.Branch}</td>
           <td>{billHistoryItem.Action}</td>
         </tr>
@@ -28,7 +27,6 @@ const BillHistoryTable = ({ billHistory }) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th></th>
             <th></th>
             <th>Branch</th>
             <th>Action</th>
