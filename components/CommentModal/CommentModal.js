@@ -6,6 +6,8 @@ import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
 
+const testimonyEmailAddress = "archive@digitaltestimony.com"
+
 const CommentModal = props => {
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
@@ -61,16 +63,28 @@ My thoughts:
       ? "oppose"
       : "have thoughts on"
 
-  const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
-  const mailToLegislators = encodeURI(
-    `mailto:${senatorEmail},${representativeEmail}?subject=${positionEmailSubject} Bill ${
-      bill ? bill.BillNumber : ""
-    }&body=${
-      testimony ? mailIntroToLegislator + "\n\n" + testimony.content : ""
-    }`
-  )
+  const legislatorEmails =
+    representativeEmail && senatorEmail
+      ? representativeEmail + "," + senatorEmail
+      : representativeEmail
+      ? representativeEmail
+      : senatorEmail
+      ? senatorEmail
+      : null
 
-  const mailTo =
+  const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
+
+  const mailToLegislators = !legislatorEmails
+    ? null
+    : encodeURI(
+        `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
+          bill ? bill.BillNumber : ""
+        }&cc=${legislatorEmails}&body=${
+          testimony ? mailIntroToLegislator + "\n\n" + testimony.content : ""
+        }`
+      )
+
+  const committeeEmails =
     houseChairEmail && senateChairEmail
       ? houseChairEmail + "," + senateChairEmail
       : houseChairEmail
@@ -78,17 +92,19 @@ My thoughts:
       : senateChairEmail
       ? senateChairEmail
       : null
+
   const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${
     bill?.BillNumber
   }: ${bill?.Title} ${
     committeeName ? "that is before the " + committeeName : ""
   }.`
-  const mailToCommittee = !mailTo
+
+  const mailToCommittee = !committeeEmails
     ? null
     : encodeURI(
-        `mailto:${mailTo}?subject=${positionEmailSubject} Bill ${
+        `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
           bill ? bill.BillNumber : ""
-        }&body=${
+        }&cc=${committeeEmails}&body=${
           testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
         }`
       )
