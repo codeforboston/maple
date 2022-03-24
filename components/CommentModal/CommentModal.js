@@ -10,21 +10,20 @@ const testimonyEmailAddress = "archive@digitaltestimony.com"
 const webSiteBillAddress = "https://digital-testimony-dev.web.app/bill?id="
 
 const CommentModal = props => {
+  const bill = props.bill
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
     props.committeeName
   ) // only default checkbox to checked if the bill is in a committee
 
-  const bill = props.bill
-
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
 
-Why this bill is important to me:
+  Why this bill is important to me:
   
-My thoughts:
-`
+  My thoughts:
+  `
   const defaultTestimony = useTestimonyTemplate
     ? testimonyTemplate
     : "My comments on this bill..."
@@ -32,7 +31,6 @@ My thoughts:
     props.testimony ? props.testimony : { content: defaultTestimony }
   )
   const [isPublishing, setIsPublishing] = useState(false)
-
   const committeeName = props.committeeName
   const houseChairEmail = props.houseChairEmail
   const senateChairEmail = props.senateChairEmail
