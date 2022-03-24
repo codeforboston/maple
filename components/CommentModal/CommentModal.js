@@ -7,6 +7,7 @@ import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
 
 const testimonyEmailAddress = "archive@digitaltestimony.com"
+const webSiteBillAddress = "https://digital-testimony-dev.web.app/bill?id="
 
 const CommentModal = props => {
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
@@ -14,6 +15,8 @@ const CommentModal = props => {
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
     props.committeeName
   ) // only default checkbox to checked if the bill is in a committee
+
+  const bill = props.bill
 
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
@@ -30,7 +33,6 @@ My thoughts:
   )
   const [isPublishing, setIsPublishing] = useState(false)
 
-  const bill = props.bill
   const committeeName = props.committeeName
   const houseChairEmail = props.houseChairEmail
   const senateChairEmail = props.senateChairEmail
@@ -63,6 +65,8 @@ My thoughts:
       ? "oppose"
       : "have thoughts on"
 
+  const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}${bill.BillNumber}`
+
   const legislatorEmails =
     representativeEmail && senatorEmail
       ? representativeEmail + "," + senatorEmail
@@ -80,7 +84,13 @@ My thoughts:
         `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
           bill ? bill.BillNumber : ""
         }&cc=${legislatorEmails}&body=${
-          testimony ? mailIntroToLegislator + "\n\n" + testimony.content : ""
+          testimony
+            ? mailIntroToLegislator +
+              "\n\n" +
+              testimony.content +
+              "\n\n" +
+              emailSuffix
+            : ""
         }`
       )
 
@@ -105,7 +115,13 @@ My thoughts:
         `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
           bill ? bill.BillNumber : ""
         }&cc=${committeeEmails}&body=${
-          testimony ? mailIntroToCommittee + "\n\n" + testimony.content : ""
+          testimony
+            ? mailIntroToCommittee +
+              "\n\n" +
+              testimony.content +
+              "\n\n" +
+              emailSuffix
+            : ""
         }`
       )
 
