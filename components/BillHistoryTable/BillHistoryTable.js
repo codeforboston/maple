@@ -1,20 +1,28 @@
 import React from "react"
 import { Table } from "react-bootstrap"
 
-const DocumentHistoryActionRows = ({ documentHistoryActions }) => {
-  return documentHistoryActions.map((documentHistoryAction, index) => {
-    return (
-      <tr key={index}>
-        <td>{documentHistoryAction.Date.substring(0, 10)}</td>
-        <td>{documentHistoryAction.Date.substring(11, 19)}</td>
-        <td>{documentHistoryAction.Branch}</td>
-        <td>{documentHistoryAction.Action}</td>
-      </tr>
-    )
-  })
+const BillHistoryActionRows = ({ billHistory }) => {
+  const sortedBillHistory = !billHistory ? null : billHistory
+  return !billHistory ? (
+    <></>
+  ) : (
+    sortedBillHistory.map((billHistoryItem, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            {billHistoryItem.Date.substring(5, 10)}-
+            {billHistoryItem.Date.substring(0, 4)}
+          </td>
+          <td>{billHistoryItem.Date.substring(11, 16)}</td>
+          <td>{billHistoryItem.Branch}</td>
+          <td>{billHistoryItem.Action}</td>
+        </tr>
+      )
+    })
+  )
 }
 
-const BillHistoryTable = ({ documentHistoryActions }) => {
+const BillHistoryTable = ({ billHistory }) => {
   return (
     <div className="text-center">
       <Table striped bordered hover>
@@ -27,9 +35,7 @@ const BillHistoryTable = ({ documentHistoryActions }) => {
           </tr>
         </thead>
         <tbody>
-          <DocumentHistoryActionRows
-            documentHistoryActions={documentHistoryActions}
-          />
+          <BillHistoryActionRows billHistory={billHistory} />
         </tbody>
       </Table>
     </div>
