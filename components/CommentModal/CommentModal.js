@@ -5,6 +5,7 @@ import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
+import TweetModal from "../TweetModal/TweetModal"
 
 const testimonyEmailAddress = "archive@digitaltestimony.com"
 const webSiteBillAddress = "https://digital-testimony-dev.web.app/bill?id="
@@ -16,6 +17,9 @@ const CommentModal = props => {
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
     props.committeeName
   ) // only default checkbox to checked if the bill is in a committee
+  const [checkedTweet, setCheckedTweet] = React.useState(true)
+
+  // const [showTweetModal, setShowTweetModal] = useState(false)
 
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
@@ -144,6 +148,8 @@ const CommentModal = props => {
     if (checkedSendToCommittee && mailToCommittee) {
       window.open(mailToCommittee) // allow user to send a formatted email using their email client
     }
+    // console.log("opening tweet modal")
+    // setShowTweetModal(true)
     handleCloseTestimony()
     setIsPublishing(false)
   }
@@ -204,6 +210,13 @@ const CommentModal = props => {
                   committeeName={committeeName}
                 />
               </div>
+              <div>
+                <EmailToCommittee
+                  checkedSendToCommittee={checkedSendToCommittee}
+                  setCheckedSendToCommittee={setCheckedSendToCommittee}
+                  committeeName={committeeName}
+                />
+              </div>
             </div>
 
             <div className="col-sm">
@@ -227,6 +240,12 @@ const CommentModal = props => {
                 }}
               />
               <Button className="mt-2">Upload a document</Button>
+              {/* <TweetModal
+                bill={bill}
+                testimony={testimony}
+                showTweetModal={showTweetModal}
+                setShowTweetModal={setShowTweetModal}
+              /> */}
             </div>
           </div>
         </div>
