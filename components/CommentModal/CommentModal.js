@@ -5,7 +5,7 @@ import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
-import TweetModal from "../TweetModal/TweetModal"
+import Tweet from "./Tweet"
 
 const testimonyEmailAddress = "archive@digitaltestimony.com"
 const webSiteBillAddress = "https://digital-testimony-dev.web.app/bill?id="
@@ -17,17 +17,16 @@ const CommentModal = props => {
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
     props.committeeName
   ) // only default checkbox to checked if the bill is in a committee
-  const [checkedTweet, setCheckedTweet] = React.useState(true)
 
-  // const [showTweetModal, setShowTweetModal] = useState(false)
+  const [checkedTweet, setCheckedTweet] = React.useState(true)
 
   const useTestimonyTemplate = true
   const testimonyTemplate = `Why I am qualified to provide testimony:
 
-  Why this bill is important to me:
+Why this bill is important to me:
   
-  My thoughts:
-  `
+My thoughts:
+`
   const defaultTestimony = useTestimonyTemplate
     ? testimonyTemplate
     : "My comments on this bill..."
@@ -132,6 +131,12 @@ const CommentModal = props => {
   const defaultContent =
     testimony && testimony.content ? testimony.content : defaultTestimony
 
+  const tweet = encodeURI(
+    `https://twitter.com/intent/tweet?text=I provided testimony on bill ${bill.BillNumber}: ${bill.Title}.
+    
+See ${webSiteBillAddress}${bill.BillNumber} for details.`
+  )
+
   const publishTestimony = async () => {
     if (
       testimony.position == undefined ||
@@ -142,14 +147,17 @@ const CommentModal = props => {
     setIsPublishing(true)
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
+
     if (checkedSendToYourLegislators) {
       window.open(mailToLegislators) // allow user to send a formatted email using their email client
     }
     if (checkedSendToCommittee && mailToCommittee) {
       window.open(mailToCommittee) // allow user to send a formatted email using their email client
     }
-    // console.log("opening tweet modal")
-    // setShowTweetModal(true)
+    if (checkedTweet) {
+      window.open(tweet)
+    }
+
     handleCloseTestimony()
     setIsPublishing(false)
   }
@@ -211,10 +219,9 @@ const CommentModal = props => {
                 />
               </div>
               <div>
-                <EmailToCommittee
-                  checkedSendToCommittee={checkedSendToCommittee}
-                  setCheckedSendToCommittee={setCheckedSendToCommittee}
-                  committeeName={committeeName}
+                <Tweet
+                  checkedTweet={checkedTweet}
+                  setCheckedTweet={setCheckedTweet}
                 />
               </div>
             </div>
@@ -240,12 +247,6 @@ const CommentModal = props => {
                 }}
               />
               <Button className="mt-2">Upload a document</Button>
-              {/* <TweetModal
-                bill={bill}
-                testimony={testimony}
-                showTweetModal={showTweetModal}
-                setShowTweetModal={setShowTweetModal}
-              /> */}
             </div>
           </div>
         </div>
