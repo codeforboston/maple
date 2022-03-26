@@ -34,6 +34,7 @@ const TopNav: React.FC = () => {
             <NavLink href="/browse">Browse</NavLink>
             {authenticated && <NavLink href="/testify">Testify</NavLink>}
             <NavLink href="/about">About</NavLink>
+            <NavLink href="/legprocess">Learn</NavLink>
             <AccountNav authenticated={authenticated} />
           </Nav>
         </Navbar.Collapse>
