@@ -69,6 +69,8 @@ export default createPage({
         
         <h2>Writing Effective Testimony</h2>
         
+        The basics of writing effective testimony are to clearly outline what bill you are testifying about, whether you support or oppose it, why you are concerned about the issue, what policy you would like to see enacted, and what legislative district you live in.
+        
         Here are some tips you can use to make sure the testimony you submit is as impactful as possible,
         
         <ul>
@@ -81,7 +83,13 @@ export default createPage({
         
         <h1>Why transparency matters</h1>
         
-        A core goal of the MATT platform (this website) is to increase the transparency of the legislative process in MA.
+        A core goal of the MATT platform (this website) is to increase the transparency of the legislative process in MA. In short, we want to know what information the Legislature considered when reaching a conclusion about a bill.
+        
+        Today, there is no legal obligation for the Legislature to disclose what written testimony they receive and, in practice, such disclosure very rarely happens. As a result, it can be difficult to compare legislative outcomes to the interests and demands of constituents, which is an important tenant of accountability for legislators.
+        
+        When you submit testimony via the MATT platform, you can publish it in a freely accesible online database (this website) so that all other stakeholders can read your perspective. We hope this will increase the overall transparency of the legislative process and lead to better policy outcomes, with greater alignment to the needs, values, and objectives of the population of Massachusetts.
+        
+        While you certainly do not have to submit testimony via this website, we hope you will.  Every piece of testimony published to this site increases the transparency of the legislative process.
         
       </>
     )
