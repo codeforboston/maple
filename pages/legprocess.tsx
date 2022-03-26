@@ -29,6 +29,7 @@ export default createPage({
         We hope this page will be helpful to you in outlining how to submit effective testimony. You may want to consult these other resources to build a more detailed understanding of the legislative process and how you can contribute.
         
         <ul>
+            <li>The MA Legislature has an online <a href="https://malegislature.gov/search/findmylegislator">tool you can use to identify your legislators (link to malegislature.gov)</a> based on your home address.</li>
             <li>The MA Legislature publishes a 13-step guide on <a href="https://malegislature.gov/Content/Documents/HowAnIdeaBecomesLaw/HowAnIdeaBecomesLaw.pdf">How an Idea Becomes a Law (link to malegislature.gov)</a></li>
             <li>Mass Legal Services published a <a href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0">2007 guide to The Legislative Process in Massachusetts (link to masslegalservices.org)</a></li>
         </ul>
@@ -52,7 +53,19 @@ export default createPage({
         
         <h2>The role of testimony</h2>
         
+        Your voice is instrumental to the legislative process and should guide both the agenda of the legislature, what topics and bills they consider, and their votes, how they decide to act on each bill. Your voice can inform legislators of the benefits or negative consequences of proposed policies and give them insight into their potential popularity. You can also recommend specific changes or improvements to legislation, whether you generally support or oppose the bill. By speaking up, you can make the laws of Massachusetts work better for all of us!
+        
+        While everyone is able to convey their opinions to the legislature, not everyone does.  The process to submit testimony can be confusing, intimidating, and difficult. We hope that this website, the MATT platform, will make that process more straightforward, more accessible to all stakeholders, and easier.
+        
         <h1>Communicating with Legislators</h1>
+        
+        There are multiple ways for you to voice your opinion to your legislators, including,
+        
+        <ul>
+          <li>Testify in writing! You can submit your thoughts on a bill to the Committee hearing it before the date of their public hearing. This website, the MATT platform, focuses on this mechanism.</li>
+          <li>Testify orally. You can attend a public hearing for a bill of interest to you and sign up for a slot to speak before the Committee.</li>
+          <li>Write to or call them. You can contact your legislators any time by <a href="https://malegislature.gov/search/findmylegislator">looking up their contact information on the MA Legislature website</a>. Your voice will probably carry the most weight with the House and Senate representatives of your own district, but you are free to contact Committee Chairs or any other member of the legislature with your opinions. You could request a meeting in person.</li>
+        </ul>
         
         <h2>Writing Effective Testimony</h2>
         
