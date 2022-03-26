@@ -1,123 +1,153 @@
-import React from "react";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/router"
-import { testimonies } from "../MockTestimonies"
-import { Table, Container, NavLink, Button, Spinner, Row } from 'react-bootstrap'
-import { useBills } from "../db";
+import React from "react"
+import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
-import {legislativeMember} from '../MockAPIResponseLegislativeMember'
+import { useBills, useMember } from "../db"
+import { formatBillId } from "../formatting"
+import { Search } from "../search"
 
-// create a hash of bills and their number of testimonies
-const countedTestimonies = testimonies.reduce(function (
-  allTestimonies,
-  testimony
-) {
-  if (testimony.billNumber in allTestimonies) {
-    allTestimonies[testimony.billNumber]++
-  } else {
-    allTestimonies[testimony.billNumber] = 1
-  }
-  return allTestimonies
-},
-{}) 
-
-// create a hash of bills and their most recent testimony
-const mostRecentTestimonies = testimonies.reduce(function (
-  allTestimonies,
-  testimony
-) {
-  const billNumber = testimony.billNumber
-  if (billNumber in allTestimonies) {
-    // keep the most recent testimony date for each bill
-    if (new Date(testimony.dateSubmitted) > new Date(allTestimonies[billNumber]))
-    { 
-      allTestimonies[billNumber] = testimony.dateSubmitted
-    }
-  } else {
-    allTestimonies[billNumber] = testimony.dateSubmitted
-  }
-  return allTestimonies
-},
-{}) 
-
-
-
-const invalidSponsorId = (Id) => {
+const invalidSponsorId = Id => {
   // we will have to learn more about why certain sponsors have invalid ID's
-  return ['GOV7'].includes(Id)
+  return ["GOV7"].includes(Id)
 }
 
-const BillRows = ({bills}) => {
+const BillRow = props => {
+  const fullBill = props.bill
+  const bill = props.bill.content
   const router = useRouter()
-  return bills.map((bill, index) => {
-    const sponsorURL = bill && bill.PrimarySponsor && bill.PrimarySponsor.Id && !invalidSponsorId(bill.PrimarySponsor.Id) ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography` : ""
-    const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
-    const SponsorComponent = sponsorURL != "" ?
-        <>
-        <links.External href={sponsorURL}>{bill.PrimarySponsor.Name}</links.External> 
-        - {legislativeMember.Branch} - {legislativeMember.District} - {legislativeMember.Party}
-        </>
-        :
-        <>
-        {bill.PrimarySponsor.Name}
-        </>
-  
+  const { member, loading } = useMember(
+    bill.PrimarySponsor ? bill.PrimarySponsor.Id : null
+  )
+  const sponsorURL =
+    bill &&
+    bill.PrimarySponsor &&
+    bill.PrimarySponsor.Id &&
+    !invalidSponsorId(bill.PrimarySponsor.Id)
+      ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography`
+      : ""
+  const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
+
+  const SponsorComponent =
+    sponsorURL != "" ? (
+      <>
+        <links.External href={sponsorURL}>
+          {bill.PrimarySponsor.Name}
+        </links.External>
+        - {loading ? "" : member.Branch} - {loading ? "" : member.District} -{" "}
+        {loading ? "" : member.Party}
+      </>
+    ) : (
+      <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
+    )
+
+  const committeeCell = fullBill.currentCommittee ? (
+    <>
+      <links.External
+        href={`https://malegislature.gov/Committees/Detail/${fullBill.currentCommittee?.id}/Committees`}
+      >
+        {fullBill.currentCommittee?.name}
+      </links.External>
+    </>
+  ) : (
+    <></>
+  )
+
+  if (loading) {
+    return null
+  } else {
     return (
-    <tr key={index}>
-      <td>{bill.BillNumber}</td>
-      <td>{bill.Title}</td>
-      <td>{SponsorComponent}</td>
-      <td>{numCoSponsors}</td>
-      <td>{countedTestimonies[bill.BillNumber] > 0 ? countedTestimonies[bill.BillNumber] : 0 }</td>
-      <td></td>
-      <td>{mostRecentTestimonies[bill.BillNumber] != null ? mostRecentTestimonies[bill.BillNumber] : "" }</td>
-      <td>
-        <Button variant="primary" onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}>
-          View Bill
-        </Button>
-      </td>
-    </tr>
+      <tr>
+        <td>{formatBillId(bill.BillNumber)}</td>
+        <td>{bill.Title}</td>
+        <td>{SponsorComponent}</td>
+        <td>{fullBill.city}</td>
+        <td>{numCoSponsors}</td>
+        <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
+        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
+        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
+        <td>{fullBill.testimonyCount}</td>
+        <td>
+          {fullBill.latestTestimonyAt &&
+            fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
+        </td>
+        <td>{committeeCell}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
+          >
+            View Bill
+          </Button>
+        </td>
+      </tr>
     )
   }
-)}
+}
 
-const ViewBills = (props) => {
-  const {bills, loading} = useBills()
+const BillRows = ({ bills }) => {
+  return bills.map((bill, index) => {
+    return <BillRow bill={bill} key={index} />
+  })
+}
+
+const ViewBills = () => {
+  const {
+    bills,
+    setSort,
+    setFilter,
+    loading,
+    nextPage,
+    previousPage,
+    currentPage,
+    hasNextPage,
+    hasPreviousPage
+  } = useBills()
+
   return (
     <Container>
-      <h1>Most Active Bills </h1>
-      <div className="col-2">
-        <select className="form-control">
-          <option value="DEFAULT">Sort bills by..</option>
-          <option value="billNum">Bill #</option>
-          <option value="numCosponsors"># CoSponsors</option>
-          <option value="numComments"># Testimony</option>
-          <option value="upcomingHearingDate">Hearing date</option>
-          <option value="recentComments">Most recent testimony</option>
-        </select>
-      </div>
-      <Table className="mt-2" striped bordered hover>
+      <Search setSort={setSort} setFilter={setFilter} />
+      {/* something about the table is causing a problem on mobile */}
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>
             <th>Bill Name</th>
-            <th>Lead</th>
+            <th>Lead Sponsor</th>
+            <th>City</th>
             <th># CoSponsors</th>
+            <th>Hearing Scheduled</th>
             <th># Testimony</th>
-            <th>Hearing date</th>
-            <th>Most recent testimony</th>
+            <th>Most Recent Testimony</th>
+            <th>Current Committee</th>
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {!loading && <BillRows bills={bills}/>}
-        </tbody>
+        <tbody>{bills && <BillRows bills={bills} />}</tbody>
       </Table>
-      <Row>
-        {loading && <Spinner animation="border" className="mx-auto"/>}
-      </Row>
+      <Row>{loading && <Spinner animation="border" className="mx-auto" />}</Row>
+      <div className="d-flex justify-content-center mb-3">
+        <Button
+          variant="primary"
+          style={{ marginRight: 15 }}
+          onClick={previousPage}
+          disabled={!hasPreviousPage}
+        >
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Button>
+        <span>Page {currentPage}</span>
+        <Button
+          variant="primary"
+          style={{ marginLeft: 15 }}
+          onClick={nextPage}
+          disabled={!hasNextPage}
+        >
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Button>
+      </div>
     </Container>
-  );
-};
+  )
+}
 
-export default ViewBills;
-
+export default ViewBills

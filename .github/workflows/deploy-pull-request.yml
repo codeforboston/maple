@@ -2,7 +2,7 @@ name: Deploy Pull Request
 
 on:
   workflow_run:
-    workflows: ['Build Pull Request']
+    workflows: ["Build Pull Request"]
     types:
       - completed
 
@@ -19,7 +19,7 @@ jobs:
       - name: Deploy App to Firebase Hosting
         uses: alexjball/action-hosting-deploy@v1
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DIGITAL_TESTIMONY_DEV }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DIGITAL_TESTIMONY_DEV }}"
           projectId: digital-testimony-dev
           artifactName: digital-testimony-app

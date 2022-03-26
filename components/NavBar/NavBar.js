@@ -1,5 +1,5 @@
-import {Navbar, Nav, NavDropdown} from "../bootstrap";
-import styles from "./NavBar.module.css";
+import { Navbar, Nav, NavDropdown } from "../bootstrap"
+import styles from "./NavBar.module.css"
 
 function NavBar({ pageTitle = "" }) {
   return (
@@ -43,7 +43,7 @@ function NavBar({ pageTitle = "" }) {
         </Navbar.Collapse>
       </Navbar>
     </div>
-  );
+  )
 }
 
-export default NavBar;
+export default NavBar

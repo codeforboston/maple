@@ -1,10 +1,9 @@
-import { AuthProvider } from "../components/auth"
-import { SSRProvider } from "../components/bootstrap"
 import "../components/fontawesome"
+import { applyLayout, AppPropsWithLayout } from "../components/page"
+import { Providers } from "../components/providers"
 import "../styles/bootstrap.scss"
 import "../styles/globals.css"
 import "../styles/Map.css"
-import { applyLayout, AppPropsWithLayout } from "../components/page"
 
 /**
  * The root React component of the application. Next.js renders this, passing
@@ -17,11 +16,7 @@ import { applyLayout, AppPropsWithLayout } from "../components/page"
  * See https://nextjs.org/docs/basic-features/layouts for the pattern.
  */
 function App(props: AppPropsWithLayout) {
-  return (
-    <SSRProvider>
-      <AuthProvider>{applyLayout(props)}</AuthProvider>
-    </SSRProvider>
-  )
+  return <Providers>{applyLayout(props)}</Providers>
 }
 
 export default App

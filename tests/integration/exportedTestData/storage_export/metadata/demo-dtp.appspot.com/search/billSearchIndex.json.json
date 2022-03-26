@@ -1,0 +1,17 @@
+{
+  "name": "search/billSearchIndex.json",
+  "bucket": "demo-dtp.appspot.com",
+  "contentType": "application/json",
+  "metageneration": 1,
+  "generation": 1647813806870,
+  "storageClass": "STANDARD",
+  "etag": "someETag",
+  "contentDisposition": "inline",
+  "contentEncoding": "gzip",
+  "downloadTokens": [],
+  "timeCreated": "2022-03-20T22:03:26.869Z",
+  "updated": "2022-03-20T22:03:26.873Z",
+  "size": 989563,
+  "md5Hash": "L0YVbtiP8AYI9bJg6ioQkQ==",
+  "crc32c": "3208138119"
+}
