@@ -63,14 +63,16 @@ class UpdateBillSearchIndex extends BillProcessor {
   }
 
   private async saveIndex(index: BillSearchIndex) {
-    await storage
-      .bucket()
-      .file("search/billSearchIndex.json")
-      .save(Buffer.from(JSON.stringify(index), "utf8"), {
-        contentType: "application/json",
-        gzip: true,
-        resumable: false
-      })
+    const file = storage.bucket().file("search/billSearchIndex.json")
+
+    await file.save(Buffer.from(JSON.stringify(index), "utf8"), {
+      contentType: "application/json",
+      gzip: true,
+      resumable: false
+    })
+
+    // Set the max-age to half the time between jobs
+    await file.setMetadata({ cacheControl: "public, max-age=43200" })
   }
 }
 
