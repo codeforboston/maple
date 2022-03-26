@@ -69,6 +69,16 @@ export default createPage({
         
         <h2>Writing Effective Testimony</h2>
         
+        Here are some tips you can use to make sure the testimony you submit is as impactful as possible,
+        
+        <ul>
+          <li>Be timely. Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill. Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.</li>
+          <li>Be original. Legislators receive a lot of form letters and repeated sentiments from organized groups of constituents. These communications are important and their volume can be meaningful to legislators.  But, almost always, an individual and personalized letter will have a greater impact.</li>
+          <li>Be informative. Whether you are a longtime advocate or a first time testifier, whether you have a doctoral degree in the subject or lived experience regarding a policy, and no matter your age, race, creed, or background, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another. For example, your being a parent gives you special insight into education policy, your living in a community affected by pollution gives you special insight into environmental policy, etc.</li>
+          <li>Be direct. State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't have to know specific legal precedents or legislative language; just explain what you would like to happen and why.</li>
+          <li>Of course, be respectful. No matter how strongly and sincerely held your position is, there may be people of good intent who feel oppositely and expect and deserve to have their opinions considered by their legislators also. Respectful testimony will carry more weight with legislators, especially those who you may need to persuade to your side of an issue.</li>
+        </ul>
+        
         <h1>Why transparency matters</h1>
         
         A core goal of the MATT platform (this website) is to increase the transparency of the legislative process in MA.
