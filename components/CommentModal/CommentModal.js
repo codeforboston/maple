@@ -7,8 +7,80 @@ import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
 import Tweet from "./Tweet"
 
-const testimonyEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary email address for each email.  This is a placeholder email address.  If people use an email addres like this for the primary address, we will also have an archive of emails sent to legislators.
-// Emails generated can also be programatically stored in a table,  but the only way to know if someone hit the "send" button is to be sent a copy of the email.
+const testimonyArchiveEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary email address for each email.  This is a placeholder email address.
+
+const createMyLegislatorEmailCommand = (
+  representativeEmail,
+  senatorEmail,
+  positionWord,
+  positionEmailSubject,
+  billNumber,
+  billTitle,
+  testimonyContent,
+  emailSuffix
+) => {
+  const legislatorEmails =
+    representativeEmail && senatorEmail
+      ? representativeEmail + "," + senatorEmail
+      : representativeEmail
+      ? representativeEmail
+      : senatorEmail
+      ? senatorEmail
+      : null
+
+  const mailIntro = `As your constituent, I am writing to let you know I ${positionWord} ${billNumber}: ${billTitle}.`
+
+  const mailCommandToLegislators = !legislatorEmails
+    ? null
+    : encodeURI(
+        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${legislatorEmails}&body=${
+          testimonyContent
+            ? mailIntro + "\n\n" + testimonyContent + "\n\n" + emailSuffix
+            : ""
+        }`
+      )
+  return mailCommandToLegislators
+}
+
+const createCommitteeChairEmailCommand = (
+  houseChairEmail,
+  senateChairEmail,
+  committeeName,
+  positionWord,
+  positionEmailSubject,
+  billNumber,
+  billTitle,
+  testimonyContent,
+  emailSuffix
+) => {
+  const committeeEmails =
+    houseChairEmail && senateChairEmail
+      ? houseChairEmail + "," + senateChairEmail
+      : houseChairEmail
+      ? houseChairEmail
+      : senateChairEmail
+      ? senateChairEmail
+      : null
+
+  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${billNumber}: ${billTitle} ${
+    committeeName ? "that is before the " + committeeName : ""
+  }.`
+
+  const mailCommandToCommitteeChairs = !committeeEmails
+    ? null
+    : encodeURI(
+        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${committeeEmails}&body=${
+          testimonyContent
+            ? mailIntroToCommittee +
+              "\n\n" +
+              testimonyContent +
+              "\n\n" +
+              emailSuffix
+            : ""
+        }`
+      )
+  return mailCommandToCommitteeChairs
+}
 
 const CommentModal = props => {
   const currentURL = window.location.href // returns the absolute URL of a page
@@ -71,63 +143,32 @@ My thoughts:
 
   const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
 
-  const legislatorEmails =
-    representativeEmail && senatorEmail
-      ? representativeEmail + "," + senatorEmail
-      : representativeEmail
-      ? representativeEmail
-      : senatorEmail
-      ? senatorEmail
-      : null
+  const billNumber = bill?.BillNumber
+  const billTitle = bill?.Title
+  const testimonyContent = testimony?.content
 
-  const mailIntroToLegislator = `As your constituent, I am writing to let you know I ${positionWord} ${bill?.BillNumber}: ${bill?.Title}.`
+  const emailCommandToMyLegislators = createMyLegislatorEmailCommand(
+    representativeEmail,
+    senatorEmail,
+    positionWord,
+    positionEmailSubject,
+    billNumber,
+    billTitle,
+    testimonyContent,
+    emailSuffix
+  )
 
-  const mailToLegislators = !legislatorEmails
-    ? null
-    : encodeURI(
-        `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
-          bill ? bill.BillNumber : ""
-        }&cc=${legislatorEmails}&body=${
-          testimony
-            ? mailIntroToLegislator +
-              "\n\n" +
-              testimony.content +
-              "\n\n" +
-              emailSuffix
-            : ""
-        }`
-      )
-
-  const committeeEmails =
-    houseChairEmail && senateChairEmail
-      ? houseChairEmail + "," + senateChairEmail
-      : houseChairEmail
-      ? houseChairEmail
-      : senateChairEmail
-      ? senateChairEmail
-      : null
-
-  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${
-    bill?.BillNumber
-  }: ${bill?.Title} ${
-    committeeName ? "that is before the " + committeeName : ""
-  }.`
-
-  const mailToCommittee = !committeeEmails
-    ? null
-    : encodeURI(
-        `mailto:${testimonyEmailAddress}?subject=${positionEmailSubject} Bill ${
-          bill ? bill.BillNumber : ""
-        }&cc=${committeeEmails}&body=${
-          testimony
-            ? mailIntroToCommittee +
-              "\n\n" +
-              testimony.content +
-              "\n\n" +
-              emailSuffix
-            : ""
-        }`
-      )
+  const emailCommandToCommitteeChairs = createCommitteeChairEmailCommand(
+    houseChairEmail,
+    senateChairEmail,
+    committeeName,
+    positionWord,
+    positionEmailSubject,
+    billNumber,
+    billTitle,
+    testimonyContent,
+    emailSuffix
+  )
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
@@ -152,10 +193,10 @@ See ${webSiteBillAddress} for details.`
     await edit.publishTestimony.execute()
 
     if (checkedSendToYourLegislators) {
-      window.open(mailToLegislators) // allow user to send a formatted email using their email client
+      window.open(emailCommandToMyLegislators) // allow user to send a formatted email using their email client
     }
-    if (checkedSendToCommittee && mailToCommittee) {
-      window.open(mailToCommittee) // allow user to send a formatted email using their email client
+    if (checkedSendToCommittee && (houseChairEmail || senateChairEmail)) {
+      window.open(emailCommandToCommitteeChairs) // allow user to send a formatted email using their email client
     }
     if (checkedTweet) {
       window.open(tweet)
