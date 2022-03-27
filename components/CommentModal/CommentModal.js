@@ -15,7 +15,6 @@ const testimonyArchiveEmailAddress = "archive@digitaltestimony.com" // in order 
 const CommentModal = props => {
   const bill = props.bill
   const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
-  console.log(webSiteBillAddress)
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
