@@ -1,4 +1,5 @@
 import { createPage } from "../components/page"
+import stateHouse from '../public/ma_state_house.jpg'
 
 export default createPage({
   v2: true,
@@ -7,8 +8,8 @@ export default createPage({
     return (
       <>
         <h1>Participate in the MATT Project Beta Test</h1>
-        
-        <img src={process.env.PUBLIC_URL + "../public/ma_state_house.jpeg"} alt="Photo of the Massachusetts State House building." />
+
+        <img src={stateHouse.src} height={300} className="d-print-none d-block mx-auto mb-2" alt="Photo of the Massachusetts State House building." />
 
         Help us make the policymaking process in Massachusetts more accessible and transparent!  We are looking for beta testers to share feedback on our beta version of the Massachusetts Archive of Transparent Testimony (MATT) platform so that we can make it as useful as possible to the Commonwealth.
         
