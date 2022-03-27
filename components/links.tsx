@@ -31,3 +31,15 @@ export const Wrap: React.FC<{ href: string }> = ({ href, children }) => (
     {children}
   </Link>
 )
+
+/**
+ * Returns the full URL for the given path in the site.
+ *
+ * @example
+ *
+ * siteUrl('bill?id=H1000') === "https://digital-testimony-dev.web.app/bill?id=H1000"
+ */
+export function siteUrl(path?: string) {
+  const base = typeof location === "undefined" ? "" : location.origin
+  return path ? new URL(path, base).href : base
+}

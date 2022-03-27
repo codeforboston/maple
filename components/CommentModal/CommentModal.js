@@ -8,14 +8,14 @@ import EmailToCommitteeComponent from "./EmailToCommitteeComponent"
 import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
 import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
 import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
+import { siteUrl } from "../links"
 
 const testimonyArchiveEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
 
 const CommentModal = props => {
-  const currentURL = window.location.href // returns the absolute URL of a page
-  const webSiteBillAddress = `${currentURL}`
-
   const bill = props.bill
+  const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
+  console.log(webSiteBillAddress)
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
   const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
