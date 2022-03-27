@@ -1,4 +1,4 @@
-import React, { useState, useLocation, useState } from "react"
+import React, { useState, useLocation, useEffect } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
