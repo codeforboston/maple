@@ -10,17 +10,17 @@ const BillStatus = props => {
 
   const handleShowBillStatus = () => setShowBillStatus(true)
   const handleCloseBillStatus = () => setShowBillStatus(false)
+  const history = documentHistoryActions[documentHistoryActions.length - 1]
 
   return (
     <>
       <Button
         variant="primary"
         className="m-1 text-truncate"
-        style={{ width: "18em" }}
+        style={{ maxWidth: "18em" }}
         onClick={handleShowBillStatus}
       >
-        Status -{" "}
-        {documentHistoryActions[documentHistoryActions.length - 1].Action}
+        Status - {history ? history.Action : "Unknown"}
       </Button>
       <Modal show={showBillStatus} onHide={handleCloseBillStatus} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillStatus}>
@@ -29,11 +29,7 @@ const BillStatus = props => {
         <Modal.Body>
           <>
             <div className="text-center">Bill Status</div>
-            <BillHistoryTable
-              documentHistoryActions={[
-                documentHistoryActions[documentHistoryActions.length - 1]
-              ]}
-            />
+            <BillHistoryTable documentHistoryActions={[history]} />
             <div className=" d-flex justify-content-center">
               <BillHistory bill={bill} />
             </div>
