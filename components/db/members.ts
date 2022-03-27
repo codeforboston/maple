@@ -38,14 +38,29 @@ export type MemberSearchIndex = {
   senators: (MemberSearchIndexItem & { Branch: "Senate" })[]
 }
 
+type MemberFetch =
+  | {
+      member: MemberContent
+      status: "loaded"
+    }
+  | { status: "loading" }
+  | { status: "doesNotExist" }
+
 export function useMember(memberCode: string) {
-  const [member, setMember] = useState<MemberContent | undefined>(undefined)
+  const [member, setMember] = useState<MemberFetch>({ status: "loading" })
 
   useEffect(() => {
     const fetchResource = async () => {
-      if (member?.MemberCode !== memberCode) {
+      if (
+        member.status != "loaded" ||
+        member?.member?.MemberCode !== memberCode
+      ) {
         const fetched = await getMember(memberCode)
-        setMember(fetched)
+        if (fetched != undefined) {
+          setMember({ member: fetched, status: "loaded" })
+        } else if (fetched === undefined) {
+          setMember({ status: "doesNotExist" })
+        }
       }
     }
     fetchResource()
@@ -53,8 +68,8 @@ export function useMember(memberCode: string) {
 
   return useMemo(
     () => ({
-      member,
-      loading: member === undefined
+      member: member.status === "loaded" ? member?.member : undefined,
+      loading: member.status === "loading"
     }),
     [member]
   )
