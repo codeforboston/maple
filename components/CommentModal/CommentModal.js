@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import Tweet from "./Tweet"
+import TweetComponent from "./TweetComponent"
 import EmailToCommitteeComponent from "./EmailToCommitteeComponent"
 import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
 import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
@@ -194,7 +194,7 @@ See ${webSiteBillAddress} for details.`
                 />
               </div>
               <div>
-                <Tweet
+                <TweetComponent
                   checkedTweet={checkedTweet}
                   setCheckedTweet={setCheckedTweet}
                 />

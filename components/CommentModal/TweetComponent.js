@@ -1,6 +1,6 @@
 import React from "react"
 
-const Tweet = ({ checkedTweet, setCheckedTweet }) => {
+const TweetComponent = ({ checkedTweet, setCheckedTweet }) => {
   const handleChangeTweet = () => {
     setCheckedTweet(!checkedTweet)
   }
@@ -21,4 +21,4 @@ const Tweet = ({ checkedTweet, setCheckedTweet }) => {
   )
 }
 
-export default Tweet
+export default TweetComponent
