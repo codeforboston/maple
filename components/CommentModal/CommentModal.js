@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
@@ -43,6 +43,11 @@ My thoughts:
   const representativeEmail = representative.member?.EmailAddress ?? ""
 
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
+
+  useEffect(() => {
+    const testimony = edit.draft ? edit.draft : defaultTestimony
+    setTestimony(testimony)
+  }, [defaultTestimony, edit.draft])
 
   const positionMessage = "Select my support..(required)"
 
@@ -110,7 +115,7 @@ My thoughts:
   }
 
   const positionChosen =
-    testimony.position != undefined && testimony.position != positionMessage
+    testimony?.position != undefined && testimony.position != positionMessage
 
   return (
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
