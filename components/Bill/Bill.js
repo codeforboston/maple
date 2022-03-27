@@ -7,13 +7,14 @@ import BillStatus from "../BillStatus/BillStatus"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import { useBill } from "../db"
 
-const ViewBillPage = props => {
-  const { loading, result: fullBill } = useBill(props.billId)
+const ViewBillPage = ({ billId }) => {
+  const { loading, result: fullBill } = useBill(billId)
 
   const bill = fullBill?.content
+  const billHistory = fullBill?.history
   const committeeName = fullBill?.currentCommittee?.name
-  const committeeChairEmail = fullBill?.currentCommittee?.committeeChairEmail
-
+  const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
+  const senateChairEmail = fullBill?.currentCommittee?.senateChair?.email
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -23,7 +24,7 @@ const ViewBillPage = props => {
       <Row>
         <div className=" d-flex justify-content-center">
           <BillCosponsors bill={bill} />
-          <BillStatus bill={bill} />
+          <BillStatus bill={bill} billHistory={billHistory} />
         </div>
       </Row>
       <div className="text-center">
@@ -55,7 +56,8 @@ const ViewBillPage = props => {
       <AddTestimony
         bill={bill}
         committeeName={committeeName}
-        committeeChairEmail={committeeChairEmail}
+        houseChairEmail={houseChairEmail}
+        senateChairEmail={senateChairEmail}
       />
     </>
   )

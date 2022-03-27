@@ -1,15 +1,12 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
 import BillHistoryTable from "../BillHistoryTable/BillHistoryTable"
-import { documentHistoryActions } from "../MockAPIResponseDocumentHistoryActions"
 
-const BillHistory = props => {
-  const bill = props.bill
+const BillHistory = ({ bill, billHistory }) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
 
   const handleShowBillHistory = () => setShowBillHistory(true)
   const handleCloseBillHistory = () => setShowBillHistory(false)
-
   return (
     <>
       <Button variant="primary" className="m-1" onClick={handleShowBillHistory}>
@@ -22,7 +19,7 @@ const BillHistory = props => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BillHistoryTable documentHistoryActions={documentHistoryActions} />
+          <BillHistoryTable billHistory={billHistory} />
         </Modal.Body>
       </Modal>
     </>

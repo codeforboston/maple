@@ -4,7 +4,12 @@ import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
 
-const AddTestimony = ({ bill, committeeName, committeeChairEmail }) => {
+const AddTestimony = ({
+  bill,
+  committeeName,
+  houseChairEmail,
+  senateChairEmail
+}) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const handleShowTestimony = () => setShowTestimony(true)
@@ -42,7 +47,8 @@ const AddTestimony = ({ bill, committeeName, committeeChairEmail }) => {
           handleShowTestimony={handleShowTestimony}
           handleCloseTestimony={handleCloseTestimony}
           committeeName={committeeName}
-          committeeChairEmail={committeeChairEmail}
+          houseChairEmail={houseChairEmail}
+          senateChairEmail={senateChairEmail}
         />
       )}
     </>

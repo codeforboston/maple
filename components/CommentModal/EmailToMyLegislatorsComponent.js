@@ -1,6 +1,6 @@
 import React from "react"
 import { Button, Modal, Checkbox, Form } from "react-bootstrap"
-import * as links from "../../components/links"
+import * as links from "../links"
 
 const EmailToMyLegislators = ({
   checkedSendToYourLegislators,
@@ -23,7 +23,7 @@ const EmailToMyLegislators = ({
           onChange={handleChangeSendToYourLegislators}
         />
         <label className="form-check-label">
-          Send copy to your legislatures
+          Send copy to your legislators
         </label>
       </div>
     )

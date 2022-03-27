@@ -1,10 +1,17 @@
 import React from "react"
 import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill } from "../db"
+import { useBill, useMember } from "../db"
+
+const MemberName = ({ memberId }) => {
+  const { member, loading } = useMember(memberId)
+  return <>{member?.Name}</>
+}
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
+  const senatorId = testimony.senatorId
+  const representativeId = testimony.representativeId
   return (
     <tr>
       <td>{testimony.billId}</td>
@@ -13,6 +20,12 @@ const TestimonyRow = ({ testimony }) => {
         {testimony.authorDisplayName == null
           ? "(blank)"
           : testimony.authorDisplayName}
+      </td>
+      <td>
+        <MemberName memberId={senatorId} />
+      </td>
+      <td>
+        <MemberName memberId={representativeId} />
       </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
@@ -37,6 +50,8 @@ const TestimonyTable = ({ testimonies }) => {
             <th>Bill</th>
             <th>Support</th>
             <th>Submitter</th>
+            <th>Submitter Senator</th>
+            <th>Submitter Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
