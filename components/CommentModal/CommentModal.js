@@ -3,84 +3,13 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import EmailToMyLegislators from "./EmailToMyLegislators"
-import EmailToCommittee from "./EmailToCommittee"
 import Tweet from "./Tweet"
+import EmailToCommitteeComponent from "./EmailToCommitteeComponent"
+import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
+import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
+import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
 
-const testimonyArchiveEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary email address for each email.  This is a placeholder email address.
-
-const createMyLegislatorEmailCommand = (
-  representativeEmail,
-  senatorEmail,
-  positionWord,
-  positionEmailSubject,
-  billNumber,
-  billTitle,
-  testimonyContent,
-  emailSuffix
-) => {
-  const legislatorEmails =
-    representativeEmail && senatorEmail
-      ? representativeEmail + "," + senatorEmail
-      : representativeEmail
-      ? representativeEmail
-      : senatorEmail
-      ? senatorEmail
-      : null
-
-  const mailIntro = `As your constituent, I am writing to let you know I ${positionWord} ${billNumber}: ${billTitle}.`
-
-  const mailCommandToLegislators = !legislatorEmails
-    ? null
-    : encodeURI(
-        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${legislatorEmails}&body=${
-          testimonyContent
-            ? mailIntro + "\n\n" + testimonyContent + "\n\n" + emailSuffix
-            : ""
-        }`
-      )
-  return mailCommandToLegislators
-}
-
-const createCommitteeChairEmailCommand = (
-  houseChairEmail,
-  senateChairEmail,
-  committeeName,
-  positionWord,
-  positionEmailSubject,
-  billNumber,
-  billTitle,
-  testimonyContent,
-  emailSuffix
-) => {
-  const committeeEmails =
-    houseChairEmail && senateChairEmail
-      ? houseChairEmail + "," + senateChairEmail
-      : houseChairEmail
-      ? houseChairEmail
-      : senateChairEmail
-      ? senateChairEmail
-      : null
-
-  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${billNumber}: ${billTitle} ${
-    committeeName ? "that is before the " + committeeName : ""
-  }.`
-
-  const mailCommandToCommitteeChairs = !committeeEmails
-    ? null
-    : encodeURI(
-        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${committeeEmails}&body=${
-          testimonyContent
-            ? mailIntroToCommittee +
-              "\n\n" +
-              testimonyContent +
-              "\n\n" +
-              emailSuffix
-            : ""
-        }`
-      )
-  return mailCommandToCommitteeChairs
-}
+const testimonyArchiveEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
 
 const CommentModal = props => {
   const currentURL = window.location.href // returns the absolute URL of a page
@@ -155,7 +84,8 @@ My thoughts:
     billNumber,
     billTitle,
     testimonyContent,
-    emailSuffix
+    emailSuffix,
+    testimonyArchiveEmailAddress
   )
 
   const emailCommandToCommitteeChairs = createCommitteeChairEmailCommand(
@@ -167,7 +97,8 @@ My thoughts:
     billNumber,
     billTitle,
     testimonyContent,
-    emailSuffix
+    emailSuffix,
+    testimonyArchiveEmailAddress
   )
 
   const defaultPosition =
@@ -246,7 +177,7 @@ See ${webSiteBillAddress} for details.`
                 <option value="neutral">Neutral</option>
               </select>
               <div>
-                <EmailToMyLegislators
+                <EmailToMyLegislatorsComponent
                   checkedSendToYourLegislators={checkedSendToYourLegislators}
                   setCheckedSendToYourLegislators={
                     setCheckedSendToYourLegislators
@@ -256,7 +187,7 @@ See ${webSiteBillAddress} for details.`
                 />
               </div>
               <div>
-                <EmailToCommittee
+                <EmailToCommitteeComponent
                   checkedSendToCommittee={checkedSendToCommittee}
                   setCheckedSendToCommittee={setCheckedSendToCommittee}
                   committeeName={committeeName}
