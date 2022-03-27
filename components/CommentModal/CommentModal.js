@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useLocation } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { useProfile, useMember } from "../db"
@@ -7,10 +7,13 @@ import EmailToMyLegislators from "./EmailToMyLegislators"
 import EmailToCommittee from "./EmailToCommittee"
 import Tweet from "./Tweet"
 
-const testimonyEmailAddress = "archive@digitaltestimony.com"
-const webSiteBillAddress = "https://digital-testimony-dev.web.app/bill?id="
+const testimonyEmailAddress = "archive@digitaltestimony.com" // in order to have emails send to legislators via BCC, we need a primary email address for each email.  This is a placeholder email address.  If people use an email addres like this for the primary address, we will also have an archive of emails sent to legislators.
+// Emails generated can also be programatically stored in a table,  but the only way to know if someone hit the "send" button is to be sent a copy of the email.
 
 const CommentModal = props => {
+  const currentURL = window.location.href // returns the absolute URL of a page
+  const webSiteBillAddress = `${currentURL}`
+
   const bill = props.bill
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
@@ -66,7 +69,7 @@ My thoughts:
       ? "oppose"
       : "have thoughts on"
 
-  const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}${bill.BillNumber}`
+  const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
 
   const legislatorEmails =
     representativeEmail && senatorEmail
@@ -134,7 +137,7 @@ My thoughts:
   const tweet = encodeURI(
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${bill.BillNumber}: ${bill.Title}.
     
-See ${webSiteBillAddress}${bill.BillNumber} for details.`
+See ${webSiteBillAddress} for details.`
   )
 
   const publishTestimony = async () => {
