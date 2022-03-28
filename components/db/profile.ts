@@ -1,5 +1,5 @@
-import { doc, onSnapshot, setDoc, getDoc  } from "firebase/firestore"
-import { useEffect, useMemo, useReducer} from "react"
+import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore"
+import { useEffect, useMemo, useReducer } from "react"
 import { useAuth } from "../auth"
 import { firestore } from "../firebase"
 import { useAsync } from "react-async-hook"
