@@ -1,7 +1,8 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore"
-import { useEffect, useMemo, useReducer } from "react"
+import { doc, onSnapshot, setDoc, getDoc  } from "firebase/firestore"
+import { useEffect, useMemo, useReducer} from "react"
 import { useAuth } from "../auth"
 import { firestore } from "../firebase"
+import { useAsync } from "react-async-hook"
 
 export type ProfileMember = {
   district: string
@@ -86,4 +87,13 @@ function updateRepresentative(uid: string, representative: ProfileMember) {
 
 function updateSenator(uid: string, senator: ProfileMember) {
   return setDoc(profileRef(uid), { senator }, { merge: true })
+}
+
+export function usePublicProfile(uid: string) {
+  return useAsync(getProfile, [uid])
+}
+
+export async function getProfile(uid: string) {
+  const snap = await getDoc(profileRef(uid))
+  return snap.exists() ? (snap.data() as Profile) : undefined
 }

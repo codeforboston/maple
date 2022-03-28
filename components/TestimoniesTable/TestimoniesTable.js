@@ -15,7 +15,6 @@ const TestimonyRow = ({ testimony }) => {
   const senatorId = testimony.senatorId
   const representativeId = testimony.representativeId
 
-  // console.log(testimony?.authorUid)
   return (
     <tr>
       <td>{testimony.billId}</td>
