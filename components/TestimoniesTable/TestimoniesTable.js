@@ -44,7 +44,7 @@ const TestimonyTable = ({ testimonies }) => {
 
   return (
     <Container>
-      <Table striped bordered hover>
+      <Table responsive striped bordered hover>
         <thead>
           <tr>
             <th>Bill</th>
