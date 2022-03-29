@@ -12,14 +12,20 @@ import { siteUrl } from "../links"
 
 const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
 
-const CommentModal = props => {
-  const bill = props.bill
+const CommentModal = ({
+  bill,
+  committeeName,
+  passedTestimony,
+  houseChairEmail,
+  senateChairEmail,
+  showTestimony,
+  handleCloseTestimony
+}) => {
   const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
-  const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
-    props.committeeName
-  ) // only default checkbox to checked if the bill is in a committee
+  const [checkedSendToCommittee, setCheckedSendToCommittee] =
+    React.useState(committeeName) // only default checkbox to checked if the bill is in a committee
 
   const [checkedTweet, setCheckedTweet] = React.useState(true)
 
@@ -34,14 +40,9 @@ My thoughts:
     ? testimonyTemplate
     : "My comments on this bill..."
   const [testimony, setTestimony] = useState(
-    props.testimony ? props.testimony : { content: defaultTestimony }
+    passedTestimony ? passedTestimony : { content: defaultTestimony }
   )
   const [isPublishing, setIsPublishing] = useState(false)
-  const committeeName = props.committeeName
-  const houseChairEmail = props.houseChairEmail
-  const senateChairEmail = props.senateChairEmail
-  const showTestimony = props.showTestimony
-  const handleCloseTestimony = props.handleCloseTestimony
 
   const { user, authenticated } = useAuth()
   const { profile } = useProfile()

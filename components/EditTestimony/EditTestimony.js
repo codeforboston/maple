@@ -20,7 +20,7 @@ const EditTestimony = props => {
         setShowTestimony={setShowTestimony}
         handleShowTestimony={handleShowTestimony}
         handleCloseTestimony={handleCloseTestimony}
-        testimony={testimony}
+        passedTestimony={testimony}
       />
     </>
   )
