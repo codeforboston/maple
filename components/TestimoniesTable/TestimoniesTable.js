@@ -1,7 +1,8 @@
 import React from "react"
-import { Table, Container } from "react-bootstrap"
+import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, useMember } from "../db"
+import { useRouter } from "next/router"
 
 const MemberName = ({ memberId }) => {
   const { member, loading } = useMember(memberId)
@@ -10,16 +11,27 @@ const MemberName = ({ memberId }) => {
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
+  const router = useRouter()
   const senatorId = testimony.senatorId
   const representativeId = testimony.representativeId
+
   return (
     <tr>
       <td>{testimony.billId}</td>
       <td>{testimony.position}</td>
       <td>
-        {testimony.authorDisplayName == null
-          ? "(blank)"
-          : testimony.authorDisplayName}
+        {testimony.authorDisplayName == null ? (
+          "(blank)"
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() =>
+              router.push(`/publicprofile?id=${testimony.authorUid}`)
+            }
+          >
+            {testimony.authorDisplayName}
+          </Button>
+        )}
       </td>
       <td>
         <MemberName memberId={senatorId} />
