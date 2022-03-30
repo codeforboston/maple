@@ -12,36 +12,38 @@ import { siteUrl } from "../links"
 
 const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
 
-const CommentModal = props => {
-  const bill = props.bill
+const CommentModal = ({
+  bill,
+  committeeName,
+  houseChairEmail,
+  senateChairEmail,
+  showTestimony,
+  handleCloseTestimony
+}) => {
   const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
   const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
     React.useState(true)
-  const [checkedSendToCommittee, setCheckedSendToCommittee] = React.useState(
-    props.committeeName
-  ) // only default checkbox to checked if the bill is in a committee
+  const [checkedSendToCommittee, setCheckedSendToCommittee] =
+    React.useState(committeeName) // only default checkbox to checked if the bill is in a committee
 
   const [checkedTweet, setCheckedTweet] = React.useState(true)
 
-  const useTestimonyTemplate = true
-  const testimonyTemplate = `Why I am qualified to provide testimony:
-
-Why this bill is important to me:
-  
-My thoughts:
-`
-  const defaultTestimony = useTestimonyTemplate
-    ? testimonyTemplate
-    : "My comments on this bill..."
-  const [testimony, setTestimony] = useState(
-    props.testimony ? props.testimony : { content: defaultTestimony }
+  const testimonyExplanation = (
+    <div>
+      <h5> Guidance on providing testimony</h5>
+      In general, provide:
+      <ul>
+        <li>Your background</li>
+        <li>Why this bill is important to you</li>
+        <li>Your thoughts on the bill</li>
+      </ul>
+    </div>
   )
+  const defaultTestimony = "Enter text.."
+
+  const [testimony, setTestimony] = useState(null)
+
   const [isPublishing, setIsPublishing] = useState(false)
-  const committeeName = props.committeeName
-  const houseChairEmail = props.houseChairEmail
-  const senateChairEmail = props.senateChairEmail
-  const showTestimony = props.showTestimony
-  const handleCloseTestimony = props.handleCloseTestimony
 
   const { user, authenticated } = useAuth()
   const { profile } = useProfile()
@@ -54,9 +56,9 @@ My thoughts:
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
 
   useEffect(() => {
-    const testimony = edit.draft ? edit.draft : defaultTestimony
+    const testimony = edit.draft ? edit.draft : {}
     setTestimony(testimony)
-  }, [defaultTestimony, edit.draft])
+  }, [edit.draft])
 
   const positionMessage = "Select my support..(required)"
 
@@ -119,7 +121,8 @@ See ${webSiteBillAddress} for details.`
   const publishTestimony = async () => {
     if (
       testimony.position == undefined ||
-      testimony.position == positionMessage
+      testimony.position == positionMessage ||
+      !testimony.content
     ) {
       return
     }
@@ -141,8 +144,10 @@ See ${webSiteBillAddress} for details.`
     setIsPublishing(false)
   }
 
+  const existingTestimony = !_.isEmpty(testimony)
   const positionChosen =
     testimony?.position != undefined && testimony.position != positionMessage
+  const testimonyWritten = testimony?.content != undefined
 
   return (
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
@@ -206,12 +211,15 @@ See ${webSiteBillAddress} for details.`
             </div>
 
             <div className="col-sm">
+              {testimonyExplanation}
               <textarea
                 className="form-control col-sm"
                 resize="none"
                 rows="20"
+                placeholder={defaultContent}
+                defaultValue={existingTestimony ? defaultContent : null}
+                // need default value if there was existing testimony
                 required
-                defaultValue={defaultContent}
                 onChange={e => {
                   const newText = e.target.value
                   const testimonyObject = {
@@ -235,6 +243,8 @@ See ${webSiteBillAddress} for details.`
         <Button variant="primary" onClick={publishTestimony}>
           {!positionChosen
             ? "Choose Endorse/Oppose/Neutral to Publish"
+            : !testimonyWritten
+            ? "Write Testimony to Publish"
             : !isPublishing
             ? "Publish"
             : "Publishing.."}
