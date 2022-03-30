@@ -6,7 +6,6 @@ import { auth, firestore } from "../../components/firebase"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
 import {
   expectPermissionDenied,
-  signInUser,
   signInUser1,
   signInUser2
 } from "./common"
