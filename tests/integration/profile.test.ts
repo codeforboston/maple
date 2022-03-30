@@ -53,6 +53,7 @@ describe("profile", () => {
 
   it("Is publicly readable when public", async () => {
     const newUser = fakeUser()
+    await signInUser(newUser.email)
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     setDoc(profileRef, { public: true })
     await expectProfile(newUser)
@@ -64,11 +65,11 @@ describe("profile", () => {
 
   it("Is not publicly readable when not public", async () => {
     const newUser = fakeUser()
+    await signInUser(newUser.email)
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     setDoc(profileRef, { public: false })
     await expectProfile(newUser)
 
-    await signInUser(newUser.email)
     const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
     expect(result.exists()).toBeTruthy()
   })
@@ -76,6 +77,7 @@ describe("profile", () => {
   it("Is readable when not public by own user", async () => {
     const newUser = fakeUser()
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    await signInUser(newUser.email)
     setDoc(profileRef, { public: false })
     await expectProfile(newUser)
 
