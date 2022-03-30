@@ -15,7 +15,6 @@ const testimonyArchiveEmailAddress = "test@example.com" // in order to have emai
 const CommentModal = ({
   bill,
   committeeName,
-  passedTestimony,
   houseChairEmail,
   senateChairEmail,
   showTestimony,
@@ -29,19 +28,21 @@ const CommentModal = ({
 
   const [checkedTweet, setCheckedTweet] = React.useState(true)
 
-  const useTestimonyTemplate = true
-  const testimonyTemplate = `Why I am qualified to provide testimony:
-
-Why this bill is important to me:
-  
-My thoughts:
-`
-  const defaultTestimony = useTestimonyTemplate
-    ? testimonyTemplate
-    : "My comments on this bill..."
-  const [testimony, setTestimony] = useState(
-    passedTestimony ? passedTestimony : { content: defaultTestimony }
+  const testimonyExplanation = (
+    <div>
+      <h5> Guidance on providing testimony</h5>
+      In general, provide:
+      <ul>
+        <li>Your background</li>
+        <li>Why this bill is important to you</li>
+        <li>Your thoughts on the bill</li>
+      </ul>
+    </div>
   )
+  const defaultTestimony = "Enter text.."
+
+  const [testimony, setTestimony] = useState(null)
+
   const [isPublishing, setIsPublishing] = useState(false)
 
   const { user, authenticated } = useAuth()
@@ -55,9 +56,9 @@ My thoughts:
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
 
   useEffect(() => {
-    const testimony = edit.draft ? edit.draft : defaultTestimony
+    const testimony = edit.draft ? edit.draft : {}
     setTestimony(testimony)
-  }, [defaultTestimony, edit.draft])
+  }, [edit.draft])
 
   const positionMessage = "Select my support..(required)"
 
@@ -120,7 +121,8 @@ See ${webSiteBillAddress} for details.`
   const publishTestimony = async () => {
     if (
       testimony.position == undefined ||
-      testimony.position == positionMessage
+      testimony.position == positionMessage ||
+      !testimony.content
     ) {
       return
     }
@@ -144,6 +146,8 @@ See ${webSiteBillAddress} for details.`
 
   const positionChosen =
     testimony?.position != undefined && testimony.position != positionMessage
+
+  const testimonyWritten = testimony?.content != undefined
 
   return (
     <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
@@ -207,12 +211,13 @@ See ${webSiteBillAddress} for details.`
             </div>
 
             <div className="col-sm">
+              {testimonyExplanation}
               <textarea
                 className="form-control col-sm"
                 resize="none"
                 rows="20"
+                placeholder={defaultContent}
                 required
-                defaultValue={defaultContent}
                 onChange={e => {
                   const newText = e.target.value
                   const testimonyObject = {
@@ -236,6 +241,8 @@ See ${webSiteBillAddress} for details.`
         <Button variant="primary" onClick={publishTestimony}>
           {!positionChosen
             ? "Choose Endorse/Oppose/Neutral to Publish"
+            : !testimonyWritten
+            ? "Write Testimony to Publish"
             : !isPublishing
             ? "Publish"
             : "Publishing.."}
