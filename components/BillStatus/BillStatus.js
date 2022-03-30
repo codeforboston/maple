@@ -1,3 +1,4 @@
+import { last } from "lodash"
 import React, { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import BillHistory from "../BillHistory/BillHistory"
@@ -8,7 +9,7 @@ const BillStatus = ({ bill, billHistory }) => {
 
   const handleShowBillStatus = () => setShowBillStatus(true)
   const handleCloseBillStatus = () => setShowBillStatus(false)
-  const history = documentHistoryActions[documentHistoryActions.length - 1]
+  const history = last(billHistory)
 
   return (
     <>
@@ -27,7 +28,7 @@ const BillStatus = ({ bill, billHistory }) => {
         <Modal.Body>
           <>
             <div className="text-center">Bill Status</div>
-            <BillHistoryTable documentHistoryActions={[history]} />
+            <BillHistoryTable billHistory={[history]} />
             <div className=" d-flex justify-content-center">
               <BillHistory bill={bill} billHistory={billHistory} />
             </div>
