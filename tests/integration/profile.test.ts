@@ -4,11 +4,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
-import {
-  expectPermissionDenied,
-  signInUser1,
-  signInUser2
-} from "./common"
+import { expectPermissionDenied, signInUser1, signInUser2 } from "./common"
 
 const fakeUser = () => ({
   uid: nanoid(),
