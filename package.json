@@ -76,8 +76,7 @@
     "react-twitter-embed": "^4.0.4",
     "sidebar-v2": "^0.4.0",
     "styled-components": "^5.3.3",
-    "web-vitals": "^0.2.4",
-    "yarn": "1.22.18"
+    "web-vitals": "^0.2.4"
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^7.0.2",
