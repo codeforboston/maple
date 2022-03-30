@@ -144,9 +144,9 @@ See ${webSiteBillAddress} for details.`
     setIsPublishing(false)
   }
 
+  const existingTestimony = !_.isEmpty(testimony)
   const positionChosen =
     testimony?.position != undefined && testimony.position != positionMessage
-
   const testimonyWritten = testimony?.content != undefined
 
   return (
@@ -217,6 +217,8 @@ See ${webSiteBillAddress} for details.`
                 resize="none"
                 rows="20"
                 placeholder={defaultContent}
+                defaultValue={existingTestimony ? defaultContent : null}
+                // need default value if there was existing testimony
                 required
                 onChange={e => {
                   const newText = e.target.value
