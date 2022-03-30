@@ -39,7 +39,13 @@ export default createPage({
               aria-describedby="basic-addon1"
             />
           </Col>
-          <Col></Col>
+          <Col>
+            <FormControl
+              placeholder="LinkedIn username"
+              aria-label="LinkedIn username"
+              aria-describedby="basic-addon1"
+            />
+          </Col>
           <Col></Col>
         </Row>
         <div className="form-check mt-3 mb-2">
@@ -47,7 +53,8 @@ export default createPage({
             className="form-check-input"
             type="checkbox"
             id="flexCheckChecked"
-            checked={true}
+            defaultChecked={true}
+            // checked={true}  // complete when OnChange is ready
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">
             Allow others to see my profile

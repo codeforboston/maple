@@ -25,7 +25,7 @@ const TopNav: React.FC = () => {
     <Navbar bg="primary" variant="dark" expand="lg">
       <Container>
         <Wrap href="/">
-          <Navbar.Brand>
+          <Navbar.Brand className="text-wrap">
             Massachusetts Archive of Transparent Testimony
           </Navbar.Brand>
         </Wrap>

@@ -16,6 +16,12 @@ class BillSearch {
     bills: this.createSearch(
       i => i.bills,
       {
+        // Weigh terms that appear at the end of a field the same as those that
+        // appear at the start.
+        ignoreLocation: true,
+        // Weigh long fields the same as short ones
+        // https://github.com/krisk/Fuse/blob/master/test/scoring.test.js#L32
+        ignoreFieldNorm: true,
         keys: [
           { name: "title", weight: 3 },
           { name: "primarySponsorName", weight: 2 }

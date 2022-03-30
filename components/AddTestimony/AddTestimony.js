@@ -1,19 +1,41 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
+import { usePublishedTestimonyListing } from "../db"
 
-const AddTestimony = ({ bill, committeeName, committeeChairEmail }) => {
+const AddTestimony = ({
+  bill,
+  committeeName,
+  houseChairEmail,
+  senateChairEmail
+}) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const handleShowTestimony = () => setShowTestimony(true)
   const handleCloseTestimony = () => setShowTestimony(false)
   const { authenticated, user } = useAuth()
+
+  const published = usePublishedTestimonyListing({ uid: user?.uid })
+  const [isPublished, setIsPublished] = useState(false)
+
+  useEffect(() => {
+    const userTestimonies = published?.result?.filter(
+      u => u.authorUid === user?.uid && bill.BillNumber === u.billId
+    )
+
+    setIsPublished(userTestimonies?.length !== 0)
+  }, [bill.BillNumber, published?.result, user?.uid])
+
   return (
     <>
       <div className="d-flex justify-content-center">
         <Button variant="primary" onClick={handleShowTestimony}>
-          {authenticated ? "Add your voice" : "Sign in to add your voice"}
+          {!authenticated
+            ? "Sign in to add your voice"
+            : isPublished
+            ? "Edit your testimony"
+            : "Add your voice"}
         </Button>
       </div>
 
@@ -25,7 +47,8 @@ const AddTestimony = ({ bill, committeeName, committeeChairEmail }) => {
           handleShowTestimony={handleShowTestimony}
           handleCloseTestimony={handleCloseTestimony}
           committeeName={committeeName}
-          committeeChairEmail={committeeChairEmail}
+          houseChairEmail={houseChairEmail}
+          senateChairEmail={senateChairEmail}
         />
       )}
     </>

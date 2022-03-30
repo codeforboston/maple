@@ -109,7 +109,7 @@ const ViewBills = () => {
     <Container>
       <Search setSort={setSort} setFilter={setFilter} />
       {/* something about the table is causing a problem on mobile */}
-      <Table striped bordered hover>
+      <Table responsive striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>

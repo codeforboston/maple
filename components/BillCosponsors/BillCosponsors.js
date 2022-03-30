@@ -63,7 +63,7 @@ const BillCosponsors = props => {
         </Modal.Header>
         <Modal.Body>
           <>
-            <Table striped bordered hover>
+            <Table responsive striped bordered hover>
               <tbody>
                 <CoSponsorRows coSponsors={coSponsors} />
               </tbody>

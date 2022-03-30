@@ -70,7 +70,7 @@ const SearchTypeSelect: React.FC<{ setFilterType: SetFilterType }> = ({
         }}
       >
         <option value="none">None</option>
-        <option value="bill">Bill Content</option>
+        <option value="bill">Bill Title and Number</option>
         <option value="primarySponsor">Lead Sponsor</option>
         <option value="committee">Current Committee</option>
         <option value="city">City</option>
@@ -102,7 +102,7 @@ function getItemSearchProps(
   switch (filterType) {
     case "bill":
       return asProps({
-        placeholder: "Search for bills...",
+        placeholder: "Type to search for bills by title or number...",
         getOptionLabel: o =>
           [formatBillId(o.id), o.title, o.pinslip].filter(Boolean).join(" | "),
         getOptionValue: o => o.id,
@@ -111,7 +111,7 @@ function getItemSearchProps(
       })
     case "city":
       return asProps({
-        placeholder: "Search for cities...",
+        placeholder: "Type to search for cities...",
         getOptionLabel: o => o.name,
         getOptionValue: o => o.name,
         getFilterOption: i => ({ type: "city", name: i.name }),
@@ -119,7 +119,7 @@ function getItemSearchProps(
       })
     case "committee":
       return asProps({
-        placeholder: "Search for committees...",
+        placeholder: "Type to search for committees...",
         getOptionLabel: o => `${o.id} | ${o.name}`,
         getOptionValue: o => o.id,
         getFilterOption: i => ({ type: "committee", id: i.id }),
@@ -127,7 +127,7 @@ function getItemSearchProps(
       })
     case "primarySponsor":
       return asProps({
-        placeholder: "Search for lead sponsors...",
+        placeholder: "Type to search for lead sponsors by name or district...",
         getOptionLabel: o => `${o.name}${o.district ? ` | ${o.district}` : ""}`,
         getOptionValue: o => o.id,
         getFilterOption: i => ({ type: "primarySponsor", id: i.id }),
