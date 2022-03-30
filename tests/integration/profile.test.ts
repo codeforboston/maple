@@ -80,7 +80,7 @@ describe("profile", () => {
     await expectProfile(newUser)
 
     await signInUser1()
-    expectPermissionDenied(getDoc(doc(firestore, `profiles/${newUser.uid}`)))
+    await expectPermissionDenied(getDoc(doc(firestore, `profiles/${newUser.uid}`)))
   })
 
   it("Can only be modified by the logged in user", async () => {
