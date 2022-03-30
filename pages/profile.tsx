@@ -1,15 +1,17 @@
 import React from "react"
 import { requireAuth } from "../components/auth"
+import { useProfile } from "../components/db"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
-import { Row, Col, FormControl } from "react-bootstrap"
+import { Row, Col, FormControl, Spinner } from "react-bootstrap"
 
 export default createPage({
   v2: true,
   title: "Profile",
   Page: requireAuth(({ user: { displayName } }) => {
+    const profile = useProfile()
     return (
       <>
         <h1>
@@ -48,18 +50,26 @@ export default createPage({
           </Col>
           <Col></Col>
         </Row>
-        <div className="form-check mt-3 mb-2">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="flexCheckChecked"
-            defaultChecked={true}
-            // checked={true}  // complete when OnChange is ready
-          />
-          <label className="form-check-label" htmlFor="flexCheckChecked">
-            Allow others to see my profile
-          </label>
-        </div>
+        {!profile.loading ? (
+          <div className="form-check mt-3 mb-2">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="flexCheckChecked"
+              defaultChecked={true}
+              checked={profile.profile?.public ?? true} // complete when OnChange is ready
+              onChange={e => {
+                profile.updateIsPublic(e.target.checked)
+              }}
+            />
+            <label className="form-check-label" htmlFor="flexCheckChecked">
+              Allow others to see my profile&nbsp;
+            </label>
+            {profile.updatingIsPublic ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
+        ) : null}
         <MyTestimonies />
       </>
     )

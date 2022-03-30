@@ -14,6 +14,7 @@ export type Profile = {
   displayName?: string
   representative?: ProfileMember
   senator?: ProfileMember
+  public?: boolean
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -22,6 +23,7 @@ type ProfileState = {
   loading: boolean
   updatingRep: boolean
   updatingSenator: boolean
+  updatingIsPublic: boolean
   profile: Profile | undefined
 }
 
@@ -39,6 +41,7 @@ export function useProfile() {
         loading: true,
         updatingRep: false,
         updatingSenator: false,
+        updatingIsPublic: false,
         profile: undefined
       }
     )
@@ -66,6 +69,13 @@ export function useProfile() {
           await updateRepresentative(uid, rep)
           dispatch({ updatingRep: false })
         }
+      },
+      updateIsPublic: async (isPublic: boolean) => {
+        if (uid) {
+          dispatch({ updatingIsPublic: true })
+          await updateIsPublic(uid, isPublic)
+          dispatch({ updatingIsPublic: false })
+        }
       }
     }),
     [uid]
@@ -87,6 +97,10 @@ function updateRepresentative(uid: string, representative: ProfileMember) {
 
 function updateSenator(uid: string, senator: ProfileMember) {
   return setDoc(profileRef(uid), { senator }, { merge: true })
+}
+
+function updateIsPublic(uid: string, isPublic: boolean) {
+  return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
 }
 
 export function usePublicProfile(uid: string) {
