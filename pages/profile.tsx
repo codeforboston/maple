@@ -56,7 +56,6 @@ export default createPage({
               className="form-check-input"
               type="checkbox"
               id="flexCheckChecked"
-              defaultChecked={true}
               checked={profile.profile?.public ?? true} // complete when OnChange is ready
               onChange={e => {
                 profile.updateIsPublic(e.target.checked)

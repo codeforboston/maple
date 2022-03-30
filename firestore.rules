@@ -15,7 +15,7 @@ service cloud.firestore {
       // Always visible by the user,
       // and public if profile.public is true or undefined (defaults to true).
       // Only writeable by the user.
-      allow read: if request.resource.data.public || request.resource.data.public == undefined || request.auth.uid == uid
+      allow read: if !("public" in resource.data) || resource.data.public || request.auth.uid == uid
       allow write: if request.auth.uid == uid
     }
     // Allow querying publications individually or with a collection group.
