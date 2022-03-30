@@ -4,7 +4,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
-import { expectPermissionDenied, signInUser1 } from "./common"
+import { expectPermissionDenied, signInUser, signInUser1 } from "./common"
 
 const fakeUser = () => ({
   uid: nanoid(),
@@ -42,13 +42,45 @@ describe("profile", () => {
     expect(profile?.displayName).toEqual(expected.displayName)
   })
 
-  it("Is publicly readable", async () => {
+  it("Is publicly readable by default", async () => {
     const newUser = fakeUser()
     await expectProfile(newUser)
 
     await signInUser1()
     const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
     expect(result.exists()).toBeTruthy()
+  })
+
+  it("Is publicly readable when public", async () => {
+    const newUser = fakeUser()
+    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    setDoc(profileRef, { public: true })
+    await expectProfile(newUser)
+
+    await signInUser1()
+    const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
+    expect(result.exists()).toBeTruthy()
+  })
+
+  it("Is not publicly readable when not public", async () => {
+    const newUser = fakeUser()
+    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    setDoc(profileRef, { public: false })
+    await expectProfile(newUser)
+
+    await signInUser(newUser.email)
+    const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
+    expect(result.exists()).toBeTruthy()
+  })
+
+  it("Is readable when not public by own user", async () => {
+    const newUser = fakeUser()
+    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    setDoc(profileRef, { public: false })
+    await expectProfile(newUser)
+
+    await signInUser1()
+    expectPermissionDenied(getDoc(doc(firestore, `profiles/${newUser.uid}`)))
   })
 
   it("Can only be modified by the logged in user", async () => {
