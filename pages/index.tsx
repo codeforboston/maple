@@ -23,9 +23,9 @@ export default createPage({
           <Wrap href="/browse">
             <Button size="lg">View Testimony</Button>
           </Wrap>
-          <Wrap href="/legprocess">
+          {/* <Wrap href="/legprocess">
             <Button size="lg">Learn About Submitting Testimony</Button>
-          </Wrap>
+          </Wrap> */}
           {!authenticated && (
             <Wrap href="/login">
               <Button size="lg">Sign Up To Contribute Testimony</Button>

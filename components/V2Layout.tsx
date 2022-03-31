@@ -1,7 +1,7 @@
 import Head from "next/head"
 import React from "react"
 import { SignOut, useAuth } from "./auth"
-import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
+import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
 
 const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
@@ -34,7 +34,7 @@ const TopNav: React.FC = () => {
             <NavLink href="/browse">Browse</NavLink>
             {authenticated && <NavLink href="/testify">Testify</NavLink>}
             <NavLink href="/about">About</NavLink>
-            <NavLink href="/legprocess">Learn</NavLink>
+            {/* <NavLink href="/legprocess">Learn</NavLink> */}
             <AccountNav authenticated={authenticated} />
           </Nav>
         </Navbar.Collapse>
