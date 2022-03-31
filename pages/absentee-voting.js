@@ -1,16 +1,16 @@
 // import { PriorityPageLayout } from "../components";
-import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
-import dynamic from "next/dynamic";
+import NewLayoutPriorityPage from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage"
+import dynamic from "next/dynamic"
 
 const MapWithNoSSR = dynamic(() => import("../components/Map/Map.jsx"), {
-  ssr: false,
-});
+  ssr: false
+})
 /* URL via EMV Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
 const EMV_LEGISLATOR_DATA_LINK =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiMO006znF3HZe1PW_eC9KyBTTHVvkDXu5FIiErLUbyeY-qtxN8AiKGGGq3eY5ka15PNwhR7iffLxD/pub?gid=0&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiMO006znF3HZe1PW_eC9KyBTTHVvkDXu5FIiErLUbyeY-qtxN8AiKGGGq3eY5ka15PNwhR7iffLxD/pub?gid=0&single=true&output=csv"
 /* URL via Third Party Data > File > Publish to the web > Link > EMV > CSV > Publish */
 const EMV_THIRD_PARTY_DATA =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?gid=791972090&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?gid=791972090&single=true&output=csv"
 
 const EMV_FURTHER_READING = (
   <ul>
@@ -51,8 +51,8 @@ const EMV_FURTHER_READING = (
       </a>
     </li>
   </ul>
-);
-const DISCLAIMER_TEXT = "Why Should We Have No-Excuse Absentee Voting?";
+)
+const DISCLAIMER_TEXT = "Why Should We Have No-Excuse Absentee Voting?"
 
 function EarlyMailVoting() {
   return (
@@ -65,9 +65,7 @@ function EarlyMailVoting() {
       letterLink="/absentee-voting-letter"
     >
       <p>
-        <b>
-          Why do we need No-Excuse Absentee Voting?
-        </b>
+        <b>Why do we need No-Excuse Absentee Voting?</b>
         <br />
         Representative democracy is stronger when more constituents participate
         in elections, and turnout is highest when participation is made easy.
@@ -100,7 +98,7 @@ function EarlyMailVoting() {
         <b>Democracy Map</b>
       </p>
     </NewLayoutPriorityPage>
-  );
+  )
 }
 
-export default EarlyMailVoting;
+export default EarlyMailVoting

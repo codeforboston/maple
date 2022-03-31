@@ -1,8 +1,21 @@
-export { fetchBillBatch, startBillBatches } from "./bills"
 export {
+  fetchBillBatch,
+  startBillBatches,
+  updateBillReferences,
+  updateBillSearchIndex
+} from "./bills"
+export { fetchCityBatch, startCityBatches } from "./cities"
+export {
+  fetchCommitteeBatch,
+  startCommitteeBatches,
+  updateCommitteeRosters
+} from "./committees"
+export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
+export {
+  createMemberSearchIndex,
   fetchMemberBatch,
-  startMemberBatches,
-  createMemberSearchIndex
+  startMemberBatches
 } from "./members"
-export { publishTestimony, deleteTestimony } from "./testimony"
+export { setUsername } from "./profile"
+export { deleteTestimony, publishTestimony } from "./testimony"
 export * from "./triggerScheduledFunction"

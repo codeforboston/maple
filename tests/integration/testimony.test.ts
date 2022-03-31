@@ -1,9 +1,15 @@
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { User } from "firebase/auth"
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { auth, firestore, functions } from "../../components/firebase"
+import { Bill } from "../../components/db"
+import { firestore, functions } from "../../components/firebase"
 import { terminateFirebase, testDb } from "../testUtils"
-import { nanoid } from "nanoid"
+import {
+  createFakeBill,
+  expectPermissionDenied,
+  signInUser1,
+  signInUser2
+} from "./common"
 
 type BaseTestimony = {
   billId: string
@@ -18,7 +24,9 @@ type DraftTestimony = BaseTestimony & {
 
 type Testimony = BaseTestimony & {
   authorUid: string
+  authorDisplayName: string
   version: number
+  publishedAt: Timestamp
 }
 
 const refs = {
@@ -28,7 +36,7 @@ const refs = {
 
 const deleteTestimony = httpsCallable<
   { publicationId: string },
-  { status: "ok" }
+  { deleted: boolean }
 >(functions, "deleteTestimony")
 
 const publishTestimony = httpsCallable<
@@ -37,12 +45,9 @@ const publishTestimony = httpsCallable<
 >(functions, "publishTestimony")
 
 let uid: string
-beforeAll(async () => {
-  const { user } = await signInWithEmailAndPassword(
-    auth,
-    "test@example.com",
-    "password"
-  )
+let user: User
+beforeEach(async () => {
+  user = await signInUser1()
   uid = user.uid
 })
 
@@ -60,19 +65,10 @@ describe("draftTestimony", () => {
 })
 
 describe("publishTestimony", () => {
-  let billId: string,
-    draft: DraftTestimony,
-    draftId = "test-draft-id"
+  let billId: string, draft: DraftTestimony, draftId: string
   beforeEach(async () => {
     billId = await createFakeBill()
-    draft = {
-      billId,
-      content: "test testimony",
-      court: 192,
-      position: "endorse"
-    }
-
-    await setDoc(refs.draftTestimony(uid, draftId), draft)
+    ;({ draft, draftId } = await createDraft(uid, billId))
   })
 
   it("Fails if draft doesn't exist", async () => {
@@ -91,6 +87,13 @@ describe("publishTestimony", () => {
     )
   })
 
+  it("Publishes testimony on scraped bills", async () => {
+    const { draftId } = await createDraft(uid, "H1")
+    const res = await publishTestimony({ draftId })
+    const publication = await getPublication(uid, res.data.publicationId)
+    expect(publication).toBeDefined()
+  })
+
   it("Publishes new testimony", async () => {
     const res = await publishTestimony({ draftId }),
       publicationId = res.data.publicationId
@@ -101,10 +104,23 @@ describe("publishTestimony", () => {
 
     expect(publication).toBeDefined()
     expect(publication?.version).toBe(1)
+    expect(publication.publishedAt).toBeDefined()
+    expect(publication.authorUid).toEqual(user.uid)
+    expect(publication.authorDisplayName).toEqual(user.displayName)
     expect(publication).toMatchObject(draft)
 
     draft = await getDraft(uid, draftId)
     expect(draft.publishedVersion).toBe(1)
+  })
+
+  it("Updates bill metadata on publish", async () => {
+    const res = await publishTestimony({ draftId })
+    const bill = await getBill(billId)
+    const published = await getPublication(uid, res.data.publicationId)
+
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.latestTestimonyId).toBe(res.data.publicationId)
+    expect(bill.latestTestimonyAt).toEqual(published.publishedAt)
   })
 
   it("Archives testimony on publish", async () => {
@@ -145,8 +161,30 @@ describe("publishTestimony", () => {
     await deleteTestimony({ publicationId: res.data.publicationId })
 
     let testimony = await getPublication(uid, res.data.publicationId)
+    const bill = await getBill(billId)
 
     expect(testimony).toBeUndefined()
+    expect(bill.latestTestimonyAt).toBeUndefined()
+    expect(bill.latestTestimonyId).toBeUndefined()
+    expect(bill.testimonyCount).toBe(0)
+  })
+
+  it("Supports multiple users", async () => {
+    const res1 = await publishTestimony({ draftId })
+
+    const { uid: uid2 } = await signInUser2()
+    await createDraft(uid2, billId)
+    const res2 = await publishTestimony({ draftId })
+
+    let bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(2)
+    expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
+
+    await deleteTestimony({ publicationId: res2.data.publicationId })
+
+    bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.latestTestimonyId).toBe(res1.data.publicationId)
   })
 
   it("Retains archives", async () => {
@@ -180,13 +218,6 @@ describe("publishTestimony", () => {
   })
 })
 
-async function expectPermissionDenied(work: Promise<any>) {
-  const e = await work
-    .then(() => fail("expected promise to reject"))
-    .catch(e => e)
-  expect(e.code).toBe("permission-denied")
-}
-
 async function getPublication(uid: string, id: string): Promise<Testimony> {
   const doc = await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).get()
   return doc.data() as any
@@ -197,8 +228,20 @@ async function getDraft(uid: string, id: string): Promise<DraftTestimony> {
   return doc.data() as any
 }
 
-async function createFakeBill() {
-  const billId = nanoid()
-  await testDb.doc(`/generalCourts/192/bills/${billId}`).create({})
-  return billId
+async function getBill(id: string): Promise<Bill> {
+  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
+  return doc.data() as any
+}
+
+async function createDraft(uid: string, billId: string) {
+  const draftId = "test-draft-id"
+  const draft: DraftTestimony = {
+    billId,
+    content: "test testimony",
+    court: 192,
+    position: "endorse"
+  }
+
+  await setDoc(refs.draftTestimony(uid, draftId), draft)
+  return { draft, draftId }
 }

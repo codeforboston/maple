@@ -11,16 +11,27 @@ export default createPage({
     const { authenticated } = useAuth()
     return (
       <>
-        <Head>
-          <title>Digital Testimony Platform</title>
-        </Head>
-        <h1>Digital Testimony Platform</h1>
         <p>
-          A collaboration between the Northeastern Law Lab and Code for Boston
+          The Massachusetts Archive of Transparent Testimony (MATT) makes it
+          easier for anyone to submit and see testimony to the{" "}
+          <a href="https://malegislature.gov">Massachusetts Legislature</a>{" "}
+          about the bills that will shape our future.
+        </p>
+        <p>
+          MATT is free to use and open source.{" "}
+          <a href="/about">This platform is developed in collaboration</a>{" "}
+          between the NuLawLab, Code for Boston, and scholars at the{" "}
+          <a href="https://www.bc.edu/bc-web/centers/clough.html">
+            BC's Clough Center
+          </a>{" "}
+          and <a href="https://cyber.harvard.edu">Harvard BKC</a>.
         </p>
 
         <Stack gap={3} className="col-lg-5 mx-auto">
-          <Wrap href="/browse">
+          <Wrap href="/bills">
+            <Button size="lg">View Bills</Button>
+          </Wrap>
+          <Wrap href="/testimonies">
             <Button size="lg">View Testimony</Button>
           </Wrap>
           {/* <Wrap href="/legprocess">

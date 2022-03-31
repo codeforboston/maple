@@ -1,33 +1,45 @@
-import React, {useState} from "react";
-import { Button, Modal, Table } from 'react-bootstrap'
+import React, { useState } from "react"
+import { Button, Modal, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
-import {legislativeMember} from '../MockAPIResponseLegislativeMember'
+import { useMember } from "../db"
+
+const CoSponsorRow = ({ coSponsor }) => {
+  const url = coSponsor
+    ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}`
+    : ""
+  const { member, loading } = useMember(coSponsor.Id)
+  if (loading) {
+    return null
+  } else {
+    return (
+      <tr>
+        <td>
+          <links.External href={url}>{coSponsor.Name}</links.External>
+        </td>
+        <td>{member.Branch}</td>
+        <td>{member.District}</td>
+        <td>{member.Party}</td>
+      </tr>
+    )
+  }
+}
 
 const CoSponsorRows = ({ coSponsors }) => {
   return coSponsors.map((coSponsor, index) => {
-    const url = coSponsor ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}` : ""
-    return (
-      <tr key={index}>
-        <td>
-          <links.External href={url}>
-              {coSponsor.Name}
-            </links.External>
-        </td>
-        <td>{legislativeMember.Branch}</td>
-        <td>{legislativeMember.District}</td>
-        <td>{legislativeMember.Party}</td>
-      </tr>
-    )
+    return <CoSponsorRow coSponsor={coSponsor} key={index} />
   })
-} 
+}
 
-const BillCosponsors = (props) => {
+const BillCosponsors = props => {
   const bill = props.bill
   const coSponsors = bill && bill.Cosponsors ? bill.Cosponsors : []
   const numCoSponsors = coSponsors ? coSponsors.length : 0
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
 
-  const handleShowBillCosponsors = () => numCoSponsors > 0 ? setShowBillCosponsors(true) : setShowBillCosponsors(false)
+  const handleShowBillCosponsors = () =>
+    numCoSponsors > 0
+      ? setShowBillCosponsors(true)
+      : setShowBillCosponsors(false)
   const handleCloseBillCosponsors = () => setShowBillCosponsors(false)
 
   return (
@@ -51,8 +63,10 @@ const BillCosponsors = (props) => {
         </Modal.Header>
         <Modal.Body>
           <>
-            <Table striped bordered hover>
-              <tbody><CoSponsorRows coSponsors={coSponsors}/></tbody>
+            <Table responsive striped bordered hover>
+              <tbody>
+                <CoSponsorRows coSponsors={coSponsors} />
+              </tbody>
             </Table>
           </>
         </Modal.Body>

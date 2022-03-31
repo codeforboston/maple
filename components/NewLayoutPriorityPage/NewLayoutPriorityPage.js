@@ -1,45 +1,45 @@
-import { Component } from "react";
+import { Component } from "react"
 // import { LayoutWrapper } from "..";
-import NewLayout from "../NewLayout/NewLayout";
-import styles from "./NewLayoutPriorityPage.module.css";
-import dynamic from "next/dynamic";
-import schlGra from "../../public/schl-64-gra.png";
-import bldgGra from "../../public/bldg-64-gra.png";
-import nprfGra from "../../public/nprf-64-gra.png";
-import nprfBlu from "../../public/nprf-64-blu.png";
-import nprfYel from "../../public/nprf-64-yel.png";
-import nprfRed from "../../public/nprf-64-red.png";
-import eofcGra from "../../public/eofc-64-gra.png";
-import Image from '../Image'
+import NewLayout from "../NewLayout/NewLayout"
+import styles from "./NewLayoutPriorityPage.module.css"
+import dynamic from "next/dynamic"
+import schlGra from "../../public/schl-64-gra.png"
+import bldgGra from "../../public/bldg-64-gra.png"
+import nprfGra from "../../public/nprf-64-gra.png"
+import nprfBlu from "../../public/nprf-64-blu.png"
+import nprfYel from "../../public/nprf-64-yel.png"
+import nprfRed from "../../public/nprf-64-red.png"
+import eofcGra from "../../public/eofc-64-gra.png"
+import Image from "../Image"
 
-const currentLegislativeSession = "192";
+const currentLegislativeSession = "192"
 
 const MapWithNoSSR = dynamic(() => import("../Map/Map.jsx"), {
-  ssr: false,
-});
+  ssr: false
+})
 
 class NewPriorityLayout extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
-      currentBills: [],
-    };
+      currentBills: []
+    }
   }
 
   componentDidMount() {
     fetch(this.props.legislator_data)
-      .then((response) => response.text())
-      .then((csv) => {
+      .then(response => response.text())
+      .then(csv => {
         // separate entries from the first row of the csv
-        const headers = csv.split("\n")[0].split(",");
+        const headers = csv.split("\n")[0].split(",")
 
         // find bills in current session using format: session/bill#
         this.setState({
           currentBills: headers.filter(
-            (h) => h.substring(0, 4) === currentLegislativeSession + "/"
-          ),
-        });
-      });
+            h => h.substring(0, 4) === currentLegislativeSession + "/"
+          )
+        })
+      })
   }
 
   render() {
@@ -70,7 +70,9 @@ class NewPriorityLayout extends Component {
                 <div className="legend__item legend__item--grade-3">
                   Some past advocacy
                 </div>
-                <div className="legend__item legend__item--grade-4">No support</div>
+                <div className="legend__item legend__item--grade-4">
+                  No support
+                </div>
               </div>
             </div>
             <div className={styles.iconContainer}>
@@ -113,10 +115,7 @@ class NewPriorityLayout extends Component {
                 The legislative information we aggregated and display on the map
                 does not - and cannot - fully reflect the views and actions of
                 state legislators. For more, read our{" "}
-                <a href="/disclaimer">
-                  full disclaimer
-                </a>
-                .
+                <a href="/disclaimer">full disclaimer</a>.
               </p>
             </div>
           </section>
@@ -151,8 +150,8 @@ class NewPriorityLayout extends Component {
           </section>
         </div>
       </NewLayout>
-    );
+    )
   }
 }
 
-export default NewPriorityLayout;
+export default NewPriorityLayout

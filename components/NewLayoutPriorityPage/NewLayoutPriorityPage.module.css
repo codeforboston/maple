@@ -2,14 +2,14 @@
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items:space-between;
+  align-items: space-between;
   margin: -1rem; /* counter the outer margins added to the columns below */
 }
 
 .map,
 .sidebar,
 .letterContainer {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 1px 1px -1px lightgrey;
   margin: 0.25rem 0;
@@ -20,21 +20,21 @@
   flex: 3 1 auto;
 }
 .sidebar {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .sidebarSection {
-		margin-left: 30px;
+  margin-left: 30px;
 }
 
 .legendConatiner {
-		width: 75%;
+  width: 75%;
 }
 
 .link {
-		color: #8c1914;
+  color: #8c1914;
 }
 
 .sidebar ul {
@@ -42,72 +42,72 @@
 }
 
 .sidebar a {
-		color: #89110C;
+  color: #89110c;
 }
 
 .letterContainer {
   display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
 }
 
 .disclaimerTitle {
-		padding-left: 10px;
-		color: black;
-		font-weight: 500;
-		font-size: 1.2em;
+  padding-left: 10px;
+  color: black;
+  font-weight: 500;
+  font-size: 1.2em;
 }
 
 .iconContainer {
-		width: 33%;
-		display: flex;
-    flex-direction: column;
-		justify-content: space-around;
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .iconsLegend {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .iconColorLegend {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		border: 1px solid lightgrey;
-		border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
 }
 
 .iconAndTitle {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.disclaimerContainer  {
-		justify-self: flex-end;
-		width: 15rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+.disclaimerContainer {
+  justify-self: flex-end;
+  width: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .priorityCardHeaderButton {
   display: flex-end;
-  color: #FFFFFF;
-  background-color: #89110C;
+  color: #ffffff;
+  background-color: #89110c;
   border-radius: 7px;
 
   text-transform: uppercase;
   font-family: Noto Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: .75em;
+  font-size: 0.75em;
 
   /* Some dumb shiz to get horizontal align */
   line-height: 100%;
@@ -120,7 +120,7 @@
 
 .priorityCardHeaderButton:hover {
   color: white;
-  filter: brightness( 85% );
+  filter: brightness(85%);
   transition: 0.15s all ease-in-out;
   text-decoration: none;
 }

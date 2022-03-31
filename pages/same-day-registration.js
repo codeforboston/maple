@@ -1,15 +1,15 @@
 // import { PriorityPageLayout } from "../components";
 // import NewLayout from '../components/NewLayout/NewLayout'
-import NewPriorityLayout from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage";
+import NewPriorityLayout from "../components/NewLayoutPriorityPage/NewLayoutPriorityPage"
 
 /* URL via SDR Data > File > Publish to the web > Link > Sheet1 > CSV > Publish */
 const SDR_LEGISLATOR_DATA_LINK =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRe608XwzuZhMlOP6GKU5ny1Kz-rlGFUhwZmhZwAZGbbAWOHlP01-S3MFD9dlerPEqjynsUbeQmBl-E/pub?gid=0&single=true&output=csv"
 /* URL via Third Party Data > File > Publish to the web > Link > SDR > CSV > Publish */
 
-const DISCLAIMER_TEXT = "Why Should We Have Same Day Registration?";
+const DISCLAIMER_TEXT = "Why Should We Have Same Day Registration?"
 const SDR_THIRD_PARTY_DATA_LINK =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLgy3yjC9PKH0YZl6AgDfR0ww3WJYzs-n9sUV9A5imHSVZmt83v_SMYVkZkj6RGnpzd9flNkJ9YNy2/pub?output=csv"
 
 const SDR_FURTHER_READING = (
   <ul>
@@ -50,16 +50,17 @@ const SDR_FURTHER_READING = (
       </a>
     </li>
   </ul>
-);
+)
 
 function ElectionDayRegistration() {
   return (
     <NewPriorityLayout
-        pageTitle="Same Day Registration"
-        legislator_data={SDR_LEGISLATOR_DATA_LINK}
-        third_party_data={SDR_THIRD_PARTY_DATA_LINK}
-        further_reading={SDR_FURTHER_READING}disclaimerText={DISCLAIMER_TEXT}
-        letterLink="/sdr-letter"
+      pageTitle="Same Day Registration"
+      legislator_data={SDR_LEGISLATOR_DATA_LINK}
+      third_party_data={SDR_THIRD_PARTY_DATA_LINK}
+      further_reading={SDR_FURTHER_READING}
+      disclaimerText={DISCLAIMER_TEXT}
+      letterLink="/sdr-letter"
     >
       <p>
         <b>Why should we have Same Day Registration?</b>
@@ -90,7 +91,7 @@ function ElectionDayRegistration() {
         <b>Advocacy Map</b>
       </p>
     </NewPriorityLayout>
-  );
+  )
 }
 
-export default ElectionDayRegistration;
+export default ElectionDayRegistration

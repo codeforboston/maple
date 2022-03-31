@@ -2,14 +2,19 @@ import React from "react"
 import { Row, Spinner } from "react-bootstrap"
 import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import AddTestimony from "../AddTestimony/AddTestimony"
-import BillHistory from "../BillHistory/BillHistory"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
+import BillReadMore from "../BillReadMore/BillReadMore"
 import { useBill } from "../db"
 
-const ViewBillPage = props => {
-  const { bill, loading } = useBill(props.billId)
+const ViewBillPage = ({ billId }) => {
+  const { loading, result: fullBill } = useBill(billId)
 
+  const bill = fullBill?.content
+  const billHistory = fullBill?.history
+  const committeeName = fullBill?.currentCommittee?.name
+  const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
+  const senateChairEmail = fullBill?.currentCommittee?.senateChair?.email
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -18,9 +23,8 @@ const ViewBillPage = props => {
     <>
       <Row>
         <div className=" d-flex justify-content-center">
-          <BillHistory bill={bill} />
           <BillCosponsors bill={bill} />
-          <BillStatus bill={bill} />
+          <BillStatus bill={bill} billHistory={billHistory} />
         </div>
       </Row>
       <div className="text-center">
@@ -29,16 +33,32 @@ const ViewBillPage = props => {
             ? bill.BillNumber + "  General Court: " + bill.GeneralCourtNumber
             : ""}
         </h4>
+        <h4>{committeeName ? "Current Committee: " + committeeName : ""}</h4>
         <h4>{bill ? bill.Title : ""}</h4>
         <h5>{bill ? bill.Pinslip : ""}</h5>
       </div>
       <div>
-        {bill && bill.DocumentText != null
-          ? bill.DocumentText.substring(1, 700) + "..."
-          : ""}
+        {bill && bill.DocumentText != null ? (
+          <>
+            <span style={{ whiteSpace: "pre-wrap" }}>
+              {bill.DocumentText.substring(0, 700) + "..."}
+            </span>
+            {bill.DocumentText.length > 700 ? (
+              <BillReadMore bill={bill} />
+            ) : null}
+          </>
+        ) : (
+          ""
+        )}
       </div>
+      <h1>Published Testimony</h1>
       <BillTestimonies bill={bill} />
-      <AddTestimony bill={bill} />
+      <AddTestimony
+        bill={bill}
+        committeeName={committeeName}
+        houseChairEmail={houseChairEmail}
+        senateChairEmail={senateChairEmail}
+      />
     </>
   )
 }

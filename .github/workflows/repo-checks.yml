@@ -15,15 +15,12 @@ jobs:
         if: always()
         run: yarn lint
 
-      # TODO: Format everything once, enable this check, and require it to pass
-      # before merging.
-      #
-      # - name: Formatting
-      #   if: always()
-      #   run: yarn check-formatting
+      - name: Formatting
+        if: always()
+        run: yarn check-formatting
 
-      # TODO: Add tests
-      # - name: Jest Tests
+      # TODO: Add unit tests
+      # - name: Unit Tests
       #   if: always()
       #   run: yarn test
 

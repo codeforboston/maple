@@ -10,7 +10,7 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
       <Head>
         <title>{`${
           title ? title + " | " : ""
-        }Digital Testimony Platform`}</title>
+        }Massachusetts Archive of Transparent Testimony`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
@@ -25,14 +25,16 @@ const TopNav: React.FC = () => {
     <Navbar bg="primary" variant="dark" expand="lg">
       <Container>
         <Wrap href="/">
-          <Navbar.Brand>Digital Testimony Platform</Navbar.Brand>
+          <Navbar.Brand className="text-wrap">
+            Massachusetts Archive of Transparent Testimony
+          </Navbar.Brand>
         </Wrap>
         <Navbar.Toggle aria-controls="topnav" />
         <Navbar.Collapse id="topnav">
           <Nav className="me-auto">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/browse">Browse</NavLink>
-            {authenticated && <NavLink href="/testify">Testify</NavLink>}
+            <NavLink href="/bills">Bills</NavLink>
+            <NavLink href="/testimonies">Testimony</NavLink>
             <NavLink href="/about">About</NavLink>
             {/* <NavLink href="/legprocess">Learn</NavLink> */}
             <AccountNav authenticated={authenticated} />

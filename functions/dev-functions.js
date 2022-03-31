@@ -40,7 +40,7 @@ function startEmulators() {
         demoProjectId,
         "emulators:start",
         "--only",
-        "pubsub,firestore",
+        "pubsub,firestore,storage",
         ...emulatorArgs
       ],
       { stdio: ["ignore", "pipe", "inherit"] }
