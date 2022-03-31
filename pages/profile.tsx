@@ -5,7 +5,6 @@ import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
 import { Row, Col, FormControl, Form } from "react-bootstrap"
-import { connectStorageEmulator } from "firebase/storage"
 
 const showLegislators = (
   <>
