@@ -5,6 +5,8 @@ import React from "react"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
 import { useBills, useMember } from "../db"
+import { useRecentTestimony } from "../db/testimony/useRecentTestimony"
+import { useUpcomingBills } from "../db/useUpcomingBills"
 import { formatBillId } from "../formatting"
 import { Search } from "../search"
 
@@ -103,6 +105,7 @@ const ViewBills = () => {
     hasPreviousPage
   } = useBills()
 
+  
   return (
     <Container>
       <Search setSort={setSort} setFilter={setFilter} />
