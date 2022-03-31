@@ -40,6 +40,7 @@ const BillRows = ({ bills }) => {
 
 const ViewBills = () => {
   const { bills, loading } = useBills()
+  // need these to be sorted to be only hearing date in future - soonest on top
 
   return (
     <Container>

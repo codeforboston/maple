@@ -55,6 +55,7 @@ const TestimoniesOnHomePageTable = ({ testimonies }) => {
 }
 
 const Testimonies = () => {
+  // need these to be sorted by date - most recent first
   const testimoniesResponse = usePublishedTestimonyListing({})
   const testimonies =
     testimoniesResponse.status == "success" ? testimoniesResponse.result : []
