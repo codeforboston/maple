@@ -9,15 +9,11 @@ const mockedNow = jest.spyOn(common, "now")
 afterAll(terminateFirebase)
 
 describe("useUpcomingBills", () => {
-    it("fetches bills", async () => {
-      const { waitFor, result } = renderHook(() => useUpcomingBills())
+  it("fetches bills", async () => {
+    const { waitFor, result } = renderHook(() => useUpcomingBills())
 
-      await waitFor(() => expect(result.current.loading).toBeFalsy())
-      console.log(result.current)
+    await waitFor(() => expect(result.current.loading).toBeFalsy())
 
-      expect(result.current?.loading).toBe(false)
-  
-
-    })
+    expect(result.current?.loading).toBe(false)
+  })
 })
-  

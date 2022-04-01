@@ -1,5 +1,5 @@
 import React from "react"
-import { usePublishedTestimonyListing } from "../db"
+import { useRecentTestimony } from "../db"
 import { Table, Container, Button } from "react-bootstrap"
 import { useRouter } from "next/router"
 
@@ -55,10 +55,8 @@ const TestimoniesOnHomePageTable = ({ testimonies }) => {
 }
 
 const Testimonies = () => {
-  // need these to be sorted by date - most recent first
-  const testimoniesResponse = usePublishedTestimonyListing({})
-  const testimonies =
-    testimoniesResponse.status == "success" ? testimoniesResponse.result : []
+  const { recentTestimony, loading } = useRecentTestimony({})
+  const testimonies = loading ? [] : recentTestimony
 
   return (
     <div>

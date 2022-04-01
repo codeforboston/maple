@@ -1,8 +1,6 @@
 import React from "react"
 import { useAuth } from "../components/auth"
 import { Button, Stack, Row, Col } from "../components/bootstrap"
-import { useRecentTestimony } from "../components/db/testimony/useRecentTestimony"
-import { useUpcomingBills } from "../components/db/useUpcomingBills"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
@@ -12,10 +10,7 @@ export default createPage({
   v2: true,
   Page: () => {
     const { authenticated } = useAuth()
-    const {upcomingBills} = useUpcomingBills()
-    const {recentTestimony} = useRecentTestimony()
 
-    console.log("frontpage", upcomingBills, recentTestimony)
     return (
       <>
         <p>
