@@ -35,8 +35,7 @@ const BillRow = props => {
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
         </links.External>
-        - {loading ? "" : member.Branch} - {loading ? "" : member.District} -{" "}
-        {loading ? "" : member.Party}
+        - {member?.Branch} - {member?.District} - {member?.Party}
       </>
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
@@ -108,7 +107,6 @@ const ViewBills = () => {
   return (
     <Container>
       <Search setSort={setSort} setFilter={setFilter} />
-      {/* something about the table is causing a problem on mobile */}
       <Table responsive striped bordered hover>
         <thead>
           <tr>
