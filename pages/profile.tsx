@@ -89,25 +89,25 @@ export default createPage({
         {individual ? "About me:" : "About this organization:"}
         <textarea className="form-control col-sm" rows={5} required />
         {individual && socialMedia}
-
-        <div className="form-check mt-3 mb-2">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="flexCheckChecked"
-            checked={profile.profile?.public ?? true} // default is true
-            onChange={e => {
-              profile.updateIsPublic(e.target.checked)
-            }}
-          />
-          <label className="form-check-label" htmlFor="flexCheckChecked">
-            Allow others to see my profile&nbsp;
-          </label>
-          {profile.updatingIsPublic ? (
-            <Spinner animation="border" className="mx-auto" size="sm" />
-          ) : null}
-        </div>
-
+        {individual && (
+          <div className="form-check mt-3 mb-2">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="flexCheckChecked"
+              checked={profile.profile?.public ?? true} // default is true
+              onChange={e => {
+                profile.updateIsPublic(e.target.checked)
+              }}
+            />
+            <label className="form-check-label" htmlFor="flexCheckChecked">
+              Allow others to see my profile&nbsp;
+            </label>
+            {profile.updatingIsPublic ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
+        )}
         <MyTestimonies />
       </>
     )
