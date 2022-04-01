@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { requireAuth } from "../components/auth"
+import { useProfile } from "../components/db"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
-import { Row, Col, FormControl, Form } from "react-bootstrap"
+import { Row, Col, FormControl, Form, Spinner } from "react-bootstrap"
 
 const showLegislators = (
   <>
@@ -45,25 +46,11 @@ const socialMedia = (
   </Row>
 )
 
-const privacy = (
-  <div className="form-check mt-3 mb-2">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="flexCheckChecked"
-      defaultChecked={true}
-      // checked={true}  // complete when OnChange is ready
-    />
-    <label className="form-check-label" htmlFor="flexCheckChecked">
-      Allow others to see my profile
-    </label>
-  </div>
-)
-
 export default createPage({
   v2: true,
   title: "Profile",
   Page: requireAuth(({ user: { displayName } }) => {
+    const profile = useProfile()
     const [entity, setEntity] = useState("individual")
     const makeOrganization = () => {
       setEntity("organization")
@@ -72,6 +59,7 @@ export default createPage({
       setEntity("individual")
     }
     const individual = entity == "individual"
+
     return (
       <>
         <h1>
@@ -101,7 +89,25 @@ export default createPage({
         {individual ? "About me:" : "About this organization:"}
         <textarea className="form-control col-sm" rows={5} required />
         {individual && socialMedia}
-        {individual && privacy}
+
+        <div className="form-check mt-3 mb-2">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="flexCheckChecked"
+            checked={profile.profile?.public ?? true} // default is true
+            onChange={e => {
+              profile.updateIsPublic(e.target.checked)
+            }}
+          />
+          <label className="form-check-label" htmlFor="flexCheckChecked">
+            Allow others to see my profile&nbsp;
+          </label>
+          {profile.updatingIsPublic ? (
+            <Spinner animation="border" className="mx-auto" size="sm" />
+          ) : null}
+        </div>
+
         <MyTestimonies />
       </>
     )

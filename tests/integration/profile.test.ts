@@ -4,7 +4,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
-import { expectPermissionDenied, signInUser1 } from "./common"
+import { expectPermissionDenied, signInUser1, signInUser2 } from "./common"
 
 const fakeUser = () => ({
   uid: nanoid(),
@@ -42,12 +42,42 @@ describe("profile", () => {
     expect(profile?.displayName).toEqual(expected.displayName)
   })
 
-  it("Is publicly readable", async () => {
+  it("Is publicly readable by default", async () => {
     const newUser = fakeUser()
     await expectProfile(newUser)
 
     await signInUser1()
     const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
+    expect(result.exists()).toBeTruthy()
+  })
+
+  it("Is publicly readable when public", async () => {
+    const user1 = await signInUser1()
+    const profileRef = doc(firestore, `profiles/${user1.uid}`)
+    await setDoc(profileRef, { public: true })
+
+    await signInUser2()
+    const result = await getDoc(doc(firestore, `profiles/${user1.uid}`))
+    expect(result.exists()).toBeTruthy()
+  })
+
+  it("Is not publicly readable when not public", async () => {
+    const user1 = await signInUser1()
+    const profileRef = doc(firestore, `profiles/${user1.uid}`)
+    await setDoc(profileRef, { public: false })
+
+    await signInUser2()
+    await expectPermissionDenied(
+      getDoc(doc(firestore, `profiles/${user1.uid}`))
+    )
+  })
+
+  it("Is readable when not public by own user", async () => {
+    const user1 = await signInUser1()
+    const profileRef = doc(firestore, `profiles/${user1.uid}`)
+    await setDoc(profileRef, { public: false })
+
+    const result = await getDoc(doc(firestore, `profiles/${user1.uid}`))
     expect(result.exists()).toBeTruthy()
   })
 
