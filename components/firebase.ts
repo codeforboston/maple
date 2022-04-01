@@ -4,13 +4,11 @@ import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions"
 import { getStorage, connectStorageEmulator } from "firebase/storage"
 
-// It's OK to check in these keys since they're bundled into the client and it
+// It's OK to check in the dev keys since they're bundled into the client and it
 // makes it easier to contribute.
-//
-// TODO: Replace with production config before v2 release. Do not check in
-// production config.
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID ?? "digital-testimony-dev"
-const config: FirebaseOptions = {
+const projectId =
+  process.env.NEXT_PUBLIC_PROJECT_ID_FOR_TEST ?? "digital-testimony-dev"
+const devConfig = {
   apiKey: "AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo",
   authDomain: "digital-testimony-dev.firebaseapp.com",
   projectId,
@@ -18,6 +16,10 @@ const config: FirebaseOptions = {
   messagingSenderId: "313437920642",
   appId: "1:313437920642:web:42723233282dbcac37439b"
 }
+
+const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
+  ? JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG)
+  : devConfig
 
 export const app = initializeApp(config)
 export const auth = getAuth(app)

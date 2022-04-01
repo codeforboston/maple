@@ -48,3 +48,7 @@ amplifytools.xcconfig
 out/
 *debug.log
 *.tsbuildinfo
+
+prod-config.js
+prod-build.env
+.firebase
