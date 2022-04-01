@@ -16,11 +16,11 @@ const AddTestimony = ({
   const router = useRouter()
 
   const handleShowTestimony = () => {
-    if(!authenticated) {
+    if (!authenticated) {
       router.push("/login")
-     } else {
-    setShowTestimony(true)
-     }
+    } else {
+      setShowTestimony(true)
+    }
   }
 
   const handleCloseTestimony = () => setShowTestimony(false)
