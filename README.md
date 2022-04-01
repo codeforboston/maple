@@ -1,8 +1,8 @@
 # Digital Testimony Platform
 
-Live Site (version 1, previous project): https://goodgovproject.com/
-
-In-Development Site (version 2, current project): https://digital-testimony-dev.web.app
+- Development site, for testing and development: https://digital-testimony-dev.web.app
+- Production site, for public use and real testimony: https://digital-testimony-prod.web.app
+- Version 1 site, for posterity: https://goodgovproject.com/
 
 ## Getting Started
 
@@ -56,11 +56,15 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 
 ## Deployment
 
-The site runs on Firebase and is deployed using Github Actions. The site is deployed automatically whenever we push to the `master` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
+The site runs on Firebase and is deployed using Github Actions. The dev site is deployed automatically whenever we push to the `master` branch. The prod site is deployed whenever we push to the `prod` branch, and on approval of @alexjball or @mvictor55. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
 
-[Deployment Action](https://github.com/codeforboston/advocacy-maps/actions/workflows/firebase-hosting-merge.yml)
-
-[Firebase console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
+- Development Environment
+  - [Frontend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-frontend-dev.yml)
+  - [Backend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-backend-dev.yml)
+  - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
+- Production Environment
+  - [Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-prod.yml)
+  - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-prod/)
 
 ## Development FAQ
 

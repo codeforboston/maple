@@ -1,6 +1,6 @@
 export function runAgainstEmulators() {
   Object.assign(process.env, {
-    NEXT_PUBLIC_PROJECT_ID: "demo-dtp",
+    NEXT_PUBLIC_PROJECT_ID_FOR_TEST: "demo-dtp",
     GCLOUD_PROJECT: "demo-dtp",
     NEXT_PUBLIC_USE_EMULATOR: "true",
     FIRESTORE_EMULATOR_HOST: "localhost:8080",
@@ -27,7 +27,7 @@ export function runAgainstDevProject() {
   }
 
   Object.assign(process.env, {
-    NEXT_PUBLIC_PROJECT_ID: "digital-testimony-dev",
+    NEXT_PUBLIC_PROJECT_ID_FOR_TEST: "digital-testimony-dev",
     GOOGLE_APPLICATION_CREDENTIALS: serviceAccount,
     SYSTEM_TEST_USER_PASSWORD: testUserPassword
   })
