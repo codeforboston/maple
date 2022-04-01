@@ -1,24 +1,17 @@
 import React from "react"
+import { usePublishedTestimonyListing } from "../db"
 import { Table, Container, Button } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, useMember } from "../db"
 import { useRouter } from "next/router"
 
-const MemberName = ({ memberId }) => {
-  const { member, loading } = useMember(memberId)
-  return <>{member?.Name}</>
-}
+// the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
 const TestimonyRow = ({ testimony }) => {
-  const { result: bill } = useBill(testimony.billId)
   const router = useRouter()
-  const senatorId = testimony.senatorId
-  const representativeId = testimony.representativeId
-
   return (
     <tr>
       <td>{testimony.billId}</td>
       <td>{testimony.position}</td>
+      <td>{testimony.content.substring(0, 25)}...</td>
       <td>
         {testimony.authorDisplayName == null ? (
           "(blank)"
@@ -33,23 +26,12 @@ const TestimonyRow = ({ testimony }) => {
           </Button>
         )}
       </td>
-      <td>
-        <MemberName memberId={senatorId} />
-      </td>
-      <td>
-        <MemberName memberId={representativeId} />
-      </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
-      <td>{testimony.content.substring(0, 100)}...</td>
-      <td>{testimony.attachment != null ? "Yes" : ""}</td>
-      <td>
-        <ExpandTestimony bill={bill?.content} testimony={testimony} />
-      </td>
     </tr>
   )
 }
 
-const TestimoniesTable = ({ testimonies }) => {
+const TestimoniesOnHomePageTable = ({ testimonies }) => {
   const testimoniesComponent = testimonies.map((testimony, index) => {
     return <TestimonyRow key={index} testimony={testimony} />
   })
@@ -60,13 +42,10 @@ const TestimoniesTable = ({ testimonies }) => {
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
-            <th>Submitter</th>
-            <th>Submitter Senator</th>
-            <th>Submitter Representative</th>
-            <th>Date Submitted</th>
+            <th>Position</th>
             <th>Text</th>
-            <th>Attachment?</th>
+            <th>Submitter</th>
+            <th>Date Submitted</th>
           </tr>
         </thead>
         <tbody>{testimoniesComponent}</tbody>
@@ -75,4 +54,17 @@ const TestimoniesTable = ({ testimonies }) => {
   )
 }
 
-export default TestimoniesTable
+const Testimonies = () => {
+  // need these to be sorted by date - most recent first
+  const testimoniesResponse = usePublishedTestimonyListing({})
+  const testimonies =
+    testimoniesResponse.status == "success" ? testimoniesResponse.result : []
+
+  return (
+    <div>
+      <TestimoniesOnHomePageTable testimonies={testimonies} />
+    </div>
+  )
+}
+
+export default Testimonies
