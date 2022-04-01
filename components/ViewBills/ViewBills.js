@@ -59,7 +59,14 @@ const BillRow = props => {
   } else {
     return (
       <tr>
-        <td>{formatBillId(bill.BillNumber)}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
+          >
+            {formatBillId(bill.BillNumber)}
+          </Button>
+        </td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
@@ -73,14 +80,6 @@ const BillRow = props => {
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
         <td>{committeeCell}</td>
-        <td>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
-          >
-            View Bill
-          </Button>
-        </td>
       </tr>
     )
   }
@@ -120,7 +119,6 @@ const ViewBills = () => {
             <th># Testimony</th>
             <th>Most Recent Testimony</th>
             <th>Current Committee</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>{bills && <BillRows bills={bills} />}</tbody>
