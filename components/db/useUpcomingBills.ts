@@ -2,14 +2,11 @@ import { useAsync } from "react-async-hook"
 import { listBillsByHearingDate } from "./bills"
 
 export function useUpcomingBills(limit: number = 100) {
-  const { result, loading, status } = useAsync(listBillsByHearingDate, [
+  const { result, status } = useAsync(listBillsByHearingDate, [
     null,
     limit,
     null
   ])
 
-  return {
-    upcomingBills: status === "success" ? result : [],
-    loading
-  }
+  return status === "success" ? result : []
 }

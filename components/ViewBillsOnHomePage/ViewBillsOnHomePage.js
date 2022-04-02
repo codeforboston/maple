@@ -39,9 +39,8 @@ const BillRows = ({ bills }) => {
 }
 
 const ViewBills = () => {
-  const { upcomingBills, loading } = useUpcomingBills()
+  const upcomingBills = useUpcomingBills()
 
-  const bills = loading ? [] : upcomingBills
   return (
     <Container>
       <Table responsive striped bordered hover>
@@ -52,9 +51,13 @@ const ViewBills = () => {
             <th>Hearing Scheduled</th>
           </tr>
         </thead>
-        <tbody>{bills && <BillRows bills={bills} />}</tbody>
+        <tbody>{upcomingBills && <BillRows bills={upcomingBills} />}</tbody>
       </Table>
-      <Row>{loading && <Spinner animation="border" className="mx-auto" />}</Row>
+      <Row>
+        {upcomingBills === undefined && (
+          <Spinner animation="border" className="mx-auto" />
+        )}
+      </Row>
     </Container>
   )
 }
