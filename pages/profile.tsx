@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { requireAuth } from "../components/auth"
-import { useProfile } from "../components/db"
+import { SocialLinks, SocialNetworks, useProfile } from "../components/db"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
-import { Row, Col, FormControl, Form, Spinner } from "react-bootstrap"
+import { Row, Col, FormControl, Form, Spinner, InputGroup } from "react-bootstrap"
 
 const showLegislators = (
   <>
@@ -26,25 +26,22 @@ const showLegislators = (
   </>
 )
 
-const socialMedia = (
-  <Row className="mt-3">
-    <Col>
-      <FormControl
-        placeholder="Twitter username"
-        aria-label="Twitter username"
-        aria-describedby="basic-addon1"
-      />
-    </Col>
-    <Col>
-      <FormControl
-        placeholder="LinkedIn username"
-        aria-label="LinkedIn username"
-        aria-describedby="basic-addon1"
-      />
-    </Col>
-    <Col></Col>
-  </Row>
-)
+/** Mapping from social network to UI name for it */
+const SOCIAL_NAMES = {
+  linkedIn: "LinkedIn",
+  twitter: "Twitter"
+} as const;
+
+const useEffectWithTimeout = (effect: () => void, deps?: React.DependencyList) => {
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      effect()
+    }, 400)
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, deps)
+}
 
 export default createPage({
   v2: true,
@@ -59,6 +56,40 @@ export default createPage({
       setEntity("individual")
     }
     const individual = entity == "individual"
+
+    // Have unsaved text inputs separate from profile
+    // so we don't ping the server every keystroke
+    const [unsavedSocials, setUnsavedSocials] = useState<SocialLinks>({})
+    const [unsavedAbout, setUnsavedAbout] = useState<string>()
+
+    useEffect(() => {
+      // Load in text inputs when profile loads
+      setUnsavedSocials(profile.profile?.social ?? {})
+      setUnsavedAbout(profile.profile?.about)
+    }, [profile.profile])
+
+    useEffectWithTimeout(() => {
+      // Wait a bit for user input to stop, then save socials
+      if (profile.loading || !profile?.profile) {
+        return;
+      }
+      for (const network of SocialNetworks) {
+        const unsavedLink = unsavedSocials[network]
+        if (unsavedLink !== undefined && profile.profile.social?.[network] !== unsavedLink) {
+          profile.updateSocial(network, unsavedLink)
+        }
+      }
+    }, [unsavedSocials, profile]);
+
+    useEffectWithTimeout(() => {
+      // Wait a bit for user input to stop, then save "About me"
+      if (profile.loading || !profile?.profile) {
+        return;
+      }
+      if (unsavedAbout !== undefined && unsavedAbout !== profile.profile.about) {
+        profile.updateAbout(unsavedAbout)
+      }
+    }, [unsavedAbout, profile]);
 
     return (
       <>
@@ -86,9 +117,50 @@ export default createPage({
           />
         </div>
         {individual && showLegislators}
-        {individual ? "About me:" : "About this organization:"}
-        <textarea className="form-control col-sm" rows={5} required />
-        {individual && socialMedia}
+        <div>
+          {individual ? "About me:" : "About this organization:"}{" "}
+          {profile.updatingAbout ? (
+            <Spinner animation="border" className="mx-auto" size="sm" />
+          ) : null}
+        </div>
+        <textarea
+          className="form-control col-sm"
+          rows={5}
+          value={unsavedAbout}
+          onChange={e => {
+            setUnsavedAbout(e.currentTarget.value)
+          }}
+          required
+        />
+        {individual && (
+          <Row className="mt-3">
+            {SocialNetworks.map(network => (
+              <Col key={network}>
+                {`${SOCIAL_NAMES[network]} Username`}
+                <InputGroup>
+                  <FormControl
+                    placeholder={`${SOCIAL_NAMES[network]} username`}
+                    aria-label={`${SOCIAL_NAMES[network]} username`}
+                    aria-describedby="basic-addon1"
+                    value={unsavedSocials[network] ?? ""}
+                    onChange={e => {
+                      const newValue = e.currentTarget.value
+                      setUnsavedSocials(oldUnsavedSocials => ({
+                        ...oldUnsavedSocials,
+                        [network]: newValue
+                      }))
+                    }}
+                  />
+                  {profile.updatingSocial[network] ? (
+                    <InputGroup.Text>
+                      <Spinner animation="border" className="mx-auto" size="sm" />
+                    </InputGroup.Text>
+                  ) : null}
+                </InputGroup>
+              </Col>
+            ))}
+          </Row>
+        )}
         {individual && (
           <div className="form-check mt-3 mb-2">
             <input

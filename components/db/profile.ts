@@ -10,11 +10,20 @@ export type ProfileMember = {
   name: string
 }
 
+export const SocialNetworks = [
+  "linkedIn",
+  "twitter"
+] as const;
+
+export type SocialLinks = Partial<Record<typeof SocialNetworks[number], string>>
+
 export type Profile = {
   displayName?: string
   representative?: ProfileMember
   senator?: ProfileMember
   public?: boolean
+  about?: string
+  social?: SocialLinks
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -24,6 +33,8 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingAbout: boolean
+  updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
 }
 
@@ -42,6 +53,11 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingAbout: false,
+        updatingSocial: {
+          linkedIn: false,
+          twitter: false
+        },
         profile: undefined
       }
     )
@@ -76,9 +92,34 @@ export function useProfile() {
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
         }
+      },
+      updateAbout: async (about: string) => {
+        if (uid) {
+          dispatch({ updatingAbout: true })
+          console.log("updating")
+          await updateAbout(uid, about)
+          dispatch({ updatingAbout: false })
+        }
+      },
+      updateSocial: async (network: keyof SocialLinks, link: string) => {
+        if (uid) {
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [network]: true
+            }
+          })
+          await updateSocial(uid, network, link)
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [network]: false
+            }
+          })
+        }
       }
     }),
-    [uid]
+    [uid, state.updatingSocial]
   )
 
   return useMemo(
@@ -101,6 +142,14 @@ function updateSenator(uid: string, senator: ProfileMember) {
 
 function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
+}
+
+function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
+  return setDoc(profileRef(uid), { social: { [network]: link }}, { merge: true });
+}
+
+function updateAbout(uid: string, about: string) {
+  return setDoc(profileRef(uid), { about }, { merge: true });
 }
 
 export function usePublicProfile(uid: string) {
