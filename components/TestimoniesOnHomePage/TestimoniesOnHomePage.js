@@ -31,8 +31,10 @@ const TestimonyRow = ({ testimony }) => {
   )
 }
 
-const TestimoniesOnHomePageTable = ({ testimonies }) => {
-  const testimoniesComponent = testimonies.map((testimony, index) => {
+const Testimonies = () => {
+  const recentTestimony = useRecentTestimony()
+
+  const testimoniesRows = recentTestimony.map((testimony, index) => {
     return <TestimonyRow key={index} testimony={testimony} />
   })
 
@@ -48,24 +50,9 @@ const TestimoniesOnHomePageTable = ({ testimonies }) => {
             <th>Date Submitted</th>
           </tr>
         </thead>
-        <tbody>{testimoniesComponent}</tbody>
+        <tbody>{testimoniesRows}</tbody>
       </Table>
-      <Row>
-        {testimonies === undefined && (
-          <Spinner animation="border" className="mx-auto" />
-        )}
-      </Row>
     </Container>
-  )
-}
-
-const Testimonies = () => {
-  const recentTestimony = useRecentTestimony()
-
-  return (
-    <div>
-      <TestimoniesOnHomePageTable testimonies={recentTestimony} />
-    </div>
   )
 }
 

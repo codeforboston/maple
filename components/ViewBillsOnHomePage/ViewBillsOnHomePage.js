@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import React from "react"
-import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
+import { Button, Container, Table } from "react-bootstrap"
 import { useUpcomingBills, useMember } from "../db"
 import { formatBillId } from "../formatting"
 
@@ -51,13 +51,8 @@ const ViewBills = () => {
             <th>Hearing Scheduled</th>
           </tr>
         </thead>
-        <tbody>{upcomingBills && <BillRows bills={upcomingBills} />}</tbody>
+        <tbody>{<BillRows bills={upcomingBills} />}</tbody>
       </Table>
-      <Row>
-        {upcomingBills === undefined && (
-          <Spinner animation="border" className="mx-auto" />
-        )}
-      </Row>
     </Container>
   )
 }
