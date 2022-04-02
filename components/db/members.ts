@@ -52,8 +52,9 @@ export function useMember(memberCode: string) {
   useEffect(() => {
     const fetchResource = async () => {
       if (
-        member.status != "loaded" ||
-        member?.member?.MemberCode !== memberCode
+        member.status !== "doesNotExist" &&
+        (member.status !== "loaded" ||
+          member?.member?.MemberCode !== memberCode)
       ) {
         const fetched = await getMember(memberCode)
         if (fetched != undefined) {
