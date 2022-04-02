@@ -5,7 +5,14 @@ import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
-import { Row, Col, FormControl, Form, Spinner, InputGroup } from "react-bootstrap"
+import {
+  Row,
+  Col,
+  FormControl,
+  Form,
+  Spinner,
+  InputGroup
+} from "react-bootstrap"
 
 const showLegislators = (
   <>
@@ -30,9 +37,12 @@ const showLegislators = (
 const SOCIAL_NAMES = {
   linkedIn: "LinkedIn",
   twitter: "Twitter"
-} as const;
+} as const
 
-const useEffectWithTimeout = (effect: () => void, deps?: React.DependencyList) => {
+const useEffectWithTimeout = (
+  effect: () => void,
+  deps?: React.DependencyList
+) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       effect()
@@ -71,25 +81,31 @@ export default createPage({
     useEffectWithTimeout(() => {
       // Wait a bit for user input to stop, then save socials
       if (profile.loading || !profile?.profile) {
-        return;
+        return
       }
       for (const network of SocialNetworks) {
         const unsavedLink = unsavedSocials[network]
-        if (unsavedLink !== undefined && profile.profile.social?.[network] !== unsavedLink) {
+        if (
+          unsavedLink !== undefined &&
+          profile.profile.social?.[network] !== unsavedLink
+        ) {
           profile.updateSocial(network, unsavedLink)
         }
       }
-    }, [unsavedSocials, profile]);
+    }, [unsavedSocials, profile])
 
     useEffectWithTimeout(() => {
       // Wait a bit for user input to stop, then save "About me"
       if (profile.loading || !profile?.profile) {
-        return;
+        return
       }
-      if (unsavedAbout !== undefined && unsavedAbout !== profile.profile.about) {
+      if (
+        unsavedAbout !== undefined &&
+        unsavedAbout !== profile.profile.about
+      ) {
         profile.updateAbout(unsavedAbout)
       }
-    }, [unsavedAbout, profile]);
+    }, [unsavedAbout, profile])
 
     return (
       <>
@@ -153,7 +169,11 @@ export default createPage({
                   />
                   {profile.updatingSocial[network] ? (
                     <InputGroup.Text>
-                      <Spinner animation="border" className="mx-auto" size="sm" />
+                      <Spinner
+                        animation="border"
+                        className="mx-auto"
+                        size="sm"
+                      />
                     </InputGroup.Text>
                   ) : null}
                 </InputGroup>

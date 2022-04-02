@@ -10,10 +10,7 @@ export type ProfileMember = {
   name: string
 }
 
-export const SocialNetworks = [
-  "linkedIn",
-  "twitter"
-] as const;
+export const SocialNetworks = ["linkedIn", "twitter"] as const
 
 export type SocialLinks = Partial<Record<typeof SocialNetworks[number], string>>
 
@@ -145,11 +142,15 @@ function updateIsPublic(uid: string, isPublic: boolean) {
 }
 
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
-  return setDoc(profileRef(uid), { social: { [network]: link }}, { merge: true });
+  return setDoc(
+    profileRef(uid),
+    { social: { [network]: link } },
+    { merge: true }
+  )
 }
 
 function updateAbout(uid: string, about: string) {
-  return setDoc(profileRef(uid), { about }, { merge: true });
+  return setDoc(profileRef(uid), { about }, { merge: true })
 }
 
 export function usePublicProfile(uid: string) {
