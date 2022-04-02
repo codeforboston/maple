@@ -285,7 +285,7 @@ export async function getBill(id: string): Promise<Bill | undefined> {
   return bill as any
 }
 
-async function listBillsByHearingDate(
+export async function listBillsByHearingDate(
   filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null

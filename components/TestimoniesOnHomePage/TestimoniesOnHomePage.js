@@ -1,6 +1,6 @@
 import React from "react"
-import { usePublishedTestimonyListing } from "../db"
-import { Table, Container, Button } from "react-bootstrap"
+import { useRecentTestimony } from "../db"
+import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import { useRouter } from "next/router"
 
 // the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
@@ -31,8 +31,10 @@ const TestimonyRow = ({ testimony }) => {
   )
 }
 
-const TestimoniesOnHomePageTable = ({ testimonies }) => {
-  const testimoniesComponent = testimonies.map((testimony, index) => {
+const Testimonies = () => {
+  const recentTestimony = useRecentTestimony()
+
+  const testimoniesRows = recentTestimony.map((testimony, index) => {
     return <TestimonyRow key={index} testimony={testimony} />
   })
 
@@ -48,22 +50,9 @@ const TestimoniesOnHomePageTable = ({ testimonies }) => {
             <th>Date Submitted</th>
           </tr>
         </thead>
-        <tbody>{testimoniesComponent}</tbody>
+        <tbody>{testimoniesRows}</tbody>
       </Table>
     </Container>
-  )
-}
-
-const Testimonies = () => {
-  // need these to be sorted by date - most recent first
-  const testimoniesResponse = usePublishedTestimonyListing({})
-  const testimonies =
-    testimoniesResponse.status == "success" ? testimoniesResponse.result : []
-
-  return (
-    <div>
-      <TestimoniesOnHomePageTable testimonies={testimonies} />
-    </div>
   )
 }
 

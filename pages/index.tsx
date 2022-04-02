@@ -10,6 +10,7 @@ export default createPage({
   v2: true,
   Page: () => {
     const { authenticated } = useAuth()
+
     return (
       <>
         <p>
