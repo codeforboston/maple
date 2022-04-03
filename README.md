@@ -2,9 +2,12 @@
 
 A legislative testimony project through Code for Boston!
 
-- Development site, for testing and development: https://digital-testimony-dev.web.app
-- Production site, for public use and real testimony: https://digital-testimony-prod.web.app
-- Version 1 site, for posterity: https://goodgovproject.com/
+Links:
+
+- [Project board](https://github.com/orgs/codeforboston/projects/4/views/1), where issues are organized
+- [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
+- [Production site](https://digital-testimony-prod.web.app), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
+- [Version 1](https://goodgovproject.com/) site, for posterity
 
 ## Getting Started
 
@@ -55,12 +58,22 @@ git merge master
 
 [This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the Github web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
 
+## Contributing
+
+See issues organized on our [project board](https://github.com/orgs/codeforboston/projects/4/views/1). Check out the "Good First Issues" tab if you're new. Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
+
+When you send out a PR that addresses an issue, [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
+
+Once all checks pass on the PR and it is approved, you can merge it!
+
 ## Developing Locally
 
 1. Make sure that you have `node` and `yarn` installed. You can download Node directly [here](https://nodejs.org/en/download/) or use a tool like [nvm](https://github.com/nvm-sh/nvm). To install yarn, run `npm i -g yarn` after installing node.
 2. Install dependencies with `yarn install`
-3. Start the development server with `yarn dev`
-4. Open the app at http://localhost:3000 in your browser
+
+If you're developing frontend-only features, such as adding UI or hooks, you can start the development server with `yarn dev` and access the app at http://localhost:3000 in your browser. The site will automatically update as you make code changes. Your local site will share the same backend as the live development site.
+
+If you're developing backend features, such as adding cloud functions or changing security rules, you can run the backend emulators, frontend development server, and test data with `yarn dev:emulators-with-data`. You can access the app at http://localhost:3000 and the emulator UI at http://localhost:3010. Both the backend and frontend should update as you make code changes.
 
 ## Code Formatting and Linting
 
@@ -72,7 +85,7 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 
 ## Deployment
 
-The site runs on Firebase and is deployed using Github Actions. The dev site is deployed automatically whenever we push to the `master` branch. The prod site is deployed whenever we push to the `prod` branch, and on approval of @alexjball or @mvictor55. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
+The site runs on Firebase and is deployed using Github Actions. The dev site is deployed automatically whenever we push to the `master` branch. The prod site is deployed whenever we push to the `prod` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
 
 - Development Environment
   - [Frontend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-frontend-dev.yml)
