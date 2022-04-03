@@ -17,7 +17,7 @@ const AddTestimony = ({
 
   const handleShowTestimony = () => {
     if (!authenticated) {
-      router.push("/login")
+      router.push({ pathname: "/login", query: { r: router.asPath } })
     } else {
       setShowTestimony(true)
     }
