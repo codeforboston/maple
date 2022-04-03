@@ -3,6 +3,7 @@ import { useRecentTestimony } from "../db"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import { useRouter } from "next/router"
 import { formatBillId } from "../formatting"
+import { Wrap } from "../links"
 
 // the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
@@ -11,13 +12,11 @@ const TestimonyRow = ({ testimony }) => {
   return (
     <tr>
       <td>
-        <Button
-          variant="primary"
-          onClick={() => router.push(`/bill?id=${testimony.billId}`)}
-        >
-          {formatBillId(testimony.billId)}
-        </Button>
-      </td>      <td>{testimony.position}</td>
+        <Wrap href={`/bill?id=${testimony.billId}`}>
+          <Button variant="primary">{formatBillId(testimony.billId)}</Button>
+        </Wrap>
+      </td>
+      <td>{testimony.position}</td>
       <td>{testimony.content.substring(0, 25)}...</td>
       <td>
         {testimony.authorDisplayName == null ? (
