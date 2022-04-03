@@ -35,7 +35,7 @@ const BillRow = props => {
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
         </links.External>
-        - {member?.Branch} - {member?.District} - {member?.Party}
+        - {member?.Branch} - {member?.District} 
       </>
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
