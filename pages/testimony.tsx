@@ -1,6 +1,12 @@
 import { createPage } from "../components/page"
-import { usePublishedTestimonyListing } from "../components/db"
+import {
+  getBill,
+  useBill,
+  usePublishedTestimonyListing
+} from "../components/db"
 import { useRouter } from "next/router"
+import { Spinner } from "react-bootstrap"
+import { formatBillId } from "../components/formatting"
 
 export default createPage({
   v2: true,
@@ -15,34 +21,48 @@ export default createPage({
     const testimony =
       status in ["loading", "error"]
         ? undefined
-        : result
+        : result && result?.length > 0
         ? result[0]
         : undefined
 
+    const { result: bill, loading, error } = useBill(billId as string)
+
     return (
       <>
-        <h1>Testimony</h1>
-        <h4>
-          {testimony
-            ? (testimony.authorDisplayName == null
-                ? "Test"
-                : testimony.authorDisplayName) +
-              " - " +
-              testimony.publishedAt.toDate().toLocaleString() +
-              " - " +
-              testimony.position
-            : ""}
-        </h4>
-        <p style={{ whiteSpace: "pre-wrap" }}>
-          {testimony ? testimony.content : ""}
-        </p>
-        {/* <h4>
-            {testimony && testimony.attachment != null ? (
-              <Button variant="primary">See attachment</Button>
+        {testimony ? (
+          <>
+            {bill ? (
+              <h1>{`${formatBillId(bill.content.BillNumber)}: ${
+                bill.content.Title
+              }`}</h1>
             ) : (
-              ""
+              <div>This testimony is not connected to a specific bill</div>
             )}
-          </h4> */}
+            <div className="m-auto">
+              <div>
+                <b>Author:</b> {testimony.authorDisplayName}
+              </div>
+              <div>
+                <b>Date Published:</b>{" "}
+                {testimony.publishedAt.toDate().toLocaleString()}
+              </div>
+              <div>
+                <b>Position:</b>{" "}
+                <span className="text-capitalize">{testimony.position}</span>
+              </div>
+              <div style={{ whiteSpace: "pre-wrap" }}>
+                <b>Testimony:</b> {testimony.content}
+              </div>
+              <div>
+                <b>Attachements:</b> None
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Spinner animation="border" className="justify-content-center" />
+          </>
+        )}
       </>
     )
   }

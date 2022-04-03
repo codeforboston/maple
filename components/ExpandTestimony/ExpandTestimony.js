@@ -1,9 +1,8 @@
+import copy from "copy-to-clipboard"
+import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import { formatAuthorDisplayName, formatBillId } from "../formatting"
-import copy from "copy-to-clipboard"
-import { siteUrl } from "../links"
-import { useRouter } from "next/router"
+import { siteUrl, Wrap } from "../links"
 
 const getDirectLink = testimony => {
   const { billId, authorUid } = testimony
@@ -39,12 +38,12 @@ const ExpandTestimony = props => {
           <h4>
             {testimony
               ? (testimony.authorDisplayName == null
-                  ? "Test"
-                  : testimony.authorDisplayName) +
-                " - " +
-                testimony.publishedAt.toDate().toLocaleString() +
-                " - " +
-                testimony.position
+                ? "Test"
+                : testimony.authorDisplayName) +
+              " - " +
+              testimony.publishedAt.toDate().toLocaleString() +
+              " - " +
+              testimony.position
               : ""}
           </h4>
           <p style={{ whiteSpace: "pre-wrap" }}>
@@ -57,14 +56,16 @@ const ExpandTestimony = props => {
               ""
             )}
           </h4>
+          <Wrap href={getDirectLink(testimony)}>
+            <Button
+              variant="primary"
+            >
+              See full page
+            </Button>
+          </Wrap>
           <Button
-            variant="outline-primary"
-            onClick={() => router.push(getDirectLink(testimony))}
-          >
-            See full page
-          </Button>
-          <Button
-            variant="link"
+            variant="primary"
+            className="ms-2"
             onClick={() => {
               copy(getDirectLink(testimony))
             }}
