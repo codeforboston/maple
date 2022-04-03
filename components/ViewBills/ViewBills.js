@@ -115,7 +115,7 @@ const ViewBills = () => {
             <th>City</th>
             <th># CoSponsors</th>
             <th>Hearing Scheduled</th>
-            <th># Testimony</th>
+            <th>Published Testimony (#)</th>
             <th>Most Recent Testimony</th>
             <th>Current Committee</th>
           </tr>
