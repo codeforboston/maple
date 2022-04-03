@@ -1,4 +1,6 @@
-# Digital Testimony Platform
+# Massachusetts Archive of Transparent Testimony (MATT)
+
+A legislative testimony project through Code for Boston!
 
 - Development site, for testing and development: https://digital-testimony-dev.web.app
 - Production site, for public use and real testimony: https://digital-testimony-prod.web.app
@@ -37,7 +39,21 @@ git checkout -b MY_FEATURE
 git push -u origin MY_FEATURE
 ```
 
-Use `git push` to upload your commits to your fork. When you're finished, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/master`
+Use `git push` to upload your commits to your fork. When you're finished, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/master`.
+
+If other PR's are merged while yours is in review, your changes may start to conflict with `master`. This will be displayed on the PR. You'll need to resolve merge conflicts before you can merge your PR:
+
+```bash
+# Update your local master branch
+git checkout master
+git pull upstream master
+
+# Merge master into your feature branch
+git checkout MY_FEATURE
+git merge master
+```
+
+[This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the Github web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
 
 ## Developing Locally
 
