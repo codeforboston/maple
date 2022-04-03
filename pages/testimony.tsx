@@ -5,8 +5,9 @@ import {
   usePublishedTestimonyListing
 } from "../components/db"
 import { useRouter } from "next/router"
-import { Spinner } from "react-bootstrap"
+import { Spinner, Button } from "react-bootstrap"
 import { formatBillId } from "../components/formatting"
+import { Wrap } from "../components/links"
 
 export default createPage({
   v2: true,
@@ -25,7 +26,7 @@ export default createPage({
         ? result[0]
         : undefined
 
-    const { result: bill, loading, error } = useBill(billId as string)
+    const { result: bill, loading } = useBill(billId as string)
 
     return (
       <>
@@ -35,6 +36,8 @@ export default createPage({
               <h1>{`${formatBillId(bill.content.BillNumber)}: ${
                 bill.content.Title
               }`}</h1>
+            ) : loading ? (
+              ""
             ) : (
               <div>This testimony is not connected to a specific bill</div>
             )}
@@ -55,6 +58,18 @@ export default createPage({
               </div>
               <div>
                 <b>Attachements:</b> None
+              </div>
+              <div className="mt-4">
+                <Wrap href={`/bill?id=${bill?.content.BillNumber}`}>
+                  <Button variant="primary" className="ms-2">
+                    View Bill
+                  </Button>
+                </Wrap>
+                <Wrap href={`/publicprofile?id=${author}`}>
+                  <Button variant="primary" className="ms-2">
+                    View User Profile
+                  </Button>
+                </Wrap>
               </div>
             </div>
           </>

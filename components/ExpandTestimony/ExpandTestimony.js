@@ -38,12 +38,12 @@ const ExpandTestimony = props => {
           <h4>
             {testimony
               ? (testimony.authorDisplayName == null
-                ? "Test"
-                : testimony.authorDisplayName) +
-              " - " +
-              testimony.publishedAt.toDate().toLocaleString() +
-              " - " +
-              testimony.position
+                  ? "Test"
+                  : testimony.authorDisplayName) +
+                " - " +
+                testimony.publishedAt.toDate().toLocaleString() +
+                " - " +
+                testimony.position
               : ""}
           </h4>
           <p style={{ whiteSpace: "pre-wrap" }}>
@@ -57,11 +57,7 @@ const ExpandTestimony = props => {
             )}
           </h4>
           <Wrap href={getDirectLink(testimony)}>
-            <Button
-              variant="primary"
-            >
-              See full page
-            </Button>
+            <Button variant="primary">See full page</Button>
           </Wrap>
           <Button
             variant="primary"
