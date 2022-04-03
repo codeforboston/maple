@@ -22,14 +22,9 @@ const TestimonyRow = ({ testimony }) => {
         {testimony.authorDisplayName == null ? (
           "(blank)"
         ) : (
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(`/publicprofile?id=${testimony.authorUid}`)
-            }
-          >
-            {testimony.authorDisplayName}
-          </Button>
+          <Wrap href={`/publicprofile?id=${testimony.authorUid}`}>
+            <Button variant="primary">{testimony.authorDisplayName}</Button>
+          </Wrap>
         )}
       </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
