@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     # Don't build forks, even if actions are enabled
     if: github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'codeforboston'
+    environment: dev
 
     steps:
       - name: Checkout code
@@ -20,6 +21,6 @@ jobs:
         uses: alexjball/action-hosting-deploy@v1
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DIGITAL_TESTIMONY_DEV }}"
+          firebaseServiceAccount: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
           projectId: digital-testimony-dev
           artifactName: digital-testimony-app

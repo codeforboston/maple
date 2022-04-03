@@ -49,7 +49,7 @@ const TestimonyRow = ({ testimony }) => {
   )
 }
 
-const TestimonyTable = ({ testimonies }) => {
+const TestimoniesTable = ({ testimonies }) => {
   const testimoniesComponent = testimonies.map((testimony, index) => {
     return <TestimonyRow key={index} testimony={testimony} />
   })
@@ -75,4 +75,4 @@ const TestimonyTable = ({ testimonies }) => {
   )
 }
 
-export default TestimonyTable
+export default TestimoniesTable

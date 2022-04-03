@@ -1,14 +1,16 @@
-import Head from "next/head"
 import React from "react"
 import { useAuth } from "../components/auth"
-import { Button, Stack } from "../components/bootstrap"
+import { Button, Stack, Row, Col } from "../components/bootstrap"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
+import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
+import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
 
 export default createPage({
   v2: true,
   Page: () => {
     const { authenticated } = useAuth()
+
     return (
       <>
         <p>
@@ -43,6 +45,16 @@ export default createPage({
             </Wrap>
           )}
         </Stack>
+        <Row className="mt-4">
+          <Col className="text-center">
+            <h4>Bills with Upcoming Hearings</h4>
+            <ViewBillsOnHomePage />
+          </Col>
+          <Col className="text-center">
+            <h4>Most Recent Testimony</h4>
+            <TestimoniesOnHomePage />
+          </Col>
+        </Row>
       </>
     )
   }

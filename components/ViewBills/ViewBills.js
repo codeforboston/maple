@@ -35,8 +35,7 @@ const BillRow = props => {
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
         </links.External>
-        - {loading ? "" : member.Branch} - {loading ? "" : member.District} -{" "}
-        {loading ? "" : member.Party}
+        - {member?.Branch} - {member?.District} - {member?.Party}
       </>
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
@@ -59,7 +58,14 @@ const BillRow = props => {
   } else {
     return (
       <tr>
-        <td>{formatBillId(bill.BillNumber)}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
+          >
+            {formatBillId(bill.BillNumber)}
+          </Button>
+        </td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
@@ -73,14 +79,6 @@ const BillRow = props => {
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
         <td>{committeeCell}</td>
-        <td>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
-          >
-            View Bill
-          </Button>
-        </td>
       </tr>
     )
   }
@@ -108,7 +106,6 @@ const ViewBills = () => {
   return (
     <Container>
       <Search setSort={setSort} setFilter={setFilter} />
-      {/* something about the table is causing a problem on mobile */}
       <Table responsive striped bordered hover>
         <thead>
           <tr>
@@ -121,7 +118,6 @@ const ViewBills = () => {
             <th># Testimony</th>
             <th>Most Recent Testimony</th>
             <th>Current Committee</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>{bills && <BillRows bills={bills} />}</tbody>

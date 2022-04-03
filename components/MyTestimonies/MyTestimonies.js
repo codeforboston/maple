@@ -63,7 +63,7 @@ const MyTestimonies = () => {
 
   return (
     <Container>
-      <h1>My Testimonies </h1>
+      <h1>Testimonies </h1>
       <Table responsive striped bordered hover>
         <thead>
           <tr>
