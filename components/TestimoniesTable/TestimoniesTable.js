@@ -4,6 +4,7 @@ import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, useMember } from "../db"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { formatBillId } from "../formatting"
 
 const MemberName = ({ memberId }) => {
   const { member, loading } = useMember(memberId)
@@ -19,7 +20,9 @@ const TestimonyRow = ({ testimony }) => {
   return (
     <tr>
       <td>
-        <Link href={`/bill?id=${testimony.billId}`}>{testimony.billId}</Link>
+        <Link href={`/bill?id=${testimony.billId}`}>
+          {formatBillId(testimony.billId)}
+        </Link>
       </td>
       <td>{testimony.position}</td>
       <td>
