@@ -1,14 +1,15 @@
-import React, { useState, useLocation, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
-import { useProfile, useMember } from "../db"
+import { useMember, useProfile } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import TweetComponent from "./TweetComponent"
+import { siteUrl } from "../links"
+import { Attachment } from "./Attachment"
+import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
+import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
 import EmailToCommitteeComponent from "./EmailToCommitteeComponent"
 import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
-import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
-import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
-import { siteUrl } from "../links"
+import TweetComponent from "./TweetComponent"
 
 const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
 
@@ -170,10 +171,6 @@ See ${webSiteBillAddress} for details.`
                   if (newPosition) {
                     const testimonyObject = {
                       content: testimony.content,
-                      senatorId: profile?.senator?.id,
-                      representativeId: profile?.representative?.id,
-                      senatorDistrict: profile?.senator?.district,
-                      representativeDistrict: profile?.representative?.district,
                       position: newPosition
                     }
                     setTestimony(testimonyObject)
@@ -224,16 +221,12 @@ See ${webSiteBillAddress} for details.`
                   const newText = e.target.value
                   const testimonyObject = {
                     position: testimony.position,
-                    senatorId: profile?.senator?.id,
-                    representativeId: profile?.representative?.id,
-                    senatorDistrict: profile?.senator?.district,
-                    representativeDistrict: profile?.representative?.district,
                     content: newText
                   }
                   setTestimony(testimonyObject)
                 }}
               />
-              <Button className="mt-2">Upload a document</Button>
+              <Attachment edit={edit} />
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ import {
   Testimony
 } from "./types"
 
-interface UseEditTestimony {
+export interface UseEditTestimony {
   /** The last hook error produced in loading the `draft` or `publication`. This
    * is separate from each callback's `error` property, which indicates errors
    * in that specific operation. */
@@ -204,7 +204,10 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
   )
 }
 
-type SaveDraftRequest = Pick<DraftTestimony, "position" | "content">
+type SaveDraftRequest = Pick<
+  DraftTestimony,
+  "position" | "content" | "attachmentId"
+>
 function useSaveDraft(
   { draftRef, draftLoading, billId, uid }: State,
   dispatch: Dispatch<Action>
