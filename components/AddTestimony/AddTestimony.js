@@ -3,6 +3,7 @@ import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
+import { useRouter } from "next/router"
 
 const AddTestimony = ({
   bill,
@@ -12,7 +13,16 @@ const AddTestimony = ({
 }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
-  const handleShowTestimony = () => setShowTestimony(true)
+  const router = useRouter()
+
+  const handleShowTestimony = () => {
+    if (!authenticated) {
+      router.push({ pathname: "/login", query: { r: router.asPath } })
+    } else {
+      setShowTestimony(true)
+    }
+  }
+
   const handleCloseTestimony = () => setShowTestimony(false)
   const { authenticated, user } = useAuth()
 

@@ -4,6 +4,7 @@ import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import { useRouter } from "next/router"
 import { formatBillId } from "../formatting"
 import { Wrap } from "../links"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 
 // the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
@@ -28,6 +29,9 @@ const TestimonyRow = ({ testimony }) => {
         )}
       </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>
+        <ExpandTestimony testimony={testimony} />
+      </td>
     </tr>
   )
 }
@@ -48,7 +52,6 @@ const Testimonies = () => {
             <th>Position</th>
             <th>Text</th>
             <th>Submitter</th>
-            <th>Date Submitted</th>
           </tr>
         </thead>
         <tbody>{testimoniesRows}</tbody>
