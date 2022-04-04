@@ -51,8 +51,6 @@ const Testimonies = () => {
             <th>Position</th>
             <th>Text</th>
             <th>Submitter</th>
-            <th>Date Submitted</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>{testimoniesRows}</tbody>
