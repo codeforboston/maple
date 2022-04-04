@@ -22,9 +22,9 @@ const BillRow = props => {
   )
   const sponsorURL =
     bill &&
-      bill.PrimarySponsor &&
-      bill.PrimarySponsor.Id &&
-      !invalidSponsorId(bill.PrimarySponsor.Id)
+    bill.PrimarySponsor &&
+    bill.PrimarySponsor.Id &&
+    !invalidSponsorId(bill.PrimarySponsor.Id)
       ? `https://malegislature.gov/Legislators/Profile/${bill.PrimarySponsor.Id}/Biography`
       : ""
   const numCoSponsors = bill.Cosponsors ? bill.Cosponsors.length : 0
