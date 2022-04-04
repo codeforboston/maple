@@ -1,7 +1,7 @@
 import React from "react"
 import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, useMember } from "../db"
+import { useBill, useMember, usePublicProfile } from "../db"
 import { useRouter } from "next/router"
 
 const MemberName = ({ memberId }) => {
@@ -15,14 +15,19 @@ const TestimonyRow = ({ testimony }) => {
   const senatorId = testimony.senatorId
   const representativeId = testimony.representativeId
 
+  const x = usePublicProfile(testimony.authorUid)
+  const authorPublic = x.result?.public
+  const loading = x.loading
+  const error = x.error
+
   return (
     <tr>
       <td>{testimony.billId}</td>
       <td>{testimony.position}</td>
       <td>
         {testimony.authorDisplayName == null ? (
-          "(blank)"
-        ) : (
+          <>(blank)</>
+        ) : authorPublic ? (
           <Button
             variant="primary"
             onClick={() =>
@@ -31,6 +36,8 @@ const TestimonyRow = ({ testimony }) => {
           >
             {testimony.authorDisplayName}
           </Button>
+        ) : (
+          <>{testimony.authorDisplayName}</>
         )}
       </td>
       <td>
