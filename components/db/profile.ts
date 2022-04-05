@@ -10,9 +10,11 @@ export type ProfileMember = {
   name: string
 }
 
-export const SocialNetworks = ["linkedIn", "twitter"] as const
+export const SOCIAL_NETWORKS = ["linkedIn", "twitter"] as const
 
-export type SocialLinks = Partial<Record<typeof SocialNetworks[number], string>>
+export type SocialLinks = Partial<
+  Record<typeof SOCIAL_NETWORKS[number], string>
+>
 
 export type Profile = {
   displayName?: string
@@ -93,7 +95,6 @@ export function useProfile() {
       updateAbout: async (about: string) => {
         if (uid) {
           dispatch({ updatingAbout: true })
-          console.log("updating")
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
         }

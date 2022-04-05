@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { requireAuth } from "../components/auth"
-import { SocialLinks, SocialNetworks, useProfile } from "../components/db"
+import { SocialLinks, SOCIAL_NETWORKS, useProfile } from "../components/db"
 import * as links from "../components/links"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
@@ -83,7 +83,7 @@ export default createPage({
       if (profile.loading || !profile?.profile) {
         return
       }
-      for (const network of SocialNetworks) {
+      for (const network of SOCIAL_NETWORKS) {
         const unsavedLink = unsavedSocials[network]
         if (
           unsavedLink !== undefined &&
@@ -150,7 +150,7 @@ export default createPage({
         />
         {individual && (
           <Row className="mt-3">
-            {SocialNetworks.map(network => (
+            {SOCIAL_NETWORKS.map(network => (
               <Col key={network}>
                 {`${SOCIAL_NAMES[network]} Username`}
                 <InputGroup>
