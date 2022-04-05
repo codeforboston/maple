@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Button, Modal } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
+import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { useMember, useProfile } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
+import { useTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
+import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { siteUrl } from "../links"
 import { Attachment } from "./Attachment"
 import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
@@ -42,8 +44,6 @@ const CommentModal = ({
   )
   const defaultTestimony = "Enter text.."
 
-  const [testimony, setTestimony] = useState(null)
-
   const [isPublishing, setIsPublishing] = useState(false)
 
   const { user, authenticated } = useAuth()
@@ -54,12 +54,14 @@ const CommentModal = ({
   const senatorEmail = senator.member?.EmailAddress ?? ""
   const representativeEmail = representative.member?.EmailAddress ?? ""
 
+  const [testimony, setTestimony] = useUnsavedTestimony()
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
+  const attachment = useTestimonyAttachment(user.uid, edit.draft, setTestimony)
 
   useEffect(() => {
     const testimony = edit.draft ? edit.draft : {}
     setTestimony(testimony)
-  }, [edit.draft])
+  }, [edit.draft, setTestimony])
 
   const positionMessage = "Select my support..(required)"
 
@@ -160,20 +162,16 @@ See ${webSiteBillAddress} for details.`
       </Modal.Header>
 
       <Modal.Body>
-        <div className="container">
-          <div className="row">
-            <div className="col-sm align-middle">
+        <Container>
+          <Row>
+            <Col className="col-sm align-middle">
               <select
                 className="form-control"
                 defaultValue={defaultPosition}
                 onChange={e => {
                   const newPosition = e.target.value
                   if (newPosition) {
-                    const testimonyObject = {
-                      content: testimony.content,
-                      position: newPosition
-                    }
-                    setTestimony(testimonyObject)
+                    setTestimony({ position: newPosition })
                   }
                 }}
               >
@@ -205,9 +203,9 @@ See ${webSiteBillAddress} for details.`
                   setCheckedTweet={setCheckedTweet}
                 />
               </div>
-            </div>
+            </Col>
 
-            <div className="col-sm">
+            <Col className="col-sm">
               {testimonyExplanation}
               <textarea
                 className="form-control col-sm"
@@ -219,17 +217,15 @@ See ${webSiteBillAddress} for details.`
                 required
                 onChange={e => {
                   const newText = e.target.value
-                  const testimonyObject = {
-                    position: testimony.position,
-                    content: newText
-                  }
-                  setTestimony(testimonyObject)
+                  setTestimony({ content: newText })
                 }}
               />
-              <Attachment edit={edit} />
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+          <Row>
+            <Attachment attachment={attachment} />
+          </Row>
+        </Container>
       </Modal.Body>
 
       <Modal.Footer>

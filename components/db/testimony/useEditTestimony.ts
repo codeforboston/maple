@@ -8,9 +8,16 @@ import {
   onSnapshot,
   updateDoc
 } from "firebase/firestore"
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject
+} from "firebase/storage"
+import { nanoid } from "nanoid"
 import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
 import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
-import { firestore } from "../../firebase"
+import { firestore, storage } from "../../firebase"
 import { currentGeneralCourt } from "../common"
 import { resolveBillTestimony } from "./resolveTestimony"
 import {
@@ -214,7 +221,7 @@ function useSaveDraft(
 ) {
   return useAsyncCallback(
     useCallback(
-      async ({ position, content }: SaveDraftRequest) => {
+      async ({ position, content, attachmentId }: SaveDraftRequest) => {
         if (draftLoading) {
           return
         } else if (!draftRef) {
@@ -222,7 +229,8 @@ function useSaveDraft(
             billId,
             content,
             court: currentGeneralCourt,
-            position
+            position,
+            attachmentId: attachmentId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -233,6 +241,7 @@ function useSaveDraft(
           await updateDoc(draftRef, {
             position,
             content,
+            attachmentId: attachmentId ?? null,
             publishedVersion: deleteField()
           })
           dispatch({ type: "loadingDraft" })
