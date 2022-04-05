@@ -7,13 +7,22 @@ import {
   uploadBytesResumable
 } from "firebase/storage"
 import { nanoid } from "nanoid"
-import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
+import {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState
+} from "react"
 import { storage } from "../../firebase"
-import { DraftTestimony } from "./types"
+import { DraftTestimony, Testimony } from "./types"
 import { SetTestimony } from "./useUnsavedTestimony"
 
 const draftAttachment = (uid: string, id: string) =>
   ref(storage, `/users/${uid}/draftAttachments/${id}`)
+const publishedAttachment = (id: string) =>
+  ref(storage, `/publishedAttachments/${id}`)
 
 type State = {
   uid: string
@@ -84,8 +93,20 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-export type UseTestimonyAttachment = ReturnType<typeof useTestimonyAttachment>
-export function useTestimonyAttachment(
+export function usePublishedTestimonyAttachment(id: string) {
+  const [url, setUrl] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    getAttachmentInfo(publishedAttachment(id)).then(info => {
+      setUrl(info.url)
+    })
+  }, [id])
+  return url
+}
+
+export type UseDraftTestimonyAttachment = ReturnType<
+  typeof useDraftTestimonyAttachment
+>
+export function useDraftTestimonyAttachment(
   uid: string,
   draft: DraftTestimony | undefined,
   setTestimony: SetTestimony
@@ -133,7 +154,7 @@ function useSyncDraft(
     if (draft) {
       const id = draft.attachmentId
       if (id) {
-        resolveAttachment(id, draftAttachment(uid, id), dispatch)
+        resolveAttachment(draftAttachment(uid, id), dispatch)
       } else {
         dispatch({ type: "resolveAttachment" })
       }
@@ -185,7 +206,7 @@ function useUpload(
           dispatch({ type: "error", error })
         },
         () => {
-          resolveAttachment(id, uploadTask.snapshot.ref, dispatch, setTestimony)
+          resolveAttachment(uploadTask.snapshot.ref, dispatch, setTestimony)
         }
       )
     },
@@ -194,24 +215,27 @@ function useUpload(
 }
 
 async function resolveAttachment(
-  id: string,
   file: StorageReference,
   dispatch: Dispatch<Action>,
   setTestimony?: SetTestimony
 ) {
   try {
     dispatch({ type: "loading" })
-    const url = await getDownloadURL(file)
-    const metadata = await getMetadata(file)
-    dispatch({
-      type: "resolveAttachment",
-      id,
-      url,
-      name: metadata.customMetadata?.originalFilename,
-      size: metadata.size
-    })
-    setTestimony?.({ attachmentId: id })
+    const info = await getAttachmentInfo(file)
+    dispatch({ type: "resolveAttachment", ...info })
+    setTestimony?.({ attachmentId: info.id })
   } catch (error) {
     dispatch({ type: "error", error })
+  }
+}
+
+async function getAttachmentInfo(file: StorageReference) {
+  const url = await getDownloadURL(file)
+  const metadata = await getMetadata(file)
+  return {
+    id: file.name,
+    url,
+    name: metadata.customMetadata?.originalFilename,
+    size: metadata.size
   }
 }

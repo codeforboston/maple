@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Button, Form, InputGroup, Row, Spinner, Col } from "../bootstrap"
-import { UseTestimonyAttachment } from "../db"
+import { UseDraftTestimonyAttachment } from "../db"
 import { External } from "../links"
 
 // TODO: pass in useEditTestimony, add upload callback to hook.
@@ -14,7 +14,7 @@ import { External } from "../links"
 export function Attachment({
   attachment
 }: {
-  attachment: UseTestimonyAttachment
+  attachment: UseDraftTestimonyAttachment
 }) {
   const { upload, error, id } = attachment
   const [key, setKey] = useState(0),
@@ -65,7 +65,7 @@ const formatSize = (size: number) => {
 const Label = ({
   attachment: { status }
 }: {
-  attachment: UseTestimonyAttachment
+  attachment: UseDraftTestimonyAttachment
 }) => {
   return (
     <Form.Label>
@@ -81,7 +81,7 @@ const Label = ({
 const Attached = ({
   attachment: { url, name, size, remove, status }
 }: {
-  attachment: UseTestimonyAttachment
+  attachment: UseDraftTestimonyAttachment
 }) => {
   const linkLabel = ["Attached", name, size ? formatSize(size) : null]
       .filter(Boolean)
@@ -102,7 +102,7 @@ const Attached = ({
 const StatusMessage = ({
   attachment: { id, error, status }
 }: {
-  attachment: UseTestimonyAttachment
+  attachment: UseDraftTestimonyAttachment
 }) => {
   if (status === "error") {
     let message: string

@@ -53,7 +53,9 @@ export class Attachments {
 
     const attachmentChanged = draftId !== publishedDraftId
     const id = attachmentChanged ? nanoid() : publishedId ?? null
-    const title = ["Testimony", draft.billId, profile?.displayName].join(", ")
+    const title = ["Testimony", draft.billId, profile?.displayName]
+      .filter(Boolean)
+      .join(", ")
 
     return { id, draftId, prevId, uid, title }
   }
@@ -116,7 +118,7 @@ export class Attachments {
     await Promise.all(
       to.map(file =>
         file.save(data, {
-          contentType: "application/gzip",
+          contentType: "application/pdf",
           metadata: {
             cacheControl: "public, max-age=3600",
             contentDisposition: `inline; filename="${title}.pdf"`

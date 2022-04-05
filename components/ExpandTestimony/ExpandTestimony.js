@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
+import { ViewAttachment } from "./ViewAttachment"
 
 const ExpandTestimony = props => {
   const bill = props.bill
@@ -34,13 +35,7 @@ const ExpandTestimony = props => {
           <p style={{ whiteSpace: "pre-wrap" }}>
             {testimony ? testimony.content : ""}
           </p>
-          <h4>
-            {testimony && testimony.attachment != null ? (
-              <Button variant="primary">See attachment</Button>
-            ) : (
-              ""
-            )}
-          </h4>
+          <ViewAttachment testimony={testimony} />
         </Modal.Body>
       </Modal>
     </>

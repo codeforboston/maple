@@ -8,16 +8,9 @@ import {
   onSnapshot,
   updateDoc
 } from "firebase/firestore"
-import {
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-  deleteObject
-} from "firebase/storage"
-import { nanoid } from "nanoid"
 import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
 import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
-import { firestore, storage } from "../../firebase"
+import { firestore } from "../../firebase"
 import { currentGeneralCourt } from "../common"
 import { resolveBillTestimony } from "./resolveTestimony"
 import {

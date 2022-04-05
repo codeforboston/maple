@@ -27,7 +27,6 @@ const TestimonyRow = ({ testimony }) => {
         </td>
         <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
         <td>{testimony.content.substring(0, 100)}...</td>
-        <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>
           <div className="d-flex">
             <ExpandTestimony bill={bill.content} testimony={testimony} />
@@ -71,7 +70,6 @@ const MyTestimonies = () => {
             <th>Bill #</th>
             <th>Date Submitted</th>
             <th>Text</th>
-            <th>Attachment?</th>
           </tr>
         </thead>
         <tbody>{testimoniesComponent}</tbody>

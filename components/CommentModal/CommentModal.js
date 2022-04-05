@@ -3,7 +3,7 @@ import { useAuth } from "../../components/auth"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { useMember, useProfile } from "../db"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import { useTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
+import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
 import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { siteUrl } from "../links"
 import { Attachment } from "./Attachment"
@@ -56,7 +56,11 @@ const CommentModal = ({
 
   const [testimony, setTestimony] = useUnsavedTestimony()
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
-  const attachment = useTestimonyAttachment(user.uid, edit.draft, setTestimony)
+  const attachment = useDraftTestimonyAttachment(
+    user.uid,
+    edit.draft,
+    setTestimony
+  )
 
   useEffect(() => {
     const testimony = edit.draft ? edit.draft : {}
