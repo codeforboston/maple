@@ -113,16 +113,16 @@ export default createPage({
             {profile.updatingIsPublic ? (
               <Spinner animation="border" className="mx-auto" size="sm" />
             ) : null}
-            <div className="mt-2">
-              <Button
-                variant="primary"
-                onClick={() => router.push(`/publicprofile?id=${uid}`)}
-              >
-                Preview Profile
-              </Button>
-            </div>
           </div>
         )}
+        <div className="mt-2">
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/publicprofile?id=${uid}`)}
+          >
+            Preview Profile
+          </Button>
+        </div>
         <MyTestimonies />
       </>
     )
