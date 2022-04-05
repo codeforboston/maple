@@ -27,7 +27,6 @@ const TestimonyRow = ({ testimony }) => {
           </Button>
         )}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
       <td>
         <ExpandTestimony testimony={testimony} />
       </td>
@@ -51,6 +50,7 @@ const Testimonies = () => {
             <th>Position</th>
             <th>Text</th>
             <th>Submitter</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{testimoniesRows}</tbody>
