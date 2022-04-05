@@ -3,6 +3,8 @@ import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, useMember } from "../db"
 import { useRouter } from "next/router"
+import Link from "next/link"
+import { formatBillId } from "../formatting"
 
 const MemberName = ({ memberId }) => {
   const { member, loading } = useMember(memberId)
