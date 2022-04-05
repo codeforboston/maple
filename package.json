@@ -19,6 +19,7 @@
     "fix": "next lint --fix; prettier --write .",
     "postinstall": "yarn --cwd functions install --frozen-lockfile",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "serve": "firebase emulators:start --only hosting",
     "start": "next start",
     "test:integration": "jest -c tests/jest.integration.config.ts -w 1",
