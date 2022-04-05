@@ -14,8 +14,6 @@ const MemberName = ({ memberId }) => {
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
   const router = useRouter()
-  const senatorId = testimony.senatorId
-  const representativeId = testimony.representativeId
 
   return (
     <tr>
@@ -39,12 +37,6 @@ const TestimonyRow = ({ testimony }) => {
           </Button>
         )}
       </td>
-      <td>
-        <MemberName memberId={senatorId} />
-      </td>
-      <td>
-        <MemberName memberId={representativeId} />
-      </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
@@ -66,10 +58,8 @@ const TestimoniesTable = ({ testimonies }) => {
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
+            <th>Position</th>
             <th>Submitter</th>
-            <th>Submitter Senator</th>
-            <th>Submitter Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
