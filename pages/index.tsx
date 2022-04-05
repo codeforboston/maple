@@ -10,6 +10,7 @@ export default createPage({
   v2: true,
   Page: () => {
     const { authenticated } = useAuth()
+
     return (
       <>
         <p>
@@ -29,12 +30,6 @@ export default createPage({
         </p>
 
         <Stack gap={3} className="col-lg-5 mx-auto">
-          <Wrap href="/bills">
-            <Button size="lg">View Bills</Button>
-          </Wrap>
-          <Wrap href="/testimonies">
-            <Button size="lg">View Testimony</Button>
-          </Wrap>
           {/* <Wrap href="/legprocess">
             <Button size="lg">Learn About Submitting Testimony</Button>
           </Wrap> */}
@@ -46,11 +41,17 @@ export default createPage({
         </Stack>
         <Row className="mt-4">
           <Col className="text-center">
-            <h4>Bills with Upcoming Hearings</h4>
+            <Wrap href="/bills">
+              <Button size="lg">View All Bills</Button>
+            </Wrap>
+            <h4 className="mt-3">Bills with Upcoming Hearings</h4>
             <ViewBillsOnHomePage />
           </Col>
           <Col className="text-center">
-            <h4>Most Recent Testimony</h4>
+            <Wrap href="/testimonies">
+              <Button size="lg">View All Testimony</Button>
+            </Wrap>
+            <h4 className="mt-3">Most Recent Testimony</h4>
             <TestimoniesOnHomePage />
           </Col>
         </Row>

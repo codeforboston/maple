@@ -65,6 +65,7 @@ const TestimoniesTable = ({ testimonies }) => {
             <th>Submitter Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{testimoniesComponent}</tbody>

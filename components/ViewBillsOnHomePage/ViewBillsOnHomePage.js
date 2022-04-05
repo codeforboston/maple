@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import React from "react"
-import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
-import { useBills, useMember } from "../db"
+import { Button, Container, Table } from "react-bootstrap"
+import { useUpcomingBills, useMember } from "../db"
 import { formatBillId } from "../formatting"
 
 const BillRow = props => {
@@ -39,8 +39,7 @@ const BillRows = ({ bills }) => {
 }
 
 const ViewBills = () => {
-  const { bills, loading } = useBills()
-  // need these to be sorted to be only hearing date in future - soonest on top
+  const upcomingBills = useUpcomingBills()
 
   return (
     <Container>
@@ -52,9 +51,8 @@ const ViewBills = () => {
             <th>Hearing Scheduled</th>
           </tr>
         </thead>
-        <tbody>{bills && <BillRows bills={bills} />}</tbody>
+        <tbody>{<BillRows bills={upcomingBills} />}</tbody>
       </Table>
-      <Row>{loading && <Spinner animation="border" className="mx-auto" />}</Row>
     </Container>
   )
 }
