@@ -3,6 +3,8 @@ import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, useMember } from "../db"
 import { useRouter } from "next/router"
+import Link from "next/link"
+import { formatBillId } from "../formatting"
 
 const MemberName = ({ memberId }) => {
   const { member, loading } = useMember(memberId)
@@ -12,12 +14,14 @@ const MemberName = ({ memberId }) => {
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
   const router = useRouter()
-  const senatorId = testimony.senatorId
-  const representativeId = testimony.representativeId
 
   return (
     <tr>
-      <td>{testimony.billId}</td>
+      <td>
+        <Link href={`/bill?id=${testimony.billId}`}>
+          {formatBillId(testimony.billId)}
+        </Link>
+      </td>
       <td>{testimony.position}</td>
       <td>
         {testimony.authorDisplayName == null ? (
@@ -32,12 +36,6 @@ const TestimonyRow = ({ testimony }) => {
             {testimony.authorDisplayName}
           </Button>
         )}
-      </td>
-      <td>
-        <MemberName memberId={senatorId} />
-      </td>
-      <td>
-        <MemberName memberId={representativeId} />
       </td>
       <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
@@ -59,10 +57,8 @@ const TestimoniesTable = ({ testimonies }) => {
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
+            <th>Position</th>
             <th>Submitter</th>
-            <th>Submitter Senator</th>
-            <th>Submitter Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th></th>
