@@ -1,24 +1,16 @@
 import React from "react"
 import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, useMember, usePublicProfile } from "../db"
-import { useRouter } from "next/router"
+import { useBill, usePublicProfile } from "../db"
 import Link from "next/link"
 import { formatBillId } from "../formatting"
-
-const MemberName = ({ memberId }) => {
-  const { member, loading } = useMember(memberId)
-  return <>{member?.Name}</>
-}
+import ProfileButton from "../ProfileButton/ProfileButton"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-  const router = useRouter()
 
-  const x = usePublicProfile(testimony.authorUid)
-  const authorPublic = x.result?.public
-  const loading = x.loading
-  const error = x.error
+  const profile = usePublicProfile(testimony.authorUid)
+  const authorPublic = profile.result?.public
 
   return (
     <tr>
@@ -29,17 +21,13 @@ const TestimonyRow = ({ testimony }) => {
       </td>
       <td>{testimony.position}</td>
       <td>
-        {testimony.authorDisplayName == null ? (
+        {!testimony.authorDisplayName ? (
           <>(blank)</>
         ) : authorPublic ? (
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(`/publicprofile?id=${testimony.authorUid}`)
-            }
-          >
-            {testimony.authorDisplayName}
-          </Button>
+          <ProfileButton
+            uid={testimony?.authorUid}
+            displayName={testimony?.authorDisplayName}
+          />
         ) : (
           <>{testimony.authorDisplayName}</>
         )}
