@@ -5,5 +5,5 @@ const withImages = require("next-images");
 
 module.exports = withImages({
   assetPrefix: isProduction ? "https://d-ondrich.github.io/advocacy-maps/" : "",
-  basePath: isProduction ? "" : "",
+  basePath: isProduction ? "" : "advocacy-maps/",
 });
