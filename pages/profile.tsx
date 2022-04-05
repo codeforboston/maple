@@ -88,7 +88,7 @@ export default createPage({
         {individual && showLegislators}
         {individual ? "About me:" : "About this organization:"}
         <textarea className="form-control col-sm" rows={5} required />
-        {individual && socialMedia}
+        {socialMedia}
         {individual && (
           <div className="form-check mt-3 mb-2">
             <input
