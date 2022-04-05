@@ -21,17 +21,19 @@ const ViewBillPage = ({ billId }) => {
     </Row>
   ) : (
     <>
-      <Row>
-        <div className=" d-flex justify-content-center">
-          <BillCosponsors bill={bill} />
-          <BillStatus bill={bill} billHistory={billHistory} />
-        </div>
-      </Row>
       <div className="text-center">
-        <h4>{bill ? bill.BillNumber : ""}</h4>
-        <h4>{committeeName ? "Current Committee: " + committeeName : ""}</h4>
-        <h4>{bill ? bill.Title : ""}</h4>
-        <h5>{bill ? bill.Pinslip : ""}</h5>
+        <h1>{bill ? bill.BillNumber : ""}</h1>
+        <h4>{bill?.Title ? bill?.Title : bill?.Pinslip}</h4>
+        <div className="font-italic">
+          Lead Sponsor: {bill?.PrimarySponsor.Name}{" "}
+        </div>
+        <Row className="mt-2 mb-2">
+          <div className=" d-flex justify-content-center">
+            <BillCosponsors bill={bill} />
+            <BillStatus bill={bill} billHistory={billHistory} />
+          </div>
+        </Row>
+        <h5>{committeeName ? "Current Committee: " + committeeName : ""}</h5>
       </div>
       <div>
         {bill && bill.DocumentText != null ? (
