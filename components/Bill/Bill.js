@@ -43,9 +43,9 @@ const ViewBillPage = ({ billId }) => {
         {bill && bill.DocumentText != null ? (
           <>
             <span style={{ whiteSpace: "pre-wrap" }}>
-              {bill.DocumentText.substring(0, 700) + "..."}
+              {bill.DocumentText.substring(0, 350) + "..."}
             </span>
-            {bill.DocumentText.length > 700 ? (
+            {bill.DocumentText.length > 350 ? (
               <BillReadMore bill={bill} />
             ) : null}
           </>
