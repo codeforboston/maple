@@ -1,5 +1,5 @@
 import React from "react"
-import { useRecentTestimony } from "../db"
+import { useRecentTestimony, usePublicProfile } from "../db"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import { useRouter } from "next/router"
 import { formatBillId } from "../formatting"
@@ -10,6 +10,8 @@ import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 
 const TestimonyRow = ({ testimony }) => {
   const router = useRouter()
+  const profile = usePublicProfile(testimony.authorUid)
+  const authorPublic = profile.result?.public
   return (
     <tr>
       <td>
@@ -22,10 +24,12 @@ const TestimonyRow = ({ testimony }) => {
       <td>
         {testimony.authorDisplayName == null ? (
           "(blank)"
-        ) : (
+        ) : authorPublic ? (
           <Wrap href={`/publicprofile?id=${testimony.authorUid}`}>
             <Button variant="primary">{testimony.authorDisplayName}</Button>
           </Wrap>
+        ) : (
+          <>{testimony.authorDisplayName}</>
         )}
       </td>
       <td>

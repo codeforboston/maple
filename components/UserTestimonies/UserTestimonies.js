@@ -13,7 +13,6 @@ const TestimonyRow = ({ testimony }) => {
   const { user, authenticated } = useAuth()
   const userUid = user ? user.uid : null
   const userIsAuthor = user?.uid == testimony?.authorUid
-  console.log(testimony)
 
   if (!bill) {
     return null
@@ -29,7 +28,9 @@ const TestimonyRow = ({ testimony }) => {
             {testimony.billId}
           </Button>
         </td>
-        <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+        <td>
+          {testimony.publishedAt.toDate().toLocaleString().substring(0, 8)}
+        </td>
         <td>{testimony.content.substring(0, 100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>

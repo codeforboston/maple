@@ -1,12 +1,13 @@
 import React from "react"
 import { Row, Spinner } from "react-bootstrap"
-import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import AddTestimony from "../AddTestimony/AddTestimony"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
-import BillStatus from "../BillStatus/BillStatus"
 import BillReadMore from "../BillReadMore/BillReadMore"
+import BillStatus from "../BillStatus/BillStatus"
+import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import { useBill } from "../db"
 import * as links from "../../components/links.tsx"
+import { billLink, committeeLink, primarySponsorLink } from "../links"
 
 const ViewBillPage = ({ billId }) => {
   const { loading, result: fullBill } = useBill(billId)
@@ -39,11 +40,11 @@ const ViewBillPage = ({ billId }) => {
         </Row>
         <h5>{committeeName ? "Current Committee: " + committeeName : ""}</h5>
       </div>
-      <div>
+      <div className="m-3">
         {bill && bill.DocumentText != null ? (
           <>
             <span style={{ whiteSpace: "pre-wrap" }}>
-              {bill.DocumentText.substring(0, 350) + "..."}
+              <i>{bill.DocumentText.substring(0, 350)}&#8288;&#8230;</i>
             </span>
             {bill.DocumentText.length > 350 ? (
               <BillReadMore bill={bill} />
