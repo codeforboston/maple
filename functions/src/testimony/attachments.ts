@@ -1,7 +1,6 @@
-import { storage } from "../firebase"
+import { storage, File } from "../firebase"
 import { fail, Maybe } from "../common"
 import { nanoid } from "nanoid"
-import type { File } from "@google-cloud/storage"
 import { DraftTestimony } from "./types"
 
 export type PublishedAttachmentState = {

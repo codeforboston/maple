@@ -16,7 +16,7 @@ import {
   useState
 } from "react"
 import { storage } from "../../firebase"
-import { DraftTestimony, Testimony } from "./types"
+import { DraftTestimony } from "./types"
 import { SetTestimony } from "./useUnsavedTestimony"
 
 const draftAttachment = (uid: string, id: string) =>
@@ -96,9 +96,13 @@ function reducer(state: State, action: Action): State {
 export function usePublishedTestimonyAttachment(id: string) {
   const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
-    getAttachmentInfo(publishedAttachment(id)).then(info => {
-      setUrl(info.url)
-    })
+    getAttachmentInfo(publishedAttachment(id))
+      .then(info => {
+        setUrl(info.url)
+      })
+      .catch(e => {
+        console.warn("Error getting published attachment info", e)
+      })
   }, [id])
   return url
 }

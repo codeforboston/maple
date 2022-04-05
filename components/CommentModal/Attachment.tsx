@@ -1,15 +1,9 @@
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react"
-import styled from "styled-components"
-import { Button, Form, InputGroup, Row, Spinner, Col } from "../bootstrap"
+import { Button, Col, Form, InputGroup, Row, Spinner } from "../bootstrap"
 import { UseDraftTestimonyAttachment } from "../db"
 import { External } from "../links"
-
-// TODO: pass in useEditTestimony, add upload callback to hook.
-// Views to update:
-// - testimony rows on testimony table, bill detail, and private profile
-// - testimony modal on home page, bill detail, testimony table, private profile, and public profile
 
 export function Attachment({
   attachment
