@@ -45,7 +45,7 @@ const AddTestimony = ({
             ? "Sign in to add your voice"
             : isPublished
             ? "Edit your testimony"
-            : "Add your voice"}
+            : "Add your testimony"}
         </Button>
       </div>
 
