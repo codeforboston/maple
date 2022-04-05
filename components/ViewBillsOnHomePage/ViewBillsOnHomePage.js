@@ -3,6 +3,7 @@ import React from "react"
 import { Button, Container, Table } from "react-bootstrap"
 import { useUpcomingBills, useMember } from "../db"
 import { formatBillId } from "../formatting"
+import { Wrap } from "../links"
 
 const BillRow = props => {
   const fullBill = props.bill
@@ -18,12 +19,9 @@ const BillRow = props => {
     return (
       <tr>
         <td>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
-          >
-            {formatBillId(bill.BillNumber)}
-          </Button>
+          <Wrap href={`/bill?id=${bill.BillNumber}`}>
+            <Button variant="primary">{formatBillId(bill.BillNumber)}</Button>
+          </Wrap>
         </td>
         <td>{bill.Title}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
