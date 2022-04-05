@@ -19,7 +19,7 @@ const BillStatus = ({ bill, billHistory }) => {
         style={{ maxWidth: "18em" }}
         onClick={handleShowBillStatus}
       >
-        Status - {history ? history.Action : "Unknown"}
+        Status: {history ? history.Action : "Unknown"}
       </Button>
       <Modal show={showBillStatus} onHide={handleCloseBillStatus} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillStatus}>
