@@ -18,7 +18,6 @@ const CoSponsorRow = ({ coSponsor }) => {
         </td>
         <td>{member?.Branch}</td>
         <td>{member?.District}</td>
-        <td>{member?.Party}</td>
       </tr>
     )
   }
