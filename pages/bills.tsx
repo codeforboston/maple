@@ -7,8 +7,8 @@ export default createPage({
   Page: () => {
     return (
       <>
-        <h1>Bills</h1>
-
+        <h1>All Bills</h1>
+        <h3>Current session, 2021-2022</h3>
         <ViewBills />
       </>
     )
