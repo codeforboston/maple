@@ -3,6 +3,8 @@ import { Table, Container, Button } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, useMember } from "../db"
 import { useRouter } from "next/router"
+import Link from "next/link"
+import { formatBillId } from "../formatting"
 
 const MemberName = ({ memberId }) => {
   const { member, loading } = useMember(memberId)
@@ -17,7 +19,11 @@ const TestimonyRow = ({ testimony }) => {
 
   return (
     <tr>
-      <td>{testimony.billId}</td>
+      <td>
+        <Link href={`/bill?id=${testimony.billId}`}>
+          {formatBillId(testimony.billId)}
+        </Link>
+      </td>
       <td>{testimony.position}</td>
       <td>
         {testimony.authorDisplayName == null ? (
