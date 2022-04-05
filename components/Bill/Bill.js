@@ -6,6 +6,7 @@ import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillStatus from "../BillStatus/BillStatus"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import { useBill } from "../db"
+import * as links from "../../components/links.tsx"
 
 const ViewBillPage = ({ billId }) => {
   const { loading, result: fullBill } = useBill(billId)
@@ -15,6 +16,7 @@ const ViewBillPage = ({ billId }) => {
   const committeeName = fullBill?.currentCommittee?.name
   const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
   const senateChairEmail = fullBill?.currentCommittee?.senateChair?.email
+  const billURL = `https://malegislature.gov/Bills/192/${bill?.BillNumber}`
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -22,7 +24,9 @@ const ViewBillPage = ({ billId }) => {
   ) : (
     <>
       <div className="text-center">
-        <h1>{bill ? bill.BillNumber : ""}</h1>
+        <h1>
+          <links.External href={billURL}>{bill?.BillNumber}</links.External>
+        </h1>
         <h4>{bill?.Title ? bill?.Title : bill?.Pinslip}</h4>
         <div className="font-italic">
           Lead Sponsor: {bill?.PrimarySponsor.Name}{" "}
