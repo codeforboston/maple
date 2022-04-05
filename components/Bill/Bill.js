@@ -1,12 +1,12 @@
 import React from "react"
 import { Row, Spinner } from "react-bootstrap"
-import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import AddTestimony from "../AddTestimony/AddTestimony"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
-import BillStatus from "../BillStatus/BillStatus"
 import BillReadMore from "../BillReadMore/BillReadMore"
+import BillStatus from "../BillStatus/BillStatus"
+import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import { useBill } from "../db"
-import { formatBillId } from "../formatting.ts"
+import { billLink, committeeLink, primarySponsorLink } from "../links"
 
 const ViewBillPage = ({ billId }) => {
   const { loading, result: fullBill } = useBill(billId)
@@ -24,11 +24,11 @@ const ViewBillPage = ({ billId }) => {
   ) : (
     <>
       <div className="text-center">
-        <h4>{bill ? formatBillId(bill.BillNumber) : ""}</h4>
+        <div className="h4">{billLink(bill)}</div>
         <div>{bill ? bill.Title : ""}</div>
         <div>
           <b>Lead Sponsor: </b>
-          {bill.PrimarySponsor.Name}
+          {primarySponsorLink(bill.PrimarySponsor)}
         </div>
       </div>
       <Row>
@@ -39,8 +39,7 @@ const ViewBillPage = ({ billId }) => {
       </Row>
       <div className="text-center">
         <b>Current Committee: </b>
-        {committeeName ? committeeName : "Not currently in committee"}{" "}
-        {/*TODO: this will be a link*/}
+       {committeeLink(fullBill?.currentCommittee)}
       </div>
       <div className="m-3">
         {bill && bill.DocumentText != null ? (
