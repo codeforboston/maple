@@ -33,12 +33,6 @@ const TestimonyRow = ({ testimony }) => {
           </Button>
         )}
       </td>
-      <td>
-        <MemberName memberId={senatorId} />
-      </td>
-      <td>
-        <MemberName memberId={representativeId} />
-      </td>
       <td>{testimony.publishedAt.toDate().toLocaleString().substring(0, 8)}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
@@ -62,8 +56,6 @@ const TestimoniesTable = ({ testimonies }) => {
             <th>Bill</th>
             <th>Position</th>
             <th>Submitter</th>
-            <th>Submitter Senator</th>
-            <th>Submitter Representative</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
