@@ -39,7 +39,7 @@ const ViewBillPage = ({ billId }) => {
       </Row>
       <div className="text-center">
         <b>Current Committee: </b>
-       {committeeLink(fullBill?.currentCommittee)}
+        {committeeLink(fullBill?.currentCommittee)}
       </div>
       <div className="m-3">
         {bill && bill.DocumentText != null ? (

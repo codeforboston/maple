@@ -52,7 +52,11 @@ export function billURL(billNumber: string) {
 }
 
 export function billLink(bill: BillContent) {
-  return <External href={billURL(bill.BillNumber)}>{formatBillId(bill.BillNumber)}</External>
+  return (
+    <External href={billURL(bill.BillNumber)}>
+      {formatBillId(bill.BillNumber)}
+    </External>
+  )
 }
 
 export function committeeURL(CommitteeCode: string) {
