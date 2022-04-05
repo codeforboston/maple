@@ -17,7 +17,14 @@ const TestimonyRow = ({ testimony }) => {
 
   return (
     <tr>
-      <td>{testimony.billId}</td>
+      <td>
+        <Button
+          variant="primary"
+          onClick={() => router.push(`/bill?id=${testimony.billId}`)}
+        >
+          {testimony.billId}
+        </Button>
+      </td>
       <td>{testimony.position}</td>
       <td>
         {testimony.authorDisplayName == null ? (
