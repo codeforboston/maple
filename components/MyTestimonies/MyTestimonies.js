@@ -67,7 +67,7 @@ const MyTestimonies = () => {
       <Table responsive striped bordered hover>
         <thead>
           <tr>
-            <th>Support</th>
+            <th>Position</th>
             <th>Bill #</th>
             <th>Date Submitted</th>
             <th>Text</th>

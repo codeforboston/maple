@@ -60,7 +60,7 @@ const TestimoniesTable = ({ testimonies }) => {
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
+            <th>Position</th>
             <th>Submitter</th>
             <th>Submitter Senator</th>
             <th>Submitter Representative</th>
