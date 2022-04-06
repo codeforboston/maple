@@ -5,6 +5,7 @@ import EditTestimony from "../EditTestimony/EditTestimony"
 import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import { useAuth } from "../../components/auth"
 import { useBill, usePublishedTestimonyListing } from "../db"
+import Link from "next/link"
 import { useRouter } from "next/router"
 
 const TestimonyRow = ({ testimony }) => {
@@ -21,16 +22,11 @@ const TestimonyRow = ({ testimony }) => {
       <tr>
         <td>{testimony.position}</td>
         <td>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/bill?id=${testimony.billId}`)}
-          >
-            {testimony.billId}
-          </Button>
+          <Link href={`/bill?id=${testimony.billId}`}>
+            {formatBillId(testimony.billId)}
+          </Link>
         </td>
-        <td>
-          {testimony.publishedAt.toDate().toLocaleString().substring(0, 8)}
-        </td>
+        <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
         <td>{testimony.content.substring(0, 100)}...</td>
         <td>{testimony.attachment != null ? "Yes" : ""}</td>
         <td>

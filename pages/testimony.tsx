@@ -47,10 +47,7 @@ export default createPage({
               </div>
               <div>
                 <b>Date Published:</b>{" "}
-                {testimony.publishedAt
-                  .toDate()
-                  .toLocaleString()
-                  .substring(0, 8)}
+                {testimony.publishedAt.toDate().toLocaleDateString()}
               </div>
               <div>
                 <b>Position:</b>{" "}

@@ -24,12 +24,7 @@ const BillRow = props => {
           </Wrap>
         </td>
         <td>{bill.Title.substring(0, 40)}...</td>
-        <td>
-          {fullBill.nextHearingAt
-            ?.toDate()
-            .toLocaleDateString()
-            .substring(0, 8)}
-        </td>
+        <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
       </tr>
     )
   }
