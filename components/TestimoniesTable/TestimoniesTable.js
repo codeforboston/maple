@@ -5,6 +5,7 @@ import { useBill, usePublicProfile } from "../db"
 import Link from "next/link"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
+import { overlayTrigger, Tooltip } from "../tooltip"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
@@ -54,7 +55,7 @@ const TestimoniesTable = ({ testimonies }) => {
           <tr>
             <th>Bill</th>
             <th>Position</th>
-            <th>Submitter</th>
+            <th>Submitter{overlayTrigger(`some submitters do not have links because _____`)}</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
