@@ -16,9 +16,8 @@ const CoSponsorRow = ({ coSponsor }) => {
         <td>
           <links.External href={url}>{coSponsor.Name}</links.External>
         </td>
-        <td>{member.Branch}</td>
-        <td>{member.District}</td>
-        <td>{member.Party}</td>
+        <td>{member?.Branch}</td>
+        <td>{member?.District}</td>
       </tr>
     )
   }

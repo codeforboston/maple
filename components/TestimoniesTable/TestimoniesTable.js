@@ -1,5 +1,5 @@
 import React from "react"
-import { Table, Container, Button } from "react-bootstrap"
+import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, usePublicProfile } from "../db"
 import Link from "next/link"
@@ -8,7 +8,6 @@ import ProfileButton from "../ProfileButton/ProfileButton"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
 
@@ -32,7 +31,7 @@ const TestimonyRow = ({ testimony }) => {
           <>{testimony.authorDisplayName}</>
         )}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
       <td>

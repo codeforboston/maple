@@ -9,7 +9,7 @@ const BillReadMore = ({ bill }) => {
 
   return (
     <>
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center mt-2">
         <Button variant="primary" onClick={handleShow}>
           Read More
         </Button>

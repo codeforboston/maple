@@ -1,5 +1,6 @@
 import React from "react"
 import { usePublicProfile } from "../db"
+import UserTestimonies from "../UserTestimonies/UserTestimonies"
 
 const PublicProfile = ({ id }) => {
   const profile = usePublicProfile(id)
@@ -17,6 +18,7 @@ const PublicProfile = ({ id }) => {
       <h4>Twitter: @{twit}</h4>
       <h4>LinkedIn:{linkedIn}</h4>
       <p>{bio}</p>
+      <UserTestimonies authorId={id} />
     </>
   )
 }
