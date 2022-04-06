@@ -41,7 +41,7 @@ const ExpandTestimony = props => {
                   ? "Test"
                   : testimony.authorDisplayName) +
                 " - " +
-                testimony.publishedAt.toDate().toLocaleString() +
+                testimony.publishedAt.toDate().toLocaleDateString() +
                 " - " +
                 testimony.position
               : ""}
