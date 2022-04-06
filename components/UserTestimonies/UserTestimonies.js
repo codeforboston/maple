@@ -6,13 +6,11 @@ import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import { useAuth } from "../../components/auth"
 import { useBill, usePublishedTestimonyListing } from "../db"
 import Link from "next/link"
-import { useRouter } from "next/router"
+import { formatBillId } from "../../components/formatting"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-  const router = useRouter()
-  const { user, authenticated } = useAuth()
-  const userUid = user ? user.uid : null
+  const { user } = useAuth()
   const userIsAuthor = user?.uid == testimony?.authorUid
 
   if (!bill) {
