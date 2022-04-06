@@ -6,7 +6,6 @@ import BillReadMore from "../BillReadMore/BillReadMore"
 import BillStatus from "../BillStatus/BillStatus"
 import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import { useBill } from "../db"
-import * as links from "../../components/links.tsx"
 import { billLink, committeeLink, primarySponsorLink } from "../links"
 
 const ViewBillPage = ({ billId }) => {
@@ -17,7 +16,7 @@ const ViewBillPage = ({ billId }) => {
   const committeeName = fullBill?.currentCommittee?.name
   const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
   const senateChairEmail = fullBill?.currentCommittee?.senateChair?.email
-  const billURL = `https://malegislature.gov/Bills/192/${bill?.BillNumber}`
+
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -25,20 +24,22 @@ const ViewBillPage = ({ billId }) => {
   ) : (
     <>
       <div className="text-center">
-        <h1>
-          <links.External href={billURL}>{bill?.BillNumber}</links.External>
-        </h1>
-        <h4>{bill?.Title ? bill?.Title : bill?.Pinslip}</h4>
-        <div className="font-italic">
-          Lead Sponsor: {bill?.PrimarySponsor.Name}{" "}
+        <div className="h4">{billLink(bill)}</div>
+        <div>{bill ? bill.Title : ""}</div>
+        <div>
+          <b>Lead Sponsor: </b>
+          {primarySponsorLink(bill.PrimarySponsor)}
         </div>
-        <Row className="mt-2 mb-2">
-          <div className=" d-flex justify-content-center">
-            <BillCosponsors bill={bill} />
-            <BillStatus bill={bill} billHistory={billHistory} />
-          </div>
-        </Row>
-        <h5>{committeeName ? "Current Committee: " + committeeName : ""}</h5>
+      </div>
+      <Row>
+        <div className=" d-flex justify-content-center mt-1">
+          <BillCosponsors bill={bill} />
+          <BillStatus bill={bill} billHistory={billHistory} />
+        </div>
+      </Row>
+      <div className="text-center">
+        <b>Current Committee: </b>
+        {committeeLink(fullBill?.currentCommittee)}
       </div>
       <div className="m-3">
         {bill && bill.DocumentText != null ? (
