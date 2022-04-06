@@ -40,14 +40,14 @@ export default createPage({
           )}
         </Stack>
         <Row className="mt-4">
-          <Col className="text-center col-12 col-xl-4">
+          <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">
               <Button size="lg">View All Bills</Button>
             </Wrap>
             <h4 className="mt-3">Bills with Upcoming Hearings</h4>
             <ViewBillsOnHomePage />
           </Col>
-          <Col className="text-center col-12 col-xl-8">
+          <Col xs={12} xl={8} className="text-center">
             <Wrap href="/testimonies">
               <Button size="lg">View All Testimony</Button>
             </Wrap>
