@@ -1,19 +1,15 @@
 import React from "react"
-import { Table, Container, Button } from "react-bootstrap"
+import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, useMember } from "../db"
-import { useRouter } from "next/router"
+import { useBill, usePublicProfile } from "../db"
 import Link from "next/link"
 import { formatBillId } from "../formatting"
-
-const MemberName = ({ memberId }) => {
-  const { member, loading } = useMember(memberId)
-  return <>{member?.Name}</>
-}
+import ProfileButton from "../ProfileButton/ProfileButton"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-  const router = useRouter()
+  const profile = usePublicProfile(testimony.authorUid)
+  const authorPublic = profile.result?.public
 
   return (
     <tr>
@@ -24,20 +20,18 @@ const TestimonyRow = ({ testimony }) => {
       </td>
       <td>{testimony.position}</td>
       <td>
-        {testimony.authorDisplayName == null ? (
-          "(blank)"
+        {!testimony.authorDisplayName ? (
+          <>(blank)</>
+        ) : authorPublic ? (
+          <ProfileButton
+            uid={testimony?.authorUid}
+            displayName={testimony?.authorDisplayName}
+          />
         ) : (
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(`/publicprofile?id=${testimony.authorUid}`)
-            }
-          >
-            {testimony.authorDisplayName}
-          </Button>
+          <>{testimony.authorDisplayName}</>
         )}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>
         <ExpandTestimony bill={bill?.content} testimony={testimony} />
