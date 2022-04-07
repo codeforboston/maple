@@ -5,13 +5,16 @@ import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import BillStatus from "../BillStatus/BillStatus"
 import BillTestimonies from "../BillTestimonies/BillTestimonies"
-import { useBill } from "../db"
-import { billLink, committeeLink, primarySponsorLink } from "../links"
+import { useBill, useMember } from "../db"
+import { billLink, committeeLink, memberLink } from "../links"
 
 const ViewBillPage = ({ billId }) => {
   const { loading, result: fullBill } = useBill(billId)
 
   const bill = fullBill?.content
+
+  const { member } = useMember(bill?.PrimarySponsor?.Id)
+
   const billHistory = fullBill?.history
   const committeeName = fullBill?.currentCommittee?.name
   const houseChairEmail = fullBill?.currentCommittee?.houseChair?.email
@@ -28,7 +31,7 @@ const ViewBillPage = ({ billId }) => {
         <div>{bill ? bill.Title : ""}</div>
         <div>
           <b>Lead Sponsor: </b>
-          {primarySponsorLink(bill.PrimarySponsor)}
+          {member && memberLink(member)}
         </div>
       </div>
       <Row>

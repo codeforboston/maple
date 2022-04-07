@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
-import * as links from "../../components/links.tsx"
 import { useMember } from "../db"
+import { memberLink } from "../links"
 
 const CoSponsorRow = ({ coSponsor }) => {
   const url = coSponsor
@@ -13,9 +13,7 @@ const CoSponsorRow = ({ coSponsor }) => {
   } else {
     return (
       <tr>
-        <td>
-          <links.External href={url}>{coSponsor.Name}</links.External>
-        </td>
+        <td>{memberLink(member)}</td>
         <td>{member?.Branch}</td>
         <td>{member?.District}</td>
       </tr>

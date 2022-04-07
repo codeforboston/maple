@@ -74,10 +74,10 @@ export function committeeLink(
   return <External href={committeeURL(id)}>{name}</External>
 }
 
-export function primarySponsorURL(member: MemberContent) {
+export function memberURL(member: MemberContent) {
   return `https://malegislature.gov/Legislators/Profile/${member.MemberCode}`
 }
 
-export function primarySponsorLink(member: MemberContent) {
-  return <External href={primarySponsorURL(member)}>{member.Name}</External>
+export function memberLink(member: MemberContent) {
+  return <External href={memberURL(member)}>{member.Name}</External>
 }
