@@ -37,7 +37,7 @@ export default createPage({
               process in Massachusetts more accessible and transparent.
             </p>
             <p>
-              The Massachusetts Archive of Transparent Testimony platform is a
+              MAPLE platform is a
               project of the <a href="https://www.nulawlab.org">NuLawLab</a>{" "}
               developed with{" "}
               <a href="https://www.codeforboston.org">Code for Boston</a>.
