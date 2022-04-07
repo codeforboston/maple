@@ -134,26 +134,6 @@ export default createPage({
 
           {/* <Twitter /> */}
         </div>
-        <h1>GGP Statement of Shared Values</h1>
-        Our core values are: humility, curiousity, compassion
-        <ul>
-          <li>
-            We believe a better quality democracy can better serve the public
-            interests
-          </li>
-          <li>
-            We focus on non-partisan means of governing - not partisan ends
-          </li>
-          <li>
-            We have a strong preference for diverse membership – including
-            political diversity
-          </li>
-          <li>We strive to give credence to the sincerity of others</li>
-          <li>We know our voice is louder in local and state politics</li>
-          <li>We prefer accurate statements over absolute statements </li>
-          <li>We listen generously </li>
-          <li>We have a responsibility to be our authentic selves</li>
-        </ul>
         {/* </Layout> */}
       </>
     )
