@@ -1,11 +1,11 @@
-import React from "react"
-import { Table, Container, Button } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, usePublicProfile } from "../db"
 import Link from "next/link"
+import React from "react"
+import { Container, Table } from "react-bootstrap"
+import { useBill, usePublicProfile } from "../db"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
-import { overlayTrigger, Tooltip } from "../tooltip"
+import { QuestionTooltip } from "../tooltip"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
@@ -55,7 +55,15 @@ const TestimoniesTable = ({ testimonies }) => {
           <tr>
             <th>Bill</th>
             <th>Position</th>
-            <th>Submitter{overlayTrigger(`some submitters do not have links because _____`)}</th>
+            <th>
+              Submitter
+              {
+                <QuestionTooltip
+                  className="m-1"
+                  text="submitters without links have chosen to make their profile private"
+                ></QuestionTooltip>
+              }
+            </th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>

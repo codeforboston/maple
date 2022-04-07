@@ -1,48 +1,22 @@
+import "@fortawesome/fontawesome-svg-core/styles.css"
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"    
-import '@fortawesome/fontawesome-svg-core/styles.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
-import {
-  OverlayTrigger,
-  OverlayTriggerProps,
-  Tooltip,
-  TooltipProps
-} from "react-bootstrap"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
 
-const renderTooltip = ({
-  text,
-  props
-}: {
-  text: string
-  props: TooltipProps
-}) => {
-  return (
-    <Tooltip id="button-tooltip" {...props}>
-      {text}
-    </Tooltip>
-  )
-}
-
-export const overlayTrigger = ({
-  text,
-  props
-}: {
-  text: string
-  props: OverlayTriggerProps
-}) => {
-  const tooltip = () => renderTooltip({ text, props })
-
+export const QuestionTooltip = ({ text }: { text: string }) => {
   return (
     <OverlayTrigger
-      placement="right"
-      delay={{ show: 250, hide: 400 }}
-      overlay={tooltip}
+      placement="auto"
+      overlay={
+        <Tooltip id="tooltip-text">
+          <p>{text}</p>
+        </Tooltip>
+      }
     >
-      <FontAwesomeIcon
-        icon={faQuestionCircle}
-        size={"sm"}
-        className="m-2"
-      />
+      <span className="m-1">
+        <FontAwesomeIcon icon={faQuestionCircle} className="text-secondary" />
+      </span>
     </OverlayTrigger>
   )
 }
