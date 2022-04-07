@@ -71,8 +71,6 @@ const BillRow = props => {
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
-        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
-        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&

@@ -156,7 +156,7 @@ export default createPage({
           }}
           required
         />
-        {individual && (
+        {
           <Row className="mt-3">
             {SOCIAL_NETWORKS.map(network => (
               <Col key={network}>
@@ -188,7 +188,7 @@ export default createPage({
               </Col>
             ))}
           </Row>
-        )}
+        }
         {individual && (
           <div className="form-check mt-3 mb-2">
             <input

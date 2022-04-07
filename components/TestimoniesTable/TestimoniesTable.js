@@ -1,15 +1,14 @@
 import Link from "next/link"
 import React from "react"
-import { Container, Table } from "react-bootstrap"
-import { useBill, usePublicProfile } from "../db"
+import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import { useBill, usePublicProfile } from "../db"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
 import { QuestionTooltip } from "../tooltip"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
 
@@ -33,7 +32,7 @@ const TestimonyRow = ({ testimony }) => {
           <>{testimony.authorDisplayName}</>
         )}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
       <td>
