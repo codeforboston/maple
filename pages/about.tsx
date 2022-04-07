@@ -15,7 +15,7 @@ export default createPage({
       <>
         <div className={style.aboutWrapper}>
           <div>
-            <h1>Why MATT?</h1>
+            <h1>Why MAPLE?</h1>
             <p>
               By creating an accessible platform for submitting testimony on
               legislation in MA via a transparent archive of public testimony,

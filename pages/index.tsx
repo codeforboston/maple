@@ -12,13 +12,13 @@ export default createPage({
     return (
       <>
         <p>
-          The Massachusetts Archive of Transparent Testimony (MATT) platform makes it
+          The Massachusetts Platform for Legislative Engagement (MAPLE) platform makes it
           easier for anyone to submit and see testimony to the{" "}
           <a href="https://malegislature.gov">Massachusetts Legislature</a>{" "}
           about the bills that will shape our future.
         </p>
         <p>
-          MATT is free to use and open source.{" "}
+          MAPLE is free to use and open source.{" "}
           <a href="/about">This platform is developed in collaboration</a>{" "}
           between the NuLawLab, Code for Boston, and scholars at the{" "}
           <a href="https://www.bc.edu/bc-web/centers/clough.html">
