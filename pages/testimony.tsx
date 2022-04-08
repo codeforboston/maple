@@ -1,13 +1,10 @@
-import { createPage } from "../components/page"
-import {
-  getBill,
-  useBill,
-  usePublishedTestimonyListing
-} from "../components/db"
 import { useRouter } from "next/router"
-import { Spinner, Button } from "react-bootstrap"
+import { Button, Spinner } from "react-bootstrap"
+import { useBill, usePublishedTestimonyListing } from "../components/db"
 import { formatBillId } from "../components/formatting"
 import { Wrap } from "../components/links"
+import { createPage } from "../components/page"
+import { ViewAttachment } from "../components/ViewAttachment"
 
 export default createPage({
   v2: true,
@@ -56,8 +53,8 @@ export default createPage({
               <div style={{ whiteSpace: "pre-wrap" }}>
                 <b>Testimony:</b> {testimony.content}
               </div>
-              <div>
-                <b>Attachements:</b> None
+              <div className="mt-2">
+                <ViewAttachment testimony={testimony} />
               </div>
               <div className="mt-4">
                 <Wrap href={`/bill?id=${bill?.content.BillNumber}`}>

@@ -1,5 +1,5 @@
-import { Testimony, usePublishedTestimonyAttachment } from "../db"
-import { External } from "../links"
+import { Testimony, usePublishedTestimonyAttachment } from "./db"
+import { External } from "./links"
 
 export function ViewAttachment({ testimony }: { testimony?: Testimony }) {
   {
