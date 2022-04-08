@@ -47,6 +47,10 @@ export const BillContent = Record({
   PrimarySponsor: Nullable(Record({ Name: String }))
 })
 
+/** Represents a missing timestamp value. This allows documents without values
+ * to appear in results when sorting by that value. */
+export const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
+
 export type Bill = Static<typeof Bill>
 export const Bill = withDefaults(
   Record({
@@ -66,6 +70,8 @@ export const Bill = withDefaults(
   {
     cosponsorCount: 0,
     testimonyCount: 0,
+    latestTestimonyAt: MISSING_TIMESTAMP,
+    nextHearingAt: MISSING_TIMESTAMP,
     fetchedAt: Timestamp.fromMillis(0),
     history: [],
     similar: []
