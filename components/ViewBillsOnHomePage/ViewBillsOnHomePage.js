@@ -23,7 +23,6 @@ const BillRow = props => {
             <Button variant="primary">{formatBillId(bill.BillNumber)}</Button>
           </Wrap>
         </td>
-        <td>{bill.Title.substring(0, 40)}...</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
       </tr>
     )
@@ -45,7 +44,6 @@ const ViewBills = () => {
         <thead>
           <tr>
             <th>Bill #</th>
-            <th>Bill Name</th>
             <th>Hearing Scheduled</th>
           </tr>
         </thead>
