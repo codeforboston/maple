@@ -35,7 +35,7 @@ const BillRow = props => {
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
         </links.External>
-        - {member?.Branch} - {member?.District} - {member?.Party}
+        - {member?.Branch} - {member?.District}
       </>
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
@@ -71,8 +71,6 @@ const BillRow = props => {
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
-        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
-        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&
@@ -115,7 +113,7 @@ const ViewBills = () => {
             <th>City</th>
             <th># CoSponsors</th>
             <th>Hearing Scheduled</th>
-            <th># Testimony</th>
+            <th>Published Testimony (#)</th>
             <th>Most Recent Testimony</th>
             <th>Current Committee</th>
           </tr>

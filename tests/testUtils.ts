@@ -3,9 +3,12 @@ import { deleteApp } from "firebase/app"
 import { terminate, clearIndexedDbPersistence } from "firebase/firestore"
 import { firestore, app } from "../components/firebase"
 
-admin.initializeApp()
+admin.initializeApp({
+  storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`
+})
 
 export const testDb = admin.firestore()
+export const testStorage = admin.storage()
 export const testAuth = admin.auth()
 export const testTimestamp = admin.firestore.Timestamp
 export { admin as testAdmin }

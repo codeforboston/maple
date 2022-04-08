@@ -39,6 +39,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /home/runner/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
       - name: Run Integration Tests
         run: yarn test:integration-ci

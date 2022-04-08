@@ -12,6 +12,10 @@ import {
 import { nth } from "lodash"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
+import type {
+  BillHistory,
+  CurrentCommittee
+} from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
 import { currentGeneralCourt, loadDoc, nullableQuery } from "./common"
 import { listUpcomingBills } from "./events"
@@ -43,6 +47,9 @@ export type Bill = {
   latestTestimonyAt?: Timestamp
   latestTestimonyId?: string
   fetchedAt: Timestamp
+  history: BillHistory
+  currentCommittee?: CurrentCommittee
+  city?: string
 }
 
 type Action =
@@ -285,7 +292,7 @@ export async function getBill(id: string): Promise<Bill | undefined> {
   return bill as any
 }
 
-async function listBillsByHearingDate(
+export async function listBillsByHearingDate(
   filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null

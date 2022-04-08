@@ -1,8 +1,9 @@
-import Head from "next/head"
+import { useRouter } from "next/router"
 import React from "react"
 import { SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
+import Head from "next/head"
 
 const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -10,7 +11,7 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
       <Head>
         <title>{`${
           title ? title + " | " : ""
-        }Massachusetts Archive of Transparent Testimony`}</title>
+        }Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
@@ -26,7 +27,7 @@ const TopNav: React.FC = () => {
       <Container>
         <Wrap href="/">
           <Navbar.Brand className="text-wrap">
-            Massachusetts Archive of Transparent Testimony
+            Massachusetts Platform for Legislative Engagement
           </Navbar.Brand>
         </Wrap>
         <Navbar.Toggle aria-controls="topnav" />
@@ -58,10 +59,13 @@ const AccountNav: React.FC<{ authenticated: boolean }> = ({
   )
 }
 
-const NavLink: React.FC<{ href: string }> = ({ href, children }) => (
-  <Wrap href={href}>
-    <Nav.Link>{children}</Nav.Link>
-  </Wrap>
-)
+const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
+  const router = useRouter()
+  return (
+    <Wrap href={href}>
+      <Nav.Link active={router.pathname === href}>{children}</Nav.Link>
+    </Wrap>
+  )
+}
 
 export default V2Layout

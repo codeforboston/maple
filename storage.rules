@@ -1,10 +1,33 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    function pdf() {
+      return request.resource.size < 10 * 1024 * 1024
+          && request.resource.contentType.matches('application/pdf');
+    }
+
     match /search/{allPaths=**} {
       // Publicly readable, only written by the admin SDK
       allow read: if true;
       allow write: if false;
+    }
+    match /publishedAttachments/{id} {
+      // public, read-only
+      allow read: if true
+      allow write: if false
+    }
+    match /users/{uid} {
+      match /draftAttachments/{id} {
+        // private, only accessible by the user
+        // Only allow smallish pdf's
+        allow read: if request.auth.uid == uid
+        allow create, update: if request.auth.uid == uid && pdf()
+        allow delete: if request.auth.uid == uid
+      }
+      match /archivedAttachments/{id} {
+        // Not accessible by users, for record keeping.
+        allow read, write: if false
+      }
     }
   }
 }

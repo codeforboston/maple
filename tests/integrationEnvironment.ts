@@ -18,7 +18,14 @@ class IntegrationEnvironment extends BrowserEnvironment {
           setInterval: timers.setInterval,
           clearImmediate: timers.clearImmediate,
           clearTimeout: timers.clearTimeout,
-          clearInterval: timers.clearInterval
+          clearInterval: timers.clearInterval,
+
+          /** jsdom's Blob implementation does not work with firebase/storage.
+           * firebase/storage *does* work with a fallback if Blob is not
+           * available, so removing the global is a hack to get storage tests
+           * working. We'll need a better solution when tests need to use Blobs.
+           * */
+          Blob: undefined
         })
       })
     )

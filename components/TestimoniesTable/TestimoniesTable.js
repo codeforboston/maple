@@ -1,47 +1,39 @@
+import Link from "next/link"
 import React from "react"
-import { Table, Container, Button } from "react-bootstrap"
+import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill, useMember } from "../db"
-import { useRouter } from "next/router"
-
-const MemberName = ({ memberId }) => {
-  const { member, loading } = useMember(memberId)
-  return <>{member?.Name}</>
-}
+import { useBill, usePublicProfile } from "../db"
+import { formatBillId } from "../formatting"
+import ProfileButton from "../ProfileButton/ProfileButton"
+import { QuestionTooltip } from "../tooltip"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-  const router = useRouter()
-  const senatorId = testimony.senatorId
-  const representativeId = testimony.representativeId
+  const profile = usePublicProfile(testimony.authorUid)
+  const authorPublic = profile.result?.public
 
   return (
     <tr>
-      <td>{testimony.billId}</td>
+      <td>
+        <Link href={`/bill?id=${testimony.billId}`}>
+          {formatBillId(testimony.billId)}
+        </Link>
+      </td>
       <td>{testimony.position}</td>
       <td>
-        {testimony.authorDisplayName == null ? (
-          "(blank)"
+        {!testimony.authorDisplayName ? (
+          <>(blank)</>
+        ) : authorPublic ? (
+          <ProfileButton
+            uid={testimony?.authorUid}
+            displayName={testimony?.authorDisplayName}
+          />
         ) : (
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(`/publicprofile?id=${testimony.authorUid}`)
-            }
-          >
-            {testimony.authorDisplayName}
-          </Button>
+          <>{testimony.authorDisplayName}</>
         )}
       </td>
-      <td>
-        <MemberName memberId={senatorId} />
-      </td>
-      <td>
-        <MemberName memberId={representativeId} />
-      </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
-      <td>{testimony.attachment != null ? "Yes" : ""}</td>
       <td>
         <ExpandTestimony bill={bill?.content} testimony={testimony} />
       </td>
@@ -60,13 +52,19 @@ const TestimoniesTable = ({ testimonies }) => {
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
-            <th>Submitter</th>
-            <th>Submitter Senator</th>
-            <th>Submitter Representative</th>
+            <th>Position</th>
+            <th>
+              Submitter
+              {
+                <QuestionTooltip
+                  className="m-1"
+                  text="submitters without links have chosen to make their profile private"
+                ></QuestionTooltip>
+              }
+            </th>
             <th>Date Submitted</th>
             <th>Text</th>
-            <th>Attachment?</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{testimoniesComponent}</tbody>

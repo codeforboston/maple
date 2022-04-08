@@ -20,7 +20,7 @@ import {
   Testimony
 } from "./types"
 
-interface UseEditTestimony {
+export interface UseEditTestimony {
   /** The last hook error produced in loading the `draft` or `publication`. This
    * is separate from each callback's `error` property, which indicates errors
    * in that specific operation. */
@@ -204,14 +204,17 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
   )
 }
 
-type SaveDraftRequest = Pick<DraftTestimony, "position" | "content">
+type SaveDraftRequest = Pick<
+  DraftTestimony,
+  "position" | "content" | "attachmentId"
+>
 function useSaveDraft(
   { draftRef, draftLoading, billId, uid }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(
-      async ({ position, content }: SaveDraftRequest) => {
+      async ({ position, content, attachmentId }: SaveDraftRequest) => {
         if (draftLoading) {
           return
         } else if (!draftRef) {
@@ -219,7 +222,8 @@ function useSaveDraft(
             billId,
             content,
             court: currentGeneralCourt,
-            position
+            position,
+            attachmentId: attachmentId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -230,6 +234,7 @@ function useSaveDraft(
           await updateDoc(draftRef, {
             position,
             content,
+            attachmentId: attachmentId ?? null,
             publishedVersion: deleteField()
           })
           dispatch({ type: "loadingDraft" })

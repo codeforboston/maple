@@ -2,8 +2,9 @@ import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, Id, DocUpdate } from "../common"
+import { checkAuth, checkRequest, Id, DocUpdate, Maybe } from "../common"
 import { db, FieldValue } from "../firebase"
+import { Attachments } from "./attachments"
 import { Testimony } from "./types"
 
 const DeleteTestimonyRequest = Record({
@@ -14,9 +15,9 @@ export const deleteTestimony = https.onCall(async (data, context) => {
   const uid = checkAuth(context)
   const { publicationId } = checkRequest(DeleteTestimonyRequest, data)
 
-  let deleted: boolean
+  let output: TransactionOutput
   try {
-    deleted = await db.runTransaction(t =>
+    output = await db.runTransaction(t =>
       new DeleteTestimonyTransaction(t, publicationId, uid).run()
     )
   } catch (e) {
@@ -24,9 +25,13 @@ export const deleteTestimony = https.onCall(async (data, context) => {
     throw e
   }
 
-  return { deleted }
+  const attachments = new Attachments()
+  await attachments.applyDelete(output.attachmentId)
+
+  return { deleted: output.deleted }
 })
 
+type TransactionOutput = { deleted: boolean; attachmentId?: Maybe<string> }
 class DeleteTestimonyTransaction {
   private t
   private publicationId
@@ -47,9 +52,9 @@ class DeleteTestimonyTransaction {
     this.uid = uid
   }
 
-  async run() {
+  async run(): Promise<TransactionOutput> {
     await this.loadPublication()
-    if (!this.publicationSnap.exists) return false
+    if (!this.publicationSnap.exists) return { deleted: false }
     await this.loadBill()
 
     const billUpdate: DocUpdate<Bill> = {
@@ -60,7 +65,10 @@ class DeleteTestimonyTransaction {
     this.t.update(this.billSnap.ref, billUpdate)
     this.t.delete(this.publicationSnap.ref)
 
-    return true
+    return {
+      deleted: true,
+      attachmentId: this.publication.attachmentId
+    }
   }
 
   private async loadPublication() {

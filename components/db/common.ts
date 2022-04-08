@@ -22,3 +22,5 @@ export function nullableQuery<T>(
 export function now() {
   return DateTime.now()
 }
+
+export type Maybe<T> = T | null | undefined

@@ -10,7 +10,7 @@ export default createPage({
         All laws passed by state legislatures should be informed by feedback
         from residents and community stakeholders. In Massachusetts, among other
         ways to have your voice heard, you can submit written testimony to the
-        legislature regarding specific bills. This website, the MATT platform,
+        legislature regarding specific bills. This website, the MAPLE platform,
         can help facilitate your submission of written testimony to the MA
         Legislature. However, please note that this is not an official
         government website and you do not need to use this platform to submit
@@ -40,7 +40,7 @@ export default createPage({
           <li>
             <b>Where</b>: Testimony is generally accepted by{" "}
             <em>committees of the legislature</em> by sending an email to their
-            Chairs. This website, MATT, will help you to do this by making it
+            Chairs. This website, MAPLE, will help you to do this by making it
             easy to find a bill you want to testify in and then generate an
             email, which you fully control, which you can then send to the
             relevant personnel.
@@ -158,7 +158,7 @@ export default createPage({
         the laws of Massachusetts work better for all of us! While everyone is
         able to convey their opinions to the legislature, not everyone does. The
         process to submit testimony can be confusing, intimidating, and
-        difficult. We hope that this website, the MATT platform, will make that
+        difficult. We hope that this website, the MAPLE platform, will make that
         process more straightforward, more accessible to all stakeholders, and
         easier.
         <h1>Communicating with Legislators</h1>
@@ -168,7 +168,7 @@ export default createPage({
           <li>
             Testify in writing! You can submit your thoughts on a bill to the
             Committee hearing it before the date of their public hearing. This
-            website, the MATT platform, focuses on this mechanism.
+            website, the MAPLE platform, focuses on this mechanism.
           </li>
           <li>
             Testify orally. You can attend a public hearing for a bill of
@@ -235,7 +235,7 @@ export default createPage({
             persuade to your side of an issue.
           </li>
         </ul>
-        <h1>Why transparency matters</h1>A core goal of the MATT platform (this
+        <h1>Why transparency matters</h1>A core goal of the MAPLE platform (this
         website) is to increase the transparency of the legislative process in
         MA. In short, we want to know what information the Legislature
         considered when reaching a conclusion about a bill. Today, there is no
@@ -243,7 +243,7 @@ export default createPage({
         they receive and, in practice, such disclosure very rarely happens. As a
         result, it can be difficult to compare legislative outcomes to the
         interests and demands of constituents, which is an important tenant of
-        accountability for legislators. When you submit testimony via the MATT
+        accountability for legislators. When you submit testimony via the MAPLE
         platform, you can publish it in a freely accesible online database (this
         website) so that all other stakeholders can read your perspective. We
         hope this will increase the overall transparency of the legislative
