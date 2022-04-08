@@ -1,8 +1,9 @@
-import Head from "next/head"
+import { useRouter } from "next/router"
 import React from "react"
 import { SignOut, useAuth } from "./auth"
-import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
+import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
+import Head from "next/head"
 
 const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -36,6 +37,7 @@ const TopNav: React.FC = () => {
             <NavLink href="/bills">Bills</NavLink>
             <NavLink href="/testimonies">Testimony</NavLink>
             <NavLink href="/about">About</NavLink>
+            {/* <NavLink href="/legprocess">Learn</NavLink> */}
             <AccountNav authenticated={authenticated} />
           </Nav>
         </Navbar.Collapse>
@@ -57,10 +59,13 @@ const AccountNav: React.FC<{ authenticated: boolean }> = ({
   )
 }
 
-const NavLink: React.FC<{ href: string }> = ({ href, children }) => (
-  <Wrap href={href}>
-    <Nav.Link>{children}</Nav.Link>
-  </Wrap>
-)
+const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
+  const router = useRouter()
+  return (
+    <Wrap href={href}>
+      <Nav.Link active={router.pathname === href}>{children}</Nav.Link>
+    </Wrap>
+  )
+}
 
 export default V2Layout

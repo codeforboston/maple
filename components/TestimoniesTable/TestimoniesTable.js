@@ -1,20 +1,37 @@
 import React from "react"
 import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import { useBill } from "../db"
+import { useBill, usePublicProfile } from "../db"
+import Link from "next/link"
+import { formatBillId } from "../formatting"
+import ProfileButton from "../ProfileButton/ProfileButton"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
+  const profile = usePublicProfile(testimony.authorUid)
+  const authorPublic = profile.result?.public
+
   return (
     <tr>
-      <td>{testimony.billId}</td>
+      <td>
+        <Link href={`/bill?id=${testimony.billId}`}>
+          {formatBillId(testimony.billId)}
+        </Link>
+      </td>
       <td>{testimony.position}</td>
       <td>
-        {testimony.authorDisplayName == null
-          ? "(blank)"
-          : testimony.authorDisplayName}
+        {!testimony.authorDisplayName ? (
+          <>(blank)</>
+        ) : authorPublic ? (
+          <ProfileButton
+            uid={testimony?.authorUid}
+            displayName={testimony?.authorDisplayName}
+          />
+        ) : (
+          <>{testimony.authorDisplayName}</>
+        )}
       </td>
-      <td>{testimony.publishedAt.toDate().toLocaleString()}</td>
+      <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>{testimony.attachment != null ? "Yes" : ""}</td>
       <td>
@@ -24,22 +41,23 @@ const TestimonyRow = ({ testimony }) => {
   )
 }
 
-const TestimonyTable = ({ testimonies }) => {
+const TestimoniesTable = ({ testimonies }) => {
   const testimoniesComponent = testimonies.map((testimony, index) => {
     return <TestimonyRow key={index} testimony={testimony} />
   })
 
   return (
     <Container>
-      <Table striped bordered hover>
+      <Table responsive striped bordered hover>
         <thead>
           <tr>
             <th>Bill</th>
-            <th>Support</th>
+            <th>Position</th>
             <th>Submitter</th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th>Attachment?</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{testimoniesComponent}</tbody>
@@ -48,4 +66,4 @@ const TestimonyTable = ({ testimonies }) => {
   )
 }
 
-export default TestimonyTable
+export default TestimoniesTable

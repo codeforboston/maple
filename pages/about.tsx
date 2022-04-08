@@ -20,16 +20,16 @@ export default createPage({
               By creating an accessible platform for submitting testimony on
               legislation in MA via a transparent archive of public testimony,
               we aim to achieve these goals:
-              <ul>
-                <li>Increase access to the legislative process</li>
-                <li>
-                  Engage a wider set of stakeholders and perspectives in
-                  policymaking
-                </li>
-                <li>Promote transparency in government</li>
-                <li>Distribute information about pending legislation</li>
-              </ul>
             </p>
+            <ul>
+              <li>Increase access to the legislative process</li>
+              <li>
+                Engage a wider set of stakeholders and perspectives in
+                policymaking
+              </li>
+              <li>Promote transparency in government</li>
+              <li>Distribute information about pending legislation</li>
+            </ul>
             <h1>Who we are</h1>
             <p>
               We are a collective of open source developers, legal scholars, and

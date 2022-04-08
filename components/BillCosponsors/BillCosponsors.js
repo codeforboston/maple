@@ -16,9 +16,8 @@ const CoSponsorRow = ({ coSponsor }) => {
         <td>
           <links.External href={url}>{coSponsor.Name}</links.External>
         </td>
-        <td>{member.Branch}</td>
-        <td>{member.District}</td>
-        <td>{member.Party}</td>
+        <td>{member?.Branch}</td>
+        <td>{member?.District}</td>
       </tr>
     )
   }
@@ -63,7 +62,7 @@ const BillCosponsors = props => {
         </Modal.Header>
         <Modal.Body>
           <>
-            <Table striped bordered hover>
+            <Table responsive striped bordered hover>
               <tbody>
                 <CoSponsorRows coSponsors={coSponsors} />
               </tbody>

@@ -1,7 +1,8 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore"
+import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore"
 import { useEffect, useMemo, useReducer } from "react"
 import { useAuth } from "../auth"
 import { firestore } from "../firebase"
+import { useAsync } from "react-async-hook"
 
 export type ProfileMember = {
   district: string
@@ -9,10 +10,19 @@ export type ProfileMember = {
   name: string
 }
 
+export const SOCIAL_NETWORKS = ["linkedIn", "twitter"] as const
+
+export type SocialLinks = Partial<
+  Record<typeof SOCIAL_NETWORKS[number], string>
+>
+
 export type Profile = {
   displayName?: string
   representative?: ProfileMember
   senator?: ProfileMember
+  public?: boolean
+  about?: string
+  social?: SocialLinks
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -21,6 +31,9 @@ type ProfileState = {
   loading: boolean
   updatingRep: boolean
   updatingSenator: boolean
+  updatingIsPublic: boolean
+  updatingAbout: boolean
+  updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
 }
 
@@ -38,6 +51,12 @@ export function useProfile() {
         loading: true,
         updatingRep: false,
         updatingSenator: false,
+        updatingIsPublic: false,
+        updatingAbout: false,
+        updatingSocial: {
+          linkedIn: false,
+          twitter: false
+        },
         profile: undefined
       }
     )
@@ -65,9 +84,40 @@ export function useProfile() {
           await updateRepresentative(uid, rep)
           dispatch({ updatingRep: false })
         }
+      },
+      updateIsPublic: async (isPublic: boolean) => {
+        if (uid) {
+          dispatch({ updatingIsPublic: true })
+          await updateIsPublic(uid, isPublic)
+          dispatch({ updatingIsPublic: false })
+        }
+      },
+      updateAbout: async (about: string) => {
+        if (uid) {
+          dispatch({ updatingAbout: true })
+          await updateAbout(uid, about)
+          dispatch({ updatingAbout: false })
+        }
+      },
+      updateSocial: async (network: keyof SocialLinks, link: string) => {
+        if (uid) {
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [network]: true
+            }
+          })
+          await updateSocial(uid, network, link)
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [network]: false
+            }
+          })
+        }
       }
     }),
-    [uid]
+    [uid, state.updatingSocial]
   )
 
   return useMemo(
@@ -86,4 +136,29 @@ function updateRepresentative(uid: string, representative: ProfileMember) {
 
 function updateSenator(uid: string, senator: ProfileMember) {
   return setDoc(profileRef(uid), { senator }, { merge: true })
+}
+
+function updateIsPublic(uid: string, isPublic: boolean) {
+  return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
+}
+
+function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
+  return setDoc(
+    profileRef(uid),
+    { social: { [network]: link } },
+    { merge: true }
+  )
+}
+
+function updateAbout(uid: string, about: string) {
+  return setDoc(profileRef(uid), { about }, { merge: true })
+}
+
+export function usePublicProfile(uid: string) {
+  return useAsync(getProfile, [uid])
+}
+
+export async function getProfile(uid: string) {
+  const snap = await getDoc(profileRef(uid))
+  return snap.exists() ? (snap.data() as Profile) : undefined
 }

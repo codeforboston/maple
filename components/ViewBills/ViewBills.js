@@ -35,8 +35,7 @@ const BillRow = props => {
         <links.External href={sponsorURL}>
           {bill.PrimarySponsor.Name}
         </links.External>
-        - {loading ? "" : member.Branch} - {loading ? "" : member.District} -{" "}
-        {loading ? "" : member.Party}
+        - {member?.Branch} - {member?.District}
       </>
     ) : (
       <>{bill.PrimarySponsor ? bill.PrimarySponsor.Name : null}</>
@@ -59,28 +58,25 @@ const BillRow = props => {
   } else {
     return (
       <tr>
-        <td>{formatBillId(bill.BillNumber)}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
+          >
+            {formatBillId(bill.BillNumber)}
+          </Button>
+        </td>
         <td>{bill.Title}</td>
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
         <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
-        {/* does fullBill have a HearingNumber? If so, we can link to the hearing -
-        for example: https://malegislature.gov/Events/Hearings/Detail/4200 */}
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&
             fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
         </td>
         <td>{committeeCell}</td>
-        <td>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/bill?id=${bill.BillNumber}`)}
-          >
-            View Bill
-          </Button>
-        </td>
       </tr>
     )
   }
@@ -108,8 +104,7 @@ const ViewBills = () => {
   return (
     <Container>
       <Search setSort={setSort} setFilter={setFilter} />
-      {/* something about the table is causing a problem on mobile */}
-      <Table striped bordered hover>
+      <Table responsive striped bordered hover>
         <thead>
           <tr>
             <th>Bill #</th>
@@ -118,10 +113,9 @@ const ViewBills = () => {
             <th>City</th>
             <th># CoSponsors</th>
             <th>Hearing Scheduled</th>
-            <th># Testimony</th>
+            <th>Published Testimony (#)</th>
             <th>Most Recent Testimony</th>
             <th>Current Committee</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>{bills && <BillRows bills={bills} />}</tbody>
