@@ -19,7 +19,7 @@ const createCommitteeChairEmailCommand = (
       ? senateChairEmail
       : null
 
-  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} ${billNumber}: ${billTitle} ${
+  const mailIntroToCommittee = `I am writing to let you know I ${positionWord} bill ${billNumber} ${
     committeeName ? "that is before the " + committeeName : ""
   }.`
 

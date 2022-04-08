@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { siteUrl } from "../links"
-import { Button, Col, Container, Modal, Row } from "../bootstrap"
+import { Button, Col, Modal } from "../bootstrap"
 import { useMember, useProfile } from "../db"
 
 import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
@@ -33,11 +33,6 @@ const PostSubmitModal = ({
 
   const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
   const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
-  const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
-    React.useState(true)
-  const [checkedSendToCommittee, setCheckedSendToCommittee] =
-    React.useState(committeeName) // only default checkbox to checked if the bill is in a committee
-  const [checkedTweet, setCheckedTweet] = React.useState(true)
   const positionEmailSubject =
     testimony?.position == "endorse"
       ? "Support of"
@@ -54,7 +49,7 @@ const PostSubmitModal = ({
 
   const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
 
-  const emailCommandToMyLegislators = createMyLegislatorEmailCommand(
+  const emailToMyLegislatorsURL = createMyLegislatorEmailCommand(
     representativeEmail,
     senatorEmail,
     positionWord,
@@ -66,7 +61,7 @@ const PostSubmitModal = ({
     testimonyArchiveEmailAddress
   )
 
-  const emailCommandToCommitteeChairs = createCommitteeChairEmailCommand(
+  const emailToCommitteeChairsURL = createCommitteeChairEmailCommand(
     houseChairEmail,
     senateChairEmail,
     committeeName,
@@ -79,28 +74,14 @@ const PostSubmitModal = ({
     testimonyArchiveEmailAddress
   )
 
-  const tweet = encodeURI(
+  const tweetURL = encodeURI(
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${bill.BillNumber}: ${bill.Title}.
     
 See ${webSiteBillAddress} for details.`
   )
 
-  // if (checkedSendToYourLegislators) {
-  //   window.open(emailCommandToMyLegislators) // allow user to send a formatted email using their email client
-  // }
-  // if (checkedSendToCommittee && (houseChairEmail || senateChairEmail)) {
-  //   window.open(emailCommandToCommitteeChairs) // allow user to send a formatted email using their email client
-  // }
-  // if (checkedTweet) {
-  //   window.open(tweet)
-  // }
-
   const handleClosePostSubmitModal = () => {}
 
-  console.log("showing post submit modal")
-  console.log("showPostSubmitModal")
-  console.log(showPostSubmitModal)
-  // handleCloseTestimony()
   return (
     <Modal show={showPostSubmitModal} onHide={handleClosePostSubmitModal}>
       <Modal.Header closeButton onClick={handleClosePostSubmitModal}>
@@ -117,26 +98,18 @@ See ${webSiteBillAddress} for details.`
           <Col className="col-sm align-middle">
             <div>
               <EmailToMyLegislatorsComponent
-                checkedSendToYourLegislators={checkedSendToYourLegislators}
-                setCheckedSendToYourLegislators={
-                  setCheckedSendToYourLegislators
-                }
+                emailToMyLegislatorsURL={emailToMyLegislatorsURL}
                 senator={senator}
                 representative={representative}
               />
             </div>
             <div>
               <EmailToCommitteeComponent
-                checkedSendToCommittee={checkedSendToCommittee}
-                setCheckedSendToCommittee={setCheckedSendToCommittee}
-                committeeName={committeeName}
+                emailToCommitteeChairsURL={emailToCommitteeChairsURL}
               />
             </div>
             <div>
-              <TweetComponent
-                checkedTweet={checkedTweet}
-                setCheckedTweet={setCheckedTweet}
-              />
+              <TweetComponent tweetURL={tweetURL} />
             </div>
           </Col>
         </>
@@ -148,13 +121,6 @@ See ${webSiteBillAddress} for details.`
       </Modal.Footer>
     </Modal>
   )
-
-  // if (!showPostSubmitModal) {
-  //   return <></>
-  // } else {
-  //   return (
-  //   )
-  // }
 }
 
 export default PostSubmitModal
