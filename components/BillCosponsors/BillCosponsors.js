@@ -10,6 +10,14 @@ const CoSponsorRow = ({ coSponsor }) => {
   const { member, loading } = useMember(coSponsor.Id)
   if (loading) {
     return null
+  } else if (!member) {
+    return (
+      <tr>
+        <td>{coSponsor.Name}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    )
   } else {
     return (
       <tr>
