@@ -7,7 +7,7 @@ export default createPage({
   Page: () => {
     return (
       <>
-        <h1>Participate in the MATT Project Beta Test</h1>
+        <h1>Participate in the MAPLE Project Beta Test</h1>
         <img
           src={stateHouse.src}
           height={300}
@@ -16,9 +16,9 @@ export default createPage({
         />
         Help us make the policymaking process in Massachusetts more accessible
         and transparent! We are looking for beta testers to share feedback on
-        our beta version of the Massachusetts Archive of Transparent Testimony
-        (MATT) platform so that we can make it as useful as possible to the
-        Commonwealth.
+        our beta version of the Massachusetts Platform for Legislative
+        Engagement (MAPLE) platform so that we can make it as useful as possible
+        to the Commonwealth.
         <h2>When is the beta testing period?</h2>
         The beta testing period runs <b>April 11-22, 2022</b>. We also welcome
         feedback before or after that time!
@@ -33,7 +33,7 @@ export default createPage({
         The beta testing process should take about 30-60 min of your time and
         can be done anytime during the beta testing period - it's a very small,
         flexible commitment. Beta testers will be asked to perform a small
-        number of essential tasks on the beta version of the MATT platform
+        number of essential tasks on the beta version of the MAPLE platform
         related to viewing information about bills and submitting and accessing
         written testimony. We will use an online form to collect your feedback
         about these interactions and may ask to do a brief Zoom interview to
@@ -54,9 +54,9 @@ export default createPage({
         </a>{" "}
         developed with{" "}
         <a href="https://www.codeforboston.org/">Code for Boston</a> together
-        with collaborating groups at Boston College and Harvard University. MATT
-        is being developed as a public good and is, and will always remain, open
-        to access and free to use.
+        with collaborating groups at Boston College and Harvard University.
+        MAPLE is being developed as a public good and is, and will always
+        remain, open to access and free to use.
       </>
     )
   }
