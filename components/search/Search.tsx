@@ -161,8 +161,9 @@ type FilterProps<T> = Pick<
 >
 const asProps = <T,>(props: FilterProps<T>) => props
 
+type LoadOptions<T> = (value: string) => Promise<T[]>
 type ItemSearchProps<T> = AsyncProps<T, false, GroupBase<T>> & {
-  loadOptions: (value: string) => Promise<T[]>
+  loadOptions: LoadOptions<T>
   getFilterOption: (i: T) => FilterOptions
   setFilter: SetFilter
   search: SearchService
@@ -175,6 +176,31 @@ function ItemSearch<T>({
   search,
   ...props
 }: ItemSearchProps<T>) {
+  const { debouncedLoadOptions, error } = useDebouncedLoadOptions(loadOptions)
+  const { defaults, loadDefaults, loading } = useDefaultOptions(loadOptions)
+  return (
+    <div className="mb-3">
+      <AsyncSelect
+        {...props}
+        instanceId="item-search"
+        isClearable
+        onFocus={loadDefaults}
+        defaultOptions={defaults}
+        isLoading={loading ? true : undefined}
+        blurInputOnSelect
+        loadOptions={debouncedLoadOptions}
+        onChange={i => setFilter(i ? getFilterOption(i) : null)}
+      />
+      {error && (
+        <Form.Text className="text-danger">
+          Search error. Please try again.
+        </Form.Text>
+      )}
+    </div>
+  )
+}
+
+const useDebouncedLoadOptions = <T,>(loadOptions: LoadOptions<T>) => {
   const [error, setError] = useState(false)
   const debouncedLoadOptions = useMemo(
     () =>
@@ -190,21 +216,24 @@ function ItemSearch<T>({
       }, 100),
     [loadOptions]
   )
-  return (
-    <div className="mb-3">
-      <AsyncSelect
-        {...props}
-        instanceId="item-search"
-        isClearable
-        blurInputOnSelect
-        loadOptions={debouncedLoadOptions}
-        onChange={i => setFilter(i ? getFilterOption(i) : null)}
-      />
-      {error && (
-        <Form.Text className="text-danger">
-          Search error. Please try again.
-        </Form.Text>
-      )}
-    </div>
-  )
+  return { error, debouncedLoadOptions }
+}
+
+const useDefaultOptions = <T,>(loadOptions: LoadOptions<T>) => {
+  const [defaults, setDefaults] = useState<any>(undefined)
+  const [loading, setLoadingDefaults] = useState(false)
+  const loadDefaults = useCallback(() => {
+    if (!defaults && !loading) {
+      setLoadingDefaults(true)
+      loadOptions("")
+        .then(options => {
+          setLoadingDefaults(false)
+          setDefaults(options)
+        })
+        .catch(() => {
+          setLoadingDefaults(false)
+        })
+    }
+  }, [defaults, loadOptions, loading])
+  return { loadDefaults, loading, defaults }
 }
