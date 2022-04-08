@@ -11,7 +11,7 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
       <Head>
         <title>{`${
           title ? title + " | " : ""
-        }Massachusetts Archive of Transparent Testimony`}</title>
+        }Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
@@ -27,7 +27,7 @@ const TopNav: React.FC = () => {
       <Container>
         <Wrap href="/">
           <Navbar.Brand className="text-wrap">
-            Massachusetts Archive of Transparent Testimony
+            Massachusetts Platform for Legislative Engagement
           </Navbar.Brand>
         </Wrap>
         <Navbar.Toggle aria-controls="topnav" />

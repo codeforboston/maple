@@ -1,4 +1,4 @@
-# Massachusetts Archive of Transparent Testimony (MATT)
+# Massachusetts Platform for Legislative Engagement (MAPLE)
 
 A legislative testimony project through Code for Boston!
 
