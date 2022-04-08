@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { useAuth } from "../../components/auth"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
-import { useMember, useProfile } from "../db"
+import { useAuth } from "../../components/auth"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
 import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
-import { siteUrl } from "../links"
 import { Attachment } from "./Attachment"
-import createCommitteeChairEmailCommand from "./createCommitteeChairEmailCommand"
-import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
-import EmailToCommitteeComponent from "./EmailToCommitteeComponent"
-import EmailToMyLegislatorsComponent from "./EmailToMyLegislatorsComponent"
-import TweetComponent from "./TweetComponent"
-
-const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
+import PostSubmitModal from "./PostSubmitModal"
 
 const CommentModal = ({
   bill,
@@ -23,14 +15,7 @@ const CommentModal = ({
   showTestimony,
   handleCloseTestimony
 }) => {
-  const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
-  const [checkedSendToYourLegislators, setCheckedSendToYourLegislators] =
-    React.useState(true)
-  const [checkedSendToCommittee, setCheckedSendToCommittee] =
-    React.useState(committeeName) // only default checkbox to checked if the bill is in a committee
-
-  const [checkedTweet, setCheckedTweet] = React.useState(true)
-
+  const { user, authenticated } = useAuth()
   const testimonyExplanation = (
     <div>
       <h5> Guidance on providing testimony</h5>
@@ -45,14 +30,7 @@ const CommentModal = ({
   const defaultTestimony = "Enter text.."
 
   const [isPublishing, setIsPublishing] = useState(false)
-
-  const { user, authenticated } = useAuth()
-  const { profile } = useProfile()
-
-  const senator = useMember(profile?.senator?.id)
-  const representative = useMember(profile?.representative?.id)
-  const senatorEmail = senator.member?.EmailAddress ?? ""
-  const representativeEmail = representative.member?.EmailAddress ?? ""
+  const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
 
   const [testimony, setTestimony] = useUnsavedTestimony()
   const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
@@ -69,61 +47,10 @@ const CommentModal = ({
 
   const positionMessage = "Select my support..(required)"
 
-  const positionEmailSubject =
-    testimony?.position == "endorse"
-      ? "Support of"
-      : testimony?.position == "oppose"
-      ? "Opposition to"
-      : "Opinion on"
-
-  const positionWord =
-    testimony?.position == "endorse"
-      ? "support"
-      : testimony?.position == "oppose"
-      ? "oppose"
-      : "have thoughts on"
-
-  const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
-
-  const billNumber = bill?.BillNumber
-  const billTitle = bill?.Title
-  const testimonyContent = testimony?.content
-
-  const emailCommandToMyLegislators = createMyLegislatorEmailCommand(
-    representativeEmail,
-    senatorEmail,
-    positionWord,
-    positionEmailSubject,
-    billNumber,
-    billTitle,
-    testimonyContent,
-    emailSuffix,
-    testimonyArchiveEmailAddress
-  )
-
-  const emailCommandToCommitteeChairs = createCommitteeChairEmailCommand(
-    houseChairEmail,
-    senateChairEmail,
-    committeeName,
-    positionWord,
-    positionEmailSubject,
-    billNumber,
-    billTitle,
-    testimonyContent,
-    emailSuffix,
-    testimonyArchiveEmailAddress
-  )
-
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
   const defaultContent =
     testimony && testimony.content ? testimony.content : defaultTestimony
-
-  const tweet = encodeURI(
-    `https://twitter.com/intent/tweet?text=I provided testimony on bill ${bill.BillNumber}: ${bill.Title}.
-    
-See ${webSiteBillAddress} for details.`
-  )
 
   const publishTestimony = async () => {
     if (
@@ -136,19 +63,11 @@ See ${webSiteBillAddress} for details.`
     setIsPublishing(true)
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
+    console.log("turning on post submit modal")
+    setShowPostSubmitModal(true)
 
-    if (checkedSendToYourLegislators) {
-      window.open(emailCommandToMyLegislators) // allow user to send a formatted email using their email client
-    }
-    if (checkedSendToCommittee && (houseChairEmail || senateChairEmail)) {
-      window.open(emailCommandToCommitteeChairs) // allow user to send a formatted email using their email client
-    }
-    if (checkedTweet) {
-      window.open(tweet)
-    }
-
-    handleCloseTestimony()
-    setIsPublishing(false)
+    // handleCloseTestimony() happens in PostSubmitModal
+    // setIsPublishing(false) happens in PostSubmitModal
   }
 
   const existingTestimony = !_.isEmpty(testimony)
@@ -167,48 +86,22 @@ See ${webSiteBillAddress} for details.`
 
       <Modal.Body>
         <Container>
+          <select
+            className="form-control"
+            defaultValue={defaultPosition}
+            onChange={e => {
+              const newPosition = e.target.value
+              if (newPosition) {
+                setTestimony({ position: newPosition })
+              }
+            }}
+          >
+            <option>{positionMessage}</option>
+            <option value="endorse">Endorse</option>
+            <option value="oppose">Oppose</option>
+            <option value="neutral">Neutral</option>
+          </select>
           <Row>
-            <Col className="col-sm align-middle">
-              <select
-                className="form-control"
-                defaultValue={defaultPosition}
-                onChange={e => {
-                  const newPosition = e.target.value
-                  if (newPosition) {
-                    setTestimony({ position: newPosition })
-                  }
-                }}
-              >
-                <option>{positionMessage}</option>
-                <option value="endorse">Endorse</option>
-                <option value="oppose">Oppose</option>
-                <option value="neutral">Neutral</option>
-              </select>
-              <div>
-                <EmailToMyLegislatorsComponent
-                  checkedSendToYourLegislators={checkedSendToYourLegislators}
-                  setCheckedSendToYourLegislators={
-                    setCheckedSendToYourLegislators
-                  }
-                  senator={senator}
-                  representative={representative}
-                />
-              </div>
-              <div>
-                <EmailToCommitteeComponent
-                  checkedSendToCommittee={checkedSendToCommittee}
-                  setCheckedSendToCommittee={setCheckedSendToCommittee}
-                  committeeName={committeeName}
-                />
-              </div>
-              <div>
-                <TweetComponent
-                  checkedTweet={checkedTweet}
-                  setCheckedTweet={setCheckedTweet}
-                />
-              </div>
-            </Col>
-
             <Col className="col-sm">
               {testimonyExplanation}
               <textarea
@@ -229,6 +122,17 @@ See ${webSiteBillAddress} for details.`
           <Row>
             <Attachment attachment={attachment} />
           </Row>
+          <PostSubmitModal
+            showPostSubmitModal={showPostSubmitModal}
+            setShowPostSubmitModal={setShowPostSubmitModal}
+            setIsPublishing={setIsPublishing}
+            handleCloseTestimony={handleCloseTestimony}
+            bill={bill}
+            testimony={testimony}
+            committeeName={committeeName}
+            houseChairEmail={houseChairEmail}
+            senateChairEmail={senateChairEmail}
+          />
         </Container>
       </Modal.Body>
 
