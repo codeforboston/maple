@@ -37,9 +37,8 @@ export default createPage({
               process in Massachusetts more accessible and transparent.
             </p>
             <p>
-              MAPLE platform is a
-              project of the <a href="https://www.nulawlab.org">NuLawLab</a>{" "}
-              developed with{" "}
+              MAPLE platform is a project of the{" "}
+              <a href="https://www.nulawlab.org">NuLawLab</a> developed with{" "}
               <a href="https://www.codeforboston.org">Code for Boston</a>.
             </p>
             <h2>NuLawLab</h2>

@@ -14,8 +14,8 @@ export default createPage({
     return (
       <>
         <p>
-          The Massachusetts Platform for Legislative Engagement (MAPLE) platform makes it
-          easier for anyone to submit and see testimony to the{" "}
+          The Massachusetts Platform for Legislative Engagement (MAPLE) platform
+          makes it easier for anyone to submit and see testimony to the{" "}
           <a href="https://malegislature.gov">Massachusetts Legislature</a>{" "}
           about the bills that will shape our future.
         </p>
@@ -29,7 +29,11 @@ export default createPage({
           and <a href="https://cyber.harvard.edu">Harvard BKC</a>.
         </p>
         <p>
-          This website is not affiliated with the state legislature, but helps individuals and organizations to submit their testimony to relevant committees and members of the legislature.  Because usage of this website is voluntary, it will not include 100% of all testimony considered by the legislature.
+          This website is not affiliated with the state legislature, but helps
+          individuals and organizations to submit their testimony to relevant
+          committees and members of the legislature. Because usage of this
+          website is voluntary, it will not include 100% of all testimony
+          considered by the legislature.
         </p>
 
         <Stack gap={3} className="col-lg-5 mx-auto">
