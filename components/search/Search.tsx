@@ -175,10 +175,19 @@ function ItemSearch<T>({
   search,
   ...props
 }: ItemSearchProps<T>) {
-  const error = useInitializeSearch(search)
+  const [error, setError] = useState(false)
   const debouncedLoadOptions = useMemo(
     () =>
-      AwesomeDebouncePromise(async (value: string) => loadOptions(value), 100),
+      AwesomeDebouncePromise(async (value: string) => {
+        try {
+          const options = await loadOptions(value)
+          setError(false)
+          return options
+        } catch (e) {
+          console.warn("Search error", e)
+          setError(true)
+        }
+      }, 100),
     [loadOptions]
   )
   return (
@@ -187,7 +196,6 @@ function ItemSearch<T>({
         {...props}
         instanceId="item-search"
         isClearable
-        defaultOptions
         blurInputOnSelect
         loadOptions={debouncedLoadOptions}
         onChange={i => setFilter(i ? getFilterOption(i) : null)}
@@ -199,24 +207,4 @@ function ItemSearch<T>({
       )}
     </div>
   )
-}
-
-function useInitializeSearch(search: SearchService) {
-  const [error, setError] = useState(false)
-
-  useEffect(
-    () =>
-      void search
-        .initialize()
-        .then(() => {
-          setError(false)
-        })
-        .catch(e => {
-          console.warn("Error initializing search", e)
-          setError(true)
-        }),
-    [search]
-  )
-
-  return error
 }
