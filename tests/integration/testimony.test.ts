@@ -1,21 +1,25 @@
 import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
+import { ref, uploadBytes } from "firebase/storage"
 import { httpsCallable } from "firebase/functions"
 import { Bill } from "../../components/db"
-import { firestore, functions } from "../../components/firebase"
-import { terminateFirebase, testDb } from "../testUtils"
+import { firestore, functions, storage } from "../../components/firebase"
+import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
+  expectStorageUnauthorized,
   signInUser1,
   signInUser2
 } from "./common"
+import { nanoid } from "nanoid"
 
 type BaseTestimony = {
   billId: string
   court: number
   position: "endorse" | "oppose" | "neutral"
   content: string
+  attachmentId: string | null | undefined
 }
 
 type DraftTestimony = BaseTestimony & {
@@ -31,7 +35,23 @@ type Testimony = BaseTestimony & {
 
 const refs = {
   draftTestimony: (uid: string, id: string) =>
-    doc(firestore, `/users/${uid}/draftTestimony/${id}`)
+    doc(firestore, `/users/${uid}/draftTestimony/${id}`),
+  draftAttachment: (uid: string, id: string) =>
+    ref(storage, `/users/${uid}/draftAttachments/${id}`),
+  publishedAttachment: (id: string) =>
+    ref(storage, `/publishedAttachments/${id}`),
+  archivedAttachment: (uid: string, id: string) =>
+    ref(storage, `/users/${uid}/archivedAttachments/${id}`)
+}
+
+const paths = {
+  draftTestimony: (uid: string, id: string) =>
+    `/users/${uid}/draftTestimony/${id}`,
+  draftAttachment: (uid: string, id: string) =>
+    `/users/${uid}/draftAttachments/${id}`,
+  publishedAttachment: (id: string) => `/publishedAttachments/${id}`,
+  archivedAttachment: (uid: string, id: string) =>
+    `/users/${uid}/archivedAttachments/${id}`
 }
 
 const deleteTestimony = httpsCallable<
@@ -51,6 +71,12 @@ beforeEach(async () => {
   uid = user.uid
 })
 
+let billId: string, draft: DraftTestimony, draftId: string
+beforeEach(async () => {
+  billId = await createFakeBill()
+  ;({ draft, draftId } = await createDraft(uid, billId))
+})
+
 afterAll(terminateFirebase)
 
 describe("draftTestimony", () => {
@@ -62,15 +88,33 @@ describe("draftTestimony", () => {
       setDoc(refs.draftTestimony("someone else", "test"), {})
     )
   })
+  describe("attachments", () => {
+    it("creates draft attachments", async () => {
+      await uploadBytes(refs.draftAttachment(uid, "test"), new Uint8Array(10), {
+        contentType: "application/pdf"
+      })
+    })
+    it("denies non-pdf attachments", async () => {
+      await expectStorageUnauthorized(
+        uploadBytes(refs.draftAttachment(uid, "test"), new Uint8Array(10), {
+          contentType: "image/png"
+        })
+      )
+    })
+    it("denies large pdfs", async () => {
+      const overLimitBytes = 15e6
+      await expectStorageUnauthorized(
+        uploadBytes(
+          refs.draftAttachment(uid, "test"),
+          new Uint8Array(overLimitBytes),
+          { contentType: "application/pdf" }
+        )
+      )
+    })
+  })
 })
 
 describe("publishTestimony", () => {
-  let billId: string, draft: DraftTestimony, draftId: string
-  beforeEach(async () => {
-    billId = await createFakeBill()
-    ;({ draft, draftId } = await createDraft(uid, billId))
-  })
-
   it("Fails if draft doesn't exist", async () => {
     await expect(
       publishTestimony({ draftId: "nonexistant-id" })
@@ -155,20 +199,6 @@ describe("publishTestimony", () => {
     expect(draftPublishedVersion).toBe(2)
   })
 
-  it("Deletes published testimony", async () => {
-    let res = await publishTestimony({ draftId })
-
-    await deleteTestimony({ publicationId: res.data.publicationId })
-
-    let testimony = await getPublication(uid, res.data.publicationId)
-    const bill = await getBill(billId)
-
-    expect(testimony).toBeUndefined()
-    expect(bill.latestTestimonyAt).toBeUndefined()
-    expect(bill.latestTestimonyId).toBeUndefined()
-    expect(bill.testimonyCount).toBe(0)
-  })
-
   it("Supports multiple users", async () => {
     const res1 = await publishTestimony({ draftId })
 
@@ -187,6 +217,121 @@ describe("publishTestimony", () => {
     expect(bill.latestTestimonyId).toBe(res1.data.publicationId)
   })
 
+  it("denies unauthorized access", async () => {
+    await expectPermissionDenied(
+      setDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`), {})
+    )
+
+    await expectPermissionDenied(
+      setDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`), {})
+    )
+
+    await expectPermissionDenied(
+      getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
+    )
+  })
+
+  describe("attachments", () => {
+    it("copies drafts to published and archived files", async () => {
+      const attachmentId = nanoid()
+      await createDraftAttachment(uid, attachmentId, "test-pdf")
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+
+      const res = await publishTestimony({ draftId }),
+        { publication, attachments } = await getPublicationAndAttachments(
+          uid,
+          res.data.publicationId
+        ),
+        publishedAttachmentId = (publication as any).attachmentId
+
+      expect(publishedAttachmentId).toBeTruthy()
+      expect(attachments.archived!.toString()).toBe("test-pdf")
+      expect(attachments.published!.toString()).toBe("test-pdf")
+    })
+
+    it("updates published attachments if draft is updated", async () => {
+      // Publish 1
+      let attachmentId = nanoid()
+      await createDraftAttachment(uid, attachmentId, "test-pdf-1")
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      const r1 = await publishTestimony({ draftId })
+      const p1 = await getPublication(uid, r1.data.publicationId)
+
+      // Publish 2
+      attachmentId = nanoid()
+      const expectedContent = "test-pdf-2"
+      await createDraftAttachment(uid, attachmentId, "test-pdf-2")
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      const r = await publishTestimony({ draftId })
+
+      const { attachments } = await getPublicationAndAttachments(
+        uid,
+        r.data.publicationId
+      )
+
+      await expect(
+        fileExists(paths.publishedAttachment(p1.attachmentId!))
+      ).resolves.toBeFalsy()
+      expect(attachments.archived!.toString()).toBe(expectedContent)
+      expect(attachments.published!.toString()).toBe(expectedContent)
+    })
+
+    it("does nothing if draft attachment is unchanged", async () => {
+      // Publish 1
+      let attachmentId = nanoid()
+      const expectedContent = "test-pdf-1"
+      await createDraftAttachment(uid, attachmentId, expectedContent)
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      let r = await publishTestimony({ draftId })
+      const publication = await getPublication(uid, r.data.publicationId)
+
+      // Publish 2
+      r = await publishTestimony({ draftId })
+      const { attachments, publication: publication2 } =
+        await getPublicationAndAttachments(uid, r.data.publicationId)
+
+      expect(publication.attachmentId).toBeTruthy()
+      expect(publication.attachmentId).toEqual(publication2.attachmentId)
+      expect(attachments.published!.toString()).toEqual(expectedContent)
+    })
+
+    it("deletes published attachment if draft is deleted", async () => {
+      // Publish 1
+      let attachmentId = nanoid()
+      const expectedContent = "test-pdf-1"
+      await createDraftAttachment(uid, attachmentId, expectedContent)
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      let r = await publishTestimony({ draftId })
+      const publication = await getPublication(uid, r.data.publicationId)
+
+      // Publish 2
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId: null })
+      r = await publishTestimony({ draftId })
+      const { attachments, publication: publication2 } =
+        await getPublicationAndAttachments(uid, r.data.publicationId)
+
+      expect(publication.attachmentId).toBeTruthy()
+      expect(publication2.attachmentId).toBeFalsy()
+      expect(attachments.published).toBeFalsy()
+    })
+  })
+})
+
+describe("deleteTestimony", () => {
+  it("Deletes published testimony", async () => {
+    let res = await publishTestimony({ draftId })
+
+    await deleteTestimony({ publicationId: res.data.publicationId })
+
+    let testimony = await getPublication(uid, res.data.publicationId)
+    const bill = await getBill(billId)
+
+    expect(testimony).toBeUndefined()
+    expect(bill.latestTestimonyAt).toBeUndefined()
+    expect(bill.latestTestimonyId).toBeUndefined()
+    expect(bill.testimonyCount).toBe(0)
+  })
+
   it("Retains archives", async () => {
     const res1 = await publishTestimony({ draftId })
     await deleteTestimony({ publicationId: res1.data.publicationId })
@@ -203,20 +348,44 @@ describe("publishTestimony", () => {
     expect(archived.size).toBe(2)
   })
 
-  it("denies unauthorized access", async () => {
-    await expectPermissionDenied(
-      setDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`), {})
-    )
+  describe("attachments", () => {
+    it("deletes attachments", async () => {
+      let attachmentId = nanoid()
+      await createDraftAttachment(uid, attachmentId, "test-pdf-1")
+      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      const r = await publishTestimony({ draftId })
+      const p = await getPublication(uid, r.data.publicationId)
 
-    await expectPermissionDenied(
-      setDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`), {})
-    )
+      await deleteTestimony({ publicationId: r.data.publicationId })
 
-    await expectPermissionDenied(
-      getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
-    )
+      expect(p.attachmentId).toBeDefined()
+      await expect(
+        fileExists(paths.publishedAttachment(p.attachmentId!))
+      ).resolves.toBeFalsy()
+    })
   })
 })
+
+async function getPublicationAndAttachments(uid: string, id: string) {
+  const publication = await getPublication(uid, id),
+    publishedAttachmentId = (publication as any).attachmentId
+
+  const attachments: { archived: null | Buffer; published: null | Buffer } = {
+    archived: null,
+    published: null
+  }
+
+  if (publishedAttachmentId) {
+    attachments.archived = await getFile(
+      paths.archivedAttachment(uid, publishedAttachmentId)
+    )
+    attachments.published = await getFile(
+      paths.publishedAttachment(publishedAttachmentId)
+    )
+  }
+
+  return { publication, attachments }
+}
 
 async function getPublication(uid: string, id: string): Promise<Testimony> {
   const doc = await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).get()
@@ -233,13 +402,31 @@ async function getBill(id: string): Promise<Bill> {
   return doc.data() as any
 }
 
+async function fileExists(path: string) {
+  const f = testStorage.bucket().file(path)
+  const [exists] = await f.exists()
+  return exists
+}
+
+async function getFile(path: string): Promise<Buffer> {
+  const [r] = await testStorage.bucket().file(path).download()
+  return r
+}
+
+async function createDraftAttachment(uid: string, id: string, content: string) {
+  await uploadBytes(refs.draftAttachment(uid, id), Buffer.from(content), {
+    contentType: "application/pdf"
+  })
+}
+
 async function createDraft(uid: string, billId: string) {
   const draftId = "test-draft-id"
   const draft: DraftTestimony = {
     billId,
     content: "test testimony",
     court: 192,
-    position: "endorse"
+    position: "endorse",
+    attachmentId: null
   }
 
   await setDoc(refs.draftTestimony(uid, draftId), draft)

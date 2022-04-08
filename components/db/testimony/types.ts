@@ -1,12 +1,14 @@
 import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { functions } from "../../firebase"
+import { Maybe } from "../common"
 
 export type BaseTestimony = {
   billId: string
   court: number
   position: "endorse" | "oppose" | "neutral"
   content: string
+  attachmentId?: Maybe<string>
 }
 
 /** Draft testimony */

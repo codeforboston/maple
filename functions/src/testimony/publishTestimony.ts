@@ -3,9 +3,10 @@ import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
-import { db, Timestamp, auth } from "../firebase"
+import { auth, db, Timestamp } from "../firebase"
 import { currentGeneralCourt } from "../malegislature"
-import { Testimony, DraftTestimony } from "./types"
+import { Attachments, PublishedAttachmentState } from "./attachments"
+import { DraftTestimony, Testimony } from "./types"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
@@ -15,9 +16,9 @@ export const publishTestimony = https.onCall(async (data, context) => {
   const uid = checkAuth(context)
   const { draftId } = checkRequest(PublishTestimonyRequest, data)
 
-  let publicationId: string
+  let output: TransactionOutput
   try {
-    publicationId = await db.runTransaction(t =>
+    output = await db.runTransaction(t =>
       new PublishTestimonyTransaction(t, draftId, uid).run()
     )
   } catch (e) {
@@ -25,8 +26,16 @@ export const publishTestimony = https.onCall(async (data, context) => {
     throw e
   }
 
-  return { publicationId }
+  let attachments = new Attachments()
+  await attachments.applyPublish(output.attachments)
+
+  return { publicationId: output.publicationId }
 })
+
+type TransactionOutput = {
+  publicationId: string
+  attachments: PublishedAttachmentState
+}
 
 class PublishTestimonyTransaction {
   private t
@@ -38,8 +47,9 @@ class PublishTestimonyTransaction {
   private billSnap!: DocumentSnapshot
   private bill!: Bill
   private publicationRef!: DocumentReference
-  private publicationExists!: boolean
+  private currentPublication?: Testimony
   private profile?: any
+  private attachments!: PublishedAttachmentState
 
   constructor(t: FirebaseFirestore.Transaction, draftId: string, uid: string) {
     this.t = t
@@ -51,6 +61,7 @@ class PublishTestimonyTransaction {
     await this.resolveDraft()
     await this.resolvePublication()
     await this.resolveProfile()
+    await this.resolveAttachments()
 
     const newPublication: Testimony = {
       authorUid: this.uid,
@@ -60,7 +71,9 @@ class PublishTestimonyTransaction {
       court: this.draft.court,
       position: this.draft.position,
       version: await this.getNextPublicationVersion(),
-      publishedAt: Timestamp.now()
+      publishedAt: Timestamp.now(),
+      attachmentId: this.attachments.id,
+      draftAttachmentId: this.attachments.draftId
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -81,7 +94,10 @@ class PublishTestimonyTransaction {
     this.updateDraft(newPublication)
     this.updateBill(newPublication)
 
-    return this.publicationRef.id
+    return {
+      publicationId: this.publicationRef.id,
+      attachments: this.attachments
+    }
   }
 
   private setPublication(newPublication: Testimony) {
@@ -107,7 +123,7 @@ class PublishTestimonyTransaction {
       latestTestimonyAt: newPublication.publishedAt,
       latestTestimonyId: this.publicationRef.id
     }
-    if (!this.publicationExists) {
+    if (!this.currentPublication) {
       billTestimonyFields.testimonyCount = this.bill.testimonyCount + 1
     }
     this.t.update(this.billSnap.ref, billTestimonyFields)
@@ -130,12 +146,7 @@ class PublishTestimonyTransaction {
 
     const draft = testimony.value
 
-    if (!(await this.isValidCourt(draft.court))) {
-      throw fail(
-        "failed-precondition",
-        `Draft testimony has invalid court number ${draft.court}`
-      )
-    }
+    await this.checkValidCourt(draft.court)
 
     const billSnap = await db
       .doc(`/generalCourts/${draft.court}/bills/${draft.billId}`)
@@ -159,11 +170,29 @@ class PublishTestimonyTransaction {
     this.profile = profileSnap.data()
   }
 
-  private async isValidCourt(court: number) {
+  private async resolveAttachments() {
+    const attachments = new Attachments()
+    this.attachments = await attachments.resolvePublish({
+      draft: this.draft,
+      publishedId: this.currentPublication?.attachmentId,
+      publishedDraftId: this.currentPublication?.draftAttachmentId,
+      uid: this.uid,
+      profile: this.profile
+    })
+  }
+
+  private async checkValidCourt(court: number) {
     // TODO: Generate court documents and check for existence of the document
-    return court === currentGeneralCourt
     // const doc = await db.doc(`/generalCourts/${court}`).get()
-    // return doc.exists
+    // const valid = doc.exists
+    const valid = court === currentGeneralCourt
+
+    if (!valid) {
+      throw fail(
+        "failed-precondition",
+        `Draft testimony has invalid court number ${court}`
+      )
+    }
   }
 
   private async getNextPublicationVersion() {
@@ -194,12 +223,12 @@ class PublishTestimonyTransaction {
     )
 
     if (publications.size === 0) {
-      this.publicationExists = false
       this.publicationRef = db
         .collection(`/users/${this.uid}/publishedTestimony`)
         .doc()
     } else {
-      this.publicationExists = true
+      const data = publications.docs[0].data()
+      this.currentPublication = Testimony.checkWithDefaults(data)
       this.publicationRef = publications.docs[0].ref
     }
   }

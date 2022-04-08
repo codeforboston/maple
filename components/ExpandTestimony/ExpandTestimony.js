@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { siteUrl, Wrap } from "../links"
+import { ViewAttachment } from "../ViewAttachment"
 
 const getDirectLink = testimony => {
   const { billId, authorUid } = testimony
@@ -49,13 +50,9 @@ const ExpandTestimony = props => {
           <p style={{ whiteSpace: "pre-wrap" }}>
             {testimony ? testimony.content : ""}
           </p>
-          <h4>
-            {testimony && testimony.attachment != null ? (
-              <Button variant="primary">See attachment</Button>
-            ) : (
-              ""
-            )}
-          </h4>
+          <p>
+            <ViewAttachment testimony={testimony} />
+          </p>
           <Wrap href={getDirectLink(testimony)}>
             <Button variant="primary">See full page</Button>
           </Wrap>
