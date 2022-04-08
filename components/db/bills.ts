@@ -239,7 +239,6 @@ function getPageKey(bill: Bill, sort: SortOptions): unknown {
   }
 }
 
-export type FilterType = FilterOptions["type"]
 export type FilterOptions =
   | { type: "bill"; id: string }
   | { type: "primarySponsor"; id: string }

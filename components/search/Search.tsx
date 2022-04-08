@@ -3,10 +3,16 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { GroupBase } from "react-select"
 import AsyncSelect, { AsyncProps } from "react-select/async"
 import { Col, Form, Row } from "../bootstrap"
-import { FilterOptions, SortOptions, FilterType } from "../db"
+import { FilterOptions, SortOptions } from "../db"
 import { formatBillId } from "../formatting"
 import { SearchService, useServiceChecked } from "./service"
 
+type FilterType =
+  | "billId"
+  | "billText"
+  | "primarySponsor"
+  | "committee"
+  | "city"
 type SetSort = (sort: SortOptions) => void
 type SetFilter = (filter: FilterOptions | null) => void
 type SetFilterType = (filterType: FilterType | null) => void
@@ -15,7 +21,7 @@ export const Search: React.FC<{
   setSort: SetSort
   setFilter: SetFilter
 }> = ({ setSort, setFilter }) => {
-  const [filterType, setFilterType] = useState<null | FilterType>(null)
+  const [filterType, setFilterType] = useState<null | FilterType>("billId")
   const onFilterTypeChange: SetFilterType = useCallback(
     t => {
       setFilterType(t)
@@ -27,8 +33,8 @@ export const Search: React.FC<{
   return (
     <Form>
       <Row>
-        <SortSelect setSort={setSort} />
         <SearchTypeSelect setFilterType={onFilterTypeChange} />
+        <SortSelect setSort={setSort} />
       </Row>
       <Row>
         <SearchBox filterType={filterType} setFilter={setFilter} />
@@ -65,12 +71,12 @@ const SearchTypeSelect: React.FC<{ setFilterType: SetFilterType }> = ({
       <Form.Select
         onChange={e => {
           const option = e.target.value
-          const filterType = option === "none" ? null : (option as FilterType)
+          const filterType = option as FilterType
           setFilterType(filterType)
         }}
       >
-        <option value="none">None</option>
-        <option value="bill">Bill Title and Number</option>
+        <option value="billId">Bill Number</option>
+        <option value="billText">Bill Title</option>
         <option value="primarySponsor">Lead Sponsor</option>
         <option value="committee">Current Committee</option>
         <option value="city">City</option>
@@ -100,14 +106,23 @@ function getItemSearchProps(
   filterType: FilterType
 ): FilterProps<any> {
   switch (filterType) {
-    case "bill":
+    case "billId":
       return asProps({
-        placeholder: "Type to search for bills by title or number...",
+        placeholder: "Type to search for bills by number...",
+        getOptionLabel: o =>
+          [formatBillId(o.id), o.title].filter(Boolean).join(" | "),
+        getOptionValue: o => o.id,
+        getFilterOption: i => ({ type: "bill", id: i.id }),
+        loadOptions: search.billIds
+      })
+    case "billText":
+      return asProps({
+        placeholder: "Type to search for bills by title...",
         getOptionLabel: o =>
           [formatBillId(o.id), o.title, o.pinslip].filter(Boolean).join(" | "),
         getOptionValue: o => o.id,
         getFilterOption: i => ({ type: "bill", id: i.id }),
-        loadOptions: search.bills
+        loadOptions: search.billContents
       })
     case "city":
       return asProps({
@@ -170,6 +185,7 @@ function ItemSearch<T>({
     <div className="mb-3">
       <AsyncSelect
         {...props}
+        instanceId="item-search"
         isClearable
         defaultOptions
         blurInputOnSelect
