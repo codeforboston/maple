@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { formatBillId } from "../formatting"
 import { Wrap } from "../links"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import { QuestionTooltip } from "../tooltip"
 
 // the word "testimonies": In more general, commonly used, contexts, the plural form will also be testimony.  However, in more specific contexts, the plural form can also be testimonies e.g. in reference to various types of testimonies or a collection of testimonies.
 
@@ -54,8 +55,15 @@ const Testimonies = () => {
             <th>Bill</th>
             <th>Position</th>
             <th>Text</th>
-            <th>Submitter</th>
-            <th></th>
+            <th>
+              Submitter
+              {
+                <QuestionTooltip
+                  className="m-1"
+                  text="submitters without links have chosen to make their profile private"
+                ></QuestionTooltip>
+              }
+            </th>
           </tr>
         </thead>
         <tbody>{testimoniesRows}</tbody>

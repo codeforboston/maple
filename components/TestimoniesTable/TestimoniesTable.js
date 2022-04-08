@@ -1,10 +1,11 @@
+import Link from "next/link"
 import React from "react"
 import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { useBill, usePublicProfile } from "../db"
-import Link from "next/link"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
+import { QuestionTooltip } from "../tooltip"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
@@ -52,7 +53,15 @@ const TestimoniesTable = ({ testimonies }) => {
           <tr>
             <th>Bill</th>
             <th>Position</th>
-            <th>Submitter</th>
+            <th>
+              Submitter
+              {
+                <QuestionTooltip
+                  className="m-1"
+                  text="submitters without links have chosen to make their profile private"
+                ></QuestionTooltip>
+              }
+            </th>
             <th>Date Submitted</th>
             <th>Text</th>
             <th></th>
