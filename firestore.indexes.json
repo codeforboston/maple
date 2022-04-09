@@ -18,6 +18,66 @@
         }
       ]
     },
+
+    // No filter
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+
+    // Filter by city
     {
       "collectionGroup": "bills",
       "queryScope": "COLLECTION",
@@ -91,6 +151,26 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+
+    // Filter by primary sponsor
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "content.PrimarySponsor.Id",
           "order": "ASCENDING"
         },
@@ -159,6 +239,26 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+
+    // Filter by current committee
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "currentCommittee.id",
           "order": "ASCENDING"
         },
@@ -227,6 +327,26 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+
+    // Filter by bill ID
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "id",
           "order": "ASCENDING"
         },
@@ -264,6 +384,21 @@
         }
       ]
     },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+
     {
       "collectionGroup": "events",
       "queryScope": "COLLECTION",
