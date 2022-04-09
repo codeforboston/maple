@@ -43,6 +43,10 @@
         {
           "fieldPath": "latestTestimonyAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -57,6 +61,10 @@
         {
           "fieldPath": "testimonyCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -71,6 +79,10 @@
         {
           "fieldPath": "cosponsorCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -99,6 +111,10 @@
         {
           "fieldPath": "latestTestimonyAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -113,6 +129,10 @@
         {
           "fieldPath": "testimonyCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -127,6 +147,10 @@
         {
           "fieldPath": "cosponsorCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -155,6 +179,10 @@
         {
           "fieldPath": "latestTestimonyAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -169,6 +197,10 @@
         {
           "fieldPath": "testimonyCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -183,6 +215,10 @@
         {
           "fieldPath": "cosponsorCount",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
         }
       ]
     },
