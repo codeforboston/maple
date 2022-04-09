@@ -114,7 +114,12 @@ export default createPage({
           Hello, {displayName ? decodeHtmlCharCodes(displayName) : "Anonymous"}!
         </h1>
         <div key={`inline-radio`} className="mb-3">
-          <div>Are you an individual or an organization?</div>
+          <div>
+            Are you an individual or an organization?{" "}
+            {profile.updatingIsOrganization ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
           <Form.Check
             inline
             label="Individual"
