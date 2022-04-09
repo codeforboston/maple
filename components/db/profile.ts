@@ -35,6 +35,7 @@ type ProfileState = {
   updatingIsPublic: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
+  updatingDisplayName: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
 }
@@ -56,6 +57,7 @@ export function useProfile() {
         updatingIsPublic: false,
         updatingIsOrganization: false,
         updatingAbout: false,
+        updatingDisplayName: false,
         updatingSocial: {
           linkedIn: false,
           twitter: false
@@ -107,6 +109,13 @@ export function useProfile() {
           dispatch({ updatingAbout: true })
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
+        }
+      },
+      updateDisplayName: async (displayName: string) => {
+        if (uid) {
+          dispatch({ updatingDisplayName: true })
+          await updateDisplayName(uid, displayName)
+          dispatch({ updatingDisplayName: false })
         }
       },
       updateSocial: async (network: keyof SocialLinks, link: string) => {
@@ -170,6 +179,10 @@ function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
 
 function updateAbout(uid: string, about: string) {
   return setDoc(profileRef(uid), { about }, { merge: true })
+}
+
+function updateDisplayName(uid: string, displayName: string) {
+  return setDoc(profileRef(uid), { displayName }, { merge: true })
 }
 
 export function usePublicProfile(uid: string) {

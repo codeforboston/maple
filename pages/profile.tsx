@@ -72,11 +72,15 @@ export default createPage({
     // so we don't ping the server every keystroke
     const [unsavedSocials, setUnsavedSocials] = useState<SocialLinks>({})
     const [unsavedAbout, setUnsavedAbout] = useState<string>()
+    const [unsavedDisplayName, setUnsavedDisplayName] = useState<string | null>(
+      displayName
+    )
 
     useEffect(() => {
       // Load in text inputs when profile loads
       setUnsavedSocials(profile.profile?.social ?? {})
       setUnsavedAbout(profile.profile?.about)
+      setUnsavedDisplayName(profile.profile?.displayName ?? displayName)
     }, [profile.profile])
 
     useEffectWithTimeout(() => {
@@ -108,11 +112,44 @@ export default createPage({
       }
     }, [unsavedAbout, profile])
 
+    useEffectWithTimeout(() => {
+      // Wait a bit for user input to stop, then save display name
+      if (profile.loading || !profile?.profile) {
+        return
+      }
+      if (
+        unsavedDisplayName !== null &&
+        unsavedDisplayName !== profile.profile.displayName
+      ) {
+        profile.updateDisplayName(unsavedDisplayName)
+      }
+    }, [unsavedDisplayName, profile])
+
     return (
       <>
         <h1>
-          Hello, {displayName ? decodeHtmlCharCodes(displayName) : "Anonymous"}!
+          Hello,{" "}
+          {unsavedDisplayName
+            ? decodeHtmlCharCodes(unsavedDisplayName)
+            : "Anonymous"}
+          !
         </h1>
+        <Col>
+          <div>
+            Display Name:{" "}
+            {profile.updatingDisplayName ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
+          <FormControl
+            placeholder={"Your name"}
+            aria-label={"Your name"}
+            value={unsavedDisplayName ?? ""}
+            onChange={e => {
+              setUnsavedDisplayName(e.currentTarget.value)
+            }}
+          />
+        </Col>
         <div key={`inline-radio`} className="mb-3">
           <div>
             Are you an individual or an organization?{" "}
@@ -204,11 +241,11 @@ export default createPage({
               }}
             />
             <label className="form-check-label" htmlFor="flexCheckChecked">
-              Allow others to see my profile
+              Allow others to see my profile{" "}
+              {profile.updatingIsPublic ? (
+                <Spinner animation="border" className="mx-auto" size="sm" />
+              ) : null}
             </label>
-            {profile.updatingIsPublic ? (
-              <Spinner animation="border" className="mx-auto" size="sm" />
-            ) : null}
           </div>
         )}
         <div className="mt-2">
