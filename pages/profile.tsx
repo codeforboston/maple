@@ -90,8 +90,6 @@ export default createPage({
       setUnsavedDisplayName(profile.profile?.displayName ?? displayName)
     }, [profile.profile])
 
-    console.log(profile.profile?.displayName)
-
     useEffectWithTimeout(() => {
       // Wait a bit for user input to stop, then save socials
       if (profile.loading || !profile?.profile) {
