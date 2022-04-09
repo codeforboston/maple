@@ -15,7 +15,7 @@ const CommentModal = ({
   showTestimony,
   handleCloseTestimony
 }) => {
-  const { user, authenticated } = useAuth()
+  const { user } = useAuth()
   const testimonyExplanation = (
     <div>
       <h5> Guidance on providing testimony</h5>
@@ -27,7 +27,6 @@ const CommentModal = ({
       </ul>
     </div>
   )
-  const defaultTestimony = "Enter text.."
 
   const [isPublishing, setIsPublishing] = useState(false)
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
@@ -49,8 +48,6 @@ const CommentModal = ({
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
-  const defaultContent =
-    testimony && testimony.content ? testimony.content : defaultTestimony
 
   const publishTestimony = async () => {
     if (
@@ -106,9 +103,8 @@ const CommentModal = ({
                 className="form-control col-sm"
                 resize="none"
                 rows="20"
-                placeholder={defaultContent}
-                defaultValue={existingTestimony ? defaultContent : null}
-                // need default value if there was existing testimony
+                placeholder={existingTestimony ? null : "enter text.."}
+                defaultValue={existingTestimony ? testimony?.content : null}
                 required
                 onChange={e => {
                   const newText = e.target.value
