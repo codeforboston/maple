@@ -63,11 +63,9 @@ const CommentModal = ({
     setIsPublishing(true)
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
-    console.log("turning on post submit modal")
     setShowPostSubmitModal(true)
-
-    // handleCloseTestimony() happens in PostSubmitModal
-    // setIsPublishing(false) happens in PostSubmitModal
+    setIsPublishing(false)
+    // handleCloseTestimony() is in postSubmitModal
   }
 
   const existingTestimony = !_.isEmpty(testimony)
@@ -125,13 +123,12 @@ const CommentModal = ({
           <PostSubmitModal
             showPostSubmitModal={showPostSubmitModal}
             setShowPostSubmitModal={setShowPostSubmitModal}
-            setIsPublishing={setIsPublishing}
             handleCloseTestimony={handleCloseTestimony}
             bill={bill}
             testimony={testimony}
-            committeeName={committeeName}
-            houseChairEmail={houseChairEmail}
             senateChairEmail={senateChairEmail}
+            houseChairEmail={houseChairEmail}
+            committeeName={committeeName}
           />
         </Container>
       </Modal.Body>

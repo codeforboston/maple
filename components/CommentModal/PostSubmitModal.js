@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { siteUrl } from "../links"
 import { Button, Col, Modal } from "../bootstrap"
 import { useMember, useProfile } from "../db"
@@ -13,7 +13,6 @@ import createMyLegislatorEmailCommand from "./createMyLegislatorEmailCommand"
 const PostSubmitModal = ({
   showPostSubmitModal,
   setShowPostSubmitModal,
-  setIsPublishing,
   handleCloseTestimony,
   bill,
   testimony,
@@ -80,7 +79,10 @@ const PostSubmitModal = ({
 See ${webSiteBillAddress} for details.`
   )
 
-  const handleClosePostSubmitModal = () => {}
+  const handleClosePostSubmitModal = () => {
+    setShowPostSubmitModal(false)
+    handleCloseTestimony()
+  }
 
   return (
     <Modal show={showPostSubmitModal} onHide={handleClosePostSubmitModal}>

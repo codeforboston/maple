@@ -1,5 +1,4 @@
 import React from "react"
-import { Button, Modal, Checkbox, Form } from "react-bootstrap"
 import * as links from "../links"
 
 const EmailToMyLegislators = ({
