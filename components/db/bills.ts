@@ -264,11 +264,11 @@ async function listBills(
   limitCount: number,
   startAfterKey: unknown[] | null
 ): Promise<Bill[]> {
-  // Don't use an orderBy clause if filtering AND sorting on bill ID's
-  const useOrderBy = !(filter?.type === "bill" && sort === "id")
-  const orderByConstraints = useOrderBy
-    ? getOrderBy(sort).map(o => orderBy(...o))
-    : []
+  // Exclude the id orderBy clause if filtering on bill ID's
+  const excludeOrderById = filter?.type === "bill"
+  const orderByConstraints = getOrderBy(sort)
+    .filter(o => !excludeOrderById || o[0] !== "id")
+    .map(o => orderBy(...o))
 
   const result = await getDocs(
     nullableQuery(
