@@ -23,6 +23,7 @@ export type Profile = {
   public?: boolean
   about?: string
   social?: SocialLinks
+  organization?: boolean
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -32,7 +33,9 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingIsOrganization: boolean
   updatingAbout: boolean
+  updatingDisplayName: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
 }
@@ -52,7 +55,9 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingIsOrganization: false,
         updatingAbout: false,
+        updatingDisplayName: false,
         updatingSocial: {
           linkedIn: false,
           twitter: false
@@ -92,11 +97,25 @@ export function useProfile() {
           dispatch({ updatingIsPublic: false })
         }
       },
+      updateIsOrganization: async (isOrganization: boolean) => {
+        if (uid) {
+          dispatch({ updatingIsOrganization: true })
+          await updateIsOrganization(uid, isOrganization)
+          dispatch({ updatingIsOrganization: false })
+        }
+      },
       updateAbout: async (about: string) => {
         if (uid) {
           dispatch({ updatingAbout: true })
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
+        }
+      },
+      updateDisplayName: async (displayName: string) => {
+        if (uid) {
+          dispatch({ updatingDisplayName: true })
+          await updateDisplayName(uid, displayName)
+          dispatch({ updatingDisplayName: false })
         }
       },
       updateSocial: async (network: keyof SocialLinks, link: string) => {
@@ -142,6 +161,14 @@ function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
 }
 
+function updateIsOrganization(uid: string, isOrganization: boolean) {
+  return setDoc(
+    profileRef(uid),
+    { organization: isOrganization },
+    { merge: true }
+  )
+}
+
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
   return setDoc(
     profileRef(uid),
@@ -152,6 +179,10 @@ function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
 
 function updateAbout(uid: string, about: string) {
   return setDoc(profileRef(uid), { about }, { merge: true })
+}
+
+function updateDisplayName(uid: string, displayName: string) {
+  return setDoc(profileRef(uid), { displayName }, { merge: true })
 }
 
 export function usePublicProfile(uid: string) {
