@@ -1,7 +1,5 @@
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -17,8 +15,7 @@ import type {
   CurrentCommittee
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
-import { currentGeneralCourt, loadDoc, nullableQuery } from "./common"
-import { listUpcomingBills } from "./events"
+import { currentGeneralCourt, loadDoc, now, nullableQuery } from "./common"
 
 export type MemberReference = {
   Id: string
@@ -257,17 +254,17 @@ function getFilter(filter: FilterOptions): Parameters<typeof where> {
   }
 }
 
+const billsRef = collection(
+  firestore,
+  `/generalCourts/${currentGeneralCourt}/bills`
+)
+
 async function listBills(
   sort: SortOptions,
   filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Bill[]> {
-  const billsRef = collection(
-    firestore,
-    `/generalCourts/${currentGeneralCourt}/bills`
-  )
-
   // Don't use an orderBy clause if filtering AND sorting on bill ID's
   const useOrderBy = !(filter?.type === "bill" && sort === "id")
 
@@ -291,42 +288,19 @@ export async function getBill(id: string): Promise<Bill | undefined> {
 }
 
 export async function listBillsByHearingDate(
-  filter: FilterOptions | null,
-  limitCount: number,
-  startAfterKey: unknown | null
+  limitCount: number
 ): Promise<Bill[]> {
-  // TODO: avoid re-fetching upcoming bills for every page
-  const fullListing = await listUpcomingBills()
-
-  let startIndex: number
-  if (startAfterKey === null) {
-    startIndex = 0
-  } else {
-    const startAfterIndex = fullListing.findIndex(
-      i => i.billId === startAfterKey
+  const result = await getDocs(
+    nullableQuery(
+      billsRef,
+      where("nextHearingAt", ">=", midnight()),
+      orderBy("nextHearingAt", "asc"),
+      limit(limitCount)
     )
-    if (startAfterIndex === -1) return []
-    startIndex = startAfterIndex + 1
-  }
-  const listing = fullListing
-    .slice(startIndex, startIndex + limitCount)
-    // TODO: support other filter types
-    .filter(
-      i => filter === null || filter.type !== "bill" || filter.id === i.billId
-    )
-
-  const bills = await Promise.all(
-    listing.map(async item => {
-      const snap = await getDoc(
-        doc(
-          firestore,
-          `/generalCourts/${currentGeneralCourt}/bills/${item.billId}`
-        )
-      )
-      const bill = snap.data() as Bill
-      bill.nextHearingAt = item.startsAt
-      return bill
-    })
   )
-  return bills
+  return result.docs.map(d => d.data() as Bill)
+}
+
+export function midnight() {
+  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
 }
