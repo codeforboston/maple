@@ -1,6 +1,8 @@
-import { difference, flatten } from "lodash"
+import { difference, flatten, flattenDeep } from "lodash"
 import { DocUpdate } from "../common"
-import { db, FieldValue } from "../firebase"
+import { Hearing } from "../events/types"
+import { db, FieldValue, Timestamp } from "../firebase"
+import { parseApiDateTime } from "../malegislature"
 import { Member, MemberReference } from "../members/types"
 import BillProcessor from "./BillProcessor"
 import { Bill } from "./types"
@@ -29,16 +31,19 @@ class UpdateBillReferences extends BillProcessor {
 
     const updates = this.mergeUpdates(
       this.getCommitteeUpdates(),
-      this.getCityUpdates()
+      this.getCityUpdates(),
+      await this.getEventUpdates()
     )
 
     await this.writeBills(updates)
   }
 
   private async writeBills(updates: BillUpdates) {
+    const validIds = new Set(this.billIds)
     const writer = db.bulkWriter()
     updates.forEach((update, id) => {
-      writer.set(db.doc(this.billPath(id)), update, { merge: true })
+      if (validIds.has(id))
+        writer.set(db.doc(this.billPath(id)), update, { merge: true })
     })
     await writer.close()
   }
@@ -94,6 +99,64 @@ class UpdateBillReferences extends BillProcessor {
     billsOutOfCommittee.forEach(id => {
       updates.set(id, {
         currentCommittee: FieldValue.delete()
+      })
+    })
+
+    return updates
+  }
+
+  async getEventUpdates(): Promise<BillUpdates> {
+    const hearings = await db
+      .collection(`/events`)
+      .where("startsAt", ">=", new Date())
+      .where("type", "==", "hearing")
+      .get()
+      .then(this.load(Hearing))
+    const updates: BillUpdates = new Map()
+
+    // Set the next hearing on every bill referenced by upcoming hearings.
+    const billEvents = flattenDeep<{
+      startsAt: Timestamp
+      billId: string
+      hearingId: string
+      court: number
+    }>(
+      hearings.map(hearing =>
+        hearing.content.HearingAgendas.map(agenda =>
+          agenda.DocumentsInAgenda.map(doc => ({
+            startsAt: parseApiDateTime(agenda.StartTime),
+            billId: doc.BillNumber,
+            court: doc.GeneralCourtNumber,
+            hearingId: hearing.id
+          }))
+        )
+      )
+    )
+    billEvents.forEach(event => {
+      const existing = updates.get(event.billId)
+      if (!existing || event.startsAt < (existing.nextHearingAt as Timestamp)) {
+        updates.set(event.billId, {
+          nextHearingAt: event.startsAt,
+          nextHearingId: event.hearingId
+        })
+      }
+    })
+
+    // Remove the next hearing on any bills that reference upcoming hearings but
+    // aren't on the agenda.
+    const hearingIds = new Set(billEvents.map(e => e.hearingId)),
+      billsWithEvents = billEvents.map(e => e.billId),
+      existingBillsWithEvents = this.bills
+        .filter(b => hearingIds.has(b.nextHearingId))
+        .map(b => b.id as string),
+      billsWithRemovedEvents = difference(
+        existingBillsWithEvents,
+        billsWithEvents
+      )
+    billsWithRemovedEvents.forEach(id => {
+      updates.set(id, {
+        nextHearingAt: FieldValue.delete(),
+        nextHearingId: FieldValue.delete()
       })
     })
 

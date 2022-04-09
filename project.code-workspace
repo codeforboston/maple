@@ -5,7 +5,10 @@
     }
   ],
   "settings": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "files.associations": {
+      "firestore.indexes.json": "jsonc"
+    }
   },
   "extensions": {
     "recommendations": [

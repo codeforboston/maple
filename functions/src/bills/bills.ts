@@ -2,7 +2,7 @@ import { isString } from "lodash"
 import { logFetchError } from "../common"
 import * as api from "../malegislature"
 import { createScraper } from "../scraper"
-import { Bill } from "./types"
+import { Bill, MISSING_TIMESTAMP } from "./types"
 
 /**
  * There are around 8000 documents. With 8 batches per day, 20 parallel
@@ -17,7 +17,7 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     startBatchSchedule: "every 3 hours",
     fetchBatchTimeout: 240,
     startBatchTimeout: 60,
-    fetchResource: async (court: number, id: string) => {
+    fetchResource: async (court: number, id: string, current) => {
       const content = await api.getDocument({ id, court })
       const history = await api
         .getBillHistory(court, id)
@@ -32,7 +32,10 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         content,
         history,
         similar,
-        cosponsorCount: content.Cosponsors.length
+        cosponsorCount: content.Cosponsors.length,
+        testimonyCount: current?.testimonyCount ?? 0,
+        latestTestimonyAt: current?.latestTestimonyAt ?? MISSING_TIMESTAMP,
+        nextHearingAt: current?.nextHearingAt ?? MISSING_TIMESTAMP
       }
 
       return resource

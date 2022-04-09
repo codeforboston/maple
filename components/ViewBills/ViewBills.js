@@ -5,7 +5,7 @@ import React from "react"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
 import { useBills, useMember } from "../db"
-import { formatBillId } from "../formatting"
+import { formatBillId, formatHearingDate } from "../formatting"
 import { Search } from "../search"
 
 const invalidSponsorId = Id => {
@@ -70,7 +70,7 @@ const BillRow = props => {
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
-        <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
+        <td>{formatHearingDate(fullBill.nextHearingAt)}</td>
         <td>{fullBill.testimonyCount}</td>
         <td>
           {fullBill.latestTestimonyAt &&
