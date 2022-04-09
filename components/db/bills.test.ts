@@ -92,7 +92,7 @@ describe("useBills", () => {
     expect(ids.slice(0, 3)).toEqual(["H1051", "H1018", "H1050"])
   })
 
-  it("sorts by ascending hearing date", async () => {
+  it("sorts by descending hearing date", async () => {
     // Test the seeded events
     const cutoff = DateTime.utc(2022, 3, 8)
     mockedNow.mockReturnValue(cutoff)
@@ -105,7 +105,7 @@ describe("useBills", () => {
 
     expect(hearingDates).not.toHaveLength(0)
     expect(hearingDates[0]).toBeGreaterThanOrEqual(cutoff.toMillis())
-    expect(hearingDates).toEqual(hearingDates.slice().sort())
+    expect(hearingDates).toEqual(hearingDates.slice().sort().reverse())
   })
 })
 
