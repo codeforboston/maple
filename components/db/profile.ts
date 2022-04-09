@@ -23,6 +23,7 @@ export type Profile = {
   public?: boolean
   about?: string
   social?: SocialLinks
+  organization?: boolean
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -32,6 +33,7 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
@@ -52,6 +54,7 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingIsOrganization: false,
         updatingAbout: false,
         updatingSocial: {
           linkedIn: false,
@@ -90,6 +93,13 @@ export function useProfile() {
           dispatch({ updatingIsPublic: true })
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
+        }
+      },
+      updateIsOrganization: async (isOrganization: boolean) => {
+        if (uid) {
+          dispatch({ updatingIsOrganization: true })
+          await updateIsOrganization(uid, isOrganization)
+          dispatch({ updatingIsOrganization: false })
         }
       },
       updateAbout: async (about: string) => {
@@ -140,6 +150,14 @@ function updateSenator(uid: string, senator: ProfileMember) {
 
 function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
+}
+
+function updateIsOrganization(uid: string, isOrganization: boolean) {
+  return setDoc(
+    profileRef(uid),
+    { organization: isOrganization },
+    { merge: true }
+  )
 }
 
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
