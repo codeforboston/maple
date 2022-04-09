@@ -59,6 +59,7 @@ export const Bill = withDefaults(
     cosponsorCount: Number,
     testimonyCount: Number,
     nextHearingAt: Optional(InstanceOf(Timestamp)),
+    nextHearingId: Optional(Id),
     latestTestimonyAt: Optional(InstanceOf(Timestamp)),
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp),

@@ -63,7 +63,7 @@ export default abstract class BillProcessor {
       .then(this.load(Member))
   }
 
-  private load<T extends { id: string }>(Entity: Runtype<T>) {
+  protected load<T extends { id: string }>(Entity: Runtype<T>) {
     return (snap: QuerySnapshot) => snap.docs.map(d => Entity.check(d.data()))
   }
 }

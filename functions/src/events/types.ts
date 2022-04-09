@@ -1,4 +1,5 @@
 import {
+  Array,
   InstanceOf,
   Literal as L,
   Null,
@@ -58,6 +59,14 @@ export const HearingContent = BaseEventContent.extend({
       EventDate: String,
       StartTime: String
     })
+  ),
+  HearingAgendas: Array(
+    Record({
+      DocumentsInAgenda: Array(
+        Record({ BillNumber: String, GeneralCourtNumber: Number })
+      ),
+      StartTime: String
+    })
   )
 })
 
@@ -66,7 +75,8 @@ export const HearingListItem = Record({ EventId: Number })
 
 export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({
-  type: L("hearing")
+  type: L("hearing"),
+  content: HearingContent
 })
 
 export type Event = Static<typeof Event>

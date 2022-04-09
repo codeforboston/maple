@@ -143,11 +143,7 @@ export function useBills() {
 
   const bills = useAsync(
     () => {
-      if (sort === "hearingDate") {
-        return listBillsByHearingDate(filter, billsPerPage, currentPageKey)
-      } else {
-        return listBills(sort, filter, billsPerPage, currentPageKey)
-      }
+      return listBills(sort, filter, billsPerPage, currentPageKey)
     },
     [billsPerPage, currentPageKey, filter, sort],
     {
@@ -211,7 +207,7 @@ type ListBillsSortOptions =
   | "latestTestimony"
 export type SortOptions = ListBillsSortOptions | "hearingDate"
 
-function getOrderBy(sort: ListBillsSortOptions): Parameters<typeof orderBy> {
+function getOrderBy(sort: SortOptions): Parameters<typeof orderBy> {
   switch (sort) {
     case "cosponsorCount":
       return ["cosponsorCount", "desc"]
@@ -221,6 +217,8 @@ function getOrderBy(sort: ListBillsSortOptions): Parameters<typeof orderBy> {
       return ["latestTestimonyAt", "desc"]
     case "testimonyCount":
       return ["testimonyCount", "desc"]
+    case "hearingDate":
+      return ["nextHearingAt", "desc"]
   }
 }
 
@@ -260,7 +258,7 @@ function getFilter(filter: FilterOptions): Parameters<typeof where> {
 }
 
 async function listBills(
-  sort: ListBillsSortOptions,
+  sort: SortOptions,
   filter: FilterOptions | null,
   limitCount: number,
   startAfterKey: unknown | null
