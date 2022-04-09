@@ -65,7 +65,7 @@ class PublishTestimonyTransaction {
 
     const newPublication: Testimony = {
       authorUid: this.uid,
-      authorDisplayName: await this.getDisplayName(),
+      authorDisplayName: this.getDisplayName(),
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,
@@ -233,8 +233,7 @@ class PublishTestimonyTransaction {
     }
   }
 
-  private async getDisplayName() {
-    const user = await auth.getUser(this.uid)
-    return user.displayName ?? "Anonymous"
+  private getDisplayName() {
+    return this.profile?.displayName ?? "Anonymous"
   }
 }
