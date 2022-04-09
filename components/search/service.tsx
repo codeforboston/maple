@@ -13,7 +13,7 @@ export const { Provider, useServiceChecked } = createService(() => {
 class BillSearch {
   service = {
     initialize: () => this.getIndex().then(() => {}),
-    bills: this.createSearch(
+    billContents: this.createSearch(
       i => i.bills,
       {
         // Weigh terms that appear at the end of a field the same as those that
@@ -28,6 +28,15 @@ class BillSearch {
         ]
       },
       100
+    ),
+    billIds: this.createSearch(
+      i => i.bills,
+      {},
+      100,
+      index => {
+        index.setKeys(["id"])
+        return index
+      }
     ),
     cities: this.createSearch(i => i.cities, {}, 300),
     committees: this.createSearch(
@@ -76,7 +85,8 @@ class BillSearch {
   private createSearch<T>(
     extract: (i: BillSearchIndex) => { items: T[]; index: any },
     indexOptions: Fuse.IFuseOptions<T> = {},
-    limit = 50
+    limit = 50,
+    prepareIndex: (i: Fuse.FuseIndex<T>) => Fuse.FuseIndex<T> = i => i
   ) {
     let fuse: Fuse<T>
     let items: T[]
@@ -85,7 +95,8 @@ class BillSearch {
         const fullIndex = await this.getIndex()
         const ext = extract(fullIndex)
         items = ext.items
-        fuse = new Fuse(items, indexOptions, Fuse.parseIndex(ext.index))
+        const index = prepareIndex(Fuse.parseIndex(ext.index))
+        fuse = new Fuse(items, indexOptions, index)
       }
     }
 
