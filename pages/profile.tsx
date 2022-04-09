@@ -65,14 +65,7 @@ export default createPage({
     const { user } = useAuth()
     const uid = user?.uid
 
-    const [entity, setEntity] = useState("individual")
-    const makeOrganization = () => {
-      setEntity("organization")
-    }
-    const makeIndividual = () => {
-      setEntity("individual")
-    }
-    const individual = entity == "individual"
+    const individual = !profile.profile?.organization
     const router = useRouter()
 
     // Have unsaved text inputs separate from profile
@@ -128,8 +121,10 @@ export default createPage({
             name="individualOrOrganization"
             type="radio"
             id="individual"
-            defaultChecked
-            onChange={makeIndividual}
+            checked={!profile.profile?.organization}
+            onChange={e => {
+              profile.updateIsOrganization(!e.currentTarget.checked)
+            }}
           />
           <Form.Check
             inline
@@ -137,7 +132,10 @@ export default createPage({
             name="individualOrOrganization"
             type="radio"
             id="organization"
-            onChange={makeOrganization}
+            checked={!!profile.profile?.organization}
+            onChange={e => {
+              profile.updateIsOrganization(e.currentTarget.checked)
+            }}
           />
         </div>
         {individual && showLegislators}
