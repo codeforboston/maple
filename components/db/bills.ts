@@ -60,8 +60,8 @@ type Action =
 type State = {
   sort: SortOptions
   filter: FilterOptions | null
-  pageKeys: unknown[]
-  currentPageKey: unknown | null
+  pageKeys: (unknown[] | null | undefined)[]
+  currentPageKey: unknown[] | null
   currentPage: number
   billsPerPage: number
   nextKey?: unknown
@@ -204,33 +204,33 @@ type ListBillsSortOptions =
   | "latestTestimony"
 export type SortOptions = ListBillsSortOptions | "hearingDate"
 
-function getOrderBy(sort: SortOptions): Parameters<typeof orderBy> {
+function getOrderBy(sort: SortOptions): Parameters<typeof orderBy>[] {
   switch (sort) {
     case "cosponsorCount":
-      return ["cosponsorCount", "desc"]
+      return [["cosponsorCount", "desc"], ["id"]]
     case "id":
-      return ["id"]
+      return [["id"]]
     case "latestTestimony":
-      return ["latestTestimonyAt", "desc"]
+      return [["latestTestimonyAt", "desc"], ["id"]]
     case "testimonyCount":
-      return ["testimonyCount", "desc"]
+      return [["testimonyCount", "desc"], ["id"]]
     case "hearingDate":
-      return ["nextHearingAt", "desc"]
+      return [["nextHearingAt", "desc"], ["id"]]
   }
 }
 
-function getPageKey(bill: Bill, sort: SortOptions): unknown {
+function getPageKey(bill: Bill, sort: SortOptions): unknown[] {
   switch (sort) {
     case "cosponsorCount":
-      return bill.cosponsorCount
+      return [bill.cosponsorCount, bill.id]
     case "hearingDate":
-      return bill.id
+      return [bill.nextHearingAt, bill.id]
     case "id":
-      return bill.id
+      return [bill.id]
     case "latestTestimony":
-      return bill.latestTestimonyAt
+      return [bill.latestTestimonyAt, bill.id]
     case "testimonyCount":
-      return bill.testimonyCount
+      return [bill.testimonyCount, bill.id]
   }
 }
 
@@ -263,18 +263,21 @@ async function listBills(
   sort: SortOptions,
   filter: FilterOptions | null,
   limitCount: number,
-  startAfterKey: unknown | null
+  startAfterKey: unknown[] | null
 ): Promise<Bill[]> {
   // Don't use an orderBy clause if filtering AND sorting on bill ID's
   const useOrderBy = !(filter?.type === "bill" && sort === "id")
+  const orderByConstraints = useOrderBy
+    ? getOrderBy(sort).map(o => orderBy(...o))
+    : []
 
   const result = await getDocs(
     nullableQuery(
       billsRef,
       filter && where(...getFilter(filter)),
-      useOrderBy && orderBy(...getOrderBy(sort)),
+      ...orderByConstraints,
       limit(limitCount),
-      startAfterKey !== null && startAfter(startAfterKey)
+      startAfterKey !== null && startAfter(...startAfterKey)
     )
   )
   return result.docs.map(d => d.data() as Bill)
