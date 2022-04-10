@@ -2831,16 +2831,17 @@ firebase-functions-test@^0.3.3:
     "@types/lodash" "^4.14.104"
     lodash "^4.17.5"
 
-firebase-functions@^3.19.0:
-  version "3.19.0"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.19.0.tgz#99c1a32529f0d35dc454c88f8bd552fc18c52726"
-  integrity sha512-FG4jurD8ymQ3hMVRgYU7dPhNoMRONxYFF1NrHrKed6YWnEvlYFDNXwGHqXQq66wyCuhCTbhMa6Dwqyng4z5tZw==
+firebase-functions@^3.20.0:
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.20.0.tgz#78945c167ac4a5c150cd3f40b1672a1060b11c1a"
+  integrity sha512-Srh2iW/A24ia1CUfSIz5wRxCCFN2cQX6cg6whM0zAnoJs2oBwrI8PUfB4ZKDM7alBZSwXGHJbEw+4P/gC0npUg==
   dependencies:
     "@types/cors" "^2.8.5"
     "@types/express" "4.17.3"
     cors "^2.8.5"
     express "^4.17.1"
     lodash "^4.17.14"
+    node-fetch "^2.6.7"
 
 firebase-tools@^10.2.1:
   version "10.2.1"

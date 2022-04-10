@@ -10,6 +10,7 @@ export const Timestamp = admin.firestore.Timestamp
 export type Timestamp = admin.firestore.Timestamp
 export const FieldValue = admin.firestore.FieldValue
 export type FieldValue = admin.firestore.FieldValue
+export type DocumentData = admin.firestore.DocumentData
 
 // Extreme hack to extract the File type from the admin storage package. For
 // some reason admin.storage does not resolve the storage namespace, as

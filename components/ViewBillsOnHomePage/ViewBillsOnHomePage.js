@@ -1,32 +1,23 @@
-import { useRouter } from "next/router"
 import React from "react"
 import { Button, Container, Table } from "react-bootstrap"
-import { useUpcomingBills, useMember } from "../db"
-import { formatBillId } from "../formatting"
+import { useUpcomingBills } from "../db"
+import { formatBillId, formatHearingDate } from "../formatting"
 import { Wrap } from "../links"
 
 const BillRow = props => {
   const fullBill = props.bill
   const bill = props.bill.content
-  const router = useRouter()
-  const { member, loading } = useMember(
-    bill.PrimarySponsor ? bill.PrimarySponsor.Id : null
-  )
 
-  if (loading) {
-    return null
-  } else {
-    return (
-      <tr>
-        <td>
-          <Wrap href={`/bill?id=${bill.BillNumber}`}>
-            <Button variant="primary">{formatBillId(bill.BillNumber)}</Button>
-          </Wrap>
-        </td>
-        <td>{fullBill.nextHearingAt?.toDate().toLocaleDateString()}</td>
-      </tr>
-    )
-  }
+  return (
+    <tr>
+      <td>
+        <Wrap href={`/bill?id=${bill.BillNumber}`}>
+          <Button variant="primary">{formatBillId(bill.BillNumber)}</Button>
+        </Wrap>
+      </td>
+      <td>{formatHearingDate(fullBill.nextHearingAt)}</td>
+    </tr>
+  )
 }
 
 const BillRows = ({ bills }) => {

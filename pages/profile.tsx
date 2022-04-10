@@ -65,25 +65,22 @@ export default createPage({
     const { user } = useAuth()
     const uid = user?.uid
 
-    const [entity, setEntity] = useState("individual")
-    const makeOrganization = () => {
-      setEntity("organization")
-    }
-    const makeIndividual = () => {
-      setEntity("individual")
-    }
-    const individual = entity == "individual"
+    const individual = !profile.profile?.organization
     const router = useRouter()
 
     // Have unsaved text inputs separate from profile
     // so we don't ping the server every keystroke
     const [unsavedSocials, setUnsavedSocials] = useState<SocialLinks>({})
     const [unsavedAbout, setUnsavedAbout] = useState<string>()
+    const [unsavedDisplayName, setUnsavedDisplayName] = useState<string | null>(
+      displayName
+    )
 
     useEffect(() => {
       // Load in text inputs when profile loads
       setUnsavedSocials(profile.profile?.social ?? {})
       setUnsavedAbout(profile.profile?.about)
+      setUnsavedDisplayName(profile.profile?.displayName ?? displayName)
     }, [profile.profile])
 
     useEffectWithTimeout(() => {
@@ -115,21 +112,61 @@ export default createPage({
       }
     }, [unsavedAbout, profile])
 
+    useEffectWithTimeout(() => {
+      // Wait a bit for user input to stop, then save display name
+      if (profile.loading || !profile?.profile) {
+        return
+      }
+      if (
+        unsavedDisplayName !== null &&
+        unsavedDisplayName !== profile.profile.displayName
+      ) {
+        profile.updateDisplayName(unsavedDisplayName)
+      }
+    }, [unsavedDisplayName, profile])
+
     return (
       <>
         <h1>
-          Hello, {displayName ? decodeHtmlCharCodes(displayName) : "Anonymous"}!
+          Hello,{" "}
+          {unsavedDisplayName
+            ? decodeHtmlCharCodes(unsavedDisplayName)
+            : "Anonymous"}
+          !
         </h1>
+        <Col>
+          <div>
+            Display Name:{" "}
+            {profile.updatingDisplayName ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
+          <FormControl
+            placeholder={"Your name"}
+            aria-label={"Your name"}
+            value={unsavedDisplayName ?? ""}
+            onChange={e => {
+              setUnsavedDisplayName(e.currentTarget.value)
+            }}
+          />
+        </Col>
         <div key={`inline-radio`} className="mb-3">
-          <div>Are you an individual or an organization?</div>
+          <div>
+            Are you an individual or an organization?{" "}
+            {profile.updatingIsOrganization ? (
+              <Spinner animation="border" className="mx-auto" size="sm" />
+            ) : null}
+          </div>
           <Form.Check
             inline
             label="Individual"
             name="individualOrOrganization"
             type="radio"
             id="individual"
-            defaultChecked
-            onChange={makeIndividual}
+            checked={!profile.profile?.organization}
+            onChange={e => {
+              profile.updateIsOrganization(!e.currentTarget.checked)
+            }}
           />
           <Form.Check
             inline
@@ -137,7 +174,10 @@ export default createPage({
             name="individualOrOrganization"
             type="radio"
             id="organization"
-            onChange={makeOrganization}
+            checked={!!profile.profile?.organization}
+            onChange={e => {
+              profile.updateIsOrganization(e.currentTarget.checked)
+            }}
           />
         </div>
         {individual && showLegislators}
@@ -201,11 +241,11 @@ export default createPage({
               }}
             />
             <label className="form-check-label" htmlFor="flexCheckChecked">
-              Allow others to see my profile
+              Allow others to see my profile{" "}
+              {profile.updatingIsPublic ? (
+                <Spinner animation="border" className="mx-auto" size="sm" />
+              ) : null}
             </label>
-            {profile.updatingIsPublic ? (
-              <Spinner animation="border" className="mx-auto" size="sm" />
-            ) : null}
           </div>
         )}
         <div className="mt-2">

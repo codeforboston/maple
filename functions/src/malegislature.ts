@@ -1,5 +1,6 @@
 import axiosModule, { AxiosRequestConfig } from "axios"
 import { isString } from "lodash"
+import { DateTime } from "luxon"
 import { Array } from "runtypes"
 import { BillHistory, BillReference } from "./bills/types"
 import { CityBills, CityListing } from "./cities/types"
@@ -10,6 +11,7 @@ import {
   SessionContent,
   SpecialEventContent
 } from "./events/types"
+import { Timestamp } from "./firebase"
 import { MemberContent } from "./members/types"
 
 const axios = axiosModule.create({
@@ -43,6 +45,11 @@ export const currentGeneralCourt = 192
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"
+
+export function parseApiDateTime(dateTime: string): Timestamp {
+  const time = DateTime.fromISO(dateTime, { zone: timeZone })
+  return Timestamp.fromMillis(time.toMillis())
+}
 
 export async function listDocuments({
   court
