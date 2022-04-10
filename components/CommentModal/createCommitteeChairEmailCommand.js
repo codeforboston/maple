@@ -5,10 +5,8 @@ const createCommitteeChairEmailCommand = (
   positionWord,
   positionEmailSubject,
   billNumber,
-  billTitle,
   testimonyContent,
-  emailSuffix,
-  testimonyArchiveEmailAddress
+  emailSuffix
 ) => {
   const committeeEmails =
     houseChairEmail && senateChairEmail
@@ -26,7 +24,7 @@ const createCommitteeChairEmailCommand = (
   const mailCommandToCommitteeChairs = !committeeEmails
     ? null
     : encodeURI(
-        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${committeeEmails}&body=${
+        `mailto:${committeeEmails}?subject=${positionEmailSubject} Bill ${billNumber}&body=${
           testimonyContent
             ? mailIntroToCommittee +
               "\n\n" +

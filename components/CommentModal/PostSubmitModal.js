@@ -25,12 +25,17 @@ const PostSubmitModal = ({
   const testimonyContent = testimony?.content
 
   const { profile } = useProfile()
+
   const senator = useMember(profile?.senator?.id)
+  console.log("senator in PostSubmitModal")
+  console.log(profile?.senator?.id)
+  console.log(useMember(profile?.senator?.id))
+
   const representative = useMember(profile?.representative?.id)
+
   const senatorEmail = senator.member?.EmailAddress ?? ""
   const representativeEmail = representative.member?.EmailAddress ?? ""
 
-  const testimonyArchiveEmailAddress = "test@example.com" // in order to have emails send to legislators via BCC, we need a primary "send to" email address for each email.  This is a placeholder email address.  Ultimately, this should be in a configuration file.
   const webSiteBillAddress = siteUrl(`bill?id=${bill.BillNumber}`)
   const positionEmailSubject =
     testimony?.position == "endorse"
@@ -56,8 +61,7 @@ const PostSubmitModal = ({
     billNumber,
     billTitle,
     testimonyContent,
-    emailSuffix,
-    testimonyArchiveEmailAddress
+    emailSuffix
   )
 
   const emailToCommitteeChairsURL = createCommitteeChairEmailCommand(
@@ -69,24 +73,29 @@ const PostSubmitModal = ({
     billNumber,
     billTitle,
     testimonyContent,
-    emailSuffix,
-    testimonyArchiveEmailAddress
+    emailSuffix
   )
 
   const tweetURL = encodeURI(
-    `https://twitter.com/intent/tweet?text=I provided testimony on bill ${bill.BillNumber}: ${bill.Title}.
+    `https://twitter.com/intent/tweet?text=I provided testimony on bill ${
+      bill.BillNumber
+    }${bill.Title.length > 174 ? "." : ": " + bill.Title + "."}
     
 See ${webSiteBillAddress} for details.`
   )
+  // a title over about 174 characters exceeds maximum tweet length of 280 characters.  this depends on the final web site address
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
     handleCloseTestimony()
   }
-
   return (
-    <Modal show={showPostSubmitModal} onHide={handleClosePostSubmitModal}>
-      <Modal.Header closeButton onClick={handleClosePostSubmitModal}>
+    <Modal
+      show={showPostSubmitModal}
+      onHide={handleClosePostSubmitModal}
+      backdrop="static"
+    >
+      <Modal.Header>
         <Modal.Title>
           <div>{"Nice job!  Your testimony is saved."}</div>
           <div>
@@ -118,7 +127,7 @@ See ${webSiteBillAddress} for details.`
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={handleClosePostSubmitModal}>
-          Close
+          Done
         </Button>
       </Modal.Footer>
     </Modal>
