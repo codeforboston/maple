@@ -79,11 +79,11 @@ const PostSubmitModal = ({
   const tweetURL = encodeURI(
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${
       bill.BillNumber
-    }${bill.Title.length > 174 ? "." : ": " + bill.Title + "."}
+    }${bill.Title.length > 174 ? "" : ": " + bill.Title}.
     
 See ${webSiteBillAddress} for details.`
   )
-  // a title over about 174 characters exceeds maximum tweet length of 280 characters.  this depends on the final web site address
+  // the maximum tweet length is 280 characters.  so, the maximum title length is about 174 characters depending on the length of the final web site address.
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
