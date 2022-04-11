@@ -7,16 +7,15 @@ import {
   startAfter,
   where
 } from "firebase/firestore"
-import { nth } from "lodash"
-import { useEffect, useMemo, useReducer } from "react"
+import { useEffect, useMemo } from "react"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../../firebase"
 import { currentGeneralCourt, nullableQuery } from "../common"
+import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
 
 /** Lists all published testimony according to the provided constraints.
  */
-// TODO: paginate once we have sufficient testimony
 export function usePublishedTestimonyListing({
   uid,
   billId
@@ -49,86 +48,17 @@ type Refinement = {
   billId?: string
 }
 
-type Action =
-  | { type: "nextPage" }
-  | { type: "previousPage" }
-  | { type: "refine"; refinement: Refinement }
-  | { type: "onSuccess"; page: Testimony[] }
-  | { type: "error"; error: Error }
-
-type State = {
-  refinement: Refinement
-  pageKeys: unknown[]
-  currentPageKey: unknown
-  currentPage: number
-  itemsPerPage: number
-  nextKey?: unknown
-  previousKey?: unknown
-  error: Error | null
-}
-
-const initialPage = {
-  pageKeys: [null],
-  currentPage: 0,
-  currentPageKey: null,
-  nextKey: undefined,
-  previousKey: undefined
-}
-
-const emptyRefinement: State["refinement"] = {
-  billId: undefined,
+const initialRefinement = (uid?: string, billId?: string): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
-  uid: undefined
-}
-
-const initialState = (uid?: string, billId?: string): State => ({
-  ...initialPage,
-  itemsPerPage: 10,
-  refinement: { ...emptyRefinement, uid, billId },
-  error: null
+  uid,
+  billId
 })
 
-function adjacentKeys(keys: unknown[], currentPage: number) {
-  return { nextKey: keys[currentPage + 1], previousKey: keys[currentPage - 1] }
-}
-
-function reducer(state: State, action: Action): State {
-  if (action.type === "nextPage" || action.type === "previousPage") {
-    const next = state.currentPage + (action.type === "nextPage" ? 1 : -1),
-      nextKey = state.pageKeys[next]
-    if (nextKey !== undefined) {
-      return {
-        ...state,
-        currentPage: next,
-        currentPageKey: nextKey,
-        ...adjacentKeys(state.pageKeys, next)
-      }
-    } else {
-      return state
-    }
-  } else if (action.type === "onSuccess") {
-    const keys = [...state.pageKeys]
-    const item = nth(action.page, state.itemsPerPage - 1)
-    keys[state.currentPage + 1] =
-      item !== undefined ? item.publishedAt : undefined
-    return {
-      ...state,
-      pageKeys: keys,
-      ...adjacentKeys(keys, state.currentPage)
-    }
-  } else if (action.type === "error") {
-    console.warn("Error in testimony", action.error)
-    return { ...state, error: action.error }
-  } else if (action.type === "refine") {
-    return {
-      ...state,
-      refinement: { ...state.refinement, ...action.refinement },
-      ...initialPage
-    }
-  }
-  return state
-}
+const useTable = createTableHook<Testimony, Refinement, unknown>({
+  getPageKey: i => i.publishedAt,
+  getItems: listTestimony
+})
 
 export function usePublishedTestimonyListing2({
   uid,
@@ -137,68 +67,31 @@ export function usePublishedTestimonyListing2({
   uid?: string
   billId?: string
 }) {
-  const [
-    {
-      refinement,
-      itemsPerPage,
-      currentPageKey,
-      currentPage,
-      nextKey,
-      previousKey
-    },
-    dispatch
-  ] = useReducer(reducer, initialState(uid, billId))
-
-  const items = useAsync(
-    () => {
-      return listTestimony(refinement, itemsPerPage, currentPageKey)
-    },
-    [currentPageKey, refinement, itemsPerPage],
-    {
-      onSuccess: page => dispatch({ type: "onSuccess", page }),
-      onError: error => dispatch({ type: "error", error })
-    }
+  const { pagination, items, refine, refinement } = useTable(
+    initialRefinement(uid, billId)
   )
 
   useEffect(() => {
-    if (refinement.uid !== uid)
-      dispatch({ type: "refine", refinement: { uid } })
-    if (refinement.billId !== billId)
-      dispatch({ type: "refine", refinement: { billId } })
-  }, [billId, refinement, uid])
+    if (refinement.uid !== uid) refine({ uid })
+    if (refinement.billId !== billId) refine({ billId })
+  }, [billId, refine, refinement, uid])
 
   return useMemo(
     () => ({
-      itemsPerPage,
-      currentPage: currentPage + 1,
-      nextPage: () => dispatch({ type: "nextPage" }),
-      previousPage: () => dispatch({ type: "previousPage" }),
-      hasNextPage: nextKey !== undefined,
-      hasPreviousPage: previousKey !== undefined,
+      ...pagination,
       filter: (
         r: { representativeId: string } | { senatorId: string } | null
       ) =>
-        dispatch({
-          type: "refine",
-          refinement: {
-            representativeId: undefined,
-            senatorId: undefined,
-            ...r
-          }
+        refine({
+          representativeId: undefined,
+          senatorId: undefined,
+          ...r
         }),
       error: items.error,
       loading: items.loading,
       items: items.result
     }),
-    [
-      itemsPerPage,
-      currentPage,
-      nextKey,
-      previousKey,
-      items.error,
-      items.loading,
-      items.result
-    ]
+    [pagination, items.error, items.loading, items.result, refine]
   )
 }
 
