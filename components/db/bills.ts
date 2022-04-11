@@ -124,6 +124,7 @@ function reducer(state: State, action: Action): State {
   return state
 }
 
+export type UseBills = ReturnType<typeof useBills>
 export function useBills() {
   const [
     {

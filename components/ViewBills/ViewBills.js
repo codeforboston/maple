@@ -1,5 +1,3 @@
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/router"
 import React from "react"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
@@ -7,6 +5,7 @@ import * as links from "../../components/links.tsx"
 import { useBills, useMember } from "../db"
 import { formatBillId, formatHearingDate } from "../formatting"
 import { Search } from "../search"
+import { PaginationButtons } from "../table"
 
 const invalidSponsorId = Id => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -89,17 +88,7 @@ const BillRows = ({ bills }) => {
 }
 
 const ViewBills = () => {
-  const {
-    bills,
-    setSort,
-    setFilter,
-    loading,
-    nextPage,
-    previousPage,
-    currentPage,
-    hasNextPage,
-    hasPreviousPage
-  } = useBills()
+  const { bills, setSort, setFilter, loading, ...pagination } = useBills()
 
   return (
     <Container>
@@ -121,25 +110,7 @@ const ViewBills = () => {
         <tbody>{bills && <BillRows bills={bills} />}</tbody>
       </Table>
       <Row>{loading && <Spinner animation="border" className="mx-auto" />}</Row>
-      <div className="d-flex justify-content-center mb-3">
-        <Button
-          variant="primary"
-          style={{ marginRight: 15 }}
-          onClick={previousPage}
-          disabled={!hasPreviousPage}
-        >
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </Button>
-        <span>Page {currentPage}</span>
-        <Button
-          variant="primary"
-          style={{ marginLeft: 15 }}
-          onClick={nextPage}
-          disabled={!hasNextPage}
-        >
-          <FontAwesomeIcon icon={faAngleRight} />
-        </Button>
-      </div>
+      <PaginationButtons pagination={pagination} />
     </Container>
   )
 }
