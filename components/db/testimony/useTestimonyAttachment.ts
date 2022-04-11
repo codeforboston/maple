@@ -54,7 +54,7 @@ type Action =
   | { type: "setDraft"; draft: DraftTestimony }
 
 function reducer(state: State, action: Action): State {
-  console.info("useTestimonyAttachment", action)
+  // console.info("useTestimonyAttachment", action)
   switch (action.type) {
     case "setDraft": {
       if (action.draft.attachmentId !== state.attachment.id) {
