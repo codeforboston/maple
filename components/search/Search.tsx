@@ -230,7 +230,8 @@ const useDefaultOptions = <T,>(loadOptions: LoadOptions<T>) => {
           setLoadingDefaults(false)
           setDefaults(options)
         })
-        .catch(() => {
+        .catch(e => {
+          console.warn("Search defaults error", e)
           setLoadingDefaults(false)
         })
     }

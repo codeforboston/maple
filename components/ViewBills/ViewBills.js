@@ -88,7 +88,7 @@ const BillRows = ({ bills }) => {
 }
 
 const ViewBills = () => {
-  const { bills, setSort, setFilter, loading, ...pagination } = useBills()
+  const { items, setSort, setFilter, pagination } = useBills()
 
   return (
     <Container>
@@ -107,9 +107,11 @@ const ViewBills = () => {
             <th>Current Committee</th>
           </tr>
         </thead>
-        <tbody>{bills && <BillRows bills={bills} />}</tbody>
+        <tbody>{items.result && <BillRows bills={items.result} />}</tbody>
       </Table>
-      <Row>{loading && <Spinner animation="border" className="mx-auto" />}</Row>
+      <Row>
+        {items.loading && <Spinner animation="border" className="mx-auto" />}
+      </Row>
       <PaginationButtons pagination={pagination} />
     </Container>
   )

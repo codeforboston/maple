@@ -7,8 +7,7 @@ import {
   Timestamp,
   where
 } from "firebase/firestore"
-import { nth } from "lodash"
-import { useMemo, useReducer } from "react"
+import { useMemo } from "react"
 import { useAsync } from "react-async-hook"
 import type {
   BillHistory,
@@ -16,6 +15,7 @@ import type {
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
 import { currentGeneralCourt, loadDoc, now, nullableQuery } from "./common"
+import { createTableHook } from "./createTableHook"
 
 export type MemberReference = {
   Id: string
@@ -49,161 +49,45 @@ export type Bill = {
   city?: string
 }
 
-type Action =
-  | { type: "nextPage" }
-  | { type: "previousPage" }
-  | { type: "sort"; sort: SortOptions }
-  | { type: "filter"; filter: FilterOptions | null }
-  | { type: "onSuccess"; page: Bill[] }
-  | { type: "error"; error: Error }
-
-type State = {
+type Refinement = {
   sort: SortOptions
   filter: FilterOptions | null
-  pageKeys: (unknown[] | null | undefined)[]
-  currentPageKey: unknown[] | null
-  currentPage: number
-  billsPerPage: number
-  nextKey?: unknown
-  previousKey?: unknown
-  error: Error | null
 }
 
-const initialPage = {
-  pageKeys: [null],
-  currentPage: 0,
-  currentPageKey: null,
-  nextKey: undefined,
-  previousKey: undefined
-}
+const useTable = createTableHook<Bill, Refinement, unknown[]>({
+  getItems: listBills,
+  getPageKey
+})
 
-const initialState: State = {
-  ...initialPage,
-  billsPerPage: 10,
-  sort: "id",
-  filter: null,
-  error: null
-}
-
-function adjacentKeys(keys: unknown[], currentPage: number) {
-  return { nextKey: keys[currentPage + 1], previousKey: keys[currentPage - 1] }
-}
-
-function reducer(state: State, action: Action): State {
-  if (action.type === "nextPage" || action.type === "previousPage") {
-    const next = state.currentPage + (action.type === "nextPage" ? 1 : -1),
-      nextKey = state.pageKeys[next]
-    if (nextKey !== undefined) {
-      return {
-        ...state,
-        currentPage: next,
-        currentPageKey: nextKey,
-        ...adjacentKeys(state.pageKeys, next)
-      }
-    } else {
-      return state
-    }
-  } else if (action.type === "sort" && action.sort !== state.sort) {
-    return { ...state, sort: action.sort, ...initialPage }
-  } else if (action.type === "onSuccess") {
-    const keys = [...state.pageKeys]
-    const bill = nth(action.page, state.billsPerPage - 1)
-    keys[state.currentPage + 1] =
-      bill !== undefined ? getPageKey(bill, state.sort) : undefined
-    return {
-      ...state,
-      pageKeys: keys,
-      ...adjacentKeys(keys, state.currentPage)
-    }
-  } else if (action.type === "error") {
-    console.warn("Error in useBills", action.error)
-    return { ...state, error: action.error }
-  } else if (action.type === "filter") {
-    return { ...state, filter: action.filter, ...initialPage }
-  }
-  return state
-}
-
-export type UseBills = ReturnType<typeof useBills>
 export function useBills() {
-  const [
-    {
-      sort,
-      filter,
-      billsPerPage,
-      currentPageKey,
-      currentPage,
-      nextKey,
-      previousKey
-    },
-    dispatch
-  ] = useReducer(reducer, initialState)
-
-  const bills = useAsync(
-    () => {
-      return listBills(sort, filter, billsPerPage, currentPageKey)
-    },
-    [billsPerPage, currentPageKey, filter, sort],
-    {
-      onSuccess: page => dispatch({ type: "onSuccess", page }),
-      onError: error => dispatch({ type: "error", error })
-    }
-  )
+  const { items, pagination, refine, refinement } = useTable({
+    sort: "id",
+    filter: null
+  })
 
   return useMemo(
     () => ({
-      billsPerPage,
-      currentPage: currentPage + 1,
-      nextPage: () => dispatch({ type: "nextPage" }),
-      previousPage: () => dispatch({ type: "previousPage" }),
-      hasNextPage: nextKey !== undefined,
-      hasPreviousPage: previousKey !== undefined,
-      setSort: (sort: SortOptions) => dispatch({ type: "sort", sort }),
+      pagination,
+      setSort: (sort: SortOptions) => refine({ ...refinement, sort }),
       setFilter: (filter: FilterOptions | null) =>
-        dispatch({ type: "filter", filter }),
-      sort,
-      error: bills.error,
-      loading: bills.loading,
-      bills: bills.result
+        refine({ ...refinement, filter }),
+      sort: refinement.sort,
+      items
     }),
-    [
-      billsPerPage,
-      currentPage,
-      nextKey,
-      previousKey,
-      sort,
-      bills.error,
-      bills.loading,
-      bills.result
-    ]
+    [pagination, items, refine, refinement]
   )
-}
-
-/** Compatibility with existing bill pages.
- *
- * @deprecated Replace with useBill, which provides testimonyCount and
- * hearing/testimony dates
- */
-export function useBillContent(id: string) {
-  const { result, loading, error } = useAsync(getBill, [id])
-
-  return {
-    bill: result?.content,
-    loading,
-    error
-  }
 }
 
 export function useBill(id: string) {
   return useAsync(getBill, [id])
 }
 
-type ListBillsSortOptions =
+export type SortOptions =
   | "id"
   | "cosponsorCount"
   | "testimonyCount"
   | "latestTestimony"
-export type SortOptions = ListBillsSortOptions | "hearingDate"
+  | "hearingDate"
 
 function getOrderBy(sort: SortOptions): Parameters<typeof orderBy>[] {
   switch (sort) {
@@ -220,7 +104,7 @@ function getOrderBy(sort: SortOptions): Parameters<typeof orderBy>[] {
   }
 }
 
-function getPageKey(bill: Bill, sort: SortOptions): unknown[] {
+function getPageKey(bill: Bill, { sort }: Refinement): unknown[] {
   switch (sort) {
     case "cosponsorCount":
       return [bill.cosponsorCount, bill.id]
@@ -260,8 +144,7 @@ const billsRef = collection(
 )
 
 async function listBills(
-  sort: SortOptions,
-  filter: FilterOptions | null,
+  { sort, filter }: Refinement,
   limitCount: number,
   startAfterKey: unknown[] | null
 ): Promise<Bill[]> {
