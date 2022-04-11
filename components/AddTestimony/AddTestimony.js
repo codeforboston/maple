@@ -7,13 +7,18 @@ import { usePublishedTestimonyListing } from "../db"
 
 const AddTestimony = ({
   bill,
-  committeeName,
-  houseChairEmail,
-  senateChairEmail
+
+  refreshTable
 }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const router = useRouter()
+
+
+  const committeeName = bill?.currentCommittee?.name,
+    houseChairEmail = bill?.houseChair?.email,
+    senateChairEmail = bill?.senateChair?.email
+
 
   const handleShowTestimony = () => {
     if (!authenticated) {
@@ -23,7 +28,10 @@ const AddTestimony = ({
     }
   }
 
-  const handleCloseTestimony = () => setShowTestimony(false)
+  const handleCloseTestimony = () => {
+    setShowTestimony(false)
+    refreshTable()
+  }
   const { authenticated, user } = useAuth()
 
   const { items } = usePublishedTestimonyListing({ uid: user?.uid })
@@ -44,8 +52,8 @@ const AddTestimony = ({
           {!authenticated
             ? "Sign in to add your voice"
             : isPublished
-            ? "Edit your testimony"
-            : "Add your testimony"}
+              ? "Edit your testimony"
+              : "Add your testimony"}
         </Button>
       </div>
 

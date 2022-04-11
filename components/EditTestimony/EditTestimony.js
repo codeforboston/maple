@@ -3,12 +3,15 @@ import { Button, Modal } from "react-bootstrap"
 import CommentModal from "../CommentModal/CommentModal"
 
 const EditTestimony = props => {
-  const bill = props.bill
+  const {bill, refreshTable} = props
   const testimony = props.testimony
   const [showTestimony, setShowTestimony] = useState(false)
-
+  
   const handleShowTestimony = () => setShowTestimony(true)
-  const handleCloseTestimony = () => setShowTestimony(false)
+  const handleCloseTestimony = () => {
+    setShowTestimony(false)
+    refreshTable()
+  }
   return (
     <>
       <Button variant="primary" onClick={handleShowTestimony}>

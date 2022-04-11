@@ -1,46 +1,42 @@
-import React, { useState } from "react"
+import React from "react"
 import { Button, Modal } from "react-bootstrap"
-import { useEditTestimony } from "../db/testimony/useEditTestimony"
-import { useAuth } from "../../components/auth"
 
-const DeleteTestimony = props => {
-  const bill = props.bill
-  const [showTestimony, setShowTestimony] = useState(false)
-  const { user, authenticated } = useAuth()
-  const handleShowTestimony = () => setShowTestimony(true)
-  const handleCloseTestimony = () => setShowTestimony(false)
 
-  const edit = useEditTestimony(user.uid, bill.BillNumber)
+export const DeleteButton = (props) => {
+  const { onclick } = props
+  return <Button variant="primary" onClick={onclick}>
+    Delete
+  </Button>
+}
 
-  const deleteTestimony = async () => {
-    handleCloseTestimony()
-    await edit.discardDraft.execute()
-    await edit.deleteTestimony.execute()
-  }
+
+const ConfirmDeleteTestimony = props => {
+  const {
+    billNumber,
+    billTitle,
+    closeConfirmDelete,
+    showConfirmDelete,
+    doDelete } = props
+
 
   return (
-    <>
-      <Button variant="primary" onClick={handleShowTestimony}>
-        Delete
-      </Button>
-      <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
-        <Modal.Header closeButton onClick={handleCloseTestimony}>
-          <Modal.Title>
-            {bill ? bill.BillNumber + " - " + bill.Title : ""}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete your testimony for this bill?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={deleteTestimony}>
-            Delete
-          </Button>
-          <Button onClick={handleCloseTestimony}>Cancel</Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal show={showConfirmDelete} onHide={closeConfirmDelete} size="lg">
+      <Modal.Header closeButton onClick={closeConfirmDelete}>
+        <Modal.Title>
+          {billNumber} {billTitle}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Are you sure you want to delete your testimony for this bill?
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary" onClick={doDelete}>
+          Delete
+        </Button>
+        <Button onClick={closeConfirmDelete}>Cancel</Button>
+      </Modal.Footer>
+    </Modal>
   )
 }
 
-export default DeleteTestimony
+export default ConfirmDeleteTestimony
