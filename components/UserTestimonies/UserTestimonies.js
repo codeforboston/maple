@@ -3,7 +3,7 @@ import React from "react"
 import { Container, Table } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import { formatBillId } from "../../components/formatting"
-import { useBill, usePublishedTestimonyListing2 } from "../db"
+import { useBill, usePublishedTestimonyListing } from "../db"
 import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import EditTestimony from "../EditTestimony/EditTestimony"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
@@ -49,7 +49,7 @@ const TestimonyRow = ({ testimony }) => {
 }
 
 const UserTestimonies = ({ authorId }) => {
-  const { items: testimoniesResponse } = usePublishedTestimonyListing2({
+  const { items: testimoniesResponse } = usePublishedTestimonyListing({
     uid: authorId
   })
   const testimonies =

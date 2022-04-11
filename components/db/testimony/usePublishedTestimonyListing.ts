@@ -8,38 +8,10 @@ import {
   where
 } from "firebase/firestore"
 import { useEffect, useMemo } from "react"
-import { useAsync } from "react-async-hook"
 import { firestore } from "../../firebase"
-import { currentGeneralCourt, nullableQuery } from "../common"
+import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
-
-/** Lists all published testimony according to the provided constraints.
- */
-export function usePublishedTestimonyListing({
-  uid,
-  billId
-}: {
-  uid?: string
-  billId?: string
-}) {
-  return useAsync(async () => {
-    const testimonyRef = collectionGroup(firestore, "publishedTestimony")
-
-    const result = await getDocs(
-      nullableQuery(
-        testimonyRef,
-        where("court", "==", currentGeneralCourt),
-        uid && where("authorUid", "==", uid),
-        billId && where("billId", "==", billId),
-        orderBy("publishedAt", "desc"),
-        limit(10)
-      )
-    )
-
-    return result.docs.map(d => d.data() as Testimony)
-  }, [billId, uid])
-}
 
 type Refinement = {
   senatorId?: string
@@ -60,7 +32,7 @@ const useTable = createTableHook<Testimony, Refinement, unknown>({
   getItems: listTestimony
 })
 
-export function usePublishedTestimonyListing2({
+export function usePublishedTestimonyListing({
   uid,
   billId
 }: {
@@ -117,6 +89,8 @@ async function listTestimony(
   const result = await getDocs(
     nullableQuery(
       testimonyRef,
+      // TODO: add court constraint
+      // where("court", "==", currentGeneralCourt),
       ...getWhere(refinement),
       orderBy("publishedAt", "desc"),
       limit(limitCount),

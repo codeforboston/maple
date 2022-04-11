@@ -6,7 +6,7 @@ import {
   Testimony,
   useBill,
   usePublicProfile,
-  usePublishedTestimonyListing2
+  usePublishedTestimonyListing
 } from "../db"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
@@ -14,7 +14,7 @@ import { QuestionTooltip } from "../tooltip"
 import { PaginationButtons } from "../table"
 
 const TestimoniesTable = () => {
-  const { pagination, items } = usePublishedTestimonyListing2({})
+  const { pagination, items } = usePublishedTestimonyListing({})
   const testimonies = items.result ?? []
   return (
     <Container>
