@@ -14,8 +14,8 @@ import { QuestionTooltip } from "../tooltip"
 import { PaginationButtons } from "../table"
 
 const TestimoniesTable = () => {
-  const testimony = usePublishedTestimonyListing2({})
-  const testimonies = testimony.items ?? []
+  const { pagination, items } = usePublishedTestimonyListing2({})
+  const testimonies = items.result ?? []
   return (
     <Container>
       <Table responsive striped bordered hover>
@@ -38,7 +38,7 @@ const TestimoniesTable = () => {
           ))}
         </tbody>
       </Table>
-      <PaginationButtons pagination={testimony} />
+      <PaginationButtons pagination={pagination} />
     </Container>
   )
 }

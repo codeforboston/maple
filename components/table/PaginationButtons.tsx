@@ -1,7 +1,7 @@
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button } from "../bootstrap"
-import { UseBills } from "../db"
+import { Pagination } from "../db"
 
 export const PaginationButtons = ({
   pagination: {
@@ -12,14 +12,7 @@ export const PaginationButtons = ({
     hasPreviousPage
   }
 }: {
-  pagination: Pick<
-    UseBills,
-    | "currentPage"
-    | "nextPage"
-    | "hasNextPage"
-    | "previousPage"
-    | "hasPreviousPage"
-  >
+  pagination: Pagination
 }) => (
   <div className="d-flex justify-content-center mb-3">
     <Button

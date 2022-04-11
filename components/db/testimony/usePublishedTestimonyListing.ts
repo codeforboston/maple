@@ -78,7 +78,7 @@ export function usePublishedTestimonyListing2({
 
   return useMemo(
     () => ({
-      ...pagination,
+      pagination,
       filter: (
         r: { representativeId: string } | { senatorId: string } | null
       ) =>
@@ -87,11 +87,9 @@ export function usePublishedTestimonyListing2({
           senatorId: undefined,
           ...r
         }),
-      error: items.error,
-      loading: items.loading,
-      items: items.result
+      items
     }),
-    [pagination, items.error, items.loading, items.result, refine]
+    [pagination, items, refine]
   )
 }
 

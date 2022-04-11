@@ -41,6 +41,15 @@ const initialPage = {
   previousKey: undefined
 }
 
+export type Pagination = {
+  itemsPerPage: number
+  currentPage: number
+  nextPage: () => void
+  previousPage: () => void
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 export function createTableHook<Item, Refinement, PageKey>({
   getPageKey,
   getItems
