@@ -1,14 +1,4 @@
-import {
-  collection,
-  getDocs,
-  orderBy,
-  Timestamp,
-  where
-} from "firebase/firestore"
-import { flattenDeep } from "lodash"
-import { DateTime } from "luxon"
-import { firestore } from "../firebase"
-import { now, nullableQuery } from "./common"
+import { Timestamp } from "firebase/firestore"
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"
@@ -79,54 +69,4 @@ type HearingLocation = {
   ZipCode: string
 }
 
-type Event = Session | SpecialEvent | Hearing
-
-export async function listUpcomingBills() {
-  const result = await listUpcomingEvents({ types: ["hearing"] })
-  const hearings = result as Hearing[]
-  const bills = flattenDeep<{
-    startsAt: Timestamp
-    billId: string
-    court: number
-  }>(
-    hearings.map(hearing =>
-      hearing.content.HearingAgendas.map(agenda =>
-        agenda.DocumentsInAgenda.map(doc => ({
-          startsAt: parseApiDateTime(agenda.StartTime),
-          billId: doc.BillNumber,
-          court: doc.GeneralCourtNumber
-        }))
-      )
-    )
-  )
-
-  return bills
-}
-
-export async function listUpcomingEvents({
-  types
-}: {
-  types?: Event["type"][]
-}) {
-  const eventsRef = collection(firestore, `/events`)
-
-  const result = await getDocs(
-    nullableQuery(
-      eventsRef,
-      types && where("type", "in", types),
-      where("startsAt", ">=", midnight()),
-      orderBy("startsAt", "asc")
-    )
-  )
-
-  return result.docs.map(d => d.data() as Event)
-}
-
-export function midnight() {
-  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
-}
-
-export function parseApiDateTime(dateTime: string): Timestamp {
-  const time = DateTime.fromISO(dateTime, { zone: timeZone })
-  return Timestamp.fromMillis(time.toMillis())
-}
+export type Event = Session | SpecialEvent | Hearing

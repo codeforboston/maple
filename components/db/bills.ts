@@ -1,7 +1,5 @@
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -17,8 +15,7 @@ import type {
   CurrentCommittee
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
-import { currentGeneralCourt, loadDoc, nullableQuery } from "./common"
-import { listUpcomingBills } from "./events"
+import { currentGeneralCourt, loadDoc, now, nullableQuery } from "./common"
 
 export type MemberReference = {
   Id: string
@@ -63,8 +60,8 @@ type Action =
 type State = {
   sort: SortOptions
   filter: FilterOptions | null
-  pageKeys: unknown[]
-  currentPageKey: unknown | null
+  pageKeys: (unknown[] | null | undefined)[]
+  currentPageKey: unknown[] | null
   currentPage: number
   billsPerPage: number
   nextKey?: unknown
@@ -143,11 +140,7 @@ export function useBills() {
 
   const bills = useAsync(
     () => {
-      if (sort === "hearingDate") {
-        return listBillsByHearingDate(filter, billsPerPage, currentPageKey)
-      } else {
-        return listBills(sort, filter, billsPerPage, currentPageKey)
-      }
+      return listBills(sort, filter, billsPerPage, currentPageKey)
     },
     [billsPerPage, currentPageKey, filter, sort],
     {
@@ -211,35 +204,36 @@ type ListBillsSortOptions =
   | "latestTestimony"
 export type SortOptions = ListBillsSortOptions | "hearingDate"
 
-function getOrderBy(sort: ListBillsSortOptions): Parameters<typeof orderBy> {
+function getOrderBy(sort: SortOptions): Parameters<typeof orderBy>[] {
   switch (sort) {
     case "cosponsorCount":
-      return ["cosponsorCount", "desc"]
+      return [["cosponsorCount", "desc"], ["id"]]
     case "id":
-      return ["id"]
+      return [["id"]]
     case "latestTestimony":
-      return ["latestTestimonyAt", "desc"]
+      return [["latestTestimonyAt", "desc"], ["id"]]
     case "testimonyCount":
-      return ["testimonyCount", "desc"]
-  }
-}
-
-function getPageKey(bill: Bill, sort: SortOptions): unknown {
-  switch (sort) {
-    case "cosponsorCount":
-      return bill.cosponsorCount
+      return [["testimonyCount", "desc"], ["id"]]
     case "hearingDate":
-      return bill.id
-    case "id":
-      return bill.id
-    case "latestTestimony":
-      return bill.latestTestimonyAt
-    case "testimonyCount":
-      return bill.testimonyCount
+      return [["nextHearingAt", "desc"], ["id"]]
   }
 }
 
-export type FilterType = FilterOptions["type"]
+function getPageKey(bill: Bill, sort: SortOptions): unknown[] {
+  switch (sort) {
+    case "cosponsorCount":
+      return [bill.cosponsorCount, bill.id]
+    case "hearingDate":
+      return [bill.nextHearingAt, bill.id]
+    case "id":
+      return [bill.id]
+    case "latestTestimony":
+      return [bill.latestTestimonyAt, bill.id]
+    case "testimonyCount":
+      return [bill.testimonyCount, bill.id]
+  }
+}
+
 export type FilterOptions =
   | { type: "bill"; id: string }
   | { type: "primarySponsor"; id: string }
@@ -259,27 +253,30 @@ function getFilter(filter: FilterOptions): Parameters<typeof where> {
   }
 }
 
+const billsRef = collection(
+  firestore,
+  `/generalCourts/${currentGeneralCourt}/bills`
+)
+
 async function listBills(
-  sort: ListBillsSortOptions,
+  sort: SortOptions,
   filter: FilterOptions | null,
   limitCount: number,
-  startAfterKey: unknown | null
+  startAfterKey: unknown[] | null
 ): Promise<Bill[]> {
-  const billsRef = collection(
-    firestore,
-    `/generalCourts/${currentGeneralCourt}/bills`
-  )
-
-  // Don't use an orderBy clause if filtering AND sorting on bill ID's
-  const useOrderBy = !(filter?.type === "bill" && sort === "id")
+  // Exclude the id orderBy clause if filtering on bill ID's
+  const excludeOrderById = filter?.type === "bill"
+  const orderByConstraints = getOrderBy(sort)
+    .filter(o => !excludeOrderById || o[0] !== "id")
+    .map(o => orderBy(...o))
 
   const result = await getDocs(
     nullableQuery(
       billsRef,
       filter && where(...getFilter(filter)),
-      useOrderBy && orderBy(...getOrderBy(sort)),
+      ...orderByConstraints,
       limit(limitCount),
-      startAfterKey !== null && startAfter(startAfterKey)
+      startAfterKey !== null && startAfter(...startAfterKey)
     )
   )
   return result.docs.map(d => d.data() as Bill)
@@ -293,42 +290,19 @@ export async function getBill(id: string): Promise<Bill | undefined> {
 }
 
 export async function listBillsByHearingDate(
-  filter: FilterOptions | null,
-  limitCount: number,
-  startAfterKey: unknown | null
+  limitCount: number
 ): Promise<Bill[]> {
-  // TODO: avoid re-fetching upcoming bills for every page
-  const fullListing = await listUpcomingBills()
-
-  let startIndex: number
-  if (startAfterKey === null) {
-    startIndex = 0
-  } else {
-    const startAfterIndex = fullListing.findIndex(
-      i => i.billId === startAfterKey
+  const result = await getDocs(
+    nullableQuery(
+      billsRef,
+      where("nextHearingAt", ">=", midnight()),
+      orderBy("nextHearingAt", "asc"),
+      limit(limitCount)
     )
-    if (startAfterIndex === -1) return []
-    startIndex = startAfterIndex + 1
-  }
-  const listing = fullListing
-    .slice(startIndex, startIndex + limitCount)
-    // TODO: support other filter types
-    .filter(
-      i => filter === null || filter.type !== "bill" || filter.id === i.billId
-    )
-
-  const bills = await Promise.all(
-    listing.map(async item => {
-      const snap = await getDoc(
-        doc(
-          firestore,
-          `/generalCourts/${currentGeneralCourt}/bills/${item.billId}`
-        )
-      )
-      const bill = snap.data() as Bill
-      bill.nextHearingAt = item.startsAt
-      return bill
-    })
   )
-  return bills
+  return result.docs.map(d => d.data() as Bill)
+}
+
+export function midnight() {
+  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
 }

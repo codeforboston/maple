@@ -6,8 +6,7 @@ const createMyLegislatorEmailCommand = (
   billNumber,
   billTitle,
   testimonyContent,
-  emailSuffix,
-  testimonyArchiveEmailAddress
+  emailSuffix
 ) => {
   const legislatorEmails =
     representativeEmail && senatorEmail
@@ -23,7 +22,7 @@ const createMyLegislatorEmailCommand = (
   const mailCommandToLegislators = !legislatorEmails
     ? null
     : encodeURI(
-        `mailto:${testimonyArchiveEmailAddress}?subject=${positionEmailSubject} Bill ${billNumber}&cc=${legislatorEmails}&body=${
+        `mailto:${legislatorEmails}?subject=${positionEmailSubject} Bill ${billNumber}&body=${
           testimonyContent
             ? mailIntro + "\n\n" + testimonyContent + "\n\n" + emailSuffix
             : ""

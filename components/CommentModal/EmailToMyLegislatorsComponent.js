@@ -1,36 +1,23 @@
 import React from "react"
-import { Button, Modal, Checkbox, Form } from "react-bootstrap"
 import * as links from "../links"
 
 const EmailToMyLegislators = ({
-  checkedSendToYourLegislators,
-  setCheckedSendToYourLegislators,
+  emailToMyLegislatorsURL,
   senator,
   representative
 }) => {
-  const handleChangeSendToYourLegislators = () => {
-    setCheckedSendToYourLegislators(!checkedSendToYourLegislators)
-  }
-
   if (senator.member || representative.member) {
     return (
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          checked={checkedSendToYourLegislators}
-          id="flexCheckChecked"
-          onChange={handleChangeSendToYourLegislators}
-        />
-        <label className="form-check-label">
-          Send copy to your legislators
-        </label>
-      </div>
+      <>
+        <links.External href={emailToMyLegislatorsURL}>
+          Email your testimony to your legislators
+        </links.External>
+      </>
     )
   } else {
     return (
       <links.External href="\profile">
-        Add legislators to your profile to share your testimony
+        Add legislators to your profile to email them your testimony
       </links.External>
     )
   }
