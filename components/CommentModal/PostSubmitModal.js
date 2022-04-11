@@ -27,10 +27,6 @@ const PostSubmitModal = ({
   const { profile } = useProfile()
 
   const senator = useMember(profile?.senator?.id)
-  console.log("senator in PostSubmitModal")
-  console.log(profile?.senator?.id)
-  console.log(useMember(profile?.senator?.id))
-
   const representative = useMember(profile?.representative?.id)
 
   const senatorEmail = senator.member?.EmailAddress ?? ""

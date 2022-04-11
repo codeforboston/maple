@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore"
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useMemo } from "react"
+import { useAsync } from "react-async-hook"
 import { currentGeneralCourt, loadDoc } from "./common"
 
 export type CommitteeReference = {
@@ -38,76 +39,26 @@ export type MemberSearchIndex = {
   senators: (MemberSearchIndexItem & { Branch: "Senate" })[]
 }
 
-type MemberFetch =
-  | {
-      member: MemberContent
-      status: "loaded"
-    }
-  | { status: "loading" }
-  | { status: "doesNotExist" }
-
-export function useMember(memberCode: string) {
-  const [member, setMember] = useState<MemberFetch>({ status: "loading" })
-
-  useEffect(() => {
-    const fetchResource = async () => {
-      if (
-        member.status !== "doesNotExist" &&
-        (member.status !== "loaded" ||
-          member?.member?.MemberCode !== memberCode)
-      ) {
-        const fetched = await getMember(memberCode)
-        if (fetched != undefined) {
-          setMember({ member: fetched, status: "loaded" })
-        } else if (fetched === undefined) {
-          setMember({ status: "doesNotExist" })
-        }
-      }
-    }
-    fetchResource()
-  }, [member, memberCode])
-
+export function useMember(id?: string) {
+  const { loading, result } = useAsync(getMember, [id])
   return useMemo(
     () => ({
-      member: member.status === "loaded" ? member?.member : undefined,
-      loading: member.status === "loading"
+      member: result,
+      loading
     }),
-    [member]
+    [loading, result]
   )
 }
 
 export function useMemberSearch() {
-  const { resource: index, loading } = useResource(
-    useCallback(() => getMemberSearchIndex(), [])
-  )
+  const { result: index, loading } = useAsync(getMemberSearchIndex, [])
   return { index, loading }
 }
 
-function useResource<T>(getResource: () => Promise<T>) {
-  const [resource, setResource] = useState<T | undefined>(undefined)
-
-  useEffect(() => {
-    const fetchResource = async () => {
-      if (resource === undefined) {
-        const fetched = await getResource()
-        setResource(fetched)
-      }
-    }
-    fetchResource()
-  }, [resource, getResource])
-
-  return useMemo(
-    () => ({
-      resource,
-      loading: resource === undefined
-    }),
-    [resource]
-  )
-}
-
 async function getMember(
-  memberCode: string
+  memberCode?: string
 ): Promise<MemberContent | undefined> {
+  if (!memberCode) return undefined
   const member = await loadDoc(
     `/generalCourts/${currentGeneralCourt}/members/${memberCode}`
   )
