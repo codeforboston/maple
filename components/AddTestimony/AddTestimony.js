@@ -5,20 +5,14 @@ import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
 
-const AddTestimony = ({
-  bill,
-
-  refreshTable
-}) => {
+const AddTestimony = ({ bill, refreshTable }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const router = useRouter()
 
-
   const committeeName = bill?.currentCommittee?.name,
     houseChairEmail = bill?.houseChair?.email,
     senateChairEmail = bill?.senateChair?.email
-
 
   const handleShowTestimony = () => {
     if (!authenticated) {
@@ -52,8 +46,8 @@ const AddTestimony = ({
           {!authenticated
             ? "Sign in to add your voice"
             : isPublished
-              ? "Edit your testimony"
-              : "Add your testimony"}
+            ? "Edit your testimony"
+            : "Add your testimony"}
         </Button>
       </div>
 

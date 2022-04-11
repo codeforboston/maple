@@ -1,76 +1,111 @@
-import React, { useCallback, useState } from "react"
-import { Table, Container, Button, Spinner } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import EditTestimony from "../EditTestimony/EditTestimony"
-import ConfirmDeleteTestimony, { DeleteButton } from "../DeleteTestimony/DeleteTestimony"
-import { useAuth } from "../../components/auth"
-import { useBill, useEditTestimony, usePublishedTestimonyListing } from "../db"
 import Link from "next/link"
+import React, { useCallback, useState } from "react"
+import { useAuth } from "../../components/auth"
+import { Container, Spinner, Table } from "../../components/bootstrap"
 import { formatBillId } from "../../components/formatting"
-import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
+import { TableButton } from "../buttons"
+import { useBill, useEditTestimony, usePublishedTestimonyListing } from "../db"
+import ConfirmDeleteTestimony from "../DeleteTestimony/DeleteTestimony"
+import EditTestimony from "../EditTestimony/EditTestimony"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 
-const TestimonyRow = ({ testimony, refreshTable }) => {
-
+const TestimonyRow = ({ testimony, refreshtable }) => {
   const { result: bill } = useBill(testimony.billId)
 
   const { user } = useAuth()
   const userIsAuthor = user?.uid == testimony?.authorUid
 
-  const { discardDraft, deleteTestimony } = useEditTestimony(user.uid, testimony.billId)
+  const { discardDraft, deleteTestimony } = useEditTestimony(
+    user.uid,
+    testimony.billId
+  )
   const loading = discardDraft.loading || deleteTestimony.loading
 
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
-
-  const handleDeleteClick = () => { setShowConfirmDelete(true) }
-
-  const doDelete = async () => {
+  const handleDeleteClick = () => {
+    setShowConfirmDelete(true)
+  }
+  const doDelete = useCallback(async () => {
     setShowConfirmDelete(false)
     await discardDraft.execute()
     await deleteTestimony.execute()
     console.log("deletion")
-    refreshTable()
+    refreshtable()
+  }, [deleteTestimony, discardDraft, refreshtable])
+
+  const [showEditTestimony, setShowEditTestimony] = useState(false)
+  const handleEditTestimonyClick = () => {
+    !showEditTestimony && setShowEditTestimony(true)
+  }
+
+  const [showTestimony, setShowTestimony] = useState(false)
+
+  const handleShowTestimony = () => {
+    setShowTestimony(true)
+  }
+  const closeTestimony = () => {
+    setShowTestimony(false)
   }
 
   if (!bill) {
     return null
   } else {
     return (
-      <tr>
-        <td>{testimony.position}</td>
-        <td>
-          <Link href={`/bill?id=${testimony.billId}`}>
-            {formatBillId(testimony.billId)}
-          </Link>
-        </td>
-        <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
-        <td>{testimony.content.substring(0, 100)}...</td>
-        <td>
-          <div className="d-flex">
-            <ExpandTestimony bill={bill.content} testimony={testimony} />
-            &nbsp;
-            {userIsAuthor && (
+      <>
+        {loading ? (
+          <tr className="w-100 m-2">
+            <td colSpan={5}>
+              <div className="d-flex justify-content-center w-100">
+                <Spinner animation="border" />
+              </div>
+            </td>
+          </tr>
+        ) : (
+          <tr>
+            <td>{testimony.position}</td>
+            <td>
+              <Link href={`/bill?id=${testimony.billId}`}>
+                {formatBillId(testimony.billId)}
+              </Link>
+            </td>
+            <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
+            <td>{testimony.content.substring(0, 100)}...</td>
+            <td className="flex-row justify-content-evenly">
+              <TableButton onclick={handleShowTestimony}>Expand</TableButton>
+              {userIsAuthor && (
+                <>
+                  <TableButton onclick={handleEditTestimonyClick}>
+                    Edit
+                  </TableButton>
+                  <TableButton onclick={handleDeleteClick}>Delete </TableButton>
+                </>
+              )}
               <>
-                <EditTestimony
-                  className="ml-2"
+                <ExpandTestimony
                   bill={bill.content}
                   testimony={testimony}
-                  refreshTable={refreshTable} />
-                &nbsp;
-                {loading
-                  ? <Spinner animation="border" />
-                  : <DeleteButton onclick={handleDeleteClick} />
-                }
+                  showTestimony={showTestimony}
+                  setShowTestimony={setShowTestimony}
+                />
+                <EditTestimony
+                  bill={bill.content}
+                  testimony={testimony}
+                  showEditTestimony={showEditTestimony}
+                  setShowEditTestimony={setShowEditTestimony}
+                  refreshtable={refreshtable}
+                />
                 <ConfirmDeleteTestimony
                   billNumber={formatBillId(bill.id)}
                   billTitle={bill.content.Title}
                   showConfirmDelete={showConfirmDelete}
                   closeConfirmDelete={() => setShowConfirmDelete(false)}
-                  doDelete={doDelete} />
+                  doDelete={doDelete}
+                />
               </>
-            )}
-          </div>
-        </td>
-      </tr>
+            </td>
+          </tr>
+        )}
+      </>
     )
   }
 }
@@ -78,21 +113,24 @@ const TestimonyRow = ({ testimony, refreshTable }) => {
 const UserTestimonies = ({ authorId }) => {
   const testimoniesResponse = usePublishedTestimonyListing({ uid: authorId })
 
-  const refreshTable = useCallback(() => { testimoniesResponse.execute() }, [testimoniesResponse])
+  const refreshTable = useCallback(() => {
+    testimoniesResponse.execute()
+  }, [testimoniesResponse])
 
   const { status, result } = testimoniesResponse
-  const testimonies = status == "loading" || status == "error"
-    ? []
-    : result
-
+  const testimonies = status == "loading" || status == "error" ? [] : result
 
   const testimoniesComponent = !testimonies
     ? ""
     : testimonies.map((testimony, index) => {
-      return <TestimonyRow testimony={testimony} key={index} refreshTable={refreshTable} />
-    })
-
-
+        return (
+          <TestimonyRow
+            testimony={testimony}
+            key={index}
+            refreshtable={refreshTable}
+          />
+        )
+      })
 
   return (
     <Container>

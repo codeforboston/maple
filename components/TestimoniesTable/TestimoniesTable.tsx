@@ -1,5 +1,5 @@
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 import { Table, Container } from "react-bootstrap"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import {
@@ -13,6 +13,7 @@ import ProfileButton from "../ProfileButton/ProfileButton"
 import { QuestionTooltip } from "../tooltip"
 import { PaginationButtons } from "../table"
 import { TestimonySearch } from "../search"
+import { TableButton } from "../buttons"
 
 const TestimoniesTable = (props: {
   uid?: string
@@ -54,6 +55,11 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
 
+  const [showTestimony, setShowTestimony] = useState(false)
+
+  const handleExpandButtonClick = () => setShowTestimony(true)
+  const closeTestimony = () => setShowTestimony(false)
+
   return (
     <tr>
       <td>
@@ -77,7 +83,13 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
       <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>
-        <ExpandTestimony bill={bill?.content} testimony={testimony} />
+        <TableButton onclick={handleExpandButtonClick}>Expand</TableButton>
+        <ExpandTestimony
+          bill={bill?.content}
+          testimony={testimony}
+          showTestimony={showTestimony}
+          closeTestimony={closeTestimony}
+        />
       </td>
     </tr>
   )
