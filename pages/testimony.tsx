@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { Button, Spinner } from "react-bootstrap"
-import { useBill, usePublishedTestimonyListing } from "../components/db"
+import { useBill, usePublishedTestimonyListing2 } from "../components/db"
 import { formatBillId } from "../components/formatting"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
@@ -12,7 +12,9 @@ export default createPage({
   Page: () => {
     const router = useRouter()
     const { billId, author } = router.query
-    const { result, status } = usePublishedTestimonyListing({
+    const {
+      items: { result, status }
+    } = usePublishedTestimonyListing2({
       uid: author as string,
       billId: billId as string
     })

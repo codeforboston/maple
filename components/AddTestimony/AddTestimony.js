@@ -26,16 +26,16 @@ const AddTestimony = ({
   const handleCloseTestimony = () => setShowTestimony(false)
   const { authenticated, user } = useAuth()
 
-  const published = usePublishedTestimonyListing2({ uid: user?.uid })
+  const { items } = usePublishedTestimonyListing2({ uid: user?.uid })
   const [isPublished, setIsPublished] = useState(false)
 
   useEffect(() => {
-    const userTestimonies = published.items?.filter(
+    const userTestimonies = items.result?.filter(
       u => u.authorUid === user?.uid && bill.BillNumber === u.billId
     )
 
     setIsPublished(userTestimonies?.length !== 0)
-  }, [bill.BillNumber, published.items, user?.uid])
+  }, [bill.BillNumber, items.result, user?.uid])
 
   return (
     <>

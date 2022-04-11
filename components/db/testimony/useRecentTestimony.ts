@@ -1,7 +1,7 @@
-import { usePublishedTestimonyListing } from "./usePublishedTestimonyListing"
+import { usePublishedTestimonyListing2 } from "./usePublishedTestimonyListing"
 
 export function useRecentTestimony() {
-  const { result, status } = usePublishedTestimonyListing({})
+  const { items } = usePublishedTestimonyListing2({})
 
-  return status === "success" ? result : []
+  return items.status === "success" ? items.result : []
 }
