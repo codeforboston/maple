@@ -28,6 +28,7 @@ export function runAgainstDevProject() {
 
   Object.assign(process.env, {
     NEXT_PUBLIC_PROJECT_ID_FOR_TEST: "digital-testimony-dev",
+    GCLOUD_PROJECT: "digital-testimony-dev",
     GOOGLE_APPLICATION_CREDENTIALS: serviceAccount,
     SYSTEM_TEST_USER_PASSWORD: testUserPassword
   })

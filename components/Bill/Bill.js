@@ -4,7 +4,7 @@ import AddTestimony from "../AddTestimony/AddTestimony"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import BillStatus from "../BillStatus/BillStatus"
-import BillTestimonies from "../BillTestimonies/BillTestimonies"
+import TestimoniesTable from "../TestimoniesTable/TestimoniesTable"
 import { useBill, useMember } from "../db"
 import { billLink, committeeLink, memberLink } from "../links"
 
@@ -59,7 +59,7 @@ const ViewBillPage = ({ billId }) => {
         )}
       </div>
       <h1>Published Testimony</h1>
-      <BillTestimonies bill={bill} />
+      <TestimoniesTable billId={bill.BillNumber} />
       <AddTestimony
         bill={bill}
         committeeName={committeeName}

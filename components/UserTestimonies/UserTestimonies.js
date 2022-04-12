@@ -1,12 +1,12 @@
-import React from "react"
-import { Table, Container, Button } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
-import EditTestimony from "../EditTestimony/EditTestimony"
-import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
-import { useAuth } from "../../components/auth"
-import { useBill, usePublishedTestimonyListing } from "../db"
 import Link from "next/link"
+import React from "react"
+import { Container, Table } from "react-bootstrap"
+import { useAuth } from "../../components/auth"
 import { formatBillId } from "../../components/formatting"
+import { useBill, usePublishedTestimonyListing } from "../db"
+import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
+import EditTestimony from "../EditTestimony/EditTestimony"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 
 const TestimonyRow = ({ testimony }) => {
   const { result: bill } = useBill(testimony.billId)
@@ -49,7 +49,9 @@ const TestimonyRow = ({ testimony }) => {
 }
 
 const UserTestimonies = ({ authorId }) => {
-  const testimoniesResponse = usePublishedTestimonyListing({ uid: authorId })
+  const { items: testimoniesResponse } = usePublishedTestimonyListing({
+    uid: authorId
+  })
   const testimonies =
     testimoniesResponse.status == "loading" ||
     testimoniesResponse.status == "error"

@@ -1,6 +1,5 @@
 import { createPage } from "../components/page"
-import { Form, Row, Button } from "../components/bootstrap"
-import Testimonies from "../components/Testimonies/Testimonies"
+import TestimoniesTable from "../components/TestimoniesTable/TestimoniesTable"
 
 export default createPage({
   v2: true,
@@ -9,23 +8,8 @@ export default createPage({
     return (
       <>
         <h1>Published Testimony</h1>
-
-        <SearchBar />
-        <Testimonies />
+        <TestimoniesTable search />
       </>
     )
   }
 })
-
-const SearchBar = () => (
-  <Form className="col-lg-5 mx-auto">
-    <Form.Group>
-      <Row>
-        <Form.Control type="text" placeholder="Search by bill #"></Form.Control>
-      </Row>
-      <Row className="mt-2">
-        <Button variant="primary">Search</Button>
-      </Row>
-    </Form.Group>
-  </Form>
-)

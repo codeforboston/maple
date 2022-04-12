@@ -22,6 +22,10 @@ export type Testimony = BaseTestimony & {
   authorDisplayName: string
   version: number
   publishedAt: Timestamp
+  representativeId?: string
+  senatorId?: string
+  senatorDistrict?: string
+  representativeDistrict?: string
 }
 
 export type WithId<T> = { id: string; value: T }
