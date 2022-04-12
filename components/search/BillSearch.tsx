@@ -1,10 +1,8 @@
-import AwesomeDebouncePromise from "awesome-debounce-promise"
-import { useCallback, useMemo, useState } from "react"
-import { GroupBase } from "react-select"
-import AsyncSelect, { AsyncProps } from "react-select/async"
+import { useCallback, useState } from "react"
 import { Col, Form, Row } from "../bootstrap"
-import { FilterOptions, SortOptions, TestimonyFilterOptions } from "../db"
+import { FilterOptions, SortOptions } from "../db"
 import { formatBillId } from "../formatting"
+import { ItemSearch, ItemSearchProps, SetFilter } from "./search"
 import { SearchService, useServiceChecked } from "./service"
 
 type FilterType =
@@ -14,8 +12,18 @@ type FilterType =
   | "committee"
   | "city"
 type SetSort = (sort: SortOptions) => void
-type SetFilter<T> = (filter: T | null) => void
 type SetFilterType = (filterType: FilterType | null) => void
+type FilterProps<T, F> = Pick<
+  ItemSearchProps<T, F>,
+  | "placeholder"
+  | "getOptionLabel"
+  | "getOptionValue"
+  | "getFilterOption"
+  | "loadOptions"
+>
+
+/** Helper for inferring type parameters of props */
+const asProps = <T, F>(props: FilterProps<T, F>) => props
 
 export const BillSearch: React.FC<{
   setSort: SetSort
@@ -40,24 +48,6 @@ export const BillSearch: React.FC<{
         <SearchBox filterType={filterType} setFilter={setFilter} />
       </Row>
     </Form>
-  )
-}
-
-export const TestimonySearch: React.FC<{
-  setFilter: SetFilter<TestimonyFilterOptions>
-}> = ({ setFilter }) => {
-  const search = useServiceChecked()
-  return (
-    <ItemSearch
-      placeholder="Type to search for legislators..."
-      getOptionLabel={o => `${o.name}${o.district ? ` | ${o.district}` : ""}`}
-      getOptionValue={o => o.id}
-      getFilterOption={i =>
-        i.branch === "House" ? { representativeId: i.id } : { senatorId: i.id }
-      }
-      loadOptions={search.members}
-      setFilter={setFilter}
-    />
   )
 }
 
@@ -112,13 +102,13 @@ const SearchBox: React.FC<{
   return filterType ? (
     <ItemSearch
       key={filterType}
-      {...getBillSearchProps(search, filterType)}
+      {...getSearchProps(search, filterType)}
       setFilter={setFilter}
     />
   ) : null
 }
 
-function getBillSearchProps(
+function getSearchProps(
   search: SearchService,
   filterType: FilterType
 ): FilterProps<any, any> {
@@ -166,90 +156,4 @@ function getBillSearchProps(
         loadOptions: search.members
       })
   }
-}
-
-type FilterProps<T, F> = Pick<
-  ItemSearchProps<T, F>,
-  | "placeholder"
-  | "getOptionLabel"
-  | "getOptionValue"
-  | "getFilterOption"
-  | "loadOptions"
->
-const asProps = <T, F>(props: FilterProps<T, F>) => props
-
-type LoadOptions<T> = (value: string) => Promise<T[]>
-type ItemSearchProps<T, F> = AsyncProps<T, false, GroupBase<T>> & {
-  loadOptions: LoadOptions<T>
-  getFilterOption: (i: T) => F
-  setFilter: SetFilter<F>
-}
-
-function ItemSearch<T, F>({
-  loadOptions,
-  getFilterOption,
-  setFilter,
-  ...props
-}: ItemSearchProps<T, F>) {
-  const { debouncedLoadOptions, error } = useDebouncedLoadOptions(loadOptions)
-  const { defaults, loadDefaults, loading } = useDefaultOptions(loadOptions)
-  return (
-    <div className="mb-3">
-      <AsyncSelect
-        {...props}
-        instanceId="item-search"
-        isClearable
-        onFocus={loadDefaults}
-        defaultOptions={defaults}
-        isLoading={loading ? true : undefined}
-        blurInputOnSelect
-        loadOptions={debouncedLoadOptions}
-        onChange={i => setFilter(i ? getFilterOption(i) : null)}
-      />
-      {error && (
-        <Form.Text className="text-danger">
-          Search error. Please try again.
-        </Form.Text>
-      )}
-    </div>
-  )
-}
-
-const useDebouncedLoadOptions = <T,>(loadOptions: LoadOptions<T>) => {
-  const [error, setError] = useState(false)
-  const debouncedLoadOptions = useMemo(
-    () =>
-      AwesomeDebouncePromise(async (value: string) => {
-        try {
-          const options = await loadOptions(value)
-          setError(false)
-          return options
-        } catch (e) {
-          console.warn("Search error", e)
-          setError(true)
-        }
-      }, 100),
-    [loadOptions]
-  )
-  return { error, debouncedLoadOptions }
-}
-
-const useDefaultOptions = <T,>(loadOptions: LoadOptions<T>) => {
-  const [defaults, setDefaults] = useState<any>(undefined)
-  const [loading, setLoadingDefaults] = useState(false)
-  const loadDefaults = useCallback(() => {
-    if (!defaults && !loading) {
-      setLoadingDefaults(true)
-      loadOptions("")
-        .then(options => {
-          setLoadingDefaults(false)
-          setDefaults(options)
-        })
-        .catch(e => {
-          console.warn("Search defaults error", e)
-          setLoadingDefaults(false)
-        })
-    }
-  }, [defaults, loadOptions, loading])
-  return { loadDefaults, loading, defaults }
 }
