@@ -24,7 +24,7 @@ jobs:
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only firestore,functions,storage
+          args: deploy --force --only firestore,functions,storage
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           PROJECT_ID: digital-testimony-dev
