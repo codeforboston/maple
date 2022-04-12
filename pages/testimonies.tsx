@@ -8,7 +8,7 @@ export default createPage({
     return (
       <>
         <h1>Published Testimony</h1>
-        <TestimoniesTable />
+        <TestimoniesTable search />
       </>
     )
   }

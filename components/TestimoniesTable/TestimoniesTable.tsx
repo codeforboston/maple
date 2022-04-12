@@ -14,13 +14,16 @@ import { QuestionTooltip } from "../tooltip"
 import { PaginationButtons } from "../table"
 import { TestimonySearch } from "../search"
 
-const TestimoniesTable = () => {
-  const { pagination, items, setFilter } = usePublishedTestimonyListing({})
+const TestimoniesTable = (props: {
+  uid?: string
+  billId?: string
+  search?: boolean
+}) => {
+  const { pagination, items, setFilter } = usePublishedTestimonyListing(props)
   const testimonies = items.result ?? []
-  console.log(testimonies)
   return (
     <Container>
-      <TestimonySearch setFilter={setFilter} />
+      {props.search && <TestimonySearch setFilter={setFilter} />}
       <Table responsive striped bordered hover>
         <thead>
           <tr>
