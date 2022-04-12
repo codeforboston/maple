@@ -36,12 +36,12 @@ const CommentModal = ({
     </div>
   )
 
-  
+
   const [isPublishing, setIsPublishing] = useState(false)
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
-  
+
   const [testimony, setTestimony] = useUnsavedTestimony()
-  
+
   const billInfo = bill.content === undefined ? bill : bill.content
   const edit = useEditTestimony(user ? user.uid : null, billInfo.BillNumber)
   const attachment = useDraftTestimonyAttachment(
@@ -59,7 +59,7 @@ const CommentModal = ({
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
-  
+
   const defaultContent =
     testimony && testimony.content ? testimony.content : undefined
 
@@ -89,7 +89,7 @@ const CommentModal = ({
     <>
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
-          <Modal.Title>
+          <Modal.Title className="w-100">
             <div className="d-flex justify-content-center">
               {existingTestimony ? <h4>Edit Your Testimony</h4> : <h4>Add Your Testimony</h4>}
             </div>
@@ -158,7 +158,7 @@ const CommentModal = ({
         senateChairEmail={senateChairEmail}
         houseChairEmail={houseChairEmail}
         committeeName={committeeName}
-        refreshtable = {refreshtable}
+        refreshtable={refreshtable}
 
       />
     </>

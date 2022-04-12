@@ -33,7 +33,7 @@ export const FormattedBillTitle = ({ bill }: { bill: Bill | BillContent }) => {
   const { BillNumber, Title } = billInfo
 
   return (
-    <div className="text-center">
+    <div className="mt-2">
       {formatBillId(BillNumber)}: {Title}
     </div>
   )

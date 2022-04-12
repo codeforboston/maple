@@ -84,7 +84,6 @@ const PostSubmitModal = ({
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
-    refreshtable()
   }
 
   return (
