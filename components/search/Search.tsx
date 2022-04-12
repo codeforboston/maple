@@ -1,9 +1,9 @@
 import AwesomeDebouncePromise from "awesome-debounce-promise"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { GroupBase } from "react-select"
 import AsyncSelect, { AsyncProps } from "react-select/async"
 import { Col, Form, Row } from "../bootstrap"
-import { FilterOptions, SortOptions } from "../db"
+import { FilterOptions, SortOptions, TestimonyFilterOptions } from "../db"
 import { formatBillId } from "../formatting"
 import { SearchService, useServiceChecked } from "./service"
 
@@ -14,12 +14,12 @@ type FilterType =
   | "committee"
   | "city"
 type SetSort = (sort: SortOptions) => void
-type SetFilter = (filter: FilterOptions | null) => void
+type SetFilter<T> = (filter: T | null) => void
 type SetFilterType = (filterType: FilterType | null) => void
 
-export const Search: React.FC<{
+export const BillSearch: React.FC<{
   setSort: SetSort
-  setFilter: SetFilter
+  setFilter: SetFilter<FilterOptions>
 }> = ({ setSort, setFilter }) => {
   const [filterType, setFilterType] = useState<null | FilterType>("billId")
   const onFilterTypeChange: SetFilterType = useCallback(
@@ -40,6 +40,24 @@ export const Search: React.FC<{
         <SearchBox filterType={filterType} setFilter={setFilter} />
       </Row>
     </Form>
+  )
+}
+
+export const TestimonySearch: React.FC<{
+  setFilter: SetFilter<TestimonyFilterOptions>
+}> = ({ setFilter }) => {
+  const search = useServiceChecked()
+  return (
+    <ItemSearch
+      placeholder="Type to search for legislators..."
+      getOptionLabel={o => `${o.name}${o.district ? ` | ${o.district}` : ""}`}
+      getOptionValue={o => o.id}
+      getFilterOption={i =>
+        i.branch === "House" ? { representativeId: i.id } : { senatorId: i.id }
+      }
+      loadOptions={search.members}
+      setFilter={setFilter}
+    />
   )
 }
 
@@ -87,24 +105,23 @@ const SearchTypeSelect: React.FC<{ setFilterType: SetFilterType }> = ({
 
 const SearchBox: React.FC<{
   filterType: FilterType | null
-  setFilter: SetFilter
+  setFilter: SetFilter<FilterOptions>
 }> = ({ filterType, setFilter }) => {
   const search = useServiceChecked()
 
   return filterType ? (
     <ItemSearch
       key={filterType}
-      {...getItemSearchProps(search, filterType)}
-      search={search}
+      {...getBillSearchProps(search, filterType)}
       setFilter={setFilter}
     />
   ) : null
 }
 
-function getItemSearchProps(
+function getBillSearchProps(
   search: SearchService,
   filterType: FilterType
-): FilterProps<any> {
+): FilterProps<any, any> {
   switch (filterType) {
     case "billId":
       return asProps({
@@ -151,31 +168,29 @@ function getItemSearchProps(
   }
 }
 
-type FilterProps<T> = Pick<
-  ItemSearchProps<T>,
+type FilterProps<T, F> = Pick<
+  ItemSearchProps<T, F>,
   | "placeholder"
   | "getOptionLabel"
   | "getOptionValue"
   | "getFilterOption"
   | "loadOptions"
 >
-const asProps = <T,>(props: FilterProps<T>) => props
+const asProps = <T, F>(props: FilterProps<T, F>) => props
 
 type LoadOptions<T> = (value: string) => Promise<T[]>
-type ItemSearchProps<T> = AsyncProps<T, false, GroupBase<T>> & {
+type ItemSearchProps<T, F> = AsyncProps<T, false, GroupBase<T>> & {
   loadOptions: LoadOptions<T>
-  getFilterOption: (i: T) => FilterOptions
-  setFilter: SetFilter
-  search: SearchService
+  getFilterOption: (i: T) => F
+  setFilter: SetFilter<F>
 }
 
-function ItemSearch<T>({
+function ItemSearch<T, F>({
   loadOptions,
   getFilterOption,
   setFilter,
-  search,
   ...props
-}: ItemSearchProps<T>) {
+}: ItemSearchProps<T, F>) {
   const { debouncedLoadOptions, error } = useDebouncedLoadOptions(loadOptions)
   const { defaults, loadDefaults, loading } = useDefaultOptions(loadOptions)
   return (

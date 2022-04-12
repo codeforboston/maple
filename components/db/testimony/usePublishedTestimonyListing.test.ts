@@ -11,9 +11,9 @@ describe("usePublishedTestimonyListing", () => {
       usePublishedTestimonyListing({ billId: "H1" })
     )
 
-    await waitFor(() => expect(result.current.loading).toBeFalsy())
+    await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
-    const testimony = result.current.result!
+    const testimony = result.current.items.result!
     expect(testimony).not.toHaveLength(0)
     testimony.forEach(t => {
       expect(t.billId).toEqual("H1")
@@ -28,9 +28,9 @@ describe("usePublishedTestimonyListing", () => {
       usePublishedTestimonyListing({ uid })
     )
 
-    await waitFor(() => expect(result.current.loading).toBeFalsy())
+    await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
-    const testimony = result.current.result!
+    const testimony = result.current.items.result!
     expect(testimony).not.toHaveLength(0)
     testimony.forEach(t => {
       expect(t.authorUid).toEqual(uid)
@@ -45,9 +45,9 @@ describe("usePublishedTestimonyListing", () => {
       usePublishedTestimonyListing({ billId: "H1", uid })
     )
 
-    await waitFor(() => expect(result.current.loading).toBeFalsy())
+    await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
-    const testimony = result.current.result!
+    const testimony = result.current.items.result!
     expect(testimony).toHaveLength(1)
     expect(testimony[0].authorUid).toBe(uid)
     expect(testimony[0].billId).toBe("H1")

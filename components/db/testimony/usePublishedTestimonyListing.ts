@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
-import { nullableQuery } from "../common"
+import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
 
@@ -32,6 +32,10 @@ const useTable = createTableHook<Testimony, Refinement, unknown>({
   getItems: listTestimony
 })
 
+export type TestimonyFilterOptions =
+  | { representativeId: string }
+  | { senatorId: string }
+
 export function usePublishedTestimonyListing({
   uid,
   billId
@@ -51,9 +55,7 @@ export function usePublishedTestimonyListing({
   return useMemo(
     () => ({
       pagination,
-      filter: (
-        r: { representativeId: string } | { senatorId: string } | null
-      ) =>
+      setFilter: (r: TestimonyFilterOptions | null) =>
         refine({
           representativeId: undefined,
           senatorId: undefined,
@@ -80,6 +82,10 @@ function getWhere({
   return constraints.map(c => where(...c))
 }
 
+// court, author x bill x (rep | senator), publishedAt desc
+// all indexes start with court end with publishedAt
+// 2 * 2 * 3
+
 async function listTestimony(
   refinement: Refinement,
   limitCount: number,
@@ -89,8 +95,7 @@ async function listTestimony(
   const result = await getDocs(
     nullableQuery(
       testimonyRef,
-      // TODO: add court constraint
-      // where("court", "==", currentGeneralCourt),
+      where("court", "==", currentGeneralCourt),
       ...getWhere(refinement),
       orderBy("publishedAt", "desc"),
       limit(limitCount),

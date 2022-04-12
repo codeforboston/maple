@@ -4,7 +4,7 @@ import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
 import { useBills, useMember } from "../db"
 import { formatBillId, formatHearingDate } from "../formatting"
-import { Search } from "../search"
+import { BillSearch } from "../search"
 import { PaginationButtons } from "../table"
 
 const invalidSponsorId = Id => {
@@ -92,7 +92,7 @@ const ViewBills = () => {
 
   return (
     <Container>
-      <Search setSort={setSort} setFilter={setFilter} />
+      <BillSearch setSort={setSort} setFilter={setFilter} />
       <Table responsive striped bordered hover>
         <thead>
           <tr>

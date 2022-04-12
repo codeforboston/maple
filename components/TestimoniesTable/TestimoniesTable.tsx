@@ -12,12 +12,15 @@ import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
 import { QuestionTooltip } from "../tooltip"
 import { PaginationButtons } from "../table"
+import { TestimonySearch } from "../search"
 
 const TestimoniesTable = () => {
-  const { pagination, items } = usePublishedTestimonyListing({})
+  const { pagination, items, setFilter } = usePublishedTestimonyListing({})
   const testimonies = items.result ?? []
+  console.log(testimonies)
   return (
     <Container>
+      <TestimonySearch setFilter={setFilter} />
       <Table responsive striped bordered hover>
         <thead>
           <tr>
