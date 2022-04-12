@@ -3,18 +3,16 @@
   "bucket": "demo-dtp.appspot.com",
   "contentType": "application/json",
   "metageneration": 1,
-  "generation": 1649709666025,
+  "generation": 1649718216284,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=43200",
   "contentEncoding": "gzip",
-  "downloadTokens": [
-    "aae76525-23fb-4b23-9252-384104d51d47"
-  ],
-  "etag": "V1K4u0/x+/0/zwH9xEIyEvgP1ro",
-  "timeCreated": "2022-04-11T20:41:06.023Z",
-  "updated": "2022-04-11T20:41:06.033Z",
-  "size": 994343,
-  "md5Hash": "wrdDayZRcH0CTpcprWY9Yw==",
-  "crc32c": "2283051826"
+  "downloadTokens": [],
+  "etag": "lXFTNT/KooZLudkUx/cPoUr/A10",
+  "timeCreated": "2022-04-11T23:03:36.282Z",
+  "updated": "2022-04-11T23:03:36.292Z",
+  "size": 994695,
+  "md5Hash": "QLLvcu4TB9VkRTzP88YK1g==",
+  "crc32c": "1999116661"
 }

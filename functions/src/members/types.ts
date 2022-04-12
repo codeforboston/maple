@@ -13,6 +13,7 @@ export const MemberContent = Record({
   LeadershipPosition: NullStr,
   District: NullStr,
   Party: NullStr,
+  Branch: NullStr,
   EmailAddress: NullStr,
   PhoneNumber: NullStr,
   FaxNumber: NullStr,
