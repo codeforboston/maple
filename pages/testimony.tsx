@@ -12,7 +12,9 @@ export default createPage({
   Page: () => {
     const router = useRouter()
     const { billId, author } = router.query
-    const { result, status } = usePublishedTestimonyListing({
+    const {
+      items: { result, status }
+    } = usePublishedTestimonyListing({
       uid: author as string,
       billId: billId as string
     })

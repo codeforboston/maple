@@ -1,7 +1,7 @@
 import { usePublishedTestimonyListing } from "./usePublishedTestimonyListing"
 
 export function useRecentTestimony() {
-  const { result, status } = usePublishedTestimonyListing({})
+  const { items } = usePublishedTestimonyListing({})
 
-  return status === "success" ? result : []
+  return items.status === "success" ? items.result : []
 }

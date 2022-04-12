@@ -12,44 +12,46 @@ describe("useBills", () => {
   it("fetches bills", async () => {
     const { waitFor, result } = renderHook(() => useBills())
 
-    expect(result.current.currentPage).toBe(1)
-    expect(result.current.loading).toBe(true)
+    expect(result.current.pagination.currentPage).toBe(1)
+    expect(result.current.items.loading).toBe(true)
 
-    await waitFor(() => expect(result.current.loading).toBeFalsy())
-    expect(result.current.bills).toHaveLength(result.current.billsPerPage)
-    expect(result.current.hasNextPage).toBeTruthy()
-    expect(result.current.hasPreviousPage).toBeFalsy()
+    await waitFor(() => expect(result.current.items.loading).toBeFalsy())
+    expect(result.current.items.result).toHaveLength(
+      result.current.pagination.itemsPerPage
+    )
+    expect(result.current.pagination.hasNextPage).toBeTruthy()
+    expect(result.current.pagination.hasPreviousPage).toBeFalsy()
   })
 
   it("paginates", async () => {
     const { waitFor, result } = renderHook(() => useBills())
-    await waitFor(() => expect(result.current.bills).toBeDefined())
+    await waitFor(() => expect(result.current.items.result).toBeDefined())
 
     // Move to the next page
-    act(() => void result.current.nextPage())
-    expect(result.current.currentPage).toBe(2)
-    expect(result.current.bills).toBeUndefined()
-    await waitFor(() => expect(result.current.bills).toBeDefined())
-    expect(result.current.hasNextPage).toBeTruthy()
-    expect(result.current.hasPreviousPage).toBeTruthy()
+    act(() => void result.current.pagination.nextPage())
+    expect(result.current.pagination.currentPage).toBe(2)
+    expect(result.current.items.result).toBeUndefined()
+    await waitFor(() => expect(result.current.items.result).toBeDefined())
+    expect(result.current.pagination.hasNextPage).toBeTruthy()
+    expect(result.current.pagination.hasPreviousPage).toBeTruthy()
 
     // move to the previous page
-    act(() => void result.current.previousPage())
-    expect(result.current.bills).toBeUndefined()
-    expect(result.current.currentPage).toBe(1)
-    await waitFor(() => expect(result.current.bills).toBeDefined())
-    expect(result.current.hasNextPage).toBeTruthy()
-    expect(result.current.hasPreviousPage).toBeFalsy()
+    act(() => void result.current.pagination.previousPage())
+    expect(result.current.items.result).toBeUndefined()
+    expect(result.current.pagination.currentPage).toBe(1)
+    await waitFor(() => expect(result.current.items.result).toBeDefined())
+    expect(result.current.pagination.hasNextPage).toBeTruthy()
+    expect(result.current.pagination.hasPreviousPage).toBeFalsy()
   })
 
   it("filters by billId", async () => {
     const { waitFor, result } = renderHook(() => useBills())
 
-    await waitFor(() => expect(result.current.loading).toBeFalsy())
+    await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
     act(() => void result.current.setFilter({ type: "bill", id: "H1" }))
-    await waitFor(() => expect(result.current.bills).toHaveLength(1))
-    expect(result.current.bills?.[0].content.BillNumber).toBe("H1")
+    await waitFor(() => expect(result.current.items.result).toHaveLength(1))
+    expect(result.current.items.result?.[0].content.BillNumber).toBe("H1")
   })
 
   it("sorts by id", async () => {
@@ -112,9 +114,9 @@ describe("useBills", () => {
 async function renderWithSort(sort: any) {
   const { waitFor, result } = renderHook(() => useBills())
   act(() => void result.current.setSort(sort))
-  await waitFor(() => expect(result.current.loading).toBeFalsy())
+  await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
-  return result.current.bills!
+  return result.current.items.result!
 }
 
 async function setTestimonyCount(billId: string, testimonyCount: number) {

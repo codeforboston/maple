@@ -21,7 +21,7 @@ export type BillSearchIndex = {
     index: any
   }
   members: {
-    items: { id: string; name: string; district?: string }[]
+    items: { id: string; name: string; district?: string; branch?: string }[]
     index: any
   }
 }
@@ -45,7 +45,8 @@ class UpdateBillSearchIndex extends BillProcessor {
         this.members.map(m => ({
           id: m.id,
           name: m.content.Name,
-          district: m.content.District ?? undefined
+          district: m.content.District ?? undefined,
+          branch: m.content.Branch ?? undefined
         }))
       )
     }

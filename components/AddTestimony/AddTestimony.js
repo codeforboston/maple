@@ -1,9 +1,9 @@
+import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
-import { Button, Modal } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
-import { useRouter } from "next/router"
 
 const AddTestimony = ({
   bill,
@@ -26,16 +26,16 @@ const AddTestimony = ({
   const handleCloseTestimony = () => setShowTestimony(false)
   const { authenticated, user } = useAuth()
 
-  const published = usePublishedTestimonyListing({ uid: user?.uid })
+  const { items } = usePublishedTestimonyListing({ uid: user?.uid })
   const [isPublished, setIsPublished] = useState(false)
 
   useEffect(() => {
-    const userTestimonies = published?.result?.filter(
+    const userTestimonies = items.result?.filter(
       u => u.authorUid === user?.uid && bill.BillNumber === u.billId
     )
 
     setIsPublished(userTestimonies?.length !== 0)
-  }, [bill.BillNumber, published?.result, user?.uid])
+  }, [bill.BillNumber, items.result, user?.uid])
 
   return (
     <>

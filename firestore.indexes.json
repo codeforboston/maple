@@ -1,5 +1,6 @@
 {
   "indexes": [
+    //// Publication cloud functions ////
     {
       "collectionGroup": "archivedTestimony",
       "queryScope": "COLLECTION",
@@ -19,6 +20,22 @@
       ]
     },
 
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+
+    //// Bill Search ////
     // No filter
     {
       "collectionGroup": "bills",
@@ -399,6 +416,7 @@
       ]
     },
 
+    //// Event Listing ////
     {
       "collectionGroup": "events",
       "queryScope": "COLLECTION",
@@ -413,20 +431,127 @@
         }
       ]
     },
+
+    //// Testimony Search ////
+    // No filters
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
-          "fieldPath": "authorUid",
+          "fieldPath": "court",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "billId",
-          "order": "ASCENDING"
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
         }
       ]
     },
+    // Rep
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "representativeId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // Sen
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "senatorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // bill
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // bill, rep
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "representativeId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // bill, senator
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "senatorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // user
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -445,10 +570,61 @@
         }
       ]
     },
+    // user, Rep
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "representativeId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // user, Sen
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "senatorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // user, bill
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -463,10 +639,50 @@
         }
       ]
     },
+    // user, bill, rep
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "representativeId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    // user, bill, senator
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "senatorId",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "court",
           "order": "ASCENDING"
