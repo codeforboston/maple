@@ -1,18 +1,16 @@
 import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
+import { TableButton } from "../buttons"
 import CommentModal from "../CommentModal/CommentModal"
 
-export const EditTestimonyButton = props => {
-  return (
-    <Button variant="primary" onClick={props.onclick}>
-      Edit
-    </Button>
-  )
-}
 
 const EditTestimony = props => {
-  const { bill, showEditTestimony, setShowEditTestimony, refreshtable } = props
-  const testimony = props.testimony
+  const { bill, refreshtable } = props
+
+  const [showEditTestimony, setShowEditTestimony] = useState(false)
+
+  const handleEditTestimonyClick = () => {
+    !showEditTestimony && setShowEditTestimony(true)
+  }
 
   const handleShowTestimony = () => setShowEditTestimony(true)
   const handleCloseTestimony = () => {
@@ -21,13 +19,15 @@ const EditTestimony = props => {
   }
   return (
     <>
+      <TableButton onclick={handleEditTestimonyClick}>
+        Edit
+      </TableButton>
       <CommentModal
         bill={bill}
         showTestimony={showEditTestimony}
         setShowTestimony={setShowEditTestimony}
         handleShowTestimony={handleShowTestimony}
         handleCloseTestimony={handleCloseTestimony}
-        testimony={testimony}
       />
     </>
   )

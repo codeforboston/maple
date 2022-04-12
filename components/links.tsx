@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
+import { Testimony } from "../functions/src/testimony/types"
 import { BillContent, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 
@@ -80,4 +81,10 @@ export function memberURL(member: MemberContent) {
 
 export function memberLink(member: MemberContent) {
   return <External href={memberURL(member)}>{member.Name}</External>
+}
+
+export const getDirectTestimonyLink = (testimony: Testimony) => {
+  const { billId, authorUid } = testimony
+
+  return siteUrl(`testimony?billId=${billId}&author=${authorUid}`)
 }

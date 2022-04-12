@@ -7,6 +7,7 @@ import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { Attachment } from "./Attachment"
 import PostSubmitModal from "./PostSubmitModal"
 import * as links from "../../components/links"
+import { FormattedBillTitle } from "../formatting"
 
 const CommentModal = ({
   bill,
@@ -34,11 +35,14 @@ const CommentModal = ({
     </div>
   )
 
+  const billInfo = bill.content === undefined ? bill : bill.content
+
   const [isPublishing, setIsPublishing] = useState(false)
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
 
   const [testimony, setTestimony] = useUnsavedTestimony()
-  const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
+
+  const edit = useEditTestimony(user ? user.uid : null, billInfo.BillNumber)
   const attachment = useDraftTestimonyAttachment(
     user.uid,
     edit.draft,
@@ -46,14 +50,18 @@ const CommentModal = ({
   )
 
   useEffect(() => {
-    const testimony = edit.draft ? edit.draft : {}
+    const testimony = edit.publication ? edit.publication : edit.draft ? edit.draft : {}
     setTestimony(testimony)
-  }, [edit.draft, setTestimony])
+  }, [edit.draft, edit.publication, setTestimony])
 
   const positionMessage = "Select my support..(required)"
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
+  
+  const defaultContent =
+    testimony && testimony.content ? testimony.content : undefined
+
 
   const publishTestimony = async () => {
     if (
@@ -76,13 +84,16 @@ const CommentModal = ({
     testimony?.position != undefined && testimony.position != positionMessage
   const testimonyWritten = testimony?.content != undefined
 
+
   return (
     <>
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
           <Modal.Title>
-            {"Add Your Testimony" +
-              (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}
+            <div className="d-flex justify-content-center">
+              {existingTestimony ? <h4>Edit Your Testimony</h4> : <h4>Add Your Testimony</h4>}
+            </div>
+            <FormattedBillTitle bill={bill} />
           </Modal.Title>
         </Modal.Header>
 
@@ -111,7 +122,7 @@ const CommentModal = ({
                   resize="none"
                   rows="20"
                   placeholder={existingTestimony ? null : "enter text..."}
-                  defaultValue={existingTestimony ? testimony?.content : null}
+                  defaultValue={existingTestimony ? defaultContent : null}
                   required
                   onChange={e => {
                     const newText = e.target.value
@@ -131,10 +142,10 @@ const CommentModal = ({
             {!positionChosen
               ? "Choose Endorse/Oppose/Neutral to Publish"
               : !testimonyWritten
-              ? "Write Testimony to Publish"
-              : !isPublishing
-              ? "Publish"
-              : "Publishing.."}
+                ? "Write Testimony to Publish"
+                : !isPublishing
+                  ? "Publish"
+                  : "Publishing.."}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -142,7 +153,7 @@ const CommentModal = ({
         showPostSubmitModal={showPostSubmitModal}
         setShowPostSubmitModal={setShowPostSubmitModal}
         handleCloseTestimony={handleCloseTestimony}
-        bill={bill}
+        bill={billInfo}
         testimony={testimony}
         senateChairEmail={senateChairEmail}
         houseChairEmail={houseChairEmail}

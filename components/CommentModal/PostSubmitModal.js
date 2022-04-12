@@ -37,15 +37,15 @@ const PostSubmitModal = ({
     testimony?.position == "endorse"
       ? "Support of"
       : testimony?.position == "oppose"
-      ? "Opposition to"
-      : "Opinion on"
+        ? "Opposition to"
+        : "Opinion on"
 
   const positionWord =
     testimony?.position == "endorse"
       ? "support"
       : testimony?.position == "oppose"
-      ? "oppose"
-      : "have thoughts on"
+        ? "oppose"
+        : "have thoughts on"
 
   const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
 
@@ -76,8 +76,7 @@ const PostSubmitModal = ({
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${
       bill.BillNumber
     }${bill.Title.length > 174 ? "" : ": " + bill.Title.trim()}.
-    
-See ${webSiteBillAddress} for details.`
+    See ${webSiteBillAddress} for details.`
   )
   // the maximum tweet length is 280 characters.  so, the maximum title length is about 174 characters depending on the length of the final web site address.
 
