@@ -8,7 +8,7 @@ const config: Config.InitialOptions = {
   clearMocks: true,
   rootDir: "..",
   roots: ["tests/system"],
-  testEnvironment: "node"
+  testEnvironment: "./tests/integrationEnvironment.ts"
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest

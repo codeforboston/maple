@@ -56,7 +56,8 @@ type Refinement = {
 
 const useTable = createTableHook<Bill, Refinement, unknown[]>({
   getItems: listBills,
-  getPageKey
+  getPageKey,
+  name: "bills"
 })
 
 export function useBills() {

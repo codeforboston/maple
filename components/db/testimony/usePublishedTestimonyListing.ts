@@ -29,7 +29,8 @@ const initialRefinement = (uid?: string, billId?: string): Refinement => ({
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
   getPageKey: i => i.publishedAt,
-  getItems: listTestimony
+  getItems: listTestimony,
+  name: "published testimony"
 })
 
 export type TestimonyFilterOptions =
@@ -74,17 +75,13 @@ function getWhere({
   senatorId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
-  if (uid) constraints.push(["authoruid", "==", uid])
+  if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
   return constraints.map(c => where(...c))
 }
-
-// court, author x bill x (rep | senator), publishedAt desc
-// all indexes start with court end with publishedAt
-// 2 * 2 * 3
 
 async function listTestimony(
   refinement: Refinement,
@@ -95,8 +92,8 @@ async function listTestimony(
   const result = await getDocs(
     nullableQuery(
       testimonyRef,
-      where("court", "==", currentGeneralCourt),
       ...getWhere(refinement),
+      where("court", "==", currentGeneralCourt),
       orderBy("publishedAt", "desc"),
       limit(limitCount),
       startAfterKey !== null && startAfter(startAfterKey)

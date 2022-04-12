@@ -27,6 +27,7 @@ type Config<I, R, P> = {
     itemsPerPage: number,
     pageKey: P | null
   ) => Promise<I[]>
+  name: string
 }
 
 function adjacentKeys<P>(keys: (P | null | undefined)[], currentPage: number) {
@@ -51,6 +52,7 @@ export type Pagination = {
 }
 
 export function createTableHook<Item, Refinement, PageKey>({
+  name,
   getPageKey,
   getItems
 }: Config<Item, Refinement, PageKey>) {
@@ -81,6 +83,7 @@ export function createTableHook<Item, Refinement, PageKey>({
         ...adjacentKeys(keys, state.currentPage)
       }
     } else if (action.type === "error") {
+      console.warn(`Error in ${name} table hook`, action.error)
       return { ...state, error: action.error }
     } else if (action.type === "refine") {
       return {
