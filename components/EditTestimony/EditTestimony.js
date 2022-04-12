@@ -12,11 +12,10 @@ const EditTestimony = props => {
     !showEditTestimony && setShowEditTestimony(true)
   }
 
-  const handleShowTestimony = () => setShowEditTestimony(true)
   const handleCloseTestimony = () => {
-    setShowEditTestimony(false)
-    refreshtable()
+    showEditTestimony && setShowEditTestimony(false)
   }
+
   return (
     <>
       <TableButton onclick={handleEditTestimonyClick}>
@@ -26,8 +25,8 @@ const EditTestimony = props => {
         bill={bill}
         showTestimony={showEditTestimony}
         setShowTestimony={setShowEditTestimony}
-        handleShowTestimony={handleShowTestimony}
         handleCloseTestimony={handleCloseTestimony}
+        refreshtable={refreshtable}
       />
     </>
   )

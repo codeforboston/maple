@@ -18,7 +18,9 @@ const PostSubmitModal = ({
   testimony,
   senateChairEmail,
   houseChairEmail,
-  committeeName
+  committeeName,
+  refreshtable
+
 }) => {
   const billNumber = bill?.BillNumber
   const billTitle = bill?.Title
@@ -82,11 +84,13 @@ const PostSubmitModal = ({
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
-    handleCloseTestimony()
+    refreshtable()
   }
+
   return (
     <Modal
       show={showPostSubmitModal}
+      onShow={handleCloseTestimony}
       onHide={handleClosePostSubmitModal}
       backdrop="static"
     >

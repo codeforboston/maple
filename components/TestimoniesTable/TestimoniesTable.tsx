@@ -55,11 +55,6 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
 
-  const [showTestimony, setShowTestimony] = useState(false)
-
-  const handleExpandButtonClick = () => setShowTestimony(true)
-  const closeTestimony = () => setShowTestimony(false)
-
   return (
     <tr>
       <td>
@@ -83,12 +78,9 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
       <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>
-        <TableButton onclick={handleExpandButtonClick}>Expand</TableButton>
         <ExpandTestimony
           bill={bill?.content}
           testimony={testimony}
-          showTestimony={showTestimony}
-          closeTestimony={closeTestimony}
         />
       </td>
     </tr>

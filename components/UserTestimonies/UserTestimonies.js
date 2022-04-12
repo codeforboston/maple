@@ -12,7 +12,7 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
   const { result: bill } = useBill(testimony.billId)
 
   const { user } = useAuth()
-  
+
   const userIsAuthor = user?.uid == testimony?.authorUid
 
 
@@ -30,7 +30,7 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
           </td>
           <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
           <td>{testimony.content.substring(0, 100)}...</td>
-          <td className="flex-row justify-content-evenly">
+          <td className="d-flex flex-nowrap justify-content-evenly">
             <>
               <ExpandTestimony
                 bill={bill}
@@ -45,7 +45,7 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
                 <DeleteTestimony
                   bill={bill}
                   testimony={testimony}
-                  refreshTable={refreshtable}
+                  refreshtable={refreshtable}
                 />
               </>}
             </>
@@ -66,7 +66,7 @@ const UserTestimonies = ({ authorId }) => {
   const { status, result } = testimoniesResponse
   const testimonies = status == "loading" || status == "error" ? [] : result
 
-  const testimoniesComponent = testimonies.map((testimony) => {
+  const testimonyRows = testimonies.map((testimony) => {
     return testimony ? (
       <TestimonyRow
         testimony={testimony}
@@ -89,7 +89,7 @@ const UserTestimonies = ({ authorId }) => {
             <th>Text</th>
           </tr>
         </thead>
-        <tbody>{testimonies && testimoniesComponent}</tbody>
+        <tbody>{testimonies && testimonyRows}</tbody>
       </Table>
     </Container>
   )
