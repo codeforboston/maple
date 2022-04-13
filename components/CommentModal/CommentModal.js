@@ -26,6 +26,9 @@ const CommentModal = ({
         <li>Why this bill is important to you</li>
         <li>Your thoughts on the bill</li>
       </ul>
+      <a href="../../pages/legprocess">
+        Click here for more information on how to provide effective testimony.
+      </a>
       <div>
         <links.External href="/legprocess">
           Learn more about submitting testimony
