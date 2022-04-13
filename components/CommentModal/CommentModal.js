@@ -107,8 +107,14 @@ const CommentModal = ({
               <option value="neutral">Neutral</option>
             </select>
             <Row>
+              <div>
+                <h5>Select your position</h5>
+              </div>
               <Col className="col-sm mt-2">
                 {testimonyExplanation}
+                <div>
+                  <h5>Enter your testimony</h5>
+                </div>
                 <textarea
                   className="form-control col-sm"
                   resize="none"
