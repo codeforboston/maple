@@ -74,8 +74,8 @@ export default createPage({
             <p>
               The project is developed in partnership between the NuLawLab and
               scholars at{" "}
-              <a href="https://goodgovproject.com">
-                Boston College Law School's Good Governance Project (GGP)
+              <a href="https://www.bc.edu/bc-web/schools/law.html">
+                Boston College Law School
               </a>{" "}
               and{" "}
               <a href="https://cyber.harvard.edu">
@@ -83,21 +83,9 @@ export default createPage({
               </a>
               .
             </p>
-            <h3>BC Good Governance Project</h3>
+            <h3>Boston College Law School</h3>
             <p>
-              GGP is a non-partisan, student-driven initiative at Boston College
-              Law School and the{" "}
-              <a href="https://www.bc.edu/bc-web/centers/clough.html">
-                BC Clough Center for Constitutional Democracy
-              </a>
-              . GGP advocates for faith in democracy, and for democratic
-              structures worth of faith; inclusive, equitable and responsive.
-              Using our Democracy Maps, we aggregate voices from across the
-              state to advance discussion on key governance issues. GGP also
-              provides legal support to pro-democracy organizations and
-              legislators, and host events to galvanize and encourage faith in
-              democracy. Project co-founder Matt Victor is a JD student at BC
-              and the founder of GGP.
+              The BS Law School is an inclusive community of scholars that prepares students for success in the legal profession at the highest levels.
             </p>
             <h3>Harvard Berkman Klein Center</h3>
             <p>
@@ -109,25 +97,6 @@ export default createPage({
                 Nathan Sanders
               </a>{" "}
               is a past Fellow and current Affiliate at BKC.
-            </p>
-            <h1>Project History</h1>
-            <p>
-              This project builds on top of the GGP's prior work in 2021 on the{" "}
-              <a href="https://goodgovproject.com/transparency-ma">
-                Transparency in MA project
-              </a>
-              . After studying our political institutions in the fall and winter
-              of 2020-2021, the GGP students identified three state legislative
-              priorities to improve the quality of democracy in Massachusetts:
-              same day registration; no-excuse absentee voting; and publicly
-              financed campaigns. While there are many other legislative
-              improvements to make to our democracy, which we identify here,
-              these three priorities reflect the impactful, pragmatic, and
-              common ground changes the GGP hopes to advance. In 2021, GGP
-              developed online advocacy maps (through collaboration with CfB)
-              allowing legislators and other leaders to register their
-              perspectives on these key issues and also performed a 50 state
-              analysis of transparency practices in state governments.
             </p>
           </div>
 
