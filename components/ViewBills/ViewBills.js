@@ -97,7 +97,7 @@ const ViewBills = () => {
         <thead>
           <tr>
             <th>Bill #</th>
-            <th>Bill Name</th>
+            <th>Bill Title</th>
             <th>Lead Sponsor</th>
             <th>City</th>
             <th># CoSponsors</th>
