@@ -4,6 +4,7 @@ import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import BillStatus from "../BillStatus/BillStatus"
 import TestimoniesTable from "../TestimoniesTable/TestimoniesTable"
+import BillTestimonies from "../BillTestimonies/BillTestimonies"
 import { useBill, useMember, usePublishedTestimonyListing } from "../db"
 import { billLink, committeeLink, memberLink } from "../links"
 
@@ -16,6 +17,8 @@ const ViewBillPage = ({ billId }) => {
 
   const billHistory = fullBill?.history
 
+
+  
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />
@@ -55,13 +58,7 @@ const ViewBillPage = ({ billId }) => {
         )}
       </div>
       <h1>Published Testimony</h1>
-      <TestimoniesTable billId={bill.BillNumber} />
-      <AddTestimony
-        bill={bill}
-        committeeName={committeeName}
-        houseChairEmail={houseChairEmail}
-        senateChairEmail={senateChairEmail}
-      />
+      <BillTestimonies bill={bill} />
     </>
   )
 }

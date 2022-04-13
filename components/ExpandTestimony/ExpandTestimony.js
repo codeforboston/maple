@@ -24,17 +24,13 @@ const ExpandTestimony = props => {
       </TableButton>
       <Modal show={showTestimony} onHide={closeTestimony} size="lg">
         <Modal.Header closeButton onClick={closeTestimony}>
-          <div className="w-100">
-            <Modal.Title>
-              <div className="d-flex flex-column flex-wrap">
-                <div>Testimony on</div>
-                {bill
-                  ? <FormattedBillTitle bill={bill} />
-                  : "No bill associated with this testimony"
-                }
-              </div>
-            </Modal.Title>
-          </div>
+          <Modal.Title className="w-100">
+            <div>Testimony on</div>
+            {bill
+              ? <FormattedBillTitle bill={bill} />
+              : "No bill associated with this testimony"
+            }
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {testimony

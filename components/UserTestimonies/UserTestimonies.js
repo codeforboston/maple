@@ -60,10 +60,10 @@ const UserTestimonies = ({ authorId }) => {
   const testimoniesResponse = usePublishedTestimonyListing({ uid: authorId })
 
   const refreshTable = useCallback(() => {
-    testimoniesResponse.execute()
+    testimoniesResponse.items.execute()
   }, [testimoniesResponse])
 
-  const { status, result } = testimoniesResponse
+  const { status, result } = testimoniesResponse.items
   const testimonies = status == "loading" || status == "error" ? [] : result
 
   const testimonyRows = testimonies.map((testimony) => {
