@@ -15,7 +15,7 @@ export default createPage({
         Legislature. However, please note that this is not an official
         government website and you do not need to use this platform to submit
         your testimony. Here are the essential things to know before submitting
-        testimony,
+        testimony:
         <ul>
           <li>
             <b>Who</b>: <em>Anyone can submit testimony</em> to the MA
@@ -53,7 +53,7 @@ export default createPage({
           </li>
         </ul>
         For more detail, see the sections below.
-        <h2>Other Resources</h2>
+        <h2 className="mt-4">Other Resources</h2>
         We hope this page will be helpful to you in outlining how to submit
         effective testimony. You may want to consult these other resources to
         build a more detailed understanding of the legislative process and how
@@ -84,7 +84,7 @@ export default createPage({
         <h1>Understanding the Massachusetts Legislative Process</h1>
         <h2>How a bill becomes a law</h2>
         Some of the key steps in the legislative process for most laws in MA
-        are,
+        are:
         <ol>
           <li>
             Filing. A Representative, Senator, or the Governor must file a bill.
@@ -161,9 +161,9 @@ export default createPage({
         difficult. We hope that this website, the MAPLE platform, will make that
         process more straightforward, more accessible to all stakeholders, and
         easier.
-        <h1>Communicating with Legislators</h1>
+        <h1 className="mt-4">Communicating with Legislators</h1>
         There are multiple ways for you to voice your opinion to your
-        legislators, including,
+        legislators, including:
         <ul>
           <li>
             Testify in writing! You can submit your thoughts on a bill to the
@@ -192,7 +192,7 @@ export default createPage({
         are concerned about the issue, what policy you would like to see
         enacted, and what legislative district you live in. Here are some tips
         you can use to make sure the testimony you submit is as impactful as
-        possible,
+        possible:
         <ul>
           <li>
             Be timely. Written testimony should be targeted towards specific
