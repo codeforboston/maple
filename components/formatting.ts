@@ -13,7 +13,7 @@ export const formatBillId = (id: string) => {
 }
 
 const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
-export const formatHearingDate = (t?: Timestamp) => {
+export const formatTimestamp = (t?: Timestamp) => {
   if (!t || t.toMillis() == MISSING_TIMESTAMP.toMillis()) {
     return undefined
   }
