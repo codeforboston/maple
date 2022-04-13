@@ -6,6 +6,7 @@ import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachm
 import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { Attachment } from "./Attachment"
 import PostSubmitModal from "./PostSubmitModal"
+import * as links from "../../components/links"
 
 const CommentModal = ({
   bill,
@@ -25,6 +26,11 @@ const CommentModal = ({
         <li>Why this bill is important to you</li>
         <li>Your thoughts on the bill</li>
       </ul>
+      <div>
+        <links.External href="/legprocess">
+          Learn more about submitting testimony
+        </links.External>
+      </div>
     </div>
   )
 
