@@ -15,13 +15,7 @@ const TestimonyRow = ({ testimony }) => {
   const router = useRouter()
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
-  const bill = useBill(testimony.billId)
-
-  const [showTestimony, setShowTestimony] = useState(false)
-  const handleExpandButtonClick = () => {
-    setShowTestimony(true)
-  }
-  const closeTestimony = () => setShowTestimony(false)
+  const {result: bill} = useBill(testimony.billId)
 
   return (
     <tr>
@@ -44,12 +38,9 @@ const TestimonyRow = ({ testimony }) => {
         )}
       </td>
       <td>
-        <TableButton onclick={handleExpandButtonClick}>Expand</TableButton>
         <ExpandTestimony
-          bill={bill.content}
+          bill={bill}
           testimony={testimony}
-          showTestimony={showTestimony}
-          closeTestimony={closeTestimony}
         />
       </td>
     </tr>

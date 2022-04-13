@@ -7,21 +7,20 @@ import { useCallback } from "react"
 
 const BillTestimonies = props => {
   const { bill } = props
-  console.log(bill)
   const { items } = usePublishedTestimonyListing({
     billId: bill.BillNumber
   })
   const testimonies =
     items.status == "success" ? items.result : []
 
-  const refreshTable = useCallback(() => {
+  const refreshtable = useCallback(() => {
     items.execute()
   }, [items])
 
   return (
     <>
       <TestimoniesTable testimonies={testimonies} />
-      <AddTestimony bill={bill} refreshTable={refreshTable} />
+      <AddTestimony bill={bill} refreshtable={refreshtable} />
     </>
   )
 }

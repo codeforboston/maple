@@ -84,7 +84,6 @@ const CommentModal = ({
     testimony?.position != undefined && testimony.position != positionMessage
   const testimonyWritten = testimony?.content != undefined
 
-
   return (
     <>
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
@@ -97,6 +96,9 @@ const CommentModal = ({
 
         <Modal.Body>
           <Container>
+            <div>
+              <h5>Select your position</h5>
+            </div>
             <select
               className="form-control"
               defaultValue={defaultPosition}
@@ -119,7 +121,7 @@ const CommentModal = ({
                   className="form-control col-sm"
                   resize="none"
                   rows="20"
-                  placeholder={existingTestimony ? null : "enter text..."}
+                  placeholder={"enter text..."}
                   defaultValue={existingTestimony ? defaultContent : null}
                   required
                   onChange={e => {
@@ -129,7 +131,7 @@ const CommentModal = ({
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-2">
               <Attachment attachment={attachment} />
             </Row>
           </Container>

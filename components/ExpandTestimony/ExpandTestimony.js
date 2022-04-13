@@ -26,10 +26,7 @@ const ExpandTestimony = props => {
         <Modal.Header closeButton onClick={closeTestimony}>
           <Modal.Title className="w-100">
             <div>Testimony on</div>
-            {bill
-              ? <FormattedBillTitle bill={bill} />
-              : "No bill associated with this testimony"
-            }
+            <FormattedBillTitle bill={bill} />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

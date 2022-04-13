@@ -29,7 +29,6 @@ const DeleteTestimony = props => {
     setShowConfirmDelete(false)
     await discardDraft.execute()
     await deleteTestimony.execute()
-    console.log("deletion")
     refreshtable()
   }, [deleteTestimony, discardDraft, refreshtable])
 

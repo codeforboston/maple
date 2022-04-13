@@ -23,11 +23,6 @@ export const formatHearingDate = (t?: Timestamp) => {
 }
 
 export const FormattedBillTitle = ({ bill }: { bill: Bill | BillContent }) => {
-  if (typeof bill !== 'object') {
-    console.log("bill is undefined or null")
-    return <div></div>
-  }
-
   const billInfo = "content" in bill ? bill.content : bill
 
   const { BillNumber, Title } = billInfo

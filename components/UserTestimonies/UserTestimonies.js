@@ -59,7 +59,7 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
 const UserTestimonies = ({ authorId }) => {
   const testimoniesResponse = usePublishedTestimonyListing({ uid: authorId })
 
-  const refreshTable = useCallback(() => {
+  const refreshtable = useCallback(() => {
     testimoniesResponse.items.execute()
   }, [testimoniesResponse])
 
@@ -71,7 +71,7 @@ const UserTestimonies = ({ authorId }) => {
       <TestimonyRow
         testimony={testimony}
         key={authorId + testimony.billId}
-        refreshtable={refreshTable}
+        refreshtable={refreshtable}
       />
     ) :
       (null)

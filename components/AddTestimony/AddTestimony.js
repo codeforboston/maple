@@ -5,7 +5,7 @@ import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
 
-const AddTestimony = ({ bill, refreshTable }) => {
+const AddTestimony = ({ bill, refreshtable }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const router = useRouter()
@@ -24,7 +24,6 @@ const AddTestimony = ({ bill, refreshTable }) => {
 
   const handleCloseTestimony = () => {
     setShowTestimony(false)
-    refreshTable()
   }
   const { authenticated, user } = useAuth()
 
@@ -46,8 +45,8 @@ const AddTestimony = ({ bill, refreshTable }) => {
           {!authenticated
             ? "Sign in to add your voice"
             : isPublished
-            ? "Edit your testimony"
-            : "Add your testimony"}
+              ? "Edit your testimony"
+              : "Add your testimony"}
         </Button>
       </div>
 
@@ -61,6 +60,7 @@ const AddTestimony = ({ bill, refreshTable }) => {
           committeeName={committeeName}
           houseChairEmail={houseChairEmail}
           senateChairEmail={senateChairEmail}
+          refreshtable={refreshtable}
         />
       )}
     </>
