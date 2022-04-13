@@ -109,14 +109,14 @@ const CommentModal = ({
             <Row>
               <Col className="col-sm mt-2">
                 {testimonyExplanation}
-                <div>
+                <div className="mt-2">
                   <h5>Enter your testimony</h5>
                 </div>
                 <textarea
                   className="form-control col-sm"
                   resize="none"
                   rows="20"
-                  placeholder={existingTestimony ? null : "enter text..."}
+                  placeholder={"enter text..."}
                   defaultValue={existingTestimony ? testimony?.content : null}
                   required
                   onChange={e => {
@@ -126,7 +126,7 @@ const CommentModal = ({
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-2">
               <Attachment attachment={attachment} />
             </Row>
           </Container>
@@ -140,7 +140,7 @@ const CommentModal = ({
               ? "Write Testimony to Publish"
               : !isPublishing
               ? "Publish"
-              : "Publishing.."}
+              : "Publishing..."}
           </Button>
         </Modal.Footer>
       </Modal>

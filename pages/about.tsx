@@ -85,7 +85,7 @@ export default createPage({
             </p>
             <h3>Boston College Law School</h3>
             <p>
-              The BS Law School is an inclusive community of scholars that
+              The BC Law School is an inclusive community of scholars that
               prepares students for success in the legal profession at the
               highest levels. Project co-founder Matt Victor is a JD student at
               BC.
