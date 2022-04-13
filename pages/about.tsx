@@ -88,7 +88,7 @@ export default createPage({
               The BS Law School is an inclusive community of scholars that
               prepares students for success in the legal profession at the
               highest levels. Project co-founder Matt Victor is a JD student at
-              BC
+              BC.
             </p>
             <h3>Harvard Berkman Klein Center</h3>
             <p>
