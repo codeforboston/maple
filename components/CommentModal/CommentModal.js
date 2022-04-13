@@ -88,6 +88,9 @@ const CommentModal = ({
 
         <Modal.Body>
           <Container>
+            <div>
+              <h5>Select your position</h5>
+            </div>
             <select
               className="form-control"
               defaultValue={defaultPosition}
@@ -104,9 +107,6 @@ const CommentModal = ({
               <option value="neutral">Neutral</option>
             </select>
             <Row>
-              <div>
-                <h5>Select your position</h5>
-              </div>
               <Col className="col-sm mt-2">
                 {testimonyExplanation}
                 <div>
