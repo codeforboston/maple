@@ -31,7 +31,7 @@ const TestimoniesTable = (props: {
             <th>Position</th>
             <th>
               Submitter
-              <QuestionTooltip text="submitters without links have chosen to make their profile private" />
+              <QuestionTooltip text="Submitters without links have chosen to make their profile private." />
             </th>
             <th>Date Submitted</th>
             <th>Text</th>

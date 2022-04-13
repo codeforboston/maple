@@ -120,7 +120,7 @@ function getSearchProps(
           [formatBillId(o.id), o.title].filter(Boolean).join(" | "),
         getOptionValue: o => o.id,
         getFilterOption: i => ({ type: "bill", id: i.id }),
-        loadOptions: search.billIds
+        loadOptions: (q: string) => search.billIds(q.replace(/\.| /g, ""))
       })
     case "billText":
       return asProps({

@@ -75,7 +75,7 @@ const PostSubmitModal = ({
   const tweetURL = encodeURI(
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${
       bill.BillNumber
-    }${bill.Title.length > 174 ? "" : ": " + bill.Title}.
+    }${bill.Title.length > 174 ? "" : ": " + bill.Title.trim()}.
     
 See ${webSiteBillAddress} for details.`
   )

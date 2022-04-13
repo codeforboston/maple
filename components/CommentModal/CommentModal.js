@@ -6,6 +6,7 @@ import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachm
 import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { Attachment } from "./Attachment"
 import PostSubmitModal from "./PostSubmitModal"
+import * as links from "../../components/links"
 
 const CommentModal = ({
   bill,
@@ -25,6 +26,11 @@ const CommentModal = ({
         <li>Why this bill is important to you</li>
         <li>Your thoughts on the bill</li>
       </ul>
+      <div>
+        <links.External href="/legprocess">
+          Learn more about submitting testimony
+        </links.External>
+      </div>
     </div>
   )
 
@@ -82,6 +88,9 @@ const CommentModal = ({
 
         <Modal.Body>
           <Container>
+            <div>
+              <h5>Select your position</h5>
+            </div>
             <select
               className="form-control"
               defaultValue={defaultPosition}
@@ -100,11 +109,14 @@ const CommentModal = ({
             <Row>
               <Col className="col-sm mt-2">
                 {testimonyExplanation}
+                <div className="mt-2">
+                  <h5>Enter your testimony</h5>
+                </div>
                 <textarea
                   className="form-control col-sm"
                   resize="none"
                   rows="20"
-                  placeholder={existingTestimony ? null : "enter text..."}
+                  placeholder={"enter text..."}
                   defaultValue={existingTestimony ? testimony?.content : null}
                   required
                   onChange={e => {
@@ -114,7 +126,7 @@ const CommentModal = ({
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-2">
               <Attachment attachment={attachment} />
             </Row>
           </Container>
@@ -128,7 +140,7 @@ const CommentModal = ({
               ? "Write Testimony to Publish"
               : !isPublishing
               ? "Publish"
-              : "Publishing.."}
+              : "Publishing..."}
           </Button>
         </Modal.Footer>
       </Modal>
