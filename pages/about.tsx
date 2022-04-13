@@ -85,7 +85,9 @@ export default createPage({
             </p>
             <h3>Boston College Law School</h3>
             <p>
-              The BS Law School is an inclusive community of scholars that prepares students for success in the legal profession at the highest levels.
+              The BS Law School is an inclusive community of scholars that
+              prepares students for success in the legal profession at the
+              highest levels.
             </p>
             <h3>Harvard Berkman Klein Center</h3>
             <p>

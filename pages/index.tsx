@@ -22,11 +22,9 @@ export default createPage({
         <p>
           MAPLE is free to use and open source.{" "}
           <a href="/about">This platform is developed in collaboration</a>{" "}
-          between the NuLawLab, Code for Boston, and scholars at {" "}
-          <a href="https://www.bc.edu/bc-web/schools/law.html">
-            BC Law
-          </a>{" "}
-          and <a href="https://cyber.harvard.edu">Harvard BKC</a>.
+          between the NuLawLab, Code for Boston, and scholars at{" "}
+          <a href="https://www.bc.edu/bc-web/schools/law.html">BC Law</a> and{" "}
+          <a href="https://cyber.harvard.edu">Harvard BKC</a>.
         </p>
         <p>
           This website is not affiliated with the state legislature, but helps
