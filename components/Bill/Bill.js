@@ -3,9 +3,8 @@ import { Row, Spinner } from "react-bootstrap"
 import BillCosponsors from "../BillCosponsors/BillCosponsors"
 import BillReadMore from "../BillReadMore/BillReadMore"
 import BillStatus from "../BillStatus/BillStatus"
-import TestimoniesTable from "../TestimoniesTable/TestimoniesTable"
 import BillTestimonies from "../BillTestimonies/BillTestimonies"
-import { useBill, useMember, usePublishedTestimonyListing } from "../db"
+import { useBill, useMember } from "../db"
 import { billLink, committeeLink, memberLink } from "../links"
 
 const ViewBillPage = ({ billId }) => {

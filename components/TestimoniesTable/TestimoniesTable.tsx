@@ -1,26 +1,23 @@
 import Link from "next/link"
-import React, { useState } from "react"
-import { Table, Container } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import React from "react"
+import { Container, Table } from "react-bootstrap"
 import {
   Testimony,
   useBill,
   usePublicProfile,
-  usePublishedTestimonyListing
+  UsePublishedTestimonyListing
 } from "../db"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
-import { QuestionTooltip } from "../tooltip"
-import { PaginationButtons } from "../table"
 import { TestimonySearch } from "../search"
-import { TableButton } from "../buttons"
+import { PaginationButtons } from "../table"
+import { QuestionTooltip } from "../tooltip"
 
-const TestimoniesTable = (props: {
-  uid?: string
-  billId?: string
-  search?: boolean
-}) => {
-  const { pagination, items, setFilter } = usePublishedTestimonyListing(props)
+const TestimoniesTable = (
+  props: UsePublishedTestimonyListing & { search?: boolean }
+) => {
+  const { pagination, items, setFilter } = props
   const testimonies = items.result ?? []
   return (
     <Container>
@@ -78,10 +75,7 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
       <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
       <td>{testimony.content.substring(0, 100)}...</td>
       <td>
-        <ExpandTestimony
-          bill={bill?.content}
-          testimony={testimony}
-        />
+        <ExpandTestimony bill={bill?.content} testimony={testimony} />
       </td>
     </tr>
   )
