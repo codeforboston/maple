@@ -1,7 +1,7 @@
 import React from "react"
 import { Button, Container, Table } from "react-bootstrap"
 import { useUpcomingBills } from "../db"
-import { formatBillId, formatHearingDate } from "../formatting"
+import { formatBillId, formatTimestamp } from "../formatting"
 import { Wrap } from "../links"
 
 const BillRow = props => {
@@ -15,7 +15,7 @@ const BillRow = props => {
           <Button variant="primary">{formatBillId(bill.BillNumber)}</Button>
         </Wrap>
       </td>
-      <td>{formatHearingDate(fullBill.nextHearingAt)}</td>
+      <td>{formatTimestamp(fullBill.nextHearingAt)}</td>
     </tr>
   )
 }

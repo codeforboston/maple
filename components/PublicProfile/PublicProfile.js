@@ -10,23 +10,36 @@ const PublicProfile = ({ id }) => {
   const twit = user?.social?.twitter
   const linkedIn = user?.social?.linkedIn
 
+  const senatorLine = <h4>Senator: {user?.senator?.name}</h4>
+  const representativeLine = (
+    <h4>Representative: {user?.representative?.name}</h4>
+  )
+  const twitterLine = (
+    <h4>
+      Twitter:{" "}
+      <links.External href={`https://www.twitter.com/${twit}`}>
+        @{twit}
+      </links.External>
+    </h4>
+  )
+
+  const linkedInLine = (
+    <h4>
+      LinkedIn:{" "}
+      <links.External href={`https://www.linkedin.com/in/${linkedIn}`}>
+        {linkedIn}
+      </links.External>
+    </h4>
+  )
+
   return (
     <>
       <h1>{user?.displayName ? user?.displayName : "Name placeholder"}</h1>
-      <h4>Senator: {user?.senator?.name}</h4>
-      <h4>Representative: {user?.representative?.name}</h4>
-      <h4>
-        Twitter:{" "}
-        <links.External href={`https://www.twitter.com/${twit}`}>
-          @{twit}
-        </links.External>
-      </h4>
-      <h4>
-        LinkedIn:{" "}
-        <links.External href={`https://www.linkedin.com/in/${linkedIn}`}>
-          {linkedIn}
-        </links.External>
-      </h4>
+      {user?.senator ? senatorLine : <></>}
+      {user?.representative ? representativeLine : <></>}
+      {twit ? twitterLine : <></>}
+      {linkedIn ? linkedInLine : <></>}
+
       <p>{bio}</p>
       <UserTestimonies authorId={id} />
     </>

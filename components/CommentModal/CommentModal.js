@@ -117,6 +117,9 @@ const CommentModal = ({
             <Row>
               <Col className="col-sm mt-2">
                 {testimonyExplanation}
+                <div className="mt-2">
+                  <h5>Enter your testimony</h5>
+                </div>
                 <textarea
                   className="form-control col-sm"
                   resize="none"
@@ -142,10 +145,10 @@ const CommentModal = ({
             {!positionChosen
               ? "Choose Endorse/Oppose/Neutral to Publish"
               : !testimonyWritten
-                ? "Write Testimony to Publish"
-                : !isPublishing
-                  ? "Publish"
-                  : "Publishing.."}
+              ? "Write Testimony to Publish"
+              : !isPublishing
+              ? "Publish"
+              : "Publishing..."}
           </Button>
         </Modal.Footer>
       </Modal>
