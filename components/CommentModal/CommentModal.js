@@ -36,7 +36,6 @@ const CommentModal = ({
     </div>
   )
 
-
   const [isPublishing, setIsPublishing] = useState(false)
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
 
@@ -89,7 +88,7 @@ const CommentModal = ({
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
           <Modal.Title className="w-100">
-            {existingTestimony ? <h4>Edit Your Testimony</h4> : <h4>Add Your Testimony</h4>}
+            {edit.publication ? <h4>Edit Your Testimony</h4> : <h4>Add Your Testimony</h4>}
             <FormattedBillTitle bill={bill} />
           </Modal.Title>
         </Modal.Header>

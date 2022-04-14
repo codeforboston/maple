@@ -7,6 +7,7 @@ import { useBill, usePublishedTestimonyListing } from "../db"
 import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import EditTestimony from "../EditTestimony/EditTestimony"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import { PaginationButtons } from "../table"
 
 const TestimonyRow = ({ testimony, refreshtable }) => {
   const { result: bill } = useBill(testimony.billId)
@@ -91,6 +92,7 @@ const UserTestimonies = ({ authorId }) => {
         </thead>
         <tbody>{testimonies && testimonyRows}</tbody>
       </Table>
+      <PaginationButtons pagination={testimoniesResponse.pagination} />
     </Container>
   )
 }

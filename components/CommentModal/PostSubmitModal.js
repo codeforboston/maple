@@ -80,10 +80,10 @@ const PostSubmitModal = ({
     }${bill.Title.length > 174 ? "" : ": " + bill.Title.trim()}.
     See ${webSiteBillAddress} for details.`
   )
-  // the maximum tweet length is 280 characters.  so, the maximum title length is about 174 characters depending on the length of the final web site address.
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
+    refreshtable()
   }
 
   return (
