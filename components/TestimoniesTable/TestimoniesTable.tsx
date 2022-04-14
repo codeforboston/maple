@@ -51,11 +51,7 @@ const TestimoniesTable = (props: {
 
 const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
   const { result: bill } = useBill(testimony.billId)
-
-  // this works
-  console.log(testimony.authorUid)
   const profile = usePublicProfile(testimony.authorUid)
-  console.log(profile)
 
   const authorPublic = profile.result?.public
 

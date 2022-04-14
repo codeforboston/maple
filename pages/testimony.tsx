@@ -31,11 +31,7 @@ export default createPage({
 
     const { result: bill, loading } = useBill(billId as string)
 
-    // why not working?
-    console.log(testimony?.authorUid)
     const profile = usePublicProfile(testimony?.authorUid)
-    console.log(profile)
-
     const authorPublic = profile.result?.public
 
     return (
@@ -75,11 +71,13 @@ export default createPage({
                     View Bill
                   </Button>
                 </Wrap>
-                <Wrap href={`/publicprofile?id=${author}`}>
-                  <Button variant="primary" className="ms-2">
-                    View User Profile
-                  </Button>
-                </Wrap>
+                {authorPublic && (
+                  <Wrap href={`/publicprofile?id=${author}`}>
+                    <Button variant="primary" className="ms-2">
+                      View User Profile
+                    </Button>
+                  </Wrap>
+                )}
               </div>
             </div>
           </>
