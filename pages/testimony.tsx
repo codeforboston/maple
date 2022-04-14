@@ -1,6 +1,10 @@
 import { useRouter } from "next/router"
 import { Button, Spinner } from "react-bootstrap"
-import { useBill, usePublishedTestimonyListing } from "../components/db"
+import {
+  useBill,
+  usePublishedTestimonyListing,
+  usePublicProfile
+} from "../components/db"
 import { formatBillId } from "../components/formatting"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
@@ -26,6 +30,13 @@ export default createPage({
         : undefined
 
     const { result: bill, loading } = useBill(billId as string)
+
+    // why not working?
+    console.log(testimony?.authorUid)
+    const profile = usePublicProfile(testimony?.authorUid)
+    console.log(profile)
+
+    const authorPublic = profile.result?.public
 
     return (
       <>
