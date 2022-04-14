@@ -10,7 +10,6 @@ const PublicProfile = ({ id }) => {
   const twit = user?.social?.twitter
   const linkedIn = user?.social?.linkedIn
   const isPublic = user?.public
-  console.log(isPublic)
 
   const senatorLine = <h4>Senator: {user?.senator?.name}</h4>
   const representativeLine = (
