@@ -54,7 +54,7 @@ const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
   const profile = usePublicProfile(testimony.authorUid)
 
   const authorPublic = profile.result?.public
-
+  console.log(profile)
   return (
     <tr>
       <td>
