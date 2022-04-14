@@ -16,8 +16,6 @@ const ViewBillPage = ({ billId }) => {
 
   const billHistory = fullBill?.history
 
-
-  
   return loading ? (
     <Row>
       <Spinner animation="border" className="mx-auto" />

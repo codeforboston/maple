@@ -45,8 +45,8 @@ const AddTestimony = ({ bill, refreshtable }) => {
           {!authenticated
             ? "Sign in to add your voice"
             : isPublished
-              ? "Edit your testimony"
-              : "Add your testimony"}
+            ? "Edit your testimony"
+            : "Add your testimony"}
         </Button>
       </div>
 

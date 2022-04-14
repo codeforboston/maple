@@ -50,7 +50,11 @@ const CommentModal = ({
   )
 
   useEffect(() => {
-    const testimony = edit.publication ? edit.publication : edit.draft ? edit.draft : {}
+    const testimony = edit.publication
+      ? edit.publication
+      : edit.draft
+      ? edit.draft
+      : {}
     setTestimony(testimony)
   }, [edit.draft, edit.publication, setTestimony])
 
@@ -61,7 +65,6 @@ const CommentModal = ({
 
   const defaultContent =
     testimony && testimony.content ? testimony.content : undefined
-
 
   const publishTestimony = useCallback(async () => {
     if (
@@ -88,7 +91,11 @@ const CommentModal = ({
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
           <Modal.Title className="w-100">
-            {edit.publication ? <h4>Edit Your Testimony</h4> : <h4>Add Your Testimony</h4>}
+            {edit.publication ? (
+              <h4>Edit Your Testimony</h4>
+            ) : (
+              <h4>Add Your Testimony</h4>
+            )}
             <FormattedBillTitle bill={bill} />
           </Modal.Title>
         </Modal.Header>
@@ -161,7 +168,6 @@ const CommentModal = ({
         houseChairEmail={houseChairEmail}
         committeeName={committeeName}
         refreshtable={refreshtable}
-
       />
     </>
   )

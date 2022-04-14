@@ -77,7 +77,6 @@ export default createPage({
       displayName
     )
 
-
     useEffect(() => {
       // Load in text inputs when profile loads
       setUnsavedSocials(profile.profile?.social ?? {})

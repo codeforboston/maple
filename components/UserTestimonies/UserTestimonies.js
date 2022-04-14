@@ -16,7 +16,6 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
 
   const userIsAuthor = user?.uid == testimony?.authorUid
 
-
   if (!bill) {
     return null
   } else {
@@ -33,22 +32,21 @@ const TestimonyRow = ({ testimony, refreshtable }) => {
           <td>{testimony.content.substring(0, 100)}...</td>
           <td className="d-flex flex-nowrap justify-content-evenly">
             <>
-              <ExpandTestimony
-                bill={bill}
-                testimony={testimony}
-              />
-              {userIsAuthor && <>
-                <EditTestimony
-                  bill={bill}
-                  testimony={testimony}
-                  refreshtable={refreshtable}
-                />
-                <DeleteTestimony
-                  bill={bill}
-                  testimony={testimony}
-                  refreshtable={refreshtable}
-                />
-              </>}
+              <ExpandTestimony bill={bill} testimony={testimony} />
+              {userIsAuthor && (
+                <>
+                  <EditTestimony
+                    bill={bill}
+                    testimony={testimony}
+                    refreshtable={refreshtable}
+                  />
+                  <DeleteTestimony
+                    bill={bill}
+                    testimony={testimony}
+                    refreshtable={refreshtable}
+                  />
+                </>
+              )}
             </>
           </td>
         </tr>
@@ -67,15 +65,14 @@ const UserTestimonies = ({ authorId }) => {
   const { status, result } = testimoniesResponse.items
   const testimonies = status == "loading" || status == "error" ? [] : result
 
-  const testimonyRows = testimonies.map((testimony) => {
+  const testimonyRows = testimonies.map(testimony => {
     return testimony ? (
       <TestimonyRow
         testimony={testimony}
         key={authorId + testimony.billId}
         refreshtable={refreshtable}
       />
-    ) :
-      (null)
+    ) : null
   })
 
   return (

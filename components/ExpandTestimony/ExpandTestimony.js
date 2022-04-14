@@ -19,9 +19,7 @@ const ExpandTestimony = props => {
   }
   return (
     <>
-      <TableButton onclick={openTestimony}>
-        Expand
-      </TableButton>
+      <TableButton onclick={openTestimony}>Expand</TableButton>
       <Modal show={showTestimony} onHide={closeTestimony} size="lg">
         <Modal.Header closeButton onClick={closeTestimony}>
           <Modal.Title className="w-100">
@@ -30,9 +28,7 @@ const ExpandTestimony = props => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {testimony
-            ? <FormattedTestimonyTitle testimony={testimony} />
-            : ""}
+          {testimony ? <FormattedTestimonyTitle testimony={testimony} /> : ""}
           <p style={{ whiteSpace: "pre-wrap" }}>
             {testimony ? testimony.content : ""}
           </p>

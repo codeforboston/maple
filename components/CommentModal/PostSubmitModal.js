@@ -20,7 +20,6 @@ const PostSubmitModal = ({
   houseChairEmail,
   committeeName,
   refreshtable
-
 }) => {
   const billNumber = bill?.BillNumber
   const billTitle = bill?.Title
@@ -39,15 +38,15 @@ const PostSubmitModal = ({
     testimony?.position == "endorse"
       ? "Support of"
       : testimony?.position == "oppose"
-        ? "Opposition to"
-        : "Opinion on"
+      ? "Opposition to"
+      : "Opinion on"
 
   const positionWord =
     testimony?.position == "endorse"
       ? "support"
       : testimony?.position == "oppose"
-        ? "oppose"
-        : "have thoughts on"
+      ? "oppose"
+      : "have thoughts on"
 
   const emailSuffix = `See more testimony on this bill at ${webSiteBillAddress}`
 

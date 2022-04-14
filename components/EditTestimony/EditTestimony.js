@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { TableButton } from "../buttons"
 import CommentModal from "../CommentModal/CommentModal"
 
-
 const EditTestimony = props => {
   const { bill, refreshtable } = props
 
@@ -18,9 +17,7 @@ const EditTestimony = props => {
 
   return (
     <>
-      <TableButton onclick={handleEditTestimonyClick}>
-        Edit
-      </TableButton>
+      <TableButton onclick={handleEditTestimonyClick}>Edit</TableButton>
       <CommentModal
         bill={bill}
         showTestimony={showEditTestimony}

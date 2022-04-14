@@ -15,7 +15,7 @@ const TestimonyRow = ({ testimony }) => {
   const router = useRouter()
   const profile = usePublicProfile(testimony.authorUid)
   const authorPublic = profile.result?.public
-  const {result: bill} = useBill(testimony.billId)
+  const { result: bill } = useBill(testimony.billId)
 
   return (
     <tr>
@@ -38,10 +38,7 @@ const TestimonyRow = ({ testimony }) => {
         )}
       </td>
       <td>
-        <ExpandTestimony
-          bill={bill}
-          testimony={testimony}
-        />
+        <ExpandTestimony bill={bill} testimony={testimony} />
       </td>
     </tr>
   )

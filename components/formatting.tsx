@@ -43,9 +43,17 @@ export const FormattedTestimonyTitle = ({
 
   return (
     <div>
-      <span><b>Author:</b> {authorDisplayName || "anonymous"}</span><br></br>
-      <span><b>Published on:</b> {publishedAt.toDate().toLocaleDateString()}</span><br></br>
-      <span><b>Position:</b> {position}</span>
+      <span>
+        <b>Author:</b> {authorDisplayName || "anonymous"}
+      </span>
+      <br></br>
+      <span>
+        <b>Published on:</b> {publishedAt.toDate().toLocaleDateString()}
+      </span>
+      <br></br>
+      <span>
+        <b>Position:</b> {position}
+      </span>
     </div>
   )
 }

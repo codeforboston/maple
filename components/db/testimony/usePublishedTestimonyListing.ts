@@ -37,7 +37,9 @@ export type TestimonyFilterOptions =
   | { representativeId: string }
   | { senatorId: string }
 
-export type UsePublishedTestimonyListing = ReturnType<typeof usePublishedTestimonyListing>
+export type UsePublishedTestimonyListing = ReturnType<
+  typeof usePublishedTestimonyListing
+>
 export function usePublishedTestimonyListing({
   uid,
   billId
