@@ -63,7 +63,11 @@ const Label = ({
 }) => {
   return (
     <Form.Label>
-      <span className="me-1">PDF Testimony</span>
+      <span className="me-1">
+        <b>(Optional) Upload PDF Attachment:</b> You may submit your testimony
+        in PDF form, but you still need to enter a brief description of your
+        testimony in the text field above.
+      </span>
       {status === "loading" && <Spinner animation="border" size="sm" />}
       {status === "error" && (
         <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />

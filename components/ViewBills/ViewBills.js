@@ -3,7 +3,7 @@ import React from "react"
 import { Button, Container, Row, Spinner, Table } from "react-bootstrap"
 import * as links from "../../components/links.tsx"
 import { useBills, useMember } from "../db"
-import { formatBillId, formatHearingDate } from "../formatting"
+import { formatBillId, formatTimestamp } from "../formatting"
 import { BillSearch } from "../search"
 import { PaginationButtons } from "../table"
 
@@ -69,12 +69,9 @@ const BillRow = props => {
         <td>{SponsorComponent}</td>
         <td>{fullBill.city}</td>
         <td>{numCoSponsors}</td>
-        <td>{formatHearingDate(fullBill.nextHearingAt)}</td>
+        <td>{formatTimestamp(fullBill.nextHearingAt)}</td>
         <td>{fullBill.testimonyCount}</td>
-        <td>
-          {fullBill.latestTestimonyAt &&
-            fullBill.latestTestimonyAt.toDate().toLocaleDateString()}
-        </td>
+        <td>{formatTimestamp(fullBill.latestTestimonyAt)}</td>
         <td>{committeeCell}</td>
       </tr>
     )
@@ -97,7 +94,7 @@ const ViewBills = () => {
         <thead>
           <tr>
             <th>Bill #</th>
-            <th>Bill Name</th>
+            <th>Bill Title</th>
             <th>Lead Sponsor</th>
             <th>City</th>
             <th># CoSponsors</th>
