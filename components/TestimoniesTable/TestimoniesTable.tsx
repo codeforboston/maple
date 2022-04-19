@@ -1,25 +1,23 @@
 import Link from "next/link"
 import React from "react"
-import { Table, Container } from "react-bootstrap"
-import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import { Container, Table } from "react-bootstrap"
 import {
   Testimony,
   useBill,
   usePublicProfile,
-  usePublishedTestimonyListing
+  UsePublishedTestimonyListing
 } from "../db"
+import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
 import { formatBillId } from "../formatting"
 import ProfileButton from "../ProfileButton/ProfileButton"
-import { QuestionTooltip } from "../tooltip"
-import { PaginationButtons } from "../table"
 import { TestimonySearch } from "../search"
+import { PaginationButtons } from "../table"
+import { QuestionTooltip } from "../tooltip"
 
-const TestimoniesTable = (props: {
-  uid?: string
-  billId?: string
-  search?: boolean
-}) => {
-  const { pagination, items, setFilter } = usePublishedTestimonyListing(props)
+const TestimoniesTable = (
+  props: UsePublishedTestimonyListing & { search?: boolean }
+) => {
+  const { pagination, items, setFilter } = props
   const testimonies = items.result ?? []
   return (
     <Container>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { useAuth } from "../../components/auth"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
@@ -7,6 +7,7 @@ import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
 import { Attachment } from "./Attachment"
 import PostSubmitModal from "./PostSubmitModal"
 import * as links from "../../components/links"
+import { FormattedBillTitle } from "../formatting"
 
 const CommentModal = ({
   bill,
@@ -14,7 +15,8 @@ const CommentModal = ({
   houseChairEmail,
   senateChairEmail,
   showTestimony,
-  handleCloseTestimony
+  handleCloseTestimony,
+  refreshtable
 }) => {
   const { user } = useAuth()
   const testimonyExplanation = (
@@ -38,7 +40,9 @@ const CommentModal = ({
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
 
   const [testimony, setTestimony] = useUnsavedTestimony()
-  const edit = useEditTestimony(user ? user.uid : null, bill.BillNumber)
+
+  const billInfo = bill.content === undefined ? bill : bill.content
+  const edit = useEditTestimony(user ? user.uid : null, billInfo.BillNumber)
   const attachment = useDraftTestimonyAttachment(
     user.uid,
     edit.draft,
@@ -46,16 +50,23 @@ const CommentModal = ({
   )
 
   useEffect(() => {
-    const testimony = edit.draft ? edit.draft : {}
+    const testimony = edit.publication
+      ? edit.publication
+      : edit.draft
+      ? edit.draft
+      : {}
     setTestimony(testimony)
-  }, [edit.draft, setTestimony])
+  }, [edit.draft, edit.publication, setTestimony])
 
   const positionMessage = "Select my support..(required)"
 
   const defaultPosition =
     testimony && testimony.position ? testimony.position : undefined
 
-  const publishTestimony = async () => {
+  const defaultContent =
+    testimony && testimony.content ? testimony.content : undefined
+
+  const publishTestimony = useCallback(async () => {
     if (
       testimony.position == undefined ||
       testimony.position == positionMessage ||
@@ -67,9 +78,8 @@ const CommentModal = ({
     await edit.saveDraft.execute(testimony)
     await edit.publishTestimony.execute()
     setIsPublishing(false)
-    handleCloseTestimony()
     setShowPostSubmitModal(true)
-  }
+  }, [edit.publishTestimony, edit.saveDraft, testimony])
 
   const existingTestimony = !_.isEmpty(testimony)
   const positionChosen =
@@ -80,9 +90,13 @@ const CommentModal = ({
     <>
       <Modal show={showTestimony} onHide={handleCloseTestimony} size="lg">
         <Modal.Header closeButton onClick={handleCloseTestimony}>
-          <Modal.Title>
-            {"Add Your Testimony" +
-              (bill ? " for " + bill.BillNumber + " - " + bill.Title : "")}
+          <Modal.Title className="w-100">
+            {edit.publication ? (
+              <h4>Edit Your Testimony</h4>
+            ) : (
+              <h4>Add Your Testimony</h4>
+            )}
+            <FormattedBillTitle bill={bill} />
           </Modal.Title>
         </Modal.Header>
 
@@ -117,7 +131,7 @@ const CommentModal = ({
                   resize="none"
                   rows="20"
                   placeholder={"enter text..."}
-                  defaultValue={existingTestimony ? testimony?.content : null}
+                  defaultValue={existingTestimony ? defaultContent : null}
                   required
                   onChange={e => {
                     const newText = e.target.value
@@ -148,11 +162,12 @@ const CommentModal = ({
         showPostSubmitModal={showPostSubmitModal}
         setShowPostSubmitModal={setShowPostSubmitModal}
         handleCloseTestimony={handleCloseTestimony}
-        bill={bill}
+        bill={billInfo}
         testimony={testimony}
         senateChairEmail={senateChairEmail}
         houseChairEmail={houseChairEmail}
         committeeName={committeeName}
+        refreshtable={refreshtable}
       />
     </>
   )

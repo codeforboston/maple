@@ -1,67 +1,79 @@
 import Link from "next/link"
-import React from "react"
-import { Container, Table } from "react-bootstrap"
+import React, { useCallback } from "react"
 import { useAuth } from "../../components/auth"
+import { Container, Table } from "../../components/bootstrap"
 import { formatBillId } from "../../components/formatting"
 import { useBill, usePublishedTestimonyListing } from "../db"
 import DeleteTestimony from "../DeleteTestimony/DeleteTestimony"
 import EditTestimony from "../EditTestimony/EditTestimony"
 import ExpandTestimony from "../ExpandTestimony/ExpandTestimony"
+import { PaginationButtons } from "../table"
 
-const TestimonyRow = ({ testimony }) => {
+const TestimonyRow = ({ testimony, refreshtable }) => {
   const { result: bill } = useBill(testimony.billId)
+
   const { user } = useAuth()
+
   const userIsAuthor = user?.uid == testimony?.authorUid
 
   if (!bill) {
     return null
   } else {
     return (
-      <tr>
-        <td>{testimony.position}</td>
-        <td>
-          <Link href={`/bill?id=${testimony.billId}`}>
-            {formatBillId(testimony.billId)}
-          </Link>
-        </td>
-        <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
-        <td>{testimony.content.substring(0, 100)}...</td>
-        <td>
-          <div className="d-flex">
-            <ExpandTestimony bill={bill.content} testimony={testimony} />
-            &nbsp;
-            {userIsAuthor && (
-              <EditTestimony
-                className="ml-2"
-                bill={bill.content}
-                testimony={testimony}
-              />
-            )}
-            &nbsp;
-            {userIsAuthor && (
-              <DeleteTestimony bill={bill.content} testimony={testimony} />
-            )}
-          </div>
-        </td>
-      </tr>
+      <>
+        <tr>
+          <td>{testimony.position}</td>
+          <td>
+            <Link href={`/bill?id=${testimony.billId}`}>
+              {formatBillId(testimony.billId)}
+            </Link>
+          </td>
+          <td>{testimony.publishedAt.toDate().toLocaleDateString()}</td>
+          <td>{testimony.content.substring(0, 100)}...</td>
+          <td className="d-flex flex-nowrap justify-content-evenly">
+            <>
+              <ExpandTestimony bill={bill} testimony={testimony} />
+              {userIsAuthor && (
+                <>
+                  <EditTestimony
+                    bill={bill}
+                    testimony={testimony}
+                    refreshtable={refreshtable}
+                  />
+                  <DeleteTestimony
+                    bill={bill}
+                    testimony={testimony}
+                    refreshtable={refreshtable}
+                  />
+                </>
+              )}
+            </>
+          </td>
+        </tr>
+      </>
     )
   }
 }
 
 const UserTestimonies = ({ authorId }) => {
-  const { items: testimoniesResponse } = usePublishedTestimonyListing({
-    uid: authorId
+  const testimoniesResponse = usePublishedTestimonyListing({ uid: authorId })
+
+  const refreshtable = useCallback(() => {
+    testimoniesResponse.items.execute()
+  }, [testimoniesResponse])
+
+  const { status, result } = testimoniesResponse.items
+  const testimonies = status == "loading" || status == "error" ? [] : result
+
+  const testimonyRows = testimonies.map(testimony => {
+    return testimony ? (
+      <TestimonyRow
+        testimony={testimony}
+        key={authorId + testimony.billId}
+        refreshtable={refreshtable}
+      />
+    ) : null
   })
-  const testimonies =
-    testimoniesResponse.status == "loading" ||
-    testimoniesResponse.status == "error"
-      ? []
-      : testimoniesResponse.result
-  const testimoniesComponent = !testimonies
-    ? ""
-    : testimonies.map((testimony, index) => {
-        return <TestimonyRow testimony={testimony} key={index} />
-      })
 
   return (
     <Container>
@@ -75,8 +87,9 @@ const UserTestimonies = ({ authorId }) => {
             <th>Text</th>
           </tr>
         </thead>
-        <tbody>{testimoniesComponent}</tbody>
+        <tbody>{testimonies && testimonyRows}</tbody>
       </Table>
+      <PaginationButtons pagination={testimoniesResponse.pagination} />
     </Container>
   )
 }
