@@ -185,8 +185,11 @@ function updateDisplayName(uid: string, displayName: string) {
   return setDoc(profileRef(uid), { displayName }, { merge: true })
 }
 
-export function usePublicProfile(uid: string) {
-  return useAsync(getProfile, [uid])
+export function usePublicProfile(uid?: string) {
+  return useAsync(
+    () => (uid ? getProfile(uid) : Promise.resolve(undefined)),
+    [uid]
+  )
 }
 
 export async function getProfile(uid: string) {
