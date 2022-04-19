@@ -9,7 +9,7 @@ const PublicProfile = ({ id }) => {
   const bio = user?.about
   const twit = user?.social?.twitter
   const linkedIn = user?.social?.linkedIn
-  const isPublic = user?.public
+  const isPublic = (user && user.public === undefined) || user?.public === false
 
   const senatorLine = <h4>Senator: {user?.senator?.name}</h4>
   const representativeLine = (
@@ -46,7 +46,7 @@ const PublicProfile = ({ id }) => {
   )
   return (
     <>
-      <h1>{user?.displayName ? user?.displayName : "Name placeholder"}</h1>
+      <h1>{user?.displayName}</h1>
       {isPublic && publicProfile}
       {!isPublic && <h3>Profile is not public</h3>}
     </>
