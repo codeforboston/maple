@@ -1,6 +1,10 @@
 import { useRouter } from "next/router"
 import { Button, Spinner } from "react-bootstrap"
-import { useBill, usePublishedTestimonyListing } from "../components/db"
+import {
+  useBill,
+  usePublishedTestimonyListing,
+  usePublicProfile
+} from "../components/db"
 import { formatBillId } from "../components/formatting"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
@@ -26,6 +30,9 @@ export default createPage({
         : undefined
 
     const { result: bill, loading } = useBill(billId as string)
+
+    const profile = usePublicProfile(testimony?.authorUid)
+    const authorPublic = profile.result?.public
 
     return (
       <>
@@ -64,11 +71,13 @@ export default createPage({
                     View Bill
                   </Button>
                 </Wrap>
-                <Wrap href={`/publicprofile?id=${author}`}>
-                  <Button variant="primary" className="ms-2">
-                    View User Profile
-                  </Button>
-                </Wrap>
+                {authorPublic && (
+                  <Wrap href={`/publicprofile?id=${author}`}>
+                    <Button variant="primary" className="ms-2">
+                      View User Profile
+                    </Button>
+                  </Wrap>
+                )}
               </div>
             </div>
           </>

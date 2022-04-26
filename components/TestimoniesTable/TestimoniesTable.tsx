@@ -50,8 +50,8 @@ const TestimoniesTable = (
 const TestimonyRow = ({ testimony }: { testimony: Testimony }) => {
   const { result: bill } = useBill(testimony.billId)
   const profile = usePublicProfile(testimony.authorUid)
-  const authorPublic = profile.result?.public
 
+  const authorPublic = profile.result?.public
   return (
     <tr>
       <td>
