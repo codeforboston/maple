@@ -11,8 +11,6 @@ const PublicProfile = ({ id }) => {
   const linkedIn = user?.social?.linkedIn
   const isPublic = user?.public
 
-  console.log(user?.public)
-
   const senatorLine = <h4>Senator: {user?.senator?.name}</h4>
   const representativeLine = (
     <h4>Representative: {user?.representative?.name}</h4>
