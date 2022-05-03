@@ -241,7 +241,7 @@ export default createPage({
                 profile.updateIsPublic(e.target.checked)
               }}
             />
-            <label className="form-check-label" htmlFor="flexCheckChecked">
+            <label className="form-check-label" htmlFor="flexCheckDefault">
               Allow others to see my profile{" "}
               {profile.updatingIsPublic ? (
                 <Spinner animation="border" className="mx-auto" size="sm" />
