@@ -33,14 +33,16 @@ export const _getDocumentProperties = (
 export const _wasScrapedRecently = (eventDoc: DocEventProperties) => {
   const eventDetailsScrapeTime = eventDoc.eventDetailsScrapeTime
   const thirtyMins = 30 * 60 * 1000
-  const oneHourAgo = Date.now() - 2 * thirtyMins 
-  const lastScrapeTime = eventDetailsScrapeTime || oneHourAgo 
+  const oneHourAgo = Date.now() - 2 * thirtyMins
+  const lastScrapeTime = eventDetailsScrapeTime || oneHourAgo
   const timeSinceLastScrape = Date.now() - lastScrapeTime
   if (timeSinceLastScrape < thirtyMins) return true
   return false
 }
 
-export const _isUpcomingHearing = (eventDoc: DocEventProperties): boolean => {
+export const _isNotUpcomingHearing = (
+  eventDoc: DocEventProperties
+): boolean => {
   return eventDoc.type !== "hearing" || eventDoc.status === "Completed"
 }
 
@@ -72,7 +74,7 @@ export const scrapeEventDetails = functions.firestore
     if (!eventData) return // document was deleted
 
     const eventDoc = _getDocumentProperties(change.after)
-    if (_isUpcomingHearing(eventDoc)) return
+    if (_isNotUpcomingHearing(eventDoc)) return
     if (_wasScrapedRecently(eventDoc)) return
 
     const htmlDocument = await _fetchEventPageDom(eventDoc.id)
