@@ -1,0 +1,7 @@
+.container {
+  background: url("../../public/skyline.png"), #1a3185;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+  background-position: center;
+}

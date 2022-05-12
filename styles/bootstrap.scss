@@ -3,5 +3,8 @@
 // https://nextjs.org/docs/basic-features/built-in-css-support#sass-support
 
 $primary: #89110c;
+//temporary assignments until we figure out how we want to set up the variables moving forward
+$secondary: #1a3185; //navy color used in new landing page
+$danger: #a92929; //dark red used in new landing page
 
 @import "bootstrap/scss/bootstrap";
