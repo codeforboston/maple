@@ -16,7 +16,7 @@ service cloud.firestore {
       // and public if profile.public is true or undefined (defaults to true),
       // or if the profile is an organization.
       // Only writeable by the user.
-      allow read: if !("public" in resource.data) || resource.data.public || request.auth.uid == uid || resource.data.organization
+      allow read: if resource.data.public || request.auth.uid == uid || resource.data.organization
       allow write: if request.auth.uid == uid
     }
     // Allow querying publications individually or with a collection group.

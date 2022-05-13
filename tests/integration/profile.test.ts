@@ -42,13 +42,14 @@ describe("profile", () => {
     expect(profile?.displayName).toEqual(expected.displayName)
   })
 
-  it("Is publicly readable by default", async () => {
+  it("Is not publicly readable by default", async () => {
     const newUser = fakeUser()
     await expectProfile(newUser)
 
     await signInUser1()
-    const result = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
-    expect(result.exists()).toBeTruthy()
+    await expectPermissionDenied(
+      getDoc(doc(firestore, `profiles/${newUser.uid}`))
+    )
   })
 
   it("Is publicly readable when public", async () => {
