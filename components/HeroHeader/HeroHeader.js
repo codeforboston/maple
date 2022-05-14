@@ -9,13 +9,19 @@ const HeroHeader = () => {
         <Col>
           <Image fluid src="statehouse.png" alt="statehouse"></Image>
         </Col>
-        <Col className="text-end mr-3">
+        <Col className="text-start mr-3 pt-2">
           <h1>
             <em>Let your voice be heard!</em>
           </h1>
-          <h3>Value prop here</h3>
-          <Button variant="danger">Sign In to Testify</Button>
-          <Button variant="light">Browse</Button>
+          <h3>Value prop here on why people should sign up for this</h3>
+          <div className="text-end m-5">
+            <div className={styles.btncontainer}>
+              <Button className="btn-primary">Sign In to Testify</Button>
+            </div>
+            <div className={styles.btncontainer}>
+              <Button className="btn-secondary">Browse</Button>
+            </div>
+          </div>
         </Col>
       </Row>
     </Container>

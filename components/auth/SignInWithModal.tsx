@@ -8,7 +8,9 @@ export default function SignInWithModal() {
 
   return (
     <>
-      <Button onClick={() => setShow(true)}>Sign In</Button>
+      <Button className="btn-primary" onClick={() => setShow(true)}>
+        Sign In
+      </Button>
       <Modal
         show={show}
         onHide={() => setShow(false)}

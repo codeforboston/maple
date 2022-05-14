@@ -1,10 +1,11 @@
 import { useRouter } from "next/router"
 import React from "react"
 import { SignOut, useAuth } from "./auth"
-import { Container, Nav, Navbar, Button } from "./bootstrap"
+import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
 import Head from "next/head"
 import Image from "react-bootstrap/Image"
+import { SignInWithModal } from "./auth"
 
 const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -42,10 +43,16 @@ const TopNav: React.FC = () => {
             <Image fluid src="nav-logo.png" alt="logo"></Image>
           </Navbar.Brand>
         </Wrap>
-        <Button variant="danger">Sign In/Sign Up</Button>
+        <AccountButton authenticated={authenticated} />
       </Container>
     </Navbar>
   )
+}
+
+const AccountButton: React.FC<{ authenticated: boolean }> = ({
+  authenticated
+}) => {
+  return authenticated ? <SignOut /> : <SignInWithModal />
 }
 
 const AccountNav: React.FC<{ authenticated: boolean }> = ({
