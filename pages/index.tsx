@@ -5,6 +5,7 @@ import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
+import AboutSection from "../components/AboutSection/AboutSection"
 
 export default createPage({
   v2: true,
@@ -33,7 +34,7 @@ export default createPage({
           website is voluntary, it will not include 100% of all testimony
           considered by the legislature.
         </p>
-
+        
         <Stack gap={3} className="col-lg-5 mx-auto">
           {/* <Wrap href="/legprocess">
             <Button size="lg">Learn About Submitting Testimony</Button>
@@ -44,6 +45,7 @@ export default createPage({
             </Wrap>
           )}
         </Stack>
+        <AboutSection />
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">

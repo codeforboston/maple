@@ -1,0 +1,14 @@
+.angledTop {
+  height: 50em;
+  margin-top: 4em;
+  margin-bottom: 4em;
+  background-color: var(--bg-blue);
+}
+.angledTop::before {
+  content: " ";
+  position: relative;
+  background-color: var(--bg-blue);
+  height: 5em;
+  width: 100%;
+  transform: translateY(-2.5em) skewY(-3deg)
+} 

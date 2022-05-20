@@ -1,3 +1,7 @@
+:root {
+  --bg-blue: #1A3185;
+}
+
 html,
 body {
   padding: 0;
@@ -7,6 +11,8 @@ body {
   min-height: 100vh;
   min-width: 100vw;
 }
+
+
 
 a {
   color: #8c1914;
@@ -176,4 +182,9 @@ a {
 
 .transparency-solution {
   width: 48%;
+}
+
+
+.bg-blue {
+  background: var(--bg-blue)
 }
