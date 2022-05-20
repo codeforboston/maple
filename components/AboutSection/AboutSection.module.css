@@ -1,14 +1,19 @@
 .angledTop {
-  height: 50em;
-  margin-top: 4em;
+  position: relative;
+  height: auto;
+  margin-top: 10em;
   margin-bottom: 4em;
+  padding-bottom: 8em;
   background-color: var(--bg-blue);
 }
 .angledTop::before {
   content: " ";
-  position: relative;
+  position: absolute;
   background-color: var(--bg-blue);
-  height: 5em;
+  /* border: 1px solid gold; */
+  height: 20em;
   width: 100%;
-  transform: translateY(-2.5em) skewY(-3deg)
+  transform-origin: bottom left;
+  transform: translateY(-1em) skewY(-5deg);
+  z-index: -1;
 } 

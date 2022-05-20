@@ -1,0 +1,18 @@
+.cardHeader {
+  transform: translateY(-40%);
+  margin-bottom: -1em;
+  border-color: transparent;
+  background-color: var(--bg-orange);
+  overflow: visible;
+}
+
+.cardBody {
+  height: 14em;
+}
+
+.cardBodyParagraph {
+  height: 90%;
+  margin-bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
