@@ -4,7 +4,7 @@ import { Button, Stack, Row, Col } from "../components/bootstrap"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
-import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
+import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
 
 export default createPage({
   v2: true,
@@ -44,6 +44,9 @@ export default createPage({
             </Wrap>
           )}
         </Stack>
+        <Row>
+          <TestimonyCalloutSection />
+        </Row>
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">
@@ -57,7 +60,6 @@ export default createPage({
               <Button size="lg">View All Testimony</Button>
             </Wrap>
             <h4 className="mt-3">Most Recent Testimony</h4>
-            <TestimoniesOnHomePage />
           </Col>
         </Row>
       </>
