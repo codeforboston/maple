@@ -1,6 +1,6 @@
 :root {
-  --bg-blue: #1A3185;
-  --bg-orange: #FF8600;
+  --bg-blue: #1a3185;
+  --bg-orange: #ff8600;
 }
 
 html,
@@ -13,8 +13,13 @@ body {
   min-width: 100vw;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: Futura,"Trebuchet MS",Arial,sans-serif; 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 
 h2 {
@@ -34,4 +39,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
