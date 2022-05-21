@@ -20,7 +20,7 @@ export default function TestimonyCallout(props: Testimony) {
   const { authorDisplayName, billId, position, content } = props
 
   return (
-    <div>
+    <Col className="m-auto">
       <Row
         className={`row-col-2 ${styles.testimonyCalloutContainer} ${styles[position]} m-2`}
       >
@@ -36,15 +36,15 @@ export default function TestimonyCallout(props: Testimony) {
         </Col>
         <Col className="">
           <Row className="m-2">
-            <Col className="">
+            <Col>
               <Row>
                 <Col
-                  className={`${styles.testimonyCalloutBodyText} align-items-start`}
+                  className={`${styles.testimonyCalloutBodyText} align-items-start my-2`}
                 >
                   {content}
                 </Col>
               </Row>
-              <Row className="mt-auto w-100 justify-content-start">
+              <Row className="mt-auto mb-2 w-100 justify-content-start">
                 <Col className="col-auto text-white">
                   Bill {formatBillId(billId)}
                 </Col>
@@ -56,6 +56,6 @@ export default function TestimonyCallout(props: Testimony) {
           </Row>
         </Col>{" "}
       </Row>
-    </div>
+    </Col>
   )
 }

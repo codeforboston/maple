@@ -12,7 +12,7 @@
 }
 
 .testimonyCalloutBodyText {
-  height: 5em;
+  height: 3em;
   overflow: hidden;
   word-wrap: anywhere;
   color: var(--bs-white);
