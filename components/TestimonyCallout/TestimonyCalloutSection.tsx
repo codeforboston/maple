@@ -3,7 +3,7 @@ import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 
 export default function TestimonyCalloutSection() {
-  const recentTestimony = useRecentTestimony()
+  const recentTestimony = useRecentTestimony(4)
 
   return (
     <Row xs={1} md={2}>
