@@ -26,7 +26,7 @@ export default function TestimonyCallout(props: Testimony) {
       >
         <Col className="col-auto">
           <Row className="h-100">
-            <Col 
+            <Col
               className={`col-auto m-0 ${styles.testimonyCalloutContainerTriangle}`}
             ></Col>
             <Col className="col-auto my-auto">

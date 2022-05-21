@@ -1,6 +1,5 @@
 .testimonyCalloutContainer {
   background-color: var(--green);
-
 }
 
 .testimonyCalloutContainerTriangle {
@@ -8,7 +7,6 @@
   width: 1em;
   border-left: 2em solid var(--bs-white);
   border-bottom: 2em solid transparent;
-
 }
 
 .testimonyCalloutBodyText {
