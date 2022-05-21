@@ -8,8 +8,13 @@ body {
   min-width: 100vw;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: Futura; 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Futura;
 }
 
 a {
@@ -25,4 +30,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
