@@ -5,7 +5,7 @@ import { Wrap } from "../links"
 const HeroHeader = () => {
   return (
     <Container fluid className={styles.container}>
-      <Row className={styles.container}>
+      <Row>
         <Col xs={{ order: "last", span: 12 }} md={{ order: "first", span: 6 }}>
           <Image fluid src="statehouse.png" alt="statehouse"></Image>
         </Col>
