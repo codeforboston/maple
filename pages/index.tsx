@@ -6,6 +6,8 @@ import { createPage } from "../components/page"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
 import HeroHeader from "../components/HeroHeader/HeroHeader"
+import TestimonyDisplay from "../components/TestimonyDisplay/TestimonyDisplay"
+import Leaf from "../components/Leaf/Leaf"
 
 export default createPage({
   v2: true,
@@ -15,6 +17,9 @@ export default createPage({
     return (
       <>
         <HeroHeader />
+        <Leaf direction="right" />
+        <TestimonyDisplay />
+        <Leaf direction="left" />
         <p>
           The Massachusetts Platform for Legislative Engagement (MAPLE) platform
           makes it easier for anyone to submit and see testimony to the{" "}

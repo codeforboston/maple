@@ -17,7 +17,11 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
-      <div>{children}</div>
+      {/*
+      Is there a more direct we can remove the white space after the leaf components than 
+      adding the overflow: hidden property to this div?
+      */}
+      <div style={{ overflow: "hidden" }}>{children}</div>
     </>
   )
 }
@@ -39,7 +43,7 @@ const TopNav: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
         <Wrap href="/">
-          <Navbar.Brand className="text-wrap">
+          <Navbar.Brand>
             <Image fluid src="nav-logo.png" alt="logo"></Image>
           </Navbar.Brand>
         </Wrap>
