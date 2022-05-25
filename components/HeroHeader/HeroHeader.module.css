@@ -1,0 +1,13 @@
+.container {
+  background: url("../../public/clouds.png"), url("../../public/skyline.png"),
+    #1a3185;
+  background-size: contain, cover;
+  background-repeat: no-repeat;
+  color: white;
+  background-position: top, center;
+}
+
+.btncontainer {
+  display: inline-block;
+  padding: 0.25em;
+}
