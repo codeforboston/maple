@@ -8,15 +8,6 @@ body {
   min-width: 100vw;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: Futura;
-}
-
 a {
   color: #8c1914;
   text-decoration: none;
