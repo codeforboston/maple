@@ -1,0 +1,16 @@
+.container {
+  height: 0;
+  width: 100%;
+  overflow-y: visible;
+}
+
+.right {
+  position: relative;
+  left: 100%;
+  transform: translate(-54%, -50%) rotate(180deg) scale(50%);
+}
+
+.left {
+  position: relative;
+  transform: translate(-41%, -50%) scale(50%);
+}
