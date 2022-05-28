@@ -2,7 +2,7 @@ import { Container, Row, Col, Button, Image } from "react-bootstrap"
 import styles from "./HeroHeader.module.css"
 import { Wrap } from "../links"
 
-const HeroHeader = () => {
+const HeroHeader= () => {
   return (
     <Container fluid className={styles.container}>
       <Row>
@@ -22,9 +22,6 @@ const HeroHeader = () => {
             sign up for this
           </p>
           <div className="text-end m-5">
-            <div className={styles.btncontainer}>
-              <Button className="btn-primary">Sign In to Testify</Button>
-            </div>
             <Wrap href="/bills">
               <div className={styles.btncontainer}>
                 <Button className="btn-secondary">Browse</Button>

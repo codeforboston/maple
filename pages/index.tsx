@@ -5,15 +5,14 @@ import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
-import HeroHeader from "../components/HeroHeader/HeroHeader"
+import HeroHeader from "../components/HeroHeader/HeroHeader.js"
 import TestimonyDisplay from "../components/TestimonyDisplay/TestimonyDisplay"
 import Leaf from "../components/Leaf/Leaf"
 
 export default createPage({
   v2: true,
   Page: () => {
-    const { authenticated } = useAuth()
-
+    
     return (
       <>
         <HeroHeader />
@@ -45,11 +44,6 @@ export default createPage({
           {/* <Wrap href="/legprocess">
             <Button size="lg">Learn About Submitting Testimony</Button>
           </Wrap> */}
-          {!authenticated && (
-            <Wrap href="/login">
-              <Button size="lg">Sign Up To Contribute Testimony</Button>
-            </Wrap>
-          )}
         </Stack>
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">

@@ -39,7 +39,6 @@ const TopNav: React.FC = () => {
             <NavLink href="/testimonies">Testimony</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/legprocess">Learn</NavLink>
-            <AccountNav authenticated={authenticated} />
           </Nav>
         </Navbar.Collapse>
         <Wrap href="/">
@@ -58,19 +57,16 @@ const AccountButton: React.FC<{ authenticated: boolean }> = ({
 }) => {
   return authenticated ? <SignOut /> : <SignInWithModal />
 }
-
-const AccountNav: React.FC<{ authenticated: boolean }> = ({
-  authenticated
-}) => {
-  return authenticated ? (
-    <>
-      <NavLink href="/profile">Profile</NavLink>
-      <SignOut />
-    </>
-  ) : (
-    <NavLink href="/login">Sign In To Testify</NavLink>
-  )
-}
+// No longer needed
+// const AccountNav: React.FC<{ authenticated: boolean }> = ({
+//   authenticated
+// }) => {
+//   return authenticated ? (
+//     <></>
+//   ) : (
+//     <NavLink href="/login">Sign In To Testify</NavLink>
+//   )
+// }
 
 const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
   const router = useRouter()
