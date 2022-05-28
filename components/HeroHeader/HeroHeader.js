@@ -2,7 +2,7 @@ import { Container, Row, Col, Button, Image } from "react-bootstrap"
 import styles from "./HeroHeader.module.css"
 import { Wrap } from "../links"
 
-const HeroHeader= () => {
+const HeroHeader = () => {
   return (
     <Container fluid className={styles.container}>
       <Row>
