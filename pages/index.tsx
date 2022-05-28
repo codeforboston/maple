@@ -12,7 +12,6 @@ import Leaf from "../components/Leaf/Leaf"
 export default createPage({
   v2: true,
   Page: () => {
-    
     return (
       <>
         <HeroHeader />
