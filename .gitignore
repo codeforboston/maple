@@ -52,3 +52,10 @@ out/
 prod-config.js
 prod-build.env
 .firebase
+
+# Secrets
+
+.gitsecret/keys/random_seed
+.gitsecret/keys/**/*~
+!*.secret
+infra/k8s/typesense-secrets.yml
