@@ -69,7 +69,8 @@ Once all checks pass on the PR and it is approved, you can merge it!
 ## Developing Locally
 
 1. Make sure that you have `node` and `yarn` installed. You can download Node directly [here](https://nodejs.org/en/download/) or use a tool like [nvm](https://github.com/nvm-sh/nvm). To install yarn, run `npm i -g yarn` after installing node.
-2. Install dependencies with `yarn install`
+2. Install dependencies with `yarn install`.
+3. If you are developing backend features, install Docker and [Docker Compose V2](https://docs.docker.com/compose/install/).
 
 If you're developing frontend-only features, such as adding UI or hooks, you can start the development server with `yarn dev` and access the app at http://localhost:3000 in your browser. The site will automatically update as you make code changes. Your local site will share the same backend as the live development site.
 
