@@ -31,6 +31,21 @@ jobs:
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest
+    needs: check_code_quality
+
+    services:
+      typesense:
+        image: typesense/typesense:0.22.2
+        ports:
+          - 8108:8108
+        env:
+          TYPESENSE_LISTEN_ADDRESS: 127.0.0.1
+          TYPESENSE_PEERING_ADDRESS: 127.0.0.1
+          TYPESENSE_DATA_DIR: /app/data
+          TYPESENSE_API_KEY: test-api-key
+          TYPESENSE_ENABLE_CORS: "true"
+        volumes:
+          - typesense-data:/app/data
 
     steps:
       - uses: actions/checkout@v2
