@@ -55,7 +55,7 @@ describe("profile", () => {
   it("Is publicly readable when public", async () => {
     const user1 = await signInUser1()
     const profileRef = doc(firestore, `profiles/${user1.uid}`)
-    await setDoc(profileRef, { public: true })
+    await setPublic(profileRef, true)
 
     await signInUser2()
     const result = await getDoc(doc(firestore, `profiles/${user1.uid}`))
@@ -65,7 +65,7 @@ describe("profile", () => {
   it("Is not publicly readable when not public", async () => {
     const user1 = await signInUser1()
     const profileRef = doc(firestore, `profiles/${user1.uid}`)
-    await setDoc(profileRef, { public: false })
+    await setPublic(profileRef, false)
 
     await signInUser2()
     await expectPermissionDenied(
@@ -76,7 +76,7 @@ describe("profile", () => {
   it("Is readable when not public by own user", async () => {
     const user1 = await signInUser1()
     const profileRef = doc(firestore, `profiles/${user1.uid}`)
-    await setDoc(profileRef, { public: false })
+    await setPublic(profileRef, false)
 
     const result = await getDoc(doc(firestore, `profiles/${user1.uid}`))
     expect(result.exists()).toBeTruthy()
@@ -95,4 +95,8 @@ describe("profile", () => {
       setDoc(profileRef, { displayName: "test" })
     ).resolves.toBeUndefined()
   })
+
+  async function setPublic(doc: any, isPublic: boolean) {
+    await setDoc(doc, { public: isPublic }, { merge: true })
+  }
 })
