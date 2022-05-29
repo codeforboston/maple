@@ -12,9 +12,11 @@ import Leaf from "../components/Leaf/Leaf"
 export default createPage({
   v2: true,
   Page: () => {
+    const { authenticated } = useAuth()
+
     return (
       <>
-        <HeroHeader />
+        <HeroHeader authenticated={authenticated}/>
         <Leaf direction="right" />
         <TestimonyDisplay />
         <Leaf direction="left" />
