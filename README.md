@@ -73,7 +73,7 @@ Once all checks pass on the PR and it is approved, you can merge it!
 
 If you're developing frontend-only features, such as adding UI or hooks, you can start the development server with `yarn dev` and access the app at http://localhost:3000 in your browser. The site will automatically update as you make code changes. Your local site will share the same backend as the live development site.
 
-If you're developing backend features, such as adding cloud functions or changing security rules, you can run the backend emulators, frontend development server, and test data with `yarn dev:emulators-with-data`. You can access the app at http://localhost:3000 and the emulator UI at http://localhost:3010. Both the backend and frontend should update as you make code changes.
+If you're developing backend features, such as adding cloud functions or changing security rules, you can run the backend emulators, search server, and test data with `yarn dev:backend`. You can access the emulator UI at http://localhost:3010. The backend should update as you make code changes.
 
 ## Code Formatting and Linting
 
@@ -83,17 +83,10 @@ You can install [pre-commit](https://pre-commit.com/) so that Prettier and ESLin
 
 If you use VSCode, consider using our [project workspace file](https://github.com/codeforboston/advocacy-maps/blob/master/project.code-workspace) (open it in VSCode and click the "Open Workspace" button in the editor). It will ask you to install ESLint and Prettier extensions, which will show lint errors in your editor and set up Prettier as the default code formatter. You can format the current file from the [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) by typing `Format Document`. You can also set the editor up to format on save: select `Open User Settings` from the command pallet, search for `format on save`, and enable it.
 
-## Deployment
+## Additional Documentation
 
-The site runs on Firebase and is deployed using Github Actions. The dev site is deployed automatically whenever we push to the `master` branch. The prod site is deployed whenever we push to the `prod` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action.
-
-- Development Environment
-  - [Frontend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-frontend-dev.yml)
-  - [Backend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-backend-dev.yml)
-  - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
-- Production Environment
-  - [Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-prod.yml)
-  - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-prod/)
+- [Deployment Details](./Deployment.md)
+- [Search Design](./Search.md)
 
 ## Development FAQ
 
