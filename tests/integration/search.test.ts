@@ -1,0 +1,172 @@
+import { DocumentSnapshot } from "@google-cloud/firestore"
+import { waitFor } from "@testing-library/react"
+import axios from "axios"
+import { first } from "lodash"
+import { nanoid } from "nanoid"
+import { CollectionAliasSchema } from "typesense/lib/Typesense/Aliases"
+import { Timestamp } from "../../functions/src/firebase"
+import { createClient } from "../../functions/src/search/client"
+import { SearchIndexer } from "../../functions/src/search/SearchIndexer"
+import { testDb } from "../testUtils"
+
+// Backfill operation can take some time. Consider doing a partial backfil in
+// test.
+// TODO: Do a partial backfill or backfill a test collection
+const timeoutMs = 20000
+jest.setTimeout(timeoutMs)
+
+const client = createClient()
+const testAlias = "bills"
+const mediumTimeout = { timeout: 5000, interval: 500 }
+const longTimeout = { timeout: 10000, interval: 500 }
+describe("Upgrades", () => {
+  it("upgrades collections when schemas are missing", async () => {
+    await clearAliases()
+    await clearCollections()
+    await triggerUpgradeCheck()
+
+    await assertBackfill()
+
+    // it("Does nothing for subsequent upgrade checks")
+
+    const existingUpgrade = await lastUpgradeTime()
+
+    await triggerUpgradeCheck()
+
+    // Assert that no upgrade was scheduled within X seconds of triggering the check
+    // TODO: Wait for a signal rather than a fixed period of time
+    const newUpgradeScheduled = waitFor(() =>
+      expect(lastUpgradeTime()).resolves.not.toEqual(existingUpgrade)
+    )
+
+    await expect(newUpgradeScheduled).rejects.toThrow()
+  })
+
+  it("upgrades collections when schemas are outdated", async () => {
+    await clearAliases()
+    await clearCollections()
+
+    const outdatedCollectionName = `${testAlias}_outdated`
+    await client.collections().create({
+      name: outdatedCollectionName,
+      fields: [{ name: "test", type: "string" }]
+    })
+    await client
+      .aliases()
+      .upsert(testAlias, { collection_name: outdatedCollectionName })
+
+    await triggerUpgradeCheck()
+    const alias = await assertBackfill()
+
+    expect(alias.collection_name).not.toEqual(outdatedCollectionName)
+  })
+
+  async function triggerUpgradeCheck() {
+    await axios({
+      method: "GET",
+      url: "http://localhost:5001/demo-dtp/us-central1/triggerPubsubFunction",
+      params: {
+        pubsub: "checkSearchIndexVersion",
+        data: '{"check":true}'
+      }
+    })
+  }
+
+  async function lastUpgradeTime(): Promise<Timestamp> {
+    const existingUpgrade = await testDb
+      .doc(SearchIndexer.upgradePath(testAlias))
+      .get()
+    expect(existingUpgrade.exists).toBeTruthy()
+    return existingUpgrade.data()!.createdAt
+  }
+
+  async function assertBackfill() {
+    let alias: CollectionAliasSchema
+    await waitFor(async () => {
+      alias = await client.aliases(testAlias).retrieve()
+      const collection = await client
+        .collections(alias.collection_name)
+        .retrieve()
+      expect(alias.name).toBe(testAlias)
+      expect(collection.num_documents).toBeGreaterThan(0)
+    }, longTimeout)
+    return alias!
+  }
+})
+
+describe("Sync", () => {
+  let existing: DocumentSnapshot
+  let id: string
+  let newBill: any
+  let newBillPath: string
+
+  beforeEach(async () => {
+    await clearCollections()
+    await clearAliases()
+
+    id = `test-bill-${nanoid()}`
+    newBillPath = `/generalCourts/192/bills/${id}`
+    existing = await testDb.doc(`/generalCourts/192/bills/H1`).get()
+    newBill = { ...existing.data()!, id }
+  })
+
+  it("Creates documents on create", async () => {
+    await testDb.doc(newBillPath).create(newBill)
+    await assertDocumentExists()
+  })
+
+  it("Updates documents on update", async () => {
+    await testDb.doc(newBillPath).create(newBill)
+    await assertDocumentExists()
+
+    const updatedTitle = "updated title"
+    await testDb.doc(newBillPath).update({ "content.Title": updatedTitle })
+    await assertDocumentTitle(updatedTitle)
+  })
+
+  it("Deletes documents on delete", async () => {
+    await testDb.doc(newBillPath).create(newBill)
+    await assertDocumentExists()
+
+    await testDb.doc(newBillPath).delete({ exists: true })
+    await assertDocumentDeleted()
+  })
+
+  async function assertDocumentDeleted() {
+    await waitFor(() => expect(getDoc()).rejects.toThrow(), mediumTimeout)
+  }
+
+  async function assertDocumentExists() {
+    await waitFor(async () => {
+      const doc = await getDoc()
+      expect(doc.id).toEqual(id)
+    }, mediumTimeout)
+  }
+
+  async function assertDocumentTitle(title: string) {
+    await waitFor(async () => {
+      const doc = await getDoc()
+      expect(doc.title).toEqual(title)
+    }, mediumTimeout)
+  }
+
+  async function getDoc() {
+    const collection = first(await client.collections().retrieve())
+    expect(collection).toBeTruthy()
+    return client.collections(collection!.name).documents(id).retrieve() as any
+  }
+})
+
+async function clearCollections() {
+  const collections = await client.collections().retrieve()
+  for (const c of collections) {
+    await client.collections(c.name).delete()
+  }
+}
+
+async function clearAliases() {
+  const { aliases } = await client.aliases().retrieve()
+  for (const a of aliases) {
+    await client.aliases(a.name).delete()
+  }
+}

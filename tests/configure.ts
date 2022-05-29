@@ -5,7 +5,9 @@ export function runAgainstEmulators() {
     NEXT_PUBLIC_USE_EMULATOR: "true",
     FIRESTORE_EMULATOR_HOST: "localhost:8080",
     FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099",
-    FIREBASE_STORAGE_EMULATOR_HOST: "localhost:9199"
+    FIREBASE_STORAGE_EMULATOR_HOST: "localhost:9199",
+    TYPESENSE_API_URL: "http://localhost:8108",
+    TYPESENSE_API_KEY: "test-api-key"
   })
 }
 
