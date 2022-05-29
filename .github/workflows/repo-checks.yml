@@ -39,8 +39,6 @@ jobs:
         ports:
           - 8108:8108
         env:
-          TYPESENSE_LISTEN_ADDRESS: 127.0.0.1
-          TYPESENSE_PEERING_ADDRESS: 127.0.0.1
           TYPESENSE_DATA_DIR: /app/data
           TYPESENSE_API_KEY: test-api-key
           TYPESENSE_ENABLE_CORS: "true"

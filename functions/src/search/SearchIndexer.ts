@@ -86,7 +86,7 @@ export class SearchIndexer {
   private async backfill() {
     const { convert } = this.config
     for await (const batch of this.listCollection()) {
-      const docs = batch.map((d, i) => (i > 5 ? convert(d.data()) : {}))
+      const docs = batch.map(d => convert(d.data()))
       const collection = await this.getCollection()
       try {
         await collection.documents().import(docs, { action: "upsert" })
