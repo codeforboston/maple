@@ -18,18 +18,21 @@
     "@google-cloud/pubsub": "^2.19.0",
     "axios": "^0.25.0",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.20.0",
+    "firebase-functions": "^3.21.2",
     "fuse.js": "6.5.3",
     "lodash": "^4.17.21",
     "luxon": "^2.3.1",
     "nanoid": "^3.3.2",
-    "runtypes": "^6.5.0"
+    "object-hash": "^3.0.0",
+    "runtypes": "^6.5.0",
+    "typesense": "^1.2.2"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/luxon": "^2.0.9",
+    "@types/object-hash": "^2.2.1",
     "firebase-functions-test": "^0.3.3",
-    "firebase-tools": "^10.2.1",
+    "firebase-tools": "^11.0.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
     "typescript": "4.5.5"

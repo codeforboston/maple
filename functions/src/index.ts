@@ -1,8 +1,10 @@
 export {
   fetchBillBatch,
   startBillBatches,
+  syncBillToSearchIndex,
   updateBillReferences,
-  updateBillSearchIndex
+  updateBillSearchIndex,
+  upgradeBillSearchIndex
 } from "./bills"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
@@ -17,5 +19,6 @@ export {
   startMemberBatches
 } from "./members"
 export { setUsername } from "./profile"
+export { checkSearchIndexVersion } from "./search"
 export { deleteTestimony, publishTestimony } from "./testimony"
-export * from "./triggerScheduledFunction"
+export * from "./triggerPubsubFunction"

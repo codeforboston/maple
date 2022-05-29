@@ -44,7 +44,8 @@ export type BillContent = Static<typeof BillContent>
 export const BillContent = Record({
   Pinslip: Nullable(String),
   Title: String,
-  PrimarySponsor: Nullable(Record({ Name: String }))
+  PrimarySponsor: Nullable(Record({ Name: String })),
+  DocumentText: Maybe(String)
 })
 
 /** Represents a missing timestamp value. This allows documents without values
