@@ -1,8 +1,10 @@
+import "instantsearch.css/themes/satellite.css"
 import "../components/fontawesome"
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
 import "../styles/bootstrap.scss"
 import "../styles/globals.css"
+import "../styles/instantsearch.css"
 import "../styles/Map.css"
 
 /**
