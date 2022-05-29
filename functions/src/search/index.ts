@@ -1,3 +1,3 @@
 export * from "./checkSearchIndexVersion"
-export { CollectionConfig, Schema } from "./config"
+export type { CollectionConfig, Schema } from "./config"
 export * from "./createSearchIndexer"
