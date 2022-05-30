@@ -2,8 +2,8 @@ import { useRouter } from "next/router"
 import { Button, Spinner } from "react-bootstrap"
 import {
   useBill,
-  usePublishedTestimonyListing,
-  usePublicProfile
+  usePublicProfile,
+  usePublishedTestimonyListing
 } from "../components/db"
 import { formatBillId } from "../components/formatting"
 import { Wrap } from "../components/links"
@@ -11,7 +11,6 @@ import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
 
 export default createPage({
-  v2: true,
   title: "Testimony",
   Page: () => {
     const router = useRouter()

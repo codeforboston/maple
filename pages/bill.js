@@ -1,9 +1,8 @@
-import { createPage } from "../components/page"
-import Bill from "../components/Bill/Bill"
 import { useRouter } from "next/router"
+import Bill from "../components/Bill/Bill"
+import { createPage } from "../components/page"
 
 export default createPage({
-  v2: true,
   title: "Bill",
   Page: () => {
     const router = useRouter(),

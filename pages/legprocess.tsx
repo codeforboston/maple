@@ -1,7 +1,6 @@
 import { createPage } from "../components/page"
 
 export default createPage({
-  v2: true,
   title: "How To Have Impact Through Legislative Testimony",
   Page: () => {
     return (

@@ -1,20 +1,15 @@
 import React from "react"
-import { useAuth } from "../components/auth"
-import { Button, Stack, Row, Col } from "../components/bootstrap"
+import { Button, Col, Row } from "../components/bootstrap"
+import HeroHeader from "../components/HeroHeader/HeroHeader"
+import Leaf from "../components/Leaf/Leaf"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
-import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
-import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
-import HeroHeader from "../components/HeroHeader/HeroHeader"
 import TestimonyDisplay from "../components/TestimonyDisplay/TestimonyDisplay"
-import Leaf from "../components/Leaf/Leaf"
+import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 
 export default createPage({
-  v2: true,
   Page: () => {
-    const { authenticated } = useAuth()
-
     return (
       <>
         <HeroHeader />
@@ -42,16 +37,6 @@ export default createPage({
           considered by the legislature.
         </p>
 
-        <Stack gap={3} className="col-lg-5 mx-auto">
-          {/* <Wrap href="/legprocess">
-            <Button size="lg">Learn About Submitting Testimony</Button>
-          </Wrap> */}
-          {!authenticated && (
-            <Wrap href="/login">
-              <Button size="lg">Sign Up To Contribute Testimony</Button>
-            </Wrap>
-          )}
-        </Stack>
         <Row>
           <TestimonyCalloutSection />
         </Row>

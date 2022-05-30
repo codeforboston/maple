@@ -1,13 +1,16 @@
+import Head from "next/head"
 import { useRouter } from "next/router"
 import React from "react"
-import { SignOut, useAuth } from "./auth"
+import Image from "react-bootstrap/Image"
+import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
-import Head from "next/head"
-import Image from "react-bootstrap/Image"
-import { SignInWithModal } from "./auth"
 
-const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
+export type LayoutProps = {
+  title?: string
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   return (
     <>
       <Head>
@@ -80,5 +83,3 @@ const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
     </Wrap>
   )
 }
-
-export default V2Layout

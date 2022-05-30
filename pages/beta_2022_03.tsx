@@ -2,7 +2,6 @@ import { createPage } from "../components/page"
 import stateHouse from "../public/ma_state_house.jpg"
 
 export default createPage({
-  v2: true,
   title: "April 2022 Beta Test",
   Page: () => {
     return (

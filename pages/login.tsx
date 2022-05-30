@@ -4,7 +4,6 @@ import { FirebaseAuth } from "../components/auth"
 import { createPage } from "../components/page"
 
 export default createPage({
-  v2: true,
   title: "Sign In",
   Page: () => {
     const onSignIn = useSignIn()
