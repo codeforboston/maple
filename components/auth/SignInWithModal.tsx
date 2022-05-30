@@ -9,7 +9,7 @@ export default function SignInWithModal() {
   return (
     <>
       <Button className="btn-primary" onClick={() => setShow(true)}>
-        Sign In
+        Sign In to Testify
       </Button>
       <Modal
         show={show}

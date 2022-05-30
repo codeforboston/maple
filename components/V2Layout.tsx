@@ -5,7 +5,6 @@ import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
 import Head from "next/head"
 import Image from "react-bootstrap/Image"
-import { SignInWithModal } from "./auth"
 
 const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -46,27 +45,29 @@ const TopNav: React.FC = () => {
             <Image fluid src="nav-logo.png" alt="logo"></Image>
           </Navbar.Brand>
         </Wrap>
-        <AccountButton authenticated={authenticated} />
+        <AccountNav authenticated={authenticated} />
       </Container>
     </Navbar>
   )
 }
 
-const AccountButton: React.FC<{ authenticated: boolean }> = ({
+const AccountNav: React.FC<{ authenticated: boolean }> = ({
   authenticated
 }) => {
-  return authenticated ? <SignOut /> : <SignInWithModal />
+  return authenticated ? (
+    <>
+      <Nav className="me-auto">
+        <NavLink href="/profile">Profile</NavLink>
+      </Nav>
+      <SignOut />
+    </>
+  ) : (
+    <Nav className="me-auto">
+      <NavLink href="/login">Sign In</NavLink>
+    </Nav>
+  )
 }
-// No longer needed
-// const AccountNav: React.FC<{ authenticated: boolean }> = ({
-//   authenticated
-// }) => {
-//   return authenticated ? (
-//     <></>
-//   ) : (
-//     <NavLink href="/login">Sign In To Testify</NavLink>
-//   )
-// }
+
 
 const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
   const router = useRouter()

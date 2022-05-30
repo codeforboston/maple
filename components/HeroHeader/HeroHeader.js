@@ -1,6 +1,7 @@
 import { Container, Row, Col, Button, Image } from "react-bootstrap"
 import styles from "./HeroHeader.module.css"
 import { Wrap } from "../links"
+import { SignInWithModal } from "../auth"
 
 const HeroHeader = ({ authenticated }) => {
   return (
@@ -24,7 +25,7 @@ const HeroHeader = ({ authenticated }) => {
           <div className="text-end m-5">
             {!authenticated && (
               <div className={styles.btncontainer}>
-                <Button className="btn-primary">Sign In to Testify</Button>
+                <SignInWithModal />
               </div>
             )}
             <Wrap href="/bills">
