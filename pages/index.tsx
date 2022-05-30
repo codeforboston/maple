@@ -16,7 +16,7 @@ export default createPage({
 
     return (
       <>
-        <HeroHeader authenticated={authenticated}/>
+        <HeroHeader authenticated={authenticated} />
         <Leaf direction="right" />
         <TestimonyDisplay />
         <Leaf direction="left" />

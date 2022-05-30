@@ -68,7 +68,6 @@ const AccountNav: React.FC<{ authenticated: boolean }> = ({
   )
 }
 
-
 const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
   const router = useRouter()
   return (
