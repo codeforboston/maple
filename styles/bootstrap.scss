@@ -2,33 +2,14 @@
 // https://getbootstrap.com/docs/5.1/customize/color/#theme-colors
 // https://nextjs.org/docs/basic-features/built-in-css-support#sass-support
 
-// these are temp working colors and should be replaced with the official color scheme when approved
-
-$white: #fff;
-$red: #89110c;
-$dark-red: #a92929;
+$red: #a92929;
 $orange: #ff8600;
 $blue: #1a3185;
-$blue-50: #3d4c83;
-$blue-25: #6078cf;
-$dark-blue: #0b0a3e;
 $green: #3d9922;
 
 $primary: $red;
-$secondary: $white;
+$secondary: $blue;
 $success: $green;
-$info: $green;
-$warning: $blue;
-$danger: $dark-red;
-$light: $blue-25;
-$dark: $dark-blue;
-
-$border-bottom-color-endorse: $green;
-$border-bottom-color-oppose: $red;
-$border-bottom-color-neutral: $blue;
-$primary: #89110c;
-//temporary assignments until we figure out how we want to set up the variables moving forward
-$secondary: #1a3185; //navy color used in new landing page
-$danger: #a92929; //dark red used in new landing page
+$info: $orange;
 
 @import "bootstrap/scss/bootstrap";
