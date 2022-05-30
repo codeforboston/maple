@@ -1,6 +1,6 @@
-import { Container, Row, Col, Button, Image } from "react-bootstrap"
-import styles from "./HeroHeader.module.css"
+import { Button, Col, Container, Image, Row } from "react-bootstrap"
 import { Wrap } from "../links"
+import styles from "./HeroHeader.module.css"
 
 const HeroHeader = () => {
   return (
@@ -23,11 +23,11 @@ const HeroHeader = () => {
           </p>
           <div className="text-end m-5">
             <div className={styles.btncontainer}>
-              <Button className="btn-primary">Sign In to Testify</Button>
+              <Button variant="primary">Sign In to Testify</Button>
             </div>
             <Wrap href="/bills">
               <div className={styles.btncontainer}>
-                <Button className="btn-secondary">Browse</Button>
+                <Button variant="outline-secondary">Browse</Button>
               </div>
             </Wrap>
           </div>
