@@ -1,5 +1,6 @@
-import { Container, Col, Row } from "react-bootstrap"
+import { Button, Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
+import { Wrap } from "../links"
 import TestimonyCallout from "./TestimonyCallout"
 
 export default function TestimonyCalloutSection() {
@@ -17,6 +18,13 @@ export default function TestimonyCalloutSection() {
               <TestimonyCallout key={t.authorUid + t.billId} {...t} />
             ))}
           </Row>
+        </Col>
+      </Row>
+      <Row className="justify-content-center">
+        <Col xs="auto">
+          <Wrap href="/testimonies">
+            <Button size="lg">View All Testimony</Button>
+          </Wrap>
         </Col>
       </Row>
     </Container>

@@ -34,6 +34,11 @@ const ViewBills = () => {
       <Table responsive striped bordered hover>
         <thead>
           <tr>
+            <th colSpan={2} className="text-center">
+              Upcoming Hearings
+            </th>
+          </tr>
+          <tr>
             <th>Bill #</th>
             <th>Hearing Scheduled</th>
           </tr>
