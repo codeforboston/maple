@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
 import { Button, Spinner } from "react-bootstrap"
+import { Container } from "../components/bootstrap"
 import {
   useBill,
   usePublicProfile,
@@ -34,7 +35,7 @@ export default createPage({
     const authorPublic = profile.result?.public
 
     return (
-      <>
+      <Container className="mt-3">
         {testimony ? (
           <>
             {bill ? (
@@ -85,7 +86,7 @@ export default createPage({
             <Spinner animation="border" className="justify-content-center" />
           </>
         )}
-      </>
+      </Container>
     )
   }
 })

@@ -1,3 +1,4 @@
+import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 import style from "../styles/About.module.css"
 
@@ -5,7 +6,7 @@ export default createPage({
   title: "About",
   Page: () => {
     return (
-      <>
+      <Container className="mt-3">
         <div className={style.aboutWrapper}>
           <div>
             <h1>Why MAPLE?</h1>
@@ -99,7 +100,7 @@ export default createPage({
           {/* <Twitter /> */}
         </div>
         {/* </Layout> */}
-      </>
+      </Container>
     )
   }
 })

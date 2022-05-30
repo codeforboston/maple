@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import React, { useCallback } from "react"
 import { FirebaseAuth } from "../components/auth"
+import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 
 export default createPage({
@@ -9,10 +10,10 @@ export default createPage({
     const onSignIn = useSignIn()
 
     return (
-      <>
+      <Container className="mt-3">
         <h1>Sign in to Testify</h1>
         <FirebaseAuth onSignIn={onSignIn} />
-      </>
+      </Container>
     )
   }
 })

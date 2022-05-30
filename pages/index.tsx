@@ -11,7 +11,7 @@ import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHo
 export default createPage({
   Page: () => {
     return (
-      <>
+      <div className="overflow-hidden">
         <HeroHeader />
         <Leaf direction="right" />
         <TestimonyDisplay />
@@ -55,7 +55,7 @@ export default createPage({
             <h4 className="mt-3">Most Recent Testimony</h4>
           </Col>
         </Row>
-      </>
+      </div>
     )
   }
 })

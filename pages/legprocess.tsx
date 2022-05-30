@@ -1,10 +1,11 @@
+import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 
 export default createPage({
   title: "How To Have Impact Through Legislative Testimony",
   Page: () => {
     return (
-      <>
+      <Container className="mt-3">
         <h1>The Basics</h1>
         All laws passed by state legislatures should be informed by feedback
         from residents and community stakeholders. In Massachusetts, among other
@@ -251,7 +252,7 @@ export default createPage({
         While you certainly do not have to submit testimony via this website, we
         hope you will. Every piece of testimony published to this site increases
         the transparency of the legislative process.
-      </>
+      </Container>
     )
   }
 })

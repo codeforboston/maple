@@ -10,6 +10,7 @@ import {
   Spinner
 } from "react-bootstrap"
 import { requireAuth, useAuth } from "../components/auth"
+import { Container } from "../components/bootstrap"
 import { SocialLinks, SOCIAL_NETWORKS, useProfile } from "../components/db"
 import * as links from "../components/links"
 import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
@@ -124,7 +125,7 @@ export default createPage({
     }, [unsavedDisplayName, profile])
 
     return (
-      <>
+      <Container className="mt-3">
         <h1>
           Hello,{" "}
           {unsavedDisplayName
@@ -255,7 +256,7 @@ export default createPage({
           </Button>
         </div>
         <MyTestimonies />
-      </>
+      </Container>
     )
   })
 })
