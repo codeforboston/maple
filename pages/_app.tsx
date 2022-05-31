@@ -5,7 +5,6 @@ import { Providers } from "../components/providers"
 import "../styles/bootstrap.scss"
 import "../styles/globals.css"
 import "../styles/instantsearch.css"
-import "../styles/Map.css"
 
 /**
  * The root React component of the application. Next.js renders this, passing
