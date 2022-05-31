@@ -6,7 +6,7 @@ import { auth } from "../firebase"
  * redirect the user to the login page. */
 const SignOut: React.FC<ButtonProps> = props => {
   return (
-    <Button className="btn-primary" {...props} onClick={() => auth.signOut()}>
+    <Button {...props} onClick={() => auth.signOut()}>
       Sign out
     </Button>
   )

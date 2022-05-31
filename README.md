@@ -97,17 +97,16 @@ Take a look at the `pages/bills.tsx` page:
 
 ```typescript
 export default createPage({
-  v2: true,
   title: "Browse",
   Page: () => {
     return (
-      <>
+      <Container>
         <h1>Browse</h1>
         ...
-      </>
+      </Container>
     )
   }
 })
 ```
 
-Your page content goes in `Page`, and will be wrapped in a layout component. Setting `v2` to `true` will use the `V2Layout`, which will render the content inside a bootstrap `Container`. The page is rendered by `_app.tsx`.
+Your page content goes in `Page`, and will be wrapped in a layout component. The page is rendered by `_app.tsx`.

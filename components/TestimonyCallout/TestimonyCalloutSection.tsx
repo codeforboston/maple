@@ -1,7 +1,6 @@
-import { Container, Col, Row } from "react-bootstrap"
+import { Col, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
-import styles from "./TestimonyCallout.module.css"
 
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)

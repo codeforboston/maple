@@ -1,15 +1,19 @@
-import { createPage } from "../components/page"
-import Bill from "../components/Bill/Bill"
 import { useRouter } from "next/router"
+import Bill from "../components/Bill/Bill"
+import { Container } from "../components/bootstrap"
+import { createPage } from "../components/page"
 
 export default createPage({
-  v2: true,
   title: "Bill",
   Page: () => {
     const router = useRouter(),
       id = router.query.id,
       billId = typeof id === "string" ? id : null
 
-    return billId ? <Bill billId={billId} /> : null
+    return billId ? (
+      <Container className="mt-3">
+        <Bill billId={billId} />
+      </Container>
+    ) : null
   }
 })
