@@ -14,6 +14,7 @@ import TypesenseInstantSearchAdapter, {
 } from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Card, Col, Container, Offcanvas, Row } from "../bootstrap"
+import { Internal } from "../links"
 
 const devConfig = {
   key: "iklz4D0Yv3lEYpYxf3e8LQr6tDlIlrvo",
@@ -90,7 +91,9 @@ const Hit = ({ hit }: { hit: Hit<BillRecord> }) => {
         <Card.Title>
           <Highlight attribute="title" hit={hit} />
         </Card.Title>
-        <Card.Subtitle>{hit.number}</Card.Subtitle>
+        <Card.Subtitle>
+          <Internal href={`/bill?id=${hit.number}`}>{hit.number}</Internal>
+        </Card.Subtitle>
       </Card.Body>
     </Card>
   )
@@ -109,12 +112,28 @@ const useRefinements = () => {
   }, [inline])
 
   const refinements = (
-    <RefinementList
-      attribute="city"
-      searchable
-      showMore
-      searchablePlaceholder="City"
-    />
+    <>
+      <RefinementList
+        attribute="city"
+        limit={5}
+        searchable
+        searchablePlaceholder="City"
+      />
+      <RefinementList
+        className="mt-3"
+        attribute="primarySponsor"
+        limit={5}
+        searchable
+        searchablePlaceholder="Primary Sponsor"
+      />
+      <RefinementList
+        className="mt-3"
+        attribute="currentCommittee"
+        limit={5}
+        searchable
+        searchablePlaceholder="Current Committee"
+      />
+    </>
   )
 
   return {
