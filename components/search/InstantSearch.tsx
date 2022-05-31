@@ -9,21 +9,41 @@ import {
   RefinementList,
   SearchBox
 } from "react-instantsearch-hooks-web"
-import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
+import TypesenseInstantSearchAdapter, {
+  TypesenseInstantsearchAdapterOptions
+} from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Card, Col, Container, Offcanvas, Row } from "../bootstrap"
 
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: {
-    apiKey: "test-api-key",
+const devConfig = {
+  key: "iklz4D0Yv3lEYpYxf3e8LQr6tDlIlrvo",
+  url: "https://maple.aballslab.com/search"
+}
+
+function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"] {
+  const key = process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY ?? devConfig.url
+  const url = new URL(
+    process.env.NEXT_PUBLIC_TYPESENSE_API_URL ?? devConfig.url
+  )
+
+  const protocol = url.protocol.startsWith("https") ? "https" : "http"
+  const port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80
+
+  return {
+    apiKey: key,
     nodes: [
       {
-        host: "localhost",
-        port: 8108,
-        protocol: "http"
+        host: url.hostname,
+        protocol,
+        port,
+        path: url.pathname
       }
     ]
-  },
+  }
+}
+
+const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+  server: getServerConfig(),
   additionalSearchParameters: {
     query_by: "title,body",
     exclude_fields: "body"

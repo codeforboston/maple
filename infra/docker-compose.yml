@@ -25,6 +25,16 @@ services:
     working_dir: /app
     volumes:
       - ..:/app
+  next:
+    image: node:16-alpine
+    command: yarn dev
+    working_dir: /app
+    network_mode: host
+    volumes:
+      - ..:/app
+    environment:
+      NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
+      NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
 
 volumes:
   search: {}
