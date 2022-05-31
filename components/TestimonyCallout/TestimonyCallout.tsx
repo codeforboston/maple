@@ -21,9 +21,7 @@ export default function TestimonyCallout(props: Testimony) {
 
   return (
     <Col className="m-auto">
-      <Row
-        className={`row-col-2 ${styles.testimonyCalloutContainer} ${styles[position]} m-2`}
-      >
+      <Row className={`row-col-2 ${styles[position]} m-2`}>
         <Col className="col-auto">
           <Row className="h-100">
             <Col

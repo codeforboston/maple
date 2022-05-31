@@ -2,10 +2,6 @@
   margin-top: 3em;
 }
 
-.testimonyCalloutContainer {
-  background-color: var(--green);
-}
-
 .testimonyCalloutContainerTriangle {
   content: " ";
   width: 1em;

@@ -20,20 +20,15 @@ export default createPage({
       <>
         <HeroHeader />
         <Leaf direction="right" />
-        <Row>
-          <TestimonyCalloutSection />
-        </Row>
+
+        <TestimonyCalloutSection />
+
         <Leaf direction="left" />
 
-        <Stack gap={3} className="col-lg-5 mx-auto">
-          {!authenticated && (
-            <Wrap href="/login">
-              <Button size="lg">Sign Up To Contribute Testimony</Button>
-            </Wrap>
-          )}
-        </Stack>
-
         <AboutSection />
+
+        <Leaf direction="left" />
+
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">

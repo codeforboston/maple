@@ -5,16 +5,16 @@ import styles from "./AboutSection.module.css"
 
 export default function AboutSection() {
   return (
-    <Container fluid>
-      <Row className={`${styles.angledTop}`}>
-        <Col xs={{ span: 10, offset: 1 }}>
+    <Row className={`${styles.angledTop}`}>
+      <Row className="justify-content-center">
+        <Col xs={10}>
           <h1 className="text-white">About MAPLE</h1>
         </Col>
-        <Col xs={{ span: 10, offset: 1 }} xl={{ span: 8, offset: 2 }}>
+        <Col xs={10} xxl={9}>
           <Row
             xs={1}
             md={2}
-            lg={3}
+            xl={3}
             className={`g-4 justify-content-center mx-5 py-5 px-4`}
           >
             <BackgroundLogo />
@@ -41,6 +41,6 @@ export default function AboutSection() {
           </Row>
         </Col>
       </Row>
-    </Container>
+    </Row>
   )
 }
