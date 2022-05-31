@@ -20,8 +20,19 @@ export default createPage({
       <>
         <HeroHeader />
         <Leaf direction="right" />
-        <TestimonyDisplay />
+        <Row>
+          <TestimonyCalloutSection />
+        </Row>
         <Leaf direction="left" />
+
+        <Stack gap={3} className="col-lg-5 mx-auto">
+          {!authenticated && (
+            <Wrap href="/login">
+              <Button size="lg">Sign Up To Contribute Testimony</Button>
+            </Wrap>
+          )}
+        </Stack>
+        <AboutSection />
         <p>
           The Massachusetts Platform for Legislative Engagement (MAPLE) platform
           makes it easier for anyone to submit and see testimony to the{" "}
@@ -42,21 +53,6 @@ export default createPage({
           website is voluntary, it will not include 100% of all testimony
           considered by the legislature.
         </p>
-
-        <Stack gap={3} className="col-lg-5 mx-auto">
-          {/* <Wrap href="/legprocess">
-            <Button size="lg">Learn About Submitting Testimony</Button>
-          </Wrap> */}
-          {!authenticated && (
-            <Wrap href="/login">
-              <Button size="lg">Sign Up To Contribute Testimony</Button>
-            </Wrap>
-          )}
-        </Stack>
-        <AboutSection />
-        <Row>
-          <TestimonyCalloutSection />
-        </Row>
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">
