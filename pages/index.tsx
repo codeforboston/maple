@@ -1,15 +1,13 @@
 import React from "react"
+import AboutSection from "../components/AboutSection/AboutSection"
 import { useAuth } from "../components/auth"
-import { Button, Stack, Row, Col } from "../components/bootstrap"
+import { Button, Col, Row } from "../components/bootstrap"
+import HeroHeader from "../components/HeroHeader/HeroHeader"
+import Leaf from "../components/Leaf/Leaf"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
-import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
-import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
-import AboutSection from "../components/AboutSection/AboutSection"
-import HeroHeader from "../components/HeroHeader/HeroHeader"
-import TestimonyDisplay from "../components/TestimonyDisplay/TestimonyDisplay"
-import Leaf from "../components/Leaf/Leaf"
+import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
 
 export default createPage({
   v2: true,
@@ -18,7 +16,7 @@ export default createPage({
 
     return (
       <>
-        <HeroHeader />
+        <HeroHeader authenticated={authenticated} />
         <Leaf direction="right" />
 
         <TestimonyCalloutSection />
