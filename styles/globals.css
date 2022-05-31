@@ -1,3 +1,7 @@
+:root {
+  --bg-blue: #1a3185;
+  --bg-orange: #ff8600;
+}
 @import url("https://fonts.googleapis.com/css2?family=Archivo&display=swap");
 
 html,
