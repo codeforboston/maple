@@ -37,15 +37,15 @@ const TopNav: React.FC = () => {
         <Container>
           <Navbar.Toggle aria-controls="topnav" />
           <Navbar.Brand>
-              <Nav.Link href="/">
-                  <Image fluid src="nav-logo.png" alt="logo"></Image>
-              </Nav.Link>
+            <Nav.Link href="/">
+              <Image fluid src="nav-logo.png" alt="logo"></Image>
+            </Nav.Link>
           </Navbar.Brand>
           <Nav>
-            {!authenticated?(
-                <SignInWithModal/>
-                ):(
-                <ProfileLink displayName={displayName}></ProfileLink>
+            {!authenticated ? (
+              <SignInWithModal />
+            ) : (
+              <ProfileLink displayName={displayName}></ProfileLink>
             )}
           </Nav>
           <Navbar.Collapse id="topnav">
@@ -57,7 +57,7 @@ const TopNav: React.FC = () => {
               <NavLink href="/legprocess">Learn</NavLink>
               {authenticated && (
                 <div>
-                  <SignOut variant="secondary" size="sm"/>
+                  <SignOut variant="secondary" size="sm" />
                 </div>
               )}
             </Nav>

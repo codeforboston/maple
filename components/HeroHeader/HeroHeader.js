@@ -25,7 +25,7 @@ const HeroHeader = ({ authenticated }) => {
           <div className="text-end m-5">
             {!authenticated && (
               <div className={styles.btncontainer}>
-                <SignInWithModal label="Sign in to Testify"/>
+                <SignInWithModal label="Sign in to Testify" />
               </div>
             )}
             <Wrap href="/bills">
