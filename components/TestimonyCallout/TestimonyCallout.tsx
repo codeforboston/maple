@@ -27,7 +27,7 @@ export default function TestimonyCallout(props: Testimony) {
         <Col className="col-auto">
           <Row className="h-100">
             <Col
-              className={`col-auto m-0 ${styles.testimonyCalloutContainerTriangle}`}
+              className={`${styles.testimonyCalloutContainerTriangle}`}
             ></Col>
             <Col className="col-auto my-auto">
               <VoteHand position={position} />
