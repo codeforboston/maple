@@ -1,13 +1,13 @@
 import React from "react"
+import AboutSection from "../components/AboutSection/AboutSection"
 import { useAuth } from "../components/auth"
-import { Button, Stack, Row, Col } from "../components/bootstrap"
+import { Button, Col, Row } from "../components/bootstrap"
+import HeroHeader from "../components/HeroHeader/HeroHeader"
+import Leaf from "../components/Leaf/Leaf"
 import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
+import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
-import TestimoniesOnHomePage from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
-import HeroHeader from "../components/HeroHeader/HeroHeader.js"
-import TestimonyDisplay from "../components/TestimonyDisplay/TestimonyDisplay"
-import Leaf from "../components/Leaf/Leaf"
 
 export default createPage({
   v2: true,
@@ -18,34 +18,15 @@ export default createPage({
       <>
         <HeroHeader authenticated={authenticated} />
         <Leaf direction="right" />
-        <TestimonyDisplay />
-        <Leaf direction="left" />
-        <p>
-          The Massachusetts Platform for Legislative Engagement (MAPLE) platform
-          makes it easier for anyone to submit and see testimony to the{" "}
-          <a href="https://malegislature.gov">Massachusetts Legislature</a>{" "}
-          about the bills that will shape our future.
-        </p>
-        <p>
-          MAPLE is free to use and open source.{" "}
-          <a href="/about">This platform is developed in collaboration</a>{" "}
-          between the NuLawLab, Code for Boston, and scholars at{" "}
-          <a href="https://www.bc.edu/bc-web/schools/law.html">BC Law</a> and{" "}
-          <a href="https://cyber.harvard.edu">Harvard BKC</a>.
-        </p>
-        <p>
-          This website is not affiliated with the state legislature, but helps
-          individuals and organizations to submit their testimony to relevant
-          committees and members of the legislature. Because usage of this
-          website is voluntary, it will not include 100% of all testimony
-          considered by the legislature.
-        </p>
 
-        <Stack gap={3} className="col-lg-5 mx-auto">
-          {/* <Wrap href="/legprocess">
-            <Button size="lg">Learn About Submitting Testimony</Button>
-          </Wrap> */}
-        </Stack>
+        <TestimonyCalloutSection />
+
+        <Leaf direction="left" />
+
+        <AboutSection />
+
+        <Leaf direction="left" />
+
         <Row className="mt-4">
           <Col xs={12} xl={4} className="text-center">
             <Wrap href="/bills">
@@ -59,7 +40,6 @@ export default createPage({
               <Button size="lg">View All Testimony</Button>
             </Wrap>
             <h4 className="mt-3">Most Recent Testimony</h4>
-            <TestimoniesOnHomePage />
           </Col>
         </Row>
       </>
