@@ -1,8 +1,9 @@
 import { Button, Col, Container, Image, Row } from "react-bootstrap"
+import { SignInWithModal } from "../auth"
 import { Wrap } from "../links"
 import styles from "./HeroHeader.module.css"
 
-const HeroHeader = () => {
+const HeroHeader = ({ authenticated }) => {
   return (
     <Container fluid className={styles.container}>
       <Row>
@@ -22,9 +23,11 @@ const HeroHeader = () => {
             sign up for this
           </p>
           <div className="text-end m-5">
-            <div className={styles.btncontainer}>
-              <Button variant="primary">Sign In to Testify</Button>
-            </div>
+            {!authenticated && (
+              <div className={styles.btncontainer}>
+                <SignInWithModal label="Sign in to Testify" />
+              </div>
+            )}
             <Wrap href="/bills">
               <div className={styles.btncontainer}>
                 <Button variant="outline-secondary">Browse</Button>

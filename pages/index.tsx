@@ -1,5 +1,6 @@
 import React from "react"
 import AboutSection from "../components/AboutSection/AboutSection"
+import { useAuth } from "../components/auth"
 import { Button, Col, Container, Row } from "../components/bootstrap"
 import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
@@ -10,9 +11,12 @@ import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHo
 
 export default createPage({
   Page: () => {
+    const { authenticated } = useAuth()
+
     return (
       <div className="overflow-hidden">
-        <HeroHeader />
+        <HeroHeader authenticated={authenticated} />
+
         <Leaf direction="right" />
 
         <Container>
