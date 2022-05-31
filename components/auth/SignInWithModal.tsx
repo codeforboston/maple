@@ -3,13 +3,13 @@ import { useState, useCallback } from "react"
 import { Button, Modal } from "../bootstrap"
 import FirebaseAuth from "./FirebaseAuth"
 
-export default function SignInWithModal() {
+export default function SignInWithModal({ label="Sign In"}) {
   const [show, setShow] = useState(false)
 
   return (
     <>
       <Button className="btn-primary" onClick={() => setShow(true)}>
-        Sign In to Testify
+        {label}
       </Button>
       <Modal
         show={show}
