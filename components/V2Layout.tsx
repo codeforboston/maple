@@ -30,7 +30,6 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
   const displayName = useAuth().user?.displayName
-  const signOut = () => auth.signOut()
   return (
     <>
       <Navbar bg="secondary" variant="dark" expand={false}>
