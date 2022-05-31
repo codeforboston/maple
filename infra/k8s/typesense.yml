@@ -19,6 +19,8 @@ spec:
     matchLabels:
       app: typesense
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -44,6 +46,8 @@ spec:
                 secretKeyRef:
                   name: typesense
                   key: api-key
+            - name: TYPESENSE_ENABLE_CORS
+              value: "true"
       volumes:
         - name: datav
           persistentVolumeClaim:

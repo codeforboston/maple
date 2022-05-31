@@ -42,11 +42,11 @@ The master key is stored in a kubernetes secret resource, which is encrypted and
 5. Trigger a search index upgrade check. Post a pubsub message with the content `{"check": true}` to the `checkSearchIndexVersion` topic:
 
 ```sh
-gcloud pubsub topics publish checkSearchIndexVersion --message='{"check": true}'
+gcloud --project digital-testimony-dev pubsub topics publish checkSearchIndexVersion --message='{"check": true}'
 ```
 
 6. Generate a search-only API key for use in the browser:
 
 ```sh
-. ./infra/create-search-key.sh
+yarn typesense-admin -e dev create-search-key
 ```
