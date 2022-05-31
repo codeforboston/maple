@@ -1,12 +1,12 @@
+import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 import stateHouse from "../public/ma_state_house.jpg"
 
 export default createPage({
-  v2: true,
   title: "April 2022 Beta Test",
   Page: () => {
     return (
-      <>
+      <Container className="mt-3">
         <h1>Participate in the MAPLE Project Beta Test</h1>
         <img
           src={stateHouse.src}
@@ -57,7 +57,7 @@ export default createPage({
         with collaborating groups at Boston College and Harvard University.
         MAPLE is being developed as a public good and is, and will always
         remain, open to access and free to use.
-      </>
+      </Container>
     )
   }
 })

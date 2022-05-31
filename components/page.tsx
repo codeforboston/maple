@@ -1,14 +1,11 @@
 import { NextPage } from "next"
 import { AppProps } from "next/app"
 import { ReactElement, ReactNode } from "react"
-import V2Layout from "./V2Layout"
+import { Layout, LayoutProps } from "./layout"
 
 export type ApplyLayout = (page: ReactElement) => ReactNode
 
-export type AppPage = NextPage & {
-  v2?: boolean
-  title?: string
-}
+export type AppPage = NextPage & LayoutProps
 
 export type AppPropsWithLayout = AppProps & {
   Component: AppPage
@@ -16,22 +13,17 @@ export type AppPropsWithLayout = AppProps & {
 
 export function applyLayout({ Component, pageProps }: AppPropsWithLayout) {
   const page = <Component {...pageProps} />
-  return Component.v2 ? (
-    <V2Layout title={Component.title}>{page}</V2Layout>
-  ) : (
-    page
-  )
+  return <Layout title={Component.title}>{page}</Layout>
 }
 
 export type PageOptions = {
   title?: string
-  v2?: boolean
+  fullWidth?: boolean
   Page: NextPage
 }
 
 export function createPage(options: PageOptions): AppPage {
-  const page: any = options.Page
+  const page: AppPage = options.Page
   page.title = options.title
-  page.v2 = options.v2
   return page
 }

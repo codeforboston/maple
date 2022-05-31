@@ -1,22 +1,21 @@
+import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
-import { requireAuth } from "../components/auth"
+import {
+  Button,
+  Col,
+  Form,
+  FormControl,
+  InputGroup,
+  Row,
+  Spinner
+} from "react-bootstrap"
+import { requireAuth, useAuth } from "../components/auth"
+import { Container } from "../components/bootstrap"
 import { SocialLinks, SOCIAL_NETWORKS, useProfile } from "../components/db"
 import * as links from "../components/links"
+import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
 import { createPage } from "../components/page"
 import SelectLegislators from "../components/SelectLegislators"
-import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
-import { useRouter } from "next/router"
-import { useAuth } from "../components/auth"
-import {
-  Row,
-  Col,
-  FormControl,
-  Form,
-  Spinner,
-  InputGroup,
-  Button
-} from "react-bootstrap"
-import testimony from "./testimony"
 
 const showLegislators = (
   <>
@@ -58,7 +57,6 @@ const useEffectWithTimeout = (
 }
 
 export default createPage({
-  v2: true,
   title: "Profile",
   Page: requireAuth(({ user: { displayName } }) => {
     const profile = useProfile()
@@ -127,7 +125,7 @@ export default createPage({
     }, [unsavedDisplayName, profile])
 
     return (
-      <>
+      <Container className="mt-3">
         <h1>
           Hello,{" "}
           {unsavedDisplayName
@@ -258,7 +256,7 @@ export default createPage({
           </Button>
         </div>
         <MyTestimonies />
-      </>
+      </Container>
     )
   })
 })

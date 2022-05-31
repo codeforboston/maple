@@ -4,12 +4,12 @@
   margin-top: 10em;
   margin-bottom: 4em;
   padding-bottom: 8em;
-  background-color: var(--bg-blue);
+  background-color: var(--bs-blue);
 }
 .angledTop::before {
   content: " ";
   position: absolute;
-  background-color: var(--bg-blue);
+  background-color: var(--bs-blue);
   /* border: 1px solid gold; */
   height: 20em;
   width: 100%;

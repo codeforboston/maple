@@ -1,7 +1,7 @@
-import { Container, Row, Col, Button, Image } from "react-bootstrap"
-import styles from "./HeroHeader.module.css"
-import { Wrap } from "../links"
+import { Button, Col, Container, Image, Row } from "react-bootstrap"
 import { SignInWithModal } from "../auth"
+import { Wrap } from "../links"
+import styles from "./HeroHeader.module.css"
 
 const HeroHeader = ({ authenticated }) => {
   return (
@@ -30,7 +30,7 @@ const HeroHeader = ({ authenticated }) => {
             )}
             <Wrap href="/bills">
               <div className={styles.btncontainer}>
-                <Button className="btn-secondary">Browse</Button>
+                <Button variant="outline-secondary">Browse</Button>
               </div>
             </Wrap>
           </div>

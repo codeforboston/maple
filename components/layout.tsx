@@ -1,14 +1,16 @@
+import Head from "next/head"
 import { useRouter } from "next/router"
-import React from "react"
+import Image from "react-bootstrap/Image"
 import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { Wrap } from "./links"
-import Head from "next/head"
-import Image from "react-bootstrap/Image"
 import ProfileLink from "./ProfileLink/ProfileLink"
-import { auth } from "./firebase"
 
-const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
+export type LayoutProps = {
+  title?: string
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   return (
     <>
       <Head>
@@ -18,11 +20,7 @@ const V2Layout: React.FC<{ title?: string }> = ({ children, title }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
-      {/*
-      Is there a more direct we can remove the white space after the leaf components than 
-      adding the overflow: hidden property to this div?
-      */}
-      <div style={{ overflow: "hidden" }}>{children}</div>
+      {children}
     </>
   )
 }
@@ -75,5 +73,3 @@ const NavLink: React.FC<{ href: string }> = ({ href, children }) => {
     </Wrap>
   )
 }
-
-export default V2Layout
