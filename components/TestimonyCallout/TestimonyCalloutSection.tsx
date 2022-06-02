@@ -1,4 +1,4 @@
-import { Col, Row } from "../bootstrap"
+import { Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 
@@ -6,7 +6,7 @@ export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
 
   return (
-    <>
+    <Container fluid>
       <Row className="mt-5 justify-content-center">
         <Col xs={10}>
           <h1>What people are saying...</h1>
@@ -24,6 +24,6 @@ export default function TestimonyCalloutSection() {
           </Row>
         </Col>
       </Row>
-    </>
+    </Container>
   )
 }
