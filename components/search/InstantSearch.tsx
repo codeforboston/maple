@@ -1,5 +1,5 @@
 import { Hit } from "instantsearch.js"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   CurrentRefinements,
   Highlight,
@@ -12,7 +12,6 @@ import {
 import TypesenseInstantSearchAdapter, {
   TypesenseInstantsearchAdapterOptions
 } from "typesense-instantsearch-adapter"
-import { useMediaQuery } from "usehooks-ts"
 import { Button, Card, Col, Container, Offcanvas, Row } from "../bootstrap"
 import { Internal } from "../links"
 
@@ -46,7 +45,7 @@ function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"] {
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
   additionalSearchParameters: {
-    query_by: "title,body",
+    query_by: "number,title,body",
     exclude_fields: "body"
   }
 })
@@ -100,9 +99,11 @@ const Hit = ({ hit }: { hit: Hit<BillRecord> }) => {
 }
 
 const useRefinements = () => {
+  // TODO: lift up refinement state and make UI responsive. for now, don't
+  // bother.
+  const inline = true
   // Grab the value on mount, to ensure it maintains its state.
-  // TODO: Support screen size changes
-  const { current: inline } = useRef(useMediaQuery("(min-width: 768px)"))
+  // const { current: inline } = useRef(useMediaQuery("(min-width: 768px)"))
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
