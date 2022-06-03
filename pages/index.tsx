@@ -19,15 +19,11 @@ export default createPage({
 
         <Leaf direction="right" />
 
-        <Container>
-          <TestimonyCalloutSection />
-        </Container>
+        <TestimonyCalloutSection />
 
         <Leaf direction="left" />
 
-        <Container>
-          <AboutSection />
-        </Container>
+        <AboutSection />
 
         <Leaf direction="left" />
 

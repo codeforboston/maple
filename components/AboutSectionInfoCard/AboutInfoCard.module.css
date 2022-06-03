@@ -2,7 +2,7 @@
   transform: translateY(-40%);
   margin-bottom: -1em;
   border-color: transparent;
-  background-color: var(--bg-orange);
+  background-color: var(--bs-orange);
   overflow: visible;
 }
 
