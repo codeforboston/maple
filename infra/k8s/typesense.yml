@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: typesense-data-2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: typesense-deployment
+spec:
+  selector:
+    matchLabels:
+      app: typesense
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: typesense
+    spec:
+      containers:
+        - name: typesense
+          image: typesense/typesense:0.22.2
+          ports:
+            - containerPort: 8108
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: "1"
+          volumeMounts:
+            - mountPath: /app/data
+              name: datav
+          env:
+            - name: TYPESENSE_DATA_DIR
+              value: /app/data
+            - name: TYPESENSE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: typesense
+                  key: api-key
+            - name: TYPESENSE_ENABLE_CORS
+              value: "true"
+      volumes:
+        - name: datav
+          persistentVolumeClaim:
+            claimName: typesense-data-2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: typesense-service
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+      targetPort: 8108
+  selector:
+    app: typesense
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: typesense-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /search
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: typesense-ingress
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: "Host(`maple.aballslab.com`) && PathPrefix(`/search`)"
+      kind: Rule
+      services:
+        - name: typesense-service
+          port: 80
+      middlewares:
+        - name: typesense-strip-prefix

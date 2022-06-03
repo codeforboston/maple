@@ -1,6 +1,6 @@
 import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
-import ViewBills from "../components/ViewBills/ViewBills"
+import { InstantSearch } from "../components/search"
 
 export default createPage({
   title: "Browse Bills",
@@ -9,7 +9,7 @@ export default createPage({
       <Container className="mt-3">
         <h1>All Bills</h1>
         <h3>Current session, 2021-2022</h3>
-        <ViewBills />
+        <InstantSearch />
       </Container>
     )
   }
