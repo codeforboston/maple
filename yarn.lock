@@ -2,6 +2,15 @@
 # yarn lockfile v1
 
 
+"@alexjball/react-instantsearch-hooks-web@~6.26.1":
+  version "6.26.1"
+  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.26.1.tgz#3516d1dc65bbe4f04fba81839b3b6cd5f5efc8d9"
+  integrity sha512-dcf1ePVfdZ48Saj20mSDAUx6zuavQRIXfKQjrPOwujNkBmvRmBxH1ojDYTzH7sjEgEXERfYl1m5zFmkxSg841g==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    instantsearch.js "^4.40.1"
+    react-instantsearch-hooks "6.26.0"
+
 "@algolia/events@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@algolia/events/-/events-4.0.1.tgz#fd39e7477e7bc703d7f893b556f676c032af3950"
@@ -9423,15 +9432,6 @@ react-firebaseui@^6.0.0:
   integrity sha512-VzLMiW7DBZCsW/qpP9nky/pPlAoIjDxA2Qyc+QAPf+RjelIkvPPiCBXR2aAz+Upy+ujrx6pYDXj547DW5uC4ww==
   dependencies:
     firebaseui "^6.0.0"
-
-react-instantsearch-hooks-web@^6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.26.0.tgz#763ab5296dcbe1d1bb42ab63483216912af929f1"
-  integrity sha512-0PUPGxEeXGVqn87dcSqNMV2SERzTKA9n/TgixNOK5Psp5WQweFUNYkEjupgwEjMtzBiDOAEbR83bZ8A8jxR6yg==
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    instantsearch.js "^4.40.1"
-    react-instantsearch-hooks "6.26.0"
 
 react-instantsearch-hooks@6.26.0:
   version "6.26.0"
