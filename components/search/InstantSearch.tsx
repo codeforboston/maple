@@ -6,10 +6,14 @@ import {
   Pagination,
   RefinementListUiComponent,
   SearchBox,
+  useCurrentRefinements,
   useRefinementListUiProps
 } from "@alexjball/react-instantsearch-hooks-web"
+import { faFilter } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Hit } from "instantsearch.js"
 import { useCallback, useEffect, useState } from "react"
+import styled from "styled-components"
 import TypesenseInstantSearchAdapter, {
   TypesenseInstantsearchAdapterOptions
 } from "typesense-instantsearch-adapter"
@@ -63,6 +67,18 @@ type BillRecord = {
   primarySponsor?: string
 }
 
+const StyledContainer = styled(Container)`
+  .ais-CurrentRefinements-item,
+  .btn {
+    height: 2.5rem;
+    padding: 0.5rem;
+  }
+
+  .ais-CurrentRefinements-delete {
+    line-height: unset;
+  }
+`
+
 export const InstantSearch = () => {
   return (
     <Base indexName="bills" searchClient={searchClient} routing>
@@ -74,20 +90,20 @@ export const InstantSearch = () => {
 const SearchLayout = () => {
   const refinements = useRefinements()
   return (
-    <Container>
+    <StyledContainer fluid>
       <Row>
         {refinements.options}
         <Col className="d-flex flex-column">
-          <SearchBox placeholder="Search Bills" className="mb-1" />
+          <SearchBox placeholder="Search Bills" className="mb-2" />
           <div className="d-flex">
-            <CurrentRefinements />
             {refinements.show}
+            <CurrentRefinements />
           </div>
           <Hits hitComponent={Hit} />
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>
-    </Container>
+    </StyledContainer>
   )
 }
 
@@ -135,10 +151,11 @@ const useRefinements = () => {
     })
   ]
 
+  const anyRefinements = useCurrentRefinements().items.length > 0
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
-        <RefinementListUiComponent key={i} {...p} />
+        <RefinementListUiComponent className="mb-3" key={i} {...(p as any)} />
       ))}
     </>
   )
@@ -157,8 +174,13 @@ const useRefinements = () => {
       </Offcanvas>
     ),
     show: inline ? null : (
-      <Button active={show} onClick={handleOpen}>
-        Filter
+      <Button
+        className="mb-2 me-2"
+        variant={anyRefinements ? "primary" : "outline-primary"}
+        active={show}
+        onClick={handleOpen}
+      >
+        <FontAwesomeIcon icon={faFilter} /> Filter
       </Button>
     )
   }

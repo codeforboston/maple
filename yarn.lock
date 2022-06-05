@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@alexjball/react-instantsearch-hooks-web@~6.26.1":
-  version "6.26.1"
-  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.26.1.tgz#3516d1dc65bbe4f04fba81839b3b6cd5f5efc8d9"
-  integrity sha512-dcf1ePVfdZ48Saj20mSDAUx6zuavQRIXfKQjrPOwujNkBmvRmBxH1ojDYTzH7sjEgEXERfYl1m5zFmkxSg841g==
+"@alexjball/react-instantsearch-hooks-web@~6.26.2":
+  version "6.26.2"
+  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.26.2.tgz#47cf396574ef5dd0a78c1cd29477db7dcaec24cd"
+  integrity sha512-AcHdI6q984WPBoyIHckigqpN7clK4XPvLUJsvzgwvryDos0c7QAOCqzyiER+/xyD+ZxapIseFLuzEISKD2+owQ==
   dependencies:
     "@babel/runtime" "^7.1.2"
     instantsearch.js "^4.40.1"
