@@ -9,10 +9,7 @@ const GoalsAndMission = () => {
       <Row>
         <Col>
           <h1 className="mt-5 fw-bold">Our Goals and Mission</h1>
-          <AboutPagesCard
-            body={GoalsAndMissionCardContent}
-            title="Our Goals"
-          />
+          <AboutPagesCard body={GoalsAndMissionCardContent} title="Our Goals" />
         </Col>
       </Row>
     </Container>
