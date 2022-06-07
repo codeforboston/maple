@@ -1,17 +1,23 @@
-import { Hit } from "instantsearch.js"
-import { useCallback, useEffect, useState } from "react"
 import {
   CurrentRefinements,
   Highlight,
   Hits,
   InstantSearch as Base,
   Pagination,
-  RefinementList,
-  SearchBox
-} from "react-instantsearch-hooks-web"
+  RefinementListUiComponent,
+  SearchBox,
+  useCurrentRefinements,
+  useRefinementListUiProps
+} from "@alexjball/react-instantsearch-hooks-web"
+import { faFilter } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Hit } from "instantsearch.js"
+import { useCallback, useEffect, useState } from "react"
+import styled from "styled-components"
 import TypesenseInstantSearchAdapter, {
   TypesenseInstantsearchAdapterOptions
 } from "typesense-instantsearch-adapter"
+import { useMediaQuery } from "usehooks-ts"
 import { Button, Card, Col, Container, Offcanvas, Row } from "../bootstrap"
 import { Internal } from "../links"
 
@@ -61,25 +67,43 @@ type BillRecord = {
   primarySponsor?: string
 }
 
+const StyledContainer = styled(Container)`
+  .ais-CurrentRefinements-item,
+  .btn {
+    height: 2.5rem;
+    padding: 0.5rem;
+  }
+
+  .ais-CurrentRefinements-delete {
+    line-height: unset;
+  }
+`
+
 export const InstantSearch = () => {
-  const refinements = useRefinements()
   return (
     <Base indexName="bills" searchClient={searchClient} routing>
-      <Container>
-        <Row>
-          {refinements.options}
-          <Col className="d-flex flex-column">
-            <SearchBox placeholder="Search Bills" className="mb-1" />
-            <div className="d-flex">
-              <CurrentRefinements />
-              {refinements.show}
-            </div>
-            <Hits hitComponent={Hit} />
-            <Pagination className="mx-auto mt-2 mb-3" />
-          </Col>
-        </Row>
-      </Container>
+      <SearchLayout />
     </Base>
+  )
+}
+
+const SearchLayout = () => {
+  const refinements = useRefinements()
+  return (
+    <StyledContainer fluid>
+      <Row>
+        {refinements.options}
+        <Col className="d-flex flex-column">
+          <SearchBox placeholder="Search Bills" className="mb-2" />
+          <div className="d-flex">
+            {refinements.show}
+            <CurrentRefinements />
+          </div>
+          <Hits hitComponent={Hit} />
+          <Pagination className="mx-auto mt-2 mb-3" />
+        </Col>
+      </Row>
+    </StyledContainer>
   )
 }
 
@@ -99,11 +123,7 @@ const Hit = ({ hit }: { hit: Hit<BillRecord> }) => {
 }
 
 const useRefinements = () => {
-  // TODO: lift up refinement state and make UI responsive. for now, don't
-  // bother.
-  const inline = true
-  // Grab the value on mount, to ensure it maintains its state.
-  // const { current: inline } = useRef(useMediaQuery("(min-width: 768px)"))
+  const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
@@ -112,28 +132,31 @@ const useRefinements = () => {
     if (inline) setShow(false)
   }, [inline])
 
+  const baseProps = { limit: 5, searchable: true }
+  const refinementProps = [
+    useRefinementListUiProps({
+      attribute: "city",
+      searchablePlaceholder: "City",
+      ...baseProps
+    }),
+    useRefinementListUiProps({
+      attribute: "primarySponsor",
+      ...baseProps,
+      searchablePlaceholder: "Primary Sponsor"
+    }),
+    useRefinementListUiProps({
+      attribute: "currentCommittee",
+      ...baseProps,
+      searchablePlaceholder: "Current Committee"
+    })
+  ]
+
+  const anyRefinements = useCurrentRefinements().items.length > 0
   const refinements = (
     <>
-      <RefinementList
-        attribute="city"
-        limit={5}
-        searchable
-        searchablePlaceholder="City"
-      />
-      <RefinementList
-        className="mt-3"
-        attribute="primarySponsor"
-        limit={5}
-        searchable
-        searchablePlaceholder="Primary Sponsor"
-      />
-      <RefinementList
-        className="mt-3"
-        attribute="currentCommittee"
-        limit={5}
-        searchable
-        searchablePlaceholder="Current Committee"
-      />
+      {refinementProps.map((p, i) => (
+        <RefinementListUiComponent className="mb-3" key={i} {...(p as any)} />
+      ))}
     </>
   )
 
@@ -143,7 +166,6 @@ const useRefinements = () => {
         {refinements}
       </Col>
     ) : (
-      // TODO: fix this somehow...use hook and render custom components...
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Filter</Offcanvas.Title>
@@ -152,8 +174,13 @@ const useRefinements = () => {
       </Offcanvas>
     ),
     show: inline ? null : (
-      <Button active={show} onClick={handleOpen}>
-        Filter
+      <Button
+        className="mb-2 me-2"
+        variant={anyRefinements ? "primary" : "outline-primary"}
+        active={show}
+        onClick={handleOpen}
+      >
+        <FontAwesomeIcon icon={faFilter} /> Filter
       </Button>
     )
   }
