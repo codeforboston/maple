@@ -14,7 +14,7 @@ export default createPage({
     const { authenticated } = useAuth()
 
     return (
-      <div className="overflow-hidden">
+      <div className="overflow-hidden whitebackground">
         <HeroHeader authenticated={authenticated} />
 
         <Leaf direction="right" />

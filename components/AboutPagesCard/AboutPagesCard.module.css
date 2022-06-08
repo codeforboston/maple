@@ -1,14 +1,13 @@
+.header:first-child {
+  border-radius: 0 5rem 5rem 0;
+}
+
 .header {
   background-color: var(--bs-blue);
   color: white;
   width: 13rem;
   height: 3rem;
   transform: translate(-15%, -40%);
-  /*I'm not sure how to get the border-radius to override the styles
-    coming from bootstrap.
-    Using an ID would work but given this element will be repeated multiple times,
-    I'm not sure how to implement it other than the temporary !important fix.*/
-  border-radius: 0 5rem 5rem 0 !important;
   overflow: hidden;
 }
 
