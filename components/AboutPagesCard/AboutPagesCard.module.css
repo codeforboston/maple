@@ -1,0 +1,16 @@
+.header:first-child {
+  border-radius: 0 5rem 5rem 0;
+}
+
+.header {
+  background-color: var(--bs-blue);
+  color: white;
+  width: 13rem;
+  height: 3rem;
+  transform: translate(-15%, -40%);
+  overflow: hidden;
+}
+
+.card {
+  margin: 3rem 5rem;
+}
