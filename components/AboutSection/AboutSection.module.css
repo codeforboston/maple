@@ -5,6 +5,7 @@
   margin-bottom: 4em;
   padding-bottom: 8em;
   background-color: var(--bs-blue);
+  z-index: 1;
 }
 .angledTop::before {
   content: " ";
