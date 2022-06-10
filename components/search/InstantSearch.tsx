@@ -6,7 +6,6 @@ import {
   Pagination,
   RefinementListUiComponent,
   SearchBox,
-  useCurrentRefinements,
   useRefinementListUiProps
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
@@ -18,7 +17,7 @@ import TypesenseInstantSearchAdapter, {
   TypesenseInstantsearchAdapterOptions
 } from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Card, Col, Container, Offcanvas, Row } from "../bootstrap"
+import { Button, Card, Col, Offcanvas, Row } from "../bootstrap"
 import { Internal } from "../links"
 
 const devConfig = {
@@ -67,15 +66,87 @@ type BillRecord = {
   primarySponsor?: string
 }
 
-const StyledContainer = styled(Container)`
-  .ais-CurrentRefinements-item,
+const StyledContainer = styled.div`
   .btn {
-    height: 2.5rem;
-    padding: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    align-self: flex-start;
+  }
+
+  .ais-CurrentRefinements-list {
+    display: inline-flex;
+    flex-wrap: wrap;
   }
 
   .ais-CurrentRefinements-delete {
     line-height: unset;
+    color: white;
+  }
+
+  .ais-CurrentRefinements-item {
+    background-color: var(--bs-blue);
+    color: white;
+    border: none;
+  }
+
+  .ais-CurrentRefinements,
+  .btn {
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .ais-RefinementList-list {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ais-RefinementList-count {
+    background: var(--bs-blue);
+    color: white;
+    font-size: 0.6rem;
+    line-height: 0.8rem;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .ais-SearchBox-form {
+    background: none;
+  }
+
+  .ais-SearchBox-input {
+    box-shadow: none;
+    border: none;
+    border-radius: 4px;
+    padding-left: 0.5rem;
+    padding-right: 2rem;
+  }
+
+  .ais-RefinementList-checkbox {
+    display: none;
+  }
+
+  .ais-SearchBox-form::after {
+    background-color: var(--bs-blue);
+    mask: url("search-solid.svg");
+    content: "";
+    height: 1rem;
+    right: 0.5rem;
+    margin-top: -0.5rem;
+    transform: scale(-1, 1);
+    position: absolute;
+    top: 50%;
+    width: 1rem;
+  }
+
+  .ais-SearchBox-reset,
+  .ais-SearchBox-loadingIndicator {
+    right: 2rem;
+  }
+
+  .ais-SearchBox-form::before {
+    display: none;
   }
 `
 
@@ -90,11 +161,13 @@ export const InstantSearch = () => {
 const SearchLayout = () => {
   const refinements = useRefinements()
   return (
-    <StyledContainer fluid>
+    <StyledContainer>
+      <Row>
+        <SearchBox placeholder="Search For Bills" className="mt-2" />
+      </Row>
       <Row>
         {refinements.options}
         <Col className="d-flex flex-column">
-          <SearchBox placeholder="Search Bills" className="mb-2" />
           <div className="d-flex">
             {refinements.show}
             <CurrentRefinements />
@@ -109,7 +182,7 @@ const SearchLayout = () => {
 
 const Hit = ({ hit }: { hit: Hit<BillRecord> }) => {
   return (
-    <Card className="mt-1 mb-1 w-100">
+    <Card className="w-100">
       <Card.Body>
         <Card.Title>
           <Highlight attribute="title" hit={hit} />
@@ -151,18 +224,17 @@ const useRefinements = () => {
     })
   ]
 
-  const anyRefinements = useCurrentRefinements().items.length > 0
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
-        <RefinementListUiComponent className="mb-3" key={i} {...(p as any)} />
+        <RefinementListUiComponent className="mb-4" key={i} {...(p as any)} />
       ))}
     </>
   )
 
   return {
     options: inline ? (
-      <Col xs={3} lg={2}>
+      <Col xs={3} lg={3} className="mt-3">
         {refinements}
       </Col>
     ) : (
@@ -170,13 +242,15 @@ const useRefinements = () => {
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Filter</Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>{refinements}</Offcanvas.Body>
+        <Offcanvas.Body>
+          <StyledContainer>{refinements}</StyledContainer>
+        </Offcanvas.Body>
       </Offcanvas>
     ),
     show: inline ? null : (
       <Button
         className="mb-2 me-2"
-        variant={anyRefinements ? "primary" : "outline-primary"}
+        variant="secondary"
         active={show}
         onClick={handleOpen}
       >

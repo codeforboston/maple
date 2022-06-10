@@ -10,7 +10,8 @@
   padding: 1rem;
 }
 
-.btn-outline-secondary {
+.btn-outline-secondary,
+.offcanvas {
   background-color: var(--bs-body-bg) !important;
 }
 
