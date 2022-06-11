@@ -1,7 +1,8 @@
 import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
-import { ref, uploadBytes } from "firebase/storage"
 import { httpsCallable } from "firebase/functions"
+import { ref, uploadBytes } from "firebase/storage"
+import { nanoid } from "nanoid"
 import { Bill } from "../../components/db"
 import { firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
@@ -12,7 +13,6 @@ import {
   signInUser1,
   signInUser2
 } from "./common"
-import { nanoid } from "nanoid"
 
 type BaseTestimony = {
   billId: string
@@ -163,6 +163,7 @@ describe("publishTestimony", () => {
     const published = await getPublication(uid, res.data.publicationId)
 
     expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
     expect(bill.latestTestimonyId).toBe(res.data.publicationId)
     expect(bill.latestTestimonyAt).toEqual(published.publishedAt)
   })
@@ -208,12 +209,14 @@ describe("publishTestimony", () => {
 
     let bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(2)
+    expect(bill.endorseCount).toBe(2)
     expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
 
     await deleteTestimony({ publicationId: res2.data.publicationId })
 
     bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
     expect(bill.latestTestimonyId).toBe(res1.data.publicationId)
   })
 
@@ -330,6 +333,7 @@ describe("deleteTestimony", () => {
     expect(bill.latestTestimonyAt).toBeUndefined()
     expect(bill.latestTestimonyId).toBeUndefined()
     expect(bill.testimonyCount).toBe(0)
+    expect(bill.endorseCount).toBe(0)
   })
 
   it("Retains archives", async () => {

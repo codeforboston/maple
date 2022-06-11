@@ -179,7 +179,7 @@ class UpdateBillReferences extends BillProcessor {
     updates.forEach(update => {
       update.forEach((docUpdate, billId) => {
         if (!merged.has(billId)) merged.set(billId, {})
-        Object.assign(merged.get(billId), docUpdate)
+        Object.assign(merged.get(billId)!, docUpdate)
       })
     })
     return merged

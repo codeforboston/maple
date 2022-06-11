@@ -2,10 +2,11 @@ import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, Id, DocUpdate, Maybe } from "../common"
+import { checkAuth, checkRequest, DocUpdate, Id, Maybe } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
 import { Testimony } from "./types"
+import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({
   publicationId: Id
@@ -59,7 +60,7 @@ class DeleteTestimonyTransaction {
 
     const billUpdate: DocUpdate<Bill> = {
       ...(await this.resolveNewLatestTestimony()),
-      testimonyCount: Math.max(this.bill.testimonyCount - 1, 0)
+      ...updateTestimonyCounts(this.bill, this.publication, undefined)
     }
 
     this.t.update(this.billSnap.ref, billUpdate)

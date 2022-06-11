@@ -7,6 +7,7 @@ import { db, Timestamp } from "../firebase"
 import { currentGeneralCourt } from "../malegislature"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
+import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
@@ -121,10 +122,12 @@ class PublishTestimonyTransaction {
   private updateBill(newPublication: Testimony) {
     const billTestimonyFields: DocUpdate<Bill> = {
       latestTestimonyAt: newPublication.publishedAt,
-      latestTestimonyId: this.publicationRef.id
-    }
-    if (!this.currentPublication) {
-      billTestimonyFields.testimonyCount = this.bill.testimonyCount + 1
+      latestTestimonyId: this.publicationRef.id,
+      ...updateTestimonyCounts(
+        this.bill,
+        this.currentPublication,
+        newPublication
+      )
     }
     this.t.update(this.billSnap.ref, billTestimonyFields)
   }

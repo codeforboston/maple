@@ -45,7 +45,8 @@ export const BillContent = Record({
   Pinslip: Nullable(String),
   Title: String,
   PrimarySponsor: Nullable(Record({ Name: String })),
-  DocumentText: Maybe(String)
+  DocumentText: Maybe(String),
+  Cosponsors: Array(Record({ Name: Maybe(String) }))
 })
 
 /** Represents a missing timestamp value. This allows documents without values
@@ -59,6 +60,9 @@ export const Bill = withDefaults(
     content: BillContent,
     cosponsorCount: Number,
     testimonyCount: Number,
+    endorseCount: Number,
+    neutralCount: Number,
+    opposeCount: Number,
     nextHearingAt: Optional(InstanceOf(Timestamp)),
     nextHearingId: Optional(Id),
     latestTestimonyAt: Optional(InstanceOf(Timestamp)),
@@ -72,6 +76,9 @@ export const Bill = withDefaults(
   {
     cosponsorCount: 0,
     testimonyCount: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0,
     latestTestimonyAt: MISSING_TIMESTAMP,
     nextHearingAt: MISSING_TIMESTAMP,
     fetchedAt: Timestamp.fromMillis(0),
