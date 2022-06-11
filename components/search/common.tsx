@@ -125,7 +125,7 @@ export const SatelliteCustomization = styled.div`
     background-color: var(--bs-blue);
     background-image: unset;
     color: white;
-    border: solid 1px white;
+    border: solid 1px var(--bs-body-bg);
     box-shadow: none;
   }
 
@@ -135,6 +135,21 @@ export const SatelliteCustomization = styled.div`
     background-color: var(--bs-blue-100);
     color: black;
     background-image: unset;
+    border-color: var(--bs-body-bg);
+  }
+
+  .ais-SortBy-select {
+    box-shadow: none;
+    margin: 1rem 1rem 1rem 0;
+    width: 15rem;
+    font-size: 1rem;
+    line-height: 1.3125rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    height: unset;
     border-color: white;
+
+    &:focus {
+      border-color: var(--bs-blue);
+    }
   }
 `

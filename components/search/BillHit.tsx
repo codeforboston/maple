@@ -7,7 +7,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import styled from "styled-components"
 import { Card, Col } from "../bootstrap"
 
@@ -17,6 +16,13 @@ type BillRecord = {
   city?: string
   currentCommittee?: string
   testimonyCount: number
+  endorseCount: number
+  opposeCount: number
+  neutralCount: number
+  nextHearingAt?: number
+  latestTestimonyAt?: number
+  cosponsors: string[]
+  cosponsorCount: number
   primarySponsor?: string
 }
 
@@ -86,26 +92,20 @@ const StyledCard = styled(Card)`
 `
 
 const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
-  // TODO: use actual counts
-  const count = hit.testimonyCount,
-    counts = { endorse: count, oppose: count, neutral: count }
-
   return (
     <div className="testimonyCount">
       <FontAwesomeIcon className="endorse" icon={faCheckCircle} />
-      {counts.endorse}
+      {hit.endorseCount}
       <FontAwesomeIcon className="neutral" icon={faMinusCircle} />
-      {counts.neutral}
+      {hit.neutralCount}
       <FontAwesomeIcon className="oppose" icon={faTimesCircle} />
-      {counts.oppose}
+      {hit.opposeCount}
     </div>
   )
 }
 
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = `/bill?id=${hit.number}`
-  const router = useRouter()
-
   return (
     <Link href={url}>
       <a style={{ all: "unset" }} className="w-100">
@@ -121,18 +121,25 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                   {hit.number} - <Highlight attribute="title" hit={hit} />
                 </Card.Title>
                 <div className="d-flex justify-content-between">
-                  {/* TODO: list other sponsors */}
-                  <span className="blurb">Sponsor: {hit.primarySponsor}</span>
+                  <span className="blurb">
+                    Sponsor: {hit.primarySponsor}{" "}
+                    {hit.cosponsorCount > 0
+                      ? `and ${hit.cosponsorCount} other${
+                          hit.cosponsorCount > 1 ? "s" : ""
+                        }`
+                      : ""}
+                  </span>
                   <span className="blurb ms-3">
                     {hit.currentCommittee &&
                       `Committee: ${hit.currentCommittee}`}
                   </span>
                 </div>
               </Col>
-              <Col xs={2} className="right">
-                {/* TODO: only display if there's an actual hearing. What to show if not? */}
-                Hearing Scheduled
-              </Col>
+              {hit.nextHearingAt ? (
+                <Col xs={2} className="right">
+                  Hearing Scheduled
+                </Col>
+              ) : null}
             </div>
           </Card.Body>
         </StyledCard>

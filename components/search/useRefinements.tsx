@@ -32,6 +32,11 @@ export const useRefinements = () => {
       searchablePlaceholder: "Primary Sponsor"
     }),
     useRefinementListUiProps({
+      attribute: "cosponsors",
+      ...baseProps,
+      searchablePlaceholder: "Cosponsor"
+    }),
+    useRefinementListUiProps({
       attribute: "currentCommittee",
       ...baseProps,
       searchablePlaceholder: "Current Committee"
