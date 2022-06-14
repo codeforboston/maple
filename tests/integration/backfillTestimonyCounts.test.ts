@@ -49,12 +49,6 @@ describe("backfillTestimonyCounts", () => {
     await waitFor(
       async () => {
         const bill = await getBill(billId)
-        console.log(
-          bill.testimonyCount,
-          bill.endorseCount,
-          bill.neutralCount,
-          bill.opposeCount
-        )
         expect(bill.testimonyCount).toEqual(4)
         expect(bill.endorseCount).toEqual(2)
         expect(bill.neutralCount).toEqual(1)
