@@ -1,18 +1,15 @@
-import { waitFor } from "@testing-library/react"
-import axios from "axios"
 import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
-import { Bill } from "../../components/db"
 import { firestore, functions, storage } from "../../components/firebase"
-import { PartialTestimony } from "../../functions/src/bills/backfillTestimonyCounts"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
   expectStorageUnauthorized,
+  getBill,
   signInUser1,
   signInUser2
 } from "./common"
@@ -373,70 +370,6 @@ describe("deleteTestimony", () => {
   })
 })
 
-describe("backfillTestimonyCounts", () => {
-  it("Calculates testimony counts", async () => {
-    await setPublication("user-1", "t-1", {
-      position: "endorse",
-      billId,
-      court: 192
-    })
-    await setPublication("user-2", "t-2", {
-      position: "neutral",
-      billId,
-      court: 192
-    })
-    await setPublication("user-3", "t-3", {
-      position: "oppose",
-      billId,
-      court: 192
-    })
-    await setPublication("user-4", "t-4", {
-      position: "endorse",
-      billId,
-      court: 192
-    })
-
-    await testDb.doc(`/generalCourts/192/bills/${billId}`).update({
-      testimonyCount: 0,
-      endorseCount: 0,
-      opposeCount: 0,
-      neutralCount: 0
-    })
-
-    await triggerBackfill([billId])
-
-    await waitFor(
-      async () => {
-        const bill = await getBill(billId)
-        console.log(
-          bill.testimonyCount,
-          bill.endorseCount,
-          bill.neutralCount,
-          bill.opposeCount
-        )
-        expect(bill.testimonyCount).toEqual(4)
-        expect(bill.endorseCount).toEqual(2)
-        expect(bill.neutralCount).toEqual(1)
-        expect(bill.opposeCount).toEqual(1)
-      },
-      { timeout: 10000, interval: 500 }
-    )
-  })
-
-  async function triggerBackfill(ids: string[]) {
-    await axios({
-      method: "GET",
-      url: "http://localhost:5001/demo-dtp/us-central1/triggerPubsubFunction",
-      params: {
-        pubsub: "backfillTestimonyCounts",
-        data: JSON.stringify({ run: true, billIds: ids })
-      }
-    })
-  }
-
-  async function assertBackfill({}) {}
-})
-
 async function getPublicationAndAttachments(uid: string, id: string) {
   const publication = await getPublication(uid, id),
     publishedAttachmentId = (publication as any).attachmentId
@@ -463,21 +396,8 @@ async function getPublication(uid: string, id: string): Promise<Testimony> {
   return doc.data() as any
 }
 
-async function setPublication(
-  uid: string,
-  id: string,
-  testimony: PartialTestimony
-): Promise<void> {
-  await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).set(testimony)
-}
-
 async function getDraft(uid: string, id: string): Promise<DraftTestimony> {
   const doc = await testDb.doc(`/users/${uid}/draftTestimony/${id}`).get()
-  return doc.data() as any
-}
-
-async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
   return doc.data() as any
 }
 
