@@ -26,10 +26,10 @@ export default abstract class BillProcessor {
   ) {
     return runWith({ timeoutSeconds })
       .pubsub.topic(topic)
-      .onPublish(message => {
+      .onPublish(async message => {
         if (message.json.run !== true)
           throw Error('Expected { "run": true } message')
-        new Processor(message.json).run()
+        await new Processor(message.json).run()
       })
   }
 
