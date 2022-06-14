@@ -1,4 +1,5 @@
 export {
+  backfillTestimonyCounts,
   fetchBillBatch,
   startBillBatches,
   syncBillToSearchIndex,
