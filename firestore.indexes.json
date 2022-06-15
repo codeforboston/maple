@@ -694,5 +694,12 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    //// backfillTestimonyCounts ////
+    {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "court",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
+    }
+  ]
 }
