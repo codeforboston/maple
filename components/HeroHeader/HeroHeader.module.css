@@ -1,13 +1,30 @@
 .container {
-  background: url("../../public/clouds.png"), url("../../public/skyline.png"),
-    #1a3185;
-  background-size: contain, cover;
-  background-repeat: no-repeat;
   color: white;
-  background-position: top, center;
+  background-color: #1a3185;
 }
 
 .btncontainer {
   display: inline-block;
   padding: 0.25em;
+}
+
+.infoRow {
+  height: fit-content;
+  outline: 3px solid brown;
+}
+
+.skyline {
+  align-self: flex-end;
+  justify-self: center;
+}
+
+.clouds {
+  align-self: end;
+  justify-self: center;
+}
+
+.statehouse {
+  z-index: 1;
+  align-self: end;
+  justify-self: center;
 }
