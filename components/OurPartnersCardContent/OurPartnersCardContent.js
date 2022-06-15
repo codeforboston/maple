@@ -1,18 +1,12 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./OurPartnersCardContent.module.css"
 
 const NuLawLabCardContent = () => {
   return (
     <>
       <Row className="mb-5">
         <Col className="text-center align-self-center">
-          <Image
-            className={styles.imgsize}
-            fluid
-            src="nulawlabicon.png"
-            alt="NuLawLab icon"
-          />
+          <Image fluid src="nulawlabicon.png" alt="NuLawLab icon" />
         </Col>
         <Col className="align-self-center">
           <p>
@@ -38,12 +32,7 @@ const CodeForBostonCardContent = () => {
     <>
       <Row className="mb-3">
         <Col className="text-center align-self-center">
-          <Image
-            fluid
-            className={styles.imgsize}
-            src="codeforbostonicon.png"
-            alt="Code for Boston icon"
-          />
+          <Image fluid src="codeforbostonicon.png" alt="Code for Boston icon" />
         </Col>
         <Col className="align-self-center">
           <p>
