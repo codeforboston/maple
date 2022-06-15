@@ -1,13 +1,43 @@
 .container {
-  background: url("../../public/clouds.png"), url("../../public/skyline.png"),
-    #1a3185;
-  background-size: contain, cover;
-  background-repeat: no-repeat;
   color: white;
-  background-position: top, center;
+  background-color: #1a3185;
+  outline: 1px solid gold;
+
 }
 
 .btncontainer {
   display: inline-block;
   padding: 0.25em;
+}
+
+.skyline {
+  transform-origin: top;
+  transform: scale(1.5);
+}
+
+.skylineContainer {
+  display: grid;
+  place-content: center;
+  position: absolute;
+  bottom: 0;
+}
+
+.cloudsContainer {
+  display: grid;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.clouds {
+  transform-origin: 0 70%;
+  transform: scale(0.9);
+  place-content: end;
+}
+
+.statehouse {
+  transform-origin: bottom;
+  transform: scale(0.9);
+  align-self: flex-end;
 }
