@@ -1,8 +1,8 @@
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { nanoid } from "nanoid"
-import { BillContent } from "../../components/db"
 import { auth } from "../../components/firebase"
-import { testTimestamp, testDb } from "../testUtils"
+import { Bill, BillContent } from "../../functions/src/bills/types"
+import { testDb, testTimestamp } from "../testUtils"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -16,12 +16,14 @@ export const signInUser4 = () => signInUser("test4@example.com")
 
 export async function createFakeBill() {
   const billId = nanoid()
+  const content: BillContent = {
+    Pinslip: null,
+    Title: "fake",
+    PrimarySponsor: null,
+    Cosponsors: []
+  }
   const bill = {
-    content: {
-      Pinslip: null,
-      Title: "fake",
-      PrimarySponsor: null
-    } as any as BillContent,
+    content,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
@@ -49,4 +51,9 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
     .catch(e => e)
   expect(e.code).toBe("storage/unauthorized")
   console.warn = warn
+}
+
+export async function getBill(id: string): Promise<Bill> {
+  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
+  return doc.data() as any
 }

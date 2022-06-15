@@ -1,13 +1,9 @@
 import { difference, flatten, flattenDeep } from "lodash"
-import { DocUpdate } from "../common"
 import { Hearing } from "../events/types"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { parseApiDateTime } from "../malegislature"
 import { Member, MemberReference } from "../members/types"
-import BillProcessor from "./BillProcessor"
-import { Bill } from "./types"
-
-type BillUpdates = Map<string, DocUpdate<Bill>>
+import BillProcessor, { BillUpdates } from "./BillProcessor"
 
 /**
  * Updates references to other entities for each bill.
@@ -23,11 +19,9 @@ type BillUpdates = Map<string, DocUpdate<Bill>>
  */
 class UpdateBillReferences extends BillProcessor {
   private membersById!: Map<string, Member>
-  private billIds!: string[]
 
   async process() {
     this.membersById = new Map(this.members.map(m => [m.id, m] as const))
-    this.billIds = this.bills.map(b => b.id)
 
     const updates = this.mergeUpdates(
       this.getCommitteeUpdates(),
@@ -36,16 +30,6 @@ class UpdateBillReferences extends BillProcessor {
     )
 
     await this.writeBills(updates)
-  }
-
-  private async writeBills(updates: BillUpdates) {
-    const validIds = new Set(this.billIds)
-    const writer = db.bulkWriter()
-    updates.forEach((update, id) => {
-      if (validIds.has(id))
-        writer.set(db.doc(this.billPath(id)), update, { merge: true })
-    })
-    await writer.close()
   }
 
   override get billFields() {
@@ -179,11 +163,12 @@ class UpdateBillReferences extends BillProcessor {
     updates.forEach(update => {
       update.forEach((docUpdate, billId) => {
         if (!merged.has(billId)) merged.set(billId, {})
-        Object.assign(merged.get(billId), docUpdate)
+        Object.assign(merged.get(billId)!, docUpdate)
       })
     })
     return merged
   }
 }
 
-export const updateBillReferences = BillProcessor.for(UpdateBillReferences)
+export const updateBillReferences =
+  BillProcessor.scheduled(UpdateBillReferences)
