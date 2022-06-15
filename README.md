@@ -4,13 +4,14 @@ A legislative testimony project through Code for Boston!
 
 Links:
 
-- [Project board](https://github.com/orgs/codeforboston/projects/4/views/1), where issues are organized
+- [Project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
 - [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
 - [Production site](https://digital-testimony-prod.web.app), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
 
 ## Getting Started
 
+0. Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#legislative-testimony` channel
 1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
 
 2. Clone your fork:
