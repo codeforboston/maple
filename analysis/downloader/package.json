@@ -1,0 +1,14 @@
+{
+  "name": "analysis",
+  "version": "1.0.0",
+  "description": "Analyze bill history",
+  "license": "MIT",
+  "dependencies": {
+    "csv": "^6.1.3",
+    "runtypes": "^6.5.1",
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "analyze": "ts-node ."
+  }
+}
