@@ -8,23 +8,21 @@
   padding: 0.25em;
 }
 
-.infoRow {
-  height: fit-content;
-  outline: 3px solid brown;
-}
-
 .skyline {
-  align-self: flex-end;
-  justify-self: center;
+  /* background-image: url("../../public/skyline.png");
+  background-size: fill;
+  background-repeat: no-repeat;
+  background-position: bottom; */
+  transform-origin: top center;
+  transform: scale(1.1);
 }
 
-.clouds {
-  align-self: end;
-  justify-self: center;
-}
-
-.statehouse {
-  z-index: 1;
-  align-self: end;
-  justify-self: center;
+.clouds { 
+  /* background-image: url("../../public/clouds.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom; */
+  /* transform-origin: 50% 0;
+  transform: scale(1.1);
+  overflow: visible; */
 }
