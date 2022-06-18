@@ -43,3 +43,9 @@ export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
 })
+
+export const countsByPositions = {
+  endorse: "endorseCount",
+  neutral: "neutralCount",
+  oppose: "opposeCount"
+} as const

@@ -40,6 +40,9 @@ export type Bill = {
   content: BillContent
   cosponsorCount: number
   testimonyCount: number
+  endorseCount: number
+  opposeCount: number
+  neutralCount: number
   nextHearingAt?: Timestamp
   latestTestimonyAt?: Timestamp
   latestTestimonyId?: string

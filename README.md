@@ -4,13 +4,14 @@ A legislative testimony project through Code for Boston!
 
 Links:
 
-- [Project board](https://github.com/orgs/codeforboston/projects/4/views/1), where issues are organized
+- [Project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
 - [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
 - [Production site](https://digital-testimony-prod.web.app), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
 
 ## Getting Started
 
+0. Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#legislative-testimony` channel
 1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
 
 2. Clone your fork:
@@ -60,7 +61,7 @@ git merge master
 
 ## Contributing
 
-See issues organized on our [project board](https://github.com/orgs/codeforboston/projects/4/views/1). Check out the "Good First Issues" tab if you're new. Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
+See issues organized on our [project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board). Or, check out the ["Good First Issues" list](https://github.com/codeforboston/advocacy-maps/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22). Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
 
 When you send out a PR that addresses an issue, [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
 
