@@ -1,6 +1,8 @@
 .container {
   color: white;
   background-color: #1a3185;
+  outline: 1px solid gold;
+
 }
 
 .btncontainer {
@@ -9,20 +11,33 @@
 }
 
 .skyline {
-  /* background-image: url("../../public/skyline.png");
-  background-size: fill;
-  background-repeat: no-repeat;
-  background-position: bottom; */
-  transform-origin: top center;
-  transform: scale(1.1);
+  transform-origin: top;
+  transform: scale(1.5);
 }
 
-.clouds { 
-  /* background-image: url("../../public/clouds.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: bottom; */
-  /* transform-origin: 50% 0;
-  transform: scale(1.1);
-  overflow: visible; */
+.skylineContainer {
+  display: grid;
+  place-content: center;
+  position: absolute;
+  bottom: 0;
+}
+
+.cloudsContainer {
+  display: grid;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.clouds {
+  transform-origin: 0 70%;
+  transform: scale(0.9);
+  place-content: end;
+}
+
+.statehouse {
+  transform-origin: bottom;
+  transform: scale(0.9);
+  align-self: flex-end;
 }

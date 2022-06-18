@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef } from "react"
 import styles from "./Parallax.module.css"
 
 export type ParallaxContainerProps = {
-  className: string
+  className?: string
   children: ReactNode
 }
 

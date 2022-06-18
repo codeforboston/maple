@@ -4,10 +4,10 @@ import styles from "./Parallax.module.css"
 export type ParallaxRowProps = {
   speed: number
   children: React.ReactNode
-  className: string
+  className?: string
 }
 
-export function ParallaxItem({
+export function ScrollTrackingItem({
   speed,
   children,
   className,

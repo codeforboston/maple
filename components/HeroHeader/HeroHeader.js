@@ -2,7 +2,7 @@ import { SignInWithModal } from "../auth"
 import { Button, Col, Image, Row, Container } from "../bootstrap"
 import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ParallaxEffect/ParallaxContainer"
-import { ParallaxItem, ParallaxColumn } from "../ParallaxEffect/ParallaxLayer"
+import { ScrollTrackingItem, ParallaxColumn } from "../ParallaxEffect/ParallaxLayer"
 import styles from "./HeroHeader.module.css"
 
 const HeroHeader = ({ authenticated }) => {
@@ -10,16 +10,16 @@ const HeroHeader = ({ authenticated }) => {
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
         <Row className={``}>
-          <ParallaxItem className={`bottom-0 border border-5 border-primary`} speed={0.6}>
-            <Image className={`${styles.skyline} position-relative  border`} src="skyline.png" alt=""></Image>
-          </ParallaxItem>
-          <ParallaxItem speed={-0.2} className={``}>
-            <Image className={`${styles.clouds} opacity-50 position-relative translate-middle top-50 start-50`} src="clouds.png" alt=""></Image>
-          </ParallaxItem>
+          <ScrollTrackingItem className={`${styles.skylineContainer}`} speed={0.6}>
+            <Image className={`${styles.skyline}`} src="skyline.png" alt=""></Image>
+          </ScrollTrackingItem>
+          <ScrollTrackingItem speed={-0.2} className={`${styles.cloudsContainer}`}>
+            <Image className={`${styles.clouds} opacity-50`} src="clouds.png" alt=""></Image>
+          </ScrollTrackingItem>
           <Col>
             <Row>
-              <Col className={`d-grid z-index-3 border align-items-center justify-content-center`} xs={{ order: "last", span: 12 }} md={{ order: "first", span: 6 }}>
-                <Image className={`position-relative start-50 top-50 translate-middle h-75`} src="statehouse.png" alt="statehouse"></Image>
+              <Col className={`d-grid z-index-3 align-items-center justify-content-center`} xs={{ order: "last", span: 12 }} md={{ order: "first", span: 6 }}>
+                <Image className={`${styles.statehouse}`} src="statehouse.png" alt="statehouse"></Image>
               </Col>
               <Col
                 className="text-start mr-3 pt-2 z-index-3"
