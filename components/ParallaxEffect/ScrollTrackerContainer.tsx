@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from "react"
-import styles from "./Parallax.module.css"
+import styles from "./scrolltrack.module.css"
 
-export type ParallaxContainerProps = {
+export type ScrollTrackerContainerProps = {
   className?: string
   children: ReactNode
 }
@@ -10,7 +10,7 @@ export default function ScrollTrackerContainer({
   className,
   children,
   ...props
-}: ParallaxContainerProps) {
+}: ScrollTrackerContainerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
 
   const onScroll = () => {

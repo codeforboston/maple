@@ -1,8 +1,6 @@
 .container {
   color: white;
   background-color: #1a3185;
-  outline: 1px solid gold;
-
 }
 
 .btncontainer {
@@ -40,4 +38,5 @@
   transform-origin: bottom;
   transform: scale(0.9);
   align-self: flex-end;
+  max-width: 100%;
 }

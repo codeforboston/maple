@@ -1,8 +1,8 @@
 import { SignInWithModal } from "../auth"
-import { Button, Col, Image, Row, Container } from "../bootstrap"
+import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"
-import ScrollTrackerContainer from "../ParallaxEffect/ParallaxContainer"
-import { ScrollTrackingItem, ParallaxColumn } from "../ParallaxEffect/ParallaxLayer"
+import ScrollTrackerContainer from "../ParallaxEffect/ScrollTrackerContainer"
+import ScrollTrackingItem from "../ParallaxEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 
 const HeroHeader = ({ authenticated }) => {

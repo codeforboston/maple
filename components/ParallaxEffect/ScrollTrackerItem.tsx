@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from "react"
-import styles from "./Parallax.module.css"
+import styles from "./scrolltrack.module.css"
 
-export type ParallaxRowProps = {
+export type ScrollTrackingItemProps = {
   speed: number
   children: React.ReactNode
   className?: string
 }
 
-export function ScrollTrackingItem({
+export default function ScrollTrackingItem({
   speed,
   children,
   className,
   ...props
-}: ParallaxRowProps) {
+}: ScrollTrackingItemProps) {
   const layerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
