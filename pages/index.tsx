@@ -8,6 +8,7 @@ import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
 import ViewBillsOnHomePage from "../components/ViewBillsOnHomePage/ViewBillsOnHomePage"
+import Testimonies from "../components/TestimoniesOnHomePage/TestimoniesOnHomePage"
 
 export default createPage({
   Page: () => {
@@ -41,6 +42,7 @@ export default createPage({
                 <Button size="lg">View All Testimony</Button>
               </Wrap>
               <h4 className="mt-3">Most Recent Testimony</h4>
+              <Testimonies />
             </Col>
           </Row>
         </Container>
