@@ -1,8 +1,8 @@
 import { SignInWithModal } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"
-import ScrollTrackerContainer from "../ParallaxEffect/ScrollTrackerContainer"
-import ScrollTrackingItem from "../ParallaxEffect/ScrollTrackerItem"
+import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
+import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 
 const HeroHeader = ({ authenticated }) => {
@@ -10,16 +10,38 @@ const HeroHeader = ({ authenticated }) => {
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
         <Row className={``}>
-          <ScrollTrackingItem className={`${styles.skylineContainer}`} speed={0.6}>
-            <Image className={`${styles.skyline}`} src="skyline.png" alt=""></Image>
+          <ScrollTrackingItem
+            className={`${styles.skylineContainer}`}
+            speed={0.6}
+          >
+            <Image
+              className={`${styles.skyline}`}
+              src="skyline.png"
+              alt=""
+            ></Image>
           </ScrollTrackingItem>
-          <ScrollTrackingItem speed={-0.2} className={`${styles.cloudsContainer}`}>
-            <Image className={`${styles.clouds} opacity-50`} src="clouds.png" alt=""></Image>
+          <ScrollTrackingItem
+            speed={-0.2}
+            className={`${styles.cloudsContainer}`}
+          >
+            <Image
+              className={`${styles.clouds} opacity-50`}
+              src="clouds.png"
+              alt=""
+            ></Image>
           </ScrollTrackingItem>
           <Col>
             <Row>
-              <Col className={`d-grid z-index-3 align-items-center justify-content-center`} xs={{ order: "last", span: 12 }} md={{ order: "first", span: 6 }}>
-                <Image className={`${styles.statehouse}`} src="statehouse.png" alt="statehouse"></Image>
+              <Col
+                className={`d-grid z-index-3 align-items-center justify-content-center`}
+                xs={{ order: "last", span: 12 }}
+                md={{ order: "first", span: 6 }}
+              >
+                <Image
+                  className={`${styles.statehouse}`}
+                  src="statehouse.png"
+                  alt="statehouse"
+                ></Image>
               </Col>
               <Col
                 className="text-start mr-3 pt-2 z-index-3"
@@ -27,12 +49,12 @@ const HeroHeader = ({ authenticated }) => {
                 md={{ order: "last", span: 6 }}
               >
                 <div className={`m-5`}>
-                  <h1 >
+                  <h1>
                     <em>Let your voice be heard!</em>
                   </h1>
                   <p className="lead">
-                    This is where we will put a value prop here on why people should
-                    sign up for this
+                    This is where we will put a value prop here on why people
+                    should sign up for this
                   </p>
                   <div className="text-end m-5">
                     {!authenticated && (

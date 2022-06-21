@@ -14,7 +14,6 @@
   right: 0;
   bottom: 0;
   left: 0;
-
 }
 
 .layerChild {
@@ -24,5 +23,7 @@
   bottom: 0;
   left: 0;
   display: grid;
-  transform: translateY(calc(var(--scroll-speed-ratio) * var(--scroll-position)))
+  transform: translateY(
+    calc(var(--scroll-speed-ratio) * var(--scroll-position))
+  );
 }
