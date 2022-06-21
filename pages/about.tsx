@@ -2,6 +2,7 @@ import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 import style from "../styles/About.module.css"
 import GoalsAndMission from "../components/GoalsAndMission/GoalsAndMission"
+import OurPartners from "../components/OurPartners/OurPartners"
 
 export default createPage({
   title: "About",
@@ -9,6 +10,7 @@ export default createPage({
     return (
       <div>
         <GoalsAndMission />
+        <OurPartners />
         <Container className="mt-3">
           <div className={style.aboutWrapper}>
             <div>
