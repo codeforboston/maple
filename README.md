@@ -11,8 +11,8 @@ Links:
 
 ## Getting Started
 
-0. Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#legislative-testimony` channel
-1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
+0. Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#legislative-testimony` channel (message victormb@bc.edu if you need invite) 
+1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account. (look for "good first issues" tag on Github) 
 
 2. Clone your fork:
 
