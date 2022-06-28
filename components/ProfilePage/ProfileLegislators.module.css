@@ -1,0 +1,9 @@
+.nowrap {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.legislatorPhoto {
+  clip-path: circle(35%);
+  background: gray;
+}
