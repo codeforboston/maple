@@ -31,14 +31,20 @@ const StyledSelect = styled(Select)`
     border: none;
     min-height: 1rem;
     line-height: 1rem;
+    cursor: pointer;
   }
 
-  .s__single-value {
+  .s__single-value,
+  .s__indicator {
     color: white;
   }
 
   .s__indicator svg {
     height: 1rem;
+  }
+
+  .s__indicator:hover {
+    color: var(--bs-gray-500);
   }
 `
 

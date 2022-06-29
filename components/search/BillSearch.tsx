@@ -3,13 +3,15 @@ import {
   Hits,
   InstantSearch,
   Pagination,
-  SearchBox
+  SearchBox,
+  useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../bootstrap"
 import { BillHit } from "./BillHit"
 import { getServerConfig } from "./common"
+import { NoResults } from "./NoResults"
 import { ResultCount } from "./ResultCount"
 import { SearchContainer } from "./SearchContainer"
 import { SearchErrorBoundary } from "./SearchErrorBoundary"
@@ -45,8 +47,21 @@ const RefinementRow = styled.div`
   gap: 0.5rem;
 `
 
+const useSearchStatus = () => {
+  const { results } = useInstantSearch()
+
+  if (!results.query) {
+    return "loading"
+  } else if (results.nbHits === 0) {
+    return "empty"
+  } else {
+    return "results"
+  }
+}
+
 const Layout = () => {
   const refinements = useRefinements()
+  const status = useSearchStatus()
   return (
     <SearchContainer>
       <Row>
@@ -61,7 +76,7 @@ const Layout = () => {
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements className="mt-2 mb-2" />
-          <Hits hitComponent={BillHit} />
+          {status === "empty" ? <NoResults /> : <Hits hitComponent={BillHit} />}
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>
