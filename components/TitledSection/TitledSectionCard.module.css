@@ -31,13 +31,3 @@
   background: var(--bs-secondary);
 }
 
-.bugContainer {
-  position: relative;
- }
-
-.bug {
-  position: absolute; 
-  right: 4rem;
-  top: 1rem;
-}
-

@@ -45,16 +45,11 @@ export const SortTestimonyDropDown = ({
       <Dropdown.Toggle variant="light" id="dropdown-order">
         {orderBy ?? "Order by"}
       </Dropdown.Toggle>
+
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setOrderBy("Most Recent")}>
-          Most Recent
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alphabetical")}>
-          Alphabetical
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alpha by Tag")}>
-          Alpha by Tag
-        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setOrderBy("Most Recent")}>Most Recent</Dropdown.Item>
+        <Dropdown.Item onClick={() => setOrderBy("Alphabetical")}>Alphabetical</Dropdown.Item>
+        <Dropdown.Item onClick={() => setOrderBy("Alpha by Tag")}>Alpha by Tag</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   )

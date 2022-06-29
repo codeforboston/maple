@@ -4,6 +4,7 @@
 }
 
 .legislatorPhoto {
-  clip-path: circle(35%);
+  padding: 2px;
+  clip-path: circle(40%);
   background: gray;
 }

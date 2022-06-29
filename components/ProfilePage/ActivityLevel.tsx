@@ -13,7 +13,7 @@ export const ActivityLevel = ({ uid }: { uid: string | undefined }) => {
       {uid ? 
       <Row>
         <Col className="">
-          <p>leaf testimony counting section</p>
+         
         </Col>
       </Row>
       : <Row>Log in to see your activity history</Row>}

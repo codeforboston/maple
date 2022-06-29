@@ -4,31 +4,29 @@
   border: 2px solid blue;
 }
 
-.fakeyIcon {
-  height: 100%;
-  width: 100%;
-  transform: translateY(15%) rotate(60deg);
+.userIcon {
+  mask: url("../../public/profile-icon.svg");
+  mask-repeat: no-repeat;
+  mask-size: cover;
+  mask-position: center;
+  height: 5em;
+  width: 5em;
+  background: var(--bs-blue);
+  border-radius: 50%; 
+  outline: 0.3em solid white;
+  outline-offset: -0.4em;
 }
 
-.fakeyIconWrap {
-  height: 4rem;
-  width: 4rem;
+.userIconWrap {
+  display: grid;
+  place-content: center;
+  padding:0;
+  height: 7em;
+  width: 7em;
   border-radius: 50%;
-  outline: 1.2rem solid var(--bs-blue);
-  outline-offset: 2px;
-  background-color: var(--bs-white);
-}
-
-.fakeyIconWrap::after {
-  content: "D";
-  color: white;
-  text-align: center;
-  display: block;
-  height: 1.8rem;
-  width: 1.8rem;
-  background-color: var(--bs-blue);
-  border-radius: 100%;
-  transform: translate(2.3rem, -1.3rem);
+  outline: 1.2em solid var(--bs-blue);
+  outline-offset: -1.2em;
+  background-color: white;
 }
 
 .displayFace1 {
@@ -68,6 +66,6 @@
 
 .activityLevelTitle {
   width: 100%;
-  padding-bottom: 1em;
+  padding-bottom: 0.5em;
   border-bottom: 2px solid white;
 }

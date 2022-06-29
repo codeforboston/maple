@@ -18,7 +18,7 @@ const TitledSectionCard = ({
       <Card.Header as="h4" className={`fw-bold ${styles.header}`}>
         {title}
       </Card.Header>
-      {bug && <Bug>{bug}</Bug>}
+      <Bug>{bug}</Bug>
       <Card.Body className={`${styles.body}`}>{children}</Card.Body>
 
       {footer && (
@@ -28,12 +28,12 @@ const TitledSectionCard = ({
   )
 }
 
-export const Bug = ({ children } : {children: React.ReactElement}) => {
-  return (
-    <Row  className={`${styles.bugContainer}`}>
-      <Col xs={{ span: 2, offset: 10 }} className={`${styles.bug}`}>{children}</Col>
-    </Row>
-  )
+export const Bug = ({
+  children
+}: {
+  children: React.ReactElement | undefined
+}) => {
+  return <Row className={`justify-content-end align-items-center`}>{children && <Col xs={12} sm={6} md={2} className={`mt-4`}>{children}</Col>}</Row>
 }
 
 export default TitledSectionCard

@@ -12,23 +12,28 @@ const DisplayLegislator = ({
 }: {
   legislator?: ProfileMemberPlus
 }) => {
-  const [photo, setPhoto] = useState<string>("leaf-asset.png")
-  // real photo blocked: not scraping photos to the database yet.
+  const [idphoto, setIdphoto] = useState<string>("leaf-asset.png")
+
+  useEffect(() => {
+    setIdphoto(
+      `https://malegislature.gov/Legislators/Profile/170/${legislator?.id}.jpg`
+    )
+  }, [legislator?.id])
 
   return (
     <>
       {legislator ? (
         <Row className={`${styles.nowrap}`}>
-          <Col
-            className={`d-flex align-items-end justify-content-end`}
-          >
+          <Col className={`d-flex align-items-end justify-content-end  m-0`}>
             <div className={`${styles.legislatorPhoto}`}>
-              <Image fluid src={photo} alt={`${legislator.name}`} />
+              <Image fluid src={idphoto} alt={`${legislator.name}`} />
             </div>
           </Col>
           <Col className="d-flex align-items-center col-7">
             <div className={`${styles.nowrap}`}>
-              <h5 className="flex m-0"><strong>{legislator.title}</strong></h5>
+              <h5 className="flex m-0">
+                <strong>{legislator.title}</strong>
+              </h5>
               <p className="flex m-0">{legislator.name}</p>
             </div>
           </Col>
@@ -48,14 +53,14 @@ export function ProfileLegislators({
   senator?: ProfileMember
 }) {
   return (
-      <TitledSectionCard title={`Legislators`}>
-        <DisplayLegislator
-          legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
-        />
-        <hr></hr>
-        <DisplayLegislator
-          legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
-        />
-      </TitledSectionCard>
+    <TitledSectionCard title={`Legislators`}>
+      <DisplayLegislator
+        legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
+      />
+      <hr></hr>
+      <DisplayLegislator
+        legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
+      />
+    </TitledSectionCard>
   )
 }
