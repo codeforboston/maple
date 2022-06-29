@@ -1,5 +1,6 @@
 // re-exports of all the bootstrap components we use. This ensures we only pull
 // in the components we use and makes it easy to reuse across the app.
+export { default as Alert } from "react-bootstrap/Alert"
 export { default as Button } from "react-bootstrap/Button"
 export { default as Card } from "react-bootstrap/Card"
 export { default as Col } from "react-bootstrap/Col"

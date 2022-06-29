@@ -1,36 +1,45 @@
 import { last } from "lodash"
-import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
-import BillHistory from "../BillHistory/BillHistory"
-import BillHistoryTable from "../BillHistoryTable/BillHistoryTable"
+import { useState } from "react"
+import styled from "styled-components"
+import { Button, Modal } from "../bootstrap"
+import { BillHistory } from "./BillHistory"
+import { BillHistoryTable } from "./BillHistoryTable"
+import { BillProps } from "./types"
 
-const BillStatus = ({ bill, billHistory }) => {
+const StyledButton = styled(Button)`
+  border-radius: 3rem 0 0 3rem;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  max-width: 100%;
+`
+
+export const BillStatus = ({ bill }: BillProps) => {
   const [showBillStatus, setShowBillStatus] = useState(false)
 
   const handleShowBillStatus = () => setShowBillStatus(true)
   const handleCloseBillStatus = () => setShowBillStatus(false)
-  const history = last(billHistory)
+  const history = last(bill.history)
 
+  if (!history) return null
   return (
     <>
-      <Button
-        variant="primary"
+      <StyledButton
+        variant="secondary"
         className="m-1 text-truncate"
-        style={{ maxWidth: "18em" }}
         onClick={handleShowBillStatus}
       >
-        Status: {history ? history.Action : "Unknown"}
-      </Button>
+        {history.Action}
+      </StyledButton>
       <Modal show={showBillStatus} onHide={handleCloseBillStatus} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillStatus}>
-          {bill ? bill.BillNumber + " - " + bill.Title : ""}
+          {bill ? bill.id + " - " + bill.content.Title : ""}
         </Modal.Header>
         <Modal.Body>
           <>
             <div className="text-center">Bill Status</div>
             <BillHistoryTable billHistory={[history]} />
             <div className=" d-flex justify-content-center">
-              <BillHistory bill={bill} billHistory={billHistory} />
+              <BillHistory bill={bill} />
             </div>
           </>
         </Modal.Body>
@@ -38,5 +47,3 @@ const BillStatus = ({ bill, billHistory }) => {
     </>
   )
 }
-
-export default BillStatus

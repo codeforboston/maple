@@ -1,8 +1,9 @@
-import React, { useState } from "react"
-import { Button, Modal, Table } from "react-bootstrap"
-import BillHistoryTable from "../BillHistoryTable/BillHistoryTable"
+import { useState } from "react"
+import { Button, Modal } from "../bootstrap"
+import { BillHistoryTable } from "./BillHistoryTable"
+import { BillProps } from "./types"
 
-const BillHistory = ({ bill, billHistory }) => {
+export const BillHistory = ({ bill }: BillProps) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
 
   const handleShowBillHistory = () => setShowBillHistory(true)
@@ -14,16 +15,12 @@ const BillHistory = ({ bill, billHistory }) => {
       </Button>
       <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillHistory}>
-          <Modal.Title>
-            {bill ? bill.BillNumber + " - " + bill.Title : ""}
-          </Modal.Title>
+          <Modal.Title>{bill.id + " - " + bill.content.Title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BillHistoryTable billHistory={billHistory} />
+          <BillHistoryTable billHistory={bill.history} />
         </Modal.Body>
       </Modal>
     </>
   )
 }
-
-export default BillHistory
