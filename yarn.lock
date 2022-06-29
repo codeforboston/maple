@@ -2,14 +2,14 @@
 # yarn lockfile v1
 
 
-"@alexjball/react-instantsearch-hooks-web@~6.26.2":
-  version "6.26.2"
-  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.26.2.tgz#47cf396574ef5dd0a78c1cd29477db7dcaec24cd"
-  integrity sha512-AcHdI6q984WPBoyIHckigqpN7clK4XPvLUJsvzgwvryDos0c7QAOCqzyiER+/xyD+ZxapIseFLuzEISKD2+owQ==
+"@alexjball/react-instantsearch-hooks-web@~6.29.1":
+  version "6.29.1"
+  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.29.1.tgz#3768239d6d94e6b2170b26403c06fbfd69d36b7b"
+  integrity sha512-fKLP7VBCXVyS60boiSBKdkbnHnC/EiZRalBrbgAtqbufxbCNdMxknIr53fozy4CWfiRT2sJu33OwiCTDFYF84A==
   dependencies:
     "@babel/runtime" "^7.1.2"
-    instantsearch.js "^4.40.1"
-    react-instantsearch-hooks "6.26.0"
+    instantsearch.js "^4.43.0"
+    react-instantsearch-hooks "6.29.0"
 
 "@algolia/events@^4.0.1":
   version "4.0.1"
@@ -3192,10 +3192,10 @@ ajv@^8.0.0, ajv@^8.3.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-algoliasearch-helper@^3.7.4, algoliasearch-helper@^3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-3.8.2.tgz#35726dc6d211f49dbab0bf6d37b4658165539523"
-  integrity sha512-AXxiF0zT9oYwl8ZBgU/eRXvfYhz7cBA5YrLPlw9inZHdaYF0QEya/f1Zp1mPYMXc1v6VkHwBq4pk6/vayBLICg==
+algoliasearch-helper@^3.10.0, algoliasearch-helper@^3.9.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-3.10.0.tgz#59a0f645dd3c7e55cf01faa568d1af50c49d36f6"
+  integrity sha512-4E4od8qWWDMVvQ3jaRX6Oks/k35ywD011wAA4LbYMMjOtaZV6VWaTjRr4iN2bdaXP2o1BP7SLFMBf3wvnHmd8Q==
   dependencies:
     "@algolia/events" "^4.0.1"
 
@@ -6615,16 +6615,16 @@ instantsearch.css@^7.4.5:
   resolved "https://registry.yarnpkg.com/instantsearch.css/-/instantsearch.css-7.4.5.tgz#2a521aa634329bf1680f79adf87c79d67669ec8d"
   integrity sha512-iIGBYjCokU93DDB8kbeztKtlu4qVEyTg1xvS6iSO1YvqRwkIZgf0tmsl/GytsLdZhuw8j4wEaeYsCzNbeJ/zEQ==
 
-instantsearch.js@^4.40.1, instantsearch.js@^4.40.6:
-  version "4.40.6"
-  resolved "https://registry.yarnpkg.com/instantsearch.js/-/instantsearch.js-4.40.6.tgz#a2734bb116e88e7f92020782fceaff8a1603fb69"
-  integrity sha512-Yjy7k9Ct+8TmHKTsKGUVZ2gXxjpv8eCjHP7vxC109MgQrgA5N0cJ/QP3H4lQP3nGA5csXgCrq8UlusFZ94eIkQ==
+instantsearch.js@^4.42.0, instantsearch.js@^4.43.0:
+  version "4.43.0"
+  resolved "https://registry.yarnpkg.com/instantsearch.js/-/instantsearch.js-4.43.0.tgz#ac5f26bd317649ec3d7b4eebfd2abc13f9b3701e"
+  integrity sha512-KcPm3Swkw5nlQFRVY5v8JebBwJ303ZGmxSMxdAevrGJBmIXpGrcGJF5goBqNa+fUpwpCY6PsICcqQS0YMuXVag==
   dependencies:
     "@algolia/events" "^4.0.1"
     "@types/google.maps" "^3.45.3"
     "@types/hogan.js" "^3.0.0"
     "@types/qs" "^6.5.3"
-    algoliasearch-helper "^3.8.2"
+    algoliasearch-helper "^3.10.0"
     classnames "^2.2.5"
     hogan.js "^3.0.2"
     preact "^10.6.0"
@@ -9433,14 +9433,15 @@ react-firebaseui@^6.0.0:
   dependencies:
     firebaseui "^6.0.0"
 
-react-instantsearch-hooks@6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/react-instantsearch-hooks/-/react-instantsearch-hooks-6.26.0.tgz#d4ccc324ea77a0b2b81584fda191d45a8a0827d5"
-  integrity sha512-KcyQoquUUmYFZRQDXT63V7VHqAVsnxVIi7LwBHAUSWYGVG7RddfJzTgl00hjXFIq5SEwfG4f1rJHbSa9oXusug==
+react-instantsearch-hooks@6.29.0:
+  version "6.29.0"
+  resolved "https://registry.yarnpkg.com/react-instantsearch-hooks/-/react-instantsearch-hooks-6.29.0.tgz#74eba7a06f69465031b50d9da10a57db545cb914"
+  integrity sha512-F4kLBkhELffrT7vaYW5gpja2R6b3v7rreDpod9nQmyyRW0ww9nIkzx01ST/6lRcNatHOgvm+mjR+/Zc7/QIbcQ==
   dependencies:
     "@babel/runtime" "^7.1.2"
-    algoliasearch-helper "^3.7.4"
-    instantsearch.js "^4.40.1"
+    algoliasearch-helper "^3.9.0"
+    instantsearch.js "^4.42.0"
+    use-sync-external-store "^1.0.0"
 
 react-is@^16.13.1, react-is@^16.3.2, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
@@ -11010,6 +11011,11 @@ use-subscription@1.5.1:
   integrity sha512-Xv2a1P/yReAjAbhylMfFplFKj9GssgTwN7RlcTxBujFQcloStWNDQdc4g4NRWH9xS4i/FDk04vQBptAXoF3VcA==
   dependencies:
     object-assign "^4.1.1"
+
+use-sync-external-store@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
+  integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
 usehooks-ts@^2.5.3:
   version "2.5.3"

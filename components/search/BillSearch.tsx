@@ -15,6 +15,7 @@ import { SearchContainer } from "./SearchContainer"
 import { SearchErrorBoundary } from "./SearchErrorBoundary"
 import { initialSortByValue, SortBy } from "./SortBy"
 import { useRefinements } from "./useRefinements"
+import { useRouting } from "./useRouting"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -29,7 +30,7 @@ export const BillSearch = () => (
     <InstantSearch
       indexName={initialSortByValue}
       searchClient={searchClient}
-      routing
+      routing={useRouting()}
     >
       <Layout />
     </InstantSearch>
