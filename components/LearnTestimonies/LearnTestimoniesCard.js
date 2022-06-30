@@ -1,0 +1,15 @@
+import { Card } from '../bootstrap';
+import styles from './LearnTestimoniesCard.module.css';
+
+const LearnTestimoniesCard = ({title, children}) =>{
+    return (
+        <Card className={styles.card} >
+            <Card.Header as="h1" className = {`fw-bold ${styles.header}`}>
+                {title}
+            </Card.Header>
+            <Card.Body className={styles.cardBody}>{children}</Card.Body>
+        </Card>
+    )
+}
+
+export default LearnTestimoniesCard;
