@@ -61,7 +61,7 @@ const useEffectWithTimeout = (
 
 export default createPage({
   title: "Profile",
-  Page: requireAuth(({ user: { displayName } }) => {
+  Page: (() => {
     const { profile, loading } = useProfile()
 
     const { user } = useAuth()
