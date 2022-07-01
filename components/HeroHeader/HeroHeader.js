@@ -19,8 +19,9 @@ const HeroHeader = ({ authenticated }) => {
             <em>Let your voice be heard!</em>
           </h1>
           <p className="lead">
-            This is where we will put a value prop here on why people should
-            sign up for this
+            MAPLE makes it easy for anyone to view and submit testimony to the
+            Massachusetts Legislature about the bills that will shape our
+            future.
           </p>
           <div className="text-end m-5">
             {!authenticated && (
