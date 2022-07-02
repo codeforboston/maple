@@ -26,6 +26,7 @@ const BaseTestimony = R({
 export type Testimony = Static<typeof Testimony>
 export const Testimony = withDefaults(
   BaseTestimony.extend({
+    id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
     version: Number,
@@ -36,7 +37,12 @@ export const Testimony = withDefaults(
     representativeDistrict: Optional(RtString),
     draftAttachmentId: Maybe(RtString)
   }),
-  { publishedAt: Timestamp.fromMillis(0), authorDisplayName: "Anonymous" }
+  {
+    // ID is backfilled
+    id: "unknown",
+    publishedAt: Timestamp.fromMillis(0),
+    authorDisplayName: "Anonymous"
+  }
 )
 
 export type DraftTestimony = Static<typeof DraftTestimony>
