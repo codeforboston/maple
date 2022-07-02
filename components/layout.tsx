@@ -14,9 +14,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   return (
     <>
       <Head>
-        <title>{`${
-          title ? title + " | " : ""
-        }Massachusetts Platform for Legislative Engagement`}</title>
+        <title>{`${title ? title + " | " : ""
+          }Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
@@ -47,11 +46,28 @@ const TopNav: React.FC = () => {
           </Nav>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
-              <NavLink href="/">Home</NavLink>
+              <NavLink  href="/">Home</NavLink>
               <NavLink href="/bills">Bills</NavLink>
-              <NavLink href="/testimonies">Testimony</NavLink>
-              <NavLink href="/about">About</NavLink>
-              <NavLink href="/legprocess">Learn</NavLink>
+
+
+              <Navbar.Text className='navbar-section-header'>Browse Testimonies</Navbar.Text>
+              <Container style={{ alignContent: 'flex-end' }}>
+                <NavLink href="/testimonies">Browse Testimonies</NavLink>
+              </Container>
+
+              <Navbar.Text >Learn</Navbar.Text>
+              <Container style={{ alignContent: 'flex-end' }}>
+                <NavLink href="/learntestimonies">Writing Effective Testimonies</NavLink>
+                <NavLink href="/legprocess">Contacting Legislatures</NavLink>
+                <NavLink href="#">Additional Resources</NavLink>
+              </Container>
+
+              <Navbar.Text >About</Navbar.Text>
+              <Container style={{ alignContent: 'flex-end' }}>
+                <NavLink href="/about">Our Mission &amp; Goals</NavLink>
+                <NavLink href="#">Our Team</NavLink>
+              </Container>
+
               {authenticated && (
                 <div>
                   <SignOut variant="secondary" size="sm" />
