@@ -4,16 +4,16 @@ import styles from './LearnTestimoniesCard.module.css';
 import Container from 'react-bootstrap/Container';
 
 const LearnTestimoniesCardContent = ({children, src, alt, index}) =>{
+
+
     return (
         <Container fluid>
-            <Row className={`mb-3 ${styles.content}`}>
-                <Col className='align-self-center' xs={{order:index%2==0?1:4}}>
-                    <div className={styles.vector-4}>
+            <Row className='my-auto'>
+                <Col className={`align-self-center ${styles.colRow}`} md={6} lg={{order:index%2==0?1:4}}>
                     <Image fluid src={src} alt={alt}/>
-                    </div>
                 </Col>
-                <Col className='text-center align-self-center' xs={{order:2}}>
-                    <p className={`${styles.text} ${styles.cardBodyParagraph}`}>
+                <Col className={`text-center align-self-center justify-content-xs-center ${styles.colRow}`} lg={{order:2}}>
+                    <p className={`h1 ${styles.text}`}>
                         {children.P1}
                     </p>
                 </Col>

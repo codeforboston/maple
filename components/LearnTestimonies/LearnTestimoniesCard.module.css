@@ -4,7 +4,6 @@
 
 .header {
     background-color: #C03442;
-    color: white;
     width: max-content;
     padding-top: 0;
     padding-bottom: 0;
@@ -18,10 +17,10 @@
 }
 
 .card {
-    
     margin: 8rem 5rem;
     padding-top: 0;
     padding-bottom: 0;
+    border-radius: 12px;
 }
 
 .title {
@@ -62,7 +61,21 @@
     color: #000;
 }
 
+@media (max-width: 600px) {
+    .text {
+        font-size: 1rem;
+    }
+}
+
+.colRow {
+    padding-right: 4rem;
+    padding-left: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .cardBody {
-    margin-right: 3em;
-    margin-left: 2em;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
 }
