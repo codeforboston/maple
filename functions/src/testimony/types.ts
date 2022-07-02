@@ -55,3 +55,16 @@ export const countsByPositions = {
   neutral: "neutralCount",
   oppose: "opposeCount"
 } as const
+
+export const TestimonySearchRecord = R({
+  id: RtString,
+  billId: RtString,
+  court: Number,
+  position: Union(L("endorse"), L("oppose"), L("neutral")),
+  content: RtString,
+  authorUid: RtString,
+  authorDisplayName: RtString,
+  version: Number,
+  publishedAt: Number
+})
+export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>
