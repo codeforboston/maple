@@ -7,7 +7,7 @@ import { Testimony } from "../functions/src/testimony/types"
 import { BillContent, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 
-type LinkProps = PropsWithChildren<{ href: string; className?: string }>
+type LinkProps = PropsWithChildren<{ href: string; className?: string;}>
 
 export function Internal({ href, children, className }: LinkProps) {
   return (
