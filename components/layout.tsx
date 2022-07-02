@@ -65,14 +65,14 @@ const TopNav: React.FC = () => {
               </Container>
 
               <Navbar.Text >Learn</Navbar.Text>
-              <Container style={{ alignContent: 'flex-end' }}>
+              <Container style={{ alignContent: 'flex-end' }} onClick={handleClick}>
                 <NavLink href="/learntestimonies">Writing Effective Testimonies</NavLink>
                 <NavLink href="/legprocess">Contacting Legislatures</NavLink>
                 <NavLink href="#">Additional Resources</NavLink>
               </Container>
 
               <Navbar.Text >About</Navbar.Text>
-              <Container style={{ alignContent: 'flex-end' }}>
+              <Container style={{ alignContent: 'flex-end' }} onClick={handleClick}>
                 <NavLink href="/about">Our Mission &amp; Goals</NavLink>
                 <NavLink href="#">Our Team</NavLink>
               </Container>
@@ -90,13 +90,12 @@ const TopNav: React.FC = () => {
   )
 }
 
-const NavLink: React.FC<{ href: string; handleClick?:any; }> = ({ href, handleClick, children }) => {
+const NavLink: React.FC<{ href: string;}> = ({ href, children }) => {
   const router = useRouter()
   return (
     <Wrap href={href}>
       <Nav.Link 
-        active={router.pathname === href}
-        onClick={handleClick}>{children}</Nav.Link>
+        active={router.pathname === href}>{children}</Nav.Link>
     </Wrap>
   )
 }
