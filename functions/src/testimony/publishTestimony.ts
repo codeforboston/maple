@@ -1,5 +1,6 @@
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
+import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
@@ -65,6 +66,7 @@ class PublishTestimonyTransaction {
     await this.resolveAttachments()
 
     const newPublication: Testimony = {
+      id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
       billId: this.draft.billId,
@@ -226,9 +228,9 @@ class PublishTestimonyTransaction {
     )
 
     if (publications.size === 0) {
-      this.publicationRef = db
-        .collection(`/users/${this.uid}/publishedTestimony`)
-        .doc()
+      this.publicationRef = db.doc(
+        `/users/${this.uid}/publishedTestimony/${nanoid()}`
+      )
     } else {
       const data = publications.docs[0].data()
       this.currentPublication = Testimony.checkWithDefaults(data)
