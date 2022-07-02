@@ -7,7 +7,7 @@ export const {
   upgradeSearchIndex: upgradeTestimonySearchIndex
 } = createSearchIndexer<TestimonySearchRecord>({
   sourceCollection: db.collectionGroup("publishedTestimony"),
-  documentTrigger: "users/{uid}/publishedTestimony",
+  documentTrigger: "users/{uid}/publishedTestimony/{id}",
   alias: "publishedTestimony",
   idField: "id",
   schema: {
