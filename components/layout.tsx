@@ -6,6 +6,8 @@ import { Container, Nav, Navbar } from "./bootstrap"
 import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
+import { useProfile } from "./db"
+import { Wrap } from "./links"
 import ProfileLink from "./ProfileLink/ProfileLink"
 export type LayoutProps = {
   title?: string
@@ -34,7 +36,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
-  const displayName = useAuth().user?.displayName!
+  const  displayName  = useAuth().user?.displayName!
+
   const [isExpanded, setIsExpanded] = useState(false)
 
   const handleClick = () => {

@@ -1,14 +1,13 @@
-import { Col, Row, Image } from "../bootstrap"
-import styled from "styled-components"
 import { ReactNode } from "react"
+import styled from "styled-components"
 
 export const StyledColLabels = styled.div`
-  flex: 0;
-  white-space: nowrap;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  padding-left: 0.5em;
 
   .main-text {
     font-weight: 900;
@@ -23,18 +22,13 @@ export const StyledColLabels = styled.div`
   }
 `
 
-export const CircleImage = styled.div.attrs((props: { trnsImg: string }) => ({
-  trnsImg: props.trnsImg || ""
-}))`
+export const CircleImage = styled.div`
   flex: 0;
-  clip-path: circle(40%);
-  margin: 1em 0 1em 1em;
-
+  width: 6em;
   .image {
-    height: 6em;
+    clip-path: circle(40%);
     width: 6em;
-    background-color: grey;
-    transform: ${props => props.trnsImg};
+    height: auto;
   }
 `
 
@@ -48,13 +42,13 @@ export const LabeledIcon = ({
   subText: ReactNode
 }) => {
   return (
-    <div className={`d-flex justify-content-center bg-light`}>
-      <CircleImage trnsImg={"scale(1)"}>
+    <div className={`d-flex flex-grow-0 border`}>
+      <CircleImage>
         <img src={idImage} alt={`${mainText} image`} className={`image`} />
       </CircleImage>
       <StyledColLabels>
         <div className="h5 main-text">{mainText}</div>
-        <p className="main-text">{subText}</p>
+        <p className="sub-text">{subText}</p>
       </StyledColLabels>
     </div>
   )

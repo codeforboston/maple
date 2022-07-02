@@ -1,24 +1,14 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import {
-  Button,
   Col,
-  Form,
-  FormControl,
-  InputGroup,
-  Row,
-  Spinner
-} from "react-bootstrap"
-import { requireAuth, useAuth } from "../components/auth"
-import { Container } from "../components/bootstrap"
-import { SocialLinks, SOCIAL_NETWORKS, useProfile } from "../components/db"
+  Row} from "react-bootstrap"
+import { useAuth } from "../components/auth"
+import { useProfile } from "../components/db"
 import * as links from "../components/links"
-import MyTestimonies from "../components/MyTestimonies/MyTestimonies"
 import { createPage } from "../components/page"
 import { ProfilePage } from "../components/ProfilePage/Profile"
-import { ProfileLegislators } from "../components/ProfilePage/ProfileLegislators"
 import SelectLegislators from "../components/SelectLegislators"
-import TitledSectionCard from "../components/TitledSection/TitledSectionCard"
 
 const showLegislators = (
   <>
@@ -39,40 +29,12 @@ const showLegislators = (
   </>
 )
 
-/** Mapping from social network to UI name for it */
-const SOCIAL_NAMES = {
-  linkedIn: "LinkedIn",
-  twitter: "Twitter"
-} as const
-
-const useEffectWithTimeout = (
-  effect: () => void,
-  deps?: React.DependencyList
-) => {
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      effect()
-    }, 400)
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, deps)
-}
 
 export default createPage({
   title: "Profile",
-  Page: (() => {
-    const { profile, loading } = useProfile()
+  Page: () => {
 
-    const { user } = useAuth()
-    const uid = user?.uid
-
-    const individual = !profile?.organization
-    const router = useRouter()
-
-    return (
-      <ProfilePage />
-    )
+    return <ProfilePage />
 
     // // Have unsaved text inputs separate from profile
     // // so we don't ping the server every keystroke
@@ -265,7 +227,7 @@ export default createPage({
     //     <MyTestimonies />
     //   </Container>
     // )
-  })
+  }
 })
 
 const decodeHtmlCharCodes = (s: string) =>

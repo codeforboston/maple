@@ -22,16 +22,16 @@ const HeaderTitle = styled.div.attrs({
   min-width: 15rem;
   width: fit-content;
 
-  margin-left: -2em;
+  margin-left: -1em;
 `
 
 const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   return (
-    <Row className={`my-4 align-items-center`}>
+    <Row className={`mt-4 align-items-center`}>
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col className={`col-auto my-3 mx-5`}>{bug}</Col>
+     {bug && <Col className={`col-auto my-3 mx-5`}>{bug}</Col>}
     </Row>
   )
 }

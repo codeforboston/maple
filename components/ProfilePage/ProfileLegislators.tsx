@@ -1,9 +1,9 @@
-import TitledSectionCard from "../TitledSection/TitledSectionCard"
 import { ProfileMember, useMember } from "../db"
 import { useEffect, useState } from "react"
 import { Col, Container, Row } from "../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./ProfileLegislators.module.css"
+import { LabeledIcon, TitledSectionCard } from "../shared"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 
@@ -23,23 +23,13 @@ const DisplayLegislator = ({
   return (
     <>
       {legislator ? (
-        <Row className={`${styles.nowrap}`}>
-          <Col className={`d-flex align-items-end justify-content-end  m-0`}>
-            <div className={`${styles.legislatorPhoto}`}>
-              <Image fluid src={idphoto} alt={`${legislator.name}`} />
-            </div>
-          </Col>
-          <Col className="d-flex align-items-center col-7">
-            <div className={`${styles.nowrap}`}>
-              <h5 className="flex m-0">
-                <strong>{legislator.title}</strong>
-              </h5>
-              <p className="flex m-0">{legislator.name}</p>
-            </div>
-          </Col>
-        </Row>
+        <LabeledIcon
+          idImage={idphoto}
+          mainText={legislator.title}
+          subText={legislator.name}
+        />
       ) : (
-        <Col>No legislator information given</Col>
+        <div>No legislator information given</div>
       )}
     </>
   )
