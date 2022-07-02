@@ -1,5 +1,5 @@
 import { Col, Image, Row } from "react-bootstrap"
-import { Testimony } from "../../functions/src/testimony/types"
+import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
 import styles from "./TestimonyCallout.module.css"
