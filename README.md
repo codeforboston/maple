@@ -13,7 +13,7 @@ You can find good first issues in our product and sprint backlogs [here on Zenhu
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
-- [Zeplin UI Mocks](https://app.zeplin.io/project/628d69a847f028bc7a5c15c9), where UI designs are organized 
+- [Zeplin UI Mocks](https://app.zeplin.io/project/628d69a847f028bc7a5c15c9), where UI designs are organized
 - [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
 - [Production site](https://digital-testimony-prod.web.app), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
