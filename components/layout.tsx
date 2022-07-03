@@ -55,8 +55,8 @@ const TopNav: React.FC = () => {
           </Nav>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
-              <NavLink  href="/">Home</NavLink>
-              <NavLink href="/bills">Bills</NavLink>
+              <NavLink href="/" handleClick={handleClick}><span style={{fontWeight:'bold', color:'#fff'}}>Home</span></NavLink>
+              <NavLink href="/bills" handleClick={handleClick}>Bills</NavLink>
 
 
               <Navbar.Text className='navbar-section-header'>Browse Testimonies</Navbar.Text>
@@ -64,14 +64,14 @@ const TopNav: React.FC = () => {
                 <NavLink href="/testimonies">Browse Testimonies</NavLink>
               </Container>
 
-              <Navbar.Text >Learn</Navbar.Text>
+              <Navbar.Text className='navbar-section-header' >Learn</Navbar.Text>
               <Container style={{ alignContent: 'flex-end' }} onClick={handleClick}>
                 <NavLink href="/learntestimonies">Writing Effective Testimonies</NavLink>
                 <NavLink href="/legprocess">Contacting Legislatures</NavLink>
                 <NavLink href="#">Additional Resources</NavLink>
               </Container>
 
-              <Navbar.Text >About</Navbar.Text>
+              <Navbar.Text className='navbar-section-header'>About</Navbar.Text>
               <Container style={{ alignContent: 'flex-end' }} onClick={handleClick}>
                 <NavLink href="/about">Our Mission &amp; Goals</NavLink>
                 <NavLink href="#">Our Team</NavLink>
@@ -90,12 +90,13 @@ const TopNav: React.FC = () => {
   )
 }
 
-const NavLink: React.FC<{ href: string;}> = ({ href, children }) => {
+const NavLink: React.FC<{ href: string; handleClick?:any}> = ({ href,handleClick, children }) => {
   const router = useRouter()
   return (
     <Wrap href={href}>
       <Nav.Link 
-        active={router.pathname === href}>{children}</Nav.Link>
+        active={router.pathname === href}
+        onClick={handleClick}>{children}</Nav.Link>
     </Wrap>
   )
 }
