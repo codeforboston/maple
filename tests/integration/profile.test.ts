@@ -1,10 +1,15 @@
 import { waitFor } from "@testing-library/react"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
-import { terminateFirebase, testAuth, testDb } from "../testUtils"
-import { expectPermissionDenied, signInUser1, signInUser2 } from "./common"
+import { terminateFirebase, testAuth } from "../testUtils"
+import {
+  expectPermissionDenied,
+  getProfile,
+  signInUser1,
+  signInUser2
+} from "./common"
 
 const fakeUser = () => ({
   uid: nanoid(),
@@ -12,12 +17,6 @@ const fakeUser = () => ({
   email: `${nanoid()}@example.com`,
   password: "password"
 })
-
-const getProfile = (uid: string) =>
-  testDb
-    .doc(`/profiles/${uid}`)
-    .get()
-    .then(d => d.data())
 
 afterAll(terminateFirebase)
 
@@ -27,7 +26,7 @@ describe("profile", () => {
     let profile: any
     await waitFor(
       async () => {
-        profile = await getProfile(newUser.uid)
+        profile = await getProfile(newUser)
         expect(profile).toBeTruthy()
       },
       { timeout: 5000, interval: 250 }
@@ -37,7 +36,7 @@ describe("profile", () => {
 
   it("Sets the display name for new users", async () => {
     const expected = fakeUser()
-    await expect(getProfile(expected.uid)).resolves.toBeUndefined()
+    await expect(getProfile(expected)).resolves.toBeUndefined()
     const profile = await expectProfile(expected)
     expect(profile?.displayName).toEqual(expected.displayName)
   })
@@ -94,6 +93,15 @@ describe("profile", () => {
     await expect(
       setDoc(profileRef, { displayName: "test" })
     ).resolves.toBeUndefined()
+  })
+
+  it("Does not allow deleting the profile or changing the role", async () => {
+    const newUser = fakeUser()
+    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    await expectProfile(newUser)
+
+    await expectPermissionDenied(updateDoc(profileRef, { role: "admin" }))
+    await expectPermissionDenied(deleteDoc(profileRef))
   })
 
   async function setPublic(doc: any, isPublic: boolean) {

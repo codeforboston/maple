@@ -16,8 +16,12 @@ service cloud.firestore {
       // and public if profile.public is true or undefined (defaults to true),
       // or if the profile is an organization.
       // Only writeable by the user.
+      // Do not allow users to delete their profile or set the role field
       allow read: if resource.data.public || request.auth.uid == uid || resource.data.organization
-      allow write: if request.auth.uid == uid
+      allow create, update: 
+        if request.auth.uid == uid &&
+           request.resource.data.get('role', 'undefined') == 
+           resource.data.get('role', 'undefined')
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {

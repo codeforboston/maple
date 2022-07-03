@@ -1,6 +1,6 @@
-import { Auth } from "firebase-admin/lib/auth/auth"
-import { UserRecord } from "firebase-functions/v1/auth"
+import { UserRecord } from "firebase-admin/lib/auth/user-record"
 import { Literal as L, Static, Union } from "runtypes"
+import { Auth, Database } from "./types"
 
 export const Role = Union(
   L("user"),
@@ -18,12 +18,14 @@ export const setRole = async ({
   email,
   uid,
   role,
-  auth
+  auth,
+  db
 }: {
   email?: string
   uid?: string
   role: Role
   auth: Auth
+  db: Database
 }) => {
   let user: UserRecord
   if (email) user = await auth.getUserByEmail(email)
@@ -32,4 +34,7 @@ export const setRole = async ({
 
   const claim: Claim = { role: Role.check(role) }
   await auth.setCustomUserClaims(user.uid, claim)
+
+  const profile = db.doc(`/profiles/${user.uid}`)
+  await profile.set({ role }, { merge: true })
 }
