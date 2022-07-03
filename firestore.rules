@@ -19,9 +19,12 @@ service cloud.firestore {
       // Do not allow users to delete their profile or set the role field
       allow read: if resource.data.public || request.auth.uid == uid || resource.data.organization
       allow create, update: 
-        if request.auth.uid == uid &&
-           request.resource.data.get('role', 'undefined') == 
-           resource.data.get('role', 'undefined')
+        if request.auth.uid == uid && 
+           !request.resource.data
+             .diff(resource.data)
+             .affectedKeys()
+             .hasAny(['auth']);
+
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {

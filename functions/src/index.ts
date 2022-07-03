@@ -13,13 +13,13 @@ export {
   startCommitteeBatches,
   updateCommitteeRosters
 } from "./committees"
-export { createProfile } from "./createProfile"
 export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
 export {
   createMemberSearchIndex,
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
+export { createProfile } from "./profile"
 export { checkSearchIndexVersion } from "./search"
 export {
   deleteTestimony,

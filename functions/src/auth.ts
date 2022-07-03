@@ -1,5 +1,5 @@
 import { UserRecord } from "firebase-admin/lib/auth/user-record"
-import { Literal as L, Static, Union } from "runtypes"
+import { Literal as L, Record, Static, Union } from "runtypes"
 import { Auth, Database } from "./types"
 
 export const Role = Union(
@@ -10,9 +10,17 @@ export const Role = Union(
 )
 export type Role = Static<typeof Role>
 
-export type Claim = {
+/** Custom-claim payload used for authorization. */
+export const Claim = Record({
   role: Role
-}
+})
+export type Claim = Static<typeof Claim>
+
+/** Auth-related user state, stored on the user profile. */
+export const UserAuth = Record({
+  // The current role
+  role: Role
+})
 
 export const setRole = async ({
   email,
@@ -32,9 +40,10 @@ export const setRole = async ({
   else if (uid) user = await auth.getUser(uid)
   else throw Error("Missing uid or email")
 
-  const claim: Claim = { role: Role.check(role) }
+  const claim = Claim.check({ role })
   await auth.setCustomUserClaims(user.uid, claim)
 
+  const userAuth = UserAuth.check({ role })
   const profile = db.doc(`/profiles/${user.uid}`)
-  await profile.set({ role }, { merge: true })
+  await profile.set({ auth: userAuth }, { merge: true })
 }

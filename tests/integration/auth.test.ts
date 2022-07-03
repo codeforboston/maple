@@ -31,7 +31,7 @@ describe("setRole", () => {
     expect(updated).toEqual({ role })
 
     const profile = (await getProfile(user))!
-    expect(profile.role).toEqual(role)
+    expect(profile.auth.role).toEqual(role)
   })
 
   it("sets user claims by uid", async () => {
@@ -44,7 +44,7 @@ describe("setRole", () => {
     expect(updated).toEqual({ role })
 
     const profile = (await getProfile(user))!
-    expect(profile.role).toEqual(role)
+    expect(profile.auth.role).toEqual(role)
   })
 
   it("rejects bad input", async () => {

@@ -7,6 +7,7 @@ import { terminateFirebase, testAuth } from "../testUtils"
 import {
   expectPermissionDenied,
   getProfile,
+  signInUser,
   signInUser1,
   signInUser2
 } from "./common"
@@ -39,7 +40,7 @@ describe("profile", () => {
     await expect(getProfile(expected)).resolves.toBeUndefined()
     const profile = await expectProfile(expected)
     expect(profile.displayName).toEqual(expected.displayName)
-    expect(profile.role).toEqual("user")
+    expect(profile.auth.role).toEqual("user")
   })
 
   it("Is not publicly readable by default", async () => {
@@ -88,7 +89,9 @@ describe("profile", () => {
     await expectProfile(newUser)
 
     await signInUser1()
-    await expectPermissionDenied(setDoc(profileRef, { displayName: "test" }))
+    await expectPermissionDenied(
+      setDoc(profileRef, { displayName: "test" }, { merge: true })
+    )
 
     await signInWithEmailAndPassword(auth, newUser.email, newUser.password)
     await expect(
@@ -100,8 +103,11 @@ describe("profile", () => {
     const newUser = fakeUser()
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     await expectProfile(newUser)
+    await signInUser(newUser.email)
 
-    await expectPermissionDenied(updateDoc(profileRef, { role: "admin" }))
+    await expectPermissionDenied(
+      updateDoc(profileRef, { auth: { role: "admin" } })
+    )
     await expectPermissionDenied(deleteDoc(profileRef))
   })
 
