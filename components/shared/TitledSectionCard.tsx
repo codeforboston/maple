@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import { Card, Row, Col } from "../bootstrap"
 import styled from "styled-components"
 
@@ -8,19 +8,30 @@ const StyledCard = styled(Card)`
   background: var(--bs-white);
 `
 
-const StyledHeader = styled(Card.Header)`
-  border-radius: 0 5rem 5rem 0;
-  background-color: var(--bs-red);
+const HeaderTitle = styled.div.attrs({
+  className: "h4"
+})`
   color: white;
   font-weight: bold;
-  width: max-content;
+  border-radius: 0 5rem 5rem 0;
+  background-color: var(--bs-red);
   height: 1.8em;
-  line-height: 1.2em;
-  padding-right: 4rem;
+  line-height: 1.8em;
   padding-left: 2rem;
-  transform: translate(-2rem, 1em);
-  overflow: hidden;
+
+  margin-left: -2em;
 `
+
+const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+  return (
+    <Row className={`my-4 align-items-center`}>
+      <Col>
+        <HeaderTitle>{title}</HeaderTitle>
+      </Col>
+      <Col className={`col-auto my-3 mx-5`}>{bug}</Col>
+    </Row>
+  )
+}
 
 const StyledFooter = styled(Card.Footer)`
   border-radius: 0 0 1rem 1rem;
@@ -42,10 +53,7 @@ const TitledSectionCard = ({
 }) => {
   return (
     <StyledCard className={className}>
-      <StyledHeader className={`h4`} style={{ borderRadius: "0 5rem 5rem 0" }}>
-        {title}
-      </StyledHeader>
-      <Bug>{bug}</Bug>
+      <Header title={title} bug={bug} />
       <Card.Body className={`mx-3`}>{children}</Card.Body>
 
       {footer && (
@@ -57,20 +65,5 @@ const TitledSectionCard = ({
   )
 }
 
-export const Bug = ({
-  children
-}: {
-  children: React.ReactElement | undefined
-}) => {
-  return (
-    <Row className={`justify-content-end`}>
-      {children && (
-        <Col className={`mt-5 mt-sm-0 mx-4 d-flex justify-content-start justify-content-sm-end`}>
-          {children}
-        </Col>
-      )}
-    </Row>
-  )
-}
 
 export default TitledSectionCard

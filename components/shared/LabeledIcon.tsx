@@ -2,28 +2,40 @@ import { Col, Row, Image } from "../bootstrap"
 import styled from "styled-components"
 import { ReactNode } from "react"
 
-export const CircleImage = styled.div`
-  clip-path: circle(50%);
-  flex: 1;
-  place-content: center;
-  height: 100%;
-  aspect-ratio: 1;
-`
-export const StyledColLabels = styled(Col)`
-  flex-wrap: nowrap;
+export const StyledColLabels = styled.div`
+  flex: 0;
   white-space: nowrap;
   display: flex;
-  flex: 1 0;
-  height: 4em;
-  align-self: flex-end;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
 
-  .beans {
-
+  .main-text {
+    font-weight: 900;
+    margin: 0;
+    flex: 0;
   }
 
+  .sub-text {
+    font-weight: 500;
+    margin: 0;
+    flex: 0;
+  }
+`
+
+export const CircleImage = styled.div.attrs((props: { trnsImg: string }) => ({
+  trnsImg: props.trnsImg || ""
+}))`
+  flex: 0;
+  clip-path: circle(40%);
+  margin: 1em 0 1em 1em;
+
+  .image {
+    height: 6em;
+    width: 6em;
+    background-color: grey;
+    transform: ${props => props.trnsImg};
+  }
 `
 
 export const LabeledIcon = ({
@@ -36,21 +48,14 @@ export const LabeledIcon = ({
   subText: ReactNode
 }) => {
   return (
-    <Row className={`d-flex align-items-start justify-content-center mt-3`}>
-      <Col className={` flex-grow-0`} style={{height: "4em"}}>
-        <CircleImage>
-          <Image
-            fluid
-            src={idImage}
-            alt={`${mainText} image`}
-            className={`flex-grow-0`}
-          />
-        </CircleImage>
-      </Col>
-      <StyledColLabels className="">
-        <div className="h5 flex-grow-0 m-0 fw-bold">{mainText}</div>
-        <p className="flex-grow-0 m-0">{subText}</p>
+    <div className={`d-flex justify-content-center bg-light`}>
+      <CircleImage trnsImg={"scale(1)"}>
+        <img src={idImage} alt={`${mainText} image`} className={`image`} />
+      </CircleImage>
+      <StyledColLabels>
+        <div className="h5 main-text">{mainText}</div>
+        <p className="main-text">{subText}</p>
       </StyledColLabels>
-    </Row>
+    </div>
   )
 }
