@@ -1,16 +1,16 @@
 import repl from "repl"
-import { Literal as L, Optional, Record, String, Union } from "runtypes"
+import { Array, Literal as L, Optional, Record, String, Union } from "runtypes"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 import { runAgainstEmulators, runAgainstProject } from "../configure"
-import { Context, Script } from "./types"
+import { Context, Script, ScriptContext } from "./types"
 
 const Args = Record({
   env: Union(L("local"), L("dev"), L("prod")),
   creds: Optional(String)
 })
 
-const ScriptArgs = Args.extend({ script: String })
+const ScriptArgs = Args.extend({ script: String, argv: Array(String) })
 
 const init: (args: unknown) => Context = args => {
   const { env, creds } = Args.check(args)
@@ -31,6 +31,7 @@ const init: (args: unknown) => Context = args => {
   const firebase = require("../../functions/src/firebase")
   return {
     firebase,
+    auth: firebase.auth,
     db: firebase.db,
     admin: firebase.admin
   }
@@ -49,7 +50,7 @@ yargs(hideBin(process.argv))
     }
   )
   .command(
-    "run-script <script>",
+    "run-script <script> [argv...]",
     "run a script in an initialized environment",
     yargs =>
       yargs.options({
@@ -61,7 +62,7 @@ yargs(hideBin(process.argv))
       }),
     async (args: unknown) => {
       const { script: scriptName } = ScriptArgs.check(args)
-      const context = init(args)
+      const context: ScriptContext = { ...init(args), args: args as any }
       const script: Script = require(`./${scriptName}`).script
 
       await script(context)
