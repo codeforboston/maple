@@ -34,11 +34,12 @@ describe("profile", () => {
     return profile
   }
 
-  it("Sets the display name for new users", async () => {
+  it("Sets the display name and role for new users", async () => {
     const expected = fakeUser()
     await expect(getProfile(expected)).resolves.toBeUndefined()
     const profile = await expectProfile(expected)
-    expect(profile?.displayName).toEqual(expected.displayName)
+    expect(profile.displayName).toEqual(expected.displayName)
+    expect(profile.role).toEqual("user")
   })
 
   it("Is not publicly readable by default", async () => {
@@ -91,7 +92,7 @@ describe("profile", () => {
 
     await signInWithEmailAndPassword(auth, newUser.email, newUser.password)
     await expect(
-      setDoc(profileRef, { displayName: "test" })
+      setDoc(profileRef, { displayName: "test" }, { merge: true })
     ).resolves.toBeUndefined()
   })
 
