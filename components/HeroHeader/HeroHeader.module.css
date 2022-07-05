@@ -1,6 +1,7 @@
 .container {
   color: white;
   background-color: #1a3185;
+  overflow: hidden;
 }
 
 .btncontainer {

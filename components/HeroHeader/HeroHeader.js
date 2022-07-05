@@ -9,7 +9,7 @@ const HeroHeader = ({ authenticated }) => {
   return (
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
-        <Row className={``}>
+        <Row>
           <ScrollTrackingItem
             className={`${styles.skylineContainer}`}
             speed={0.6}
