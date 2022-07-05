@@ -49,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "@alexjball/react-instantsearch-hooks-web": "~6.26.2",
+    "@alexjball/react-instantsearch-hooks-web": "~6.29.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
