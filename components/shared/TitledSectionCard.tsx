@@ -18,6 +18,9 @@ const HeaderTitle = styled.div.attrs({
   height: 1.8em;
   line-height: 1.8em;
   padding-left: 2rem;
+  padding-right: 2rem;
+  min-width:15rem;
+  width: fit-content;
 
   margin-left: -2em;
 `
