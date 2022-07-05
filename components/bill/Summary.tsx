@@ -16,6 +16,7 @@ const SummaryContainer = styled(Container)`
 const Pinslip = styled(Col)`
   margin-top: 1rem;
   font-style: italic;
+  font-size: 1.25rem;
 `
 
 const Divider = styled(Col)`

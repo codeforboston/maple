@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Button, Modal } from "../bootstrap"
-import { BillHistoryTable } from "./BillHistoryTable"
+import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
 
-export const BillHistory = ({ bill }: BillProps) => {
+export const HistoryModal = ({ bill }: BillProps) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
 
   const handleShowBillHistory = () => setShowBillHistory(true)
@@ -18,7 +18,7 @@ export const BillHistory = ({ bill }: BillProps) => {
           <Modal.Title>{bill.id + " - " + bill.content.Title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BillHistoryTable billHistory={bill.history} />
+          <HistoryTable billHistory={bill.history} />
         </Modal.Body>
       </Modal>
     </>

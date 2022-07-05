@@ -1,1 +1,1 @@
-export * from "./Bill"
+export * from "./BillDetails"

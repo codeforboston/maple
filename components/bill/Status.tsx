@@ -2,18 +2,19 @@ import { last } from "lodash"
 import { useState } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
-import { BillHistory } from "./BillHistory"
-import { BillHistoryTable } from "./BillHistoryTable"
+import { HistoryModal } from "./HistoryModal"
+import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
 
 const StyledButton = styled(Button)`
   border-radius: 3rem 0 0 3rem;
   font-size: 2rem;
   line-height: 2.5rem;
+  height: fit-content;
   max-width: 100%;
 `
 
-export const BillStatus = ({ bill }: BillProps) => {
+export const Status = ({ bill }: BillProps) => {
   const [showBillStatus, setShowBillStatus] = useState(false)
 
   const handleShowBillStatus = () => setShowBillStatus(true)
@@ -25,7 +26,7 @@ export const BillStatus = ({ bill }: BillProps) => {
     <>
       <StyledButton
         variant="secondary"
-        className="m-1 text-truncate"
+        className="text-truncate"
         onClick={handleShowBillStatus}
       >
         {history.Action}
@@ -37,9 +38,9 @@ export const BillStatus = ({ bill }: BillProps) => {
         <Modal.Body>
           <>
             <div className="text-center">Bill Status</div>
-            <BillHistoryTable billHistory={[history]} />
+            <HistoryTable billHistory={[history]} />
             <div className=" d-flex justify-content-center">
-              <BillHistory bill={bill} />
+              <HistoryModal bill={bill} />
             </div>
           </>
         </Modal.Body>

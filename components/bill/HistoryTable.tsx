@@ -22,7 +22,7 @@ const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
   )
 }
 
-export const BillHistoryTable = ({ billHistory }: HistoryProps) => {
+export const HistoryTable = ({ billHistory }: HistoryProps) => {
   return (
     <div className="text-center">
       <Table responsive striped bordered hover>

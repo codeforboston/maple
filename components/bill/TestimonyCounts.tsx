@@ -89,7 +89,7 @@ const Count = ({
         <div className="total" />
         <div
           className="filled"
-          style={{ right: `${(1 - count / total) * 100}%` }}
+          style={{ right: `${total > 0 ? (1 - count / total) * 100 : 100}%` }}
         />
       </div>
       <div className={`count ${position}`}>{count}</div>

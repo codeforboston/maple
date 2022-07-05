@@ -5,6 +5,7 @@
 $red: #a92929;
 $orange: #ff8600;
 $blue: #1a3185;
+$dark-blue: #0b0a3e;
 $green: #3d9922;
 
 $body-bg: #eae7e7;
@@ -13,6 +14,9 @@ $primary: $red;
 $secondary: $blue;
 $success: $green;
 $info: $orange;
+$dark: $dark-blue;
+
+$link-color: $secondary;
 
 // Archivo, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto,
