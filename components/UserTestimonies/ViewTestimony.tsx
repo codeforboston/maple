@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useAuth } from "../../components/auth"
 import { Testimony } from "../../functions/src/testimony/types"
 import { Col, Dropdown, Row } from "../bootstrap"
-import TitledSectionCard from "../shared/TitledSectionCard"
+import { TitledSectionCard } from "../shared"
 import { useBill, usePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
 import { Internal } from "../links"
@@ -41,7 +41,7 @@ export const SortTestimonyDropDown = ({
   setOrderBy: (order: string) => void
 }) => {
   return (
-    <Dropdown className={`border`}>
+    <Dropdown>
       <Dropdown.Toggle variant="light" id="dropdown-order">
         {orderBy ?? "Order by"}
       </Dropdown.Toggle>
@@ -65,8 +65,6 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
 
   const { result: bill } = useBill(testimony.billId)
 
-
-
   return (
     <div className={`bg-white border-0 border-bottom p-xs-1 p-md-5`}>
       <div className={`bg-white border-0 h3`}>
@@ -77,7 +75,9 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
       <div>
         <Row className={`justify-content-between`}>
           <Col className={`h5 fw-bold`}>{`${published}`}</Col>
-          <Col className={`ms-auto d-flex justify-content-start justify-content-sm-end`}>
+          <Col
+            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
+          >
             <PositionLabel position={testimony.position} />
           </Col>
         </Row>
