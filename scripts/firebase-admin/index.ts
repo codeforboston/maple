@@ -38,7 +38,7 @@ const init: (args: unknown) => Context = args => {
 }
 
 yargs(hideBin(process.argv))
-  .scriptName("typesense-admin")
+  .scriptName("firebase-admin")
   .command(
     "console",
     "start a node repl with an initialized admin and db",

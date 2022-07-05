@@ -1,8 +1,8 @@
-import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore"
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore"
 import { useEffect, useMemo, useReducer } from "react"
-import { useAuth } from "../auth"
-import { firestore } from "../firebase"
 import { useAsync } from "react-async-hook"
+import { Role, useAuth } from "../auth"
+import { firestore } from "../firebase"
 
 export type ProfileMember = {
   district: string
@@ -17,6 +17,7 @@ export type SocialLinks = Partial<
 >
 
 export type Profile = {
+  auth?: { role: Role }
   displayName?: string
   representative?: ProfileMember
   senator?: ProfileMember
