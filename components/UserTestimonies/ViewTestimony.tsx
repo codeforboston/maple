@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useAuth } from "../../components/auth"
-import { Testimony } from "../../functions/src/testimony/types"
+import { Testimony } from "../db"
 import { Col, Dropdown, Row } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { useBill, usePublishedTestimonyListing } from "../db"
