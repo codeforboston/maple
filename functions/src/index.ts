@@ -21,5 +21,10 @@ export {
 } from "./members"
 export { setUsername } from "./profile"
 export { checkSearchIndexVersion } from "./search"
-export { deleteTestimony, publishTestimony } from "./testimony"
+export {
+  deleteTestimony,
+  publishTestimony,
+  syncTestimonyToSearchIndex,
+  upgradeTestimonySearchIndex
+} from "./testimony"
 export * from "./triggerPubsubFunction"

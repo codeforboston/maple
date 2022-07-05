@@ -1,8 +1,10 @@
 import { runWith } from "firebase-functions"
-import { CollectionConfig, registerConfig } from "./config"
+import { BaseRecord, CollectionConfig, registerConfig } from "./config"
 import { SearchIndexer } from "./SearchIndexer"
 
-export function createSearchIndexer(config: CollectionConfig) {
+export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
+  config: CollectionConfig<T>
+) {
   registerConfig(config)
   return {
     upgradeSearchIndex: runWith({
@@ -17,7 +19,7 @@ export function createSearchIndexer(config: CollectionConfig) {
       timeoutSeconds: 30,
       secrets: ["TYPESENSE_API_KEY"]
     })
-      .firestore.document(`${config.sourceCollection.path}/{id}`)
+      .firestore.document(config.documentTrigger)
       .onWrite(async change => {
         await new SearchIndexer(config).syncDocument(change)
       })

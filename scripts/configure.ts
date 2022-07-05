@@ -11,7 +11,7 @@ export function runAgainstEmulators() {
   })
 }
 
-export function runAgainstDevProject() {
+export function runAgainstProject(projectId: string) {
   const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS
   if (!serviceAccount) {
     console.error(
@@ -19,6 +19,15 @@ export function runAgainstDevProject() {
     )
     process.exit(1)
   }
+
+  Object.assign(process.env, {
+    GCLOUD_PROJECT: projectId,
+    GOOGLE_APPLICATION_CREDENTIALS: serviceAccount
+  })
+}
+
+export function runAgainstDevWithTestUser() {
+  runAgainstProject("digital-testimony-dev")
 
   const testUserPassword = process.env.SYSTEM_TEST_USER_PASSWORD
   if (!testUserPassword) {
@@ -30,8 +39,6 @@ export function runAgainstDevProject() {
 
   Object.assign(process.env, {
     NEXT_PUBLIC_PROJECT_ID_FOR_TEST: "digital-testimony-dev",
-    GCLOUD_PROJECT: "digital-testimony-dev",
-    GOOGLE_APPLICATION_CREDENTIALS: serviceAccount,
     SYSTEM_TEST_USER_PASSWORD: testUserPassword
   })
 }
