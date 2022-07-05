@@ -1,8 +1,8 @@
 import { Config } from "@jest/types"
 import nextJest from "next/jest"
-import { runAgainstDevProject } from "./configure"
+import { runAgainstDevWithTestUser } from "../scripts/configure"
 
-runAgainstDevProject()
+runAgainstDevWithTestUser()
 
 const config: Config.InitialOptions = {
   clearMocks: true,
