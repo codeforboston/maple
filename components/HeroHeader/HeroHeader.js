@@ -53,9 +53,9 @@ const HeroHeader = ({ authenticated }) => {
                     <em>Let your voice be heard!</em>
                   </h1>
                   <p className="lead">
-                    MAPLE makes it easy for anyone to view and submit testimony to the
-                    Massachusetts Legislature about the bills that will shape our
-                    future.
+                    MAPLE makes it easy for anyone to view and submit testimony
+                    to the Massachusetts Legislature about the bills that will
+                    shape our future.
                   </p>
                   <div className="text-end m-5">
                     {!authenticated && (
@@ -75,8 +75,8 @@ const HeroHeader = ({ authenticated }) => {
           </Col>
         </Row>
       </ScrollTrackerContainer>
-      </Container>
-      )
+    </Container>
+  )
 }
 
-      export default HeroHeader
+export default HeroHeader
