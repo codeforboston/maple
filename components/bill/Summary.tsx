@@ -9,7 +9,7 @@ const SummaryContainer = styled(Container)`
   padding: 1rem;
   background-image: url("quote-left.svg");
   background-repeat: no-repeat;
-  background-size: 3rem;
+  background-size: 4rem;
   background-position: 0.5rem 0.5rem;
 `
 
