@@ -1,6 +1,8 @@
 import AboutInfoCard from "../AboutSectionInfoCard/AboutInfoCard"
 import { Col, Container, Row } from "../bootstrap"
 import BackgroundLogo from "../LogoPlacements/BackgroundLogo"
+import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
+import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./AboutSection.module.css"
 
 export default function AboutSection() {
@@ -8,6 +10,12 @@ export default function AboutSection() {
     <Container fluid>
       <Row className={`${styles.angledTop}`}>
         <Row className="justify-content-center">
+          <ScrollTrackerContainer>
+            <ScrollTrackingItem speed={0.5}>
+              <BackgroundLogo />
+            </ScrollTrackingItem>
+          </ScrollTrackerContainer>
+
           <Col xs={10}>
             <h1 className="text-white">About MAPLE</h1>
           </Col>
@@ -16,9 +24,8 @@ export default function AboutSection() {
               xs={1}
               md={2}
               xl={3}
-              className={`g-4 justify-content-center mx-5 py-5 px-4`}
+              className={`g-4 justify-content-center py-5`}
             >
-              <BackgroundLogo />
               <AboutInfoCard
                 title="Who"
                 bodytext="Anyone can submit testimony to the MA legislature. Legislators tend to value testimony most when it comes from their own constituents, so testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district."
