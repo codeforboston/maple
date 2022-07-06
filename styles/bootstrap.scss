@@ -33,3 +33,34 @@ $headings-font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
 :root {
   --bs-blue-100: #{$blue-100};
 }
+
+$utilities: map-merge(
+  $utilities,
+  (
+    "width":
+      map-merge(
+        map-get($utilities, "width"),
+        (
+          values:
+            map-merge(
+              map-get(map-get($utilities, "width"), "values"),
+              (
+                10: 10%
+              ),
+              (
+                90: 90%
+              ),
+              (
+                110: 110%
+              ),
+              (
+                125: 125%
+              ),
+              (
+                150: 150%
+              )
+            )
+        )
+      )
+  )
+);

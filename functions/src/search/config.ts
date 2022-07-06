@@ -1,14 +1,16 @@
-import { CollectionReference } from "@google-cloud/firestore"
+import { Query } from "@google-cloud/firestore"
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections"
 import { DocumentData } from "../firebase"
 
+export type BaseRecord = { id: string }
 export type Schema = Omit<CollectionCreateSchema, "name">
-export type CollectionConfig = {
+export type CollectionConfig<T extends BaseRecord = BaseRecord> = {
   readonly alias: string
   readonly schema: Schema
-  readonly sourceCollection: CollectionReference
+  readonly sourceCollection: Query
+  readonly documentTrigger: string
   readonly idField: string
-  readonly convert: (data: DocumentData) => { id: string }
+  readonly convert: (data: DocumentData) => T
 }
 
 const registered: CollectionConfig[] = []

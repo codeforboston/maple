@@ -1,6 +1,6 @@
-import { runAgainstEmulators } from "./configure"
 import { Config } from "@jest/types"
 import nextJest from "next/jest"
+import { runAgainstEmulators } from "../scripts/configure"
 
 runAgainstEmulators()
 

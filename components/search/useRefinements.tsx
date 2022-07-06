@@ -5,9 +5,18 @@ import {
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useEffect, useState } from "react"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Col, Offcanvas } from "../bootstrap"
-import { FilterButton, SatelliteCustomization } from "./common"
+import { Button, Col, Offcanvas } from "../bootstrap"
+import { SearchContainer } from "./SearchContainer"
+
+export const FilterButton = styled(Button)`
+  font-size: 1rem;
+  line-height: 1rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  align-self: flex-start;
+`
 
 export const useRefinements = () => {
   const inline = useMediaQuery("(min-width: 768px)")
@@ -53,7 +62,7 @@ export const useRefinements = () => {
 
   return {
     options: inline ? (
-      <Col xs={3} lg={3} className="mt-3">
+      <Col xs={3} lg={3}>
         {refinements}
       </Col>
     ) : (
@@ -62,17 +71,12 @@ export const useRefinements = () => {
           <Offcanvas.Title>Filter</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <SatelliteCustomization>{refinements}</SatelliteCustomization>
+          <SearchContainer>{refinements}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
     ),
     show: inline ? null : (
-      <FilterButton
-        className="mb-2 me-2"
-        variant="secondary"
-        active={show}
-        onClick={handleOpen}
-      >
+      <FilterButton variant="secondary" active={show} onClick={handleOpen}>
         <FontAwesomeIcon icon={faFilter} /> Filter
       </FilterButton>
     )
