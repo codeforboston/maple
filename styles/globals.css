@@ -30,6 +30,18 @@
   background-color: white;
 }
 
+.bg-endorse {
+  background-color: var(--bs-green);
+}
+
+.bg-neutral {
+  background-color: var(--bs-blue);
+}
+
+.bg-oppose {
+  background-color: var(--bs-orange);
+}
+
 .z-index-1 {
   z-index: 1;
 }
