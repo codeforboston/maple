@@ -1,9 +1,12 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
-import { useMember } from "../db"
+import styled from "styled-components"
+import { Bill, BillContent, MemberReference, useMember } from "../db"
 import { memberLink } from "../links"
+import { FC } from "../types"
+import { BillProps } from "./types"
 
-const CoSponsorRow = ({ coSponsor }) => {
+const CoSponsorRow = ({ coSponsor }: { coSponsor: MemberReference }) => {
   const url = coSponsor
     ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}`
     : ""
@@ -29,15 +32,27 @@ const CoSponsorRow = ({ coSponsor }) => {
   }
 }
 
-const CoSponsorRows = ({ coSponsors }) => {
-  return coSponsors.map((coSponsor, index) => {
-    return <CoSponsorRow coSponsor={coSponsor} key={index} />
-  })
+const CoSponsorRows = ({ coSponsors }: { coSponsors: MemberReference[] }) => {
+  return (
+    <>
+      {coSponsors.map((coSponsor, index) => {
+        return <CoSponsorRow coSponsor={coSponsor} key={index} />
+      })}
+    </>
+  )
 }
 
-const BillCosponsors = props => {
-  const bill = props.bill
-  const coSponsors = bill && bill.Cosponsors ? bill.Cosponsors : []
+const StyledButton = styled(Button)`
+  :focus {
+    box-shadow: none;
+  }
+  padding: 0;
+  margin: 0;
+`
+
+export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
+  const billNumber = bill.id
+  const coSponsors = bill.content.Cosponsors
   const numCoSponsors = coSponsors ? coSponsors.length : 0
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
 
@@ -49,22 +64,20 @@ const BillCosponsors = props => {
 
   return (
     <>
-      <Button
-        variant="primary"
+      <StyledButton
+        variant="link"
         className="m-1"
         onClick={handleShowBillCosponsors}
       >
-        Cosponsors {numCoSponsors}
-      </Button>
+        {children}
+      </StyledButton>
       <Modal
         show={showBillCosponsors}
         onHide={handleCloseBillCosponsors}
         size="lg"
       >
         <Modal.Header closeButton onClick={handleCloseBillCosponsors}>
-          <Modal.Title>
-            {bill ? bill.BillNumber + " CoSponsors" : ""}
-          </Modal.Title>
+          <Modal.Title>{billNumber + " CoSponsors"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
@@ -79,5 +92,3 @@ const BillCosponsors = props => {
     </>
   )
 }
-
-export default BillCosponsors

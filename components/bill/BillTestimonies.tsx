@@ -4,7 +4,7 @@ import TestimoniesTable from "../TestimoniesTable/TestimoniesTable"
 import { useCallback } from "react"
 import { BillContent } from "../db"
 
-const BillTestimonies = (props: { bill: BillContent }) => {
+export const BillTestimonies = (props: { bill: BillContent }) => {
   const { bill } = props
   const testimony = usePublishedTestimonyListing({
     billId: bill.BillNumber
@@ -23,5 +23,3 @@ const BillTestimonies = (props: { bill: BillContent }) => {
     </>
   )
 }
-
-export default BillTestimonies
