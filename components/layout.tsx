@@ -64,21 +64,14 @@ const TopNav: React.FC = () => {
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
               <NavLink href="/" handleClick={handleClick}>
-                <span style={{ fontWeight: "bold", color: "#fff" }}>Home</span>
+                Home
               </NavLink>
               <NavLink href="/bills" handleClick={handleClick}>
                 Bills
               </NavLink>
-
-              <Navbar.Text className="navbar-section-header">
-                Browse Testimonies
-              </Navbar.Text>
-              <Container
-                onClick={handleClick}
-                style={{ alignContent: "flex-end" }}
-              >
-                <NavLink href="/testimonies">Browse Testimonies</NavLink>
-              </Container>
+              <NavLink href="/testimonies" handleClick={handleClick}>
+                Testimony
+              </NavLink>
 
               <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
               <Container
