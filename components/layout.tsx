@@ -4,8 +4,10 @@ import { useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
+import PageFooter from "./Footer/Footer"
 import { Wrap } from "./links"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import NavLink from "./NavLink";
 
 export type LayoutProps = {
   title?: string
@@ -21,6 +23,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
+      <PageFooter>
+
+      </PageFooter>
     </>
   )
 }
@@ -90,13 +95,13 @@ const TopNav: React.FC = () => {
   )
 }
 
-const NavLink: React.FC<{ href: string;}> = ({ href, children }) => {
-  const router = useRouter()
-  return (
-    <Wrap href={href}>
-      <Nav.Link 
-        active={router.pathname === href}>{children}</Nav.Link>
-    </Wrap>
-  )
-}
+// const NavLink: React.FC<{ href: string;}> = ({ href, children }) => {
+//   const router = useRouter()
+//   return (
+//     <Wrap href={href}>
+//       <Nav.Link 
+//         active={router.pathname === href}>{children}</Nav.Link>
+//     </Wrap>
+//   )
+// }
 
