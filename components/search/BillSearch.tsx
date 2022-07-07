@@ -4,15 +4,20 @@ import {
   InstantSearch,
   Pagination,
   SearchBox,
-  SortBy
+  useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
-import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
+import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../bootstrap"
 import { BillHit } from "./BillHit"
-import { getServerConfig, SatelliteCustomization } from "./common"
+import { getServerConfig } from "./common"
+import { NoResults } from "./NoResults"
+import { ResultCount } from "./ResultCount"
+import { SearchContainer } from "./SearchContainer"
 import { SearchErrorBoundary } from "./SearchErrorBoundary"
+import { initialSortByValue, SortBy } from "./SortBy"
 import { useRefinements } from "./useRefinements"
+import { useRouting } from "./useRouting"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -22,44 +27,59 @@ const searchClient = new TypesenseInstantSearchAdapter({
   }
 }).searchClient
 
-const soryByItems: SortByItem[] = [
-  { label: "Relevance", value: "bills" },
-  { label: "Testimony Count", value: "bills/sort/testimonyCount:desc" },
-  {
-    label: "Cosponsor Count",
-    value: "bills/sort/cosponsorCount:desc"
-  },
-  { label: "Next Hearing Date", value: "bills/sort/nextHearingAt:desc" },
-  { label: "Latest Testimony", value: "bills/sort/latestTestimonyAt:desc" }
-]
-
 export const BillSearch = () => (
   <SearchErrorBoundary>
-    <InstantSearch indexName="bills" searchClient={searchClient} routing>
-      <SearchLayout />
+    <InstantSearch
+      indexName={initialSortByValue}
+      searchClient={searchClient}
+      routing={useRouting()}
+    >
+      <Layout />
     </InstantSearch>
   </SearchErrorBoundary>
 )
 
-const SearchLayout = () => {
+const RefinementRow = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`
+
+const useSearchStatus = () => {
+  const { results } = useInstantSearch()
+
+  if (!results.query) {
+    return "loading"
+  } else if (results.nbHits === 0) {
+    return "empty"
+  } else {
+    return "results"
+  }
+}
+
+const Layout = () => {
   const refinements = useRefinements()
+  const status = useSearchStatus()
   return (
-    <SatelliteCustomization>
+    <SearchContainer>
       <Row>
-        <SearchBox placeholder="Search For Bills" className="mt-2" />
+        <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
         {refinements.options}
         <Col className="d-flex flex-column">
-          <div className="d-flex">
-            <SortBy items={soryByItems} />
+          <RefinementRow>
+            <ResultCount className="flex-grow-1 m-1" />
+            <SortBy />
             {refinements.show}
-            <CurrentRefinements />
-          </div>
-          <Hits hitComponent={BillHit} />
+          </RefinementRow>
+          <CurrentRefinements className="mt-2 mb-2" />
+          {status === "empty" ? <NoResults /> : <Hits hitComponent={BillHit} />}
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>
-    </SatelliteCustomization>
+    </SearchContainer>
   )
 }

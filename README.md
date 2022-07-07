@@ -119,4 +119,5 @@ export default createPage({
 ```
 
 Your page content goes in `Page`, and will be wrapped in a layout component. The page is rendered by `_app.tsx`.
+
 # advocacy-maps

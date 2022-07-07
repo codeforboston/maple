@@ -37,6 +37,8 @@ export class SearchIndexer {
   }
 
   async performUpgrade() {
+    // Ensure collection exists
+    await this.getCollection()
     await this.backfill()
     await this.upgradeAlias()
   }

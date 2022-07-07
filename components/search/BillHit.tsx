@@ -9,6 +9,7 @@ import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
 import { Card, Col } from "../bootstrap"
+import { formatBillId } from "../formatting"
 
 type BillRecord = {
   number: string
@@ -38,6 +39,8 @@ const StyledCard = styled(Card)`
   outline-width: 0;
   transition: outline-width 0.1s;
 
+  font-size: 0.75rem;
+
   &:hover {
     outline-width: 2px;
   }
@@ -50,9 +53,12 @@ const StyledCard = styled(Card)`
     padding: 0;
   }
 
+  .card-title {
+    margin-bottom: 0;
+  }
+
   .blurb {
     color: var(--bs-blue);
-    font-size: 0.75rem;
   }
 
   .endorse {
@@ -118,9 +124,10 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                   <TestimonyCount hit={hit} />
                 </div>
                 <Card.Title as="h6">
-                  {hit.number} - <Highlight attribute="title" hit={hit} />
+                  {formatBillId(hit.number)} -{" "}
+                  <Highlight attribute="title" hit={hit} />
                 </Card.Title>
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between flex-column">
                   <span className="blurb">
                     Sponsor: {hit.primarySponsor}{" "}
                     {hit.cosponsorCount > 0
@@ -129,7 +136,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                         }`
                       : ""}
                   </span>
-                  <span className="blurb ms-3">
+                  <span className="blurb">
                     {hit.currentCommittee &&
                       `Committee: ${hit.currentCommittee}`}
                   </span>

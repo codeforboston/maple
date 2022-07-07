@@ -11,8 +11,9 @@ export const {
   sourceCollection: db.collection(
     `/generalCourts/${currentGeneralCourt}/bills`
   ),
-  idField: "id",
+  documentTrigger: `generalCourts/${currentGeneralCourt}/bills/{id}`,
   alias: "bills",
+  idField: "id",
   schema: {
     fields: [
       { name: "number", type: "string", facet: false },
