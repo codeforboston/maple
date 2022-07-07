@@ -10,12 +10,12 @@ const GoalsAndMission = () => {
     <Container>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">Our Goals and Mission</h1>
-          <AboutPagesCard title="Our Goals">
-            <OurGoalsCardContent />
-          </AboutPagesCard>
+          <h1 className="fw-bold m-5">Our Mission &amp; Goals</h1>
           <AboutPagesCard title="Our Mission">
             <OurMissionCardContent />
+          </AboutPagesCard>
+          <AboutPagesCard title="Our Goals">
+            <OurGoalsCardContent />
           </AboutPagesCard>
         </Col>
       </Row>

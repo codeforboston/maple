@@ -90,8 +90,10 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={handleClick}
               >
-                <NavLink href="/about">Our Mission &amp; Goals</NavLink>
-                <NavLink href="#">Our Team</NavLink>
+                <NavLink href="/missionandgoals">
+                  Our Mission &amp; Goals
+                </NavLink>
+                <NavLink href="/ourteam">Our Team</NavLink>
               </Container>
 
               {authenticated && (
