@@ -19,9 +19,9 @@ const TextHeader = styled.p`
   margin: 0;
 `
 
-const PageFooter = ({ children, authenticated }: PageFooterProps) => {
+const PageFooter = ({authenticated }: PageFooterProps) => {
   return (
-    <Container fluid style={{ background: "#000", justifyContent: "center" }}>
+    <Container fluid style={{ backgroundColor: "#000", justifyContent: "center" }}>
       <Row style={{ padding: "2.5em 1.5em 0 1.5em" }}>
         <Col
           md={8}
@@ -96,7 +96,8 @@ const PageFooter = ({ children, authenticated }: PageFooterProps) => {
           </Col>
         </Col>
 
-        <Col>
+        <Col style={{display:'flex', justifyContent: 'flex-end', marginRight:'1em'}}>
+          <div style={{maxWidth:'220px'}}>
           <Row style={{ textAlign: "center" }}>
             <p style={{ fontSize: "12px", color: "#fff" }}>Follow MAPLE</p>
           </Row>
@@ -146,7 +147,7 @@ const PageFooter = ({ children, authenticated }: PageFooterProps) => {
               </Button>
             </Col>
           </Row>
-          <Row style={{ marginTop: 10 }}>
+          <Row style={{ marginTop: 10}}>
             <Image
               className="bg-transparent"
               src="maple.png"
@@ -154,9 +155,9 @@ const PageFooter = ({ children, authenticated }: PageFooterProps) => {
               width={100}
             />
           </Row>
+          </div>
         </Col>
       </Row>
-      {children}
     </Container>
   )
 }
