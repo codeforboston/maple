@@ -8,6 +8,7 @@ export const StyledColLabels = styled.div`
   align-items: flex-start;
   justify-content: center;
   padding-left: 0.5em;
+  font-size: 0.75rem;
 
   .main-text {
     font-weight: 900;
@@ -24,10 +25,11 @@ export const StyledColLabels = styled.div`
 
 export const CircleImage = styled.div`
   flex: 0;
-  width: 6em;
+  height: 5rem;
+  width: 5rem;
+  clip-path: circle(40%);
   .image {
-    clip-path: circle(40%);
-    width: 6em;
+    width: 5rem;
     height: auto;
   }
 `
@@ -42,12 +44,12 @@ export const LabeledIcon = ({
   subText: ReactNode
 }) => {
   return (
-    <div className={`d-flex flex-grow-0 border`}>
+    <div className={`d-flex flex-grow-1`}>
       <CircleImage>
         <img src={idImage} alt={`${mainText} image`} className={`image`} />
       </CircleImage>
       <StyledColLabels>
-        <div className="h5 main-text">{mainText}</div>
+        <div className="main-text">{mainText}</div>
         <p className="sub-text">{subText}</p>
       </StyledColLabels>
     </div>

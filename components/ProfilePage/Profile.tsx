@@ -1,12 +1,11 @@
 import Image from "react-bootstrap/Image"
-import { Button, Col, Container, Nav, Row } from "../bootstrap"
+import styled from "styled-components"
+import { Button, Col, Container, Row } from "../bootstrap"
 import { Profile, useProfile } from "../db"
-import { External, Internal, Wrap } from "../links"
+import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
-import styles from "./Profile.module.css"
 import { ProfileLegislators } from "./ProfileLegislators"
-import styled from "styled-components"
 
 export function ProfilePage() {
   const { profile } = useProfile()
@@ -14,16 +13,17 @@ export function ProfilePage() {
   const displayName = profile?.displayName
 
   return (
-    <Container fluid>
+    <Container>
       <ProfileHeader displayName={displayName} />
-      <Row>
+      <Row className={`mb-5`}>
         <Col xs={12} lg={8}>
-          <ProfileAboutSection profile={profile} />
+          <ProfileAboutSection profile={profile} className={`h-100`} />
         </Col>
         <Col xs={12} lg={4}>
           <ProfileLegislators
             rep={profile?.representative}
             senator={profile?.senator}
+            className={`h-100`}
           />
         </Col>
       </Row>
@@ -36,12 +36,19 @@ export function ProfilePage() {
   )
 }
 
-export const ProfileAboutSection = ({ profile }: { profile?: Profile }) => {
+export const ProfileAboutSection = ({
+  profile,
+  className
+}: {
+  profile?: Profile
+  className?: string
+}) => {
   const { twitter, linkedIn }: { twitter?: string; linkedIn?: string } =
     profile?.social ?? {}
 
   return (
     <TitledSectionCard
+      className={className}
       title={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
       bug={<Socials twit={twitter} linkedIn={linkedIn} />}
       footer={<></>}
@@ -77,7 +84,7 @@ export const Socials = ({
 )
 
 export const ProfileDisplayName = styled.div.attrs(props => ({
-  className: props.className
+  className: `${props.className}`
 }))`
   margin: 0;
   font-family: Nunito;
@@ -87,11 +94,11 @@ export const ProfileDisplayName = styled.div.attrs(props => ({
   color: #000;
 
   .firstName {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   .lastName {
-    font-size: 44px;
+    font-size: 2.75rem;
   }
 `
 
@@ -120,10 +127,15 @@ export const ProfileHeader = ({ displayName }: { displayName?: string }) => {
         className={`col-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start`}
       >
         <UserIcon className={`col d-none d-sm-flex`} />
-        {displayName && (
+        {displayName ? (
           <ProfileDisplayName className={``}>
-            <div className={`firstName`}>{firstName}</div>
-            <div className={`lastName`}>{lastName}</div>
+            <div className={`firstName text-capitalize`}>{firstName}</div>
+            <div className={`lastName text-capitalize`}>{lastName}</div>
+          </ProfileDisplayName>
+        ) : (
+          <ProfileDisplayName className={``}>
+            <div className={`firstName text-capitalize`}>Anonymous</div>
+            <div className={`lastName text-capitalize`}>User</div>
           </ProfileDisplayName>
         )}
       </Col>

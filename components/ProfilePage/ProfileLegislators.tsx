@@ -1,8 +1,5 @@
-import { ProfileMember, useMember } from "../db"
 import { useEffect, useState } from "react"
-import { Col, Container, Row } from "../bootstrap"
-import Image from "react-bootstrap/Image"
-import styles from "./ProfileLegislators.module.css"
+import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
@@ -37,13 +34,15 @@ const DisplayLegislator = ({
 
 export function ProfileLegislators({
   rep,
-  senator
+  senator,
+  className
 }: {
   rep?: ProfileMember
   senator?: ProfileMember
+  className?: string
 }) {
   return (
-    <TitledSectionCard title={`Legislators`}>
+    <TitledSectionCard title={`Legislators`} className={className}>
       <DisplayLegislator
         legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
       />
