@@ -17,10 +17,22 @@
 }
 
 .card {
-  margin: 3rem 2rem;
+  margin: 2rem 2rem;
   padding-top: 0;
   padding-bottom: 0;
   border-radius: 12px;
+}
+
+.title {
+  font-family: "Nunito";
+  font-size: 3rem;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -1.88px;
+  text-align: left;
+  color: #000;
 }
 
 .subheader {
