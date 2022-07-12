@@ -33,10 +33,10 @@
   width: 100%;
   height: auto;
   padding: 2rem 3rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 12px;
   flex-direction: row;
-    flex-wrap: wrap;
+  flex-wrap: wrap;
   display: flex;
   margin: 3rem 0;
 }

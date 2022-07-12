@@ -1,8 +1,8 @@
 import styles from "./RoleOfTestimonyCard.module.css"
 import Image from "react-bootstrap/Image"
-import {Col} from "../bootstrap"
+import { Col } from "../bootstrap"
 
-const RoleOfTestimonyCard = ({ title, key, index, alt, paragraph, src}) => {
+const RoleOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
   return (
     <div className={styles.card}>
       <Col
@@ -10,10 +10,12 @@ const RoleOfTestimonyCard = ({ title, key, index, alt, paragraph, src}) => {
         md={6}
         lg={{ order: index % 2 == 0 ? 0 : 5 }}
       >
-        <Image fluid className={styles.imageItself}src={src} alt={alt} />
+        <Image fluid className={styles.imageItself} src={src} alt={alt} />
       </Col>
-      <Col className={index % 2 == 0 ? styles.textRight : styles.textLeft} 
-        lg={{ order: 3 }}>
+      <Col
+        className={index % 2 == 0 ? styles.textRight : styles.textLeft}
+        lg={{ order: 3 }}
+      >
         <div className={styles.title}>{title}</div>
         <div className={styles.content}>{paragraph}</div>
       </Col>
