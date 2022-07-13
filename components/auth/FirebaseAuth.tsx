@@ -1,4 +1,4 @@
-import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth"
+import { GoogleAuthProvider } from "firebase/auth"
 import { useMemo } from "react"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 import styled from "styled-components"
@@ -7,6 +7,19 @@ import { auth } from "../firebase"
 const AuthButtons = styled(StyledFirebaseAuth)<{ borderless?: boolean }>`
   .firebaseui-container {
     ${props => props.borderless && "box-shadow: none;"}
+  }
+
+  .firebaseui-idp-list {
+    padding: 0 0;
+    margin: 0 0;
+  }
+
+  .firebaseui-idp-list > .firebaseui-list-item {
+    margin: 0 0;
+  }
+
+  .firebaseui-idp-button {
+    width: 100%;
   }
 `
 
@@ -24,10 +37,7 @@ const FirebaseAuth: React.FC<{
         },
         signInFailure: error => void console.warn("Sign in failure", error)
       },
-      signInOptions: [
-        EmailAuthProvider.PROVIDER_ID,
-        GoogleAuthProvider.PROVIDER_ID
-      ]
+      signInOptions: [GoogleAuthProvider.PROVIDER_ID]
     }),
     [onSignIn]
   )

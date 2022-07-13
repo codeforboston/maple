@@ -26,6 +26,11 @@
   border: none;
 }
 
+.modal-header {
+  background-color: var(--bs-blue);
+  color: white;
+}
+
 .whitebackground {
   background-color: white;
 }
