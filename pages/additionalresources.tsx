@@ -8,7 +8,8 @@ const content = [
   {
     paragraph: {
       title: ``,
-      P1: `The MA Legislature has an online tool you can use to identify your legislators based on your home address.  https://malegislature.gov/Search/FindMyLegislator `
+      P1: `The MA Legislature has an online tool you can use to identify your legislators based on your home address.`
+      // https://malegislature.gov/Search/FindMyLegislator
     }
   },
   {
@@ -20,7 +21,8 @@ const content = [
   {
     paragraph: {
       title: ``,
-      P1: `Mass Legal Services published a 2007 guide to The Legislative Process in Massachusetts.  https://www.masslegalservices.org/content/legislative-process-massachusetts-0`
+      P1: `Mass Legal Services published a 2007 guide to The Legislative Process in Massachusetts.`
+      //  https://www.masslegalservices.org/content/legislative-process-massachusetts-0
     }
   }
 ]
