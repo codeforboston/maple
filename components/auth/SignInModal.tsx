@@ -1,43 +1,60 @@
-import React from "react"
+import React, { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
-import { Button, Col, FloatingLabel, Form, Modal, Stack } from "../bootstrap"
+import { useForm } from "react-hook-form"
+import { Button, Col, Form, Modal, Stack } from "../bootstrap"
 import Divider from "../Divider/Divider"
+import Input from "../forms/Input"
+import PasswordInput from "../forms/PasswordInput"
 import * as links from "../links"
 import FirebaseAuth from "./FirebaseAuth"
+
+type SignInData = { email: string; password: string }
 
 export default function SignInModal({
   show,
   onHide
 }: Pick<ModalProps, "show" | "onHide">) {
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    clearErrors,
+    formState: { errors }
+  } = useForm<SignInData>()
+
+  useEffect(() => {
+    if (!show) clearErrors()
+  }, [show, clearErrors])
+
+  const onSubmit = ({ email, password }: SignInData) => {
+    console.log(email, password)
   }
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="sign-in-modal" centered>
-      <Modal.Header closeButton closeVariant="white">
+      <Modal.Header closeButton>
         <Modal.Title id="sign-in-modal">Sign In</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
-          <Form onSubmit={handleSignIn}>
-            <FloatingLabel controlId="email" label="Email" className="mb-3">
-              <Form.Control
-                id="email"
+          <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+            <Stack gap={2}>
+              <Input
+                label="Email"
                 type="email"
-                placeholder="name@example.com"
+                {...register("email", { required: "An email is required." })}
+                error={errors.email?.message}
               />
-            </FloatingLabel>
 
-            <FloatingLabel
-              controlId="password"
-              label="Password"
-              className="mb-2"
-            >
-              <Form.Control id="password" type="password" placeholder="123" />
-            </FloatingLabel>
+              <PasswordInput
+                label="Password"
+                {...register("password", {
+                  required: "A password is required."
+                })}
+                error={errors.password?.message}
+              />
+            </Stack>
 
-            <div className="mb-4 text-center fs-6">
+            <div className="mt-2 mb-4 text-center fs-6">
               <links.Internal href="#">Forgot password?</links.Internal>
             </div>
 
@@ -46,7 +63,7 @@ export default function SignInModal({
                 Sign In
               </Button>
 
-              <Divider>or</Divider>
+              <Divider className="px-4">or</Divider>
 
               <FirebaseAuth borderless />
             </Stack>
