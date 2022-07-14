@@ -1,7 +1,7 @@
 import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
 import RoleOfTestimonyCard from "../components/RoleOfTestimony/RoleOfTestimonyCard"
-import styles from "../components/LearnTestimonies/LearnTestimoniesCard.module.css"
+import styles from "../components/AdditionalResources/AdditionalResourcesCard.module.css"
 
 const content = [
   {
