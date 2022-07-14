@@ -8,21 +8,39 @@ const content = [
   {
     paragraph: {
       title: ``,
-      P1: `The MA Legislature has an online tool you can use to identify your legislators based on your home address.`
-      // https://malegislature.gov/Search/FindMyLegislator
+      P1: (
+        <>
+          The MA Legislature has an{" "}
+          <a href="https://malegislature.gov/Search/FindMyLegislator">
+            online tool
+          </a>{" "}
+          you can use to identify your legislators based on your home address.
+        </>
+      )
     }
   },
   {
     paragraph: {
       title: ``,
-      P1: `The MA Legislature publishes a 13-step guide on How an Idea Becomes a Law.`
+      P1: (
+        <>
+          The MA Legislature publishes a 13-step guide on How an Idea Becomes a
+          Law.
+        </>
+      )
     }
   },
   {
     paragraph: {
       title: ``,
-      P1: `Mass Legal Services published a 2007 guide to The Legislative Process in Massachusetts.`
-      //  https://www.masslegalservices.org/content/legislative-process-massachusetts-0
+      P1: (
+        <>
+          Mass Legal Services published a 2007 guide to The{" "}
+          <a href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0">
+            Legislative Process in Massachusetts.
+          </a>
+        </>
+      )
     }
   }
 ]
