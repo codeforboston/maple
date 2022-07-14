@@ -22,8 +22,10 @@ const content = [
     paragraph: {
       P1: (
         <>
-          The MA Legislature publishes a 13-step guide on How an Idea Becomes a
-          Law.
+          The MA Legislature publishes a{" "}
+          <a href="https://malegislature.gov/Content/Documents/HowAnIdeaBecomesLaw/HowAnIdeaBecomesLaw.pdf">
+            13-step guide on How an Idea Becomes a Law.
+          </a>
         </>
       )
     }
