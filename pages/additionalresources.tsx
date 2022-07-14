@@ -7,7 +7,6 @@ import styles from "../components/AdditionalResources/AdditionalResourcesCard.mo
 const content = [
   {
     paragraph: {
-      title: ``,
       P1: (
         <>
           The MA Legislature has an{" "}
@@ -21,7 +20,6 @@ const content = [
   },
   {
     paragraph: {
-      title: ``,
       P1: (
         <>
           The MA Legislature publishes a 13-step guide on How an Idea Becomes a
@@ -32,7 +30,6 @@ const content = [
   },
   {
     paragraph: {
-      title: ``,
       P1: (
         <>
           Mass Legal Services published a 2007 guide to The{" "}
