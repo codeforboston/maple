@@ -81,6 +81,9 @@ const TopNav: React.FC = () => {
                 <NavLink href="/learntestimonies">
                   Writing Effective Testimonies
                 </NavLink>
+                <NavLink href="/learnbasicsoftestimony">
+                  Basics Of Testimony
+                </NavLink>
                 <NavLink href="/learnroleoftestimony">
                   Role Of Testimony
                 </NavLink>
