@@ -5,15 +5,17 @@ import { Button, Col, Form, Modal, Stack } from "../bootstrap"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
-import * as links from "../links"
 import SocialSignOnButtons from "./SocialSignOnButtons"
 
 type SignInData = { email: string; password: string }
 
 export default function SignInModal({
   show,
-  onHide
-}: Pick<ModalProps, "show" | "onHide">) {
+  onHide,
+  onForgotPassword
+}: Pick<ModalProps, "show" | "onHide"> & {
+  onForgotPassword: () => void
+}) {
   const {
     register,
     handleSubmit,
@@ -36,7 +38,11 @@ export default function SignInModal({
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
-          <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <Form
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            className="d-flex flex-column align-items-center"
+          >
             <Stack gap={2}>
               <Input
                 label="Email"
@@ -54,9 +60,14 @@ export default function SignInModal({
               />
             </Stack>
 
-            <div className="mt-2 mb-4 text-center fs-6">
-              <links.Internal href="#">Forgot password?</links.Internal>
-            </div>
+            {/* TODO: fix focous ring color */}
+            <Button
+              variant="link"
+              className="mt-2 mb-4 py-0 px-0"
+              onClick={onForgotPassword}
+            >
+              Forgot password?
+            </Button>
 
             <Stack gap={4}>
               <Button type="submit" className="w-100">
