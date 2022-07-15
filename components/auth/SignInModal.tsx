@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import { Button, Col, Form, Modal, Stack } from "../bootstrap"
@@ -6,7 +6,7 @@ import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
 import * as links from "../links"
-import FirebaseAuth from "./FirebaseAuth"
+import SocialSignOnButtons from "./SocialSignOnButtons"
 
 type SignInData = { email: string; password: string }
 
@@ -65,7 +65,7 @@ export default function SignInModal({
 
               <Divider className="px-4">or</Divider>
 
-              <FirebaseAuth borderless />
+              <SocialSignOnButtons />
             </Stack>
           </Form>
         </Col>

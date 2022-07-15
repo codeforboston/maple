@@ -2,7 +2,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useId } from "@react-aria/utils"
 import clsx from "clsx"
-import React, { useState } from "react"
+import { forwardRef, useState } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { Form, FloatingLabel } from "../bootstrap"
 import styles from "./PasswordInput.module.css"
@@ -12,7 +12,7 @@ type PasswordInputProps = Omit<FormControlProps, "type"> & {
   error?: string
 }
 
-const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
+const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, error, className, ...restProps }, ref) => {
     const id = useId()
     const errorId = `${id}-error`

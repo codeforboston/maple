@@ -1,5 +1,6 @@
 import { useId } from "@react-aria/utils"
-import React from "react"
+import clsx from "clsx"
+import { forwardRef } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { Form, FloatingLabel } from "../bootstrap"
 
@@ -8,7 +9,7 @@ type InputProps = FormControlProps & {
   error?: string
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className, ...restProps }, ref) => {
     const id = useId()
     const errorId = `${id}-error`
@@ -24,7 +25,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholder={label}
             isInvalid={hasError}
             aria-invalid={hasError}
-            aria-describedby={hasError ? errorId : undefined}
+            aria-describedby={clsx(hasError && errorId)}
           />
 
           <Form.Control.Feedback type="invalid" id={errorId}>
