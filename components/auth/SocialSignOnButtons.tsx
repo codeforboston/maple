@@ -14,8 +14,13 @@ type AuthButton = (props: {
 }) => JSX.Element
 
 const GoogleButton: AuthButton = ({ onClick, loading }) => (
-  <LoadingButton variant="light" onClick={onClick} loading={loading}>
-    <Image src="google-icon.png" alt="Google" className="mx-4" />
+  <LoadingButton
+    variant="light"
+    onClick={onClick}
+    loading={loading}
+    spinnerProps={{ className: "me-4" }}
+  >
+    <Image src="google-icon.png" alt="Google" className="me-4" />
     Continue with Google
   </LoadingButton>
 )
@@ -41,7 +46,10 @@ export default function SocialSignOnButtons() {
 
   const isLoading = (providerId: string) => {
     const [loadingProvider] = signInWithProvider.currentParams || []
-    return loadingProvider?.providerId === providerId
+    return (
+      signInWithProvider.status === "loading" &&
+      loadingProvider?.providerId === providerId
+    )
   }
 
   return (
