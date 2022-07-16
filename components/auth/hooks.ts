@@ -1,7 +1,9 @@
 import {
+  AuthProvider,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signInWithPopup
 } from "firebase/auth"
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
@@ -59,5 +61,11 @@ export type SendPasswordResetEmailData = { email: string }
 export function useSendPasswordResetEmail() {
   return useAsyncCallback(async ({ email }: SendPasswordResetEmailData) => {
     await sendPasswordResetEmail(auth, email)
+  })
+}
+
+export function useSignInWithPopUp() {
+  return useAsyncCallback(async (provider: AuthProvider) => {
+    await signInWithPopup(auth, provider)
   })
 }

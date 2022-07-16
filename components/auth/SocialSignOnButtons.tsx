@@ -1,12 +1,7 @@
-import {
-  AuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup
-} from "firebase/auth"
-import { useAsyncCallback } from "react-async-hook"
+import { AuthProvider, GoogleAuthProvider } from "firebase/auth"
 import { Image, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import { auth } from "../firebase"
+import { useSignInWithPopUp } from "./hooks"
 
 type AuthButton = (props: {
   onClick: () => void
@@ -30,19 +25,7 @@ const buttons: { provider: AuthProvider; SignInButton: AuthButton }[] = [
 ]
 
 export default function SocialSignOnButtons() {
-  const signInWithProvider = useAsyncCallback(
-    async (provider: AuthProvider) => {
-      try {
-        const userCredentials = await signInWithPopup(auth, provider)
-        console.log(userCredentials)
-      } catch (err) {
-        console.log(
-          `error while signing in with provider id ${provider.providerId}:`,
-          err
-        )
-      }
-    }
-  )
+  const signInWithProvider = useSignInWithPopUp()
 
   const isLoading = (providerId: string) => {
     const [loadingProvider] = signInWithProvider.currentParams || []
