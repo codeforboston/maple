@@ -5,7 +5,7 @@ import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import PageFooter from "./Footer/Footer"
 import ProfileLink from "./ProfileLink/ProfileLink"
-import {NavLink} from './Navlink';
+import { NavLink } from "./Navlink"
 
 export type LayoutProps = {
   title?: string
@@ -22,7 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
-      <PageFooter authenticated={true}/>
+      <PageFooter authenticated={true} />
     </>
   )
 }
@@ -107,4 +107,3 @@ const TopNav: React.FC = () => {
     </>
   )
 }
-
