@@ -1,5 +1,6 @@
 import React from "react"
-import { Button } from "./bootstrap"
+import type { ButtonProps } from "react-bootstrap"
+import { Button, Spinner } from "./bootstrap"
 
 export const TableButton = ({
   onclick,
@@ -14,3 +15,28 @@ export const TableButton = ({
     </Button>
   )
 }
+
+export const LoadingButton = ({
+  loading,
+  children,
+  disabled,
+  ...restProps
+}: ButtonProps & { loading: boolean }) => (
+  <Button {...restProps} disabled={loading || disabled}>
+    {loading ? (
+      <>
+        <Spinner
+          as="span"
+          animation="border"
+          size="sm"
+          role="status"
+          aria-hidden
+          className="me-2"
+        />
+        <span className="visually-hidden">Loading...</span>
+      </>
+    ) : null}
+
+    {children}
+  </Button>
+)

@@ -1,16 +1,8 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  Modal,
-  Row,
-  Spinner,
-  Stack
-} from "../bootstrap"
+import { Alert, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
@@ -128,26 +120,13 @@ export default function SignUpModal({
             </Stack>
 
             <Stack gap={4}>
-              <Button
+              <LoadingButton
                 type="submit"
                 className="w-100"
-                disabled={createUserWithEmailAndPassword.loading}
+                loading={createUserWithEmailAndPassword.loading}
               >
-                {createUserWithEmailAndPassword.loading ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden
-                      className="me-2"
-                    />
-                    <span className="visually-hidden">Loading...</span>
-                  </>
-                ) : null}
                 Sign Up
-              </Button>
+              </LoadingButton>
 
               <Divider className="px-4">or</Divider>
 

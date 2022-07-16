@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Button, Col, Form, Image, Modal, Spinner } from "../bootstrap"
+import { Alert, Col, Form, Image, Modal } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
 import { SendPasswordResetEmailData, useSendPasswordResetEmail } from "./hooks"
 
@@ -73,22 +74,13 @@ export default function ForgotPasswordModal({
                 className="mb-4"
               />
 
-              <Button type="submit" className="w-100">
-                {sendPasswordResetEmail.loading ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden
-                      className="me-2"
-                    />
-                    <span className="visually-hidden">Loading...</span>
-                  </>
-                ) : null}
+              <LoadingButton
+                type="submit"
+                className="w-100"
+                loading={sendPasswordResetEmail.loading}
+              >
                 Send Recovery Email
-              </Button>
+              </LoadingButton>
             </Form>
           ) : null}
         </Col>

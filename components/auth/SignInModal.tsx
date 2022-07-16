@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Button, Col, Form, Modal, Spinner, Stack } from "../bootstrap"
+import { Alert, Button, Col, Form, Modal, Stack } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
@@ -83,22 +84,13 @@ export default function SignInModal({
             </Button>
 
             <Stack gap={4}>
-              <Button type="submit" className="w-100" disabled={signIn.loading}>
-                {signIn.loading ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden
-                      className="me-2"
-                    />
-                    <span className="visually-hidden">Loading...</span>
-                  </>
-                ) : null}
+              <LoadingButton
+                type="submit"
+                className="w-100"
+                loading={signIn.loading}
+              >
                 Sign In
-              </Button>
+              </LoadingButton>
 
               <Divider className="px-4">or</Divider>
 
