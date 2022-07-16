@@ -1,13 +1,15 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Col, Form, Modal, Stack } from "../bootstrap"
+import { Alert, Button, Col, Form, Modal, Spinner, Stack } from "../bootstrap"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
+import {
+  SignInWithEmailAndPasswordData,
+  useSignInWithEmailAndPassword
+} from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
-
-type SignInData = { email: string; password: string }
 
 export default function SignInModal({
   show,
@@ -19,16 +21,23 @@ export default function SignInModal({
   const {
     register,
     handleSubmit,
-    clearErrors,
+    reset,
     formState: { errors }
-  } = useForm<SignInData>()
+  } = useForm<SignInWithEmailAndPasswordData>()
+
+  const signIn = useSignInWithEmailAndPassword()
 
   useEffect(() => {
-    if (!show) clearErrors()
-  }, [show, clearErrors])
+    if (!show) {
+      reset()
+      signIn.reset()
+    }
+    // could not add a reference to signIn.reset to dep array without triggering an infinite effect, so:
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [show, reset])
 
-  const onSubmit = ({ email, password }: SignInData) => {
-    console.log(email, password)
+  const onSubmit = (credentials: SignInWithEmailAndPasswordData) => {
+    signIn.execute(credentials)
   }
 
   return (
@@ -38,6 +47,10 @@ export default function SignInModal({
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
+          {signIn.error ? (
+            <Alert variant="danger">{signIn.error.message}</Alert>
+          ) : null}
+
           <Form
             noValidate
             onSubmit={handleSubmit(onSubmit)}
@@ -60,7 +73,7 @@ export default function SignInModal({
               />
             </Stack>
 
-            {/* TODO: fix focous ring color */}
+            {/* TODO: fix focus ring color */}
             <Button
               variant="link"
               className="mt-2 mb-4 py-0 px-0"
@@ -70,7 +83,20 @@ export default function SignInModal({
             </Button>
 
             <Stack gap={4}>
-              <Button type="submit" className="w-100">
+              <Button type="submit" className="w-100" disabled={signIn.loading}>
+                {signIn.loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden
+                      className="me-2"
+                    />
+                    <span className="visually-hidden">Loading...</span>
+                  </>
+                ) : null}
                 Sign In
               </Button>
 

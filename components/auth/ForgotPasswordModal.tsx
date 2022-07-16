@@ -1,10 +1,9 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Col, Form, Image, Modal } from "../bootstrap"
+import { Alert, Button, Col, Form, Image, Modal, Spinner } from "../bootstrap"
 import Input from "../forms/Input"
-
-type ForgotPasswordData = { email: string }
+import { SendPasswordResetEmailData, useSendPasswordResetEmail } from "./hooks"
 
 export default function ForgotPasswordModal({
   show,
@@ -13,17 +12,23 @@ export default function ForgotPasswordModal({
   const {
     register,
     handleSubmit,
-    clearErrors,
+    reset,
     formState: { errors }
-  } = useForm<ForgotPasswordData>()
+  } = useForm<SendPasswordResetEmailData>()
+
+  const sendPasswordResetEmail = useSendPasswordResetEmail()
 
   useEffect(() => {
-    if (!show) clearErrors()
-  }, [show, clearErrors])
+    if (!show) {
+      reset()
+      sendPasswordResetEmail.reset()
+    }
+    // could not add a reference to sendPasswordResetEmail.reset to dep array without triggering an infinite effect, so:
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [show, reset])
 
-  const onSubmit = ({ email }: ForgotPasswordData) => {
-    console.log(email)
-    // https://firebase.google.com/docs/auth/web/manage-users#send_a_password_reset_email
+  const onSubmit = (userToSendEmailTo: SendPasswordResetEmailData) => {
+    sendPasswordResetEmail.execute(userToSendEmailTo)
   }
 
   return (
@@ -43,8 +48,20 @@ export default function ForgotPasswordModal({
           <div className="d-flex flex-column align-items-center mb-2">
             <Image src="mail.png" alt="Mail entering mailbox" fluid />
 
-            <p className="h5">We'll email you with a link to reset it.</p>
+            {sendPasswordResetEmail.status === "success" ? (
+              <div role="alert" className="h5">
+                Check your inbox!
+              </div>
+            ) : (
+              <p className="h5">We'll email you with a link to reset it.</p>
+            )}
           </div>
+
+          {sendPasswordResetEmail.error ? (
+            <Alert variant="danger">
+              {sendPasswordResetEmail.error.message}
+            </Alert>
+          ) : null}
 
           <Form noValidate onSubmit={handleSubmit(onSubmit)}>
             <Input
@@ -56,6 +73,19 @@ export default function ForgotPasswordModal({
             />
 
             <Button type="submit" className="w-100">
+              {sendPasswordResetEmail.loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden
+                    className="me-2"
+                  />
+                  <span className="visually-hidden">Loading...</span>
+                </>
+              ) : null}
               Send Recovery Email
             </Button>
           </Form>
