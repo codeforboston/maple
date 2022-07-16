@@ -1,17 +1,19 @@
 import Head from "next/head"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
-import { SignInWithModal, SignOut, useAuth } from "./auth"
+import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
+import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
-import ProfileLink from "./ProfileLink/ProfileLink"
 import { NavLink } from "./Navlink"
-
+import ProfileLink from "./ProfileLink/ProfileLink"
 export type LayoutProps = {
   title?: string
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+  const { authenticated } = useAuth()
+
   return (
     <>
       <Head>
@@ -22,7 +24,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
-      <PageFooter authenticated={true} />
+      <PageFooter
+        authenticated={authenticated}
+        signOut={() => void auth.signOut()}
+      />
     </>
   )
 }
@@ -96,9 +101,9 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <div>
-                  <SignOut variant="secondary" size="sm" />
-                </div>
+                <NavLink href="" handleClick={() => auth.signOut()}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
