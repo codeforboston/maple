@@ -3,16 +3,21 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth"
-import { Button, Image, Stack } from "../bootstrap"
+import { useAsyncCallback } from "react-async-hook"
+import { Image, Stack } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import { auth } from "../firebase"
 
-type AuthButton = (props: { onClick: () => void }) => JSX.Element
+type AuthButton = (props: {
+  onClick: () => void
+  loading: boolean
+}) => JSX.Element
 
-const GoogleButton: AuthButton = ({ onClick }) => (
-  <Button variant="light" onClick={onClick}>
+const GoogleButton: AuthButton = ({ onClick, loading }) => (
+  <LoadingButton variant="light" onClick={onClick} loading={loading}>
     <Image src="google-icon.png" alt="Google" className="mx-4" />
     Continue with Google
-  </Button>
+  </LoadingButton>
 )
 
 const buttons: { provider: AuthProvider; SignInButton: AuthButton }[] = [
@@ -20,16 +25,23 @@ const buttons: { provider: AuthProvider; SignInButton: AuthButton }[] = [
 ]
 
 export default function SocialSignOnButtons() {
-  const signInWithProvider = async (provider: AuthProvider) => {
-    try {
-      const userCredentials = await signInWithPopup(auth, provider)
-      console.log(userCredentials)
-    } catch (err) {
-      console.log(
-        `error while signing in with provider id ${provider.providerId}:`,
-        err
-      )
+  const signInWithProvider = useAsyncCallback(
+    async (provider: AuthProvider) => {
+      try {
+        const userCredentials = await signInWithPopup(auth, provider)
+        console.log(userCredentials)
+      } catch (err) {
+        console.log(
+          `error while signing in with provider id ${provider.providerId}:`,
+          err
+        )
+      }
     }
+  )
+
+  const isLoading = (providerId: string) => {
+    const [loadingProvider] = signInWithProvider.currentParams || []
+    return loadingProvider?.providerId === providerId
   }
 
   return (
@@ -37,7 +49,8 @@ export default function SocialSignOnButtons() {
       {buttons.map(({ provider, SignInButton }) => (
         <SignInButton
           key={provider.providerId}
-          onClick={() => signInWithProvider(provider)}
+          loading={isLoading(provider.providerId)}
+          onClick={() => signInWithProvider.execute(provider)}
         />
       ))}
     </Stack>

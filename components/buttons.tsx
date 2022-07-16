@@ -21,7 +21,7 @@ export const LoadingButton = ({
   children,
   disabled,
   ...restProps
-}: ButtonProps & { loading: boolean }) => (
+}: ButtonProps & { loading?: boolean }) => (
   <Button {...restProps} disabled={loading || disabled}>
     {loading ? (
       <>
