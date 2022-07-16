@@ -28,10 +28,6 @@ export default function ForgotPasswordModal({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
 
-  const onSubmit = (userToSendEmailTo: SendPasswordResetEmailData) => {
-    sendPasswordResetEmail.execute(userToSendEmailTo)
-  }
-
   return (
     <Modal
       show={show}
@@ -65,7 +61,10 @@ export default function ForgotPasswordModal({
           ) : null}
 
           {sendPasswordResetEmail.status !== "success" ? (
-            <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+            <Form
+              noValidate
+              onSubmit={handleSubmit(sendPasswordResetEmail.execute)}
+            >
               <Input
                 label="Email"
                 type="email"
