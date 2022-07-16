@@ -1,19 +1,24 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import {
+  Alert,
+  Button,
+  Col,
+  Form,
+  Modal,
+  Row,
+  Spinner,
+  Stack
+} from "../bootstrap"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
+import {
+  CreateUserWithEmailAndPasswordData,
+  useCreateUserWithEmailAndPassword
+} from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
-
-type SignUpData = {
-  email: string
-  fullName: string
-  nickname: string
-  password: string
-  confirmedPassword: string
-}
 
 export default function SignUpModal({
   show,
@@ -22,17 +27,24 @@ export default function SignUpModal({
   const {
     register,
     handleSubmit,
-    clearErrors,
+    reset,
     getValues,
     formState: { errors }
-  } = useForm<SignUpData>()
+  } = useForm<CreateUserWithEmailAndPasswordData>()
+
+  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword()
 
   useEffect(() => {
-    if (!show) clearErrors()
-  }, [show, clearErrors])
+    if (!show) {
+      reset()
+      createUserWithEmailAndPassword.reset()
+    }
+    // could not add a reference to createUserWithEmailAndPassword.reset to dep array without triggering an infinite effect, so:
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [show, reset])
 
-  const onSubmit = (signUpData: SignUpData) => {
-    console.log(signUpData)
+  const onSubmit = (newUser: CreateUserWithEmailAndPasswordData) => {
+    createUserWithEmailAndPassword.execute(newUser)
   }
 
   return (
@@ -48,6 +60,12 @@ export default function SignUpModal({
       </Modal.Header>
       <Modal.Body>
         <Col md={11} className="mx-auto">
+          {createUserWithEmailAndPassword.error ? (
+            <Alert variant="danger">
+              {createUserWithEmailAndPassword.error.message}
+            </Alert>
+          ) : null}
+
           <Form noValidate onSubmit={handleSubmit(onSubmit)}>
             <Stack gap={3} className="mb-4">
               <Input
@@ -84,7 +102,8 @@ export default function SignUpModal({
                       minLength: {
                         value: 8,
                         message: "Your password must be 8 characters or longer."
-                      }
+                      },
+                      deps: ["confirmedPassword"]
                     })}
                     error={errors.password?.message}
                   />
@@ -109,7 +128,24 @@ export default function SignUpModal({
             </Stack>
 
             <Stack gap={4}>
-              <Button type="submit" className="w-100">
+              <Button
+                type="submit"
+                className="w-100"
+                disabled={createUserWithEmailAndPassword.loading}
+              >
+                {createUserWithEmailAndPassword.loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden
+                      className="me-2"
+                    />
+                    <span className="visually-hidden">Loading...</span>
+                  </>
+                ) : null}
                 Sign Up
               </Button>
 

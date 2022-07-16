@@ -1,9 +1,11 @@
 import Head from "next/head"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
+import { auth } from "./firebase"
 import { Wrap } from "./links"
 import ProfileLink from "./ProfileLink/ProfileLink"
 
@@ -28,13 +30,23 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
-  const displayName = useAuth().user?.displayName!
+  const { profile } = useProfile()
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleClick = () => {
-    setIsExpanded(false)
-    console.log("Clicked")
-  }
+  const toggleNav = () => setIsExpanded(!isExpanded)
+  const closeNav = () => setIsExpanded(false)
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      // when a user clicks the sign out button, the navbar is left open.
+      // this fixes that
+      if (user === null) {
+        closeNav()
+      }
+    })
+
+    return unsubscribe
+  }, [])
 
   return (
     <>
@@ -45,10 +57,7 @@ const TopNav: React.FC = () => {
         expanded={isExpanded}
       >
         <Container>
-          <Navbar.Toggle
-            aria-controls="topnav"
-            onClick={() => setIsExpanded(isExpanded ? false : true)}
-          />
+          <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
           <Navbar.Brand>
             <Nav.Link href="/">
               <Image fluid src="nav-logo.png" alt="logo"></Image>
@@ -58,25 +67,25 @@ const TopNav: React.FC = () => {
             {!authenticated ? (
               <SignInWithModal />
             ) : (
-              <ProfileLink displayName={displayName}></ProfileLink>
+              <ProfileLink displayName={profile?.displayName} />
             )}
           </Nav>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
-              <NavLink href="/" handleClick={handleClick}>
+              <NavLink href="/" handleClick={closeNav}>
                 Home
               </NavLink>
-              <NavLink href="/bills" handleClick={handleClick}>
+              <NavLink href="/bills" handleClick={closeNav}>
                 Bills
               </NavLink>
-              <NavLink href="/testimonies" handleClick={handleClick}>
+              <NavLink href="/testimonies" handleClick={closeNav}>
                 Testimony
               </NavLink>
 
               <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
               <Container
                 style={{ alignContent: "flex-end" }}
-                onClick={handleClick}
+                onClick={closeNav}
               >
                 <NavLink href="/learntestimonies">
                   Writing Effective Testimonies
@@ -91,7 +100,7 @@ const TopNav: React.FC = () => {
               <Navbar.Text className="navbar-section-header">About</Navbar.Text>
               <Container
                 style={{ alignContent: "flex-end" }}
-                onClick={handleClick}
+                onClick={closeNav}
               >
                 <NavLink href="/missionandgoals">
                   Our Mission &amp; Goals

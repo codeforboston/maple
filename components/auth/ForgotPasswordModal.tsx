@@ -63,32 +63,34 @@ export default function ForgotPasswordModal({
             </Alert>
           ) : null}
 
-          <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-            <Input
-              label="Email"
-              type="email"
-              {...register("email", { required: "An email is required." })}
-              error={errors.email?.message}
-              className="mb-4"
-            />
+          {sendPasswordResetEmail.status !== "success" ? (
+            <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+              <Input
+                label="Email"
+                type="email"
+                {...register("email", { required: "An email is required." })}
+                error={errors.email?.message}
+                className="mb-4"
+              />
 
-            <Button type="submit" className="w-100">
-              {sendPasswordResetEmail.loading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden
-                    className="me-2"
-                  />
-                  <span className="visually-hidden">Loading...</span>
-                </>
-              ) : null}
-              Send Recovery Email
-            </Button>
-          </Form>
+              <Button type="submit" className="w-100">
+                {sendPasswordResetEmail.loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden
+                      className="me-2"
+                    />
+                    <span className="visually-hidden">Loading...</span>
+                  </>
+                ) : null}
+                Send Recovery Email
+              </Button>
+            </Form>
+          ) : null}
         </Col>
       </Modal.Body>
     </Modal>
