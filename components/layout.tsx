@@ -1,11 +1,11 @@
 import Head from "next/head"
-import { useRouter } from "next/router"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithModal, SignOut, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
-import { Wrap } from "./links"
+import PageFooter from "./Footer/Footer"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import {NavLink} from './Navlink';
 
 export type LayoutProps = {
   title?: string
@@ -22,6 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
+      <PageFooter authenticated={true}/>
     </>
   )
 }
@@ -107,17 +108,3 @@ const TopNav: React.FC = () => {
   )
 }
 
-const NavLink: React.FC<{ href: string; handleClick?: any }> = ({
-  href,
-  handleClick,
-  children
-}) => {
-  const router = useRouter()
-  return (
-    <Wrap href={href}>
-      <Nav.Link active={router.pathname === href} onClick={handleClick}>
-        {children}
-      </Nav.Link>
-    </Wrap>
-  )
-}
