@@ -20,14 +20,12 @@ export default function StartModal({
       </Modal.Header>
       <Modal.Body>
         <Col md={7} className="mx-auto">
-          <Stack gap={3} className="mb-4 text-center">
-            <Col xs={8} md={12} className="mx-auto">
-              <Image
-                fluid
-                src="fancy-govt-with-bg.png"
-                alt="Government Building"
-              />
-            </Col>
+          <Stack gap={3} direction="vertical" className="mb-4 text-center">
+            <Image
+              fluid
+              src="fancy-govt-with-bg.png"
+              alt="Government Building"
+            />
 
             <p className="h5">
               Add your voice to the conversation by becoming a member!

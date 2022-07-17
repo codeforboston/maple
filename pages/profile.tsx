@@ -149,6 +149,7 @@ export default createPage({
             }}
           />
         </Col>
+        {/* TODO: add fullName field */}
         <div key={`inline-radio`} className="mb-3">
           <div>
             Are you an individual or an organization?{" "}

@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Col, Form, Image, Modal } from "../bootstrap"
+import { Alert, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
 import { SendPasswordResetEmailData, useSendPasswordResetEmail } from "./hooks"
@@ -46,7 +46,7 @@ export default function ForgotPasswordModal({
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
-          <div className="d-flex flex-column align-items-center mb-2">
+          <Stack direction="vertical" className="align-items-center mb-2">
             <Image src="mail.png" alt="Mail entering mailbox" fluid />
 
             {sendPasswordResetEmail.status === "success" ? (
@@ -56,7 +56,7 @@ export default function ForgotPasswordModal({
             ) : (
               <p className="h5">We'll email you with a link to reset it.</p>
             )}
-          </div>
+          </Stack>
 
           {sendPasswordResetEmail.error ? (
             <Alert variant="danger">
@@ -71,7 +71,7 @@ export default function ForgotPasswordModal({
                 type="email"
                 {...register("email", { required: "An email is required." })}
                 error={errors.email?.message}
-                className="mb-4"
+                className="mb-3"
               />
 
               <LoadingButton

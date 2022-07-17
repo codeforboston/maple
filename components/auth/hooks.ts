@@ -65,6 +65,7 @@ export function useCreateUserWithEmailAndPassword() {
         password
       )
 
+      // TODO: handle errors here - potentially try to delete the created user to give a feel of "transactionality"?
       await setProfile(credentials.user.uid, {
         displayName: nickname,
         fullName

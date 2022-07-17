@@ -74,7 +74,6 @@ export default function SignInModal({
               />
             </Stack>
 
-            {/* TODO: fix focus ring color */}
             <Button
               variant="link"
               className="mt-2 mb-4 py-0 px-0"

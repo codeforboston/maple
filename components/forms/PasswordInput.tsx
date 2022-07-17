@@ -45,6 +45,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             aria-describedby={clsx(hasError && errorId, toggleId)}
           />
 
+          {/* TODO: fix focus ring color */}
           <button
             type="button"
             onClick={toggleIsShowing}
