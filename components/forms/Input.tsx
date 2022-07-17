@@ -4,7 +4,11 @@ import { forwardRef } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { Form, FloatingLabel } from "../bootstrap"
 
-type InputProps = FormControlProps & {
+type InputProps = Omit<
+  FormControlProps,
+  // we manage these props, so we want ts to yell at you if you pass them in
+  "placeholder" | "isInvalid" | "aria-invalid" | "aria-describedby"
+> & {
   label: string
   error?: string
 }

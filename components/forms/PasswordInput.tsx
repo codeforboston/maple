@@ -7,7 +7,11 @@ import type { FormControlProps } from "react-bootstrap"
 import { Form, FloatingLabel } from "../bootstrap"
 import styles from "./PasswordInput.module.css"
 
-type PasswordInputProps = Omit<FormControlProps, "type"> & {
+type PasswordInputProps = Omit<
+  FormControlProps,
+  // we manage these props, so we want ts to yell at you if you pass them in
+  "type" | "placeholder" | "isInvalid" | "aria-invalid" | "aria-describedby"
+> & {
   label: string
   error?: string
 }
