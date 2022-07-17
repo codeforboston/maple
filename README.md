@@ -8,7 +8,7 @@ Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/de
 
 Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-boston/events/) and join our group.
 
-You can find good first issues in our product and sprint backlogs [here on Zenhub](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board?labels=good%20first%20issue).
+You can find good first issues [here](https://github.com/codeforboston/advocacy-maps/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
 ## Links
 
@@ -73,7 +73,7 @@ See issues organized on our [project board](https://app.zenhub.com/workspaces/de
 
 When you send out a PR that addresses an issue, [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
 
-Once all checks pass on the PR and it is approved, you can merge it!
+Add a reviewer to your PR. If you're not sure who has the context to review, add `alexjball`. Once all the checks pass and someone approves your PR, you can merge it!
 
 ## Developing Locally
 
