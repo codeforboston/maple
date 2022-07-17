@@ -37,6 +37,10 @@ export default function SignInModal({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
 
+  const onSubmit = handleSubmit(credentials => {
+    signIn.execute(credentials)
+  })
+
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="sign-in-modal" centered>
       <Modal.Header closeButton>
@@ -50,7 +54,7 @@ export default function SignInModal({
 
           <Form
             noValidate
-            onSubmit={handleSubmit(signIn.execute)}
+            onSubmit={onSubmit}
             className="d-flex flex-column align-items-center"
           >
             <Stack gap={2}>

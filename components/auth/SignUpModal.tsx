@@ -35,6 +35,10 @@ export default function SignUpModal({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
 
+  const onSubmit = handleSubmit(newUser => {
+    createUserWithEmailAndPassword.execute(newUser)
+  })
+
   return (
     <Modal
       show={show}
@@ -54,10 +58,7 @@ export default function SignUpModal({
             </Alert>
           ) : null}
 
-          <Form
-            noValidate
-            onSubmit={handleSubmit(createUserWithEmailAndPassword.execute)}
-          >
+          <Form noValidate onSubmit={onSubmit}>
             <Stack gap={3} className="mb-4">
               <Input
                 label="Email"

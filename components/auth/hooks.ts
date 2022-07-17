@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app"
 import {
   AuthProvider,
   createUserWithEmailAndPassword,
@@ -9,7 +10,38 @@ import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
 
-// TODO: map firebase errors to nice error messages
+const errorMessages: Record<string, string | undefined> = {
+  // TODO: do we want to tell users this? this opens us up to user enumeration attacks
+  "auth/email-already-exists": "You already have an account.",
+  // same here
+  "auth/wrong-password": "Your password is wrong.",
+  "auth/invalid-email": "The email you provided is not a valid email.",
+  "auth/user-not-found": "You don't have an account."
+}
+
+const getErrorMessage = (errorCode?: string) => {
+  const niceErrorMessage = errorCode ? errorMessages[errorCode] : undefined
+  return niceErrorMessage || "Something went wrong!"
+}
+
+function useFirebaseFunction<Params, Result>(
+  fn: (params: Params) => Promise<Result>
+) {
+  return useAsyncCallback(async (params: Params) => {
+    try {
+      // necessary to await here so we trap any errors thrown by the function
+      const result = await fn(params)
+      return result
+    } catch (err) {
+      console.log(err)
+
+      const message = getErrorMessage(
+        err instanceof FirebaseError ? err.code : undefined
+      )
+      throw new Error(message)
+    }
+  })
+}
 
 export type CreateUserWithEmailAndPasswordData = {
   email: string
@@ -20,23 +52,25 @@ export type CreateUserWithEmailAndPasswordData = {
 }
 
 export function useCreateUserWithEmailAndPassword() {
-  return useAsyncCallback(
+  return useFirebaseFunction(
     async ({
       email,
       fullName,
       nickname,
       password
     }: CreateUserWithEmailAndPasswordData) => {
-      const { user } = await createUserWithEmailAndPassword(
+      const credentials = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       )
 
-      await setProfile(user.uid, {
+      await setProfile(credentials.user.uid, {
         displayName: nickname,
         fullName
       })
+
+      return credentials
     }
   )
 }
@@ -44,28 +78,22 @@ export function useCreateUserWithEmailAndPassword() {
 export type SignInWithEmailAndPasswordData = { email: string; password: string }
 
 export function useSignInWithEmailAndPassword() {
-  return useAsyncCallback(
-    async ({ email, password }: SignInWithEmailAndPasswordData) => {
-      const credentials = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      console.log(credentials)
-    }
+  return useFirebaseFunction(
+    ({ email, password }: SignInWithEmailAndPasswordData) =>
+      signInWithEmailAndPassword(auth, email, password)
   )
 }
 
 export type SendPasswordResetEmailData = { email: string }
 
 export function useSendPasswordResetEmail() {
-  return useAsyncCallback(async ({ email }: SendPasswordResetEmailData) => {
-    await sendPasswordResetEmail(auth, email)
-  })
+  return useFirebaseFunction(({ email }: SendPasswordResetEmailData) =>
+    sendPasswordResetEmail(auth, email)
+  )
 }
 
 export function useSignInWithPopUp() {
-  return useAsyncCallback(async (provider: AuthProvider) => {
-    await signInWithPopup(auth, provider)
-  })
+  return useFirebaseFunction((provider: AuthProvider) =>
+    signInWithPopup(auth, provider)
+  )
 }
