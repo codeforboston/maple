@@ -35,7 +35,7 @@ const LegislatorForm: React.FC<{
   return (
     <Form>
       <Form.Group className="mb-3">
-        <Form.Label as="h4">Representative</Form.Label>
+        <Form.FloatingLabel label="Representative"></Form.FloatingLabel>
         <Search
           placeholder="Search your representative"
           index={index.representatives}
@@ -46,7 +46,7 @@ const LegislatorForm: React.FC<{
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label as="h4">Senator</Form.Label>
+        <Form.FloatingLabel label="Senator"></Form.FloatingLabel>
         <Search
           placeholder="Search your senator"
           index={index.senators}

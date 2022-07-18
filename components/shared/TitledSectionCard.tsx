@@ -6,6 +6,7 @@ const StyledCard = styled(Card)`
   margin: 1rem;
   border-radius: 1rem;
   background: var(--bs-white);
+  border: none;
 `
 
 const HeaderTitle = styled.div.attrs({
@@ -54,15 +55,15 @@ const TitledSectionCard = ({
   className?: string
 }) => {
   return (
-      <StyledCard className={className}>
-        <Header title={title} bug={bug} />
-        <Card.Body className={`mx-1 mx-md-3`}>{children}</Card.Body>
-        {footer && (
-          <StyledFooter style={{ borderRadius: "0 0 1rem 1rem" }}>
-            {footer}
-          </StyledFooter>
-        )}
-      </StyledCard>
+    <StyledCard className={className}>
+      <Header title={title} bug={bug} />
+      <Card.Body className={`mx-1 mx-md-3`}>{children}</Card.Body>
+      {footer && (
+        <StyledFooter style={{ borderRadius: "0 0 1rem 1rem" }}>
+          {footer}
+        </StyledFooter>
+      )}
+    </StyledCard>
   )
 }
 

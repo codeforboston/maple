@@ -57,3 +57,9 @@ export const FormattedTestimonyTitle = ({
     </div>
   )
 }
+
+
+export const decodeHtmlCharCodes = (s: string) =>
+  s.replace(/(&#(\d+);)/g, (match, capture, charCode) =>
+    String.fromCharCode(charCode)
+  )

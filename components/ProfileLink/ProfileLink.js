@@ -1,7 +1,4 @@
-import {
-  Container, Nav,
-  Navbar
-} from "react-bootstrap"
+import { Container, Nav, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 
 const ProfileLink = ({ displayName = "User" }) => {

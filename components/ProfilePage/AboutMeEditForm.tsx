@@ -1,4 +1,6 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
+import { FormCheck } from "react-bootstrap"
+import styled from "styled-components"
 import { Button, Col, Form, Image, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import SelectLegislators from "../SelectLegislators"
@@ -36,7 +38,7 @@ export function AboutMeEditForm({
   const [newLinkedIn, setNewLinkedIn] = useState(social?.linkedIn)
 
   const handleOrganizationUpdate = (e: ChangeEvent) => {
-    // updateIsOrganization(getValue(e) === "Organization")
+    updateIsOrganization(getValue(e) === "Organization")
   }
 
   const handleNameUpdate = (e: ChangeEvent) => {
@@ -57,7 +59,7 @@ export function AboutMeEditForm({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
-  
+
     console.log(newName, newAbout, newTwitter, newLinkedIn)
     newName && updateDisplayName(newName)
     newAbout && updateAbout(newAbout)
@@ -68,13 +70,26 @@ export function AboutMeEditForm({
   return (
     <TitledSectionCard
       title={"About You"}
-      bug={<Col>allow others to see your profile</Col>}
+      bug={
+        <Row className={`justify-content-center`}>
+          <FormCheck
+            className={`col-auto`}
+            type="checkbox"
+            checked={isPublic}
+            onChange={() => updateIsPublic(!isPublic)}
+          />
+          <Form.Label className={`col`}>
+            Allow others to see your profile
+          </Form.Label>
+        </Row>
+      }
     >
       <Form onSubmit={onSubmit}>
         <Form.FloatingLabel label="User Type" className="mb-3">
           <Form.Select
             value={organization ? "Organization" : "Individual"}
             onChange={handleOrganizationUpdate}
+            className="bg-white"
           >
             <option>Organization</option>
             <option>Individual</option>
@@ -85,35 +100,43 @@ export function AboutMeEditForm({
             type="text"
             value={newName}
             onChange={handleNameUpdate}
+            className="bg-white"
           />
         </Form.FloatingLabel>
         <Form.FloatingLabel
           label="Write something about your organization"
-          className="mb-3"
+          className="mb-3 bg-white"
         >
           <Form.Control
             value={newAbout}
             as="textarea"
             style={{ height: "100px" }}
             onChange={handleAboutUpdate}
+            className={`bg-white`}
           />
         </Form.FloatingLabel>
         <Row>
-          <Image
-            className="col-2"
-            style={{ objectFit: "contain" }}
-            alt="Profile image"
-            src={"leaf-asset.png"}
-            fluid
-          ></Image>
-          <UploadProfileImage />
-          <Form.Group as={Col} name="SocialMedia">
+          <Col className="d-grid justify-content-center align-items-start">
+            <Image
+              className="bg-success w-50 m-auto"
+              style={{ objectFit: "contain" }}
+              alt="Profile image"
+              src={"leaf-asset.png"}
+            ></Image>
+            <Form.Control
+              className={`bg-white`}
+              type="file"
+              accept="image/png, image/jpg"
+            />
+          </Col>
+          <Col>
             <Form.FloatingLabel label="Twitter Username" className="mb-3">
               <Form.Control
                 name="twitter"
                 type="text"
                 value={social?.twitter}
                 onChange={handleTwitterUpdate}
+                className={`bg-white`}
               />
             </Form.FloatingLabel>
             <Form.FloatingLabel label="LinkedIn Username" className="mb-3">
@@ -122,18 +145,18 @@ export function AboutMeEditForm({
                 type="text"
                 value={social?.linkedIn}
                 onChange={handleLinkedInUpdate}
+                className={`bg-white`}
               />
             </Form.FloatingLabel>
-          </Form.Group>
+            <SelectLegislators />
+          </Col>
         </Row>
-          <Form.Group className="d-flex col-auto m-auto">
-            <Button className="flex-grow-0 m-auto" type="submit">
+        <Form.Group className="d-flex col-auto m-auto">
+          <Button className="flex-grow-0 m-auto" type="submit">
             Save Profile
-            </Button>
-          </Form.Group>
+          </Button>
+        </Form.Group>
       </Form>
-      <SelectLegislators />
-      <Row className={`row-cols-1`}></Row>
     </TitledSectionCard>
   )
 }
