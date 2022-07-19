@@ -15,9 +15,9 @@ import SocialSignOnButtons from "./SocialSignOnButtons"
 export default function SignInModal({
   show,
   onHide,
-  onForgotPassword
+  onForgotPasswordClick
 }: Pick<ModalProps, "show" | "onHide"> & {
-  onForgotPassword: () => void
+  onForgotPasswordClick: () => void
 }) {
   const {
     register,
@@ -77,7 +77,7 @@ export default function SignInModal({
             <Button
               variant="link"
               className="mt-2 mb-4 py-0 px-0"
-              onClick={onForgotPassword}
+              onClick={onForgotPasswordClick}
             >
               Forgot password?
             </Button>

@@ -20,7 +20,6 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, error, className, ...restProps }, ref) => {
     const id = useId()
     const errorId = `${id}-error`
-    const toggleId = `${id}-toggle`
 
     const hasError = Boolean(error)
 
@@ -36,19 +35,24 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         >
           <Form.Control
             {...restProps}
-            type={isShowing ? "text" : "password"}
             ref={ref}
+            type={isShowing ? "text" : "password"}
             placeholder={label}
             className={styles.passwordInput}
             isInvalid={hasError}
             aria-invalid={hasError}
-            aria-describedby={clsx(hasError && errorId, toggleId)}
+            aria-describedby={clsx(hasError && errorId)}
           />
 
-          {/* TODO: fix focus ring color */}
+          <p aria-live="polite" className="visually-hidden">
+            {isShowing ? `${label} showing` : `${label} hidden`}
+          </p>
+
           <button
             type="button"
             onClick={toggleIsShowing}
+            role="switch"
+            aria-checked={isShowing}
             aria-label={isShowing ? `Hide ${label}` : `Show ${label}`}
             className={clsx(
               styles.toggleButton,

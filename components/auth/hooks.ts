@@ -11,15 +11,13 @@ import { setProfile } from "../db"
 import { auth } from "../firebase"
 
 const errorMessages: Record<string, string | undefined> = {
-  // TODO: do we want to tell users this? this opens us up to user enumeration attacks
   "auth/email-already-exists": "You already have an account.",
-  // same here
   "auth/wrong-password": "Your password is wrong.",
   "auth/invalid-email": "The email you provided is not a valid email.",
   "auth/user-not-found": "You don't have an account."
 }
 
-const getErrorMessage = (errorCode?: string) => {
+function getErrorMessage(errorCode?: string) {
   const niceErrorMessage = errorCode ? errorMessages[errorCode] : undefined
   return niceErrorMessage || "Something went wrong!"
 }
@@ -65,7 +63,6 @@ export function useCreateUserWithEmailAndPassword() {
         password
       )
 
-      // TODO: handle errors here - potentially try to delete the created user to give a feel of "transactionality"?
       await setProfile(credentials.user.uid, {
         displayName: nickname,
         fullName

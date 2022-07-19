@@ -20,28 +20,33 @@ const GoogleButton: AuthButton = ({ onClick, loading }) => (
   </LoadingButton>
 )
 
-const buttons: { provider: AuthProvider; SignInButton: AuthButton }[] = [
-  { provider: new GoogleAuthProvider(), SignInButton: GoogleButton }
+type ButtonWithProvider = {
+  provider: AuthProvider
+  SignOnButton: AuthButton
+}
+
+const buttons: ButtonWithProvider[] = [
+  { provider: new GoogleAuthProvider(), SignOnButton: GoogleButton }
 ]
 
 export default function SocialSignOnButtons() {
-  const signInWithProvider = useSignInWithPopUp()
+  const signInWithPopUp = useSignInWithPopUp()
 
   const isLoading = (providerId: string) => {
-    const [loadingProvider] = signInWithProvider.currentParams || []
+    const [loadingProvider] = signInWithPopUp.currentParams || []
     return (
-      signInWithProvider.status === "loading" &&
+      signInWithPopUp.status === "loading" &&
       loadingProvider?.providerId === providerId
     )
   }
 
   return (
     <Stack gap={3}>
-      {buttons.map(({ provider, SignInButton }) => (
-        <SignInButton
+      {buttons.map(({ provider, SignOnButton }) => (
+        <SignOnButton
           key={provider.providerId}
           loading={isLoading(provider.providerId)}
-          onClick={() => signInWithProvider.execute(provider)}
+          onClick={() => signInWithPopUp.execute(provider)}
         />
       ))}
     </Stack>
