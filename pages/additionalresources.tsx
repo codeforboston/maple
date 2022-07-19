@@ -23,8 +23,8 @@ const content = [
       P1: (
         <>
           The MA Legislature publishes a{" "}
-          <a href="https://malegislature.gov/Content/Documents/HowAnIdeaBecomesLaw/HowAnIdeaBecomesLaw.pdf">
-            13-step guide on How an Idea Becomes a Law.
+          <a href="https://www.mass.gov/doc/the-legislative-process-0/download">
+            document on the legislative process.
           </a>
         </>
       )
