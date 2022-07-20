@@ -1,18 +1,16 @@
+import AwesomeDebouncePromise from "awesome-debounce-promise"
+import Fuse from "fuse.js"
+import { useMemo } from "react"
+import { GroupBase } from "react-select"
+import AsyncSelect, { AsyncProps } from "react-select/async"
+import { Form, Row, Spinner } from "./bootstrap"
 import {
   MemberSearchIndex,
-  MemberSearchIndexItem,
-  Profile,
-  ProfileHook,
+  MemberSearchIndexItem, ProfileHook,
   ProfileMember,
   useMemberSearch,
   useProfile
 } from "./db"
-import Fuse from "fuse.js"
-import AsyncSelect, { AsyncProps } from "react-select/async"
-import { GroupBase } from "react-select"
-import { useMemo } from "react"
-import { Row, Spinner, Form } from "./bootstrap"
-import AwesomeDebouncePromise from "awesome-debounce-promise"
 
 const SelectLegislators: React.FC = () => {
   const { index, loading: searchLoading } = useMemberSearch(),

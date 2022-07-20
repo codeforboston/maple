@@ -7,4 +7,3 @@ export default createPage({
     return <ProfilePage />
   }
 })
-

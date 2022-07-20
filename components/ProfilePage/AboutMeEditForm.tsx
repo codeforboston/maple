@@ -1,11 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { FormCheck } from "react-bootstrap"
-import styled from "styled-components"
 import { Button, Col, Form, Image, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import SelectLegislators from "../SelectLegislators"
 import { TitledSectionCard } from "../shared"
-import { getValue, UploadProfileImage } from "./EditProfilePage"
+import { getValue } from "./EditProfilePage"
 
 export function AboutMeEditForm({
   profile,
@@ -60,7 +59,6 @@ export function AboutMeEditForm({
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    console.log(newName, newAbout, newTwitter, newLinkedIn)
     newName && updateDisplayName(newName)
     newAbout && updateAbout(newAbout)
     newTwitter && updateSocial("twitter", newTwitter)
