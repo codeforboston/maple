@@ -6,7 +6,8 @@ import AsyncSelect, { AsyncProps } from "react-select/async"
 import { Form, Row, Spinner } from "./bootstrap"
 import {
   MemberSearchIndex,
-  MemberSearchIndexItem, ProfileHook,
+  MemberSearchIndexItem,
+  ProfileHook,
   ProfileMember,
   useMemberSearch,
   useProfile
