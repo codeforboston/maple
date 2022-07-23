@@ -192,10 +192,10 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
                             href="/about"
                             other={{ className: `${styles.footerLink}` }}
                         >
-                            Our Mission :&amp; Goals
+                            Our Mission &amp; Goals
                         </NavLink>
                         <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
-                            Our Mission :&amp; Our Team
+                            Our Mission &amp; Our Team
                         </NavLink>
                     </Col>
 
