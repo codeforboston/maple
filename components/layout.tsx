@@ -7,7 +7,6 @@ import PageFooter from "./Footer/Footer"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import { NavLink } from "./Navlink"
 
-
 export type LayoutProps = {
   title?: string
 }
@@ -24,7 +23,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       <TopNav />
       {children}
       {/* <PageFooter authenticated={true} /> */}
-        <PageFooter  authenticated={true} />
+      <PageFooter authenticated={true} />
     </>
   )
 }
