@@ -21,6 +21,23 @@ Follow these steps before deploying to a new environment:
 1. Enable CORS access for storage bucket with `yarn enable-cors-$environment` from the functions directory.
 2. Configure the Typesense api key. Copy it from the Kubernetes secret and set it in Firebase with `yarn firebase functions:secrets:set TYPESENSE_API_KEY`
 
+## One-offs
+
+To perform a migration or run batch scripts, you can either create and deploy a cloud function, then call it manually, or run the code on your local machine with the appropriate credentials for the environment.
+
+To run on your local machine, first acquire a credentials file to grant access to the project. Ask alexjball@ or [create a new key for one of the service accounts](https://cloud.google.com/docs/authentication/production#create_service_account). Then, use the `firebase-admin` tool to access the project and run scripts.
+
+For example, to set the role for a particular user by email, run this:
+
+```sh
+yarn firebase-admin \
+    -e dev \
+    -c ~/path/to/credentials.json \
+  run-script setRole \
+    --email=me@alexjball.com \
+    --role=admin
+```
+
 ## Typesense
 
 The typesense server is deployed to a kubernetes cluster using the files in `infra/k8s`. To change deployment settings, modify the config files and re-deploy them.

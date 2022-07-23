@@ -12,19 +12,22 @@ service cloud.firestore {
       allow write: if false;
     }
     match /profiles/{uid} {
-      // Always visible by the user,
-      // and public if profile.public is true or undefined (defaults to true),
-      // or if the profile is an organization.
-      // Only writeable by the user.
-      // Do not allow users to delete their profile or set the role field
-      allow read: if resource.data.public || request.auth.uid == uid || resource.data.organization
-      allow create, update: 
-        if request.auth.uid == uid && 
-           !request.resource.data
-             .diff(resource.data)
-             .affectedKeys()
-             .hasAny(['auth']);
+      function validRoleChange() {
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
+      }
 
+      function validPublicChange() {
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['public'])
+            || request.auth.token.get("role", "user") == "user"
+      }
+
+      // Always visible to the user and public if `public` is true.
+      // Only writable by the user.
+      // Do not allow users to delete their profile, set the role field.
+      // Only normal "user" roles can toggle visibility.
+      // or if the profile is an organization.
+      allow read: if resource.data.public || request.auth.uid == uid
+      allow create, update: if request.auth.uid == uid && validRoleChange() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {

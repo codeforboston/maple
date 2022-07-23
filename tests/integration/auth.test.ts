@@ -1,4 +1,6 @@
+import { UserRecord } from "firebase-admin/auth"
 import { nanoid } from "nanoid"
+import { Role } from "../../components/auth"
 import { setRole } from "../../functions/src/auth"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
 import { getProfile } from "./common"
@@ -22,29 +24,38 @@ describe("setRole", () => {
     return user
   }
 
-  it("sets user claims by email", async () => {
-    const user = await createUser()
-    const role = "user"
-    await setRole({ email: user.email, ...ctx, role })
-
+  const expectUser = async (
+    user: UserRecord,
+    role: Role,
+    isPublic: boolean
+  ) => {
     const updated = (await testAuth.getUser(user.uid)).customClaims
     expect(updated).toEqual({ role })
 
     const profile = (await getProfile(user))!
-    expect(profile.auth.role).toEqual(role)
+    expect(profile.role).toEqual(role)
+    expect(profile.public).toBe(isPublic)
+  }
+
+  it.each<[string, (u: any) => any]>([
+    ["uid", u => ({ uid: u.uid })],
+    ["email", u => ({ email: u.email })]
+  ])("sets claims by %s", async (_, extract) => {
+    const user = await createUser()
+    const role = "user"
+    await setRole({ ...extract(user), ...ctx, role })
+    expectUser(user, role, false)
   })
 
-  it("sets user claims by uid", async () => {
+  it.each<[Role, boolean]>([
+    ["user", false],
+    ["admin", false],
+    ["legislator", true],
+    ["organization", true]
+  ])("sets claims for %s", async (role, expectedPublic) => {
     const user = await createUser()
-
-    const role = "user"
     await setRole({ uid: user.uid, ...ctx, role })
-
-    const updated = (await testAuth.getUser(user.uid)).customClaims
-    expect(updated).toEqual({ role })
-
-    const profile = (await getProfile(user))!
-    expect(profile.auth.role).toEqual(role)
+    expectUser(user, role, expectedPublic)
   })
 
   it("rejects bad input", async () => {

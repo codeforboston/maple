@@ -68,6 +68,7 @@ yargs(hideBin(process.argv))
       await script(context)
     }
   )
+  .strictCommands()
   .options({
     env: { choices: ["local", "dev", "prod"], alias: "e" }
   }).argv

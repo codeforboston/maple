@@ -3,7 +3,8 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
-import { terminateFirebase, testAuth } from "../testUtils"
+import { setRole } from "../../functions/src/auth"
+import { terminateFirebase, testAuth, testDb } from "../testUtils"
 import {
   expectPermissionDenied,
   getProfile,
@@ -105,10 +106,23 @@ describe("profile", () => {
     await expectProfile(newUser)
     await signInUser(newUser.email)
 
-    await expectPermissionDenied(
-      updateDoc(profileRef, { auth: { role: "admin" } })
-    )
+    await expectPermissionDenied(updateDoc(profileRef, { role: "admin" }))
     await expectPermissionDenied(deleteDoc(profileRef))
+  })
+
+  it("Does not allow setting public for non-user roles", async () => {
+    const newUser = fakeUser()
+    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
+    await expectProfile(newUser)
+    await setRole({
+      uid: newUser.uid,
+      role: "legislator",
+      auth: testAuth,
+      db: testDb
+    })
+    await signInUser(newUser.email)
+
+    await expectPermissionDenied(updateDoc(profileRef, { public: false }))
   })
 
   async function setPublic(doc: any, isPublic: boolean) {

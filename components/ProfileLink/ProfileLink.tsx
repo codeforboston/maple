@@ -14,7 +14,7 @@ const greeting = (role: Role, displayName?: string) => {
 }
 
 const ProfileLink = ({
-  displayName = "User",
+  displayName,
   role = "user"
 }: {
   displayName?: string

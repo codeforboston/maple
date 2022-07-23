@@ -38,7 +38,6 @@ const TopNav: React.FC = () => {
 
   const handleClick = () => {
     setIsExpanded(false)
-    console.log("Clicked")
   }
 
   return (
