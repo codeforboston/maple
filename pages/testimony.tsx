@@ -70,15 +70,6 @@ export default createPage({
               <div className="mt-2">
                 <ViewAttachment testimony={testimony} />
               </div>
-              <div className="mt-4">
-                {authorPublic && (
-                  <Wrap href={`/publicprofile?id=${author}`}>
-                    <Button variant="primary" className="ms-2">
-                      View User Profile
-                    </Button>
-                  </Wrap>
-                )}
-              </div>
             </div>
           </>
         ) : (
