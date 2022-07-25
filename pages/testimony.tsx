@@ -33,6 +33,7 @@ export default createPage({
 
     const profile = usePublicProfile(testimony?.authorUid)
     const authorPublic = profile.result?.public
+    const authorLink = "/publicprofile?id=" + author
 
     return (
       <Container className="mt-3">
@@ -49,16 +50,20 @@ export default createPage({
             )}
             <div className="m-auto">
               <div>
-                <b>Author:</b> {testimony.authorDisplayName}
+                <b>
+                  {authorPublic && (
+                    <a href={authorLink}>{testimony.authorDisplayName}</a>
+                  )}
+                  {!authorPublic && testimony.authorDisplayName}
+                  {testimony.position === "neutral"
+                    ? " is neutral on "
+                    : " " + testimony.position + "d "}
+                  {" this "}{" "}
+                  <a href={`/bill?id=${bill?.content.BillNumber}`}>bill</a>
+                  {" on " + testimony.publishedAt.toDate().toLocaleDateString()}
+                </b>
               </div>
-              <div>
-                <b>Date Published:</b>{" "}
-                {testimony.publishedAt.toDate().toLocaleDateString()}
-              </div>
-              <div>
-                <b>Position:</b>{" "}
-                <span className="text-capitalize">{testimony.position}</span>
-              </div>
+
               <div style={{ whiteSpace: "pre-wrap" }}>
                 <b>Testimony:</b> {testimony.content}
               </div>
@@ -66,11 +71,6 @@ export default createPage({
                 <ViewAttachment testimony={testimony} />
               </div>
               <div className="mt-4">
-                <Wrap href={`/bill?id=${bill?.content.BillNumber}`}>
-                  <Button variant="primary" className="ms-2">
-                    View Bill
-                  </Button>
-                </Wrap>
                 {authorPublic && (
                   <Wrap href={`/publicprofile?id=${author}`}>
                     <Button variant="primary" className="ms-2">
