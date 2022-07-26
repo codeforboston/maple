@@ -1,4 +1,4 @@
-import { Card } from "../bootstrap"
+import Card from "react-bootstrap/Card"
 import styles from "./LearnTestimoniesCard.module.css"
 
 const LearnTestimoniesCard = ({ title, children }) => {

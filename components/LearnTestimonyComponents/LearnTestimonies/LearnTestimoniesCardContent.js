@@ -1,7 +1,8 @@
-import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./LearnTestimoniesCard.module.css"
 import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 
 const LearnTestimoniesCardContent = ({ children, src, alt, index }) => {
   return (

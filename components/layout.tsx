@@ -78,14 +78,8 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={handleClick}
               >
-                <NavLink href="/learntestimonies">
-                  Writing Effective Testimonies
-                </NavLink>
                 <NavLink href="/learnbasicsoftestimony">
-                  Basics Of Testimony
-                </NavLink>
-                <NavLink href="/learnroleoftestimony">
-                  Role Of Testimony
+                  Learn About Testimony
                 </NavLink>
                 <NavLink href="/legprocess">Contacting Legislatures</NavLink>
                 <NavLink href="#">Additional Resources</NavLink>
