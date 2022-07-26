@@ -1,17 +1,19 @@
 import Head from "next/head"
-import { useRouter } from "next/router"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
-import { SignInWithModal, SignOut, useAuth } from "./auth"
+import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
-import { Wrap } from "./links"
+import { auth } from "./firebase"
+import PageFooter from "./Footer/Footer"
+import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
-
 export type LayoutProps = {
   title?: string
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+  const { authenticated } = useAuth()
+
   return (
     <>
       <Head>
@@ -22,6 +24,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
+      <PageFooter
+        authenticated={authenticated}
+        signOut={() => void auth.signOut()}
+      />
     </>
   )
 }
@@ -81,8 +87,9 @@ const TopNav: React.FC = () => {
                 <NavLink href="/learnbasicsoftestimony">
                   Learn About Testimony
                 </NavLink>
-                <NavLink href="/legprocess">Contacting Legislatures</NavLink>
-                <NavLink href="#">Additional Resources</NavLink>
+                <NavLink href="/additionalresources">
+                  Additional Resources
+                </NavLink>
               </Container>
 
               <Navbar.Text className="navbar-section-header">About</Navbar.Text>
@@ -97,29 +104,14 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <div>
-                  <SignOut variant="secondary" size="sm" />
-                </div>
+                <NavLink href="" handleClick={() => auth.signOut()}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
     </>
-  )
-}
-
-const NavLink: React.FC<{ href: string; handleClick?: any }> = ({
-  href,
-  handleClick,
-  children
-}) => {
-  const router = useRouter()
-  return (
-    <Wrap href={href}>
-      <Nav.Link active={router.pathname === href} onClick={handleClick}>
-        {children}
-      </Nav.Link>
-    </Wrap>
   )
 }
