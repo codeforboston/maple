@@ -58,15 +58,17 @@ export default createPage({
         {testimony ? (
           <>
             <div>
-              {bill ? (
-                <a href={billLink}>{`${formatBillId(
-                  bill.content.BillNumber
-                )}: ${bill.content.Title}`}</a>
-              ) : loading ? (
-                ""
-              ) : (
-                <div>This testimony is not connected to a specific bill</div>
-              )}
+              <h3>
+                {bill ? (
+                  <a href={billLink}>{`${formatBillId(
+                    bill.content.BillNumber
+                  )}: ${bill.content.Title}`}</a>
+                ) : loading ? (
+                  ""
+                ) : (
+                  <div>This testimony is not connected to a specific bill</div>
+                )}
+              </h3>
             </div>
 
             <div>
