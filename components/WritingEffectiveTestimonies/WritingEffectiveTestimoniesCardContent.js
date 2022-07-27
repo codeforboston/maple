@@ -1,9 +1,14 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./LearnTestimoniesCard.module.css"
+import styles from "./WritingEffectiveTestimoniesCard.module.css"
 import Container from "react-bootstrap/Container"
 
-const LearnTestimoniesCardContent = ({ children, src, alt, index }) => {
+const WritingEffectiveTestimoniesCardContent = ({
+  children,
+  src,
+  alt,
+  index
+}) => {
   return (
     <Container fluid>
       <Row className="my-auto">
@@ -25,4 +30,4 @@ const LearnTestimoniesCardContent = ({ children, src, alt, index }) => {
   )
 }
 
-export default LearnTestimoniesCardContent
+export default WritingEffectiveTestimoniesCardContent

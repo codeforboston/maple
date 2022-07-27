@@ -68,7 +68,7 @@ const OurGoalsCardContent = () => (
 const OurMissionCardContent = () => (
   <>
     <h3 className={`text-center fw-bold mb-4 ${styles.missionheader}`}>
-      increase the transparency of the legislative process in Massachusetts
+      Increase the transparency of the legislative process in Massachusetts
     </h3>
     <Row className="mb-5">
       <Col>
