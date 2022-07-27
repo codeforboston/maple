@@ -41,7 +41,7 @@ describe("profile", () => {
     await expect(getProfile(expected)).resolves.toBeUndefined()
     const profile = await expectProfile(expected)
     expect(profile.displayName).toEqual(expected.displayName)
-    expect(profile.auth.role).toEqual("user")
+    expect(profile.role).toEqual("user")
   })
 
   it("Is not publicly readable by default", async () => {
