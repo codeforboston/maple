@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { createPage } from "../components/page"
-import Tabs from "../components/Tabs/Tabs"
 import {
   Basics,
   Role,
   Write
 } from "../components/LearnTestimonyComponents/LearnComponents"
+import { createPage } from "../components/page"
+import Tabs from "../components/Tabs/Tabs"
 
 type TabsType = {
   label: string

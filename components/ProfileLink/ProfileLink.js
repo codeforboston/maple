@@ -1,14 +1,5 @@
-import React from "react"
-import {
-  Collapse,
-  Container,
-  Dropdown,
-  Nav,
-  Navbar,
-  NavDropdown
-} from "react-bootstrap"
+import { Container, Nav, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { SignOut } from "../auth"
 
 const ProfileLink = ({ displayName = "User" }) => {
   return (
