@@ -1,8 +1,8 @@
-import styles from "./BasicsOfTestimonyCard.module.css"
 import Image from "react-bootstrap/Image"
 import { Col } from "../bootstrap"
+import styles from "./BasicsOfTestimonyCard.module.css"
 
-const RoleOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
+const BasicsOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
   return (
     <div className={styles.card}>
       <Col
@@ -28,4 +28,4 @@ const RoleOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
   )
 }
 
-export default RoleOfTestimonyCard
+export default BasicsOfTestimonyCard
