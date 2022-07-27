@@ -37,16 +37,12 @@ export const Layout = ({ bill }: BillProps) => {
       </Row>
       <Row className="mt-4">
         <Col>
-          {/* <Col md={8}> */}
           <SponsorsAndCommittees bill={bill} />
           <LabeledContainer className="mt-3">
             <div className="mb-2 title">Testimony</div>
             <BillTestimonies bill={bill.content} />
           </LabeledContainer>
         </Col>
-        {/* <Col md={4}>
-          <SubmitTestimony> SubmitTestimony</SubmitTestimony>
-        </Col> */}
       </Row>
     </StyledContainer>
   )

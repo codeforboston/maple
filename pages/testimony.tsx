@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { Button, Spinner } from "react-bootstrap"
+import { Col, Row, Spinner } from "react-bootstrap"
 import { Container } from "../components/bootstrap"
 import {
   useBill,
@@ -7,9 +7,26 @@ import {
   usePublishedTestimonyListing
 } from "../components/db"
 import { formatBillId } from "../components/formatting"
-import { Wrap } from "../components/links"
 import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
+import styled from "styled-components"
+
+const Position = styled(Container)`
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+`
+const Testimony = styled(Container)`
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-image: url("quote-left.svg");
+  background-repeat: no-repeat;
+  background-size: 4rem;
+  background-position: 0.5rem 0.5rem;
+`
 
 export default createPage({
   title: "Testimony",
@@ -34,42 +51,52 @@ export default createPage({
     const profile = usePublicProfile(testimony?.authorUid)
     const authorPublic = profile.result?.public
     const authorLink = "/publicprofile?id=" + author
+    const billLink = "/bill?id=" + bill?.content.BillNumber
 
     return (
       <Container className="mt-3">
         {testimony ? (
           <>
-            {bill ? (
-              <h1>{`${formatBillId(bill.content.BillNumber)}: ${
-                bill.content.Title
-              }`}</h1>
-            ) : loading ? (
-              ""
-            ) : (
-              <div>This testimony is not connected to a specific bill</div>
-            )}
-            <div className="m-auto">
-              <div>
-                <b>
-                  {authorPublic && (
-                    <a href={authorLink}>{testimony.authorDisplayName}</a>
-                  )}
-                  {!authorPublic && testimony.authorDisplayName}
-                  {testimony.position === "neutral"
-                    ? " is neutral on "
-                    : " " + testimony.position + "d "}
-                  {" this "}{" "}
-                  <a href={`/bill?id=${bill?.content.BillNumber}`}>bill</a>
-                  {" on " + testimony.publishedAt.toDate().toLocaleDateString()}
-                </b>
+            <div>
+              {bill ? (
+                <a href={billLink}>{`${formatBillId(
+                  bill.content.BillNumber
+                )}: ${bill.content.Title}`}</a>
+              ) : loading ? (
+                ""
+              ) : (
+                <div>This testimony is not connected to a specific bill</div>
+              )}
+            </div>
+
+            <div>
+              <div className="mt-4">
+                <Position>
+                  <h3>
+                    {authorPublic && (
+                      <a href={authorLink}>{testimony.authorDisplayName}</a>
+                    )}
+                    {!authorPublic && testimony.authorDisplayName}
+                    {testimony.position === "neutral"
+                      ? " is neutral on "
+                      : " " + testimony.position + "d "}
+                    {" this "}{" "}
+                    <a href={`/bill?id=${bill?.content.BillNumber}`}>bill</a>
+                    {" on " +
+                      testimony.publishedAt.toDate().toLocaleDateString()}
+                  </h3>
+                </Position>
               </div>
 
-              <div style={{ whiteSpace: "pre-wrap" }}>
-                <b>Testimony:</b> {testimony.content}
+              <div className="mt-4">
+                <Testimony>{testimony.content}</Testimony>
               </div>
+
               <div className="mt-2">
                 <ViewAttachment testimony={testimony} />
               </div>
+
+              <div className="mt-4"></div>
             </div>
           </>
         ) : (
