@@ -11,7 +11,7 @@ import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
 import styled from "styled-components"
 
-const Position = styled(Container)`
+const PositionSentence = styled(Container)`
   background-color: white;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -73,21 +73,21 @@ export default createPage({
 
             <div>
               <div className="mt-4">
-                <Position>
+                <PositionSentence>
                   <h3>
                     {authorPublic && (
                       <a href={authorLink}>{testimony.authorDisplayName}</a>
                     )}
                     {!authorPublic && testimony.authorDisplayName}
-                    {testimony.position === "neutral"
-                      ? " is neutral on "
-                      : " " + testimony.position + "d "}
-                    {" this "}{" "}
-                    <a href={`/bill?id=${bill?.content.BillNumber}`}>bill</a>
-                    {" on " +
+                    <span style={{ color: "#FF8600" }}>
+                      {testimony.position === "neutral"
+                        ? " is neutral on "
+                        : " " + testimony.position + "d "}
+                    </span>
+                    {" this bill on " +
                       testimony.publishedAt.toDate().toLocaleDateString()}
                   </h3>
-                </Position>
+                </PositionSentence>
               </div>
 
               <div className="mt-4">
