@@ -8,12 +8,11 @@ import { FormattedBillTitle } from "../formatting"
 import { Internal } from "../links"
 import { PositionLabel } from "./PositionBug"
 
-export default function ViewTestimony() {
-  const { user } = useAuth()
+export default function ViewTestimony({ uid }: { uid?: string }) {
   const {
     items: { loading, result },
     setFilter
-  } = usePublishedTestimonyListing({ uid: user?.uid })
+  } = usePublishedTestimonyListing({ uid: uid })
 
   const testimony = useMemo(() => {
     return result ?? []

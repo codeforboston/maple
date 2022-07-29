@@ -1,160 +1,269 @@
-import { ChangeEvent, FormEvent, useState } from "react"
-import { FormCheck } from "react-bootstrap"
-import { Button, Col, Form, Image, Row } from "../bootstrap"
+import clsx from "clsx"
+import { ChangeEvent, useState } from "react"
+import { FormCheck, FormControlProps } from "react-bootstrap"
+import { useForm } from "react-hook-form"
+import { Button, Form, Image, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
-import SelectLegislators from "../SelectLegislators"
 import { TitledSectionCard } from "../shared"
-import { getValue } from "./EditProfilePage"
+import { Header } from "../shared/TitledSectionCard"
+import { YourLegislators } from "./YourLegislators"
 
-export function AboutMeEditForm({
-  profile,
-  actions
-}: {
+type UpdateProfileData = {
+  name: string
+  aboutYou: string
+  twitter: string
+  linkedIn: string
+  public: boolean
+  organization: boolean
+  profileImage: any
+}
+
+type Props = {
   profile: Profile
   actions: ProfileHook
-}) {
+  uid?: string
+}
+
+async function updateProfile(
+  { profile, actions, uid }: Props,
+  data: UpdateProfileData
+) {
+  const {
+    updateIsPublic,
+    updateSocial,
+    updateAbout,
+    updateDisplayName,
+    updateProfileImage,
+    updateIsOrganization
+  } = actions
+
+  await updateIsPublic(data.public)
+  await updateSocial("linkedIn", data.linkedIn)
+  await updateSocial("twitter", data.twitter)
+  await updateAbout(data.aboutYou)
+  await updateDisplayName(data.name)
+  await updateIsOrganization(data.organization)
+  // await updateProfileImage(data.profileImage) disabled until permissions to be updated in fb storage
+  console.log("done update")
+}
+
+export function AboutMeEditForm({ profile, actions, uid }: Props) {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit
+  } = useForm<UpdateProfileData>()
+
   const {
     displayName,
     about,
     organization,
-    representative,
     public: isPublic,
-    senator,
-    social
+    social,
+    profileImage
   }: Profile = profile
 
-  const {
-    updateIsPublic,
-    updateIsOrganization,
-    updateSocial,
-    updateAbout,
-    updateDisplayName
-  } = actions
+  const userType = organization ? "organization" : "individual"
 
-  const [newName, setNewName] = useState(displayName)
-  const [newAbout, setNewAbout] = useState(about)
-  const [newTwitter, setNewTwitter] = useState(social?.twitter)
-  const [newLinkedIn, setNewLinkedIn] = useState(social?.linkedIn)
+  const { updateIsOrganization } = actions
 
-  const handleOrganizationUpdate = (e: ChangeEvent) => {
-    updateIsOrganization(getValue(e) === "Organization")
-  }
+  const onSubmit = handleSubmit(async update => {
+    await updateProfile({ profile, actions }, update)
+  })
 
-  const handleNameUpdate = (e: ChangeEvent) => {
-    setNewName(getValue(e))
-  }
-  const handleAboutUpdate = (e: ChangeEvent) => {
-    setNewAbout(getValue(e))
-  }
-  const handleIsPublicUpdate = (e: ChangeEvent) => {}
+  return (
+    <TitledSectionCard>
+      <Form onSubmit={onSubmit}>
+        <Header
+          title={"About You"}
+          bug={
+            <Row className={`justify-content-center`}>
+              <FormCheck
+                className={`col-auto`}
+                type="checkbox"
+                defaultChecked={isPublic}
+                {...register("public")}
+              />
+              <Form.Label className={`col`}>
+                Allow others to see your profile
+              </Form.Label>
+            </Row>
+          }
+        ></Header>
+        <div className={`mx-1 mx-md-3`}>
+          <Form.FloatingLabel label="User Type" className="mb-3">
+            <Form.Select
+              className="bg-white"
+              {...register("organization")}
+              defaultValue={userType}
+              onChange={e =>
+                updateIsOrganization(e.target.value === "organization")
+              }
+            >
+              <option value="organization">Organization</option>
+              <option value="individual">Individual</option>
+            </Form.Select>
+          </Form.FloatingLabel>
+          <TextInput
+            name="Name"
+            registerProps={register("name")}
+            defaultValue={displayName}
+          />
+          <TextAreaInput
+            name="AboutYou"
+            placeHolder={
+              organization
+                ? "Write something about your organization"
+                : "Write something about yourself"
+            }
+            registerProps={register("aboutYou")}
+            defaultValue={about}
+          />
+          <div className={clsx("w-100", organization && "row")}>
+            {organization && (
+              <ImageInput
+                registerProps={register("profileImage")}
+                imageSrc={"https://randomuser.me/api/portraits/lego/0.jpg"}
+              />
+            )}
+            <div className="col">
+              <TextInput
+                label="Twitter Username"
+                name="twitter"
+                registerProps={register("twitter")}
+                defaultValue={social?.twitter}
+              />
+              <TextInput
+                label="LinkedIn Username"
+                name="linkedIn"
+                registerProps={register("linkedIn")}
+                defaultValue={social?.linkedIn}
+              />
+            </div>
+          </div>
+          <Form.Group className="d-flex col-auto m-auto">
+            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
+              Save Profile
+            </Button>
+          </Form.Group>
+        </div>
+      </Form>
+      {!organization && (
+        <>
+          <Header title="Your Legislators"></Header>
+          <YourLegislators />
+        </>
+      )}
+    </TitledSectionCard>
+  )
+}
 
-  const handleTwitterUpdate = (e: ChangeEvent) => {
-    setNewTwitter(getValue(e))
-  }
+export type TextInputProps = {
+  label?: string
+  name?: string
+  defaultValue?: string
+  registerProps: any
+  className?: string
+  placeHolder?: string
+}
 
-  const handleLinkedInUpdate = (e: FormEvent) => {
-    setNewLinkedIn(getValue(e))
-  }
+export const TextInput = ({
+  label,
+  name,
+  defaultValue,
+  registerProps,
+  className
+}: TextInputProps & FormControlProps) => {
+  return (
+    <Form.FloatingLabel
+      id={name || label?.replace(" ", "")}
+      label={label || name}
+      className={clsx(className || "mb-3")}
+    >
+      <Form.Control
+        name={name}
+        type="text"
+        defaultValue={defaultValue}
+        {...registerProps}
+        className={`bg-white w-100`}
+      />
+    </Form.FloatingLabel>
+  )
+}
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault()
+export const TextAreaInput = ({
+  label,
+  name,
+  defaultValue,
+  registerProps,
+  className
+}: TextInputProps) => {
+  return (
+    <Form.FloatingLabel
+      id={name || label?.replace(" ", "")}
+      label={label || name}
+      className={clsx(className || "mb-3")}
+    >
+      <Form.Control
+        name={name}
+        as="textarea"
+        type="text"
+        defaultValue={defaultValue}
+        {...registerProps}
+        className={`bg-white w-100`}
+        style={{ height: "300px" }}
+      />
+    </Form.FloatingLabel>
+  )
+}
 
-    newName && updateDisplayName(newName)
-    newAbout && updateAbout(newAbout)
-    newTwitter && updateSocial("twitter", newTwitter)
-    newLinkedIn && updateSocial("linkedIn", newLinkedIn)
+export type ImageInputProps = {
+  label?: string
+  name?: string
+  defaultValue?: string
+  registerProps: any
+  className?: string
+  imageSrc?: string
+}
+
+export const ImageInput = ({
+  label,
+  name,
+  defaultValue,
+  registerProps,
+  className,
+  imageSrc
+}: ImageInputProps) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
   }
 
   return (
-    <TitledSectionCard
-      title={"About You"}
-      bug={
-        <Row className={`justify-content-center`}>
-          <FormCheck
-            className={`col-auto`}
-            type="checkbox"
-            checked={isPublic}
-            onChange={() => updateIsPublic(!isPublic)}
-          />
-          <Form.Label className={`col`}>
-            Allow others to see your profile
-          </Form.Label>
-        </Row>
-      }
-    >
-      <Form onSubmit={onSubmit}>
-        <Form.FloatingLabel label="User Type" className="mb-3">
-          <Form.Select
-            value={organization ? "Organization" : "Individual"}
-            onChange={handleOrganizationUpdate}
-            className="bg-white"
-          >
-            <option>Organization</option>
-            <option>Individual</option>
-          </Form.Select>
-        </Form.FloatingLabel>
-        <Form.FloatingLabel label="Name" className="mb-3">
-          <Form.Control
-            type="text"
-            value={newName}
-            onChange={handleNameUpdate}
-            className="bg-white"
-          />
-        </Form.FloatingLabel>
-        <Form.FloatingLabel
-          label="Write something about your organization"
-          className="mb-3 bg-white"
-        >
-          <Form.Control
-            value={newAbout}
-            as="textarea"
-            style={{ height: "100px" }}
-            onChange={handleAboutUpdate}
-            className={`bg-white`}
-          />
-        </Form.FloatingLabel>
-        <Row>
-          <Col className="d-grid justify-content-center align-items-start">
-            <Image
-              className="bg-success w-50 m-auto"
-              style={{ objectFit: "contain" }}
-              alt="Profile image"
-              src={"leaf-asset.png"}
-            ></Image>
-            <Form.Control
-              className={`bg-white`}
-              type="file"
-              accept="image/png, image/jpg"
-            />
-          </Col>
-          <Col>
-            <Form.FloatingLabel label="Twitter Username" className="mb-3">
-              <Form.Control
-                name="twitter"
-                type="text"
-                value={social?.twitter}
-                onChange={handleTwitterUpdate}
-                className={`bg-white`}
-              />
-            </Form.FloatingLabel>
-            <Form.FloatingLabel label="LinkedIn Username" className="mb-3">
-              <Form.Control
-                name="linkedIn"
-                type="text"
-                value={social?.linkedIn}
-                onChange={handleLinkedInUpdate}
-                className={`bg-white`}
-              />
-            </Form.FloatingLabel>
-            <SelectLegislators />
-          </Col>
-        </Row>
-        <Form.Group className="d-flex col-auto m-auto">
-          <Button className="flex-grow-0 m-auto" type="submit">
-            Save Profile
-          </Button>
-        </Form.Group>
-      </Form>
-    </TitledSectionCard>
+    <div className="d-flex flex-row px-3 col">
+      <Image
+        className="bg-success"
+        style={{
+          objectFit: "contain",
+          height: "10rem",
+          width: "auto",
+          borderRadius: "2rem",
+          margin: "1rem"
+        }}
+        alt="Profile image"
+        src={imageSrc}
+      ></Image>
+      <div className="d-flex flex-column justify-content-center align-items-start col mx-3">
+        <input
+          as={Button}
+          variant="primary"
+          id="profileimage"
+          className={`bg-white d-block`}
+          type="file"
+          accept="image/png, image/jpg"
+          {...registerProps}
+          onChange={onChange}
+        />
+      </div>
+    </div>
   )
 }

@@ -68,7 +68,7 @@ const PageFooter = ({ authenticated, signOut }: PageFooterProps) => {
               </>
             ) : (
               <NavLink
-                href="login"
+                href="/login"
                 other={{ className: `${styles.footerLink}` }}
               >
                 Sign In

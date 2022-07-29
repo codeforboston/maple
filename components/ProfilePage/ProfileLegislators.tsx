@@ -32,24 +32,28 @@ const DisplayLegislator = ({
   )
 }
 
+type ProfileLegislatorsProps = {
+  rep?: ProfileMember
+  senator?: ProfileMember
+  className?: string
+}
+
 export function ProfileLegislators({
   rep,
   senator,
   className
-}: {
-  rep?: ProfileMember
-  senator?: ProfileMember
-  className?: string
-}) {
+}: ProfileLegislatorsProps) {
   return (
     <TitledSectionCard title={`Legislators`} className={className}>
-      <DisplayLegislator
-        legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
-      />
-      <hr></hr>
-      <DisplayLegislator
-        legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
-      />
+      <div className="ms-5">
+        <DisplayLegislator
+          legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
+        />
+        <hr></hr>
+        <DisplayLegislator
+          legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
+        />
+      </div>
     </TitledSectionCard>
   )
 }
