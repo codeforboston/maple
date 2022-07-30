@@ -1,18 +1,17 @@
+import AwesomeDebouncePromise from "awesome-debounce-promise"
+import Fuse from "fuse.js"
+import { useMemo } from "react"
+import { GroupBase } from "react-select"
+import AsyncSelect, { AsyncProps } from "react-select/async"
+import { Form, Row, Spinner } from "./bootstrap"
 import {
   MemberSearchIndex,
   MemberSearchIndexItem,
-  Profile,
   ProfileHook,
   ProfileMember,
   useMemberSearch,
   useProfile
 } from "./db"
-import Fuse from "fuse.js"
-import AsyncSelect, { AsyncProps } from "react-select/async"
-import { GroupBase } from "react-select"
-import { useMemo } from "react"
-import { Row, Spinner, Form } from "./bootstrap"
-import AwesomeDebouncePromise from "awesome-debounce-promise"
 
 const SelectLegislators: React.FC = () => {
   const { index, loading: searchLoading } = useMemberSearch(),
@@ -35,7 +34,7 @@ const LegislatorForm: React.FC<{
   return (
     <Form>
       <Form.Group className="mb-3">
-        <Form.Label as="h4">Representative</Form.Label>
+        <Form.FloatingLabel label="Representative"></Form.FloatingLabel>
         <Search
           placeholder="Search your representative"
           index={index.representatives}
@@ -46,7 +45,7 @@ const LegislatorForm: React.FC<{
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label as="h4">Senator</Form.Label>
+        <Form.FloatingLabel label="Senator"></Form.FloatingLabel>
         <Search
           placeholder="Search your senator"
           index={index.senators}

@@ -1,8 +1,8 @@
 import { Container } from "../components/bootstrap"
 import { createPage } from "../components/page"
-import LearnTestimoniesCard from "../components/LearnTestimonies/LearnTestimoniesCard"
-import LearnTestimoniesCardContent from "../components/LearnTestimonies/LearnTestimoniesCardContent"
-import styles from "../components/LearnTestimonies/LearnTestimoniesCard.module.css"
+import WritingEffectiveTestimoniesCard from "../components/WritingEffectiveTestimonies/WritingEffectiveTestimoniesCard"
+import WritingEffectiveTestimoniesCardContent from "../components/WritingEffectiveTestimonies/WritingEffectiveTestimoniesCardContent"
+import styles from "../components/WritingEffectiveTestimonies/WritingEffectiveTestimoniesCard.module.css"
 
 const content = [
   {
@@ -64,15 +64,18 @@ export default createPage({
           possible:
         </p>
         {content.map((value, index) => (
-          <LearnTestimoniesCard title={value.title} key={value.title}>
-            <LearnTestimoniesCardContent
+          <WritingEffectiveTestimoniesCard
+            title={value.title}
+            key={value.title}
+          >
+            <WritingEffectiveTestimoniesCardContent
               src={value.src}
               alt={value.alt}
               index={index}
             >
               {value.paragraph}
-            </LearnTestimoniesCardContent>
-          </LearnTestimoniesCard>
+            </WritingEffectiveTestimoniesCardContent>
+          </WritingEffectiveTestimoniesCard>
         ))}
       </Container>
     )

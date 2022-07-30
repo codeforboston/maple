@@ -1,7 +1,7 @@
 import { Card } from "../bootstrap"
-import styles from "./LearnTestimoniesCard.module.css"
+import styles from "./WritingEffectiveTestimoniesCard.module.css"
 
-const LearnTestimoniesCard = ({ title, children }) => {
+const WritingEffectiveTestimoniesCard = ({ title, children }) => {
   return (
     <Card className={styles.card}>
       <Card.Header
@@ -15,4 +15,4 @@ const LearnTestimoniesCard = ({ title, children }) => {
   )
 }
 
-export default LearnTestimoniesCard
+export default WritingEffectiveTestimoniesCard

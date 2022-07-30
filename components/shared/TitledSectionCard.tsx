@@ -6,32 +6,32 @@ const StyledCard = styled(Card)`
   margin: 1rem;
   border-radius: 1rem;
   background: var(--bs-white);
+  border: none;
 `
 
 const HeaderTitle = styled.div.attrs({
-  className: "h4"
+  className: "text-capitalize"
 })`
   color: white;
+  font-size: 1.25rem;
   font-weight: bold;
   border-radius: 0 5rem 5rem 0;
   background-color: var(--bs-red);
-  height: 1.8em;
-  line-height: 1.8em;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  min-width: 15rem;
+  height: 2rem;
+  line-height: 2rem;
+  padding: 0 2rem;
   width: fit-content;
-
-  margin-left: -2em;
+  min-width: 15rem;
+  margin-left: -1rem;
 `
 
 const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   return (
-    <Row className={`my-4 align-items-center`}>
+    <Row className={`mt-4 align-items-start`}>
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col className={`col-auto my-3 mx-5`}>{bug}</Col>
+      <Col className={`col-auto my-auto mx-5`}>{bug && bug}</Col>
     </Row>
   )
 }
@@ -57,8 +57,7 @@ const TitledSectionCard = ({
   return (
     <StyledCard className={className}>
       <Header title={title} bug={bug} />
-      <Card.Body className={`mx-3`}>{children}</Card.Body>
-
+      <Card.Body className={`mx-1 mx-md-3`}>{children}</Card.Body>
       {footer && (
         <StyledFooter style={{ borderRadius: "0 0 1rem 1rem" }}>
           {footer}
