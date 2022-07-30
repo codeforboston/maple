@@ -38,7 +38,10 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             ref={ref}
             type={isShowing ? "text" : "password"}
             placeholder={label}
-            className={styles.passwordInput}
+            className={clsx(
+              styles.passwordInput,
+              hasError && styles.passwordInputInvalid
+            )}
             isInvalid={hasError}
             aria-invalid={hasError}
             aria-describedby={clsx(hasError && errorId)}

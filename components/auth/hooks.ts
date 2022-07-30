@@ -2,9 +2,11 @@ import { FirebaseError } from "firebase/app"
 import {
   AuthProvider,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithPopup
+  signInWithPopup,
+  User
 } from "firebase/auth"
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
@@ -63,10 +65,13 @@ export function useCreateUserWithEmailAndPassword() {
         password
       )
 
-      await setProfile(credentials.user.uid, {
-        displayName: nickname,
-        fullName
-      })
+      await Promise.all([
+        setProfile(credentials.user.uid, {
+          displayName: nickname,
+          fullName
+        }),
+        sendEmailVerification(credentials.user)
+      ])
 
       return credentials
     }
@@ -80,6 +85,10 @@ export function useSignInWithEmailAndPassword() {
     ({ email, password }: SignInWithEmailAndPasswordData) =>
       signInWithEmailAndPassword(auth, email, password)
   )
+}
+
+export function useSendEmailVerification() {
+  return useFirebaseFunction((user: User) => sendEmailVerification(user))
 }
 
 export type SendPasswordResetEmailData = { email: string }
