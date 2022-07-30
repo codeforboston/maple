@@ -50,8 +50,9 @@ export default function ForgotPasswordModal({
             <Image src="mail.png" alt="Mail entering mailbox" fluid />
 
             {sendPasswordResetEmail.status === "success" ? (
-              <div role="alert" className="h5">
-                Check your inbox!
+              <div role="alert" className="h5 text-center">
+                Check your inbox! If you don't see anything, be sure to check
+                your spam folder.
               </div>
             ) : (
               <p className="h5">We'll email you with a link to reset it.</p>
