@@ -1,3 +1,4 @@
+import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { Button, Col, Container, Row } from "../bootstrap"
@@ -6,6 +7,7 @@ import styles from "./Footer.module.css"
 export type PageFooterProps = {
   children?: any
   authenticated: boolean
+  user: User | null | undefined
   signOut: () => void
 }
 
@@ -18,7 +20,7 @@ const TextHeader = styled.p`
   margin: 0;
 `
 
-const PageFooter = ({ authenticated, signOut }: PageFooterProps) => {
+const PageFooter = ({ authenticated, user, signOut }: PageFooterProps) => {
   return (
     <Container
       fluid
@@ -53,7 +55,7 @@ const PageFooter = ({ authenticated, signOut }: PageFooterProps) => {
             {authenticated ? (
               <>
                 <NavLink
-                  href="/profile"
+                  href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
                   other={{ className: `${styles.footerLink}` }}
                 >
                   Profile

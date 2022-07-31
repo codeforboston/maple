@@ -1,6 +1,4 @@
-import { useRouter } from "next/router"
-import { useCallback, useEffect } from "react"
-import { useAsync } from "react-async-hook"
+import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 import { useAuth } from "../components/auth"
 import { createPage } from "../components/page"
@@ -10,41 +8,52 @@ export default createPage({
   title: "Profile",
   Page: () => {
     const { id, loading } = useProfileRouting()
+    const { authenticated, user } = useAuth()
 
-    id && console.log("profile create page id", id)
-
-    if (loading) {
-      return (
-        <div className={`d-grid place-content-center`}>
-          <Spinner animation={"border"} />
-        </div>
-      )
-    }
-
-    return <div>{id && <ProfilePage id={id} />}</div>
+    return (
+      <div>
+        {loading ? (
+          <div className={`d-grid place-content-center`}>
+            <Spinner animation={"border"} />
+          </div>
+        ) : !loading && !id && authenticated ? (
+          <ProfilePage id={user!.uid} />
+        ) : id ? (
+          <ProfilePage id={id} />
+        ) : (
+          <div>no user</div>
+        )}
+      </div>
+    )
   }
 })
 
 const useProfileRouting = () => {
-  const { isReady, query, push } = useRouter()
-
   const { user } = useAuth()
 
+  const [id, setId] = useState<string>("od")
+  const [loading, setLoading] = useState<boolean>(true)
+
   useEffect(() => {
-    if (!isReady) return
-  }, [isReady, query])
+    if (window) {
+      const urlParams = new URLSearchParams(window.location?.search)
+      const urlid = urlParams.get("id")
 
-  const getUrlId = useCallback(async () => {
-    if (!isReady) return
+      if (urlid === null) {
+        if (user?.uid) {
+          setId(user.uid)
+          urlParams.set("id", user.uid)
+        }
+      }
 
-    const qid = query.id
-    const validatedId: string | undefined =
-      typeof qid === "string" ? qid : user?.uid
-
-    return validatedId
-  }, [isReady, query.id, user?.uid])
-
-  const { result: id, loading } = useAsync(getUrlId, [getUrlId])
+      if (typeof urlid === "string") {
+        setId(urlid)
+      }
+      if (urlid !== undefined) {
+        setLoading(false)
+      }
+    }
+  }, [id, user?.uid])
 
   return { id, loading }
 }

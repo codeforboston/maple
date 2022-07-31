@@ -1,20 +1,20 @@
 import Image from "react-bootstrap/Image"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Row } from "../bootstrap"
+import { Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { Profile, usePublicProfile } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
+
 import {
   Header,
   ProfileDisplayName,
   UserIcon
 } from "./StyledEditProfileCompnents"
-
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
-  const { result: profile } = usePublicProfile(id)
+  const { result: profile, loading } = usePublicProfile(id)
 
   const isUser = user?.uid === id
 
@@ -22,44 +22,53 @@ export function ProfilePage({ id }: { id: string }) {
 
   return (
     <>
-      {isUser && (
-        <Container
-          fluid
-          className={`text-white text-center text-middle`}
-          style={{
-            fontFamily: "nunito",
-            fontSize: "20px",
-            position: "absolute",
-            height: 0,
-            paddingBottom: "2rem",
-            backgroundColor: "var(--bs-orange)"
-          }}
-        >
-          <p>Currently viewing your profile</p>
-        </Container>
-      )}
-      <Container>
-        <ProfileHeader displayName={displayName} isUser={isUser} />
-        <Row className={`mb-5`}>
-          <Col>
-            <ProfileAboutSection profile={profile} />
-          </Col>
-          {isUser && (
-            <Col xs={12} md={4}>
-              <ProfileLegislators
-                rep={profile?.representative}
-                senator={profile?.senator}
-                className={`h-100`}
-              />
-            </Col>
-          )}
-        </Row>
+      {
+      loading ? (
         <Row>
-          <Col xs={12}>
-            <ViewTestimony uid={id} />
-          </Col>
+          <Spinner animation="border" className="mx-auto" />
         </Row>
-      </Container>
+      ) : (
+        <>
+          {isUser && (
+            <Container
+              fluid
+              className={`text-white text-center text-middle`}
+              style={{
+                fontFamily: "nunito",
+                fontSize: "20px",
+                position: "absolute",
+                height: 0,
+                paddingBottom: "2rem",
+                backgroundColor: "var(--bs-orange)"
+              }}
+            >
+              <p>Currently viewing your profile</p>
+            </Container>
+          )}
+          <Container>
+            <ProfileHeader displayName={displayName} isUser={isUser} />
+            <Row className={`mb-5`}>
+              <Col>
+                <ProfileAboutSection profile={profile} />
+              </Col>
+              {isUser && (
+                <Col xs={12} md={4}>
+                  <ProfileLegislators
+                    rep={profile?.representative}
+                    senator={profile?.senator}
+                    className={`h-100`}
+                  />
+                </Col>
+              )}
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <ViewTestimony uid={id} />
+              </Col>
+            </Row>
+          </Container>
+        </>
+      )}
     </>
   )
 }

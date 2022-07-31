@@ -44,7 +44,6 @@ async function updateProfile(
   await updateDisplayName(data.name)
   await updateIsOrganization(data.organization)
   // await updateProfileImage(data.profileImage) disabled until permissions to be updated in fb storage
-  console.log("done update")
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
@@ -235,7 +234,7 @@ export const ImageInput = ({
   imageSrc
 }: ImageInputProps) => {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
+    console.log("uploaded image event.target.value", e.target.value)
   }
 
   return (
