@@ -1,16 +1,9 @@
 import React, { Component } from "react"
 import styles from "./Footer.module.css"
 import "./Footer.module.css"
-import {
-  Col,
-  Container,
-  Row,
-  Button,
-  Navbar,
-  Nav
-} from "../bootstrap"
+import { Col, Container, Row, Button, Navbar, Nav } from "../bootstrap"
 import styled from "styled-components"
-import { NavLink, ExternalNavLink } from "../Navlink";
+import { NavLink, ExternalNavLink } from "../Navlink"
 import Image from "react-bootstrap/Image"
 import CustomDropdown from "./CustomFooterDropdown"
 
@@ -117,7 +110,9 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
                 Writing Effective Testimonies
               </NavLink>
               <NavLink href="/legalprocess">Contact Legislators</NavLink>
-              <NavLink href="/additionalresources">Additional Resources</NavLink>
+              <NavLink href="/additionalresources">
+                Additional Resources
+              </NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="About">
@@ -126,7 +121,9 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
             </CustomDropdown>
 
             <CustomDropdown title="Resources">
-              <NavLink href="https://malegislature.gov/Search/FindMyLegislator">Find Your Legislators</NavLink>
+              <NavLink href="https://malegislature.gov/Search/FindMyLegislator">
+                Find Your Legislators
+              </NavLink>
               <NavLink href="/legalprocess">Policies</NavLink>
             </CustomDropdown>
 
@@ -134,9 +131,15 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
               <NavLink href="https://law.northeastern.edu/">
                 North Eastern University School of Law
               </NavLink>
-              <NavLink href="https://www.codeforboston.org/">Code For Boston</NavLink>
-              <NavLink href="https://www.bc.edu/bc-web/schools/law.html">Boston College Law School</NavLink>
-              <NavLink href="https://cyber.harvard.edu/">Harvard Berkman Klein Center</NavLink>
+              <NavLink href="https://www.codeforboston.org/">
+                Code For Boston
+              </NavLink>
+              <NavLink href="https://www.bc.edu/bc-web/schools/law.html">
+                Boston College Law School
+              </NavLink>
+              <NavLink href="https://cyber.harvard.edu/">
+                Harvard Berkman Klein Center
+              </NavLink>
             </CustomDropdown>
           </Nav>
         </Navbar>
@@ -206,7 +209,10 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
             >
               Contacting Legislatures
             </NavLink>
-            <NavLink href="/additionalresources" other={{ className: `${styles.footerLink}` }}>
+            <NavLink
+              href="/additionalresources"
+              other={{ className: `${styles.footerLink}` }}
+            >
               Additional Resources
             </NavLink>
 
@@ -217,7 +223,10 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
             >
               Our Mission &amp; Goals
             </NavLink>
-            <NavLink href="/about/team" other={{ className: `${styles.footerLink}` }}>
+            <NavLink
+              href="/about/team"
+              other={{ className: `${styles.footerLink}` }}
+            >
               Our Team
             </NavLink>
           </Col>

@@ -24,7 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
-      <PageFooter authenticated={true} signOut={()=>{}} />
+      <PageFooter authenticated={true} signOut={() => {}} />
     </>
   )
 }
