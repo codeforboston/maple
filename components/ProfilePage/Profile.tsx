@@ -1,6 +1,10 @@
+import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { Button, Col, Container, Row } from "../bootstrap"
+import { useAuth } from "../auth"
+import { useSendEmailVerification } from "../auth/hooks"
+import { Alert, Button, Col, Container, Row } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import { Profile, useProfile } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
@@ -8,6 +12,7 @@ import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
 
 export function ProfilePage() {
+  const { user } = useAuth()
   const { profile } = useProfile()
 
   const displayName = profile?.displayName
@@ -15,6 +20,9 @@ export function ProfilePage() {
   return (
     <Container>
       <ProfileHeader displayName={displayName} />
+
+      {!user?.emailVerified ? <VerifyAccountSection user={user} /> : null}
+
       <Row className={`mb-5`}>
         <Col xs={12} lg={8}>
           <ProfileAboutSection profile={profile} className={`h-100`} />
@@ -149,5 +157,36 @@ export const ProfileHeader = ({ displayName }: { displayName?: string }) => {
         </div>
       </Col>
     </Row>
+  )
+}
+
+export const VerifyAccountSection = ({ user }: { user: User }) => {
+  const sendEmailVerification = useSendEmailVerification()
+
+  return (
+    <TitledSectionCard title={"Verify Your Account"}>
+      <p>
+        We sent a link to your email to verify your account, but you haven't
+        clicked it yet. If you don't see it, be sure to check your spam folder.
+      </p>
+
+      {sendEmailVerification.status === "success" ? (
+        <Alert variant="success">Check your email!</Alert>
+      ) : null}
+
+      {sendEmailVerification.status === "error" ? (
+        <Alert variant="danger">{sendEmailVerification.error?.message}</Alert>
+      ) : null}
+
+      {sendEmailVerification.status !== "success" ? (
+        <LoadingButton
+          variant="light"
+          loading={sendEmailVerification.loading}
+          onClick={() => sendEmailVerification.execute(user)}
+        >
+          Send Another Link
+        </LoadingButton>
+      ) : null}
+    </TitledSectionCard>
   )
 }
