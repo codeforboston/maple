@@ -7,17 +7,17 @@ import {
   Row,
   Button,
   Navbar,
-  Nav,
-  NavDropdown
+  Nav
 } from "../bootstrap"
 import styled from "styled-components"
-import { NavLink } from "../Navlink"
+import { NavLink, ExternalNavLink } from "../Navlink";
 import Image from "react-bootstrap/Image"
 import CustomDropdown from "./CustomFooterDropdown"
 
 export type PageFooterProps = {
   children?: any
   authenticated: boolean
+  signOut: () => void
 }
 
 const TextHeader = styled.p`
@@ -109,34 +109,34 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
 
             <CustomDropdown title="Account">
               <NavLink href="/profile">Profile</NavLink>
-              <NavLink href="/signout">Sign out</NavLink>
+              <NavLink href="/login">Sign out</NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="Learn">
-              <NavLink href="/testimonies">
+              <NavLink href="/learnbasicsoftestimony">
                 Writing Effective Testimonies
               </NavLink>
-              <NavLink href="/policies">Contact Legislators</NavLink>
-              <NavLink href="/policies">Additional Resources</NavLink>
+              <NavLink href="/legalprocess">Contact Legislators</NavLink>
+              <NavLink href="/additionalresources">Additional Resources</NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="About">
-              <NavLink href="/testimonies">Our Mission &amp; Goals</NavLink>
-              <NavLink href="/policies">Our Team</NavLink>
+              <NavLink href="/missionandgoals">Our Mission &amp; Goals</NavLink>
+              <NavLink href="/about/team">Our Team</NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="Resources">
-              <NavLink href="/testimonies">Find Your Legislators</NavLink>
-              <NavLink href="/policies">Policies</NavLink>
+              <NavLink href="https://malegislature.gov/Search/FindMyLegislator">Find Your Legislators</NavLink>
+              <NavLink href="/legalprocess">Policies</NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="Our Team">
-              <NavLink href="/testimonies">
+              <NavLink href="https://law.northeastern.edu/">
                 North Eastern University School of Law
               </NavLink>
-              <NavLink href="/policies">Code For Boston</NavLink>
-              <NavLink href="/policies">Boston College Law School</NavLink>
-              <NavLink href="/policies">Harvard Berkman Klein Center</NavLink>
+              <NavLink href="https://www.codeforboston.org/">Code For Boston</NavLink>
+              <NavLink href="https://www.bc.edu/bc-web/schools/law.html">Boston College Law School</NavLink>
+              <NavLink href="https://cyber.harvard.edu/">Harvard Berkman Klein Center</NavLink>
             </CustomDropdown>
           </Nav>
         </Navbar>
@@ -158,25 +158,34 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
             >
               Testimonies
             </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
-              Policies
+            <NavLink
+              href="/bills"
+              other={{ className: `${styles.footerLink}` }}
+            >
+              Bills
             </NavLink>
 
             <TextHeader>Account</TextHeader>
-            <NavLink
-              href="/profile"
-              other={{ className: `${styles.footerLink}` }}
-            >
-              Profile
-            </NavLink>
 
             {authenticated ? (
-              <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
-                Sign Out
-              </NavLink>
+              <>
+                <NavLink
+                  href="/profile"
+                  other={{ className: `${styles.footerLink}` }}
+                >
+                  Profile
+                </NavLink>
+                <NavLink
+                  href="/login"
+                  handleClick={() => {}}
+                  other={{ className: `${styles.footerLink}` }}
+                >
+                  Sign Out
+                </NavLink>
+              </>
             ) : (
               <NavLink
-                href="login"
+                href="/login"
                 other={{ className: `${styles.footerLink}` }}
               >
                 Sign In
@@ -186,49 +195,66 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
           <Col>
             <TextHeader>Learn</TextHeader>
             <NavLink
-              href="/learntestimonies"
+              href="/writingeffectivetestimonies"
               other={{ className: `${styles.footerLink}` }}
             >
               Writing Effective Testimonies
             </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            <NavLink
+              href="/legprocess"
+              other={{ className: `${styles.footerLink}` }}
+            >
               Contacting Legislatures
             </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            <NavLink href="/additionalresources" other={{ className: `${styles.footerLink}` }}>
               Additional Resources
             </NavLink>
 
             <TextHeader>About</TextHeader>
             <NavLink
-              href="/about"
+              href="/missionandgoals"
               other={{ className: `${styles.footerLink}` }}
             >
               Our Mission &amp; Goals
             </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
-              Our Mission &amp; Our Team
+            <NavLink href="/about/team" other={{ className: `${styles.footerLink}` }}>
+              Our Team
             </NavLink>
           </Col>
 
           <Col md={"auto"}>
             <TextHeader>Resources</TextHeader>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            <ExternalNavLink
+              className={styles.footerLink}
+              href="https://malegislature.gov/Search/FindMyLegislator"
+            >
               Find your Legislators
-            </NavLink>
-
+            </ExternalNavLink>
             <TextHeader>Our Team</TextHeader>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            <ExternalNavLink
+              href="https://law.northeastern.edu/"
+              className={styles.footerLink}
+            >
               North Eastern University School of Law
-            </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            </ExternalNavLink>
+            <ExternalNavLink
+              href="https://www.codeforboston.org/"
+              className={styles.footerLink}
+            >
               Code for Boston
-            </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            </ExternalNavLink>
+            <ExternalNavLink
+              href="https://www.bc.edu/bc-web/schools/law.html"
+              className={styles.footerLink}
+            >
               Boston College Law School
-            </NavLink>
-            <NavLink href="#" other={{ className: `${styles.footerLink}` }}>
+            </ExternalNavLink>
+            <ExternalNavLink
+              href="https://cyber.harvard.edu/"
+              className={styles.footerLink}
+            >
               Harvard Berkman Klein Center
-            </NavLink>
+            </ExternalNavLink>
           </Col>
         </Col>
 
