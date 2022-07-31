@@ -14,6 +14,7 @@ import { auth } from "../firebase"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
+  "auth/email-already-in-use": "You already have an account.",
   "auth/wrong-password": "Your password is wrong.",
   "auth/invalid-email": "The email you provided is not a valid email.",
   "auth/user-not-found": "You don't have an account."

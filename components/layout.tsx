@@ -14,7 +14,7 @@ export type LayoutProps = {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
-  const { authenticated } = useAuth()
+  const { authenticated, user } = useAuth()
 
   return (
     <>
@@ -28,6 +28,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       {children}
       <PageFooter
         authenticated={authenticated}
+        user={user}
         signOut={() => void auth.signOut()}
       />
     </>

@@ -33,8 +33,8 @@ const LegislatorForm: React.FC<{
 }> = ({ index, profile }) => {
   return (
     <Form>
-      <Form.Group className="mb-3">
-        <Form.FloatingLabel label="Representative"></Form.FloatingLabel>
+      <Form.Group className="mb-4">
+        <Form.Label>Representative</Form.Label>
         <Search
           placeholder="Search your representative"
           index={index.representatives}
@@ -44,8 +44,8 @@ const LegislatorForm: React.FC<{
         />
       </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.FloatingLabel label="Senator"></Form.FloatingLabel>
+      <Form.Group>
+        <Form.Label>Senator</Form.Label>
         <Search
           placeholder="Search your senator"
           index={index.senators}
@@ -60,7 +60,7 @@ const LegislatorForm: React.FC<{
 
 type SearchProps = {
   index: MemberSearchIndexItem[]
-  update: (member: ProfileMember) => void
+  update: (member: ProfileMember | null) => void
   memberId: string | undefined
 } & AsyncProps<MemberSearchIndexItem, false, GroupBase<MemberSearchIndexItem>>
 
@@ -99,24 +99,26 @@ const Search: React.FC<SearchProps> = ({
   )
 
   return (
-    <Row className="col-lg-8 mb-2">
-      <AsyncSelect
-        defaultOptions={index}
-        getOptionLabel={o => `${o.Name} | ${o.District}`}
-        getOptionValue={o => o.MemberCode}
-        value={memberId === undefined ? undefined : byId[memberId]}
-        onChange={value =>
-          value &&
+    <AsyncSelect
+      isClearable
+      defaultOptions={index}
+      getOptionLabel={o => `${o.Name} | ${o.District}`}
+      getOptionValue={o => o.MemberCode}
+      value={memberId === undefined ? undefined : byId[memberId]}
+      onChange={value => {
+        if (value) {
           update({
             id: value.MemberCode,
             district: value.District,
             name: value.Name
           })
+        } else {
+          update(null)
         }
-        loadOptions={loadOptions}
-        {...props}
-      />
-    </Row>
+      }}
+      loadOptions={loadOptions}
+      {...props}
+    />
   )
 }
 

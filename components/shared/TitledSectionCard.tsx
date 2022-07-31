@@ -1,15 +1,16 @@
 import React, { ReactNode } from "react"
-import { Card, Row, Col } from "../bootstrap"
 import styled from "styled-components"
+import { Card, Col, Row } from "../bootstrap"
 
 const StyledCard = styled(Card)`
+  flex-grow: 1;
   margin: 1rem;
   border-radius: 1rem;
   background: var(--bs-white);
   border: none;
 `
 
-const HeaderTitle = styled.div.attrs({
+export const HeaderTitle = styled.div.attrs({
   className: "text-capitalize"
 })`
   color: white;
@@ -25,7 +26,7 @@ const HeaderTitle = styled.div.attrs({
   margin-left: -1rem;
 `
 
-const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   return (
     <Row className={`mt-4 align-items-start`}>
       <Col>
@@ -36,10 +37,21 @@ const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   )
 }
 
+export const StyledBody = styled(Card.Body).attrs({
+  className: `mx-1 mx-md-3`
+})``
+
 const StyledFooter = styled(Card.Footer)`
   border-radius: 0 0 1rem 1rem;
-  background: var(--bs-secondary);
 `
+
+type TitledSectionCardProps = {
+  title?: string
+  footer?: React.ReactElement
+  bug?: React.ReactElement
+  className?: string
+  children: React.ReactNode
+}
 
 const TitledSectionCard = ({
   title,
@@ -47,21 +59,21 @@ const TitledSectionCard = ({
   footer,
   bug,
   className
-}: {
-  title: string
-  children: React.ReactNode
-  footer?: React.ReactElement
-  bug?: React.ReactElement
-  className?: string
-}) => {
+}: TitledSectionCardProps) => {
   return (
-    <StyledCard className={className}>
-      <Header title={title} bug={bug} />
-      <Card.Body className={`mx-1 mx-md-3`}>{children}</Card.Body>
+    <StyledCard className={className + " h-100 "}>
+      {title && <Header title={title} bug={bug} />}
+      <div className={`h-100`}>{children}</div>
       {footer && (
-        <StyledFooter style={{ borderRadius: "0 0 1rem 1rem" }}>
+        <Card.Footer
+          style={{
+            borderRadius: "0 0 1rem 1rem",
+            background: "var(--bs-secondary)",
+            justifySelf: "end"
+          }}
+        >
           {footer}
-        </StyledFooter>
+        </Card.Footer>
       )}
     </StyledCard>
   )
