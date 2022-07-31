@@ -22,8 +22,7 @@ export function ProfilePage({ id }: { id: string }) {
 
   return (
     <>
-      {
-      loading ? (
+      {loading ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>

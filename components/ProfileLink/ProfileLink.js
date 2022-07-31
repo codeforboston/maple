@@ -8,14 +8,14 @@ const ProfileLink = ({ displayName = "User" }) => {
   const [search, setSearch] = useState()
 
   useEffect(() => {
-    if (user?.uid){
+    if (user?.uid) {
       setSearch(`?id=${user.uid}`)
     }
   }, [user?.uid])
 
   return (
     <Container>
-      <NavLink href={'/profile' + search} >
+      <NavLink href={"/profile" + search}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Image
             style={{ margin: "10px" }}

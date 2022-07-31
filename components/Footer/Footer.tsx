@@ -55,7 +55,9 @@ const PageFooter = ({ authenticated, user, signOut }: PageFooterProps) => {
             {authenticated ? (
               <>
                 <NavLink
-                  href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
+                  href={`${
+                    user?.uid ? "/profile?id=" + user?.uid : "/profile"
+                  }`}
                   other={{ className: `${styles.footerLink}` }}
                 >
                   Profile
