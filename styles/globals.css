@@ -31,6 +31,10 @@
   color: white;
 }
 
+.modal-content {
+  border: none;
+}
+
 .whitebackground {
   background-color: white;
 }
