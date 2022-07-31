@@ -1,38 +1,74 @@
 import Image from "react-bootstrap/Image"
-import styled from "styled-components"
-import { Button, Col, Container, Row } from "../bootstrap"
-import { Profile, useProfile } from "../db"
+import { useAuth } from "../auth"
+import { Button, Col, Container, Row, Spinner } from "../bootstrap"
+import { Profile, usePublicProfile } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
 
-export function ProfilePage() {
-  const { profile } = useProfile()
+import {
+  Header,
+  ProfileDisplayName,
+  UserIcon
+} from "./StyledEditProfileCompnents"
+export function ProfilePage({ id }: { id: string }) {
+  const { user } = useAuth()
+  const { result: profile, loading } = usePublicProfile(id)
+
+  const isUser = user?.uid === id
 
   const displayName = profile?.displayName
 
   return (
-    <Container>
-      <ProfileHeader displayName={displayName} />
-      <Row className={`mb-5`}>
-        <Col xs={12} lg={8}>
-          <ProfileAboutSection profile={profile} className={`h-100`} />
-        </Col>
-        <Col xs={12} lg={4}>
-          <ProfileLegislators
-            rep={profile?.representative}
-            senator={profile?.senator}
-            className={`h-100`}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
-          <ViewTestimony />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      {loading ? (
+        <Row>
+          <Spinner animation="border" className="mx-auto" />
+        </Row>
+      ) : (
+        <>
+          {isUser && (
+            <Container
+              fluid
+              className={`text-white text-center text-middle`}
+              style={{
+                fontFamily: "nunito",
+                fontSize: "20px",
+                position: "absolute",
+                height: 0,
+                paddingBottom: "2rem",
+                backgroundColor: "var(--bs-orange)"
+              }}
+            >
+              <p>Currently viewing your profile</p>
+            </Container>
+          )}
+          <Container>
+            <ProfileHeader displayName={displayName} isUser={isUser} />
+            <Row className={`mb-5`}>
+              <Col>
+                <ProfileAboutSection profile={profile} />
+              </Col>
+              {isUser && (
+                <Col xs={12} md={4}>
+                  <ProfileLegislators
+                    rep={profile?.representative}
+                    senator={profile?.senator}
+                    className={`h-100`}
+                  />
+                </Col>
+              )}
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <ViewTestimony uid={id} />
+              </Col>
+            </Row>
+          </Container>
+        </>
+      )}
+    </>
   )
 }
 
@@ -48,12 +84,12 @@ export const ProfileAboutSection = ({
 
   return (
     <TitledSectionCard
-      className={className}
+      className={`${className} h-100`}
       title={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
       bug={<Socials twit={twitter} linkedIn={linkedIn} />}
       footer={<></>}
     >
-      {profile?.about ?? "State your purpose"}
+      <div className="mx-5 my-2">{profile?.about ?? "State your purpose"}</div>
     </TitledSectionCard>
   )
 }
@@ -83,71 +119,48 @@ export const Socials = ({
   </Row>
 )
 
-export const ProfileDisplayName = styled.div.attrs(props => ({
-  className: `${props.className}`
-}))`
-  margin: 0;
-  font-family: Nunito;
-  font-weight: 500;
-  letter-spacing: -0.63px;
-  text-align: justify;
-  color: #000;
-
-  .firstName {
-    font-size: 1.5rem;
-  }
-
-  .lastName {
-    font-size: 2.75rem;
-  }
-`
-
-export const UserIcon = styled(Image).attrs(props => ({
-  alt: "",
-  src: "profile-icon.svg",
-  className: props.className
-}))`
-  height: 8em;
-  width: 8em;
-  margin: 1em;
-  border-radius: 50%;
-  border: 1em solid var(--bs-blue);
-  background-color: var(--bs-blue);
-  flex: 0;
-`
-
-export const ProfileHeader = ({ displayName }: { displayName?: string }) => {
+export const ProfileHeader = ({
+  displayName,
+  isUser
+}: {
+  displayName?: string
+  isUser: boolean
+}) => {
   const [firstName, lastName] = displayName
     ? displayName.split(" ")
     : ["user", "user"]
 
   return (
-    <Row className={`d-flex align-items-center justify-content-center`}>
-      <Col
-        className={`col-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start`}
-      >
+    <Header className={`d-flex`}>
+      <Col xs={"auto"} className={"col-auto"}>
         <UserIcon className={`col d-none d-sm-flex`} />
-        {displayName ? (
-          <ProfileDisplayName className={``}>
-            <div className={`firstName text-capitalize`}>{firstName}</div>
-            <div className={`lastName text-capitalize`}>{lastName}</div>
-          </ProfileDisplayName>
-        ) : (
-          <ProfileDisplayName className={``}>
-            <div className={`firstName text-capitalize`}>Anonymous</div>
-            <div className={`lastName text-capitalize`}>User</div>
-          </ProfileDisplayName>
-        )}
       </Col>
-      <Col className={`col-12 col-md-5`}>
-        <div
-          className={`d-flex justify-content-center justify-content-md-end align-items-center align-items-md-end`}
-        >
-          <Internal href="/editprofile">
-            <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
-          </Internal>
-        </div>
-      </Col>
-    </Row>
+      {displayName ? (
+        <ProfileDisplayName className={``}>
+          <div className={`firstName text-capitalize`}>{firstName}</div>
+          <div className={`lastName text-capitalize`}>{lastName}</div>
+        </ProfileDisplayName>
+      ) : (
+        <ProfileDisplayName className={``}>
+          <div className={`firstName text-capitalize`}>Anonymous</div>
+          <div className={`lastName text-capitalize`}>User</div>
+        </ProfileDisplayName>
+      )}
+      {isUser && <EditProfileButton />}
+    </Header>
+  )
+}
+
+const EditProfileButton = () => {
+  return (
+    <Col className={`d-flex justify-content-end`}>
+      {/* <div
+        className={`d-flex justify-content-center justify-content-md-end align-items-center align-items-md-end`}
+      > */}
+      <Internal href="/editprofile">
+        <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
+      </Internal>
+      {/* </div> */}
+    </Col>
   )
 }
