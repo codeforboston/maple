@@ -19,10 +19,11 @@ const PositionSentence = styled(Container)`
   font-weight: bold;
 `
 const Testimony = styled(Container)`
+  white-space: pre-wrap;
+  font-family: "Nunito";
   background-color: white;
   border-radius: 0.75rem;
   padding: 1rem;
-  background-image: url("quote-left.svg");
   background-repeat: no-repeat;
   background-size: 4rem;
   background-position: 0.5rem 0.5rem;
