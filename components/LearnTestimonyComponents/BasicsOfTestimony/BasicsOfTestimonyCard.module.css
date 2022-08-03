@@ -87,7 +87,7 @@
   color: #000;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   .text {
     font-size: 1rem;
   }
@@ -98,6 +98,7 @@
   }
   .card {
     margin: 0;
+    padding: 0;
   }
 }
 

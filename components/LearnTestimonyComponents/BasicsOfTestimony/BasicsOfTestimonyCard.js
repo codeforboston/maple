@@ -1,5 +1,5 @@
+import Col from "react-bootstrap/Col"
 import Image from "react-bootstrap/Image"
-import { Col } from "../bootstrap"
 import styles from "./BasicsOfTestimonyCard.module.css"
 
 const BasicsOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
