@@ -25,27 +25,6 @@ export default createPage({
         <Leaf direction="left" />
 
         <AboutSection />
-
-        <Leaf direction="left" />
-
-        <Container>
-          <Row className="mt-4">
-            <Col xs={12} xl={4} className="text-center">
-              <Wrap href="/bills">
-                <Button size="lg">View All Bills</Button>
-              </Wrap>
-              <h4 className="mt-3">Bills with Upcoming Hearings</h4>
-              <ViewBillsOnHomePage />
-            </Col>
-            <Col xs={12} xl={8} className="text-center">
-              <Wrap href="/testimonies">
-                <Button size="lg">View All Testimony</Button>
-              </Wrap>
-              <h4 className="mt-3">Most Recent Testimony</h4>
-              <Testimonies />
-            </Col>
-          </Row>
-        </Container>
       </div>
     )
   }
