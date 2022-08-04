@@ -4,13 +4,13 @@ import * as links from "./links"
 import { Wrap } from "./links"
 
 export const NavLink: React.FC<{
-  href: string
+  href?: string
   handleClick?: any
   other?: any
 }> = ({ href, handleClick, children, other }) => {
   const router = useRouter()
   return (
-    <Wrap href={href}>
+    <Wrap href={href ?? router.asPath}>
       <Nav.Link
         active={router.pathname === href}
         onClick={handleClick}

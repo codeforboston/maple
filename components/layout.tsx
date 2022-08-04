@@ -8,7 +8,6 @@ import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
-
 export type LayoutProps = {
   title?: string
 }
@@ -117,9 +116,7 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink href="" handleClick={() => auth.signOut()}>
-                  Sign Out
-                </NavLink>
+                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
