@@ -36,7 +36,7 @@ services:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
       NEXT_PUBLIC_USE_EMULATOR: "true"
-      NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp,
+      NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
 
 volumes:
   search: {}
