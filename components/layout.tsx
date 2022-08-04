@@ -116,9 +116,7 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink href="" handleClick={() => auth.signOut()}>
-                  Sign Out
-                </NavLink>
+                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
