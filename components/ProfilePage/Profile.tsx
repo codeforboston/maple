@@ -1,17 +1,20 @@
+import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Row, Spinner } from "../bootstrap"
+import { useSendEmailVerification } from "../auth/hooks"
+import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
+import { LoadingButton } from "../buttons"
 import { Profile, usePublicProfile } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
-
 import {
   Header,
   ProfileDisplayName,
   UserIcon
 } from "./StyledEditProfileCompnents"
+
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
@@ -46,6 +49,11 @@ export function ProfilePage({ id }: { id: string }) {
           )}
           <Container>
             <ProfileHeader displayName={displayName} isUser={isUser} />
+
+            {isUser && !user.emailVerified ? (
+              <VerifyAccountSection user={user} />
+            ) : null}
+
             <Row className={`mb-5`}>
               <Col>
                 <ProfileAboutSection profile={profile} />
@@ -60,6 +68,7 @@ export function ProfilePage({ id }: { id: string }) {
                 </Col>
               )}
             </Row>
+
             <Row>
               <Col xs={12}>
                 <ViewTestimony uid={id} />
@@ -162,5 +171,39 @@ const EditProfileButton = () => {
       </Internal>
       {/* </div> */}
     </Col>
+  )
+}
+
+export const VerifyAccountSection = ({ user }: { user: User }) => {
+  const sendEmailVerification = useSendEmailVerification()
+
+  return (
+    <TitledSectionCard title={"Verify Your Account"}>
+      <div className="px-5 pt-2 pb-4">
+        <p>
+          We sent a link to your email to verify your account, but you haven't
+          clicked it yet. If you don't see it, be sure to check your spam
+          folder.
+        </p>
+
+        {sendEmailVerification.status === "success" ? (
+          <Alert variant="success">Check your email!</Alert>
+        ) : null}
+
+        {sendEmailVerification.status === "error" ? (
+          <Alert variant="danger">{sendEmailVerification.error?.message}</Alert>
+        ) : null}
+
+        {sendEmailVerification.status !== "success" ? (
+          <LoadingButton
+            variant="light"
+            loading={sendEmailVerification.loading}
+            onClick={() => sendEmailVerification.execute(user)}
+          >
+            Send Another Link
+          </LoadingButton>
+        ) : null}
+      </div>
+    </TitledSectionCard>
   )
 }

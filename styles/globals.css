@@ -26,6 +26,15 @@
   border: none;
 }
 
+.modal-header {
+  background-color: var(--bs-blue);
+  color: white;
+}
+
+.modal-content {
+  border: none;
+}
+
 .whitebackground {
   background-color: white;
 }

@@ -25,6 +25,7 @@ export type SocialLinks = Partial<
 
 export type Profile = {
   displayName?: string
+  fullName?: string
   representative?: ProfileMember
   senator?: ProfileMember
   public?: boolean
@@ -44,6 +45,7 @@ type ProfileState = {
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
+  updatingFullName: boolean
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
@@ -67,6 +69,7 @@ export function useProfile() {
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
+        updatingFullName: false,
         updatingProfileImage: false,
         updatingSocial: {
           linkedIn: false,
@@ -126,6 +129,13 @@ export function useProfile() {
           dispatch({ updatingDisplayName: true })
           await updateDisplayName(uid, displayName)
           dispatch({ updatingDisplayName: false })
+        }
+      },
+      updateFullName: async (fullName: string) => {
+        if (uid) {
+          dispatch({ updatingFullName: true })
+          await updateFullName(uid, fullName)
+          dispatch({ updatingFullName: false })
         }
       },
       updateProfileImage: async (image: File) => {
@@ -213,6 +223,10 @@ function updateDisplayName(uid: string, displayName: string) {
   return setDoc(profileRef(uid), { displayName }, { merge: true })
 }
 
+function updateFullName(uid: string, fullName: string) {
+  return setDoc(profileRef(uid), { fullName }, { merge: true })
+}
+
 export const profileImageRef = (uid: string) =>
   ref(storage, `/users/${uid}/profileImage`)
 
@@ -238,4 +252,8 @@ export function usePublicProfile(uid?: string) {
 export async function getProfile(uid: string) {
   const snap = await getDoc(profileRef(uid))
   return snap.exists() ? (snap.data() as Profile) : undefined
+}
+
+export function setProfile(uid: string, profileData: Partial<Profile>) {
+  return setDoc(profileRef(uid), profileData, { merge: true })
 }
