@@ -20,8 +20,9 @@ export function ProfilePage({ id }: { id: string }) {
   const { result: profile, loading } = usePublicProfile(id)
 
   const isUser = user?.uid === id
-
+  const isOrganization: boolean = profile?.organization || false
   const displayName = profile?.displayName
+  const profileImage = profile?.profileImage
 
   return (
     <>
@@ -48,7 +49,12 @@ export function ProfilePage({ id }: { id: string }) {
             </Container>
           )}
           <Container>
-            <ProfileHeader displayName={displayName} isUser={isUser} />
+            <ProfileHeader
+              displayName={displayName}
+              isUser={isUser}
+              isOrganization={isOrganization || false}
+              profileImage={profileImage}
+            />
 
             {isUser && !user.emailVerified ? (
               <VerifyAccountSection user={user} />
@@ -130,10 +136,14 @@ export const Socials = ({
 
 export const ProfileHeader = ({
   displayName,
-  isUser
+  isUser,
+  isOrganization,
+  profileImage
 }: {
   displayName?: string
   isUser: boolean
+  isOrganization: boolean
+  profileImage?: string
 }) => {
   const [firstName, lastName] = displayName
     ? displayName.split(" ")
@@ -141,9 +151,16 @@ export const ProfileHeader = ({
 
   return (
     <Header className={`d-flex`}>
-      <Col xs={"auto"} className={"col-auto"}>
-        <UserIcon className={`col d-none d-sm-flex`} />
-      </Col>
+      {isOrganization ? (
+        <Col xs={"auto"} className={"col-auto"}>
+          <UserIcon className={`col d-none d-sm-flex`} />
+        </Col>
+      ) : (
+        <Col xs={"auto"} className={"col-auto"}>
+          <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
+        </Col>
+      )}
+
       {displayName ? (
         <ProfileDisplayName className={``}>
           <div className={`firstName text-capitalize`}>{firstName}</div>
@@ -163,13 +180,9 @@ export const ProfileHeader = ({
 const EditProfileButton = () => {
   return (
     <Col className={`d-flex justify-content-end`}>
-      {/* <div
-        className={`d-flex justify-content-center justify-content-md-end align-items-center align-items-md-end`}
-      > */}
       <Internal href="/editprofile">
         <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
       </Internal>
-      {/* </div> */}
     </Col>
   )
 }

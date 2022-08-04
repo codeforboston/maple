@@ -87,7 +87,7 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: "profile-icon.svg",
+  src: props.src ||  "profile-icon.svg",
   className: props.className
 }))`
   height: 8rem;

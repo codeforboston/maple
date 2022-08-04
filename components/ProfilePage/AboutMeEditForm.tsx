@@ -2,7 +2,8 @@ import clsx from "clsx"
 import { ChangeEvent, useState } from "react"
 import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Form, Image, Row } from "../bootstrap"
+import Input from "react-select/dist/declarations/src/components/Input"
+import { Button, Form, Image, InputGroup, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
@@ -64,7 +65,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
 
   const userType = organization ? "organization" : "individual"
 
-  const { updateIsOrganization } = actions
+  const { updateIsOrganization, updateProfileImage } = actions
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
@@ -121,8 +122,8 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           <div className={clsx("w-100", organization && "row")}>
             {organization && (
               <ImageInput
-                registerProps={register("profileImage")}
-                imageSrc={"https://randomuser.me/api/portraits/lego/0.jpg"}
+                imageSrc={profileImage}
+                updateProfileImage={updateProfileImage}
               />
             )}
             <div className="col">
@@ -220,21 +221,25 @@ export type ImageInputProps = {
   label?: string
   name?: string
   defaultValue?: string
-  registerProps: any
   className?: string
   imageSrc?: string
+  updateProfileImage?: (image: File) => Promise<void>
 }
 
 export const ImageInput = ({
   label,
   name,
   defaultValue,
-  registerProps,
   className,
-  imageSrc
+  imageSrc,
+  updateProfileImage
 }: ImageInputProps) => {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("uploaded image event.target.value", e.target.value)
+    const files = e.target.files
+    if (files !== null && updateProfileImage){
+      const file = files[0]
+      updateProfileImage(file)
+    }
   }
 
   return (
@@ -253,13 +258,10 @@ export const ImageInput = ({
       ></Image>
       <div className="d-flex flex-column justify-content-center align-items-start col mx-3">
         <input
-          as={Button}
-          variant="primary"
           id="profileimage"
           className={`bg-white d-block`}
           type="file"
           accept="image/png, image/jpg"
-          {...registerProps}
           onChange={onChange}
         />
       </div>
