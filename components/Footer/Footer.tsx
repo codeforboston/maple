@@ -1,15 +1,15 @@
-import React, { Component } from "react"
-import styles from "./Footer.module.css"
-import "./Footer.module.css"
-import { Col, Container, Row, Button, Navbar, Nav } from "../bootstrap"
-import styled from "styled-components"
-import { NavLink, ExternalNavLink } from "../Navlink"
+import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
+import { Button, Col, Container, Nav, Navbar, Row } from "../bootstrap"
+import { ExternalNavLink, NavLink } from "../Navlink"
 import CustomDropdown from "./CustomFooterDropdown"
+import styles from "./Footer.module.css"
 
 export type PageFooterProps = {
   children?: any
   authenticated: boolean
+  user: User | null | undefined
   signOut: () => void
 }
 
@@ -86,7 +86,7 @@ function MapleContainer() {
   )
 }
 
-const PageFooter = ({ authenticated }: PageFooterProps) => {
+const PageFooter = ({ authenticated, user, signOut }: PageFooterProps) => {
   return (
     <Container
       fluid
@@ -96,8 +96,7 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
         <Navbar variant="dark" expand="lg" className="d-md-none">
           <Nav>
             <CustomDropdown title="Browse">
-              <NavLink href="/testimonies">Testimonies</NavLink>
-              <NavLink href="/policies">Policies</NavLink>
+              <NavLink href="/bills">Policies</NavLink>
             </CustomDropdown>
 
             <CustomDropdown title="Account">
@@ -173,14 +172,16 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
             {authenticated ? (
               <>
                 <NavLink
-                  href="/profile"
+                  href={`${
+                    user?.uid ? "/profile?id=" + user?.uid : "/profile"
+                  }`}
                   other={{ className: `${styles.footerLink}` }}
                 >
                   Profile
                 </NavLink>
                 <NavLink
-                  href="/login"
-                  handleClick={() => {}}
+                  href=""
+                  handleClick={() => signOut()}
                   other={{ className: `${styles.footerLink}` }}
                 >
                   Sign Out
@@ -198,7 +199,7 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
           <Col>
             <TextHeader>Learn</TextHeader>
             <NavLink
-              href="/writingeffectivetestimonies"
+              href="/learntestimonies"
               other={{ className: `${styles.footerLink}` }}
             >
               Writing Effective Testimonies
@@ -224,7 +225,7 @@ const PageFooter = ({ authenticated }: PageFooterProps) => {
               Our Mission &amp; Goals
             </NavLink>
             <NavLink
-              href="/about/team"
+              href="/ourteam"
               other={{ className: `${styles.footerLink}` }}
             >
               Our Team

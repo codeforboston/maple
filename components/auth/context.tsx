@@ -1,8 +1,7 @@
-import { signOut, User } from "firebase/auth"
+import { User } from "firebase/auth"
 import { useRouter } from "next/router"
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -31,13 +30,13 @@ export function useAuth() {
 
 function useAuthenticationHook(): AuthState {
   const [user, setUser] = useState<User | null | undefined>(undefined)
-  useEffect(
-    () =>
-      auth.onAuthStateChanged(user => {
-        setUser(user)
-      }),
-    []
-  )
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      setUser(user)
+    })
+
+    return unsubscribe
+  }, [])
   return useMemo(
     () => ({
       user,
@@ -56,7 +55,7 @@ export function requireAuth(Component: React.FC<{ user: User }>) {
     const router = useRouter()
     useEffect(() => {
       if (user === null) {
-        router.push({ pathname: "/login", query: { r: router.asPath } })
+        router.push({ pathname: "/" })
       }
     }, [router, user])
 

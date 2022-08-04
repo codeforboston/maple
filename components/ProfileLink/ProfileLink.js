@@ -1,19 +1,21 @@
-import React from "react"
-import {
-  Collapse,
-  Container,
-  Dropdown,
-  Nav,
-  Navbar,
-  NavDropdown
-} from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { Container, Nav, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { SignOut } from "../auth"
-
+import { useAuth } from "../auth"
+import { NavLink } from "../Navlink"
 const ProfileLink = ({ displayName = "User" }) => {
+  const { user } = useAuth()
+  const [search, setSearch] = useState()
+
+  useEffect(() => {
+    if (user?.uid) {
+      setSearch(`?id=${user.uid}`)
+    }
+  }, [user?.uid])
+
   return (
     <Container>
-      <Nav.Link href="/profile">
+      <NavLink href={"/profile" + search}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Image
             style={{ margin: "10px" }}
@@ -26,7 +28,7 @@ const ProfileLink = ({ displayName = "User" }) => {
             </Navbar.Collapse>
           </Navbar>
         </div>
-      </Nav.Link>
+      </NavLink>
     </Container>
   )
 }

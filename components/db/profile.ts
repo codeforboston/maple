@@ -1,8 +1,15 @@
-import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore"
+import {
+  deleteField,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc
+} from "firebase/firestore"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useMemo, useReducer } from "react"
-import { useAuth } from "../auth"
-import { firestore } from "../firebase"
 import { useAsync } from "react-async-hook"
+import { useAuth } from "../auth"
+import { firestore, storage } from "../firebase"
 
 export type ProfileMember = {
   district: string
@@ -18,12 +25,14 @@ export type SocialLinks = Partial<
 
 export type Profile = {
   displayName?: string
+  fullName?: string
   representative?: ProfileMember
   senator?: ProfileMember
   public?: boolean
   about?: string
   social?: SocialLinks
   organization?: boolean
+  profileImage?: string
 }
 
 export type ProfileHook = ReturnType<typeof useProfile>
@@ -36,6 +45,8 @@ type ProfileState = {
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
+  updatingFullName: boolean
+  updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   profile: Profile | undefined
 }
@@ -58,6 +69,8 @@ export function useProfile() {
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
+        updatingFullName: false,
+        updatingProfileImage: false,
         updatingSocial: {
           linkedIn: false,
           twitter: false
@@ -76,14 +89,14 @@ export function useProfile() {
 
   const callbacks = useMemo(
     () => ({
-      updateSenator: async (senator: ProfileMember) => {
+      updateSenator: async (senator: ProfileMember | null) => {
         if (uid) {
           dispatch({ updatingSenator: true })
           await updateSenator(uid, senator)
           dispatch({ updatingSenator: false })
         }
       },
-      updateRep: async (rep: ProfileMember) => {
+      updateRep: async (rep: ProfileMember | null) => {
         if (uid) {
           dispatch({ updatingRep: true })
           await updateRepresentative(uid, rep)
@@ -118,6 +131,20 @@ export function useProfile() {
           dispatch({ updatingDisplayName: false })
         }
       },
+      updateFullName: async (fullName: string) => {
+        if (uid) {
+          dispatch({ updatingFullName: true })
+          await updateFullName(uid, fullName)
+          dispatch({ updatingFullName: false })
+        }
+      },
+      updateProfileImage: async (image: File) => {
+        if (uid) {
+          dispatch({ updatingProfileImage: true })
+          await updateProfileImage(uid, image)
+          dispatch({ updatingProfileImage: false })
+        }
+      },
       updateSocial: async (network: keyof SocialLinks, link: string) => {
         if (uid) {
           dispatch({
@@ -149,12 +176,23 @@ export function useProfile() {
   )
 }
 
-function updateRepresentative(uid: string, representative: ProfileMember) {
-  return setDoc(profileRef(uid), { representative }, { merge: true })
+function updateRepresentative(
+  uid: string,
+  representative: ProfileMember | null
+) {
+  return setDoc(
+    profileRef(uid),
+    { representative: representative ?? deleteField() },
+    { merge: true }
+  )
 }
 
-function updateSenator(uid: string, senator: ProfileMember) {
-  return setDoc(profileRef(uid), { senator }, { merge: true })
+function updateSenator(uid: string, senator: ProfileMember | null) {
+  return setDoc(
+    profileRef(uid),
+    { senator: senator ?? deleteField() },
+    { merge: true }
+  )
 }
 
 function updateIsPublic(uid: string, isPublic: boolean) {
@@ -185,6 +223,25 @@ function updateDisplayName(uid: string, displayName: string) {
   return setDoc(profileRef(uid), { displayName }, { merge: true })
 }
 
+function updateFullName(uid: string, fullName: string) {
+  return setDoc(profileRef(uid), { fullName }, { merge: true })
+}
+
+export const profileImageRef = (uid: string) =>
+  ref(storage, `/users/${uid}/profileImage`)
+
+export const profileImageUrl = (uid: string) =>
+  getDownloadURL(profileImageRef(uid))
+
+export async function updateProfileImage(uid: string, image: File) {
+  // TODO: update profile image URL for display
+  const result = await uploadBytes(profileImageRef(uid), image, {
+    contentDisposition: "inline",
+    contentType: image.type,
+    cacheControl: "private, max-age=3600"
+  })
+}
+
 export function usePublicProfile(uid?: string) {
   return useAsync(
     () => (uid ? getProfile(uid) : Promise.resolve(undefined)),
@@ -195,4 +252,8 @@ export function usePublicProfile(uid?: string) {
 export async function getProfile(uid: string) {
   const snap = await getDoc(profileRef(uid))
   return snap.exists() ? (snap.data() as Profile) : undefined
+}
+
+export function setProfile(uid: string, profileData: Partial<Profile>) {
+  return setDoc(profileRef(uid), profileData, { merge: true })
 }

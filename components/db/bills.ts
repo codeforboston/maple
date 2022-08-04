@@ -17,6 +17,8 @@ import { firestore } from "../firebase"
 import { currentGeneralCourt, loadDoc, now, nullableQuery } from "./common"
 import { createTableHook } from "./createTableHook"
 
+export type { BillHistory } from "../../functions/src/bills/types"
+
 export type MemberReference = {
   Id: string
   Name: string

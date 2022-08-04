@@ -70,7 +70,8 @@ const BostonCollegeCardContent = () => {
             The BC Law School is an inclusive community of scholars that
             prepares students for success in the legal profession at the highest
             levels.<br></br>
-            <br></br>Project co-founder Matt Victor is a JD student at BC.
+            <br></br>Project co-founder Matt Victor is a graduate of The BC Law
+            School.
           </p>
         </Col>
       </Row>

@@ -26,20 +26,29 @@
   border: none;
 }
 
+.modal-header {
+  background-color: var(--bs-blue);
+  color: white;
+}
+
+.modal-content {
+  border: none;
+}
+
 .whitebackground {
   background-color: white;
 }
 
-.z-index-1 {
-  z-index: 1;
+.bg-endorse {
+  background-color: var(--bs-green);
 }
 
-.z-index-2 {
-  z-index: 2;
+.bg-neutral {
+  background-color: var(--bs-blue);
 }
 
-.z-index-3 {
-  z-index: 3;
+.bg-oppose {
+  background-color: var(--bs-orange);
 }
 
 .navbar {
