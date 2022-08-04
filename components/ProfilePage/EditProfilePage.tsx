@@ -1,4 +1,4 @@
-import { KeyboardEvent, useState } from "react"
+import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -17,9 +17,9 @@ import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
 import {
   Header,
-  StyledTabNav,
   StyledDropdownNav,
-  StyledTabContent
+  StyledTabContent,
+  StyledTabNav
 } from "./StyledEditProfileCompnents"
 
 export function EditProfile() {

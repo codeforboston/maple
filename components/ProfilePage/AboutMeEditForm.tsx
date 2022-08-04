@@ -1,12 +1,12 @@
 import clsx from "clsx"
-import { ChangeEvent, useState } from "react"
+import { useEffect, useState } from "react"
 import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import Input from "react-select/dist/declarations/src/components/Input"
-import { Button, Form, Image, InputGroup, Row } from "../bootstrap"
+import { Button, Form, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
+import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
 
 type UpdateProfileData = {
@@ -29,22 +29,15 @@ async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  const {
-    updateIsPublic,
-    updateSocial,
-    updateAbout,
-    updateDisplayName,
-    updateProfileImage,
-    updateIsOrganization
-  } = actions
+  const { updateIsPublic, updateSocial, updateAbout, updateDisplayName } =
+    actions
 
+  console.log(data.organization, data.twitter)
   await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
-  await updateIsOrganization(data.organization)
-  // await updateProfileImage(data.profileImage) disabled until permissions to be updated in fb storage
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
@@ -59,17 +52,25 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
     about,
     organization,
     public: isPublic,
-    social,
-    profileImage
+    social
   }: Profile = profile
 
-  const userType = organization ? "organization" : "individual"
+  const [userType, setUserType] = useState(
+    organization ? "organization" : "individual"
+  )
 
-  const { updateIsOrganization, updateProfileImage } = actions
+  const { updateIsOrganization } = actions
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updateProfile({ profile, actions, uid }, update)
   })
+
+  useEffect(() => {
+    if (organization === undefined) return
+    setUserType(organization ? "organization" : "individual")
+  }, [organization])
+
+  console.log(organization, userType)
 
   return (
     <TitledSectionCard>
@@ -94,11 +95,10 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
               className="bg-white"
-              {...register("organization")}
               defaultValue={userType}
-              onChange={e =>
+              onChange={e => {
                 updateIsOrganization(e.target.value === "organization")
-              }
+              }}
             >
               <option value="organization">Organization</option>
               <option value="individual">Individual</option>
@@ -120,12 +120,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
             defaultValue={about}
           />
           <div className={clsx("w-100", organization && "row")}>
-            {organization && (
-              <ImageInput
-                imageSrc={profileImage}
-                updateProfileImage={updateProfileImage}
-              />
-            )}
+            {organization && <ImageInput />}
             <div className="col">
               <TextInput
                 label="Twitter Username"
@@ -214,57 +209,5 @@ export const TextAreaInput = ({
         style={{ height: "300px" }}
       />
     </Form.FloatingLabel>
-  )
-}
-
-export type ImageInputProps = {
-  label?: string
-  name?: string
-  defaultValue?: string
-  className?: string
-  imageSrc?: string
-  updateProfileImage?: (image: File) => Promise<void>
-}
-
-export const ImageInput = ({
-  label,
-  name,
-  defaultValue,
-  className,
-  imageSrc,
-  updateProfileImage
-}: ImageInputProps) => {
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files !== null && updateProfileImage){
-      const file = files[0]
-      updateProfileImage(file)
-    }
-  }
-
-  return (
-    <div className="d-flex flex-row px-3 col">
-      <Image
-        className="bg-success"
-        style={{
-          objectFit: "contain",
-          height: "10rem",
-          width: "auto",
-          borderRadius: "2rem",
-          margin: "1rem"
-        }}
-        alt="Profile image"
-        src={imageSrc}
-      ></Image>
-      <div className="d-flex flex-column justify-content-center align-items-start col mx-3">
-        <input
-          id="profileimage"
-          className={`bg-white d-block`}
-          type="file"
-          accept="image/png, image/jpg"
-          onChange={onChange}
-        />
-      </div>
-    </div>
   )
 }

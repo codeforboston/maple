@@ -142,6 +142,10 @@ export function useProfile() {
         if (uid) {
           dispatch({ updatingProfileImage: true })
           await updateProfileImage(uid, image)
+          const imageUrl = await profileImageUrl(uid)
+          await setDoc(profileRef(uid), {
+            profileImage: imageUrl
+          })
           dispatch({ updatingProfileImage: false })
         }
       },
