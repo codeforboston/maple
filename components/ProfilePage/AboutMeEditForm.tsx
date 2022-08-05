@@ -1,7 +1,6 @@
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { ChangeEvent, FormEvent } from "react"
 import { FormCheck, FormControlProps } from "react-bootstrap"
-import { useForm } from "react-hook-form"
 import { Button, Form, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import { TitledSectionCard } from "../shared"
@@ -19,6 +18,8 @@ type UpdateProfileData = {
   profileImage: any
 }
 
+type ProfileKey = keyof Profile
+
 type Props = {
   profile: Profile
   actions: ProfileHook
@@ -32,21 +33,16 @@ async function updateProfile(
   const { updateIsPublic, updateSocial, updateAbout, updateDisplayName } =
     actions
 
-  console.log(data.organization, data.twitter)
   await updateIsPublic(data.public)
-  await updateSocial("linkedIn", data.linkedIn)
-  await updateSocial("twitter", data.twitter)
-  await updateAbout(data.aboutYou)
-  await updateDisplayName(data.name)
+  data.linkedIn && (await updateSocial("linkedIn", data.linkedIn))
+  data.twitter && (await updateSocial("twitter", data.twitter))
+  data.aboutYou && (await updateAbout(data.aboutYou))
+  data.name && (await updateDisplayName(data.name))
+
+  console.log(profile)
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit
-  } = useForm<UpdateProfileData>()
-
   const {
     displayName,
     about,
@@ -55,22 +51,46 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
     social
   }: Profile = profile
 
-  const [userType, setUserType] = useState(
-    organization ? "organization" : "individual"
-  )
-
   const { updateIsOrganization } = actions
 
-  const onSubmit = handleSubmit(async update => {
+  const getFormValues = (
+    e: FormEvent<HTMLFormElement>,
+    items: ProfileKey[]
+  ) => {
+    const form = e.target as HTMLFormElement
+
+    const data: { [name: string]: string | number | boolean | undefined } = {}
+
+    items.forEach(i => {
+      const current = profile[i]
+      i === "public"
+        ? (data[i] = form[i]?.checked ?? current)
+        : (data[i] = form[i]?.value ?? current)
+    })
+
+    return data as UpdateProfileData
+  }
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const update = getFormValues(e, [
+      "name",
+      "aboutYou",
+      "twitter",
+      "linkedIn",
+      "public",
+      "organization",
+      "profileImage"
+    ] as ProfileKey[])
+
     await updateProfile({ profile, actions, uid }, update)
-  })
+  }
 
-  useEffect(() => {
-    if (organization === undefined) return
-    setUserType(organization ? "organization" : "individual")
-  }, [organization])
-
-  console.log(organization, userType)
+  const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value)
+    await updateIsOrganization(e.target.value === "organization")
+  }
 
   return (
     <TitledSectionCard>
@@ -80,12 +100,12 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           bug={
             <Row className={`justify-content-center`}>
               <FormCheck
+                name="public"
                 className={`col-auto`}
                 type="checkbox"
                 defaultChecked={isPublic}
-                {...register("public")}
               />
-              <Form.Label className={`col`}>
+              <Form.Label htmlFor="public" className={`col`}>
                 Allow others to see your profile
               </Form.Label>
             </Row>
@@ -94,29 +114,24 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
         <div className={`mx-1 mx-md-3`}>
           <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
+              name="organization"
               className="bg-white"
-              defaultValue={userType}
-              onChange={e => {
-                updateIsOrganization(e.target.value === "organization")
-              }}
+              defaultValue={organization ? "organization" : "individual"}
+              onChange={handleChooseUserType}
             >
               <option value="organization">Organization</option>
               <option value="individual">Individual</option>
             </Form.Select>
           </Form.FloatingLabel>
-          <TextInput
-            name="Name"
-            registerProps={register("name")}
-            defaultValue={displayName}
-          />
+          <TextInput name="name" label="Name" defaultValue={displayName} />
           <TextAreaInput
-            name="AboutYou"
+            name="aboutYou"
+            label="About You"
             placeHolder={
               organization
                 ? "Write something about your organization"
                 : "Write something about yourself"
             }
-            registerProps={register("aboutYou")}
             defaultValue={about}
           />
           <div className={clsx("w-100", organization && "row")}>
@@ -125,13 +140,11 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               <TextInput
                 label="Twitter Username"
                 name="twitter"
-                registerProps={register("twitter")}
                 defaultValue={social?.twitter}
               />
               <TextInput
                 label="LinkedIn Username"
                 name="linkedIn"
-                registerProps={register("linkedIn")}
                 defaultValue={social?.linkedIn}
               />
             </div>
@@ -155,9 +168,8 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
 
 export type TextInputProps = {
   label?: string
-  name?: string
+  name: string
   defaultValue?: string
-  registerProps: any
   className?: string
   placeHolder?: string
 }
@@ -166,7 +178,6 @@ export const TextInput = ({
   label,
   name,
   defaultValue,
-  registerProps,
   className
 }: TextInputProps & FormControlProps) => {
   return (
@@ -176,10 +187,9 @@ export const TextInput = ({
       className={clsx(className || "mb-3")}
     >
       <Form.Control
-        name={name}
+        name={name || label}
         type="text"
         defaultValue={defaultValue}
-        {...registerProps}
         className={`bg-white w-100`}
       />
     </Form.FloatingLabel>
@@ -190,12 +200,12 @@ export const TextAreaInput = ({
   label,
   name,
   defaultValue,
-  registerProps,
-  className
+  className,
+  placeHolder
 }: TextInputProps) => {
   return (
     <Form.FloatingLabel
-      id={name || label?.replace(" ", "")}
+      id={name}
       label={label || name}
       className={clsx(className || "mb-3")}
     >
@@ -204,7 +214,7 @@ export const TextAreaInput = ({
         as="textarea"
         type="text"
         defaultValue={defaultValue}
-        {...registerProps}
+        placeholder={placeHolder}
         className={`bg-white w-100`}
         style={{ height: "300px" }}
       />

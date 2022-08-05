@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect } from "react"
+import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Image, Spinner } from "../bootstrap"
 import { useProfile } from "../db"
@@ -13,10 +13,6 @@ export const ImageInput = ({ className }: ImageInputProps) => {
   const { updatingProfileImage, updateProfileImage, profile } = useProfile()
 
   const profileImage = profile?.profileImage
-
-  useEffect(() => {
-    console.log("reloading image input", profileImage)
-  }, [profileImage])
 
   const onChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
