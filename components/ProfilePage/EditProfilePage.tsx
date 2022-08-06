@@ -22,7 +22,6 @@ import {
   StyledTabNav
 } from "./StyledEditProfileCompnents"
 
-
 export function EditProfile() {
   const { user } = useAuth()
   const uid = user?.uid
