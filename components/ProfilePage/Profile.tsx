@@ -153,11 +153,11 @@ export const ProfileHeader = ({
     <Header className={`d-flex`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} />
+          <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
         </Col>
       ) : (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
+          <UserIcon className={`col d-none d-sm-flex`} />
         </Col>
       )}
 

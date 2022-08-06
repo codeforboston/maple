@@ -224,7 +224,7 @@ function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
 }
 
 function updateAbout(uid: string, about: string) {
-  return setDoc(profileRef(uid), { about }, { merge: true })
+  return setDoc(profileRef(uid), { about: about ?? deleteField() }, { merge: true })
 }
 
 function updateDisplayName(uid: string, displayName: string) {

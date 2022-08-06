@@ -1,8 +1,10 @@
 import clsx from "clsx"
-import { ChangeEvent, FormEvent } from "react"
-import { FormCheck, FormControlProps } from "react-bootstrap"
+import { ChangeEvent } from "react"
+import { FormCheck } from "react-bootstrap"
+import { useForm } from "react-hook-form"
 import { Button, Form, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
+import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
 import { ImageInput } from "./ImageInput"
@@ -44,6 +46,12 @@ async function updateProfile(
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
   const {
+    register,
+    formState: { errors },
+    handleSubmit
+  } = useForm<UpdateProfileData>()
+
+  const {
     displayName,
     about,
     organization,
@@ -53,39 +61,9 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
 
   const { updateIsOrganization } = actions
 
-  const getFormValues = (
-    e: FormEvent<HTMLFormElement>,
-    items: ProfileKey[]
-  ) => {
-    const form = e.target as HTMLFormElement
-
-    const data: { [name: string]: string | number | boolean | undefined } = {}
-
-    items.forEach(i => {
-      const current = profile[i]
-      i === "public"
-        ? (data[i] = form[i]?.checked ?? current)
-        : (data[i] = form[i]?.value ?? current)
-    })
-
-    return data as UpdateProfileData
-  }
-
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const update = getFormValues(e, [
-      "name",
-      "aboutYou",
-      "twitter",
-      "linkedIn",
-      "public",
-      "organization",
-      "profileImage"
-    ] as ProfileKey[])
-
-    await updateProfile({ profile, actions, uid }, update)
-  }
+  const onSubmit = handleSubmit(data => {
+    updateProfile({ profile, actions, uid }, data)
+  })
 
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value)
@@ -100,7 +78,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           bug={
             <Row className={`justify-content-center`}>
               <FormCheck
-                name="public"
+                {...register("public")}
                 className={`col-auto`}
                 type="checkbox"
                 defaultChecked={isPublic}
@@ -111,11 +89,11 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
             </Row>
           }
         ></Header>
-        <div className={`mx-1 mx-md-3`}>
+        <div className={`mx-1 mx-md-3 d-flex flex-column gap-3`}>
           <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
-              name="organization"
               className="bg-white"
+              {...register("organization")}
               defaultValue={organization ? "organization" : "individual"}
               onChange={handleChooseUserType}
             >
@@ -123,29 +101,26 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               <option value="individual">Individual</option>
             </Form.Select>
           </Form.FloatingLabel>
-          <TextInput name="name" label="Name" defaultValue={displayName} />
-          <TextAreaInput
-            name="aboutYou"
+          <Input label="Name" defaultValue={displayName} />
+          <Input
+            as="textarea"
+            {...register("aboutYou")}
+            style={{ height: "10rem" }}
             label="About You"
-            placeHolder={
-              organization
-                ? "Write something about your organization"
-                : "Write something about yourself"
-            }
             defaultValue={about}
           />
           <div className={clsx("w-100", organization && "row")}>
             {organization && <ImageInput />}
             <div className="col">
-              <TextInput
+              <Input
                 label="Twitter Username"
-                name="twitter"
                 defaultValue={social?.twitter}
+                {...register("twitter")}
               />
-              <TextInput
+              <Input
                 label="LinkedIn Username"
-                name="linkedIn"
                 defaultValue={social?.linkedIn}
+                {...register("linkedIn")}
               />
             </div>
           </div>
@@ -163,61 +138,5 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
         </>
       )}
     </TitledSectionCard>
-  )
-}
-
-export type TextInputProps = {
-  label?: string
-  name: string
-  defaultValue?: string
-  className?: string
-  placeHolder?: string
-}
-
-export const TextInput = ({
-  label,
-  name,
-  defaultValue,
-  className
-}: TextInputProps & FormControlProps) => {
-  return (
-    <Form.FloatingLabel
-      id={name || label?.replace(" ", "")}
-      label={label || name}
-      className={clsx(className || "mb-3")}
-    >
-      <Form.Control
-        name={name || label}
-        type="text"
-        defaultValue={defaultValue}
-        className={`bg-white w-100`}
-      />
-    </Form.FloatingLabel>
-  )
-}
-
-export const TextAreaInput = ({
-  label,
-  name,
-  defaultValue,
-  className,
-  placeHolder
-}: TextInputProps) => {
-  return (
-    <Form.FloatingLabel
-      id={name}
-      label={label || name}
-      className={clsx(className || "mb-3")}
-    >
-      <Form.Control
-        name={name}
-        as="textarea"
-        type="text"
-        defaultValue={defaultValue}
-        placeholder={placeHolder}
-        className={`bg-white w-100`}
-        style={{ height: "300px" }}
-      />
-    </Form.FloatingLabel>
   )
 }
