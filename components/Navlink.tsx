@@ -6,14 +6,16 @@ import { Wrap } from "./links"
 export const NavLink: React.FC<{
   href?: string
   handleClick?: any
+  className?: string
   other?: any
-}> = ({ href, handleClick, children, other }) => {
+}> = ({ href, handleClick, className, children, other }) => {
   const router = useRouter()
   return (
     <Wrap href={href ?? router.asPath}>
       <Nav.Link
         active={router.pathname === href}
         onClick={handleClick}
+        className={className}
         {...other}
       >
         {children}

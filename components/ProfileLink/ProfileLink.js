@@ -14,15 +14,15 @@ const ProfileLink = ({ displayName = "User" }) => {
   }, [user?.uid])
 
   return (
-    <Container>
-      <NavLink href={"/profile" + search}>
-        <div style={{ display: "flex", alignItems: "center" }}>
+    <Container className={`py-0`}>
+      <NavLink href={"/profile" + search} className={`py-0`}>
+        <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
           <Image
-            style={{ margin: "10px" }}
+            style={{ margin: "0 10px" }}
             src="profile-icon.svg"
             alt="profile icon"
           ></Image>
-          <Navbar expand="lg">
+          <Navbar expand="lg" className={`p-0`}>
             <Navbar.Collapse id="topnav">
               <Navbar.Brand>Hello, {displayName}</Navbar.Brand>
             </Navbar.Collapse>
