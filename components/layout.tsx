@@ -84,9 +84,9 @@ const TopNav: React.FC = () => {
               <NavLink href="/bills" handleClick={closeNav}>
                 Bills
               </NavLink>
-              <NavLink href="/testimonies" handleClick={closeNav}>
+              {/* <NavLink href="/testimonies" handleClick={closeNav}>
                 Testimony
-              </NavLink>
+              </NavLink> */}
 
               <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
               <Container
