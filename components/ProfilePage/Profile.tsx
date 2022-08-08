@@ -53,7 +53,7 @@ export function ProfilePage({ id }: { id: string }) {
               displayName={displayName}
               isUser={isUser}
               isOrganization={isOrganization || false}
-              profileImage={profileImage}
+              profileImage={profileImage || "./profile-icon.svg"}
             />
 
             {isUser && !user.emailVerified ? (

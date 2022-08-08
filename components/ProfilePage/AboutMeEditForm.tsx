@@ -36,10 +36,10 @@ async function updateProfile(
     actions
 
   await updateIsPublic(data.public)
-  data.linkedIn && (await updateSocial("linkedIn", data.linkedIn))
-  data.twitter && (await updateSocial("twitter", data.twitter))
-  data.aboutYou && (await updateAbout(data.aboutYou))
-  data.name && (await updateDisplayName(data.name))
+  await updateSocial("linkedIn", data.linkedIn)
+  await updateSocial("twitter", data.twitter)
+  await updateAbout(data.aboutYou)
+  await updateDisplayName(data.name)
 
   console.log(profile)
 }
