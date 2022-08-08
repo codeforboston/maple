@@ -81,27 +81,38 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
             <PositionLabel position={testimony.position} />
           </Col>
         </Row>
-        {testimony.content.length > TESTIMONY_CHAR_LIMIT &&
-        !showAllTestimony ? (
-          <>
-            <div className={`col m2`}>
-              {testimony.content.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
-            </div>
-            <Col
-              className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-            >
-              <a
-                href="#"
-                onClick={() => setShowAllTestimony(!showAllTestimony)}
-              >
-                Show More
-              </a>
-            </Col>
-          </>
-        ) : (
-          <div className={`col m2`}>{testimony.content}</div>
-        )}
+        <FormattedTestimonyContent testimony={testimony.content} />
       </div>
     </div>
+  )
+}
+
+export const FormattedTestimonyContent = ({
+  testimony
+}: {
+  testimony: string
+}) => {
+  const TESTIMONY_CHAR_LIMIT = 442
+  const [showAllTestimony, setShowAllTestimony] = useState(false)
+
+  return (
+    <>
+      {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
+        <>
+          <div className={`col m2`}>
+            {testimony.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
+          </div>
+          <Col
+            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
+          >
+            <a href="#" onClick={() => setShowAllTestimony(!showAllTestimony)}>
+              Show More
+            </a>
+          </Col>
+        </>
+      ) : (
+        <div className={`col m2`}>{testimony}</div>
+      )}
+    </>
   )
 }
