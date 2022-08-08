@@ -46,14 +46,11 @@ export const SortTestimonyDropDown = ({
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setOrderBy("Most Recent")}>
-          Most Recent
+        <Dropdown.Item onClick={() => setOrderBy("Recent")}>
+          Recent
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alphabetical")}>
-          Alphabetical
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alpha by Tag")}>
-          Alpha by Tag
+        <Dropdown.Item onClick={() => setOrderBy("Last-First")}>
+          Last-First
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
