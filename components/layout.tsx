@@ -66,7 +66,7 @@ const TopNav: React.FC = () => {
           <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
           <Navbar.Brand>
             <Nav.Link href="/" className={`py-0`}>
-              <Image fluid src="nav-logo.png" alt="logo" ></Image>
+              <Image fluid src="nav-logo.png" alt="logo"></Image>
             </Nav.Link>
           </Navbar.Brand>
           <Nav>
