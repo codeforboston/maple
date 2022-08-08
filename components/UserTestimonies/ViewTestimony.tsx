@@ -65,6 +65,9 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
 
   const { result: bill } = useBill(testimony.billId)
 
+  const TESTIMONY_CHAR_LIMIT = 442
+  const [showAllTestimony, setShowAllTestimony] = useState(false)
+
   return (
     <div className={`bg-white border-0 border-bottom p-xs-1 p-md-5`}>
       <div className={`bg-white border-0 h3`}>
@@ -81,7 +84,26 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
             <PositionLabel position={testimony.position} />
           </Col>
         </Row>
-        <div className={`col m2`}>{testimony.content}</div>
+        {testimony.content.length > TESTIMONY_CHAR_LIMIT &&
+        !showAllTestimony ? (
+          <>
+            <div className={`col m2`}>
+              {testimony.content.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
+            </div>
+            <Col
+              className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
+            >
+              <a
+                href="#"
+                onClick={() => setShowAllTestimony(!showAllTestimony)}
+              >
+                Show More
+              </a>
+            </Col>
+          </>
+        ) : (
+          <div className={`col m2`}>{testimony.content}</div>
+        )}
       </div>
     </div>
   )
