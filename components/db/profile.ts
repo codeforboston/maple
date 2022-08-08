@@ -218,7 +218,7 @@ function updateIsOrganization(uid: string, isOrganization: boolean) {
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
   return setDoc(
     profileRef(uid),
-    { social: { [network]: link ?? deleteField()} },
+    { social: { [network]: link ?? deleteField() } },
     { merge: true }
   )
 }
