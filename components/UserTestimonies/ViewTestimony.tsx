@@ -7,6 +7,7 @@ import { useBill, usePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
 import { Internal } from "../links"
 import { PositionLabel } from "./PositionBug"
+import styles from "./ViewTestimony.module.css"
 
 export default function ViewTestimony({ uid }: { uid?: string }) {
   const {
@@ -41,16 +42,20 @@ export const SortTestimonyDropDown = ({
 }) => {
   return (
     <Dropdown>
-      <Dropdown.Toggle variant="light" id="dropdown-order">
-        {orderBy ?? "Order by"}
+      <Dropdown.Toggle
+        variant="primary"
+        id="dropdown-order"
+        bsPrefix={styles.toggleIcon}
+      >
+        {orderBy ?? "Order by"}{" "}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setOrderBy("Recent")}>
-          Recent
+        <Dropdown.Item onClick={() => setOrderBy("Most Recent First")}>
+          Most Recent First
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Last-First")}>
-          Last-First
+        <Dropdown.Item onClick={() => setOrderBy("Oldest First")}>
+          Oldest First
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
