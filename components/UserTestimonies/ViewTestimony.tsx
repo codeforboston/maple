@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useAuth } from "../../components/auth"
 import { Testimony } from "../db"
-import { Col, Dropdown, Row } from "../bootstrap"
+import { Col, Dropdown, Row, Button } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { useBill, usePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
@@ -110,9 +110,12 @@ export const FormattedTestimonyContent = ({
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
           >
-            <a href="#" onClick={() => setShowAllTestimony(!showAllTestimony)}>
+            <Button
+              variant="link"
+              onClick={() => setShowAllTestimony(!showAllTestimony)}
+            >
               Show More
-            </a>
+            </Button>
           </Col>
         </>
       ) : (
