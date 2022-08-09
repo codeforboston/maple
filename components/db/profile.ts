@@ -142,6 +142,14 @@ export function useProfile() {
         if (uid) {
           dispatch({ updatingProfileImage: true })
           await updateProfileImage(uid, image)
+          const imageUrl = await profileImageUrl(uid)
+          await setDoc(
+            profileRef(uid),
+            {
+              profileImage: imageUrl
+            },
+            { merge: true }
+          )
           dispatch({ updatingProfileImage: false })
         }
       },
@@ -210,21 +218,33 @@ function updateIsOrganization(uid: string, isOrganization: boolean) {
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
   return setDoc(
     profileRef(uid),
-    { social: { [network]: link } },
+    { social: { [network]: link ?? deleteField() } },
     { merge: true }
   )
 }
 
 function updateAbout(uid: string, about: string) {
-  return setDoc(profileRef(uid), { about }, { merge: true })
+  return setDoc(
+    profileRef(uid),
+    { about: about ?? deleteField() },
+    { merge: true }
+  )
 }
 
 function updateDisplayName(uid: string, displayName: string) {
-  return setDoc(profileRef(uid), { displayName }, { merge: true })
+  return setDoc(
+    profileRef(uid),
+    { displayName: displayName ?? deleteField() },
+    { merge: true }
+  )
 }
 
 function updateFullName(uid: string, fullName: string) {
-  return setDoc(profileRef(uid), { fullName }, { merge: true })
+  return setDoc(
+    profileRef(uid),
+    { fullName: fullName ?? deleteField() },
+    { merge: true }
+  )
 }
 
 export const profileImageRef = (uid: string) =>
