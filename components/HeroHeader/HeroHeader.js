@@ -30,10 +30,10 @@ const HeroHeader = ({ authenticated }) => {
               alt=""
             ></Image>
           </ScrollTrackingItem>
-          <Col>
+          <Col style={{ zIndex: "10" }}>
             <Row>
               <Col
-                className={`d-grid z-index-3 align-items-center justify-content-center`}
+                className={`d-grid align-items-center justify-content-center`}
                 xs={{ order: "last", span: 12 }}
                 md={{ order: "first", span: 6 }}
               >
@@ -44,7 +44,7 @@ const HeroHeader = ({ authenticated }) => {
                 ></Image>
               </Col>
               <Col
-                className="text-start mr-3 pt-2 z-index-3"
+                className="text-start mr-3 pt-2"
                 xs={{ order: "first", span: 12 }}
                 md={{ order: "last", span: 6 }}
               >
