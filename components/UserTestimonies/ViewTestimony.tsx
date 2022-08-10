@@ -1,34 +1,36 @@
-import { useMemo, useState } from "react"
-import { useAuth } from "../../components/auth"
-import { Testimony } from "../db"
-import { Col, Dropdown, Row, Button } from "../bootstrap"
-import { TitledSectionCard } from "../shared"
-import { useBill, usePublishedTestimonyListing } from "../db"
+import { useState } from "react"
+import { Button, Col, Dropdown, Row } from "../bootstrap"
+import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
-import { Internal } from "../links"
+import { Internal, Wrap } from "../links"
+import { TitledSectionCard } from "../shared"
+import { PaginationButtons } from "../table"
 import { PositionLabel } from "./PositionBug"
 import styles from "./ViewTestimony.module.css"
 
-export default function ViewTestimony({ uid }: { uid?: string }) {
-  const {
-    items: { loading, result },
-    setFilter
-  } = usePublishedTestimonyListing({ uid: uid })
-
-  const testimony = useMemo(() => {
-    return result ?? []
-  }, [result])
+const ViewTestimony = (
+  props: UsePublishedTestimonyListing & { search?: boolean } & {
+    showControls?: boolean
+  }
+) => {
+  const { pagination, items, setFilter, showControls = false } = props
+  const testimony = items.result ?? []
 
   const [orderBy, setOrderBy] = useState<string>()
 
   return (
     <TitledSectionCard
-      title={"Testimony Section"}
+      title={"Testimony"}
       bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
       {testimony.map(i => (
-        <TestimonyItem key={i.authorUid + i.billId} testimony={i} />
+        <TestimonyItem
+          key={i.authorUid + i.billId}
+          testimony={i}
+          showControls={showControls}
+        />
       ))}
+      <PaginationButtons pagination={pagination} />
     </TitledSectionCard>
   )
 }
@@ -62,13 +64,16 @@ export const SortTestimonyDropDown = ({
   )
 }
 
-export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
+export const TestimonyItem = ({
+  testimony,
+  showControls
+}: {
+  testimony: Testimony
+  showControls: boolean
+}) => {
   const published = testimony.publishedAt.toDate().toLocaleDateString()
 
   const { result: bill } = useBill(testimony.billId)
-
-  const TESTIMONY_CHAR_LIMIT = 442
-  const [showAllTestimony, setShowAllTestimony] = useState(false)
 
   return (
     <div className={`bg-white border-0 border-bottom p-xs-1 p-md-5`}>
@@ -86,7 +91,24 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
             <PositionLabel position={testimony.position} />
           </Col>
         </Row>
-        <FormattedTestimonyContent testimony={testimony.content} />
+        <Row className={`col m2`}>
+          <Col className={`p-4 ps-3`} style={{ whiteSpace: "pre-wrap" }}>
+            <FormattedTestimonyContent testimony={testimony.content} />
+          </Col>
+          {showControls && (
+            <Col
+              className={`d-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
+              style={{
+                fontFamily: "nunito",
+                borderLeft: "1px solid rgb(200, 200, 200)",
+                minWidth: "20%"
+              }}
+            >
+              <Wrap href="#"> Edit</Wrap>
+              <Wrap href="#">Delete</Wrap>
+            </Col>
+          )}
+        </Row>
       </div>
     </div>
   )
@@ -124,3 +146,5 @@ export const FormattedTestimonyContent = ({
     </>
   )
 }
+
+export default ViewTestimony
