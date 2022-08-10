@@ -2,6 +2,7 @@ import axiosModule, { AxiosRequestConfig } from "axios"
 import { isString } from "lodash"
 import { DateTime } from "luxon"
 import { Array } from "runtypes"
+import { create as createRootCas } from "ssl-root-cas"
 import { BillHistory, BillReference } from "./bills/types"
 import { CityBills, CityListing } from "./cities/types"
 import { CommitteeContent, CommitteeListing } from "./committees/types"
@@ -14,10 +15,31 @@ import {
 import { Timestamp } from "./firebase"
 import { MemberContent } from "./members/types"
 
-const axios = axiosModule.create({
-  baseURL: "https://malegislature.gov/api",
-  timeout: 5000
-})
+/**
+ * The MA Legislature website's SSL certificate only contains the first
+ * certificate in the chain, but its full-chain includes root and intermediate
+ * DigiCert certs. Browsers happen to bundle these but tools like curl and node
+ * only include root certs. So we need to add the intermediate cert in order to
+ * create HTTPS connections. Sigh...
+ *
+ * https://www.digicert.com/kb/digicert-root-certificates.htm
+ */
+function addCertificates() {
+  const rootCas = createRootCas()
+  rootCas.addFile(__dirname + "/ssl/DigiCert TLS RSA SHA256 2020 CA1.pem")
+  require("https").globalAgent.options.ca = rootCas
+}
+
+function createClient() {
+  addCertificates()
+  const client = axiosModule.create({
+    baseURL: "https://malegislature.gov/api",
+    timeout: 5000
+  })
+  return client
+}
+
+const axios = createClient()
 
 async function request(config: AxiosRequestConfig): Promise<unknown> {
   const response = await axios(config)
