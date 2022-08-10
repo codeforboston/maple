@@ -17,7 +17,7 @@ export const BillTestimonies = (props: { bill: BillContent }) => {
 
   return (
     <>
-      <ViewTestimony {...testimony} showControls={false}/>
+      <ViewTestimony {...testimony} showControls={false} />
       <AddTestimony bill={bill} refreshtable={refreshtable} />
     </>
   )

@@ -20,7 +20,6 @@ export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
 
-
   const isUser = user?.uid === id
 
   const testimony = usePublishedTestimonyListing({
@@ -32,7 +31,6 @@ export function ProfilePage({ id }: { id: string }) {
   const refreshtable = useCallback(() => {
     items.execute()
   }, [items])
-
 
   const isOrganization: boolean = profile?.organization || false
   const displayName = profile?.displayName

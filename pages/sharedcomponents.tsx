@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
 import { Container, Row, Col } from "../components/bootstrap"
+import { usePublishedTestimonyListing } from "../components/db"
 import { createPage } from "../components/page"
 import { LabeledIcon, TitledSectionCard } from "../components/shared"
 import ViewTestimony from "../components/UserTestimonies/ViewTestimony"
@@ -9,7 +10,11 @@ export default createPage({
   Page: () => {
     const router = useRouter(),
       id = router.query.id,
-      billId = typeof id === "string" ? id : null
+      billId = typeof id === "string" ? id : undefined
+
+    const testimony = usePublishedTestimonyListing({
+      billId
+    })
 
     return (
       <Container>
@@ -56,7 +61,7 @@ export default createPage({
           experiments show that our model can generate more coherent texts than
           state-of-the-art baselines.{" "}
         </TitledSectionCard>
-        <ViewTestimony />
+        <ViewTestimony {...testimony} />
       </Container>
     )
   }
