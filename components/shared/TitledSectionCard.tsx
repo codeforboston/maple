@@ -61,7 +61,7 @@ const TitledSectionCard = ({
   className
 }: TitledSectionCardProps) => {
   return (
-    <StyledCard className={className + " h-100 "}>
+    <StyledCard className={className}>
       {title && <Header title={title} bug={bug} />}
       <div className={`h-100`}>{children}</div>
       {footer && (

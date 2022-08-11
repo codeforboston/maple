@@ -1,10 +1,11 @@
+import { useCallback } from "react"
 import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import { useAuth } from "../auth"
 import { useSendEmailVerification } from "../auth/hooks"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import { Profile, usePublicProfile } from "../db"
+import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -20,6 +21,17 @@ export function ProfilePage({ id }: { id: string }) {
   const { result: profile, loading } = usePublicProfile(id)
 
   const isUser = user?.uid === id
+
+  const testimony = usePublishedTestimonyListing({
+    uid: id
+  })
+
+  const { items } = testimony
+
+  const refreshtable = useCallback(() => {
+    items.execute()
+  }, [items])
+
   const isOrganization: boolean = profile?.organization || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
@@ -77,7 +89,7 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row>
               <Col xs={12}>
-                <ViewTestimony uid={id} />
+                <ViewTestimony {...testimony} showControls={isUser} />
               </Col>
             </Row>
           </Container>
