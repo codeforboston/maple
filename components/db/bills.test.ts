@@ -73,9 +73,9 @@ describe("useBills", () => {
   })
 
   it("sorts by descending testimonyCount", async () => {
-    await setTestimonyCount("H1051", 40)
-    await setTestimonyCount("H1018", 20)
-    await setTestimonyCount("H1050", 10)
+    await setTestimonyCount("H1051", 400)
+    await setTestimonyCount("H1018", 200)
+    await setTestimonyCount("H1050", 100)
 
     const bills = await renderWithSort("testimonyCount")
 
