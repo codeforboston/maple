@@ -67,7 +67,7 @@ export function requireAuth(Component: React.FC<{ user: User }>) {
     const router = useRouter()
     useEffect(() => {
       if (user === null) {
-        router.push({ pathname: "/login", query: { r: router.asPath } })
+        router.push({ pathname: "/" })
       }
     }, [router, user])
 

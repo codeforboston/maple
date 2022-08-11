@@ -1,6 +1,8 @@
-import { Container, Nav, Navbar } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { Container, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { Role } from "../auth"
+import { Role, useAuth } from "../auth"
+import { NavLink } from "../Navlink"
 
 const greeting = (role: Role, displayName?: string) => {
   switch (role) {
@@ -20,22 +22,31 @@ const ProfileLink = ({
   displayName?: string
   role?: Role
 }) => {
+  const { user } = useAuth()
+  const [search, setSearch] = useState("")
+
+  useEffect(() => {
+    if (user?.uid) {
+      setSearch(`?id=${user.uid}`)
+    }
+  }, [user?.uid])
+
   return (
-    <Container>
-      <Nav.Link href="/profile">
-        <div style={{ display: "flex", alignItems: "center" }}>
+    <Container className={`py-0`}>
+      <NavLink href={"/profile" + search} className={`py-0`}>
+        <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
           <Image
-            style={{ margin: "10px" }}
+            style={{ margin: "0 10px" }}
             src="profile-icon.svg"
             alt="profile icon"
           ></Image>
-          <Navbar expand="lg">
+          <Navbar expand="lg" className={`p-0`}>
             <Navbar.Collapse id="topnav">
-              <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
+              <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>{" "}
             </Navbar.Collapse>
           </Navbar>
         </div>
-      </Nav.Link>
+      </NavLink>
     </Container>
   )
 }

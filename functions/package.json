@@ -1,8 +1,10 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "rm -rf lib && tsc",
-    "build:watch": "rm -rf lib && tsc --watch --preserveWatchOutput",
+    "clean": "rimraf lib",
+    "copy-files": "copyfiles -u 1 src/ssl/* lib/",
+    "build": "yarn clean && tsc && yarn copy-files",
+    "build:watch": "yarn clean && yarn copy-files && tsc --watch --preserveWatchOutput",
     "dev": "node dev-functions.js",
     "logs": "firebase functions:log",
     "test": "jest",
@@ -25,15 +27,18 @@
     "nanoid": "^3.3.2",
     "object-hash": "^3.0.0",
     "runtypes": "6.5.1",
+    "ssl-root-cas": "^1.3.1",
     "typesense": "^1.2.2"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/luxon": "^2.0.9",
     "@types/object-hash": "^2.2.1",
+    "copyfiles": "^2.4.1",
     "firebase-functions-test": "^0.3.3",
     "firebase-tools": "^11.2.0",
     "jest": "^27.5.1",
+    "rimraf": "^3.0.2",
     "ts-jest": "^27.1.3",
     "typescript": "4.5.5"
   },

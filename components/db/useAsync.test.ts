@@ -6,6 +6,7 @@ const callback1 = async () => 1
 const callback2 = async () => 2
 
 test("useAsync does not update when the callback changes", async () => {
+  // eslint-disable-next-line
   const hook = renderHook((cb: any) => useAsync(cb, []), {
     initialProps: callback1
   })

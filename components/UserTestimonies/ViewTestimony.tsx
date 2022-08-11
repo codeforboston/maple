@@ -1,19 +1,19 @@
 import { useMemo, useState } from "react"
 import { useAuth } from "../../components/auth"
 import { Testimony } from "../db"
-import { Col, Dropdown, Row } from "../bootstrap"
+import { Col, Dropdown, Row, Button } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { useBill, usePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
 import { Internal } from "../links"
 import { PositionLabel } from "./PositionBug"
+import styles from "./ViewTestimony.module.css"
 
-export default function ViewTestimony() {
-  const { user } = useAuth()
+export default function ViewTestimony({ uid }: { uid?: string }) {
   const {
     items: { loading, result },
     setFilter
-  } = usePublishedTestimonyListing({ uid: user?.uid })
+  } = usePublishedTestimonyListing({ uid: uid })
 
   const testimony = useMemo(() => {
     return result ?? []
@@ -42,18 +42,20 @@ export const SortTestimonyDropDown = ({
 }) => {
   return (
     <Dropdown>
-      <Dropdown.Toggle variant="light" id="dropdown-order">
-        {orderBy ?? "Order by"}
+      <Dropdown.Toggle
+        variant="primary"
+        id="dropdown-order"
+        bsPrefix={styles.toggleIcon}
+      >
+        {orderBy ?? "Order by"}{" "}
       </Dropdown.Toggle>
+
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setOrderBy("Most Recent")}>
-          Most Recent
+        <Dropdown.Item onClick={() => setOrderBy("Most Recent First")}>
+          Most Recent First
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alphabetical")}>
-          Alphabetical
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Alpha by Tag")}>
-          Alpha by Tag
+        <Dropdown.Item onClick={() => setOrderBy("Oldest First")}>
+          Oldest First
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
@@ -64,6 +66,9 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
   const published = testimony.publishedAt.toDate().toLocaleDateString()
 
   const { result: bill } = useBill(testimony.billId)
+
+  const TESTIMONY_CHAR_LIMIT = 442
+  const [showAllTestimony, setShowAllTestimony] = useState(false)
 
   return (
     <div className={`bg-white border-0 border-bottom p-xs-1 p-md-5`}>
@@ -81,8 +86,41 @@ export const TestimonyItem = ({ testimony }: { testimony: Testimony }) => {
             <PositionLabel position={testimony.position} />
           </Col>
         </Row>
-        <div className={`col m2`}>{testimony.content}</div>
+        <FormattedTestimonyContent testimony={testimony.content} />
       </div>
     </div>
+  )
+}
+
+export const FormattedTestimonyContent = ({
+  testimony
+}: {
+  testimony: string
+}) => {
+  const TESTIMONY_CHAR_LIMIT = 442
+  const [showAllTestimony, setShowAllTestimony] = useState(false)
+
+  return (
+    <>
+      {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
+        <>
+          <div className={`col m2`}>
+            {testimony.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
+          </div>
+          <Col
+            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
+          >
+            <Button
+              variant="link"
+              onClick={() => setShowAllTestimony(!showAllTestimony)}
+            >
+              Show More
+            </Button>
+          </Col>
+        </>
+      ) : (
+        <div className={`col m2`}>{testimony}</div>
+      )}
+    </>
   )
 }
