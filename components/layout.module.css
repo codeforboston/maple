@@ -25,6 +25,6 @@
   margin-right: auto;
 }
 
-.navbar_box:last-child  > * {
+.navbar_box:last-child > * {
   margin-left: auto;
 }

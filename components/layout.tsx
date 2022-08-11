@@ -1,7 +1,7 @@
 import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
-import { useMediaQuery} from '@react-hook/media-query'
+import { useMediaQuery } from "@react-hook/media-query"
 import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
@@ -40,7 +40,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
   const { profile } = useProfile()
-  const isMobile = useMediaQuery('only screen and (max-width: 780px)')
+  const isMobile = useMediaQuery("only screen and (max-width: 780px)")
 
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -82,7 +82,11 @@ const TopNav: React.FC = () => {
 
             <div className={styles.navbar_box}>
               <Nav>
-                {authenticated ? <ProfileLink displayName={profile?.displayName} /> : !isMobile && <SignInWithModal />}
+                {authenticated ? (
+                  <ProfileLink displayName={profile?.displayName} />
+                ) : (
+                  !isMobile && <SignInWithModal />
+                )}
               </Nav>
             </div>
           </div>
@@ -130,7 +134,9 @@ const TopNav: React.FC = () => {
               )}
             </Nav>
           </Navbar.Collapse>
-          {isMobile && !authenticated ? <SignInWithModal className={styles.mobile_nav_auth}/> : null}
+          {isMobile && !authenticated ? (
+            <SignInWithModal className={styles.mobile_nav_auth} />
+          ) : null}
         </Container>
       </Navbar>
     </>

@@ -6,11 +6,14 @@ import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
 
 interface IProps {
-  label?: string;
-  className?: string;
+  label?: string
+  className?: string
 }
 
-export default function SignInWithModal({ label = "Log in / Sign up", className = "" }: IProps) {
+export default function SignInWithModal({
+  label = "Log in / Sign up",
+  className = ""
+}: IProps) {
   const [currentModal, setCurrentModal] = useState<
     "start" | "signIn" | "signUp" | "forgotPassword" | null
   >(null)
