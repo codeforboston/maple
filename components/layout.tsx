@@ -1,6 +1,7 @@
 import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
+import { useMediaQuery} from '@react-hook/media-query'
 import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
@@ -8,6 +9,8 @@ import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import styles from "./layout.module.css"
+
 export type LayoutProps = {
   title?: string
 }
@@ -37,6 +40,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
   const { profile } = useProfile()
+  const isMobile = useMediaQuery('only screen and (max-width: 780px)')
+
   const [isExpanded, setIsExpanded] = useState(false)
 
   const toggleNav = () => setIsExpanded(!isExpanded)
@@ -58,24 +63,29 @@ const TopNav: React.FC = () => {
     <>
       <Navbar
         bg="secondary"
+        sticky={isMobile ? "top" : undefined}
         variant="dark"
         expand={false}
         expanded={isExpanded}
       >
         <Container>
-          <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
-          <Navbar.Brand>
-            <Nav.Link href="/" className={`py-0`}>
-              <Image fluid src="nav-logo.png" alt="logo"></Image>
-            </Nav.Link>
-          </Navbar.Brand>
-          <Nav>
-            {!authenticated ? (
-              <SignInWithModal />
-            ) : (
-              <ProfileLink displayName={profile?.displayName} />
-            )}
-          </Nav>
+          <div className={styles.navbar_boxes_container}>
+            <div className={styles.navbar_box}>
+              <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
+            </div>
+
+            <Navbar.Brand>
+              <Nav.Link href="/" className="py-0">
+                <Image fluid src="nav-logo.png" alt="logo"></Image>
+              </Nav.Link>
+            </Navbar.Brand>
+
+            <div className={styles.navbar_box}>
+              <Nav>
+                {authenticated ? <ProfileLink displayName={profile?.displayName} /> : !isMobile && <SignInWithModal />}
+              </Nav>
+            </div>
+          </div>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
               <NavLink href="/" handleClick={closeNav}>
@@ -120,6 +130,7 @@ const TopNav: React.FC = () => {
               )}
             </Nav>
           </Navbar.Collapse>
+          {isMobile && !authenticated ? <SignInWithModal className={styles.mobile_nav_auth}/> : null}
         </Container>
       </Navbar>
     </>
