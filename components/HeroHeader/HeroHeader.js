@@ -49,10 +49,8 @@ const HeroHeader = ({ authenticated }) => {
                 md={{ order: "last", span: 6 }}
               >
                 <div className={`m-5`}>
-                  <h1>
-                    <em>Let your voice be heard!</em>
-                  </h1>
-                  <p className="lead">
+                  <div className={styles.title}>Let your voice be heard!</div>
+                  <p className={styles.subtitle}>
                     MAPLE makes it easy for anyone to view and submit testimony
                     to the Massachusetts Legislature about the bills that will
                     shape our future.
