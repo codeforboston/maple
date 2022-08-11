@@ -57,3 +57,9 @@ export async function getBill(id: string): Promise<Bill> {
   const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
   return doc.data() as any
 }
+
+export const getProfile = (user: { uid: string }) =>
+  testDb
+    .doc(`/profiles/${user.uid}`)
+    .get()
+    .then(d => d.data())

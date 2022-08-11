@@ -19,7 +19,7 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { setUsername } from "./profile"
+export { createProfile } from "./profile"
 export { checkSearchIndexVersion } from "./search"
 export {
   deleteTestimony,

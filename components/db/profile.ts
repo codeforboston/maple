@@ -8,7 +8,7 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { useAuth } from "../auth"
+import { Role, useAuth } from "../auth"
 import { firestore, storage } from "../firebase"
 
 export type ProfileMember = {
@@ -24,6 +24,7 @@ export type SocialLinks = Partial<
 >
 
 export type Profile = {
+  role?: Role
   displayName?: string
   fullName?: string
   representative?: ProfileMember

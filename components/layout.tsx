@@ -35,7 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 }
 
 const TopNav: React.FC = () => {
-  const { authenticated } = useAuth()
+  const { authenticated, claims } = useAuth()
   const { profile } = useProfile()
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -73,7 +73,10 @@ const TopNav: React.FC = () => {
             {!authenticated ? (
               <SignInWithModal />
             ) : (
-              <ProfileLink displayName={profile?.displayName} />
+              <ProfileLink
+                role={claims?.role}
+                displayName={profile?.displayName}
+              ></ProfileLink>
             )}
           </Nav>
           <Navbar.Collapse id="topnav">
