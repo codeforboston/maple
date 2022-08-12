@@ -3,8 +3,7 @@ import { Container, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { Role, useAuth } from "../auth"
 import { NavLink } from "../Navlink"
-import styles from './ProfileLink.module.css'
-
+import styles from "./ProfileLink.module.css"
 
 const greeting = (role: Role, displayName?: string) => {
   switch (role) {

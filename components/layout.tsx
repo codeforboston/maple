@@ -65,7 +65,8 @@ const TopNav: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    const _isMobile = (checkMobile && isMobileOnRender) || (!isMobileOnRender && checkMobile)
+    const _isMobile =
+      (checkMobile && isMobileOnRender) || (!isMobileOnRender && checkMobile)
     setSticky(_isMobile)
   }, [checkMobile, isMobileOnRender])
 
