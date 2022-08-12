@@ -1,6 +1,7 @@
 import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
+import { useMediaQuery } from "usehooks-ts"
 import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
@@ -8,6 +9,8 @@ import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import styles from "./layout.module.css"
+
 export type LayoutProps = {
   title?: string
 }
@@ -37,12 +40,19 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
   const { profile } = useProfile()
+  const checkMobile = useMediaQuery("(max-width: 768px)")
+  const [isMobileOnRender, setIsMobileOnRender] = useState(false)
+  const [sticky, setSticky] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
 
   useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsMobileOnRender(true)
+    }
+
     const unsubscribe = auth.onAuthStateChanged(user => {
       // when a user clicks the sign out button, the navbar is left open.
       // this fixes that
@@ -54,28 +64,42 @@ const TopNav: React.FC = () => {
     return unsubscribe
   }, [])
 
+  useEffect(() => {
+    const _isMobile = (checkMobile && isMobileOnRender) || (!isMobileOnRender && checkMobile)
+    setSticky(_isMobile)
+  }, [checkMobile, isMobileOnRender])
+
   return (
     <>
       <Navbar
         bg="secondary"
         variant="dark"
+        sticky={sticky ? "top" : undefined}
         expand={false}
         expanded={isExpanded}
       >
         <Container>
-          <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
-          <Navbar.Brand>
-            <Nav.Link href="/" className={`py-0`}>
-              <Image fluid src="nav-logo.png" alt="logo"></Image>
-            </Nav.Link>
-          </Navbar.Brand>
-          <Nav>
-            {!authenticated ? (
-              <SignInWithModal />
-            ) : (
-              <ProfileLink displayName={profile?.displayName} />
-            )}
-          </Nav>
+          <div className={styles.navbar_boxes_container}>
+            <div className={styles.navbar_box}>
+              <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
+            </div>
+
+            <Navbar.Brand className="mx-2 p-0">
+              <Nav.Link href="/" className="py-0">
+                <Image fluid src="nav-logo.png" alt="logo"></Image>
+              </Nav.Link>
+            </Navbar.Brand>
+
+            <div className={styles.navbar_box}>
+              <Nav>
+                {authenticated ? (
+                  <ProfileLink displayName={profile?.displayName} />
+                ) : (
+                  !sticky && <SignInWithModal />
+                )}
+              </Nav>
+            </div>
+          </div>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
               <NavLink href="/" handleClick={closeNav}>
@@ -120,6 +144,9 @@ const TopNav: React.FC = () => {
               )}
             </Nav>
           </Navbar.Collapse>
+          {sticky && !authenticated ? (
+            <SignInWithModal className={styles.mobile_nav_auth} />
+          ) : null}
         </Container>
       </Navbar>
     </>
