@@ -2512,11 +2512,6 @@
     "@react-types/shared" "^3.13.1"
     clsx "^1.1.1"
 
-"@react-hook/media-query@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@react-hook/media-query/-/media-query-1.1.1.tgz#7fc4e52591784a39be924b62b4270ae3e18ec578"
-  integrity sha512-VM14wDOX5CW5Dn6b2lTiMd79BFMTut9AZj2+vIRT3LCKgMCYmdqruTtzDPSnIVDQdtxdPgtOzvU9oK20LopuOw==
-
 "@react-stately/utils@^3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@react-stately/utils/-/utils-3.5.0.tgz#e76231cfc93042814dcc5d96436e50c807c1d905"
