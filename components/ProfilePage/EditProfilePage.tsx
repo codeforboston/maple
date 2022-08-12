@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -11,7 +11,12 @@ import {
   Row,
   Spinner
 } from "../bootstrap"
-import { Profile, ProfileHook, useProfile } from "../db"
+import {
+  Profile,
+  ProfileHook,
+  useProfile,
+  usePublishedTestimonyListing
+} from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
@@ -43,9 +48,19 @@ export function EditProfileForm({
 }: {
   profile: Profile
   actions: ProfileHook
-  uid?: string
+  uid: string
 }) {
   const [key, setKey] = useState("AboutYou")
+
+  const testimony = usePublishedTestimonyListing({
+    uid: uid
+  })
+
+  const { items } = testimony
+
+  const refreshtable = useCallback(() => {
+    items.execute()
+  }, [items])
 
   const tabs = [
     {
@@ -56,7 +71,7 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <ViewTestimony uid={uid} />
+      content: <ViewTestimony {...testimony} showControls={true} />
     }
   ]
 

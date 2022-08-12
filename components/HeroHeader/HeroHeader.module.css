@@ -2,11 +2,20 @@
   color: white;
   background-color: #1a3185;
   overflow: hidden;
+  font-family: "Nunito";
 }
 
 .btncontainer {
   display: inline-block;
   padding: 0.25em;
+}
+
+.title {
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  font-size: 1rem;
 }
 
 .skyline {

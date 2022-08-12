@@ -38,7 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 }
 
 const TopNav: React.FC = () => {
-  const { authenticated } = useAuth()
+  const { authenticated, claims } = useAuth()
   const { profile } = useProfile()
   const checkMobile = useMediaQuery("(max-width: 768px)")
   const [isMobileOnRender, setIsMobileOnRender] = useState(false)
@@ -93,7 +93,10 @@ const TopNav: React.FC = () => {
             <div className={styles.navbar_box}>
               <Nav>
                 {authenticated ? (
-                  <ProfileLink displayName={profile?.displayName} />
+                  <ProfileLink
+                    role={claims?.role}
+                    displayName={profile?.displayName}
+                  />
                 ) : (
                   !sticky && <SignInWithModal />
                 )}

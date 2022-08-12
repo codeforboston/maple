@@ -1,13 +1,31 @@
 import { useEffect, useState } from "react"
-import { Container, Nav, Navbar } from "react-bootstrap"
+import { Container, Navbar } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { useAuth } from "../auth"
+import { Role, useAuth } from "../auth"
 import { NavLink } from "../Navlink"
 import styles from './ProfileLink.module.css'
 
-const ProfileLink = ({ displayName = "User" }) => {
+
+const greeting = (role: Role, displayName?: string) => {
+  switch (role) {
+    case "user":
+    case "legislator":
+    case "organization":
+      return displayName ? `Hello, ${displayName}` : "Hello there"
+    case "admin":
+      return `Hello, Admin ${displayName}`
+  }
+}
+
+const ProfileLink = ({
+  displayName,
+  role = "user"
+}: {
+  displayName?: string
+  role?: Role
+}) => {
   const { user } = useAuth()
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     if (user?.uid) {
@@ -26,7 +44,7 @@ const ProfileLink = ({ displayName = "User" }) => {
           />
           <Navbar expand="lg" className="p-0">
             <Navbar.Collapse id="topnav">
-              <Navbar.Brand>Hello, {displayName}</Navbar.Brand>
+              <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
             </Navbar.Collapse>
           </Navbar>
         </div>
