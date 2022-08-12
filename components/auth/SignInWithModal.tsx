@@ -5,7 +5,15 @@ import SignInModal from "./SignInModal"
 import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
 
-export default function SignInWithModal({ label = "Sign In" }) {
+interface Props {
+  label?: string
+  className?: string
+}
+
+export default function SignInWithModal({
+  label = "Log in / Sign up",
+  className
+}: Props) {
   const [currentModal, setCurrentModal] = useState<
     "start" | "signIn" | "signUp" | "forgotPassword" | null
   >(null)
@@ -13,7 +21,7 @@ export default function SignInWithModal({ label = "Sign In" }) {
   const close = () => setCurrentModal(null)
 
   return (
-    <>
+    <span className={className}>
       <Button variant="primary" onClick={() => setCurrentModal("start")}>
         {label}
       </Button>
@@ -34,6 +42,6 @@ export default function SignInWithModal({ label = "Sign In" }) {
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}
       />
-    </>
+    </span>
   )
 }
