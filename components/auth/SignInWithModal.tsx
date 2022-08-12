@@ -5,15 +5,15 @@ import SignInModal from "./SignInModal"
 import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
 
-interface IProps {
+interface Props {
   label?: string
   className?: string
 }
 
 export default function SignInWithModal({
   label = "Log in / Sign up",
-  className = ""
-}: IProps) {
+  className
+}: Props) {
   const [currentModal, setCurrentModal] = useState<
     "start" | "signIn" | "signUp" | "forgotPassword" | null
   >(null)

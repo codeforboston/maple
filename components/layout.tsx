@@ -1,7 +1,7 @@
 import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
-import { useMediaQuery } from "@react-hook/media-query"
+import { useMediaQuery } from "usehooks-ts"
 import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
@@ -40,14 +40,19 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated } = useAuth()
   const { profile } = useProfile()
-  const isMobile = useMediaQuery("only screen and (max-width: 780px)")
-
+  const checkMobile = useMediaQuery("(max-width: 768px)")
+  const [isMobileOnRender, setIsMobileOnRender] = useState(false)
+  const [sticky, setSticky] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
 
   useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsMobileOnRender(true)
+    }
+
     const unsubscribe = auth.onAuthStateChanged(user => {
       // when a user clicks the sign out button, the navbar is left open.
       // this fixes that
@@ -59,12 +64,17 @@ const TopNav: React.FC = () => {
     return unsubscribe
   }, [])
 
+  useEffect(() => {
+    const _isMobile = (checkMobile && isMobileOnRender) || (!isMobileOnRender && checkMobile)
+    setSticky(_isMobile)
+  }, [checkMobile, isMobileOnRender])
+
   return (
     <>
       <Navbar
         bg="secondary"
-        sticky={isMobile ? "top" : undefined}
         variant="dark"
+        sticky={sticky ? "top" : undefined}
         expand={false}
         expanded={isExpanded}
       >
@@ -74,7 +84,7 @@ const TopNav: React.FC = () => {
               <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
             </div>
 
-            <Navbar.Brand>
+            <Navbar.Brand className="mx-2 p-0">
               <Nav.Link href="/" className="py-0">
                 <Image fluid src="nav-logo.png" alt="logo"></Image>
               </Nav.Link>
@@ -85,7 +95,7 @@ const TopNav: React.FC = () => {
                 {authenticated ? (
                   <ProfileLink displayName={profile?.displayName} />
                 ) : (
-                  !isMobile && <SignInWithModal />
+                  !sticky && <SignInWithModal />
                 )}
               </Nav>
             </div>
@@ -134,7 +144,7 @@ const TopNav: React.FC = () => {
               )}
             </Nav>
           </Navbar.Collapse>
-          {isMobile && !authenticated ? (
+          {sticky && !authenticated ? (
             <SignInWithModal className={styles.mobile_nav_auth} />
           ) : null}
         </Container>
