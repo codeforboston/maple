@@ -8,11 +8,14 @@ import React, {
   useState
 } from "react"
 import { auth } from "../firebase"
+import { Claim } from "./types"
 
 interface AuthState {
   /** null if the user is signed out, undefined if the auth state hasn't been
    * initialized */
   user: User | null | undefined
+  /** Only set if authenticated */
+  claims?: Claim
   /** True iff user is signed in */
   authenticated: boolean
 }
@@ -30,19 +33,28 @@ export function useAuth() {
 
 function useAuthenticationHook(): AuthState {
   const [user, setUser] = useState<User | null | undefined>(undefined)
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      setUser(user)
-    })
-
-    return unsubscribe
-  }, [])
+  const [claims, setClaims] = useState<Claim | undefined>(undefined)
+  useEffect(
+    () =>
+      auth.onAuthStateChanged(async user => {
+        let claims: Claim | undefined = undefined
+        if (user) {
+          const token = await user.getIdTokenResult()
+          const fromToken = Claim.validate(token.claims)
+          if (fromToken.success) claims = fromToken.value
+        }
+        setClaims(claims)
+        setUser(user)
+      }),
+    []
+  )
   return useMemo(
     () => ({
       user,
+      claims,
       authenticated: !!user
     }),
-    [user]
+    [claims, user]
   )
 }
 

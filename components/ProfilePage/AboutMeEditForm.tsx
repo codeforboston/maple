@@ -20,8 +20,6 @@ type UpdateProfileData = {
   profileImage: any
 }
 
-type ProfileKey = keyof Profile
-
 type Props = {
   profile: Profile
   actions: ProfileHook
@@ -40,8 +38,6 @@ async function updateProfile(
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
-
-  console.log(profile)
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
@@ -66,7 +62,6 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
   })
 
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value)
     await updateIsOrganization(e.target.value === "organization")
   }
 
@@ -101,7 +96,11 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               <option value="individual">Individual</option>
             </Form.Select>
           </Form.FloatingLabel>
-          <Input label="Name" defaultValue={displayName} />
+          <Input
+            label="Name"
+            {...register("name")}
+            defaultValue={displayName}
+          />
           <Input
             as="textarea"
             {...register("aboutYou")}
