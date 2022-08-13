@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Form, Image, Row } from "../bootstrap"
+import { Button, Form, Image, Row, Col } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
@@ -22,6 +22,7 @@ type Props = {
   profile: Profile
   actions: ProfileHook
   uid?: string
+  setFormUpdated?: any
 }
 
 async function updateProfile(
@@ -46,10 +47,10 @@ async function updateProfile(
   // await updateProfileImage(data.profileImage) disabled until permissions to be updated in fb storage
 }
 
-export function AboutMeEditForm({ profile, actions, uid }: Props) {
+export function AboutMeEditForm({ profile, actions, uid, setFormUpdated }: Props) {
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit
   } = useForm<UpdateProfileData>()
 
@@ -59,7 +60,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
     organization,
     public: isPublic,
     social,
-    profileImage
+    profileImage,
   }: Profile = profile
 
   const userType = organization ? "organization" : "individual"
@@ -68,7 +69,18 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
+
+    handleRedirect();
   })
+
+  const handleRedirect = ()=>{
+    //redirect user to profile page
+    profile.organization ? location.assign(`/organization?id=${uid}`) : location.assign(`/profile?=${uid}`)
+  }
+
+  useEffect(() => {
+    setFormUpdated(isDirty);
+  }, [isDirty, setFormUpdated])
 
   return (
     <TitledSectionCard>
@@ -140,11 +152,18 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               />
             </div>
           </div>
-          <Form.Group className="d-flex col-auto m-auto">
-            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
-              Save Profile
-            </Button>
-          </Form.Group>
+          <Row className="align-items-center justify-content-center mb-3">
+            <Col className="align-items-center" xs="auto">
+              <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
+                Save Profile
+              </Button>
+              </Col>
+              <Col className="align-items-center" xs="auto">
+              <Button className="flex-grow-0 mt-5 mx-auto" variant="outline-dark" onClick={handleRedirect}>
+                Cancel
+              </Button>
+            </Col>
+          </Row>
         </div>
       </Form>
       {!organization && (
