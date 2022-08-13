@@ -51,7 +51,7 @@ export function EditProfileForm({
   uid: string
 }) {
   const [key, setKey] = useState("AboutYou")
-  const [formUpdated, setFormUpdated] = useState(false);
+  const [formUpdated, setFormUpdated] = useState(false)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -67,7 +67,14 @@ export function EditProfileForm({
     {
       title: "About You",
       eventKey: "AboutYou",
-      content: <AboutMeEditForm profile={profile} actions={actions} uid={uid} setFormUpdated={setFormUpdated} />
+      content: (
+        <AboutMeEditForm
+          profile={profile}
+          actions={actions}
+          uid={uid}
+          setFormUpdated={setFormUpdated}
+        />
+      )
     },
     {
       title: "Testimonies",
@@ -80,16 +87,21 @@ export function EditProfileForm({
     <Container>
       <Header>
         <Col>Edit Profile</Col>
-        {!formUpdated && <Col className={`d-flex justify-content-end`}>
-          {!profile.organization ? <Internal href={`/profile?id=${uid}`}>
-
-            <Button className={`btn btn-lg`}>View your profile</Button>
-          </Internal> :
-            <Internal href={`/organization?id=${uid}`}>
-              <Button className={`btn btn-lg`}>View your organization page</Button>
-            </Internal>
-          }
-        </Col>}
+        {!formUpdated && (
+          <Col className={`d-flex justify-content-end`}>
+            {!profile.organization ? (
+              <Internal href={`/profile?id=${uid}`}>
+                <Button className={`btn btn-lg`}>View your profile</Button>
+              </Internal>
+            ) : (
+              <Internal href={`/organization?id=${uid}`}>
+                <Button className={`btn btn-lg`}>
+                  View your organization page
+                </Button>
+              </Internal>
+            )}
+          </Col>
+        )}
       </Header>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
         <StyledTabNav className={`d-none d-md-flex`}>

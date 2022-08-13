@@ -41,7 +41,12 @@ async function updateProfile(
   await updateDisplayName(data.name)
 }
 
-export function AboutMeEditForm({ profile, actions, uid, setFormUpdated }: Props) {
+export function AboutMeEditForm({
+  profile,
+  actions,
+  uid,
+  setFormUpdated
+}: Props) {
   const {
     register,
     formState: { errors, isDirty },
@@ -54,15 +59,13 @@ export function AboutMeEditForm({ profile, actions, uid, setFormUpdated }: Props
     organization,
     public: isPublic,
     social,
-    profileImage,
+    profileImage
   }: Profile = profile
 
   const { updateIsOrganization } = actions
 
-<<<<<<< HEAD
-  const onSubmit = handleSubmit(data => {
-    updateProfile({ profile, actions, uid }, data)
-  })
+
+ 
 
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
     await updateIsOrganization(e.target.value === "organization")
@@ -70,15 +73,21 @@ export function AboutMeEditForm({ profile, actions, uid, setFormUpdated }: Props
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
+
+    handleRedirect()
   })
 
-  const handleRedirect = ()=>{
+  const handleRedirect = () => {
     //redirect user to profile page
-    profile.organization ? location.assign(`/organization?id=${uid}`) : location.assign(`/profile?=${uid}`)
+    profile.organization
+      ? location.assign(`/organization?id=${uid}`)
+      : location.assign(`/profile?=${uid}`)
   }
 
+  handleRedirect()
+
   useEffect(() => {
-    setFormUpdated(isDirty);
+    setFormUpdated(isDirty)
   }, [isDirty, setFormUpdated])
 
   return (
@@ -144,9 +153,13 @@ export function AboutMeEditForm({ profile, actions, uid, setFormUpdated }: Props
               <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
                 Save Profile
               </Button>
-              </Col>
-              <Col className="align-items-center" xs="auto">
-              <Button className="flex-grow-0 mt-5 mx-auto" variant="outline-dark" onClick={handleRedirect}>
+            </Col>
+            <Col className="align-items-center" xs="auto">
+              <Button
+                className="flex-grow-0 mt-5 mx-auto"
+                variant="outline-dark"
+                onClick={handleRedirect}
+              >
                 Cancel
               </Button>
             </Col>

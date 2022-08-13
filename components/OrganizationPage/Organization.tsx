@@ -1,3 +1,4 @@
+import { profile } from "console"
 import { User } from "firebase/auth"
 import { userInfo } from "os"
 import Image from "react-bootstrap/Image"
@@ -19,18 +20,16 @@ import {
 export function OrgPage({ id }: { id: string }) {
   const { user } = useAuth()
 
-  console.log("From user: ", user);
+  console.log("From user: ", user)
 
   console.log("from public profile result: ", usePublicProfile(id).result)
 
-  const { result: profile, loading } = usePublicProfile(id);
+  const { result: profile, loading } = usePublicProfile(id)
 
+  const isUser = user?.uid === id
 
-
-  const isUser = user?.uid === id;
-
-  const displayName = profile?.displayName;
-  const isOrganization = profile?.organization;
+  const displayName = profile?.displayName
+  const isOrganization = profile?.organization
 
   return (
     <>
@@ -57,7 +56,12 @@ export function OrgPage({ id }: { id: string }) {
             </Container>
           )}
           <Container>
-            <ProfileHeader displayName={displayName} isUser={isUser} isOrganization= {isOrganization as boolean} />
+            <ProfileHeader
+              displayName={displayName}
+              isUser={isUser}
+              isOrganization={isOrganization as boolean}
+              profileImage={profile?.profileImage}
+            />
 
             {isUser && !user.emailVerified ? (
               <VerifyAccountSection user={user} />
@@ -132,10 +136,12 @@ export const ProfileHeader = ({
   displayName,
   isUser,
   isOrganization,
+  profileImage
 }: {
   displayName?: string
   isUser: boolean
-  isOrganization: boolean;
+  isOrganization: boolean
+  profileImage?: string
 }) => {
   const [firstName, lastName] = displayName
     ? displayName.split(" ")
@@ -144,18 +150,20 @@ export const ProfileHeader = ({
   return (
     <Header className={`d-flex`}>
       <Col xs={"auto"} className={"col-auto"}>
-        <UserIcon className={`col d-none d-sm-flex`} />
+        <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
       </Col>
       {displayName ? (
-        <Col xs={'auto'} className={"col-auto"}>
+        <Col xs={"auto"} className={"col-auto"}>
           <ProfileDisplayName className={``}>
             <div className={`firstName text-capitalize`}>{firstName}</div>
             <div className={`lastName text-capitalize`}>{lastName}</div>
           </ProfileDisplayName>
 
-          {isOrganization && <VerifiedBadge>
-            <div className={"verifiedText"}>verified organization</div>
-          </VerifiedBadge>}
+          {isOrganization && (
+            <VerifiedBadge>
+              <div className={"verifiedText"}>verified organization</div>
+            </VerifiedBadge>
+          )}
         </Col>
       ) : (
         <ProfileDisplayName className={``}>

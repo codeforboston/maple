@@ -87,7 +87,7 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: "profile-icon.svg",
+  src: props.src,
   className: props.className
 }))`
   height: 8rem;
@@ -97,7 +97,7 @@ export const UserIcon = styled(Image).attrs(props => ({
   background-color: var(--bs-blue);
   flex: 0;
 `
-export const VerifiedBadge = styled.div.attrs(props=>({
+export const VerifiedBadge = styled.div.attrs(props => ({
   className: props.className
 }))`
   background-color: var(--bs-blue);
@@ -108,9 +108,9 @@ export const VerifiedBadge = styled.div.attrs(props=>({
   align-content: center;
   text-align: center;
 
-  .verifiedText{
+  .verifiedText {
     font-size: 1rem;
-    color:white;
+    color: white;
     align-self: center;
     justify-self: center;
   }
