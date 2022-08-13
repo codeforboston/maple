@@ -40,8 +40,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 const TopNav: React.FC = () => {
   const { authenticated, claims } = useAuth()
   const { profile } = useProfile()
-  const checkMobile = useMediaQuery("(max-width: 768px)")
-  const [isMobileOnRender, setIsMobileOnRender] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const [sticky, setSticky] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -49,10 +48,6 @@ const TopNav: React.FC = () => {
   const closeNav = () => setIsExpanded(false)
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsMobileOnRender(true)
-    }
-
     const unsubscribe = auth.onAuthStateChanged(user => {
       // when a user clicks the sign out button, the navbar is left open.
       // this fixes that
@@ -64,11 +59,7 @@ const TopNav: React.FC = () => {
     return unsubscribe
   }, [])
 
-  useEffect(() => {
-    const _isMobile =
-      (checkMobile && isMobileOnRender) || (!isMobileOnRender && checkMobile)
-    setSticky(_isMobile)
-  }, [checkMobile, isMobileOnRender])
+  useEffect(() => setSticky(isMobile), [isMobile])
 
   return (
     <>
@@ -86,7 +77,7 @@ const TopNav: React.FC = () => {
             </div>
 
             <Navbar.Brand className="mx-2 p-0">
-              <Nav.Link href="/" className="py-0">
+              <Nav.Link href="/" className="p-0">
                 <Image fluid src="nav-logo.png" alt="logo"></Image>
               </Nav.Link>
             </Navbar.Brand>
