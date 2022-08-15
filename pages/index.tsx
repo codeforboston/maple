@@ -1,6 +1,7 @@
 import React from "react"
 import AboutSection from "../components/AboutSection/AboutSection"
 import { useAuth } from "../components/auth"
+import { HearingsScheduled } from "../components/HearingsScheduled/HearingsScheduled"
 import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
 import { createPage } from "../components/page"
@@ -21,6 +22,8 @@ export default createPage({
         <Leaf direction="left" />
 
         <AboutSection />
+
+        <HearingsScheduled />
       </div>
     )
   }
