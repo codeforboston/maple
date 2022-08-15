@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react"
-import { Button, Col, Container, Modal, Row } from "../bootstrap"
+import { useCallback, useEffect, useState } from "react"
 import { useAuth } from "../../components/auth"
+import * as links from "../../components/links"
+import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
 import { useUnsavedTestimony } from "../db/testimony/useUnsavedTestimony"
+import { FormattedBillTitle } from "../formatting"
 import { Attachment } from "./Attachment"
 import PostSubmitModal from "./PostSubmitModal"
-import * as links from "../../components/links"
-import { FormattedBillTitle } from "../formatting"
 
 const CommentModal = ({
   bill,
@@ -45,8 +45,8 @@ const CommentModal = ({
   const edit = useEditTestimony(user ? user.uid : null, billInfo.BillNumber)
   const attachment = useDraftTestimonyAttachment(
     user.uid,
-    edit.draft,
-    setTestimony
+    edit.draft?.attachmentId,
+    id => setTestimony({ attachmentId: id })
   )
 
   useEffect(() => {

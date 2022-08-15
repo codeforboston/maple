@@ -1,17 +1,18 @@
 import { SSRProvider as AriaSSRProvider } from "@react-aria/ssr"
-import { AuthProvider } from "../components/auth"
+import { Provider as Auth } from "../components/auth"
 import { SSRProvider as BootstrapSSRProvider } from "../components/bootstrap"
-import { ServiceProvider } from "./service"
+import { Provider as Profile } from "./db/profile/service"
+import { Publish } from "./publish/service"
 import { Provider as Search } from "./search"
+import { ServiceProvider } from "./service"
+import { Provider as Redux } from "./store"
 
-const services = [AuthProvider, Search]
+const providers = [Redux, Auth, Profile, Publish.Provider, Search]
 
-export const Providers: React.FC<{ children: React.ReactElement }> = ({
-  children
-}) => (
+export const Providers: React.FC = ({ children }) => (
   <AriaSSRProvider>
     <BootstrapSSRProvider>
-      <ServiceProvider providers={services}>{children}</ServiceProvider>
+      <ServiceProvider providers={providers}>{children}</ServiceProvider>
     </BootstrapSSRProvider>
   </AriaSSRProvider>
 )

@@ -1,12 +1,13 @@
 // Order is important!
+import "instantsearch.css/themes/satellite.css"
+import "../components/fontawesome"
 import "../styles/bootstrap.scss"
 import "../styles/globals.css"
-import "../components/fontawesome"
 import "../styles/instantsearch.css"
-import "instantsearch.css/themes/satellite.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
+import { Services } from "../components/services"
 
 /**
  * The root React component of the application. Next.js renders this, passing
@@ -19,7 +20,12 @@ import { Providers } from "../components/providers"
  * See https://nextjs.org/docs/basic-features/layouts for the pattern.
  */
 function App(props: AppPropsWithLayout) {
-  return <Providers>{applyLayout(props)}</Providers>
+  return (
+    <Providers>
+      <Services />
+      {applyLayout(props)}
+    </Providers>
+  )
 }
 
 export default App

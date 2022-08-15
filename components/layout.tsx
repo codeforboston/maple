@@ -30,7 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       {children}
       <PageFooter
         authenticated={authenticated}
-        user={user}
+        user={user as any}
         signOut={() => void auth.signOut()}
       />
     </>

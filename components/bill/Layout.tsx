@@ -1,14 +1,14 @@
 import styled from "styled-components"
-import { BillTestimonies } from "./BillTestimonies"
 import { Col, Container, Row } from "../bootstrap"
+import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber } from "./BillNumber"
+import { BillTestimonies } from "./BillTestimonies"
+import { LabeledContainer } from "./LabeledContainer"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
-import { SubmitTestimony } from "./SubmitTestimony"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { LabeledContainer } from "./LabeledContainer"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -16,7 +16,7 @@ const StyledContainer = styled(Container)`
 
 export const Layout = ({ bill }: BillProps) => {
   return (
-    <StyledContainer className="mt-3">
+    <StyledContainer className="mt-3 mb-3">
       <Row>
         <Col>
           <Back href="/bills">Back to List of Bills</Back>
@@ -36,9 +36,15 @@ export const Layout = ({ bill }: BillProps) => {
         </Col>
       </Row>
       <Row className="mt-4">
-        <Col>
+        <Col md={8}>
           <SponsorsAndCommittees bill={bill} />
-          <BillTestimonies bill={bill.content} />
+          <LabeledContainer className="mt-3">
+            <div className="mb-2 title">Testimony</div>
+            <BillTestimonies bill={bill.content} />
+          </LabeledContainer>
+        </Col>
+        <Col md={4}>
+          <TestimonyFormPanel bill={bill} />
         </Col>
       </Row>
     </StyledContainer>
