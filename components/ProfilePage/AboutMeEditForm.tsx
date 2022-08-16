@@ -64,9 +64,6 @@ export function AboutMeEditForm({
 
   const { updateIsOrganization } = actions
 
-
- 
-
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
     await updateIsOrganization(e.target.value === "organization")
   }
