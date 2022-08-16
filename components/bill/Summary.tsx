@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Col, Container, Row } from "../bootstrap"
+import { Col, Container, Row, Button } from "../bootstrap"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 
@@ -19,6 +19,14 @@ const Pinslip = styled(Col)`
   font-size: 1.25rem;
 `
 
+const ReadMore = styled(Col)`
+  margin-top: 1rem;
+  font-family: "Nunito";
+  color: blue;
+  font-style: normal;
+  font-size: 1.25rem;
+`
+
 const Divider = styled(Col)`
   width: 1px;
   padding: 0;
@@ -33,7 +41,13 @@ export const Summary = ({
   return (
     <SummaryContainer className={className}>
       <Row>
-        <Pinslip> {bill.content.Pinslip}</Pinslip>
+        <Pinslip>
+          {bill.content.Pinslip}
+          <ReadMore>
+            <div className="d-flex justify-content-end">Read more..</div>
+          </ReadMore>
+        </Pinslip>
+
         <Divider xs="auto" />
         <Col xs="auto">
           <TestimonyCounts bill={bill} />
