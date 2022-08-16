@@ -6,7 +6,7 @@ import { useAuth } from "../auth"
 import { useSendEmailVerification } from "../auth/hooks"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import { Profile, usePublicProfile } from "../db"
+import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -30,6 +30,10 @@ export function OrgPage({ id }: { id: string }) {
 
   const displayName = profile?.displayName
   const isOrganization = profile?.organization
+
+  const testimony = usePublishedTestimonyListing({uid:id})
+
+
 
   return (
     <>
@@ -75,7 +79,7 @@ export function OrgPage({ id }: { id: string }) {
 
             <Row>
               <Col xs={12}>
-                <ViewTestimony uid={id} />
+                <ViewTestimony {...testimony} />
               </Col>
             </Row>
           </Container>
