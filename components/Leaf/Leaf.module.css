@@ -14,3 +14,9 @@
   position: relative;
   transform: translate(-41%, -50%) scale(50%);
 }
+
+.hearings {
+  z-index: 1;
+  position: relative;
+  transform: translate(30%, -67%);
+}

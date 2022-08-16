@@ -1,10 +1,13 @@
 import React, { useState } from "react"
 import { Container, Carousel } from "react-bootstrap"
-import { Button, Col, Image, Row, Card } from "../bootstrap"
+import { Col, Image, Row } from "../bootstrap"
 import styles from "./HearingsScheduled.module.css"
 import { useUpcomingEvents } from "../db/events"
-import { Event, Session, Hearing } from "../../functions/src/events/types"
 
+/*
+Return an object in format below: 
+{ day: "Thursday", month: "Aug", date: "18", time: "11:00 AM" }
+*/
 export const formatDate = (
   dateString: string
 ): { day: string; month: string; date: string; time: string } => {
@@ -57,6 +60,12 @@ type EventData = {
   time: string
 }
 
+/*
+Currently event types handled: sessions, hearings.
+  Event type of specialEvent (and any incorrect value) are ignored.
+  SpecialEvent type contains only EventId, EventDate, and StartTime
+  It is missing name and location which are used on the event cards.
+*/
 const EventCard = ({
   type,
   name,
@@ -100,14 +109,6 @@ const EventCard = ({
 }
 
 export const HearingsScheduled = () => {
-  const Leaf = () => {
-    return (
-      <div className={styles.container}>
-        <Image className={styles.leaf} fluid src="leaf-asset.png" alt="leaf" />
-      </div>
-    )
-  }
-
   const [index, setIndex] = useState(0)
 
   const handleSelect = (
@@ -157,65 +158,62 @@ export const HearingsScheduled = () => {
   })
 
   return (
-    <>
-      <Leaf />
-      <Container fluid>
-        <Row className="mt-5 align-content-center">
-          <Col>
-            <h1 className={`${styles.heading}`}>Hearings Scheduled</h1>
-          </Col>
-        </Row>
-        <Row className="">
-          <Col sm={5}>
-            <Image
-              className={`ml-5 ${styles.podium}`}
-              src="speaker-podium.png"
-              alt="speaker at podium"
-            />
-          </Col>
-          <Col sm={7}>
-            <section className={`${styles.carousel}`}>
-              <Carousel
-                variant="dark"
-                interval={null}
-                indicators={false}
-                activeIndex={index}
-                onSelect={handleSelect}
-                // bsPrefix={styles.carousel}
-              >
-                <Carousel.Item>
-                  <h1 className="text-center">August 2022</h1>
-                </Carousel.Item>
-                <Carousel.Item>
-                  <h1 className="text-center">September 2022</h1>
-                </Carousel.Item>
-                <Carousel.Item>
-                  <h1 className="text-center">October 2022</h1>
-                </Carousel.Item>
-              </Carousel>
-            </section>
+    <Container fluid>
+      <Row className="mt-5 align-content-center">
+        <Col>
+          <h1 className={`${styles.heading}`}>Hearings Scheduled</h1>
+        </Col>
+      </Row>
+      <Row className="">
+        <Col sm={5}>
+          <Image
+            className={`ml-5 ${styles.podium}`}
+            src="speaker-podium.png"
+            alt="speaker at podium"
+          />
+        </Col>
+        <Col sm={7}>
+          <section className={`${styles.carousel}`}>
+            <Carousel
+              variant="dark"
+              interval={null}
+              indicators={false}
+              activeIndex={index}
+              onSelect={handleSelect}
+              // bsPrefix={styles.carousel}
+            >
+              <Carousel.Item>
+                <h1 className="text-center">August 2022</h1>
+              </Carousel.Item>
+              <Carousel.Item>
+                <h1 className="text-center">September 2022</h1>
+              </Carousel.Item>
+              <Carousel.Item>
+                <h1 className="text-center">October 2022</h1>
+              </Carousel.Item>
+            </Carousel>
+          </section>
 
-            <section className={styles.eventSection}>
-              {eventList?.map(e => {
-                return (
-                  <EventCard
-                    key={e.id}
-                    type={e.type}
-                    name={e.name}
-                    id={e.id}
-                    location={e.location}
-                    fullDate={e.fullDate}
-                    month={e.month}
-                    date={e.date}
-                    day={e.day}
-                    time={e.time}
-                  />
-                )
-              })}
-            </section>
-          </Col>
-        </Row>
-      </Container>
-    </>
+          <section className={styles.eventSection}>
+            {eventList?.map(e => {
+              return (
+                <EventCard
+                  key={e.id}
+                  type={e.type}
+                  name={e.name}
+                  id={e.id}
+                  location={e.location}
+                  fullDate={e.fullDate}
+                  month={e.month}
+                  date={e.date}
+                  day={e.day}
+                  time={e.time}
+                />
+              )
+            })}
+          </section>
+        </Col>
+      </Row>
+    </Container>
   )
 }
