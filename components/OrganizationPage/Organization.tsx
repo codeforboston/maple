@@ -31,9 +31,7 @@ export function OrgPage({ id }: { id: string }) {
   const displayName = profile?.displayName
   const isOrganization = profile?.organization
 
-  const testimony = usePublishedTestimonyListing({uid:id})
-
-
+  const testimony = usePublishedTestimonyListing({ uid: id })
 
   return (
     <>
