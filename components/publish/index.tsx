@@ -1,1 +1,1 @@
-export * from "./TestimonyFormPanel"
+export * from "./panel"

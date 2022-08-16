@@ -1,4 +1,4 @@
-import { debounce, isEmpty, isEqual, isUndefined, pickBy } from "lodash"
+import { debounce, isEmpty, isEqual, pickBy } from "lodash"
 import { useEffect, useMemo, useState } from "react"
 import {
   Bill,
@@ -141,30 +141,3 @@ export const publishTestimonyAndProceed = createAppThunk(
     }
   }
 )
-
-export type PanelStatus =
-  | "signedOut"
-  | "noTestimony"
-  | "createInProgress"
-  | "published"
-  | "editInProgress"
-
-/** What to display on the testimony panel on the bill detail page */
-export const usePanelStatus = () => {
-  const { draft, publication } = usePublishState()
-
-  let status: PanelStatus = "signedOut"
-  if (!draft && !publication) {
-    status = "noTestimony"
-  } else if (draft && !publication) {
-    status = "createInProgress"
-  } else if (draft && publication) {
-    if (!isUndefined(draft.publishedVersion)) {
-      status = "published"
-    } else {
-      status = "editInProgress"
-    }
-  }
-
-  return status
-}

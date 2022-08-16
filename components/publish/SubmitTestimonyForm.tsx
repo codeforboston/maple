@@ -4,7 +4,6 @@ import { Col, Container, Image, Row } from "../bootstrap"
 import { Bill, Profile, usePublicProfile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
-import { useFormPersistence } from "./hooks"
 import { ProgressBar } from "./ProgressBar"
 import { PublishTestimony } from "./PublishTestimony"
 import { Step, usePublishState } from "./redux"
@@ -22,9 +21,6 @@ const StyledContainer = styled(Container)`
 
 export const SubmitTestimonyForm = () => {
   const { bill, authorUid } = usePublishState()
-
-  useFormPersistence(bill!.id, authorUid!)
-
   const profile = usePublicProfile(authorUid).result
 
   return (

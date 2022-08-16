@@ -1,18 +1,13 @@
 import { useEffect } from "react"
-import styled from "styled-components"
-import { useAuth } from "../auth"
-import { Bill } from "../db"
-import { useAppDispatch } from "../hooks"
-import { CreateTestimony, FinishTestimony, SignedOut } from "./ctas"
-import { resolvePublicationInfo, usePanelStatus } from "./hooks"
-import { setStep } from "./redux"
+import { useAuth } from "../../auth"
+import { Bill } from "../../db"
+import { useAppDispatch } from "../../hooks"
+import { resolvePublicationInfo } from "../hooks"
+import { setStep } from "../redux"
+import { CreateTestimony, SignedOut } from "./ctas"
+import { usePanelStatus } from "./hooks"
 import { ThankYouModal } from "./ThankYouModal"
-
-const Styled = styled.div`
-  border-radius: 1rem;
-  background: white;
-  min-height: 25rem;
-`
+import { YourTestimony } from "./YourTestimony"
 
 export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
   const dispatch = useAppDispatch()
@@ -41,11 +36,7 @@ const Panel = () => {
       return <SignedOut />
     case "noTestimony":
       return <CreateTestimony />
-    case "createInProgress":
-      return <FinishTestimony />
-    case "published":
-      return <Styled>Edit your existing testimony</Styled>
-    case "editInProgress":
-      return <Styled>Finish editing your existing testimony</Styled>
+    default:
+      return <YourTestimony />
   }
 }

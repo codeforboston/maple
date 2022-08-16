@@ -1,30 +1,19 @@
 import { isRejected } from "@reduxjs/toolkit"
-import { ReactNode } from "react"
 import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import styled from "styled-components"
 import { LoadingButton } from "../buttons"
-import { Position } from "../db"
 import { useAppDispatch } from "../hooks"
 import { publishTestimonyAndProceed } from "./hooks"
 import * as nav from "./NavigationButtons"
 import { usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
+import { TestimonyPreview } from "./TestimonyPreview"
 
 const maxLength = 1000
 
-export const positionActions: Record<Position, ReactNode> = {
-  neutral: (
-    <span>
-      are <b>Neutral</b> on
-    </span>
-  ),
-  endorse: <b>Endorse</b>,
-  oppose: <b>Oppose</b>
-}
-
 export const PublishTestimony = styled(({ ...rest }) => {
   const dispatch = useAppDispatch()
-  const { position, content, sync } = usePublishState()
+  const { content, sync } = usePublishState()
   const publish = useAsyncCallback(async () => {
     const result = await dispatch(publishTestimonyAndProceed())
     // pass error through to useAsync
@@ -33,14 +22,12 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
   if (sync !== "synced") return null
 
-  const snippet = clampString(content!, maxLength)
   return (
     <div {...rest}>
       <StepHeader>Confirm Your Choices</StepHeader>
       <div className="testimony-container mt-4">
         <div className="title">Your Testimony</div>
-        <p>You {positionActions[position!]} this bill</p>
-        <p>“{snippet}”</p>
+        <TestimonyPreview />
       </div>
 
       {publish.error && <div>Error: {publish.error}</div>}

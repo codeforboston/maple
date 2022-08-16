@@ -1,6 +1,7 @@
 import React from "react"
-import type { ButtonProps, SpinnerProps } from "react-bootstrap"
-import { Button, Spinner } from "./bootstrap"
+import type { ButtonProps, ImageProps, SpinnerProps } from "react-bootstrap"
+import styled from "styled-components"
+import { Button, Image, Spinner } from "./bootstrap"
 
 export const TableButton = ({
   onclick,
@@ -45,3 +46,25 @@ export const LoadingButton = ({
     {children}
   </Button>
 )
+
+export const ImageButton = styled<ImageProps>(
+  ({ alt, ...imageProps }: ImageProps) => {
+    return <Image tabIndex={0} alt={alt} role="button" {...imageProps} />
+  }
+)`
+  margin: auto;
+  cursor: pointer;
+
+  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
+  &:hover {
+    filter: brightness(70%);
+  }
+  &:active {
+    filter: brightness(50%);
+  }
+  &:focus {
+    outline: 3px solid var(--bs-blue-300);
+  }
+  border-radius: 3px;
+  padding: 1px;
+`

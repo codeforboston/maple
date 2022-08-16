@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Image, Modal } from "../bootstrap"
-import { useAppDispatch } from "../hooks"
-import { setShowThankYou, usePublishState } from "./redux"
+import { Image, Modal } from "../../bootstrap"
+import { useAppDispatch } from "../../hooks"
+import { setShowThankYou, usePublishState } from "../redux"
 
 const modalDurationMs = 2000
 
