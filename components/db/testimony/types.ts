@@ -13,14 +13,14 @@ import {
 import { functions } from "../../firebase"
 import { Id, Maybe } from "../common"
 
-const maxTestimonyLength = 10_000
+export const maxTestimonyLength = 10_000
 
 export const Position = Union(L("endorse"), L("oppose"), L("neutral"))
 export type Position = Static<typeof Position>
 
 export const Content = String.withConstraint(
-  s => s.length > 0 && s.length < maxTestimonyLength
-)
+  s => s.length > 0 || "Content is empty"
+).withConstraint(s => s.length < maxTestimonyLength || "Content is too long")
 export type Content = Static<typeof Content>
 
 export const BaseTestimony = R({

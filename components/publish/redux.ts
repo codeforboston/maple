@@ -1,15 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { indexOf, uniqBy } from "lodash"
+import { shallowEqual } from "react-redux"
 import {
   Bill,
   DraftTestimony,
+  maxTestimonyLength,
   MemberSearchIndexItem,
   Position,
   Testimony,
+  UseEditTestimony,
   WorkingDraft
 } from "../db"
 import { currentGeneralCourt, Maybe } from "../db/common"
 import { useAppSelector } from "../hooks"
+
+export type Service = UseEditTestimony
 
 export const stepsInOrder = [
   "position",
@@ -32,13 +37,15 @@ export type Legislator = MemberSearchIndexItem & {
 type Errors = {
   position?: string
   content?: string
-  attachmentId?: string
 }
 
 /** Syncs form values to the draft in firestore. */
-export type SyncState = "empty" | "unsaved" | "loading" | "synced"
+export type SyncState = "error" | "empty" | "unsaved" | "loading" | "synced"
 
 export type State = {
+  /** A bit of a hack to share the UseEditTestimony hook instance across the form */
+  service?: Service
+
   /** Current step in the testimony form */
   step?: Step
 
@@ -59,10 +66,6 @@ export type State = {
 
   /** ID of storage object for the attachment */
   attachmentId?: string
-
-  // /** Document version of the published testimony that matches this draft. If
-  //  * this is undefined, there are unpublished changes. */
-  // publishedVersion?: number
 
   /** Form validation errors */
   errors: Errors
@@ -126,7 +129,8 @@ export const {
     setContent,
     setAttachmentId,
     setPublicationInfo,
-    setSync
+    setSyncState,
+    bindService
   }
 } = createSlice({
   name: "publish",
@@ -151,6 +155,9 @@ export const {
           published testimony. Displays a warning if there is an open draft.
           redirects to draft if not published
     */
+    bindService(state, action: PayloadAction<Service | undefined>) {
+      state.service = action.payload
+    },
     signedOut(_) {
       return initialState
     },
@@ -172,17 +179,23 @@ export const {
     setPosition(state, action: PayloadAction<Maybe<Position>>) {
       const validated = Position.validate(action.payload)
       state.position = action.payload ?? undefined
-      // state.publishedVersion = undefined
-      if (!validated.success) state.errors.position = validated.code
+
+      // update errors
+      if (!validated.success) state.errors.position = "Invalid position"
+      else state.errors.position = undefined
     },
     setContent(state, action: PayloadAction<Maybe<string>>) {
-      const validated = Position.validate(action.payload)
-      state.content = action.payload ?? undefined
-      if (!validated.success) state.errors.content = validated.code
+      const content = action.payload ?? undefined
+      state.content = content
+
+      // update errors
+      if (!content) state.errors.content = "Content must not be empty"
+      else if (content && content.length > maxTestimonyLength)
+        state.errors.content = "Content is too long"
+      else state.errors.content = undefined
     },
     setAttachmentId(state, action: PayloadAction<Maybe<string>>) {
       state.attachmentId = action.payload ?? undefined
-      // state.publishedVersion = undefined
     },
     setPublicationInfo(
       state,
@@ -196,9 +209,8 @@ export const {
       state.content = payload.content
       state.position = payload.position
       state.draft = payload
-      // state.publishedVersion = payload.publishedVersion
     },
-    setSync(state, action: PayloadAction<SyncState>) {
+    setSyncState(state, action: PayloadAction<SyncState>) {
       state.sync = action.payload
     },
     /** Updates testimony state after syncing to firestore documents. */
@@ -255,4 +267,11 @@ export const {
   }
 })
 
-export const usePublishState = () => useAppSelector(state => state.publish)
+export const usePublishState = () =>
+  useAppSelector(
+    ({ publish: { service: edit, ...rest } }) => rest,
+    shallowEqual
+  )
+
+export const usePublishService = () =>
+  useAppSelector(({ publish: { service: edit } }) => edit, shallowEqual)

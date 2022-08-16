@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
-import styled from "styled-components"
 import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading } from "../legislatorSearch"
 import { External } from "../links"
 import { SelectLegislators } from "../ProfilePage/SelectLegislators"
+import * as nav from "./NavigationButtons"
 import { nextStep } from "./redux"
 import { StepHeader } from "./StepHeader"
 
-export const SelectLegislatorsCta = styled(({ ...rest }) => {
+export const SelectLegislatorsCta = ({ className }: { className?: string }) => {
   const { profile: { representative, senator } = {}, loading } =
     useProfileState()
   const dispatch = useAppDispatch()
@@ -33,7 +33,7 @@ export const SelectLegislatorsCta = styled(({ ...rest }) => {
     return <Loading />
   } else if (state === "missingLegislators") {
     return (
-      <div {...rest}>
+      <div className={className}>
         <StepHeader>Select Your Legislators</StepHeader>
         <p>
           It looks like you haven't selected your legislators. Please use the{" "}
@@ -43,9 +43,10 @@ export const SelectLegislatorsCta = styled(({ ...rest }) => {
           and select your State Representative and Senator below.
         </p>
         <SelectLegislators />
+        <nav.FormNavigation right={<nav.Next />} />
       </div>
     )
   } else {
     return null
   }
-})``
+}

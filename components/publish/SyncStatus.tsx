@@ -35,14 +35,21 @@ export const SyncStatus = styled(({ ...rest }) => {
     background-color: var(--bs-orange);
     border-radius: 50%;
   }
+
+  .fa-icon {
+    width: 1rem;
+    height: 1rem;
+  }
 `
 
 const getLabel = (state: SyncState) => {
   switch (state) {
+    case "error":
+      return "Error Saving, Please Reload."
     case "empty":
       return
     case "loading":
-      return "Saving Draft"
+      return "Draft Saving..."
     case "synced":
       return "Draft Saved"
     case "unsaved":
@@ -51,12 +58,21 @@ const getLabel = (state: SyncState) => {
 }
 const getContent = (state: SyncState) => {
   switch (state) {
+    case "error":
+      return (
+        <FontAwesomeIcon icon={faCheckCircle} className="text-danger fa-icon" />
+      )
     case "empty":
       return <div />
     case "loading":
       return <Spinner animation="border" variant="secondary" />
     case "synced":
-      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+      return (
+        <FontAwesomeIcon
+          icon={faCheckCircle}
+          className="text-success fa-icon"
+        />
+      )
     case "unsaved":
       return <span className="unsaved" />
   }

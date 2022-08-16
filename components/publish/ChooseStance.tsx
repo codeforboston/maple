@@ -1,9 +1,10 @@
-import { ButtonProps } from "react-bootstrap"
+import { ToggleButton, ToggleButtonProps } from "react-bootstrap"
 import styled from "styled-components"
-import { Button, Image } from "../bootstrap"
+import { Image } from "../bootstrap"
 import { Position } from "../db"
 import { useAppDispatch } from "../hooks"
 import { positionLabels } from "./content"
+import { FormNavigation, Next } from "./NavigationButtons"
 import { setPosition, usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
 
@@ -12,9 +13,10 @@ export const ChooseStance = styled(({ ...rest }) => {
   const dispatch = useAppDispatch()
   const props = (position: Position) => ({
     position,
-    active: currentPosition === position,
-    onClick: () => dispatch(setPosition(position))
+    checked: currentPosition === position,
+    onClick: () => void dispatch(setPosition(position))
   })
+  const hasPosition = Boolean(currentPosition)
   return (
     <div {...rest}>
       <StepHeader step={1}>Choose Your Stance</StepHeader>
@@ -23,12 +25,14 @@ export const ChooseStance = styled(({ ...rest }) => {
         <PositionButton {...props("neutral")} />
         <PositionButton {...props("oppose")} />
       </div>
+
+      <FormNavigation status right={<Next disabled={!hasPosition} />} />
     </div>
   )
 })``
 
 const PositionButton = styled<
-  { position: Position } & Pick<ButtonProps, "onClick" | "active">
+  { position: Position } & Pick<ToggleButtonProps, "onClick" | "checked">
 >(({ position, ...rest }) => {
   const icons: Record<Position, React.ReactNode> = {
     neutral: (
@@ -44,10 +48,16 @@ const PositionButton = styled<
     )
   }
   return (
-    <Button {...rest} variant="outline-secondary">
+    <ToggleButton
+      id={`${position}-btn`}
+      value={position}
+      type="radio"
+      {...rest}
+      variant="outline-secondary"
+    >
       {icons[position]}
       <div className="mt-3">{positionLabels[position]}</div>
-    </Button>
+    </ToggleButton>
   )
 })`
   border-radius: 0.5rem;

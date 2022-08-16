@@ -1,5 +1,6 @@
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
-import { useEffect } from "react"
+import { useRouter } from "next/router"
+import { useCallback, useEffect } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
 import { Button } from "../bootstrap"
@@ -8,6 +9,7 @@ import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading, MultiSearch } from "../legislatorSearch"
 import { calloutLabels } from "./content"
+import * as nav from "./NavigationButtons"
 import {
   addCommittee,
   addMyLegislators,
@@ -15,8 +17,10 @@ import {
   Legislator,
   resolvedLegislatorSearch,
   setRecipients,
+  setShowThankYou,
   usePublishState
 } from "./redux"
+import { SendEmailButton } from "./SendEmailButton"
 import { StepHeader } from "./StepHeader"
 
 export const ShareTestimony = styled(({ ...rest }) => {
@@ -44,6 +48,7 @@ export const ShareTestimony = styled(({ ...rest }) => {
         )}
       </div>
       <SelectLegislatorEmails className="mt-2" />
+      <nav.FormNavigation right={<ShareButton />} />
     </div>
   )
 })`
@@ -180,4 +185,32 @@ const useSelectLegislators = () => {
       })
     )
   }, [currentCommittee, dispatch, index, representative, senator])
+}
+
+const ShareButton = () => {
+  const { share, bill } = usePublishState()
+  const router = useRouter()
+  const dispatch = useAppDispatch()
+  const redirectToBill = useCallback(() => {
+    dispatch(setShowThankYou(true))
+    router.push(`/bill?id=${bill!.id}`)
+  }, [bill, dispatch, router])
+
+  if (share.recipients.length > 0) {
+    return (
+      <SendEmailButton
+        onClick={() => {
+          redirectToBill()
+        }}
+      />
+    )
+  } else if (!share.loading) {
+    return (
+      <Button variant="outline-secondary" onClick={redirectToBill}>
+        Finish Without Emailing
+      </Button>
+    )
+  } else {
+    return <div />
+  }
 }

@@ -2,14 +2,12 @@ import clsx from "clsx"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { Bill, Profile, usePublicProfile } from "../db"
-import { useAppSelector } from "../hooks"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormPersistence } from "./hooks"
-import { NavigationButtons } from "./NavigationButtons"
 import { ProgressBar } from "./ProgressBar"
 import { PublishTestimony } from "./PublishTestimony"
-import { Step } from "./redux"
+import { Step, usePublishState } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
@@ -23,7 +21,7 @@ const StyledContainer = styled(Container)`
 `
 
 export const SubmitTestimonyForm = () => {
-  const { bill, authorUid } = useAppSelector(state => state.publish)
+  const { bill, authorUid } = usePublishState()
 
   useFormPersistence(bill!.id, authorUid!)
 
@@ -58,7 +56,7 @@ const Divider = styled.div`
 `
 
 const Form = () => {
-  const { step = "position", bill } = useAppSelector(state => state.publish)
+  const { step = "position", bill } = usePublishState()
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
     write: <WriteTestimony />,
@@ -74,7 +72,6 @@ const Form = () => {
       <Overview className="mt-3" />
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
       {content[step]}
-      <NavigationButtons className="mt-4 mb-4" />
     </FormContainer>
   )
 }

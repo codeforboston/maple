@@ -1,27 +1,66 @@
 import clsx from "clsx"
-import { useRouter } from "next/router"
-import { ReactNode, useCallback } from "react"
+import { ReactNode } from "react"
+import { ButtonProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
-import {
-  nextStep,
-  previousStep,
-  setShowThankYou,
-  Step,
-  usePublishState
-} from "./redux"
-import { SendEmailButton } from "./SendEmailButton"
+import { nextStep, previousStep, Step, usePublishState } from "./redux"
+import { SyncStatus } from "./SyncStatus"
+
+type FormNavigationProps = {
+  className?: string
+  status?: boolean
+  left?: ReactNode
+  right?: ReactNode
+}
+
+export const FormNavigation = ({
+  status = false,
+  left = <div />,
+  right = <div />,
+  className
+}: FormNavigationProps) => {
+  return (
+    <div className={clsx("mt-4 mb-4", className)}>
+      {status && <SyncStatus />}
+      <div className="d-flex justify-content-between flex-wrap gap-2 mt-1">
+        {left}
+        {right}
+      </div>
+    </div>
+  )
+}
+
+export const NavButton = ({ className, ...props }: ButtonProps) => (
+  <Button className={clsx("form-navigation-btn", className)} {...props} />
+)
+
+const createNavButton = (actionCreator: any, label: string) => {
+  const StyledNavButton = ({ disabled, ...props }: ButtonProps) => {
+    const dispatch = useAppDispatch()
+    const synced = usePublishState().sync === "synced"
+    return (
+      <NavButton
+        variant="outline-secondary"
+        onClick={() => dispatch(actionCreator())}
+        disabled={disabled || !synced}
+        {...props}
+      >
+        {label}
+      </NavButton>
+    )
+  }
+  return StyledNavButton
+}
+
+export const Next = createNavButton(nextStep, "Next")
+export const Previous = createNavButton(previousStep, "Previous")
 
 export const NavigationButtons = styled(({ className, ...rest }) => {
   const currentStep = usePublishState().step!,
     dispatch = useAppDispatch()
 
-  const next = (
-      <Button variant="outline-secondary" onClick={() => dispatch(nextStep())}>
-        Next
-      </Button>
-    ),
+  const next = <Next />,
     previous = (
       <Button
         variant="outline-secondary"
@@ -35,7 +74,7 @@ export const NavigationButtons = styled(({ className, ...rest }) => {
         Publish & Proceed
       </Button>
     ),
-    share = <ShareButton />,
+    share = <div />,
     space = <div />
 
   const options: Record<Step, [ReactNode, ReactNode]> = {
@@ -59,40 +98,4 @@ export const NavigationButtons = styled(({ className, ...rest }) => {
       {right}
     </div>
   )
-})`
-  .btn {
-    min-width: 10rem;
-    line-height: 2.5rem;
-    padding: 0 0.5rem 0 0.5rem;
-  }
-`
-
-const ShareButton = () => {
-  const { share, bill } = usePublishState()
-  const router = useRouter()
-  const dispatch = useAppDispatch()
-  const redirectToBill = useCallback(() => {
-    dispatch(setShowThankYou(true))
-    router.push(`/bill?id=${bill!.id}`)
-  }, [bill, dispatch, router])
-
-  if (share.recipients.length > 0) {
-    return (
-      <SendEmailButton
-        onClick={() => {
-          redirectToBill()
-          // Delay opening the new tab until the draft gains focus
-          // setTimeout(redirectToBill, 1000)
-        }}
-      />
-    )
-  } else if (!share.loading) {
-    return (
-      <Button variant="outline-secondary" onClick={redirectToBill}>
-        Finish Without Emailing
-      </Button>
-    )
-  } else {
-    return <div />
-  }
-}
+})``

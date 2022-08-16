@@ -1,21 +1,30 @@
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Form, Tab, Tabs } from "../bootstrap"
+import { Tab, Tabs } from "../bootstrap"
 import { Attachment } from "../CommentModal/Attachment"
 import { useDraftTestimonyAttachment } from "../db"
 import { Maybe } from "../db/common"
+import Input, { InputProps } from "../forms/Input"
 import { useAppDispatch } from "../hooks"
 import { Loading } from "../legislatorSearch"
+import * as nav from "./NavigationButtons"
 import { setAttachmentId, setContent, usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
-import { SyncStatus } from "./SyncStatus"
 
 type TabKey = "text" | "import"
 
 export const WriteTestimony = styled(({ ...rest }) => {
   const write = useWriteTestimony()
   const tabs = useTabs(write)
+
+  let valid: boolean = false
+  if (tabs.activeKey === "text") {
+    valid = !!write.content && !write.attachmentId
+  } else if (tabs.activeKey === "import") {
+    valid = !!write.content && !!write.attachmentId
+  }
+
   return (
     <div {...rest}>
       <StepHeader step={2}>Write Your Testimony</StepHeader>
@@ -36,7 +45,12 @@ export const WriteTestimony = styled(({ ...rest }) => {
               <Import {...write} />
             </Tab>
           </Tabs>
-          <SyncStatus />
+
+          <nav.FormNavigation
+            left={<nav.Previous />}
+            right={<nav.Next disabled={!valid} />}
+            status
+          />
         </>
       )}
     </div>
@@ -46,7 +60,7 @@ export const WriteTestimony = styled(({ ...rest }) => {
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 function useWriteTestimony() {
   const dispatch = useAppDispatch()
-  const { attachmentId, content, sync } = usePublishState()
+  const { attachmentId, content, sync, errors } = usePublishState()
   const uid = useAuth().user?.uid!
   const attachment = useDraftTestimonyAttachment(uid, attachmentId, id =>
     dispatch(setAttachmentId(id))
@@ -57,7 +71,8 @@ function useWriteTestimony() {
     content,
     attachment,
     attachmentId,
-    sync
+    sync,
+    errors
   }
 }
 
@@ -90,36 +105,42 @@ const useTabs = ({
   return { onSelect, activeKey, loading: activeKey === undefined }
 }
 
-const Import = ({ content, setContent, attachment }: UseWriteTestimony) => {
+const Import = (write: UseWriteTestimony) => {
   return (
     <div>
-      <Form.Group className="mt-3" controlId="testimonyTextContent">
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          placeholder="Add a brief description of your testimony here"
-          rows={3}
-          value={content}
-          onChange={e => setContent(e.target.value)}
-        />
-      </Form.Group>
-      <Attachment className="mt-3" attachment={attachment} />
+      <Text
+        {...write}
+        inputProps={{
+          label: "Description",
+          placeholder: "Add a brief description of your testimony here",
+          rows: 3,
+          help: undefined
+        }}
+      />
+      <Attachment className="mt-3" attachment={write.attachment} />
     </div>
   )
 }
 
-const Text = ({ content, setContent }: UseWriteTestimony) => {
+const Text = ({
+  content,
+  setContent,
+  errors,
+  inputProps
+}: UseWriteTestimony & { inputProps?: InputProps }) => {
   return (
-    <Form.Group className="mt-3" controlId="testimonyTextContent">
-      <Form.Label>Testimony Text</Form.Label>
-      <Form.Control
-        as="textarea"
-        placeholder="Add your testimony here"
-        rows={6}
-        value={content}
-        onChange={e => setContent(e.target.value)}
-      />
-      <Form.Text muted>Testimony is limited to 10,000 characters.</Form.Text>
-    </Form.Group>
+    <Input
+      className="mt-3"
+      label="Testimony Text"
+      placeholder="Add your testimony here"
+      as="textarea"
+      floating={false}
+      rows={6}
+      value={content}
+      help="Testimony is limited to 10,000 characters."
+      onChange={e => setContent(e.target.value)}
+      error={errors.content}
+      {...inputProps}
+    />
   )
 }

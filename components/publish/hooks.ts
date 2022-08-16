@@ -2,6 +2,7 @@ import { debounce, isEmpty, isEqual, isUndefined, pickBy } from "lodash"
 import { useEffect, useMemo, useState } from "react"
 import {
   Bill,
+  DraftTestimony,
   getBill,
   UseEditTestimony,
   useEditTestimony,
@@ -9,9 +10,11 @@ import {
 } from "../db"
 import { createAppThunk, useAppDispatch } from "../hooks"
 import {
+  bindService,
   restoreFromDraft,
   setPublicationInfo,
-  setSync,
+  setStep,
+  setSyncState,
   SyncState,
   syncTestimony,
   usePublishState
@@ -24,10 +27,11 @@ export const useFormPersistence = (billId: string, authorUid: string) => {
   useInitializeFromFirestore(edit)
   useSyncToStore(edit)
 
-  const { draft, saveDraft, loading: docsLoading } = edit,
+  const { draft, saveDraft, loading: docsLoading, error: loadingError } = edit,
     dispatch = useAppDispatch(),
     form = useFormDraft(),
-    persisted = usePersistedDraft(draft)
+    persisted = usePersistedDraft(draft),
+    hasError = Boolean(saveDraft.error || loadingError)
 
   const saveDraftDebounced = useMemo(
     () =>
@@ -46,12 +50,13 @@ export const useFormPersistence = (billId: string, authorUid: string) => {
   // - Should not continue re-attempting if error
   // - Should re-attempt when new changes are made to the form
   useEffect(() => {
-    if (!loading && unsaved && !empty && !saveDraft.error)
-      saveDraftDebounced(form)
-  }, [empty, form, loading, saveDraft.error, saveDraftDebounced, unsaved])
+    if (unsaved && !loading && !empty && !hasError) saveDraftDebounced(form)
+  }, [empty, form, hasError, loading, saveDraftDebounced, unsaved])
 
   let state: SyncState
-  if (loading) {
+  if (hasError) {
+    state = "error"
+  } else if (loading) {
     state = "loading"
   } else if (unsaved) {
     state = "unsaved"
@@ -60,7 +65,7 @@ export const useFormPersistence = (billId: string, authorUid: string) => {
   } else {
     state = "synced"
   }
-  useEffect(() => void dispatch(setSync(state)), [dispatch, state])
+  useEffect(() => void dispatch(setSyncState(state)), [dispatch, state])
 }
 
 function useInitializeFromFirestore({ draft }: UseEditTestimony) {
@@ -74,11 +79,16 @@ function useInitializeFromFirestore({ draft }: UseEditTestimony) {
   }, [dispatch, draft, initialized])
 }
 
-function useSyncToStore({ draft, publication }: UseEditTestimony) {
+function useSyncToStore(edit: UseEditTestimony) {
   const dispatch = useAppDispatch()
-  useEffect(() => {
-    dispatch(syncTestimony({ draft, publication }))
-  }, [dispatch, draft, publication])
+  const { draft, publication } = edit
+  useEffect(
+    () => void dispatch(syncTestimony({ draft, publication })),
+    [dispatch, draft, publication]
+  )
+  useEffect(() => void dispatch(bindService(edit)), [dispatch, edit])
+  // Clear the hook on unmount
+  useEffect(() => () => void dispatch(bindService(undefined)), [dispatch])
 }
 
 function usePersistedDraft(draft?: WorkingDraft): DraftContent | undefined {
@@ -105,6 +115,30 @@ export const resolvePublicationInfo = createAppThunk(
       bill = await getBill(info.billId)
     }
     dispatch(setPublicationInfo({ authorUid: info.authorUid, bill }))
+  }
+)
+
+export const publishTestimonyAndProceed = createAppThunk(
+  "publish/publishTestimony",
+  async (_, { dispatch, getState }) => {
+    const {
+      publish: { step, sync, draft, service: edit },
+      profile: { profile }
+    } = getState()
+
+    if (step !== "publish") throw Error("must be on publish step to publish")
+    if (sync !== "synced") throw Error("must be synced to publish")
+
+    DraftTestimony.check(draft)
+
+    await edit?.publishTestimony.execute()
+
+    const hasLegislators = Boolean(profile?.representative && profile.senator)
+    if (hasLegislators) {
+      dispatch(setStep("share"))
+    } else {
+      dispatch(setStep("selectLegislators"))
+    }
   }
 )
 

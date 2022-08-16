@@ -53,3 +53,9 @@
 .bg-oppose {
   background-color: var(--bs-orange);
 }
+
+.form-navigation-btn {
+  min-width: 10rem;
+  line-height: 2.5rem;
+  padding: 0 0.5rem 0 0.5rem;
+}

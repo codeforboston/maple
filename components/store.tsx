@@ -15,8 +15,8 @@ export const createStore = () =>
           isSerializable: (value: any) =>
             isPlain(value) ||
             (typeof value === "object" && value instanceof Timestamp),
-          ignoredPaths: ["auth.user"],
-          ignoredActions: ["auth/authChanged"]
+          ignoredPaths: ["auth.user", "publish.service"],
+          ignoredActions: ["auth/authChanged", "publish/bindService"]
         }
       }).concat(rejectionLogger),
     reducer: {

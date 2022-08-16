@@ -7,7 +7,6 @@ import "../styles/instantsearch.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
-import { Services } from "../components/services"
 
 /**
  * The root React component of the application. Next.js renders this, passing
@@ -20,12 +19,7 @@ import { Services } from "../components/services"
  * See https://nextjs.org/docs/basic-features/layouts for the pattern.
  */
 function App(props: AppPropsWithLayout) {
-  return (
-    <Providers>
-      <Services />
-      {applyLayout(props)}
-    </Providers>
-  )
+  return <Providers>{applyLayout(props)}</Providers>
 }
 
 export default App

@@ -1,24 +1,54 @@
+import { isRejected } from "@reduxjs/toolkit"
+import { ReactNode } from "react"
+import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import styled from "styled-components"
-import { positionLabels } from "./content"
+import { LoadingButton } from "../buttons"
+import { Position } from "../db"
+import { useAppDispatch } from "../hooks"
+import { publishTestimonyAndProceed } from "./hooks"
+import * as nav from "./NavigationButtons"
 import { usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
 
 const maxLength = 1000
 
-export const PublishTestimony = styled(({ ...rest }) => {
-  const { position, content } = usePublishState()
-  const snippet = clampString(content!, maxLength)
+export const positionActions: Record<Position, ReactNode> = {
+  neutral: (
+    <span>
+      are <b>Neutral</b> on
+    </span>
+  ),
+  endorse: <b>Endorse</b>,
+  oppose: <b>Oppose</b>
+}
 
+export const PublishTestimony = styled(({ ...rest }) => {
+  const dispatch = useAppDispatch()
+  const { position, content, sync } = usePublishState()
+  const publish = useAsyncCallback(async () => {
+    const result = await dispatch(publishTestimonyAndProceed())
+    // pass error through to useAsync
+    if (isRejected(result)) throw result.error
+  })
+
+  if (sync !== "synced") return null
+
+  const snippet = clampString(content!, maxLength)
   return (
     <div {...rest}>
       <StepHeader>Confirm Your Choices</StepHeader>
       <div className="testimony-container mt-4">
         <div className="title">Your Testimony</div>
-        <p>
-          You <b>{positionLabels[position!]}</b> this bill
-        </p>
+        <p>You {positionActions[position!]} this bill</p>
         <p>“{snippet}”</p>
       </div>
+
+      {publish.error && <div>Error: {publish.error}</div>}
+
+      <nav.FormNavigation
+        left={<nav.Previous />}
+        right={<PublishButton publish={publish} />}
+      />
     </div>
   )
 })`
@@ -47,6 +77,21 @@ export const PublishTestimony = styled(({ ...rest }) => {
     margin-bottom: 1rem;
   }
 `
+
+type PublishAction = UseAsyncReturn<void, []>
+
+const PublishButton = ({ publish }: { publish: PublishAction }) => {
+  return (
+    <LoadingButton
+      loading={publish.loading}
+      className="form-navigation-btn"
+      variant="secondary"
+      onClick={publish.execute}
+    >
+      Publish & Proceed
+    </LoadingButton>
+  )
+}
 
 const clampString = (s: string, maxLength: number) => {
   const words = s.split(" ")
