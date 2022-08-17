@@ -78,7 +78,7 @@ const TopNav: React.FC = () => {
 
             <Navbar.Brand className="mx-2 p-0">
               <Nav.Link href="/" className="p-0">
-                <Image fluid src="nav-logo.svg" alt="logo"></Image>
+                <Image fluid src="/nav-logo.svg" alt="logo"></Image>
               </Nav.Link>
             </Navbar.Brand>
 
