@@ -13,7 +13,7 @@ const SummaryContainer = styled(Container)`
   background-position: 0.5rem 0.5rem;
 `
 
-const Pinslip = styled(Col)`
+const TitleFormat = styled(Col)`
   margin-top: 1rem;
   font-style: italic;
   font-size: 1.25rem;
@@ -41,12 +41,15 @@ export const Summary = ({
   return (
     <SummaryContainer className={className}>
       <Row>
-        <Pinslip>
-          {bill.content.Pinslip}
+        <TitleFormat>
+          {bill.content.Title}
           <ReadMore>
-            <div className="d-flex justify-content-end">Read more..</div>
+            <div className="d-flex justify-content-end">
+              {/* <Button bsStyle="link">Read more..</Button> */}
+              Read more..
+            </div>
           </ReadMore>
-        </Pinslip>
+        </TitleFormat>
 
         <Divider xs="auto" />
         <Col xs="auto">

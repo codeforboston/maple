@@ -28,7 +28,6 @@ export const Layout = ({ bill }: BillProps) => {
           <Status bill={bill} />
         </Col>
       </Row>
-      {bill.content.Title}
       <Row className="mt-2">
         <Col>
           <Summary bill={bill} />
