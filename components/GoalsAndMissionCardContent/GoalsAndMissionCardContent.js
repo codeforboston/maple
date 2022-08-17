@@ -16,7 +16,7 @@ const OurGoalsCardContent = () => (
           <Image
             className={styles.imgsize}
             fluid
-            src="gov_key.png"
+            src="/gov_key.png"
             alt="government building with key"
           />
         </div>
@@ -27,7 +27,7 @@ const OurGoalsCardContent = () => (
           <Image
             className={styles.imgsize}
             fluid
-            src="doc_arrows_people.png"
+            src="/doc_arrows_people.png"
             alt="government building with key"
           />
         </div>
@@ -42,7 +42,7 @@ const OurGoalsCardContent = () => (
           <Image
             className={styles.imgsize}
             fluid
-            src="doc_arrows_people.png"
+            src="/doc_arrows_people.png"
             alt="government building with key"
           />
         </div>
@@ -55,7 +55,7 @@ const OurGoalsCardContent = () => (
           <Image
             className={styles.imgsize}
             fluid
-            src="gov_key.png"
+            src="/gov_key.png"
             alt="government building with key"
           />
         </div>
@@ -83,7 +83,7 @@ const OurMissionCardContent = () => (
         <Image
           className={styles.imgsize}
           fluid
-          src="leg_magnifying_glass.png"
+          src="/leg_magnifying_glass.png"
           alt="document with magnifying glass"
         />
       </Col>
@@ -93,7 +93,7 @@ const OurMissionCardContent = () => (
         <Image
           className={styles.imgsize}
           fluid
-          src="doc_treasure_box.png"
+          src="/doc_treasure_box.png"
           alt="document with magnifying glass"
         />
       </Col>
@@ -127,7 +127,7 @@ const OurMissionCardContent = () => (
         <Image
           className={styles.imgsize}
           fluid
-          src="step_1.png"
+          src="/step_1.png"
           alt="step 1 of the legislative process"
         />
       </Col>
@@ -135,7 +135,7 @@ const OurMissionCardContent = () => (
         <Image
           className={styles.imgsize}
           fluid
-          src="step_2.png"
+          src="/step_2.png"
           alt="step 2 of the legislative process"
         />
       </Col>
@@ -143,7 +143,7 @@ const OurMissionCardContent = () => (
         <Image
           className={styles.imgsize}
           fluid
-          src="step_3.png"
+          src="/step_3.png"
           alt="step 3 of the legislative process"
         />
       </Col>

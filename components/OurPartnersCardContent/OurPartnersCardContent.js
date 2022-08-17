@@ -6,7 +6,7 @@ const NuLawLabCardContent = () => {
     <>
       <Row className="mb-5">
         <Col className="text-center align-self-center">
-          <Image fluid src="nulawlabicon.png" alt="NuLawLab icon" />
+          <Image fluid src="/nulawlabicon.png" alt="NuLawLab icon" />
         </Col>
         <Col className="align-self-center">
           <p>
@@ -32,7 +32,11 @@ const CodeForBostonCardContent = () => {
     <>
       <Row className="mb-3">
         <Col className="text-center align-self-center">
-          <Image fluid src="codeforbostonicon.png" alt="Code for Boston icon" />
+          <Image
+            fluid
+            src="/codeforbostonicon.png"
+            alt="Code for Boston icon"
+          />
         </Col>
         <Col className="align-self-center">
           <p>
@@ -63,7 +67,7 @@ const BostonCollegeCardContent = () => {
     <>
       <Row className="mb-5">
         <Col className="text-center align-self-center">
-          <Image fluid src="bostoncollegeicon.png" alt="Boston College icon" />
+          <Image fluid src="/bostoncollegeicon.png" alt="Boston College icon" />
         </Col>
         <Col className="align-self-center">
           <p>
@@ -86,7 +90,7 @@ const HbkCenterCardContent = () => {
         <Col className="text-center align-self-center">
           <Image
             fluid
-            src="berkmankleincentericon.png"
+            src="/berkmankleincentericon.png"
             alt="Berkman Klein Center icon"
           />
         </Col>

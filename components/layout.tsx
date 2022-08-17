@@ -112,7 +112,7 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={closeNav}
               >
-                <NavLink href="/learnbasicsoftestimony">
+                <NavLink href="/learn/basics-of-testimony">
                   Learn About Testimony
                 </NavLink>
                 <NavLink href="/legprocess">
@@ -128,10 +128,10 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={closeNav}
               >
-                <NavLink href="/missionandgoals">
+                <NavLink href="/about/mission-and-goals">
                   Our Mission &amp; Goals
                 </NavLink>
-                <NavLink href="/ourteam">Our Team</NavLink>
+                <NavLink href="/about/our-team">Our Team</NavLink>
               </Container>
 
               {authenticated && (
