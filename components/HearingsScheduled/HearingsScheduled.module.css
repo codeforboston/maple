@@ -22,13 +22,12 @@
   font-size: 3.375em;
 }
 
-.carousel .icon-next {
-  color: red;
+.carousel-control-prev-icon {
+  background-image: url("../../public/carousel-left.png");
 }
 
-.carousel-control .icon-prev,
-.carousel-control .icon-next {
-  color: red;
+.carousel-control-next-icon {
+  background-image: url("../../public/carousel-right.png");
 }
 
 .container {
@@ -37,17 +36,12 @@
   overflow-y: visible;
 }
 
-.leaf {
-  position: relative;
-  left: 100%;
-  transform: translate(-54%, -50%) rotate(180deg) scale(50%);
-}
-
 .eventSection {
-  width: 40em;
+  width: 43em;
   display: grid;
   grid-template-columns: 50% 50%;
   margin-left: 1em;
+  margin-bottom: 2em;
 }
 
 .card {
@@ -55,41 +49,41 @@
   font-family: Nunito;
   font-weight: 400;
   border: 2px var(--bs-blue) solid;
-  width: 18em; /* width: 269px; */
+  width: 20em; /* width: 269px; */
   margin-bottom: 2em;
-  border-radius: 8px;
+  border-radius: 0.5em;
   display: block;
   height: fit-content;
 }
 .cardHeader {
   color: white;
   background: var(--bs-blue);
-  padding-top: 4px;
+  padding-top: 0.25em;
   padding-left: 1em;
-  height: 51.94px;
-  border-radius: 5px 5px 0 0;
+  height: 3.21em; /* 51.94px */
+  border-radius: 0.3125em 0.3125em 0 0;
   display: grid;
   grid-template-columns: 35% 65%;
   align-items: center;
 }
 
 .month {
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1;
 }
 
 .date {
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 0;
 }
 
 .day {
-  font-size: 23px;
+  font-size: 1.5rem;
 }
 
 .cardBody {
   padding: 1em 1.5em 0em 1.5em;
-  font-size: 16px;
+  font-size: 1rem;
   display: grid;
   grid-template-columns: 35% 65%;
 }
@@ -105,4 +99,15 @@
   color: var(--bs-blue);
   line-height: 1.2;
   margin-left: 0.625em;
+}
+
+.noEvents {
+  color: var(--bs-blue);
+  width: 43em;
+  text-align: center;
+}
+
+.loading {
+  width: 43em;
+  display: grid;
 }
