@@ -1,5 +1,4 @@
 version: "3"
-name: dtp-backend
 services:
   search:
     image: typesense/typesense:0.22.2
