@@ -1,4 +1,7 @@
 import { useState } from "react"
+import Autolinker from "autolinker"
+import parse from "html-react-parser"
+import * as DOMPurify from "dompurify"
 import { Button, Col, Dropdown, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle } from "../formatting"
@@ -23,10 +26,10 @@ const ViewTestimony = (
       title={"Testimony"}
       bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      {testimony.map(i => (
+      {testimony.map(t => (
         <TestimonyItem
-          key={i.authorUid + i.billId}
-          testimony={i}
+          key={t.authorUid + t.billId}
+          testimony={t}
           showControls={showControls}
         />
       ))}
@@ -122,16 +125,30 @@ export const FormattedTestimonyContent = ({
   const TESTIMONY_CHAR_LIMIT = 442
   const [showAllTestimony, setShowAllTestimony] = useState(false)
 
+  const _formatTestimony = (testimony: string, limit?: number) => {
+    const formattedTestimony = Autolinker.link(
+      limit ? testimony.slice(0, TESTIMONY_CHAR_LIMIT) : testimony,
+      {
+        truncate: 32,
+        stripPrefix: {
+          www: false
+        }
+      }
+    )
+
+    return parse(
+      DOMPurify.sanitize(formattedTestimony, { USE_PROFILES: { html: true } })
+    )
+  }
+
   return (
     <>
       {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
         <>
-          <div className={`col m2`}>
-            {testimony.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
+          <div className="col m2">
+            {_formatTestimony(testimony, TESTIMONY_CHAR_LIMIT)}...
           </div>
-          <Col
-            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          >
+          <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
             <Button
               variant="link"
               onClick={() => setShowAllTestimony(!showAllTestimony)}
@@ -141,7 +158,7 @@ export const FormattedTestimonyContent = ({
           </Col>
         </>
       ) : (
-        <div className={`col m2`}>{testimony}</div>
+        <div className="col m2">{_formatTestimony(testimony)}</div>
       )}
     </>
   )
