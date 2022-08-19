@@ -14,19 +14,5 @@ const config = {
 }
 
 module.exports = {
-  ...config,
-  async redirects() {
-    return [
-      {
-        source: "/learn",
-        destination: "/learn/basics-of-testimony",
-        permanent: false
-      },
-      {
-        source: "/about",
-        destination: "/about/mission-and-goals",
-        permanent: false
-      }
-    ]
-  }
+  ...config
 }
