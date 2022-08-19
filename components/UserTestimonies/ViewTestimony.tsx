@@ -126,18 +126,20 @@ export const FormattedTestimonyContent = ({
   const [showAllTestimony, setShowAllTestimony] = useState(false)
 
   const _formatTestimony = (testimony: string, limit?: number) => {
-    const formattedTestimony = Autolinker.link(
+    const linkedTestimony = Autolinker.link(
       limit ? testimony.slice(0, TESTIMONY_CHAR_LIMIT) : testimony,
       {
-        truncate: 32,
-        stripPrefix: {
-          www: false
-        }
+        truncate: 32
       }
     )
 
+    const paragraphedTestimony = linkedTestimony
+      .split(/[\r\n]+/)
+      .map((line, i) => `<p key=${i}>${line}</p>`)
+      .join("")
+
     return parse(
-      DOMPurify.sanitize(formattedTestimony, { USE_PROFILES: { html: true } })
+      DOMPurify.sanitize(paragraphedTestimony, { USE_PROFILES: { html: true } })
     )
   }
 
