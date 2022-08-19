@@ -6,12 +6,22 @@ import {
   Write
 } from "../../components/LearnTestimonyComponents/LearnComponents"
 import Tabs from "../../components/Tabs/Tabs"
+import { GetStaticPaths, GetStaticProps } from "next/types"
+import { ParsedUrlQuery } from "querystring"
 
 type TabsType = {
   label: string
   slug: string
   index: number
   Component: React.FC<{}>
+}
+
+type Props = {
+  slug: string
+}
+
+interface IParams extends ParsedUrlQuery {
+  slug: string
 }
 
 const tabs: TabsType[] = [
@@ -37,9 +47,11 @@ const tabs: TabsType[] = [
 
 export default createPage({
   title: "Learn",
-  Page: () => {
+  Page: (props) => {
+
     const router = useRouter()
-    const slug = (router.query.slug as string) || ""
+
+    const { slug } = props as Props
 
     const [selectedTab] = tabs.filter(t => t.slug === slug)
 
@@ -57,3 +69,30 @@ export default createPage({
     )
   }
 })
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // When this is true (in preview environments) don't
+  // prerender any static pages
+  // (faster builds, but slower initial page load)
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: 'blocking',
+    }
+  }
+
+  // Get the paths we want to prerender based on posts
+  // In production environments, prerender all pages
+  // (slower builds, but faster initial page load)
+  const paths = tabs.map((tab) => ({
+    params: { slug: tab.slug },
+  }))
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false }
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const props = context.params as IParams
+  return { props }
+}
