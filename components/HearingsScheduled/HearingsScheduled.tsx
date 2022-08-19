@@ -21,11 +21,11 @@ export type EventData = {
 
 /*
 Currently event types handled: sessions, hearings.
-  Event type of specialEvent (and any incorrect value) are ignored.
-  SpecialEvent type contains only EventId, EventDate, and StartTime
+  Event type of specialEvent (and any incorrect value) are currently ignored.
+
+  The SpecialEvent data type only contains EventId, EventDate, and StartTime
   It is missing name and location which are used on the event cards:
-  A decision needs to be made as what info would go on cards
-  and determine what the base URL is.
+  A decision needs to be made as what info would go on cards and determine what the base URL is.
 */
 export const EventCard = ({
   index,
@@ -82,8 +82,10 @@ export const EventCard = ({
   )
 }
 
-/** Component with interactive calendar of upcoming hearings and sessions */
-/** TBD import carousel-left and carousel right icons for the carousel component */
+/** Component with interactive calendar of upcoming hearings and sessions
+ * Only events from the current month forward are displayed
+ *
+ */
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
 
@@ -94,8 +96,8 @@ export const HearingsScheduled = () => {
     setMonthIndex(selectedIndex)
   }
 
-  /* Currently this component is expecting useUpcomingEvents to return a sorted list 
-    The field eventList.fullDate exists as a date type in case sorting needs to be done
+  /* Currently this component is expecting useUpcomingEvents to return a sorted list. 
+    The field eventList.fullDate exists as a Date type in case sorting needs to be done
     here in the future.
    */
   const events = useUpcomingEvents()
@@ -154,6 +156,7 @@ export const HearingsScheduled = () => {
     currentDate.setMonth(currentDate.getMonth() + 1)
   }
 
+  /* List of events in current month displayed in carousel */
   const thisMonthsEvents = eventList.filter(e => {
     return e.index === monthIndex
   })
@@ -183,6 +186,18 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
+              prevIcon={
+                <span
+                  aria-hidden="true"
+                  className={styles.carouselControlPrevIcon}
+                />
+              }
+              nextIcon={
+                <span
+                  aria-hidden="true"
+                  className={styles.carouselControlNextIcon}
+                />
+              }
             >
               {monthsList?.map(month => {
                 return (

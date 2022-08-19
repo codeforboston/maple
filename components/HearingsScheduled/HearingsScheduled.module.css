@@ -22,11 +22,22 @@
   font-size: 3.375em;
 }
 
+.carouselControlNextIcon {
+  width: 37px;
+  height: 37px;
+  background-image: url("../../public/carousel-right.png");
+  background-repeat: no-repeat;
+}
+
+.carouselControlPrevIcon {
+  width: 37px;
+  height: 37px;
+  background-image: url("../../public/carousel-left.png");
+  background-repeat: no-repeat;
+}
+
 .eventSection {
   width: 43em;
-  /* display: grid;
-  grid-template-columns: 50% 50%; */
-  /* margin-left: 1em; */
   margin-bottom: 2em;
 }
 
