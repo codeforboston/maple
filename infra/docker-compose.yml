@@ -1,3 +1,8 @@
+# Important:
+# - Run this using `yarn compose`
+# - Make sure you use docker compsoe v2: `docker compose version`
+#   https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command
+
 version: "3"
 name: dtp-backend
 services:
@@ -5,31 +10,44 @@ services:
     image: typesense/typesense:0.22.2
     volumes:
       - search:/app/data
-    network_mode: host
+    ports:
+      - 8108:8108
     environment:
-      TYPESENSE_LISTEN_ADDRESS: 127.0.0.1
-      TYPESENSE_PEERING_ADDRESS: 127.0.0.1
       TYPESENSE_DATA_DIR: /app/data
       TYPESENSE_API_KEY: test-api-key
       TYPESENSE_ENABLE_CORS: "true"
+
   firebase:
     image: andreysenov/firebase-tools:latest-node-16
     command: yarn firebase --project demo-dtp emulators:start --only auth,functions,pubsub,firestore,storage --import tests/integration/exportedTestData
     working_dir: /app
     volumes:
       - ..:/app
-    network_mode: host
+      # Override env for running in compose
+      - ${PWD}/infra/.env.functions-compose:/app/functions/.env.demo-dtp
+      # Override firebase.json to bind to all container interfaces
+      - ${PWD}/infra/firebase.compose.json:/app/firebase.json
+    ports:
+      - 9099:9099
+      - 5001:5001
+      - 8080:8080
+      - 3010:3010
+      - 8085:8085
+      - 9199:9199
+
   builder:
     image: node:16-alpine
     command: yarn --cwd functions build:watch
     working_dir: /app
     volumes:
       - ..:/app
+
   next:
     image: node:16-alpine
     command: yarn dev
     working_dir: /app
-    network_mode: host
+    ports:
+      - 3000:3000
     volumes:
       - ..:/app
     environment:
