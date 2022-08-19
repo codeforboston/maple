@@ -16,10 +16,15 @@ services:
       TYPESENSE_DATA_DIR: /app/data
       TYPESENSE_API_KEY: test-api-key
       TYPESENSE_ENABLE_CORS: "true"
+    cpu_count: 2
 
   firebase:
-    image: andreysenov/firebase-tools:latest-node-16
-    command: yarn firebase --project demo-dtp emulators:start --only auth,functions,pubsub,firestore,storage --import tests/integration/exportedTestData
+    image: alexjball/firebase-tools:latest-node-16
+    command: >
+      yarn firebase 
+      --project demo-dtp emulators:start 
+      --only auth,functions,pubsub,firestore,storage 
+      --import tests/integration/exportedTestData
     working_dir: /app
     volumes:
       - ..:/app
