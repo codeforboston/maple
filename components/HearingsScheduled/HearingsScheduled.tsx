@@ -1,57 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Container, Carousel, Spinner } from "react-bootstrap"
 import { Col, Image, Row } from "../bootstrap"
 import styles from "./HearingsScheduled.module.css"
 import { useUpcomingEvents } from "../db/events"
-import CarouselLeft from "../../public/carousel-left.png"
-import CarouselRight from "../../public/carousel-right.png"
+import { formatDate, numberToFullMonth } from "./dateUtils"
 
-/*
-Return an object in format below: 
-{ day: "Thursday", month: "Aug", date: "18", time: "11:00 AM" }
-*/
-export const formatDate = (
-  dateString: string
-): { day: string; month: string; year: string; date: string; time: string } => {
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
-  ]
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ]
-  const date = new Date(dateString)
-  const day = daysOfWeek[new Date(date).getDay()]
-  const month = months[date.getMonth()]
-  const num = date.getDate().toString()
-  const year = date.getFullYear().toString()
-
-  const [hourString, minute] = dateString.split("T")[1].split(":")
-  let hour = parseInt(hourString)
-  const meridian = hour < 12 ? "PM" : "AM"
-  if (hour > 12) hour -= 12
-  const formattedTime = `${hour.toString()}:${minute} ${meridian}`
-
-  return { day, month, year, date: num, time: formattedTime }
-}
-
-type EventData = {
+export type EventData = {
   index: number
   type: string
   name: string
@@ -69,7 +23,9 @@ type EventData = {
 Currently event types handled: sessions, hearings.
   Event type of specialEvent (and any incorrect value) are ignored.
   SpecialEvent type contains only EventId, EventDate, and StartTime
-  It is missing name and location which are used on the event cards.
+  It is missing name and location which are used on the event cards:
+  A decision needs to be made as what info would go on cards
+  and determine what the base URL is.
 */
 export const EventCard = ({
   index,
@@ -126,40 +82,8 @@ export const EventCard = ({
   )
 }
 
-const numberToFullMonth = (month: number): string => {
-  switch (month) {
-    case 0:
-      return "January"
-    case 1:
-      return "February"
-    case 2:
-      return "March"
-    case 3:
-      return "April"
-    case 4:
-      return "May"
-    case 5:
-      return "June"
-    case 6:
-      return "July"
-    case 7:
-      return "August"
-    case 8:
-      return "September"
-    case 9:
-      return "October"
-    case 10:
-      return "November"
-    case 11:
-      return "December"
-    default:
-      return "August"
-  }
-}
-/******************************************************************************************************* */
-
 /** Component with interactive calendar of upcoming hearings and sessions */
-
+/** TBD import carousel-left and carousel right icons for the carousel component */
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
 
@@ -170,6 +94,10 @@ export const HearingsScheduled = () => {
     setMonthIndex(selectedIndex)
   }
 
+  /* Currently this component is expecting useUpcomingEvents to return a sorted list 
+    The field eventList.fullDate exists as a date type in case sorting needs to be done
+    here in the future.
+   */
   const events = useUpcomingEvents()
 
   const eventList: EventData[] = []
@@ -255,7 +183,6 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              // bsPrefix={styles.carousel}
             >
               {monthsList?.map(month => {
                 return (
@@ -271,24 +198,29 @@ export const HearingsScheduled = () => {
             <>
               {thisMonthsEvents.length ? (
                 <section className={styles.eventSection}>
-                  {thisMonthsEvents?.map(e => {
-                    return (
-                      <EventCard
-                        key={e.id}
-                        index={e.index}
-                        type={e.type}
-                        name={e.name}
-                        id={e.id}
-                        location={e.location}
-                        fullDate={e.fullDate}
-                        year={e.year}
-                        month={e.month}
-                        date={e.date}
-                        day={e.day}
-                        time={e.time}
-                      />
-                    )
-                  })}
+                  <Container>
+                    <Row className="gx-5 justify-content-center">
+                      {thisMonthsEvents?.map(e => {
+                        return (
+                          <Col xxl={6} key={e.id}>
+                            <EventCard
+                              index={e.index}
+                              type={e.type}
+                              name={e.name}
+                              id={e.id}
+                              location={e.location}
+                              fullDate={e.fullDate}
+                              year={e.year}
+                              month={e.month}
+                              date={e.date}
+                              day={e.day}
+                              time={e.time}
+                            />
+                          </Col>
+                        )
+                      })}
+                    </Row>
+                  </Container>
                 </section>
               ) : (
                 <section className={styles.noEvents}>

@@ -22,25 +22,11 @@
   font-size: 3.375em;
 }
 
-.carousel-control-prev-icon {
-  background-image: url("../../public/carousel-left.png");
-}
-
-.carousel-control-next-icon {
-  background-image: url("../../public/carousel-right.png");
-}
-
-.container {
-  height: 100px;
-  width: 100%;
-  overflow-y: visible;
-}
-
 .eventSection {
   width: 43em;
-  display: grid;
-  grid-template-columns: 50% 50%;
-  margin-left: 1em;
+  /* display: grid;
+  grid-template-columns: 50% 50%; */
+  /* margin-left: 1em; */
   margin-bottom: 2em;
 }
 
@@ -55,6 +41,13 @@
   display: block;
   height: fit-content;
 }
+
+@media (max-width: 1400px) {
+  .card {
+    margin-left: 8.2em;
+  }
+}
+
 .cardHeader {
   color: white;
   background: var(--bs-blue);
@@ -103,11 +96,11 @@
 
 .noEvents {
   color: var(--bs-blue);
-  width: 43em;
+  width: 39.5em;
   text-align: center;
 }
 
 .loading {
-  width: 43em;
+  width: 39.5em;
   display: grid;
 }
