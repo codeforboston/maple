@@ -1,10 +1,12 @@
-export async function getStaticProps() {
-  return {
-    redirect: {
-      destination: "/learn/basics-of-testimony",
-      fallback: true
-    }
-  }
-}
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 
-export default function Page() {}
+export default function Page() {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push("/learn/basics-of-testimony")
+  })
+
+  return null
+}
