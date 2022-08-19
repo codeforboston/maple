@@ -154,7 +154,10 @@ const LearnLinks = () => (
     >
       Testimony Explained
     </NavLink>
-    <NavLink href="/learn/legislative-process" other={{ className: `${styles.footerLink}` }}>
+    <NavLink
+      href="/learn/legislative-process"
+      other={{ className: `${styles.footerLink}` }}
+    >
       Contacting Legislators
     </NavLink>
     <NavLink
@@ -174,7 +177,10 @@ const AboutLinks = () => (
     >
       Our Mission &amp; Goals
     </NavLink>
-    <NavLink href="/about/our-team" other={{ className: `${styles.footerLink}` }}>
+    <NavLink
+      href="/about/our-team"
+      other={{ className: `${styles.footerLink}` }}
+    >
       Our Team
     </NavLink>
   </>

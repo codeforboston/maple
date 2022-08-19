@@ -1,12 +1,10 @@
-
 export async function getStaticProps() {
   return {
     redirect: {
-      destination: '/learn/basics-of-testimony',
+      destination: "/learn/basics-of-testimony",
       fallback: true
-    },
+    }
   }
 }
 
-export default function Page() {
-}
+export default function Page() {}

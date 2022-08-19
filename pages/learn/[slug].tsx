@@ -47,8 +47,7 @@ const tabs: TabsType[] = [
 
 export default createPage({
   title: "Learn",
-  Page: (props) => {
-
+  Page: props => {
     const router = useRouter()
 
     const { slug } = props as Props
@@ -77,22 +76,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
       paths: [],
-      fallback: 'blocking',
+      fallback: "blocking"
     }
   }
 
   // Get the paths we want to prerender based on posts
   // In production environments, prerender all pages
   // (slower builds, but faster initial page load)
-  const paths = tabs.map((tab) => ({
-    params: { slug: tab.slug },
+  const paths = tabs.map(tab => ({
+    params: { slug: tab.slug }
   }))
 
   // { fallback: false } means other routes should 404
   return { paths, fallback: false }
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async context => {
   const props = context.params as IParams
   return { props }
 }
