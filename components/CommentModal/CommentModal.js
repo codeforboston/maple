@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Button, Col, Container, Modal, Row } from "../bootstrap"
+import Link from "next/link"
+import { Alert, Button, Col, Container, Modal, Row } from "../bootstrap"
 import { useAuth } from "../../components/auth"
 import { useEditTestimony } from "../db/testimony/useEditTestimony"
 import { useDraftTestimonyAttachment } from "../db/testimony/useTestimonyAttachment"
@@ -38,7 +39,7 @@ const CommentModal = ({
 
   const [isPublishing, setIsPublishing] = useState(false)
   const [showPostSubmitModal, setShowPostSubmitModal] = useState(false)
-
+  const [publishError, setPublishError] = useState(false)
   const [testimony, setTestimony] = useUnsavedTestimony()
 
   const billInfo = bill.content === undefined ? bill : bill.content
@@ -67,18 +68,24 @@ const CommentModal = ({
     testimony && testimony.content ? testimony.content : undefined
 
   const publishTestimony = useCallback(async () => {
-    if (
-      testimony.position == undefined ||
-      testimony.position == positionMessage ||
-      !testimony.content
-    ) {
-      return
+    try {
+      if (
+        testimony.position == undefined ||
+        testimony.position == positionMessage ||
+        !testimony.content
+      ) {
+        return
+      }
+      setIsPublishing(true)
+      await edit.saveDraft.execute(testimony)
+      await edit.publishTestimony.execute()
+      setIsPublishing(false)
+      setShowPostSubmitModal(true)
+    } catch (err) {
+      console.error(err)
+      setIsPublishing(false)
+      setPublishError(err.message)
     }
-    setIsPublishing(true)
-    await edit.saveDraft.execute(testimony)
-    await edit.publishTestimony.execute()
-    setIsPublishing(false)
-    setShowPostSubmitModal(true)
   }, [edit.publishTestimony, edit.saveDraft, testimony])
 
   const existingTestimony = !_.isEmpty(testimony)
@@ -146,8 +153,16 @@ const CommentModal = ({
           </Container>
         </Modal.Body>
 
+        {publishError && (
+          <Alert variant="danger" className="text-center">
+            {publishError}
+            {" ! "}
+            <Link href={`/profile?id=${user.uid}`}>Navigate to the profile </Link>
+          </Alert>
+        )}
+
         <Modal.Footer>
-          <Button variant="primary" onClick={publishTestimony}>
+          <Button variant="primary" onClick={publishTestimony} disabled={publishError}>
             {!positionChosen
               ? "Choose Endorse/Oppose/Neutral to Publish"
               : !testimonyWritten

@@ -41,7 +41,7 @@ export function checkAuth(context: https.CallableContext, checkEmailVerification
     if (!email_verified) {
       throw fail(
         "permission-denied",
-        "Caller must verify an account"
+        "You must verify an account first"
       )
     }
   }
