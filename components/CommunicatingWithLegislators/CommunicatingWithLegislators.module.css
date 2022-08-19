@@ -1,0 +1,17 @@
+.imgsize {
+  height: 8rem;
+  width: 8rem;
+}
+
+.missionheader {
+  color: var(--bs-orange);
+}
+
+.submittestimony {
+  color: #c71e32;
+}
+
+.sectiondetails {
+  text-align: center;
+  font-size: 1.5rem;
+}
