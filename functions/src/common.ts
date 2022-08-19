@@ -25,7 +25,10 @@ export function checkRequest<A>(type: Runtype<A>, data: any) {
 }
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
-export function checkAuth(context: https.CallableContext, checkEmailVerification = false) {
+export function checkAuth(
+  context: https.CallableContext,
+  checkEmailVerification = false
+) {
   const uid = context.auth?.uid
 
   if (!uid) {
@@ -37,12 +40,9 @@ export function checkAuth(context: https.CallableContext, checkEmailVerification
 
   if (checkEmailVerification) {
     const email_verified = context.auth?.token?.email_verified
-    
+
     if (!email_verified) {
-      throw fail(
-        "permission-denied",
-        "You must verify an account first"
-      )
+      throw fail("permission-denied", "You must verify an account first")
     }
   }
 

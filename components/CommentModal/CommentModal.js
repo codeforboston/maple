@@ -157,12 +157,18 @@ const CommentModal = ({
           <Alert variant="danger" className="text-center">
             {publishError}
             {" ! "}
-            <Link href={`/profile?id=${user.uid}`}>Navigate to the profile </Link>
+            <Link href={`/profile?id=${user.uid}`}>
+              Navigate to the profile
+            </Link>
           </Alert>
         )}
 
         <Modal.Footer>
-          <Button variant="primary" onClick={publishTestimony} disabled={publishError}>
+          <Button
+            variant="primary"
+            onClick={publishTestimony}
+            disabled={publishError}
+          >
             {!positionChosen
               ? "Choose Endorse/Oppose/Neutral to Publish"
               : !testimonyWritten
