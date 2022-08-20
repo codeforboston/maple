@@ -1,11 +1,12 @@
 import { Image } from "react-bootstrap"
 import styles from "./Leaf.module.css"
 
-const Leaf = ({ direction }) => {
+const Leaf = ({ position }) => {
+  console.log(position)
   return (
     <div className={styles.container}>
       <Image
-        className={direction === "left" ? styles.left : styles.right}
+        className={styles[position]}
         fluid
         src="leaf-asset.png"
         alt="leaf"
