@@ -4,7 +4,6 @@ import { useAuth } from "../components/auth"
 import { HearingsScheduled } from "../components/HearingsScheduled/HearingsScheduled"
 import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
-import HearingsLeaf from "../components/Leaf/HearingsLeaf"
 import { createPage } from "../components/page"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
 
@@ -16,15 +15,17 @@ export default createPage({
       <div className="overflow-hidden whitebackground">
         <HeroHeader authenticated={authenticated} />
 
-        <Leaf direction="right" />
+        <Leaf position="firstLeaf" />
 
         <TestimonyCalloutSection />
 
-        <Leaf direction="left" />
+        <Leaf position="secondLeaf" />
+
+        <Leaf position="thirdLeaf" />
 
         <AboutSection />
 
-        <HearingsLeaf />
+        <Leaf position="fourthLeaf" />
 
         <HearingsScheduled />
       </div>
