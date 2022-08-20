@@ -48,6 +48,10 @@ $btn-close-opacity: 1;
 $btn-close-hover-opacity: 1;
 $btn-close-focus-opacity: 1;
 
+// Tooltip overrides
+$tooltip-bg: $blue;
+$tooltip-arrow-color: $blue;
+
 @import "bootstrap/scss/bootstrap";
 
 // Import fonts using the default bootstrap weights
