@@ -4,6 +4,7 @@ import { Col, Image, Row } from "../bootstrap"
 import styles from "./HearingsScheduled.module.css"
 import { useUpcomingEvents } from "../db/events"
 import { formatDate, numberToFullMonth } from "./dateUtils"
+import { useCalendarEvents } from "./calendarEvents"
 
 export type EventData = {
   index: number
@@ -20,8 +21,8 @@ export type EventData = {
 }
 
 /*
-Currently event types handled: sessions, hearings.
-  Event type of specialEvent (and any incorrect value) are currently ignored.
+Event types handled: sessions, hearings.
+  Event type of specialEvent (and any incorrect value) are ignored.
 
   The SpecialEvent data type only contains EventId, EventDate, and StartTime
   It is missing name and location which are used on the event cards:
@@ -82,10 +83,6 @@ export const EventCard = ({
   )
 }
 
-/** Component with interactive calendar of upcoming hearings and sessions
- * Only events from the current month forward are displayed
- *
- */
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
 
@@ -96,65 +93,7 @@ export const HearingsScheduled = () => {
     setMonthIndex(selectedIndex)
   }
 
-  /* Currently this component is expecting useUpcomingEvents to return a sorted list. 
-    The field eventList.fullDate exists as a Date type in case sorting needs to be done
-    here in the future.
-   */
-  const events = useUpcomingEvents()
-
-  const eventList: EventData[] = []
-  let latestDate = new Date()
-  const indexOffset = new Date().getMonth()
-  if (events) {
-    for (let e of events) {
-      const currentDate = new Date(e.content.EventDate)
-
-      if (currentDate > latestDate) latestDate = currentDate
-
-      const date = formatDate(e.content.EventDate)
-      if (e.type === "session") {
-        eventList.push({
-          index: currentDate.getMonth() - indexOffset,
-          type: e.type,
-          name: e.content.Name,
-          id: e.content.EventId,
-          location: e.content.LocationName,
-          fullDate: currentDate,
-          year: date.year,
-          month: date.month,
-          date: date.date,
-          day: date.day,
-          time: date.time
-        })
-      } else if (e.type === "hearing") {
-        eventList.push({
-          index: currentDate.getMonth() - indexOffset,
-          type: e.type,
-          name: e.content.Name,
-          id: e.content.EventId,
-          location: e.content.Location.LocationName,
-          fullDate: currentDate,
-          year: date.year,
-          month: date.month,
-          date: date.date,
-          day: date.day,
-          time: date.time
-        })
-      }
-    }
-  }
-
-  /* Create list of months to cycle through on calendar */
-  let currentDate = new Date()
-  const monthsList = []
-  while (currentDate.getMonth() <= latestDate.getMonth()) {
-    monthsList.push(
-      `${numberToFullMonth(currentDate.getMonth())} ${currentDate
-        .getFullYear()
-        .toString()}`
-    )
-    currentDate.setMonth(currentDate.getMonth() + 1)
-  }
+  const { loading, eventList, monthsList } = useCalendarEvents()
 
   /* List of events in current month displayed in carousel */
   const thisMonthsEvents = eventList.filter(e => {
@@ -169,7 +108,7 @@ export const HearingsScheduled = () => {
         </Col>
       </Row>
       <Row className="">
-        <Col sm={5}>
+        <Col xs={{ order: 1 }} md={{ span: 5, order: 0 }}>
           <Image
             className={`ml-5 ${styles.podium}`}
             src="speaker-podium.png"
@@ -209,7 +148,11 @@ export const HearingsScheduled = () => {
             </Carousel>
           </section>
 
-          {events ? (
+          {loading ? (
+            <div className={styles.loading}>
+              <Spinner animation="border" className="mx-auto" />
+            </div>
+          ) : (
             <>
               {thisMonthsEvents.length ? (
                 <section className={styles.eventSection}>
@@ -243,10 +186,6 @@ export const HearingsScheduled = () => {
                 </section>
               )}
             </>
-          ) : (
-            <div className={styles.loading}>
-              <Spinner animation="border" className="mx-auto" />
-            </div>
           )}
         </Col>
       </Row>
