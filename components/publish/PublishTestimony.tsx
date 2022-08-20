@@ -39,11 +39,6 @@ export const PublishTestimony = styled(({ ...rest }) => {
     </div>
   )
 })`
-  p {
-    margin-bottom: 1rem;
-    white-space: pre-wrap;
-  }
-
   @media (min-width: 768px) {
     .testimony-container {
       padding: 3rem 4rem 3rem 4rem !important;
@@ -78,16 +73,4 @@ const PublishButton = ({ publish }: { publish: PublishAction }) => {
       Publish & Proceed
     </LoadingButton>
   )
-}
-
-const clampString = (s: string, maxLength: number) => {
-  const words = s.split(" ")
-  let length = 0
-  for (let i = 0; i < words.length; i++) {
-    length += words[i].length + (length > 0 ? 1 : 0)
-    if (length > maxLength) {
-      return words.slice(0, i).join(" ") + "…"
-    }
-  }
-  return s
 }

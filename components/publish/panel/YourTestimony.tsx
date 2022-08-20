@@ -1,35 +1,44 @@
+import clsx from "clsx"
+import { useState } from "react"
+import { UseAsyncReturn } from "react-async-hook"
+import { Collapse, ImageProps } from "react-bootstrap"
 import styled from "styled-components"
-import { Button } from "../../bootstrap"
+import { Button, Spinner, Stack } from "../../bootstrap"
 import { ImageButton } from "../../buttons"
-import { Internal, Wrap } from "../../links"
+import { External, twitterShareLink, Wrap } from "../../links"
 import { usePublishService, usePublishState } from "../redux"
 import { TestimonyPreview } from "../TestimonyPreview"
 import { formUrl } from "./hooks"
 
-export const YourTestimony = styled(({ ...rest }) => {
-  return (
-    <div {...rest}>
-      <MainPanel className="mb-3" />
-      <TwitterButton className="m-2 mb-3" />
-      <EmailButton className="m-2" />
-    </div>
-  )
-})`
-  display: flex;
-  flex-direction: column;
-`
+export const YourTestimony = () => {
+  const synced = usePublishState().sync === "synced"
+  return synced ? (
+    <Stack gap={4}>
+      <MainPanel />
+      <TwitterButton className="mx-2" />
+      <EmailButton className="mx-2" />
+    </Stack>
+  ) : null
+}
 
 const MainPanel = styled(({ ...rest }) => {
-  const { draft, publication, deleteTestimony } = usePublishService() ?? {}
+  const { draft, deleteTestimony } = usePublishService() ?? {}
   const unpublishedDraft = draft?.publishedVersion === undefined
 
+  const [showConfirm, setShowConfirm] = useState(false)
   return (
     <div {...rest}>
       <div className="d-flex">
         <span className="title">Your Testimony</span>
         <EditTestimonyButton className="me-1" />
-        <HideTestimonyButton />
+        <DeleteTestimonyButton onClick={() => setShowConfirm(s => !s)} />
       </div>
+      <DeleteTestimonyConfirmation
+        className="mt-2"
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        deleteTestimony={deleteTestimony}
+      />
       <div className="divider mt-3 mb-3" />
       <TestimonyPreview />
       {unpublishedDraft && <div className="draft-badge">Draft</div>}
@@ -79,38 +88,115 @@ const MainPanel = styled(({ ...rest }) => {
   .position-section {
     text-align: center;
   }
+
+  .testimony-button {
+    width: 2rem;
+    height: 2rem;
+  }
 `
 
-const EditTestimonyButton = (props: ClsProps) => {
+const EditTestimonyButton = ({ className }: ClsProps) => {
   const billId = useBillId()
   return (
-    <Internal href={formUrl(billId)}>
-      <ImageButton {...props} alt="edit testimony" src="edit-testimony.svg" />
-    </Internal>
+    <ImageButton
+      alt="edit testimony"
+      tooltip="Edit Testimony"
+      src="edit-testimony.svg"
+      href={formUrl(billId)}
+      className={clsx("testimony-button", className)}
+    />
   )
 }
 
-const HideTestimonyButton = (props: ClsProps) => {
-  return <ImageButton alt="hide testimony" src="hide-testimony.svg" />
+const DeleteTestimonyButton = (props: ImageProps) => {
+  return (
+    <ImageButton
+      alt="delete testimony"
+      tooltip="Delete Testimony"
+      src="delete-testimony.svg"
+      className="testimony-button"
+      {...props}
+    />
+  )
 }
+
+const DeleteTestimonyConfirmation = styled<{
+  show: boolean
+  onHide: () => void
+  deleteTestimony: UseAsyncReturn<void, []> | undefined
+}>(({ show, onHide, deleteTestimony, ...props }) => {
+  return (
+    <Collapse in={show}>
+      <div>
+        <div {...props}>
+          <div>Are you sure you want to delete your testimony?</div>
+          <div className="d-flex justify-content-center mt-2">
+            <Button
+              className="choice me-4"
+              variant="success"
+              onClick={deleteTestimony?.execute}
+              disabled={
+                deleteTestimony === undefined || deleteTestimony.loading
+              }
+            >
+              {deleteTestimony?.loading ? (
+                <Spinner size="sm" animation="border" />
+              ) : (
+                "Yes"
+              )}
+            </Button>
+            <Button className="choice" variant="info" onClick={onHide}>
+              No
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Collapse>
+  )
+})`
+  font-size: 0.75rem;
+  .choice {
+    font-size: inherit;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    border-radius: 0.75rem;
+    color: white;
+    display: flex;
+    align-items: center;
+  }
+`
 
 type ClsProps = { className?: string }
 
 const Cta = styled(Button).attrs({ variant: "light" })`
-  line-height: 2.5rem;
+  min-height: 3rem;
   border-radius: 0.5rem;
-  padding: 0;
+  padding: 0.5rem;
+  display: inline-flex;
+  gap: 5px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `
 
 const TwitterButton = (props: ClsProps) => {
-  return <Cta {...props}>Post to Twitter</Cta>
+  const { publication } = usePublishService() ?? {}
+
+  if (publication) {
+    return (
+      <External as={Cta} href={twitterShareLink(publication)} {...props}>
+        Tweet Your Published Testimony
+      </External>
+    )
+  } else {
+    return null
+  }
 }
 
 const EmailButton = (props: ClsProps) => {
   const billId = useBillId()
   return (
     <Wrap href={formUrl(billId, "share")}>
-      <Cta {...props}>Send as Email</Cta>
+      <Cta {...props}>Email Your Published Testimony </Cta>
     </Wrap>
   )
 }

@@ -15,21 +15,29 @@ export const positionActions: Record<Position, ReactNode> = {
   oppose: <b className="oppose-position">oppose</b>
 }
 
-export const TestimonyPreview = styled(() => {
+export const TestimonyPreview = styled(props => {
   const { position, content } = usePublishState()
   const snippet = clampString(content, maxLength)
 
   return (
-    <>
+    <div {...props}>
       {position && (
         <p className="position-section">
           You {positionActions[position]} this bill
         </p>
       )}
       {snippet && <p className="content-section">“{snippet}”</p>}
-    </>
+    </div>
   )
-})``
+})`
+  .content-section {
+    overflow-x: auto;
+  }
+  p {
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+  }
+`
 
 const clampString = (s: string | undefined, maxLength: number) => {
   if (!s) return undefined

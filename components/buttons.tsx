@@ -1,7 +1,8 @@
 import React from "react"
-import type { ButtonProps, ImageProps, SpinnerProps } from "react-bootstrap"
+import { ButtonProps, ImageProps, SpinnerProps, Tooltip } from "react-bootstrap"
 import styled from "styled-components"
-import { Button, Image, Spinner } from "./bootstrap"
+import { Button, Image, OverlayTrigger, Spinner } from "./bootstrap"
+import { Internal } from "./links"
 
 export const TableButton = ({
   onclick,
@@ -47,12 +48,24 @@ export const LoadingButton = ({
   </Button>
 )
 
-export const ImageButton = styled<ImageProps>(
-  ({ alt, ...imageProps }: ImageProps) => {
-    return <Image tabIndex={0} alt={alt} role="button" {...imageProps} />
-  }
-)`
-  margin: auto;
+export const ImageButton = styled<
+  Pick<ImageProps, "alt" | "src"> & { tooltip?: string; href?: string }
+>(({ alt, tooltip, href, ...rest }) => {
+  const link = !!href
+  const img = <Image alt={alt} tabIndex={0} role="button" {...rest} />
+  const content = link ? <Internal href={href}>{img}</Internal> : img
+  return tooltip ? (
+    <OverlayTrigger
+      delay={500}
+      placement="top"
+      overlay={<Tooltip>{tooltip}</Tooltip>}
+    >
+      {content}
+    </OverlayTrigger>
+  ) : (
+    content
+  )
+})`
   cursor: pointer;
 
   transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
@@ -66,5 +79,6 @@ export const ImageButton = styled<ImageProps>(
     outline: 3px solid var(--bs-blue-300);
   }
   border-radius: 3px;
+
   padding: 1px;
 `

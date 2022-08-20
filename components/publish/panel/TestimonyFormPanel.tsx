@@ -4,7 +4,7 @@ import { Bill } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import { resolvePublicationInfo } from "../hooks"
 import { setStep } from "../redux"
-import { CreateTestimony, SignedOut } from "./ctas"
+import { CompleteTestimony, CreateTestimony, SignedOut } from "./ctas"
 import { usePanelStatus } from "./hooks"
 import { ThankYouModal } from "./ThankYouModal"
 import { YourTestimony } from "./YourTestimony"
@@ -32,10 +32,14 @@ export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
 const Panel = () => {
   const status = usePanelStatus()
   switch (status) {
+    case "loading":
+      return null
     case "signedOut":
       return <SignedOut />
     case "noTestimony":
       return <CreateTestimony />
+    case "createInProgress":
+      return <CompleteTestimony />
     default:
       return <YourTestimony />
   }

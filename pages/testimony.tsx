@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
-import { Col, Row, Spinner } from "react-bootstrap"
+import { Spinner } from "react-bootstrap"
+import styled from "styled-components"
 import { Container } from "../components/bootstrap"
 import {
   useBill,
@@ -9,7 +10,6 @@ import {
 import { formatBillId } from "../components/formatting"
 import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
-import styled from "styled-components"
 
 const PositionSentence = styled(Container)`
   background-color: white;

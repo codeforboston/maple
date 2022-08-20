@@ -1,5 +1,5 @@
 import { ReactElement } from "react"
-import { Button, Image } from "react-bootstrap"
+import { Button, ButtonProps, Image } from "react-bootstrap"
 import styled from "styled-components"
 import { SignInWithModal } from "../../auth"
 import { useAppSelector } from "../../hooks"
@@ -21,9 +21,17 @@ const Styled = styled.div`
   }
 `
 
-const Cta = ({ title, cta }: { title: string; cta: ReactElement }) => {
+const Cta = ({
+  title,
+  cta,
+  className
+}: {
+  title: string
+  cta: ReactElement
+  className?: string
+}) => {
   return (
-    <Styled>
+    <Styled className={className}>
       <div className="text-center title">{title}</div>
       <Image alt="" className="mt-2 mb-2" src="testimony-panel-empty.svg" />
       {cta}
@@ -31,11 +39,13 @@ const Cta = ({ title, cta }: { title: string; cta: ReactElement }) => {
   )
 }
 
-const OpenForm = ({ label }: { label: string }) => {
+const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
   const billId = useAppSelector(state => state.publish.bill?.id)!
   return (
     <Wrap href={formUrl(billId)}>
-      <Button variant="primary">{label}</Button>
+      <Button variant="primary" {...props}>
+        {label}
+      </Button>
     </Wrap>
   )
 }
@@ -44,6 +54,20 @@ export const CreateTestimony = () => (
   <Cta
     title="You Haven't Submitted Testimony"
     cta={<OpenForm label="Create Testimony" />}
+  />
+)
+
+export const CompleteTestimony = () => (
+  <Cta
+    title="You Have Draft Testimony"
+    cta={
+      <OpenForm
+        label="Complete Testimony"
+        variant="info"
+        className="text-white"
+      />
+    }
+    className="text-info"
   />
 )
 
