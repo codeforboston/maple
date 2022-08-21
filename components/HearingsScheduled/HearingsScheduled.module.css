@@ -1,9 +1,9 @@
 .heading {
   color: var(--bs-blue);
-  font-size: 4em;
+  font-size: 4rem;
   font-weight: 500;
   text-align: center;
-  margin-bottom: 3em;
+  margin-bottom: 1.25em; /* 5rem */
 }
 
 .podium {
@@ -14,7 +14,8 @@
 }
 
 .carousel {
-  max-width: 40em;
+  max-width: 40rem;
+  min-width: 34rem;
   margin-bottom: 6em;
 }
 
@@ -22,22 +23,49 @@
   font-size: 3.375em;
 }
 
+@media (max-width: 71.25em) {
+  .heading {
+    font-size: 2.75rem;
+  }
+  .podium {
+    width: 18.12rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .podium {
+    margin-bottom: 4.5em;
+  }
+}
+
+@media (max-width: 23.44em) {
+  .heading {
+    font-size: 2.25rem;
+  }
+  .podium {
+    width: 12.94rem;
+  }
+  .carousel h1 {
+    font-size: 2rem;
+  }
+}
+
 .carouselControlNextIcon {
-  width: 37px;
-  height: 37px;
+  width: 2.3125rem;
+  height: 2.3125rem;
   background-image: url("../../public/carousel-right.png");
   background-repeat: no-repeat;
 }
 
 .carouselControlPrevIcon {
-  width: 37px;
-  height: 37px;
+  width: 2.3125rem;
+  height: 2.3125rem;
   background-image: url("../../public/carousel-left.png");
   background-repeat: no-repeat;
 }
 
 .eventSection {
-  width: 43em;
+  width: 43rem;
   margin-bottom: 2em;
 }
 
@@ -46,16 +74,23 @@
   font-family: Nunito;
   font-weight: 400;
   border: 2px var(--bs-blue) solid;
-  width: 20em; /* width: 269px; */
+  width: 20rem; /* width: 269px; */
   margin-bottom: 2em;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
   display: block;
   height: fit-content;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 87.5em) {
   .card {
     margin-left: 8.2em;
+  }
+}
+
+@media (max-width: 34.375em) {
+  /* 47.94em */
+  .card {
+    margin-left: 6em;
   }
 }
 

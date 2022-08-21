@@ -102,12 +102,12 @@ export const HearingsScheduled = () => {
 
   return (
     <Container fluid>
-      <Row className="mt-5 align-content-center">
+      <Row className="mt-5">
         <Col>
           <h1 className={`${styles.heading}`}>Hearings Scheduled</h1>
         </Col>
       </Row>
-      <Row className="">
+      <Row>
         <Col xs={{ order: 1 }} md={{ span: 5, order: 0 }}>
           <Image
             className={`ml-5 ${styles.podium}`}
@@ -115,7 +115,7 @@ export const HearingsScheduled = () => {
             alt="speaker at podium"
           />
         </Col>
-        <Col sm={7}>
+        <Col md={7}>
           <section className={`${styles.carousel}`}>
             <Carousel
               variant="dark"
@@ -156,7 +156,7 @@ export const HearingsScheduled = () => {
             <>
               {thisMonthsEvents.length ? (
                 <section className={styles.eventSection}>
-                  <Container>
+                  <Container className="justify-content-center">
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
                         return (
