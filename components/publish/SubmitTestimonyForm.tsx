@@ -1,7 +1,9 @@
 import clsx from "clsx"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
-import { Bill, Profile, usePublicProfile } from "../db"
+import { Col, Container, Image, Row, Spinner } from "../bootstrap"
+import { Bill, Profile } from "../db"
+import { useProfileState } from "../db/profile/redux"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { ProgressBar } from "./ProgressBar"
@@ -10,6 +12,24 @@ import { Step, usePublishState } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
+
+function useReadyForm() {
+  const { bill, authorUid, sync, step } = usePublishState()
+  const profile = useProfileState().profile
+  const [initialized, setInitialized] = useState(false)
+  const ready = initialized && bill && authorUid && profile
+  const synced = sync === "synced"
+
+  useEffect(() => {
+    if (synced) setInitialized(true)
+  }, [synced])
+
+  if (ready) {
+    return { ready: true, bill, authorUid, profile, step, synced } as const
+  } else {
+    return { ready: false } as const
+  }
+}
 
 const Background = styled.div`
   background: linear-gradient(to right, white 50%, var(--bs-body-bg) 50%);
@@ -20,22 +40,23 @@ const StyledContainer = styled(Container)`
 `
 
 export const SubmitTestimonyForm = () => {
-  const { bill, authorUid } = usePublishState()
-  const profile = usePublicProfile(authorUid).result
+  const form = useReadyForm()
 
-  return (
+  return form.ready ? (
     <Background>
       <StyledContainer fluid="lg">
         <Row className="g-0">
           <Col xs={9}>
-            <Form />
+            <Form step={form.step} bill={form.bill} synced={form.synced} />
           </Col>
           <Col xs={3}>
-            <QuickInfo bill={bill!} profile={profile} />
+            <QuickInfo bill={form.bill} profile={form.profile} />
           </Col>
         </Row>
       </StyledContainer>
     </Background>
+  ) : (
+    <Spinner animation="border" />
   )
 }
 
@@ -51,8 +72,15 @@ const Divider = styled.div`
   background-color: var(--bs-gray-500);
 `
 
-const Form = () => {
-  const { step = "position", bill } = usePublishState()
+const Form = ({
+  step,
+  bill,
+  synced
+}: {
+  step: Step
+  bill: Bill
+  synced: boolean
+}) => {
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
     write: <WriteTestimony />,
@@ -62,7 +90,10 @@ const Form = () => {
   }
   return (
     <FormContainer>
-      <links.Internal href={`/bill?id=${bill!.id}`}>
+      <links.Internal
+        href={`/bill?id=${bill!.id}`}
+        className={clsx(!synced && "pe-none")}
+      >
         Back to Bill
       </links.Internal>
       <Overview className="mt-3" />
@@ -120,13 +151,13 @@ const Chip = styled.div`
     height: 100%;
   `
 
-const QuickInfo = ({ bill, profile }: { bill: Bill; profile?: Profile }) => {
+const QuickInfo = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
   const {
       content: { Title },
       city,
       currentCommittee: committee
     } = bill,
-    { representative, senator } = profile ?? {},
+    { representative, senator } = profile,
     hasLegislators = Boolean(representative || senator)
   return (
     <InfoContainer>

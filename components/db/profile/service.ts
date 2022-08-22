@@ -11,9 +11,13 @@ export const { Provider } = createService(() => {
   const dispatch = useAppDispatch()
   useEffect(() => {
     if (uid) {
-      return onSnapshot(profileRef(uid), snapshot => {
+      const unsubscribe = onSnapshot(profileRef(uid), snapshot => {
         dispatch(profileChanged(snapshot.data()))
       })
+      return () => {
+        unsubscribe()
+        dispatch(profileChanged())
+      }
     }
   }, [dispatch, uid])
 })

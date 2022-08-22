@@ -12,7 +12,7 @@ import { createAppThunk, useAppDispatch } from "../hooks"
 import {
   bindService,
   restoreFromDraft,
-  setPublicationInfo,
+  setBill,
   setStep,
   setSyncState,
   SyncState,
@@ -22,7 +22,7 @@ import {
 
 const formDebounceMs = 1000
 
-export const useFormPersistence = (billId: string, authorUid: string) => {
+export const usePublishForm = (billId: string, authorUid: string) => {
   const edit = useEditTestimony(authorUid, billId)
   useInitializeFromFirestore(edit)
   useSyncToStore(edit)
@@ -103,18 +103,16 @@ export function useFormDraft() {
   return { attachmentId, content, position }
 }
 
-export const resolvePublicationInfo = createAppThunk(
-  "publish/resolvePublicationInfo",
-  async (
-    info: { billId?: string; bill?: Bill; authorUid: string },
-    { dispatch }
-  ) => {
-    let bill: Bill | undefined = info.bill
+export const resolveBill = createAppThunk(
+  "publish/resolveBill",
+  async (info: { billId?: string; bill?: Bill }, { dispatch }) => {
+    let bill = info.bill
     if (!bill) {
       if (!info.billId) throw Error("billId or bill required")
       bill = await getBill(info.billId)
+      if (!bill) throw Error(`Invalid billId ${info.billId}`)
     }
-    dispatch(setPublicationInfo({ authorUid: info.authorUid, bill }))
+    dispatch(setBill(bill))
   }
 )
 

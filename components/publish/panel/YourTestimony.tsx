@@ -6,9 +6,9 @@ import styled from "styled-components"
 import { Button, Spinner, Stack } from "../../bootstrap"
 import { ImageButton } from "../../buttons"
 import { External, twitterShareLink, Wrap } from "../../links"
+import { formUrl } from "../navigation"
 import { usePublishService, usePublishState } from "../redux"
 import { TestimonyPreview } from "../TestimonyPreview"
-import { formUrl } from "./hooks"
 
 export const YourTestimony = () => {
   const synced = usePublishState().sync === "synced"
@@ -96,13 +96,14 @@ const MainPanel = styled(({ ...rest }) => {
 `
 
 const EditTestimonyButton = ({ className }: ClsProps) => {
-  const billId = useBillId()
+  const billId = usePublishState().bill?.id!,
+    url = formUrl(billId)
   return (
     <ImageButton
       alt="edit testimony"
       tooltip="Edit Testimony"
       src="edit-testimony.svg"
-      href={formUrl(billId)}
+      href={url}
       className={clsx("testimony-button", className)}
     />
   )
@@ -179,26 +180,19 @@ const Cta = styled(Button).attrs({ variant: "light" })`
 `
 
 const TwitterButton = (props: ClsProps) => {
-  const { publication } = usePublishService() ?? {}
-
-  if (publication) {
-    return (
-      <External as={Cta} href={twitterShareLink(publication)} {...props}>
-        Tweet Your Published Testimony
-      </External>
-    )
-  } else {
-    return null
-  }
+  const { publication } = usePublishState()
+  return publication ? (
+    <External as={Cta} href={twitterShareLink(publication)} {...props}>
+      Tweet Your Published Testimony
+    </External>
+  ) : null
 }
 
 const EmailButton = (props: ClsProps) => {
-  const billId = useBillId()
-  return (
-    <Wrap href={formUrl(billId, "share")}>
+  const { publication, bill: { id: billId } = {} } = usePublishState()
+  return publication ? (
+    <Wrap href={formUrl(billId!, "share")}>
       <Cta {...props}>Email Your Published Testimony </Cta>
     </Wrap>
-  )
+  ) : null
 }
-
-const useBillId = () => usePublishState().bill?.id!

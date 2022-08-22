@@ -13,7 +13,6 @@ import "instantsearch.css/themes/satellite.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
-import { PublishService } from "../components/publish/PublishService"
 
 /**
  * The root React component of the application. Next.js renders this, passing
@@ -26,12 +25,7 @@ import { PublishService } from "../components/publish/PublishService"
  * See https://nextjs.org/docs/basic-features/layouts for the pattern.
  */
 function App(props: AppPropsWithLayout) {
-  return (
-    <Providers>
-      <PublishService />
-      {applyLayout(props)}
-    </Providers>
-  )
+  return <Providers>{applyLayout(props)}</Providers>
 }
 
 export default App

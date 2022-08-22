@@ -9,6 +9,7 @@ import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading, MultiSearch } from "../legislatorSearch"
 import { calloutLabels } from "./content"
+import { useFormRedirection } from "./navigation"
 import * as nav from "./NavigationButtons"
 import {
   addCommittee,
@@ -132,6 +133,7 @@ const SelectLegislatorEmails = ({ className }: { className?: string }) => {
 }
 
 const useSelectLegislators = () => {
+  useFormRedirection()
   const { bill: { currentCommittee } = {} } = usePublishState()
   const { profile: { representative, senator } = {} } = useProfileState()
   const { index } = useMemberSearch()
@@ -140,6 +142,7 @@ const useSelectLegislators = () => {
   useEffect(() => {
     dispatch(clearLegislatorSearch())
   }, [dispatch])
+
   useEffect(() => {
     if (!index) return
 

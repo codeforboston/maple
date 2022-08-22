@@ -8,11 +8,33 @@ import { Maybe } from "../db/common"
 import Input, { InputProps } from "../forms/Input"
 import { useAppDispatch } from "../hooks"
 import { Loading } from "../legislatorSearch"
+import { useFormRedirection } from "./navigation"
 import * as nav from "./NavigationButtons"
 import { setAttachmentId, setContent, usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
 
 type TabKey = "text" | "import"
+type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
+
+function useWriteTestimony() {
+  const dispatch = useAppDispatch()
+  const { attachmentId, content, sync, errors, position } = usePublishState()
+  const uid = useAuth().user?.uid!
+  const attachment = useDraftTestimonyAttachment(uid, attachmentId, id =>
+    dispatch(setAttachmentId(id))
+  )
+
+  useFormRedirection()
+
+  return {
+    setContent: (c: Maybe<string>) => dispatch(setContent(c)),
+    content,
+    attachment,
+    attachmentId,
+    sync,
+    errors
+  }
+}
 
 export const WriteTestimony = styled(({ ...rest }) => {
   const write = useWriteTestimony()
@@ -56,25 +78,6 @@ export const WriteTestimony = styled(({ ...rest }) => {
     </div>
   )
 })``
-
-type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
-function useWriteTestimony() {
-  const dispatch = useAppDispatch()
-  const { attachmentId, content, sync, errors } = usePublishState()
-  const uid = useAuth().user?.uid!
-  const attachment = useDraftTestimonyAttachment(uid, attachmentId, id =>
-    dispatch(setAttachmentId(id))
-  )
-
-  return {
-    setContent: (c: Maybe<string>) => dispatch(setContent(c)),
-    content,
-    attachment,
-    attachmentId,
-    sync,
-    errors
-  }
-}
 
 const useTabs = ({
   sync: syncState,
@@ -128,6 +131,7 @@ const Text = ({
   errors,
   inputProps
 }: UseWriteTestimony & { inputProps?: InputProps }) => {
+  const [touched, setTouched] = useState(false)
   return (
     <Input
       className="mt-3"
@@ -138,8 +142,12 @@ const Text = ({
       rows={6}
       value={content}
       help="Testimony is limited to 10,000 characters."
-      onChange={e => setContent(e.target.value)}
-      error={errors.content}
+      onChange={e => {
+        setTouched(true)
+        setContent(e.target.value)
+      }}
+      onBlur={() => setTouched(true)}
+      error={touched ? errors.content : undefined}
       {...inputProps}
     />
   )

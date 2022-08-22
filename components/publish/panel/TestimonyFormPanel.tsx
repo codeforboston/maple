@@ -2,8 +2,7 @@ import { useEffect } from "react"
 import { useAuth } from "../../auth"
 import { Bill } from "../../db"
 import { useAppDispatch } from "../../hooks"
-import { resolvePublicationInfo } from "../hooks"
-import { setStep } from "../redux"
+import { resolveBill } from "../hooks"
 import { CompleteTestimony, CreateTestimony, SignedOut } from "./ctas"
 import { usePanelStatus } from "./hooks"
 import { ThankYouModal } from "./ThankYouModal"
@@ -13,14 +12,8 @@ export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
   const dispatch = useAppDispatch()
   const authorUid = useAuth().user?.uid
   useEffect(() => {
-    if (authorUid) {
-      dispatch(resolvePublicationInfo({ authorUid, bill }))
-    }
+    dispatch(resolveBill({ bill }))
   }, [authorUid, bill, dispatch])
-  // TODO: set step smarterly
-  useEffect(() => {
-    dispatch(setStep("position"))
-  }, [dispatch])
   return (
     <>
       <ThankYouModal />

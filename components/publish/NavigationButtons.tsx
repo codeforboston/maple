@@ -1,10 +1,9 @@
 import clsx from "clsx"
 import { ReactNode } from "react"
 import { ButtonProps } from "react-bootstrap"
-import styled from "styled-components"
 import { Button } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
-import { nextStep, previousStep, Step, usePublishState } from "./redux"
+import { nextStep, previousStep, usePublishState } from "./redux"
 import { SyncStatus } from "./SyncStatus"
 
 type FormNavigationProps = {
@@ -55,47 +54,3 @@ const createNavButton = (actionCreator: any, label: string) => {
 
 export const Next = createNavButton(nextStep, "Next")
 export const Previous = createNavButton(previousStep, "Previous")
-
-export const NavigationButtons = styled(({ className, ...rest }) => {
-  const currentStep = usePublishState().step!,
-    dispatch = useAppDispatch()
-
-  const next = <Next />,
-    previous = (
-      <Button
-        variant="outline-secondary"
-        onClick={() => dispatch(previousStep())}
-      >
-        Previous
-      </Button>
-    ),
-    publish = (
-      <Button variant="secondary" onClick={() => dispatch(nextStep())}>
-        Publish & Proceed
-      </Button>
-    ),
-    share = <div />,
-    space = <div />
-
-  const options: Record<Step, [ReactNode, ReactNode]> = {
-      position: [space, next],
-      write: [previous, next],
-      publish: [previous, publish],
-      selectLegislators: [space, next],
-      share: [space, share]
-    },
-    [left, right] = options[currentStep]
-
-  return (
-    <div
-      className={clsx(
-        "d-flex justify-content-between flex-wrap gap-2",
-        className
-      )}
-      {...rest}
-    >
-      {left}
-      {right}
-    </div>
-  )
-})``

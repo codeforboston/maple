@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { indexOf, uniqBy } from "lodash"
+import { indexOf, isEqual, uniqBy } from "lodash"
 import { shallowEqual } from "react-redux"
+import { Literal as L, Static, Union } from "runtypes"
+import { authChanged } from "../auth/redux"
 import {
   Bill,
   DraftTestimony,
@@ -11,21 +13,22 @@ import {
   UseEditTestimony,
   WorkingDraft
 } from "../db"
-import { currentGeneralCourt, Maybe } from "../db/common"
+import { Maybe } from "../db/common"
 import { useAppSelector } from "../hooks"
 
 export type Service = UseEditTestimony
 
-export const stepsInOrder = [
-  "position",
-  "write",
-  "publish",
-  "selectLegislators",
-  "share"
-] as const
-export type Step = typeof stepsInOrder[number]
+export const Step = Union(
+  L("position"),
+  L("write"),
+  L("publish"),
+  L("selectLegislators"),
+  L("share")
+)
+export type Step = Static<typeof Step>
+export const stepsInOrder = Step.alternatives.map(s => s.value)
 
-export const isComplete = (current: Step | undefined, step: Step) => {
+export const isComplete = (current: Step, step: Step) => {
   return !!current && stepsInOrder.indexOf(current) > stepsInOrder.indexOf(step)
 }
 
@@ -34,7 +37,7 @@ export type Legislator = MemberSearchIndexItem & {
   callout?: string
 }
 
-type Errors = {
+export type Errors = {
   position?: string
   content?: string
 }
@@ -46,17 +49,14 @@ export type State = {
   /** A bit of a hack to share the UseEditTestimony hook instance across the form */
   service?: Service
 
-  /** Current step in the testimony form */
-  step?: Step
-
   /** Currently logged in user, author of the testimony */
   authorUid?: string
 
-  /** Current general court  */
-  court?: number
-
   /** Current bill */
   bill?: Bill
+
+  /** Current step in the testimony form */
+  step: Step
 
   /** position on the bill */
   position?: Position
@@ -87,7 +87,7 @@ export type State = {
   sync: SyncState
 }
 
-type ShareState = {
+export type ShareState = {
   loading: boolean
   recipients: Legislator[]
   userLegislators: Legislator[]
@@ -104,16 +104,15 @@ const initialShareState: ShareState = {
   },
   initialState: State = {
     errors: {},
-    court: currentGeneralCourt,
     showThankYou: false,
     share: initialShareState,
-    sync: "empty"
+    sync: "loading",
+    step: "position"
   }
 
 export const {
   reducer,
   actions: {
-    signedOut,
     restoreFromDraft,
     syncTestimony,
     setStep,
@@ -130,7 +129,8 @@ export const {
     setAttachmentId,
     setPublicationInfo,
     setSyncState,
-    bindService
+    bindService,
+    setBill
   }
 } = createSlice({
   name: "publish",
@@ -158,9 +158,6 @@ export const {
     bindService(state, action: PayloadAction<Service | undefined>) {
       state.service = action.payload
     },
-    signedOut(_) {
-      return initialState
-    },
     setStep(state, action: PayloadAction<Step>) {
       state.step = action.payload
     },
@@ -177,25 +174,21 @@ export const {
       }
     },
     setPosition(state, action: PayloadAction<Maybe<Position>>) {
-      const validated = Position.validate(action.payload)
       state.position = action.payload ?? undefined
-
-      // update errors
-      if (!validated.success) state.errors.position = "Invalid position"
-      else state.errors.position = undefined
+      validateForm(state)
     },
     setContent(state, action: PayloadAction<Maybe<string>>) {
-      const content = action.payload ?? undefined
-      state.content = content
-
-      // update errors
-      if (!content) state.errors.content = "Content must not be empty"
-      else if (content && content.length > maxTestimonyLength)
-        state.errors.content = "Content is too long"
-      else state.errors.content = undefined
+      state.content = action.payload ?? undefined
+      validateForm(state)
     },
     setAttachmentId(state, action: PayloadAction<Maybe<string>>) {
       state.attachmentId = action.payload ?? undefined
+    },
+    // Reset the form whenever the bill changes
+    setBill(state, action: PayloadAction<Bill>) {
+      const bill = action.payload
+      if (isEqual(state.bill, bill)) return state
+      return resetForm({ ...state, bill })
     },
     setPublicationInfo(
       state,
@@ -209,6 +202,7 @@ export const {
       state.content = payload.content
       state.position = payload.position
       state.draft = payload
+      validateForm(state)
     },
     setSyncState(state, action: PayloadAction<SyncState>) {
       state.sync = action.payload
@@ -222,7 +216,6 @@ export const {
       }>
     ) {
       const { draft, publication } = action.payload
-
       state.publication = publication
       state.draft = draft
     },
@@ -264,9 +257,38 @@ export const {
     setShowThankYou(state, action: PayloadAction<boolean>) {
       state.showThankYou = action.payload
     }
+  },
+  extraReducers: builder => {
+    // Reset the form whenever the authenticated user changes
+    builder.addCase(authChanged, (state, action) => {
+      const authorUid = action.payload.user?.uid
+      if (state.authorUid === authorUid) return state
+      return resetForm({ ...state, authorUid })
+    })
   }
 })
 
+/** Check form for errors */
+const validateForm = ({ content, position, errors }: State) => {
+  const validated = Position.validate(position)
+  if (!validated.success) errors.position = "Invalid position"
+  else errors.position = undefined
+
+  if (!content) errors.content = "Testimony content must not be empty"
+  else if (content && content.length > maxTestimonyLength)
+    errors.content = "Testimony content is too long"
+  else errors.content = undefined
+}
+
+/** Reset the form, carrying over context props */
+const resetForm = (state: State) => ({
+  ...initialState,
+  bill: state.bill,
+  authorUid: state.authorUid,
+  service: state.service
+})
+
+export type PublishState = ReturnType<typeof usePublishState>
 export const usePublishState = () =>
   useAppSelector(
     ({ publish: { service: edit, ...rest } }) => rest,

@@ -2,9 +2,9 @@ import { ReactElement } from "react"
 import { Button, ButtonProps, Image } from "react-bootstrap"
 import styled from "styled-components"
 import { SignInWithModal } from "../../auth"
-import { useAppSelector } from "../../hooks"
 import { Wrap } from "../../links"
-import { formUrl } from "./hooks"
+import { formUrl } from "../navigation"
+import { usePublishState } from "../redux"
 
 const Styled = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ const Cta = ({
 }
 
 const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
-  const billId = useAppSelector(state => state.publish.bill?.id)!
+  const billId = usePublishState().bill?.id!
   return (
     <Wrap href={formUrl(billId)}>
       <Button variant="primary" {...props}>

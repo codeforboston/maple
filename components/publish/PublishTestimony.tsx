@@ -1,26 +1,35 @@
 import { isRejected } from "@reduxjs/toolkit"
-import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
+import { useAsyncCallback } from "react-async-hook"
 import styled from "styled-components"
 import { LoadingButton } from "../buttons"
 import { useAppDispatch } from "../hooks"
 import { publishTestimonyAndProceed } from "./hooks"
+import { useFormRedirection } from "./navigation"
 import * as nav from "./NavigationButtons"
 import { usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
 import { TestimonyPreview } from "./TestimonyPreview"
 
-const maxLength = 1000
-
-export const PublishTestimony = styled(({ ...rest }) => {
+type UsePublisTestimony = ReturnType<typeof usePublishTestimony>
+function usePublishTestimony() {
   const dispatch = useAppDispatch()
-  const { content, sync } = usePublishState()
+  const { sync, draft } = usePublishState()
   const publish = useAsyncCallback(async () => {
     const result = await dispatch(publishTestimonyAndProceed())
     // pass error through to useAsync
     if (isRejected(result)) throw result.error
   })
+  const alreadyPublished = Boolean(draft?.publishedVersion),
+    synced = sync === "synced"
 
-  if (sync !== "synced") return null
+  useFormRedirection()
+
+  return { synced, alreadyPublished, publish }
+}
+
+export const PublishTestimony = styled(({ ...rest }) => {
+  const publish = usePublishTestimony(),
+    error = publish.publish.error
 
   return (
     <div {...rest}>
@@ -30,7 +39,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
         <TestimonyPreview />
       </div>
 
-      {publish.error && <div>Error: {publish.error}</div>}
+      {error && <div>Error: {error}</div>}
 
       <nav.FormNavigation
         left={<nav.Previous />}
@@ -60,17 +69,16 @@ export const PublishTestimony = styled(({ ...rest }) => {
   }
 `
 
-type PublishAction = UseAsyncReturn<void, []>
-
-const PublishButton = ({ publish }: { publish: PublishAction }) => {
+const PublishButton = ({ publish }: { publish: UsePublisTestimony }) => {
   return (
     <LoadingButton
-      loading={publish.loading}
+      disabled={publish.alreadyPublished || !publish.synced}
+      loading={publish.publish.loading}
       className="form-navigation-btn"
       variant="secondary"
-      onClick={publish.execute}
+      onClick={publish.publish.execute}
     >
-      Publish & Proceed
+      {publish.alreadyPublished ? "Already Published" : "Publish & Proceed"}
     </LoadingButton>
   )
 }

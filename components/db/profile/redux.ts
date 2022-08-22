@@ -18,7 +18,7 @@ export const {
   reducers: {
     profileChanged(state, action: PayloadAction<Profile | undefined>) {
       state.profile = action.payload
-      state.loading = false
+      state.loading = !Boolean(action.payload)
     }
   }
 })

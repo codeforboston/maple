@@ -9,19 +9,19 @@ const Divider = styled.div`
   margin: calc(${chipHeight / 2}rem - 0.5px) -1rem 0 -1rem;
 `
 
-export const ProgressBar = styled<{ currentStep?: Step }>(
+export const ProgressBar = styled<{ currentStep: Step }>(
   ({ currentStep, ...rest }) => {
     return (
       <div {...rest}>
-        <Step step={1} active={isComplete(currentStep, "position")}>
+        <StepBox step={1} active={isComplete(currentStep, "position")}>
           Choose your stance
-        </Step>
+        </StepBox>
         <Divider />
-        <Step step={2} active={isComplete(currentStep, "write")}>
+        <StepBox step={2} active={isComplete(currentStep, "write")}>
           Write your testimony
-        </Step>
+        </StepBox>
         <Divider />
-        <Step step={3}>Let your voice be heard</Step>
+        <StepBox step={3}>Let your voice be heard</StepBox>
       </div>
     )
   }
@@ -32,7 +32,7 @@ export const ProgressBar = styled<{ currentStep?: Step }>(
   font-size: 0.75rem;
 `
 
-const Step: React.FC<{ step: number; active?: boolean }> = ({
+const StepBox: React.FC<{ step: number; active?: boolean }> = ({
   step,
   active,
   children

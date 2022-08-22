@@ -1,6 +1,6 @@
 import { isUndefined } from "lodash"
 import { useAuth } from "../../auth"
-import { Step, usePublishState } from "../redux"
+import { usePublishState } from "../redux"
 
 export type PanelStatus =
   | "signedOut"
@@ -30,6 +30,3 @@ export const usePanelStatus = (): PanelStatus => {
     return "published"
   }
 }
-
-export const formUrl = (billId: string, step: Step = "position") =>
-  `/submit-testimony?billId=${billId}&step=${step}`
