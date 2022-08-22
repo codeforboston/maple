@@ -1,3 +1,5 @@
+import Autolinker from "autolinker"
+import * as DOMPurify from "dompurify"
 import { Timestamp } from "firebase/firestore"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
@@ -12,6 +14,24 @@ export const formatBillId = (id: string) => {
   } else {
     return `${match.groups.chamber}.${match.groups.number}`
   }
+}
+
+export const formatTestimonyLinks = (testimony: string, limit?: number) => {
+  const linkedTestimony = Autolinker.link(
+    limit ? testimony.slice(0, limit) : testimony,
+    {
+      truncate: 32
+    }
+  )
+
+  const paragraphedTestimony = linkedTestimony
+    .split(/\s*[\r\n]+\s*/)
+    .map(line => `<p>${line}</p>`)
+    .join("")
+
+  return DOMPurify.sanitize(paragraphedTestimony, {
+    USE_PROFILES: { html: true }
+  })
 }
 
 const MISSING_TIMESTAMP = Timestamp.fromMillis(0)

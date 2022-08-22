@@ -1,10 +1,7 @@
 import { useState } from "react"
-import Autolinker from "autolinker"
-import parse from "html-react-parser"
-import * as DOMPurify from "dompurify"
 import { Button, Col, Dropdown, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
-import { FormattedBillTitle } from "../formatting"
+import { FormattedBillTitle, formatTestimonyLinks } from "../formatting"
 import { Internal, Wrap } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
@@ -125,31 +122,16 @@ export const FormattedTestimonyContent = ({
   const TESTIMONY_CHAR_LIMIT = 442
   const [showAllTestimony, setShowAllTestimony] = useState(false)
 
-  const _formatTestimony = (testimony: string, limit?: number) => {
-    const linkedTestimony = Autolinker.link(
-      limit ? testimony.slice(0, TESTIMONY_CHAR_LIMIT) : testimony,
-      {
-        truncate: 32
-      }
-    )
-
-    const paragraphedTestimony = linkedTestimony
-      .split(/[\r\n]+/)
-      .map((line, i) => `<p key=${i}>${line}</p>`)
-      .join("")
-
-    return parse(
-      DOMPurify.sanitize(paragraphedTestimony, { USE_PROFILES: { html: true } })
-    )
-  }
-
   return (
     <>
       {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
         <>
-          <div className="col m2">
-            {_formatTestimony(testimony, TESTIMONY_CHAR_LIMIT)}...
-          </div>
+          <div
+            className="col m2"
+            dangerouslySetInnerHTML={{
+              __html: formatTestimonyLinks(testimony, TESTIMONY_CHAR_LIMIT)
+            }}
+          />
           <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
             <Button
               variant="link"
@@ -160,7 +142,10 @@ export const FormattedTestimonyContent = ({
           </Col>
         </>
       ) : (
-        <div className="col m2">{_formatTestimony(testimony)}</div>
+        <div
+          className="col m2"
+          dangerouslySetInnerHTML={{ __html: formatTestimonyLinks(testimony) }}
+        />
       )}
     </>
   )
