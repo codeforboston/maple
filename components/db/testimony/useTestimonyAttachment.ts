@@ -18,9 +18,9 @@ import {
 import { storage } from "../../firebase"
 import { Maybe } from "../common"
 
-const draftAttachment = (uid: string, id: string) =>
+export const draftAttachment = (uid: string, id: string) =>
   ref(storage, `/users/${uid}/draftAttachments/${id}`)
-const publishedAttachment = (id: string) =>
+export const publishedAttachment = (id: string) =>
   ref(storage, `/publishedAttachments/${id}`)
 
 type SetDraftAttachmentId = (id: string | null) => void
@@ -94,13 +94,16 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+export async function getPublishedTestimonyAttachmentUrl(id: string) {
+  const info = await getAttachmentInfo(publishedAttachment(id))
+  return info.url
+}
+
 export function usePublishedTestimonyAttachment(id: string) {
   const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
-    getAttachmentInfo(publishedAttachment(id))
-      .then(info => {
-        setUrl(info.url)
-      })
+    getPublishedTestimonyAttachmentUrl(id)
+      .then(setUrl)
       .catch(e => {
         console.warn("Error getting published attachment info", e)
       })

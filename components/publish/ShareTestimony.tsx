@@ -1,14 +1,16 @@
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useRouter } from "next/router"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
-import { Button } from "../bootstrap"
+import { Button, Modal } from "../bootstrap"
+import { CopyButton } from "../buttons"
 import { useMemberSearch } from "../db"
 import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading, MultiSearch } from "../legislatorSearch"
 import { calloutLabels } from "./content"
+import { useTestimonyEmail } from "./hooks"
 import { useFormRedirection } from "./navigation"
 import * as nav from "./NavigationButtons"
 import {
@@ -49,7 +51,7 @@ export const ShareTestimony = styled(({ ...rest }) => {
         )}
       </div>
       <SelectLegislatorEmails className="mt-2" />
-      <nav.FormNavigation right={<ShareButton />} />
+      <nav.FormNavigation right={<ShareButtons />} />
     </div>
   )
 })`
@@ -190,8 +192,9 @@ const useSelectLegislators = () => {
   }, [currentCommittee, dispatch, index, representative, senator])
 }
 
-const ShareButton = () => {
+const ShareButtons = () => {
   const { share, bill } = usePublishState()
+  const email = useTestimonyEmail()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const redirectToBill = useCallback(() => {
@@ -199,21 +202,76 @@ const ShareButton = () => {
     router.push(`/bill?id=${bill!.id}`)
   }, [bill, dispatch, router])
 
+  const buttons = []
+
+  if (email.to)
+    buttons.push(
+      <CopyButton className="form-navigation-btn" text={email.to}>
+        Copy Email Recipients
+      </CopyButton>
+    )
+
+  if (email.body)
+    buttons.push(
+      <CopyButton className="form-navigation-btn" text={email.body}>
+        Copy Email Body
+      </CopyButton>
+    )
+
   if (share.recipients.length > 0) {
-    return (
+    buttons.push(
       <SendEmailButton
-        onClick={() => {
-          redirectToBill()
-        }}
+        className="form-navigation-btn"
+        onClick={redirectToBill}
       />
     )
   } else if (!share.loading) {
-    return (
-      <Button variant="outline-secondary" onClick={redirectToBill}>
+    buttons.push(<FinishWithoutEmailing onConfirm={redirectToBill} />)
+  }
+
+  return <div className="d-flex gap-2 flex-wrap">{buttons}</div>
+}
+
+export function FinishWithoutEmailing({
+  onConfirm
+}: {
+  onConfirm: () => void
+}) {
+  const [show, setShow] = useState(false)
+  const onHide = () => setShow(false)
+  return (
+    <>
+      <Button
+        variant="outline-secondary"
+        className="form-navigation-btn"
+        onClick={() => setShow(true)}
+      >
         Finish Without Emailing
       </Button>
-    )
-  } else {
-    return <div />
-  }
+      <Modal
+        show={show}
+        onHide={onHide}
+        aria-labelledby="sign-in-modal"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="sign-in-modal">Finish Without Emailing?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Are you sure you want to finish without emailing your testimony?
+            Engaging with your legislators helps them help you.
+          </p>
+        </Modal.Body>
+        <Modal.Footer className="p-2">
+          <Button variant="outline-danger" onClick={onConfirm}>
+            Yes, Finish Without Emailing
+          </Button>
+          <Button variant="secondary" onClick={onHide}>
+            Continue Sharing
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  )
 }

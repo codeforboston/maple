@@ -7,8 +7,8 @@ import {
   UseEditTestimony,
   useEditTestimony,
   WorkingDraft
-} from "../db"
-import { createAppThunk, useAppDispatch } from "../hooks"
+} from "../../db"
+import { createAppThunk, useAppDispatch } from "../../hooks"
 import {
   bindService,
   restoreFromDraft,
@@ -18,7 +18,7 @@ import {
   SyncState,
   syncTestimony,
   usePublishState
-} from "./redux"
+} from "../redux"
 
 const formDebounceMs = 1000
 

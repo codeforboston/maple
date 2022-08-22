@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useRef, useState } from "react"
 import { ButtonProps, ImageProps, SpinnerProps, Tooltip } from "react-bootstrap"
+import CopyToClipboard from "react-copy-to-clipboard"
 import styled from "styled-components"
-import { Button, Image, OverlayTrigger, Spinner } from "./bootstrap"
+import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
 
 export const TableButton = ({
@@ -82,3 +83,39 @@ export const ImageButton = styled<
 
   padding: 1px;
 `
+
+export const CopyButton = ({
+  text,
+  tooltipDurationMs = 1000,
+  children,
+  ...props
+}: ButtonProps & { text: string; tooltipDurationMs?: number }) => {
+  const [show, setShow] = useState(false)
+  const target = useRef(null)
+  const closeTimeout = useRef<any>()
+  return (
+    <>
+      <CopyToClipboard
+        text={text}
+        options={{ format: "text/plain" }}
+        onCopy={(_, success) => {
+          if (success) {
+            clearTimeout(closeTimeout.current)
+            setShow(true)
+            closeTimeout.current = setTimeout(
+              () => setShow(false),
+              tooltipDurationMs
+            )
+          }
+        }}
+      >
+        <Button ref={target} variant="secondary" {...props}>
+          {children}
+        </Button>
+      </CopyToClipboard>
+      <Overlay target={target} show={show} placement="top">
+        {props => <Tooltip {...props}>Copied!</Tooltip>}
+      </Overlay>
+    </>
+  )
+}
