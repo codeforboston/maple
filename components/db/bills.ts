@@ -14,7 +14,7 @@ import type {
   CurrentCommittee
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
-import { currentGeneralCourt, loadDoc, now, nullableQuery } from "./common"
+import { currentGeneralCourt, loadDoc, midnight, nullableQuery } from "./common"
 import { createTableHook } from "./createTableHook"
 
 export type { BillHistory } from "../../functions/src/bills/types"
@@ -191,8 +191,4 @@ export async function listBillsByHearingDate(
     )
   )
   return result.docs.map(d => d.data() as Bill)
-}
-
-export function midnight() {
-  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
 }

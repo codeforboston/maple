@@ -1,6 +1,7 @@
 import React from "react"
 import AboutSection from "../components/AboutSection/AboutSection"
 import { useAuth } from "../components/auth"
+import { HearingsScheduled } from "../components/HearingsScheduled/HearingsScheduled"
 import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
 import { createPage } from "../components/page"
@@ -14,13 +15,19 @@ export default createPage({
       <div className="overflow-hidden whitebackground">
         <HeroHeader authenticated={authenticated} />
 
-        <Leaf direction="right" />
+        <Leaf position="firstLeaf" />
 
         <TestimonyCalloutSection />
 
-        <Leaf direction="left" />
+        <Leaf position="secondLeaf" />
+
+        <Leaf position="thirdLeaf" />
 
         <AboutSection />
+
+        <Leaf position="fourthLeaf" />
+
+        <HearingsScheduled />
       </div>
     )
   }
