@@ -19,9 +19,9 @@ import { storage } from "../../firebase"
 import { Maybe } from "../common"
 
 export const draftAttachment = (uid: string, id: string) =>
-  ref(storage, `/users/${uid}/draftAttachments/${id}`)
+  ref(storage, `users/${uid}/draftAttachments/${id}`)
 export const publishedAttachment = (id: string) =>
-  ref(storage, `/publishedAttachments/${id}`)
+  ref(storage, `publishedAttachments/${id}`)
 
 type SetDraftAttachmentId = (id: string | null) => void
 
