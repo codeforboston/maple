@@ -15,7 +15,8 @@ const PublishTestimonyRequest = Record({
 })
 
 export const publishTestimony = https.onCall(async (data, context) => {
-  const uid = checkAuth(context)
+  const checkEmailVerification = true
+  const uid = checkAuth(context, checkEmailVerification)
   const { draftId } = checkRequest(PublishTestimonyRequest, data)
 
   let output: TransactionOutput
