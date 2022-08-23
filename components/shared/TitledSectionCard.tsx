@@ -13,12 +13,14 @@ const StyledCard = styled(Card)`
 export const HeaderTitle = styled.div.attrs({
   className: "text-capitalize"
 })`
+  display: flex;
+  align-items: center;
   color: white;
   font-size: 1.25rem;
   font-weight: bold;
   border-radius: 0 5rem 5rem 0;
   background-color: var(--bs-red);
-  height: 2rem;
+  height: 2.5rem;
   line-height: 2rem;
   padding: 0 2rem;
   width: fit-content;
