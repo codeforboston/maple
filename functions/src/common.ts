@@ -38,7 +38,7 @@ export function checkAuth(
     )
   }
 
-  if (checkEmailVerification && process.env.NODE_ENV !== 'test') {
+  if (checkEmailVerification && process.env.NODE_ENV !== "test") {
     const email_verified = context.auth?.token?.email_verified
 
     if (!email_verified) {
