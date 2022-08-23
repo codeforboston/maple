@@ -23,6 +23,12 @@
   font-size: 3.375em;
 }
 
+.eventSection {
+  min-width: fit-content;
+  max-width: 43rem;
+  margin-bottom: 2em;
+}
+
 @media (max-width: 71.25em) {
   .heading {
     font-size: 2.75rem;
@@ -30,11 +36,17 @@
   .podium {
     width: 18.12rem;
   }
+  .carousel {
+    min-width: fit-content;
+  }
 }
 
 @media (max-width: 48em) {
   .podium {
     margin-bottom: 4.5em;
+  }
+  .carousel h1 {
+    font-size: 2rem;
   }
 }
 
@@ -44,9 +56,6 @@
   }
   .podium {
     width: 12.94rem;
-  }
-  .carousel h1 {
-    font-size: 2rem;
   }
 }
 
@@ -62,11 +71,6 @@
   height: 2.3125rem;
   background-image: url("../../public/carousel-left.png");
   background-repeat: no-repeat;
-}
-
-.eventSection {
-  width: 43rem;
-  margin-bottom: 2em;
 }
 
 .card {
@@ -87,10 +91,12 @@
   }
 }
 
-@media (max-width: 34.375em) {
-  /* 47.94em */
+@media (max-width: 47.93em) {
+}
+
+@media (max-width: 31em) {
   .card {
-    margin-left: 6em;
+    margin-left: 0em;
   }
 }
 

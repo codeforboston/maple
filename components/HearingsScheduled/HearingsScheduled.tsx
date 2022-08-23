@@ -156,7 +156,7 @@ export const HearingsScheduled = () => {
             <>
               {thisMonthsEvents.length ? (
                 <section className={styles.eventSection}>
-                  <Container className="justify-content-center">
+                  <Container className="">
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
                         return (
