@@ -204,14 +204,22 @@ const ShareButtons = () => {
 
   if (email.to)
     buttons.push(
-      <CopyButton className="form-navigation-btn" text={email.to}>
+      <CopyButton
+        key="copy-recipients"
+        className="form-navigation-btn"
+        text={email.to}
+      >
         Copy Email Recipients
       </CopyButton>
     )
 
   if (email.body)
     buttons.push(
-      <CopyButton className="form-navigation-btn" text={email.body}>
+      <CopyButton
+        key="copy-body"
+        className="form-navigation-btn"
+        text={email.body}
+      >
         Copy Email Body
       </CopyButton>
     )
@@ -219,12 +227,18 @@ const ShareButtons = () => {
   if (share.recipients.length > 0) {
     buttons.push(
       <SendEmailButton
+        key="send-email"
         className="form-navigation-btn"
         onClick={redirectToBill}
       />
     )
   } else if (!share.loading) {
-    buttons.push(<FinishWithoutEmailing onConfirm={redirectToBill} />)
+    buttons.push(
+      <FinishWithoutEmailing
+        key="finish-without-saving"
+        onConfirm={redirectToBill}
+      />
+    )
   }
 
   return <div className="d-flex gap-2 flex-wrap">{buttons}</div>

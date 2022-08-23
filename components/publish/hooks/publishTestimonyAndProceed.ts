@@ -12,7 +12,8 @@ export const publishTestimonyAndProceed = createAppThunk(
     } = getState()
 
     if (step !== "publish") throw Error("must be on publish step to publish")
-    if (sync !== "synced") throw Error("must be synced to publish")
+    if (sync === "loading" || sync === "unsaved")
+      throw Error("must be synced to publish")
 
     DraftTestimony.check(draft)
 

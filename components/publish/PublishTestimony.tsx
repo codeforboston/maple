@@ -15,14 +15,16 @@ import { TestimonyPreview } from "./TestimonyPreview"
 type UsePublisTestimony = ReturnType<typeof usePublishTestimony>
 function usePublishTestimony() {
   const dispatch = useAppDispatch()
-  const { sync, draft } = usePublishState()
+  const { sync, draft, publication } = usePublishState()
   const publish = useAsyncCallback(async () => {
     const result = await dispatch(publishTestimonyAndProceed())
     // pass error through to useAsync
     if (isRejected(result)) throw result.error
   })
-  const alreadyPublished = Boolean(draft?.publishedVersion),
-    synced = sync === "synced"
+  const alreadyPublished = Boolean(
+      draft?.publishedVersion !== undefined && publication
+    ),
+    synced = sync === "synced" || sync === "error"
 
   useFormRedirection()
 
@@ -41,7 +43,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
         <TestimonyPreview />
       </div>
 
-      {error && <div>Error: {error}</div>}
+      {error && <div className="mt-2 text-danger">Error: {error.message}</div>}
 
       <nav.FormNavigation
         left={<nav.Previous />}

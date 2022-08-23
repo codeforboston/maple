@@ -37,8 +37,9 @@ export const NavButton = ({ className, ...props }: ButtonProps) => (
 
 const createNavButton = (actionCreator: any, label: string) => {
   const StyledNavButton = ({ disabled, ...props }: ButtonProps) => {
-    const dispatch = useAppDispatch()
-    const synced = usePublishState().sync === "synced"
+    const dispatch = useAppDispatch(),
+      sync = usePublishState().sync,
+      synced = sync === "synced" || sync === "error"
     return (
       <NavButton
         variant="outline-secondary"
