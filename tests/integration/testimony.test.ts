@@ -328,12 +328,14 @@ describe("deleteTestimony", () => {
 
     let testimony = await getPublication(uid, res.data.publicationId)
     const bill = await getBill(billId)
+    const draft = await testDb.doc(paths.draftTestimony(uid, draftId)).get()
 
     expect(testimony).toBeUndefined()
     expect(bill.latestTestimonyAt).toBeUndefined()
     expect(bill.latestTestimonyId).toBeUndefined()
     expect(bill.testimonyCount).toBe(0)
     expect(bill.endorseCount).toBe(0)
+    expect(draft.data()!.publishedVersion).toBeUndefined()
   })
 
   it("Retains archives", async () => {

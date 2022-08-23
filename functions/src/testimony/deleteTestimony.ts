@@ -5,7 +5,7 @@ import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, Id, Maybe } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
-import { Testimony } from "./types"
+import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({
@@ -42,6 +42,7 @@ class DeleteTestimonyTransaction {
   private publication!: Testimony
   private billSnap!: DocumentSnapshot
   private bill!: Bill
+  private draftSnap?: DocumentSnapshot
 
   constructor(
     t: FirebaseFirestore.Transaction,
@@ -57,14 +58,20 @@ class DeleteTestimonyTransaction {
     await this.loadPublication()
     if (!this.publicationSnap.exists) return { deleted: false }
     await this.loadBill()
+    await this.loadDraft()
 
     const billUpdate: DocUpdate<Bill> = {
       ...(await this.resolveNewLatestTestimony()),
       ...updateTestimonyCounts(this.bill, this.publication, undefined)
     }
 
+    const draftUpdate: DocUpdate<DraftTestimony> = {
+      publishedVersion: FieldValue.delete()
+    }
+
     this.t.update(this.billSnap.ref, billUpdate)
     this.t.delete(this.publicationSnap.ref)
+    if (this.draftSnap) this.t.update(this.draftSnap.ref, draftUpdate)
 
     return {
       deleted: true,
@@ -90,6 +97,18 @@ class DeleteTestimonyTransaction {
       )
     )
     this.bill = Bill.checkWithDefaults(this.billSnap.data())
+  }
+
+  private async loadDraft() {
+    const result = await this.t.get(
+      db
+        .collection(`users/${this.uid}/draftTestimony`)
+        .where("billId", "==", this.publication.billId)
+    )
+
+    if (result.docs.length === 1) {
+      this.draftSnap = result.docs[0]
+    }
   }
 
   private async resolveNewLatestTestimony() {
