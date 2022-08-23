@@ -1,5 +1,5 @@
-import { Container } from "../components/bootstrap"
-import { createPage } from "../components/page"
+import { Container } from "../../components/bootstrap"
+import { createPage } from "../../components/page"
 
 export default createPage({
   title: "How To Have Impact Through Legislative Testimony",

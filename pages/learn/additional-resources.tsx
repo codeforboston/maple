@@ -1,8 +1,8 @@
-import { Container } from "../components/bootstrap"
-import { createPage } from "../components/page"
-import AdditionalResourcesCard from "../components/AdditionalResources/AdditionalResourcesCard"
-import AdditionalResourcesCardContent from "../components/AdditionalResources/AdditionalResourcesCardContent"
-import styles from "../components/AdditionalResources/AdditionalResourcesCard.module.css"
+import { Container } from "../../components/bootstrap"
+import { createPage } from "../../components/page"
+import AdditionalResourcesCard from "../../components/AdditionalResources/AdditionalResourcesCard"
+import AdditionalResourcesCardContent from "../../components/AdditionalResources/AdditionalResourcesCardContent"
+import styles from "../../components/AdditionalResources/AdditionalResourcesCard.module.css"
 
 const content = [
   {

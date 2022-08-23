@@ -2,7 +2,7 @@ import Col from "react-bootstrap/Col"
 import Image from "react-bootstrap/Image"
 import styles from "./BasicsOfTestimonyCard.module.css"
 
-const BasicsOfTestimonyCard = ({ title, key, index, alt, paragraph, src }) => {
+const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }) => {
   return (
     <div className={styles.card}>
       <Col
