@@ -25,9 +25,9 @@
     "lint:fix": "next lint --fix",
     "serve": "firebase emulators:start --only hosting",
     "start": "next start",
-    "test:integration": "NODE_ENV=test jest -c tests/jest.integration.config.ts -w 1",
-    "test:integration-ci": "NODE_ENV=test node scripts/test-integration-ci.js",
-    "test:system": "NODE_ENV=test jest -c tests/jest.system.config.ts",
+    "test:integration": "jest -c tests/jest.integration.config.ts -w 1",
+    "test:integration-ci": "node scripts/test-integration-ci.js",
+    "test:system": "jest -c tests/jest.system.config.ts",
     "seed": "jest -c tests/jest.seed.config.ts"
   },
   "browserslist": {
