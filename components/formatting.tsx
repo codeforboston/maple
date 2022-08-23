@@ -1,8 +1,16 @@
 import Autolinker from "autolinker"
-import * as DOMPurify from "dompurify"
+import DOMPurify from "dompurify"
 import { Timestamp } from "firebase/firestore"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
+
+DOMPurify.addHook("afterSanitizeAttributes", function (node) {
+  // set all elements owning target to target=_blank
+  if ("target" in node) {
+    node.setAttribute("target", "_blank")
+    node.setAttribute("rel", "noopener")
+  }
+})
 
 const billIdFormat = /^(?<chamber>\D+)(?<number>\d+)$/
 
