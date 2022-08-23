@@ -1,16 +1,27 @@
 import Autolinker from "autolinker"
-import DOMPurify from "dompurify"
+import createDOMPurify, { DOMPurifyI } from "dompurify"
 import { Timestamp } from "firebase/firestore"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
 
-DOMPurify.addHook("afterSanitizeAttributes", function (node) {
-  // set all elements owning target to target=_blank
-  if ("target" in node) {
-    node.setAttribute("target", "_blank")
-    node.setAttribute("rel", "noopener")
+const sanitize = (() => {
+  let dom: DOMPurifyI | undefined
+  return (raw: string) => {
+    if (!dom) {
+      dom = createDOMPurify()
+      dom.addHook("afterSanitizeAttributes", function (node) {
+        // set all elements owning target to target=_blank
+        if ("target" in node) {
+          node.setAttribute("target", "_blank")
+          node.setAttribute("rel", "noopener")
+        }
+      })
+    }
+    return dom.sanitize(raw, {
+      USE_PROFILES: { html: true }
+    })
   }
-})
+})()
 
 const billIdFormat = /^(?<chamber>\D+)(?<number>\d+)$/
 
@@ -37,9 +48,7 @@ export const formatTestimonyLinks = (testimony: string, limit?: number) => {
     .map(line => `<p>${line}</p>`)
     .join("")
 
-  return DOMPurify.sanitize(paragraphedTestimony, {
-    USE_PROFILES: { html: true }
-  })
+  return sanitize(paragraphedTestimony)
 }
 
 const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
