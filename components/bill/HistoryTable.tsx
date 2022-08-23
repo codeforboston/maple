@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { Table } from "../bootstrap"
 import { BillHistory } from "../db"
 
 export type HistoryProps = { billHistory: BillHistory }
@@ -45,13 +44,11 @@ export const HistoryTable = ({ billHistory }: HistoryProps) => {
 const StyledTable = styled.table`
   table-layout: auto;
   width: 100%;
+  font-family: "Nunito";
 
   th {
-    font: {
-      family: Nunito;
-      size: 16px;
-      weight: 400;
-    }
+    font-size: 16px;
+    font-weight: 400;
     line-height: 22px;
     letter-spacing: -1.125px;
     text-align: start;
