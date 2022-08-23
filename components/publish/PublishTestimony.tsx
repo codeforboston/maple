@@ -3,10 +3,12 @@ import { useAsyncCallback } from "react-async-hook"
 import styled from "styled-components"
 import { LoadingButton } from "../buttons"
 import { useAppDispatch } from "../hooks"
-import { publishTestimonyAndProceed } from "./hooks"
-import { useFormRedirection } from "./navigation"
+import {
+  publishTestimonyAndProceed,
+  useFormRedirection,
+  usePublishState
+} from "./hooks"
 import * as nav from "./NavigationButtons"
-import { usePublishState } from "./redux"
 import { StepHeader } from "./StepHeader"
 import { TestimonyPreview } from "./TestimonyPreview"
 

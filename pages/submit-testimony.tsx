@@ -1,7 +1,9 @@
 import { requireAuth } from "../components/auth"
 import { createPage } from "../components/page"
-import { useSyncRouterAndStore } from "../components/publish/navigation"
-import { PublishService } from "../components/publish/PublishService"
+import {
+  usePublishService,
+  useSyncRouterAndStore
+} from "../components/publish/hooks"
 import { SubmitTestimonyForm } from "../components/publish/SubmitTestimonyForm"
 
 export default createPage({
@@ -11,7 +13,7 @@ export default createPage({
 
     return (
       <>
-        <PublishService />
+        <usePublishService.Provider />
         <SubmitTestimonyForm />
       </>
     )

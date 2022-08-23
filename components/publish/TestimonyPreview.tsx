@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import styled from "styled-components"
 import { Position } from "../db"
-import { usePublishState } from "./redux"
+import { usePublishState } from "./hooks"
 
 const maxLength = 1000
 

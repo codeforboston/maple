@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { getPublishedTestimonyAttachmentUrl } from "../../db"
 import { formatBillId } from "../../formatting"
 import { siteUrl } from "../../links"
-import { usePublishState } from "../redux"
+import { usePublishState } from "./usePublishState"
 
+/** Generates the email sent to legislators. */
 export const useTestimonyEmail = () => {
   const { share, position, bill, content, publication } = usePublishState()
 

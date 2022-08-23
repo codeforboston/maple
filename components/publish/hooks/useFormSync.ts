@@ -1,31 +1,22 @@
 import { debounce, isEmpty, isEqual, pickBy } from "lodash"
 import { useEffect, useMemo, useState } from "react"
+import { UseEditTestimony, WorkingDraft } from "../../db"
+import { useAppDispatch } from "../../hooks"
 import {
-  Bill,
-  DraftTestimony,
-  getBill,
-  UseEditTestimony,
-  useEditTestimony,
-  WorkingDraft
-} from "../../db"
-import { createAppThunk, useAppDispatch } from "../../hooks"
-import {
-  bindService,
   restoreFromDraft,
-  setBill,
-  setStep,
+  Service,
   setSyncState,
   SyncState,
-  syncTestimony,
-  usePublishState
+  syncTestimony
 } from "../redux"
+import { usePublishState } from "./usePublishState"
 
 const formDebounceMs = 1000
 
-export const usePublishForm = (billId: string, authorUid: string) => {
-  const edit = useEditTestimony(authorUid, billId)
+/** Syncs the form to Firestore. */
+export function useFormSync(edit: Service) {
   useInitializeFromFirestore(edit)
-  useSyncToStore(edit)
+  useSyncTestimonyToStore(edit)
 
   const { draft, saveDraft, loading: docsLoading, error: loadingError } = edit,
     dispatch = useAppDispatch(),
@@ -42,6 +33,8 @@ export const usePublishForm = (billId: string, authorUid: string) => {
     [saveDraft.execute]
   )
 
+  // Why does this turn to loading when we move to submit-testimony? because the
+  // page remounts, along with this hook.
   const empty = isEmpty(pickBy(form)),
     loading = docsLoading || saveDraft?.loading,
     unsaved = !isEqual(form, persisted)
@@ -79,16 +72,19 @@ function useInitializeFromFirestore({ draft }: UseEditTestimony) {
   }, [dispatch, draft, initialized])
 }
 
-function useSyncToStore(edit: UseEditTestimony) {
+function useSyncTestimonyToStore(edit: UseEditTestimony) {
   const dispatch = useAppDispatch()
   const { draft, publication } = edit
   useEffect(
     () => void dispatch(syncTestimony({ draft, publication })),
     [dispatch, draft, publication]
   )
-  useEffect(() => void dispatch(bindService(edit)), [dispatch, edit])
-  // Clear the hook on unmount
-  useEffect(() => () => void dispatch(bindService(undefined)), [dispatch])
+}
+
+type DraftContent = ReturnType<typeof useFormDraft>
+function useFormDraft() {
+  const { attachmentId, content, position } = usePublishState()
+  return { attachmentId, content, position }
 }
 
 function usePersistedDraft(draft?: WorkingDraft): DraftContent | undefined {
@@ -96,46 +92,3 @@ function usePersistedDraft(draft?: WorkingDraft): DraftContent | undefined {
   const { attachmentId, content, position } = draft
   return { attachmentId: attachmentId ?? undefined, content, position }
 }
-
-type DraftContent = ReturnType<typeof useFormDraft>
-export function useFormDraft() {
-  const { attachmentId, content, position } = usePublishState()
-  return { attachmentId, content, position }
-}
-
-export const resolveBill = createAppThunk(
-  "publish/resolveBill",
-  async (info: { billId?: string; bill?: Bill }, { dispatch }) => {
-    let bill = info.bill
-    if (!bill) {
-      if (!info.billId) throw Error("billId or bill required")
-      bill = await getBill(info.billId)
-      if (!bill) throw Error(`Invalid billId ${info.billId}`)
-    }
-    dispatch(setBill(bill))
-  }
-)
-
-export const publishTestimonyAndProceed = createAppThunk(
-  "publish/publishTestimony",
-  async (_, { dispatch, getState }) => {
-    const {
-      publish: { step, sync, draft, service: edit },
-      profile: { profile }
-    } = getState()
-
-    if (step !== "publish") throw Error("must be on publish step to publish")
-    if (sync !== "synced") throw Error("must be synced to publish")
-
-    DraftTestimony.check(draft)
-
-    await edit?.publishTestimony.execute()
-
-    const hasLegislators = Boolean(profile?.representative && profile.senator)
-    if (hasLegislators) {
-      dispatch(setStep("share"))
-    } else {
-      dispatch(setStep("selectLegislators"))
-    }
-  }
-)

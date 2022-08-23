@@ -10,8 +10,7 @@ import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
 import { Loading, MultiSearch } from "../legislatorSearch"
 import { calloutLabels } from "./content"
-import { useTestimonyEmail } from "./hooks"
-import { useFormRedirection } from "./navigation"
+import { useFormRedirection, usePublishState, useTestimonyEmail } from "./hooks"
 import * as nav from "./NavigationButtons"
 import {
   addCommittee,
@@ -20,14 +19,14 @@ import {
   Legislator,
   resolvedLegislatorSearch,
   setRecipients,
-  setShowThankYou,
-  usePublishState
+  setShowThankYou
 } from "./redux"
 import { SendEmailButton } from "./SendEmailButton"
 import { StepHeader } from "./StepHeader"
 
 export const ShareTestimony = styled(({ ...rest }) => {
-  useSelectLegislators()
+  useFormRedirection()
+  useEmailRecipients()
   const dispatch = useAppDispatch()
   const { share } = usePublishState()
   return (
@@ -134,8 +133,7 @@ const SelectLegislatorEmails = ({ className }: { className?: string }) => {
   )
 }
 
-const useSelectLegislators = () => {
-  useFormRedirection()
+const useEmailRecipients = () => {
   const { bill: { currentCommittee } = {} } = usePublishState()
   const { profile: { representative, senator } = {} } = useProfileState()
   const { index } = useMemberSearch()

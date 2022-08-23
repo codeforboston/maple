@@ -6,8 +6,7 @@ import styled from "styled-components"
 import { Button, Spinner, Stack } from "../../bootstrap"
 import { ImageButton } from "../../buttons"
 import { External, twitterShareLink, Wrap } from "../../links"
-import { formUrl } from "../navigation"
-import { usePublishService, usePublishState } from "../redux"
+import { formUrl, usePublishService, usePublishState } from "../hooks"
 import { TestimonyPreview } from "../TestimonyPreview"
 
 export const YourTestimony = () => {

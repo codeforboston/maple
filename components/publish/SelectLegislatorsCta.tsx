@@ -2,7 +2,7 @@ import { useProfileState } from "../db/profile/redux"
 import { Loading } from "../legislatorSearch"
 import { External } from "../links"
 import { SelectLegislators } from "../ProfilePage/SelectLegislators"
-import { useFormRedirection } from "./navigation"
+import { useFormRedirection } from "./hooks"
 import * as nav from "./NavigationButtons"
 import { StepHeader } from "./StepHeader"
 

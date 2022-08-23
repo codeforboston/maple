@@ -3,7 +3,8 @@ import { ReactNode } from "react"
 import { ButtonProps } from "react-bootstrap"
 import { Button } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
-import { nextStep, previousStep, usePublishState } from "./redux"
+import { usePublishState } from "./hooks"
+import { nextStep, previousStep } from "./redux"
 import { SyncStatus } from "./SyncStatus"
 
 type FormNavigationProps = {

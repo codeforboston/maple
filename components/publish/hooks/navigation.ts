@@ -1,9 +1,9 @@
 import { isEqual } from "lodash"
 import Router, { useRouter } from "next/router"
 import { useEffect } from "react"
-import { createAppThunk, useAppDispatch } from "../hooks"
-import { resolveBill } from "./hooks"
-import { PublishState, setStep, Step, usePublishState } from "./redux"
+import { PublishState, resolveBill, usePublishState } from "."
+import { createAppThunk, useAppDispatch } from "../../hooks"
+import { setStep, Step } from "../redux"
 
 export const formUrl = (billId: string, step: Step = "position") =>
   `/submit-testimony?billId=${billId}&step=${step}`

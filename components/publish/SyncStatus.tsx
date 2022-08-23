@@ -2,7 +2,8 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
-import { SyncState, usePublishState } from "./redux"
+import { usePublishState } from "./hooks"
+import { SyncState } from "./redux"
 
 export const SyncStatus = styled(({ ...rest }) => {
   const state = usePublishState().sync

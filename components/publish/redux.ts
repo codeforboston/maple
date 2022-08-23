@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { indexOf, isEqual, uniqBy } from "lodash"
-import { shallowEqual } from "react-redux"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
 import {
@@ -14,7 +13,6 @@ import {
   WorkingDraft
 } from "../db"
 import { Maybe } from "../db/common"
-import { useAppSelector } from "../hooks"
 
 export type Service = UseEditTestimony
 
@@ -287,13 +285,3 @@ const resetForm = (state: State) => ({
   authorUid: state.authorUid,
   service: state.service
 })
-
-export type PublishState = ReturnType<typeof usePublishState>
-export const usePublishState = () =>
-  useAppSelector(
-    ({ publish: { service: edit, ...rest } }) => rest,
-    shallowEqual
-  )
-
-export const usePublishService = () =>
-  useAppSelector(({ publish: { service: edit } }) => edit, shallowEqual)

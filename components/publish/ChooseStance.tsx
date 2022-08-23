@@ -4,8 +4,9 @@ import { Image } from "../bootstrap"
 import { Position } from "../db"
 import { useAppDispatch } from "../hooks"
 import { positionLabels } from "./content"
+import { usePublishState } from "./hooks"
 import { FormNavigation, Next } from "./NavigationButtons"
-import { setPosition, usePublishState } from "./redux"
+import { setPosition } from "./redux"
 import { StepHeader } from "./StepHeader"
 
 export const ChooseStance = styled(({ ...rest }) => {

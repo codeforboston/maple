@@ -1,6 +1,6 @@
 import { isUndefined } from "lodash"
 import { useAuth } from "../../auth"
-import { usePublishState } from "../redux"
+import { usePublishState } from "./usePublishState"
 
 export type PanelStatus =
   | "signedOut"

@@ -1,35 +1,16 @@
 import clsx from "clsx"
-import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row, Spinner } from "../bootstrap"
 import { Bill, Profile } from "../db"
-import { useProfileState } from "../db/profile/redux"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
+import { useFormInfo } from "./hooks"
 import { ProgressBar } from "./ProgressBar"
 import { PublishTestimony } from "./PublishTestimony"
-import { Step, usePublishState } from "./redux"
+import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-
-function useReadyForm() {
-  const { bill, authorUid, sync, step } = usePublishState()
-  const profile = useProfileState().profile
-  const [initialized, setInitialized] = useState(false)
-  const ready = initialized && bill && authorUid && profile
-  const synced = sync === "synced"
-
-  useEffect(() => {
-    if (synced) setInitialized(true)
-  }, [synced])
-
-  if (ready) {
-    return { ready: true, bill, authorUid, profile, step, synced } as const
-  } else {
-    return { ready: false } as const
-  }
-}
 
 const Background = styled.div`
   background: linear-gradient(to right, white 50%, var(--bs-body-bg) 50%);
@@ -40,7 +21,7 @@ const StyledContainer = styled(Container)`
 `
 
 export const SubmitTestimonyForm = () => {
-  const form = useReadyForm()
+  const form = useFormInfo()
 
   return form.ready ? (
     <Background>

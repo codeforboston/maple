@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { BillDetails } from "../components/bill"
 import { createPage } from "../components/page"
-import { PublishService } from "../components/publish/PublishService"
+import { usePublishService } from "../components/publish/hooks"
 
 export default createPage({
   title: "Bill",
@@ -12,7 +12,7 @@ export default createPage({
 
     return (
       <>
-        <PublishService />
+        <usePublishService.Provider />
         {billId && <BillDetails billId={billId} />}
       </>
     )
