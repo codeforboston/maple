@@ -1,30 +1,50 @@
-import { Container, Row, Col } from "../bootstrap"
-import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
+import { Container, Row, Col, Card } from "../bootstrap"
 import {
   WritingContent,
   OralContent,
   WriteOrCallContent
 } from "./CommunicatingWithLegislatorsContent"
+import styles from "./CommunicatingWithLegislators.module.css"
 
 const CommunicatingWithLegislators = () => {
+  const CommWithLegCard = ({
+    title,
+    children
+  }: {
+    title: string
+    children: JSX.Element
+  }): JSX.Element => {
+    return (
+      <Card className={styles.card}>
+        <Card.Title as="h2" className={`mx-auto ${styles.title}`}>
+          {title}
+        </Card.Title>
+        <Card.Body className={styles.body}>{children}</Card.Body>
+      </Card>
+    )
+  }
+
   return (
     <Container>
-      <Row>
+      <Row className={styles.container}>
         <Col>
-          <h1 className="fw-bold m-5">Communicating with Legislators</h1>
-          <p>
+          <h1 className={styles.pageHeading}>Communicating with Legislators</h1>
+          <p className={styles.subHeading}>
             There are multiple ways for you to voice your opinion to your
             legislators.
           </p>
-          <AboutPagesCard title="Testify in writing">
+
+          <CommWithLegCard title="Testify in writing">
             <WritingContent />
-          </AboutPagesCard>
-          <AboutPagesCard title="Testify orally">
+          </CommWithLegCard>
+
+          <CommWithLegCard title="Testify orally">
             <OralContent />
-          </AboutPagesCard>
-          <AboutPagesCard title="Write or call them">
+          </CommWithLegCard>
+
+          <CommWithLegCard title="Write or call them">
             <WriteOrCallContent />
-          </AboutPagesCard>
+          </CommWithLegCard>
         </Col>
       </Row>
     </Container>
