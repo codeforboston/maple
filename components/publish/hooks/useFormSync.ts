@@ -37,24 +37,23 @@ export function useFormSync(edit: Service) {
   // page remounts, along with this hook.
   const empty = isEmpty(pickBy(form)),
     loading = docsLoading || saveDraft?.loading,
-    unsaved = !isEqual(form, persisted)
+    exists = persisted !== undefined,
+    saved = isEqual(form, persisted) || (empty && !exists)
 
   // TOOD: add error state.
   // - Should not continue re-attempting if error
   // - Should re-attempt when new changes are made to the form
   useEffect(() => {
-    if (unsaved && !loading && !empty && !hasError) saveDraftDebounced(form)
-  }, [empty, form, hasError, loading, saveDraftDebounced, unsaved])
+    if (!saved && !loading && !empty && !hasError) saveDraftDebounced(form)
+  }, [empty, form, hasError, loading, saveDraftDebounced, saved])
 
   let state: SyncState
   if (hasError) {
     state = "error"
   } else if (loading) {
     state = "loading"
-  } else if (unsaved) {
+  } else if (!saved) {
     state = "unsaved"
-  } else if (empty) {
-    state = "empty"
   } else {
     state = "synced"
   }

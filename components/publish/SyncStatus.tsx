@@ -47,8 +47,6 @@ const getLabel = (state: SyncState) => {
   switch (state) {
     case "error":
       return "Error Saving, Please Reload."
-    case "empty":
-      return
     case "loading":
       return "Draft Saving..."
     case "synced":
@@ -63,8 +61,6 @@ const getContent = (state: SyncState) => {
       return (
         <FontAwesomeIcon icon={faCheckCircle} className="text-danger fa-icon" />
       )
-    case "empty":
-      return <div />
     case "loading":
       return <Spinner animation="border" variant="secondary" />
     case "synced":

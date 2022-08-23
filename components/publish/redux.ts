@@ -41,7 +41,7 @@ export type Errors = {
 }
 
 /** Syncs form values to the draft in firestore. */
-export type SyncState = "error" | "empty" | "unsaved" | "loading" | "synced"
+export type SyncState = "error" | "unsaved" | "loading" | "synced"
 
 export type State = {
   /** A bit of a hack to share the UseEditTestimony hook instance across the form */
