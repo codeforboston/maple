@@ -5,13 +5,17 @@ import { usePublishState } from "./usePublishState"
 export function useFormInfo() {
   const { bill, authorUid, sync, step } = usePublishState()
   const profile = useProfileState().profile
-  const [initialized, setInitialized] = useState(false)
-  const ready = initialized && bill && authorUid && profile
+  const [init, setInit] = useState<"uninitialized" | "mounted" | "initialized">(
+    "uninitialized"
+  )
+  const ready = init === "initialized" && bill && authorUid && profile
   const synced = sync === "synced"
 
+  // wait for unmount effects to run before tracking initialization
+  useEffect(() => setInit("mounted"), [])
   useEffect(() => {
-    if (synced) setInitialized(true)
-  }, [synced])
+    if (synced && init === "mounted") setInit("initialized")
+  }, [synced, init])
 
   if (ready) {
     return { ready: true, bill, authorUid, profile, step, synced } as const

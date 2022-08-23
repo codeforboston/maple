@@ -33,8 +33,6 @@ export function useFormSync(edit: Service) {
     [saveDraft.execute]
   )
 
-  // Why does this turn to loading when we move to submit-testimony? because the
-  // page remounts, along with this hook.
   const empty = isEmpty(pickBy(form)),
     loading = docsLoading || saveDraft?.loading,
     exists = persisted !== undefined,
@@ -58,6 +56,8 @@ export function useFormSync(edit: Service) {
     state = "synced"
   }
   useEffect(() => void dispatch(setSyncState(state)), [dispatch, state])
+  // Reset sync state on unmount
+  useEffect(() => () => void dispatch(setSyncState("loading")), [dispatch])
 }
 
 function useInitializeFromFirestore({ draft }: UseEditTestimony) {
