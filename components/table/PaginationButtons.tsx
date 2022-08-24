@@ -14,7 +14,7 @@ export const PaginationButtons = ({
 }: {
   pagination: Pagination
 }) => (
-  <div className="d-flex justify-content-center mb-3">
+  <div className="d-flex justify-content-center my-3">
     <Button
       variant="primary"
       style={{ marginRight: 15 }}
@@ -23,7 +23,7 @@ export const PaginationButtons = ({
     >
       <FontAwesomeIcon icon={faAngleLeft} />
     </Button>
-    <span>Page {currentPage}</span>
+    <span className="align-self-center">Page {currentPage}</span>
     <Button
       variant="primary"
       style={{ marginLeft: 15 }}

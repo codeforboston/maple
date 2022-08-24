@@ -149,16 +149,19 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
 const LearnLinks = () => (
   <>
     <NavLink
-      href="/learnbasicsoftestimony"
+      href="/learn/basics-of-testimony"
       other={{ className: `${styles.footerLink}` }}
     >
       Testimony Explained
     </NavLink>
-    <NavLink href="/legprocess" other={{ className: `${styles.footerLink}` }}>
+    <NavLink
+      href="/learn/legislative-process"
+      other={{ className: `${styles.footerLink}` }}
+    >
       Contacting Legislators
     </NavLink>
     <NavLink
-      href="/additionalresources"
+      href="/learn/additional-resources"
       other={{ className: `${styles.footerLink}` }}
     >
       Additional Resources
@@ -169,12 +172,15 @@ const LearnLinks = () => (
 const AboutLinks = () => (
   <>
     <NavLink
-      href="/missionandgoals"
+      href="/about/mission-and-goals"
       other={{ className: `${styles.footerLink}` }}
     >
       Our Mission &amp; Goals
     </NavLink>
-    <NavLink href="/ourteam" other={{ className: `${styles.footerLink}` }}>
+    <NavLink
+      href="/about/our-team"
+      other={{ className: `${styles.footerLink}` }}
+    >
       Our Team
     </NavLink>
   </>
