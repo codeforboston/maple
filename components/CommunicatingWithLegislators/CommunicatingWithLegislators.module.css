@@ -1,0 +1,74 @@
+.container {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.pageHeading {
+  margin-top: 4.25rem;
+  font-size: 3.75rem;
+  font-weight: bold;
+  letter-spacing: -1.88px;
+}
+
+.subHeading {
+  font-size: 1.5rem;
+  margin-left: 1.2rem;
+  margin-bottom: 0;
+  letter-spacing: -0.625px;
+  text-align: left;
+}
+
+.image {
+  width: 12.5rem;
+}
+
+@media (max-width: 767px) {
+  .imageParent {
+    display: flex;
+  }
+  .image {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .pageHeading {
+    text-align: center;
+  }
+}
+
+.missionheader {
+  color: var(--bs-orange);
+}
+
+.submittestimony {
+  color: var(--bs-orange);
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  margin: 3.75rem auto;
+  max-width: 855px;
+}
+
+.header {
+  font-size: 4rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  margin-top: 1.875rem;
+  letter-spacing: -1.125px;
+}
+
+.body {
+  font-size: 1.5rem;
+  text-align: left;
+  padding-left: 5.4375rem;
+  padding-right: 5.4375rem;
+  padding-bottom: 2.96875rem;
+  letter-spacing: -0.625px;
+  line-height: 2.05rem;
+}
