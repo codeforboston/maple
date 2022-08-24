@@ -137,7 +137,7 @@ const Basics = () => {
           key={value.title}
           alt={value.alt}
           paragraph={value.paragraph}
-          src={value.src}
+          src={`/${value.src}`}
         />
       ))}
     </Container>
@@ -163,7 +163,7 @@ const Role = () => {
           key={value.title}
           alt={value.alt}
           paragraph={value.paragraph}
-          src={value.src}
+          src={`/${value.src}`}
         />
       ))}
     </Container>
@@ -185,7 +185,7 @@ const Write = () => {
       {WriteContent.map((value, index) => (
         <LearnTestimoniesCard title={value.title} key={value.title}>
           <LearnTestimoniesCardContent
-            src={value.src}
+            src={`/${value.src}`}
             alt={value.alt}
             index={index}
           >

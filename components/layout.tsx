@@ -78,7 +78,7 @@ const TopNav: React.FC = () => {
 
             <Navbar.Brand className="mx-2 p-0">
               <Nav.Link href="/" className="p-0">
-                <Image fluid src="nav-logo.svg" alt="logo"></Image>
+                <Image fluid src="/nav-logo.svg" alt="logo"></Image>
               </Nav.Link>
             </Navbar.Brand>
 
@@ -112,13 +112,13 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={closeNav}
               >
-                <NavLink href="/learnbasicsoftestimony">
+                <NavLink href="/learn/basics-of-testimony">
                   Learn About Testimony
                 </NavLink>
-                <NavLink href="/legprocess">
+                <NavLink href="/learn/legislative-process">
                   Communicating with Legislators
                 </NavLink>
-                <NavLink href="/additionalresources">
+                <NavLink href="/learn/additional-resources">
                   Additional Resources
                 </NavLink>
               </Container>
@@ -128,10 +128,10 @@ const TopNav: React.FC = () => {
                 style={{ alignContent: "flex-end" }}
                 onClick={closeNav}
               >
-                <NavLink href="/missionandgoals">
+                <NavLink href="/about/mission-and-goals">
                   Our Mission &amp; Goals
                 </NavLink>
-                <NavLink href="/ourteam">Our Team</NavLink>
+                <NavLink href="/about/our-team">Our Team</NavLink>
               </Container>
 
               {authenticated && (

@@ -1,5 +1,5 @@
-import { createPage } from "../components/page"
-import OurPartners from "../components/OurPartners/OurPartners"
+import { createPage } from "../../components/page"
+import OurPartners from "../../components/OurPartners/OurPartners"
 
 export default createPage({
   title: "Our Team",

@@ -1,0 +1,158 @@
+.heading {
+  color: var(--bs-blue);
+  font-size: 4rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1.25em; /* 5rem */
+}
+
+.podium {
+  margin-bottom: 10.3em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.carousel {
+  max-width: 40rem;
+  min-width: 34rem;
+  margin-bottom: 6em;
+}
+
+.carousel h1 {
+  font-size: 3.375em;
+}
+
+.eventSection {
+  min-width: fit-content;
+  max-width: 43rem;
+  margin-bottom: 2em;
+}
+
+@media (max-width: 71.25em) {
+  .heading {
+    font-size: 2.75rem;
+  }
+  .podium {
+    width: 18.12rem;
+  }
+  .carousel {
+    min-width: fit-content;
+  }
+}
+
+@media (max-width: 48em) {
+  .podium {
+    margin-bottom: 4.5em;
+  }
+  .carousel h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 23.44em) {
+  .heading {
+    font-size: 2.25rem;
+  }
+  .podium {
+    width: 12.94rem;
+  }
+}
+
+.carouselControlNextIcon {
+  width: 2.3125rem;
+  height: 2.3125rem;
+  background-image: url("../../public/carousel-right.png");
+  background-repeat: no-repeat;
+}
+
+.carouselControlPrevIcon {
+  width: 2.3125rem;
+  height: 2.3125rem;
+  background-image: url("../../public/carousel-left.png");
+  background-repeat: no-repeat;
+}
+
+.card {
+  background: white;
+  font-family: Nunito;
+  font-weight: 400;
+  border: 2px var(--bs-blue) solid;
+  width: 20rem; /* width: 269px; */
+  margin-bottom: 2em;
+  border-radius: 0.5rem;
+  display: block;
+  height: fit-content;
+}
+
+@media (max-width: 87.5em) {
+  .card {
+    margin-left: 8.2em;
+  }
+}
+
+@media (max-width: 47.93em) {
+}
+
+@media (max-width: 31em) {
+  .card {
+    margin-left: 0em;
+  }
+}
+
+.cardHeader {
+  color: white;
+  background: var(--bs-blue);
+  padding-top: 0.25em;
+  padding-left: 1em;
+  height: 3.21em; /* 51.94px */
+  border-radius: 0.3125em 0.3125em 0 0;
+  display: grid;
+  grid-template-columns: 35% 65%;
+  align-items: center;
+}
+
+.month {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.date {
+  font-size: 1.5rem;
+  line-height: 0;
+}
+
+.day {
+  font-size: 1.5rem;
+}
+
+.cardBody {
+  padding: 1em 1.5em 0em 1.5em;
+  font-size: 1rem;
+  display: grid;
+  grid-template-columns: 35% 65%;
+}
+
+.name {
+  margin-left: 0.625em;
+  line-height: 1.2;
+  color: var(--bs-blue);
+  margin-bottom: 0.5em;
+}
+
+.location {
+  color: var(--bs-blue);
+  line-height: 1.2;
+  margin-left: 0.625em;
+}
+
+.noEvents {
+  color: var(--bs-blue);
+  width: 39.5em;
+  text-align: center;
+}
+
+.loading {
+  width: 39.5em;
+  display: grid;
+}

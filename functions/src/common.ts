@@ -25,14 +25,27 @@ export function checkRequest<A>(type: Runtype<A>, data: any) {
 }
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
-export function checkAuth(context: https.CallableContext) {
+export function checkAuth(
+  context: https.CallableContext,
+  checkEmailVerification = false
+) {
   const uid = context.auth?.uid
+
   if (!uid) {
     throw fail(
       "unauthenticated",
       "Caller must be signed in to publish testimony"
     )
   }
+
+  if (checkEmailVerification && process.env.FUNCTIONS_EMULATOR !== "true") {
+    const email_verified = context.auth?.token?.email_verified
+
+    if (!email_verified) {
+      throw fail("permission-denied", "You must verify an account first")
+    }
+  }
+
   return uid
 }
 
