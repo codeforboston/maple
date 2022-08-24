@@ -35,6 +35,10 @@ const StyledButton = styled(Button)`
   margin: 0;
 `
 
+const FormattedBillDetails = styled(Col)`
+  white-space: pre-wrap;
+`
+
 export const Summary = ({
   bill,
   className
@@ -66,7 +70,11 @@ export const Summary = ({
             <Modal.Header closeButton onClick={handleHideBillDetails}>
               <Modal.Title>{bill?.id}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{bill?.content?.DocumentText}</Modal.Body>
+            <Modal.Body>
+              <FormattedBillDetails>
+                {bill?.content?.DocumentText}
+              </FormattedBillDetails>
+            </Modal.Body>
           </Modal>
         </TitleFormat>
 
