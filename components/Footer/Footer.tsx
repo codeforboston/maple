@@ -78,7 +78,7 @@ function MapleContainer() {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="maple.png"
+          src="/maple.png"
           alt="Massachusettes state seal"
           width={100}
         />
