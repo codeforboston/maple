@@ -1,7 +1,8 @@
 import styled from "styled-components"
-import { Col, Container, Row, Button } from "../bootstrap"
+import { Col, Container, Row, Button, Modal } from "../bootstrap"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
+import { useState } from "react"
 
 const SummaryContainer = styled(Container)`
   background-color: white;
@@ -19,14 +20,6 @@ const TitleFormat = styled(Col)`
   font-size: 1.25rem;
 `
 
-const ReadMore = styled(Col)`
-  margin-top: 1rem;
-  font-family: "Nunito";
-  color: blue;
-  font-style: normal;
-  font-size: 1.25rem;
-`
-
 const Divider = styled(Col)`
   width: 1px;
   padding: 0;
@@ -34,21 +27,47 @@ const Divider = styled(Col)`
   align-self: stretch;
 `
 
+const StyledButton = styled(Button)`
+  :focus {
+    box-shadow: none;
+  }
+  padding: 0;
+  margin: 0;
+`
+
 export const Summary = ({
   bill,
   className
 }: BillProps & { className?: string }) => {
+  const [showBillDetails, setShowBillDetails] = useState(false)
+  const handleShowBillDetails = () => setShowBillDetails(true)
+  const handleHideBillDetails = () => setShowBillDetails(false)
+
   return (
     <SummaryContainer className={className}>
       <Row>
         <TitleFormat>
           {bill.content.Title}
-          <ReadMore>
-            <div className="d-flex justify-content-end">
-              {/* <Button bsStyle="link">Read more..</Button> */}
+          <div className="d-flex justify-content-end">
+            <StyledButton
+              variant="link"
+              className="m-1"
+              onClick={handleShowBillDetails}
+            >
               Read more..
-            </div>
-          </ReadMore>
+            </StyledButton>
+          </div>
+
+          <Modal
+            show={showBillDetails}
+            onHide={handleHideBillDetails}
+            size="lg"
+          >
+            <Modal.Header closeButton onClick={handleHideBillDetails}>
+              <Modal.Title>{bill?.id}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{bill?.content?.DocumentText}</Modal.Body>
+          </Modal>
         </TitleFormat>
 
         <Divider xs="auto" />
