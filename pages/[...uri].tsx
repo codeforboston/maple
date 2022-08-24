@@ -5,15 +5,26 @@ import { serialize } from 'next-mdx-remote/serialize'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { Container } from "../components/bootstrap"
 import styles from "../components/AdditionalResources/AdditionalResourcesCard.module.css"
+import AdditionalResourcesCard from "../components/AdditionalResources/AdditionalResourcesCard"
+import AdditionalResourcesCardContent from "../components/AdditionalResources/AdditionalResourcesCardContent"
 import { createPage } from "../components/page"
 import { getAllPageIds, getPageData } from "../lib/useContent"
 
 const h1: React.FC = ({children}) => <h1 className={styles.title}>{ children }</h1>
 const Intro: React.FC = ({children}) => <div className={styles.subheader}>{ children }</div>
-
+const ResourceCard: React.FC = ({children}) => {
+  return (
+    <AdditionalResourcesCard>
+      <AdditionalResourcesCardContent >
+        {children}
+      </AdditionalResourcesCardContent>
+    </AdditionalResourcesCard>
+  )
+}
 const components = {
   h1,
-  Intro
+  Intro,
+  ResourceCard
 }
 
 type Props = {

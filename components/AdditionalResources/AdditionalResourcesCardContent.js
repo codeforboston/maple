@@ -9,7 +9,7 @@ const AdditionalResourcesCardContent = ({ children }) => {
         <Col
           className={`text-center align-self-center justify-content-xs-center ${styles.colRow}`}
         >
-          <p className={`h1 ${styles.text}`}>{children.P1}</p>
+          <div className={`h1 ${styles.text}`}>{children.P1 || children}</div>
         </Col>
       </Row>
     </Container>
