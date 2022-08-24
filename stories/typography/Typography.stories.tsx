@@ -1,13 +1,12 @@
 import { Meta, Story } from "@storybook/react"
 
 const meta: Meta = {
-  title: 'Typography',
+  title: "Typography",
   component: () => null,
   parameters: {
-    docs: {
-    },
-  },
-};
+    docs: {}
+  }
+}
 
 export const Typopgraphy: Story = () => {
   return (
@@ -19,11 +18,13 @@ export const Typopgraphy: Story = () => {
       <h5>h5. Maple is my favorite tree. </h5>
       <h6>h6. Maple is my favorite tree. </h6>
       <p>Body 1. Maple is my favorite tree.</p>
-      <p><small>Body 2. Maple is my favorite tree.</small></p>
+      <p>
+        <small>Body 2. Maple is my favorite tree.</small>
+      </p>
       <figcaption>Caption. Maple is my favorite tree. </figcaption>
       <button>Maple is my favorite tree.</button>
     </div>
   )
 }
 
-export default meta;
+export default meta

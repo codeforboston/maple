@@ -1,17 +1,15 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { useState } from "react";
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { useState } from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
 
-import {
-  LoadingButton
-} from "../../../components/buttons";
+import { LoadingButton } from "../../../components/buttons"
 
 import { Image } from "../../../components/bootstrap"
 
 export default {
   title: "Components/Buttons/LoadingButton",
-  component: LoadingButton,
-} as ComponentMeta<typeof LoadingButton>;
+  component: LoadingButton
+} as ComponentMeta<typeof LoadingButton>
 
 const Template: ComponentStory<typeof LoadingButton> = ({
   children,
@@ -19,7 +17,7 @@ const Template: ComponentStory<typeof LoadingButton> = ({
   loading = false,
   ...rest
 }) => {
-  const [isLoading, setLoading] = useState(loading);
+  const [isLoading, setLoading] = useState(loading)
   const clickAction = () => {
     setLoading(true)
     return setTimeout(() => setLoading(false), 2000)
@@ -30,44 +28,46 @@ const Template: ComponentStory<typeof LoadingButton> = ({
       onClick={clickAction}
       disabled={disabled}
       {...rest}
-    >{children}</LoadingButton>
+    >
+      {children}
+    </LoadingButton>
   )
 }
 
-
 export const Primary = Template.bind({})
 Primary.args = {
-  children: 'Click Me!',
-};
+  children: "Click Me!"
+}
 
 export const Disabled = Template.bind({})
 Disabled.args = {
   disabled: true,
-  children: 'Disabled',
-};
-
+  children: "Disabled"
+}
 
 export const Loading = Template.bind({})
 Loading.args = {
   loading: true,
-  children: 'Loading',
-};
+  children: "Loading"
+}
 
 export const Light = Template.bind({})
 Light.args = {
-  variant: 'light',
-  children: 'Light',
-};
+  variant: "light",
+  children: "Light"
+}
 
 export const WithImage = Template.bind({})
 WithImage.args = {
-  variant: 'light',
+  variant: "light",
   spinnerProps: { className: "me-4" },
-  children: <>
-    <Image src="/google-icon.png" alt="Google" className="me-4" />
-    With Image
-  </>,
-};
+  children: (
+    <>
+      <Image src="/google-icon.png" alt="Google" className="me-4" />
+      With Image
+    </>
+  )
+}
 
 // export const LightWithImage = () => (
 //   <LoadingButton variant="light" spinnerProps={}>
