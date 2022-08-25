@@ -23,7 +23,7 @@ yargs(hideBin(process.argv))
     () => {},
     (args: Args) => {
       globalThis.client = resolveClient(args)
-      repl.start({})
+      repl.start({}).setupHistory("typesense-admin.history", () => {})
     }
   )
   .command(
