@@ -5,7 +5,7 @@ import { SignInWithModal } from "../auth"
 
 const WritingContent = () => (
   <Row className="align-items-center">
-    <Col md={8}>
+    <Col xs={12} md={8}>
       <p>
         You can submit your thoughts on a bill to the Committee hearing it
         before the date of their public hearing. This website, the MAPLE
@@ -25,7 +25,7 @@ const WritingContent = () => (
 
 const OralContent = () => (
   <Row className="align-items-center">
-    <Col xs={{ span: 12, order: 2 }} md={{ span: 4, order: 1 }}>
+    <Col xs={{ span: 12, order: 2 }} md={{ span: 4, order: 0 }}>
       <Image
         className={styles.image}
         fluid
@@ -33,7 +33,7 @@ const OralContent = () => (
         alt="microphone next to a sheet of paper"
       />
     </Col>
-    <Col xs={{ span: 12, order: 1 }} md={{ span: 8, order: 2 }}>
+    <Col xs={{ span: 12, order: 1 }} md={{ span: 8, order: 1 }}>
       <p>
         You can attend a public hearing for a bill of interest to you and sign
         up for a slot to speak before the Committee.
@@ -44,7 +44,7 @@ const OralContent = () => (
 
 const WriteOrCallContent = () => (
   <Row className="align-items-center">
-    <Col md={8}>
+    <Col xs={12} md={8}>
       <p>
         You can contact your legislators any time by looking up their contact
         information on the MA Legislature website. Your voice will probably
