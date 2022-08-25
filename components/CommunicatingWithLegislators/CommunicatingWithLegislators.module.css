@@ -93,6 +93,7 @@
     padding-left: 2rem;
     padding-right: 2rem;
     padding-bottom: 1.75rem;
+    line-height: 1.75rem;
   }
   .image {
     width: 10rem;
@@ -127,6 +128,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 1.5rem;
+    line-height: 1.5rem;
   }
   .image {
     width: 8rem;
