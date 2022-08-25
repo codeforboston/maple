@@ -1,32 +1,56 @@
 import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
+import {
+  InstanceOf,
+  Literal as L,
+  Number,
+  Optional,
+  Record as R,
+  Static,
+  String,
+  Union
+} from "runtypes"
 import { functions } from "../../firebase"
-import { Maybe } from "../common"
+import { Id, Maybe } from "../common"
 
-export type BaseTestimony = {
-  billId: string
-  court: number
-  position: "endorse" | "oppose" | "neutral"
-  content: string
-  attachmentId?: Maybe<string>
-}
+export const maxTestimonyLength = 10_000
 
-/** Draft testimony */
-export type DraftTestimony = BaseTestimony & {
-  publishedVersion?: number
-}
+export const Position = Union(L("endorse"), L("oppose"), L("neutral"))
+export type Position = Static<typeof Position>
 
-/** Published testimony */
-export type Testimony = BaseTestimony & {
-  authorUid: string
-  authorDisplayName: string
-  version: number
-  publishedAt: Timestamp
-  representativeId?: string
-  senatorId?: string
-  senatorDistrict?: string
-  representativeDistrict?: string
-}
+export const Content = String.withConstraint(
+  s => s.length > 0 || "Content is empty"
+).withConstraint(s => s.length < maxTestimonyLength || "Content is too long")
+export type Content = Static<typeof Content>
+
+export const BaseTestimony = R({
+  billId: String,
+  court: Number,
+  position: Position,
+  content: Content,
+  attachmentId: Maybe(String)
+})
+export type BaseTestimony = Static<typeof BaseTestimony>
+
+export type Testimony = Static<typeof Testimony>
+export const Testimony = BaseTestimony.extend({
+  authorUid: Id,
+  id: Id,
+  authorDisplayName: String,
+  version: Number,
+  publishedAt: InstanceOf(Timestamp),
+  representativeId: Optional(String),
+  senatorId: Optional(String),
+  senatorDistrict: Optional(String),
+  representativeDistrict: Optional(String),
+  draftAttachmentId: Maybe(String)
+})
+
+export type WorkingDraft = Partial<DraftTestimony>
+export type DraftTestimony = Static<typeof DraftTestimony>
+export const DraftTestimony = BaseTestimony.extend({
+  publishedVersion: Optional(Number)
+})
 
 export type WithId<T> = { id: string; value: T }
 

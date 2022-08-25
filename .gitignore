@@ -61,4 +61,6 @@ prod-build.env
 !*.secret
 infra/k8s/typesense-secrets.yml
 
+.python-version
+
 /*.history

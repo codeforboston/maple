@@ -1,6 +1,6 @@
-import { storage, File } from "../firebase"
-import { fail, Maybe } from "../common"
 import { nanoid } from "nanoid"
+import { fail, Maybe } from "../common"
+import { File, storage } from "../firebase"
 import { DraftTestimony } from "./types"
 
 export type PublishedAttachmentState = {
@@ -15,11 +15,11 @@ export type PublishedAttachmentState = {
 export class Attachments {
   private files = {
     published: (id: string) =>
-      storage.bucket().file(`/publishedAttachments/${id}`),
+      storage.bucket().file(`publishedAttachments/${id}`),
     archived: (uid: string, id: string) =>
-      storage.bucket().file(`/users/${uid}/archivedAttachments/${id}`),
+      storage.bucket().file(`users/${uid}/archivedAttachments/${id}`),
     draft: (uid: string, id: string) =>
-      storage.bucket().file(`/users/${uid}/draftAttachments/${id}`)
+      storage.bucket().file(`users/${uid}/draftAttachments/${id}`)
   }
 
   /** Deletes the given published attachment */

@@ -1,40 +1,11 @@
-import {
-  deleteField,
-  doc,
-  getDoc,
-  onSnapshot,
-  setDoc
-} from "firebase/firestore"
+import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { useEffect, useMemo, useReducer } from "react"
+import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { Role, useAuth } from "../auth"
-import { firestore, storage } from "../firebase"
-
-export type ProfileMember = {
-  district: string
-  id: string
-  name: string
-}
-
-export const SOCIAL_NETWORKS = ["linkedIn", "twitter"] as const
-
-export type SocialLinks = Partial<
-  Record<typeof SOCIAL_NETWORKS[number], string>
->
-
-export type Profile = {
-  role?: Role
-  displayName?: string
-  fullName?: string
-  representative?: ProfileMember
-  senator?: ProfileMember
-  public?: boolean
-  about?: string
-  social?: SocialLinks
-  organization?: boolean
-  profileImage?: string
-}
+import { useAuth } from "../../auth"
+import { firestore, storage } from "../../firebase"
+import { useProfileState } from "./redux"
+import { Profile, ProfileMember, SocialLinks } from "./types"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -52,10 +23,11 @@ type ProfileState = {
   profile: Profile | undefined
 }
 
-const profileRef = (uid: string) => doc(firestore, `/profiles/${uid}`)
+export const profileRef = (uid: string) => doc(firestore, `/profiles/${uid}`)
 
 export function useProfile() {
-  const { user } = useAuth(),
+  const { user } = useAuth()
+  const { loading, profile } = useProfileState(),
     uid = user?.uid,
     [state, dispatch] = useReducer(
       (state: ProfileState, action: Partial<ProfileState>) => ({
@@ -76,17 +48,9 @@ export function useProfile() {
           linkedIn: false,
           twitter: false
         },
-        profile: undefined
+        profile
       }
     )
-
-  useEffect(() => {
-    if (uid) {
-      return onSnapshot(profileRef(uid), snapshot => {
-        dispatch({ profile: snapshot.data() ?? {}, loading: false })
-      })
-    }
-  }, [uid])
 
   const callbacks = useMemo(
     () => ({
@@ -179,9 +143,10 @@ export function useProfile() {
     () => ({
       ...state,
       ...callbacks,
-      loading: state.profile === undefined
+      profile,
+      loading
     }),
-    [callbacks, state]
+    [callbacks, loading, profile, state]
   )
 }
 
