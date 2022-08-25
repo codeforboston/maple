@@ -26,6 +26,10 @@ export function now() {
 
 export type Maybe<T> = T | null | undefined
 
+export function midnight() {
+  return now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toJSDate()
+}
+
 // In particular, reject "/" in ID strings
 const simpleId = /^[A-Za-z0-9-_]+$/
 /** Validates firestore-compatible ID's */

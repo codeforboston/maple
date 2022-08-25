@@ -40,7 +40,7 @@ const AddTestimony = ({ bill, refreshtable }) => {
 
   return (
     <>
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center pb-3">
         <Button variant="primary" onClick={handleShowTestimony}>
           {!authenticated
             ? "Sign in to add your voice"

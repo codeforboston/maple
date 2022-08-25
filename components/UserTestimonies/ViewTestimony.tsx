@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button, Col, Dropdown, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
-import { FormattedBillTitle } from "../formatting"
+import { FormattedBillTitle, formatTestimonyLinks } from "../formatting"
 import { Internal, Wrap } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
@@ -23,10 +23,10 @@ const ViewTestimony = (
       title={"Testimony"}
       bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      {testimony.map(i => (
+      {testimony.map(t => (
         <TestimonyItem
-          key={i.authorUid + i.billId}
-          testimony={i}
+          key={t.authorUid + t.billId}
+          testimony={t}
           showControls={showControls}
         />
       ))}
@@ -126,12 +126,13 @@ export const FormattedTestimonyContent = ({
     <>
       {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
         <>
-          <div className={`col m2`}>
-            {testimony.slice(0, TESTIMONY_CHAR_LIMIT) + "...."}
-          </div>
-          <Col
-            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          >
+          <div
+            className="col m2"
+            dangerouslySetInnerHTML={{
+              __html: formatTestimonyLinks(testimony, TESTIMONY_CHAR_LIMIT)
+            }}
+          />
+          <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
             <Button
               variant="link"
               onClick={() => setShowAllTestimony(!showAllTestimony)}
@@ -141,7 +142,10 @@ export const FormattedTestimonyContent = ({
           </Col>
         </>
       ) : (
-        <div className={`col m2`}>{testimony}</div>
+        <div
+          className="col m2"
+          dangerouslySetInnerHTML={{ __html: formatTestimonyLinks(testimony) }}
+        />
       )}
     </>
   )

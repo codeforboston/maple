@@ -38,7 +38,7 @@ const ProfileLink = ({
         <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
           <Image
             className={styles.profileLinkImage}
-            src="profile-icon.svg"
+            src="/profile-icon.svg"
             alt="profile icon"
           />
           <Navbar expand="lg" className="p-0">

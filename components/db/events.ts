@@ -1,4 +1,13 @@
-import { Timestamp } from "firebase/firestore"
+import {
+  collection,
+  getDocs,
+  orderBy,
+  Timestamp,
+  where
+} from "firebase/firestore"
+import { useAsync } from "react-async-hook"
+import { firestore } from "../firebase"
+import { midnight, nullableQuery } from "./common"
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"
@@ -70,3 +79,24 @@ type HearingLocation = {
 }
 
 export type Event = Session | SpecialEvent | Hearing
+
+/** Returns upcoming events, or undefined if loading or an error occured. */
+export function useUpcomingEvents() {
+  const hearings = useAsync(() => listUpcomingEvents(), [])
+  console.log(hearings)
+  return hearings.status === "success" ? hearings.result : undefined
+}
+
+export async function listUpcomingEvents(types?: Event["type"][]) {
+  const eventsRef = collection(firestore, `/events`)
+  const result = await getDocs(
+    nullableQuery(
+      eventsRef,
+      types && where("type", "in", types),
+      where("startsAt", ">=", midnight()),
+      orderBy("startsAt", "asc")
+    )
+  )
+
+  return result.docs.map(d => d.data() as Event)
+}
