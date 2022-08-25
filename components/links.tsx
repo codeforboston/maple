@@ -1,7 +1,7 @@
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
-import { PropsWithChildren } from "react"
+import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "../functions/src/testimony/types"
 import { BillContent, MemberContent } from "./db"
@@ -9,24 +9,30 @@ import { formatBillId } from "./formatting"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
 
-export function Internal({ href, children, className }: LinkProps) {
-  return (
-    <Link href={href}>
-      <a className={className}>{children}</a>
-    </Link>
-  )
-}
+export const Internal = forwardRef<HTMLAnchorElement, LinkProps>(
+  ({ href, children, className, ...rest }: LinkProps, ref) => {
+    return (
+      <Link href={href}>
+        <a ref={ref} className={className} {...rest}>
+          {children}
+        </a>
+      </Link>
+    )
+  }
+)
+Internal.displayName = "Internal"
 
 export function External({
   href,
   children,
   className,
-  plain
-}: LinkProps & { plain?: boolean }) {
+  plain,
+  as: C = "a"
+}: LinkProps & { plain?: boolean; as?: React.FC | "a" }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className={className}>
+    <C href={href} target="_blank" rel="noreferrer" className={className}>
       {children} {!plain && <FontAwesomeIcon icon={faExternalLinkAlt} />}
-    </a>
+    </C>
   )
 }
 
@@ -87,4 +93,15 @@ export const getDirectTestimonyLink = (testimony: Testimony) => {
   const { billId, authorUid } = testimony
 
   return siteUrl(`testimony?billId=${billId}&author=${authorUid}`)
+}
+
+export const twitterShareLink = (publication: Testimony) => {
+  const link = getDirectTestimonyLink(publication),
+    billNumber = formatBillId(publication.billId),
+    tweet = encodeURIComponent(
+      `I provided testimony on Bill ${billNumber}. See ${link} for details.`
+    ),
+    tweetUrl = `https://twitter.com/intent/tweet?text=${tweet}`
+
+  return tweetUrl
 }
