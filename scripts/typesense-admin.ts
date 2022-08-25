@@ -67,7 +67,8 @@ yargs(hideBin(process.argv))
     if (!argv.env && !argv.url) return "Must specify env or url"
     if (!argv.env && !argv.key) return "Must specify env or key"
     return true
-  }).argv
+  })
+  .strictCommands().argv
 
 function resolveClient(args: Args) {
   let key: string | undefined, url: string | undefined
