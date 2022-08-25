@@ -39,7 +39,7 @@ function createClient() {
   return client
 }
 
-const axios = createClient()
+export const axios = createClient()
 
 async function request(config: AxiosRequestConfig): Promise<unknown> {
   const response = await axios(config)
@@ -95,6 +95,22 @@ export async function getDocument({
 }): Promise<any> {
   const response = await request({
     url: `/GeneralCourts/${court}/Documents/${id}`,
+    method: "GET",
+    timeout: 30_000
+  })
+  return response as any
+}
+
+export async function getDocumentPdf({
+  id,
+  court
+}: {
+  id: string
+  court: number
+}) {
+  const response = await request({
+    baseURL: "https://malegislature.gov",
+    url: `/Bills/${court}/${id}.pdf`,
     method: "GET",
     timeout: 30_000
   })
