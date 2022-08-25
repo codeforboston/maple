@@ -5,10 +5,8 @@ import { Back } from "./Back"
 import { BillNumber } from "./BillNumber"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
-import { SubmitTestimony } from "./SubmitTestimony"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { LabeledContainer } from "./LabeledContainer"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
