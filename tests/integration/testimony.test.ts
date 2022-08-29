@@ -184,6 +184,10 @@ describe("publishTestimony", () => {
   it("Updates existing testimony", async () => {
     const res1 = await publishTestimony({ draftId })
 
+    let bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
+
     const updatedDraft: DraftTestimony = {
       ...draft,
       content: "updated content"
@@ -198,6 +202,10 @@ describe("publishTestimony", () => {
     expect(published.version).toBe(2)
     expect(published.content).toBe(updatedDraft.content)
     expect(draftPublishedVersion).toBe(2)
+
+    bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
   })
 
   it("Supports multiple users", async () => {
