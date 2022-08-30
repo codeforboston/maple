@@ -4,22 +4,37 @@ import {
   OurGoalsCardContent,
   OurMissionCardContent
 } from "../GoalsAndMissionCardContent/GoalsAndMissionCardContent"
+import styled from 'styled-components';
+
+const Container_GM = styled(Container)`
+  .card:nth-child(2) .card-body {
+    padding: 0 2.5rem;
+  }
+
+  .card:nth-child(2) .col {
+    padding: 0 1.5rem;
+  }
+
+  .card:nth-child(3) .card-body {
+    padding: 0 6rem;
+  }
+`
 
 const GoalsAndMission = () => {
   return (
-    <Container>
+    <Container_GM>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">Our Mission &amp; Goals</h1>
-          <AboutPagesCard title="Our Mission">
-            <OurMissionCardContent />
-          </AboutPagesCard>
+          <h1 className="fw-bold m-5">Our Goals &amp; Mission</h1>
           <AboutPagesCard title="Our Goals">
             <OurGoalsCardContent />
           </AboutPagesCard>
+          <AboutPagesCard title="Our Mission">
+            <OurMissionCardContent />
+          </AboutPagesCard>
         </Col>
       </Row>
-    </Container>
+    </Container_GM>
   )
 }
 
