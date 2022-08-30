@@ -34,8 +34,23 @@
   letter-spacing: -0.625px;
 }
 
+.justifyContentBetween {
+  display: flex;
+  /* justify-content: space-around; */
+}
+
 .oneTwoImage {
   padding-bottom: 13px;
+}
+
+.threeImage {
+  padding-left: 0;
+}
+
+@media (max-width: 991px) {
+  .threeImage {
+    padding-left: 3rem;
+  }
 }
 
 .oneTwoThreeImage {

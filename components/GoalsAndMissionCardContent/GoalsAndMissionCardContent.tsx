@@ -75,7 +75,7 @@ const OurMissionCardContent = () => (
       Increase the transparency of the legislative process in Massachusetts
     </h3>
     <Row className="mb-4">
-      <Col lg={8}>
+      <Col sm={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
         <p className={styles.body}>
           A core goal of the MAPLE platform (this website) is to increase the
           transparency of the legislative process in MA. In short, we want to
@@ -83,7 +83,12 @@ const OurMissionCardContent = () => (
           conclusion about a bill.{" "}
         </p>
       </Col>
-      <Col lg={4} className="text-center">
+      <Col
+        sm={{ span: 12, order: 1 }}
+        md={{ span: 6, order: 2 }}
+        lg={4}
+        className="text-center"
+      >
         <Image
           // className={styles.missionImage}
           fluid
@@ -94,7 +99,12 @@ const OurMissionCardContent = () => (
     </Row>
 
     <Row>
-      <Col className="">
+      <Col
+        sm={{ span: 12, order: 1 }}
+        md={{ span: 6, order: 1 }}
+        lg={4}
+        className=""
+      >
         <Image
           // className={styles.imgsize}
           fluid
@@ -102,7 +112,12 @@ const OurMissionCardContent = () => (
           alt="document with magnifying glass"
         />
       </Col>
-      <Col className={`text-end ${styles.body}`}>
+      <Col
+        sm={{ span: 12, order: 2 }}
+        md={{ span: 6, order: 1 }}
+        lg={8}
+        className={`text-end ${styles.body}`}
+      >
         <p>
           Today, there is no legal obligation for the Legislature to disclose
           what written testimony they receive and, in practice, such disclosure
@@ -129,8 +144,8 @@ const OurMissionCardContent = () => (
       </Col>
     </Row>
 
-    <Row className={`${styles.oneTwoThreeImage}`}>
-      <Col className={`${styles.oneTwoImage}`}>
+    <Row className={`d-flex ${styles.oneTwoThreeImage}`}>
+      <Col lg={4} className={`text-center ${styles.oneTwoImage}`}>
         <Image
           className=""
           fluid
@@ -138,7 +153,7 @@ const OurMissionCardContent = () => (
           alt="step 1 of the legislative process"
         />
       </Col>
-      <Col className={`${styles.oneTwoImage}`}>
+      <Col lg={4} className={`text-center ${styles.oneTwoImage}`}>
         <Image
           className=""
           fluid
@@ -146,7 +161,7 @@ const OurMissionCardContent = () => (
           alt="step 2 of the legislative process"
         />
       </Col>
-      <Col className="">
+      <Col lg={4} className={`text-center ${styles.threeImage}`}>
         <Image
           className=""
           fluid
