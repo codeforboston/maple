@@ -41,7 +41,7 @@ const OurGoalsCardContent = () => (
     </Row>
 
     <Row>
-      <Col sm={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
+      <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
         <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
@@ -55,7 +55,7 @@ const OurGoalsCardContent = () => (
         </figure>
       </Col>
 
-      <Col sm={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }}>
+      <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }}>
         <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
