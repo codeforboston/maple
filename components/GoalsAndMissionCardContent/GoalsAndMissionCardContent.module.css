@@ -86,7 +86,7 @@
     line-height: 22.21px;
   }
   .body {
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
     padding-bottom: 2rem;
     text-align: left !important;
   }
@@ -99,10 +99,6 @@
   .three {
     text-align: left !important;
   }
-
-  /* .threeImage {
-    padding-left: 3rem;
-  } */
 
   .oneTwoThreeImage {
     margin-top: 3rem;
