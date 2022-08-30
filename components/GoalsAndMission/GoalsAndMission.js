@@ -4,7 +4,7 @@ import {
   OurGoalsCardContent,
   OurMissionCardContent
 } from "../GoalsAndMissionCardContent/GoalsAndMissionCardContent"
-import styled from 'styled-components';
+import styled from "styled-components"
 
 const Container_GM = styled(Container)`
   .card:nth-child(2) .card-body {
