@@ -94,7 +94,7 @@ const OurMissionCardContent = () => (
         className={`text-center`}
       >
         <Image
-          // className={styles.missionImage}
+          className={styles.missionImages}
           fluid
           src="/leg_magnifying_glass.png"
           alt="document with magnifying glass"
@@ -110,7 +110,7 @@ const OurMissionCardContent = () => (
         className="text-center"
       >
         <Image
-          className=""
+          className={styles.missionImages}
           fluid
           src="/doc_treasure_box.png"
           alt="document with magnifying glass"

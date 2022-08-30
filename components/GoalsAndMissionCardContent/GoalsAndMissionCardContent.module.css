@@ -34,23 +34,6 @@
   letter-spacing: -0.625px;
 }
 
-.justifyContentBetween {
-  display: flex;
-  /* justify-content: space-around; */
-}
-
-.one {
-  text-align: center;
-}
-
-.two {
-  text-align: center;
-}
-
-/* .three {
-  text-align: center;
-} */
-
 .oneTwoImage {
   padding-bottom: 13px;
 }
@@ -86,7 +69,6 @@
     line-height: 22.21px;
   }
   .body {
-    /* padding-top: 2rem; */
     padding-bottom: 2rem;
     text-align: left !important;
   }
@@ -118,7 +100,10 @@
   }
   .missionHeader {
     font-size: 1.25rem;
-    padding-bottom: 0;
+    padding-bottom: 1rem;
+  }
+  .missionImages {
+    height: 90px;
   }
   .caption {
     font-size: 1.125rem;
