@@ -21,3 +21,34 @@
   padding-right: 4rem;
   padding-bottom: 2.875rem;
 }
+
+@media (max-width: 768px) {
+  .header {
+    font-size: 1.5rem;
+    height: 3rem;
+    padding-top: 0.6rem;
+    padding-right: 3rem;
+    padding-left: 2.5rem;
+    transform: translate(-5.5rem, -40%);
+  }
+  .card {
+    padding-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    font-size: 1.125rem;
+    height: 2.4375rem;
+    padding-top: 0.6rem;
+    padding-right: 2.5rem;
+    padding-left: 2rem;
+    transform: translate(-2rem, -40%);
+  }
+  .card {
+    padding-left: 0.8125rem;
+    padding-right: 0.8125rem;
+    padding-bottom: 0;
+    margin-top: 2rem;
+  }
+}

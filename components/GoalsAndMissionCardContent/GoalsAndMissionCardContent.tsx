@@ -24,6 +24,7 @@ const OurGoalsCardContent = () => (
           </figcaption>
         </figure>
       </Col>
+
       <Col md={6}>
         <figure className="text-center mb-3">
           <Image
@@ -38,8 +39,9 @@ const OurGoalsCardContent = () => (
         </figure>
       </Col>
     </Row>
+
     <Row>
-      <Col md={6}>
+      <Col sm={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
         <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
@@ -52,7 +54,8 @@ const OurGoalsCardContent = () => (
           </figcaption>
         </figure>
       </Col>
-      <Col md={6}>
+
+      <Col sm={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }}>
         <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
@@ -74,8 +77,9 @@ const OurMissionCardContent = () => (
     <h3 className={`text-center fw-bold ${styles.missionHeader}`}>
       Increase the transparency of the legislative process in Massachusetts
     </h3>
+
     <Row className="mb-4">
-      <Col sm={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
+      <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
         <p className={styles.body}>
           A core goal of the MAPLE platform (this website) is to increase the
           transparency of the legislative process in MA. In short, we want to
@@ -84,10 +88,10 @@ const OurMissionCardContent = () => (
         </p>
       </Col>
       <Col
-        sm={{ span: 12, order: 1 }}
+        xs={{ span: 12, order: 1 }}
         md={{ span: 6, order: 2 }}
         lg={4}
-        className="text-center"
+        className={`text-center`}
       >
         <Image
           // className={styles.missionImage}
@@ -103,10 +107,10 @@ const OurMissionCardContent = () => (
         sm={{ span: 12, order: 1 }}
         md={{ span: 6, order: 1 }}
         lg={4}
-        className=""
+        className="text-center"
       >
         <Image
-          // className={styles.imgsize}
+          className=""
           fluid
           src="/doc_treasure_box.png"
           alt="document with magnifying glass"
@@ -130,7 +134,7 @@ const OurMissionCardContent = () => (
 
     <Row>
       <Col>
-        <p className={styles.body}>
+        <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
           When you submit testimony via the MAPLE platform, you can publish it
           in a freely accesible online database (this website) so that all other
           stakeholders can read your perspective. We hope this will increase the
@@ -144,26 +148,29 @@ const OurMissionCardContent = () => (
       </Col>
     </Row>
 
-    <Row className={`d-flex ${styles.oneTwoThreeImage}`}>
-      <Col lg={4} className={`text-center ${styles.oneTwoImage}`}>
+    <Row className={`${styles.oneTwoThreeImage}`}>
+      <Col lg={4} className={`text-center ${styles.one} ${styles.oneTwoImage}`}>
         <Image
-          className=""
+          className={styles.stepsImages}
           fluid
           src="/step_1.png"
           alt="step 1 of the legislative process"
         />
       </Col>
-      <Col lg={4} className={`text-center ${styles.oneTwoImage}`}>
+      <Col lg={4} className={`text-center ${styles.two} ${styles.oneTwoImage}`}>
         <Image
-          className=""
+          className={styles.stepsImages}
           fluid
           src="/step_2.png"
           alt="step 2 of the legislative process"
         />
       </Col>
-      <Col lg={4} className={`text-center ${styles.threeImage}`}>
+      <Col
+        lg={4}
+        className={`text-center ${styles.three} ${styles.threeImage}`}
+      >
         <Image
-          className=""
+          className={styles.stepsImages}
           fluid
           src="/step_3.png"
           alt="step 3 of the legislative process"

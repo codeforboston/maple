@@ -11,9 +11,7 @@ const GoalsAndMission = () => {
     <Container>
       <Row>
         <Col>
-          <h1 className={`fw-bold mt-5 ${styles.header}`}>
-            Our Goals and Mission
-          </h1>
+          <h1 className={`fw-bold ${styles.header}`}>Our Goals and Mission</h1>
           <AboutPagesCard title="Our Goals">
             <OurGoalsCardContent />
           </AboutPagesCard>

@@ -2,5 +2,25 @@
   font-size: 3.75rem;
   line-height: 5.125rem;
   letter-spacing: -1.875px;
+  margin-top: 4rem;
   margin-left: -1.5rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: normal;
+    margin-top: 2rem;
+    margin-left: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    font-size: 1.25rem;
+    line-height: 27px;
+    margin-top: 1rem;
+    margin-left: 1.5rem;
+  }
 }
