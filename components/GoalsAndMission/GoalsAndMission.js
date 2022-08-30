@@ -18,6 +18,15 @@ const Container_GM = styled(Container)`
   .card:nth-child(3) .card-body {
     padding: 0 6rem;
   }
+
+  .card:nth-child(3) .row:nth-child(2) :not(.text-center) {
+    flex-basis: 30%;
+  }
+
+  .card:nth-child(3) .row:nth-child(3) .text-end {
+    flex-basis: 30%;
+  }
+
 `
 
 const GoalsAndMission = () => {
