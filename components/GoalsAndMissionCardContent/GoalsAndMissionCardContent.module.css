@@ -105,6 +105,12 @@
   }
 }
 
+@media (max-width: 767px) {
+  .body {
+    padding-top: 2rem;
+  }
+}
+
 @media (max-width: 576px) {
   .goalsHeader {
     font-size: 1.125rem;
