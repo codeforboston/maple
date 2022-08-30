@@ -26,7 +26,6 @@ const Container_GM = styled(Container)`
   .card:nth-child(3) .row:nth-child(3) .text-end {
     flex-basis: 30%;
   }
-
 `
 
 const GoalsAndMission = () => {
