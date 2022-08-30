@@ -24,9 +24,8 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
 }
 
 const CalloutBalloon = styled.div`
-  flex: 1;
   height: 8rem;
-  width: 100%;
+  width: calt(100% - 6rem);
   margin: 0.5rem;
   color: white;
   font-family: "Nunito";
@@ -39,6 +38,7 @@ const CalloutBalloon = styled.div`
   .background {
     position: absolute;
     inset: 0;
+    width: 100%;
     display: flex;
     align-items: flex-end;
   }
@@ -50,7 +50,8 @@ const CalloutBalloon = styled.div`
   }
 
   .balloon {
-    flex: 1;
+    flex: 0 0 calc(100% - 3rem);
+    width: 100%;
     height: 100%;
     border-radius: 10px 10px 10px 0;
     display: flex;
@@ -60,6 +61,7 @@ const CalloutBalloon = styled.div`
 
   .foreground {
     position: relative;
+    inset: 0;
     height: 100%;
     width: 100%;
     margin-left: 4em;
@@ -69,7 +71,7 @@ const CalloutBalloon = styled.div`
   .hand-container {
     flex: 1;
     height: 100%;
-    width: 30%;
+    width: 5rem;
     display: grid;
     place-content: center;
   }
@@ -143,9 +145,9 @@ const Callout = ({
   authorDisplayName: string
 }) => {
   console.log(position)
+
   return (
     <CalloutBalloon>
-      {" "}
       <div className="background">
         <div className={`callout-angle ${position}`}></div>
         <div className={`balloon ${position}`}></div>
@@ -155,7 +157,7 @@ const Callout = ({
           <VoteHand position={position} />
         </div>
         <div className="content-container">
-          <div className="main-content">{trimContent(content, 90)}</div>
+          <div className="main-content">"{trimContent(content, 90)}"</div>
           <div className="footer">
             <div className="bill">Bill{formatBillId(billId)}</div>
             <div className="author">{authorDisplayName}</div>
@@ -167,7 +169,14 @@ const Callout = ({
 }
 
 function trimContent(content: string, length: number) {
-  return content.length > length ? content.slice(0, length) + "..." : content
+  if (content.length > length) {
+    let cutLength = length
+    while (content[cutLength - 1] !== " " && cutLength > 1) {
+      cutLength--
+    }
+    return content.slice(0, cutLength - 1) + "..."
+  }
+  return content
 }
 
 export default function TestimonyCallout(props: Testimony) {
