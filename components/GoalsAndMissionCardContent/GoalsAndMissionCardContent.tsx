@@ -5,61 +5,65 @@ import { SignInWithModal } from "../auth"
 
 const OurGoalsCardContent = () => (
   <>
-    <p>
+    <h3 className={styles.goalsHeader}>
       By creating an accessible platform for submitting testimony on legislation
       in MA via a transparent archive of public testimony, we aim to achieve
       these goals:
-    </p>
+    </h3>
     <Row className="mb-4">
-      <Col>
-        <div className="text-center mb-3">
+      <Col md={6}>
+        <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
             fluid
             src="/gov_key.png"
             alt="government building with key"
           />
-        </div>
-        <p className="fw-bold">Increase access to the legislative process</p>
+          <figcaption className={`fw-bold ${styles.caption}`}>
+            Increase access to the legislative process
+          </figcaption>
+        </figure>
       </Col>
-      <Col>
-        <div className="text-center mb-3">
+      <Col md={6}>
+        <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
             fluid
             src="/doc_arrows_people.png"
             alt="government building with key"
           />
-        </div>
-        <p className="fw-bold">
-          Engage a wider set of stakeholders and perspectives in policymaking
-        </p>
+          <figcaption className={`fw-bold ${styles.caption}`}>
+            Engage a wider set of stakeholders and perspectives in policymaking
+          </figcaption>
+        </figure>
       </Col>
     </Row>
     <Row>
-      <Col>
-        <div className="text-center mb-3">
+      <Col md={6}>
+        <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
             fluid
             src="/doc_arrows_people.png"
             alt="government building with key"
           />
-        </div>
-        <p className="fw-bold">
-          Distribute information about pending legislation
-        </p>
+          <figcaption className={`fw-bold ${styles.caption}`}>
+            Distribute information about pending legislation
+          </figcaption>
+        </figure>
       </Col>
-      <Col>
-        <div className="text-center mb-3">
+      <Col md={6}>
+        <figure className="text-center mb-3">
           <Image
             className={styles.imgsize}
             fluid
             src="/gov_key.png"
             alt="government building with key"
           />
-        </div>
-        <p className="fw-bold">Promote transparency in government</p>
+          <figcaption className={`fw-bold ${styles.caption}`}>
+            Promote transparency in government
+          </figcaption>
+        </figure>
       </Col>
     </Row>
   </>
@@ -67,37 +71,38 @@ const OurGoalsCardContent = () => (
 
 const OurMissionCardContent = () => (
   <>
-    <h3 className={`text-center fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-center fw-bold ${styles.missionHeader}`}>
       Increase the transparency of the legislative process in Massachusetts
     </h3>
-    <Row className="mb-5">
-      <Col>
-        <p>
+    <Row className="mb-4">
+      <Col lg={8}>
+        <p className={styles.body}>
           A core goal of the MAPLE platform (this website) is to increase the
           transparency of the legislative process in MA. In short, we want to
           know what information the Legislature considered when reaching a
           conclusion about a bill.{" "}
         </p>
       </Col>
-      <Col className="text-center">
+      <Col lg={4} className="text-center">
         <Image
-          className={styles.imgsize}
+          // className={styles.missionImage}
           fluid
           src="/leg_magnifying_glass.png"
           alt="document with magnifying glass"
         />
       </Col>
     </Row>
-    <Row className="mb-4">
-      <Col>
+
+    <Row>
+      <Col className="">
         <Image
-          className={styles.imgsize}
+          // className={styles.imgsize}
           fluid
           src="/doc_treasure_box.png"
           alt="document with magnifying glass"
         />
       </Col>
-      <Col className="text-end">
+      <Col className={`text-end ${styles.body}`}>
         <p>
           Today, there is no legal obligation for the Legislature to disclose
           what written testimony they receive and, in practice, such disclosure
@@ -107,9 +112,10 @@ const OurMissionCardContent = () => (
         </p>
       </Col>
     </Row>
-    <Row className="mb-3">
+
+    <Row>
       <Col>
-        <p>
+        <p className={styles.body}>
           When you submit testimony via the MAPLE platform, you can publish it
           in a freely accesible online database (this website) so that all other
           stakeholders can read your perspective. We hope this will increase the
@@ -122,39 +128,42 @@ const OurMissionCardContent = () => (
         </p>
       </Col>
     </Row>
-    <Row className="text-center mb-5">
-      <Col>
+
+    <Row className={`${styles.oneTwoThreeImage}`}>
+      <Col className={`${styles.oneTwoImage}`}>
         <Image
-          className={styles.imgsize}
+          className=""
           fluid
           src="/step_1.png"
           alt="step 1 of the legislative process"
         />
       </Col>
-      <Col>
+      <Col className={`${styles.oneTwoImage}`}>
         <Image
-          className={styles.imgsize}
+          className=""
           fluid
           src="/step_2.png"
           alt="step 2 of the legislative process"
         />
       </Col>
-      <Col>
+      <Col className="">
         <Image
-          className={styles.imgsize}
+          className=""
           fluid
           src="/step_3.png"
           alt="step 3 of the legislative process"
         />
       </Col>
     </Row>
+
     <Row className="text-center">
       <Col>
-        <h3 className={`fw-bold mt-3 ${styles.submittestimony}`}>
+        <h3 className={`fw-bold mt-3 ${styles.submitTestimony}`}>
           Submit your testimony now!
         </h3>
       </Col>
     </Row>
+
     <Row className="text-center mb-3">
       <Col>
         <SignInWithModal />

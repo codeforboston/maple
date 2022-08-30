@@ -2,10 +2,46 @@
   height: 8rem;
 }
 
-.missionheader {
+.missionHeader {
+  font-size: 2rem;
+  letter-spacing: -0.625px;
+  margin-top: -1rem;
+  padding-bottom: 2rem;
   color: var(--bs-orange);
 }
 
-.submittestimony {
+.goalsHeader {
+  font-size: 1.25rem;
+  line-height: 27.28px;
+  letter-spacing: -0.625px;
+  margin-top: -1rem;
+  padding-bottom: 2rem;
+}
+
+.caption {
+  font-family: Nunito, sans-serif;
+  font-size: 1.25rem;
+  line-height: 27.28px;
+  letter-spacing: -0.625px;
+  text-align: left;
+  margin-top: 0.875rem;
+}
+
+.body {
+  font-family: Nunito, sans-serif;
+  font-size: 1.25rem;
+  line-height: 27.28px;
+  letter-spacing: -0.625px;
+}
+
+.oneTwoImage {
+  padding-bottom: 13px;
+}
+
+.oneTwoThreeImage {
+  align-items: end;
+}
+
+.submitTestimony {
   color: #c71e32;
 }

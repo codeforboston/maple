@@ -4,15 +4,20 @@
 
 .header {
   background-color: var(--bs-blue);
+  font-size: 2.25rem;
   color: white;
   width: max-content;
-  padding-right: 4rem;
-  padding-left: 2rem;
-  height: 3rem;
-  transform: translate(-2rem, -40%);
+  padding-top: 1.1rem;
+  padding-right: 6.5rem;
+  padding-left: 3.875rem;
+  height: 4.875rem;
+  transform: translate(-8rem, -40%);
   overflow: hidden;
 }
 
 .card {
-  margin: 3rem 5rem;
+  margin: 3rem 2rem 6rem 2.5rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  padding-bottom: 2.875rem;
 }
