@@ -5,9 +5,6 @@ export const LabeledContainer = styled.div`
   background: white;
   padding: 0.5rem 1rem 1rem 0.5rem;
 
-  &.noradius {
-    border-radius: 0;
-  }
   .title {
     color: white;
     background-color: var(--bs-red);

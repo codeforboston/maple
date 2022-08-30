@@ -1,8 +1,11 @@
 import { FirebaseOptions, initializeApp } from "firebase/app"
-import { getAuth, connectAuthEmulator } from "firebase/auth"
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions"
-import { getStorage, connectStorageEmulator } from "firebase/storage"
+import { connectAuthEmulator, getAuth } from "firebase/auth"
+import {
+  connectFirestoreEmulator,
+  initializeFirestore
+} from "firebase/firestore"
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions"
+import { connectStorageEmulator, getStorage } from "firebase/storage"
 
 // It's OK to check in the dev keys since they're bundled into the client and it
 // makes it easier to contribute.
@@ -22,9 +25,11 @@ const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
   : devConfig
 
 export const app = initializeApp(config)
+export const firestore = initializeFirestore(app, {
+  ignoreUndefinedProperties: true
+})
 export const auth = getAuth(app)
 export const storage = getStorage(app)
-export const firestore = getFirestore(app)
 export const functions = getFunctions(app)
 
 if (process.env.NODE_ENV !== "production") {

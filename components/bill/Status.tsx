@@ -2,7 +2,7 @@ import { last } from "lodash"
 import { useState } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
-import { HistoryModal } from "./HistoryModal"
+import { StyledBillTitle, StyledModalTitle } from "./HistoryModal"
 import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
 
@@ -15,10 +15,10 @@ const StyledButton = styled(Button)`
 `
 
 export const Status = ({ bill }: BillProps) => {
-  const [showBillStatus, setShowBillStatus] = useState(false)
+  const [showBillHistory, setShowBillHistory] = useState(false)
 
-  const handleShowBillStatus = () => setShowBillStatus(true)
-  const handleCloseBillStatus = () => setShowBillStatus(false)
+  const handleShowBillHistory = () => setShowBillHistory(true)
+  const handleCloseBillHistory = () => setShowBillHistory(false)
   const history = last(bill.history)
 
   if (!history) return null
@@ -27,22 +27,19 @@ export const Status = ({ bill }: BillProps) => {
       <StyledButton
         variant="secondary"
         className="text-truncate"
-        onClick={handleShowBillStatus}
+        onClick={handleShowBillHistory}
       >
         {history.Action}
       </StyledButton>
-      <Modal show={showBillStatus} onHide={handleCloseBillStatus} size="lg">
-        <Modal.Header closeButton onClick={handleCloseBillStatus}>
-          {bill ? bill.id + " - " + bill.content.Title : ""}
+      <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
+        <Modal.Header closeButton onClick={handleCloseBillHistory}>
+          <StyledModalTitle>Status & History</StyledModalTitle>
         </Modal.Header>
+        <StyledBillTitle>
+          {bill.id + " - " + bill.content.Title}
+        </StyledBillTitle>
         <Modal.Body>
-          <>
-            <div className="text-center">Bill Status</div>
-            <HistoryTable billHistory={[history]} />
-            <div className=" d-flex justify-content-center">
-              <HistoryModal bill={bill} />
-            </div>
-          </>
+          <HistoryTable billHistory={bill.history} />
         </Modal.Body>
       </Modal>
     </>

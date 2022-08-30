@@ -16,20 +16,21 @@ import {
   useState
 } from "react"
 import { storage } from "../../firebase"
-import { DraftTestimony } from "./types"
-import { SetTestimony } from "./useUnsavedTestimony"
+import { Maybe } from "../common"
 
-const draftAttachment = (uid: string, id: string) =>
-  ref(storage, `/users/${uid}/draftAttachments/${id}`)
-const publishedAttachment = (id: string) =>
-  ref(storage, `/publishedAttachments/${id}`)
+export const draftAttachment = (uid: string, id: string) =>
+  ref(storage, `users/${uid}/draftAttachments/${id}`)
+export const publishedAttachment = (id: string) =>
+  ref(storage, `publishedAttachments/${id}`)
+
+type SetDraftAttachmentId = (id: string | null) => void
 
 type State = {
   uid: string
   status: "loading" | "error" | "ok"
 
   attachment: {
-    draft?: DraftTestimony
+    draftAttachmentId?: Maybe<string>
     /** A url to view the file in the browser */
     url?: string
     /** The name of the file, as uploaded */
@@ -51,17 +52,17 @@ type Action =
       size?: number
     }
   | { type: "error"; error: any }
-  | { type: "setDraft"; draft: DraftTestimony }
+  | { type: "setDraftAttachmentId"; attachmentId: Maybe<string> }
 
 function reducer(state: State, action: Action): State {
   // console.info("useTestimonyAttachment", action)
   switch (action.type) {
-    case "setDraft": {
-      if (action.draft.attachmentId !== state.attachment.id) {
+    case "setDraftAttachmentId": {
+      if (action.attachmentId !== state.attachment.id) {
         // Set the draft, initialize rest of state based on it
         return {
           ...state,
-          attachment: { draft: action.draft }
+          attachment: { draftAttachmentId: action.attachmentId }
         }
       } else {
         return state
@@ -72,7 +73,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         status: "ok",
         attachment: {
-          draft: state.attachment.draft,
+          draftAttachmentId: state.attachment.draftAttachmentId,
           id: action.id,
           url: action.url,
           name: action.name,
@@ -93,13 +94,16 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+export async function getPublishedTestimonyAttachmentUrl(id: string) {
+  const info = await getAttachmentInfo(publishedAttachment(id))
+  return info.url
+}
+
 export function usePublishedTestimonyAttachment(id: string) {
   const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
-    getAttachmentInfo(publishedAttachment(id))
-      .then(info => {
-        setUrl(info.url)
-      })
+    getPublishedTestimonyAttachmentUrl(id)
+      .then(setUrl)
       .catch(e => {
         console.warn("Error getting published attachment info", e)
       })
@@ -112,8 +116,8 @@ export type UseDraftTestimonyAttachment = ReturnType<
 >
 export function useDraftTestimonyAttachment(
   uid: string,
-  draft: DraftTestimony | undefined,
-  setTestimony: SetTestimony
+  draftAttachmentId: Maybe<string>,
+  setDraftAttachmentId: SetDraftAttachmentId
 ) {
   const [state, dispatch] = useReducer(reducer, {
     uid,
@@ -121,10 +125,10 @@ export function useDraftTestimonyAttachment(
     attachment: {}
   })
 
-  useSyncDraft(state, dispatch, draft)
+  useSyncDraft(state, dispatch, draftAttachmentId)
 
-  const remove = useRemove(state, dispatch, setTestimony)
-  const upload = useUpload(state, dispatch, setTestimony)
+  const remove = useRemove(state, dispatch, setDraftAttachmentId)
+  const upload = useUpload(state, dispatch, setDraftAttachmentId)
   const {
     attachment: { error, id, url, name, size },
     status
@@ -145,31 +149,36 @@ export function useDraftTestimonyAttachment(
   )
 }
 
+// TODO: how to handle no draft vs draft w/o attachment using only attachment id?
 function useSyncDraft(
-  { attachment: { draft }, uid }: State,
+  { attachment: { draftAttachmentId }, uid }: State,
   dispatch: Dispatch<Action>,
-  currentDraft: DraftTestimony | undefined
+  currentDraftAttachmentId: Maybe<string>
 ) {
   useEffect(() => {
-    if (currentDraft) dispatch({ type: "setDraft", draft: currentDraft })
-  }, [currentDraft, dispatch])
+    if (currentDraftAttachmentId)
+      dispatch({
+        type: "setDraftAttachmentId",
+        attachmentId: currentDraftAttachmentId
+      })
+  }, [currentDraftAttachmentId, dispatch])
 
   useEffect(() => {
-    if (draft) {
-      const id = draft.attachmentId
+    if (draftAttachmentId) {
+      const id = draftAttachmentId
       if (id) {
         resolveAttachment(draftAttachment(uid, id), dispatch)
       } else {
         dispatch({ type: "resolveAttachment" })
       }
     }
-  }, [dispatch, draft, uid])
+  }, [dispatch, draftAttachmentId, uid])
 }
 
 function useRemove(
   { attachment: { id }, uid }: State,
   dispatch: Dispatch<Action>,
-  setTestimony: SetTestimony
+  setDraftAttachmentId: SetDraftAttachmentId
 ) {
   return useCallback(async () => {
     if (id) {
@@ -177,18 +186,18 @@ function useRemove(
         dispatch({ type: "loading" })
         await deleteObject(draftAttachment(uid, id))
         dispatch({ type: "resolveAttachment" })
-        setTestimony({ attachmentId: null })
+        setDraftAttachmentId(null)
       } catch (error) {
         dispatch({ type: "error", error })
       }
     }
-  }, [dispatch, id, setTestimony, uid])
+  }, [dispatch, id, setDraftAttachmentId, uid])
 }
 
 function useUpload(
   { uid }: State,
   dispatch: Dispatch<Action>,
-  setTestimony: SetTestimony
+  setDraftAttachmentId: SetDraftAttachmentId
 ) {
   return useCallback(
     async (file: File) => {
@@ -210,24 +219,28 @@ function useUpload(
           dispatch({ type: "error", error })
         },
         () => {
-          resolveAttachment(uploadTask.snapshot.ref, dispatch, setTestimony)
+          resolveAttachment(
+            uploadTask.snapshot.ref,
+            dispatch,
+            setDraftAttachmentId
+          )
         }
       )
     },
-    [dispatch, setTestimony, uid]
+    [dispatch, setDraftAttachmentId, uid]
   )
 }
 
 async function resolveAttachment(
   file: StorageReference,
   dispatch: Dispatch<Action>,
-  setTestimony?: SetTestimony
+  setDraftAttachmentId?: SetDraftAttachmentId
 ) {
   try {
     dispatch({ type: "loading" })
     const info = await getAttachmentInfo(file)
     dispatch({ type: "resolveAttachment", ...info })
-    setTestimony?.({ attachmentId: info.id })
+    setDraftAttachmentId?.(info.id)
   } catch (error) {
     dispatch({ type: "error", error })
   }

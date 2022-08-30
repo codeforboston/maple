@@ -1,0 +1,136 @@
+.container {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.pageHeading {
+  margin-top: 4.25rem;
+  font-size: 3.75rem;
+  font-weight: bold;
+  letter-spacing: -1.88px;
+}
+
+.subHeading {
+  font-size: 1.5rem;
+  margin-left: 0.2rem;
+  margin-bottom: 0;
+  letter-spacing: -0.625px;
+  text-align: left;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  margin: 3.75rem auto;
+  max-width: 855px;
+}
+
+.title {
+  font-size: 2.25rem;
+  margin-top: 1.875rem;
+  letter-spacing: -1.125px;
+}
+
+.body {
+  font-size: 1.5rem;
+  text-align: left;
+  padding-left: 5.4375rem;
+  padding-right: 5.4375rem;
+  padding-bottom: 2.96875rem;
+  letter-spacing: -0.625px;
+  line-height: 2.05rem;
+}
+
+.image {
+  width: 12.5rem;
+}
+
+/* Responsive Queries */
+
+@media (max-width: 62em) {
+  .body {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .pageHeading {
+    font-size: 3rem;
+  }
+  .subHeading {
+    font-size: 1.25rem;
+  }
+  .body {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-bottom: 2rem;
+  }
+  .imageParent {
+    display: flex;
+  }
+  .image {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* bootstrap: small > 576px */
+@media (max-width: 36em) {
+  .pageHeading {
+    margin-top: 2.5rem;
+    font-size: 2.75rem;
+  }
+  .card {
+    margin: 2.5rem auto;
+  }
+  .body {
+    font-size: 1.25rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 1.75rem;
+    line-height: 1.75rem;
+  }
+  .image {
+    width: 10rem;
+  }
+}
+
+/* bootstrap: xs < 576px
+   this break at 464px */
+@media (max-width: 26em) {
+  .container {
+    margin-bottom: 0.5rem;
+  }
+  .pageHeading {
+    margin-top: 2rem;
+    font-size: 2.25rem;
+    text-align: center;
+  }
+  .subHeading {
+    font-size: 1rem;
+    text-align: center;
+  }
+  .card {
+    margin: 2rem auto;
+  }
+  .title {
+    font-size: 1.75rem;
+    margin-top: 1.5rem;
+    letter-spacing: -1.125px;
+  }
+  .body {
+    font-size: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1.5rem;
+    line-height: 1.5rem;
+  }
+  .image {
+    width: 8rem;
+  }
+}

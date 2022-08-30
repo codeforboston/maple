@@ -29,11 +29,13 @@ const init: (args: unknown) => Context = args => {
       break
   }
   const firebase = require("../../functions/src/firebase")
+  const api = require("../../functions/src/malegislature")
   return {
     firebase,
     auth: firebase.auth,
     db: firebase.db,
-    admin: firebase.admin
+    admin: firebase.admin,
+    api
   }
 }
 
@@ -46,7 +48,7 @@ yargs(hideBin(process.argv))
     (args: unknown) => {
       const context = init(args)
       Object.assign(globalThis, context)
-      repl.start({})
+      repl.start({}).setupHistory("firebase-admin.history", () => {})
     }
   )
   .command(

@@ -17,7 +17,8 @@ import {
   deleteTestimony,
   DraftTestimony,
   publishTestimony,
-  Testimony
+  Testimony,
+  WorkingDraft
 } from "./types"
 
 export interface UseEditTestimony {
@@ -29,9 +30,11 @@ export interface UseEditTestimony {
    * from each callback's `loading` property, which indicates whether that
    * operation is loading */
   loading: boolean
+  draftLoading: boolean
+  publicationLoading: boolean
 
   /** The current draft version of the testimony, if any.  */
-  draft?: DraftTestimony
+  draft?: WorkingDraft
   /** The current published version of the testimony, if any.  */
   publication?: Testimony
 
@@ -106,6 +109,8 @@ export function useEditTestimony(
       draft,
       error,
       loading: draftLoading || publicationLoading,
+      draftLoading,
+      publicationLoading,
       publication
     }),
     [
@@ -140,7 +145,7 @@ function useTestimony(
       return onSnapshot(draftRef, {
         next: snap =>
           snap.exists() &&
-          dispatch({ type: "loadDraft", value: snap.data() as DraftTestimony }),
+          dispatch({ type: "loadDraft", value: snap.data() as WorkingDraft }),
         error: error => dispatch({ type: "error", error })
       })
   }, [dispatch, draftRef])
@@ -160,17 +165,18 @@ function useTestimony(
 }
 
 function usePublishTestimony(
-  { draft, draftRef }: State,
+  { draft: workingDraft, draftRef }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(async () => {
+      DraftTestimony.check(workingDraft)
       // TODO: don't publish again if draft.publishedVersion is defined
       if (draftRef) {
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }
-    }, [dispatch, draftRef]),
+    }, [dispatch, draftRef, workingDraft]),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
@@ -205,7 +211,7 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
 }
 
 type SaveDraftRequest = Pick<
-  DraftTestimony,
+  WorkingDraft,
   "position" | "content" | "attachmentId"
 >
 function useSaveDraft(
@@ -218,7 +224,7 @@ function useSaveDraft(
         if (draftLoading) {
           return
         } else if (!draftRef) {
-          const newDraft: DraftTestimony = {
+          const newDraft: WorkingDraft = {
             billId,
             content,
             court: currentGeneralCourt,
@@ -231,13 +237,13 @@ function useSaveDraft(
           )
           dispatch({ type: "resolveDraft", id: result.id })
         } else if (draftRef) {
+          dispatch({ type: "loadingDraft" })
           await updateDoc(draftRef, {
             position,
             content,
             attachmentId: attachmentId ?? null,
             publishedVersion: deleteField()
           })
-          dispatch({ type: "loadingDraft" })
         }
       },
       [billId, dispatch, draftLoading, draftRef, uid]
@@ -251,7 +257,7 @@ type State = {
   billId: string
   error?: Error
 
-  draft?: DraftTestimony
+  draft?: WorkingDraft
   draftRef?: DocumentReference
   draftLoading: boolean
 
@@ -262,7 +268,7 @@ type State = {
 
 type Action =
   | { type: "error"; error: Error }
-  | { type: "loadDraft"; value: DraftTestimony }
+  | { type: "loadDraft"; value: WorkingDraft }
   | { type: "loadPublication"; value: Testimony }
   | { type: "deletePublication" }
   | { type: "discardDraft" }
@@ -271,7 +277,6 @@ type Action =
   | { type: "loadingDraft" }
 
 function reducer(state: State, action: Action): State {
-  // console.info("useEditTestimony", action)
   switch (action.type) {
     case "error":
       console.warn("Error in useEditTestimony", action.error)
