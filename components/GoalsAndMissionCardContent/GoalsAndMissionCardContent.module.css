@@ -46,7 +46,8 @@
   background-color: white;
 }
 
-@media (max-width: 991px) {
+/* Bootstrap md */
+@media (max-width: 62em) {
   .threeImage {
     padding-left: 1.6rem;
   }
@@ -60,7 +61,8 @@
   color: #c71e32;
 }
 
-@media (max-width: 992px) {
+/* Bootstrap md */
+@media (max-width: 62em) {
   .testimonyDisclaimer {
     margin: -1rem -5.07rem;
     background-color: var(--bs-blue);
@@ -87,13 +89,15 @@
   }
 }
 
-@media (max-width: 767px) {
+/* Bootstrap sm */
+@media (max-width: 48em) {
   .body {
     padding-top: 2rem;
   }
 }
 
-@media (max-width: 576px) {
+/* Bootstrap xs */
+@media (max-width: 36em) {
   .goalsHeader {
     font-size: 1.125rem;
     line-height: 22.21px;

@@ -6,7 +6,8 @@
   margin-left: -1.5rem;
 }
 
-@media (max-width: 768px) {
+/* Bootstrap sm */
+@media (max-width: 48em) {
   .header {
     font-size: 2.5rem;
     font-weight: bold;
@@ -16,7 +17,8 @@
   }
 }
 
-@media (max-width: 576px) {
+/* Bootstrap xs */
+@media (max-width: 36em) {
   .header {
     font-size: 1.25rem;
     line-height: 27px;

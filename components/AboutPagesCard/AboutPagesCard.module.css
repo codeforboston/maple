@@ -22,7 +22,8 @@
   padding-bottom: 2.875rem;
 }
 
-@media (max-width: 768px) {
+/* Bootstrap sm */
+@media (max-width: 48em) {
   .header {
     font-size: 1.5rem;
     height: 3rem;
@@ -36,7 +37,8 @@
   }
 }
 
-@media (max-width: 576px) {
+/*Bootstrap xs */
+@media (max-width: 36em) {
   .header {
     font-size: 1.125rem;
     height: 2.4375rem;
