@@ -24,7 +24,7 @@ beforeEach(async () => {
 })
 
 let draft: DraftTestimony,
-  testimony: Omit<Testimony, "publishedAt">,
+  testimony: Omit<Testimony, "publishedAt" | "id">,
   updatedDraft: typeof draft,
   updatedTestimony: typeof testimony
 beforeEach(() => {

@@ -22,7 +22,11 @@ export default function SignInWithModal({
 
   return (
     <span className={className}>
-      <Button variant="primary" onClick={() => setCurrentModal("start")}>
+      <Button
+        variant="primary"
+        className="w-100"
+        onClick={() => setCurrentModal("start")}
+      >
         {label}
       </Button>
 

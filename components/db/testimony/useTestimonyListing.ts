@@ -7,9 +7,8 @@ import {
   where
 } from "firebase/firestore"
 import { useEffect, useMemo, useReducer } from "react"
-import { BaseTestimony } from "."
 import { firestore } from "../../firebase"
-import { DraftTestimony, Testimony, WithId } from "./types"
+import { BaseTestimony, DraftTestimony, Testimony, WithId } from "./types"
 
 /** Latest draft and publication for a particular user and bill */
 export type BillTestimony = {

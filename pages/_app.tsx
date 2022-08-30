@@ -1,8 +1,14 @@
-// Order is important!
+// Order is important! Leave the empty lines, it prevents IDE's from
+// autosorting.
+
 import "../styles/bootstrap.scss"
+
 import "../styles/globals.css"
+
 import "../components/fontawesome"
+
 import "../styles/instantsearch.css"
+
 import "instantsearch.css/themes/satellite.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"

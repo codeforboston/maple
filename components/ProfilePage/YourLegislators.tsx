@@ -1,7 +1,7 @@
 import { Col, Row } from "../bootstrap"
 import { External } from "../links"
-import SelectLegislators from "../SelectLegislators"
 import { StyledBody } from "../shared/TitledSectionCard"
+import { SelectLegislators } from "./SelectLegislators"
 
 export const YourLegislators = () => {
   return (
