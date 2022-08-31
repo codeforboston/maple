@@ -10,7 +10,8 @@ const config = {
   },
   eslint: {
     dirs: ["pages", "components", "functions/src", "tests"]
-  }
+  },
+  trailingSlash: true
 }
 
 module.exports = {

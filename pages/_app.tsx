@@ -13,6 +13,7 @@ import "instantsearch.css/themes/satellite.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
+import { appWithTranslation } from "next-i18next"
 
 /**
  * The root React component of the application. Next.js renders this, passing
@@ -28,4 +29,4 @@ function App(props: AppPropsWithLayout) {
   return <Providers>{applyLayout(props)}</Providers>
 }
 
-export default App
+export default appWithTranslation(App)
