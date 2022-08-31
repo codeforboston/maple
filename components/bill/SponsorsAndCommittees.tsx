@@ -1,9 +1,3 @@
-import {
-  FunctionComponent,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode
-} from "react"
 import styled from "styled-components"
 import { Image } from "../bootstrap"
 import { BillProps } from "./types"
@@ -11,6 +5,7 @@ import { LabeledContainer } from "./LabeledContainer"
 import { External } from "../links"
 import { Cosponsors } from "./Cosponsors"
 import { FC } from "../types"
+import { LabeledIcon, TitledSectionCard } from "../shared"
 
 export const SponsorsAndCommittees: FC<BillProps> = ({ bill, className }) => {
   return (
@@ -28,6 +23,7 @@ const Committees: FC<BillProps> = ({ bill }) => {
     <div>
       <div className="title">Committee</div>
       <div className="d-flex justify-content-around">
+        committee icon
         <Item
           label="Committee"
           href={`https://malegislature.gov/Committees/Detail/${current.id}`}
@@ -54,18 +50,34 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
         )}
       </div>
       <div className="mt-2 mb-2 d-flex justify-content-around">
+        <Image
+          src={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
+          alt={`image of ${primary.Name}`}
+          roundedCircle
+          width="20"
+          height="20"
+        />
         <Item
           label="Lead Sponsor"
           href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
           name={primary.Name}
         />
         {bill.content.Cosponsors.slice(0, 2).map(s => (
-          <Item
-            key={s.Id}
-            label="Sponsor"
-            href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
-            name={s.Name}
-          />
+          <>
+            <Image
+              src={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
+              alt={`image of ${s.Name}`}
+              roundedCircle
+              width="20"
+              height="20"
+            />
+            <Item
+              key={s.Id}
+              label="Sponsor"
+              href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
+              name={s.Name}
+            />
+          </>
         ))}
       </div>
     </div>
