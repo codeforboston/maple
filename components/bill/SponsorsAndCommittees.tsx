@@ -23,11 +23,10 @@ const Committees: FC<BillProps> = ({ bill }) => {
     <div>
       <div className="title">Committee</div>
       <div className="d-flex justify-content-around">
-        committee icon
-        <Item
-          label="Committee"
-          href={`https://malegislature.gov/Committees/Detail/${current.id}`}
-          name={current.name}
+        <LabeledIcon
+          idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
+          mainText="Committee"
+          subText={current.name} // can this be link? {`https://malegislature.gov/Committees/Detail/${current.id}`}
         />
       </div>
     </div>
@@ -49,33 +48,19 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
           </Cosponsors>
         )}
       </div>
-      <div className="mt-2 mb-2 d-flex justify-content-around">
-        <Image
-          src={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
-          alt={`image of ${primary.Name}`}
-          roundedCircle
-          width="20"
-          height="20"
+      <div className="mt-2 mb-2 d-flex justify-content-right">
+        <LabeledIcon
+          idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
+          mainText="Lead Sponsor"
+          subText={primary.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
         />
-        <Item
-          label="Lead Sponsor"
-          href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
-          name={primary.Name}
-        />
+
         {bill.content.Cosponsors.slice(0, 2).map(s => (
           <>
-            <Image
-              src={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
-              alt={`image of ${s.Name}`}
-              roundedCircle
-              width="20"
-              height="20"
-            />
-            <Item
-              key={s.Id}
-              label="Sponsor"
-              href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
-              name={s.Name}
+            <LabeledIcon
+              idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
+              mainText="Sponsor"
+              subText={s.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
             />
           </>
         ))}
