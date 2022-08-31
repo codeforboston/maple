@@ -1,3 +1,4 @@
+import { getAnalytics } from "firebase/analytics"
 import { FirebaseOptions, initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth } from "firebase/auth"
 import {
@@ -17,7 +18,8 @@ const devConfig = {
   projectId,
   storageBucket: `${projectId}.appspot.com`,
   messagingSenderId: "313437920642",
-  appId: "1:313437920642:web:42723233282dbcac37439b"
+  appId: "1:313437920642:web:42723233282dbcac37439b",
+  measurementId: "G-R81R1WLMXY"
 }
 
 const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
@@ -25,6 +27,8 @@ const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
   : devConfig
 
 export const app = initializeApp(config)
+export const analytics =
+  typeof window !== "undefined" ? getAnalytics(app) : undefined
 export const firestore = initializeFirestore(app, {
   ignoreUndefinedProperties: true
 })
