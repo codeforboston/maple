@@ -63,3 +63,41 @@
 .tooltip-inner {
   font-family: "Nunito";
 }
+
+.edit-profile-header {
+  flex-direction: column !important;
+}
+
+@media (min-width: 768px) {
+  .edit-profile-header {
+    flex-direction: row !important;
+  }
+}
+
+.header-bug {
+  color: #12266F;
+  font-size: 1rem;
+  border-color: #12266F
+}
+
+.about-me-checkbox input {
+  height: 25px;
+  width: 25px;
+  margin-top: 0;
+  border-color: #12266F;
+}
+
+.input-social-media::placeholder {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .save-profile-button {
+    
+    width: 100%;
+  }
+}
+/* 
+  .input-social-media::placeholder {
+    font-size: 16px;
+  }   */
