@@ -57,11 +57,16 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
 
         {bill.content.Cosponsors.slice(0, 2).map(s => (
           <>
-            <LabeledIcon
-              idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
-              mainText="Sponsor"
-              subText={s.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
-            />
+            {/* don't show lead sponsor again */}
+            {s.Id != primary.Id ? (
+              <LabeledIcon
+                idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
+                mainText="Sponsor"
+                subText={s.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
+              />
+            ) : (
+              <></>
+            )}
           </>
         ))}
       </div>
