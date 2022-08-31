@@ -3,16 +3,15 @@ import { createService } from "./service";
 import LogRocket from "logrocket";
 import { useAuth } from "./auth";
 
+const logRocketId = process.env.NEXT_PUBLIC_LOG_ROCKET_ID ?? "a9zjgu/maple"
+
 export const { Provider: LogRocketProvider } = createService(() => {
     useEffect(() => {
-        const logrocketId = 'a9zjgu/maple'
-        LogRocket.init(logrocketId)
-    })
+        LogRocket.init(logRocketId)
+    }, [logRocketId])
     const { user } = useAuth()
-    console.log(user)
     useEffect(() => {
         if(user && user.email) {
-            console.log(user.email)
             LogRocket.identify(user.email)
         }
     }, [user])
