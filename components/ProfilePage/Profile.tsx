@@ -169,7 +169,7 @@ export const ProfileHeader = ({
         </Col>
       ) : (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} />
+          <UserIcon className={`col d-none d-md-flex`} />
         </Col>
       )}
 

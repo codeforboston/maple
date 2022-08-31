@@ -34,7 +34,6 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
   ) => {
     const id = useId()
     const errorId = `${id}-error`
-
     const hasError = Boolean(error)
 
     const control = (
@@ -56,7 +55,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
     return (
       <Form.Group controlId={id} className={className}>
         {floating ? (
-          <FloatingLabel controlId={id} label={label}>
+          <FloatingLabel controlId={id} label={label} >
             {control}
           </FloatingLabel>
         ) : (

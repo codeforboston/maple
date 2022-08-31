@@ -30,11 +30,11 @@ export const HeaderTitle = styled.div.attrs({
 
 export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   return (
-    <Row className={`mt-4 align-items-start`}>
+    <Row className="mt-4 align-items-start">
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col className={`col-auto my-auto mx-5`}>{bug && bug}</Col>
+      <Col className={`col-auto mt-2 mb-3 mx-5 header-bug`}>{bug && bug}</Col>
     </Row>
   )
 }
