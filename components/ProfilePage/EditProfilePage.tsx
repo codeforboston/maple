@@ -80,7 +80,7 @@ export function EditProfileForm({
       <Header className="edit-profile-header">
         <Col className="align-items-center d-flex">Edit Profile</Col>
         <Col className={`d-flex justify-content-center w-100`}>
-          <Internal href={`/profile?id=${uid}`} className="view-profile">
+          <Internal href={`/profile?id=${uid}`} className="view-edit-profile">
             <Button className={`btn btn-lg`}>View your profile</Button>
           </Internal>
         </Col>

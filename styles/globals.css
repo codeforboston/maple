@@ -1,3 +1,5 @@
+@import './Profile.module.css';
+
 .navbar-dark .navbar-toggler {
   border: none;
 }
@@ -71,69 +73,5 @@
 @media (min-width: 768px) {
   .edit-profile-header {
     flex-direction: row !important;
-  }
-}
-
-.header-bug {
-  color: #12266F;
-  font-size: 1rem;
-  border-color: #12266F
-}
-
-.about-me-checkbox input {
-  height: 25px;
-  width: 25px;
-  margin-top: 0;
-  border-color: #12266F;
-}
-
-.input-social-media::placeholder {
-  font-size: 12px;
-}
-
-.save-profile-button > button {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-}
-
-.your-legislators-width {
-  width: 100%;
-}
-
-.testimony-title {
-  width: 60%
-}
-
-.view-profile {
-  width: 100%;
-}
-
-.view-profile > button {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .your-legislators-width {
-    width: 50%;
-  }
-
-  .save-profile-button { 
-    align-self: flex-end;
-    width: auto;
-  }
-
-  .testimony-title {
-    width: 100%
-  }
-
-  .view-profile {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .view-profile > button {
-    width: auto
   }
 }
