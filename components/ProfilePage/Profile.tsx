@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
+import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { useSendEmailVerification } from "../auth/hooks"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
@@ -19,6 +20,7 @@ import {
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   const isUser = user?.uid === id
 
@@ -66,6 +68,7 @@ export function ProfilePage({ id }: { id: string }) {
               isUser={isUser}
               isOrganization={isOrganization || false}
               profileImage={profileImage || "./profile-icon.svg"}
+              isMobile={isMobile}
             />
 
             {isUser && !user.emailVerified ? (
@@ -73,11 +76,11 @@ export function ProfilePage({ id }: { id: string }) {
             ) : null}
 
             <Row className={`mb-5`}>
-              <Col>
-                <ProfileAboutSection profile={profile} />
+              <Col className={`${isMobile && 'mb-4'}`}>
+                <ProfileAboutSection profile={profile} isMobile={isMobile}/>
               </Col>
               {isUser && (
-                <Col xs={12} md={4}>
+                <Col xs={12} md={5}>
                   <ProfileLegislators
                     rep={profile?.representative}
                     senator={profile?.senator}
@@ -101,10 +104,11 @@ export function ProfilePage({ id }: { id: string }) {
 
 export const ProfileAboutSection = ({
   profile,
-  className
+  className,
 }: {
   profile?: Profile
   className?: string
+  isMobile?: boolean
 }) => {
   const { twitter, linkedIn }: { twitter?: string; linkedIn?: string } =
     profile?.social ?? {}
@@ -150,19 +154,21 @@ export const ProfileHeader = ({
   displayName,
   isUser,
   isOrganization,
-  profileImage
+  profileImage,
+  isMobile
 }: {
   displayName?: string
   isUser: boolean
   isOrganization: boolean
   profileImage?: string
+  isMobile: boolean
 }) => {
   const [firstName, lastName] = displayName
     ? displayName.split(" ")
     : ["user", "user"]
 
   return (
-    <Header className={`d-flex`}>
+    <Header className={`d-flex edit-profile-header`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
           <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
@@ -174,13 +180,13 @@ export const ProfileHeader = ({
       )}
 
       {displayName ? (
-        <ProfileDisplayName className={``}>
-          <div className={`firstName text-capitalize`}>{firstName}</div>
+        <ProfileDisplayName className={`align-items-center ${!isMobile ? 'd-block' : 'd-flex'}`}>
+          <div className={`${!isMobile ? 'firstName' : 'me-2'} text-capitalize`}>{firstName}</div>
           <div className={`lastName text-capitalize`}>{lastName}</div>
         </ProfileDisplayName>
       ) : (
-        <ProfileDisplayName className={``}>
-          <div className={`firstName text-capitalize`}>Anonymous</div>
+        <ProfileDisplayName className={`align-items-center ${!isMobile ? 'd-block' : 'd-flex'}`}>
+          <div className={`${!isMobile ? 'firstName' : 'me-2'} text-capitalize`}>Anonymous</div>
           <div className={`lastName text-capitalize`}>User</div>
         </ProfileDisplayName>
       )}
@@ -191,8 +197,8 @@ export const ProfileHeader = ({
 
 const EditProfileButton = () => {
   return (
-    <Col className={`d-flex justify-content-end`}>
-      <Internal href="/editprofile">
+    <Col className={`d-flex justify-content-end w-100`}>
+      <Internal href="/editprofile" className="view-profile">
         <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
       </Internal>
     </Col>
@@ -203,7 +209,7 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
   const sendEmailVerification = useSendEmailVerification()
 
   return (
-    <TitledSectionCard title={"Verify Your Account"}>
+    <TitledSectionCard title={"Verify Your Account"} className="col-md-5">
       <div className="px-5 pt-2 pb-4">
         <p>
           We sent a link to your email to verify your account, but you haven't
