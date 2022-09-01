@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: typesense-data-2
+  name: typesense-data
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  storageClassName: local-path
+  storageClassName: standard-rwo
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,6 +35,9 @@ spec:
             limits:
               memory: 1Gi
               cpu: "1"
+            requests:
+              memory: 500Mi
+              cpu: 300m
           volumeMounts:
             - mountPath: /app/data
               name: datav
@@ -44,14 +47,14 @@ spec:
             - name: TYPESENSE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: typesense
+                  name: typesense-prod
                   key: api-key
             - name: TYPESENSE_ENABLE_CORS
               value: "true"
       volumes:
         - name: datav
           persistentVolumeClaim:
-            claimName: typesense-data-2
+            claimName: typesense-data
 ---
 apiVersion: v1
 kind: Service
@@ -85,7 +88,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: "Host(`maple.aballslab.com`) && PathPrefix(`/search`)"
+    - match: "Host(`maple-prod.alexjball.com`) && PathPrefix(`/search`)"
       kind: Rule
       services:
         - name: typesense-service

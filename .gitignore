@@ -60,6 +60,9 @@ prod-build.env
 .gitsecret/keys/**/*~
 !*.secret
 infra/k8s/typesense-secrets.yml
+infra/k8s/typesense-secrets.prod.yml
+
+# pyenv
 
 .python-version
 
