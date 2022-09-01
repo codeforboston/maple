@@ -65,13 +65,3 @@
 .tooltip-inner {
   font-family: "Nunito";
 }
-
-.edit-profile-header {
-  flex-direction: column !important;
-}
-
-@media (min-width: 768px) {
-  .edit-profile-header {
-    flex-direction: row !important;
-  }
-}

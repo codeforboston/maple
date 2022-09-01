@@ -19,6 +19,10 @@
   width: 100%;
 }
 
+.edit-profile-header {
+  flex-direction: column !important;
+}
+
 .your-legislators-width {
   width: 100%;
 }
@@ -37,6 +41,10 @@
 }
 
 @media (min-width: 768px) {
+  .edit-profile-header {
+    flex-direction: row !important;
+  }
+
   .your-legislators-width {
     width: 50%;
   }
