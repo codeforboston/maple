@@ -11,8 +11,9 @@
 }
 
 .goalsHeader {
+  margin-left: -0.8125rem;
   font-size: 1.25rem;
-  line-height: 27.28px;
+  line-height: 1.705rem;
   letter-spacing: -0.625px;
   margin-top: -1rem;
   padding-bottom: 2rem;
@@ -21,7 +22,7 @@
 .caption {
   font-family: Nunito, sans-serif;
   font-size: 1.25rem;
-  line-height: 27.28px;
+  line-height: 1.705rem;
   letter-spacing: -0.625px;
   text-align: left;
   margin-top: 0.875rem;
@@ -30,12 +31,12 @@
 .body {
   font-family: Nunito, sans-serif;
   font-size: 1.25rem;
-  line-height: 27.28px;
+  line-height: 1.705rem;
   letter-spacing: -0.625px;
 }
 
 .oneTwoImage {
-  padding-bottom: 13px;
+  padding-bottom: 0.8125rem;
 }
 
 .threeImage {
@@ -107,7 +108,7 @@
     padding-bottom: 1rem;
   }
   .missionImages {
-    height: 90px;
+    height: 5.625rem;
   }
   .caption {
     font-size: 1.125rem;
@@ -127,7 +128,7 @@
     line-height: 22.21px;
   }
   .stepsImages {
-    height: 118px;
+    height: 7.375rem;
   }
   .submitTestimony {
     font-size: 1.125rem;
