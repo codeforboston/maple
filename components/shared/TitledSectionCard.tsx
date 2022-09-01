@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { Card, Col, Row } from "../bootstrap"
 
 const StyledCard = styled(Card)`
@@ -29,12 +30,14 @@ export const HeaderTitle = styled.div.attrs({
 `
 
 export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  
   return (
     <Row className="mt-4 align-items-start">
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col className={`col-auto mt-2 mb-3 mx-5 header-bug`}>{bug && bug}</Col>
+      <Col className={`col-auto mt-2 mb-3 ${isMobile ? 'mx-4 mt-4 col-10' : 'mx-5'} header-bug`}>{bug && bug}</Col>
     </Row>
   )
 }

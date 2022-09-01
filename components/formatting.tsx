@@ -1,6 +1,7 @@
 import Autolinker from "autolinker"
 import createDOMPurify, { DOMPurifyI } from "dompurify"
 import { Timestamp } from "firebase/firestore"
+import { useMediaQuery } from "usehooks-ts"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
 
@@ -60,13 +61,14 @@ export const formatTimestamp = (t?: Timestamp) => {
 }
 
 export const FormattedBillTitle = ({ bill }: { bill: Bill | BillContent }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const billInfo = "content" in bill ? bill.content : bill
 
   const { BillNumber, Title } = billInfo
 
   return (
     <div className="mt-2">
-      {formatBillId(BillNumber)}: {Title}
+      {formatBillId(BillNumber)}: {isMobile ? Title.substring(0, 45) + '...' : Title}
     </div>
   )
 }

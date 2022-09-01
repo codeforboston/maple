@@ -1,5 +1,7 @@
 import { useState } from "react"
-import { Button, Col, Dropdown, Row } from "../bootstrap"
+import Image from "react-bootstrap/Image"
+import { useMediaQuery } from "usehooks-ts"
+import { Button, Col, Form, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
 import { FormattedBillTitle, formatTestimonyLinks } from "../formatting"
 import { Internal, Wrap } from "../links"
@@ -43,24 +45,13 @@ export const SortTestimonyDropDown = ({
   setOrderBy: (order: string) => void
 }) => {
   return (
-    <Dropdown>
-      <Dropdown.Toggle
-        variant="primary"
-        id="dropdown-order"
-        bsPrefix={styles.toggleIcon}
-      >
-        {orderBy ?? "Order by"}{" "}
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setOrderBy("Most Recent First")}>
-          Most Recent First
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setOrderBy("Oldest First")}>
-          Oldest First
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+    <Form.Select
+      className="bg-white w-100"
+      onChange={(e) => setOrderBy(e.target.value)}
+    >
+      <option value="Most Recent First">Most Recent First</option>
+      <option value="Oldest First">Oldest First</option>
+    </Form.Select>
   )
 }
 
@@ -71,20 +62,40 @@ export const TestimonyItem = ({
   testimony: Testimony
   showControls: boolean
 }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
 
   const { result: bill } = useBill(testimony.billId)
 
   return (
-    <div className={`bg-white border-0 border-bottom p-xs-1 p-md-5`}>
-      <div className={`bg-white border-0 h3`}>
-        <Internal className={`text-secondary`} href="#">
+    <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
+      <div className={`bg-white border-0 h3 d-flex`}>
+        <Internal className={`text-secondary testimony-title`} href="#">
           {bill && <FormattedBillTitle bill={bill} />}
         </Internal>
+        {isMobile && (
+          <>
+            <Image
+              className="px-2 ms-auto align-self-center"
+              src="/edit-testimony.svg"
+              alt="Edit icon"
+              height={50}
+              width={50}
+            />
+
+            <Image
+              className="px-2 align-self-center"
+              src="/hide-testimony.svg"
+              alt="Hide testimony icon"
+              height={50}
+              width={50}
+            />
+          </>        
+        )}
       </div>
       <div>
         <Row className={`justify-content-between`}>
-          <Col className={`h5 fw-bold`}>{`${published}`}</Col>
+          <Col className={`h5 fw-bold align-self-center`}>{`${published}`}</Col>
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
           >
@@ -97,7 +108,7 @@ export const TestimonyItem = ({
           </Col>
           {showControls && (
             <Col
-              className={`d-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
+              className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
               style={{
                 fontFamily: "nunito",
                 borderLeft: "1px solid rgb(200, 200, 200)",
