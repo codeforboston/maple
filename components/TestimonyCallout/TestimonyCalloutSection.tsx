@@ -37,16 +37,20 @@ export default function TestimonyCalloutSection() {
         </Carousel>
       ) : (
         <Row className="justify-content-center">
-        <Col xs={10} xl={9} xxl={8}>
-          <Row xs={1} lg={2} className={`g-2 justify-content-center py-2 mt-4`}>
-            {recentTestimony?.map(testimony => (
-              <TestimonyCallout
-                key={testimony.authorUid + testimony.billId}
-                {...testimony}
-              />
-            ))}
-          </Row>
-        </Col>
+          <Col xs={10} xl={9} xxl={8}>
+            <Row
+              xs={1}
+              lg={2}
+              className={`g-2 justify-content-center py-2 mt-4`}
+            >
+              {recentTestimony?.map(testimony => (
+                <TestimonyCallout
+                  key={testimony.authorUid + testimony.billId}
+                  {...testimony}
+                />
+              ))}
+            </Row>
+          </Col>
         </Row>
       )}
     </Container>
