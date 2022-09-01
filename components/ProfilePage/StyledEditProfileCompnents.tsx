@@ -19,7 +19,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
     height: 2.25em;
 
     .nav-item {
-      width: auto
+      width: auto;
     }
   }
 

@@ -55,7 +55,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
     return (
       <Form.Group controlId={id} className={className}>
         {floating ? (
-          <FloatingLabel controlId={id} label={label} >
+          <FloatingLabel controlId={id} label={label}>
             {control}
           </FloatingLabel>
         ) : (

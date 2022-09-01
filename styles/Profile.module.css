@@ -1,14 +1,14 @@
 .header-bug {
-  color: #12266F;
+  color: #12266f;
   font-size: 1rem;
-  border-color: #12266F
+  border-color: #12266f;
 }
 
 .about-me-checkbox input {
   height: 25px;
   width: 25px;
   margin-top: 0;
-  border-color: #12266F;
+  border-color: #12266f;
 }
 
 .input-social-media::placeholder {
@@ -24,7 +24,7 @@
 }
 
 .testimony-title {
-  width: 60%
+  width: 60%;
 }
 
 .view-edit-profile {
@@ -41,13 +41,13 @@
     width: 50%;
   }
 
-  .save-profile-button { 
+  .save-profile-button {
     align-self: flex-end;
     width: auto;
   }
 
   .testimony-title {
-    width: 100%
+    width: 100%;
   }
 
   .view-edit-profile {
@@ -56,6 +56,6 @@
   }
 
   .view-edit-profile > button {
-    width: auto
+    width: auto;
   }
 }

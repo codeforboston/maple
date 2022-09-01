@@ -68,7 +68,8 @@ export const FormattedBillTitle = ({ bill }: { bill: Bill | BillContent }) => {
 
   return (
     <div className="mt-2">
-      {formatBillId(BillNumber)}: {isMobile ? Title.substring(0, 45) + '...' : Title}
+      {formatBillId(BillNumber)}:{" "}
+      {isMobile ? Title.substring(0, 45) + "..." : Title}
     </div>
   )
 }

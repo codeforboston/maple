@@ -76,8 +76,8 @@ export function ProfilePage({ id }: { id: string }) {
             ) : null}
 
             <Row className={`mb-5`}>
-              <Col className={`${isMobile && 'mb-4'}`}>
-                <ProfileAboutSection profile={profile} isMobile={isMobile}/>
+              <Col className={`${isMobile && "mb-4"}`}>
+                <ProfileAboutSection profile={profile} isMobile={isMobile} />
               </Col>
               {isUser && (
                 <Col xs={12} md={5}>
@@ -104,7 +104,7 @@ export function ProfilePage({ id }: { id: string }) {
 
 export const ProfileAboutSection = ({
   profile,
-  className,
+  className
 }: {
   profile?: Profile
   className?: string
@@ -180,13 +180,25 @@ export const ProfileHeader = ({
       )}
 
       {displayName ? (
-        <ProfileDisplayName className={`align-items-center ${!isMobile ? 'd-block' : 'd-flex'}`}>
-          <div className={`${!isMobile ? 'firstName' : 'me-2'} text-capitalize`}>{firstName}</div>
+        <ProfileDisplayName
+          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
+        >
+          <div
+            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+          >
+            {firstName}
+          </div>
           <div className={`lastName text-capitalize`}>{lastName}</div>
         </ProfileDisplayName>
       ) : (
-        <ProfileDisplayName className={`align-items-center ${!isMobile ? 'd-block' : 'd-flex'}`}>
-          <div className={`${!isMobile ? 'firstName' : 'me-2'} text-capitalize`}>Anonymous</div>
+        <ProfileDisplayName
+          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
+        >
+          <div
+            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+          >
+            Anonymous
+          </div>
           <div className={`lastName text-capitalize`}>User</div>
         </ProfileDisplayName>
       )}

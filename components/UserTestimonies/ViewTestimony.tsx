@@ -47,7 +47,7 @@ export const SortTestimonyDropDown = ({
   return (
     <Form.Select
       className="bg-white w-100"
-      onChange={(e) => setOrderBy(e.target.value)}
+      onChange={e => setOrderBy(e.target.value)}
     >
       <option value="Most Recent First">Most Recent First</option>
       <option value="Oldest First">Oldest First</option>
@@ -90,7 +90,7 @@ export const TestimonyItem = ({
               height={50}
               width={50}
             />
-          </>        
+          </>
         )}
       </div>
       <div>

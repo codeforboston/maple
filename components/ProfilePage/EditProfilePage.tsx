@@ -89,7 +89,12 @@ export function EditProfileForm({
         <StyledTabNav>
           {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link eventKey={t.eventKey} className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}>{t.title}</Nav.Link>
+              <Nav.Link
+                eventKey={t.eventKey}
+                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
+              >
+                {t.title}
+              </Nav.Link>
             </Nav.Item>
           ))}
         </StyledTabNav>
