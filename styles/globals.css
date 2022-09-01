@@ -91,12 +91,27 @@
   font-size: 12px;
 }
 
-@media (max-width: 768px) {
-  .save-profile-button {
-    
-    width: 100%;
+.save-profile-button > button {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .save-profile-button { 
+    align-self: flex-end;
+    width: auto;
   }
 }
+
+.your-legislators-width {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .your-legislators-width {
+    width: 50%;
+  }
+}
+
 /* 
   .input-social-media::placeholder {
     font-size: 16px;

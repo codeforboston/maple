@@ -104,7 +104,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           <Input
             as="textarea"
             {...register("aboutYou")}
-            style={{ height: "10rem" }}
+            style={{ height: "20rem" }}
             label="Write something about yourself"
             defaultValue={about}
           />
@@ -125,8 +125,8 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               />
             </div>
           </div>
-          <Form.Group className="d-flex">
-            <Button className="flex-grow-0 mt-5 mx-auto save-profile-button" type="submit">
+          <Form.Group className="d-flex save-profile-button">
+            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
               Save Profile
             </Button>
           </Form.Group>
