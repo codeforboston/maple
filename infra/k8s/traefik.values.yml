@@ -1,12 +1,27 @@
+image:
+  tag: "v2.8.3"
+
 ports:
   websecure:
     tls:
+      enabled: true
       certResolver: leresolver
   web:
-    redirectTo: websecure
+    expose: true
+    # redirectTo: websecure
+
+deployment:
+  initContainers:
+    - name: volume-permissions
+      image: busybox:1.31.1
+      command: ["sh", "-c", "chmod -Rv 600 /data/*"]
+      volumeMounts:
+        - name: data
+          mountPath: /data
 
 persistence:
   # persists the /data directory
+  name: data
   enabled: true
   size: 128Mi
 
@@ -17,16 +32,13 @@ logs:
 certResolvers:
   leresolver:
     email: me@alexjball.com
-    httpChallenge:
+    httpchallenge:
       entrypoint: "web"
+    tlschallenge: true
     storage: /data/acme.json
-    caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+    # Please note that this is the staging Let's Encrypt server.
+    # Once you get things working, you should remove that whole line altogether.
+    caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
 
 additionalArguments:
-  #   - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web
-  #   - --certificatesresolvers.leresolver.acme.email=me@alexjball.com
-  #   # Please note that this is the staging Let's Encrypt server.
-  #   # Once you get things working, you should remove that whole line altogether.
-  #   - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-  #   - --certificatesresolvers.leresolver.acme.storage=/data/acme.json
   - --providers.providersthrottleduration=100
