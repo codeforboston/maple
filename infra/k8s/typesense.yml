@@ -87,7 +87,7 @@ metadata:
 spec:
   entryPoints:
     - websecure
-    - web
+  tls: {}
   routes:
     - match: "Host(`maple-prod.alexjball.com`) && PathPrefix(`/search`)"
       kind: Rule
@@ -96,5 +96,3 @@ spec:
           port: 80
       middlewares:
         - name: typesense-strip-prefix
-  tls:
-    certResolver: leresolver

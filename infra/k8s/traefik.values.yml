@@ -4,14 +4,14 @@ image:
 ports:
   websecure:
     tls:
-      enabled: true
-      certResolver: leresolver
+      certResolver: letsencrypt
   web:
-    expose: true
-    # redirectTo: websecure
+    redirectTo: websecure
 
 deployment:
   initContainers:
+    # Traefik ends up saving the acme.json file with 660 permissions. It checks
+    # for 600 on startup (???) and this fixes the permissions.
     - name: volume-permissions
       image: busybox:1.31.1
       command: ["sh", "-c", "chmod -Rv 600 /data/*"]
@@ -20,8 +20,8 @@ deployment:
           mountPath: /data
 
 persistence:
-  # persists the /data directory
   name: data
+  path: /data
   enabled: true
   size: 128Mi
 
@@ -30,7 +30,7 @@ logs:
     level: DEBUG
 
 certResolvers:
-  leresolver:
+  letsencrypt:
     email: me@alexjball.com
     httpchallenge:
       entrypoint: "web"
@@ -38,7 +38,8 @@ certResolvers:
     storage: /data/acme.json
     # Please note that this is the staging Let's Encrypt server.
     # Once you get things working, you should remove that whole line altogether.
-    caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
+    # caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
 
 additionalArguments:
+  # This gives the challenges more time to run before failing.
   - --providers.providersthrottleduration=100
