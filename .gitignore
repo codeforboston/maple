@@ -59,8 +59,8 @@ prod-build.env
 .gitsecret/keys/random_seed
 .gitsecret/keys/**/*~
 !*.secret
-infra/k8s/typesense-secrets.yml
-infra/k8s/typesense-secrets.prod.yml
+infra/dev/typesense-secrets.yml
+infra/prod/typesense-secrets.yml
 
 # pyenv
 

@@ -1,0 +1,14 @@
+# Default values for maple.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# apiDomain is the FQDN of the application.
+apiDomain: ""
+
+# storageClass is the storage class of the typesense data volume.
+storageClass: ""
+
+# secretName is the name of the secret containing secret values.
+# The secret must contain these keys:
+# api-key: The key to use for the typesense bootstrap key.
+secretName: ""
