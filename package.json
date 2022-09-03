@@ -19,7 +19,7 @@
     "export": "next build && next export",
     "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage tests/integration/exportedTestData",
     "export:nolint": "next build --no-lint && next export",
-    "fix": "next lint --fix; prettier --write .",
+    "fix": "next lint --fix && prettier --write .",
     "postinstall": "yarn --cwd functions install --frozen-lockfile",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
