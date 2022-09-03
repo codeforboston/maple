@@ -8035,6 +8035,11 @@ loglevel@^1.7.1:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.8.0.tgz#e7ec73a57e1e7b419cb6c6ac06bf050b67356114"
   integrity sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA==
 
+logrocket@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-3.0.1.tgz#c746e8df3d5fee999b152975e51db1908357a6f0"
+  integrity sha512-jOWG+jEzobKVxGytzZ+4KGm2kiMQMRTHab2uDWQyVZcHfEF38BlCH1yjQVY4LCmuQUwZitP9biMzJZnyUQ0dtQ==
+
 long@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
