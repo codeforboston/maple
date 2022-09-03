@@ -38,10 +38,7 @@ export const Layout = ({ bill }: BillProps) => {
       <Row className="mt-4">
         <Col md={8}>
           <SponsorsAndCommittees bill={bill} />
-          <LabeledContainer className="mt-3">
-            <div className="mb-2 title">Testimony</div>
-            <BillTestimonies bill={bill.content} />
-          </LabeledContainer>
+          <BillTestimonies bill={bill.content} />
         </Col>
         <Col md={4}>
           <TestimonyFormPanel bill={bill} />
