@@ -1,0 +1,26 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: typesense-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /search
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: typesense-ingress
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    certResolver: letsencrypt
+  routes:
+    - match: "Host(`{{ .Values.apiDomain }}`) && PathPrefix(`/search`)"
+      kind: Rule
+      services:
+        - name: typesense-service
+          port: 80
+      middlewares:
+        - name: typesense-strip-prefix

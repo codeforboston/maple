@@ -19,6 +19,8 @@ jobs:
         run: yarn run export
         env:
           NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+          NEXT_PUBLIC_TYPESENSE_API_URL: ${{ secrets.TYPESENSE_API_URL }}
+          NEXT_PUBLIC_TYPESENSE_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
           NEXT_PUBLIC_LOG_ROCKET_ID: ${{ secrets.LOG_ROCKET_ID }}
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
