@@ -64,3 +64,5 @@ infra/k8s/typesense-secrets.yml
 .python-version
 
 /*.history
+
+storybook-static
