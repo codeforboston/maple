@@ -38,6 +38,16 @@ yarn firebase-admin \
     --role=admin
 ```
 
+You can also deploy a cloud function and trigger it via pubsub, like `backfillTestimonyCounts` or `checkSearchIndexVersion`:
+
+```sh
+PROJECT=digital-testimony-dev
+
+gcloud --project $PROJECT pubsub topics publish backfillTestimonyCounts --message='{"run": true}'
+
+gcloud --project $PROJECT pubsub topics publish checkSearchIndexVersion --message='{"check": true}'
+```
+
 ## Typesense
 
 The typesense server is deployed to a kubernetes cluster using the files in `infra/k8s`. To change deployment settings, modify the config files and re-deploy them.
