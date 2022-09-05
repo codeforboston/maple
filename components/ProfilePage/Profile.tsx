@@ -1,6 +1,7 @@
-import { useCallback } from "react"
 import { User } from "firebase/auth"
+import { useCallback } from "react"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { useSendEmailVerification } from "../auth/hooks"
@@ -16,6 +17,64 @@ import {
   ProfileDisplayName,
   UserIcon
 } from "./StyledEditProfileCompnents"
+
+const StyledContainer = styled(Container)`
+  .about-me-checkbox input {
+    height: 25px;
+    width: 25px;
+    margin-top: 0;
+    border-color: #12266f;
+  }
+
+  .input-social-media::placeholder {
+    font-size: 12px;
+  }
+
+  .save-profile-button > button {
+    width: 100%;
+  }
+
+  .edit-profile-header {
+    flex-direction: column !important;
+  }
+
+  .your-legislators-width {
+    width: 100%;
+  }
+
+  .view-edit-profile {
+    width: 100%;
+    text-decoration: none;
+  }
+
+  .view-edit-profile > button {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .edit-profile-header {
+      flex-direction: row !important;
+    }
+
+    .your-legislators-width {
+      width: 50%;
+    }
+
+    .save-profile-button {
+      align-self: flex-end;
+      width: auto;
+    }
+
+    .view-edit-profile {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .view-edit-profile > button {
+      width: auto;
+    }
+  }
+`
 
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
@@ -47,7 +106,7 @@ export function ProfilePage({ id }: { id: string }) {
       ) : (
         <>
           {isUser && (
-            <Container
+            <StyledContainer
               fluid
               className={`text-white text-center text-middle`}
               style={{
@@ -60,9 +119,9 @@ export function ProfilePage({ id }: { id: string }) {
               }}
             >
               <p>Currently viewing your profile</p>
-            </Container>
+            </StyledContainer>
           )}
-          <Container>
+          <StyledContainer>
             <ProfileHeader
               displayName={displayName}
               isUser={isUser}
@@ -95,7 +154,7 @@ export function ProfilePage({ id }: { id: string }) {
                 <ViewTestimony {...testimony} showControls={isUser} />
               </Col>
             </Row>
-          </Container>
+          </StyledContainer>
         </>
       )}
     </>

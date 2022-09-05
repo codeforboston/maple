@@ -29,6 +29,14 @@ export const HeaderTitle = styled.div.attrs({
   margin-left: -1rem;
 `
 
+const BugContainer = styled(Col)`
+  .header-bug {
+    color: #12266f;
+    font-size: 1rem;
+    border-color: #12266f;
+  }
+`
+
 export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
@@ -37,13 +45,13 @@ export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col
+      <BugContainer
         className={`col-auto mt-2 mb-3 ${
           isMobile ? "mx-4 mt-4 col-10" : "mx-5"
-        } header-bug`}
+        }`}
       >
         {bug && bug}
-      </Col>
+      </BugContainer>
     </Row>
   )
 }

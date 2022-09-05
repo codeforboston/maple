@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
@@ -8,7 +9,6 @@ import { Internal, Wrap } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
 import { PositionLabel } from "./PositionBug"
-import styles from "./ViewTestimony.module.css"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & { search?: boolean } & {
@@ -55,6 +55,18 @@ export const SortTestimonyDropDown = ({
   )
 }
 
+const StyledTitle = styled(Internal)`
+  .testimony-title {
+    width: 60%;
+  }
+
+  @media (min-width: 768px) {
+    .testimony-title {
+      width: 100%;
+    }
+  }
+`
+
 export const TestimonyItem = ({
   testimony,
   showControls
@@ -70,9 +82,9 @@ export const TestimonyItem = ({
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
       <div className={`bg-white border-0 h3 d-flex`}>
-        <Internal className={`text-secondary testimony-title`} href="#">
+        <StyledTitle className="text-secondary" href="#">
           {bill && <FormattedBillTitle bill={bill} />}
-        </Internal>
+        </StyledTitle>
         {isMobile && (
           <>
             <Image
