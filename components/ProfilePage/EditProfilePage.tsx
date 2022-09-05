@@ -77,32 +77,27 @@ export function EditProfileForm({
 
   return (
     <Container>
-      <Header>
-        <Col>Edit Profile</Col>
-        <Col className={`d-flex justify-content-end`}>
-          <Internal href={`/profile?id=${uid}`}>
+      <Header className="edit-profile-header">
+        <Col className="align-items-center d-flex">Edit Profile</Col>
+        <Col className={`d-flex justify-content-center w-100`}>
+          <Internal href={`/profile?id=${uid}`} className="view-edit-profile">
             <Button className={`btn btn-lg`}>View your profile</Button>
           </Internal>
         </Col>
       </Header>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-        <StyledTabNav className={`d-none d-md-flex`}>
-          {tabs.map(t => (
+        <StyledTabNav>
+          {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
+              <Nav.Link
+                eventKey={t.eventKey}
+                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
+              >
+                {t.title}
+              </Nav.Link>
             </Nav.Item>
           ))}
         </StyledTabNav>
-        <StyledDropdownNav
-          title={tabs.find(t => t.eventKey === key)?.title || key}
-          className={`d-flex d-md-none`}
-        >
-          {tabs.map(t => (
-            <NavDropdown.Item key={t.eventKey} eventKey={t.eventKey}>
-              {t.title}
-            </NavDropdown.Item>
-          ))}
-        </StyledDropdownNav>
         <StyledTabContent>
           {tabs.map(t => (
             <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>

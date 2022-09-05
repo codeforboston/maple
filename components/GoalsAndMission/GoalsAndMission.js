@@ -4,18 +4,19 @@ import {
   OurGoalsCardContent,
   OurMissionCardContent
 } from "../GoalsAndMissionCardContent/GoalsAndMissionCardContent"
+import styles from "./GoalsAndMission.module.css"
 
 const GoalsAndMission = () => {
   return (
     <Container>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">Our Mission &amp; Goals</h1>
-          <AboutPagesCard title="Our Mission">
-            <OurMissionCardContent />
-          </AboutPagesCard>
+          <h1 className={`fw-bold ${styles.header}`}>Our Goals and Mission</h1>
           <AboutPagesCard title="Our Goals">
             <OurGoalsCardContent />
+          </AboutPagesCard>
+          <AboutPagesCard title="Our Mission">
+            <OurMissionCardContent />
           </AboutPagesCard>
         </Col>
       </Row>

@@ -71,20 +71,20 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
         <Header
           title={"About You"}
           bug={
-            <Row className={`justify-content-center`}>
+            <Row className={`justify-content-center align-items-center`}>
               <FormCheck
                 {...register("public")}
-                className={`col-auto`}
+                className={`col-auto about-me-checkbox`}
                 type="checkbox"
                 defaultChecked={isPublic}
               />
-              <Form.Label htmlFor="public" className={`col`}>
+              <Form.Label htmlFor="public" className={`col my-1`}>
                 Allow others to see your profile
               </Form.Label>
             </Row>
           }
         ></Header>
-        <div className={`mx-1 mx-md-3 d-flex flex-column gap-3`}>
+        <div className={`mx-4 d-flex flex-column gap-3`}>
           <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
               className="bg-white"
@@ -104,26 +104,28 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           <Input
             as="textarea"
             {...register("aboutYou")}
-            style={{ height: "10rem" }}
-            label="About You"
+            style={{ height: "20rem" }}
+            label="Write something about yourself"
             defaultValue={about}
           />
           <div className={clsx("w-100", organization && "row")}>
             {organization && <ImageInput />}
-            <div className="col">
+            <div className="row">
               <Input
                 label="Twitter Username"
                 defaultValue={social?.twitter}
+                className=" w-50"
                 {...register("twitter")}
               />
               <Input
                 label="LinkedIn Username"
                 defaultValue={social?.linkedIn}
+                className="w-50"
                 {...register("linkedIn")}
               />
             </div>
           </div>
-          <Form.Group className="d-flex col-auto m-auto">
+          <Form.Group className="d-flex save-profile-button">
             <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
               Save Profile
             </Button>

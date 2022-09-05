@@ -67,3 +67,5 @@ infra/prod/typesense-secrets.yml
 .python-version
 
 /*.history
+
+storybook-static
