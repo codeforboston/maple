@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { Card, Col, Row } from "../bootstrap"
 
 const StyledCard = styled(Card)`
@@ -28,13 +29,29 @@ export const HeaderTitle = styled.div.attrs({
   margin-left: -1rem;
 `
 
+const BugContainer = styled(Col)`
+  .header-bug {
+    color: #12266f;
+    font-size: 1rem;
+    border-color: #12266f;
+  }
+`
+
 export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
   return (
-    <Row className={`mt-4 align-items-start`}>
+    <Row className="mt-4 align-items-start">
       <Col>
         <HeaderTitle>{title}</HeaderTitle>
       </Col>
-      <Col className={`col-auto my-auto mx-5`}>{bug && bug}</Col>
+      <BugContainer
+        className={`col-auto mt-2 mb-3 ${
+          isMobile ? "mx-4 mt-4 col-10" : "mx-5"
+        }`}
+      >
+        {bug && bug}
+      </BugContainer>
     </Row>
   )
 }
