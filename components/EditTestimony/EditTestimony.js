@@ -1,26 +1,29 @@
 import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
+import { TableButton } from "../buttons"
 import CommentModal from "../CommentModal/CommentModal"
 
 const EditTestimony = props => {
-  const bill = props.bill
-  const testimony = props.testimony
-  const [showTestimony, setShowTestimony] = useState(false)
+  const { bill, refreshtable } = props
 
-  const handleShowTestimony = () => setShowTestimony(true)
-  const handleCloseTestimony = () => setShowTestimony(false)
+  const [showEditTestimony, setShowEditTestimony] = useState(false)
+
+  const handleEditTestimonyClick = () => {
+    !showEditTestimony && setShowEditTestimony(true)
+  }
+
+  const handleCloseTestimony = () => {
+    showEditTestimony && setShowEditTestimony(false)
+  }
+
   return (
     <>
-      <Button variant="primary" onClick={handleShowTestimony}>
-        Edit
-      </Button>
+      <TableButton onclick={handleEditTestimonyClick}>Edit</TableButton>
       <CommentModal
         bill={bill}
-        showTestimony={showTestimony}
-        setShowTestimony={setShowTestimony}
-        handleShowTestimony={handleShowTestimony}
+        showTestimony={showEditTestimony}
+        setShowTestimony={setShowEditTestimony}
         handleCloseTestimony={handleCloseTestimony}
-        testimony={testimony}
+        refreshtable={refreshtable}
       />
     </>
   )

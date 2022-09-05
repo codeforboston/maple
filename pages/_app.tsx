@@ -1,9 +1,18 @@
+// Order is important! Leave the empty lines, it prevents IDE's from
+// autosorting.
+
+import "../styles/bootstrap.scss"
+
+import "../styles/globals.css"
+
 import "../components/fontawesome"
+
+import "../styles/instantsearch.css"
+
+import "instantsearch.css/themes/satellite.css"
+
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
-import "../styles/bootstrap.scss"
-import "../styles/globals.css"
-import "../styles/Map.css"
 
 /**
  * The root React component of the application. Next.js renders this, passing

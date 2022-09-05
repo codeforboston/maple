@@ -77,4 +77,6 @@ class UpdateBillSearchIndex extends BillProcessor {
   }
 }
 
-export const updateBillSearchIndex = BillProcessor.for(UpdateBillSearchIndex)
+export const updateBillSearchIndex = BillProcessor.scheduled(
+  UpdateBillSearchIndex
+)

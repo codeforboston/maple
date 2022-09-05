@@ -1,14 +1,18 @@
-import { AuthProvider } from "../components/auth"
-import { SSRProvider } from "../components/bootstrap"
-import { ServiceProvider } from "./service"
+import { SSRProvider as AriaSSRProvider } from "@react-aria/ssr"
+import { Provider as Auth } from "../components/auth"
+import { SSRProvider as BootstrapSSRProvider } from "../components/bootstrap"
+import { Provider as Profile } from "./db/profile/service"
+import { LogRocketProvider as LogRocket } from "./logRocket"
 import { Provider as Search } from "./search"
+import { ServiceProvider } from "./service"
+import { Provider as Redux } from "./store"
 
-const services = [AuthProvider, Search]
+const providers = [Redux, Auth, Profile, Search, LogRocket]
 
-export const Providers: React.FC<{ children: React.ReactElement }> = ({
-  children
-}) => (
-  <SSRProvider>
-    <ServiceProvider providers={services}>{children}</ServiceProvider>
-  </SSRProvider>
+export const Providers: React.FC = ({ children }) => (
+  <AriaSSRProvider>
+    <BootstrapSSRProvider>
+      <ServiceProvider providers={providers}>{children}</ServiceProvider>
+    </BootstrapSSRProvider>
+  </AriaSSRProvider>
 )

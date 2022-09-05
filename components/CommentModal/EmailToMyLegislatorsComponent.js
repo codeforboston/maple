@@ -10,7 +10,7 @@ const EmailToMyLegislators = ({
     return (
       <>
         <links.External href={emailToMyLegislatorsURL}>
-          Email your testimony to your legislators
+          Format an email for your legislators
         </links.External>
       </>
     )

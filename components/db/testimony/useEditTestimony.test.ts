@@ -24,7 +24,7 @@ beforeEach(async () => {
 })
 
 let draft: DraftTestimony,
-  testimony: Omit<Testimony, "publishedAt">,
+  testimony: Omit<Testimony, "publishedAt" | "id">,
   updatedDraft: typeof draft,
   updatedTestimony: typeof testimony
 beforeEach(() => {
@@ -163,7 +163,10 @@ describe("useEditTestimony", () => {
 
     expect(result.current.draft?.publishedVersion).toBeDefined()
     await act(() => result.current.saveDraft.execute(updatedDraft))
-    expect(result.current.draft?.publishedVersion).toBeUndefined()
+    await waitFor(
+      () => expect(result.current.draft?.publishedVersion).toBeUndefined(),
+      { timeout: 5000 }
+    )
   })
 
   it("Deletes testimony", async () => {

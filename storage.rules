@@ -6,16 +6,23 @@ service firebase.storage {
           && request.resource.contentType.matches('application/pdf');
     }
 
+    function image() {
+      return request.resource.size < 500 * 1024
+          && request.resource.contentType.matches('image/.*');
+    }
+
     match /search/{allPaths=**} {
       // Publicly readable, only written by the admin SDK
       allow read: if true;
       allow write: if false;
     }
+
     match /publishedAttachments/{id} {
       // public, read-only
       allow read: if true
       allow write: if false
     }
+
     match /users/{uid} {
       match /draftAttachments/{id} {
         // private, only accessible by the user
@@ -27,6 +34,11 @@ service firebase.storage {
       match /archivedAttachments/{id} {
         // Not accessible by users, for record keeping.
         allow read, write: if false
+      }
+      match /profileImage {
+        // publicly readable, writable by owner
+        allow read: if true
+        allow write: if request.auth.uid == uid && image()
       }
     }
   }

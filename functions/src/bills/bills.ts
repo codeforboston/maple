@@ -34,6 +34,9 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         similar,
         cosponsorCount: content.Cosponsors.length,
         testimonyCount: current?.testimonyCount ?? 0,
+        endorseCount: current?.endorseCount ?? 0,
+        neutralCount: current?.neutralCount ?? 0,
+        opposeCount: current?.opposeCount ?? 0,
         latestTestimonyAt: current?.latestTestimonyAt ?? MISSING_TIMESTAMP,
         nextHearingAt: current?.nextHearingAt ?? MISSING_TIMESTAMP
       }

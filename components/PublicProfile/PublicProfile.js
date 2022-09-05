@@ -9,6 +9,7 @@ const PublicProfile = ({ id }) => {
   const bio = user?.about
   const twit = user?.social?.twitter
   const linkedIn = user?.social?.linkedIn
+  const isPublic = user?.public
 
   const senatorLine = <h4>Senator: {user?.senator?.name}</h4>
   const representativeLine = (
@@ -32,9 +33,8 @@ const PublicProfile = ({ id }) => {
     </h4>
   )
 
-  return (
+  const publicProfile = (
     <>
-      <h1>{user?.displayName ? user?.displayName : "Name placeholder"}</h1>
       {user?.senator ? senatorLine : <></>}
       {user?.representative ? representativeLine : <></>}
       {twit ? twitterLine : <></>}
@@ -42,6 +42,13 @@ const PublicProfile = ({ id }) => {
 
       <p>{bio}</p>
       <UserTestimonies authorId={id} />
+    </>
+  )
+  return (
+    <>
+      <h1>{user?.displayName}</h1>
+      {isPublic && publicProfile}
+      {!isPublic && <h3>Profile is not public</h3>}
     </>
   )
 }

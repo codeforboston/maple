@@ -18,7 +18,8 @@ const PostSubmitModal = ({
   testimony,
   senateChairEmail,
   houseChairEmail,
-  committeeName
+  committeeName,
+  refreshtable
 }) => {
   const billNumber = bill?.BillNumber
   const billTitle = bill?.Title
@@ -76,18 +77,18 @@ const PostSubmitModal = ({
     `https://twitter.com/intent/tweet?text=I provided testimony on bill ${
       bill.BillNumber
     }${bill.Title.length > 174 ? "" : ": " + bill.Title.trim()}.
-    
-See ${webSiteBillAddress} for details.`
+    See ${webSiteBillAddress} for details.`
   )
-  // the maximum tweet length is 280 characters.  so, the maximum title length is about 174 characters depending on the length of the final web site address.
 
   const handleClosePostSubmitModal = () => {
     setShowPostSubmitModal(false)
-    handleCloseTestimony()
+    refreshtable()
   }
+
   return (
     <Modal
       show={showPostSubmitModal}
+      onShow={handleCloseTestimony}
       onHide={handleClosePostSubmitModal}
       backdrop="static"
     >

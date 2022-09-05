@@ -1,0 +1,65 @@
+# Important:
+# - Run this using `yarn compose`
+# - Make sure you use docker compsoe v2: `docker compose version`
+#   https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command
+
+version: "3"
+name: dtp-backend
+services:
+  search:
+    image: typesense/typesense:0.22.2
+    volumes:
+      - search:/app/data
+    ports:
+      - 8108:8108
+    environment:
+      TYPESENSE_DATA_DIR: /app/data
+      TYPESENSE_API_KEY: test-api-key
+      TYPESENSE_ENABLE_CORS: "true"
+    cpu_count: 2
+
+  firebase:
+    image: alexjball/firebase-tools:latest-node-16
+    command: >
+      yarn firebase 
+      --project demo-dtp emulators:start 
+      --only auth,functions,pubsub,firestore,storage 
+      --import tests/integration/exportedTestData
+    working_dir: /app
+    volumes:
+      - ..:/app
+      # Override env for running in compose
+      - ${PWD}/infra/.env.functions-compose:/app/functions/.env.demo-dtp
+      # Override firebase.json to bind to all container interfaces
+      - ${PWD}/infra/firebase.compose.json:/app/firebase.json
+    ports:
+      - 9099:9099
+      - 5001:5001
+      - 8080:8080
+      - 3010:3010
+      - 8085:8085
+      - 9199:9199
+
+  builder:
+    image: node:16-alpine
+    command: yarn --cwd functions build:watch
+    working_dir: /app
+    volumes:
+      - ..:/app
+
+  next:
+    image: node:16-alpine
+    command: yarn dev
+    working_dir: /app
+    ports:
+      - 3000:3000
+    volumes:
+      - ..:/app
+    environment:
+      NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
+      NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
+      NEXT_PUBLIC_USE_EMULATOR: "true"
+      NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
+
+volumes:
+  search: {}

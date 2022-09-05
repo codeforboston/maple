@@ -5,15 +5,14 @@ import { useAuth } from "../../components/auth"
 import CommentModal from "../CommentModal/CommentModal"
 import { usePublishedTestimonyListing } from "../db"
 
-const AddTestimony = ({
-  bill,
-  committeeName,
-  houseChairEmail,
-  senateChairEmail
-}) => {
+const AddTestimony = ({ bill, refreshtable }) => {
   const [showTestimony, setShowTestimony] = useState(false)
 
   const router = useRouter()
+
+  const committeeName = bill?.currentCommittee?.name,
+    houseChairEmail = bill?.houseChair?.email,
+    senateChairEmail = bill?.senateChair?.email
 
   const handleShowTestimony = () => {
     if (!authenticated) {
@@ -23,7 +22,9 @@ const AddTestimony = ({
     }
   }
 
-  const handleCloseTestimony = () => setShowTestimony(false)
+  const handleCloseTestimony = () => {
+    setShowTestimony(false)
+  }
   const { authenticated, user } = useAuth()
 
   const { items } = usePublishedTestimonyListing({ uid: user?.uid })
@@ -39,7 +40,7 @@ const AddTestimony = ({
 
   return (
     <>
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center pb-3">
         <Button variant="primary" onClick={handleShowTestimony}>
           {!authenticated
             ? "Sign in to add your voice"
@@ -59,6 +60,7 @@ const AddTestimony = ({
           committeeName={committeeName}
           houseChairEmail={houseChairEmail}
           senateChairEmail={senateChairEmail}
+          refreshtable={refreshtable}
         />
       )}
     </>

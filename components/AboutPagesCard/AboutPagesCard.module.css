@@ -1,0 +1,18 @@
+.header:first-child {
+  border-radius: 0 5rem 5rem 0;
+}
+
+.header {
+  background-color: var(--bs-blue);
+  color: white;
+  width: max-content;
+  padding-right: 4rem;
+  padding-left: 2rem;
+  height: 3rem;
+  transform: translate(-2rem, -40%);
+  overflow: hidden;
+}
+
+.card {
+  margin: 3rem 5rem;
+}

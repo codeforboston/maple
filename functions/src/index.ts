@@ -1,8 +1,11 @@
 export {
+  backfillTestimonyCounts,
   fetchBillBatch,
   startBillBatches,
+  syncBillToSearchIndex,
   updateBillReferences,
-  updateBillSearchIndex
+  updateBillSearchIndex,
+  upgradeBillSearchIndex
 } from "./bills"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
@@ -16,6 +19,12 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { setUsername } from "./profile"
-export { deleteTestimony, publishTestimony } from "./testimony"
-export * from "./triggerScheduledFunction"
+export { createProfile } from "./profile"
+export { checkSearchIndexVersion } from "./search"
+export {
+  deleteTestimony,
+  publishTestimony,
+  syncTestimonyToSearchIndex,
+  upgradeTestimonySearchIndex
+} from "./testimony"
+export * from "./triggerPubsubFunction"

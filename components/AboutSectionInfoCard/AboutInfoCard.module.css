@@ -1,0 +1,17 @@
+.cardHeader {
+  transform: translateY(-40%);
+  margin-bottom: -1em;
+  border-color: transparent;
+  background-color: var(--bs-orange);
+  overflow: visible;
+}
+
+.cardBody {
+  height: fit-content;
+}
+
+.cardBodyParagraph {
+  height: 100%;
+  margin-bottom: 0.5em;
+  overflow: visible;
+}

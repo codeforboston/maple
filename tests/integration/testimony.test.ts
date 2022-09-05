@@ -1,18 +1,18 @@
 import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
-import { ref, uploadBytes } from "firebase/storage"
 import { httpsCallable } from "firebase/functions"
-import { Bill } from "../../components/db"
+import { ref, uploadBytes } from "firebase/storage"
+import { nanoid } from "nanoid"
 import { firestore, functions, storage } from "../../components/firebase"
 import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
   expectStorageUnauthorized,
+  getBill,
   signInUser1,
   signInUser2
 } from "./common"
-import { nanoid } from "nanoid"
 
 type BaseTestimony = {
   billId: string
@@ -163,6 +163,7 @@ describe("publishTestimony", () => {
     const published = await getPublication(uid, res.data.publicationId)
 
     expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
     expect(bill.latestTestimonyId).toBe(res.data.publicationId)
     expect(bill.latestTestimonyAt).toEqual(published.publishedAt)
   })
@@ -183,6 +184,10 @@ describe("publishTestimony", () => {
   it("Updates existing testimony", async () => {
     const res1 = await publishTestimony({ draftId })
 
+    let bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
+
     const updatedDraft: DraftTestimony = {
       ...draft,
       content: "updated content"
@@ -197,6 +202,10 @@ describe("publishTestimony", () => {
     expect(published.version).toBe(2)
     expect(published.content).toBe(updatedDraft.content)
     expect(draftPublishedVersion).toBe(2)
+
+    bill = await getBill(billId)
+    expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
   })
 
   it("Supports multiple users", async () => {
@@ -208,12 +217,14 @@ describe("publishTestimony", () => {
 
     let bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(2)
+    expect(bill.endorseCount).toBe(2)
     expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
 
     await deleteTestimony({ publicationId: res2.data.publicationId })
 
     bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(1)
+    expect(bill.endorseCount).toBe(1)
     expect(bill.latestTestimonyId).toBe(res1.data.publicationId)
   })
 
@@ -325,11 +336,14 @@ describe("deleteTestimony", () => {
 
     let testimony = await getPublication(uid, res.data.publicationId)
     const bill = await getBill(billId)
+    const draft = await testDb.doc(paths.draftTestimony(uid, draftId)).get()
 
     expect(testimony).toBeUndefined()
     expect(bill.latestTestimonyAt).toBeUndefined()
     expect(bill.latestTestimonyId).toBeUndefined()
     expect(bill.testimonyCount).toBe(0)
+    expect(bill.endorseCount).toBe(0)
+    expect(draft.data()!.publishedVersion).toBeUndefined()
   })
 
   it("Retains archives", async () => {
@@ -394,11 +408,6 @@ async function getPublication(uid: string, id: string): Promise<Testimony> {
 
 async function getDraft(uid: string, id: string): Promise<DraftTestimony> {
   const doc = await testDb.doc(`/users/${uid}/draftTestimony/${id}`).get()
-  return doc.data() as any
-}
-
-async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
   return doc.data() as any
 }
 

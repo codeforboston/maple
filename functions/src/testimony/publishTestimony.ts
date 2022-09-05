@@ -1,5 +1,6 @@
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
+import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
@@ -7,13 +8,15 @@ import { db, Timestamp } from "../firebase"
 import { currentGeneralCourt } from "../malegislature"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
+import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
 })
 
 export const publishTestimony = https.onCall(async (data, context) => {
-  const uid = checkAuth(context)
+  const checkEmailVerification = true
+  const uid = checkAuth(context, checkEmailVerification)
   const { draftId } = checkRequest(PublishTestimonyRequest, data)
 
   let output: TransactionOutput
@@ -64,6 +67,7 @@ class PublishTestimonyTransaction {
     await this.resolveAttachments()
 
     const newPublication: Testimony = {
+      id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
       billId: this.draft.billId,
@@ -121,10 +125,12 @@ class PublishTestimonyTransaction {
   private updateBill(newPublication: Testimony) {
     const billTestimonyFields: DocUpdate<Bill> = {
       latestTestimonyAt: newPublication.publishedAt,
-      latestTestimonyId: this.publicationRef.id
-    }
-    if (!this.currentPublication) {
-      billTestimonyFields.testimonyCount = this.bill.testimonyCount + 1
+      latestTestimonyId: this.publicationRef.id,
+      ...updateTestimonyCounts(
+        this.bill,
+        this.currentPublication,
+        newPublication
+      )
     }
     this.t.update(this.billSnap.ref, billTestimonyFields)
   }
@@ -223,9 +229,9 @@ class PublishTestimonyTransaction {
     )
 
     if (publications.size === 0) {
-      this.publicationRef = db
-        .collection(`/users/${this.uid}/publishedTestimony`)
-        .doc()
+      this.publicationRef = db.doc(
+        `/users/${this.uid}/publishedTestimony/${nanoid()}`
+      )
     } else {
       const data = publications.docs[0].data()
       this.currentPublication = Testimony.checkWithDefaults(data)

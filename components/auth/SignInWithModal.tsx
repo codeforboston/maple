@@ -1,27 +1,51 @@
-import { useRouter } from "next/router"
-import { useState, useCallback } from "react"
-import { Button, Modal } from "../bootstrap"
-import FirebaseAuth from "./FirebaseAuth"
+import { useState } from "react"
+import { Button } from "../bootstrap"
+import ForgotPasswordModal from "./ForgotPasswordModal"
+import SignInModal from "./SignInModal"
+import SignUpModal from "./SignUpModal"
+import StartModal from "./StartModal"
 
-export default function SignInWithModal() {
-  const [show, setShow] = useState(false)
+interface Props {
+  label?: string
+  className?: string
+}
+
+export default function SignInWithModal({
+  label = "Log in / Sign up",
+  className
+}: Props) {
+  const [currentModal, setCurrentModal] = useState<
+    "start" | "signIn" | "signUp" | "forgotPassword" | null
+  >(null)
+
+  const close = () => setCurrentModal(null)
 
   return (
-    <>
-      <Button onClick={() => setShow(true)}>Sign In</Button>
-      <Modal
-        show={show}
-        onHide={() => setShow(false)}
-        aria-labelledby="login-modal"
-        centered
+    <span className={className}>
+      <Button
+        variant="primary"
+        className="w-100"
+        onClick={() => setCurrentModal("start")}
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="login-modal">Sign In to Testify</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <FirebaseAuth borderless />
-        </Modal.Body>
-      </Modal>
-    </>
+        {label}
+      </Button>
+
+      <StartModal
+        show={currentModal === "start"}
+        onHide={close}
+        onSignInClick={() => setCurrentModal("signIn")}
+        onSignUpClick={() => setCurrentModal("signUp")}
+      />
+      <SignInModal
+        show={currentModal === "signIn"}
+        onHide={close}
+        onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
+      />
+      <SignUpModal show={currentModal === "signUp"} onHide={close} />
+      <ForgotPasswordModal
+        show={currentModal === "forgotPassword"}
+        onHide={() => setCurrentModal("signIn")}
+      />
+    </span>
   )
 }

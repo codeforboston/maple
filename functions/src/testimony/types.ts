@@ -26,6 +26,7 @@ const BaseTestimony = R({
 export type Testimony = Static<typeof Testimony>
 export const Testimony = withDefaults(
   BaseTestimony.extend({
+    id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
     version: Number,
@@ -36,10 +37,34 @@ export const Testimony = withDefaults(
     representativeDistrict: Optional(RtString),
     draftAttachmentId: Maybe(RtString)
   }),
-  { publishedAt: Timestamp.fromMillis(0), authorDisplayName: "Anonymous" }
+  {
+    // ID is backfilled
+    id: "unknown",
+    publishedAt: Timestamp.fromMillis(0),
+    authorDisplayName: "Anonymous"
+  }
 )
 
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number)
 })
+
+export const countsByPositions = {
+  endorse: "endorseCount",
+  neutral: "neutralCount",
+  oppose: "opposeCount"
+} as const
+
+export const TestimonySearchRecord = R({
+  id: RtString,
+  billId: RtString,
+  court: Number,
+  position: Union(L("endorse"), L("oppose"), L("neutral")),
+  content: RtString,
+  authorUid: RtString,
+  authorDisplayName: RtString,
+  version: Number,
+  publishedAt: Number
+})
+export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>
