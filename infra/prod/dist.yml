@@ -2338,7 +2338,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  api-key: bUtTWmltQ1VoWXV3dFlWU05za3lGVUdVago=
+  api-key: bUtTWmltQ1VoWXV3dFlWU05za3lGVUdVag==
 kind: Secret
 metadata:
   name: typesense
