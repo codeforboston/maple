@@ -1,6 +1,7 @@
+import { AttachmentLink } from "components/CommentModal/Attachment"
 import { ReactNode } from "react"
 import styled from "styled-components"
-import { Position } from "../db"
+import { Position, useDraftTestimonyAttachmentInfo } from "../db"
 import { usePublishState } from "./hooks"
 
 const maxLength = 1000
@@ -16,8 +17,9 @@ export const positionActions: Record<Position, ReactNode> = {
 }
 
 export const TestimonyPreview = styled(props => {
-  const { position, content } = usePublishState()
+  const { position, content, attachmentId, authorUid } = usePublishState()
   const snippet = clampString(content, maxLength)
+  const info = useDraftTestimonyAttachmentInfo(authorUid, attachmentId)
 
   return (
     <div {...props}>
@@ -27,11 +29,16 @@ export const TestimonyPreview = styled(props => {
         </p>
       )}
       {snippet && <p className="content-section">“{snippet}”</p>}
+      {info && <AttachmentLink className="attachment-link" attachment={info} />}
     </div>
   )
 })`
   .content-section {
     overflow-x: auto;
+  }
+  .attachment-link {
+    display: block;
+    margin-bottom: 1rem;
   }
   p {
     margin-bottom: 1rem;

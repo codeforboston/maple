@@ -71,6 +71,10 @@ export const PublishTestimony = styled(({ ...rest }) => {
     text-align: center;
     margin-bottom: 1rem;
   }
+
+  .attachment-link {
+    color: white;
+  }
 `
 
 const PublishButton = ({ publish }: { publish: UsePublisTestimony }) => {
