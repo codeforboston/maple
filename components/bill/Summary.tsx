@@ -1,8 +1,9 @@
+import * as links from "components/links"
+import { useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Row, Button, Modal } from "../bootstrap"
+import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
-import { useState } from "react"
 
 const SummaryContainer = styled(Container)`
   background-color: white;
@@ -46,6 +47,7 @@ export const Summary = ({
   const [showBillDetails, setShowBillDetails] = useState(false)
   const handleShowBillDetails = () => setShowBillDetails(true)
   const handleHideBillDetails = () => setShowBillDetails(false)
+  const billText = bill?.content?.DocumentText
 
   return (
     <SummaryContainer className={className}>
@@ -53,13 +55,19 @@ export const Summary = ({
         <TitleFormat>
           {bill.content.Title}
           <div className="d-flex justify-content-end">
-            <StyledButton
-              variant="link"
-              className="m-1"
-              onClick={handleShowBillDetails}
-            >
-              Read more..
-            </StyledButton>
+            {billText ? (
+              <StyledButton
+                variant="link"
+                className="m-1"
+                onClick={handleShowBillDetails}
+              >
+                Read more..
+              </StyledButton>
+            ) : (
+              <links.External href={links.billPdfUrl(bill.id)}>
+                Download PDF
+              </links.External>
+            )}
           </div>
 
           <Modal
