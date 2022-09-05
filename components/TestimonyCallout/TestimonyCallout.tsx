@@ -1,6 +1,4 @@
-import { relative } from "path"
-import React, { ReactNode } from "react"
-import { Col, Image, Row } from "react-bootstrap"
+import { Image } from "react-bootstrap"
 import styled from "styled-components"
 import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
@@ -46,7 +44,7 @@ const CalloutBalloon = styled.div`
   .callout-angle {
     flex: 0 0 3rem;
     height: 3rem;
-    clip-path: polygon(0 100%, 100% 100%, 100% 0);
+    clip-path: polygon(-5% 105%, 105% 105%, 105% -5%);
   }
 
   .balloon {
