@@ -28,3 +28,12 @@ patches:
       version: v1
       kind: Service
       name: prod-traefik
+
+  # https://github.com/traefik/traefik/issues/8786#issuecomment-1237273950
+  - patch: |-
+      - op: remove
+        path: /spec/template/spec/containers/0/readinessProbe
+    target:
+      version: v1
+      kind: Deployment
+      name: prod-traefik

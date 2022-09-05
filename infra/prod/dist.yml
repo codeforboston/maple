@@ -2465,7 +2465,6 @@ spec:
         - --certificatesresolvers.letsencrypt.acme.email=me@alexjball.com
         - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
         - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
-        - --providers.providersthrottleduration=100
         image: traefik:v2.8.4
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -2491,15 +2490,6 @@ spec:
         - containerPort: 8443
           name: websecure
           protocol: TCP
-        readinessProbe:
-          failureThreshold: 1
-          httpGet:
-            path: /ping
-            port: 9000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
         resources: null
         securityContext:
           capabilities:
