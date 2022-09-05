@@ -24,8 +24,8 @@ spec:
               memory: 1Gi
               cpu: "1"
             requests:
-              memory: 500Mi
-              cpu: 300m
+              memory: 50Mi
+              cpu: 50m
           volumeMounts:
             - mountPath: /app/data
               name: datav
@@ -35,7 +35,7 @@ spec:
             - name: TYPESENSE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: typesense
+                  name: "{{ .Values.secretName }}"
                   key: api-key
             - name: TYPESENSE_ENABLE_CORS
               value: "true"

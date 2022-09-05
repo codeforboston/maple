@@ -96,6 +96,7 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 ## Additional Documentation
 
 - [Deployment Details](./Deployment.md)
+- [Kubernetes Notes](./Kubernetes.md)
 - [Search Design](./Search.md)
 
 ## Development FAQ

@@ -14,7 +14,8 @@ metadata:
 spec:
   entryPoints:
     - websecure
-  tls: {}
+  tls:
+    certResolver: letsencrypt
   routes:
     - match: "Host(`{{ .Values.apiDomain }}`) && PathPrefix(`/search`)"
       kind: Rule
