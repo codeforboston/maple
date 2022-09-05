@@ -1,11 +1,9 @@
-import styled from "styled-components"
-import { Image } from "../bootstrap"
-import { BillProps } from "./types"
-import { LabeledContainer } from "./LabeledContainer"
 import { External } from "../links"
-import { Cosponsors } from "./Cosponsors"
+import { LabeledIcon } from "../shared"
 import { FC } from "../types"
-import { LabeledIcon, TitledSectionCard } from "../shared"
+import { Cosponsors } from "./Cosponsors"
+import { LabeledContainer } from "./LabeledContainer"
+import { BillProps } from "./types"
 
 export const SponsorsAndCommittees: FC<BillProps> = ({ bill, className }) => {
   return (
@@ -26,7 +24,13 @@ const Committees: FC<BillProps> = ({ bill }) => {
         <LabeledIcon
           idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
           mainText="Committee"
-          subText={current.name} // can this be link? {`https://malegislature.gov/Committees/Detail/${current.id}`}
+          subText={
+            <External
+              href={`https://malegislature.gov/Committees/Detail/${current.id}`}
+            >
+              {current.name}
+            </External>
+          }
         />
       </div>
     </div>
@@ -52,54 +56,32 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
         <LabeledIcon
           idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
           mainText="Lead Sponsor"
-          subText={primary.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
+          subText={
+            <External
+              href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
+            >
+              {primary.Name}
+            </External>
+          }
         />
 
-        {bill.content.Cosponsors.slice(0, 2).map(s => (
-          <>
-            {/* don't show lead sponsor again */}
-            {s.Id != primary.Id ? (
-              <LabeledIcon
-                idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
-                mainText="Sponsor"
-                subText={s.Name} // can this be link? href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
-              />
-            ) : (
-              <></>
-            )}
-          </>
-        ))}
+        {bill.content.Cosponsors.filter(s => s.Id !== primary.Id)
+          .slice(0, 2)
+          .map(s => (
+            <LabeledIcon
+              key={s.Id}
+              idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
+              mainText="Sponsor"
+              subText={
+                <External
+                  href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
+                >
+                  {s.Name}
+                </External>
+              }
+            />
+          ))}
       </div>
     </div>
-  )
-}
-
-const Styled = {
-  Item: styled.div`
-    font-size: 0.75rem;
-    a {
-      color: var(--bs-blue);
-    }
-    .label {
-      font-weight: bold;
-    }
-    .content {
-      max-width: 15rem;
-    }
-  `
-}
-
-const Item: FC<{
-  label: string
-  name: string
-  href: string
-}> = ({ label, name, href, className }) => {
-  return (
-    <Styled.Item className={` ${className}`}>
-      <div className="label">{label}</div>
-      <div className="content">
-        <External href={href}>{name}</External>
-      </div>
-    </Styled.Item>
   )
 }
