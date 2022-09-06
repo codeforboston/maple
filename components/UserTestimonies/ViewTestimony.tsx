@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
 import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
-import { FormattedBillTitle, formatTestimonyLinks } from "../formatting"
+import { formatTestimonyLinks } from "../formatting"
 import { Internal, Wrap } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
@@ -81,11 +81,14 @@ export const TestimonyItem = ({
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
-      <div className={`bg-white border-0 h3 d-flex`}>
-        <StyledTitle className="text-secondary" href="#">
-          {bill && <FormattedBillTitle bill={bill} />}
+      <div className={`bg-white border-0 h5 d-flex`}>
+        <StyledTitle
+          className="text-secondary"
+          href={`/profile?id=${testimony.authorUid}`}
+        >
+          {testimony.authorDisplayName}
         </StyledTitle>
-        {isMobile && (
+        {isMobile && showControls && (
           <>
             <Image
               className="px-2 ms-auto align-self-center"
