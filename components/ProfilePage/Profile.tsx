@@ -16,7 +16,7 @@ import {
   Header,
   ProfileDisplayName,
   UserIcon,
-  VerifiedBadge,
+  VerifiedBadge
 } from "./StyledEditProfileCompnents"
 
 const StyledContainer = styled(Container)`
@@ -94,7 +94,7 @@ export function ProfilePage({ id }: { id: string }) {
     items.execute()
   }, [items])
 
-  const isOrganization: boolean = profile?.role==="organization" || false
+  const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
 
@@ -262,7 +262,6 @@ export const ProfileHeader = ({
               <div className={"verifiedText"}>verified organization</div>
             </VerifiedBadge>
           )}
-
         </Col>
       ) : (
         <ProfileDisplayName

@@ -86,17 +86,15 @@ export function EditProfileForm({
     <Container>
       <Header>
         <Col>Edit Profile</Col>
-          <Col className={`d-flex justify-content-end`}>
-            
-              <Internal href={`/profile?id=${uid}`}>
-                <Button 
-                className={`btn btn-lg`}
-                disabled={!!formUpdated}>
-                  {!profile.organization ? "View your profile": "View your organization page"}
-                  </Button>
-              </Internal>
-            
-          </Col>
+        <Col className={`d-flex justify-content-end`}>
+          <Internal href={`/profile?id=${uid}`}>
+            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+              {!profile.organization
+                ? "View your profile"
+                : "View your organization page"}
+            </Button>
+          </Internal>
+        </Col>
       </Header>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
         <StyledTabNav>

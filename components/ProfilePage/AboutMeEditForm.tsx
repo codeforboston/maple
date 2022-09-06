@@ -9,7 +9,7 @@ import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
 import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
-import { Internal } from "../links";
+import { Internal } from "../links"
 
 type UpdateProfileData = {
   name: string
@@ -49,8 +49,13 @@ async function updateProfile(
   await updateFullName(data.name)
 }
 
-
-export function AboutMeEditForm({ profile, actions, uid, className, setFormUpdated }: Props) {
+export function AboutMeEditForm({
+  profile,
+  actions,
+  uid,
+  className,
+  setFormUpdated
+}: Props) {
   const {
     register,
     formState: { errors, isDirty },
@@ -84,8 +89,6 @@ export function AboutMeEditForm({ profile, actions, uid, className, setFormUpdat
       ? location.assign(`/organization?id=${uid}`)
       : location.assign(`/profile?=${uid}`)
   }
-
-
 
   useEffect(() => {
     setFormUpdated(isDirty)
@@ -158,9 +161,13 @@ export function AboutMeEditForm({ profile, actions, uid, className, setFormUpdat
               </Button>
             </Col>
             <Col className="align-items-center" xs="auto">
-              <Button className="flex-grow-0 mt-5 mx-auto" 
-                href='/profile'
-                style={{backgroundColor: "var(--bs-blue)"}}>Cancel</Button>
+              <Button
+                className="flex-grow-0 mt-5 mx-auto"
+                href="/profile"
+                style={{ backgroundColor: "var(--bs-blue)" }}
+              >
+                Cancel
+              </Button>
             </Col>
           </Row>
         </div>
