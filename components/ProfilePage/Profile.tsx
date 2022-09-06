@@ -1,10 +1,10 @@
+import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
 import { useCallback } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { useSendEmailVerification } from "../auth/hooks"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
@@ -155,6 +155,7 @@ export function ProfilePage({ id }: { id: string }) {
                   {...testimony}
                   showControls={isUser}
                   showBillNumber
+                  className="mb-4"
                 />
               </Col>
             </Row>
