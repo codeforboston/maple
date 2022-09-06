@@ -4,7 +4,6 @@ import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
-import { LabeledContainer } from "./LabeledContainer"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
@@ -35,12 +34,12 @@ export const Layout = ({ bill }: BillProps) => {
           <Summary bill={bill} />
         </Col>
       </Row>
-      <Row className="mt-4">
+      <Row>
         <Col md={8}>
-          <SponsorsAndCommittees bill={bill} />
-          <BillTestimonies bill={bill.content} />
+          <SponsorsAndCommittees bill={bill} className="mt-4" />
+          <BillTestimonies bill={bill.content} className="mt-4" />
         </Col>
-        <Col md={4}>
+        <Col md={4} className="mt-4">
           <TestimonyFormPanel bill={bill} />
         </Col>
       </Row>

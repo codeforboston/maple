@@ -76,7 +76,15 @@ const Layout = () => {
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements className="mt-2 mb-2" />
-          {status === "empty" ? <NoResults /> : <Hits hitComponent={BillHit} />}
+          {status === "empty" ? (
+            <NoResults>
+              Your search has yielded zero results!
+              <br />
+              <b>Try another search term</b>
+            </NoResults>
+          ) : (
+            <Hits hitComponent={BillHit} />
+          )}
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>

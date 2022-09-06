@@ -1,11 +1,17 @@
 import { formUrl } from "components/publish/hooks"
+import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
-import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
+import {
+  Testimony,
+  useBill,
+  usePublicProfile,
+  UsePublishedTestimonyListing
+} from "../db"
 import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
@@ -16,6 +22,7 @@ const ViewTestimony = (
     search?: boolean
     showControls?: boolean
     showBillNumber?: boolean
+    className?: string
   }
 ) => {
   const {
@@ -23,7 +30,8 @@ const ViewTestimony = (
     items,
     setFilter,
     showControls = false,
-    showBillNumber = false
+    showBillNumber = false,
+    className
   } = props
   const testimony = items.result ?? []
 
@@ -32,16 +40,25 @@ const ViewTestimony = (
   return (
     <TitledSectionCard
       title={"Testimony"}
+      className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      {testimony.map(t => (
-        <TestimonyItem
-          key={t.authorUid + t.billId}
-          testimony={t}
-          showControls={showControls}
-          showBillNumber={showBillNumber}
-        />
-      ))}
+      {testimony.length > 0 ? (
+        testimony.map(t => (
+          <TestimonyItem
+            key={t.authorUid + t.billId}
+            testimony={t}
+            showControls={showControls}
+            showBillNumber={showBillNumber}
+          />
+        ))
+      ) : (
+        <NoResults>
+          There is no testimony here. <br />
+          <b>Be the first and add one!</b>
+        </NoResults>
+      )}
+      <div className="p-3" />
       {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )
@@ -65,7 +82,26 @@ export const SortTestimonyDropDown = ({
   )
 }
 
-const StyledTitle = styled(Internal)`
+const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
+  const profile = usePublicProfile(testimony.authorUid)
+
+  const authorName = profile.loading
+    ? ""
+    : profile.result?.fullName ?? testimony.authorDisplayName ?? "Anonymous"
+  const linkToProfile = !!profile.result
+  return (
+    <div {...props}>
+      {linkToProfile ? (
+        <Internal href={`/profile?id=${testimony.authorUid}`}>
+          {authorName}
+        </Internal>
+      ) : (
+        authorName
+      )}
+    </div>
+  )
+})`
+  font-weight: bold;
   .testimony-title {
     width: 60%;
   }
@@ -94,12 +130,7 @@ export const TestimonyItem = ({
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
       <div className={`bg-white border-0 h5 d-flex`}>
-        <StyledTitle
-          className="text-secondary fw-bold"
-          href={`/profile?id=${testimony.authorUid}`}
-        >
-          {testimony.authorDisplayName}
-        </StyledTitle>
+        <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
           <>
             <Internal href={formUrl(testimony.billId)}>

@@ -5,7 +5,6 @@ import { Card, Col, Row } from "../bootstrap"
 
 const StyledCard = styled(Card)`
   flex-grow: 1;
-  margin: 1rem;
   border-radius: 1rem;
   background: var(--bs-white);
   border: none;
