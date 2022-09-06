@@ -94,7 +94,7 @@ export function ProfilePage({ id }: { id: string }) {
     items.execute()
   }, [items])
 
-  const isOrganization: boolean = profile?.organization || false
+  const isOrganization: boolean = profile?.role==="organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
 
@@ -139,7 +139,7 @@ export function ProfilePage({ id }: { id: string }) {
               <Col className={`${isMobile && "mb-4"}`}>
                 <ProfileAboutSection profile={profile} isMobile={isMobile} />
               </Col>
-              {isUser && isOrganization && (
+              {!isOrganization && (
                 <Col xs={12} md={5}>
                   <ProfileLegislators
                     rep={profile?.representative}
