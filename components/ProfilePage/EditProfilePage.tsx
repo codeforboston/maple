@@ -57,7 +57,14 @@ export function EditProfileForm({
     {
       title: "About You",
       eventKey: "AboutYou",
-      content: <AboutMeEditForm profile={profile} actions={actions} uid={uid} />
+      content: (
+        <AboutMeEditForm
+          profile={profile}
+          actions={actions}
+          uid={uid}
+          className="mt-3 mb-4"
+        />
+      )
     },
     {
       title: "Testimonies",
@@ -67,7 +74,7 @@ export function EditProfileForm({
           {...testimony}
           showControls={true}
           showBillNumber
-          className="mb-4"
+          className="mt-3 mb-4"
         />
       )
     }

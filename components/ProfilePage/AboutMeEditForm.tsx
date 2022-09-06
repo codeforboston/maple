@@ -23,6 +23,7 @@ type Props = {
   profile: Profile
   actions: ProfileHook
   uid?: string
+  className?: string
 }
 
 async function updateProfile(
@@ -45,7 +46,7 @@ async function updateProfile(
   await updateFullName(data.name)
 }
 
-export function AboutMeEditForm({ profile, actions, uid }: Props) {
+export function AboutMeEditForm({ profile, actions, uid, className }: Props) {
   const {
     register,
     formState: { errors },
@@ -71,7 +72,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
   }
 
   return (
-    <TitledSectionCard>
+    <TitledSectionCard className={className}>
       <Form onSubmit={onSubmit}>
         <Header
           title={"About You"}
