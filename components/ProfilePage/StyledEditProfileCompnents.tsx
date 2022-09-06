@@ -120,3 +120,21 @@ export const UserIcon = styled(Image).attrs(props => ({
   background-color: var(--bs-blue);
   flex: 0;
 `
+export const VerifiedBadge = styled.div.attrs(props => ({
+  className: props.className
+}))`
+  background-color: var(--bs-blue);
+  border-radius: 70px;
+  display: flex;
+  padding: 3px 25.8px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+
+  .verifiedText {
+    font-size: 1rem;
+    color: white;
+    align-self: center;
+    justify-self: center;
+  }
+`

@@ -86,29 +86,17 @@ export function EditProfileForm({
     <Container>
       <Header>
         <Col>Edit Profile</Col>
-        {!formUpdated && (
           <Col className={`d-flex justify-content-end`}>
-            {!profile.organization ? (
+            
               <Internal href={`/profile?id=${uid}`}>
-                <Button className={`btn btn-lg`}>View your profile</Button>
+                <Button 
+                className={`btn btn-lg`}
+                disabled={!!formUpdated}>
+                  {!profile.organization ? "View your profile": "View your organization page"}
+                  </Button>
               </Internal>
-            ) : (
-              <Internal href={`/organization?id=${uid}`}>
-                <Button className={`btn btn-lg`}>
-                  View your organization page
-                </Button>
-              </Internal>
-            )}
+            
           </Col>
-        )}
-      </Header>
-      <Header className="edit-profile-header">
-        <Col className="align-items-center d-flex">Edit Profile</Col>
-        <Col className={`d-flex justify-content-center w-100`}>
-          <Internal href={`/profile?id=${uid}`} className="view-edit-profile">
-            <Button className={`btn btn-lg`}>View your profile</Button>
-          </Internal>
-        </Col>
       </Header>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
         <StyledTabNav>

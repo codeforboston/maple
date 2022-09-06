@@ -9,6 +9,7 @@ import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
 import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
+import { Internal } from "../links";
 
 type UpdateProfileData = {
   name: string
@@ -157,20 +158,11 @@ export function AboutMeEditForm({ profile, actions, uid, className, setFormUpdat
               </Button>
             </Col>
             <Col className="align-items-center" xs="auto">
-              <Button
-                className="flex-grow-0 mt-5 mx-auto"
-                variant="outline-dark"
-                onClick={handleRedirect}
-              >
-                Cancel
-              </Button>
+              <Button className="flex-grow-0 mt-5 mx-auto" 
+                href='/profile'
+                style={{backgroundColor: "var(--bs-blue)"}}>Cancel</Button>
             </Col>
           </Row>
-          <Form.Group className="d-flex save-profile-button">
-            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
-              Save Profile
-            </Button>
-          </Form.Group>
         </div>
       </Form>
       {!organization && (
