@@ -10,7 +10,7 @@ import {
 } from "./hooks"
 import * as nav from "./NavigationButtons"
 import { StepHeader } from "./StepHeader"
-import { TestimonyPreview } from "./TestimonyPreview"
+import { YourTestimony } from "./TestimonyPreview"
 
 type UsePublisTestimony = ReturnType<typeof usePublishTestimony>
 function usePublishTestimony() {
@@ -38,10 +38,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
   return (
     <div {...rest}>
       <StepHeader>Confirm Your Choices</StepHeader>
-      <div className="testimony-container mt-4">
-        <div className="title">Your Testimony</div>
-        <TestimonyPreview />
-      </div>
+      <YourTestimony className="mt-4" />
 
       {error && <div className="mt-2 text-danger">Error: {error.message}</div>}
 
@@ -51,27 +48,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
       />
     </div>
   )
-})`
-  @media (min-width: 768px) {
-    .testimony-container {
-      padding: 3rem 4rem 3rem 4rem !important;
-    }
-  }
-
-  .testimony-container {
-    color: white;
-    padding: 1rem;
-    background-color: var(--bs-blue);
-    border-radius: 1rem;
-  }
-
-  .title {
-    font-weight: bold;
-    font-size: 1.25rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-`
+})``
 
 const PublishButton = ({ publish }: { publish: UsePublisTestimony }) => {
   return (

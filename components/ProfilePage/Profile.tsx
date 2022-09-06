@@ -151,7 +151,11 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row>
               <Col xs={12}>
-                <ViewTestimony {...testimony} showControls={isUser} />
+                <ViewTestimony
+                  {...testimony}
+                  showControls={isUser}
+                  showBillNumber
+                />
               </Col>
             </Row>
           </StyledContainer>
@@ -280,9 +284,9 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
   const sendEmailVerification = useSendEmailVerification()
 
   return (
-    <TitledSectionCard title={"Verify Your Account"} className="col-md-5">
+    <TitledSectionCard title={"Verify Your Account"} className="col">
       <div className="px-5 pt-2 pb-4">
-        <p>
+        <p className="fw-bold text-info">
           We sent a link to your email to verify your account, but you haven't
           clicked it yet. If you don't see it, be sure to check your spam
           folder.
@@ -298,7 +302,8 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
 
         {sendEmailVerification.status !== "success" ? (
           <LoadingButton
-            variant="light"
+            variant="info"
+            className="text-white"
             loading={sendEmailVerification.loading}
             onClick={() => sendEmailVerification.execute(user)}
           >

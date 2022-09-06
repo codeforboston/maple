@@ -1,16 +1,8 @@
-import { useState, useCallback } from "react"
+import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
-import {
-  Button,
-  Col,
-  Container,
-  Nav,
-  NavDropdown,
-  Row,
-  Spinner
-} from "../bootstrap"
+import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
@@ -22,7 +14,6 @@ import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
 import {
   Header,
-  StyledDropdownNav,
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileCompnents"
@@ -71,7 +62,9 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <ViewTestimony {...testimony} showControls={true} />
+      content: (
+        <ViewTestimony {...testimony} showControls={true} showBillNumber />
+      )
     }
   ]
 

@@ -39,7 +39,7 @@ const MainPanel = styled(({ ...rest }) => {
         deleteTestimony={deleteTestimony}
       />
       <div className="divider mt-3 mb-3" />
-      <TestimonyPreview />
+      <TestimonyPreview className="mb-2" />
       {unpublishedDraft && <div className="draft-badge">Draft</div>}
     </div>
   )

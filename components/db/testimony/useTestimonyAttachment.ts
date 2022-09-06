@@ -99,6 +99,26 @@ export async function getPublishedTestimonyAttachmentUrl(id: string) {
   return info.url
 }
 
+export async function getDraftTestimonyAttachmentInfo(uid: string, id: string) {
+  const info = await getAttachmentInfo(draftAttachment(uid, id))
+  return info
+}
+
+export function useDraftTestimonyAttachmentInfo(uid?: string, id?: string) {
+  const [info, setInfo] = useState<AttachmentInfo | undefined>(undefined)
+  useEffect(() => {
+    if (id && uid) {
+      getDraftTestimonyAttachmentInfo(uid, id)
+        .then(setInfo)
+        .catch(e => {
+          console.warn("Error getting draft attachment info", e)
+        })
+    }
+    return () => setInfo(undefined)
+  }, [id, uid])
+  return info
+}
+
 export function usePublishedTestimonyAttachment(id: string) {
   const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
@@ -245,6 +265,8 @@ async function resolveAttachment(
     dispatch({ type: "error", error })
   }
 }
+
+export type AttachmentInfo = Awaited<ReturnType<typeof getAttachmentInfo>>
 
 async function getAttachmentInfo(file: StorageReference) {
   const url = await getDownloadURL(file)

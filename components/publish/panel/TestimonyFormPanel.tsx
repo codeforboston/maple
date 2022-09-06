@@ -3,7 +3,12 @@ import { useAuth } from "../../auth"
 import { Bill } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import { resolveBill, usePanelStatus } from "../hooks"
-import { CompleteTestimony, CreateTestimony, SignedOut } from "./ctas"
+import {
+  CompleteTestimony,
+  CreateTestimony,
+  SignedOut,
+  UnverifiedEmail
+} from "./ctas"
 import { ThankYouModal } from "./ThankYouModal"
 import { YourTestimony } from "./YourTestimony"
 
@@ -28,6 +33,8 @@ const Panel = () => {
       return null
     case "signedOut":
       return <SignedOut />
+    case "unverified":
+      return <UnverifiedEmail />
     case "noTestimony":
       return <CreateTestimony />
     case "createInProgress":
