@@ -25,28 +25,31 @@ type Props = {
   actions: ProfileHook
   uid?: string
   setFormUpdated?: any
+  className?: string
 }
 
 async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  const { updateIsPublic, updateSocial, updateAbout, updateDisplayName } =
-    actions
+  const {
+    updateIsPublic,
+    updateSocial,
+    updateAbout,
+    updateDisplayName,
+    updateFullName
+  } = actions
 
   await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
+  await updateFullName(data.name)
 }
 
-export function AboutMeEditForm({
-  profile,
-  actions,
-  uid,
-  setFormUpdated
-}: Props) {
+
+export function AboutMeEditForm({ profile, actions, uid, className, setFormUpdated }: Props) {
   const {
     register,
     formState: { errors, isDirty },
@@ -88,26 +91,26 @@ export function AboutMeEditForm({
   }, [isDirty, setFormUpdated])
 
   return (
-    <TitledSectionCard>
+    <TitledSectionCard className={className}>
       <Form onSubmit={onSubmit}>
         <Header
           title={"About You"}
           bug={
-            <Row className={`justify-content-center`}>
-              <FormCheck
+            <Row className={`justify-content-center align-items-center`}>
+              <Form.Check
                 {...register("public")}
-                className={`col-auto`}
+                className={`col-auto about-me-checkbox`}
                 type="checkbox"
                 defaultChecked={isPublic}
               />
-              <Form.Label htmlFor="public" className={`col`}>
+              <Form.Label htmlFor="public" className={`col my-1`}>
                 Allow others to see your profile
               </Form.Label>
             </Row>
           }
         ></Header>
-        <div className={`mx-1 mx-md-3 d-flex flex-column gap-3`}>
-          <Form.FloatingLabel label="User Type" className="mb-3">
+        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
+          {/* <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
               className="bg-white"
               {...register("organization")}
@@ -117,7 +120,7 @@ export function AboutMeEditForm({
               <option value="organization">Organization</option>
               <option value="individual">Individual</option>
             </Form.Select>
-          </Form.FloatingLabel>
+          </Form.FloatingLabel> */}
           <Input
             label="Name"
             {...register("name")}
@@ -126,21 +129,23 @@ export function AboutMeEditForm({
           <Input
             as="textarea"
             {...register("aboutYou")}
-            style={{ height: "10rem" }}
-            label="About You"
+            style={{ height: "20rem" }}
+            label="Write something about yourself"
             defaultValue={about}
           />
           <div className={clsx("w-100", organization && "row")}>
             {organization && <ImageInput />}
-            <div className="col">
+            <div className="row">
               <Input
                 label="Twitter Username"
                 defaultValue={social?.twitter}
+                className=" w-50"
                 {...register("twitter")}
               />
               <Input
                 label="LinkedIn Username"
                 defaultValue={social?.linkedIn}
+                className="w-50"
                 {...register("linkedIn")}
               />
             </div>
@@ -161,6 +166,11 @@ export function AboutMeEditForm({
               </Button>
             </Col>
           </Row>
+          <Form.Group className="d-flex save-profile-button">
+            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
+              Save Profile
+            </Button>
+          </Form.Group>
         </div>
       </Form>
       {!organization && (

@@ -11,7 +11,8 @@ declare global {
 
 const envs: Record<string, { url: string; key?: string; alias?: string }> = {
   local: { url: "http://localhost:8108", key: "test-api-key" },
-  dev: { url: "https://maple.aballslab.com/search", alias: "default" }
+  dev: { url: "https://maple.aballslab.com/search", alias: "default" },
+  prod: { url: "https://maple-prod.alexjball.com/search", alias: "prod" }
 }
 
 type Args = { url?: string; key?: string; env?: string }
@@ -23,7 +24,7 @@ yargs(hideBin(process.argv))
     () => {},
     (args: Args) => {
       globalThis.client = resolveClient(args)
-      repl.start({})
+      repl.start({}).setupHistory("typesense-admin.history", () => {})
     }
   )
   .command(
@@ -67,7 +68,8 @@ yargs(hideBin(process.argv))
     if (!argv.env && !argv.url) return "Must specify env or url"
     if (!argv.env && !argv.key) return "Must specify env or key"
     return true
-  }).argv
+  })
+  .strictCommands().argv
 
 function resolveClient(args: Args) {
   let key: string | undefined, url: string | undefined

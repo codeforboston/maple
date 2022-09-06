@@ -22,6 +22,8 @@ export type { BillHistory } from "../../functions/src/bills/types"
 export type MemberReference = {
   Id: string
   Name: string
+  /**  1 = Legislative Member, 2 = Committee, 3 = Public Request, 4 = Special
+   * Request */
   Type: number
 }
 

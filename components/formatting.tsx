@@ -1,6 +1,7 @@
 import Autolinker from "autolinker"
 import createDOMPurify, { DOMPurifyI } from "dompurify"
 import { Timestamp } from "firebase/firestore"
+import { useMediaQuery } from "usehooks-ts"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
 
@@ -35,6 +36,8 @@ export const formatBillId = (id: string) => {
   }
 }
 
+export const splitParagraphs = (s: string) => s.split(/\s*[\r\n]+\s*/)
+
 export const formatTestimonyLinks = (testimony: string, limit?: number) => {
   const linkedTestimony = Autolinker.link(
     limit ? testimony.slice(0, limit) : testimony,
@@ -43,12 +46,11 @@ export const formatTestimonyLinks = (testimony: string, limit?: number) => {
     }
   )
 
-  const paragraphedTestimony = linkedTestimony
-    .split(/\s*[\r\n]+\s*/)
+  const paragraphedTestimony = splitParagraphs(linkedTestimony)
     .map(line => `<p>${line}</p>`)
     .join("")
 
-  return sanitize(paragraphedTestimony)
+  return { __html: sanitize(paragraphedTestimony) }
 }
 
 const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
@@ -60,13 +62,15 @@ export const formatTimestamp = (t?: Timestamp) => {
 }
 
 export const FormattedBillTitle = ({ bill }: { bill: Bill | BillContent }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const billInfo = "content" in bill ? bill.content : bill
 
   const { BillNumber, Title } = billInfo
 
   return (
     <div className="mt-2">
-      {formatBillId(BillNumber)}: {Title}
+      {formatBillId(BillNumber)}:{" "}
+      {isMobile ? Title.substring(0, 45) + "..." : Title}
     </div>
   )
 }

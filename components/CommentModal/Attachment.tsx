@@ -2,13 +2,15 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react"
 import { Button, Col, Form, InputGroup, Row, Spinner } from "../bootstrap"
-import { UseDraftTestimonyAttachment } from "../db"
+import { AttachmentInfo, UseDraftTestimonyAttachment } from "../db"
 import { External } from "../links"
 
 export function Attachment({
-  attachment
+  attachment,
+  className
 }: {
   attachment: UseDraftTestimonyAttachment
+  className?: string
 }) {
   const { upload, error, id } = attachment
   const [key, setKey] = useState(0),
@@ -29,7 +31,7 @@ export function Attachment({
   }, [clearInput, error])
 
   return (
-    <Form.Group controlId="testimonyAttachment">
+    <Form.Group className={className} controlId="testimonyAttachment">
       <Label attachment={attachment} />
       {id ? (
         <Attached attachment={attachment} />
@@ -63,11 +65,7 @@ const Label = ({
 }) => {
   return (
     <Form.Label>
-      <span className="me-1">
-        <b>(Optional) Upload PDF Attachment:</b> You may submit your testimony
-        in PDF form, but you still need to enter a brief description of your
-        testimony in the text field above.
-      </span>
+      <span className="me-1">Upload Your Testimony as an Attachment</span>
       {status === "loading" && <Spinner animation="border" size="sm" />}
       {status === "error" && (
         <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
@@ -76,20 +74,43 @@ const Label = ({
   )
 }
 
+export const AttachmentLink = ({
+  attachment: { size, url, name },
+  className
+}: {
+  attachment: AttachmentInfo
+  className?: string
+}) => {
+  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
+    .filter(Boolean)
+    .join(" - ")
+  return (
+    <External className={className} href={url}>
+      {linkLabel}
+    </External>
+  )
+}
+
 const Attached = ({
-  attachment: { url, name, size, remove, status }
+  attachment
 }: {
   attachment: UseDraftTestimonyAttachment
 }) => {
-  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
-      .filter(Boolean)
-      .join(" - "),
-    viewLink = url ? <External href={url}>{linkLabel}</External> : null
+  const { url, name, size, id, remove, status } = attachment
   return (
     <Row className="align-items-center">
-      <Col md="auto">{viewLink}</Col>
+      <Col md="auto">
+        {url && size && name && id ? (
+          <AttachmentLink attachment={{ url, size, name, id }} />
+        ) : null}
+      </Col>
       <Col>
-        <Button onClick={remove} disabled={status === "loading"}>
+        <Button
+          variant="secondary"
+          className="py-1 px-2"
+          onClick={remove}
+          disabled={status === "loading"}
+        >
           Remove
         </Button>
       </Col>
@@ -112,7 +133,9 @@ const StatusMessage = ({
 
     return <Form.Text className="text-danger">{message}</Form.Text>
   } else if (status === "ok" && !id) {
-    return <Form.Text>Files must be less than 10 MB</Form.Text>
+    return (
+      <Form.Text>Files must be PDF documents and less than 10 MB.</Form.Text>
+    )
   } else {
     return null
   }

@@ -1,9 +1,11 @@
 import { useCallback } from "react"
-import AddTestimony from "../AddTestimony/AddTestimony"
 import { BillContent, usePublishedTestimonyListing } from "../db"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 
-export const BillTestimonies = (props: { bill: BillContent }) => {
+export const BillTestimonies = (props: {
+  bill: BillContent
+  className?: string
+}) => {
   const { bill } = props
   const testimony = usePublishedTestimonyListing({
     billId: bill.BillNumber
@@ -17,8 +19,11 @@ export const BillTestimonies = (props: { bill: BillContent }) => {
 
   return (
     <>
-      <ViewTestimony {...testimony} showControls={false} />
-      <AddTestimony bill={bill} refreshtable={refreshtable} />
+      <ViewTestimony
+        {...testimony}
+        showControls={false}
+        className={props.className}
+      />
     </>
   )
 }

@@ -1,8 +1,10 @@
-import { useCallback } from "react"
+import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
+import { useCallback } from "react"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { useSendEmailVerification } from "../auth/hooks"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
@@ -16,9 +18,68 @@ import {
   UserIcon
 } from "./StyledEditProfileCompnents"
 
+const StyledContainer = styled(Container)`
+  .about-me-checkbox input {
+    height: 25px;
+    width: 25px;
+    margin-top: 0;
+    border-color: #12266f;
+  }
+
+  .input-social-media::placeholder {
+    font-size: 12px;
+  }
+
+  .save-profile-button > button {
+    width: 100%;
+  }
+
+  .edit-profile-header {
+    flex-direction: column !important;
+  }
+
+  .your-legislators-width {
+    width: 100%;
+  }
+
+  .view-edit-profile {
+    width: 100%;
+    text-decoration: none;
+  }
+
+  .view-edit-profile > button {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .edit-profile-header {
+      flex-direction: row !important;
+    }
+
+    .your-legislators-width {
+      width: 50%;
+    }
+
+    .save-profile-button {
+      align-self: flex-end;
+      width: auto;
+    }
+
+    .view-edit-profile {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .view-edit-profile > button {
+      width: auto;
+    }
+  }
+`
+
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   const isUser = user?.uid === id
 
@@ -45,7 +106,7 @@ export function ProfilePage({ id }: { id: string }) {
       ) : (
         <>
           {isUser && (
-            <Container
+            <StyledContainer
               fluid
               className={`text-white text-center text-middle`}
               style={{
@@ -58,14 +119,15 @@ export function ProfilePage({ id }: { id: string }) {
               }}
             >
               <p>Currently viewing your profile</p>
-            </Container>
+            </StyledContainer>
           )}
-          <Container>
+          <StyledContainer>
             <ProfileHeader
               displayName={displayName}
               isUser={isUser}
               isOrganization={isOrganization || false}
               profileImage={profileImage || "./profile-icon.svg"}
+              isMobile={isMobile}
             />
 
             {isUser && !user.emailVerified ? (
@@ -73,11 +135,11 @@ export function ProfilePage({ id }: { id: string }) {
             ) : null}
 
             <Row className={`mb-5`}>
-              <Col>
-                <ProfileAboutSection profile={profile} />
+              <Col className={`${isMobile && "mb-4"}`}>
+                <ProfileAboutSection profile={profile} isMobile={isMobile} />
               </Col>
               {isUser && (
-                <Col xs={12} md={4}>
+                <Col xs={12} md={5}>
                   <ProfileLegislators
                     rep={profile?.representative}
                     senator={profile?.senator}
@@ -89,10 +151,15 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row>
               <Col xs={12}>
-                <ViewTestimony {...testimony} showControls={isUser} />
+                <ViewTestimony
+                  {...testimony}
+                  showControls={isUser}
+                  showBillNumber
+                  className="mb-4"
+                />
               </Col>
             </Row>
-          </Container>
+          </StyledContainer>
         </>
       )}
     </>
@@ -105,6 +172,7 @@ export const ProfileAboutSection = ({
 }: {
   profile?: Profile
   className?: string
+  isMobile?: boolean
 }) => {
   const { twitter, linkedIn }: { twitter?: string; linkedIn?: string } =
     profile?.social ?? {}
@@ -150,37 +218,51 @@ export const ProfileHeader = ({
   displayName,
   isUser,
   isOrganization,
-  profileImage
+  profileImage,
+  isMobile
 }: {
   displayName?: string
   isUser: boolean
   isOrganization: boolean
   profileImage?: string
+  isMobile: boolean
 }) => {
   const [firstName, lastName] = displayName
     ? displayName.split(" ")
     : ["user", "user"]
 
   return (
-    <Header className={`d-flex`}>
+    <Header className={`d-flex edit-profile-header`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
           <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
         </Col>
       ) : (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} />
+          <UserIcon className={`col d-none d-md-flex`} />
         </Col>
       )}
 
       {displayName ? (
-        <ProfileDisplayName className={``}>
-          <div className={`firstName text-capitalize`}>{firstName}</div>
+        <ProfileDisplayName
+          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
+        >
+          <div
+            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+          >
+            {firstName}
+          </div>
           <div className={`lastName text-capitalize`}>{lastName}</div>
         </ProfileDisplayName>
       ) : (
-        <ProfileDisplayName className={``}>
-          <div className={`firstName text-capitalize`}>Anonymous</div>
+        <ProfileDisplayName
+          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
+        >
+          <div
+            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+          >
+            Anonymous
+          </div>
           <div className={`lastName text-capitalize`}>User</div>
         </ProfileDisplayName>
       )}
@@ -191,8 +273,8 @@ export const ProfileHeader = ({
 
 const EditProfileButton = () => {
   return (
-    <Col className={`d-flex justify-content-end`}>
-      <Internal href="/editprofile">
+    <Col className={`d-flex justify-content-end w-100`}>
+      <Internal href="/editprofile" className="view-edit-profile">
         <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
       </Internal>
     </Col>
@@ -203,9 +285,9 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
   const sendEmailVerification = useSendEmailVerification()
 
   return (
-    <TitledSectionCard title={"Verify Your Account"}>
+    <TitledSectionCard title={"Verify Your Account"} className="col">
       <div className="px-5 pt-2 pb-4">
-        <p>
+        <p className="fw-bold text-info">
           We sent a link to your email to verify your account, but you haven't
           clicked it yet. If you don't see it, be sure to check your spam
           folder.
@@ -221,7 +303,8 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
 
         {sendEmailVerification.status !== "success" ? (
           <LoadingButton
-            variant="light"
+            variant="info"
+            className="text-white"
             loading={sendEmailVerification.loading}
             onClick={() => sendEmailVerification.execute(user)}
           >

@@ -1,65 +1,191 @@
-import { Col, Image, Row } from "react-bootstrap"
+import { Image } from "react-bootstrap"
+import styled from "styled-components"
 import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
-import styles from "./TestimonyCallout.module.css"
 
 export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
+  const positionStyles = {
+    endorse: "flip",
+    neutral: "flipRotate",
+    oppose: ""
+  }
+
   return (
     <Image
-      className={`${position === "endorse" ? styles.flip : ""} ${
-        position === "neutral" ? styles.flipRotate : ""
-      }`}
+      fluid
+      className={`${positionStyles[position]}`}
       alt={`${position}`}
       src="VoteHand.png"
-      style={{ margin: "-1em" }}
     />
   )
 }
 
-export default function TestimonyCallout(props: Testimony) {
-  const { authorDisplayName, billId, position, content } = props
+const CalloutBalloon = styled.div`
+  height: 8rem;
+  width: calt(100% - 6rem);
+  margin: 0.5rem;
+  color: white;
+  font-family: "Nunito";
+  position: relative;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: visible;
+
+  .background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .callout-angle {
+    flex: 0 0 3rem;
+    height: 3rem;
+    clip-path: polygon(-5% 105%, 105% 105%, 105% -5%);
+  }
+
+  .balloon {
+    flex: 0 0 calc(100% - 3rem);
+    width: 100%;
+    height: 100%;
+    border-radius: 10px 10px 10px 0;
+    display: flex;
+    border-left: 1px solid inherit;
+    align-items: flex-start;
+  }
+
+  .foreground {
+    position: relative;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    margin-left: 4em;
+    display: flex;
+  }
+
+  .hand-container {
+    flex: 1;
+    height: 100%;
+    width: 5rem;
+    display: grid;
+    place-content: center;
+  }
+
+  .content-container {
+    padding: 1rem;
+    flex: 4;
+    color: white;
+    font-family: "Nunito";
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 0; // creates new stacking context so that text is in front of background
+  }
+
+  .main-content {
+    flex: 1;
+    margin-top: auto;
+    word-wrap: break-word;
+  }
+
+  .footer {
+    flex: 0;
+    width: 100%;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+
+    .bill {
+      flex: 0;
+    }
+
+    .author {
+      flex: 0;
+      white-space: nowrap;
+    }
+  }
+
+  .endorse {
+    background-color: var(--bs-green);
+  }
+
+  .neutral {
+    background-color: var(--bs-blue);
+  }
+
+  .oppose {
+    background-color: var(--bs-red);
+  }
+
+  .flipRotate {
+    transform-origin: center;
+    transform: scale(1, -1) rotate(-70deg);
+  }
+
+  .flip {
+    transform-origin: center;
+    transform: scale(1, -1);
+  }
+`
+
+const Callout = ({
+  position,
+  content,
+  billId,
+  authorDisplayName
+}: {
+  content: string
+  position: "endorse" | "oppose" | "neutral"
+  billId: string
+  authorDisplayName: string
+}) => {
+  console.log(position)
 
   return (
-    <Col className="m-auto">
-      <links.Internal
-        href={`/bill?id=${billId}`}
-        className="text-decoration-none"
-      >
-        <Row className={`row-col-2 ${styles[position]} m-2`}>
-          <Col className="col-auto">
-            <Row className="h-100">
-              <Col
-                className={`${styles.testimonyCalloutContainerTriangle}`}
-              ></Col>
-              <Col className="col-auto my-auto">
-                <VoteHand position={position} />
-              </Col>
-            </Row>
-          </Col>
-          <Col className="">
-            <Row className="m-2">
-              <Col>
-                <Row>
-                  <Col
-                    className={`${styles.testimonyCalloutBodyText} align-items-start my-2`}
-                  >
-                    {content}
-                  </Col>
-                </Row>
-                <Row className="mt-auto mb-2 w-100 justify-content-start">
-                  <Col className="col-auto text-white">
-                    Bill {formatBillId(billId)}
-                  </Col>
-                  <Col className="col-auto text-white ms-auto">
-                    -{authorDisplayName}
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>{" "}
-        </Row>
-      </links.Internal>
-    </Col>
+    <CalloutBalloon>
+      <div className="background">
+        <div className={`callout-angle ${position}`}></div>
+        <div className={`balloon ${position}`}></div>
+      </div>
+      <div className="foreground">
+        <div className="hand-container">
+          <VoteHand position={position} />
+        </div>
+        <div className="content-container">
+          <div className="main-content">"{trimContent(content, 90)}"</div>
+          <div className="footer">
+            <div className="bill">Bill{formatBillId(billId)}</div>
+            <div className="author">{authorDisplayName}</div>
+          </div>
+        </div>
+      </div>
+    </CalloutBalloon>
+  )
+}
+
+function trimContent(content: string, length: number) {
+  if (content.length > length) {
+    let cutLength = length
+    while (content[cutLength - 1] !== " " && cutLength > 1) {
+      cutLength--
+    }
+    return content.slice(0, cutLength - 1) + "..."
+  }
+  return content
+}
+
+export default function TestimonyCallout(props: Testimony) {
+  const { billId } = props
+
+  return (
+    <links.Internal
+      href={`/bill?id=${billId}`}
+      className="text-decoration-none"
+    >
+      <Callout {...props}></Callout>
+    </links.Internal>
   )
 }
