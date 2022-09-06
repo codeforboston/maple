@@ -151,9 +151,10 @@ export const FormattedTestimonyContent = ({
         <>
           <div
             className="col m2"
-            dangerouslySetInnerHTML={{
-              __html: formatTestimonyLinks(testimony, TESTIMONY_CHAR_LIMIT)
-            }}
+            dangerouslySetInnerHTML={formatTestimonyLinks(
+              testimony,
+              TESTIMONY_CHAR_LIMIT
+            )}
           />
           <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
             <Button
@@ -167,7 +168,7 @@ export const FormattedTestimonyContent = ({
       ) : (
         <div
           className="col m2"
-          dangerouslySetInnerHTML={{ __html: formatTestimonyLinks(testimony) }}
+          dangerouslySetInnerHTML={formatTestimonyLinks(testimony)}
         />
       )}
     </>

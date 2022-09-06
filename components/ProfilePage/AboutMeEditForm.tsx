@@ -29,14 +29,20 @@ async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  const { updateIsPublic, updateSocial, updateAbout, updateDisplayName } =
-    actions
+  const {
+    updateIsPublic,
+    updateSocial,
+    updateAbout,
+    updateDisplayName,
+    updateFullName
+  } = actions
 
   await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
+  await updateFullName(data.name)
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
