@@ -16,6 +16,36 @@ export const positionActions: Record<Position, ReactNode> = {
   oppose: <b className="oppose-position">oppose</b>
 }
 
+export const YourTestimony = styled(({ className, children }) => {
+  return (
+    <div className={className}>
+      {children}
+      <div className="title">Your Testimony</div>
+      <TestimonyPreview />
+    </div>
+  )
+})`
+  @media (min-width: 768px) {
+    padding: 3rem 4rem 3rem 4rem !important;
+  }
+
+  color: white;
+  padding: 1rem;
+  background-color: var(--bs-blue);
+  border-radius: 1rem;
+
+  .attachment-link {
+    color: white;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+`
+
 export const TestimonyPreview = styled(props => {
   const { position, content, attachmentId, authorUid } = usePublishState()
   const snippet = clampString(content, maxLength)
