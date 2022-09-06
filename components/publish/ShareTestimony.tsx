@@ -1,6 +1,7 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
+import { External } from "components/links"
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
@@ -102,6 +103,17 @@ const CopyTestimony = styled(props => {
   height: 2rem;
   padding: 0.25rem;
 `
+
+const EmailHelp = (props: { className?: string }) => {
+  return (
+    <External
+      href="https://www.makeuseof.com/tag/how-to-change-the-default-email-program-for-mailto-links/"
+      {...props}
+    >
+      Having trouble opening the email draft?
+    </External>
+  )
+}
 
 const RecipientControls = styled(({ className }) => {
   const dispatch = useAppDispatch()
@@ -285,7 +297,12 @@ const ShareButtons = () => {
     )
   }
 
-  return <div className="d-flex gap-2 flex-wrap">{buttons}</div>
+  return (
+    <div className="d-flex flex-column align-items-end">
+      {sent && <EmailHelp className="mb-2 text-info" />}
+      <div className="d-flex gap-2 flex-wrap">{buttons}</div>
+    </div>
+  )
 }
 
 export function FinishWithoutEmailing({
