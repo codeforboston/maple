@@ -29,7 +29,7 @@ export const useTestimonyEmail = () => {
       positionActions[position!]
     } bill ${billId}: "${bill?.content.Title.trim()}".`,
     billUrl = siteUrl(`/bills?billId=${bill?.id!}`),
-    attachmentSection = attachment
+    attachmentSection = attachment?.url
       ? `Read more of my testimony at ${attachment.url}`
       : null,
     cta = `Please see more testimony for this bill at ${billUrl}`,

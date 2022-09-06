@@ -1,4 +1,5 @@
 import { formUrl } from "components/publish/hooks"
+import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -16,6 +17,7 @@ const ViewTestimony = (
     search?: boolean
     showControls?: boolean
     showBillNumber?: boolean
+    className?: string
   }
 ) => {
   const {
@@ -23,7 +25,8 @@ const ViewTestimony = (
     items,
     setFilter,
     showControls = false,
-    showBillNumber = false
+    showBillNumber = false,
+    className
   } = props
   const testimony = items.result ?? []
 
@@ -32,16 +35,25 @@ const ViewTestimony = (
   return (
     <TitledSectionCard
       title={"Testimony"}
+      className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      {testimony.map(t => (
-        <TestimonyItem
-          key={t.authorUid + t.billId}
-          testimony={t}
-          showControls={showControls}
-          showBillNumber={showBillNumber}
-        />
-      ))}
+      {testimony.length > 0 ? (
+        testimony.map(t => (
+          <TestimonyItem
+            key={t.authorUid + t.billId}
+            testimony={t}
+            showControls={showControls}
+            showBillNumber={showBillNumber}
+          />
+        ))
+      ) : (
+        <NoResults>
+          There is no testimony here. <br />
+          <b>Be the first and add one!</b>
+        </NoResults>
+      )}
+      <div className="p-3" />
       {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )

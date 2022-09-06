@@ -63,7 +63,12 @@ export function EditProfileForm({
       title: "Testimonies",
       eventKey: "Testimonies",
       content: (
-        <ViewTestimony {...testimony} showControls={true} showBillNumber />
+        <ViewTestimony
+          {...testimony}
+          showControls={true}
+          showBillNumber
+          className="mb-4"
+        />
       )
     }
   ]
