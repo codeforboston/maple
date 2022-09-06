@@ -7,7 +7,6 @@ import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
 import { formatTestimonyLinks } from "../formatting"
 import { Internal, Wrap } from "../links"
 import { TitledSectionCard } from "../shared"
-import { PaginationButtons } from "../table"
 import { PositionLabel } from "./PositionBug"
 
 const ViewTestimony = (
@@ -23,7 +22,7 @@ const ViewTestimony = (
   return (
     <TitledSectionCard
       title={"Testimony"}
-      bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
+      // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
       {testimony.map(t => (
         <TestimonyItem
@@ -32,7 +31,7 @@ const ViewTestimony = (
           showControls={showControls}
         />
       ))}
-      <PaginationButtons pagination={pagination} />
+      {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )
 }
