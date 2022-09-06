@@ -1,4 +1,5 @@
 import { useSendEmailVerification } from "components/auth/hooks"
+import { User } from "firebase/auth"
 import { useCallback } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
