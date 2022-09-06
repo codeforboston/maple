@@ -81,7 +81,7 @@ export function AboutMeEditForm({
       : location.assign(`/profile?=${uid}`)
   }
 
-  handleRedirect()
+
 
   useEffect(() => {
     setFormUpdated(isDirty)
