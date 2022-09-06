@@ -2,7 +2,7 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react"
 import { Button, Col, Form, InputGroup, Row, Spinner } from "../bootstrap"
-import { UseDraftTestimonyAttachment } from "../db"
+import { AttachmentInfo, UseDraftTestimonyAttachment } from "../db"
 import { External } from "../links"
 
 export function Attachment({
@@ -74,18 +74,36 @@ const Label = ({
   )
 }
 
+export const AttachmentLink = ({
+  attachment: { size, url, name },
+  className
+}: {
+  attachment: AttachmentInfo
+  className?: string
+}) => {
+  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
+    .filter(Boolean)
+    .join(" - ")
+  return (
+    <External className={className} href={url}>
+      {linkLabel}
+    </External>
+  )
+}
+
 const Attached = ({
-  attachment: { url, name, size, remove, status }
+  attachment
 }: {
   attachment: UseDraftTestimonyAttachment
 }) => {
-  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
-      .filter(Boolean)
-      .join(" - "),
-    viewLink = url ? <External href={url}>{linkLabel}</External> : null
+  const { url, name, size, id, remove, status } = attachment
   return (
     <Row className="align-items-center">
-      <Col md="auto">{viewLink}</Col>
+      <Col md="auto">
+        {url && size && name && id ? (
+          <AttachmentLink attachment={{ url, size, name, id }} />
+        ) : null}
+      </Col>
       <Col>
         <Button
           variant="secondary"

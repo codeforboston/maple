@@ -1,3 +1,4 @@
+import { Internal } from "components/links"
 import { useRouter } from "next/router"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
@@ -51,7 +52,7 @@ export default createPage({
 
     const profile = usePublicProfile(testimony?.authorUid)
     const authorPublic = profile.result?.public
-    const authorLink = "/publicprofile?id=" + author
+    const authorLink = "/profile?id=" + author
     const billLink = "/bill?id=" + bill?.content.BillNumber
 
     return (
@@ -61,9 +62,9 @@ export default createPage({
             <div>
               <h3>
                 {bill ? (
-                  <a href={billLink}>{`${formatBillId(
+                  <Internal href={billLink}>{`${formatBillId(
                     bill.content.BillNumber
-                  )}: ${bill.content.Title}`}</a>
+                  )}: ${bill.content.Title}`}</Internal>
                 ) : loading ? (
                   ""
                 ) : (

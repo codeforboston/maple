@@ -12,7 +12,7 @@ export const SendEmailButton = (props: ButtonProps) => {
       variant="secondary"
       {...props}
     >
-      Open Email Draft
+      Send Email
     </Button>
   ) : null
 }

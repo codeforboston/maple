@@ -34,6 +34,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   }
 
   .nav-link {
+    cursor: pointer;
     background-color: white;
     overflow: visible;
     width: auto;

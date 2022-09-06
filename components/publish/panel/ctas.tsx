@@ -1,7 +1,7 @@
 import { ReactElement } from "react"
 import { Button, ButtonProps, Image } from "react-bootstrap"
 import styled from "styled-components"
-import { SignInWithModal } from "../../auth"
+import { SignInWithModal, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
 
@@ -76,3 +76,18 @@ export const SignedOut = () => (
     cta={<SignInWithModal label="Sign In/Sign Up" />}
   />
 )
+
+export const UnverifiedEmail = () => {
+  const id = useAuth().user?.uid!
+
+  return (
+    <Cta
+      title="Verify Your Email to Add Testimony"
+      cta={
+        <Wrap href={`/profile?id=${id}`}>
+          <Button variant="primary">Verify Your Email</Button>
+        </Wrap>
+      }
+    />
+  )
+}

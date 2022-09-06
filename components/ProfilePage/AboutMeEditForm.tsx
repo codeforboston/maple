@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { ChangeEvent } from "react"
-import { FormCheck } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import { Button, Form, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
@@ -30,14 +29,20 @@ async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  const { updateIsPublic, updateSocial, updateAbout, updateDisplayName } =
-    actions
+  const {
+    updateIsPublic,
+    updateSocial,
+    updateAbout,
+    updateDisplayName,
+    updateFullName
+  } = actions
 
   await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
+  await updateFullName(data.name)
 }
 
 export function AboutMeEditForm({ profile, actions, uid }: Props) {
@@ -72,7 +77,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
           title={"About You"}
           bug={
             <Row className={`justify-content-center align-items-center`}>
-              <FormCheck
+              <Form.Check
                 {...register("public")}
                 className={`col-auto about-me-checkbox`}
                 type="checkbox"
@@ -84,8 +89,8 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
             </Row>
           }
         ></Header>
-        <div className={`mx-4 d-flex flex-column gap-3`}>
-          <Form.FloatingLabel label="User Type" className="mb-3">
+        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
+          {/* <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select
               className="bg-white"
               {...register("organization")}
@@ -95,7 +100,7 @@ export function AboutMeEditForm({ profile, actions, uid }: Props) {
               <option value="organization">Organization</option>
               <option value="individual">Individual</option>
             </Form.Select>
-          </Form.FloatingLabel>
+          </Form.FloatingLabel> */}
           <Input
             label="Name"
             {...register("name")}

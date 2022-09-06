@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
-import { getPublishedTestimonyAttachmentUrl } from "../../db"
-import { formatBillId } from "../../formatting"
+import { getPublishedTestimonyAttachmentUrl, useProfile } from "../../db"
+import { formatBillId, splitParagraphs } from "../../formatting"
 import { siteUrl } from "../../links"
+import { positionActions } from "../content"
 import { usePublishState } from "./usePublishState"
 
 /** Generates the email sent to legislators. */
 export const useTestimonyEmail = () => {
   const { share, position, bill, content, publication } = usePublishState()
+  const { profile } = useProfile()
 
   const [attachment, setAttachment] = useState<{ url?: string } | undefined>()
   useEffect(() => {
@@ -23,9 +25,17 @@ export const useTestimonyEmail = () => {
       .map(r => `${r.Name} <${r.EmailAddress}>`)
       .join(","),
     billId = formatBillId(bill?.id!),
-    intro = `As your constituent, I am writing to let you know that I ${position} bill ${billId}: "${bill?.content.Title}".`,
+    intro = `As your constituent, I am writing to let you know that I ${
+      positionActions[position!]
+    } bill ${billId}: "${bill?.content.Title.trim()}".`,
     billUrl = siteUrl(`/bills?billId=${bill?.id!}`),
-    ending = `See more testimony for this bill at ${billUrl}`,
+    attachmentSection = attachment
+      ? `Read more of my testimony at ${attachment.url}`
+      : null,
+    cta = `Please see more testimony for this bill at ${billUrl}`,
+    ending = `Thank you for taking the time to read this email.\n\nSincerely,\n${
+      profile?.fullName ?? ""
+    }`,
     subjectPosition =
       position == "endorse"
         ? "Support of"
@@ -36,15 +46,18 @@ export const useTestimonyEmail = () => {
 
   const sections = [
       intro,
-      content,
-      attachment ? attachment.url : null,
+      ...splitParagraphs(content!),
+      attachmentSection,
+      cta,
       ending
     ].filter(Boolean),
     body = sections.join("\n\n")
 
-  const mailToUrl = encodeURI(`mailto:${to}?subject=${subject}&body=${body}`)
+  const mailToUrl = `mailto:${encodeURIComponent(
+    to
+  )}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
-  if (attachment) {
+  if (attachment && profile) {
     return { ready: true, mailToUrl, body, to } as const
   } else {
     return { ready: false } as const

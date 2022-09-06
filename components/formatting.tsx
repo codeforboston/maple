@@ -36,6 +36,8 @@ export const formatBillId = (id: string) => {
   }
 }
 
+export const splitParagraphs = (s: string) => s.split(/\s*[\r\n]+\s*/)
+
 export const formatTestimonyLinks = (testimony: string, limit?: number) => {
   const linkedTestimony = Autolinker.link(
     limit ? testimony.slice(0, limit) : testimony,
@@ -44,12 +46,11 @@ export const formatTestimonyLinks = (testimony: string, limit?: number) => {
     }
   )
 
-  const paragraphedTestimony = linkedTestimony
-    .split(/\s*[\r\n]+\s*/)
+  const paragraphedTestimony = splitParagraphs(linkedTestimony)
     .map(line => `<p>${line}</p>`)
     .join("")
 
-  return sanitize(paragraphedTestimony)
+  return { __html: sanitize(paragraphedTestimony) }
 }
 
 const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
