@@ -64,7 +64,10 @@ export const Summary = ({
                 Read more..
               </StyledButton>
             ) : (
-              <links.External href={links.billPdfUrl(bill.id)}>
+              <links.External
+                className="fst-normal fs-body"
+                href={links.billPdfUrl(bill.id)}
+              >
                 Download PDF
               </links.External>
             )}
