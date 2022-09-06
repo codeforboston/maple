@@ -6,7 +6,12 @@ import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
-import { Testimony, useBill, UsePublishedTestimonyListing } from "../db"
+import {
+  Testimony,
+  useBill,
+  usePublicProfile,
+  UsePublishedTestimonyListing
+} from "../db"
 import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
@@ -77,7 +82,26 @@ export const SortTestimonyDropDown = ({
   )
 }
 
-const StyledTitle = styled(Internal)`
+const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
+  const profile = usePublicProfile(testimony.authorUid)
+
+  const authorName = profile.loading
+    ? ""
+    : profile.result?.fullName ?? testimony.authorDisplayName ?? "Anonymous"
+  const linkToProfile = !!profile.result
+  return (
+    <div {...props}>
+      {linkToProfile ? (
+        <Internal href={`/profile?id=${testimony.authorUid}`}>
+          {authorName}
+        </Internal>
+      ) : (
+        authorName
+      )}
+    </div>
+  )
+})`
+  font-weight: bold;
   .testimony-title {
     width: 60%;
   }
@@ -106,12 +130,7 @@ export const TestimonyItem = ({
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
       <div className={`bg-white border-0 h5 d-flex`}>
-        <StyledTitle
-          className="text-secondary fw-bold"
-          href={`/profile?id=${testimony.authorUid}`}
-        >
-          {testimony.authorDisplayName}
-        </StyledTitle>
+        <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
           <>
             <Internal href={formUrl(testimony.billId)}>
