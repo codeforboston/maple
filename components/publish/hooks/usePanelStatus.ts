@@ -4,6 +4,7 @@ import { usePublishState } from "./usePublishState"
 
 export type PanelStatus =
   | "signedOut"
+  | "unverified"
   | "loading"
   | "noTestimony"
   | "createInProgress"
@@ -13,13 +14,15 @@ export type PanelStatus =
 /** What to display on the testimony panel on the bill detail page */
 export const usePanelStatus = (): PanelStatus => {
   const { draft, publication, sync } = usePublishState()
-  const { authenticated } = useAuth()
+  const { authenticated, user } = useAuth()
   const loading = sync !== "synced"
 
   if (!authenticated) {
     return "signedOut"
   } else if (loading) {
     return "loading"
+  } else if (!user?.emailVerified) {
+    return "unverified"
   } else if (!draft && !publication) {
     return "noTestimony"
   } else if (draft && !publication) {
