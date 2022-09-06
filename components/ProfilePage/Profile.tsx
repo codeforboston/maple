@@ -151,7 +151,11 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row>
               <Col xs={12}>
-                <ViewTestimony {...testimony} showControls={isUser} />
+                <ViewTestimony
+                  {...testimony}
+                  showControls={isUser}
+                  showBillNumber
+                />
               </Col>
             </Row>
           </StyledContainer>
