@@ -34,9 +34,11 @@ export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
   return async () => {
     if (value === undefined) {
-      value = (await analytics.isSupported())
-        ? analytics.getAnalytics(app)
-        : null
+      if (await analytics.isSupported()) {
+        value = analytics.getAnalytics(app)
+      } else {
+        value = null
+      }
     }
     return value
   }
