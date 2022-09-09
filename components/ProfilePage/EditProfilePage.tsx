@@ -42,6 +42,7 @@ export function EditProfileForm({
   uid: string
 }) {
   const [key, setKey] = useState("AboutYou")
+  const [formUpdated, setFormUpdated] = useState(false)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -62,6 +63,7 @@ export function EditProfileForm({
           profile={profile}
           actions={actions}
           uid={uid}
+          setFormUpdated={setFormUpdated}
           className="mt-3 mb-4"
         />
       )
@@ -82,11 +84,15 @@ export function EditProfileForm({
 
   return (
     <Container>
-      <Header className="edit-profile-header">
-        <Col className="align-items-center d-flex">Edit Profile</Col>
-        <Col className={`d-flex justify-content-center w-100`}>
-          <Internal href={`/profile?id=${uid}`} className="view-edit-profile">
-            <Button className={`btn btn-lg`}>View your profile</Button>
+      <Header>
+        <Col>Edit Profile</Col>
+        <Col className={`d-flex justify-content-end`}>
+          <Internal href={`/profile?id=${uid}`}>
+            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+              {!profile.organization
+                ? "View your profile"
+                : "View your organization page"}
+            </Button>
           </Internal>
         </Col>
       </Header>
