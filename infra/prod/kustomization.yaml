@@ -18,17 +18,6 @@ resources:
   - ./typesense-secrets.yml
 
 patches:
-  # Set the IP of traefik to match the reserved, static regional IP
-  # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_a_service
-  - patch: |-
-      - op: add
-        path: /spec/loadBalancerIP
-        value: 35.224.191.63
-    target:
-      version: v1
-      kind: Service
-      name: prod-traefik
-
   # https://github.com/traefik/traefik/issues/8786#issuecomment-1237273950
   - patch: |-
       - op: remove
