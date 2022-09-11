@@ -2347,30 +2347,6 @@ type: Opaque
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app.kubernetes.io/instance: dev
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.24.1
-  name: dev-traefik
-spec:
-  ports:
-  - name: web
-    port: 80
-    protocol: TCP
-    targetPort: web
-  - name: websecure
-    port: 443
-    protocol: TCP
-    targetPort: websecure
-  selector:
-    app.kubernetes.io/instance: dev
-    app.kubernetes.io/name: traefik
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
   name: typesense-service
 spec:
   ports:
@@ -2484,9 +2460,11 @@ spec:
           name: traefik
           protocol: TCP
         - containerPort: 8000
+          hostPort: 80
           name: web
           protocol: TCP
         - containerPort: 8443
+          hostPort: 443
           name: websecure
           protocol: TCP
         resources: null

@@ -69,3 +69,4 @@ infra/prod/typesense-secrets.yml
 /*.history
 
 storybook-static
+/token

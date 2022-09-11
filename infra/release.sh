@@ -38,6 +38,6 @@ case $CMD in
     ;;
 
   help|*)
-    echo "Usage: deploy (dev|prod) (build|deploy|delete)"
+    echo "Usage: release.sh (dev|prod) (build|deploy|delete)"
     ;;
 esac
