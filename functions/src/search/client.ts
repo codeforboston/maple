@@ -1,15 +1,15 @@
 import { Client } from "typesense"
 
 export const createClient = (
-  apiUrl = process.env.TYPESENSE_API_URL!,
-  apiKey = process.env.TYPESENSE_API_KEY!
+  apiUrl = process.env.TYPESENSE_API_URL || "http://localhost:8108",
+  apiKey = process.env.TYPESENSE_API_KEY || "test-api-key"
 ) => {
-  const url = new URL('https://maple.aballslab.com/search') // ! revert
+  const url = new URL(apiUrl)
   const protocol = url.protocol.startsWith("https") ? "https" : "http"
   const port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80
 
   return new Client({
-    apiKey: 'n65zE6pZ7bH0EHCL4OhWfDID5Qj7xZuK', // ! revert
+    apiKey,
     nodes: [
       {
         host: url.hostname,

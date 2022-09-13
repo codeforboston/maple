@@ -99,6 +99,7 @@ async function listTestimony(
 ): Promise<Testimony[]> {
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
   if (refinement.profilePage && refinement.uid) {
+    console.log('process', process.env)
     const client = createClient()
 
     const data = await client
