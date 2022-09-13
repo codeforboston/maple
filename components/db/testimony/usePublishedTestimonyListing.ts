@@ -96,32 +96,18 @@ async function listTestimony(
   refinement: Refinement,
   limitCount: number,
   startAfterKey: unknown | null,
-
 ): Promise<Testimony[]> {
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
   if (refinement.profilePage && refinement.uid) {
-    const cl = createClient()
+    const client = createClient()
 
-    // const temp = await cl
-    //   .collections('publishedTestimony')
-    //   .documents()
-    //   .search({q: '3D8nBq6ZflXplLPU3kjmHFdqToP2', query_by: 'authorUid'})
-    
-    const temp = await cl
+    const data = await client
       .collections('publishedTestimony')
       .documents()
       .search({q: refinement.uid, query_by: 'authorUid'})
 
-    // console.log('temp hits', temp.hits);
-      
-    return temp.hits ? temp.hits.map(({ document }) => document as Testimony) : []
-  } else {
-
-    // console.log(temp.hits && temp.hits.map(({ document }) => document as Testimony))
-    // console.log('testimonyRef', testimonyRef)
-    // console.log('...getWhere(refinement)', ...getWhere(refinement))
-    // console.log('currentGeneralCourt', currentGeneralCourt)
-
+    return data.hits ? data.hits.map(({ document }) => document as Testimony) : []
+  }
     const result = await getDocs(
       nullableQuery(
         testimonyRef,
@@ -133,7 +119,5 @@ async function listTestimony(
       )
     )
 
-    // console.log(result.docs.map(d => d.data() as Testimony))
     return result.docs.map(d => d.data() as Testimony)
-  }
 }
