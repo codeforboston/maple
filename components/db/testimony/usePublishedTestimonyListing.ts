@@ -12,19 +12,23 @@ import { firestore } from "../../firebase"
 import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
+import * as typesense from 'typesense'
+import { createClient } from "../../../functions/src/search/client"
 
 type Refinement = {
   senatorId?: string
   representativeId?: string
   uid?: string
   billId?: string
+  profilePage?: boolean
 }
 
-const initialRefinement = (uid?: string, billId?: string): Refinement => ({
+const initialRefinement = (uid?: string, billId?: string, profilePage?: boolean): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
-  billId
+  billId,
+  profilePage
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -42,13 +46,15 @@ export type UsePublishedTestimonyListing = ReturnType<
 >
 export function usePublishedTestimonyListing({
   uid,
-  billId
+  billId,
+  profilePage
 }: {
   uid?: string
   billId?: string
+  profilePage?: boolean
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, billId)
+    initialRefinement(uid, billId, profilePage)
   )
 
   useEffect(() => {
@@ -89,18 +95,45 @@ function getWhere({
 async function listTestimony(
   refinement: Refinement,
   limitCount: number,
-  startAfterKey: unknown | null
+  startAfterKey: unknown | null,
+
 ): Promise<Testimony[]> {
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
-  const result = await getDocs(
-    nullableQuery(
-      testimonyRef,
-      ...getWhere(refinement),
-      where("court", "==", currentGeneralCourt),
-      orderBy("publishedAt", "desc"),
-      limit(limitCount),
-      startAfterKey !== null && startAfter(startAfterKey)
+  if (refinement.profilePage && refinement.uid) {
+    const cl = createClient()
+
+    // const temp = await cl
+    //   .collections('publishedTestimony')
+    //   .documents()
+    //   .search({q: '3D8nBq6ZflXplLPU3kjmHFdqToP2', query_by: 'authorUid'})
+    
+    const temp = await cl
+      .collections('publishedTestimony')
+      .documents()
+      .search({q: refinement.uid, query_by: 'authorUid'})
+
+    // console.log('temp hits', temp.hits);
+      
+    return temp.hits ? temp.hits.map(({ document }) => document as Testimony) : []
+  } else {
+
+    // console.log(temp.hits && temp.hits.map(({ document }) => document as Testimony))
+    // console.log('testimonyRef', testimonyRef)
+    // console.log('...getWhere(refinement)', ...getWhere(refinement))
+    // console.log('currentGeneralCourt', currentGeneralCourt)
+
+    const result = await getDocs(
+      nullableQuery(
+        testimonyRef,
+        ...getWhere(refinement),
+        where("court", "==", currentGeneralCourt),
+        orderBy("publishedAt", "desc"),
+        limit(limitCount),
+        startAfterKey !== null && startAfter(startAfterKey)
+      )
     )
-  )
-  return result.docs.map(d => d.data() as Testimony)
+
+    // console.log(result.docs.map(d => d.data() as Testimony))
+    return result.docs.map(d => d.data() as Testimony)
+  }
 }
