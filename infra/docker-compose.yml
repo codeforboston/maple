@@ -19,19 +19,28 @@ services:
     cpu_count: 2
 
   firebase:
-    image: alexjball/firebase-tools:latest-node-16
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
     command: >
-      yarn firebase 
-      --project demo-dtp emulators:start 
-      --only auth,functions,pubsub,firestore,storage 
+      yarn firebase
+      --project demo-dtp emulators:start
+      --only auth,functions,pubsub,firestore,storage
       --import tests/integration/exportedTestData
     working_dir: /app
     volumes:
       - ..:/app
+
       # Override env for running in compose
-      - ${PWD}/infra/.env.functions-compose:/app/functions/.env.demo-dtp
+      - ./.env.functions-compose:/app/functions/.env.demo-dtp
+
       # Override firebase.json to bind to all container interfaces
-      - ${PWD}/infra/firebase.compose.json:/app/firebase.json
+      - ./firebase.compose.json:/app/firebase.json
+
+      # Prevent host node_modules from overriding the image modules.
+      - /app/node_modules/
+      - /app/functions/node_modules/
     ports:
       - 9099:9099
       - 5001:5001
@@ -48,13 +57,20 @@ services:
       - ..:/app
 
   next:
-    image: node:16-alpine
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
     command: yarn dev
     working_dir: /app
     ports:
       - 3000:3000
     volumes:
       - ..:/app
+
+      # Prevent host node_modules from overriding the image modules.
+      - /app/node_modules/
+      - /app/fuctions/node_modules/
     environment:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108

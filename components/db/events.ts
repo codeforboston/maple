@@ -83,7 +83,6 @@ export type Event = Session | SpecialEvent | Hearing
 /** Returns upcoming events, or undefined if loading or an error occured. */
 export function useUpcomingEvents() {
   const hearings = useAsync(() => listUpcomingEvents(), [])
-  console.log(hearings)
   return hearings.status === "success" ? hearings.result : undefined
 }
 
