@@ -142,8 +142,6 @@ const Callout = ({
   billId: string
   authorDisplayName: string
 }) => {
-  console.log(position)
-
   return (
     <CalloutBalloon>
       <div className="background">
