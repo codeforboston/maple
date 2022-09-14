@@ -83,7 +83,7 @@ Add a reviewer to your PR. If you're not sure who has the context to review, add
 
 If you're developing frontend-only features, such as adding UI or hooks, you can start the development server with `yarn dev` and access the app at http://localhost:3000 in your browser. The site will automatically update as you make code changes. Your local site will share the same backend as the live development site.
 
-If you're developing backend features, such as adding cloud functions or changing security rules, you can run the backend emulators, search server, and test data with `yarn dev:backend`. You can access the emulator UI at http://localhost:3010. The backend should update as you make code changes.
+If you're developing backend features, such as adding cloud functions or changing security rules, you can run the backend emulators, search server, and test data with `yarn dev:backend`. You can access the emulator UI at http://localhost:3010. The backend should update as you make code changes. When dependencies in `package.json` change, run `yarn dev:backend:update` to rebuild the image with the new dependencies. Finally, the first time you run the backend, or whenever you update, run `yarn dev:backfill` to generate new search indexes for bill/testimony search.
 
 ## Code Formatting and Linting
 

@@ -11,6 +11,7 @@
     "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions,storage",
     "dev": "next dev",
     "dev:backend": "yarn compose up",
+    "dev:backend:update": "yarn compose down -v && yarn compose up --build",
     "dev:backfill": "sh ./scripts/backfill-dev.sh",
     "typesense-admin": "ts-node -P tsconfig.script.json scripts/typesense-admin.ts",
     "firebase-admin": "ts-node -P tsconfig.script.json scripts/firebase-admin",
