@@ -3,10 +3,10 @@ import { terminateFirebase } from "../../tests/testUtils"
 import { useUpcomingBills } from "./useUpcomingBills"
 
 import { DateTime } from "luxon"
-import * as common from "./common"
+import { midnight } from "./common"
 import { useUpcomingEvents } from "./events"
 
-const mockedMidnight = jest.spyOn(common, "midnight")
+const mockedMidnight = jest.mocked(midnight)
 
 afterAll(terminateFirebase)
 
