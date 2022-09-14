@@ -2530,7 +2530,7 @@ spec:
               name: typesense
         - name: TYPESENSE_ENABLE_CORS
           value: "true"
-        image: typesense/typesense:0.22.2
+        image: typesense/typesense:0.23.1
         name: typesense
         ports:
         - containerPort: 8108
