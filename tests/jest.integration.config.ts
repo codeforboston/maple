@@ -16,7 +16,7 @@ const config: Config.InitialOptions = {
   ],
   transform: {
     // Yields correct line numbers but doesn't use SWC?
-    "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }]
+    // "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }]
   }
 }
 
