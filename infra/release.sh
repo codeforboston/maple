@@ -13,6 +13,14 @@ function check_dist_committed() {
   fi
 }
 
+function confirm_context() {
+  CTX=$(kubectl config current-context)
+  read -p "Deploy to context $CTX? (y/n) "
+  if [ "$REPLY" != "y" ]; then
+    echo "Not deploying"
+    exit
+  fi
+}
 
 case $CMD in
   build)
@@ -24,6 +32,7 @@ case $CMD in
 
   deploy)
     check_dist_committed
+    confirm_context
     kubectl apply -f $ENV/dist.yml
     ;;
 
