@@ -20,8 +20,9 @@ services:
 
   firebase:
     build:
-      dockerfile: infra/Dockerfile.firebase
       context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
     command: >
       yarn firebase
       --project demo-dtp emulators:start
@@ -57,8 +58,9 @@ services:
 
   next:
     build:
-      dockerfile: infra/Dockerfile.next
       context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
     command: yarn dev
     working_dir: /app
     ports:
