@@ -96,16 +96,16 @@ async function listTestimony(
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Testimony[]> {
-  // if (refinement.profilePage && refinement.uid) {
-  //   const client = createClient()
+  if (refinement.profilePage && refinement.uid) {
+    const client = createClient()
 
-  //   const data = await client
-  //     .collections('publishedTestimony')
-  //     .documents()
-  //     .search({q: refinement.uid, query_by: 'authorUid'})
+    const data = await client
+      .collections('publishedTestimony')
+      .documents()
+      .search({q: refinement.uid, query_by: 'authorUid'})
 
-  //   return data.hits ? data.hits.map(({ document }) => document as Testimony) : []
-  // }
+    return data.hits ? data.hits.map(({ document }) => document as Testimony) : []
+  }
 
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
 
