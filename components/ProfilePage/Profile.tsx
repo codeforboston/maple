@@ -85,7 +85,8 @@ export function ProfilePage({ id }: { id: string }) {
   const isUser = user?.uid === id
 
   const testimony = usePublishedTestimonyListing({
-    uid: id
+    uid: id,
+    profilePage: true
   })
 
   const { items } = testimony

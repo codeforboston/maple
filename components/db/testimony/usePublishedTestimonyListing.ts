@@ -12,19 +12,22 @@ import { firestore } from "../../firebase"
 import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
+import { createClient } from "../../../functions/src/search/client"
 
 type Refinement = {
   senatorId?: string
   representativeId?: string
   uid?: string
-  billId?: string
+  billId?: string,
+  profilePage?: boolean
 }
 
-const initialRefinement = (uid?: string, billId?: string): Refinement => ({
+const initialRefinement = (uid?: string, billId?: string, profilePage?: boolean): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
-  billId
+  billId,
+  profilePage
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -42,13 +45,15 @@ export type UsePublishedTestimonyListing = ReturnType<
 >
 export function usePublishedTestimonyListing({
   uid,
-  billId
+  billId,
+  profilePage
 }: {
   uid?: string
   billId?: string
+  profilePage?: boolean
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, billId)
+    initialRefinement(uid, billId, profilePage)
   )
 
   useEffect(() => {
@@ -91,7 +96,19 @@ async function listTestimony(
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Testimony[]> {
+  // if (refinement.profilePage && refinement.uid) {
+  //   const client = createClient()
+
+  //   const data = await client
+  //     .collections('publishedTestimony')
+  //     .documents()
+  //     .search({q: refinement.uid, query_by: 'authorUid'})
+
+  //   return data.hits ? data.hits.map(({ document }) => document as Testimony) : []
+  // }
+
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
+
   const result = await getDocs(
     nullableQuery(
       testimonyRef,
@@ -102,5 +119,6 @@ async function listTestimony(
       startAfterKey !== null && startAfter(startAfterKey)
     )
   )
-  return result.docs.map(d => d.data() as Testimony)
+
+  return result.docs.map(d => d.data() as Testimony)  
 }
