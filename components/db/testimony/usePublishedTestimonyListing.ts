@@ -12,7 +12,7 @@ import { firestore } from "../../firebase"
 import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
-import { createClient } from "../../../functions/src/search/client"
+import { createClient } from "../../../components/search/common"
 
 type Refinement = {
   senatorId?: string

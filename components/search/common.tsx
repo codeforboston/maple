@@ -1,3 +1,4 @@
+import { Client } from "typesense"
 import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 const devConfig = {
@@ -5,24 +6,28 @@ const devConfig = {
   url: "https://maple.aballslab.com/search"
 }
 
-export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"] {
-  const key = process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY ?? devConfig.key
-  const url = new URL(
-    process.env.NEXT_PUBLIC_TYPESENSE_API_URL ?? devConfig.url
-  )
+export const getServerConfig =
+  (): TypesenseInstantsearchAdapterOptions["server"] => {
+    const key =
+      process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY ?? devConfig.key
+    const url = new URL(
+      process.env.NEXT_PUBLIC_TYPESENSE_API_URL ?? devConfig.url
+    )
 
-  const protocol = url.protocol.startsWith("https") ? "https" : "http"
-  const port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80
+    const protocol = url.protocol.startsWith("https") ? "https" : "http"
+    const port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80
 
-  return {
-    apiKey: key,
-    nodes: [
-      {
-        host: url.hostname,
-        protocol,
-        port,
-        path: url.pathname
-      }
-    ]
+    return {
+      apiKey: key,
+      nodes: [
+        {
+          host: url.hostname,
+          protocol,
+          port,
+          path: url.pathname
+        }
+      ]
+    }
   }
-}
+
+export const createClient = () => new Client(getServerConfig())
