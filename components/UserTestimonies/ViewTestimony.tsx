@@ -123,7 +123,9 @@ export const TestimonyItem = ({
   showBillNumber: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const published = new Date(Number(testimony.publishedAt.seconds * 1000 || testimony.publishedAt)).toLocaleDateString()
+  const published = new Date(
+    Number(testimony.publishedAt.seconds * 1000 || testimony.publishedAt)
+  ).toLocaleDateString()
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>

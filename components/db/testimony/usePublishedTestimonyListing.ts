@@ -18,11 +18,15 @@ type Refinement = {
   senatorId?: string
   representativeId?: string
   uid?: string
-  billId?: string,
+  billId?: string
   profilePage?: boolean
 }
 
-const initialRefinement = (uid?: string, billId?: string, profilePage?: boolean): Refinement => ({
+const initialRefinement = (
+  uid?: string,
+  billId?: string,
+  profilePage?: boolean
+): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
@@ -100,11 +104,13 @@ async function listTestimony(
     const client = createClient()
 
     const data = await client
-      .collections('publishedTestimony')
+      .collections("publishedTestimony")
       .documents()
-      .search({q: refinement.uid, query_by: 'authorUid'})
+      .search({ q: refinement.uid, query_by: "authorUid" })
 
-    return data.hits ? data.hits.map(({ document }) => document as Testimony) : []
+    return data.hits
+      ? data.hits.map(({ document }) => document as Testimony)
+      : []
   }
 
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
@@ -120,5 +126,5 @@ async function listTestimony(
     )
   )
 
-  return result.docs.map(d => d.data() as Testimony)  
+  return result.docs.map(d => d.data() as Testimony)
 }
