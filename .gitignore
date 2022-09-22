@@ -62,8 +62,6 @@ prod-build.env
 infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
 
-# pyenv
-
 .python-version
 
 /*.history
