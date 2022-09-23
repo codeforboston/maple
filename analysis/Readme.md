@@ -6,7 +6,8 @@ After installing pyenv, set up an environment and configure it to be used by def
 
 ```sh
 # From the repo root
-pyenv install 3.10.5 maple-3.10.5
+pyenv install 3.10.5
+pyenv virtualenv 3.10.5 maple-3.10.5
 pyenv activate maple-3.10.5
 echo "maple-3.10.5" > .python-version
 pip install -r analysis/requirements.txt
