@@ -1,0 +1,10 @@
+# Output from the downloader
+matched-actions.csv
+matched-actions.json
+linked-bills.json
+
+# Exclude all text files except the ones we need
+*.txt
+!requirements.txt
+
+__pycache__
