@@ -10,6 +10,8 @@ Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-
 
 You can find good first issues [here](https://github.com/codeforboston/advocacy-maps/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
+Check out the [Contributing](./Contributing.md) docs for how to contribute to the project.
+
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
@@ -43,37 +45,7 @@ git checkout master
 git pull upstream master
 ```
 
-4. To contribute a feature, open a feature branch off `master`:
-
-```
-git checkout master
-git checkout -b MY_FEATURE
-git push -u origin MY_FEATURE
-```
-
-Use `git push` to upload your commits to your fork. When you're finished, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/master`.
-
-If other PR's are merged while yours is in review, your changes may start to conflict with `master`. This will be displayed on the PR. You'll need to resolve merge conflicts before you can merge your PR:
-
-```bash
-# Update your local master branch
-git checkout master
-git pull upstream master
-
-# Merge master into your feature branch
-git checkout MY_FEATURE
-git merge master
-```
-
-[This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the Github web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
-
-## Contributing
-
-See issues organized on our [project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board). If you're new, [check out the Good First Issues in our product and sprint backlogs](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board?labels=good%20first%20issue). Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
-
-When you send out a PR that addresses an issue, [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
-
-Add a reviewer to your PR. If you're not sure who has the context to review, add `alexjball`. Once all the checks pass and someone approves your PR, you can merge it!
+4. Now you're ready to work on a feature! See the [Contributing](./Contributing.md) page for more info.
 
 ## Developing Locally
 
@@ -98,25 +70,3 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 - [Deployment Details](./Deployment.md)
 - [Kubernetes Notes](./Kubernetes.md)
 - [Search Design](./Search.md)
-
-## Development FAQ
-
-### How do I create a new page?
-
-Take a look at the `pages/bills.tsx` page:
-
-```typescript
-export default createPage({
-  title: "Browse",
-  Page: () => {
-    return (
-      <Container>
-        <h1>Browse</h1>
-        ...
-      </Container>
-    )
-  }
-})
-```
-
-Your page content goes in `Page`, and will be wrapped in a layout component. The page is rendered by `_app.tsx`.
