@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
+import type { TestimonySearchRecord as TestimonyRecord } from "functions/src/testimony/types"
 import {
   InstanceOf,
   Literal as L,
@@ -33,6 +34,8 @@ export const BaseTestimony = R({
 export type BaseTestimony = Static<typeof BaseTestimony>
 
 export type Testimony = Static<typeof Testimony>
+export type TestimonySearchRecord = TestimonyRecord
+
 export const Testimony = BaseTestimony.extend({
   authorUid: Id,
   id: Id,

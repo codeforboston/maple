@@ -91,6 +91,14 @@ export function ProfilePage({ id }: { id: string }) {
 
   const { items } = testimony
 
+
+  // ! TO DO
+  // const testimony = useTestimonyListing(id)
+  // const items = testimony.testimony?.map(t => t.publication.value)
+
+  
+
+
   const refreshtable = useCallback(() => {
     items.execute()
   }, [items])

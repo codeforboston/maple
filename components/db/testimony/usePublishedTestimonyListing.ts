@@ -11,7 +11,7 @@ import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
 import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
-import { Testimony } from "./types"
+import { Testimony, TestimonySearchRecord } from "./types"
 import { createClient } from "../../../components/search/common"
 
 type Refinement = {
@@ -100,18 +100,22 @@ async function listTestimony(
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Testimony[]> {
-  if (refinement.profilePage && refinement.uid) {
-    const client = createClient()
+  // if (refinement.profilePage && refinement.uid) {
+  //   const client = createClient()
 
-    const data = await client
-      .collections("publishedTestimony")
-      .documents()
-      .search({ q: refinement.uid, query_by: "authorUid" })
+  //   const data = await client
+  //     .collections("publishedTestimony")
+  //     .documents()
+  //     .search({ q: refinement.uid, query_by: "authorUid" })
 
-    return data.hits
-      ? data.hits.map(({ document }) => document as Testimony)
-      : []
-  }
+  //   return data.hits
+  //     ? data.hits.map(({ document } : { document: any }) => { 
+  //       return {
+  //         ...document,
+  //         publishedAt: document.publishedAt
+  //       } as TestimonySearchRecord
+  //     }) : []
+  // }
 
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
 

@@ -28,7 +28,7 @@ export function useTestimonyListing(uid: string) {
       onSnapshot(
         query(
           collectionGroup(firestore, "publishedTestimony"),
-          where("authorUid", "==", uid)
+          where("authorUid", "==", 'VBN6dg70PGsupNvayJ2TPHPgydHz')
         ),
         {
           next: snapshot => dispatch({ type: "updatePublications", snapshot }),
@@ -40,7 +40,7 @@ export function useTestimonyListing(uid: string) {
 
   useEffect(
     () =>
-      onSnapshot(query(collection(firestore, `users/${uid}/draftTestimony`)), {
+      onSnapshot(query(collection(firestore, `users/VBN6dg70PGsupNvayJ2TPHPgydHz/draftTestimony`)), {
         next: snapshot => dispatch({ type: "updateDrafts", snapshot }),
         error: error => dispatch({ type: "error", error })
       }),
