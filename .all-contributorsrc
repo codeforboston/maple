@@ -52,7 +52,8 @@
       "profile": "https://github.com/jamesvas5307",
       "contributions": [
         "design",
-        "mentoring"
+        "mentoring",
+        "userTesting"
       ]
     },
     {
@@ -320,6 +321,25 @@
       "profile": "https://www.richardkwon.com/",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "mchai1218",
+      "name": "Minqi Chai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44985426?v=4",
+      "profile": "https://minqichai.notion.site/",
+      "contributions": [
+        "userTesting"
+      ]
+    },
+    {
+      "login": "sammymyi",
+      "name": "sammymyi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/105759252?v=4",
+      "profile": "https://github.com/sammymyi",
+      "contributions": [
+        "design",
+        "userTesting"
       ]
     }
   ]
