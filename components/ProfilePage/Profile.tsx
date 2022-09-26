@@ -1,13 +1,13 @@
 import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
+import { Profile, usePublicProfile, useTestimonyListing } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -81,27 +81,17 @@ export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
   const isMobile = useMediaQuery("(max-width: 768px)")
-
+  const [items, setItems] = useState([])
   const isUser = user?.uid === id
+  const { testimony } = useTestimonyListing(id)
 
-  const testimony = usePublishedTestimonyListing({
-    uid: id,
-    profilePage: true
-  })
-
-  const { items } = testimony
-
-
-  // ! TO DO
-  // const testimony = useTestimonyListing(id)
-  // const items = testimony.testimony?.map(t => t.publication.value)
-
-  
-
-
-  const refreshtable = useCallback(() => {
-    items.execute()
-  }, [items])
+  useEffect(() => {
+    if (testimony && testimony.length > 0) {
+      const data = testimony.map(e => ({ ...e.publication.value, id: e.publication.id }))
+      console.log('items', data)
+      setItems(data)
+    }
+  }, [testimony])
 
   const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
@@ -162,7 +152,7 @@ export function ProfilePage({ id }: { id: string }) {
             <Row>
               <Col xs={12}>
                 <ViewTestimony
-                  {...testimony}
+                  items={{ result: items }}
                   showControls={isUser}
                   showBillNumber
                   className="mb-4"

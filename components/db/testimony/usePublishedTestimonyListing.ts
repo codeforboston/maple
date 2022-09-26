@@ -13,6 +13,7 @@ import { currentGeneralCourt, nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony, TestimonySearchRecord } from "./types"
 import { createClient } from "../../../components/search/common"
+import { log } from "console"
 
 type Refinement = {
   senatorId?: string
@@ -25,13 +26,11 @@ type Refinement = {
 const initialRefinement = (
   uid?: string,
   billId?: string,
-  profilePage?: boolean
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
   billId,
-  profilePage
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -50,14 +49,12 @@ export type UsePublishedTestimonyListing = ReturnType<
 export function usePublishedTestimonyListing({
   uid,
   billId,
-  profilePage
 }: {
   uid?: string
   billId?: string
-  profilePage?: boolean
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, billId, profilePage)
+    initialRefinement(uid, billId)
   )
 
   useEffect(() => {
@@ -100,24 +97,39 @@ async function listTestimony(
   limitCount: number,
   startAfterKey: unknown | null
 ): Promise<Testimony[]> {
-  // if (refinement.profilePage && refinement.uid) {
-  //   const client = createClient()
-
-  //   const data = await client
-  //     .collections("publishedTestimony")
-  //     .documents()
-  //     .search({ q: refinement.uid, query_by: "authorUid" })
-
-  //   return data.hits
-  //     ? data.hits.map(({ document } : { document: any }) => { 
-  //       return {
-  //         ...document,
-  //         publishedAt: document.publishedAt
-  //       } as TestimonySearchRecord
-  //     }) : []
-  // }
-
+  const client = createClient()
   const testimonyRef = collectionGroup(firestore, "publishedTestimony")
+  let query = { q: "*", query_by: "billId" }
+
+  console.log('List Testimony', {
+    refinement,
+    testimonyRef,
+    getWhere: {...getWhere(refinement)},
+    currentGeneralCourt,
+    orderBy: orderBy("publishedAt", "desc"),
+    limit: limit(limitCount),
+    startAfterKey
+  })
+
+  if (refinement.billId)
+    query = {
+      q: refinement.billId,
+      query_by: "billId"
+    }
+
+  const data = await client
+    .collections("publishedTestimony")
+    .documents()
+    .search(query)
+
+  return data.hits
+    ? data.hits.map(({ document } : { document: any }) => { 
+      return {
+        ...document,
+        publishedAt: document.publishedAt
+      } as TestimonySearchRecord
+    }) : []
+
 
   const result = await getDocs(
     nullableQuery(

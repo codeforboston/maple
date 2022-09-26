@@ -7,7 +7,8 @@ import {
   Profile,
   ProfileHook,
   useProfile,
-  usePublishedTestimonyListing
+  usePublishedTestimonyListing,
+  useTestimonyListing
 } from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -43,7 +44,7 @@ export function EditProfileForm({
 }) {
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
-
+  
   const testimony = usePublishedTestimonyListing({
     uid: uid
   })

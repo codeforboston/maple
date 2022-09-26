@@ -26,22 +26,18 @@ const ViewTestimony = (
   }
 ) => {
   const {
-    pagination,
     items,
-    setFilter,
     showControls = false,
     showBillNumber = false,
     className
   } = props
-  const testimony = items.result ?? []
 
-  const [orderBy, setOrderBy] = useState<string>()
+  const testimony = items.result ?? []
 
   return (
     <TitledSectionCard
       title={"Testimony"}
       className={className}
-      // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
       {testimony.length > 0 ? (
         testimony.map(t => (
@@ -59,7 +55,6 @@ const ViewTestimony = (
         </NoResults>
       )}
       <div className="p-3" />
-      {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )
 }
