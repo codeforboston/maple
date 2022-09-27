@@ -124,18 +124,27 @@
 
 /* bootstrap: small > 576px */
 @media (max-width: 36em) {
+  .header {
+    font-size: 1.125rem;
+    padding-right: 3rem;
+    padding-left: 1.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    transform: translate(-1.5rem, -40%);
+  }
   .title {
-    padding-left: 1rem;
+    padding-left: 1.7rem;
     font-size: 2.25rem;
   }
   .subheader {
     font-size: 1.25rem;
+    padding-left: 2rem;
   }
   .image {
     width: 12rem;
   }
   .text {
-    font-size: 1rem;
+    font-size: 1.125rem;
     padding-top: 1rem;
   }
 }
