@@ -159,11 +159,13 @@ export const TestimonyItem = ({
               </>
             )}
             {`${published} · `}
-            <Internal
-              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-            >
-              Full Text
-            </Internal>
+            {testimony.publishedAt && (
+              <Internal
+                href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+              >
+                Full Text
+              </Internal>
+            )}
           </Col>
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
