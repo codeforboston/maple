@@ -27,6 +27,13 @@
   letter-spacing: -0.63px;
   text-align: left;
   color: #000;
+  color: red;
+}
+
+.colRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .card {
@@ -79,14 +86,34 @@
   color: #000;
 }
 
-@media (max-width: 600px) {
-  .text {
-    font-size: 1rem;
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .image {
+    margin: 0;
+    margin: auto;
+  }
+  .title {
+    padding-top: 1rem;
+  }
+  .textLeft {
+    padding-left: 1rem;
   }
 }
 
-.colRow {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+/* bootstrap: small > 576px */
+@media (max-width: 36em) {
+  .title {
+    font-size: 1.25rem;
+  }
+  .content {
+    font-size: 1.125rem;
+  }
+}
+
+/* bootstrap: xs < 576px
+   this break at 464px */
+@media (max-width: 29em) {
+  .header {
+    font-size: 1.25rem;
+  }
 }
