@@ -20,7 +20,7 @@
 }
 
 .header {
-  background-color: #c03442;
+  background-color: var(--bs-blue);
   width: max-content;
   padding-top: 0;
   padding-bottom: 0;
@@ -96,3 +96,12 @@
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
+
+/* Responsive Queries */
+
+/* bootstrap: medium > 768px */
+/* @media (max-width: 48em) {
+  .header {
+    font-size: 1.25rem;
+  }
+} */
