@@ -1,10 +1,8 @@
 import {
   collectionGroup,
-  getDocs,
   limit,
   orderBy,
   QueryConstraint,
-  startAfter,
   where
 } from "firebase/firestore"
 import { useEffect, useMemo } from "react"
@@ -111,36 +109,50 @@ async function listTestimony(
     startAfterKey
   })
 
-  if (refinement.billId)
+  if (refinement.billId && refinement.uid) {
+    query = {
+      q: `${refinement.uid}, ${refinement.billId}`,
+      query_by: "authorUid,billId",
+    }
+    console.log(1, query)
+  } else if (refinement.billId) {
+    console.log(2)
     query = {
       q: refinement.billId,
       query_by: "billId"
     }
+  } else if (refinement.uid) {
+    console.log(3)
+    query = {
+      q: refinement.uid,
+      query_by: "authorUid"
+    }
+  }
 
   const data = await client
     .collections("publishedTestimony")
     .documents()
     .search(query)
 
+  console.log('Data', data)
   return data.hits
-    ? data.hits.map(({ document } : { document: any }) => { 
-      return {
+    ? data.hits.map(({ document }) => ({
         ...document,
         publishedAt: document.publishedAt
-      } as TestimonySearchRecord
-    }) : []
+      }) as TestimonySearchRecord
+    ) : []
 
 
-  const result = await getDocs(
-    nullableQuery(
-      testimonyRef,
-      ...getWhere(refinement),
-      where("court", "==", currentGeneralCourt),
-      orderBy("publishedAt", "desc"),
-      limit(limitCount),
-      startAfterKey !== null && startAfter(startAfterKey)
-    )
-  )
+  // const result = await getDocs(
+  //   nullableQuery(
+  //     testimonyRef,
+  //     ...getWhere(refinement),
+  //     where("court", "==", currentGeneralCourt),
+  //     orderBy("publishedAt", "desc"),
+  //     limit(limitCount),
+  //     startAfterKey !== null && startAfter(startAfterKey)
+  //   )
+  // )
 
   return result.docs.map(d => d.data() as Testimony)
 }

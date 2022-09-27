@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -8,7 +8,7 @@ import {
   ProfileHook,
   useProfile,
   usePublishedTestimonyListing,
-  useTestimonyListing
+  useTestimonyListing,
 } from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -44,16 +44,23 @@ export function EditProfileForm({
 }) {
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
-  
-  const testimony = usePublishedTestimonyListing({
-    uid: uid
-  })
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const { testimony } = useTestimonyListing(uid)
 
-  const { items } = testimony
+  useEffect(() => {
+    if (testimony && testimony.length > 0) {
+      setLoading(true)
 
-  const refreshtable = useCallback(() => {
-    items.execute()
-  }, [items])
+      const data = testimony.map(e => 
+        e?.publication ?
+        ({ ...e.publication.value, id: e.publication.id }) :
+        ({ ...e.draft.value, id: e.draft.id, authorUid: uid, authorDisplayName: profile.displayName }))
+
+      setItems(data)
+      setLoading(false)
+    }
+  }, [testimony])
 
   const tabs = [
     {
@@ -72,9 +79,13 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: (
+      content: loading ? (
+        <Row>
+          <Spinner animation="border" className="mx-auto" />
+        </Row>
+      ) : (
         <ViewTestimony
-          {...testimony}
+          items={{ result: items }}
           showControls={true}
           showBillNumber
           className="mt-3 mb-4"

@@ -8,11 +8,10 @@ import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
 import {
   Testimony,
-  useBill,
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
-import { formatBillId, formatTestimonyLinks } from "../formatting"
+import { formatBillId, formatTestimonyDate, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
@@ -118,9 +117,7 @@ export const TestimonyItem = ({
   showBillNumber: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const published = new Date(
-    Number(testimony.publishedAt.seconds * 1000 || testimony.publishedAt)
-  ).toLocaleDateString()
+  const published = testimony.publishedAt ? formatTestimonyDate(testimony.publishedAt) : "Draft"
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>

@@ -1,6 +1,7 @@
 import Autolinker from "autolinker"
 import createDOMPurify, { DOMPurifyI } from "dompurify"
 import { Timestamp } from "firebase/firestore"
+import { InstanceOf } from "runtypes"
 import { useMediaQuery } from "usehooks-ts"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
@@ -103,3 +104,7 @@ export const decodeHtmlCharCodes = (s: string) =>
   s.replace(/(&#(\d+);)/g, (match, capture, charCode) =>
     String.fromCharCode(charCode)
   )
+
+export const formatTestimonyDate = (publishedAt: Timestamp) => new Date(
+  Number(publishedAt.seconds * 1000 || publishedAt)
+).toLocaleDateString()

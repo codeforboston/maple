@@ -79,7 +79,8 @@ const StyledContainer = styled(Container)`
 
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
-  const { result: profile, loading } = usePublicProfile(id)
+  const { result: profile } = usePublicProfile(id)
+  const [loading, setLoading] = useState<boolean>(true)
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [items, setItems] = useState([])
   const isUser = user?.uid === id
@@ -87,9 +88,15 @@ export function ProfilePage({ id }: { id: string }) {
 
   useEffect(() => {
     if (testimony && testimony.length > 0) {
-      const data = testimony.map(e => ({ ...e.publication.value, id: e.publication.id }))
-      console.log('items', data)
+      setLoading(true)
+
+      const data = testimony.map(e => 
+        e?.publication ?
+        ({ ...e.publication.value, id: e.publication.id,  }) :
+        ({ ...e.draft.value, id: e.draft.id, authorUid: user?.uid, authorDisplayName: profile?.displayName }))
+
       setItems(data)
+      setLoading(false)
     }
   }, [testimony])
 

@@ -65,6 +65,6 @@ export const TestimonySearchRecord = R({
   authorUid: RtString,
   authorDisplayName: RtString,
   version: Number,
-  publishedAt: Number
+  publishedAt: InstanceOf(Timestamp)
 })
 export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>

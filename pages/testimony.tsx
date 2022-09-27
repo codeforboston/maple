@@ -8,7 +8,7 @@ import {
   usePublicProfile,
   usePublishedTestimonyListing
 } from "../components/db"
-import { formatBillId } from "../components/formatting"
+import { formatBillId, formatTestimonyDate } from "../components/formatting"
 import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
 
@@ -86,8 +86,7 @@ export default createPage({
                         ? " is neutral on "
                         : " " + testimony.position + "d "}
                     </span>
-                    {" this bill on " +
-                      testimony.publishedAt.toDate().toLocaleDateString()}
+                    {" this bill on " + formatTestimonyDate(testimony.publishedAt)}
                   </h3>
                 </PositionSentence>
               </div>
