@@ -1,0 +1,6 @@
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .content {
+    padding-top: 2rem;
+  }
+}
