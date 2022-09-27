@@ -13,6 +13,8 @@
   padding-bottom: 4rem;
 }
 
+/* Responsive Queries */
+
 /* bootstrap: medium > 768px */
 @media (max-width: 48em) {
   .header {

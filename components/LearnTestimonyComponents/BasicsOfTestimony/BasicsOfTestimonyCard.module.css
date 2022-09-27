@@ -108,6 +108,9 @@
   justify-content: center;
 }
 
+/* Responsive Queries */
+
+/* bootstrap: small > 576px */
 @media (max-width: 36em) {
   .title {
     font-size: 1.25rem;

@@ -86,6 +86,8 @@
   color: #000;
 }
 
+/* Responsive Queries */
+
 /* bootstrap: medium > 768px */
 @media (max-width: 48em) {
   .image {
