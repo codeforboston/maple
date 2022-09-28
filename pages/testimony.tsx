@@ -1,4 +1,5 @@
 import { Internal } from "components/links"
+import { publicDecrypt } from "crypto"
 import { useRouter } from "next/router"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
@@ -34,13 +35,15 @@ export default createPage({
   title: "Testimony",
   Page: () => {
     const router = useRouter()
-    const { billId, author } = router.query
+    const { billId, author, published } = router.query
     const {
       items: { result, status }
     } = usePublishedTestimonyListing({
       uid: author as string,
-      billId: billId as string
+      billId: billId as string,
+      published: published as string
     })
+  
     const testimony =
       status in ["loading", "error"]
         ? undefined
@@ -75,20 +78,24 @@ export default createPage({
 
             <div>
               <div className="mt-4">
-                <PositionSentence>
-                  <h3>
-                    {authorPublic && (
-                      <a href={authorLink}>{testimony.authorDisplayName}</a>
-                    )}
-                    {!authorPublic && testimony.authorDisplayName}
-                    <span style={{ color: "#FF8600" }}>
-                      {testimony.position === "neutral"
-                        ? " is neutral on "
-                        : " " + testimony.position + "d "}
-                    </span>
-                    {" this bill on " + formatTestimonyDate(testimony.publishedAt)}
-                  </h3>
-                </PositionSentence>
+                {testimony.publishedAt ? (
+                  <PositionSentence>
+                    <h3>
+                      {authorPublic && (
+                        <a href={authorLink}>{testimony.authorDisplayName}</a>
+                      )}
+                      {!authorPublic && testimony.authorDisplayName}
+                      <span style={{ color: "#FF8600" }}>
+                        {testimony.position === "neutral"
+                          ? " is neutral on "
+                          : " " + testimony.position + "d "}
+                      </span>
+                      {" this bill on " + formatTestimonyDate(testimony.publishedAt)}
+                    </h3>
+                  </PositionSentence>
+                ) : (
+                  <PositionSentence><h3>This testimony is still in</h3><h3 style={{ color: '#ff8600' }}>draft</h3></PositionSentence>
+                )}
               </div>
 
               <div className="mt-4">

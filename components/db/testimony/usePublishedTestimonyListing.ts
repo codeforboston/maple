@@ -1,5 +1,6 @@
 import {
   collectionGroup,
+  getDocs,
   limit,
   orderBy,
   QueryConstraint,
@@ -12,23 +13,26 @@ import { createTableHook } from "../createTableHook"
 import { Testimony, TestimonySearchRecord } from "./types"
 import { createClient } from "../../../components/search/common"
 import { log } from "console"
+import { getBillTestimony } from "./resolveTestimony"
 
 type Refinement = {
   senatorId?: string
   representativeId?: string
   uid?: string
   billId?: string
-  profilePage?: boolean
+  published?: string
 }
 
 const initialRefinement = (
   uid?: string,
   billId?: string,
+  published?: string
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
   billId,
+  published
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -44,21 +48,26 @@ export type TestimonyFilterOptions =
 export type UsePublishedTestimonyListing = ReturnType<
   typeof usePublishedTestimonyListing
 >
+
 export function usePublishedTestimonyListing({
   uid,
   billId,
+  published,
 }: {
   uid?: string
   billId?: string
+  published?: string
 } = {}) {
+  
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, billId)
+    initialRefinement(uid, billId, published)
   )
 
   useEffect(() => {
     if (refinement.uid !== uid) refine({ uid })
     if (refinement.billId !== billId) refine({ billId })
-  }, [billId, refine, refinement, uid])
+    if (refinement.published !== published) refine({ published })
+  }, [billId, published, refine, refinement, uid])
 
   return useMemo(
     () => ({
@@ -96,23 +105,20 @@ async function listTestimony(
   startAfterKey: unknown | null
 ): Promise<Testimony[]> {
   const client = createClient()
-  const testimonyRef = collectionGroup(firestore, "publishedTestimony")
-  let query = { q: "*", query_by: "billId" }
+  const publishedBool = refinement.published === "true"
 
-  console.log('List Testimony', {
-    refinement,
-    testimonyRef,
-    getWhere: {...getWhere(refinement)},
-    currentGeneralCourt,
-    orderBy: orderBy("publishedAt", "desc"),
-    limit: limit(limitCount),
-    startAfterKey
-  })
+  let query = { }
+
+  if (!publishedBool && refinement.billId && refinement.uid) {
+      const result = await getBillTestimony(refinement.uid, refinement.billId)
+
+      return [result.draft] as Testimony[]
+  }
 
   if (refinement.billId && refinement.uid) {
     query = {
       q: `${refinement.uid}, ${refinement.billId}`,
-      query_by: "authorUid,billId",
+      query_by: "authorUid, billId",
     }
     console.log(1, query)
   } else if (refinement.billId) {
@@ -127,7 +133,13 @@ async function listTestimony(
       q: refinement.uid,
       query_by: "authorUid"
     }
+  } else {
+    query = {
+      q: "*",
+      query_by: "billId"
+    }
   }
+
 
   const data = await client
     .collections("publishedTestimony")
@@ -154,5 +166,4 @@ async function listTestimony(
   //   )
   // )
 
-  return result.docs.map(d => d.data() as Testimony)
 }
