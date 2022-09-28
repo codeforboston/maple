@@ -59,10 +59,8 @@ const ViewTestimony = (
 }
 
 export const SortTestimonyDropDown = ({
-  orderBy,
   setOrderBy
-}: {
-  orderBy?: string
+} : {
   setOrderBy: (order: string) => void
 }) => {
   return (
@@ -117,7 +115,8 @@ export const TestimonyItem = ({
   showBillNumber: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const published = testimony.publishedAt ? formatTestimonyDate(testimony.publishedAt) : "Draft"
+  const isPublished = !!testimony.publishedAt
+  const publishedVersion = () => isPublished ? formatTestimonyDate(testimony.publishedAt) : <span style={{color: '#ff8600'}}>Draft</span>
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
@@ -158,7 +157,7 @@ export const TestimonyItem = ({
                 {" · "}
               </>
             )}
-            {`${published} · `}
+            {publishedVersion()} ·
             {testimony.publishedAt && (
               <Internal
                 href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}

@@ -1,13 +1,12 @@
 import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
-import { useCallback, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import { Profile, usePublicProfile, useTestimonyListing } from "../db"
+import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -79,27 +78,13 @@ const StyledContainer = styled(Container)`
 
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
-  const { result: profile } = usePublicProfile(id)
-  const [loading, setLoading] = useState<boolean>(true)
+  const { result: profile, loading } = usePublicProfile(id)
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const [items, setItems] = useState([])
   const isUser = user?.uid === id
-  const { testimony } = useTestimonyListing(id)
-
-  useEffect(() => {
-    if (testimony && testimony.length > 0) {
-      setLoading(true)
-
-      const data = testimony.map(e => 
-        e?.publication ?
-        ({ ...e.publication.value, id: e.publication.id,  }) :
-        ({ ...e.draft.value, id: e.draft.id, authorUid: user?.uid, authorDisplayName: profile?.displayName }))
-
-      setItems(data)
-      setLoading(false)
-    }
-  }, [testimony])
-
+  const testimony = usePublishedTestimonyListing({
+    uid: id
+  })
+  const { items } = testimony
   const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
@@ -159,7 +144,7 @@ export function ProfilePage({ id }: { id: string }) {
             <Row>
               <Col xs={12}>
                 <ViewTestimony
-                  items={{ result: items }}
+                  {...testimony}
                   showControls={isUser}
                   showBillNumber
                   className="mb-4"
