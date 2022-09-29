@@ -30,7 +30,7 @@ export const Testimony = withDefaults(
     authorUid: Id,
     authorDisplayName: RtString,
     version: Number,
-    publishedAt: InstanceOf(Timestamp),
+    publishedAt: Number,
     representativeId: Optional(RtString),
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),

@@ -100,9 +100,7 @@ function getWhere({
 }
 
 async function listTestimony(
-  refinement: Refinement,
-  limitCount: number,
-  startAfterKey: unknown | null
+  refinement: Refinement
 ): Promise<Testimony[]> {
   const client = createClient()
   const publishedBool = refinement.published === "true"
@@ -117,8 +115,9 @@ async function listTestimony(
 
   if (refinement.billId && refinement.uid) {
     query = {
-      q: `${refinement.uid}, ${refinement.billId}`,
-      query_by: "authorUid, billId",
+      q: refinement.uid,
+      query_by: "authorUid",
+      filter_by: `billId:=${refinement.billId}`
     }
     console.log(1, query)
   } else if (refinement.billId) {
@@ -146,7 +145,7 @@ async function listTestimony(
     .documents()
     .search(query)
 
-  console.log('Data', data)
+  console.log('Data', data.hits?.length)
   return data.hits
     ? data.hits.map(({ document }) => ({
         ...document,
