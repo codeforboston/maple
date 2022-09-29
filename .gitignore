@@ -70,3 +70,5 @@ infra/prod/typesense-secrets.yml
 
 storybook-static
 /token
+
+.tool-versions
