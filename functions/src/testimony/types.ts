@@ -30,7 +30,7 @@ export const Testimony = withDefaults(
     authorUid: Id,
     authorDisplayName: RtString,
     version: Number,
-    publishedAt: Number,
+    publishedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),
@@ -65,6 +65,6 @@ export const TestimonySearchRecord = R({
   authorUid: RtString,
   authorDisplayName: RtString,
   version: Number,
-  publishedAt: InstanceOf(Timestamp)
+  publishedAt: Number
 })
 export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>

@@ -1,13 +1,14 @@
+import { useBillTestimony } from "components/db/testimony/useBillTestimony"
 import { Internal } from "components/links"
-import { publicDecrypt } from "crypto"
 import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
 import { Container } from "../components/bootstrap"
 import {
+  Testimony,
   useBill,
-  usePublicProfile,
-  usePublishedTestimonyListing
+  usePublicProfile
 } from "../components/db"
 import { formatBillId, formatTestimonyDate } from "../components/formatting"
 import { createPage } from "../components/page"
@@ -20,7 +21,7 @@ const PositionSentence = styled(Container)`
   text-align: center;
   font-weight: bold;
 `
-const Testimony = styled(Container)`
+const TestimonyContainer = styled(Container)`
   white-space: pre-wrap;
   font-family: "Nunito";
   background-color: white;
@@ -35,28 +36,21 @@ export default createPage({
   title: "Testimony",
   Page: () => {
     const router = useRouter()
-    const { billId, author, published } = router.query
-    const {
-      items: { result, status }
-    } = usePublishedTestimonyListing({
-      uid: author as string,
-      billId: billId as string,
-      published: published as string
-    })
-  
-    const testimony =
-      status in ["loading", "error"]
-        ? undefined
-        : result && result?.length > 0
-        ? result[0]
-        : undefined
-
+    const [testimony, setTestimony] = useState<Testimony>()
+    const { billId, author } = router.query
+    const billTestimonyResult = useBillTestimony(author as string, billId as string)
     const { result: bill, loading } = useBill(billId as string)
 
-    const profile = usePublicProfile(testimony?.authorUid)
+    const profile = usePublicProfile(author as string)
     const authorPublic = profile.result?.public
     const authorLink = "/profile?id=" + author
     const billLink = "/bill?id=" + bill?.content.BillNumber
+
+    useEffect(() => {
+      if (billTestimonyResult.loading) {
+        setTestimony(billTestimonyResult.published || billTestimonyResult.draft)
+      }
+    }, [billTestimonyResult])
 
     return (
       <Container className="mt-3">
@@ -65,9 +59,9 @@ export default createPage({
             <div>
               <h3>
                 {bill ? (
-                  <Internal href={billLink}>{`${formatBillId(
+                  <Internal href={billLink}>{`${ formatBillId(
                     bill.content.BillNumber
-                  )}: ${bill.content.Title}`}</Internal>
+                  ) }: ${ bill.content.Title }`}</Internal>
                 ) : loading ? (
                   ""
                 ) : (
@@ -99,7 +93,7 @@ export default createPage({
               </div>
 
               <div className="mt-4">
-                <Testimony>{testimony.content}</Testimony>
+                <TestimonyContainer>{testimony.content}</TestimonyContainer>
               </div>
 
               <div className="mt-2">
