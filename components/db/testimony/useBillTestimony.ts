@@ -24,8 +24,8 @@ export const useBillTestimony = (uid: string, billId: string): BillTestimonyResu
     const publishedData = await getPublishedTestimony(uid, billId)
     const draftData = await getDraftTestimony(uid, billId)
 
-    setPublished(publishedData?.docs[0].data() as Testimony)
-    setDraft(draftData?.docs[0].data() as Testimony)
+    setPublished(publishedData?.docs[0]?.data() as Testimony)
+    setDraft(draftData?.docs[0]?.data() as Testimony)
 
     setLoading(false)
   }
