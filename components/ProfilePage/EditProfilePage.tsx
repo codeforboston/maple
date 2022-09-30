@@ -6,6 +6,7 @@ import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
+  Testimony,
   useProfile,
   usePublishedTestimonyListing,
   useTestimonyListing
@@ -44,7 +45,7 @@ export function EditProfileForm({
 }) {
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<Testimony[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const { testimony } = useTestimonyListing(uid)
 
@@ -55,15 +56,15 @@ export function EditProfileForm({
       const data = testimony.map(e =>
         e?.publication
           ? { ...e.publication.value, id: e.publication.id }
-          : {
+          : e.draft && ({
               ...e.draft.value,
               id: e.draft.id,
               authorUid: uid,
               authorDisplayName: profile.displayName
-            }
+            })
       )
 
-      setItems(data)
+      setItems(data as Testimony[])
       setLoading(false)
     }
   }, [testimony])
