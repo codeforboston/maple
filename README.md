@@ -10,6 +10,8 @@ Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-
 
 You can find good first issues [here](https://github.com/codeforboston/advocacy-maps/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
+Check out the [Contributing](./Contributing.md) docs for how to contribute to the project.
+
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
@@ -43,37 +45,7 @@ git checkout master
 git pull upstream master
 ```
 
-4. To contribute a feature, open a feature branch off `master`:
-
-```
-git checkout master
-git checkout -b MY_FEATURE
-git push -u origin MY_FEATURE
-```
-
-Use `git push` to upload your commits to your fork. When you're finished, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/master`.
-
-If other PR's are merged while yours is in review, your changes may start to conflict with `master`. This will be displayed on the PR. You'll need to resolve merge conflicts before you can merge your PR:
-
-```bash
-# Update your local master branch
-git checkout master
-git pull upstream master
-
-# Merge master into your feature branch
-git checkout MY_FEATURE
-git merge master
-```
-
-[This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the Github web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
-
-## Contributing
-
-See issues organized on our [project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board). If you're new, [check out the Good First Issues in our product and sprint backlogs](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board?labels=good%20first%20issue). Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
-
-When you send out a PR that addresses an issue, [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
-
-Add a reviewer to your PR. If you're not sure who has the context to review, add `alexjball`. Once all the checks pass and someone approves your PR, you can merge it!
+4. Now you're ready to work on a feature! See the [Contributing](./Contributing.md) page for more info.
 
 ## Developing Locally
 
@@ -99,24 +71,69 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 - [Kubernetes Notes](./Kubernetes.md)
 - [Search Design](./Search.md)
 
-## Development FAQ
+## Contributors
 
-### How do I create a new page?
+Thanks to all our contributors!
 
-Take a look at the `pages/bills.tsx` page:
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://github.com/0lafe"><img src="https://avatars.githubusercontent.com/u/21280852?v=4?s=100" width="100px;" alt="0lafe"/><br /><sub><b>0lafe</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=0lafe" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/alexjball"><img src="https://avatars.githubusercontent.com/u/8595776?v=4?s=100" width="100px;" alt="Alex Ball"/><br /><sub><b>Alex Ball</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=alexjball" title="Code">💻</a> <a href="https://github.com/codeforboston/advocacy-maps/pulls?q=is%3Apr+reviewed-by%3Aalexjball" title="Reviewed Pull Requests">👀</a> <a href="#mentoring-alexjball" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center"><a href="https://github.com/AnnaKSteele"><img src="https://avatars.githubusercontent.com/u/6483197?v=4?s=100" width="100px;" alt="Anna Steele"/><br /><sub><b>Anna Steele</b></sub></a><br /><a href="#business-AnnaKSteele" title="Business development">💼</a> <a href="#projectManagement-AnnaKSteele" title="Project Management">📆</a></td>
+      <td align="center"><a href="https://bhrutledge.com/"><img src="https://avatars.githubusercontent.com/u/1326704?v=4?s=100" width="100px;" alt="Brian Rutledge"/><br /><sub><b>Brian Rutledge</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=bhrutledge" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/bhinebaugh"><img src="https://avatars.githubusercontent.com/u/466561?v=4?s=100" width="100px;" alt="Byron Kent Hinebaugh"/><br /><sub><b>Byron Kent Hinebaugh</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=bhinebaugh" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/cbmacd1213"><img src="https://avatars.githubusercontent.com/u/67985403?v=4?s=100" width="100px;" alt="Colin MacDonald"/><br /><sub><b>Colin MacDonald</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=cbmacd1213" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/almaraz333"><img src="https://avatars.githubusercontent.com/u/60356596?v=4?s=100" width="100px;" alt="Colton Almaraz"/><br /><sub><b>Colton Almaraz</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=almaraz333" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/Dev1nxavier"><img src="https://avatars.githubusercontent.com/u/7763861?v=4?s=100" width="100px;" alt="Dev1nxavier"/><br /><sub><b>Dev1nxavier</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=Dev1nxavier" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/jkoren"><img src="https://avatars.githubusercontent.com/u/67333843?v=4?s=100" width="100px;" alt="Jeff Korenstein"/><br /><sub><b>Jeff Korenstein</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=jkoren" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/KY233466"><img src="https://avatars.githubusercontent.com/u/81402259?v=4?s=100" width="100px;" alt="KY233466"/><br /><sub><b>KY233466</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=KY233466" title="Code">💻</a></td>
+      <td align="center"><a href="https://kepweb.dev/"><img src="https://avatars.githubusercontent.com/u/19396186?v=4?s=100" width="100px;" alt="Kep Kaeppeler"/><br /><sub><b>Kep Kaeppeler</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=Keparoo" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/pololeningcelaya"><img src="https://avatars.githubusercontent.com/u/57147656?v=4?s=100" width="100px;" alt="Leopoldo Lening Celaya"/><br /><sub><b>Leopoldo Lening Celaya</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=pololeningcelaya" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/luke-rucker"><img src="https://avatars.githubusercontent.com/u/10203352?v=4?s=100" width="100px;" alt="Luke Rucker"/><br /><sub><b>Luke Rucker</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=luke-rucker" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/NONstiky"><img src="https://avatars.githubusercontent.com/u/16812993?v=4?s=100" width="100px;" alt="Marcos Banchik"/><br /><sub><b>Marcos Banchik</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=NONstiky" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://www.zagaja.com/"><img src="https://avatars.githubusercontent.com/u/565647?v=4?s=100" width="100px;" alt="Matthew Zagaja"/><br /><sub><b>Matthew Zagaja</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=mzagaja" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/mikeyavorsky"><img src="https://avatars.githubusercontent.com/u/1855512?v=4?s=100" width="100px;" alt="Mike Yavorsky"/><br /><sub><b>Mike Yavorsky</b></sub></a><br /><a href="#design-mikeyavorsky" title="Design">🎨</a></td>
+      <td align="center"><a href="https://github.com/kilometers"><img src="https://avatars.githubusercontent.com/u/6674848?v=4?s=100" width="100px;" alt="Miles Baird"/><br /><sub><b>Miles Baird</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=kilometers" title="Code">💻</a></td>
+      <td align="center"><a href="https://minqichai.notion.site/"><img src="https://avatars.githubusercontent.com/u/44985426?v=4?s=100" width="100px;" alt="Minqi Chai"/><br /><sub><b>Minqi Chai</b></sub></a><br /><a href="#userTesting-mchai1218" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/nesanders"><img src="https://avatars.githubusercontent.com/u/1727426?v=4?s=100" width="100px;" alt="Nathan Sanders"/><br /><sub><b>Nathan Sanders</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=nesanders" title="Code">💻</a> <a href="#business-nesanders" title="Business development">💼</a> <a href="#fundingFinding-nesanders" title="Funding Finding">🔍</a></td>
+      <td align="center"><a href="https://www.richardkwon.com/"><img src="https://avatars.githubusercontent.com/u/24848125?v=4?s=100" width="100px;" alt="Richard Kwon"/><br /><sub><b>Richard Kwon</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=Rae-Kwon" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/rileyhgrant"><img src="https://avatars.githubusercontent.com/u/59549713?v=4?s=100" width="100px;" alt="Riley Grant"/><br /><sub><b>Riley Grant</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=rileyhgrant" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/RobertMrowiec"><img src="https://avatars.githubusercontent.com/u/25043084?v=4?s=100" width="100px;" alt="RobertMrowiec"/><br /><sub><b>RobertMrowiec</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=RobertMrowiec" title="Code">💻</a> <a href="https://github.com/codeforboston/advocacy-maps/pulls?q=is%3Apr+reviewed-by%3ARobertMrowiec" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center"><a href="https://rodrigopassos.com/"><img src="https://avatars.githubusercontent.com/u/994788?v=4?s=100" width="100px;" alt="Rodrigo Passos"/><br /><sub><b>Rodrigo Passos</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=webrgp" title="Code">💻</a> <a href="https://github.com/codeforboston/advocacy-maps/pulls?q=is%3Apr+reviewed-by%3Awebrgp" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center"><a href="https://github.com/ssolmonson"><img src="https://avatars.githubusercontent.com/u/58236786?v=4?s=100" width="100px;" alt="Scott Solmonson"/><br /><sub><b>Scott Solmonson</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=ssolmonson" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/veronicaadler"><img src="https://avatars.githubusercontent.com/u/83320256?v=4?s=100" width="100px;" alt="Veronica Adler"/><br /><sub><b>Veronica Adler</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=veronicaadler" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/arutfield"><img src="https://avatars.githubusercontent.com/u/36383013?v=4?s=100" width="100px;" alt="arutfield"/><br /><sub><b>arutfield</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=arutfield" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/bancona"><img src="https://avatars.githubusercontent.com/u/5554068?v=4?s=100" width="100px;" alt="bancona"/><br /><sub><b>bancona</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=bancona" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/d-ondrich"><img src="https://avatars.githubusercontent.com/u/25425042?v=4?s=100" width="100px;" alt="d.ondrich"/><br /><sub><b>d.ondrich</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=d-ondrich" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/djtanner"><img src="https://avatars.githubusercontent.com/u/3960256?v=4?s=100" width="100px;" alt="djtanner"/><br /><sub><b>djtanner</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=djtanner" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/jamesvas5307"><img src="https://avatars.githubusercontent.com/u/14347149?v=4?s=100" width="100px;" alt="jamesvas5307"/><br /><sub><b>jamesvas5307</b></sub></a><br /><a href="#design-jamesvas5307" title="Design">🎨</a> <a href="#mentoring-jamesvas5307" title="Mentoring">🧑‍🏫</a> <a href="#userTesting-jamesvas5307" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/jkinzer85"><img src="https://avatars.githubusercontent.com/u/80472427?v=4?s=100" width="100px;" alt="jkinzer85"/><br /><sub><b>jkinzer85</b></sub></a><br /><a href="#userTesting-jkinzer85" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/mmailloux22"><img src="https://avatars.githubusercontent.com/u/48417120?v=4?s=100" width="100px;" alt="mmailloux22"/><br /><sub><b>mmailloux22</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=mmailloux22" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/mvictor55"><img src="https://avatars.githubusercontent.com/u/71357256?v=4?s=100" width="100px;" alt="mvictor55"/><br /><sub><b>mvictor55</b></sub></a><br /><a href="#business-mvictor55" title="Business development">💼</a> <a href="#projectManagement-mvictor55" title="Project Management">📆</a> <a href="#fundingFinding-mvictor55" title="Funding Finding">🔍</a> <a href="https://github.com/codeforboston/advocacy-maps/commits?author=mvictor55" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/ren0nie0"><img src="https://avatars.githubusercontent.com/u/32780767?v=4?s=100" width="100px;" alt="ren0nie0"/><br /><sub><b>ren0nie0</b></sub></a><br /><a href="#research-ren0nie0" title="Research">🔬</a></td>
+      <td align="center"><a href="https://github.com/sammymyi"><img src="https://avatars.githubusercontent.com/u/105759252?v=4?s=100" width="100px;" alt="sammymyi"/><br /><sub><b>sammymyi</b></sub></a><br /><a href="#design-sammymyi" title="Design">🎨</a> <a href="#userTesting-sammymyi" title="User Testing">📓</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/sashamaryl"><img src="https://avatars.githubusercontent.com/u/30247522?v=4?s=100" width="100px;" alt="sashamaryl"/><br /><sub><b>sashamaryl</b></sub></a><br /><a href="https://github.com/codeforboston/advocacy-maps/commits?author=sashamaryl" title="Code">💻</a> <a href="#mentoring-sashamaryl" title="Mentoring">🧑‍🏫</a> <a href="#research-sashamaryl" title="Research">🔬</a></td>
+    </tr>
+  </tbody>
+</table>
 
-```typescript
-export default createPage({
-  title: "Browse",
-  Page: () => {
-    return (
-      <Container>
-        <h1>Browse</h1>
-        ...
-      </Container>
-    )
-  }
-})
-```
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-Your page content goes in `Page`, and will be wrapped in a layout component. The page is rendered by `_app.tsx`.
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This table follows the [All Contributors](https://allcontributors.org/) specification and is managed by the @all-contributors bot. You can add yourself or another contributor by [commenting on an issue or a pull request](https://allcontributors.org/docs/en/bot/usage).
