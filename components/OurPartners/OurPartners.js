@@ -38,9 +38,9 @@ const OurPartners = () => {
       </Row>
       <Row className="mx-5">
         <Col>
-          <h1 className="mt-5 fw-bold">Our Partners</h1>
+          <h1 className="mt-5 fw-bold">Collaborators</h1>
           <p>
-            The project is developed in partnership between the NuLawLab and
+            The project is developed in collaboration between the NuLawLab and
             scholars at{" "}
             <a href="https://www.bc.edu/bc-web/schools/law.html">
               Boston College Law School
