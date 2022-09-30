@@ -1,8 +1,8 @@
 import { Client } from "typesense"
 
 export const createClient = (
-  apiUrl = process.env.TYPESENSE_API_URL || "http://localhost:8108",
-  apiKey = process.env.TYPESENSE_API_KEY || "test-api-key"
+  apiUrl = process.env.TYPESENSE_API_URL!,
+  apiKey = process.env.TYPESENSE_API_KEY!
 ) => {
   const url = new URL(apiUrl)
   const protocol = url.protocol.startsWith("https") ? "https" : "http"
