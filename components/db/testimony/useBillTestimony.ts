@@ -1,3 +1,4 @@
+import { useAuth } from "components/auth";
 import {
   collection,
   getDocs,
@@ -6,6 +7,7 @@ import {
 } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { firestore } from "../../firebase"
+import { useProfile } from "../profile";
 import { Testimony } from "./types"
 
 export interface BillTestimonyResult {
@@ -18,14 +20,17 @@ export const useBillTestimony = (uid: string, billId: string): BillTestimonyResu
   const [published, setPublished] = useState<Testimony>()
   const [draft, setDraft] = useState<Testimony>()
   const [loading, setLoading] = useState<boolean>(true)
-
+  const { user } = useAuth()
+  
   const fetchDrafts = async (uid: string, billId: string) => {
     setLoading(true)
     const publishedData = await getPublishedTestimony(uid, billId)
-    const draftData = await getDraftTestimony(uid, billId)
-
     setPublished(publishedData?.docs[0]?.data() as Testimony)
-    setDraft(draftData?.docs[0]?.data() as Testimony)
+    
+    if (user?.uid === uid) {
+      const draftData = await getDraftTestimony(uid, billId)
+      setDraft(draftData?.docs[0]?.data() as Testimony)
+    }
 
     setLoading(false)
   }
