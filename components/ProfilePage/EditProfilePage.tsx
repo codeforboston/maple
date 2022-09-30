@@ -8,7 +8,7 @@ import {
   ProfileHook,
   useProfile,
   usePublishedTestimonyListing,
-  useTestimonyListing,
+  useTestimonyListing
 } from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -52,10 +52,16 @@ export function EditProfileForm({
     if (testimony && testimony.length > 0) {
       setLoading(true)
 
-      const data = testimony.map(e => 
-        e?.publication ?
-        ({ ...e.publication.value, id: e.publication.id }) :
-        ({ ...e.draft.value, id: e.draft.id, authorUid: uid, authorDisplayName: profile.displayName }))
+      const data = testimony.map(e =>
+        e?.publication
+          ? { ...e.publication.value, id: e.publication.id }
+          : {
+              ...e.draft.value,
+              id: e.draft.id,
+              authorUid: uid,
+              authorDisplayName: profile.displayName
+            }
+      )
 
       setItems(data)
       setLoading(false)

@@ -105,6 +105,7 @@ export const decodeHtmlCharCodes = (s: string) =>
     String.fromCharCode(charCode)
   )
 
-export const formatTestimonyDate = (publishedAt: Timestamp) => new Date(
-  Number(publishedAt.seconds * 1000 || publishedAt)
-).toLocaleDateString()
+export const formatTestimonyDate = (publishedAt: Timestamp) =>
+  new Date(
+    Number(publishedAt.seconds * 1000 || publishedAt)
+  ).toLocaleDateString()

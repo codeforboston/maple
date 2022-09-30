@@ -1,32 +1,30 @@
-import { useAuth } from "components/auth";
-import {
-  collection,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
+import { useAuth } from "components/auth"
+import { collection, getDocs, query, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { firestore } from "../../firebase"
-import { useProfile } from "../profile";
+import { useProfile } from "../profile"
 import { Testimony } from "./types"
 
 export interface BillTestimonyResult {
-  draft?: Testimony;
-  published?: Testimony;
-  loading: boolean;
+  draft?: Testimony
+  published?: Testimony
+  loading: boolean
 }
 
-export const useBillTestimony = (uid: string, billId: string): BillTestimonyResult => {
+export const useBillTestimony = (
+  uid: string,
+  billId: string
+): BillTestimonyResult => {
   const [published, setPublished] = useState<Testimony>()
   const [draft, setDraft] = useState<Testimony>()
   const [loading, setLoading] = useState<boolean>(true)
   const { user } = useAuth()
-  
+
   const fetchDrafts = async (uid: string, billId: string) => {
     setLoading(true)
     const publishedData = await getPublishedTestimony(uid, billId)
     setPublished(publishedData?.docs[0]?.data() as Testimony)
-    
+
     if (user?.uid === uid) {
       const draftData = await getDraftTestimony(uid, billId)
       setDraft(draftData?.docs[0]?.data() as Testimony)
@@ -48,16 +46,18 @@ export const useBillTestimony = (uid: string, billId: string): BillTestimonyResu
   }
 }
 
-const getPublishedTestimony = (uid: string, billId: string) => getDocs(
-  query(
-    collection(firestore, `users/${uid}/publishedTestimony`),
-    where("billId", "==", billId)
+const getPublishedTestimony = (uid: string, billId: string) =>
+  getDocs(
+    query(
+      collection(firestore, `users/${uid}/publishedTestimony`),
+      where("billId", "==", billId)
+    )
   )
-)
 
-const getDraftTestimony = (uid: string, billId: string) => getDocs(
-  query(
-    collection(firestore, `users/${uid}/draftTestimony`),
-    where("billId", "==", billId)
+const getDraftTestimony = (uid: string, billId: string) =>
+  getDocs(
+    query(
+      collection(firestore, `users/${uid}/draftTestimony`),
+      where("billId", "==", billId)
+    )
   )
-)

@@ -11,7 +11,11 @@ import {
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
-import { formatBillId, formatTestimonyDate, formatTestimonyLinks } from "../formatting"
+import {
+  formatBillId,
+  formatTestimonyDate,
+  formatTestimonyLinks
+} from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
@@ -34,10 +38,7 @@ const ViewTestimony = (
   const testimony = items.result ?? []
 
   return (
-    <TitledSectionCard
-      title={"Testimony"}
-      className={className}
-    >
+    <TitledSectionCard title={"Testimony"} className={className}>
       {testimony.length > 0 ? (
         testimony.map(t => (
           <TestimonyItem
@@ -60,7 +61,7 @@ const ViewTestimony = (
 
 export const SortTestimonyDropDown = ({
   setOrderBy
-} : {
+}: {
   setOrderBy: (order: string) => void
 }) => {
   return (
@@ -116,7 +117,11 @@ export const TestimonyItem = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isPublished = !!testimony.publishedAt
-  const publishedVersion = isPublished ? formatTestimonyDate(testimony.publishedAt) : <span style={{color: '#ff8600'}}>Draft</span>
+  const publishedVersion = isPublished ? (
+    formatTestimonyDate(testimony.publishedAt)
+  ) : (
+    <span style={{ color: "#ff8600" }}>Draft</span>
+  )
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
@@ -157,7 +162,8 @@ export const TestimonyItem = ({
                 {" · "}
               </>
             )}
-            {publishedVersion}{" · "}
+            {publishedVersion}
+            {" · "}
             <Internal
               href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
             >

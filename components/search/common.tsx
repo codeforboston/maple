@@ -7,8 +7,7 @@ const devConfig = {
 }
 
 export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"] {
-  const key =
-    process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY ?? devConfig.key
+  const key = process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY ?? devConfig.key
   const url = new URL(
     process.env.NEXT_PUBLIC_TYPESENSE_API_URL ?? devConfig.url
   )

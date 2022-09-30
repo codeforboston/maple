@@ -11,10 +11,7 @@ type Refinement = {
   published?: string
 }
 
-const initialRefinement = (
-  uid?: string,
-  billId?: string
-): Refinement => ({
+const initialRefinement = (uid?: string, billId?: string): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
@@ -42,7 +39,6 @@ export function usePublishedTestimonyListing({
   uid?: string
   billId?: string
 } = {}) {
-  
   const { pagination, items, refine, refinement } = useTable(
     initialRefinement(uid, billId)
   )
@@ -68,16 +64,16 @@ export function usePublishedTestimonyListing({
 }
 
 export interface TypeSenseQuery {
-  q: string;
-  query_by: string;
-  filter_by?: string  
+  q: string
+  query_by: string
+  filter_by?: string
 }
 
 async function listTestimony(
   refinement: Refinement
 ): Promise<TestimonySearchRecord[]> {
   const client = createClient()
-  
+
   let query: TypeSenseQuery = {
     q: "*",
     query_by: "billId"
@@ -106,10 +102,11 @@ async function listTestimony(
     .documents()
     .search(query)
 
-  const hits = data.hits?.map(({ document }) => ({
-    ...document,
-    publishedAt: (document as any).publishedAt
-  })) || []
+  const hits =
+    data.hits?.map(({ document }) => ({
+      ...document,
+      publishedAt: (document as any).publishedAt
+    })) || []
 
-  return hits as TestimonySearchRecord[] 
+  return hits as TestimonySearchRecord[]
 }

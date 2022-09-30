@@ -5,11 +5,7 @@ import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
 import { Container } from "../components/bootstrap"
-import {
-  Testimony,
-  useBill,
-  usePublicProfile
-} from "../components/db"
+import { Testimony, useBill, usePublicProfile } from "../components/db"
 import { formatBillId, formatTestimonyDate } from "../components/formatting"
 import { createPage } from "../components/page"
 import { ViewAttachment } from "../components/ViewAttachment"
@@ -38,7 +34,10 @@ export default createPage({
     const router = useRouter()
     const [testimony, setTestimony] = useState<Testimony>()
     const { billId, author } = router.query
-    const billTestimonyResult = useBillTestimony(author as string, billId as string)
+    const billTestimonyResult = useBillTestimony(
+      author as string,
+      billId as string
+    )
     const { result: bill, loading } = useBill(billId as string)
 
     const profile = usePublicProfile(author as string)
@@ -59,9 +58,9 @@ export default createPage({
             <div>
               <h3>
                 {bill ? (
-                  <Internal href={billLink}>{`${ formatBillId(
+                  <Internal href={billLink}>{`${formatBillId(
                     bill.content.BillNumber
-                  ) }: ${ bill.content.Title }`}</Internal>
+                  )}: ${bill.content.Title}`}</Internal>
                 ) : loading ? (
                   ""
                 ) : (
@@ -84,11 +83,15 @@ export default createPage({
                           ? " is neutral on "
                           : " " + testimony.position + "d "}
                       </span>
-                      {" this bill on " + formatTestimonyDate(testimony.publishedAt)}
+                      {" this bill on " +
+                        formatTestimonyDate(testimony.publishedAt)}
                     </h3>
                   </PositionSentence>
                 ) : (
-                  <PositionSentence><h3>This testimony is still in</h3><h3 style={{ color: '#ff8600' }}>draft</h3></PositionSentence>
+                  <PositionSentence>
+                    <h3>This testimony is still in</h3>
+                    <h3 style={{ color: "#ff8600" }}>draft</h3>
+                  </PositionSentence>
                 )}
               </div>
 

@@ -25,14 +25,17 @@ export function useTestimonyListing(uid: string) {
 
   useEffect(
     () =>
-      onSnapshot(query(collection(firestore, `users/${uid}/publishedTestimony`)), {
-        next: snapshot => dispatch({ type: "updatePublications", snapshot }),
-        error: error => dispatch({ type: "error", error })
-      }),
-      [uid]
-    )
+      onSnapshot(
+        query(collection(firestore, `users/${uid}/publishedTestimony`)),
+        {
+          next: snapshot => dispatch({ type: "updatePublications", snapshot }),
+          error: error => dispatch({ type: "error", error })
+        }
+      ),
+    [uid]
+  )
 
-    useEffect(
+  useEffect(
     () =>
       onSnapshot(query(collection(firestore, `users/${uid}/draftTestimony`)), {
         next: snapshot => dispatch({ type: "updateDrafts", snapshot }),
