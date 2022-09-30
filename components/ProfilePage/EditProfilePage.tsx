@@ -52,7 +52,6 @@ export function EditProfileForm({
     if (testimony && testimony.length > 0) {
       setLoading(true)
 
-      console.log('data', data)
       const data = testimony.map(e => 
         e?.publication ?
         ({ ...e.publication.value, id: e.publication.id }) :
