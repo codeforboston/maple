@@ -6,7 +6,6 @@ export const BillTestimonies = (props: {
   className?: string
 }) => {
   const { bill } = props
-
   const testimony = usePublishedTestimonyListing({
     billId: bill.BillNumber
   })

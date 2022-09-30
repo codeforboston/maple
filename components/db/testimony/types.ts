@@ -35,7 +35,6 @@ export type BaseTestimony = Static<typeof BaseTestimony>
 
 export type Testimony = Static<typeof Testimony>
 export type TestimonySearchRecord = TestimonyRecord
-
 export const Testimony = BaseTestimony.extend({
   authorUid: Id,
   id: Id,
