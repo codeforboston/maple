@@ -20,7 +20,7 @@ const WhyMAPLECardContent = () => (
 
 const BenefitsCardContent = () => (
   <>
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Help your priorities &amp; positions reach a wider audience
     </h3>
     <Row className="mb-3">
@@ -37,7 +37,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Connect with your members, and grow your reach
     </h3>
     <Row className="mb-3">
@@ -52,7 +52,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Coordinate legislative communication campaigns with ease
     </h3>
     <Row className="mb-3">
@@ -66,7 +66,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       See what everyone&apos;s saying
     </h3>
     <Row className="mb-3">
@@ -81,7 +81,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Curate your testimony history
     </h3>
     <Row className="mb-3">
@@ -97,7 +97,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Speed up your legislative research
     </h3>
     <Row className="mb-3">
@@ -110,7 +110,7 @@ const BenefitsCardContent = () => (
       </Col>
     </Row>
 
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Help change the norms in Massachusetts
     </h3>
     <Row className="mb-3">
@@ -125,7 +125,7 @@ const BenefitsCardContent = () => (
 
     <Row className="text-center">
       <Col>
-        <h3 className={`fw-bold mt-3 ${styles.submittestimony}`}>
+        <h3 className={`fw-bold mt-3 ${styles.calltoaction}`}>
           Ready to sign up for MAPLE? Click here!
         </h3>
       </Col>
@@ -140,20 +140,22 @@ const BenefitsCardContent = () => (
 
 const ChallengeCardContent = () => (
   <>
-    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
-      Join MAPLE&apos;s Coallition of Lead Organizations (CLO) to make the 193rd
-      General Court (2023 - 2024) the most transparent legislative session in
-      Massachusetts history!
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Join MAPLE&apos;s Coallition to make the 193rd General Court the most
+      transparent in Massachusetts history!
     </h3>
     <p>
       Organizations that join MAPLE&apos;s Coallition of Lead Organizations
       (CLO) commit to publishing all of their public testimony submitted to the
-      193rd General Court through the MAPLE platform. In addition to all the
-      benefits outlined above, these organizations will have their profiles
-      featured prominently on the MAPLE website during the two-year legislative
-      session. Any organization can contact MAPLE to be considered for
-      membership in the CLO. Organizations will be prioritized to join the CLO
-      based on the size of the constituency they represent.
+      193rd General Court through the MAPLE platform. The 193rd General Court is
+      the session that runs from January of 2023 through 2024.{" "}
+    </p>
+    <p>
+      In addition to all the benefits outlined above, these organizations will
+      have their profiles featured prominently on the MAPLE website during the
+      two-year legislative session. Any organization can contact MAPLE to be
+      considered for membership in the CLO. Organizations will be prioritized to
+      join the CLO based on the size of the constituency they represent.
     </p>
     <p>
       Maple is a nonpartisan project and does not take political positions;
@@ -161,12 +163,10 @@ const ChallengeCardContent = () => (
       position by MAPLE or its parent organization, members, or collaborators.
     </p>
     <h3
-      className={`fw-bold mt-3 ${styles.submittestimony}`}
+      className={`fw-bold mt-3 ${styles.calltoaction}`}
       href="mailto:mapletestimony@gmail.com"
     >
-      {
-        // TODO use a real email Contact us to join the coallition!
-      }
+      Join the MAPLE coallition&mdash;reach out to mapletestimony@gmail.com
     </h3>
   </>
 )
