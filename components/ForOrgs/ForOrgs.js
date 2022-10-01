@@ -2,7 +2,8 @@ import { Container, Row, Col } from "../bootstrap"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import {
   WhyMAPLECardContent,
-  BenefitsCardContent
+  BenefitsCardContent,
+  ChallengeCardContent
 } from "../ForOrgsCardContent/ForOrgsCardContent"
 
 const ForOrgs = () => {
@@ -16,6 +17,9 @@ const ForOrgs = () => {
           </AboutPagesCard>
           <AboutPagesCard title="What we offer">
             <BenefitsCardContent />
+          </AboutPagesCard>
+          <AboutPagesCard title="Rise to the challenge for the 193rd">
+            <ChallengeCardContent />
           </AboutPagesCard>
         </Col>
       </Row>

@@ -138,4 +138,37 @@ const BenefitsCardContent = () => (
   </>
 )
 
-export { WhyMAPLECardContent, BenefitsCardContent }
+const ChallengeCardContent = () => (
+  <>
+    <h3 className={`text-left fw-bold mb-4 ${styles.missionheader}`}>
+      Join MAPLE&apos;s Coallition of Lead Organizations (CLO) to make the 193rd
+      General Court (2023 - 2024) the most transparent legislative session in
+      Massachusetts history!
+    </h3>
+    <p>
+      Organizations that join MAPLE&apos;s Coallition of Lead Organizations
+      (CLO) commit to publishing all of their public testimony submitted to the
+      193rd General Court through the MAPLE platform. In addition to all the
+      benefits outlined above, these organizations will have their profiles
+      featured prominently on the MAPLE website during the two-year legislative
+      session. Any organization can contact MAPLE to be considered for
+      membership in the CLO. Organizations will be prioritized to join the CLO
+      based on the size of the constituency they represent.
+    </p>
+    <p>
+      Maple is a nonpartisan project and does not take political positions;
+      membership in the CLO does not indicate endorsement of any political
+      position by MAPLE or its parent organization, members, or collaborators.
+    </p>
+    <h3
+      className={`fw-bold mt-3 ${styles.submittestimony}`}
+      href="mailto:mapletestimony@gmail.com"
+    >
+      {
+        // TODO use a real email Contact us to join the coallition!
+      }
+    </h3>
+  </>
+)
+
+export { WhyMAPLECardContent, BenefitsCardContent, ChallengeCardContent }
