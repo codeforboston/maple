@@ -5,10 +5,10 @@ import { SignInWithModal } from "../auth"
 
 const WhyMAPLECardContent = () => (
   <>
-    <p>
+    <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
       MAPLE is a powerful communication tool for organizations, offered
       completely for free.
-    </p>
+    </h3>
     <p>
       It takes only a couple minutes to sign up for your organization&apos;s
       account on MAPLE, giving you immediate access to publish and share your
@@ -28,10 +28,10 @@ const BenefitsCardContent = () => (
         <p>
           Your organization&apos;s testimony will be highlighted to MAPLE
           visitors when they look up bills, with easy tools for sharing on
-          social media. Testimony published onMAPLE will be seen by legislators,
-          residents, members of the media, and other stakeholders. The more
-          organizations share their testimony on the platform, the more people
-          will see it. You can even designate bills as your lesilative
+          social media. Testimony published on MAPLE will be seen by
+          legislators, residents, members of the media, and other stakeholders.
+          The more organizations share their testimony on the platform, the more
+          people will see it. You can even designate bills as your legislative
           priorities to signal your focus for each session.{" "}
         </p>
       </Col>
@@ -73,7 +73,7 @@ const BenefitsCardContent = () => (
       <Col>
         <p>
           Even if you don&amp;t sign in, you can use MAPLE to browse testimony
-          submitted on any bill. Get a lay of the land and Track public opinion
+          submitted on any bill. Get a lay of the land and track public opinion
           at a glance using our endorse / oppose ratios. Read the full testimony
           of any user to find other stakeholders you may want to connect with or
           learn from.{" "}
@@ -89,7 +89,7 @@ const BenefitsCardContent = () => (
         <p>
           When you submit your testimony through MAPLE, it automatically appears
           in an indexed &amp; organized listing on your profile page. Use your
-          profile to automatically generate a listing of your lobbying efforts
+          profile to automatically generate a record of your lobbying efforts
           for your website, for member communications, or for semi-annual
           filings. You can also publish previously submitted tesitmony on MAPLE
           at any time.{" "}
@@ -104,7 +104,7 @@ const BenefitsCardContent = () => (
       <Col>
         <p>
           MAPLE is fast. (Really fast.) Try{" "}
-          <a href="bills">searching for a bill</a> to see just how much MAPLE
+          <a href="/bills">searching for a bill</a> to see just how much MAPLE
           can speed up your legislative research process; no sign in required!{" "}
         </p>
       </Col>
@@ -126,7 +126,7 @@ const BenefitsCardContent = () => (
     <Row className="text-center">
       <Col>
         <h3 className={`fw-bold mt-3 ${styles.calltoaction}`}>
-          Ready to sign up for MAPLE? Click here!
+          Ready to sign up for MAPLE?
         </h3>
       </Col>
     </Row>
@@ -140,7 +140,7 @@ const BenefitsCardContent = () => (
 
 const ChallengeCardContent = () => (
   <>
-    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">
       Join MAPLE&apos;s Coallition to make the 193rd General Court the most
       transparent in Massachusetts history!
     </h3>
@@ -162,11 +162,10 @@ const ChallengeCardContent = () => (
       membership in the CLO does not indicate endorsement of any political
       position by MAPLE or its parent organization, members, or collaborators.
     </p>
-    <h3
-      className={`fw-bold mt-3 ${styles.calltoaction}`}
-      href="mailto:mapletestimony@gmail.com"
-    >
-      Join the MAPLE coallition&mdash;reach out to mapletestimony@gmail.com
+    <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
+      <a href="mailto:mapletestimony@gmail.com">
+        Join the MAPLE coallition&mdash;reach out to mapletestimony@gmail.com
+      </a>
     </h3>
   </>
 )
