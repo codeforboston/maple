@@ -19,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       <Head>
         <title>{`${
           title ? title + " | " : ""
-        }Massachusetts Platform for Legislative Engagement`}</title>
+        }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <TopNav />
@@ -111,6 +111,7 @@ const TopNav: React.FC = () => {
                   Our Mission &amp; Goals
                 </NavLink>
                 <NavLink href="/ourteam">Our Team</NavLink>
+                <NavLink href="/fororgs">For organizations</NavLink>
               </Container>
 
               {authenticated && (
