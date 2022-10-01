@@ -1,42 +1,81 @@
+# Important:
+# - Run this using `yarn compose`
+# - Make sure you use docker compsoe v2: `docker compose version`
+#   https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command
+
 version: "3"
 name: dtp-backend
 services:
   search:
-    image: typesense/typesense:0.22.2
+    image: typesense/typesense:0.23.1
     volumes:
       - search:/app/data
-    network_mode: host
+    ports:
+      - 8108:8108
     environment:
-      TYPESENSE_LISTEN_ADDRESS: 127.0.0.1
-      TYPESENSE_PEERING_ADDRESS: 127.0.0.1
       TYPESENSE_DATA_DIR: /app/data
       TYPESENSE_API_KEY: test-api-key
       TYPESENSE_ENABLE_CORS: "true"
+    cpu_count: 2
+
   firebase:
-    image: andreysenov/firebase-tools:latest-node-16
-    command: yarn firebase --project demo-dtp emulators:start --only auth,functions,pubsub,firestore,storage --import tests/integration/exportedTestData
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
+    command: >
+      yarn firebase
+      --project demo-dtp emulators:start
+      --only auth,functions,pubsub,firestore,storage
+      --import tests/integration/exportedTestData
     working_dir: /app
     volumes:
       - ..:/app
-    network_mode: host
+
+      # Override env for running in compose
+      - ./.env.functions-compose:/app/functions/.env.demo-dtp
+
+      # Override firebase.json to bind to all container interfaces
+      - ./firebase.compose.json:/app/firebase.json
+
+      # Prevent host node_modules from overriding the image modules.
+      - /app/node_modules/
+      - /app/functions/node_modules/
+    ports:
+      - 9099:9099
+      - 5001:5001
+      - 8080:8080
+      - 3010:3010
+      - 8085:8085
+      - 9199:9199
+
   builder:
     image: node:16-alpine
     command: yarn --cwd functions build:watch
     working_dir: /app
     volumes:
       - ..:/app
+
   next:
-    image: node:16-alpine
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: firebase
     command: yarn dev
     working_dir: /app
-    network_mode: host
+    ports:
+      - 3000:3000
     volumes:
       - ..:/app
+
+      # Prevent host node_modules from overriding the image modules.
+      - /app/node_modules/
+      - /app/fuctions/node_modules/
     environment:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
       NEXT_PUBLIC_USE_EMULATOR: "true"
-      NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp,
+      NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
 
 volumes:
   search: {}

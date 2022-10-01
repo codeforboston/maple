@@ -12,13 +12,14 @@ import { testDb } from "../testUtils"
 // Backfill operation can take some time. Consider doing a partial backfil in
 // test.
 // TODO: Do a partial backfill or backfill a test collection
-const timeoutMs = 30000
+const timeoutMs = 50000
 jest.setTimeout(timeoutMs)
 
 const client = createClient()
 const testAlias = "bills"
-const mediumTimeout = { timeout: 5000, interval: 500 }
-const longTimeout = { timeout: 20000, interval: 500 }
+const mediumTimeout = { timeout: 5000, interval: 1000 }
+const reallyLongTimeout = { timeout: 40000, interval: 1000 }
+
 describe("Upgrades", () => {
   it("upgrades collections when schemas are missing", async () => {
     await clearAliases()
@@ -89,7 +90,7 @@ describe("Upgrades", () => {
         .retrieve()
       expect(alias.name).toBe(testAlias)
       expect(collection.num_documents).toBeGreaterThan(0)
-    }, longTimeout)
+    }, reallyLongTimeout)
     return alias!
   }
 })

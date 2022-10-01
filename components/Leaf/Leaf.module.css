@@ -4,13 +4,26 @@
   overflow-y: visible;
 }
 
-.right {
+.firstLeaf {
   position: relative;
   left: 100%;
-  transform: translate(-54%, -50%) rotate(180deg) scale(50%);
+  transform: translate(-62%, -50%) rotate(270deg);
 }
 
-.left {
+.secondLeaf {
   position: relative;
-  transform: translate(-41%, -50%) scale(50%);
+  transform: translate(-30%, -60%);
+}
+
+.thirdLeaf {
+  z-index: 2;
+  position: relative;
+  left: 100%;
+  transform: translate(-62%, 53%) rotate(270deg);
+}
+
+.fourthLeaf {
+  z-index: 1;
+  position: relative;
+  transform: translate(30%, -67%);
 }

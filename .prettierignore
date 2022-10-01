@@ -7,3 +7,4 @@ lib
 .firebase
 exportedTestData
 .yarn
+dist.yml

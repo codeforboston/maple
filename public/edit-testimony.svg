@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="30"
+   height="30"
+   viewBox="0 0 30 30"
+   fill="none"
+   version="1.1"
+   id="svg3367"
+   sodipodi:docname="edit-testimony.svg"
+   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3371" />
+  <sodipodi:namedview
+     id="namedview3369"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="7.6129032"
+     inkscape:cx="11.822034"
+     inkscape:cy="14.580508"
+     inkscape:window-width="1309"
+     inkscape:window-height="456"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3367" />
+  <circle
+     cx="15"
+     cy="15"
+     r="15"
+     fill="#1a3185"
+     id="circle3363" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="m 22.9033,7.0990902 c 1.2552,1.25519 1.401,3.1997098 0.4373,4.6150098 L 18.2883,6.6618402 c 1.4153,-0.96369 3.3598,-0.81794 4.615,0.43725 z M 8.69238,16.1674 17.3478,7.5120202 22.4904,12.6546 13.835,21.31 Z m -0.89536,0.8954 -0.29852,0.2985 -1.3086,6.4512 6.4512,-1.3086 0.2985,-0.2985 z"
+     fill="#ffffff"
+     id="path3365" />
+</svg>

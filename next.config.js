@@ -9,8 +9,10 @@ const config = {
     styledComponents: true
   },
   eslint: {
-    dirs: ["pages", "components", "functions/src", "tests"]
+    dirs: ["pages", "components", "functions/src", "tests", "analysis"]
   }
 }
 
-module.exports = config
+module.exports = {
+  ...config
+}

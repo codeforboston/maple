@@ -14,10 +14,7 @@ const config: Config.InitialOptions = {
     "<rootDir>/tests/seed",
     "<rootDir>/functions"
   ],
-  transform: {
-    // Yields correct line numbers but doesn't use SWC?
-    "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }]
-  }
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"]
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest

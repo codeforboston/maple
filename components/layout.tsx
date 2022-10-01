@@ -1,12 +1,16 @@
 import Head from "next/head"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
+import { useMediaQuery } from "usehooks-ts"
 import { SignInWithModal, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
 import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import styles from "./layout.module.css"
+
 export type LayoutProps = {
   title?: string
 }
@@ -26,7 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       {children}
       <PageFooter
         authenticated={authenticated}
-        user={user}
+        user={user as any}
         signOut={() => void auth.signOut()}
       />
     </>
@@ -34,70 +38,87 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
 }
 
 const TopNav: React.FC = () => {
-  const { authenticated } = useAuth()
-  const displayName = useAuth().user?.displayName!
+  const { authenticated, claims } = useAuth()
+  const { profile } = useProfile()
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const [sticky, setSticky] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleClick = () => {
-    setIsExpanded(false)
-    console.log("Clicked")
-  }
+  const toggleNav = () => setIsExpanded(!isExpanded)
+  const closeNav = () => setIsExpanded(false)
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      // when a user clicks the sign out button, the navbar is left open.
+      // this fixes that
+      if (user === null) {
+        closeNav()
+      }
+    })
+
+    return unsubscribe
+  }, [])
+
+  useEffect(() => setSticky(isMobile), [isMobile])
 
   return (
     <>
       <Navbar
         bg="secondary"
         variant="dark"
+        sticky={sticky ? "top" : undefined}
         expand={false}
         expanded={isExpanded}
       >
         <Container>
-          <Navbar.Toggle
-            aria-controls="topnav"
-            onClick={() => setIsExpanded(isExpanded ? false : true)}
-          />
-          <Navbar.Brand>
-            <Nav.Link href="/">
-              <Image fluid src="nav-logo.png" alt="logo"></Image>
-            </Nav.Link>
-          </Navbar.Brand>
-          <Nav>
-            {!authenticated ? (
-              <SignInWithModal />
-            ) : (
-              <ProfileLink displayName={displayName}></ProfileLink>
-            )}
-          </Nav>
+          <div className={styles.navbar_boxes_container}>
+            <div className={styles.navbar_box}>
+              <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
+            </div>
+
+            <Navbar.Brand className="mx-2 p-0">
+              <Nav.Link href="/" className="p-0">
+                <Image fluid src="/nav-logo.svg" alt="logo"></Image>
+              </Nav.Link>
+            </Navbar.Brand>
+
+            <div className={styles.navbar_box}>
+              <Nav>
+                {authenticated ? (
+                  <ProfileLink
+                    role={claims?.role}
+                    displayName={profile?.displayName}
+                  />
+                ) : (
+                  !sticky && <SignInWithModal />
+                )}
+              </Nav>
+            </div>
+          </div>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
-              <NavLink href="/" handleClick={handleClick}>
+              <NavLink href="/" handleClick={closeNav}>
                 Home
               </NavLink>
-              <NavLink href="/bills" handleClick={handleClick}>
+              <NavLink href="/bills" handleClick={closeNav}>
                 Bills
               </NavLink>
-              <NavLink href="/testimonies" handleClick={handleClick}>
+              {/* <NavLink href="/testimonies" handleClick={closeNav}>
                 Testimony
-              </NavLink>
+              </NavLink> */}
 
               <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
               <Container
                 style={{ alignContent: "flex-end" }}
-                onClick={handleClick}
+                onClick={closeNav}
               >
-                <NavLink href="/writingeffectivetestimonies">
-                  Writing Effective Testimonies
+                <NavLink href="/learn/basics-of-testimony">
+                  Learn About Testimony
                 </NavLink>
-                <NavLink href="/learnbasicsoftestimony">
-                  Basics Of Testimony
-                </NavLink>
-                <NavLink href="/legprocess">
+                <NavLink href="/learn/legislative-process">
                   Communicating with Legislators
                 </NavLink>
-                <NavLink href="/learnroleoftestimony">
-                  Role Of Testimony
-                </NavLink>
-                <NavLink href="/additionalresources">
+                <NavLink href="/learn/additional-resources">
                   Additional Resources
                 </NavLink>
               </Container>
@@ -105,22 +126,23 @@ const TopNav: React.FC = () => {
               <Navbar.Text className="navbar-section-header">About</Navbar.Text>
               <Container
                 style={{ alignContent: "flex-end" }}
-                onClick={handleClick}
+                onClick={closeNav}
               >
-                <NavLink href="/missionandgoals">
+                <NavLink href="/about/mission-and-goals">
                   Our Mission &amp; Goals
                 </NavLink>
-                <NavLink href="/ourteam">Our Team</NavLink>
-                <NavLink href="/fororgs">For organizations</NavLink>
+                <NavLink href="/about/our-team">Our Team</NavLink>
+                <NavLink href="/about/for-orgs">For organizations</NavLink>
               </Container>
 
               {authenticated && (
-                <NavLink href="" handleClick={() => auth.signOut()}>
-                  Sign Out
-                </NavLink>
+                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
+          {sticky && !authenticated ? (
+            <SignInWithModal className={styles.mobile_nav_auth} />
+          ) : null}
         </Container>
       </Navbar>
     </>

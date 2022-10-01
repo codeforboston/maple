@@ -6,18 +6,35 @@ import { Col, Nav, NavDropdown, Row } from "../bootstrap"
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
 }))`
+  display: flex;
+  justify-content: center;
+  height: 2.5em;
+
+  .nav-item {
+    width: 50%;
+  }
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
+    height: 2.25em;
+
+    .nav-item {
+      width: auto;
+    }
+  }
+
   text-align: center;
   margin: 0 1rem;
   font-family: Nunito;
   font-size: 1.25rem;
   color: var(--bs-dark);
-  height: 2.25em;
 
   .nav-link.active {
     height: 4.4rem;
   }
 
   .nav-link {
+    cursor: pointer;
     background-color: white;
     overflow: visible;
     width: auto;
@@ -58,12 +75,18 @@ export const StyledTabContent = styled(TabContent)`
 `
 
 export const Header = styled(Row)`
-  font-size: 3.75rem;
+  font-size: 3rem;
   font-family: Nunito;
   font-weight: 500;
   margin-right: 1rem;
+  margin-left: 1rem;
   height: 16rem;
   align-items: center;
+  /* flex-direction: column ; */
+
+  /* @media only screen and (min-width: 576px) {
+    flex-direction: row ;
+  } */
 `
 
 export const ProfileDisplayName = styled(Col).attrs(props => ({
@@ -87,7 +110,7 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: "profile-icon.svg",
+  src: props.src || "profile-icon.svg",
   className: props.className
 }))`
   height: 8rem;
@@ -96,4 +119,22 @@ export const UserIcon = styled(Image).attrs(props => ({
   border-radius: 50%;
   background-color: var(--bs-blue);
   flex: 0;
+`
+export const VerifiedBadge = styled.div.attrs(props => ({
+  className: props.className
+}))`
+  background-color: var(--bs-blue);
+  border-radius: 70px;
+  display: flex;
+  padding: 3px 25.8px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+
+  .verifiedText {
+    font-size: 1rem;
+    color: white;
+    align-self: center;
+    justify-self: center;
+  }
 `

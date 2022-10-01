@@ -1,16 +1,16 @@
 import repl from "repl"
-import { Literal as L, Optional, Record, String, Union } from "runtypes"
+import { Array, Literal as L, Optional, Record, String, Union } from "runtypes"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 import { runAgainstEmulators, runAgainstProject } from "../configure"
-import { Context, Script } from "./types"
+import { Context, Script, ScriptContext } from "./types"
 
 const Args = Record({
   env: Union(L("local"), L("dev"), L("prod")),
   creds: Optional(String)
 })
 
-const ScriptArgs = Args.extend({ script: String })
+const ScriptArgs = Args.extend({ script: String, argv: Array(String) })
 
 const init: (args: unknown) => Context = args => {
   const { env, creds } = Args.check(args)
@@ -29,15 +29,18 @@ const init: (args: unknown) => Context = args => {
       break
   }
   const firebase = require("../../functions/src/firebase")
+  const api = require("../../functions/src/malegislature")
   return {
     firebase,
+    auth: firebase.auth,
     db: firebase.db,
-    admin: firebase.admin
+    admin: firebase.admin,
+    api
   }
 }
 
 yargs(hideBin(process.argv))
-  .scriptName("typesense-admin")
+  .scriptName("firebase-admin")
   .command(
     "console",
     "start a node repl with an initialized admin and db",
@@ -45,11 +48,11 @@ yargs(hideBin(process.argv))
     (args: unknown) => {
       const context = init(args)
       Object.assign(globalThis, context)
-      repl.start({})
+      repl.start({}).setupHistory("firebase-admin.history", () => {})
     }
   )
   .command(
-    "run-script <script>",
+    "run-script <script> [argv...]",
     "run a script in an initialized environment",
     yargs =>
       yargs.options({
@@ -61,12 +64,13 @@ yargs(hideBin(process.argv))
       }),
     async (args: unknown) => {
       const { script: scriptName } = ScriptArgs.check(args)
-      const context = init(args)
+      const context: ScriptContext = { ...init(args), args: args as any }
       const script: Script = require(`./${scriptName}`).script
 
       await script(context)
     }
   )
+  .strictCommands()
   .options({
     env: { choices: ["local", "dev", "prod"], alias: "e" }
   }).argv

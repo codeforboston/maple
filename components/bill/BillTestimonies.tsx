@@ -1,10 +1,11 @@
-import AddTestimony from "../AddTestimony/AddTestimony"
-import { usePublishedTestimonyListing } from "../db"
-import TestimoniesTable from "../TestimoniesTable/TestimoniesTable"
 import { useCallback } from "react"
-import { BillContent } from "../db"
+import { BillContent, usePublishedTestimonyListing } from "../db"
+import ViewTestimony from "../UserTestimonies/ViewTestimony"
 
-export const BillTestimonies = (props: { bill: BillContent }) => {
+export const BillTestimonies = (props: {
+  bill: BillContent
+  className?: string
+}) => {
   const { bill } = props
   const testimony = usePublishedTestimonyListing({
     billId: bill.BillNumber
@@ -18,8 +19,11 @@ export const BillTestimonies = (props: { bill: BillContent }) => {
 
   return (
     <>
-      <TestimoniesTable {...testimony} />
-      <AddTestimony bill={bill} refreshtable={refreshtable} />
+      <ViewTestimony
+        {...testimony}
+        showControls={false}
+        className={props.className}
+      />
     </>
   )
 }

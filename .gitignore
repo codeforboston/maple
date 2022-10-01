@@ -59,4 +59,12 @@ prod-build.env
 .gitsecret/keys/random_seed
 .gitsecret/keys/**/*~
 !*.secret
-infra/k8s/typesense-secrets.yml
+infra/dev/typesense-secrets.yml
+infra/prod/typesense-secrets.yml
+
+.python-version
+
+/*.history
+
+storybook-static
+/token

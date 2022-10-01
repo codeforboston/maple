@@ -7,6 +7,7 @@ $orange: #ff8600;
 $blue: #1a3185;
 $dark-blue: #0b0a3e;
 $green: #3d9922;
+$gray-700: #495057;
 
 $body-bg: #eae7e7;
 
@@ -28,6 +29,29 @@ $headings-font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
   "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
+// Modal Overrides
+$modal-header-padding-x: 1.5rem;
+$modal-header-padding-y: 1rem;
+$modal-inner-padding: 2rem;
+
+$modal-lg: 650px;
+
+// Input overrides
+$input-bg: #fff;
+$input-focus-border-color: rgba($gray-700, 0.75);
+$input-btn-focus-color: rgba($gray-700, 0.25);
+
+// Close button overrides
+$btn-close-color: #fff;
+$btn-close-focus-shadow: 0 0 0 0.25rem rgba(#fff, 0.25);
+$btn-close-opacity: 1;
+$btn-close-hover-opacity: 1;
+$btn-close-focus-opacity: 1;
+
+// Tooltip overrides
+$tooltip-bg: $blue;
+$tooltip-arrow-color: $blue;
+
 @import "bootstrap/scss/bootstrap";
 
 // Import fonts using the default bootstrap weights
@@ -37,5 +61,10 @@ $headings-font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
 :root {
   --bs-blue-100: #{$blue-100};
   --bs-blue-300: #{$blue-300};
+  --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+}
+
+.fs-body {
+  font-size: 1rem;
 }

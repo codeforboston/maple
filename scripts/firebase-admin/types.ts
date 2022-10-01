@@ -1,9 +1,10 @@
-import type * as firebase from "../../functions/src/firebase"
+import type { Context } from "../../functions/src/types"
+export type { Context } from "../../functions/src/types"
 
-export type Context = {
-  firebase: typeof firebase
-  db: typeof firebase.db
-  admin: typeof firebase.admin
+export type ScriptContext = Context & {
+  args: {
+    argv: string[]
+    [k: string]: unknown
+  }
 }
-
-export type Script = (ctx: Context) => Promise<any>
+export type Script = (ctx: ScriptContext) => Promise<any>

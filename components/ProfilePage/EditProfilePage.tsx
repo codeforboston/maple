@@ -1,25 +1,21 @@
-import { KeyboardEvent, useState } from "react"
+import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
+import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import {
-  Button,
-  Col,
-  Container,
-  Nav,
-  NavDropdown,
-  Row,
-  Spinner
-} from "../bootstrap"
-import { Profile, ProfileHook, useProfile } from "../db"
+  Profile,
+  ProfileHook,
+  useProfile,
+  usePublishedTestimonyListing
+} from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
 import {
   Header,
-  StyledTabNav,
-  StyledDropdownNav,
-  StyledTabContent
+  StyledTabContent,
+  StyledTabNav
 } from "./StyledEditProfileCompnents"
 
 export function EditProfile() {
@@ -43,20 +39,46 @@ export function EditProfileForm({
 }: {
   profile: Profile
   actions: ProfileHook
-  uid?: string
+  uid: string
 }) {
   const [key, setKey] = useState("AboutYou")
+  const [formUpdated, setFormUpdated] = useState(false)
+
+  const testimony = usePublishedTestimonyListing({
+    uid: uid
+  })
+
+  const { items } = testimony
+
+  const refreshtable = useCallback(() => {
+    items.execute()
+  }, [items])
 
   const tabs = [
     {
       title: "About You",
       eventKey: "AboutYou",
-      content: <AboutMeEditForm profile={profile} actions={actions} uid={uid} />
+      content: (
+        <AboutMeEditForm
+          profile={profile}
+          actions={actions}
+          uid={uid}
+          setFormUpdated={setFormUpdated}
+          className="mt-3 mb-4"
+        />
+      )
     },
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <ViewTestimony uid={uid} />
+      content: (
+        <ViewTestimony
+          {...testimony}
+          showControls={true}
+          showBillNumber
+          className="mt-3 mb-4"
+        />
+      )
     }
   ]
 
@@ -66,28 +88,27 @@ export function EditProfileForm({
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
           <Internal href={`/profile?id=${uid}`}>
-            <Button className={`btn btn-lg`}>View your profile</Button>
+            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+              {!profile.organization
+                ? "View your profile"
+                : "View your organization page"}
+            </Button>
           </Internal>
         </Col>
       </Header>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-        <StyledTabNav className={`d-none d-md-flex`}>
-          {tabs.map(t => (
+        <StyledTabNav>
+          {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link eventKey={t.eventKey}>{t.title}</Nav.Link>
+              <Nav.Link
+                eventKey={t.eventKey}
+                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
+              >
+                {t.title}
+              </Nav.Link>
             </Nav.Item>
           ))}
         </StyledTabNav>
-        <StyledDropdownNav
-          title={tabs.find(t => t.eventKey === key)?.title || key}
-          className={`d-flex d-md-none`}
-        >
-          {tabs.map(t => (
-            <NavDropdown.Item key={t.eventKey} eventKey={t.eventKey}>
-              {t.title}
-            </NavDropdown.Item>
-          ))}
-        </StyledDropdownNav>
         <StyledTabContent>
           {tabs.map(t => (
             <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
