@@ -132,7 +132,7 @@ const TopNav: React.FC = () => {
                   Our Mission &amp; Goals
                 </NavLink>
                 <NavLink href="/about/our-team">Our Team</NavLink>
-                <NavLink href="/about/for-orgs">For organizations</NavLink>
+                <NavLink href="/about/for-orgs">For Organizations</NavLink>
               </Container>
 
               {authenticated && (
