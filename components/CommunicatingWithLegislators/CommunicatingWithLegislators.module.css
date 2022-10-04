@@ -50,6 +50,9 @@
 /* Responsive Queries */
 
 @media (max-width: 62em) {
+  .pageHeading {
+    text-align: center;
+  }
   .body {
     padding-left: 4rem;
     padding-right: 4rem;
@@ -83,7 +86,7 @@
 @media (max-width: 36em) {
   .pageHeading {
     margin-top: 2.5rem;
-    font-size: 2.75rem;
+    font-size: 2rem;
   }
   .card {
     margin: 2.5rem auto;
@@ -108,7 +111,7 @@
   }
   .pageHeading {
     margin-top: 2rem;
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     text-align: center;
   }
   .subHeading {
@@ -119,7 +122,7 @@
     margin: 2rem auto;
   }
   .title {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     margin-top: 1.5rem;
     letter-spacing: -1.125px;
   }
