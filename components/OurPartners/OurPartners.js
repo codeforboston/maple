@@ -1,10 +1,10 @@
-import { Container, Row, Col } from "../bootstrap"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
+import { Col, Container, Row } from "../bootstrap"
 import {
-  NuLawLabCardContent,
-  CodeForBostonCardContent,
   BostonCollegeCardContent,
-  HbkCenterCardContent
+  CodeForBostonCardContent,
+  HbkCenterCardContent,
+  NuLawLabCardContent
 } from "../OurPartnersCardContent/OurPartnersCardContent.tsx"
 import styles from "./OurPartners.module.css"
 
@@ -39,9 +39,9 @@ const OurPartners = () => {
       </Row>
       <Row className="mx-5">
         <Col>
-          <h1 className={`mt-5 fw-bold ${styles.header}`}>Our Partners</h1>
+          <h1 className={`mt-5 fw-bold ${styles.header}`}>Collaborators</h1>
           <p className={styles.subheader}>
-            The project is developed in partnership between the NuLawLab and
+            The project is developed in collaboration between the NuLawLab and
             scholars at{" "}
             <a href="https://www.bc.edu/bc-web/schools/law.html">
               Boston College Law School
