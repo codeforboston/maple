@@ -1,15 +1,16 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
+import styles from "./OurPartnersCardContent.module.css"
 
 const NuLawLabCardContent = () => {
   return (
     <>
       <Row className="mb-5">
-        <Col className="text-center align-self-center">
+        <Col className="text-center align-self-center" md={6}>
           <Image fluid src="/nulawlabicon.png" alt="NuLawLab icon" />
         </Col>
-        <Col className="align-self-center">
-          <p>
+        <Col className="align-self-center" md={6}>
+          <p className={styles.content}>
             The NuLawLab is the interdisciplinary innovation laboratory at{" "}
             <a href="https://www.northeastern.edu/law/">
               Northeastern University School of Law
@@ -31,15 +32,15 @@ const CodeForBostonCardContent = () => {
   return (
     <>
       <Row className="mb-3">
-        <Col className="text-center align-self-center">
+        <Col className="text-center align-self-center" md={6}>
           <Image
             fluid
             src="/codeforbostonicon.png"
             alt="Code for Boston icon"
           />
         </Col>
-        <Col className="align-self-center">
-          <p>
+        <Col className="align-self-center" md={6}>
+          <p className={styles.content}>
             Code for Boston addresses local social and civic challenges through
             creative uses of technology. Despite the name, they are not solely
             focused on coding!<br></br>
@@ -66,11 +67,11 @@ const BostonCollegeCardContent = () => {
   return (
     <>
       <Row className="mb-5">
-        <Col className="text-center align-self-center">
+        <Col className="text-center align-self-center" md={6}>
           <Image fluid src="/bostoncollegeicon.png" alt="Boston College icon" />
         </Col>
-        <Col className="align-self-center">
-          <p>
+        <Col className="align-self-center" md={6}>
+          <p className={styles.content}>
             The BC Law School is an inclusive community of scholars that
             prepares students for success in the legal profession at the highest
             levels.<br></br>
@@ -87,15 +88,15 @@ const HbkCenterCardContent = () => {
   return (
     <>
       <Row className="mb-3">
-        <Col className="text-center align-self-center">
+        <Col className="text-center align-self-center" md={6}>
           <Image
             fluid
             src="/berkmankleincentericon.png"
             alt="Berkman Klein Center icon"
           />
         </Col>
-        <Col className="align-self-center">
-          <p>
+        <Col className="align-self-center" md={6}>
+          <p className={styles.content}>
             The Berkman Klein Center's mission is to explore and understand
             cyberspace; to study its development, dynamics, norms, and
             standards; and to assess the need or lack thereof for laws and

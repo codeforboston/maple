@@ -75,7 +75,8 @@ const WriteContent = [
   {
     title: "Be Timely",
     paragraph: {
-      P1: `Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill.
+      P1: `Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill.`,
+      P2: `
             Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.`
     },
     src: "Leg+Clock.png",

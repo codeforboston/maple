@@ -1,7 +1,7 @@
 # Massachusetts Platform for Legislative Engagement (MAPLE)
 
 A legislative testimony project through Code for Boston!
-We are creating a new web platform called MAPLE (the Massachusetts Platform for Legislative Engagement) that makes it easy for residents to submit their testimony to the MA legislature and read the testimony of others. Our goals are to shine a light on the statehouse by 1) providing a public archive of legislative testimony; 2) standardizing and demystifying the testimony process, so that more people can make their voices heard; and 3) creating a space for constituents and legislators  to maintain prolonged focus on key issues, and to learn more efficiently about the laws that will shape our lives. Through this, we hope that people can better channel their political energy into productive improvements for our local and state communities. 
+We are creating a new web platform called MAPLE (the Massachusetts Platform for Legislative Engagement) that makes it easy for residents to submit their testimony to the MA legislature and read the testimony of others. Our goals are to shine a light on the statehouse by 1) providing a public archive of legislative testimony; 2) standardizing and demystifying the testimony process, so that more people can make their voices heard; and 3) creating a space for constituents and legislators to maintain prolonged focus on key issues, and to learn more efficiently about the laws that will shape our lives. Through this, we hope that people can better channel their political energy into productive improvements for our local and state communities.
 
 ## Essentials
 

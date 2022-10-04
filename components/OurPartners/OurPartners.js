@@ -1,19 +1,20 @@
-import { Container, Row, Col } from "../bootstrap"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
+import { Col, Container, Row } from "../bootstrap"
 import {
-  NuLawLabCardContent,
-  CodeForBostonCardContent,
   BostonCollegeCardContent,
-  HbkCenterCardContent
-} from "../OurPartnersCardContent/OurPartnersCardContent"
+  CodeForBostonCardContent,
+  HbkCenterCardContent,
+  NuLawLabCardContent
+} from "../OurPartnersCardContent/OurPartnersCardContent.tsx"
+import styles from "./OurPartners.module.css"
 
 const OurPartners = () => {
   return (
-    <Container>
+    <Container className={styles.container}>
       <Row className="mt-5 mx-5">
         <Col>
-          <h1 className="fw-bold mb-3">Our Team</h1>
-          <p>
+          <h1 className={`fw-bold mb-3 ${styles.header}`}>Our Team</h1>
+          <p className={styles.subheader}>
             We are a collective of open source developers, legal scholars, and
             policy analysts & advocates seeking to make the legislative process
             in Massachusetts more accessible and transparent.<br></br>
@@ -38,8 +39,8 @@ const OurPartners = () => {
       </Row>
       <Row className="mx-5">
         <Col>
-          <h1 className="mt-5 fw-bold">Collaborators</h1>
-          <p>
+          <h1 className={`mt-5 fw-bold ${styles.header}`}>Collaborators</h1>
+          <p className={styles.subheader}>
             The project is developed in collaboration between the NuLawLab and
             scholars at{" "}
             <a href="https://www.bc.edu/bc-web/schools/law.html">
