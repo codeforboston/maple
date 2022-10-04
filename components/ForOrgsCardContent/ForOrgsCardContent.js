@@ -141,14 +141,14 @@ const BenefitsCardContent = () => (
 const ChallengeCardContent = () => (
   <>
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">
-      Join MAPLE&apos;s Coallition to make the 193rd General Court the most
+      Join MAPLE&apos;s Coalition to make the 193rd General Court the most
       transparent in Massachusetts history!
     </h3>
     <p>
-      Organizations that join MAPLE&apos;s Coallition of Lead Organizations
-      (CLO) commit to publishing all of their public testimony submitted to the
-      193rd General Court through the MAPLE platform. The 193rd General Court is
-      the session that runs from January of 2023 through 2024.{" "}
+      Organizations that join MAPLE&apos;s Coalition of Lead Organizations (CLO)
+      commit to publishing all of their public testimony submitted to the 193rd
+      General Court through the MAPLE platform. The 193rd General Court is the
+      session that runs from January of 2023 through 2024.{" "}
     </p>
     <p>
       In addition to all the benefits outlined above, these organizations will
@@ -164,7 +164,7 @@ const ChallengeCardContent = () => (
     </p>
     <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
       <a href="mailto:mapletestimony@gmail.com">
-        Join the MAPLE coallition&mdash;reach out to mapletestimony@gmail.com
+        Join the MAPLE coalition&mdash;reach out to mapletestimony@gmail.com
       </a>
     </h3>
   </>
