@@ -72,7 +72,7 @@ const BenefitsCardContent = () => (
     <Row className="mb-3">
       <Col>
         <p>
-          Even if you don&amp;t sign in, you can use MAPLE to browse testimony
+          Even if you don&apos;t sign in, you can use MAPLE to browse testimony
           submitted on any bill. Get a lay of the land and track public opinion
           at a glance using our endorse / oppose ratios. Read the full testimony
           of any user to find other stakeholders you may want to connect with or

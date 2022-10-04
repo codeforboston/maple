@@ -6,7 +6,6 @@ export default function Page() {
 
   useEffect(() => {
     router.push("/about/mission-and-goals")
-    router.push("/about/for-orgs")
   })
 
   return null
