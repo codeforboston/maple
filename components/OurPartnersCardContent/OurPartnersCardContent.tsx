@@ -63,59 +63,7 @@ const CodeForBostonCardContent = () => {
   )
 }
 
-const BostonCollegeCardContent = () => {
-  return (
-    <>
-      <Row className="mb-5">
-        <Col className="text-center align-self-center" md={6}>
-          <Image fluid src="/bostoncollegeicon.png" alt="Boston College icon" />
-        </Col>
-        <Col className="align-self-center" md={6}>
-          <p className={styles.content}>
-            The BC Law School is an inclusive community of scholars that
-            prepares students for success in the legal profession at the highest
-            levels.<br></br>
-            <br></br>Project co-founder Matt Victor is a graduate of The BC Law
-            School.
-          </p>
-        </Col>
-      </Row>
-    </>
-  )
-}
-
-const HbkCenterCardContent = () => {
-  return (
-    <>
-      <Row className="mb-3">
-        <Col className="text-center align-self-center" md={6}>
-          <Image
-            fluid
-            src="/berkmankleincentericon.png"
-            alt="Berkman Klein Center icon"
-          />
-        </Col>
-        <Col className="align-self-center" md={6}>
-          <p className={styles.content}>
-            The Berkman Klein Center's mission is to explore and understand
-            cyberspace; to study its development, dynamics, norms, and
-            standards; and to assess the need or lack thereof for laws and
-            sanctions. <br></br>
-            <br></br>Project co-founder{" "}
-            <a href="https://cyber.harvard.edu/people/nathan-sanders">
-              Nathan Sanders
-            </a>{" "}
-            is a past Fellow and current Affiliate at BKC.
-          </p>
-        </Col>
-      </Row>
-    </>
-  )
-}
-
 export {
   NuLawLabCardContent,
   CodeForBostonCardContent,
-  BostonCollegeCardContent,
-  HbkCenterCardContent
 }
