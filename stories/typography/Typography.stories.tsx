@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react"
 
 const meta: Meta = {
-  title: "Typography",
+  title: "Components/Typography",
   component: () => null,
   parameters: {
     docs: {}
