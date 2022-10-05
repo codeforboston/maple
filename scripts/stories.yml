@@ -126,6 +126,11 @@ name: ResourcesCard
 folder: dashboard/sidePanels
 grouping: Dashboard/Side Panels
 figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=123%3A3003
+---
+name: DashboardPriorityBillsCard
+folder: dashboard/sidePanels
+grouping: Dashboard/Side Panels
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A14013
 
 # Dashboard Newsfeed
 ---
