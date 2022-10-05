@@ -1,0 +1,12 @@
+import { createMeta } from "stories/utils"
+
+// TODO: move into components directory
+const {{name}} = () => <div>TODO</div>
+
+export default createMeta({
+  title: "{{&grouping}}/{{name}}",
+  figmaUrl: "{{&figmaUrl}}",
+  component: {{name}}
+})
+
+export const Primary = () => <{{name}} />
