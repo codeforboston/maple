@@ -1,9 +1,7 @@
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
 import {
-  BostonCollegeCardContent,
   CodeForBostonCardContent,
-  HbkCenterCardContent,
   NuLawLabCardContent
 } from "../OurPartnersCardContent/OurPartnersCardContent.tsx"
 import styles from "./OurPartners.module.css"
@@ -34,37 +32,6 @@ const OurPartners = () => {
         <Col>
           <AboutPagesCard title="Code for Boston">
             <CodeForBostonCardContent />
-          </AboutPagesCard>
-        </Col>
-      </Row>
-      <Row className="mx-5">
-        <Col>
-          <h1 className={`mt-5 fw-bold ${styles.header}`}>Collaborators</h1>
-          <p className={styles.subheader}>
-            The project is developed in collaboration between the NuLawLab and
-            scholars at{" "}
-            <a href="https://www.bc.edu/bc-web/schools/law.html">
-              Boston College Law School
-            </a>{" "}
-            and{" "}
-            <a href="https://cyber.harvard.edu">
-              Harvard University's Berkman Klein Center for Internet & Society
-            </a>
-            .
-          </p>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <AboutPagesCard title="Boston College Law School">
-            <BostonCollegeCardContent />
-          </AboutPagesCard>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <AboutPagesCard title="Harvard Berkman Klein Center">
-            <HbkCenterCardContent />
           </AboutPagesCard>
         </Col>
       </Row>
