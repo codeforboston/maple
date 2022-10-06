@@ -63,7 +63,4 @@ const CodeForBostonCardContent = () => {
   )
 }
 
-export {
-  NuLawLabCardContent,
-  CodeForBostonCardContent,
-}
+export { NuLawLabCardContent, CodeForBostonCardContent }
