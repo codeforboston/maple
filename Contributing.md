@@ -4,7 +4,7 @@ Everyone should feel empowered to contribute to the project as they can, whether
 
 # Contributing a Code Change
 
-We follow the [Github flow](https://docs.github.com/en/get-started/quickstart/github-flow) or fork-and-pull development model.
+We follow the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow) or fork-and-pull development model.
 
 1. Pick an issue. See issues organized on our [project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board). If you're new, [check out the Good First Issues in our product and sprint backlogs](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board?labels=good%20first%20issue). Once you choose an issue, assign it to yourself or leave a comment saying you're working on it.
 
@@ -40,7 +40,7 @@ git checkout MY_FEATURE
 git merge master
 ```
 
-[This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the Github web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
+[This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the GitHub web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
 
 # Development Conventions
 
