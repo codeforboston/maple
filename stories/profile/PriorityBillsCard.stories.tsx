@@ -1,6 +1,6 @@
-import React from "react";
-import { createMeta } from "stories/utils";
-import {PriorityBillsCard} from "../../components/PriortyBillsCard/PriorityBillsCard";
+import React from "react"
+import { createMeta } from "stories/utils"
+import { PriorityBillsCard } from "../../components/PriortyBillsCard/PriorityBillsCard"
 
 //const PriorityBillsCard = () => <div>TODO</div>
 
@@ -16,51 +16,34 @@ export default createMeta({
 //   description: "My baby don't mess around because she loves me so and this I know fo sho (uh) but does she really wanna but can't stand to see me walk out the door? (Ah)",
 // }
 
-const Template = args => <PriorityBillsCard {...args}/>
+const Template = args => <PriorityBillsCard {...args} />
 
 export const Primary = Template.bind({})
 Primary.args = {
-  id:"123", 
-  title:"hc 223", 
-  description:"An act that will which would have wonder with have done wrought it so orth here we go!", 
-  color:"white", 
-  backgroundColor:"navy", 
-  width:"600px",
-  height: "100px", 
-  borderRadius:"0px 0px 0px 0px",} 
+  bills: [
+    {
+      id: "123",
+      title: "hc 223",
+      description:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
 
-  export const Tail = Template.bind({})
-Tail.args = {
-  id:"123", 
-  title:"hc 223", 
-  description:"An act that will which would have wonder with have done wrought it so orth here we go!", 
-  color:"white", 
-  backgroundColor:"navy", 
-  width:"600px",
-  height: "100px", 
-  borderRadius:"0px 0px 15px 15px",} 
+      approval: "y"
+    },
+    {
+      id: "123",
+      title: "hc 223",
+      description:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
 
-  export const PrimarySelected = Template.bind({})
-PrimarySelected.args = {
-  id:"123", 
-  title:"hc 223", 
-  description:"An act that will which would have wonder with have done wrought it so orth here we go!", 
-  color:"black", 
-  backgroundColor:"white",
-  width:"600px",
-  height: "100px", 
-  borderRadius:"0px 0px 0px 0px",} 
+      approval: "y"
+    },
+    {
+      id: "123",
+      title: "hc 223",
+      description:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
 
-  export const TailSelected = Template.bind({})
-TailSelected.args = {
-  id:"123", 
-  title:"hc 223", 
-  description:"An act that will which would have wonder with have done wrought it so orth here we go!", 
-  color:"black", 
-  backgroundColor:"white", 
-  width:"600px",
-  height: "100px", 
-  borderRadius:"0px 0px 15px 15px",} 
-  
-
-
+      approval: "y"
+    }
+  ]
+}
