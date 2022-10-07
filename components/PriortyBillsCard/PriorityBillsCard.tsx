@@ -12,10 +12,12 @@ export const PriorityBillsCard = (bills: bill[]) => {
   const normal = {
     color: "white",
     backgroundColor: "navy",
-    width: "600px",
-    height: "100px",
+    borderTop: "solid black 2px",
     borderRadius: "0px",
-    margin: "2px"
+    boxShadow: "0px 1px 5px #000",
+    width: "600px",
+    padding: "0px 0px 5px 0px",
+    margin: "0px"
   }
   const tail = {
     borderRadius: "0px 0px 15px 15px"
@@ -24,6 +26,8 @@ export const PriorityBillsCard = (bills: bill[]) => {
     color: "black",
     backgroundColor: "white"
   }
+  const handleClick = () => console.log("click")
+
   return (
     <>
       {bills.bills.map((bill, index) => {
@@ -32,7 +36,7 @@ export const PriorityBillsCard = (bills: bill[]) => {
           style.borderRadius = tail.borderRadius
         }
         return (
-          <Card style={style}>
+          <Card style={style} onClick={handleClick}>
             <Card.Body>
               <Card.Title>
                 {bill.title} {bill.approval}
@@ -45,10 +49,3 @@ export const PriorityBillsCard = (bills: bill[]) => {
     </>
   )
 }
-
-// bill: {
-//   id: string
-//   title: string
-//   description: string
-//   approval: string
-// }
