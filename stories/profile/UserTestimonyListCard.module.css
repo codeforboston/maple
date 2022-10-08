@@ -1,0 +1,46 @@
+* {
+  font-family: 'Nunito';
+}
+
+.header {
+  border: 1px solid #1A3185;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #1A3185;
+}
+
+.header_title {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: 'Nunito';
+  color: white;
+  padding: 10px 28px;
+  margin-bottom: 0;
+}
+
+.filters {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters p {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.filters select {
+  padding-right: 6rem;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.testimony_card_title {
+  font-weight: 500;
+  size: 20px;
+}
+
+.testimony_card_content {
+  -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent);
+  padding-bottom: 0.5rem;
+}
