@@ -8,13 +8,20 @@ type bill = {
   approval: string
 }
 
-export const PriorityBillsCard = (bills: bill[]) => {
+export const PriorityBillsCard = (props: { bills: bill[] }) => {
   const normal = {
     color: "white",
     backgroundColor: "navy",
     borderTop: "solid black 2px",
     borderRadius: "0px",
-    boxShadow: "0px 1px 5px #000",
+    width: "600px",
+    padding: "0px 0px 5px 0px",
+    margin: "0px"
+  }
+  const header = {
+    color: "white",
+    backgroundColor: "navy",
+    borderRadius: "15px 15px 0px 0px",
     width: "600px",
     padding: "0px 0px 5px 0px",
     margin: "0px"
@@ -30,9 +37,14 @@ export const PriorityBillsCard = (bills: bill[]) => {
 
   return (
     <>
-      {bills.bills.map((bill, index) => {
+      <Card style={header}>
+        <Card.Body>
+          <Card.Title>header</Card.Title>
+        </Card.Body>
+      </Card>
+      {props.bills.map((bill, index) => {
         const style = { ...normal }
-        if (index === bills.bills.length - 1) {
+        if (index === props.bills.length - 1) {
           style.borderRadius = tail.borderRadius
         }
         return (
