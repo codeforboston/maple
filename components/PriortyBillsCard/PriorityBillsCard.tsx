@@ -3,12 +3,12 @@ import styled from "styled-components"
 
 type bill = {
   id: string
-  billNumber
+  billNumber:string,
   title: string
   approval: string
 }
-//props:bills, callback, bill_id
-export const PriorityBillsCard = (props: { bills: bill[] }) => {
+
+export const PriorityBillsCard = (props: { bills: bill[], bill_id:string, }) => {
   const normal = {
     color: "white",
     backgroundColor: "navy",
@@ -33,7 +33,6 @@ export const PriorityBillsCard = (props: { bills: bill[] }) => {
     color: "black",
     backgroundColor: "white"
   }
-  const handleClick = () => console.log("click")
 
   return (
     <>
@@ -48,7 +47,7 @@ export const PriorityBillsCard = (props: { bills: bill[] }) => {
           style.borderRadius = tail.borderRadius
         }
         return (
-          <Card style={style} onClick={handleClick}>
+          <Card style={style} >
             <Card.Body>
               <Card.Title>
                 {bill.billNumber} {bill.approval}
