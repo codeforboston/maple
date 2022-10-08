@@ -3,11 +3,11 @@ import styled from "styled-components"
 
 type bill = {
   id: string
+  billNumber
   title: string
-  description: string
   approval: string
 }
-
+//props:bills, callback, bill_id
 export const PriorityBillsCard = (props: { bills: bill[] }) => {
   const normal = {
     color: "white",
@@ -51,9 +51,9 @@ export const PriorityBillsCard = (props: { bills: bill[] }) => {
           <Card style={style} onClick={handleClick}>
             <Card.Body>
               <Card.Title>
-                {bill.title} {bill.approval}
+                {bill.billNumber} {bill.approval}
               </Card.Title>
-              <Card.Text>{bill.description}</Card.Text>
+              <Card.Text>{bill.title}</Card.Text>
             </Card.Body>
           </Card>
         )
