@@ -2384,8 +2384,8 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: standard-rwo
+      storage: 10Gi
+  storageClassName: linode-block-storage-retain
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -2579,7 +2579,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`maple-prod.alexjball.com`) && PathPrefix(`/search`)
+    match: Host(`maple-prod2.alexjball.com`) && PathPrefix(`/search`)
     middlewares:
     - name: typesense-strip-prefix
     services:
