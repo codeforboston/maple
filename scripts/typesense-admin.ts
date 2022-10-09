@@ -94,5 +94,5 @@ function resolveClient(args: Args) {
 
   if (!url || !key) throw new Error("Couldn't resolve url or key")
 
-  return createClient(url, key)
+  return createClient({ apiUrl: url, apiKey: key })
 }
