@@ -11,23 +11,35 @@ type bill = {
 export const PriorityBillsCard = (props: { bills: bill[], bill_id:string, }) => {
   const normal = {
     color: "white",
-    backgroundColor: "navy",
-    borderTop: "solid black 2px",
+    backgroundColor: "#1a3185",
+
+    fontFamily:"Nunito",
+    fontWeight: "600px",
+    lineHeight:"15px",
+    letterSpacing:"3%",
+    fontSize: "12px",
+
+    borderTop: "solid white 1px",
     borderRadius: "0px",
-    width: "600px",
-    padding: "0px 0px 5px 0px",
-    margin: "0px"
+    width: "254px",
+    height:"79px",
+    padding: "0px 0px 15px 0px",
+    margin: "0px",
+    
   }
   const header = {
+    
+    width: "254px",
+    height:"53px",
     color: "white",
-    backgroundColor: "navy",
+    backgroundColor: "#1a3185",
     borderRadius: "15px 15px 0px 0px",
-    width: "600px",
     padding: "0px 0px 5px 0px",
     margin: "0px"
   }
   const tail = {
-    borderRadius: "0px 0px 15px 15px"
+    borderRadius: "0px 0px 15px 15px",
+    height:"87px"
   }
   const selected = {
     color: "black",
@@ -38,7 +50,8 @@ export const PriorityBillsCard = (props: { bills: bill[], bill_id:string, }) => 
     <>
       <Card style={header}>
         <Card.Body>
-          <Card.Title>header</Card.Title>
+          <Card.Title>Priority Bills</Card.Title>
+          <Card.Text>Session*</Card.Text>
         </Card.Body>
       </Card>
       {props.bills.map((bill, index) => {

@@ -1,0 +1,44 @@
+.priorty-header{
+    width: 254px;
+    height:53px;
+    color: white;
+    background-color: #1a3185;
+    border-radius: 15px 15px 0px 0px;
+    padding: 0px 0px 5px 0px;
+    margin: 0px
+}
+.bill-slot {
+    color: white;
+    background-color: #1a3185;
+
+    font-family: Nunito;
+    letter-spacing:3%;
+    font-size: 12px;
+
+    border-top: solid white 1px;
+    border-radius: 0px;
+    width: 254px;
+    height:79px;
+    padding: 0px 0px 15px 0px;
+    margin: 0px;
+    
+    /* backgroundColor, color, font */
+}
+.bill-tail{
+    border-radius: 0px 0px 15px 15px;
+    height: 87px;
+}
+.bill-selected{
+    color: black;
+    background-color: white;
+}
+.bill-number{
+    height: 15px;
+}
+.bill-title{
+    font-weight: 600px;
+    line-height:15px;
+}
+/* selected */
+/* tail */
+/* tail selected */
