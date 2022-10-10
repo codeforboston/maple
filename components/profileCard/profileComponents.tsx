@@ -3,15 +3,12 @@ import styled from "styled-components"
 export default function ProfileContainer() {
   return (
     <Container>
-      <Logo>
-        <img loading="lazy" src="/imagedotmenu.svg" alt="" />
-      </Logo>
       <Wrapper>
         <ImageContainer>
           <img src="/image/ProfilePic.png" alt="" />
         </ImageContainer>
-        <Span>Peter Parker</Span>
-        <PtAG>Joined in 2022</PtAG>
+        <ProfileName>Peter Parker</ProfileName>
+        <JoinYear>Joined in 2022</JoinYear>
       </Wrapper>
     </Container>
   )
@@ -20,7 +17,7 @@ export default function ProfileContainer() {
 const Container = styled.div`
   width: 254px;
   height: 331px;
-  background-color: #1a3185;
+  background-color: var(--bs-blue);
   margin: 20px;
   border-radius: 20px;
   color: white;
@@ -32,20 +29,22 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 `
 const ImageContainer = styled.div`
   width: 160px;
   height: 160px;
   border-radius: 999999px;
   margin: 0 auto;
-
+  margin-top: 35px;
   img {
     width: 100%;
     height: 100%;
   }
 `
 
-const Span = styled.span`
+const ProfileName = styled.span`
   font-weight: 500;
   font-size: 22px;
   line-height: 27.5px;
@@ -53,18 +52,11 @@ const Span = styled.span`
   margin-top: 14px;
 `
 
-const PtAG = styled.p`
+const JoinYear = styled.p`
   font-weight: 500;
   margin-top: 5px;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: 1.5%;
   text-align: center;
-`
-
-const Logo = styled.div`
-  padding-top: 14px;
-  margin-bottom: 21px;
-  margin-right: 15px;
-  text-align: end;
 `
