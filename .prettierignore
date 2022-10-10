@@ -1,0 +1,12 @@
+.vscode
+node_modules    
+.next
+public
+out
+lib
+.firebase
+exportedTestData
+.yarn
+dist.yml
+analysis/data
+dist

@@ -1,0 +1,105 @@
+.header:first-child {
+  border-radius: 0 5rem 5rem 0;
+}
+
+.header {
+  background-color: #c03442;
+  width: max-content;
+  padding-top: o;
+  padding-bottom: 0;
+  padding-right: 4rem;
+  padding-left: 2rem;
+  height: 5rem;
+  transform: translate(-3rem, -40%);
+  overflow: hidden;
+  line-height: 5rem;
+  font-weight: 900;
+}
+
+.card {
+  margin: 2rem 2rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 12px;
+}
+
+.title {
+  font-family: "Nunito";
+  font-size: 3rem;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -1.88px;
+  text-align: left;
+  color: #000;
+}
+
+.subheader {
+  flex-grow: 0;
+  font-family: "Nunito";
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.63px;
+  text-align: left;
+  color: #000;
+}
+
+.text {
+  flex-grow: 0;
+  font-family: "Nunito";
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.63px;
+  text-align: left;
+  color: #000;
+}
+
+.colRow {
+  padding-right: 4rem;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cardBody {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Responsive Queries */
+
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .title {
+    font-size: 2rem;
+    padding-left: 1.25rem;
+  }
+  .subheader {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* bootstrap: small > 576px */
+@media (max-width: 36em) {
+  .title {
+    font-size: 1.25rem;
+    padding-left: 2rem;
+  }
+  .text {
+    font-size: 1.125rem;
+  }
+  .subheader {
+    font-size: 1.125rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

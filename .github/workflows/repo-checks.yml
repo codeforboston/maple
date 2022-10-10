@@ -1,0 +1,57 @@
+name: Repo Checks
+
+on: ["push", "pull_request"]
+
+jobs:
+  check_code_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-repo
+
+      - name: Linting
+        if: always()
+        run: yarn lint
+
+      - name: Formatting
+        if: always()
+        run: yarn check-formatting
+
+      # TODO: Add unit tests
+      # - name: Unit Tests
+      #   if: always()
+      #   run: yarn test
+
+      - name: Types
+        if: always()
+        run: yarn check-types
+
+  integration_tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: check_code_quality
+
+    services:
+      typesense:
+        image: typesense/typesense:0.23.1
+        ports:
+          - 8108:8108
+        env:
+          TYPESENSE_DATA_DIR: /app/data
+          TYPESENSE_API_KEY: test-api-key
+          TYPESENSE_ENABLE_CORS: "true"
+        volumes:
+          - typesense-data:/app/data
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-repo
+      - name: Cache Emulators
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+      - name: Run Integration Tests
+        run: yarn test:integration-ci

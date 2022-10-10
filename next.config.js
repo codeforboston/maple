@@ -1,9 +1,18 @@
-const isProduction = process.env.NODE_ENV === "production";
-const withImages = require("next-images");
+/**
+ * @type {import('next').NextConfig}
+ */
+const config = {
+  images: {
+    loader: "custom"
+  },
+  compiler: {
+    styledComponents: true
+  },
+  eslint: {
+    dirs: ["pages", "components", "functions/src", "tests", "analysis"]
+  }
+}
 
-// module.exports = withImage();
-
-module.exports = withImages({
-  assetPrefix: isProduction ? "https://d-ondrich.github.io/advocacy-maps/" : "",
-  basePath: isProduction ? "advocacy-maps/" : "",
-});
+module.exports = {
+  ...config
+}

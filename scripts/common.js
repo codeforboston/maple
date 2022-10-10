@@ -1,0 +1,20 @@
+const { spawnSync } = require("child_process")
+
+const demoProjectId = "demo-dtp"
+const env = {
+  ...process.env,
+  NEXT_PUBLIC_USE_EMULATOR: true,
+  NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demoProjectId,
+  FUNCTIONS_EMULATOR_TIMEOUT_SECONDS: "240"
+}
+
+function runOrExit(...args) {
+  const { status } = spawnSync(...args)
+  if (status !== 0) process.exit(status ?? 1)
+}
+
+module.exports = {
+  demoProjectId,
+  env,
+  runOrExit
+}

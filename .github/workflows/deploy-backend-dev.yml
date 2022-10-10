@@ -1,0 +1,30 @@
+name: Deploy Firebase functions, storage, and firestore to the Development environment.
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - functions/**
+      - firestore.rules
+      - firestore.indexes.json
+      - firebase.json
+      - storage.rules
+
+jobs:
+  build_and_deploy:
+    # Don't deploy forks, even if actions are enabled
+    if: github.repository_owner == 'codeforboston'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Build Environment
+        uses: ./.github/actions/setup-repo
+      - name: Build and Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --force --only firestore,functions,storage
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          PROJECT_ID: digital-testimony-dev

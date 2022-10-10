@@ -1,0 +1,137 @@
+.imgsize {
+  height: 8rem;
+}
+
+.missionHeader {
+  font-size: 2rem;
+  letter-spacing: -0.625px;
+  margin-top: -1rem;
+  padding-bottom: 2rem;
+  color: var(--bs-orange);
+}
+
+.goalsHeader {
+  margin-left: -0.8125rem;
+  font-size: 1.25rem;
+  line-height: 1.705rem;
+  letter-spacing: -0.625px;
+  margin-top: -1rem;
+  padding-bottom: 2rem;
+}
+
+.caption {
+  font-family: Nunito, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.705rem;
+  letter-spacing: -0.625px;
+  text-align: left;
+  margin-top: 0.875rem;
+}
+
+.body {
+  font-family: Nunito, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.705rem;
+  letter-spacing: -0.625px;
+}
+
+.oneTwoImage {
+  padding-bottom: 0.8125rem;
+}
+
+.threeImage {
+  padding-left: 0;
+}
+
+.testimonyDisclaimer {
+  background-color: white;
+}
+
+/* Bootstrap md */
+@media (max-width: 62em) {
+  .threeImage {
+    padding-left: 1.6rem;
+  }
+}
+
+.oneTwoThreeImage {
+  align-items: end;
+}
+
+.submitTestimony {
+  color: #c71e32;
+}
+
+/* Bootstrap md */
+@media (max-width: 62em) {
+  .testimonyDisclaimer {
+    margin: -1rem -5.07rem;
+    background-color: var(--bs-blue);
+    color: white;
+    padding: 1.75rem 1.25rem;
+    line-height: 22.21px;
+  }
+  .body {
+    padding-bottom: 2rem;
+    text-align: left !important;
+  }
+  .one {
+    text-align: left !important;
+  }
+  .two {
+    text-align: right !important;
+  }
+  .three {
+    text-align: left !important;
+  }
+
+  .oneTwoThreeImage {
+    margin-top: 3rem;
+  }
+}
+
+/* Bootstrap sm */
+@media (max-width: 48em) {
+  .body {
+    padding-top: 2rem;
+  }
+}
+
+/* Bootstrap xs */
+@media (max-width: 36em) {
+  .goalsHeader {
+    font-size: 1.125rem;
+    line-height: 22.21px;
+  }
+  .missionHeader {
+    font-size: 1.25rem;
+    padding-bottom: 1rem;
+  }
+  .missionImages {
+    height: 5.625rem;
+  }
+  .caption {
+    font-size: 1.125rem;
+    text-align: center;
+  }
+  .body {
+    font-size: 1.125rem;
+    line-height: 22.1px;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+  }
+  .testimonyDisclaimer {
+    margin: -1rem -1.86rem;
+    background-color: var(--bs-blue);
+    color: white;
+    padding: 1.75rem 1.25rem;
+    line-height: 22.21px;
+  }
+  .stepsImages {
+    height: 7.375rem;
+  }
+  .submitTestimony {
+    font-size: 1.125rem;
+    letter-spacing: -0.7px;
+  }
+}

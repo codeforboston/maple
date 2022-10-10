@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "digital-testimony-dev",
+    "prod": "digital-testimony-prod"
+  },
+  "targets": {}
+}
