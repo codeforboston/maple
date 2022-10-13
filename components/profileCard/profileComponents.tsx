@@ -7,7 +7,7 @@ interface Props {
   yearJoined: Date
 }
 
-export const ProfileCard: NextPage<Props> = ({
+export const ProfileCards: NextPage<Props> = ({
   name,
   ProfileImage,
   yearJoined

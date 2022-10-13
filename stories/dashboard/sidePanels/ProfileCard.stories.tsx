@@ -1,10 +1,10 @@
-import ProfileContainer from "components/profileCard/profileComponents"
+import { ProfileCards } from "components/profileCard/profileComponents"
 import { createMeta } from "stories/utils"
 
 // TODO: move into components directory
 const ProfileCard = () => (
   <div>
-    <ProfileContainer />
+    <ProfileCards />
   </div>
 )
 
