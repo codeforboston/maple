@@ -1,14 +1,25 @@
 import styled from "styled-components"
+import { NextPage } from "next"
 
-export default function ProfileContainer() {
+interface Props {
+  name: string
+  ProfileImage: string
+  yearJoined: Date
+}
+
+export const ProfileCard: NextPage<Props> = ({
+  name,
+  ProfileImage,
+  yearJoined
+}) => {
   return (
     <Container>
       <Wrapper>
         <ImageContainer>
-          <img src="/image/ProfilePic.png" alt="" />
+          <img src={ProfileImage} alt="" />
         </ImageContainer>
-        <ProfileName>Peter Parker</ProfileName>
-        <JoinYear>Joined in 2022</JoinYear>
+        <ProfileName>{name}</ProfileName>
+        <JoinYear>Joined in ,{yearJoined}</JoinYear>
       </Wrapper>
     </Container>
   )
@@ -21,6 +32,7 @@ const Container = styled.div`
   margin: 20px;
   border-radius: 20px;
   color: white;
+  font-family: "Nunito";
 `
 
 const Wrapper = styled.div`
