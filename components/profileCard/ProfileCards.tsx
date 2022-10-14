@@ -16,7 +16,14 @@ export const ProfileCards: NextPage<Props> = ({
     <Container>
       <Wrapper>
         <ImageContainer>
-          <img src={ProfileImage} alt="" />
+          <img
+            src={
+              ProfileImage
+                ? ProfileImage
+                : "https://i.pinimg.com/474x/4b/71/f8/4b71f8137985eaa992d17a315997791e.jpg"
+            }
+            alt=""
+          />
         </ImageContainer>
         <ProfileName>{name}</ProfileName>
         <JoinYear>Joined in ,{yearJoined}</JoinYear>
