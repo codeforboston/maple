@@ -31,8 +31,8 @@
     "test:integration-ci": "node scripts/test-integration-ci.js",
     "test:system": "jest -c tests/jest.system.config.ts",
     "seed": "jest -c tests/jest.seed.config.ts",
-    "storybook": "start-storybook -p 6006 -s ./public",
-    "build-storybook": "build-storybook -s public"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "browserslist": {
     "production": [

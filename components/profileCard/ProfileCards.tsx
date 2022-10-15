@@ -1,5 +1,5 @@
-import styled from "styled-components"
 import { NextPage } from "next"
+import styled from "styled-components"
 
 interface Props {
   name: string
