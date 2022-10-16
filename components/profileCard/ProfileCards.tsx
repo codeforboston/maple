@@ -1,32 +1,21 @@
-import { NextPage } from "next"
+import { FC } from "react"
 import styled from "styled-components"
 
 interface Props {
   name: string
-  ProfileImage: string
-  yearJoined: Date
+  profileImageSrc: string
+  joinDate: Date
 }
 
-export const ProfileCards: NextPage<Props> = ({
-  name,
-  ProfileImage,
-  yearJoined
-}) => {
+export const ProfileCard: FC<Props> = ({ name, profileImageSrc, joinDate }) => {
   return (
     <Container>
       <Wrapper>
         <ImageContainer>
-          <img
-            src={
-              ProfileImage
-                ? ProfileImage
-                : "https://i.pinimg.com/474x/4b/71/f8/4b71f8137985eaa992d17a315997791e.jpg"
-            }
-            alt=""
-          />
+          <img src={profileImageSrc} alt="profile image" />
         </ImageContainer>
         <ProfileName>{name}</ProfileName>
-        <JoinYear>Joined in ,{yearJoined}</JoinYear>
+        <JoinYear>Joined in {joinDate.getFullYear()}</JoinYear>
       </Wrapper>
     </Container>
   )

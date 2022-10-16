@@ -1,23 +1,14 @@
 import { ComponentMeta } from "@storybook/react"
-import { ComponentType, JSXElementConstructor } from "react"
+import { ComponentType } from "react"
 
-/** Copied from ComponentMeta */
-type ComponentConstructor =
-  | keyof JSX.IntrinsicElements
-  | JSXElementConstructor<any>
-
-type Meta<T extends ComponentConstructor> = {
+type Meta = {
   title: string
-  component: ComponentType<T>
+  component: ComponentType<any>
   figmaUrl?: string
 }
 
-export const createMeta = <T extends ComponentConstructor>({
-  title,
-  component,
-  figmaUrl
-}: Meta<T>): ComponentMeta<T> => {
-  const meta: ComponentMeta<T> = { title, component }
+export const createMeta = ({ title, component, figmaUrl }: Meta) => {
+  const meta: ComponentMeta<any> = { title, component }
   if (figmaUrl)
     meta.parameters = {
       design: {

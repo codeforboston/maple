@@ -1,12 +1,5 @@
-import { ProfileCards } from "components/profileCard/ProfileCards"
+import { ProfileCard } from "components/profileCard/ProfileCards"
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const ProfileCard = () => (
-  <div>
-    <ProfileCards />
-  </div>
-)
 
 export default createMeta({
   title: "Dashboard/Side Panels/ProfileCard",
@@ -15,4 +8,10 @@ export default createMeta({
   component: ProfileCard
 })
 
-export const Primary = () => <ProfileCard />
+export const Primary = () => (
+  <ProfileCard
+    joinDate={new Date(2022, 1)}
+    name="Peter Parker"
+    profileImageSrc="/ProfilePic.png"
+  />
+)
