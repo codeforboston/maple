@@ -2,6 +2,7 @@ import { convertNumericRefinementsToFilters } from "instantsearch.js/es/lib/util
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { PriorityBillsCard } from "../../components/PriortyBillsCard/PriorityBillsCard"
+import { ComponentStory } from "@storybook/react"
 
 //const PriorityBillsCard = () => <div>TODO</div>
 //const [isATheCLickyMe, setIsATheClickyMe] = useState()
@@ -13,7 +14,24 @@ export default createMeta({
   component: PriorityBillsCard
 })
 
-const Template = args => <PriorityBillsCard {...args} />
+const Template: ComponentStory<typeof PriorityBillsCard> = props => {
+  const [billId, setBillId] = useState("hc 911")
+  const clickAction = () => {
+    for (let i = 0; i < props.bills.length; i++) {
+      if (props.bills[i].billNumber === billId) {
+        setBillId(
+          i + 1 >= props.bills.length
+            ? props.bills[0].billNumber
+            : props.bills[i + 1].billNumber
+        )
+        break
+      }
+    }
+  }
+  props.onClick = clickAction
+  props.bill_id = billId
+  return <PriorityBillsCard {...props} />
+}
 
 export const Primary = Template.bind({})
 Primary.args = {
@@ -73,8 +91,7 @@ Primary.args = {
   fontWeight: "600px",
   lineHeight: "15px",
   letterSpacing: "3%",
-  fontSize: "12px",
-  callBack: () => console.log("yo")
+  fontSize: "12px"
 }
 
 export const Selected = Template.bind({})
@@ -89,16 +106,16 @@ Selected.args = {
       approval: "y"
     },
     {
-      id: "123",
-      billNumber: "hc 223",
+      id: "223",
+      billNumber: "hc 2123",
       title:
         "An act that will which would have wonder with have done wrought it so orth here we go!",
 
       approval: "y"
     },
     {
-      id: "123",
-      billNumber: "hc 223",
+      id: "323",
+      billNumber: "hc 323",
       title:
         "An act that will which would have wonder with have done wrought it so orth here we go!",
 
@@ -116,6 +133,66 @@ Selected.args = {
   fontWeight: "600px",
   lineHeight: "15px",
   letterSpacing: "3%",
+  fontSize: "12px"
+}
+
+export const OneSelected = Template.bind({})
+OneSelected.args = {
+  bills: [
+    {
+      id: "123",
+      billNumber: "hc 508",
+      title:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
+
+      approval: "y"
+    },
+    {
+      id: "456",
+      billNumber: "hc 411",
+      title:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
+
+      approval: "y"
+    },
+    {
+      id: "789",
+      billNumber: "hc 999",
+      title:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
+
+      approval: "y"
+    },
+    {
+      id: "012",
+      billNumber: "hc 911",
+      title:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
+
+      approval: "y"
+    },
+    {
+      id: "345",
+      billNumber: "hc 888",
+      title:
+        "An act that will which would have wonder with have done wrought it so orth here we go!",
+
+      approval: "y"
+    }
+  ],
+
+  color: "white",
+  backgroundColor: "#1a3185",
+  borderTop: "solid white 1px",
+  width: "254px",
+  height: "79px",
+  padding: "0px 0px 15px 0px",
+  marginTop: "0px",
+  marginBottom: "0px",
+  margin: "0px",
+  fontWeight: "600px",
+  lineHeight: "15px",
+  letterSpacing: "3%",
   fontSize: "12px",
-  callBack: "check"
+  bill_id: "hc 411"
 }

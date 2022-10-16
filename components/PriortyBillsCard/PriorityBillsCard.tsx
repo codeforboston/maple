@@ -26,7 +26,7 @@ export const PriorityBillsCard = (props: {
   lineHeight: string
   letterSpacing: string
   fontSize: string
-  callBack: any
+  onClick: any
   //
 }) => {
   const normal = {
@@ -79,9 +79,12 @@ export const PriorityBillsCard = (props: {
         if (index === props.bills.length - 1) {
           style.borderRadius = tail.borderRadius
         }
+        if (bill.billNumber === props.bill_id) {
+          ;(style.color = "black"), (style.backgroundColor = "white")
+        }
         return (
-          <Card style={style} onClick={props.callBack} key={bill.billNumber}>
-            <Card.Body>
+          <Card style={style} onClick={props.onClick} key={bill.billNumber}>
+            <Card.Body style={{ padding: "3px" }}>
               <Card.Title
                 style={{
                   fontSize: "22px",
