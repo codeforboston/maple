@@ -10,16 +10,19 @@ const LearnTestimoniesCardContent = ({ children, src, alt, index }) => {
       <Row className="my-auto">
         <Col
           className={`align-self-center ${styles.colRow}`}
-          md={6}
-          lg={{ order: index % 2 == 0 ? 1 : 4 }}
+          lg={6}
+          xl={{ order: index % 2 == 0 ? 1 : 4 }}
         >
-          <Image fluid src={src} alt={alt} />
+          <Image fluid src={src} alt={alt} className={`${styles.image}`} />
         </Col>
         <Col
           className={`text-center align-self-center justify-content-xs-center ${styles.colRow}`}
           lg={{ order: 2 }}
         >
-          <p className={`h1 ${styles.text}`}>{children.P1}</p>
+          <div className={`h1 ${styles.text}`}>
+            <p>{children.P1}</p>
+            {children.P2 && <p>{children.P2}</p>}
+          </div>
         </Col>
       </Row>
     </Container>
