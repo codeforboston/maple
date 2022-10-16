@@ -1,4 +1,4 @@
-import { ProfileCard } from "components/profileCard/ProfileCards"
+import { ProfileCard } from "components/ProfileCard"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
