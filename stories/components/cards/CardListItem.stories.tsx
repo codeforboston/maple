@@ -11,14 +11,9 @@ export default createMeta({
 
 const Template: ComponentStory<typeof CardListItems> = ({
   cardItems,
-  children,
   ...rest
 }) => {
-  return (
-    <CardListItems cardItems={cardItems} {...rest}>
-      {children}
-    </CardListItems>
-  )
+  return <CardListItems cardItems={cardItems} {...rest}></CardListItems>
 }
 
 export const Primary = Template.bind({})

@@ -3,7 +3,7 @@ import styles from "./CardListItem.module.css"
 
 interface ListItemProps {
   billName: string
-  billDescription: string
+  billDescription?: string
 }
 
 const ListItem = (props: ListItemProps) => {
@@ -12,19 +12,18 @@ const ListItem = (props: ListItemProps) => {
     <ListGroup.Item className={styles.item}>
       <div className="ms-2 me-auto">
         <div className={`${styles.text} ${styles.billName}`}>{billName}</div>
-        <span className={`${styles.text} ${styles.billDescription}`}>
-          {billDescription}
-        </span>
+        {billDescription && (
+          <span className={`${styles.text} ${styles.billDescription}`}>
+            {billDescription}
+          </span>
+        )}
       </div>
     </ListGroup.Item>
   )
 }
 
 interface CardListItemsProps {
-  cardItems: {
-    billName: string
-    billDescription: string
-  }[]
+  cardItems: ListItemProps[]
 }
 
 export const CardListItems = (props: CardListItemsProps) => {

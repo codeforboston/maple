@@ -1,23 +1,23 @@
 .item {
-		background-color: #1A3185;
-		height: 80px;
-		color: #FFFFFF;
-		border-bottom: 1px solid #FFFFFF;
-		display: flex;
-		align-items: center;
+  background-color: #1a3185;
+  height: 80px;
+  color: #ffffff;
+  border-bottom: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
 }
 
 .text {
-		font-family: Nunito;
-		font-style: normal;
-		font-weight: 500;
-		line-height: 125%;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 125%;
 }
 
 .billName {
-    font-size: 22px;
+  font-size: 22px;
 }
 
 .billDescription {
-    font-size: 12px;
+  font-size: 12px;
 }

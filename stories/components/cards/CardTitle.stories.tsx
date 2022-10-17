@@ -14,7 +14,6 @@ const Template: ComponentStory<typeof CardTitle> = ({
   subheader,
   timestamp,
   imgSrc,
-  children,
   ...rest
 }) => {
   return (
@@ -24,9 +23,7 @@ const Template: ComponentStory<typeof CardTitle> = ({
       timestamp={timestamp}
       imgSrc={imgSrc}
       {...rest}
-    >
-      {children}
-    </CardTitle>
+    />
   )
 }
 

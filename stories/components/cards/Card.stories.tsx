@@ -16,7 +16,6 @@ const Template: ComponentStory<typeof Card> = ({
   timestamp,
   imgSrc,
   cardItems,
-  children,
   ...rest
 }) => {
   return (
@@ -28,9 +27,7 @@ const Template: ComponentStory<typeof Card> = ({
       imgSrc={imgSrc}
       cardItems={cardItems}
       {...rest}
-    >
-      {children}
-    </Card>
+    />
   )
 }
 
