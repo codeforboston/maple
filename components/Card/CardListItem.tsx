@@ -6,8 +6,8 @@ interface ListItemProps {
   billDescription: string
 }
 
-const ListItem = (ListItemProps: ListItemProps): typeof ListItem => {
-  const { billName, billDescription } = ListItemProps
+const ListItem = (props: ListItemProps) => {
+  const { billName, billDescription } = props
   return (
     <ListGroup.Item className={styles.item}>
       <div className="ms-2 me-auto">
@@ -27,14 +27,16 @@ interface CardListItemsProps {
   }[]
 }
 
-export const CardListItems = (
-  CardListItemsProps: CardListItemsProps
-): typeof CardListItems => {
-  const { cardItems = [] } = CardListItemsProps
+export const CardListItems = (props: CardListItemsProps) => {
+  const { cardItems = [] } = props
   return (
     <ListGroup className="list-group-flush">
-      {cardItems?.map(({ billName, billDescription }): typeof ListItem => (
-        <ListItem billName={billName} billDescription={billDescription} />
+      {cardItems?.map(({ billName, billDescription }) => (
+        <ListItem
+          key={billName}
+          billName={billName}
+          billDescription={billDescription}
+        />
       ))}
     </ListGroup>
   )

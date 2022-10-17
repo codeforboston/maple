@@ -3,11 +3,11 @@ import CardBootstrap from "react-bootstrap/Card"
 import styles from "./SeeMore.module.css"
 
 interface SeeMoreProps {
-  onClick: (event: string) => void
+  onClick?: (event: string) => void
 }
 
-export const SeeMore = (SeeMoreProps: SeeMoreProps): typeof SeeMore => {
-  const { onClick } = SeeMoreProps
+export const SeeMore = (props: SeeMoreProps) => {
+  const { onClick = () => {} } = props
   const [seeMore, setSeeMore] = useState<string>("SEE_MORE")
   const LABEL_ENUM: Record<string, string> = {
     SEE_MORE: "See More",

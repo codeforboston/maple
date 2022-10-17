@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
+import styles from "./Card.module.css"
 import { CardListItems } from "./CardListItem"
 import { CardTitle } from "./CardTitle"
 import { SeeMore } from "./SeeMore"
-import styles from "./Card.module.css"
 
 interface CardItem {
   billName: string
@@ -19,7 +19,7 @@ interface CardProps {
   cardItems?: CardItem[] | undefined
 }
 
-export const Card = (CardProps: CardProps): typeof Card => {
+export const Card = (CardProps: CardProps) => {
   const { header, imgSrc, subheader, bodyText, timestamp, cardItems } =
     CardProps
   const [cardItemsToDisplay, setCardItemsToDisplay] = useState<
