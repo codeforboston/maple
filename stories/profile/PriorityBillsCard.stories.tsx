@@ -40,7 +40,7 @@ Primary.args = {
       id: "123",
       billNumber: "hc 508",
       title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
+        "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     },
@@ -48,7 +48,7 @@ Primary.args = {
       id: "456",
       billNumber: "hc 411",
       title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
+        "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     },
@@ -56,7 +56,7 @@ Primary.args = {
       id: "789",
       billNumber: "hc 999",
       title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
+        "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     },
@@ -64,7 +64,7 @@ Primary.args = {
       id: "012",
       billNumber: "hc 911",
       title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
+        "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     },
@@ -72,127 +72,11 @@ Primary.args = {
       id: "345",
       billNumber: "hc 888",
       title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
+        "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     }
   ],
-  bill_id: "ham",
-
-  color: "white",
-  backgroundColor: "#1a3185",
-  borderTop: "solid white 1px",
-  width: "254px",
-  height: "79px",
-  padding: "0px 0px 15px 0px",
-  marginTop: "0px",
-  marginBottom: "0px",
-  margin: "0px",
-  fontWeight: "600px",
-  lineHeight: "15px",
-  letterSpacing: "3%",
-  fontSize: "12px"
-}
-
-export const Selected = Template.bind({})
-Selected.args = {
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc 223",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "223",
-      billNumber: "hc 2123",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "323",
-      billNumber: "hc 323",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    }
-  ],
-  bill_id: "ham",
-  borderTop: "solid white 1px",
-  width: "254px",
-  height: "79px",
-  padding: "0px 0px 15px 0px",
-  marginTop: "0px",
-  marginBottom: "0px",
-  margin: "0px",
-  fontWeight: "600px",
-  lineHeight: "15px",
-  letterSpacing: "3%",
-  fontSize: "12px"
-}
-
-export const OneSelected = Template.bind({})
-OneSelected.args = {
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc 508",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "456",
-      billNumber: "hc 411",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "789",
-      billNumber: "hc 999",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "012",
-      billNumber: "hc 911",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    },
-    {
-      id: "345",
-      billNumber: "hc 888",
-      title:
-        "An act that will which would have wonder with have done wrought it so orth here we go!",
-
-      approval: "y"
-    }
-  ],
-
-  color: "white",
-  backgroundColor: "#1a3185",
-  borderTop: "solid white 1px",
-  width: "254px",
-  height: "79px",
-  padding: "0px 0px 15px 0px",
-  marginTop: "0px",
-  marginBottom: "0px",
-  margin: "0px",
-  fontWeight: "600px",
-  lineHeight: "15px",
-  letterSpacing: "3%",
-  fontSize: "12px",
-  bill_id: "hc 411"
+  bill_id: "hc 411",
+  session: "123"
 }

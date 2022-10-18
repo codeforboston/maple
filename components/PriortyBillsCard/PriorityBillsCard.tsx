@@ -1,5 +1,6 @@
 import { Card } from "react-bootstrap"
-import styled from "styled-components"
+import { Container } from "react-bootstrap"
+import Stylez from "./PriorityBillsCard.module.css"
 
 type bill = {
   id: string
@@ -11,91 +12,46 @@ type bill = {
 export const PriorityBillsCard = (props: {
   bills: bill[]
   bill_id: string
-
-  //style props
-  color: string
-  backgroundColor: string
-  borderTop: string
-  width: string
-  height: string
-  padding: string
-  marginTop: string
-  marginBottom: string
-  margin: string
-  fontWeight: string
-  lineHeight: string
-  letterSpacing: string
-  fontSize: string
+  session: string
   onClick: any
   //
 }) => {
-  const normal = {
-    color: props.color,
-    backgroundColor: props.backgroundColor,
-
-    fontFamily: "Nunito",
-    borderRadius: "0px",
-    borderTop: props.borderTop,
-
-    width: props.width,
-    height: props.height,
-    padding: props.padding,
-    marginTop: props.marginTop,
-    marginBottom: props.marginBottom,
-    margin: props.margin,
-    fontWeight: props.fontWeight,
-    lineHeight: props.lineHeight,
-    letterSpacing: props.letterSpacing,
-    fontSize: props.fontSize
-  }
-  const header = {
-    width: "254px",
-    height: "53px",
-    color: "white",
-    backgroundColor: "#1a3185",
-    borderRadius: "15px 15px 0px 0px",
-    padding: "0px 0px 5px 0px",
-    margin: "0px"
-  }
-  const tail = {
-    borderRadius: "0px 0px 15px 15px",
-    height: "87px"
-  }
-  const selected = {
-    color: "black",
-    backgroundColor: "white"
-  }
-
   return (
     <>
-      <Card style={header}>
-        <Card.Body>
-          <Card.Title>Priority Bills</Card.Title>
-          <Card.Text>Session*</Card.Text>
+      <Card className={Stylez.header}>
+        <Card.Body
+          style={{
+            paddingTop: "7px",
+            paddingBottom: "0px",
+            marginBottom: "0px"
+          }}
+        >
+          <Card.Title className={Stylez.billNumber}>Priority Bills</Card.Title>
+          <Card.Text className={Stylez.billTitle}>
+            Session {props.session}
+          </Card.Text>
         </Card.Body>
       </Card>
       {props.bills.map((bill, index) => {
-        const style = { ...normal }
-        if (index === props.bills.length - 1) {
-          style.borderRadius = tail.borderRadius
-        }
+        let style = Stylez.billSlot
+        let tail = false
         if (bill.billNumber === props.bill_id) {
-          ;(style.color = "black"), (style.backgroundColor = "white")
+          style = Stylez.billSelected
+        }
+        if (index === props.bills.length - 1) {
+          style = Stylez.billTail
+          tail = true
+        }
+        if (bill.billNumber === props.bill_id && tail) {
+          style = Stylez.tailSelected
         }
         return (
-          <Card style={style} onClick={props.onClick} key={bill.billNumber}>
+          <Card className={style} onClick={props.onClick} key={bill.billNumber}>
             <Card.Body style={{ padding: "3px" }}>
-              <Card.Title
-                style={{
-                  fontSize: "22px",
-                  margin: "0px",
-                  marginTop: "0px",
-                  padding: "0px 0px 0px 0px"
-                }}
-              >
-                {bill.billNumber} {bill.approval}
+              <Card.Title className={Stylez.billNumber}>
+                {bill.billNumber}
               </Card.Title>
-              <Card.Text>{bill.title}</Card.Text>
+              <Card.Text className={Stylez.billTitle}>{bill.title}</Card.Text>
             </Card.Body>
           </Card>
         )
