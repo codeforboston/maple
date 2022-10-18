@@ -1,15 +1,14 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { ComponentStory } from "@storybook/react"
+import { Image } from "components/bootstrap"
 import { useState } from "react"
-import { ComponentStory, ComponentMeta } from "@storybook/react"
-
+import { createMeta } from "stories/utils"
 import { LoadingButton } from "../../../components/buttons"
 
-import { Image } from "../../../components/bootstrap"
-
-export default {
+export default createMeta({
   title: "Components/Buttons/LoadingButton",
   component: LoadingButton
-} as ComponentMeta<typeof LoadingButton>
+})
 
 const Template: ComponentStory<typeof LoadingButton> = ({
   children,
