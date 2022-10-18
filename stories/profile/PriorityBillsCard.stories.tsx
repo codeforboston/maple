@@ -15,8 +15,8 @@ export default createMeta({
 })
 
 const Template: ComponentStory<typeof PriorityBillsCard> = props => {
-  const [billId, setBillId] = useState("hc 911")
-  const clickAction = () => {
+  const [billId, setBillId] = useState("hc.508")
+  const HandleCLick = () => {
     for (let i = 0; i < props.bills.length; i++) {
       if (props.bills[i].billNumber === billId) {
         setBillId(
@@ -28,7 +28,7 @@ const Template: ComponentStory<typeof PriorityBillsCard> = props => {
       }
     }
   }
-  props.onClick = clickAction
+  props.onClick = HandleCLick
   props.bill_id = billId
   return <PriorityBillsCard {...props} />
 }
@@ -38,7 +38,7 @@ Primary.args = {
   bills: [
     {
       id: "123",
-      billNumber: "hc 508",
+      billNumber: "hc.508",
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
@@ -46,7 +46,7 @@ Primary.args = {
     },
     {
       id: "456",
-      billNumber: "hc 411",
+      billNumber: "hc.411",
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
@@ -54,7 +54,7 @@ Primary.args = {
     },
     {
       id: "789",
-      billNumber: "hc 999",
+      billNumber: "hc.999",
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
@@ -62,7 +62,7 @@ Primary.args = {
     },
     {
       id: "012",
-      billNumber: "hc 911",
+      billNumber: "hc.911",
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
@@ -70,13 +70,12 @@ Primary.args = {
     },
     {
       id: "345",
-      billNumber: "hc 888",
+      billNumber: "hc.888",
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
       approval: "y"
     }
   ],
-  bill_id: "hc 411",
   session: "123"
 }
