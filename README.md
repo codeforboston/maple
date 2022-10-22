@@ -1,6 +1,7 @@
 # Massachusetts Platform for Legislative Engagement (MAPLE)
 
 A legislative testimony project through Code for Boston!
+
 We are creating a new web platform called MAPLE (the Massachusetts Platform for Legislative Engagement) that makes it easy for residents to submit their testimony to the MA legislature and read the testimony of others. Our goals are to shine a light on the statehouse by 1) providing a public archive of legislative testimony; 2) standardizing and demystifying the testimony process, so that more people can make their voices heard; and 3) creating a space for constituents and legislators to maintain prolonged focus on key issues, and to learn more efficiently about the laws that will shape our lives. Through this, we hope that people can better channel their political energy into productive improvements for our local and state communities.
 
 ## Essentials
@@ -16,7 +17,8 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
-- [Zeplin UI Mocks](https://app.zeplin.io/project/628d69a847f028bc7a5c15c9), where UI designs are organized
+- [Figma Designs](https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE), where UI designs are organized
+- [Chromatic Storybook Library](https://www.chromatic.com/library?appId=634f3926f2a0d0f0195eefd7&branch=master), where our React UI component library is documented.
 - [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
 - [Production site](https://mapletestimony.org), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity

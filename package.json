@@ -32,7 +32,8 @@
     "test:system": "jest -c tests/jest.system.config.ts",
     "seed": "jest -c tests/jest.seed.config.ts",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "chromatic --project-token=f8618e690599"
   },
   "browserslist": {
     "production": [
@@ -130,6 +131,7 @@
     "all-contributors-cli": "^6.20.5",
     "axios": "^0.27.2",
     "babel-loader": "^8.2.5",
+    "chromatic": "^6.10.2",
     "clsx": "^1.2.1",
     "concurrently": "^7.0.0",
     "eslint": "^8.7.0",
