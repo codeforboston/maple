@@ -47,12 +47,12 @@ const CodeForBostonCardContent = () => {
             <br></br> They foster relationships between government, nonprofit,
             academic, for-profit companies, residents, civic technologists,
             analysts, designers, and many more.{" "}
-            <a href="https://github.com/codeforboston/advocacy-maps/graphs/contributors">
+            <a href="https://github.com/codeforboston/maple/graphs/contributors">
               Code for Boston's volunteer contributors
             </a>{" "}
             have led the technical implementation and development of this
             website and platform as an open source project (
-            <a href="https://github.com/codeforboston/advocacy-maps">
+            <a href="https://github.com/codeforboston/maple">
               see our repository on GitHub
             </a>
             ).
