@@ -73,6 +73,7 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 - [Deployment Details](./Deployment.md)
 - [Kubernetes Notes](./Kubernetes.md)
 - [Search Design](./Search.md)
+- [Rename Your Repository And Default Branch](./Rename-Repo-Default-Branch.md)
 
 ## Contributors
 
