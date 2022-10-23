@@ -15,11 +15,11 @@ export default createMeta({
 })
 
 const Template: ComponentStory<typeof PriorityBillsCard> = props => {
-  const [billId, setBillId] = useState("hc.508")
+  const [selectedBillId, setSelectedBillId] = useState("hc.508")
   const HandleCLick = () => {
     for (let i = 0; i < props.bills.length; i++) {
-      if (props.bills[i].billNumber === billId) {
-        setBillId(
+      if (props.bills[i].billNumber === selectedBillId) {
+        setSelectedBillId(
           i + 1 >= props.bills.length
             ? props.bills[0].billNumber
             : props.bills[i + 1].billNumber
@@ -29,7 +29,7 @@ const Template: ComponentStory<typeof PriorityBillsCard> = props => {
     }
   }
   props.onClick = HandleCLick
-  props.selectedBillId = billId
+  props.selectedBillId = selectedBillId
   return <PriorityBillsCard {...props} />
 }
 
