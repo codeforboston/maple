@@ -10,7 +10,7 @@ type bill = {
 
 export const PriorityBillsCard = (props: {
   bills: bill[]
-  bill_id: string
+  selectedBillId: string
   session: string
   onClick: any
 }) => {
@@ -33,14 +33,14 @@ export const PriorityBillsCard = (props: {
       {props.bills.map((bill, index) => {
         let style = Styles.billSlot
         let tail = false
-        if (bill.billNumber === props.bill_id) {
+        if (bill.billNumber === props.selectedBillId) {
           style = Styles.billSelected
         }
         if (index === props.bills.length - 1) {
           style = Styles.billTail
           tail = true
         }
-        if (bill.billNumber === props.bill_id && tail) {
+        if (bill.billNumber === props.selectedBillId && tail) {
           style = Styles.tailSelected
         }
         return (
@@ -57,3 +57,4 @@ export const PriorityBillsCard = (props: {
     </>
   )
 }
+g

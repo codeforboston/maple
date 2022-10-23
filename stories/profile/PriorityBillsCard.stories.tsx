@@ -29,7 +29,7 @@ const Template: ComponentStory<typeof PriorityBillsCard> = props => {
     }
   }
   props.onClick = HandleCLick
-  props.bill_id = billId
+  props.selectedBillId = billId
   return <PriorityBillsCard {...props} />
 }
 
