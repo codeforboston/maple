@@ -5,7 +5,6 @@ type bill = {
   id: string
   billNumber: string
   title: string
-  approval: string
 }
 
 export const PriorityBillsCard = (props: {
@@ -57,4 +56,3 @@ export const PriorityBillsCard = (props: {
     </>
   )
 }
-g

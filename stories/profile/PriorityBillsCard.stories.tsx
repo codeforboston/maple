@@ -42,7 +42,6 @@ Primary.args = {
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
-      approval: "y"
     },
     {
       id: "456",
@@ -50,7 +49,6 @@ Primary.args = {
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
-      approval: "y"
     },
     {
       id: "789",
@@ -58,7 +56,6 @@ Primary.args = {
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
-      approval: "y"
     },
     {
       id: "012",
@@ -66,7 +63,6 @@ Primary.args = {
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
-      approval: "y"
     },
     {
       id: "345",
@@ -74,7 +70,6 @@ Primary.args = {
       title:
         "An Act that goes by no other name but... I forget. But it was good",
 
-      approval: "y"
     }
   ],
   session: "123"
