@@ -1,5 +1,5 @@
 {
-  "projectName": "advocacy-maps",
+  "projectName": "maple",
   "projectOwner": "codeforboston",
   "repoType": "github",
   "repoHost": "https://github.com",
@@ -349,6 +349,24 @@
       "profile": "https://github.com/jkinzer85",
       "contributions": [
         "userTesting"
+      ]
+    },
+    {
+      "login": "Tcoding12",
+      "name": "Anthony ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/78769953?v=4",
+      "profile": "https://github.com/Tcoding12",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ujwalkumar1995",
+      "name": "Ujwal Kumar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20976813?v=4",
+      "profile": "https://github.com/ujwalkumar1995",
+      "contributions": [
+        "code"
       ]
     }
   ]
