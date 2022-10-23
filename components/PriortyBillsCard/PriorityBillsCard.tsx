@@ -11,7 +11,7 @@ export const PriorityBillsCard = (props: {
   bills: bill[]
   selectedBillId: string
   session: string
-  onClick: any
+  onClick: (billNumber: string) => void
 }) => {
   return (
     <>
@@ -43,7 +43,7 @@ export const PriorityBillsCard = (props: {
           style = Styles.tailSelected
         }
         return (
-          <Card className={style} onClick={props.onClick} key={bill.billNumber}>
+          <Card className={style} onClick={()=>props.onClick(bill.billNumber)} key={bill.billNumber}>
             <Card.Body style={{ padding: "3px" }}>
               <Card.Title className={Styles.billNumber}>
                 {bill.billNumber}
