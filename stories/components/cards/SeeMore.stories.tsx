@@ -1,7 +1,5 @@
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const SeeMore = () => <div>TODO</div>
+import { SeeMore } from "../../../components/Card"
 
 export default createMeta({
   title: "Components/Cards/SeeMore",
