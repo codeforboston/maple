@@ -14,7 +14,7 @@ export default createMeta({
 })
 
 const Template: ComponentStory<typeof PriorityBillsCard> = props => {
-  const [selectedBillId, setSelectedBillId] = useState("hc.411")
+  const [selectedBillId, setSelectedBillId] = useState("")
 
   const onBillSelected = (billNumber: string) => {
     console.log("onBillSelected", billNumber)
