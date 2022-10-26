@@ -1,8 +1,7 @@
-import { convertNumericRefinementsToFilters } from "instantsearch.js/es/lib/utils"
+import { ComponentStory } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { PriorityBillsCard } from "../../components/PriortyBillsCard/PriorityBillsCard"
-import { ComponentStory } from "@storybook/react"
 
 //const PriorityBillsCard = () => <div>TODO</div>
 //const [isATheCLickyMe, setIsATheClickyMe] = useState()
@@ -15,14 +14,17 @@ export default createMeta({
 })
 
 const Template: ComponentStory<typeof PriorityBillsCard> = props => {
-  const [selectedBillId, setSelectedBillId] = useState("hc.508")
+  const [selectedBillId, setSelectedBillId] = useState("hc.411")
 
   const onBillSelected = (billNumber: string) => {
+    console.log("onBillSelected", billNumber)
     setSelectedBillId(billNumber)
   }
 
   props.onClick = (string: string) => onBillSelected(string)
   props.selectedBillId = selectedBillId
+
+  console.log("rerender", props)
   return <PriorityBillsCard {...props} />
 }
 

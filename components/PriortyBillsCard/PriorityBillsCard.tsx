@@ -1,4 +1,5 @@
-import { Card } from "react-bootstrap"
+import { CardTitle, ListItem } from "components/Card"
+import { Card as MapleCard } from "../Card/Card"
 import Styles from "./PriorityBillsCard.module.css"
 
 type bill = {
@@ -13,50 +14,25 @@ export const PriorityBillsCard = (props: {
   session: string
   onClick: (billNumber: string) => void
 }) => {
-  return (
-    <>
-      <Card className={Styles.header}>
-        <Card.Body
-          style={{
-            paddingTop: "7px",
-            paddingBottom: "0px",
-            marginBottom: "0px"
-          }}
-        >
-          <Card.Title className={Styles.billNumber}>Priority Bills</Card.Title>
-          <Card.Text className={Styles.billTitle}>
-            Session {props.session}
-          </Card.Text>
-        </Card.Body>
-      </Card>
-      {props.bills.map((bill, index) => {
-        let style = Styles.billSlot
-        let tail = false
-        if (bill.billNumber === props.selectedBillId) {
-          style = Styles.billSelected
-        }
-        if (index === props.bills.length - 1) {
-          style = Styles.billTail
-          tail = true
-        }
-        if (bill.billNumber === props.selectedBillId && tail) {
-          style = Styles.tailSelected
-        }
-        return (
-          <Card
-            className={style}
-            onClick={() => props.onClick(bill.billNumber)}
-            key={bill.billNumber}
-          >
-            <Card.Body style={{ padding: "3px" }}>
-              <Card.Title className={Styles.billNumber}>
-                {bill.billNumber}
-              </Card.Title>
-              <Card.Text className={Styles.billTitle}>{bill.title}</Card.Text>
-            </Card.Body>
-          </Card>
-        )
-      })}
-    </>
+  const items = props.bills.map((bill, index) => {
+    let style = Styles.billSlot
+    if (bill.billNumber === props.selectedBillId) {
+      style = Styles.billSelected
+    }
+    return (
+      <ListItem
+        className={style}
+        onClick={() => props.onClick(bill.billNumber)}
+        key={bill.billNumber}
+        billName={bill.billNumber}
+        billDescription={bill.title}
+      />
+    )
+  })
+
+  const header = (
+    <CardTitle header="Priority Bills" subheader={`Session ${props.session}`} />
   )
+
+  return <MapleCard items={items} headerElement={header} />
 }

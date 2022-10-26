@@ -1,89 +1,13 @@
-.header {
-  width: 254px;
-  height: 53px;
-  color: white;
-  background-color: #1a3185;
-  border-radius: 15px 15px 0px 0px;
-}
 .billSlot {
   color: white;
   background-color: #1a3185;
-
-  font-family: Nunito;
-  letter-spacing: 3%;
-  font-size: 12px;
-
-  border-top: solid white 1px;
-  border-radius: 0px;
-  width: 254px;
-  height: 79px;
-  padding: 5px 0px 0px 0px;
-  margin: 0px;
-}
-.billTail {
-  border-radius: 0px 0px 15px 15px;
-  height: 87px;
-
-  padding: 5px 0px 15px 0px;
-  margin: 0px;
-  width: 254px;
-  color: white;
-  background-color: #1a3185;
-
-  font-family: Nunito;
-  letter-spacing: 3%;
-  font-size: 12px;
-
-  border-top: solid white 1px;
 }
 .billSelected {
   color: black;
   background-color: white;
+}
+.itemText {
   font-family: Nunito;
   letter-spacing: 3%;
   font-size: 12px;
-
-  border-top: solid white 1px;
-  border-radius: 0px;
-  width: 254px;
-  height: 79px;
-  padding: 5px 0px 15px 0px;
-  margin: 0px;
-}
-.billNumber {
-  letter-spacing: 3%;
-  font-family: Nunito;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 125%;
-  margin-bottom: 0px;
-
-  padding: 0px 5px 0px 5px;
-}
-.billTitle {
-  font-family: Nunito;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 125%;
-  /* or 15px */
-
-  letter-spacing: 0.03em;
-  padding: 0px 5px 0px 5px;
-}
-
-.tailSelected {
-  color: black;
-  background-color: white;
-  font-family: Nunito;
-  letter-spacing: 3%;
-  font-size: 12px;
-
-  border-top: solid white 1px;
-  width: 254px;
-  padding: 5px 0px 15px 0px;
-  margin: 0px;
-  border-radius: 0px 0px 15px 15px;
-  height: 87px;
 }
