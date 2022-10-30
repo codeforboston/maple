@@ -2579,7 +2579,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: (Host(`api.mapletestimony.org`) || Host(`maple-prod2.alexjball.com`)) && PathPrefix(`/search`)
+    match: Host(`api.mapletestimony.org`) && PathPrefix(`/search`)
     middlewares:
     - name: typesense-strip-prefix
     services:
