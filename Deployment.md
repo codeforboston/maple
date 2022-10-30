@@ -1,13 +1,13 @@
 # Deployment
 
-The site runs on Firebase and Kubernetes and is deployed using Github Actions. It uses several external services as well. The dev site is deployed automatically whenever we push to the `master` branch. The prod site is deployed whenever we push to the `prod` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action. Kubernetes is currently deployed manually. See [more details here](./Kubernetes.md)
+The site runs on Firebase and Kubernetes and is deployed using Github Actions. It uses several external services as well. The dev site is deployed automatically whenever we push to the `main` branch. The prod site is deployed whenever we push to the `prod` branch. Deployments should "just work" but if the site isn't updating, check the status of the deployment action. Kubernetes is currently deployed manually. See [more details here](./Kubernetes.md)
 
 - Development Environment
-  - [Frontend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-frontend-dev.yml)
-  - [Backend Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-backend-dev.yml)
+  - [Frontend Deployment Workflow](https://github.com/codeforboston/maple/actions/workflows/deploy-frontend-dev.yml)
+  - [Backend Deployment Workflow](https://github.com/codeforboston/maple/actions/workflows/deploy-backend-dev.yml)
   - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-dev/)
 - Production Environment
-  - [Deployment Workflow](https://github.com/codeforboston/advocacy-maps/actions/workflows/deploy-prod.yml)
+  - [Deployment Workflow](https://github.com/codeforboston/maple/actions/workflows/deploy-prod.yml)
   - [Console](https://console.firebase.google.com/u/0/project/digital-testimony-prod/)
 
 ## Firebase
@@ -56,9 +56,9 @@ Currently, the dev environment runs on my computer in a single-node [`k3s`](http
 
 ### Typesense API Keys
 
-Clients authenticate with the typesense server using API keys. We have one master key for updating collections and one key that only allows searching for use in the browser.
+Clients authenticate with the typesense server using API keys. We have one main key for updating collections and one key that only allows searching for use in the browser.
 
-The master key is stored in a kubernetes secret resource, which is encrypted and checked-in to the repo using [git-secret](https://git-secret.io/).
+The main key is stored in a kubernetes secret resource, which is encrypted and checked-in to the repo using [git-secret](https://git-secret.io/).
 
 ### Deployment Steps
 

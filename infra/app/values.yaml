@@ -14,11 +14,19 @@ traefik:
     name: traefik
     tag: "v2.8.4"
 
+  # Expose traefik through hostPorts on the deployment rather than with the
+  # service. On GKE, the default LoadBalancer uses an expensive cloud balancer,
+  # and it's not been straightforward setting up an altnerative.
+  service:
+    enabled: false
+
   ports:
     websecure:
+      hostPort: 443
       tls:
         certResolver: letsencrypt
     web:
+      hostPort: 80
       redirectTo: websecure
 
   deployment:

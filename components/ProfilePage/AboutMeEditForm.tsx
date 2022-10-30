@@ -1,13 +1,15 @@
 import clsx from "clsx"
-import { ChangeEvent } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
+import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Form, Row } from "../bootstrap"
+import { Button, Form, Image, Row, Col } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
 import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
+import { Internal } from "../links"
 
 type UpdateProfileData = {
   name: string
@@ -23,6 +25,7 @@ type Props = {
   profile: Profile
   actions: ProfileHook
   uid?: string
+  setFormUpdated?: any
   className?: string
 }
 
@@ -46,10 +49,16 @@ async function updateProfile(
   await updateFullName(data.name)
 }
 
-export function AboutMeEditForm({ profile, actions, uid, className }: Props) {
+export function AboutMeEditForm({
+  profile,
+  actions,
+  uid,
+  className,
+  setFormUpdated
+}: Props) {
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit
   } = useForm<UpdateProfileData>()
 
@@ -58,18 +67,32 @@ export function AboutMeEditForm({ profile, actions, uid, className }: Props) {
     about,
     organization,
     public: isPublic,
-    social
+    social,
+    profileImage
   }: Profile = profile
 
   const { updateIsOrganization } = actions
 
-  const onSubmit = handleSubmit(data => {
-    updateProfile({ profile, actions, uid }, data)
-  })
-
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
     await updateIsOrganization(e.target.value === "organization")
   }
+
+  const onSubmit = handleSubmit(async update => {
+    await updateProfile({ profile, actions }, update)
+
+    handleRedirect()
+  })
+
+  const handleRedirect = () => {
+    //redirect user to profile page
+    profile.organization
+      ? location.assign(`/organization?id=${uid}`)
+      : location.assign(`/profile?=${uid}`)
+  }
+
+  useEffect(() => {
+    setFormUpdated(isDirty)
+  }, [isDirty, setFormUpdated])
 
   return (
     <TitledSectionCard className={className}>
@@ -131,11 +154,22 @@ export function AboutMeEditForm({ profile, actions, uid, className }: Props) {
               />
             </div>
           </div>
-          <Form.Group className="d-flex save-profile-button">
-            <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
-              Save Profile
-            </Button>
-          </Form.Group>
+          <Row className="align-items-center justify-content-center mb-3">
+            <Col className="align-items-center" xs="auto">
+              <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
+                Save Profile
+              </Button>
+            </Col>
+            <Col className="align-items-center" xs="auto">
+              <Button
+                className="flex-grow-0 mt-5 mx-auto"
+                href="/profile"
+                style={{ backgroundColor: "var(--bs-blue)" }}
+              >
+                Cancel
+              </Button>
+            </Col>
+          </Row>
         </div>
       </Form>
       {!organization && (

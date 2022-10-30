@@ -15,7 +15,8 @@ import { ProfileLegislators } from "./ProfileLegislators"
 import {
   Header,
   ProfileDisplayName,
-  UserIcon
+  UserIcon,
+  VerifiedBadge
 } from "./StyledEditProfileCompnents"
 
 const StyledContainer = styled(Container)`
@@ -93,7 +94,7 @@ export function ProfilePage({ id }: { id: string }) {
     items.execute()
   }, [items])
 
-  const isOrganization: boolean = profile?.organization || false
+  const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
 
@@ -138,7 +139,7 @@ export function ProfilePage({ id }: { id: string }) {
               <Col className={`${isMobile && "mb-4"}`}>
                 <ProfileAboutSection profile={profile} isMobile={isMobile} />
               </Col>
-              {isUser && (
+              {!isOrganization && (
                 <Col xs={12} md={5}>
                   <ProfileLegislators
                     rep={profile?.representative}
@@ -244,16 +245,24 @@ export const ProfileHeader = ({
       )}
 
       {displayName ? (
-        <ProfileDisplayName
-          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
-        >
-          <div
-            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+        <Col xs={"auto"} className={"col-auto"}>
+          <ProfileDisplayName
+            className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
           >
-            {firstName}
-          </div>
-          <div className={`lastName text-capitalize`}>{lastName}</div>
-        </ProfileDisplayName>
+            <div
+              className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
+            >
+              {firstName}
+            </div>
+            <div className={`lastName text-capitalize`}>{lastName}</div>
+          </ProfileDisplayName>
+
+          {isOrganization && (
+            <VerifiedBadge>
+              <div className={"verifiedText"}>verified organization</div>
+            </VerifiedBadge>
+          )}
+        </Col>
       ) : (
         <ProfileDisplayName
           className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}

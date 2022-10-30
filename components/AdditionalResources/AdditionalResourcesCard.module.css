@@ -61,12 +61,6 @@
   color: #000;
 }
 
-@media (max-width: 600px) {
-  .text {
-    font-size: 1rem;
-  }
-}
-
 .colRow {
   padding-right: 4rem;
   padding-left: 2rem;
@@ -78,4 +72,34 @@
 .cardBody {
   padding-top: 3rem;
   padding-bottom: 3rem;
+}
+
+/* Responsive Queries */
+
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .title {
+    font-size: 2rem;
+    padding-left: 1.25rem;
+  }
+  .subheader {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* bootstrap: small > 576px */
+@media (max-width: 36em) {
+  .title {
+    font-size: 1.25rem;
+    padding-left: 2rem;
+  }
+  .text {
+    font-size: 1.125rem;
+  }
+  .subheader {
+    font-size: 1.125rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }

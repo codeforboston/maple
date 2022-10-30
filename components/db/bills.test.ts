@@ -2,9 +2,9 @@ import { act, renderHook } from "@testing-library/react-hooks"
 import { DateTime } from "luxon"
 import { useBills } from "."
 import { terminateFirebase, testDb } from "../../tests/testUtils"
-import * as common from "./common"
+import { now } from "./common"
 
-const mockedNow = jest.spyOn(common, "now")
+const mockedNow = jest.mocked(now)
 
 afterAll(terminateFirebase)
 

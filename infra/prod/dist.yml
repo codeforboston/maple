@@ -2347,31 +2347,6 @@ type: Opaque
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app.kubernetes.io/instance: prod
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.24.1
-  name: prod-traefik
-spec:
-  loadBalancerIP: 35.224.191.63
-  ports:
-  - name: web
-    port: 80
-    protocol: TCP
-    targetPort: web
-  - name: websecure
-    port: 443
-    protocol: TCP
-    targetPort: websecure
-  selector:
-    app.kubernetes.io/instance: prod
-    app.kubernetes.io/name: traefik
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
   name: typesense-service
 spec:
   ports:
@@ -2409,8 +2384,8 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: standard-rwo
+      storage: 10Gi
+  storageClassName: linode-block-storage-retain
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -2485,9 +2460,11 @@ spec:
           name: traefik
           protocol: TCP
         - containerPort: 8000
+          hostPort: 80
           name: web
           protocol: TCP
         - containerPort: 8443
+          hostPort: 443
           name: websecure
           protocol: TCP
         resources: null
@@ -2553,7 +2530,7 @@ spec:
               name: typesense
         - name: TYPESENSE_ENABLE_CORS
           value: "true"
-        image: typesense/typesense:0.22.2
+        image: typesense/typesense:0.23.1
         name: typesense
         ports:
         - containerPort: 8108
@@ -2602,7 +2579,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`maple-prod.alexjball.com`) && PathPrefix(`/search`)
+    match: (Host(`api.mapletestimony.org`) || Host(`maple-prod2.alexjball.com`)) && PathPrefix(`/search`)
     middlewares:
     - name: typesense-strip-prefix
     services:

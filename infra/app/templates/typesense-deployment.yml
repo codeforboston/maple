@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: typesense
-          image: typesense/typesense:0.22.2
+          image: typesense/typesense:0.23.1
           ports:
             - containerPort: 8108
           resources:

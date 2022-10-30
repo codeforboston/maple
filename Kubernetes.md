@@ -59,7 +59,15 @@ gcloud container clusters create $NAME \
 gcloud compute addresses create maple-ingress --region us-central1
 ```
 
-3. Configure DNS for your domain. Create an `A Record` with the value of the IP you reserved. See [these instructions for Google Domains](https://support.google.com/domains/answer/3290350?hl=en#zippy=%2Cadd-a-resource-record).
+Then assign the address to the cluster node following [these](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#IP_assign) instructions. You can also reserve the IP assigned when the VM starts through the console.
+
+3. Allow ports 80 and 443 through the firewall:
+
+```sh
+gcloud compute firewall-rules create maple-ingress --allow tcp:80,tcp:443
+```
+
+4. Configure DNS for your domain. Create an `A Record` with the value of the IP you reserved. See [these instructions for Google Domains](https://support.google.com/domains/answer/3290350?hl=en#zippy=%2Cadd-a-resource-record).
 
 # Configuring the deployment
 
@@ -67,10 +75,7 @@ Deployments are configured using Kubernetes resources in the `infra` folder. We 
 
 1. Use `kubectl config use-context` to select the appropriate cluster
 
-2. Update the values in `infra/$ENV/kustomization.yml` as needed. In particular:
-
-   - The static IP address you reserved for the deployment needs to be set as the `loadBalancerIP` of the traefik service.
-   - The domain you set up DNS for needs to be the `apiDomain` value for the helm chart.
+2. Update the values in `infra/$ENV/kustomization.yml` as needed. In particular, the domain you set up DNS for needs to be the `apiDomain` value for the helm chart.
 
 # Deploying to a Kubernetes cluster
 
