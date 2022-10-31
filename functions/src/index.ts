@@ -20,7 +20,7 @@ export {
   startMemberBatches
 } from "./members"
 export { createProfile } from "./profile"
-export { checkSearchIndexVersion } from "./search"
+export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,
   publishTestimony,
