@@ -10,8 +10,9 @@ helmCharts:
     includeCRDs: true
     releaseName: prod
     valuesInline:
-      apiDomain: maple-prod.alexjball.com
-      storageClassName: standard-rwo
+      apiDomain: api.mapletestimony.org
+      storageSize: 10Gi
+      storageClassName: linode-block-storage-retain
       secretName: typesense
 
 resources:
