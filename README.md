@@ -12,7 +12,7 @@ Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-
 
 You can find good first issues [here](https://github.com/codeforboston/maple/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
-Check out the [Contributing](./Contributing.md) docs for how to contribute to the project.
+Check out the [Contributing](./Contributing.md) docs for how to contribute to the project, and [the wiki](https://github.com/codeforboston/maple/wiki) for project documentation.
 
 ## Links
 
@@ -48,7 +48,7 @@ git checkout main
 git pull upstream main
 ```
 
-4. Now you're ready to work on a feature! See the [Contributing](./Contributing.md) page for more info.
+4. Now you're ready to work on a feature! See the [Contributing](./Contributing.md) page for more info, and refer to [the wiki](https://github.com/codeforboston/maple/wiki) for more documentation.
 
 ## Developing Locally
 

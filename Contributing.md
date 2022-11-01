@@ -41,25 +41,3 @@ git merge main
 ```
 
 [This will print out a message about a conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts). Resolve them (recommend [using VSCode](https://www.youtube.com/watch?v=QmKdodJU-js) or [command line](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) rather than the GitHub web interface), stage the files, commit the changes, and finally push your changes to your feature branch.
-
-# Development Conventions
-
-## Creating a New Page
-
-Take a look at the `pages/bills.tsx` page:
-
-```typescript
-export default createPage({
-  title: "Browse",
-  Page: () => {
-    return (
-      <Container>
-        <h1>Browse</h1>
-        ...
-      </Container>
-    )
-  }
-})
-```
-
-Your page content goes in `Page`, and will be wrapped in a layout component. The page is rendered by `_app.tsx`.
