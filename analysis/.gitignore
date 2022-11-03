@@ -2,7 +2,7 @@
 matched-actions.csv
 matched-actions.json
 linked-bills.json
-
+./data/*
 # Exclude all text files except the ones we need
 *.txt
 !requirements.txt
