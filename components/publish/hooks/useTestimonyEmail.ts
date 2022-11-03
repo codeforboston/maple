@@ -53,9 +53,9 @@ export const useTestimonyEmail = () => {
     ].filter(Boolean),
     body = sections.join("\n\n")
 
-  const mailToUrl = `mailto:${encodeURIComponent(
-    to
-  )}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  const mailToUrl = `mailto:test@example.com?subject=${encodeURIComponent(
+    subject
+  )}&body=${encodeURIComponent(body)}`
 
   if (attachment && profile) {
     return { ready: true, mailToUrl, body, to } as const
