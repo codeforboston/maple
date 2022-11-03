@@ -19,6 +19,10 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
 - [Figma Designs](https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE), where UI designs are organized
 - [Chromatic Storybook Library](https://www.chromatic.com/library?appId=634f3926f2a0d0f0195eefd7&branch=main), where our React UI component library is documented.
+- [Maple Documentation on the Wiki](https://github.com/codeforboston/maple/wiki)
+
+## Live Sites
+
 - [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
 - [Production site](https://mapletestimony.org), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
@@ -70,10 +74,7 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 
 ## Additional Documentation
 
-- [Deployment Details](./Deployment.md)
-- [Kubernetes Notes](./Kubernetes.md)
-- [Search Design](./Search.md)
-- [Rename Your Repository And Default Branch](./Rename-Repo-Default-Branch.md)
+See [the Wiki](https://github.com/codeforboston/maple/wiki)
 
 ## Contributors
 

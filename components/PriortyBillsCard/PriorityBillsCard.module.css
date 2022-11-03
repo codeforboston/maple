@@ -1,0 +1,13 @@
+.billSlot {
+  color: white;
+  background-color: #1a3185;
+}
+.billSelected {
+  color: black;
+  background-color: white;
+}
+.itemText {
+  font-family: Nunito;
+  letter-spacing: 3%;
+  font-size: 12px;
+}
