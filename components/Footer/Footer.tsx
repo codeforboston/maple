@@ -78,8 +78,8 @@ function MapleContainer() {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="maple.png"
-          alt="Massachusettes state seal"
+          src="/maple.png"
+          alt="MAPLE logo"
           width={100}
         />
       </Row>
@@ -101,28 +101,16 @@ const ResourcesLinks = () => (
 const OurTeamLinks = () => (
   <>
     <ExternalNavLink
-      href="https://law.northeastern.edu/"
+      href="https://www.nulawlab.org"
       className={styles.footerLink}
     >
-      North Eastern University School of Law
+      Northeastern University NuLawLab
     </ExternalNavLink>
     <ExternalNavLink
       href="https://www.codeforboston.org/"
       className={styles.footerLink}
     >
       Code for Boston
-    </ExternalNavLink>
-    <ExternalNavLink
-      href="https://www.bc.edu/bc-web/schools/law.html"
-      className={styles.footerLink}
-    >
-      Boston College Law School
-    </ExternalNavLink>
-    <ExternalNavLink
-      href="https://cyber.harvard.edu/"
-      className={styles.footerLink}
-    >
-      Harvard Berkman Klein Center
     </ExternalNavLink>
   </>
 )

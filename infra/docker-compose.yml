@@ -70,7 +70,7 @@ services:
 
       # Prevent host node_modules from overriding the image modules.
       - /app/node_modules/
-      - /app/fuctions/node_modules/
+      - /app/functions/node_modules/
     environment:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108

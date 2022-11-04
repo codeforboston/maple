@@ -1,0 +1,172 @@
+# Components
+name: PrioritizeButton
+folder: components/buttons
+grouping: Components/Buttons
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A6927
+---
+name: PrimaryButtonWithIcon
+folder: components/buttons
+grouping: Components/Buttons
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A14373
+---
+name: ButtonGroup
+folder: components/buttons
+grouping: Components/Buttons
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=243%3A12340
+---
+name: DropdownButton
+folder: components/buttons
+grouping: Components/Buttons
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A12483
+---
+name: Tag
+folder: components
+grouping: Components
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A13514
+---
+name: CardTitle
+folder: components/cards
+grouping: Components/Cards
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=110%3A2655
+---
+name: SeeMore
+folder: components/cards
+grouping: Components/Cards
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=119%3A2856
+---
+name: Card
+folder: components/cards
+grouping: Components/Cards
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=229%3A8338
+---
+name: CardListItem
+folder: components/cards
+grouping: Components/Cards
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=119%3A2727
+
+# Page Layout
+---
+name: PageHeader
+folder: components/page
+grouping: Components/Page
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A6642
+---
+name: PageFooter
+folder: components/page
+grouping: Components/Page
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010
+
+# Org Profile
+---
+name: PriorityBillsCard
+folder: profile
+grouping: Profile
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=109%3A2927
+---
+name: BioCard
+folder: profile
+grouping: Profile
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=229%3A8099
+---
+name: UserTestimonyListCard
+folder: profile
+grouping: Profile
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=311%3A10561
+---
+name: ContactInfo
+folder: profile
+grouping: Profile
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=229%3A8117
+---
+name: OrgTitle
+folder: profile
+grouping: Profile
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=229%3A8111
+
+# Mission Center
+---
+name: DashboardTabs
+folder: dashboard/missionCenter
+grouping: Dashboard/Mission Center
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A13880
+---
+name: OrgStanceCard
+folder: dashboard/missionCenter
+grouping: Dashboard/Mission Center
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=242%3A12162
+---
+name: BillStatusCard
+folder: dashboard/missionCenter
+grouping: Dashboard/Mission Center
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A13623
+---
+name: BillOverviewCard
+folder: dashboard/missionCenter
+grouping: Dashboard/Mission Center
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=307%3A12453
+---
+name: BillCosponsorCard
+folder: dashboard/missionCenter
+grouping: Dashboard/Mission Center
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A12313
+
+# Dashboard Side Panels
+---
+name: ProfileCard
+folder: dashboard/sidePanels
+grouping: Dashboard/Side Panels
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=296%3A15838
+---
+name: FollowingCard
+folder: dashboard/sidePanels
+grouping: Dashboard/Side Panels
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=167%3A6922
+---
+name: ResourcesCard
+folder: dashboard/sidePanels
+grouping: Dashboard/Side Panels
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=123%3A3003
+---
+name: DashboardPriorityBillsCard
+folder: dashboard/sidePanels
+grouping: Dashboard/Side Panels
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A14013
+
+# Dashboard Newsfeed
+---
+name: HotBillCard
+folder: dashboard/newsfeed
+grouping: Dashboard/Newsfeed
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A3865
+---
+name: AlertCard
+folder: dashboard/newsfeed
+grouping: Dashboard/Newsfeed
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A2873
+
+# Bill Details
+---
+name: OrgPriorityCard
+folder: billDetail
+grouping: Bill Detail
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=242%3A16628
+---
+name: BillTestimonyListCard
+folder: billDetail
+grouping: Bill Detail
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=180%3A7916
+---
+name: CurrentCommitteeCard
+folder: billDetail
+grouping: Bill Detail
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=159%3A4939
+---
+name: BillStatus
+folder: billDetail
+grouping: Bill Detail
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=249%3A18636
+---
+name: BillSponsorCard
+folder: billDetail
+grouping: Bill Detail
+figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=172%3A8380

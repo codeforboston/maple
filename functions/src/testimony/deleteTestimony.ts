@@ -16,10 +16,17 @@ export const deleteTestimony = https.onCall(async (data, context) => {
   const uid = checkAuth(context)
   const { publicationId } = checkRequest(DeleteTestimonyRequest, data)
 
+  return performDeleteTestimony(uid, publicationId)
+})
+
+export const performDeleteTestimony = async (
+  authorUid: string,
+  publicationId: string
+) => {
   let output: TransactionOutput
   try {
     output = await db.runTransaction(t =>
-      new DeleteTestimonyTransaction(t, publicationId, uid).run()
+      new DeleteTestimonyTransaction(t, publicationId, authorUid).run()
     )
   } catch (e) {
     logger.info("Deletion transaction failed.", e)
@@ -30,7 +37,7 @@ export const deleteTestimony = https.onCall(async (data, context) => {
   await attachments.applyDelete(output.attachmentId)
 
   return { deleted: output.deleted }
-})
+}
 
 type TransactionOutput = { deleted: boolean; attachmentId?: Maybe<string> }
 class DeleteTestimonyTransaction {

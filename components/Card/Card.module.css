@@ -1,0 +1,13 @@
+.container {
+  background-color: none;
+  border-radius: 12px 12px 12px 12px;
+  overflow: hidden;
+}
+
+.body {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+}

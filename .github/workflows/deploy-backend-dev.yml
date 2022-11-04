@@ -2,7 +2,7 @@ name: Deploy Firebase functions, storage, and firestore to the Development envir
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - functions/**
       - firestore.rules
