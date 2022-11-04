@@ -20,9 +20,9 @@ import pandas as pd
 # NOTE - it's good to order these in terms of the sequence of the stage.
 # That ordering will be preserved in plots.
 DATA_FILES: Dict[str, Path] = {
-    'reported_referred': Path('../data/2022_11_03_reported-referred.json'),
-    'hearing_scheduled': Path('../data/2022_11_03_hearing_scheduled.json'),
-    'enacted': Path('../data/2022_11_03_enacted.json'),
+    'reported_referred': Path('../data/2022_11_03_reported-referred.json.zip'),
+    'hearing_scheduled': Path('../data/2022_11_03_hearing_scheduled.json.zip'),
+    'enacted': Path('../data/2022_11_03_enacted.json.zip'),
 }
 STATUSES: List[str] = list(DATA_FILES.keys())
 
