@@ -148,11 +148,12 @@ def plot_fraction_enacted_per_committee(df_date: pd.DataFrame, min_bills: int=15
     """Plot the fraction of bills referred to each committee that get enacted
     """
     sel_committees = sorted(df_date['committee_name'].value_counts().pipe(lambda x: x[x >= min_bills].index))
-    df_sel = df_date[df_date['committee_name'].isin(sel_committees)]
-    plt.figure()
-    perc_enacted = 100 * (1 - df_date.pipe(lambda x: x[~x['reported_referred'].isnull()])['enacted'].isnull().mean())
-    num_bills = dist_group.apply(lambda x: (~np.isnan(x)).sum()).loc[sel_committees]
+    df_referrred_group = df_date.pipe(lambda x: x[~x['reported_referred'].isnull()]).groupby('committee_name')
+    perc_enacted = 100 * (1 - df_referrred_group['enacted'].apply(lambda x: x.isnull().mean()))
+    num_bills = df_referrred_group['reported_referred'].apply(lambda x: (~x.isnull()).sum()).loc[sel_committees]
     x = np.arange(len(perc_enacted))
+    plt.figure()
+    
     plt.bar(x, perc_enacted)
     for i in range(len(x)):
         plt.text(x[i], perc_enacted[i], f'N={num_bills[i]}'
