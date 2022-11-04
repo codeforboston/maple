@@ -109,35 +109,65 @@ def plot_residence_dist_per_status(df_date: pd.DataFrame):
     fig.supxlabel('Duration in status (days)')
     fig.supylabel('# of bills')
     plt.savefig('residence_dist_per_status.png', dpi=300)
+    plt.close()
+
+def shorten(x: List[str], length: int=20) -> List[str]:
+    """Shorten the labels in `x` to a maximum length of `length`.
+    """
+    return [(label if len(label) < length else label[:length] + '...') for label in x]
 
 def plot_residence_avg_per_status_per_committee(df_date: pd.DataFrame, min_bills: int=15):
     """Average residence time per bill status per committee.
     """
     sel_committees = sorted(df_date['committee_name'].value_counts().pipe(lambda x: x[x >= min_bills].index))
     df_sel = df_date[df_date['committee_name'].isin(sel_committees)]
-    fig, axs = plt.subplots(len(STATUSES) - 1, figsize=(4 * (len(STATUSES) - 1), 4), sharex='all')
+    fig, axs = plt.subplots(len(STATUSES) - 1, figsize=(4 * (len(STATUSES) - 1), 8), sharex='all')
     for status_i, status in enumerate(STATUSES[1:], start=1):
+        # calculate duration in this status
         dist = (df_sel[status] - df_sel[STATUSES[status_i-1]]).dt.days
+        # group by committee
         dist_group = pd.Series(index=df_sel['committee_name'].values, data=dist.values).groupby(level=0)
+        # calculate average
         avg_duration = dist_group.mean().loc[sel_committees]
-        num_bills = dist_group.apply(len).loc[sel_committees]
+        # calculate number of bills in each committee with dates recorded
+        num_bills = dist_group.apply(lambda x: (~np.isnan(x)).sum()).loc[sel_committees]
         x = np.arange(len(avg_duration))
         axs[status_i - 1].bar(x, avg_duration)
         for i in range(len(x)):
             axs[status_i - 1].text(x[i], avg_duration[i], f'N={num_bills[i]}'
                                    , ha='center', va='bottom', size=6)
         axs[status_i - 1].set_title(f'{STATUSES[status_i - 1]} --> {STATUSES[status_i]}')
-    plt.xticks(x, sel_committees, rotation=45, ha='right')
+    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right')
     fig.supxlabel('Committee')
     fig.supylabel('Average duration in status (days)')
     plt.tight_layout()
     plt.savefig('residence_avg_per_status_per_committee.png', dpi=300)
+    plt.close()
+
+def plot_fraction_enacted_per_committee(df_date: pd.DataFrame, min_bills: int=15):
+    """Plot the fraction of bills referred to each committee that get enacted
+    """
+    sel_committees = sorted(df_date['committee_name'].value_counts().pipe(lambda x: x[x >= min_bills].index))
+    df_sel = df_date[df_date['committee_name'].isin(sel_committees)]
+    plt.figure()
+    perc_enacted = 100 * (1 - df_date.pipe(lambda x: x[~x['reported_referred'].isnull()])['enacted'].isnull().mean())
+    num_bills = dist_group.apply(lambda x: (~np.isnan(x)).sum()).loc[sel_committees]
+    x = np.arange(len(perc_enacted))
+    plt.bar(x, perc_enacted)
+    for i in range(len(x)):
+        plt.text(x[i], perc_enacted[i], f'N={num_bills[i]}'
+                                , ha='center', va='bottom', size=6)
+    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right')
+    fig.supxlabel('Committee')
+    fig.supylabel('Fraction of bills referred --> enacted (%)')
+    plt.tight_layout()
+    plt.savefig('fraction_enacted_per_committee.png', dpi=300)
+    plt.close()
 
 # TODO
 #* Probability of a bill being enacted per status
 #* Probability of a bill being enacted per status per committee
 #* Fraction of bills enacted from each committee that did not get hearings
-#* Fraction of bills enacted referred to each committee that get passed
 #* Number of bills referred to each committee
 
 def main():
@@ -147,6 +177,7 @@ def main():
     log_quality_checks(df_date, df_days)
     plot_residence_dist_per_status(df_date)
     plot_residence_avg_per_status_per_committee(df_date)
+    plot_fraction_enacted_per_committee(df_date)
     import pdb; pdb.set_trace()
 
 if __name__ == '__main__':
