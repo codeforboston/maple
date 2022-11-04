@@ -3,9 +3,6 @@ import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { PriorityBillsCard } from "../../components/PriortyBillsCard/PriorityBillsCard"
 
-//const PriorityBillsCard = () => <div>TODO</div>
-//const [isATheCLickyMe, setIsATheClickyMe] = useState()
-
 export default createMeta({
   title: "Profile/PriorityBillsCard",
   figmaUrl:
@@ -24,7 +21,6 @@ const Template: ComponentStory<typeof PriorityBillsCard> = props => {
   props.onClick = (string: string) => onBillSelected(string)
   props.selectedBillId = selectedBillId
 
-  console.log("rerender", props)
   return <PriorityBillsCard {...props} />
 }
 

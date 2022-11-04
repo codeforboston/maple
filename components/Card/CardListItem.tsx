@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { ReactElement } from "react"
+import { ReactElement, ReactNode } from "react"
 import { ListGroupItemProps } from "react-bootstrap"
 import ListGroup from "react-bootstrap/ListGroup"
 import styles from "./CardListItem.module.css"
@@ -7,6 +7,10 @@ import styles from "./CardListItem.module.css"
 type ListItemProps = {
   billName: string
   billDescription?: string
+  endorseCount: number
+  opposeCount: number
+  neutralCount: number
+  object: ReactNode
 } & ListGroupItemProps
 
 export const ListItem = (props: ListItemProps) => {
