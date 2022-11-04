@@ -137,7 +137,7 @@ def plot_residence_avg_per_status_per_committee(df_date: pd.DataFrame, min_bills
             axs[status_i - 1].text(x[i], avg_duration[i], f'N={num_bills[i]}'
                                    , ha='center', va='bottom', size=6)
         axs[status_i - 1].set_title(f'{STATUSES[status_i - 1]} --> {STATUSES[status_i]}')
-    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right')
+    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right', fontsize=8)
     fig.supxlabel('Committee')
     fig.supylabel('Average duration in status (days)')
     plt.tight_layout()
@@ -149,16 +149,16 @@ def plot_fraction_enacted_per_committee(df_date: pd.DataFrame, min_bills: int=15
     """
     sel_committees = sorted(df_date['committee_name'].value_counts().pipe(lambda x: x[x >= min_bills].index))
     df_referrred_group = df_date.pipe(lambda x: x[~x['reported_referred'].isnull()]).groupby('committee_name')
-    perc_enacted = 100 * (1 - df_referrred_group['enacted'].apply(lambda x: x.isnull().mean()))
+    perc_enacted = 100 * (1 - df_referrred_group['enacted'].apply(lambda x: x.isnull().mean())).loc[sel_committees]
     num_bills = df_referrred_group['reported_referred'].apply(lambda x: (~x.isnull()).sum()).loc[sel_committees]
     x = np.arange(len(perc_enacted))
-    plt.figure()
+    fig = plt.figure()
     
     plt.bar(x, perc_enacted)
     for i in range(len(x)):
         plt.text(x[i], perc_enacted[i], f'N={num_bills[i]}'
                                 , ha='center', va='bottom', size=6)
-    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right')
+    plt.xticks(x, shorten(sel_committees), rotation=45, ha='right', fontsize=8)
     fig.supxlabel('Committee')
     fig.supylabel('Fraction of bills referred --> enacted (%)')
     plt.tight_layout()
