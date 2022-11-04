@@ -8,3 +8,5 @@ lib
 exportedTestData
 .yarn
 dist.yml
+analysis/data/*.json
+
