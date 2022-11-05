@@ -1,12 +1,11 @@
 import { FC } from "react"
 import styled from "styled-components"
 import { Position } from "components/db"
-import { Literal } from "runtypes/lib/types/literal"
 
 const ImageContainer = styled.div`
   width: 87px;
   height: 87px;
-  border-width: 2.5px solid var(--bs-green);
+  border: 2.5px solid var(--bs-green);
   border-radius: 50%;
   position: relative;
 
@@ -62,7 +61,7 @@ export const positionObj = [
   },
   {
     position: "oppose",
-    svg: "/Thumbs-down.svg",
+    svg: "/thumbs-down.svg",
     shade: "var(--bs-orange)"
   }
 ]

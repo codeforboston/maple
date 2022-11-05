@@ -17,32 +17,32 @@ export const AvatarWithTitle = Template.bind({})
 AvatarWithTitle.args = {
   name: "Boston Fire Department Union",
   orgImageSrc: "/BFD.png",
-  stanceTitle: "endorse"
+  position: "endorse"
 }
 
 export const AvatarWithoutTitle = Template.bind({})
 AvatarWithoutTitle.args = {
   orgImageSrc: "/BFD.png",
-  stanceTitle: "endorse"
+  position: "endorse"
 }
 
 export const EndorsedAvatar = Template.bind({})
 EndorsedAvatar.args = {
   name: "Boston Fire Department Union",
   orgImageSrc: "/BFD.png",
-  stanceTitle: "endorse"
+  position: "endorse"
 }
 
 export const RejectedAvatar = Template.bind({})
 RejectedAvatar.args = {
   name: "Parents Defending Education",
   orgImageSrc: "/PDE.png",
-  stanceTitle: "reject"
+  position: "neutral"
 }
 
 export const NeutralAvatar = Template.bind({})
 NeutralAvatar.args = {
   name: "Moms for Liberty",
   orgImageSrc: "/MFL.png",
-  stanceTitle: "neutral"
+  position: "neutral"
 }

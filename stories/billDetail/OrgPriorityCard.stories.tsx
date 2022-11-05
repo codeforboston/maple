@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { OrgPriorityCard } from "./OrgPriorityCard"
+import { OrgItem, OrgPriorityCard } from "./OrgPriorityCard"
 
 export default createMeta({
   title: "Bill Detail/OrgPriorityCard",
@@ -13,81 +13,81 @@ const Template: ComponentStory<typeof OrgPriorityCard> = args => (
   <OrgPriorityCard {...args} />
 )
 
-const orgs2 = [
+const orgs2: OrgItem[] = [
   {
     id: "qewhtfb001",
     name: "Moms for Liberty",
     orgImageSrc: "/MFL.png",
-    stanceTitle: "neutral"
+    position: "neutral"
   },
   {
     id: "qewhtfb002",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   },
   {
     id: "qewhtfb003",
     name: "Parents Defending Education",
     orgImageSrc: "/PDE.png",
-    stanceTitle: "reject"
+    position: "oppose"
   },
   {
     id: "qewhtfb004",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   }
 ]
 
-const orgs3 = [
+const orgs3: OrgItem[] = [
   {
     id: "qewhtfb001",
     name: "Moms for Liberty",
     orgImageSrc: "/MFL.png",
-    stanceTitle: "neutral"
+    position: "neutral"
   },
   {
     id: "qewhtfb002",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   },
   {
     id: "qewhtfb003",
     name: "Parents Defending Education",
     orgImageSrc: "/PDE.png",
-    stanceTitle: "reject"
+    position: "oppose"
   },
   {
     id: "qewhtfb004",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   },
   {
     id: "qewhtfb005",
     name: "Moms for Liberty",
     orgImageSrc: "/MFL.png",
-    stanceTitle: "neutral"
+    position: "neutral"
   },
   {
     id: "qewhtfb006",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   },
   {
     id: "qewhtfb007",
     name: "Parents Defending Education",
     orgImageSrc: "/PDE.png",
-    stanceTitle: "reject"
+    position: "oppose"
   },
   {
     id: "qewhtfb008",
     name: "Boston Fire Department Union",
     orgImageSrc: "/BFD.png",
-    stanceTitle: "endorse"
+    position: "endorse"
   }
 ]
 

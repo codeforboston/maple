@@ -1,12 +1,19 @@
 import { Card, SeeMore } from "components/Card"
+import { Position } from "components/db"
 import { Key, useState } from "react"
 import { OrgAvatar } from "stories/components/OrgAvatar"
 import styled from "styled-components"
 
+export interface OrgItem {
+  id: Key | null | undefined
+  name: string
+  orgImageSrc: string
+  position: Position
+}
 interface OrgProps {
   header: string
   subheader: string
-  orgs?: any
+  orgs?: Array<OrgItem>
 }
 const Wrapper = styled.div`
   width: 635px;
@@ -22,16 +29,10 @@ const Wrapper = styled.div`
     border-top: 2px solid var(--bs-gray-700);
   }
 `
-interface OrgItem {
-  id: Key | null | undefined
-  name: string
-  orgImageSrc: string
-  stanceTitle: string
-}
 
 export const OrgPriorityCard = (props: OrgProps) => {
   const [orgsToDisplay, setOrgsToDisplay] = useState<OrgItem[] | undefined>(
-    props.orgs?.slice(0, 3)
+    props.orgs?.slice(0, 4)
   )
 
   const handleSeeMoreClick = (event: string): void => {
@@ -39,7 +40,7 @@ export const OrgPriorityCard = (props: OrgProps) => {
       setOrgsToDisplay(props.orgs)
       return
     }
-    setOrgsToDisplay(props.orgs?.slice(0, 3))
+    setOrgsToDisplay(props.orgs?.slice(0, 4))
   }
   return (
     <Wrapper>
@@ -49,23 +50,16 @@ export const OrgPriorityCard = (props: OrgProps) => {
         bodyText={
           <>
             <div className="cardBody">
-              {props.orgs.map(
-                (org: {
-                  id: Key | null | undefined
-                  name: string
-                  orgImageSrc: string
-                  stanceTitle: string
-                }) => {
-                  return (
-                    <OrgAvatar
-                      key={org.id}
-                      name={org.name}
-                      orgImageSrc={org.orgImageSrc}
-                      stanceTitle={org.stanceTitle}
-                    />
-                  )
-                }
-              )}
+              {orgsToDisplay?.map(org => {
+                return (
+                  <OrgAvatar
+                    key={org.id}
+                    name={org.name}
+                    orgImageSrc={org.orgImageSrc}
+                    position={org.position}
+                  />
+                )
+              })}
             </div>
             <hr className="solid" />{" "}
             {props.orgs?.length && props.orgs?.length > 4 && (
