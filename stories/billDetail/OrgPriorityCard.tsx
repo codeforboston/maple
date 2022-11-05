@@ -3,6 +3,8 @@ import { Position } from "components/db"
 import { Key, useState } from "react"
 import { OrgAvatar } from "stories/components/OrgAvatar"
 import styled from "styled-components"
+import { FC } from "react"
+import { chunk } from "lodash"
 
 export interface OrgItem {
   id: Key | null | undefined
@@ -20,54 +22,44 @@ const Wrapper = styled.div`
   display: grid;
 
   .cardBody {
-    flex-wrap: wrap;
     display: flex;
     justify-content: flex-start;
-    padding: 0rem;
+    overflow-x: auto;
   }
+
   .solid {
     border-top: 2px solid var(--bs-gray-700);
     padding: 0rem;
   }
 `
 
-export const OrgPriorityCard = (props: OrgProps) => {
-  const [orgsToDisplay, setOrgsToDisplay] = useState<OrgItem[] | undefined>(
-    props.orgs?.slice(0, 4)
+const OrgRow: FC<{ orgs: OrgItem[] }> = ({ orgs }) => {
+  return (
+    <div className="cardBody m-2">
+      {orgs?.map(org => {
+        return (
+          <OrgAvatar
+            key={org.id}
+            name={org.name}
+            orgImageSrc={org.orgImageSrc}
+            position={org.position}
+          />
+        )
+      })}
+    </div>
   )
+}
 
-  const handleSeeMoreClick = (event: string): void => {
-    if (event === "SEE_MORE") {
-      setOrgsToDisplay(props.orgs)
-      return
-    }
-    setOrgsToDisplay(props.orgs?.slice(0, 4))
-  }
+export const OrgPriorityCard: FC<OrgProps> = props => {
   return (
     <Wrapper>
       <Card
         header={props.header}
         subheader={props.subheader}
-        bodyText={
-          <>
-            <div className="cardBody">
-              {orgsToDisplay?.map(org => {
-                return (
-                  <OrgAvatar
-                    key={org.id}
-                    name={org.name}
-                    orgImageSrc={org.orgImageSrc}
-                    position={org.position}
-                  />
-                )
-              })}
-            </div>
-            <hr className="solid" />{" "}
-            {props.orgs?.length && props.orgs?.length > 4 && (
-              <SeeMore onClick={handleSeeMoreClick} />
-            )}
-          </>
-        }
+        initialRowCount={1}
+        items={chunk(props.orgs, 4).map((orgsForRow, key) => (
+          <OrgRow key={key} orgs={orgsForRow} />
+        ))}
       />
     </Wrapper>
   )

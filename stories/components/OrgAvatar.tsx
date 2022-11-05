@@ -28,7 +28,6 @@ const ImageContainer = styled.div`
 
 const OrgAvatarContainer = styled.div`
   width: 124px;
-  height: 133px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,14 +67,14 @@ export const positionObj = [
 ]
 
 export const OrgAvatar: FC<Props> = ({ orgImageSrc, name, position }) => {
-  const pos = positionObj.find(pos => pos.position === position)
+  const pos = positionObj.find(pos => pos.position === position)!
 
   return (
     <>
       <OrgAvatarContainer>
-        <ImageContainer style={{ borderColor: pos?.shade }}>
+        <ImageContainer style={{ borderColor: pos.shade }}>
           <img className="orgLogo" src={orgImageSrc} alt={name} />
-          <img className="stanceIcon" src={pos?.svg} alt={pos?.position} />
+          <img className="stanceIcon" src={pos.svg} alt={pos.position} />
         </ImageContainer>
         <p>{name}</p>
       </OrgAvatarContainer>

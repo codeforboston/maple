@@ -19,6 +19,7 @@ interface CardProps {
   cardItems?: CardItem[] | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
+  initialRowCount?: number
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -30,7 +31,8 @@ export const Card = (CardProps: CardProps) => {
     timestamp,
     cardItems,
     items,
-    headerElement
+    headerElement,
+    initialRowCount = 3
   } = CardProps
 
   const headerContent = header ? (
@@ -63,7 +65,7 @@ export const Card = (CardProps: CardProps) => {
         />
       ))
     : items ?? []
-  const shown = showAll ? allItems : allItems.slice(0, 3)
+  const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
     <CardBootstrap className={styles.container}>
@@ -76,7 +78,9 @@ export const Card = (CardProps: CardProps) => {
           </CardBootstrap.Text>
         </CardBootstrap.Body>
       )}
-      {allItems.length > 3 && <SeeMore onClick={handleSeeMoreClick} />}
+      {allItems.length > initialRowCount && (
+        <SeeMore onClick={handleSeeMoreClick} />
+      )}
     </CardBootstrap>
   )
 }

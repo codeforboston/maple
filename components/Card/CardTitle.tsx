@@ -14,7 +14,7 @@ export const CardTitle = (props: CardTitleProps) => {
     <CardBootstrap.Body className={`${styles.text} ${styles.body}`}>
       {imgSrc && <CardBootstrap.Img className={styles.img} src={imgSrc} />}
 
-      <CardBootstrap.Body>
+      <div>
         {header && (
           <CardBootstrap.Title className={styles.title}>
             {header}
@@ -30,7 +30,7 @@ export const CardTitle = (props: CardTitleProps) => {
             {timestamp}
           </CardBootstrap.Text>
         )}
-      </CardBootstrap.Body>
+      </div>
     </CardBootstrap.Body>
   )
 }
