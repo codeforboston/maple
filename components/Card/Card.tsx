@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import styles from "./Card.module.css"
 import { CardListItems } from "./CardListItem"
@@ -14,7 +14,7 @@ interface CardProps {
   header: string | undefined
   imgSrc?: string | undefined
   subheader?: string | undefined
-  bodyText?: string | undefined
+  bodyText?: string | undefined | ReactElement
   timestamp?: string | undefined
   cardItems?: CardItem[] | undefined
 }

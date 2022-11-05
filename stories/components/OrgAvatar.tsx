@@ -1,10 +1,12 @@
 import { FC } from "react"
 import styled from "styled-components"
+import { Position } from "components/db"
+import { Literal } from "runtypes/lib/types/literal"
 
 const ImageContainer = styled.div`
   width: 87px;
   height: 87px;
-  border: 2.5px solid var(--bs-green); //dependant on the stance
+  border-width: 2.5px solid var(--bs-green);
   border-radius: 50%;
   position: relative;
 
@@ -31,12 +33,12 @@ const OrgAvatarContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0px;
 
   p {
     font-size: 12px;
     text-align: center;
     letter-spacing: 0.03em;
+    line-height: 1rem;
     margin-top: 0.5rem;
   }
 `
@@ -44,42 +46,36 @@ const OrgAvatarContainer = styled.div`
 interface Props {
   name: string
   orgImageSrc: string
-  stanceTitle: string
+  position: Position
 }
 
-export const stance = [
+export const positionObj = [
   {
-    title: "endorse",
-    svg: "/Thumbs up.svg",
+    position: "endorse",
+    svg: "/thumbs-up2.svg",
     shade: "var(--bs-green)"
   },
   {
-    title: "neutral",
+    position: "neutral",
     svg: "/Neutral-icon.svg",
     shade: "var(--bs-dark-blue)"
   },
   {
-    title: "reject",
+    position: "oppose",
     svg: "/Thumbs-down.svg",
     shade: "var(--bs-orange)"
   }
 ]
 
-export const OrgAvatar: FC<Props> = ({ orgImageSrc, name, stanceTitle }) => {
-  type ItemStance = {
-    title?: string
-    svg?: string
-    shade?: string
-    [key: string]: any
-  }
-  const obj: ItemStance = stance.filter(stand => stand.title === stanceTitle)
-  console.log(obj)
+export const OrgAvatar: FC<Props> = ({ orgImageSrc, name, position }) => {
+  const pos = positionObj.find(pos => pos.position === position)
+
   return (
     <>
       <OrgAvatarContainer>
-        <ImageContainer style={{ borderColor: obj[0].shade }}>
+        <ImageContainer style={{ borderColor: pos?.shade }}>
           <img className="orgLogo" src={orgImageSrc} alt={name} />
-          <img className="stanceIcon" src={obj[0].svg} alt={obj[0].title} />
+          <img className="stanceIcon" src={pos?.svg} alt={pos?.position} />
         </ImageContainer>
         <p>{name}</p>
       </OrgAvatarContainer>
