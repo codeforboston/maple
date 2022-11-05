@@ -5,7 +5,7 @@ import { Position } from "components/db"
 const ImageContainer = styled.div`
   width: 87px;
   height: 87px;
-  border: 2.5px solid var(--bs-green);
+  border: 2.5px solid;
   border-radius: 50%;
   position: relative;
 
@@ -34,6 +34,7 @@ const OrgAvatarContainer = styled.div`
   align-items: center;
 
   p {
+    font-family: "Nunito";
     font-size: 12px;
     text-align: center;
     letter-spacing: 0.03em;

@@ -82,12 +82,6 @@ const orgs3: OrgItem[] = [
     name: "Parents Defending Education",
     orgImageSrc: "/PDE.png",
     position: "oppose"
-  },
-  {
-    id: "qewhtfb008",
-    name: "Boston Fire Department Union",
-    orgImageSrc: "/BFD.png",
-    position: "endorse"
   }
 ]
 

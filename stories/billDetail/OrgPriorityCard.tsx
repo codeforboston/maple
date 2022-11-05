@@ -16,17 +16,18 @@ interface OrgProps {
   orgs?: Array<OrgItem>
 }
 const Wrapper = styled.div`
-  width: 635px;
+  width: fit-content;
   display: grid;
 
   .cardBody {
     flex-wrap: wrap;
     display: flex;
-    justify-content: space-around;
-    align-content: space-around;
+    justify-content: flex-start;
+    padding: 0rem;
   }
   .solid {
     border-top: 2px solid var(--bs-gray-700);
+    padding: 0rem;
   }
 `
 
