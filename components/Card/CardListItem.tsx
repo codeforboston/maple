@@ -7,7 +7,7 @@ import styles from "./CardListItem.module.css"
 type ListItemProps = {
   billName: string
   billDescription?: string
-  Element: ReactElement
+  Element: ReactElement | undefined
 } & ListGroupItemProps
 
 export const ListItem = (props: ListItemProps) => {
