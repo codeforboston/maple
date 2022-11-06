@@ -23,10 +23,13 @@ export const HotBillCard = (props: {
         key={bill.billNumber}
         billName={bill.billNumber}
         billDescription={bill.title}
-        endorseCount={bill.endorseCount}
-        opposeCount={bill.opposeCount}
-        neutralCount={bill.neutralCount}
-        object={Positions}
+        Element={
+          <Positions
+            endorseCount={bill.endorseCount}
+            opposeCount={bill.opposeCount}
+            neutralCount={bill.neutralCount}
+          />
+        }
       />
     )
   })

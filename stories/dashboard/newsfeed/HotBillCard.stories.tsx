@@ -14,15 +14,6 @@ export default createMeta({
 })
 
 const Template: ComponentStory<typeof HotBillCard> = props => {
-  const [selectedBillId, setSelectedBillId] = useState("")
-
-  const onBillSelected = (billNumber: string) => {
-    console.log("onBillSelected", billNumber)
-    setSelectedBillId(billNumber)
-  }
-
-  props.selectedBillId = selectedBillId
-
   return <HotBillCard {...props} />
 }
 
