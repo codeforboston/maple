@@ -14,12 +14,7 @@ export const Positions = (props: {
       <PositionStyle>
         <p className="stanceTitle">Endorse</p>
         <div>
-          <Image
-            className="svg"
-            alt=""
-            src="Thumbs Up.svg"
-            style={{ fill: "#AB7C94" }}
-          />
+          <Image className="svg" alt="" src="Thumbs Up.svg" />
           <p>{props.endorseCount}</p>
         </div>
       </PositionStyle>
@@ -43,10 +38,14 @@ export const Positions = (props: {
 
 const PositionsStyle = styled.div`
   display: flex;
-  margin-right: 15%;
+  margin-right: 5%;
 
   font-family: "Nunito";
   font-style: normal;
+
+  @media (max-width: 1250px) {
+    margin-right: 10%;
+  }
 `
 const PositionStyle = styled.div`
   display: flex;

@@ -31,31 +31,36 @@ Primary.args = {
       id: "123",
       billNumber: "hc.508",
       title:
-        "An Act that goes by no other name but... I forget. But it was good"
+        "An Act that goes by no other name but... I forget. But it was good",
+      stance: "endorse"
     },
     {
       id: "456",
       billNumber: "hc.411",
       title:
-        "An Act that goes by no other name but... I forget. But it was good"
+        "An Act that goes by no other name but... I forget. But it was good",
+      stance: "oppose"
     },
     {
       id: "789",
       billNumber: "hc.999",
       title:
-        "An Act that goes by no other name but... I forget. But it was good"
+        "An Act that goes by no other name but... I forget. But it was good",
+      stance: "neutral"
     },
     {
       id: "012",
       billNumber: "hc.911",
       title:
-        "An Act that goes by no other name but... I forget. But it was good"
+        "An Act that goes by no other name but... I forget. But it was good",
+      stance: "oppose"
     },
     {
       id: "345",
       billNumber: "hc.888",
       title:
-        "An Act that goes by no other name but... I forget. But it was good"
+        "An Act that goes by no other name but... I forget. But it was good",
+      stance: "endorse"
     }
   ],
   session: "123"

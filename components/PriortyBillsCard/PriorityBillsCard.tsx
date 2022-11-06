@@ -2,6 +2,7 @@ import { CardTitle, ListItem } from "components/Card"
 import { Card as MapleCard } from "../Card/Card"
 import Styles from "./PriorityBillsCard.module.css"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 
 type bill = {
   id: string
@@ -52,5 +53,15 @@ const Position = (stance: string) => {
     default:
       stanceSVG = "Thumbs Neut.svg"
   }
-  return <Image className="svg" alt="" src={stanceSVG} />
+  return (
+    <SvgStyle>
+      <Image className="svg" alt="" src={stanceSVG} />
+    </SvgStyle>
+  )
 }
+
+const SvgStyle = styled.div`
+  position: absolute;
+  left: 7%;
+  top: 15%;
+`
