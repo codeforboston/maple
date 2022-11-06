@@ -12,7 +12,7 @@ export const Positions = (props: {
   return (
     <PositionsStyle>
       <PositionStyle>
-        <p>Endorse</p>
+        <p className="stanceTitle">Endorse</p>
         <div>
           <Image
             className="svg"
@@ -24,14 +24,14 @@ export const Positions = (props: {
         </div>
       </PositionStyle>
       <PositionStyle>
-        <p>Neutral</p>
+        <p className="stanceTitle">Neutral</p>
         <div>
           <Image className="svg" alt="" src="Thumbs Neut.svg" />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
-        <p>Oppose</p>
+        <p className="stanceTitle">Oppose</p>
         <div>
           <Image className="svg" alt="" src="Thumbs Down.svg" />
           <p>{props.opposeCount}</p>
@@ -44,6 +44,9 @@ export const Positions = (props: {
 const PositionsStyle = styled.div`
   display: flex;
   margin-right: 15%;
+
+  font-family: "Nunito";
+  font-style: normal;
 `
 const PositionStyle = styled.div`
   display: flex;
@@ -51,6 +54,9 @@ const PositionStyle = styled.div`
   align-items: center;
   margin-left: 10%;
   margin-bottom: 0;
+  .stanceTitle {
+    color: #8999d6;
+  }
   p {
     margin: 0;
   }
