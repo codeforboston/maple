@@ -1,11 +1,13 @@
 import { CardTitle, ListItem } from "components/Card"
 import { Card as MapleCard } from "../Card/Card"
 import Styles from "./PriorityBillsCard.module.css"
+import Image from "react-bootstrap/Image"
 
 type bill = {
   id: string
   billNumber: string
   title: string
+  stance: string
 }
 
 export const PriorityBillsCard = (props: {
@@ -26,6 +28,7 @@ export const PriorityBillsCard = (props: {
         key={bill.billNumber}
         billName={bill.billNumber}
         billDescription={bill.title}
+        Element={Position(bill.stance)}
       />
     )
   })
@@ -35,4 +38,19 @@ export const PriorityBillsCard = (props: {
   )
 
   return <MapleCard items={items} headerElement={header} />
+}
+
+const Position = (stance: string) => {
+  var stanceSVG
+  switch (stance) {
+    case "endorse":
+      stanceSVG = "Thumbs Up.svg"
+      break
+    case "oppose":
+      stanceSVG = "Thumbs Down.svg"
+      break
+    default:
+      stanceSVG = "Thumbs Neut.svg"
+  }
+  return <Image className="svg" alt="" src={stanceSVG} />
 }
