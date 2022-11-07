@@ -8,7 +8,7 @@ import { SeeMore } from "./SeeMore"
 interface CardItem {
   billName: string
   billDescription: string
-  element: ReactElement | undefined
+  element?: ReactElement | undefined
 }
 
 interface CardProps {

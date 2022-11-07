@@ -77,14 +77,12 @@ HeaderAndSubheaderAndBodyAndTwoListItems.args = {
     {
       billName: "H.3340",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3342",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     }
   ]
 }
@@ -99,38 +97,32 @@ HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args = {
     {
       billName: "H.3340",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3342",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3340",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3342",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3340",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     },
     {
       billName: "H.3342",
       billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: undefined
+        "An Act creating a green bank to promote clean energy in Massachusetts"
     }
   ]
 }
