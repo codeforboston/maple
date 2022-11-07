@@ -8,6 +8,7 @@ import { SeeMore } from "./SeeMore"
 interface CardItem {
   billName: string
   billDescription: string
+  element: ReactElement | undefined
 }
 
 interface CardProps {
@@ -55,11 +56,12 @@ export const Card = (CardProps: CardProps) => {
   }
 
   const allItems = cardItems
-    ? cardItems?.map(({ billName, billDescription }) => (
+    ? cardItems?.map(({ billName, billDescription, element }) => (
         <ListItem
           key={billName}
           billName={billName}
           billDescription={billDescription}
+          element={element}
         />
       ))
     : items ?? []

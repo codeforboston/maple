@@ -29,7 +29,7 @@ export const PriorityBillsCard = (props: {
         key={bill.billNumber}
         billName={bill.billNumber}
         billDescription={bill.title}
-        Element={Position(bill.stance)}
+        element={Position(bill.stance)}
       />
     )
   })

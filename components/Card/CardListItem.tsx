@@ -7,11 +7,11 @@ import styles from "./CardListItem.module.css"
 type ListItemProps = {
   billName: string
   billDescription?: string
-  Element: ReactElement | undefined
+  element: ReactElement | undefined
 } & ListGroupItemProps
 
 export const ListItem = (props: ListItemProps) => {
-  const { billName, billDescription, className, Element, ...rest } = props
+  const { billName, billDescription, className, ...rest } = props
   return (
     <ListGroup.Item className={clsx(styles.item, className)} {...rest}>
       <div className="ms-2 me-auto">
@@ -22,7 +22,7 @@ export const ListItem = (props: ListItemProps) => {
           </span>
         )}
       </div>
-      {Element}
+      {props.element && props.element}
     </ListGroup.Item>
   )
 }
