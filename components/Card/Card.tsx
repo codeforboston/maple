@@ -16,6 +16,7 @@ interface CardProps {
   imgSrc?: string | undefined
   subheader?: string | undefined
   bodyText?: string | undefined
+  bodyImage?: string | undefined
   timestamp?: string | undefined
   cardItems?: CardItem[] | undefined
   items?: ReactElement[]
@@ -28,6 +29,7 @@ export const Card = (CardProps: CardProps) => {
     imgSrc,
     subheader,
     bodyText,
+    bodyImage,
     timestamp,
     cardItems,
     items,
@@ -73,6 +75,7 @@ export const Card = (CardProps: CardProps) => {
       {<CardListItems items={shown} />}
       {bodyText && (
         <CardBootstrap.Body>
+          {bodyImage && <img src={bodyImage} alt="" />}
           <CardBootstrap.Text className={styles.body}>
             {bodyText}
           </CardBootstrap.Text>
