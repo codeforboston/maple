@@ -75,7 +75,16 @@ export const Card = (CardProps: CardProps) => {
       {<CardListItems items={shown} />}
       {bodyText && (
         <CardBootstrap.Body>
-          {bodyImage && <img src={bodyImage} alt="" />}
+          {bodyImage && (
+            <img
+              src={bodyImage}
+              alt=""
+              style={{
+                width: "110%",
+                margin: "-1.1rem -1rem 0 -1rem"
+              }}
+            />
+          )}
           <CardBootstrap.Text className={styles.body}>
             {bodyText}
           </CardBootstrap.Text>

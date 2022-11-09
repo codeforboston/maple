@@ -68,6 +68,19 @@ HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   bodyText: "This is body text and it's nonsense placeholder and filler"
 }
 
+export const HeaderAndSubheaderAndTimestampAndImgAndBodyAnBOdyImage =
+  Template.bind({})
+HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
+  header: "Header",
+  subheader: "Subheader",
+  timestamp: "3:29PM",
+  imgSrc:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
+  bodyText: "This is body text and it's nonsense placeholder and filler",
+  bodyImage:
+    "https://images.unsplash.com/photo-1625980344922-a4df108b2bd0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YmlsbHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
+}
+
 export const HeaderAndSubheaderAndBodyAndTwoListItems = Template.bind({})
 HeaderAndSubheaderAndBodyAndTwoListItems.args = {
   header: "Header",
