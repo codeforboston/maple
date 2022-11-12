@@ -1,6 +1,6 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./ForOrgsCardContent.module.css"
+import styles from "./ForTestifiersCardContent.module.css"
 import { SignInWithModal } from "../auth"
 import Link from "next/link"
 

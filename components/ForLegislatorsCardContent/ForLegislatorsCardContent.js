@@ -1,6 +1,6 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./ForOrgsCardContent.module.css"
+import styles from "./ForLegislatorsCardContent.module.css"
 import { SignInWithModal } from "../auth"
 import Link from "next/link"
 
@@ -104,7 +104,7 @@ const BenefitsCardContent = () => (
     <Row className="mb-3">
       <Col>
         <p>
-          MAPLE is fast. (Really fast.) Try
+          MAPLE is fast. (Really fast.) Try{" "}
           <Link href="/bills">
             <a>searching for a bill</a>
           </Link>{" "}
