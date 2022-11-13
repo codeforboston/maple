@@ -56,11 +56,9 @@ const ChallengeCardContent = () => (
       minutes.
     </p>
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">
-      {!authenticated && (
-        <div className={styles.btncontainer}>
-          <SignInWithModal label="Click here to sign up for your MAPLE account" />
-        </div>
-      )}
+      <div className={styles.btncontainer}>
+        <SignInWithModal label="Click here to sign up for your MAPLE account" />
+      </div>
     </h3>
     <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
       <a href="mailto:mapletestimony@gmail.com">
