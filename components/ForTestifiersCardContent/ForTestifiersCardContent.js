@@ -39,7 +39,7 @@ const BenefitsCardContent = () => (
     </Row>
 
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
-      Learn about all sides of an issue
+      Hear from multiples sides and perspectives
     </h3>
     <Row className="mb-3">
       <Col>

@@ -17,6 +17,13 @@ const WhyMAPLECardContent = () => (
       advanced featurs let you filter to bills sponsored by your office, bills
       concerning your city, or bills that you choose to follow.
     </p>
+    <p>
+      Why trust MAPLE? We are a nonpartisan, nonprofit, volunteer-developed
+      civic technology initiative focused on increasing engagement between the
+      legislature and its constituents. We offer our product as an open source
+      public good; we are committed not to charging our users and we will never
+      sell the data from our platform.
+    </p>
   </>
 )
 
@@ -27,7 +34,54 @@ const BenefitsCardContent = () => (
     </h3>
     <Row className="mb-3">
       <Col>
-        <p>Lorem Ipsum.</p>
+        <p>
+          When you visit any bill page on MAPLE, you can see every piece of
+          testimony submitted by MAPLE users along with their district
+          information. You can easily seek out your own constiuents&apos;
+          testimony and see how opinions vary across the Commonwealth.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      See testimony on all bills before all committees in one place
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          MAPLE makes it easy for users to submit testimony on any bill, before
+          any committee, Anyone can see testimony on a bill as soon as it is
+          submitted.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Simplify the testimony process for your constituents
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          Do your constituents need assistance finding the right committee, the
+          right chairperson, and the right email address to submit their
+          testimony on a bill? Send them to MAPLE! Our platform makes it easy
+          for anyone to direct their testimony to the right committee
+          chairpersons as well as to their own constituents.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Get access to advanced bill &amp; testimony statistics
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          Go beyond the text of written testimony. MAPLE&apos;s bill pages show
+          you how many people support and oppose legislation, how that opinion
+          has changed over time, how many people have submitted testimony, and
+          how interest and support is distributed across the state.
+        </p>
       </Col>
     </Row>
   </>
