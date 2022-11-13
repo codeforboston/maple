@@ -24,18 +24,57 @@ const WhyMAPLECardContent = () => (
 const BenefitsCardContent = () => (
   <>
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
-      Help your priorities &amp; positions reach a wider audience
+      Weigh in on the issues that matter to you
     </h3>
     <Row className="mb-3">
       <Col>
         <p>
-          Your organization&apos;s testimony will be highlighted to MAPLE
-          visitors when they look up bills, with easy tools for sharing on
-          social media. Testimony published on MAPLE will be seen by
-          legislators, residents, members of the media, and other stakeholders.
-          The more organizations share their testimony on the platform, the more
-          people will see it. You can even designate bills as your legislative
-          priorities to signal your focus for each session.{" "}
+          Before the Massachusetts state legislature can pass a bill, they
+          convene three committees to hear public testimony on the policy
+          changes that bill proposes. Don&apos;t miss out on the chance to make
+          your perspective heard; submit your testimony to use your voice to
+          shape public policy for our Commonwealth.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Learn about all sides of an issue
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          As a non-partisan platform, all stakeholders can use MAPLE to share
+          their perspective on issues and bills. See what others are saying to
+          get more informed about the most important public policy issues of the
+          day.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      See what the organizations you trust are saying
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          Organizations use MAPLE to share their priorities and positions with
+          the world. Look for testimony from the groups you belong to and trust
+          on MAPLE to help you learn about the issues that matter to you.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Find out what&apos;s happening on the issues you care about
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          The legislative process on any bill or policy issue can be long and
+          complicated. Use MAPLE to get easy access to up-to-date,
+          contextualized information on the status, debate, and next steps for
+          every bill before the legislature.
         </p>
       </Col>
     </Row>
