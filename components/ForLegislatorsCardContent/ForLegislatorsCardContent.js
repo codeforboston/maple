@@ -7,7 +7,7 @@ import Link from "next/link"
 const WhyMAPLECardContent = () => (
   <>
     <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
-      MAPLE is a free, nonpartisan, nonprofit platform that makes it easier for
+      MAPLE is a free, nonpartisan, nonprofit platform that makes it easy for
       legislative offices to see what constituents from around the Commonwealth
       are saying about bills sitting in any Committee.
     </h3>
