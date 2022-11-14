@@ -72,6 +72,25 @@ const BenefitsCardContent = () => (
     </Row>
 
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Extend access to constituents who speak any language
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          MAPLE uses machine translation to make the legislative process more
+          accessible to non-native English speakers. Both our website content
+          and the testimonies we post can be automatically translated to any
+          language on demand, meaning that non-English speakers can write
+          testimony in the language in which they are most comfortable and
+          legislative offices can click a button to translate it to English.
+          While machine translation is not perfect, it offers a big step forward
+          in language accessibility for constituents who do not have access to
+          expert translation.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Get access to advanced bill &amp; testimony statistics
     </h3>
     <Row className="mb-3">

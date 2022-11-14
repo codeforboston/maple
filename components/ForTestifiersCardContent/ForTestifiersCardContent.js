@@ -66,6 +66,23 @@ const BenefitsCardContent = () => (
     </Row>
 
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Read and write testimony in any language
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          Both our website content and the testimonies we post can be
+          automatically translated to any language on demand, so non-English
+          speakers can write testimony in any language and legislators can click
+          a button to automatically translate it to English. While machine
+          translation is not perfect, it offers a big step forward in language
+          accessibility for testifiers who do not have access to expert
+          translation.
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
       Find out what&apos;s happening on the issues you care about
     </h3>
     <Row className="mb-3">
