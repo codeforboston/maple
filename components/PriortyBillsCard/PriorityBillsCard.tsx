@@ -16,6 +16,7 @@ export const PriorityBillsCard = (props: {
   selectedBillId: string
   session: string
   onClick: (billNumber: string) => void
+  editBtn: boolean
 }) => {
   const items = props.bills?.map((bill, index) => {
     let style = Styles.billSlot
@@ -42,7 +43,13 @@ export const PriorityBillsCard = (props: {
     )
   })
 
-  const header = (
+  const header = props.editBtn ? (
+    <CardTitle
+      header="Priority Bills"
+      subheader={`Session ${props.session}`}
+      inHeaderElement={EditButton()}
+    />
+  ) : (
     <CardTitle header="Priority Bills" subheader={`Session ${props.session}`} />
   )
 
@@ -68,7 +75,30 @@ const Position = (stance: string) => {
   )
 }
 
+const EditButton = () => {
+  return (
+    <EditBtnStyle onClick={() => console.log("edit")}>
+      <p className="editTitle">edit</p>
+      <SvgStyle>
+        <Image className="svg" alt="" src="edit-testimony.svg" />
+      </SvgStyle>
+    </EditBtnStyle>
+  )
+}
+
 const SvgStyle = styled.div`
   display: inline;
   align-self: ;
+`
+
+const EditBtnStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .editTitle {
+    color: #8999d6;
+  }
+  p {
+    margin: 0;
+  }
 `
