@@ -48,6 +48,15 @@ HeaderAndSubheaderAndTimestamp.args = {
   subheader: "Subheader",
   timestamp: "3:29PM"
 }
+export const HeaderAndSubheaderAndTimestampAndInHeaderElement = Template.bind(
+  {}
+)
+HeaderAndSubheaderAndTimestamp.args = {
+  header: "Header",
+  subheader: "Subheader",
+  timestamp: "3:29PM",
+  inHeaderElement: <>button here</>
+}
 
 export const HeaderAndSubheaderAndTimestampAndImg = Template.bind({})
 HeaderAndSubheaderAndTimestampAndImg.args = {
@@ -68,7 +77,7 @@ HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   bodyText: "This is body text and it's nonsense placeholder and filler"
 }
 
-export const HeaderAndSubheaderAndTimestampAndImgAndBodyAnBOdyImage =
+export const HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage =
   Template.bind({})
 HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   header: "Header",

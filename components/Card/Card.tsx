@@ -19,6 +19,7 @@ interface CardProps {
   bodyImage?: string | undefined
   timestamp?: string | undefined
   cardItems?: CardItem[] | undefined
+  inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
 }
@@ -33,6 +34,7 @@ export const Card = (CardProps: CardProps) => {
     timestamp,
     cardItems,
     items,
+    inHeaderElement,
     headerElement
   } = CardProps
 
@@ -42,6 +44,7 @@ export const Card = (CardProps: CardProps) => {
       subheader={subheader}
       timestamp={timestamp}
       imgSrc={imgSrc}
+      inHeaderElement={inHeaderElement}
     />
   ) : headerElement ? (
     headerElement
