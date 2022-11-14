@@ -8,7 +8,7 @@ type bill = {
   id: string
   billNumber: string
   title: string
-  stance: string
+  stance?: string
 }
 
 export const PriorityBillsCard = (props: {
@@ -17,18 +17,26 @@ export const PriorityBillsCard = (props: {
   session: string
   onClick: (billNumber: string) => void
 }) => {
-  const items = props.bills.map((bill, index) => {
+  const items = props.bills?.map((bill, index) => {
     let style = Styles.billSlot
     if (bill.billNumber === props.selectedBillId) {
       style = Styles.billSelected
     }
-    return (
+    return bill.stance ? (
       <ListItem
         className={style}
         onClick={() => props.onClick(bill.billNumber)}
         key={bill.billNumber}
         billName={bill.billNumber}
         billNameElement={Position(bill.stance)}
+        billDescription={bill.title}
+      />
+    ) : (
+      <ListItem
+        className={style}
+        onClick={() => props.onClick(bill.billNumber)}
+        key={bill.billNumber}
+        billName={bill.billNumber}
         billDescription={bill.title}
       />
     )
@@ -62,5 +70,5 @@ const Position = (stance: string) => {
 
 const SvgStyle = styled.div`
   display: inline;
-  align-self: center;
+  align-self: ;
 `
