@@ -28,8 +28,8 @@ export const PriorityBillsCard = (props: {
         onClick={() => props.onClick(bill.billNumber)}
         key={bill.billNumber}
         billName={bill.billNumber}
+        billNameElement={Position(bill.stance)}
         billDescription={bill.title}
-        element={Position(bill.stance)}
       />
     )
   })
@@ -61,7 +61,6 @@ const Position = (stance: string) => {
 }
 
 const SvgStyle = styled.div`
-  position: absolute;
-  left: 7%;
-  top: 15%;
+  display: inline;
+  align-self: center;
 `
