@@ -60,13 +60,13 @@ const Position = (stance: string) => {
   var stanceSVG
   switch (stance) {
     case "endorse":
-      stanceSVG = "Thumb-endorse.svg"
+      stanceSVG = "/Thumb-endorse.svg"
       break
     case "oppose":
-      stanceSVG = "Thumb-oppose.svg"
+      stanceSVG = "/Thumb-oppose.svg"
       break
     default:
-      stanceSVG = "Thumb-neutral.svg"
+      stanceSVG = "/Thumb-neutral.svg"
   }
   return (
     <SvgStyle>

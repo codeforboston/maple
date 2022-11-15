@@ -97,7 +97,7 @@ HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement.args = {
   timestamp: "3:29PM",
   imgSrc:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  inHeaderElement: <img src="thumbs-endorse.svg" alt="" />
+  inHeaderElement: <img src="/thumbs-endorse.svg" alt="" />
 }
 
 export const HeaderAndSubheaderAndTimestampAndImgAndBody = Template.bind({})
@@ -202,6 +202,6 @@ export const HeaderWithItemsAndItemElementsAndBillNameElement = Template.bind(
 HeaderWithItemsAndItemElementsAndBillNameElement.args = {
   ...HeaderWithItemsAndItemElements.args,
   cardItems: HeaderWithItemsAndItemElements.args.cardItems?.map(item => {
-    return { ...item, billNameElement: <img src="thumbs-endorse.svg" /> }
+    return { ...item, billNameElement: <img src="/thumbs-endorse.svg" /> }
   })
 }
