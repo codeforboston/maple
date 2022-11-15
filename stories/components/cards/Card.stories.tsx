@@ -10,13 +10,6 @@ export default createMeta({
   component: Card
 })
 
-const StorySVG = () => {
-  return (
-    <div>
-      <img src="Thumbs Up.svg" alt="" />
-    </div>
-  )
-}
 const NewBody = () => {
   var misfits = ["Danzig", "Only", "Doyle", "Googy"]
   return (
@@ -104,7 +97,7 @@ HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement.args = {
   timestamp: "3:29PM",
   imgSrc:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  inHeaderElement: <StorySVG />
+  inHeaderElement: <img src="thumbs-endorse.svg" alt="" />
 }
 
 export const HeaderAndSubheaderAndTimestampAndImgAndBody = Template.bind({})
@@ -128,12 +121,7 @@ HeaderAndSubheaderAndTimestampAndImgAndNewBody.args = {
 export const HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage =
   Template.bind({})
 HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  imgSrc:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  bodyText: "This is body text and it's nonsense placeholder and filler",
+  ...HeaderAndSubheaderAndTimestampAndImgAndBody.args,
   bodyImage:
     "https://plus.unsplash.com/premium_photo-1661315458660-6aa08c1ddf38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bGVnaXNsYXRpb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"
 }
@@ -197,100 +185,23 @@ HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args = {
   ]
 }
 
-export const HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElement =
-  Template.bind({})
-HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElement.args = {
-  header: "Header",
-  subheader: "Subheader",
-  bodyText: "This is body text and it's nonsense placeholder and filler",
-  cardItems: [
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    },
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    },
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts",
-      element: <img src="edit-testimony.svg" />
-    }
-  ]
-}
-export const HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElementAndBillNameElement =
-  Template.bind({})
-HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElementAndBillNameElement.args =
-  {
-    header: "Header",
-    subheader: "Subheader",
-    bodyText: "This is body text and it's nonsense placeholder and filler",
-    cardItems: [
-      {
-        billName: "H.3340",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
-      },
-      {
-        billName: "H.3342",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
-      },
-      {
-        billName: "H.3340",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
-      },
-      {
-        billName: "H.3342",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
-      },
-      {
-        billName: "H.3340",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
-      },
-      {
-        billName: "H.3342",
-        billNameElement: <img src="Thumbs Up.svg" />,
-        billDescription:
-          "An Act creating a green bank to promote clean energy in Massachusetts",
-        element: <img src="edit-testimony.svg" />
+export const HeaderWithItemsAndItemElements = Template.bind({})
+HeaderWithItemsAndItemElements.args = {
+  ...HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args,
+  cardItems:
+    HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args.cardItems?.map(
+      item => {
+        return { ...item, element: <img src="edit-testimony.svg" /> }
       }
-    ]
-  }
+    )
+}
+
+export const HeaderWithItemsAndItemElementsAndBillNameElement = Template.bind(
+  {}
+)
+HeaderWithItemsAndItemElementsAndBillNameElement.args = {
+  ...HeaderWithItemsAndItemElements.args,
+  cardItems: HeaderWithItemsAndItemElements.args.cardItems?.map(item => {
+    return { ...item, billNameElement: <img src="thumbs-endorse.svg" /> }
+  })
+}

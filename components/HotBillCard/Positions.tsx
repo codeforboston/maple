@@ -2,7 +2,6 @@ import React from "react"
 import { Container, CardImg } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import ThumbsUp from "../../public/Thumbs Up.svg"
 
 export const Positions = (props: {
   endorseCount: number
@@ -14,21 +13,21 @@ export const Positions = (props: {
       <PositionStyle>
         <p className="stanceTitle">Endorse</p>
         <div>
-          <Image className="svg" alt="" src="Thumbs Up.svg" />
+          <Image className="svg" alt="" src="thumbs-endorse.svg" />
           <p>{props.endorseCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Neutral</p>
         <div>
-          <Image className="svg" alt="" src="Thumbs Neut.svg" />
+          <Image className="svg" alt="" src="thumbs-neutral.svg" />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Oppose</p>
         <div>
-          <Image className="svg" alt="" src="Thumbs Down.svg" />
+          <Image className="svg" alt="" src="thumbs-oppose.svg" />
           <p>{props.opposeCount}</p>
         </div>
       </PositionStyle>
