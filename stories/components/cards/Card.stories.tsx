@@ -1,5 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
+import { string } from "yargs"
 import { Card } from "../../../components/Card"
 
 export default createMeta({
@@ -16,6 +17,22 @@ const StorySVG = () => {
     </div>
   )
 }
+const NewBody = () => {
+  var misfits = ["Danzig", "Only", "Doyle", "Googy"]
+  return (
+    <div>
+      <img
+        src="https://media.istockphoto.com/id/1333237768/photo/spooky-halloween-sky.jpg?b=1&s=170667a&w=0&k=20&c=g2iKCwBRqWDqRmPBpxDmdNSO8MMn9_xFJafafOid4DI="
+        width="100%"
+      ></img>
+      <p>
+        {misfits.map(misfit => {
+          return <span key={misfit}>{misfit} </span>
+        })}
+      </p>
+    </div>
+  )
+}
 
 const Template: ComponentStory<typeof Card> = ({
   header,
@@ -25,6 +42,7 @@ const Template: ComponentStory<typeof Card> = ({
   imgSrc,
   cardItems,
   inHeaderElement,
+  body,
   ...rest
 }) => {
   return (
@@ -36,6 +54,7 @@ const Template: ComponentStory<typeof Card> = ({
       imgSrc={imgSrc}
       cardItems={cardItems}
       inHeaderElement={inHeaderElement}
+      body={body}
       {...rest}
     />
   )
@@ -96,6 +115,14 @@ HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   imgSrc:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
   bodyText: "This is body text and it's nonsense placeholder and filler"
+}
+
+export const HeaderAndSubheaderAndTimestampAndImgAndNewBody = Template.bind({})
+HeaderAndSubheaderAndTimestampAndImgAndNewBody.args = {
+  header: "Header",
+  subheader: "Subheader",
+  timestamp: "3:29PM",
+  body: <NewBody />
 }
 
 export const HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage =
@@ -169,3 +196,101 @@ HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args = {
     }
   ]
 }
+
+export const HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElement =
+  Template.bind({})
+HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElement.args = {
+  header: "Header",
+  subheader: "Subheader",
+  bodyText: "This is body text and it's nonsense placeholder and filler",
+  cardItems: [
+    {
+      billName: "H.3340",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    },
+    {
+      billName: "H.3342",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    },
+    {
+      billName: "H.3340",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    },
+    {
+      billName: "H.3342",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    },
+    {
+      billName: "H.3340",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    },
+    {
+      billName: "H.3342",
+      billDescription:
+        "An Act creating a green bank to promote clean energy in Massachusetts",
+      element: <img src="edit-testimony.svg" />
+    }
+  ]
+}
+export const HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElementAndBillNameElement =
+  Template.bind({})
+HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMoreAndItemElementAndBillNameElement.args =
+  {
+    header: "Header",
+    subheader: "Subheader",
+    bodyText: "This is body text and it's nonsense placeholder and filler",
+    cardItems: [
+      {
+        billName: "H.3340",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      },
+      {
+        billName: "H.3342",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      },
+      {
+        billName: "H.3340",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      },
+      {
+        billName: "H.3342",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      },
+      {
+        billName: "H.3340",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      },
+      {
+        billName: "H.3342",
+        billNameElement: <img src="Thumbs Up.svg" />,
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts",
+        element: <img src="edit-testimony.svg" />
+      }
+    ]
+  }

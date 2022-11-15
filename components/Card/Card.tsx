@@ -7,6 +7,7 @@ import { SeeMore } from "./SeeMore"
 
 interface CardItem {
   billName: string
+  billNameElement?: ReactElement | undefined
   billDescription: string
   element?: ReactElement | undefined
 }
@@ -83,14 +84,17 @@ export const Card = (CardProps: CardProps) => {
   }
 
   const allItems = cardItems
-    ? cardItems?.map(({ billName, billDescription, element }) => (
-        <ListItem
-          key={billName}
-          billName={billName}
-          billDescription={billDescription}
-          element={element}
-        />
-      ))
+    ? cardItems?.map(
+        ({ billName, billDescription, element, billNameElement }) => (
+          <ListItem
+            key={billName}
+            billName={billName}
+            billNameElement={billNameElement}
+            billDescription={billDescription}
+            element={element}
+          />
+        )
+      )
     : items ?? []
   const shown = showAll ? allItems : allItems.slice(0, 3)
 
