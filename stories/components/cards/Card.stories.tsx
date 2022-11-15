@@ -10,7 +10,7 @@ export default createMeta({
   component: Card
 })
 
-const NewBody = () => {
+const CustomBody = () => {
   var misfits = ["Danzig", "Only", "Doyle", "Googy"]
   return (
     <div>
@@ -110,20 +110,14 @@ HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   bodyText: "This is body text and it's nonsense placeholder and filler"
 }
 
-export const HeaderAndSubheaderAndTimestampAndImgAndNewBody = Template.bind({})
-HeaderAndSubheaderAndTimestampAndImgAndNewBody.args = {
+export const HeaderAndSubheaderAndTimestampAndImgAndCustomBody = Template.bind(
+  {}
+)
+HeaderAndSubheaderAndTimestampAndImgAndCustomBody.args = {
   header: "Header",
   subheader: "Subheader",
   timestamp: "3:29PM",
-  body: <NewBody />
-}
-
-export const HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage =
-  Template.bind({})
-HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage.args = {
-  ...HeaderAndSubheaderAndTimestampAndImgAndBody.args,
-  bodyImage:
-    "https://plus.unsplash.com/premium_photo-1661315458660-6aa08c1ddf38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bGVnaXNsYXRpb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"
+  body: <CustomBody />
 }
 
 export const HeaderAndSubheaderAndBodyAndTwoListItems = Template.bind({})
