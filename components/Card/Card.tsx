@@ -22,6 +22,7 @@ interface CardProps {
   inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
+  body?: ReactElement
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -35,7 +36,8 @@ export const Card = (CardProps: CardProps) => {
     cardItems,
     items,
     inHeaderElement,
-    headerElement
+    headerElement,
+    body
   } = CardProps
 
   const headerContent = header ? (
@@ -48,6 +50,26 @@ export const Card = (CardProps: CardProps) => {
     />
   ) : headerElement ? (
     headerElement
+  ) : null
+
+  const bodyContent = body ? (
+    body
+  ) : bodyText ? (
+    <CardBootstrap.Body>
+      {bodyImage && (
+        <img
+          src={bodyImage}
+          alt=""
+          style={{
+            width: "110%",
+            margin: "-1.1rem -1rem 0 -1rem"
+          }}
+        />
+      )}
+      <CardBootstrap.Text className={styles.body}>
+        {bodyText}
+      </CardBootstrap.Text>
+    </CardBootstrap.Body>
   ) : null
 
   const [showAll, setShowAll] = useState(false)
@@ -76,23 +98,7 @@ export const Card = (CardProps: CardProps) => {
     <CardBootstrap className={styles.container}>
       {headerContent}
       {<CardListItems items={shown} />}
-      {bodyText && (
-        <CardBootstrap.Body>
-          {bodyImage && (
-            <img
-              src={bodyImage}
-              alt=""
-              style={{
-                width: "110%",
-                margin: "-1.1rem -1rem 0 -1rem"
-              }}
-            />
-          )}
-          <CardBootstrap.Text className={styles.body}>
-            {bodyText}
-          </CardBootstrap.Text>
-        </CardBootstrap.Body>
-      )}
+      {bodyContent}
       {allItems.length > 3 && <SeeMore onClick={handleSeeMoreClick} />}
     </CardBootstrap>
   )

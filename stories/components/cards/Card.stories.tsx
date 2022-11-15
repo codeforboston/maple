@@ -9,6 +9,14 @@ export default createMeta({
   component: Card
 })
 
+const StorySVG = () => {
+  return (
+    <div>
+      <img src="Thumbs Up.svg" alt="" />
+    </div>
+  )
+}
+
 const Template: ComponentStory<typeof Card> = ({
   header,
   subheader,
@@ -16,6 +24,7 @@ const Template: ComponentStory<typeof Card> = ({
   timestamp,
   imgSrc,
   cardItems,
+  inHeaderElement,
   ...rest
 }) => {
   return (
@@ -26,6 +35,7 @@ const Template: ComponentStory<typeof Card> = ({
       timestamp={timestamp}
       imgSrc={imgSrc}
       cardItems={cardItems}
+      inHeaderElement={inHeaderElement}
       {...rest}
     />
   )
@@ -51,7 +61,7 @@ HeaderAndSubheaderAndTimestamp.args = {
 export const HeaderAndSubheaderAndTimestampAndInHeaderElement = Template.bind(
   {}
 )
-HeaderAndSubheaderAndTimestamp.args = {
+HeaderAndSubheaderAndTimestampAndInHeaderElement.args = {
   header: "Header",
   subheader: "Subheader",
   timestamp: "3:29PM",
@@ -67,6 +77,17 @@ HeaderAndSubheaderAndTimestampAndImg.args = {
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png"
 }
 
+export const HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement =
+  Template.bind({})
+HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement.args = {
+  header: "Header",
+  subheader: "Subheader",
+  timestamp: "3:29PM",
+  imgSrc:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
+  inHeaderElement: <StorySVG />
+}
+
 export const HeaderAndSubheaderAndTimestampAndImgAndBody = Template.bind({})
 HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
   header: "Header",
@@ -79,7 +100,7 @@ HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
 
 export const HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage =
   Template.bind({})
-HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
+HeaderAndSubheaderAndTimestampAndImgAndBodyAndBodyImage.args = {
   header: "Header",
   subheader: "Subheader",
   timestamp: "3:29PM",
