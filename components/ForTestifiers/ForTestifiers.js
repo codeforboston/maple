@@ -11,7 +11,7 @@ const ForTestifiers = () => {
     <Container>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">MAPLE for Organizations</h1>
+          <h1 className="fw-bold m-5">MAPLE for Testifiers</h1>
           <AboutPagesCard title="Why use MAPLE">
             <WhyMAPLECardContent />
           </AboutPagesCard>
