@@ -1,4 +1,4 @@
-import { Container, Row, Col } from "../bootstrap"
+import { Container, Row, Col } from "../../bootstrap"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import {
   WhyMAPLECardContent,
