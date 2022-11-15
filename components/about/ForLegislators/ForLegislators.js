@@ -4,7 +4,7 @@ import {
   WhyMAPLECardContent,
   BenefitsCardContent,
   ChallengeCardContent
-} from "../about/ForLegislatorsCardContent/ForLegislatorsCardContent"
+} from "../ForLegislatorsCardContent/ForLegislatorsCardContent"
 
 const ForLegislators = () => {
   return (
