@@ -24,7 +24,7 @@ const Template: ComponentStory<typeof PriorityBillsCard> = props => {
   return <PriorityBillsCard {...props} />
 }
 
-//editBtn: true,
+var stances = ["endorse", "neutral", "oppose"]
 export const Primary = Template.bind({})
 Primary.args = {
   bills: [
@@ -32,48 +32,6 @@ Primary.args = {
       id: "123",
       billNumber: "hc.508",
       title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "neutral"
-    },
-    {
-      id: "012",
-      billNumber: "hc.911",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "345",
-      billNumber: "hc.888",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    }
-  ],
-  session: "123"
-}
-
-export const BillsWithoutStances = Template.bind({})
-BillsWithoutStances.args = {
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
         "An Act that goes by no other name but... I forget. But it was good"
     },
     {
@@ -101,35 +59,15 @@ BillsWithoutStances.args = {
         "An Act that goes by no other name but... I forget. But it was good"
     }
   ],
-  session: "124"
+  session: "123"
 }
 
-export const ThreeBillsWithStances = Template.bind({})
-ThreeBillsWithStances.args = {
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "neutral"
-    }
-  ],
-  session: "123"
+export const BillsWithStances = Template.bind({})
+BillsWithStances.args = {
+  ...Primary.args,
+  bills: Primary.args.bills?.map(bill => {
+    return { ...bill, stance: stances[Math.floor(Math.random() * 3)] }
+  })
 }
 
 export const ThreeBillsWithoutStances = Template.bind({})
@@ -157,138 +95,33 @@ ThreeBillsWithoutStances.args = {
   session: "124"
 }
 
+export const ThreeBillsWithStances = Template.bind({})
+ThreeBillsWithStances.args = {
+  ...ThreeBillsWithoutStances.args,
+  bills: ThreeBillsWithoutStances.args.bills?.map(bill => {
+    return { ...bill, stance: stances[Math.floor(Math.random() * 3)] }
+  })
+}
 export const PrimaryAndEditBtn = Template.bind({})
 PrimaryAndEditBtn.args = {
-  editBtn: true,
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "neutral"
-    },
-    {
-      id: "012",
-      billNumber: "hc.911",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "345",
-      billNumber: "hc.888",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    }
-  ],
-  session: "123"
+  ...Primary.args,
+  editBtn: true
 }
 
-export const BillsWithoutStancesAndEditBtn = Template.bind({})
-BillsWithoutStancesAndEditBtn.args = {
-  editBtn: true,
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "012",
-      billNumber: "hc.911",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "345",
-      billNumber: "hc.888",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    }
-  ],
-  session: "124"
+export const WithStancesAndEditBtn = Template.bind({})
+WithStancesAndEditBtn.args = {
+  ...BillsWithStances.args,
+  editBtn: true
+}
+
+export const ThreeBillsAndEditBtn = Template.bind({})
+ThreeBillsAndEditBtn.args = {
+  ...ThreeBillsWithoutStances.args,
+  editBtn: true
 }
 
 export const ThreeBillsWithStancesAndEditBtn = Template.bind({})
 ThreeBillsWithStancesAndEditBtn.args = {
-  editBtn: true,
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "endorse"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "oppose"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good",
-      stance: "neutral"
-    }
-  ],
-  session: "123"
-}
-
-export const ThreeBillsWithoutStancesAndEditBtn = Template.bind({})
-ThreeBillsWithoutStancesAndEditBtn.args = {
-  editBtn: true,
-  bills: [
-    {
-      id: "123",
-      billNumber: "hc.508",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "456",
-      billNumber: "hc.411",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    },
-    {
-      id: "789",
-      billNumber: "hc.999",
-      title:
-        "An Act that goes by no other name but... I forget. But it was good"
-    }
-  ],
-  session: "124"
+  ...ThreeBillsWithStances.args,
+  editBtn: true
 }
