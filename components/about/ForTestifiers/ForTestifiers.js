@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "../bootstrap"
-import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
+import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import {
   WhyMAPLECardContent,
   BenefitsCardContent,
