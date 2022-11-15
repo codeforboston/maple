@@ -4,21 +4,21 @@ import {
   WhyMAPLECardContent,
   BenefitsCardContent,
   ChallengeCardContent
-} from "../ForOrgsCardContent/ForOrgsCardContent"
+} from "../about/ForTestifiersCardContent/ForTestifiersCardContent"
 
-const ForOrgs = () => {
+const ForTestifiers = () => {
   return (
     <Container>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">MAPLE for Organizations</h1>
+          <h1 className="fw-bold m-5">MAPLE for Testifiers</h1>
           <AboutPagesCard title="Why use MAPLE">
             <WhyMAPLECardContent />
           </AboutPagesCard>
           <AboutPagesCard title="What we offer">
             <BenefitsCardContent />
           </AboutPagesCard>
-          <AboutPagesCard title="Rise to the challenge for the 193rd">
+          <AboutPagesCard title="Get started with MAPLE today!">
             <ChallengeCardContent />
           </AboutPagesCard>
         </Col>
@@ -27,4 +27,4 @@ const ForOrgs = () => {
   )
 }
 
-export default ForOrgs
+export default ForTestifiers
