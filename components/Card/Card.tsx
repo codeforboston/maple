@@ -7,7 +7,9 @@ import { SeeMore } from "./SeeMore"
 
 interface CardItem {
   billName: string
+  billNameElement?: ReactElement | undefined
   billDescription: string
+  element?: ReactElement | undefined
 }
 
 interface CardProps {
@@ -17,8 +19,10 @@ interface CardProps {
   bodyText?: string | undefined
   timestamp?: string | undefined
   cardItems?: CardItem[] | undefined
+  inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
+  body?: ReactElement
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -30,7 +34,9 @@ export const Card = (CardProps: CardProps) => {
     timestamp,
     cardItems,
     items,
-    headerElement
+    inHeaderElement,
+    headerElement,
+    body
   } = CardProps
 
   const headerContent = header ? (
@@ -39,9 +45,20 @@ export const Card = (CardProps: CardProps) => {
       subheader={subheader}
       timestamp={timestamp}
       imgSrc={imgSrc}
+      inHeaderElement={inHeaderElement}
     />
   ) : headerElement ? (
     headerElement
+  ) : null
+
+  const bodyContent = body ? (
+    body
+  ) : bodyText ? (
+    <CardBootstrap.Body>
+      <CardBootstrap.Text className={styles.body}>
+        {bodyText}
+      </CardBootstrap.Text>
+    </CardBootstrap.Body>
   ) : null
 
   const [showAll, setShowAll] = useState(false)
@@ -55,13 +72,17 @@ export const Card = (CardProps: CardProps) => {
   }
 
   const allItems = cardItems
-    ? cardItems?.map(({ billName, billDescription }) => (
-        <ListItem
-          key={billName}
-          billName={billName}
-          billDescription={billDescription}
-        />
-      ))
+    ? cardItems?.map(
+        ({ billName, billDescription, element, billNameElement }) => (
+          <ListItem
+            key={billName}
+            billName={billName}
+            billNameElement={billNameElement}
+            billDescription={billDescription}
+            element={element}
+          />
+        )
+      )
     : items ?? []
   const shown = showAll ? allItems : allItems.slice(0, 3)
 
@@ -69,13 +90,7 @@ export const Card = (CardProps: CardProps) => {
     <CardBootstrap className={styles.container}>
       {headerContent}
       {<CardListItems items={shown} />}
-      {bodyText && (
-        <CardBootstrap.Body>
-          <CardBootstrap.Text className={styles.body}>
-            {bodyText}
-          </CardBootstrap.Text>
-        </CardBootstrap.Body>
-      )}
+      {bodyContent}
       {allItems.length > 3 && <SeeMore onClick={handleSeeMoreClick} />}
     </CardBootstrap>
   )
