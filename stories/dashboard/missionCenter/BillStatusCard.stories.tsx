@@ -1,7 +1,5 @@
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const BillStatusCard = () => <div>TODO</div>
+import { BillStatusCard } from "components/BillStatusCard/BillStatusCard"
 
 export default createMeta({
   title: "Dashboard/Mission Center/BillStatusCard",
