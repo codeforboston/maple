@@ -4,15 +4,18 @@ import styles from "./SeeMore.module.css"
 
 interface SeeMoreProps {
   onClick?: (event: string) => void
+  numberOfItems?: number
+  typeOfItems?: string
 }
 
 export const SeeMore = (props: SeeMoreProps) => {
   const { onClick = () => {} } = props
   const [seeMore, setSeeMore] = useState<string>("SEE_MORE")
   const LABEL_ENUM: Record<string, string> = {
-    SEE_MORE: "See More",
+    SEE_MORE: props.numberOfItems && props.typeOfItems ? "See "+props.numberOfItems+" "+props.typeOfItems : "See More",
     SEE_LESS: "See Less"
   }
+
   return (
     <CardBootstrap.Body
       onClick={() => {
