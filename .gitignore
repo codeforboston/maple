@@ -62,7 +62,6 @@ prod-build.env
 infra/dev/typesense-secrets.yml
 infra/prod/typesense-secrets.yml
 
-.python-version
 
 /*.history
 
@@ -70,3 +69,11 @@ storybook-static
 build-storybook.log
 
 /token
+
+# Python
+*.pyc
+__pycache__
+.python-version
+
+# Emacs
+.dir-locals-2.el
