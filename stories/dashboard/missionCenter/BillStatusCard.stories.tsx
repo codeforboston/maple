@@ -1,5 +1,6 @@
 import { createMeta } from "stories/utils"
 import { BillStatusCard } from "components/BillStatusCard/BillStatusCard"
+import { ComponentStory } from "@storybook/react"
 
 export default createMeta({
   title: "Dashboard/Mission Center/BillStatusCard",
@@ -8,4 +9,28 @@ export default createMeta({
   component: BillStatusCard
 })
 
-export const Primary = () => <BillStatusCard />
+const Template: ComponentStory<typeof BillStatusCard> = props => {
+  return <BillStatusCard {...props} />
+}
+
+export const Primary = Template.bind({})
+Primary.args = {
+  bill: {
+    history: [
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" },
+      { date: "01/01", branch: "house", action: "someone entered the house" }
+    ]
+  }
+}

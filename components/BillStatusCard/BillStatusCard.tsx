@@ -1,33 +1,33 @@
 import { Card as MapleCard } from "../Card/Card"
+import { ReactElement } from "react"
 import styled from "styled-components"
+import { BillHistory } from "components/db"
+import bill from "pages/bill"
 
-export const BillStatusCard = (props: {}) => {
+type history = {
+  date: string
+  branch: string
+  action: string
+}
+
+type bill = {
+  history?: history[] | undefined
+}
+
+export const BillStatusCard = (props: { bill: bill }) => {
   var body = (
     <ScrollStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
-      <StatusStyle>
-        <h3>House</h3>
-        <h1>Hearing Scheduled for Nov 11, 2022</h1>
-      </StatusStyle>
+      {props.bill.history?.map((hist, index) => {
+        return (
+          <StatusStyle key={hist.action + index}>
+            {hist.action}
+            <div>
+              {hist.date}
+              {hist.branch}
+            </div>
+          </StatusStyle>
+        )
+      })}
     </ScrollStyle>
   )
   return <MapleCard header="Bill Status" body={body} />
@@ -35,16 +35,11 @@ export const BillStatusCard = (props: {}) => {
 
 const StatusStyle = styled.div`
   display: flex;
-  flex-direction: column;
-  background-color: #1a3185;
-  color: white;
+  background-color: white;
+  color: black;
   .header: small;
   padding: 5%;
-
-  h1 {
-    text-align: center;
-    align-self: center;
-  }
+  border-top: 1px solid black;
 `
 
 const ScrollStyle = styled.div`
