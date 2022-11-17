@@ -16,7 +16,11 @@ const Template: ComponentStory<typeof CardListItems> = ({ items, ...rest }) => {
 export const Primary = Template.bind({})
 Primary.args = {
   items: [
-    <ListItem billName="H.3330" billDescription="Important bill, must vote!" />
+    <ListItem
+      billName="H.3330"
+      billDescription="Important bill, must vote!"
+      element={undefined}
+    />
   ]
 }
 
