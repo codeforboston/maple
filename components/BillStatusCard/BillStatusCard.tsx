@@ -20,10 +20,10 @@ export const BillStatusCard = (props: { bill: bill }) => {
       {props.bill.history?.map((hist, index) => {
         return (
           <StatusStyle key={hist.action + index}>
-            {hist.action}
+            <p>{hist.action}</p>
             <div>
-              {hist.date}
-              {hist.branch}
+              <p className="date">{hist.date}</p>
+              <p className="branch">{hist.branch}</p>
             </div>
           </StatusStyle>
         )
@@ -35,11 +35,30 @@ export const BillStatusCard = (props: { bill: bill }) => {
 
 const StatusStyle = styled.div`
   display: flex;
-  background-color: white;
-  color: black;
-  .header: small;
+  justify-content: space-between;
   padding: 5%;
   border-top: 1px solid black;
+
+  background-color: white;
+  color: black;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+
+  .date {
+    margin-bottom: 0px;
+  }
+  .branch {
+    margin-top: 0px;
+    background-color: red;
+    color: white;
+
+    border-radius: 15px;
+    padding: 0px 10px 0px 10px;
+  }
 `
 
 const ScrollStyle = styled.div`
@@ -47,4 +66,15 @@ const ScrollStyle = styled.div`
   height: 300px;
   overflow: hidden;
   overflow-y: scroll;
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+    border-radius: 10px;
+  }
 `

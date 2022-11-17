@@ -17,20 +17,28 @@ export const Primary = Template.bind({})
 Primary.args = {
   bill: {
     history: [
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
+      {
+        date: "01/01",
+        branch: "house",
+        action: "House checked with e l and L"
+      },
       { date: "01/01", branch: "house", action: "someone entered the house" },
       { date: "01/01", branch: "house", action: "someone entered the house" },
       { date: "01/01", branch: "house", action: "someone entered the house" },
       { date: "01/01", branch: "house", action: "someone entered the house" }
+    ]
+  }
+}
+
+export const SingularHistory = Template.bind({})
+SingularHistory.args = {
+  bill: {
+    history: [
+      {
+        date: "01/01",
+        branch: "house",
+        action: "House checked with e l and L"
+      }
     ]
   }
 }
