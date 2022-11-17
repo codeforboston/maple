@@ -1,7 +1,5 @@
 import { Card as MapleCard } from "../Card/Card"
-import { ReactElement } from "react"
 import styled from "styled-components"
-import { BillHistory } from "components/db"
 import bill from "pages/bill"
 
 type history = {
@@ -19,7 +17,10 @@ export const BillStatusCard = (props: { bill: bill }) => {
     <ScrollStyle>
       {props.bill.history?.map((hist, index) => {
         return (
-          <StatusStyle key={hist.action + index}>
+          <StatusStyle
+            key={hist.action + index}
+            style={index == 0 ? { borderTop: "none" } : {}}
+          >
             <p>{hist.action}</p>
             <div>
               <p className="date">{hist.date}</p>
@@ -69,7 +70,8 @@ const ScrollStyle = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0%;
-  height: 300px;
+  /* height for testing*/
+  height: 400px;
   overflow: hidden;
   overflow-y: scroll;
 
