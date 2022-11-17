@@ -36,8 +36,10 @@ export const BillStatusCard = (props: { bill: bill }) => {
 const StatusStyle = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 5%;
+  align-items: center;
+  padding: 1% 5% 1% 5%;
   border-top: 1px solid black;
+  width: 100%;
 
   background-color: white;
   color: black;
@@ -45,16 +47,17 @@ const StatusStyle = styled.div`
   font-family: Nunito;
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
+  font-size: 1.5rem;
 
   .date {
     margin-bottom: 0px;
   }
   .branch {
     margin-top: 0px;
-    background-color: red;
+    background-color: #c71e32;
     color: white;
+
+    font-size: 1rem;
 
     border-radius: 15px;
     padding: 0px 10px 0px 10px;
@@ -62,6 +65,9 @@ const StatusStyle = styled.div`
 `
 
 const ScrollStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 0%;
   height: 300px;
   overflow: hidden;

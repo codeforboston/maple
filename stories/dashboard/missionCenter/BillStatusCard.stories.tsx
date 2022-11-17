@@ -19,13 +19,13 @@ Primary.args = {
     history: [
       {
         date: "01/01",
-        branch: "house",
-        action: "House checked with e l and L"
+        branch: "HOUSE",
+        action: "House checked with the l and L for Nunito"
       },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" },
-      { date: "01/01", branch: "house", action: "someone entered the house" }
+      { date: "01/02", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/03", branch: "JOINT", action: "someone entered the house" },
+      { date: "01/04", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/05", branch: "SENATE", action: "someone entered the house" }
     ]
   }
 }
@@ -36,8 +36,8 @@ SingularHistory.args = {
     history: [
       {
         date: "01/01",
-        branch: "house",
-        action: "House checked with e l and L"
+        branch: "HOUSE",
+        action: "House checked with the l and L for Nunito"
       }
     ]
   }
