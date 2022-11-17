@@ -3,12 +3,34 @@ import styled from "styled-components"
 
 export const BillStatusCard = (props: {}) => {
   var body = (
-    <StatusStyle>
-      <h3>House</h3>
-      <h1>Hearing Scheduled for Nov 11, 2022</h1>
-    </StatusStyle>
+    <ScrollStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+      <StatusStyle>
+        <h3>House</h3>
+        <h1>Hearing Scheduled for Nov 11, 2022</h1>
+      </StatusStyle>
+    </ScrollStyle>
   )
-  return <MapleCard body={body} />
+  return <MapleCard header="Bill Status" body={body} />
 }
 
 const StatusStyle = styled.div`
@@ -23,8 +45,11 @@ const StatusStyle = styled.div`
     text-align: center;
     align-self: center;
   }
+`
 
-  :hover {
-    background-color: #6d7bb1;
-  }
+const ScrollStyle = styled.div`
+  padding: 0%;
+  height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
 `
