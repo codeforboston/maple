@@ -3,7 +3,6 @@ import React from "react"
 import { BillSponsors } from "../../components/bill/BillSponsors"
 import { ComponentStory } from "@storybook/react"
 
-
 export default createMeta({
   title: "Bill Detail/BillSponsorCard",
   figmaUrl:
@@ -11,52 +10,49 @@ export default createMeta({
   component: BillSponsors
 })
 
-
-const Template: ComponentStory<typeof BillSponsors> = (args) => {
-  return <BillSponsors {...args}/>
+const Template: ComponentStory<typeof BillSponsors> = args => {
+  return <BillSponsors {...args} />
 }
-
 
 export const Primary = Template.bind({})
 Primary.args = {
   PrimarySponsor: [
     {
-    id: 0,
-    Name: 'Michael Brady',
-    sponsorType: 'Lead Sponsor'
+      id: 0,
+      Name: "Michael Brady",
+      sponsorType: "Lead Sponsor"
     }
   ],
-  CoSponsors:[
+  CoSponsors: [
     {
       id: 1,
-      Name: 'Jeffrey Roy',
-      sponsorType: 'Sponsor'
+      Name: "Jeffrey Roy",
+      sponsorType: "Sponsor"
     },
     {
       id: 2,
       Name: "James J. O'Day",
-      sponsorType: 'Sponsor'
+      sponsorType: "Sponsor"
     },
     {
       id: 3,
-      Name: 'Michael D. Brady',
-      sponsorType: 'Sponsor'
+      Name: "Michael D. Brady",
+      sponsorType: "Sponsor"
     },
     {
       id: 4,
-      Name: 'Jeffrey N. Roy',
-      sponsorType: 'Sponsor'
+      Name: "Jeffrey N. Roy",
+      sponsorType: "Sponsor"
     },
     {
       id: 5,
       Name: "James J. O'Day",
-      sponsorType: 'Sponsor'
+      sponsorType: "Sponsor"
     },
     {
       id: 6,
       Name: "Sandra Day O'Connor",
-      sponsorType: 'Sponsor'
+      sponsorType: "Sponsor"
     }
   ]
-     
 }
