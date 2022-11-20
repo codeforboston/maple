@@ -5,7 +5,7 @@ import { Position } from "components/db"
 const ImageContainer = styled.div`
   width: 87px;
   height: 87px;
-  border: 2.5px solid;
+  border: 2.5px solid var(--bs-green);
   border-radius: 50%;
   position: relative;
 
@@ -28,12 +28,13 @@ const ImageContainer = styled.div`
 
 const OrgAvatarContainer = styled.div`
   width: 124px;
+  height: 133px;
   display: flex;
   flex-direction: column;
   align-items: center;
 
   p {
-    font-family: "Nunito";
+    font-family: Nunito;
     font-size: 12px;
     text-align: center;
     letter-spacing: 0.03em;
@@ -48,6 +49,12 @@ interface Props {
   position: Position
 }
 
+type ItemStance = {
+  position: string
+  svg: string
+  shade: string
+}
+
 export const positionObj = [
   {
     position: "endorse",
@@ -55,26 +62,28 @@ export const positionObj = [
     shade: "var(--bs-green)"
   },
   {
+    position: "oppose",
+    svg: "/Thumbs-down.svg",
+    shade: "var(--bs-orange)"
+  },
+  {
     position: "neutral",
     svg: "/Neutral-icon.svg",
     shade: "var(--bs-dark-blue)"
-  },
-  {
-    position: "oppose",
-    svg: "/thumbs-down.svg",
-    shade: "var(--bs-orange)"
   }
 ]
 
 export const OrgAvatar: FC<Props> = ({ orgImageSrc, name, position }) => {
-  const pos = positionObj.find(pos => pos.position === position)!
+  const obj: ItemStance = positionObj.find(
+    stand => stand.position === position
+  )!
 
   return (
     <>
       <OrgAvatarContainer>
-        <ImageContainer style={{ borderColor: pos.shade }}>
+        <ImageContainer style={{ borderColor: obj.shade }}>
           <img className="orgLogo" src={orgImageSrc} alt={name} />
-          <img className="stanceIcon" src={pos.svg} alt={pos.position} />
+          <img className="stanceIcon" src={obj.svg} alt={obj.position} />
         </ImageContainer>
         <p>{name}</p>
       </OrgAvatarContainer>
