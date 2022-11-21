@@ -1,6 +1,6 @@
 import { Card, SeeMore } from "components/Card"
 import { Position } from "components/db"
-import { Key, useState } from "react"
+import { Key } from "react"
 import { OrgAvatar } from "stories/components/OrgAvatar"
 import styled from "styled-components"
 import { FC } from "react"

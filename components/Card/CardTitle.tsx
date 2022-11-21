@@ -1,3 +1,4 @@
+import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import styles from "./CardTitle.module.css"
 
@@ -6,15 +7,16 @@ interface CardTitleProps {
   subheader?: string
   timestamp?: string
   imgSrc?: string
+  inHeaderElement?: ReactElement
 }
 
 export const CardTitle = (props: CardTitleProps) => {
-  const { header, subheader, timestamp, imgSrc } = props
+  const { header, subheader, timestamp, imgSrc, inHeaderElement } = props
   return (
     <CardBootstrap.Body className={`${styles.text} ${styles.body}`}>
       {imgSrc && <CardBootstrap.Img className={styles.img} src={imgSrc} />}
 
-      <div>
+      <CardBootstrap.Body>
         {header && (
           <CardBootstrap.Title className={styles.title}>
             {header}
@@ -30,7 +32,8 @@ export const CardTitle = (props: CardTitleProps) => {
             {timestamp}
           </CardBootstrap.Text>
         )}
-      </div>
+      </CardBootstrap.Body>
+      {inHeaderElement && inHeaderElement}
     </CardBootstrap.Body>
   )
 }

@@ -23,6 +23,7 @@ interface CardProps {
   items?: ReactElement[]
   headerElement?: ReactElement
   body?: ReactElement
+  initialRowCount?: number
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -36,7 +37,8 @@ export const Card = (CardProps: CardProps) => {
     items,
     inHeaderElement,
     headerElement,
-    body
+    body,
+    initialRowCount = 3
   } = CardProps
 
   const headerContent = header ? (
@@ -91,7 +93,9 @@ export const Card = (CardProps: CardProps) => {
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}
-      {allItems.length > 3 && <SeeMore onClick={handleSeeMoreClick} />}
+      {allItems.length > initialRowCount && (
+        <SeeMore onClick={handleSeeMoreClick} />
+      )}
     </CardBootstrap>
   )
 }
