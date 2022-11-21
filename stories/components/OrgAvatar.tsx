@@ -58,17 +58,17 @@ type ItemStance = {
 export const positionObj = [
   {
     position: "endorse",
-    svg: "/thumbs-up2.svg",
+    svg: "/thumbs-endorse.svg",
     shade: "var(--bs-green)"
   },
   {
     position: "oppose",
-    svg: "/Thumbs-down.svg",
+    svg: "/thumbs-oppose.svg",
     shade: "var(--bs-orange)"
   },
   {
     position: "neutral",
-    svg: "/Neutral-icon.svg",
+    svg: "/thumbs-neutral.svg",
     shade: "var(--bs-dark-blue)"
   }
 ]
