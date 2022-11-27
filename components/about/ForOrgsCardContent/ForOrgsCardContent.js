@@ -1,7 +1,8 @@
-import { Row, Col } from "../bootstrap"
+import { Row, Col } from "../../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./ForOrgsCardContent.module.css"
-import { SignInWithModal } from "../auth"
+import { SignInWithModal } from "../../auth"
+import Link from "next/link"
 
 const WhyMAPLECardContent = () => (
   <>
@@ -48,6 +49,25 @@ const BenefitsCardContent = () => (
           priorities and positions. MAPLE helps alert your constituents to the
           most important bills on issues you care about, and helps you explain
           why you support or oppose them.{" "}
+        </p>
+      </Col>
+    </Row>
+
+    <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
+      Extend access to members who speak any language
+    </h3>
+    <Row className="mb-3">
+      <Col>
+        <p>
+          MAPLE uses machine translation to make the legislative process more
+          accessible to non-native English speakers. Both our website content
+          and the testimonies we post can be automatically translated to any
+          language on demand, meaning that non-English speakers can write
+          testimony in the language in which they are most comfortable and
+          legislative offices can click a button to translate it to English.
+          While machine translation is not perfect, it offers a big step forward
+          in language accessibility for constituents who do not have access to
+          expert translation.
         </p>
       </Col>
     </Row>
@@ -103,9 +123,12 @@ const BenefitsCardContent = () => (
     <Row className="mb-3">
       <Col>
         <p>
-          MAPLE is fast. (Really fast.) Try{" "}
-          <a href="/bills">searching for a bill</a> to see just how much MAPLE
-          can speed up your legislative research process; no sign in required!{" "}
+          MAPLE is fast. (Really fast.) Try
+          <Link href="/bills">
+            <a>searching for a bill</a>
+          </Link>{" "}
+          to see just how much MAPLE can speed up your legislative research
+          process; no sign in required!{" "}
         </p>
       </Col>
     </Row>
