@@ -21,8 +21,19 @@ from typing import Iterable, Iterator, Type
 
 import peewee as pw
 
-import maple.types
-from maple.types import Action, ActionType, Bill, Branch, Status, UnknownValue
+from maple.types import (
+    Action,
+    ActionType,
+    Bill,
+    Branch,
+    Committee,
+    Status,
+    UnknownValue,
+)
+
+# Aside for those using MyPy: the peewee package doesn't seem to be properly
+# typed, and MyPy is panicking on many statements that seem to run just fine.
+# Forgive the many `type: ignore` comments.
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +85,16 @@ class BranchF(pw.Field):
             return UnknownValue(value)
 
 
+class CommitteeF(pw.Field):
+    field_type = "Committee"
+
+    def db_value(self, value: Committee) -> str:
+        return value.name
+
+    def python_value(self, value: str) -> Committee:
+        return Committee(value)
+
+
 class BillM(BaseModel):
     """The table of bills."""
 
@@ -95,12 +116,14 @@ class ActionM(BaseModel):
     seq_num = pw.IntegerField()
     action = pw.TextField()
     when = pw.DateTimeField()
+    committee = CommitteeF()
 
     def to_action(self) -> Action:
         return Action(
             action=self.action,  # type: ignore
             branch=self.branch,  # type: ignore
             when=self.when,  # type: ignore
+            committee=self.committee,  # type: ignore
         )
 
 
@@ -131,7 +154,7 @@ class TrainingDB:
         with _database.atomic() as transaction:
             try:
                 # Drop existing labels
-                LabelM.delete().execute()
+                LabelM.delete().execute()  # type: ignore
 
                 # Apply new labels
                 for action_id, label in labels:
@@ -174,7 +197,7 @@ class TrainingDB:
             .join(
                 LabelM, on=(ActionM.id == LabelM.action), join_type=pw.JOIN.LEFT_OUTER
             )
-            .iterator()
+            .iterator()  # type: ignore
         )
 
         for actionm in actions:

@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from maple.classification import regex_classification
 from maple.db import connect
-from maple.types import Action, ActionType, Bill, Branch
+from maple.types import Action, ActionType, Bill, Branch, UnknownValue
 
 
 def parse_bills(bills_file: Path) -> list[Bill]:
@@ -22,6 +22,7 @@ def parse_bills(bills_file: Path) -> list[Bill]:
                 action=row["action"],
                 branch=Branch[row["branch"].lower()],
                 when=parse_datetime(row["date"]),
+                committee=UnknownValue(""),
             )
             bill_actions[row["id"]].append(action)
 
