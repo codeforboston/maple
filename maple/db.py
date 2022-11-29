@@ -131,7 +131,7 @@ class TrainingDB:
         with _database.atomic() as transaction:
             try:
                 # Drop existing labels
-                LabelM.delete()
+                LabelM.delete().execute()
 
                 # Apply new labels
                 for action_id, label in labels:
