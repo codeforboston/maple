@@ -14,6 +14,32 @@ from maple.types import Action, ActionType, Bill, Branch, UnknownValue
 
 
 def parse_bills(bills_file: Path) -> list[Bill]:
+    """Load all bills from a CSV file.
+
+    The file is assumed to have the following columns:
+
+    action
+      The raw text describing the action
+
+    branch
+      The branch of government taking the action
+
+    date
+      When the action occurred.
+
+    Parameters
+    ----------
+
+    bills_file
+        The CSV file containing the bills to load.
+
+    Returns
+    -------
+
+    A list of all bills found in the file.
+
+    """
+
     with open(bills_file, "r") as f:
         bill_actions = defaultdict(list)
 
@@ -30,11 +56,22 @@ def parse_bills(bills_file: Path) -> list[Bill]:
 
 
 def parse_datetime(dt: str) -> datetime:
+    """Parse a datetime string.
+
+    Examples
+    --------
+
+    >>> parse_datetime("2021-02-25T16:46:19.933Z")
+    datetime.datetime(2021, 2, 25, 16, 46, 19, 933000)
+
+    >>> parse_datetime("2021-04-15T04:00:00.000Z")
+    datetime.datetime(2021, 4, 15, 4, 0)
+
+    """
     return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def load_command(args: argparse.Namespace) -> None:
-
     with connect(args.db_path) as db:
         for bill in tqdm(parse_bills(args.bills_file), unit="bills"):
             db.add_bill(bill)
@@ -135,7 +172,7 @@ def label_command(args: argparse.Namespace) -> None:
         db.relabel(zip(labeled.action_id, labeled.label.map(lambda x: ActionType[x])))
 
 
-def repl_func(args: argparse.Namespace) -> None:
+def repl_command(args: argparse.Namespace) -> None:
     with connect(args.db_path) as db:
         code.interact(local=locals())
 
@@ -145,24 +182,30 @@ if __name__ == "__main__":
 
     subparsers = parser.add_subparsers()
 
-    load = subparsers.add_parser("load-bills")
+    load = subparsers.add_parser(
+        "load-bills", help="load bills into a new or existing database"
+    )
     load.add_argument("--db-path", type=Path, required=True)
     load.add_argument("--bills-file", type=Path, required=True)
     load.set_defaults(func=load_command)
 
-    regex = subparsers.add_parser("predict-regex")
+    regex = subparsers.add_parser(
+        "predict-regex", help="predict action types for actions in the database"
+    )
     regex.add_argument("--db-path", type=Path, required=True)
     regex.add_argument("--predictions-file", type=Path, required=False)
     regex.set_defaults(func=regex_command)
 
-    label = subparsers.add_parser("label")
+    label = subparsers.add_parser("label", help="update labels stored in the database")
     label.add_argument("--db-path", type=Path, required=True)
     label.add_argument("--labels-file", type=Path, required=True)
     label.set_defaults(func=label_command)
 
-    repl = subparsers.add_parser("repl")
+    repl = subparsers.add_parser(
+        "repl", help="enter a REPL with a database connection active"
+    )
     repl.add_argument("--db-path", type=Path, required=True)
-    repl.set_defaults(func=repl_func)
+    repl.set_defaults(func=repl_command)
 
     args = parser.parse_args()
 
