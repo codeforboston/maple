@@ -46,12 +46,18 @@ class ActionType(Enum):
 
 
 @dataclass(frozen=True)
+class Committee:
+    name: str
+
+
+@dataclass(frozen=True)
 class Action:
     """An action taken on a Bill."""
 
     action: str
     branch: Branch
     when: datetime
+    committee: Committee | UnknownValue | None
 
 
 @dataclass(frozen=True)
