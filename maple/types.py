@@ -16,7 +16,7 @@ class Status(Enum):
     introduced = "introduced"
     first_committee = "first committee"
     second_committee = "second committee"
-    chamber_1 = "chamber 1"
+    chamber_1 = "chamber_1"
     chamber_2 = "chamber_2"
     signed = "signed by governor"
 

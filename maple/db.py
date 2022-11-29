@@ -5,9 +5,21 @@ In an ideal world, we'd directly store and retrieve objects from the
 database (e.g. a `Bill` has a list of `Action`s associated with it, and we need
 to represent this with a join.) To that end, we introduce new types with an 'M'
 suffix (for 'Model') that act as a wrapper around the associated object for use
-with the database.
+with the database. Types with the 'F' suffix indicate custom field types, and
+are used to provide some type safety when reading from and writing to the
+database.
 
-As an example, consider the `ActionM` class. This
+As an example of a model, consider the `ActionM` class. This model represents
+an `Action` in the ORM; each class has similar fields, where possible. Note
+that `ActionM` stores an index value, `seq_num`, that is missing from `Action`;
+this is because this value is derived from an `Action`s position in a
+`Bill.history` list. Likewise, `ActionM` has a `bill_id` field used to
+establish a relationship to a `BillM` that isn't present in `Action`, since
+such back-references in pure Python are usually unnecessary.
+
+As an example of a field, consider the `BranchF` class. This represents a
+database column storing an element of the `Branch` enumeration. (Some databases
+directly support custom enumeration types; SQLite3 isn't one of them.)
 
 """
 
