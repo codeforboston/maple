@@ -1,7 +1,7 @@
+import { DateTime } from "luxon"
 import { useUpcomingEvents } from "../db/events"
-import { EventData } from "./HearingsScheduled"
 import { formatDate, numberToFullMonth } from "./dateUtils"
-
+import { EventData } from "./HearingsScheduled"
 /* This hook is expecting useUpcomingEvents to return a list sorted by date. 
     The field eventList.fullDate exists as a Date type in case sorting needs to be done
     here in the future.
@@ -11,25 +11,27 @@ import { formatDate, numberToFullMonth } from "./dateUtils"
 export const useCalendarEvents = () => {
   const events = useUpcomingEvents()
 
+  const thisMonth = DateTime.now().startOf("month")
   const eventList: EventData[] = []
-  let latestDate = new Date()
+  let latestDate = DateTime.now()
   const indexOffset = new Date().getMonth()
 
   if (events) {
     for (let e of events) {
-      const currentDate = new Date(e.content.EventDate)
+      const eventDate = DateTime.fromISO(e.content.EventDate)
 
-      if (currentDate > latestDate) latestDate = currentDate
+      if (eventDate > latestDate) latestDate = eventDate
 
+      const index = Math.floor(eventDate.diff(thisMonth, "months").months)
       const date = formatDate(e.content.EventDate)
       if (e.type === "session") {
         eventList.push({
-          index: currentDate.getMonth() - indexOffset,
+          index,
           type: e.type,
           name: e.content.Name,
           id: e.content.EventId,
           location: e.content.LocationName,
-          fullDate: currentDate,
+          fullDate: eventDate.toJSDate(),
           year: date.year,
           month: date.month,
           date: date.date,
@@ -38,12 +40,12 @@ export const useCalendarEvents = () => {
         })
       } else if (e.type === "hearing") {
         eventList.push({
-          index: currentDate.getMonth() - indexOffset,
+          index,
           type: e.type,
           name: e.content.Name,
           id: e.content.EventId,
           location: e.content.Location.LocationName,
-          fullDate: currentDate,
+          fullDate: eventDate.toJSDate(),
           year: date.year,
           month: date.month,
           date: date.date,
@@ -55,15 +57,14 @@ export const useCalendarEvents = () => {
   }
 
   /* Create list of months to cycle through on calendar */
-  let currentDate = new Date()
+  let eventMonth = DateTime.now().startOf("month")
+  const lastMonth = latestDate.startOf("month")
   const monthsList = []
-  while (currentDate.getMonth() <= latestDate.getMonth()) {
+  while (eventMonth <= lastMonth) {
     monthsList.push(
-      `${numberToFullMonth(currentDate.getMonth())} ${currentDate
-        .getFullYear()
-        .toString()}`
+      `${numberToFullMonth(eventMonth.month - 1)} ${eventMonth.year}`
     )
-    currentDate.setMonth(currentDate.getMonth() + 1)
+    eventMonth = eventMonth.plus({ month: 1 })
   }
 
   const loading = events ? false : true

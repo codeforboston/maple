@@ -1,6 +1,7 @@
 .container {
   background-color: none;
   border-radius: 12px 12px 12px 12px;
+  overflow: hidden;
 }
 
 .body {
