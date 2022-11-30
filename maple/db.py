@@ -5,9 +5,21 @@ In an ideal world, we'd directly store and retrieve objects from the
 database (e.g. a `Bill` has a list of `Action`s associated with it, and we need
 to represent this with a join.) To that end, we introduce new types with an 'M'
 suffix (for 'Model') that act as a wrapper around the associated object for use
-with the database.
+with the database. Types with the 'F' suffix indicate custom field types, and
+are used to provide some type safety when reading from and writing to the
+database.
 
-As an example, consider the `ActionM` class. This
+As an example of a model, consider the `ActionM` class. This model represents
+an `Action` in the ORM; each class has similar fields, where possible. Note
+that `ActionM` stores an index value, `seq_num`, that is missing from `Action`;
+this is because this value is derived from an `Action`s position in a
+`Bill.history` list. Likewise, `ActionM` has a `bill_id` field used to
+establish a relationship to a `BillM` that isn't present in `Action`, since
+such back-references in pure Python are usually unnecessary.
+
+As an example of a field, consider the `BranchF` class. This represents a
+database column storing an element of the `Branch` enumeration. (Some databases
+directly support custom enumeration types; SQLite3 isn't one of them.)
 
 """
 
@@ -21,8 +33,19 @@ from typing import Iterable, Iterator, Type
 
 import peewee as pw
 
-import maple.types
-from maple.types import Action, ActionType, Bill, Branch, Status, UnknownValue
+from maple.types import (
+    Action,
+    ActionType,
+    Bill,
+    Branch,
+    Committee,
+    Status,
+    UnknownValue,
+)
+
+# Aside for those using MyPy: the peewee package doesn't seem to be properly
+# typed, and MyPy is panicking on many statements that seem to run just fine.
+# Forgive the many `type: ignore` comments.
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +97,16 @@ class BranchF(pw.Field):
             return UnknownValue(value)
 
 
+class CommitteeF(pw.Field):
+    field_type = "Committee"
+
+    def db_value(self, value: Committee) -> str:
+        return value.name
+
+    def python_value(self, value: str) -> Committee:
+        return Committee(value)
+
+
 class BillM(BaseModel):
     """The table of bills."""
 
@@ -95,12 +128,14 @@ class ActionM(BaseModel):
     seq_num = pw.IntegerField()
     action = pw.TextField()
     when = pw.DateTimeField()
+    committee = CommitteeF()
 
     def to_action(self) -> Action:
         return Action(
             action=self.action,  # type: ignore
             branch=self.branch,  # type: ignore
             when=self.when,  # type: ignore
+            committee=self.committee,  # type: ignore
         )
 
 
@@ -131,7 +166,7 @@ class TrainingDB:
         with _database.atomic() as transaction:
             try:
                 # Drop existing labels
-                LabelM.delete()
+                LabelM.delete().execute()  # type: ignore
 
                 # Apply new labels
                 for action_id, label in labels:
@@ -174,7 +209,7 @@ class TrainingDB:
             .join(
                 LabelM, on=(ActionM.id == LabelM.action), join_type=pw.JOIN.LEFT_OUTER
             )
-            .iterator()
+            .iterator()  # type: ignore
         )
 
         for actionm in actions:
