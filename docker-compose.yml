@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    entrypoint: "bash"
+    working_dir: "/app"

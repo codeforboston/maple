@@ -11,6 +11,7 @@ from tqdm import tqdm
 from maple.classification import regex_classification
 from maple.db import connect
 from maple.types import Action, ActionType, Bill, Branch, UnknownValue
+from maple.util import parse_datetime
 
 
 def parse_bills(bills_file: Path) -> list[Bill]:
@@ -53,22 +54,6 @@ def parse_bills(bills_file: Path) -> list[Bill]:
             bill_actions[row["id"]].append(action)
 
         return [Bill(id=k, history=v) for k, v in bill_actions.items()]
-
-
-def parse_datetime(dt: str) -> datetime:
-    """Parse a datetime string.
-
-    Examples
-    --------
-
-    >>> parse_datetime("2021-02-25T16:46:19.933Z")
-    datetime.datetime(2021, 2, 25, 16, 46, 19, 933000)
-
-    >>> parse_datetime("2021-04-15T04:00:00.000Z")
-    datetime.datetime(2021, 4, 15, 4, 0)
-
-    """
-    return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def load_command(args: argparse.Namespace) -> None:
