@@ -11,20 +11,13 @@ interface AlertCardBodyProps {
 export const AlertCardBody = (props: AlertCardBodyProps) => {
     const { imgSrc, imgAltTxt, text} = props
     return (
-        imgSrc ? (
-            <div>
-              <img src={imgSrc} width="100%" alt={imgAltTxt}></img>
-                <CardBootstrap.Text className={styles.body}>
-                  {text}
-                </CardBootstrap.Text>
-            </div>
-        ) : (
+        <div>
+            {imgSrc && <img src={imgSrc} width="100%" alt={imgAltTxt}></img>}
             <CardBootstrap.Body>
                 <CardBootstrap.Text className={styles.body}>
                     {text}
                 </CardBootstrap.Text>
             </CardBootstrap.Body>
-        )
-
+        </div>
     )
 }
