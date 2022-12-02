@@ -21,7 +21,7 @@ OrgWithBodyImage.args = {
   subheader: "Our Priority Bills", 
   timestamp: "4:30 PM", 
   headerImgSrc:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png", 
-  bodyImgSrc:"https://media.istockphoto.com/id/1333237768/photo/spooky-halloween-sky.jpg?b=1&s=170667a&w=0&k=20&c=g2iKCwBRqWDqRmPBpxDmdNSO8MMn9_xFJafafOid4DI=",
+  bodyImgSrc:"https://regulatorystudies.columbian.gwu.edu/sites/g/files/zaxdzs4751/files/image/United_States_Capitol_-_west_front_small.jpg",
   bodyText: "Come to our FAQ Session held at plaza on 248 Willow Street in Watertown, MA! There will be light refreshments and snacks."
 } 
 
@@ -38,7 +38,7 @@ BillWithBodyImage.args = {
   header: "Bill H.1321",
   subheader: "An Act to do something cool", 
   timestamp: "6:00 AM", 
-  bodyImgSrc:"https://media.istockphoto.com/id/1333237768/photo/spooky-halloween-sky.jpg?b=1&s=170667a&w=0&k=20&c=g2iKCwBRqWDqRmPBpxDmdNSO8MMn9_xFJafafOid4DI=",
+  bodyImgSrc:"https://regulatorystudies.columbian.gwu.edu/sites/g/files/zaxdzs4751/files/image/United_States_Capitol_-_west_front_small.jpg",
   bodyText: "Bill moved on in deliberations with some group"
 } 
 
