@@ -9,15 +9,13 @@ interface AlertCardBodyProps {
 }
 
 export const AlertCardBody = (props: AlertCardBodyProps) => {
-    const { imgSrc, imgAltTxt, text} = props
-    return (
-        <div>
-            {imgSrc && <img src={imgSrc} width="100%" alt={imgAltTxt}></img>}
-            <CardBootstrap.Body>
-                <CardBootstrap.Text className={styles.body}>
-                    {text}
-                </CardBootstrap.Text>
-            </CardBootstrap.Body>
-        </div>
-    )
+  const { imgSrc, imgAltTxt, text } = props
+  return (
+    <div>
+      {imgSrc && <img src={imgSrc} width="100%" alt={imgAltTxt}></img>}
+      <CardBootstrap.Body>
+        <CardBootstrap.Text className={styles.body}>{text}</CardBootstrap.Text>
+      </CardBootstrap.Body>
+    </div>
+  )
 }

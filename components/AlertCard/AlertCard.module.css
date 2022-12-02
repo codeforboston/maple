@@ -1,9 +1,9 @@
 .body {
-    font-family: Nunito;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 25px;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
 }
 
 .bodywithimage {
@@ -14,4 +14,3 @@
   line-height: 25px;
   padding: 2px;
 }
-  
