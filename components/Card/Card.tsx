@@ -22,7 +22,7 @@ interface CardProps {
   inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
-  body?: ReactElement
+  body?: ReactElement | undefined
   initialRowCount?: number
 }
 
@@ -57,7 +57,6 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
-      {imgSrc && <img src={imgSrc} width="100%" alt=" "/>}
       <CardBootstrap.Text className={styles.body}>
         {bodyText}
       </CardBootstrap.Text>

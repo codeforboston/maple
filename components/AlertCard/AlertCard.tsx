@@ -1,6 +1,9 @@
 import { CardTitle} from "components/Card"
+import OrgPriorityCardStories from "stories/billDetail/OrgPriorityCard.stories"
 import { Card as MapleCard } from "../Card/Card"
-import Styles from "./AlertCard.module.css"
+import styles from "./AlertCard.module.css"
+import { AlertCardBody } from "./AlertCardBody"
+
 
 export const AlertCard = (props: {
   header: string
@@ -8,6 +11,7 @@ export const AlertCard = (props: {
   timestamp: string
   headerImgSrc: string
   bodyImgSrc: string
+  bodyImgAltTxt: string
   bodyText: string
 }) => {
 
@@ -18,5 +22,12 @@ export const AlertCard = (props: {
     imgSrc={props.headerImgSrc}
   />
 
-  return <MapleCard headerElement={header} bodyText={props.bodyText} imgSrc={props.bodyImgSrc}/>
+  const body = <AlertCardBody 
+    imgSrc={props.bodyImgSrc}
+    imgAltTxt={props.bodyImgAltTxt}
+    text={props.bodyText}
+  />
+      
+  
+  return <MapleCard headerElement={header} body= {body}/>
 }
