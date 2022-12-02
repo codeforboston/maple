@@ -22,7 +22,7 @@ interface CardProps {
   inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
-  body?: ReactElement | undefined
+  body?: ReactElement
   initialRowCount?: number
 }
 
