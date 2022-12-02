@@ -21,6 +21,6 @@ Primary.args = {
   subheader: "this is the subeheader", 
   timestamp: "This is a timestamp", 
   headerImgSrc:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png", 
-  bodyImgSrc:"",
+  bodyImgSrc:"https://media.istockphoto.com/id/1333237768/photo/spooky-halloween-sky.jpg?b=1&s=170667a&w=0&k=20&c=g2iKCwBRqWDqRmPBpxDmdNSO8MMn9_xFJafafOid4DI=",
   bodyText: "This is the bodyText"
 } 

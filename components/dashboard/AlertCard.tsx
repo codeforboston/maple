@@ -12,11 +12,11 @@ export const AlertCard = (props: {
 }) => {
 
   const header = <CardTitle 
-  header={props.header} 
-  subheader={props.subheader}
-  timestamp={props.timestamp} 
-  imgSrc={props.headerImgSrc}
+    header={props.header} 
+    subheader={props.subheader}
+    timestamp={props.timestamp} 
+    imgSrc={props.headerImgSrc}
   />
 
-  return <MapleCard headerElement={header} />
+  return <MapleCard headerElement={header} bodyText={props.bodyText} imgSrc={props.bodyImgSrc}/>
 }

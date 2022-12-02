@@ -57,6 +57,7 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
+      {imgSrc && <img src={imgSrc} width="100%" alt=" "/>}
       <CardBootstrap.Text className={styles.body}>
         {bodyText}
       </CardBootstrap.Text>
