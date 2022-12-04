@@ -7,9 +7,9 @@ import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
+import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
-import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -26,13 +26,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <TopNav />
-      {children}
-      <PageFooter
-        authenticated={authenticated}
-        user={user as any}
-        signOut={() => void auth.signOut()}
-      />
+      <div className={styles.pageContainer}>
+        <TopNav />
+        <div className={styles.content}>{children}</div>
+        <PageFooter
+          authenticated={authenticated}
+          user={user as any}
+          signOut={() => void auth.signOut()}
+        />
+      </div>
     </>
   )
 }
