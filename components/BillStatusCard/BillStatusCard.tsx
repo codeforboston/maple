@@ -24,7 +24,9 @@ export const BillStatusCard = (props: { bill: bill }) => {
             <p>{hist.action}</p>
             <div>
               <p className="date">{hist.date}</p>
-              <p className="branch">{hist.branch}</p>
+              <div className="branch" style={HandleBranchStyle(hist.branch)}>
+                {hist.branch}
+              </div>
             </div>
           </StatusStyle>
         )
@@ -32,6 +34,26 @@ export const BillStatusCard = (props: { bill: bill }) => {
     </ScrollStyle>
   )
   return <MapleCard header="Bill Status" body={body} />
+}
+
+const HandleBranchStyle = (branchStyle: string) => {
+  var returnStyle
+  switch (branchStyle) {
+    case "HOUSE":
+      returnStyle = { backgroundColor: "blue" }
+      break
+    case "SENATE":
+      returnStyle = { backgroundColor: "red" }
+      break
+    default:
+      returnStyle = {
+        backgroundColor: "white",
+        color: "black",
+        border: "solid black 1px"
+      }
+      break
+  }
+  return returnStyle
 }
 
 const StatusStyle = styled.div`
@@ -55,7 +77,6 @@ const StatusStyle = styled.div`
   }
   .branch {
     margin-top: 0px;
-    background-color: #c71e32;
     color: white;
 
     font-size: 1rem;
