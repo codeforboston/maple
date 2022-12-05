@@ -22,7 +22,7 @@ export const BillStatusCard = (props: { bill: bill }) => {
             style={index == 0 ? { borderTop: "none" } : {}}
           >
             <p>{hist.action}</p>
-            <div>
+            <div className="dateBranch">
               <p className="date">{hist.date}</p>
               <div className="branch" style={HandleBranchStyle(hist.branch)}>
                 {hist.branch}
@@ -60,7 +60,7 @@ const StatusStyle = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1% 5% 1% 5%;
+  padding: 1% 1% 1% 1%;
   border-top: 1px solid black;
   width: 100%;
 
@@ -72,6 +72,9 @@ const StatusStyle = styled.div`
   font-weight: 500;
   font-size: 1.5rem;
 
+  .dateBranch {
+    width: 75px;
+  }
   .date {
     margin-bottom: 0px;
   }
@@ -80,7 +83,7 @@ const StatusStyle = styled.div`
     color: white;
 
     font-size: 1rem;
-
+    width: fit-content;
     border-radius: 15px;
     padding: 0px 10px 0px 10px;
   }
