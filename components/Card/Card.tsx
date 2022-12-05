@@ -16,13 +16,14 @@ interface CardProps {
   header?: string | undefined
   imgSrc?: string | undefined
   subheader?: string | undefined
-  bodyText?: string | undefined
+  bodyText?: string | undefined | ReactElement
   timestamp?: string | undefined
   cardItems?: CardItem[] | undefined
   inHeaderElement?: ReactElement | undefined
   items?: ReactElement[]
   headerElement?: ReactElement
   body?: ReactElement
+  initialRowCount?: number
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -36,7 +37,8 @@ export const Card = (CardProps: CardProps) => {
     items,
     inHeaderElement,
     headerElement,
-    body
+    body,
+    initialRowCount = 3
   } = CardProps
 
   const headerContent = header ? (
@@ -84,14 +86,16 @@ export const Card = (CardProps: CardProps) => {
         )
       )
     : items ?? []
-  const shown = showAll ? allItems : allItems.slice(0, 3)
+  const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
     <CardBootstrap className={styles.container}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}
-      {allItems.length > 3 && <SeeMore onClick={handleSeeMoreClick} />}
+      {allItems.length > initialRowCount && (
+        <SeeMore onClick={handleSeeMoreClick} />
+      )}
     </CardBootstrap>
   )
 }
