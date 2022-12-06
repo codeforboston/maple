@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import clsx from "clsx"
+import { useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import styles from "./SeeMore.module.css"
 
@@ -6,6 +7,7 @@ interface SeeMoreProps {
   onClick?: (event: string) => void
   numberOfItems?: number
   typeOfItems?: string
+  className?: string
 }
 
 export const SeeMore = (props: SeeMoreProps) => {
@@ -25,7 +27,7 @@ export const SeeMore = (props: SeeMoreProps) => {
         onClick(seeMore)
         setSeeMore(seeMore === "SEE_MORE" ? "SEE_LESS" : "SEE_MORE")
       }}
-      className={styles.container}
+      className={clsx(styles.container, props.className)}
     >
       <CardBootstrap.Text
         style={{

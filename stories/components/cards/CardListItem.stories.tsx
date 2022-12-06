@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { CardListItems } from "../../../components/Card"
+import { CardListItems, ListItem } from "../../../components/Card"
 
 export default createMeta({
   title: "Components/Cards/CardListItem",
@@ -9,46 +9,31 @@ export default createMeta({
   component: CardListItems
 })
 
-const Template: ComponentStory<typeof CardListItems> = ({
-  cardItems,
-  ...rest
-}) => {
-  return <CardListItems cardItems={cardItems} {...rest}></CardListItems>
+const Template: ComponentStory<typeof CardListItems> = ({ items, ...rest }) => {
+  return <CardListItems items={items} {...rest}></CardListItems>
 }
 
 export const Primary = Template.bind({})
 Primary.args = {
-  cardItems: [
-    {
-      billName: "H.3330",
-      billDescription: "Important bill, must vote!"
-    }
+  items: [
+    <ListItem
+      billName="H.3330"
+      billDescription="Important bill, must vote!"
+      element={undefined}
+    />
   ]
 }
 
 export const OnlyBillName = Template.bind({})
 OnlyBillName.args = {
-  cardItems: [
-    {
-      billName: "H.3330"
-    }
-  ]
+  items: [<ListItem billName="H.3330" />]
 }
 
 export const MultipleItems = Template.bind({})
 MultipleItems.args = {
-  cardItems: [
-    {
-      billName: "H.3330",
-      billDescription: "Important bill, must vote!"
-    },
-    {
-      billName: "H.3331",
-      billDescription: "Important bill, must vote!"
-    },
-    {
-      billName: "H.3332",
-      billDescription: "Important bill, must vote!"
-    }
+  items: [
+    <ListItem billName="H.3330" billDescription="Important bill, must vote!" />,
+    <ListItem billName="H.3330" billDescription="Important bill, must vote!" />,
+    <ListItem billName="H.3330" billDescription="Important bill, must vote!" />
   ]
 }

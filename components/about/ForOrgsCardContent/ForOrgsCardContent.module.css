@@ -1,0 +1,11 @@
+.imgsize {
+  height: 8rem;
+}
+
+.orgsheader {
+  color: var(--bs-orange);
+}
+
+.calltoaction {
+  color: #c71e32;
+}
