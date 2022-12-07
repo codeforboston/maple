@@ -12,9 +12,9 @@ type bill = {
   history?: history[] | undefined
 }
 
-export const BillStatusCard = (props: { bill: bill }) => {
+export const BillStatusCard = (props: { bill: bill; height?: number }) => {
   var body = (
-    <ScrollStyle>
+    <ScrollStyle style={props.height ? { height: props.height } : {}}>
       {props.bill.history?.map((hist, index) => {
         return (
           <StatusStyle
@@ -40,10 +40,10 @@ const HandleBranchStyle = (branchStyle: string) => {
   var returnStyle
   switch (branchStyle) {
     case "HOUSE":
-      returnStyle = { backgroundColor: "blue" }
+      returnStyle = { backgroundColor: "#1a3185" }
       break
     case "SENATE":
-      returnStyle = { backgroundColor: "red" }
+      returnStyle = { backgroundColor: "#A92929" }
       break
     default:
       returnStyle = {
@@ -94,8 +94,6 @@ const ScrollStyle = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0%;
-  /* height for testing*/
-  height: 400px;
   overflow: hidden;
   overflow-y: scroll;
 

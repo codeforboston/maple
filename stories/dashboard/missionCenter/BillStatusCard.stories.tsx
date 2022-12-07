@@ -25,6 +25,14 @@ Primary.args = {
       { date: "01/02", branch: "HOUSE", action: "someone entered the house" },
       { date: "01/03", branch: "JOINT", action: "someone entered the house" },
       { date: "01/04", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/05", branch: "SENATE", action: "someone entered the house" },
+      { date: "01/02", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/03", branch: "JOINT", action: "someone entered the house" },
+      { date: "01/04", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/05", branch: "SENATE", action: "someone entered the house" },
+      { date: "01/02", branch: "HOUSE", action: "someone entered the house" },
+      { date: "01/03", branch: "JOINT", action: "someone entered the house" },
+      { date: "01/04", branch: "HOUSE", action: "someone entered the house" },
       { date: "01/05", branch: "SENATE", action: "someone entered the house" }
     ]
   }
