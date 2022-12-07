@@ -87,6 +87,14 @@ export function EditProfileForm({
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
+          <Internal className={`px-2`} href={`/profile?id=${uid}`}>
+            <Button
+              className={`btn btn-lg btn-outline-secondary`}
+              disabled={!!formUpdated}
+            >
+              {"Settings"}
+            </Button>
+          </Internal>
           <Internal href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
