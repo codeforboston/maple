@@ -18,6 +18,7 @@ import {
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileCompnents"
+import NotificationSettingsModal from "./NotificationSettingsModal"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -44,6 +45,7 @@ export function EditProfileForm({
 }) {
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -83,15 +85,18 @@ export function EditProfileForm({
     }
   ]
 
+  const close = () => setSettingsModal(null)
+
   return (
     <Container>
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Internal className={`px-2`} href={`/profile?id=${uid}`}>
+          <div className={`px-2`}>
             <Button
               className={`btn btn-lg btn-outline-secondary`}
               disabled={!!formUpdated}
+              onClick={() => setSettingsModal("show")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +110,7 @@ export function EditProfileForm({
               </svg>
               {"Settings"}
             </Button>
-          </Internal>
+          </div>
           <Internal href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
@@ -136,6 +141,10 @@ export function EditProfileForm({
           ))}
         </StyledTabContent>
       </TabContainer>
+      <NotificationSettingsModal
+        show={settingsModal === "show"}
+        onHide={close}
+      />
     </Container>
   )
 }
