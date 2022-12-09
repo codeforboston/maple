@@ -91,9 +91,9 @@ export function EditProfileForm({
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Col className={`d-flex justify-content-end pt-2 px-2`}>
+          <Internal className={`ml-2`} href={`javascript:void(0)`}>
             <Button
-              className={`btn btn-lg btn-outline-secondary`}
+              className={`btn btn-lg btn-outline-secondary mx-4`}
               disabled={!!formUpdated}
               onClick={() => setSettingsModal("show")}
             >
@@ -109,7 +109,7 @@ export function EditProfileForm({
               </svg>
               {"Settings"}
             </Button>
-          </Col>
+          </Internal>
           <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
