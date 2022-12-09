@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
-import Image from "react-bootstrap/Image"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
@@ -92,7 +91,7 @@ export function EditProfileForm({
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <div className={`px-2`}>
+          <Col className={`d-flex justify-content-end pt-2 px-2`}>
             <Button
               className={`btn btn-lg btn-outline-secondary`}
               disabled={!!formUpdated}
@@ -110,8 +109,8 @@ export function EditProfileForm({
               </svg>
               {"Settings"}
             </Button>
-          </div>
-          <Internal href={`/profile?id=${uid}`}>
+          </Col>
+          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View your profile"
