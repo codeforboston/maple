@@ -1,19 +1,11 @@
 .thinContainer {
-  padding: 1.5rem;
-}
-
-.xthinContainer {
   padding: 0.8rem;
 }
 
-.NotificationSmallFontSize {
+.ModalFontSize {
   font-size: 12px;
 }
 
-.NotificationButtonLength {
-  width: 103.75px;
-}
-
-.NotificationButtonHeight {
-  height: 31px;
+.ModalButtonLength {
+  width: 110px;
 }
