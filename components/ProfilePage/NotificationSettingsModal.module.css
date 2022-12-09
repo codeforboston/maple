@@ -2,6 +2,10 @@
   padding: 1.5rem;
 }
 
+.xthinContainer {
+  padding: 0.8rem;
+}
+
 .NotificationSmallFontSize {
   font-size: 12px;
 }
