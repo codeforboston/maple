@@ -1,3 +1,15 @@
 .thinContainer {
   padding: 1.5rem;
 }
+
+.NotificationSmallFontSize {
+  font-size: 12px;
+}
+
+.NotificationButtonLength {
+  width: 93.75px;
+}
+
+.NotificationButtonHeight {
+  height: 31px;
+}
