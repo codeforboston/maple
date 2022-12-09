@@ -1,0 +1,2081 @@
+[
+    {
+        "id": "H100",
+        "branch": "Senate",
+        "date": "2021-06-07T15:26:51.847Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H1917",
+        "branch": "Senate",
+        "date": "2022-08-01T06:16:31.113Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2144",
+        "branch": "Senate",
+        "date": "2021-11-17T16:07:59.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2156",
+        "branch": "Senate",
+        "date": "2021-08-02T15:17:50.193Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2166",
+        "branch": "Senate",
+        "date": "2021-10-14T19:15:55.493Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2169",
+        "branch": "Senate",
+        "date": "2021-12-20T16:10:46.077Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2183",
+        "branch": "Senate",
+        "date": "2022-03-24T15:13:45.787Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2190",
+        "branch": "Senate",
+        "date": "2022-02-03T16:17:42.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2205",
+        "branch": "Senate",
+        "date": "2022-05-05T15:11:37.283Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2294",
+        "branch": "Senate",
+        "date": "2022-07-29T19:07:14.913Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2645",
+        "branch": "Senate",
+        "date": "2022-03-21T15:15:10.117Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2646",
+        "branch": "Senate",
+        "date": "2022-03-21T15:15:10.117Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2714",
+        "branch": "Senate",
+        "date": "2021-08-16T15:16:21.750Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2757",
+        "branch": "Senate",
+        "date": "2021-08-19T15:17:00.637Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H303",
+        "branch": "Senate",
+        "date": "2021-07-21T16:12:57.030Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3190",
+        "branch": "Senate",
+        "date": "2022-04-25T15:15:37.060Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3459",
+        "branch": "Senate",
+        "date": "2022-07-29T19:07:09.070Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3469",
+        "branch": "Senate",
+        "date": "2021-11-15T16:15:28.670Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3705",
+        "branch": "Senate",
+        "date": "2021-12-16T16:06:29.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3709",
+        "branch": "Senate",
+        "date": "2021-06-03T15:12:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3712",
+        "branch": "Senate",
+        "date": "2022-01-18T16:12:41.913Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3722",
+        "branch": "Senate",
+        "date": "2022-05-19T15:18:46.130Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3724",
+        "branch": "Senate",
+        "date": "2022-01-10T16:15:25.057Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3725",
+        "branch": "Senate",
+        "date": "2022-01-20T17:13:03.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3726",
+        "branch": "Senate",
+        "date": "2021-12-13T16:26:21.710Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3745",
+        "branch": "Senate",
+        "date": "2022-01-24T16:26:59.993Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3746",
+        "branch": "Senate",
+        "date": "2021-12-13T16:26:23.163Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3748",
+        "branch": "Senate",
+        "date": "2022-06-06T15:32:00.370Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3749",
+        "branch": "Senate",
+        "date": "2022-07-21T19:48:03.703Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3754",
+        "branch": "Senate",
+        "date": "2021-10-21T15:07:59.840Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3755",
+        "branch": "Senate",
+        "date": "2021-09-16T15:20:37.157Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3760",
+        "branch": "Senate",
+        "date": "2022-04-25T15:15:37.060Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3761",
+        "branch": "Senate",
+        "date": "2022-03-24T15:13:45.787Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3762",
+        "branch": "Senate",
+        "date": "2022-06-29T17:05:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3764",
+        "branch": "Senate",
+        "date": "2021-11-29T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3766",
+        "branch": "Senate",
+        "date": "2022-06-29T17:05:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3809",
+        "branch": "Senate",
+        "date": "2021-11-24T16:05:43.737Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3813",
+        "branch": "Senate",
+        "date": "2021-08-02T15:17:50.193Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3820",
+        "branch": "Senate",
+        "date": "2021-11-24T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3827",
+        "branch": "Senate",
+        "date": "2021-06-07T15:26:51.847Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3854",
+        "branch": "Senate",
+        "date": "2021-10-21T15:07:59.840Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3855",
+        "branch": "Senate",
+        "date": "2021-10-21T15:07:59.840Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3856",
+        "branch": "Senate",
+        "date": "2021-10-27T17:15:41.193Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3859",
+        "branch": "Senate",
+        "date": "2022-01-31T16:16:35.957Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3864",
+        "branch": "Senate",
+        "date": "2022-07-18T17:05:05.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H387",
+        "branch": "Senate",
+        "date": "2022-05-09T15:05:11.383Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3894",
+        "branch": "Senate",
+        "date": "2022-04-28T15:11:37.320Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3895",
+        "branch": "Senate",
+        "date": "2021-10-06T17:23:17.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3896",
+        "branch": "Senate",
+        "date": "2021-11-04T15:16:36.130Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3897",
+        "branch": "Senate",
+        "date": "2021-09-20T15:06:06.010Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3898",
+        "branch": "Senate",
+        "date": "2021-09-09T15:41:49.810Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3905",
+        "branch": "Senate",
+        "date": "2021-06-28T15:14:22.433Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3909",
+        "branch": "Senate",
+        "date": "2022-02-24T16:11:00.650Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3910",
+        "branch": "Senate",
+        "date": "2021-12-20T16:10:46.077Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3914",
+        "branch": "Senate",
+        "date": "2022-07-18T17:05:05.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3915",
+        "branch": "Senate",
+        "date": "2022-02-14T16:10:16.330Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3916",
+        "branch": "Senate",
+        "date": "2022-04-28T15:11:37.320Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3919",
+        "branch": "Senate",
+        "date": "2022-03-07T16:14:33.473Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3920",
+        "branch": "Senate",
+        "date": "2021-12-23T16:15:19.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3927",
+        "branch": "Senate",
+        "date": "2021-08-16T15:16:21.750Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3935",
+        "branch": "Senate",
+        "date": "2022-01-26T17:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3937",
+        "branch": "Senate",
+        "date": "2022-04-14T14:19:04.070Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3942",
+        "branch": "Senate",
+        "date": "2021-09-07T15:10:15.507Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3947",
+        "branch": "Senate",
+        "date": "2021-09-20T15:06:06.010Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3948",
+        "branch": "Senate",
+        "date": "2021-10-25T15:14:48.240Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3965",
+        "branch": "Senate",
+        "date": "2022-07-21T19:48:06.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3970",
+        "branch": "Senate",
+        "date": "2021-12-03T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3972",
+        "branch": "Senate",
+        "date": "2021-09-13T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3973",
+        "branch": "Senate",
+        "date": "2021-07-21T16:12:57.030Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3975",
+        "branch": "Senate",
+        "date": "2021-07-26T15:18:11.427Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3976",
+        "branch": "Senate",
+        "date": "2021-07-26T15:18:11.427Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3981",
+        "branch": "Senate",
+        "date": "2022-06-16T15:17:23.960Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3986",
+        "branch": "Senate",
+        "date": "2022-01-31T16:16:35.957Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3987",
+        "branch": "Senate",
+        "date": "2022-01-31T16:16:35.957Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3988",
+        "branch": "Senate",
+        "date": "2022-06-13T15:22:13.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3995",
+        "branch": "Senate",
+        "date": "2021-08-12T15:05:36.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3998",
+        "branch": "Senate",
+        "date": "2022-04-07T15:16:38.650Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H3999",
+        "branch": "Senate",
+        "date": "2021-10-06T17:23:17.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4002",
+        "branch": "Senate",
+        "date": "2021-07-09T17:52:51.923Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4020",
+        "branch": "Senate",
+        "date": "2022-01-10T16:15:25.057Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4024",
+        "branch": "Senate",
+        "date": "2021-12-27T16:05:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4066",
+        "branch": "Senate",
+        "date": "2021-11-17T16:07:59.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4083",
+        "branch": "Senate",
+        "date": "2022-01-13T16:20:41.050Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4084",
+        "branch": "Senate",
+        "date": "2021-12-16T16:06:29.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4092",
+        "branch": "Senate",
+        "date": "2021-11-29T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4094",
+        "branch": "Senate",
+        "date": "2021-11-17T16:07:59.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4101",
+        "branch": "Senate",
+        "date": "2021-12-20T16:10:46.077Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4103",
+        "branch": "Senate",
+        "date": "2021-10-06T17:23:17.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4116",
+        "branch": "Senate",
+        "date": "2022-01-03T17:18:00.950Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4118",
+        "branch": "Senate",
+        "date": "2021-09-23T15:18:11.913Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4123",
+        "branch": "Senate",
+        "date": "2022-06-21T15:16:10.503Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4126",
+        "branch": "Senate",
+        "date": "2022-03-28T15:14:43.403Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4127",
+        "branch": "Senate",
+        "date": "2021-09-27T17:13:16.190Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4128",
+        "branch": "Senate",
+        "date": "2021-11-03T17:27:38.220Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4198",
+        "branch": "Senate",
+        "date": "2022-05-19T15:18:46.130Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4200",
+        "branch": "Senate",
+        "date": "2021-10-14T19:16:20.210Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4205",
+        "branch": "Senate",
+        "date": "2022-07-07T15:19:29.733Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4206",
+        "branch": "Senate",
+        "date": "2022-07-13T18:18:22.697Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4211",
+        "branch": "Senate",
+        "date": "2021-11-15T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4217",
+        "branch": "Senate",
+        "date": "2021-10-28T15:15:21.160Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4222",
+        "branch": "Senate",
+        "date": "2022-01-31T16:16:35.957Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4223",
+        "branch": "Senate",
+        "date": "2022-05-16T15:07:18.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4231",
+        "branch": "Senate",
+        "date": "2022-05-12T15:08:54.240Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4233",
+        "branch": "Senate",
+        "date": "2022-05-16T15:07:18.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4250",
+        "branch": "Senate",
+        "date": "2022-07-30T21:29:33.423Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4252",
+        "branch": "Senate",
+        "date": "2022-01-13T16:20:41.050Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4256",
+        "branch": "Senate",
+        "date": "2021-11-17T16:07:59.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4257",
+        "branch": "Senate",
+        "date": "2021-11-17T16:07:59.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4259",
+        "branch": "Senate",
+        "date": "2022-06-16T15:17:23.960Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4260",
+        "branch": "Senate",
+        "date": "2021-12-23T16:15:19.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4269",
+        "branch": "Senate",
+        "date": "2021-12-03T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4284",
+        "branch": "Senate",
+        "date": "2022-04-11T15:23:35.550Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4286",
+        "branch": "Senate",
+        "date": "2022-05-05T15:11:37.283Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4296",
+        "branch": "Senate",
+        "date": "2022-06-06T15:32:00.370Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4302",
+        "branch": "Senate",
+        "date": "2022-05-23T15:37:53.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4313",
+        "branch": "Senate",
+        "date": "2022-05-19T15:18:46.130Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4315",
+        "branch": "Senate",
+        "date": "2022-03-10T18:24:01.907Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4316",
+        "branch": "Senate",
+        "date": "2022-08-01T02:07:30.810Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4323",
+        "branch": "Senate",
+        "date": "2022-07-31T16:12:31.417Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4332",
+        "branch": "Senate",
+        "date": "2022-07-29T19:07:10.727Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4333",
+        "branch": "Senate",
+        "date": "2022-07-29T19:07:12.333Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4338",
+        "branch": "Senate",
+        "date": "2022-08-01T07:26:42.143Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4341",
+        "branch": "Senate",
+        "date": "2022-07-18T17:05:05.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4345",
+        "branch": "Senate",
+        "date": "2022-02-03T16:17:42.820Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4353",
+        "branch": "Senate",
+        "date": "2022-04-11T15:23:35.550Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4442",
+        "branch": "Senate",
+        "date": "2022-07-26T18:51:06.913Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4443",
+        "branch": "Senate",
+        "date": "2022-07-26T18:51:09.477Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4501",
+        "branch": "Senate",
+        "date": "2022-04-14T14:19:04.070Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4523",
+        "branch": "Senate",
+        "date": "2022-05-12T15:08:54.240Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4528",
+        "branch": "Senate",
+        "date": "2022-06-23T15:27:01.003Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4554",
+        "branch": "Senate",
+        "date": "2022-07-18T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4555",
+        "branch": "Senate",
+        "date": "2022-05-23T15:37:53.287Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4578",
+        "branch": "Senate",
+        "date": "2022-03-31T15:19:10.677Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4580",
+        "branch": "Senate",
+        "date": "2022-03-28T15:14:43.403Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4593",
+        "branch": "Senate",
+        "date": "2022-04-28T15:11:37.320Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4708",
+        "branch": "Senate",
+        "date": "2022-06-06T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4764",
+        "branch": "Senate",
+        "date": "2022-07-21T22:41:09.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4792",
+        "branch": "Senate",
+        "date": "2022-07-31T16:12:44.043Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4805",
+        "branch": "Senate",
+        "date": "2022-05-26T21:12:31.050Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4823",
+        "branch": "Senate",
+        "date": "2022-07-21T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4832",
+        "branch": "Senate",
+        "date": "2022-07-28T20:14:48.800Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4838",
+        "branch": "Senate",
+        "date": "2022-06-27T15:11:54.537Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4860",
+        "branch": "Senate",
+        "date": "2022-07-26T17:17:58.827Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4870",
+        "branch": "Senate",
+        "date": "2022-08-01T00:57:16.967Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4875",
+        "branch": "Senate",
+        "date": "2022-07-18T17:05:05.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4911",
+        "branch": "Senate",
+        "date": "2022-06-27T15:11:54.537Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4932",
+        "branch": "Senate",
+        "date": "2022-07-11T15:14:21.070Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H4981",
+        "branch": "Senate",
+        "date": "2022-08-01T02:07:33.437Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5016",
+        "branch": "Senate",
+        "date": "2022-08-01T07:26:43.690Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5045",
+        "branch": "Senate",
+        "date": "2022-07-28T21:58:16.793Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5047",
+        "branch": "Senate",
+        "date": "2022-08-01T07:27:20.927Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5050",
+        "branch": "Senate",
+        "date": "2022-07-18T17:05:05.453Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5052",
+        "branch": "Senate",
+        "date": "2022-07-30T21:29:37.860Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5060",
+        "branch": "Senate",
+        "date": "2022-07-22T00:18:02.780Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5090",
+        "branch": "Senate",
+        "date": "2022-07-26T21:00:00.197Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5104",
+        "branch": "Senate",
+        "date": "2022-07-29T21:00:13.197Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5106",
+        "branch": "Senate",
+        "date": "2022-07-28T21:59:03.400Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5159",
+        "branch": "Senate",
+        "date": "2022-08-01T07:26:45.190Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H5164",
+        "branch": "Senate",
+        "date": "2022-08-01T14:12:17.157Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H54",
+        "branch": "Senate",
+        "date": "2021-01-21T16:41:15.347Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H67",
+        "branch": "Senate",
+        "date": "2021-02-25T16:12:24.787Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H72",
+        "branch": "Senate",
+        "date": "2021-03-04T17:24:41.963Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H73",
+        "branch": "Senate",
+        "date": "2021-03-11T22:19:45.063Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H901",
+        "branch": "Senate",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H92",
+        "branch": "Senate",
+        "date": "2021-06-14T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H93",
+        "branch": "Senate",
+        "date": "2021-10-14T19:15:49.807Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H94",
+        "branch": "Senate",
+        "date": "2021-08-16T15:16:21.750Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H98",
+        "branch": "Senate",
+        "date": "2021-06-07T15:26:51.847Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H99",
+        "branch": "Senate",
+        "date": "2021-04-05T15:17:11.270Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S1340",
+        "branch": "Senate",
+        "date": "2021-10-14T15:16:44.587Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S1362",
+        "branch": "Senate",
+        "date": "2021-12-20T16:10:46.077Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S1364",
+        "branch": "Senate",
+        "date": "2021-10-06T17:23:17.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S15",
+        "branch": "Senate",
+        "date": "2021-03-22T22:07:21.143Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S1734",
+        "branch": "Senate",
+        "date": "2021-10-06T17:23:17.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S1747",
+        "branch": "Senate",
+        "date": "2022-06-09T15:16:12.890Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2380",
+        "branch": "Senate",
+        "date": "2022-07-05T15:18:19.300Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S24",
+        "branch": "Senate",
+        "date": "2021-04-20T15:17:55.657Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2447",
+        "branch": "Senate",
+        "date": "2021-11-24T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2449",
+        "branch": "Senate",
+        "date": "2021-09-02T15:08:12.240Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2450",
+        "branch": "Senate",
+        "date": "2021-09-02T15:08:12.240Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2464",
+        "branch": "Senate",
+        "date": "2021-11-10T23:34:19.070Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2475",
+        "branch": "Senate",
+        "date": "2021-06-15T18:18:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2477",
+        "branch": "Senate",
+        "date": "2022-05-16T15:07:18.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2479",
+        "branch": "Senate",
+        "date": "2021-09-20T15:06:06.010Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2487",
+        "branch": "Senate",
+        "date": "2021-08-30T15:13:47.190Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2498",
+        "branch": "Senate",
+        "date": "2022-05-16T15:07:18.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2523",
+        "branch": "Senate",
+        "date": "2022-02-28T16:22:51.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2526",
+        "branch": "Senate",
+        "date": "2022-05-19T15:18:46.130Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2550",
+        "branch": "Senate",
+        "date": "2022-01-10T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2557",
+        "branch": "Senate",
+        "date": "2021-11-24T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2561",
+        "branch": "Senate",
+        "date": "2021-12-13T16:26:20.227Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2563",
+        "branch": "Senate",
+        "date": "2021-10-28T15:15:21.160Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2566",
+        "branch": "Senate",
+        "date": "2022-01-20T17:13:03.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2573",
+        "branch": "Senate",
+        "date": "2022-02-07T16:08:09.247Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2587",
+        "branch": "Senate",
+        "date": "2022-03-07T16:14:33.473Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2588",
+        "branch": "Senate",
+        "date": "2022-03-24T15:13:45.787Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2591",
+        "branch": "Senate",
+        "date": "2022-05-16T15:07:18.147Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2592",
+        "branch": "Senate",
+        "date": "2022-01-18T16:12:41.913Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2603",
+        "branch": "Senate",
+        "date": "2021-12-20T16:10:46.077Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2610",
+        "branch": "Senate",
+        "date": "2022-01-24T16:26:59.993Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2616",
+        "branch": "Senate",
+        "date": "2022-04-04T15:20:18.757Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2654",
+        "branch": "Senate",
+        "date": "2022-02-24T16:11:00.650Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2686",
+        "branch": "Senate",
+        "date": "2022-05-26T15:50:13.637Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2694",
+        "branch": "Senate",
+        "date": "2022-05-25T15:36:49.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2702",
+        "branch": "Senate",
+        "date": "2022-04-21T15:05:56.657Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2703",
+        "branch": "Senate",
+        "date": "2022-07-14T19:10:14.587Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2705",
+        "branch": "Senate",
+        "date": "2022-07-07T15:19:29.733Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2706",
+        "branch": "Senate",
+        "date": "2022-04-25T15:15:37.060Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2775",
+        "branch": "Senate",
+        "date": "2022-03-24T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2778",
+        "branch": "Senate",
+        "date": "2022-06-16T15:17:23.960Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2788",
+        "branch": "Senate",
+        "date": "2022-06-13T15:22:13.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2792",
+        "branch": "Senate",
+        "date": "2022-04-21T15:05:56.657Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2799",
+        "branch": "Senate",
+        "date": "2022-07-21T19:41:28.970Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2841",
+        "branch": "Senate",
+        "date": "2022-06-27T15:11:54.537Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2863",
+        "branch": "Senate",
+        "date": "2022-06-13T15:22:13.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2884",
+        "branch": "Senate",
+        "date": "2022-06-13T15:22:13.457Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2924",
+        "branch": "Senate",
+        "date": "2022-06-16T15:17:23.960Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2965",
+        "branch": "Senate",
+        "date": "2022-07-28T21:03:52.053Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2985",
+        "branch": "Senate",
+        "date": "2022-07-14T22:26:21.493Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S2990",
+        "branch": "Senate",
+        "date": "2022-07-21T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S3075",
+        "branch": "Senate",
+        "date": "2022-07-29T21:21:44.317Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S3096",
+        "branch": "Senate",
+        "date": "2022-08-01T06:16:25.737Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S3097",
+        "branch": "Senate",
+        "date": "2022-08-01T13:54:47.160Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S31",
+        "branch": "Senate",
+        "date": "2021-05-03T15:20:01.317Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S33",
+        "branch": "Senate",
+        "date": "2021-04-05T15:17:11.270Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S37",
+        "branch": "Senate",
+        "date": "2021-03-22T22:07:37.517Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S41",
+        "branch": "Senate",
+        "date": "2021-05-13T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S493",
+        "branch": "Senate",
+        "date": "2021-08-02T15:17:50.193Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S535",
+        "branch": "Senate",
+        "date": "2022-07-07T15:19:29.733Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S6",
+        "branch": "Senate",
+        "date": "2021-01-25T16:20:28.577Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "S9",
+        "branch": "Senate",
+        "date": "2021-01-28T16:12:06.720Z",
+        "type": "Enacted",
+        "info": "laid before the Governor"
+    },
+    {
+        "id": "H2182",
+        "branch": "House",
+        "date": "2022-06-23T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "155 YEAS to 0 NAYS (See YEA and NAY No. 203)"
+    },
+    {
+        "id": "H2189",
+        "branch": "House",
+        "date": "2021-09-23T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 91)"
+    },
+    {
+        "id": "H2193",
+        "branch": "House",
+        "date": "2022-01-19T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 125)"
+    },
+    {
+        "id": "H3178",
+        "branch": "House",
+        "date": "2021-11-17T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 121)"
+    },
+    {
+        "id": "H3751",
+        "branch": "House",
+        "date": "2022-07-21T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 223)"
+    },
+    {
+        "id": "H3770",
+        "branch": "House",
+        "date": "2021-05-18T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "160 YEAS to 0 NAYS (See YEA and NAY No. 36)"
+    },
+    {
+        "id": "H3867",
+        "branch": "House",
+        "date": "2022-02-16T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "156 YEAS to 0 NAYS (See YEA and NAY No. 148)"
+    },
+    {
+        "id": "H3900",
+        "branch": "House",
+        "date": "2022-02-10T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "158 YEAS to 0 NAYS (See YEA and NAY No. 142)"
+    },
+    {
+        "id": "H3903",
+        "branch": "House",
+        "date": "2021-07-15T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "160 YEAS to 0 NAYS ( See YEA and NAY No. 70)"
+    },
+    {
+        "id": "H3936",
+        "branch": "House",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "152 YEAS to 0 NAYS (See YEA and NAY, No. 234)"
+    },
+    {
+        "id": "H3996",
+        "branch": "House",
+        "date": "2022-01-19T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 126)"
+    },
+    {
+        "id": "H3999",
+        "branch": "House",
+        "date": "2021-10-06T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "157 YEAS to 0 NAYS (See YEA and NAY No. 106)"
+    },
+    {
+        "id": "H4002",
+        "branch": "House",
+        "date": "2021-07-09T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 68)"
+    },
+    {
+        "id": "H4108",
+        "branch": "House",
+        "date": "2022-03-17T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "154 YEAS to 0 NAYS (See YEA and NAY No. 159)"
+    },
+    {
+        "id": "H4118",
+        "branch": "House",
+        "date": "2021-09-23T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "158 YEAS to 1 NAYS (See YEA and NAY No. 102)"
+    },
+    {
+        "id": "H4197",
+        "branch": "House",
+        "date": "2022-07-14T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "154 YEAS to 0 NAYS (See YEA and NAY No. 217)"
+    },
+    {
+        "id": "H4215",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 240)"
+    },
+    {
+        "id": "H4251",
+        "branch": "House",
+        "date": "2022-01-27T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "158 YEAS to 0 NAYS (See YEA and NAY No. 130)"
+    },
+    {
+        "id": "H4321",
+        "branch": "House",
+        "date": "2022-07-30T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 258)"
+    },
+    {
+        "id": "H4360",
+        "branch": "House",
+        "date": "2022-06-16T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "155 YEAS to 0 NAYS (See YEA and NAY No. 199)"
+    },
+    {
+        "id": "H4432",
+        "branch": "House",
+        "date": "2022-04-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "156 YEAS to 0 NAYS (See YEA and NAY No. 172)"
+    },
+    {
+        "id": "H4519",
+        "branch": "House",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "152 YEAS to 0 NAYS (See YEA and NAY, No. 235)"
+    },
+    {
+        "id": "H4631",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 241)"
+    },
+    {
+        "id": "H4638",
+        "branch": "House",
+        "date": "2022-06-16T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "155 YEAS to 0 NAYS (See YEA and NAY No. 198)"
+    },
+    {
+        "id": "H4794",
+        "branch": "House",
+        "date": "2022-07-30T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 257)"
+    },
+    {
+        "id": "H4805",
+        "branch": "House",
+        "date": "2022-05-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "117 YEAS to 36 NAYS (See YEA and NAY No. 191)"
+    },
+    {
+        "id": "H4900",
+        "branch": "House",
+        "date": "2022-07-29T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 253)"
+    },
+    {
+        "id": "H4901",
+        "branch": "House",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 231)"
+    },
+    {
+        "id": "H4946",
+        "branch": "House",
+        "date": "2022-07-30T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 256)"
+    },
+    {
+        "id": "H4979",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 243)"
+    },
+    {
+        "id": "H4986",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 242)"
+    },
+    {
+        "id": "H5048",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 244)"
+    },
+    {
+        "id": "H5049",
+        "branch": "House",
+        "date": "2022-07-29T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 247)"
+    },
+    {
+        "id": "H5050",
+        "branch": "House",
+        "date": "2022-07-18T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 221)"
+    },
+    {
+        "id": "H5060",
+        "branch": "House",
+        "date": "2022-07-21T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "146 YEAS to 7 NAYS (See YEA and NAY No. 229)"
+    },
+    {
+        "id": "H5065",
+        "branch": "House",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 233)"
+    },
+    {
+        "id": "H5090",
+        "branch": "House",
+        "date": "2022-07-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "137 YEAS to 16 NAYS (See YEA and NAY No. 236)"
+    },
+    {
+        "id": "H5095",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 284)"
+    },
+    {
+        "id": "H5106",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 245)"
+    },
+    {
+        "id": "H5142",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 260)"
+    },
+    {
+        "id": "H5151",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 270)"
+    },
+    {
+        "id": "H5155",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 281)"
+    },
+    {
+        "id": "H5161",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 283)"
+    },
+    {
+        "id": "H5163",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "147 YEAS to 6 NAYS (See YEA and NAY No. 285)"
+    },
+    {
+        "id": "H5164",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "151 YEAS to 2 NAYS (See YEA and NAY No. 286)"
+    },
+    {
+        "id": "H90",
+        "branch": "House",
+        "date": "2021-03-25T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "157 YEAS to 0 NAYS (See YEA and NAY No. 17)"
+    },
+    {
+        "id": "S1353",
+        "branch": "House",
+        "date": "2022-01-19T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS (See YEA and NAY No. 124)"
+    },
+    {
+        "id": "S1357",
+        "branch": "House",
+        "date": "2022-04-26T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "155 YEAS to 0 NAYS (See YEA and NAY No. 171)"
+    },
+    {
+        "id": "S2475",
+        "branch": "House",
+        "date": "2021-06-15T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "150 YEAS to 10 NAYS (See YEA and NAY No. 46)"
+    },
+    {
+        "id": "S2732",
+        "branch": "House",
+        "date": "2022-05-18T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "155 YEAS to 0 NAYS (See YEA and NAY No. 183)"
+    },
+    {
+        "id": "S29",
+        "branch": "House",
+        "date": "2022-01-19T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "159 YEAS to 0 NAYS ( See YEA and NAY No. 123)"
+    },
+    {
+        "id": "S2924",
+        "branch": "House",
+        "date": "2022-06-16T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "126 YEAS to 29 NAYS (See YEA and NAY No. 200)"
+    },
+    {
+        "id": "S3004",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 274)"
+    },
+    {
+        "id": "S3020",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 280)"
+    },
+    {
+        "id": "S3029",
+        "branch": "House",
+        "date": "2022-07-28T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 239)"
+    },
+    {
+        "id": "S3031",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 271)"
+    },
+    {
+        "id": "S3053",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 273)"
+    },
+    {
+        "id": "S3062",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 272)"
+    },
+    {
+        "id": "S3064",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 278)"
+    },
+    {
+        "id": "S3065",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 275)"
+    },
+    {
+        "id": "S3073",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 279)"
+    },
+    {
+        "id": "S3075",
+        "branch": "House",
+        "date": "2022-07-29T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 251)"
+    },
+    {
+        "id": "S3088",
+        "branch": "House",
+        "date": "2022-08-01T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY No. 282)"
+    },
+    {
+        "id": "S3090",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 277)"
+    },
+    {
+        "id": "S3091",
+        "branch": "House",
+        "date": "2022-07-31T04:00:00.000Z",
+        "type": "Enacted",
+        "info": "153 YEAS to 0 NAYS (See YEA and NAY, No. 276)"
+    },
+    {
+        "id": "S9",
+        "branch": "House",
+        "date": "2021-01-28T05:00:00.000Z",
+        "type": "Enacted",
+        "info": "144 YEAS to 14 NAYS (See YEA and NAY No. 3)"
+    }
+]
