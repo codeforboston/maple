@@ -146,9 +146,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {hit.nextHearingAt && <Card.Footer className="card-footer">
+          {hit.nextHearingAt ? <Card.Footer className="card-footer">
             Hearing Scheduled {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
-          </Card.Footer>}
+          </Card.Footer>: null}
         </StyledCard>
       </a>
     </Link>
