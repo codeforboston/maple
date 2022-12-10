@@ -88,7 +88,7 @@ const StyledCard = styled(Card)`
     padding-right: 1rem;
   }
 
-  .footer {
+  .card-footer {
     background-color: var(--bs-blue);
     color: white;
     padding: 0.5rem;
@@ -146,7 +146,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {hit.nextHearingAt && <Card.Footer className="d-sm footer">
+          {hit.nextHearingAt && <Card.Footer className="card-footer">
             Hearing Scheduled {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
           </Card.Footer>}
         </StyledCard>
