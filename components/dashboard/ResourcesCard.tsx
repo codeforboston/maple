@@ -1,9 +1,8 @@
-import React from "react"
 import styled from "styled-components"
 
 type Props = {}
 
-function ResourcesCard({}: Props) {
+export function ResourcesCard({}: Props) {
   return (
     <Container>
       <Wrapper>
@@ -39,13 +38,11 @@ function ResourcesCard({}: Props) {
   )
 }
 
-export default ResourcesCard
-
 const Container = styled.div`
   width: 255px;
   background-color: #1a3185;
   height: 223px;
-  margin: 50px;
+  margin: 1rem;
   border-radius: 20px;
 `
 
