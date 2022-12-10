@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { ModalProps } from "react-bootstrap"
+import Dropdown from "react-bootstrap/Dropdown"
 import { Button, Col, Image, Modal, Stack } from "../bootstrap"
 import styles from "./NotificationSettingsModal.module.css"
 
@@ -27,23 +28,19 @@ export default function NotificationSettingsModal({
       <Modal.Header closeButton>
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
-      <Modal.Body className={styles.thinContainer}>
+      <Modal.Body className={styles.modalContainer}>
         <Stack>
           &nbsp; Notifications
           <hr className={`mt-0`} />
         </Stack>
-        <Stack
-          className={`${styles.ModalFontSize}`}
-          direction={`horizontal`}
-          gap={3}
-        >
+        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
           <Col className={`col-8`}>
             Would you like to receive updates about bills/organizations you
             follow through email?
           </Col>
           {notifications === "enable" ? (
             <Button
-              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.ModalButtonLength}`}
+              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.modalButtonLength}`}
               onClick={() => setNotifications("enabled")}
             >
               <Image
@@ -57,7 +54,7 @@ export default function NotificationSettingsModal({
             </Button>
           ) : (
             <Button
-              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.ModalButtonLength}`}
+              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.modalButtonLength}`}
               onClick={() => setNotifications("enable")}
             >
               <Image
@@ -71,29 +68,57 @@ export default function NotificationSettingsModal({
             </Button>
           )}
         </Stack>
-        <Stack className={`pt-5`}>
+        {notifications === "enable" ? (
+          <Stack
+            className={`pt-3 ${styles.modalFontSize}`}
+            direction={`horizontal`}
+          >
+            <Col className={`col-8`}>&nbsp;</Col>
+          </Stack>
+        ) : (
+          <Stack
+            className={`pt-3 ${styles.modalFontSize}`}
+            direction={`horizontal`}
+          >
+            <Col className={`col-8`}>
+              How often would you like to receive emails?
+            </Col>
+            <Dropdown className={`d-inline-block ms-auto`}>
+              <Dropdown.Toggle
+                className={`btn-sm py-1 ${styles.modalButtonLength}`}
+                variant="outline-secondary"
+                id="dropdown-basic"
+              >
+                Monthly
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={onCancelClick}>Daily</Dropdown.Item>
+                <Dropdown.Item onClick={onCancelClick}>Weekly</Dropdown.Item>
+                <Dropdown.Item onClick={onCancelClick}>Monthly</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Stack>
+        )}
+        <Stack className={`pt-4`}>
           &nbsp; Profile Settings
           <hr className={`mt-0`} />
         </Stack>
-        <Stack
-          className={`${styles.ModalFontSize}`}
-          direction={`horizontal`}
-          gap={3}
-        >
+        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
           <Col className={`col-8`}>
             Don't make my profile public. (Your name will still be associated
             with your testimony.)
           </Col>
           {profileSettings === "enable" ? (
             <Button
-              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.ModalButtonLength}`}
+              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.modalButtonLength}`}
               onClick={() => setProfileSettings("enabled")}
             >
               {"Enable"}
             </Button>
           ) : (
             <Button
-              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.ModalButtonLength}`}
+              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.modalButtonLength}`}
               onClick={() => setProfileSettings("enable")}
             >
               {"Enabled"}
@@ -119,7 +144,7 @@ export default function NotificationSettingsModal({
 
 /*
   Notification button -> [x] Enable, Enabled
-                         [ ] Enabled activates How Often Drop Down
+                         [ ] Enabled activates "How Often" Drop Down
                          [ ]     Set up Drop Down
                          [ ] State -> Enable, Enabled (with How Often)
   Continue -> [ ] Update Backend with Notifications & Profile Settings State 

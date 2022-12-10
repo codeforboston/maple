@@ -1,11 +1,15 @@
-.thinContainer {
+.dropdownSize {
+  max-width: 110px;
+}
+
+.modalContainer {
   padding: 0.8rem;
 }
 
-.ModalFontSize {
-  font-size: 12px;
+.modalButtonLength {
+  width: 110px;
 }
 
-.ModalButtonLength {
-  width: 110px;
+.modalFontSize {
+  font-size: 12px;
 }
