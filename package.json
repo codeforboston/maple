@@ -22,7 +22,7 @@
     "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage tests/integration/exportedTestData",
     "export:nolint": "next build --no-lint && next export",
     "fix": "next lint --fix && prettier --write .",
-    "postinstall": "yarn --cwd functions install --frozen-lockfile",
+    "postinstall": "yarn --cwd functions install --frozen-lockfile --ignore-engines",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "serve": "firebase emulators:start --only hosting",
@@ -34,6 +34,9 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chromatic": "chromatic --project-token=f8618e690599"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "browserslist": {
     "production": [
@@ -80,7 +83,7 @@
     "leaflet.markercluster": "^1.4.1",
     "lodash": "^4.17.21",
     "logrocket": "^3.0.1",
-    "luxon": "^2.3.1",
+    "luxon": "^3.1.1",
     "nanoid": "^3.3.1",
     "next": "^12.1.5",
     "next-on-netlify": "^2.9.0",
