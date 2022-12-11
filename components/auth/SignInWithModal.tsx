@@ -4,6 +4,7 @@ import ForgotPasswordModal from "./ForgotPasswordModal"
 import SignInModal from "./SignInModal"
 import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
+import TermsOfServiceModal from "./TermsOfServiceModal"
 
 interface Props {
   label?: string
@@ -19,7 +20,6 @@ export default function SignInWithModal({
   >(null)
 
   const close = () => setCurrentModal(null)
-
   return (
     <span className={className}>
       <Button
@@ -41,7 +41,10 @@ export default function SignInWithModal({
         onHide={close}
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
-      <SignUpModal show={currentModal === "signUp"} onHide={close} />
+      <SignUpModal 
+        show={currentModal === "signUp"} 
+        onHide={close} 
+      />
       <ForgotPasswordModal
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}

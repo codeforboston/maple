@@ -1,7 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useState} from "react"
+import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
@@ -11,6 +12,9 @@ import {
   useCreateUserWithEmailAndPassword
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
+import TermsOfServiceModal from "./TermsOfServiceModal"
+import styles from "./SignUpModal.module.css"
+import { required } from "yargs"
 
 export default function SignUpModal({
   show,
@@ -23,6 +27,11 @@ export default function SignUpModal({
     getValues,
     formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
+  const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
+    "not-agreed"
+  )
+
+  const showTos = tosStep === "reading"
 
   const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword()
 
@@ -40,18 +49,21 @@ export default function SignUpModal({
   })
 
   return (
+    <>
+
     <Modal
       show={show}
       onHide={onHide}
       aria-labelledby="sign-up-modal"
       centered
       size="lg"
+      className={clsx(showTos && "d-none")}
     >
       <Modal.Header closeButton>
         <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Col md={11} className="mx-auto">
+        <Col md={12} className="mx-auto">
           {createUserWithEmailAndPassword.error ? (
             <Alert variant="danger">
               {createUserWithEmailAndPassword.error.message}
@@ -59,6 +71,12 @@ export default function SignUpModal({
           ) : null}
 
           <Form noValidate onSubmit={onSubmit}>
+            <TermsOfServiceModal 
+              show={showTos}
+              onHide={() => setTosStep("not-agreed")}
+              onAgree={() => setTosStep("agreed")
+            }
+            />
             <Stack gap={3} className="mb-4">
               <Input
                 label="Email"
@@ -117,6 +135,17 @@ export default function SignUpModal({
                   />
                 </Col>
               </Row>
+              <Col className={styles.agreebox}>
+                <b>In order to continue you must agree to the <a className={styles.modallink} onClick={() => setTosStep("reading")}>privacy policy and terms of use</a></b>
+                <Form.Check 
+                  inline 
+                  required
+                  label="I agree to terms of service" 
+                  feedback="You must agree before submitting"
+                  type="checkbox"
+                  className={styles.checkbox}
+                />
+              </Col>
             </Stack>
 
             <Stack gap={4}>
@@ -136,5 +165,7 @@ export default function SignUpModal({
         </Col>
       </Modal.Body>
     </Modal>
+    </>
   )
 }
+

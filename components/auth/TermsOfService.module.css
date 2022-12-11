@@ -1,0 +1,15 @@
+.text {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.hr{
+    color: black;
+    background-color: black;
+    height:10px;
+}
+
+.readmore {
+    color: #1A3185; 
+}
