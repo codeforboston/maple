@@ -2,8 +2,6 @@ import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { CurrentCommitteeCard } from "../../components/CurrentCommitteeCard/CurrentCommitteeCard"
 
-// TODO: move into components directory
-
 export default createMeta({
   title: "Bill Detail/CurrentCommitteeCard",
   figmaUrl:
