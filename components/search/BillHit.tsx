@@ -5,8 +5,7 @@ import {
   faTimesCircle
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { format } from "date-fns/esm"
-import { fromUnixTime } from "date-fns/esm"
+import { format, fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
@@ -146,9 +145,12 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {hit.nextHearingAt ? <Card.Footer className="card-footer">
-            Hearing Scheduled {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
-          </Card.Footer>: null}
+          {hit.nextHearingAt ? (
+            <Card.Footer className="card-footer">
+              Hearing Scheduled{" "}
+              {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
+            </Card.Footer>
+          ) : null}
         </StyledCard>
       </a>
     </Link>

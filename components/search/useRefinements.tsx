@@ -84,7 +84,12 @@ export const useRefinements = () => {
       </Offcanvas>
     ),
     show: inline ? null : (
-      <FilterButton variant="secondary" active={show} onClick={handleOpen} className={hasRefinements ? "ais-FilterButton-has-refinements": ""}>
+      <FilterButton
+        variant="secondary"
+        active={show}
+        onClick={handleOpen}
+        className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+      >
         <FontAwesomeIcon icon={faFilter} /> Filter
       </FilterButton>
     )
