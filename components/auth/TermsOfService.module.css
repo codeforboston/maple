@@ -4,6 +4,18 @@
     font-weight: 500;
 }
 
+.agreebox {
+    background-color: #EAE7E7;
+    border-radius: 10px;
+    padding: 12px;
+
+}
+
+.checkbox {
+    color: #1A3185; 
+    background: transparent; 
+}
+
 .hr{
     color: black;
     background-color: black;
@@ -12,4 +24,14 @@
 
 .readmore {
     color: #1A3185; 
+    background: transparent; 
 }
+
+.button {
+    width: 100%; 
+}
+
+.warning {
+    font-weight: bold
+}
+

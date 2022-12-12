@@ -135,27 +135,22 @@ export default function SignUpModal({
                   />
                 </Col>
               </Row>
-              <Col className={styles.agreebox}>
-                <b>In order to continue you must agree to the <a className={styles.modallink} onClick={() => setTosStep("reading")}>privacy policy and terms of use</a></b>
-                <Form.Check 
-                  inline 
-                  required
-                  label="I agree to terms of service" 
-                  feedback="You must agree before submitting"
-                  type="checkbox"
-                  className={styles.checkbox}
-                />
-              </Col>
             </Stack>
 
             <Stack gap={4}>
-              <LoadingButton
+              {tosStep == 'agreed' ? 
+                <LoadingButton
                 type="submit"
                 className="w-100"
-                loading={createUserWithEmailAndPassword.loading}
-              >
-                Sign Up
-              </LoadingButton>
+                loading={createUserWithEmailAndPassword.loading}>
+                  Sign up
+                </LoadingButton>
+              : 
+                <Button type="button" onClick={() => setTosStep("reading")}>
+                  Continue
+                </Button>
+                
+              }
 
               <Divider className="px-4">or</Divider>
 
