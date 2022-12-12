@@ -7,9 +7,9 @@ import styles from "./NotificationSettingsModal.module.css"
 export default function NotificationSettingsModal({
   show,
   onHide,
-  onCancelClick
+  onClickCloseModal
 }: Pick<ModalProps, "show" | "onHide"> & {
-  onCancelClick: () => void
+  onClickCloseModal: () => void
 }) {
   const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
     "Enable"
@@ -131,10 +131,15 @@ export default function NotificationSettingsModal({
           className={`d-flex justify-content-end pt-4`}
           direction={`horizontal`}
         >
-          <Button className={`btn btn-sm mx-3 py-1`}>Continue</Button>
+          <Button
+            className={`btn btn-sm mx-3 py-1`}
+            onClick={onClickCloseModal}
+          >
+            Continue
+          </Button>
           <Button
             className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onCancelClick}
+            onClick={onClickCloseModal}
           >
             Cancel
           </Button>
@@ -145,6 +150,8 @@ export default function NotificationSettingsModal({
 }
 
 /*
+  Modal State -> Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
+                 from parent EditProfilePage.tsx
   Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
-                     [ ] then Close Modal
+                     [x] then Close Modal
 */

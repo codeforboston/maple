@@ -145,7 +145,7 @@ export function EditProfileForm({
       <NotificationSettingsModal
         show={settingsModal === "show"}
         onHide={close}
-        onCancelClick={() => setSettingsModal(null)}
+        onClickCloseModal={() => setSettingsModal(null)}
       />
     </Container>
   )
