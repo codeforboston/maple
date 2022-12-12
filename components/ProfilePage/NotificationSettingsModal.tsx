@@ -14,6 +14,9 @@ export default function NotificationSettingsModal({
   const [notifications, setNotifications] = useState<"enable" | "enabled">(
     "enable"
   ) //replace initial state with User data
+  const [notificationFrequency, setNotificationFrequency] = useState<
+    "Daily" | "Weekly" | "Monthly"
+  >("Monthly") //replace initial state with User data
   const [profileSettings, setProfileSettings] = useState<"enable" | "enabled">(
     "enable"
   ) //replace initial state with User data
@@ -73,7 +76,14 @@ export default function NotificationSettingsModal({
             className={`pt-3 ${styles.modalFontSize}`}
             direction={`horizontal`}
           >
-            <Col className={`col-8`}>&nbsp;</Col>
+            <Col className={`col-8`}>
+              <Button
+                className={`btn btn-sm invisible py-1 ${styles.modalButtonLength}`}
+              >
+                {"Placeholder"}
+                {/* Maintains spacing when Notifactions are not enabled */}
+              </Button>
+            </Col>
           </Stack>
         ) : (
           <Stack
@@ -89,13 +99,25 @@ export default function NotificationSettingsModal({
                 variant="outline-secondary"
                 id="dropdown-basic"
               >
-                Monthly
+                {notificationFrequency}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item onClick={onCancelClick}>Daily</Dropdown.Item>
-                <Dropdown.Item onClick={onCancelClick}>Weekly</Dropdown.Item>
-                <Dropdown.Item onClick={onCancelClick}>Monthly</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setNotificationFrequency("Daily")}
+                >
+                  Daily
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setNotificationFrequency("Weekly")}
+                >
+                  Weekly
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setNotificationFrequency("Monthly")}
+                >
+                  Monthly
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Stack>
@@ -143,12 +165,6 @@ export default function NotificationSettingsModal({
 }
 
 /*
-  Notification button -> [x] Enable, Enabled
-                         [ ] Enabled activates "How Often" Drop Down
-                         [ ]     Set up Drop Down
-                         [ ] State -> Enable, Enabled (with How Often)
   Continue -> [ ] Update Backend with Notifications & Profile Settings State 
               [ ] then Close Modal
-
-  tweak :hover and :focus for all/some buttons?
 */
