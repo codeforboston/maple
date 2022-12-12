@@ -11,14 +11,14 @@ export default function NotificationSettingsModal({
 }: Pick<ModalProps, "show" | "onHide"> & {
   onCancelClick: () => void
 }) {
-  const [notifications, setNotifications] = useState<"enable" | "enabled">(
-    "enable"
+  const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
+    "Enable"
   ) //replace initial state with User data
   const [notificationFrequency, setNotificationFrequency] = useState<
     "Daily" | "Weekly" | "Monthly"
   >("Monthly") //replace initial state with User data
-  const [profileSettings, setProfileSettings] = useState<"enable" | "enabled">(
-    "enable"
+  const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
+    "Enable"
   ) //replace initial state with User data
 
   return (
@@ -41,87 +41,65 @@ export default function NotificationSettingsModal({
             Would you like to receive updates about bills/organizations you
             follow through email?
           </Col>
-          {notifications === "enable" ? (
-            <Button
-              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.modalButtonLength}`}
-              onClick={() => setNotifications("enabled")}
-            >
-              <Image
-                className={`pe-1`}
-                src="/mail-2.svg"
-                alt="open envelope with letter, toggles update frequency options"
-                width="22"
-                height="19"
-              />
-              {"Enable"}
-            </Button>
-          ) : (
-            <Button
-              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.modalButtonLength}`}
-              onClick={() => setNotifications("enable")}
-            >
-              <Image
-                className={`pe-1`}
-                src="/mail-2.svg"
-                alt="open envelope with letter, toggles update frequency options"
-                width="22"
-                height="19"
-              />
-              {"Enabled"}
-            </Button>
-          )}
+          <Button
+            className={`
+              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
+              ${
+                notifications === "Enable"
+                  ? "btn-outline-secondary"
+                  : "btn-secondary"
+              }
+            `}
+            onClick={() =>
+              setNotifications(
+                notifications === "Enable" ? "Enabled" : "Enable"
+              )
+            }
+          >
+            <Image
+              className={`pe-1`}
+              src="/mail-2.svg"
+              alt="open envelope with letter, toggles update frequency options"
+              width="22"
+              height="19"
+            />
+            {notifications}
+          </Button>
         </Stack>
-        {notifications === "enable" ? (
-          <Stack
-            className={`pt-3 ${styles.modalFontSize}`}
-            direction={`horizontal`}
-          >
-            <Col className={`col-8`}>
-              <Button
-                className={`btn btn-sm invisible py-1 ${styles.modalButtonLength}`}
-              >
-                {"Placeholder"}
-                {/* Maintains spacing when Notifactions are not enabled */}
-              </Button>
-            </Col>
-          </Stack>
-        ) : (
-          <Stack
-            className={`pt-3 ${styles.modalFontSize}`}
-            direction={`horizontal`}
-          >
-            <Col className={`col-8`}>
-              How often would you like to receive emails?
-            </Col>
-            <Dropdown className={`d-inline-block ms-auto`}>
-              <Dropdown.Toggle
-                className={`btn-sm py-1 ${styles.modalButtonLength}`}
-                variant="outline-secondary"
-                id="dropdown-basic"
-              >
-                {notificationFrequency}
-              </Dropdown.Toggle>
+        <Stack
+          className={`
+            pt-3 ${styles.modalFontSize} 
+            ${notifications === "Enable" ? "invisible" : null} 
+          `}
+          direction={`horizontal`}
+        >
+          <Col className={`col-8`}>
+            How often would you like to receive emails?
+          </Col>
+          <Dropdown className={`d-inline-block ms-auto`}>
+            <Dropdown.Toggle
+              className={`btn-sm py-1 ${styles.modalButtonLength}`}
+              variant="outline-secondary"
+              id="dropdown-basic"
+            >
+              {notificationFrequency}
+            </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={() => setNotificationFrequency("Daily")}
-                >
-                  Daily
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => setNotificationFrequency("Weekly")}
-                >
-                  Weekly
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => setNotificationFrequency("Monthly")}
-                >
-                  Monthly
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Stack>
-        )}
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => setNotificationFrequency("Daily")}>
+                Daily
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setNotificationFrequency("Weekly")}>
+                Weekly
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => setNotificationFrequency("Monthly")}
+              >
+                Monthly
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Stack>
         <Stack className={`pt-4`}>
           &nbsp; Profile Settings
           <hr className={`mt-0`} />
@@ -131,21 +109,23 @@ export default function NotificationSettingsModal({
             Don't make my profile public. (Your name will still be associated
             with your testimony.)
           </Col>
-          {profileSettings === "enable" ? (
-            <Button
-              className={`btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.modalButtonLength}`}
-              onClick={() => setProfileSettings("enabled")}
-            >
-              {"Enable"}
-            </Button>
-          ) : (
-            <Button
-              className={`btn btn-sm btn-secondary ms-auto py-1 ${styles.modalButtonLength}`}
-              onClick={() => setProfileSettings("enable")}
-            >
-              {"Enabled"}
-            </Button>
-          )}
+          <Button
+            className={`
+              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
+              ${
+                profileSettings === "Enable"
+                  ? "btn-outline-secondary"
+                  : "btn-secondary"
+              }
+            `}
+            onClick={() =>
+              setProfileSettings(
+                profileSettings === "Enable" ? "Enabled" : "Enable"
+              )
+            }
+          >
+            {profileSettings}
+          </Button>
         </Stack>
         <Stack
           className={`d-flex justify-content-end pt-4`}
@@ -165,6 +145,6 @@ export default function NotificationSettingsModal({
 }
 
 /*
-  Continue -> [ ] Update Backend with Notifications & Profile Settings State 
-              [ ] then Close Modal
+  Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
+                     [ ] then Close Modal
 */
