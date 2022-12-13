@@ -43,5 +43,8 @@ interface CardListItemsProps {
 
 export const CardListItems = (props: CardListItemsProps) => {
   const { items = [] } = props
+  if (items.length <= 0) {
+    return <></>
+  }
   return <ListGroup className="list-group-flush">{items}</ListGroup>
 }
