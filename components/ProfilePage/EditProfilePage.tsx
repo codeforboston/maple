@@ -2,7 +2,8 @@ import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
+import { Button, Col, Container, Image, Nav, Row, Spinner } from "../bootstrap"
+import { GearButton } from "../buttons"
 import {
   Profile,
   ProfileHook,
@@ -12,12 +13,12 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileCompnents"
-import NotificationSettingsModal from "./NotificationSettingsModal"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -92,25 +93,13 @@ export function EditProfileForm({
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
           <Internal className={`ml-2`} href={`javascript:void(0)`}>
-            <Button
+            <GearButton
               className={`btn btn-lg btn-outline-secondary me-4`}
               disabled={!!formUpdated}
               onClick={() => setSettingsModal("show")}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                className={`bi bi-gear-fill px-1 pb-1`}
-                viewBox="0 0 16 16"
-              >
-                <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-              </svg>
-              {/*svg doesn't properly inherit "currentColor" if it's placed in
-               an Image component between the svg and the Button component */}
               {"Settings"}
-            </Button>
+            </GearButton>
           </Internal>
           <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
