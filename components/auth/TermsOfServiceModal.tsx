@@ -53,7 +53,7 @@ export default function TermsOfServiceModal({
                             <p className={styles.warning}>In order to continue you must agree to the privacy policy and terms of use</p>
                             <Row>
                                 <Col md={6}>
-                                    <Button onClick={onAgree} className = {styles.button} size="sm">I Agree</Button>
+                                    <Button onClick={onAgree} className = {styles.button} size="sm">Agree and Sign Up</Button>
                                 </Col>
                                 <Col md={6}>
                                     <Button onClick={onHide} className = {styles.button} size="sm" variant="outline-primary">Cancel</Button>

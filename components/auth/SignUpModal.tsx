@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react"
+import { useRef, useEffect, useState} from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm, useFormState } from "react-hook-form"
@@ -28,6 +28,7 @@ export default function SignUpModal({
     trigger, 
     formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
+  
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
     "not-agreed"
   )
@@ -39,6 +40,7 @@ export default function SignUpModal({
   useEffect(() => {
     if (!show) {
       reset()
+      setTosStep("not-agreed")
       createUserWithEmailAndPassword.reset()
     }
     // could not add a reference to createUserWithEmailAndPassword.reset to dep array without triggering an infinite effect, so:
@@ -58,6 +60,13 @@ export default function SignUpModal({
     }
   }
 
+  useEffect(() => {
+    if (tosStep == 'agreed'){
+      const loadingbtn = document.getElementById("loading-button")
+      loadingbtn?.click()
+    }
+
+  }, [tosStep])
 
   return (
     <>
@@ -85,8 +94,7 @@ export default function SignUpModal({
             <TermsOfServiceModal 
               show={showTos}
               onHide={() => setTosStep("not-agreed")}
-              onAgree={() => setTosStep("agreed")
-            }
+              onAgree={() => setTosStep("agreed")}
             />
             <Stack gap={3} className="mb-4">
               <Input
@@ -151,6 +159,7 @@ export default function SignUpModal({
             <Stack gap={4}>
               {tosStep == 'agreed' ?
                 <LoadingButton
+                  id="loading-button"
                   type="submit"
                   className="w-100"
                   loading={createUserWithEmailAndPassword.loading}>
