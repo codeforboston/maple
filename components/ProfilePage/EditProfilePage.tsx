@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Image, Nav, Row, Spinner } from "../bootstrap"
+import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import { GearButton } from "../buttons"
 import {
   Profile,
