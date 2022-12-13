@@ -25,6 +25,7 @@
 .readmore {
     color: #1A3185; 
     background: transparent; 
+    white-space: nowrap;
 }
 
 .button {
@@ -35,3 +36,11 @@
     font-weight: bold
 }
 
+.link {
+    text-decoration: none;
+}
+
+.svg {
+    margin-left: 8px; 
+    margin-bottom: 5px; 
+}

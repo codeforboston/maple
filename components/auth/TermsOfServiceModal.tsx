@@ -1,6 +1,7 @@
 import type { ModalProps } from "react-bootstrap"
-import { Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import { Button, Col, Modal, Row, Stack } from "../bootstrap"
 import styles from "./TermsOfService.module.css"
+import SVG from 'react-inlinesvg'
 
 export default function TermsOfServiceModal({
   show,
@@ -20,8 +21,11 @@ export default function TermsOfServiceModal({
                                 <h4>Privacy Policy</h4>
                             </Col>
                             <Col md={3}>
-                                <a rel="noreferrer" href={"./privacy-policy"} target={"_blank"}>
-                                    <h6 className={styles.readmore} >Read More</h6>
+                                <a className={styles.link} rel="noreferrer" href={"./privacy-policy"} target={"_blank"}>
+                                    <h6 className={styles.readmore} >
+                                        Read More 
+                                        <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
+                                    </h6>
                                 </a>  
                             </Col>
                             <hr className={styles.hr} />
@@ -38,10 +42,14 @@ export default function TermsOfServiceModal({
                                 <h4>Terms of Service</h4>
                             </Col>
                             <Col md={3}>
-                                <a rel="noreferrer" href={"./terms-of-service"} target={"_blank"}>
-                                    <h6 className={styles.readmore} >Read More</h6>
+                                <a className={styles.link} rel="noreferrer" href={"./terms-of-service"} target={"_blank"}>
+                                    <h6 className={styles.readmore} >
+                                        Read More 
+                                        <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
+                                    </h6>
                                 </a>                                
                             </Col>
+                            
                             <hr className={styles.hr} />
                             <Col md={10}>
                                 <ul>
