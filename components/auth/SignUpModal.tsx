@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
@@ -24,10 +24,10 @@ export default function SignUpModal({
     handleSubmit,
     reset,
     getValues,
-    trigger, 
+    trigger,
     formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
-  
+
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
     "not-agreed"
   )
@@ -60,129 +60,124 @@ export default function SignUpModal({
   }
 
   useEffect(() => {
-    if (tosStep == 'agreed'){
+    if (tosStep == "agreed") {
       const loadingbtn = document.getElementById("loading-button")
       loadingbtn?.click()
     }
-
   }, [tosStep])
 
   return (
     <>
+      <Modal
+        show={show}
+        onHide={onHide}
+        aria-labelledby="sign-up-modal"
+        centered
+        size="lg"
+        className={clsx(showTos && "d-none")}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Col md={12} className="mx-auto">
+            {createUserWithEmailAndPassword.error ? (
+              <Alert variant="danger">
+                {createUserWithEmailAndPassword.error.message}
+              </Alert>
+            ) : null}
 
-    <Modal
-      show={show}
-      onHide={onHide}
-      aria-labelledby="sign-up-modal"
-      centered
-      size="lg"
-      className={clsx(showTos && "d-none")}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Col md={12} className="mx-auto">
-          {createUserWithEmailAndPassword.error ? (
-            <Alert variant="danger">
-              {createUserWithEmailAndPassword.error.message}
-            </Alert>
-          ) : null}
-
-          <Form noValidate onSubmit={onSubmit}>
-            <TermsOfServiceModal 
-              show={showTos}
-              onHide={() => setTosStep("not-agreed")}
-              onAgree={() => setTosStep("agreed")}
-            />
-            <Stack gap={3} className="mb-4">
-              <Input
-                label="Email"
-                type="email"
-                {...register("email", { required: "An email is required." })}
-                error={errors.email?.message}
+            <Form noValidate onSubmit={onSubmit}>
+              <TermsOfServiceModal
+                show={showTos}
+                onHide={() => setTosStep("not-agreed")}
+                onAgree={() => setTosStep("agreed")}
               />
+              <Stack gap={3} className="mb-4">
+                <Input
+                  label="Email"
+                  type="email"
+                  {...register("email", { required: "An email is required." })}
+                  error={errors.email?.message}
+                />
 
-              <Input
-                label="Full Name"
-                type="text"
-                {...register("fullName", {
-                  required: "A full name is required."
-                })}
-                error={errors.fullName?.message}
-              />
+                <Input
+                  label="Full Name"
+                  type="text"
+                  {...register("fullName", {
+                    required: "A full name is required."
+                  })}
+                  error={errors.fullName?.message}
+                />
 
-              <Input
-                label="Nickname"
-                type="text"
-                {...register("nickname", {
-                  required: "A nickname is required."
-                })}
-                error={errors.nickname?.message}
-              />
+                <Input
+                  label="Nickname"
+                  type="text"
+                  {...register("nickname", {
+                    required: "A nickname is required."
+                  })}
+                  error={errors.nickname?.message}
+                />
 
-              <Row className="g-3">
-                <Col md={6}>
-                  <PasswordInput
-                    label="Password"
-                    {...register("password", {
-                      required: "A password is required.",
-                      minLength: {
-                        value: 8,
-                        message: "Your password must be 8 characters or longer."
-                      },
-                      deps: ["confirmedPassword"]
-                    })}
-                    error={errors.password?.message}
-                  />
-                </Col>
+                <Row className="g-3">
+                  <Col md={6}>
+                    <PasswordInput
+                      label="Password"
+                      {...register("password", {
+                        required: "A password is required.",
+                        minLength: {
+                          value: 8,
+                          message:
+                            "Your password must be 8 characters or longer."
+                        },
+                        deps: ["confirmedPassword"]
+                      })}
+                      error={errors.password?.message}
+                    />
+                  </Col>
 
-                <Col md={6}>
-                  <PasswordInput
-                    label="Confirm Password"
-                    {...register("confirmedPassword", {
-                      required: "You must confirm your password.",
-                      validate: confirmedPassword => {
-                        const password = getValues("password")
-                        return confirmedPassword !== password
-                          ? "Confirmed password must match password."
-                          : undefined
-                      }
-                    })}
-                    error={errors.confirmedPassword?.message}
-                  />
-                </Col>
-              </Row>
-            </Stack>
+                  <Col md={6}>
+                    <PasswordInput
+                      label="Confirm Password"
+                      {...register("confirmedPassword", {
+                        required: "You must confirm your password.",
+                        validate: confirmedPassword => {
+                          const password = getValues("password")
+                          return confirmedPassword !== password
+                            ? "Confirmed password must match password."
+                            : undefined
+                        }
+                      })}
+                      error={errors.confirmedPassword?.message}
+                    />
+                  </Col>
+                </Row>
+              </Stack>
 
-            <Stack gap={4}>
-              {tosStep == 'agreed' ?
-                <LoadingButton
-                  id="loading-button"
-                  type="submit"
-                  className="w-100"
-                  loading={createUserWithEmailAndPassword.loading}>
+              <Stack gap={4}>
+                {tosStep == "agreed" ? (
+                  <LoadingButton
+                    id="loading-button"
+                    type="submit"
+                    className="w-100"
+                    loading={createUserWithEmailAndPassword.loading}
+                  >
                     Sign up
-                </LoadingButton>
-              : 
-                <Button 
-                  type="button" 
-                  onClick={handleContinueClick}
-                >
-                  Continue
-                </Button>
-                
-              }
+                  </LoadingButton>
+                ) : (
+                  <Button type="button" onClick={handleContinueClick}>
+                    Continue
+                  </Button>
+                )}
 
-              <Divider className="px-4">or</Divider>
+                <Divider className="px-4">or</Divider>
 
-              <SocialSignOnButtons />
-            </Stack>
-          </Form>
-        </Col>
-      </Modal.Body>
-    </Modal>
+                <SocialSignOnButtons />
+              </Stack>
+            </Form>
+          </Col>
+        </Modal.Body>
+      </Modal>
     </>
   )
 }
-
