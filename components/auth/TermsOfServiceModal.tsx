@@ -1,5 +1,3 @@
-import { ChildProcess } from "child_process"
-import { setShowThankYou } from "components/publish/redux"
 import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import styles from "./TermsOfService.module.css"
@@ -22,7 +20,9 @@ export default function TermsOfServiceModal({
                                 <h4>Privacy Policy</h4>
                             </Col>
                             <Col md={3}>
-                                <h6 className={styles.readmore}>Read More</h6>
+                                <a rel="noreferrer" href={"./privacy-policy"} target={"_blank"}>
+                                    <h6 className={styles.readmore} >Read More</h6>
+                                </a>  
                             </Col>
                             <hr className={styles.hr} />
                             <Col md={10}>
@@ -38,7 +38,9 @@ export default function TermsOfServiceModal({
                                 <h4>Terms of Service</h4>
                             </Col>
                             <Col md={3}>
-                                <h6 className={styles.readmore} >Read More</h6>
+                                <a rel="noreferrer" href={"./terms-of-service"} target={"_blank"}>
+                                    <h6 className={styles.readmore} >Read More</h6>
+                                </a>                                
                             </Col>
                             <hr className={styles.hr} />
                             <Col md={10}>

@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState} from "react"
+import { useEffect, useState} from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
-import { useForm, useFormState } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Divider from "../Divider/Divider"
@@ -13,7 +13,6 @@ import {
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
-import styles from "./SignUpModal.module.css"
 import { required } from "yargs"
 
 export default function SignUpModal({
