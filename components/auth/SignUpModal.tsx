@@ -1,7 +1,7 @@
 import { useEffect, useState} from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
-import { useForm } from "react-hook-form"
+import { useForm, useFormState } from "react-hook-form"
 import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Divider from "../Divider/Divider"
@@ -25,6 +25,7 @@ export default function SignUpModal({
     handleSubmit,
     reset,
     getValues,
+    trigger, 
     formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
@@ -47,6 +48,16 @@ export default function SignUpModal({
   const onSubmit = handleSubmit(newUser => {
     createUserWithEmailAndPassword.execute(newUser)
   })
+
+  async function handleContinueClick() {
+    const isValid = await trigger()
+    console.log(isValid)
+    console.log("triggered form")
+    if (isValid) {
+      setTosStep("reading")
+    }
+  }
+
 
   return (
     <>
@@ -138,15 +149,18 @@ export default function SignUpModal({
             </Stack>
 
             <Stack gap={4}>
-              {tosStep == 'agreed' ? 
+              {tosStep == 'agreed' ?
                 <LoadingButton
-                type="submit"
-                className="w-100"
-                loading={createUserWithEmailAndPassword.loading}>
-                  Sign up
+                  type="submit"
+                  className="w-100"
+                  loading={createUserWithEmailAndPassword.loading}>
+                    Sign up
                 </LoadingButton>
               : 
-                <Button type="button" onClick={() => setTosStep("reading")}>
+                <Button 
+                  type="button" 
+                  onClick={handleContinueClick}
+                >
                   Continue
                 </Button>
                 
