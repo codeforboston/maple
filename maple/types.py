@@ -43,6 +43,7 @@ class ActionType(Enum):
     reading = "reading"
     cancellation = "cancellation"
     rules_note = "rules_note"
+    chamber_committee = "chamber_committee"
 
 
 @dataclass(frozen=True)
