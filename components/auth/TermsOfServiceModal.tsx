@@ -24,7 +24,7 @@ export default function TermsOfServiceModal({
                 <a
                   className={styles.link}
                   rel="noreferrer"
-                  href={"./privacy-policy"}
+                  href={"/privacy-policy"}
                   target={"_blank"}
                 >
                   <h6 className={styles.readmore}>
@@ -60,7 +60,7 @@ export default function TermsOfServiceModal({
                 <a
                   className={styles.link}
                   rel="noreferrer"
-                  href={"./terms-of-service"}
+                  href={"/terms-of-service"}
                   target={"_blank"}
                 >
                   <h6 className={styles.readmore}>

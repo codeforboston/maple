@@ -2,6 +2,7 @@ import SignInModal from "./SignInModal"
 import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
 import ForgotPasswordModal from "./ForgotPasswordModal"
+import VerifyEmailModal from "./VerifyEmailModal"
 import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import { useAppDispatch } from "components/hooks"
 
@@ -30,6 +31,11 @@ export default function AuthModal() {
         <SignUpModal 
           show={currentModal === "signUp"} 
           onHide={close} 
+          onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
+        />
+        <VerifyEmailModal 
+          show={currentModal === "verifyEmail"}
+          onHide={close}
         />
         <ForgotPasswordModal
           show={currentModal === "forgotPassword"}

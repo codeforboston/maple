@@ -13,19 +13,21 @@ import {
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
-import { required } from "yargs"
 
 export default function SignUpModal({
   show,
-  onHide
-}: Pick<ModalProps, "show" | "onHide">) {
+  onHide, 
+  onSuccessfulSubmit
+}: Pick<ModalProps, "show" | "onHide"> & {
+  onSuccessfulSubmit: () => void
+})  {
   const {
     register,
     handleSubmit,
     reset,
     getValues,
     trigger,
-    formState: { errors }
+    formState: { errors, isSubmitSuccessful}
   } = useForm<CreateUserWithEmailAndPasswordData>()
 
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
@@ -52,8 +54,6 @@ export default function SignUpModal({
 
   async function handleContinueClick() {
     const isValid = await trigger()
-    console.log(isValid)
-    console.log("triggered form")
     if (isValid) {
       setTosStep("reading")
     }
@@ -65,6 +65,13 @@ export default function SignUpModal({
       loadingbtn?.click()
     }
   }, [tosStep])
+
+  useEffect(() =>{
+    console.log(isSubmitSuccessful)
+    if (isSubmitSuccessful)
+      onSuccessfulSubmit
+
+}, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (
     <>

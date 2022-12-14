@@ -9,6 +9,7 @@ export type AuthFlowStep =
   | "signIn"
   | "signUp"
   | "forgotPassword"
+  | "verifyEmail"
   | null
 
 export interface State {

@@ -13,10 +13,8 @@ export default function SignInWithButton({
   className
 }: Props) {
   const dispatch = useAppDispatch()
-  const { authFlowStep: currentModal } = useAuth()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
-  const close = () => dispatch(authStepChanged(null))
 
   return (
     <span className={className}>
