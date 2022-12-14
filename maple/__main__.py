@@ -153,8 +153,9 @@ def regex_command(args: argparse.Namespace) -> None:
 def label_command(args: argparse.Namespace) -> None:
     with connect(args.db_path) as db:
         df = pd.read_csv(args.labels_file)
-        labeled = df[~pd.isna(df.label)]
-        db.relabel(zip(labeled.action_id, labeled.label.map(lambda x: ActionType[x])))
+        db.relabel(
+            zip(df.action_id, df.label.map(lambda xs: [ActionType[x] for x in xs]))
+        )
 
 
 def drop_labels_command(args: argparse.Namespace) -> None:

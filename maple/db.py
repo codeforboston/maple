@@ -29,7 +29,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator, Type
+from typing import Iterable, Iterator, List, Type
 
 import peewee as pw
 
@@ -160,17 +160,18 @@ class TrainingDB:
 
         return counts
 
-    def relabel(self, labels: Iterable[tuple[int, ActionType]]) -> None:
+    def relabel(self, labels: Iterable[tuple[int, List[ActionType]]]) -> None:
         """Drop existing labels, and apply new ones. """
 
         with _database.atomic() as transaction:
             try:
-                # Drop existing labels
-                LabelM.delete().execute()  # type: ignore
+                for action_id, action_labels in labels:
+                    # Drop existing labels for the action
+                    LabelM.select(LabelM.action_id == action_id).delete().execute()  # type: ignore
 
-                # Apply new labels
-                for action_id, label in labels:
-                    LabelM.create(action=action_id, label=label)
+                    # Apply new labels for this action
+                    for action_label in action_labels:
+                        LabelM.create(action=action_id, label=action_label)
             except:
                 transaction.rollback()
                 raise
