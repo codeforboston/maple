@@ -34,20 +34,9 @@ async function updateProfile(
   }: { profile: Profile; actions: ProfileHook; uid?: string },
   data: UpdateProfileData
 ) {
-  const {
-    updateIsPublic,
-    updateSocial,
-    updateAbout,
-    updateDisplayName,
-    updateFullName
-  } = actions
+  const { updateIsPublic } = actions
 
   await updateIsPublic(data.public)
-  await updateSocial("linkedIn", data.linkedIn)
-  await updateSocial("twitter", data.twitter)
-  await updateAbout(data.aboutYou)
-  await updateDisplayName(data.name)
-  await updateFullName(data.name)
 }
 
 export default function NotificationSettingsModal({
@@ -83,6 +72,8 @@ export default function NotificationSettingsModal({
 
     onSettingsModalClose()
   })
+
+  console.log("isPublic: ", isPublic)
 
   return (
     <Modal

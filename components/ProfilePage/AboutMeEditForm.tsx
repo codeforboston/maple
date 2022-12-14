@@ -99,19 +99,19 @@ export function AboutMeEditForm({
       <Form onSubmit={onSubmit}>
         <Header
           title={"About You"}
-          // bug={
-          //   <Row className={`justify-content-center align-items-center`}>
-          //     <Form.Check
-          //       {...register("public")}
-          //       className={`col-auto about-me-checkbox`}
-          //       type="checkbox"
-          //       defaultChecked={isPublic}
-          //     />
-          //     <Form.Label htmlFor="public" className={`col my-1`}>
-          //       Allow others to see your profile
-          //     </Form.Label>
-          //   </Row>
-          // }
+          bug={
+            <Row className={`justify-content-center align-items-center`}>
+              <Form.Check
+                {...register("public")}
+                className={`col-auto about-me-checkbox`}
+                type="checkbox"
+                defaultChecked={isPublic}
+              />
+              <Form.Label htmlFor="public" className={`col my-1`}>
+                Allow others to see your profile
+              </Form.Label>
+            </Row>
+          }
         ></Header>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           {/* <Form.FloatingLabel label="User Type" className="mb-3">
