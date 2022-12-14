@@ -19,7 +19,7 @@ type UpdateProfileData = {
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
-  onCloseModal: () => void
+  onSettingsModalClose: () => void
   profile: Profile
   profileSettings: string
   setProfileSettings: Dispatch<SetStateAction<"Enable" | "Enabled">>
@@ -53,7 +53,7 @@ async function updateProfile(
 export default function NotificationSettingsModal({
   actions,
   onHide,
-  onCloseModal,
+  onSettingsModalClose,
   profile,
   profileSettings,
   setProfileSettings,
@@ -81,7 +81,7 @@ export default function NotificationSettingsModal({
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
 
-    onCloseModal()
+    onSettingsModalClose()
   })
 
   return (
@@ -201,7 +201,7 @@ export default function NotificationSettingsModal({
           </Button>
           <Button
             className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onCloseModal}
+            onClick={onSettingsModalClose}
           >
             Cancel
           </Button>

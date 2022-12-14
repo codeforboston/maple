@@ -60,7 +60,7 @@ export function EditProfileForm({
     isPublic ? "Enable" : "Enabled"
   )
 
-  const onSettingsModalClick = () => {
+  const onSettingsModalOpen = () => {
     setSettingsModal("show")
     setProfileSettings(isPublic ? "Enable" : "Enabled")
   }
@@ -114,7 +114,7 @@ export function EditProfileForm({
             <GearButton
               className={`btn btn-lg btn-outline-secondary me-4`}
               disabled={!!formUpdated}
-              onClick={() => onSettingsModalClick()}
+              onClick={() => onSettingsModalOpen()}
             >
               {"Settings"}
             </GearButton>
@@ -152,7 +152,7 @@ export function EditProfileForm({
       <NotificationSettingsModal
         actions={actions}
         onHide={close}
-        onCloseModal={() => setSettingsModal(null)}
+        onSettingsModalClose={() => setSettingsModal(null)}
         profile={profile}
         profileSettings={profileSettings}
         setProfileSettings={setProfileSettings}
