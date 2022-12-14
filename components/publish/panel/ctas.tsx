@@ -1,7 +1,7 @@
 import { ReactElement } from "react"
 import { Button, ButtonProps, Image } from "react-bootstrap"
 import styled from "styled-components"
-import { SignInWithModal, useAuth } from "../../auth"
+import { SignInWithButton, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
 
@@ -73,7 +73,7 @@ export const CompleteTestimony = () => (
 export const SignedOut = () => (
   <Cta
     title="Sign In to Add Testimony"
-    cta={<SignInWithModal label="Sign In/Sign Up" />}
+    cta={<SignInWithButton label="Sign In/Sign Up" />}
   />
 )
 

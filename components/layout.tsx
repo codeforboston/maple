@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithModal, useAuth } from "./auth"
+import { SignInWithButton, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
@@ -10,6 +10,7 @@ import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import styles from "./layout.module.css"
+import AuthModal from "./auth/AuthModal"
 
 export type LayoutProps = {
   title?: string
@@ -28,6 +29,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <TopNav />
       {children}
+      <AuthModal />
       <PageFooter
         authenticated={authenticated}
         user={user as any}
@@ -90,7 +92,7 @@ const TopNav: React.FC = () => {
                     displayName={profile?.displayName}
                   />
                 ) : (
-                  !sticky && <SignInWithModal />
+                  !sticky && <SignInWithButton />
                 )}
               </Nav>
             </div>
@@ -143,7 +145,7 @@ const TopNav: React.FC = () => {
             </Nav>
           </Navbar.Collapse>
           {sticky && !authenticated ? (
-            <SignInWithModal className={styles.mobile_nav_auth} />
+            <SignInWithButton className={styles.mobile_nav_auth} />
           ) : null}
         </Container>
       </Navbar>
