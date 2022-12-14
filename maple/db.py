@@ -29,7 +29,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator, Type
+from typing import Iterable, Iterator, List, Type
 
 import peewee as pw
 
@@ -103,7 +103,9 @@ class CommitteeF(pw.Field):
     def db_value(self, value: Committee) -> str:
         return value.name
 
-    def python_value(self, value: str) -> Committee:
+    def python_value(self, value: str) -> Committee | UnknownValue:
+        if value is None:
+            return UnknownValue("unknown")
         return Committee(value)
 
 
@@ -160,17 +162,18 @@ class TrainingDB:
 
         return counts
 
-    def relabel(self, labels: Iterable[tuple[int, ActionType]]) -> None:
+    def relabel(self, labels: Iterable[tuple[int, List[ActionType]]]) -> None:
         """Drop existing labels, and apply new ones. """
 
         with _database.atomic() as transaction:
             try:
-                # Drop existing labels
-                LabelM.delete().execute()  # type: ignore
+                for action_id, action_labels in labels:
+                    # Drop existing labels for the action
+                    LabelM.delete().where(LabelM.action_id == action_id).execute()  # type: ignore
 
-                # Apply new labels
-                for action_id, label in labels:
-                    LabelM.create(action=action_id, label=label)
+                    # Apply new labels for this action
+                    for action_label in action_labels:
+                        LabelM.create(action=action_id, label=action_label)
             except:
                 transaction.rollback()
                 raise
@@ -202,7 +205,9 @@ class TrainingDB:
 
         return billM
 
-    def actions_and_labels(self) -> Iterator[tuple[int, Action, ActionType | None]]:
+    def actions_and_labels(
+        self,
+    ) -> Iterator[tuple[int, int, Action, List[ActionType]]]:
         actions = (
             (ActionM)
             .select(ActionM, LabelM)
@@ -212,14 +217,15 @@ class TrainingDB:
             .iterator()  # type: ignore
         )
 
-        for actionm in actions:
+        for actionm in set(actions):
             action = actionm.to_action()
 
-            if len(actionm.labels) == 0:
-                yield actionm.id, action, None
-            else:
-                for label in actionm.labels:
-                    yield actionm.id, action, label.label
+            yield actionm.id, actionm.bill_id, action, [
+                label.label for label in actionm.labels
+            ]
+
+    def drop_labels(self) -> None:
+        LabelM.delete().execute()
 
 
 @contextmanager

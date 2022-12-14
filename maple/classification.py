@@ -29,7 +29,7 @@ def regex_classification(action: Action) -> ActionType:
 
 _action_rules = [
     (re.compile(".*referred.*to the committee on(.*)", re.I), ActionType.referred),
-    (re.compile(".*to be engrossed.*", re.I), ActionType.engrossement),
+    (re.compile(".*to be engrossed.*", re.I), ActionType.engrossment),
     (re.compile(".*hearing scheduled.* ", re.I), ActionType.hearing_scheduled),
     (re.compile(".*accompanied a study order.*", re.I), ActionType.study_order),
     (re.compile("house concurred.*", re.I), ActionType.concurred),

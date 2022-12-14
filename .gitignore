@@ -77,3 +77,7 @@ __pycache__
 
 # Emacs
 .dir-locals-2.el
+
+# nixos
+nix/
+shell.nix
