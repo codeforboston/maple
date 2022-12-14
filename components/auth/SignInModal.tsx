@@ -15,7 +15,7 @@ import SocialSignOnButtons from "./SocialSignOnButtons"
 export default function SignInModal({
   show,
   onHide,
-  onForgotPasswordClick
+  onForgotPasswordClick, 
 }: Pick<ModalProps, "show" | "onHide"> & {
   onForgotPasswordClick: () => void
 }) {
@@ -23,7 +23,7 @@ export default function SignInModal({
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors, isSubmitSuccessful }
   } = useForm<SignInWithEmailAndPasswordData>()
 
   const signIn = useSignInWithEmailAndPassword()
@@ -36,6 +36,13 @@ export default function SignInModal({
     // could not add a reference to signIn.reset to dep array without triggering an infinite effect, so:
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
+
+  useEffect(() =>{
+    console.log(isSubmitSuccessful)
+    if (isSubmitSuccessful)
+      onHide
+
+  }, [isSubmitSuccessful, onHide])
 
   const onSubmit = handleSubmit(credentials => {
     signIn.execute(credentials)

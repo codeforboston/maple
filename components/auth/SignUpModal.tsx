@@ -71,7 +71,7 @@ export default function SignUpModal({
     if (isSubmitSuccessful)
       onSuccessfulSubmit
 
-}, [isSubmitSuccessful, onSuccessfulSubmit])
+  }, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (
     <>
