@@ -1,25 +1,88 @@
-import { useState } from "react"
+import { AnyARecord } from "dns"
+import { useState, Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { Button, Col, Image, Modal, Stack } from "../bootstrap"
+import { useForm } from "react-hook-form"
+import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
+import { Profile, ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
 
+type UpdateProfileData = {
+  name: string
+  aboutYou: string
+  twitter: string
+  linkedIn: string
+  public: boolean
+  organization: boolean
+  profileImage: any
+}
+
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  actions: ProfileHook
+  onCloseModal: () => void
+  profile: Profile
+  profileSettings: string
+  setProfileSettings: Dispatch<SetStateAction<"Enable" | "Enabled">>
+  uid?: string
+}
+
+async function updateProfile(
+  {
+    profile,
+    actions,
+    uid
+  }: { profile: Profile; actions: ProfileHook; uid?: string },
+  data: UpdateProfileData
+) {
+  const {
+    updateIsPublic,
+    updateSocial,
+    updateAbout,
+    updateDisplayName,
+    updateFullName
+  } = actions
+
+  await updateIsPublic(data.public)
+  await updateSocial("linkedIn", data.linkedIn)
+  await updateSocial("twitter", data.twitter)
+  await updateAbout(data.aboutYou)
+  await updateDisplayName(data.name)
+  await updateFullName(data.name)
+}
+
 export default function NotificationSettingsModal({
-  show,
+  actions,
   onHide,
-  onClickCloseModal
-}: Pick<ModalProps, "show" | "onHide"> & {
-  onClickCloseModal: () => void
-}) {
+  onCloseModal,
+  profile,
+  profileSettings,
+  setProfileSettings,
+  show,
+  uid
+}: Props) {
+  const { register, handleSubmit } = useForm<UpdateProfileData>()
+
+  const {
+    displayName,
+    about,
+    organization,
+    public: isPublic,
+    social,
+    profileImage
+  }: Profile = profile
+
   const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
     "Enable"
   ) //replace initial state with User data
   const [notificationFrequency, setNotificationFrequency] = useState<
     "Daily" | "Weekly" | "Monthly"
   >("Monthly") //replace initial state with User data
-  const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
+
+  const onSubmit = handleSubmit(async update => {
+    await updateProfile({ profile, actions }, update)
+
+    onCloseModal()
+  })
 
   return (
     <Modal
@@ -110,6 +173,7 @@ export default function NotificationSettingsModal({
             with your testimony.)
           </Col>
           <Button
+            // {...register("public")}
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -123,6 +187,7 @@ export default function NotificationSettingsModal({
                 profileSettings === "Enable" ? "Enabled" : "Enable"
               )
             }
+            // value={profileSettings === "Enabled" ? true : false}
           >
             {profileSettings}
           </Button>
@@ -131,15 +196,12 @@ export default function NotificationSettingsModal({
           className={`d-flex justify-content-end pt-4`}
           direction={`horizontal`}
         >
-          <Button
-            className={`btn btn-sm mx-3 py-1`}
-            onClick={onClickCloseModal}
-          >
+          <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
             Continue
           </Button>
           <Button
             className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onClickCloseModal}
+            onClick={onCloseModal}
           >
             Cancel
           </Button>
@@ -152,6 +214,11 @@ export default function NotificationSettingsModal({
 /*
   Modal State -> Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
                  from parent EditProfilePage.tsx
+                 / make sure Cancelling and coming back doesn't leave unsaved edits?
   Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
                      [x] then Close Modal
+
+  ?
+  EditProfilePage -> when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
+                     however, View your profile is still active dispite appearing otherwise                    
 */

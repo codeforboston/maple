@@ -47,6 +47,24 @@ export function EditProfileForm({
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
+  const {
+    displayName,
+    about,
+    organization,
+    public: isPublic,
+    social,
+    profileImage
+  }: Profile = profile
+
+  const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
+    isPublic ? "Enable" : "Enabled"
+  )
+
+  const onSettingsModalClick = () => {
+    setSettingsModal("show")
+    setProfileSettings(isPublic ? "Enable" : "Enabled")
+  }
+
   const testimony = usePublishedTestimonyListing({
     uid: uid
   })
@@ -96,7 +114,7 @@ export function EditProfileForm({
             <GearButton
               className={`btn btn-lg btn-outline-secondary me-4`}
               disabled={!!formUpdated}
-              onClick={() => setSettingsModal("show")}
+              onClick={() => onSettingsModalClick()}
             >
               {"Settings"}
             </GearButton>
@@ -132,9 +150,14 @@ export function EditProfileForm({
         </StyledTabContent>
       </TabContainer>
       <NotificationSettingsModal
-        show={settingsModal === "show"}
+        actions={actions}
         onHide={close}
-        onClickCloseModal={() => setSettingsModal(null)}
+        onCloseModal={() => setSettingsModal(null)}
+        profile={profile}
+        profileSettings={profileSettings}
+        setProfileSettings={setProfileSettings}
+        show={settingsModal === "show"}
+        uid={uid}
       />
     </Container>
   )
