@@ -221,6 +221,9 @@ class TrainingDB:
                 for label in actionm.labels:
                     yield actionm.id, action, label.label
 
+    def drop_labels(self) -> None:
+        LabelM.delete().execute()
+
 
 @contextmanager
 def connect(db_path: Path) -> Iterator[TrainingDB]:

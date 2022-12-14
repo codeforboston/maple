@@ -157,6 +157,18 @@ def label_command(args: argparse.Namespace) -> None:
         db.relabel(zip(labeled.action_id, labeled.label.map(lambda x: ActionType[x])))
 
 
+def drop_labels_command(args: argparse.Namespace) -> None:
+    print("Do you really want to drop all labels? This cannot be undone ")
+    answer = input("y/n: ")
+
+    if answer != "y":
+        print("Canceled")
+        raise SystemExit(1)
+
+    with connect(args.db_path) as db:
+        db.drop_labels()
+
+
 def repl_command(args: argparse.Namespace) -> None:
     with connect(args.db_path) as db:
         code.interact(local=locals())
@@ -180,6 +192,12 @@ if __name__ == "__main__":
     regex.add_argument("--db-path", type=Path, required=True)
     regex.add_argument("--predictions-file", type=Path, required=False)
     regex.set_defaults(func=regex_command)
+
+    drop_labels = subparsers.add_parser(
+        "drop-labels", help="drop all labels, please be careful"
+    )
+    drop_labels.add_argument("--db-path", type=Path, required=True)
+    drop_labels.set_defaults(func=drop_labels_command)
 
     label = subparsers.add_parser("label", help="update labels stored in the database")
     label.add_argument("--db-path", type=Path, required=True)
