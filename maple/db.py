@@ -128,7 +128,7 @@ class ActionM(BaseModel):
     seq_num = pw.IntegerField()
     action = pw.TextField()
     when = pw.DateTimeField()
-    committee = CommitteeF()
+    committee = CommitteeF(null=True)
 
     def to_action(self) -> Action:
         return Action(
