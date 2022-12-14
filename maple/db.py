@@ -103,7 +103,9 @@ class CommitteeF(pw.Field):
     def db_value(self, value: Committee) -> str:
         return value.name
 
-    def python_value(self, value: str) -> Committee:
+    def python_value(self, value: str) -> Committee | UnknownValue:
+        if value is None:
+            return UnknownValue("unknown")
         return Committee(value)
 
 
@@ -167,7 +169,7 @@ class TrainingDB:
             try:
                 for action_id, action_labels in labels:
                     # Drop existing labels for the action
-                    LabelM.select(LabelM.action_id == action_id).delete().execute()  # type: ignore
+                    LabelM.delete().where(LabelM.action_id == action_id).execute()  # type: ignore
 
                     # Apply new labels for this action
                     for action_label in action_labels:
@@ -203,7 +205,9 @@ class TrainingDB:
 
         return billM
 
-    def actions_and_labels(self) -> Iterator[tuple[int, Action, ActionType | None]]:
+    def actions_and_labels(
+        self,
+    ) -> Iterator[tuple[int, int, Action, List[ActionType]]]:
         actions = (
             (ActionM)
             .select(ActionM, LabelM)
@@ -213,14 +217,12 @@ class TrainingDB:
             .iterator()  # type: ignore
         )
 
-        for actionm in actions:
+        for actionm in set(actions):
             action = actionm.to_action()
 
-            if len(actionm.labels) == 0:
-                yield actionm.id, action, None
-            else:
-                for label in actionm.labels:
-                    yield actionm.id, action, label.label
+            yield actionm.id, actionm.bill_id, action, [
+                label.label for label in actionm.labels
+            ]
 
     def drop_labels(self) -> None:
         LabelM.delete().execute()

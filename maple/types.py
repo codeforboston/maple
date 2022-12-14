@@ -33,7 +33,7 @@ class Branch(Enum):
 class ActionType(Enum):
     uncategorized = "uncategorized"
     signed_by_governor = "signed_by_governor"
-    engrossement = "engrossment"
+    engrossment = "engrossment"
     hearing_scheduled = "hearing_scheduled"
     study_order = "study_order"
     referred = "referred"
