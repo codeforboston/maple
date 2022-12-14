@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { useAppDispatch } from "components/hooks"
 import { Button } from "../bootstrap"
 import ForgotPasswordModal from "./ForgotPasswordModal"
+import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import SignInModal from "./SignInModal"
 import SignUpModal from "./SignUpModal"
 import StartModal from "./StartModal"
-import TermsOfServiceModal from "./TermsOfServiceModal"
 
 interface Props {
   label?: string
@@ -15,11 +15,12 @@ export default function SignInWithModal({
   label = "Log in / Sign up",
   className
 }: Props) {
-  const [currentModal, setCurrentModal] = useState<
-    "start" | "signIn" | "signUp" | "forgotPassword" | null
-  >(null)
+  const dispatch = useAppDispatch()
+  const { authFlowStep: currentModal } = useAuth()
+  const setCurrentModal = (step: AuthFlowStep) =>
+    dispatch(authStepChanged(step))
+  const close = () => dispatch(authStepChanged(null))
 
-  const close = () => setCurrentModal(null)
   return (
     <span className={className}>
       <Button
