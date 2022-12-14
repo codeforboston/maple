@@ -172,7 +172,7 @@ export default function NotificationSettingsModal({
             Don't make my profile public. (Your name will still be associated
             with your testimony.)
           </Col>
-          <Button
+          {/* <Button
             // {...register("public")}
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
@@ -190,7 +190,13 @@ export default function NotificationSettingsModal({
             // value={profileSettings === "Enabled" ? true : false}
           >
             {profileSettings}
-          </Button>
+          </Button> */}
+          <Form.Check
+            {...register("public")}
+            className={`form-check-input:checked ms-auto pe-5`}
+            type="checkbox"
+            defaultChecked={isPublic}
+          />
         </Stack>
         <Stack
           className={`d-flex justify-content-end pt-4`}

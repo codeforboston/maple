@@ -63,3 +63,14 @@
 .tooltip-inner {
   font-family: "Nunito";
 }
+
+.form-check-input {
+  border-color: #1a3185;
+  height: 20px;
+  width: 20px;
+}
+
+.form-check-input:checked {
+  background-color: #1a3185;
+  border-color: #1a3185;
+}
