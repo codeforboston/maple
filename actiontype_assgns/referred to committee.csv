@@ -1,0 +1,74 @@
+action_id,action,prediction,action_type
+1,Referred to the committee on House Ways and Means,referred,referred_to_committee
+3,Referred to the committee on Public Service,referred,referred_to_committee
+7,Bill reported favorably by committee and referred to the committee on House Ways and Means,referred,referred_to_committee
+64,"Referred to the committee on House Rules, reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Transportation",referred,referred_to_committee
+86,"Bill reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+87,Committee recommended ought to pass and referred to the committee on House Ways and Means,referred,referred_to_committee
+180,Reported favorably by committee and referred to the committee on Health Care Financing,referred,referred_to_committee
+181,Committee recommended bill ought to pass and referred to the committee on House Ways and Means,referred,referred_to_committee
+499,"Referred to the committee on House Steering, Policy and Scheduling with the amendment pending",referred,referred_to_committee
+797,Bill reported favorably by committee as changed and referred to the committee on House Ways and Means,referred,referred_to_committee
+1181,Referred to the committee on Health Care Financing,referred,referred_to_committee
+1823,Referred to the committee on Housing,referred,referred_to_committee
+3274,Read; and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+4533,Read; and referred to the committee on Senate Rules,referred,referred_to_committee
+5209,"Referred to the committee on Mental Health, Substance Use and Recovery",referred,referred_to_committee
+5433,Bill reported favorably by committee and referred to the committee on Health Care Financing,referred,referred_to_committee
+5888,Reported favorably by committee as changed and referred to the committee on Health Care Financing,referred,referred_to_committee
+6151,"Committee recommended ought NOT to pass and referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+7290,"Resolve reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+7336,"Committee recommended bill ought to pass and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+7871,Recommitted to the committee on Public Safety and Homeland Security,uncategorized,referred_to_committee
+11453,Resolve reported favorably by committee and referred to the committee on House Ways and Means,referred,referred_to_committee
+11569,Referred to the committee on House Steering Policy and Scheduling for a second reading with the amendment pending,referred,referred_to_committee
+14214,"Resolutions reported favorably by committee and referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+15317,"The following section reported from the committee on House Ways and Means recommending that the action of the General Court stand; and the section was referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+15857,"Bill reported favorably by committee and referred to the committee on Bonding, Capital Expenditures and State Assets",referred,referred_to_committee
+15994,Referred to the committee on House Rules,referred,referred_to_committee
+15995,"Reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Education",referred,referred_to_committee
+16005,"Reported, rules suspended and referred to the committee on Municipalities and Regional Government",referred,referred_to_committee
+16080,"Reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Health Care Financing",referred,referred_to_committee
+16735,"Reported, referred to the committee on Joint Rules, rules suspended and referred to the committee on Public Service",referred,referred_to_committee
+17233,Bill reported favorably and referred to the committee on Senate Rules,referred,referred_to_committee
+17348,"The following items and sections severally reported from committee on House Ways and Means recommending, in each instance, that the action of the General Court stand; and the items and sections severally were referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+18314,Order reported favorably by committee and referred to the committee on Joint Rules,referred,referred_to_committee
+18896,Referred to committee on Bills in the Third Reading,uncategorized,referred_to_committee
+18921,"Reported, rules suspended and referred to the committee on Housing",referred,referred_to_committee
+19864,"Referred the committee on House Steering, Policy and Scheduling with the amendment pending",uncategorized,referred_to_committee
+20439,"Referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+21225,Referred on motion (Crighton) to the committee on Senate Rules,referred,referred_to_committee
+21248,Read; and referred to the committee on House Ways and Means,referred,referred_to_committee
+22580,Committee recommended ought to pass and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+22589,"Resolution reported favorably by committee and referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+23064,"Reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Mental Health, Substance Use and Recovery",referred,referred_to_committee
+23283,"Reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Housing",referred,referred_to_committee
+23289,Recommitted to the committee on Housing,uncategorized,referred_to_committee
+23486,Committee recommended ought to pass and referred to the committee on House Ways and Means with the amendment pending,referred,referred_to_committee
+23488,"Referred to the committee on House Steering, Policy and Scheduling with the amendments pending",referred,referred_to_committee
+25338,Referred to the committee on Houae Bills in the Third Reading,referred,referred_to_committee
+25484,Referred to the committee on House Bills in the Third,referred,referred_to_committee
+25803,Referred to the temporary committee on House Rules,uncategorized,referred_to_committee
+25871,Referred to the temporary committee on House Ways and Means,uncategorized,referred_to_committee
+25916,Referred to the committee on Temporary Ways and Means,referred,referred_to_committee
+28436,"Recommitted to the committee on Rules of the two branches, acting concurrently",uncategorized,referred_to_committee
+28437,Bill reported favorably by committee and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+28542,Bill reported favorably by committee as changed and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+28688,Bill reported favorably by committee as changed and referred to the committee on Health Care Financing,referred,referred_to_committee
+29461,Bill reported favorably by committee and referred to the committee on Senate Rules,referred,referred_to_committee
+29628,Resolve reported favorably by committee and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+30015,"Bill reported favorably by committee as changed and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+30473,Read; and referred to the committee on House Steering Policy and Scheduling,referred,referred_to_committee
+31270,Referred to the committee on Senate Rules,referred,referred_to_committee
+36296,Resolution reported favorably by committee and referred to the committee on Senate Rules,referred,referred_to_committee
+36511,Read and referred to the committee on Transportation,referred,referred_to_committee
+36657,Referred to the committee on Senate Ways and Means,referred,referred_to_committee
+36803,"Committee recommended ought to pass with an amendment and referred to the committee on House Steering, Policy and Scheduling",referred,referred_to_committee
+37229,"Order reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+37311,Committee reported favorably and referred to the committee on Senate Rules,referred,referred_to_committee
+37358,"Bill reported favorably and referred to the committee on Rules of the two branches, acting concurrently",referred,referred_to_committee
+37527,Bill reported favorably and referred to the committee on Senate Ways and Means,referred,referred_to_committee
+37695,Order referred to the committee on Senate Rules,referred,referred_to_committee
+38179,Bill reported favorably as changed and referred to the committee on Senate Rules,referred,referred_to_committee
+43243,Referred to the committee on Temporary Senate Rules,referred,referred_to_committee
+43878,Referred (Friedman) to the committee on Joint Ways and Means,referred,referred_to_committee

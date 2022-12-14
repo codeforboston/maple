@@ -1,0 +1,48 @@
+action_id,action,prediction,action_type
+91115,"Reported, in part, by H4000",uncategorized,bill_redirect
+91141,Accompanied S555,reference,bill_redirect
+91149,"Accompanied a new draft, see H4784",reference,bill_redirect
+91198,Accompanied by H1013,reference,bill_redirect
+91219,Pending new draft of H96,uncategorized,bill_redirect
+91616,"New draft substituted, see H5051",uncategorized,bill_redirect
+92408,"Accompanied a study order, see H4960",study_order,bill_redirect
+105757,New draft of H96,uncategorized,bill_redirect
+106435,Recommended new text for H3702,uncategorized,bill_redirect
+115028,"Committee reported, in part, ought to pass with an amendment, substituting therefor a bill, see H5007",uncategorized,bill_redirect
+116247,Reported (in part) by S3084,uncategorized,bill_redirect
+120610,"Committee reported that the matter be placed in the Orders of the Day for Thursday January 13, 2022 with an amendment, substituting a new draft, see S2616",uncategorized,bill_redirect
+120613,"Committee recommended ought to pass with an amendment, substituting therefor a new draft, see S2616",uncategorized,bill_redirect
+120912,"Committee recommended ought to pass with an amendment, substituting a new draft, see S2572",uncategorized,bill_redirect
+121029,Accompanying S1276,uncategorized,bill_redirect
+121522,"New draft (Pacheco) substituted, see S2778",uncategorized,bill_redirect
+121820,Reported in part by S39,uncategorized,bill_redirect
+122075,"Committee recommended ought to pass with an amendment, substituting thereof a new draft, see S2730",uncategorized,bill_redirect
+125492,"Committee reported that the matter be placed in the Orders of the Day for the next session with an amendment, substituting therefor a new draft, see S2704",uncategorized,bill_redirect
+126729,"Committee recommended ought to pass with an amendment, substituting therefore a new draft, see S2533",uncategorized,bill_redirect
+126931,"New draft substituted (DiZoglio), see S3015",uncategorized,bill_redirect
+127664,"Substituted, as amended, as a new text for H3701",uncategorized,bill_redirect
+127919,"Read second, amended by substitution of a new text (H3872) and ordered to a third reading",uncategorized,bill_redirect
+127928,"Reported in part, S2475",uncategorized,bill_redirect
+128024,Recommended new draft for S2470,uncategorized,bill_redirect
+128025,Substituted as a new draft for S2470,uncategorized,bill_redirect
+128104,Substituted as a new text for H3863,uncategorized,bill_redirect
+128156,"New Draft substituted, see S2561",uncategorized,bill_redirect
+128208,"New draft substituted, as amended, see S2558",uncategorized,bill_redirect
+128258,Recommended new text (Comerford) for H3995,uncategorized,bill_redirect
+128352,Recommended new draft (Velis) for S1367,uncategorized,bill_redirect
+128360,"Read third, amended by substitution of a new text (H4433) and passed to be engrossed",engrossment,bill_redirect
+128374,"Committee recommended ought to pass with an amendment , substituting a new draft, see S2557",uncategorized,bill_redirect
+128552,"Substituted, as amended, as a new draft for S459",uncategorized,bill_redirect
+129381,New text of H3900,uncategorized,bill_redirect
+129803,"Reported in part, see S2467",uncategorized,bill_redirect
+129855,Recommended new draft of S2059,uncategorized,bill_redirect
+130283,Substituted as anew text for H4578,uncategorized,bill_redirect
+131290,"Substitute, as a new text for H4807",uncategorized,bill_redirect
+131784,Recommended (Friedman) new text for H4954,uncategorized,bill_redirect
+132151,New draft (Pacheco) substituted for S3065,uncategorized,bill_redirect
+132173,New draft (Pacheco) for S2517,uncategorized,bill_redirect
+132190,New draft (Gobi) of S3028,uncategorized,bill_redirect
+132489,"Recommended new text, on the residue, of H5076",uncategorized,bill_redirect
+132494,"Substituted, as a new text for H5076",uncategorized,bill_redirect
+135346,"Committee recommended ought to pass with an amendment substituting a new draft, S2651",uncategorized,bill_redirect
+136238,"Committee reported that the matter be placed in the Orders of the Day for the next session with an amendment, substituting a new draft, see S2956",uncategorized,bill_redirect

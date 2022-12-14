@@ -1,0 +1,81 @@
+action_id,action,prediction,action_type
+91124,Committee reported that the matter be placed in the Orders of the Day for the next sitting for a second reading,uncategorized,chamber_business
+91125,Read second and ordered to a third reading,uncategorized,chamber_business
+91126,Read third and passed to be engrossed,engrossment,chamber_business
+91127,"Read, rules suspended, read second and ordered to a third reading",uncategorized,chamber_business
+91128,Taken out of the Orders of the Day,uncategorized,chamber_business
+91129,Read third (title changed) and passed to be engrossed,engrossment,chamber_business
+91449,Committee reported that the matter be placed in the Orders of the Day for the next sitting,uncategorized,chamber_business
+91615,"Read second, amended (as recommended by the committee on House Ways and Means)",uncategorized,chamber_business
+92209,Red second and ordered to a third reading,uncategorized,chamber_business
+92211,Read third,uncategorized,chamber_business
+92454,Committee reported that the matter be placed in the Orders of the Day for the next sitting for a second reading with the amendment pending,uncategorized,chamber_business
+95647,"Committee reported that the matter be placed in the Orders of the Day for the next session with an amendment, inserting in place thereof the text of S3092",uncategorized,chamber_business
+95649,Read second,uncategorized,chamber_business
+95651,Ordered to a third reading,uncategorized,chamber_business
+96958,"Committee reported that the matter be placed in the Orders of the Day for Wednesday November 17, 2021",uncategorized,chamber_business
+96960,"Read second, ordered to a third reading, read third and passed to be engrossed",engrossment,chamber_business
+96988,Read; and placed in the Orders of the Day for the next session,uncategorized,chamber_business
+97265,"Placed in the Orders of the Day for the next sitting (under the last sentence of Rule 7A), the question being on acceptance",uncategorized,chamber_business
+97898,Committee reported that the matter be placed in the Orders of the Day for the next session,uncategorized,chamber_business
+97900,"Read second, ordered to a third reading, read third",uncategorized,chamber_business
+98948,"Committee reported that the matter be placed in the Orders of the Day for the next sitting, the question being on acceptance",uncategorized,chamber_business
+99192,"Read third, amended and passed to be engrossed",engrossment,chamber_business
+99564,Committee reported that the matter be placed in the Orders of the Day for the next sitting with the amendment pending,uncategorized,chamber_business
+100264,"Read second, ordered to a third reading, read third (title changed) and passed to be engrossed",engrossment,chamber_business
+102682,Referred to the committee on House Steering Policy and Scheduling for a second reading with the amendment pending,referred,chamber_business
+104071,"Read third, amended and passed to be engrossed.",engrossment,chamber_business
+104831,Placed in the Orders of the Day for the next sitting (under the last sentence of Rule 7A) for a second reading,uncategorized,chamber_business
+105328,"Committee reported that the matter be placed in the Orders of the Day for the next sitting, question of adoption",uncategorized,chamber_business
+105764,"Placed in the Orders of the Day for Thursday, April 29, 2021",uncategorized,chamber_business
+105834,"Read second, ordered to a third reading, rules suspended, read third (title changed) and passed to be engrossed",engrossment,chamber_business
+105861,"Read third (title changed), amended and passed to be engrossed",engrossment,chamber_business
+106397,Read third (title changed),uncategorized,chamber_business
+106452,"Placed in the Orders of the Day for the next session, the question being ""Shall this reorganization plan be approved?""",uncategorized,chamber_business
+106454,"Placed in the Orders of the Day for the next sitting, the question being on acceptance",uncategorized,chamber_business
+106716,Committee recommended that the matter be placed in the Orders of the Day for the next sitting for a second reading with the amendment pending,uncategorized,chamber_business
+106808,"Read second, ordered to a third reading, rules suspended, read third and passed to be engrossed",engrossment,chamber_business
+107445,"Placed in the Orders of the Day for Thursday, July 1. 2021",uncategorized,chamber_business
+107471,"Read, rules suspended, read second, ordered to a third reading, read third and passed to be engrossed",engrossment,chamber_business
+107540,Committee reported that the matter be placed in the Orders of the Day for a second reading with the amendment pending,uncategorized,chamber_business
+108054,"Read, rules suspended, read second, ordered to a third reading, read a third time and passed to be engrossed",engrossment,chamber_business
+108415,"Placed in the Orders of the Day for Tuesday, May 25, 2021, pursuant to an order previously adopted",uncategorized,chamber_business
+108536,Placed in the Orders of the Day for the next sitting,uncategorized,chamber_business
+109050,"Read second, rules suspended, ordered to a third reading, read third and passed to be engrossed",engrossment,chamber_business
+110005,"Read, rules suspended, read second",uncategorized,chamber_business
+110319,Placed in the Orders of the Day for the next session,uncategorized,chamber_business
+111153,"Ought NOT to pass (under Joint Rule 10) and placed in the Orders of the Day for the next sitting, the question being on acceptance",uncategorized,chamber_business
+112339,"Committee reported that the matter be placed in the Orders of the Day for Thursday, May 5, 2022 with an amendment, inserting in place thereof the text of S2851",uncategorized,chamber_business
+112700,"Placed in the Orders of the day for Thursday, April 14, 2022",uncategorized,chamber_business
+112770,"Read second, ordered to a third reading, rules suspended and read third",uncategorized,chamber_business
+112878,"Ordered to a third reading, rules suspended and read third",uncategorized,chamber_business
+113437,"Ordered to a third reading, rules suspended, read third",uncategorized,chamber_business
+113878,Ordered to a third reading - 156 YEAS to 0 NAYS (See YEA and NAY No. 169),uncategorized,chamber_business
+113907,"Placed in the Orders of the Day for Tuesday, May 24, 2022 pursuant to an order previously adopted",uncategorized,chamber_business
+114602,Committee reported that the matter be placed in the Orders of the Day for the next sitting for a second reading with the amendments pending,uncategorized,chamber_business
+115031,Committee reported that the matter be placed in the Orders of the Day for the next sitting with the amendments pending,uncategorized,chamber_business
+116919,"Read second, amended and ordered to a third reading",uncategorized,chamber_business
+117112,"Read second, ordered to a third reading, rules suspended, read third (title changed), amended and passed to be engrossed",engrossment,chamber_business
+117310,"Read second, ordered to a third reading, rules suspended, read third, and passed to be engrossed",engrossment,chamber_business
+117555,"Read, rules suspended, read second, ordered to a third reading, read third (title changed) and passed to be engrossed",engrossment,chamber_business
+117777,"Committee reported that the matter be placed in the Orders of the Day for the next sitting with the amendment pending, question on ordering to a third reading",uncategorized,chamber_business
+117892,"Read second, amended (as recommended by the committee on Ways and Means), ordered to a third reading",uncategorized,chamber_business
+119548,Ought NOT to pass (under Joint Rule 10) and placed in the Orders of the Day for the next session,uncategorized,chamber_business
+120610,"Committee reported that the matter be placed in the Orders of the Day for Thursday January 13, 2022 with an amendment, substituting a new draft, see S2616",uncategorized,chamber_business
+121421,Bill reported favorably by committee and placed in the Orders of the Day for the next session,uncategorized,chamber_business
+121625,Bill reported favorably by committee as changed and placed in the Orders of the Day for the next session,uncategorized,chamber_business
+125492,"Committee reported that the matter be placed in the Orders of the Day for the next session with an amendment, substituting therefor a new draft, see S2704",uncategorized,chamber_business
+127708,Committee recommended ought to be adopted and placed in the Orders of the Day for the next session,uncategorized,chamber_business
+127917,Committee reported that the matter be placed in the Orders of the Day for the next sitting with the amendment (H3872) pending,uncategorized,chamber_business
+127919,"Read second, amended by substitution of a new text (H3872) and ordered to a third reading",uncategorized,chamber_business
+128033,"Read second, amended (as recommended by the committee on House Ways and Means) and ordered to a third reading",uncategorized,chamber_business
+128206,"Committee reported that the matter be placed in the Orders of the Day for Thursday, October 21, 2021",uncategorized,chamber_business
+128360,"Read third, amended by substitution of a new text (H4433) and passed to be engrossed",engrossment,chamber_business
+128702,"Read and placed in Orders of the Day for Wednesday, October 27, 2021",uncategorized,chamber_business
+128725,"Read; rules suspended, read second, ordered to a third reading, rules suspended, read third and passed to be engrossed",engrossment,chamber_business
+128817,Read second and ordered to a third reading.,uncategorized,chamber_business
+128899,Read third and passed to be engrossed - see Roll Call #102 (Yeas 38 – Nays 0),engrossment,chamber_business
+130355,"Ordered to a third reading, read third and passed to be engrossed",engrossment,chamber_business
+133307,"Read second, amended, ordered to a third reading, read third (title changed) and passed to be engrossed",engrossment,chamber_business
+133987,"Read second, ordered to a third reading, read a third time and passed to be engrossed",engrossment,chamber_business
+136238,"Committee reported that the matter be placed in the Orders of the Day for the next session with an amendment, substituting a new draft, see S2956",uncategorized,chamber_business

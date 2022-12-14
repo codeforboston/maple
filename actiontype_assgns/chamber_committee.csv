@@ -1,0 +1,77 @@
+action_id,action,prediction,action_type
+91114,Referred to the committee on House Ways and Means,referred,chamber_committee
+91120,Bill reported favorably by committee and referred to the committee on House Ways and Means,referred,chamber_committee
+91199,"Bill reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+91200,Committee recommended ought to pass and referred to the committee on House Ways and Means,referred,chamber_committee
+91293,Reported favorably by committee and referred to the committee on Health Care Financing,referred,chamber_committee
+91294,Committee recommended bill ought to pass and referred to the committee on House Ways and Means,referred,chamber_committee
+91612,"Referred to the committee on House Steering, Policy and Scheduling with the amendment pending",referred,chamber_committee
+91615,"Read second, amended (as recommended by the committee on House Ways and Means)",uncategorized,chamber_committee
+91910,Bill reported favorably by committee as changed and referred to the committee on House Ways and Means,referred,chamber_committee
+92294,Referred to the committee on Health Care Financing,referred,chamber_committee
+94387,Read; and referred to the committee on Senate Ways and Means,referred,chamber_committee
+95531,Amendment (as recommended by the committee on House Ways and Means) adopted,uncategorized,chamber_committee
+96079,Discharged to the committee on Health Care Financing,uncategorized,chamber_committee
+96546,Bill reported favorably by committee and referred to the committee on Health Care Financing,referred,chamber_committee
+97001,Reported favorably by committee as changed and referred to the committee on Health Care Financing,referred,chamber_committee
+97264,"Committee recommended ought NOT to pass and referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+98403,"Resolve reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+98449,"Committee recommended bill ought to pass and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+102566,Resolve reported favorably by committee and referred to the committee on House Ways and Means,referred,chamber_committee
+105327,"Resolutions reported favorably by committee and referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+105755,Reported from the committee on House Ways and Means,uncategorized,chamber_committee
+105780,Bills in the Third Reading special report accepted,uncategorized,chamber_committee
+106337,Bills in the Third Reading Special report accepted,uncategorized,chamber_committee
+106338,Governor's amendment considered (in the form approved by the committee on Bills in the Third Reading),uncategorized,chamber_committee
+106430,"The following section reported from the committee on House Ways and Means recommending that the action of the General Court stand; and the section was referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+106823,Governors amendment considered (in the form approved by the committee on Bills in the Third Reading),uncategorized,chamber_committee
+106888,Discharged to the committee on House Ways and Means,uncategorized,chamber_committee
+107087,Bills in the Third Reading report accepted,uncategorized,chamber_committee
+107193,"Reported, referred to the committee on Joint Rules, reported, rules suspended and referred to the committee on Health Care Financing",referred,chamber_committee
+108461,"The following items and sections severally reported from committee on House Ways and Means recommending, in each instance, that the action of the General Court stand; and the items and sections severally were referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+110009,Referred to committee on Bills in the Third Reading,uncategorized,chamber_committee
+110121,Senate NON-concurred in the reference to the committee on Labor and Workforce Development and referred to the committee on Joint Ways and Means,referred,chamber_committee
+110429,Reported from the committee on Health Care Financing,uncategorized,chamber_committee
+110890,"Bills in the Third Reading special report accepted, see H4501",uncategorized,chamber_committee
+110977,"Referred the committee on House Steering, Policy and Scheduling with the amendment pending",uncategorized,chamber_committee
+111552,"Referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+112361,Read; and referred to the committee on House Ways and Means,referred,chamber_committee
+113693,Committee recommended ought to pass and referred to the committee on Senate Ways and Means,referred,chamber_committee
+113702,"Resolution reported favorably by committee and referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+114599,Committee recommended ought to pass and referred to the committee on House Ways and Means with the amendment pending,referred,chamber_committee
+114601,"Referred to the committee on House Steering, Policy and Scheduling with the amendments pending",referred,chamber_committee
+115034,Amended (as recommended by the committee on House Ways and Means),uncategorized,chamber_committee
+116010,Refererrd to the committee on Bills in the Third Reading,uncategorized,chamber_committee
+116451,Referred to the committee on Houae Bills in the Third Reading,referred,chamber_committee
+116566,Governor's amendment considered in the form approved by the committee on Bills in the Third Reading,uncategorized,chamber_committee
+116984,Referred to the temporary committee on House Ways and Means,uncategorized,chamber_committee
+116985,"Order adopted, transferred to the committee on House Ways and Means",uncategorized,chamber_committee
+117029,Referred to the committee on Temporary Ways and Means,referred,chamber_committee
+117892,"Read second, amended (as recommended by the committee on Ways and Means), ordered to a third reading",uncategorized,chamber_committee
+119396,Reported from the Temporary Committee on Rules,uncategorized,chamber_committee
+119549,"Recommitted to the committee on Rules of the two branches, acting concurrently",uncategorized,chamber_committee
+119550,Bill reported favorably by committee and referred to the committee on Senate Ways and Means,referred,chamber_committee
+119655,Bill reported favorably by committee as changed and referred to the committee on Senate Ways and Means,referred,chamber_committee
+119801,Bill reported favorably by committee as changed and referred to the committee on Health Care Financing,referred,chamber_committee
+120741,Resolve reported favorably by committee and referred to the committee on Senate Ways and Means,referred,chamber_committee
+121128,"Bill reported favorably by committee as changed and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+121813,"Amended, as recommended by the committee on Rules by striking out the text of S14 and inserting in place a duplicate of the text of H68, as amended",uncategorized,chamber_committee
+126807,Discharged to the committee on Senate Ways and Means,uncategorized,chamber_committee
+127642,Reported from the committee on Senate Ways and Means,uncategorized,chamber_committee
+127770,Referred to the committee on Senate Ways and Means,referred,chamber_committee
+127916,"Committee recommended ought to pass with an amendment and referred to the committee on House Steering, Policy and Scheduling",referred,chamber_committee
+128033,"Read second, amended (as recommended by the committee on House Ways and Means) and ordered to a third reading",uncategorized,chamber_committee
+128101,"Reported from the committee on Senate Ways and Means (reported Friday, July 2, 2021)",uncategorized,chamber_committee
+128342,"Order reported favorably by committee and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+128471,"Bill reported favorably and referred to the committee on Rules of the two branches, acting concurrently",referred,chamber_committee
+128640,Bill reported favorably and referred to the committee on Senate Ways and Means,referred,chamber_committee
+128804,"Ways and Means amendment adopted, as amended",uncategorized,chamber_committee
+129258,Reported from the committee on Rules,uncategorized,chamber_committee
+129498,Reported form the committee on Senate Ways and Means,uncategorized,chamber_committee
+131403,"Bills in the Third Reading amendment, adopted, see S3080",uncategorized,chamber_committee
+131959,"Pending Senate Ways and Means amendment adopted, as amended",uncategorized,chamber_committee
+131963,Governor's amendment as reported from the committee on Bills in the Third Reading,uncategorized,chamber_committee
+134991,Referred (Friedman) to the committee on Joint Ways and Means,referred,chamber_committee
+136068,Bills in the Third Reading discharged report accepted,uncategorized,chamber_committee
+136082,Senate Bills in the Third Reading Report (S30) accepted,uncategorized,chamber_committee
+136083,"Governor's amendment adopted, in the form recommended by Senate Bills in the Third Reading -- see Roll Call #19 (Yeas 39 to Nays 1)",uncategorized,chamber_committee
