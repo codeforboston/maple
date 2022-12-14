@@ -9,7 +9,7 @@ export default createMeta({
   component: FollowingCard
 })
 
-export const Template: ComponentStory<typeof FollowingCard> = args => (
+const Template: ComponentStory<typeof FollowingCard> = args => (
   <FollowingCard {...args} />
 )
 
