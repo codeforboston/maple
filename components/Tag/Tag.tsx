@@ -19,16 +19,14 @@ const Wrapper = styled.span<{ chamber: Chamber }>`
   padding: 2px 10px;
   border-radius: 12px;
   color: ${({ chamber }) =>
-    chamber === "joint" ? "var(--charcoal)" : "white"};
+    chamber === "joint" ? "var(--bs-gray-dark)" : "white"};
   font-size: 12px;
   font-family: Nunito;
   font-weight: 700;
   line-height: 15px;
   letter-spacing: 0.03em;
   ${({ chamber }) =>
-    chamber === "joint"
-      ? "border: 1px solid; border-color: var(--charcoal)"
-      : null};
+    chamber === "joint" ? "border: 1px solid var(--bs-gray-dark)" : null};
 `
 
 export const Tag: FC<Props> = ({ chamber }) => (
