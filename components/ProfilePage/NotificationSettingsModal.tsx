@@ -189,5 +189,9 @@ export default function NotificationSettingsModal({
 
   ?
   EditProfilePage -> when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
-                     however, View your profile is still active dispite appearing otherwise                 
+                     however, View your profile is still active dispite appearing otherwise
+                     
+  if you're already at your profile page and sign out/on, your profile doesn't update until you refresh the page
+
+  updateProfileImage does not appear implemented on AboutMeEditForm
 */

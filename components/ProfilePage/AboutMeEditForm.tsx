@@ -16,8 +16,8 @@ type UpdateProfileData = {
   aboutYou: string
   twitter: string
   linkedIn: string
-  private: string
-  public: boolean
+  // private: string
+  // public: boolean
   organization: boolean
   profileImage: any
 }
@@ -35,14 +35,14 @@ async function updateProfile(
   data: UpdateProfileData
 ) {
   const {
-    updateIsPublic,
+    // updateIsPublic,
     updateSocial,
     updateAbout,
     updateDisplayName,
     updateFullName
   } = actions
 
-  await updateIsPublic(data.public)
+  // await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
@@ -67,8 +67,8 @@ export function AboutMeEditForm({
     displayName,
     about,
     organization,
-    private: isPrivate,
-    public: isPublic,
+    // private: isPrivate,
+    // public: isPublic,
     social,
     profileImage
   }: Profile = profile
