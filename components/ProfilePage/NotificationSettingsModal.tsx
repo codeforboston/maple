@@ -41,12 +41,10 @@ export default function NotificationSettingsModal({
 
   const { private: isPrivate }: Profile = profile
 
-  const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
-  const [notificationFrequency, setNotificationFrequency] = useState<
-    "Daily" | "Weekly" | "Monthly"
-  >("Monthly") //replace initial state with User data
+  // replace initial state with User data
+  const [notifications, setNotifications] = useState<
+    null | "Daily" | "Weekly" | "Monthly"
+  >(null)
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ actions }, update)
@@ -78,15 +76,13 @@ export default function NotificationSettingsModal({
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                notifications === "Enable"
+                notifications === null
                   ? "btn-outline-secondary"
                   : "btn-secondary"
               }
             `}
             onClick={() =>
-              setNotifications(
-                notifications === "Enable" ? "Enabled" : "Enable"
-              )
+              setNotifications(notifications === null ? "Monthly" : null)
             }
           >
             <Image
@@ -96,13 +92,13 @@ export default function NotificationSettingsModal({
               width="22"
               height="19"
             />
-            {notifications}
+            {notifications === null ? "Enable" : "Enabled"}
           </Button>
         </Stack>
         <Stack
           className={`
             pt-3 ${styles.modalFontSize} 
-            ${notifications === "Enable" ? "invisible" : null} 
+            ${notifications === null ? "invisible" : null} 
           `}
           direction={`horizontal`}
         >
@@ -115,19 +111,17 @@ export default function NotificationSettingsModal({
               variant="outline-secondary"
               id="dropdown-basic"
             >
-              {notificationFrequency}
+              {notifications}
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Daily")}>
+              <Dropdown.Item onClick={() => setNotifications("Daily")}>
                 Daily
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Weekly")}>
+              <Dropdown.Item onClick={() => setNotifications("Weekly")}>
                 Weekly
               </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => setNotificationFrequency("Monthly")}
-              >
+              <Dropdown.Item onClick={() => setNotifications("Monthly")}>
                 Monthly
               </Dropdown.Item>
             </Dropdown.Menu>
