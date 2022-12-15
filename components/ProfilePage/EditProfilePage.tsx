@@ -53,8 +53,6 @@ export function EditProfileForm({
     notificationActive: notificationOn
   }: Profile = profile
 
-  console.log("P: ", profile)
-
   const [notificationsEnabled, setNotificationsEnabled] = useState<"On" | "">(
     notificationOn === "On" ? "On" : ""
   )
@@ -64,8 +62,6 @@ export function EditProfileForm({
   const [profileSettings, setProfileSettings] = useState<"yes" | "">(
     isPrivate === "yes" ? "yes" : ""
   )
-
-  console.log("F: ", notificationFrequency)
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
