@@ -1,4 +1,3 @@
-// components/bill/BillWidget.tsx
 import { FC } from "react"
 import styled from "styled-components"
 
