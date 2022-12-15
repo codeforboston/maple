@@ -47,14 +47,30 @@ export function EditProfileForm({
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
-  const { private: isPrivate }: Profile = profile
+  const {
+    private: isPrivate,
+    notification: notificationFrequency,
+    notificationActive: notificationOn
+  }: Profile = profile
 
+  console.log("P: ", profile)
+
+  const [notificationsEnabled, setNotificationsEnabled] = useState<"On" | "">(
+    notificationOn === "On" ? "On" : ""
+  )
+  const [notifications, setNotifications] = useState<
+    "Daily" | "Weekly" | "Monthly"
+  >(notificationFrequency ? notificationFrequency : "Monthly")
   const [profileSettings, setProfileSettings] = useState<"yes" | "">(
     isPrivate === "yes" ? "yes" : ""
   )
 
+  console.log("F: ", notificationFrequency)
+
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
+    setNotificationsEnabled(notificationOn === "On" ? "On" : "")
+    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
     setProfileSettings(isPrivate === "yes" ? "yes" : "")
   }
 
@@ -144,13 +160,15 @@ export function EditProfileForm({
       </TabContainer>
       <NotificationSettingsModal
         actions={actions}
+        notifications={notifications}
+        setNotifications={setNotifications}
+        notificationsEnabled={notificationsEnabled}
+        setNotificationsEnabled={setNotificationsEnabled}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
-        profile={profile}
         profileSettings={profileSettings}
         setProfileSettings={setProfileSettings}
         show={settingsModal === "show"}
-        uid={uid}
       />
     </Container>
   )

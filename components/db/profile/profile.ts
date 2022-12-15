@@ -15,6 +15,8 @@ type ProfileState = {
   updatingSenator: boolean
   updatingIsPrivate: boolean
   updatingIsPublic: boolean
+  updatingNotification: boolean
+  updatingNotificationActive: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
@@ -41,6 +43,8 @@ export function useProfile() {
         updatingSenator: false,
         updatingIsPrivate: false,
         updatingIsPublic: false,
+        updatingNotification: false,
+        updatingNotificationActive: false,
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
@@ -82,6 +86,20 @@ export function useProfile() {
           dispatch({ updatingIsPublic: true })
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
+        }
+      },
+      updateNotification: async (notificationFrequency: string) => {
+        if (uid) {
+          dispatch({ updatingNotification: true })
+          await updateNotification(uid, notificationFrequency)
+          dispatch({ updatingNotification: false })
+        }
+      },
+      updateNotificationActive: async (notificationOn: string) => {
+        if (uid) {
+          dispatch({ updatingNotificationActive: true })
+          await updateNotificationActive(uid, notificationOn)
+          dispatch({ updatingNotificationActive: false })
         }
       },
       updateIsOrganization: async (isOrganization: boolean) => {
@@ -184,6 +202,22 @@ function updateIsPrivate(uid: string, isPrivate: string) {
 
 function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
+}
+
+function updateNotification(uid: string, notificationFrequency: string) {
+  return setDoc(
+    profileRef(uid),
+    { notification: notificationFrequency },
+    { merge: true }
+  )
+}
+
+function updateNotificationActive(uid: string, notificationOn: string) {
+  return setDoc(
+    profileRef(uid),
+    { notificationActive: notificationOn },
+    { merge: true }
+  )
 }
 
 function updateIsOrganization(uid: string, isOrganization: boolean) {

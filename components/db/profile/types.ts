@@ -1,4 +1,4 @@
-import { Role } from "../../auth"
+import { Frequency, Role } from "../../auth"
 
 export type ProfileMember = {
   district: string
@@ -20,6 +20,8 @@ export type Profile = {
   senator?: ProfileMember
   private?: string
   public?: boolean
+  notification?: Frequency
+  notificationActive?: string
   about?: string
   social?: SocialLinks
   organization?: boolean
