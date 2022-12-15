@@ -26,7 +26,8 @@ export default function AuthModal() {
         <SignInModal
           show={currentModal === "signIn"}
           onHide={close}
-          onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
+          onForgotPasswordClick={() => setCurrentModal("forgotPassword")
+        }
         />
         <SignUpModal 
           show={currentModal === "signUp"} 

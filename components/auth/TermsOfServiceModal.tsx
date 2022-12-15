@@ -2,6 +2,7 @@ import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Modal, Row, Stack } from "../bootstrap"
 import styles from "./TermsOfService.module.css"
 import SVG from "react-inlinesvg"
+import { External } from "components/links"
 
 export default function TermsOfServiceModal({
   show,
@@ -16,22 +17,12 @@ export default function TermsOfServiceModal({
       <Modal.Body className={styles.text}>
         <Col md={12} className="mx-auto">
           <Stack gap={3} className="mb-4">
-            <Row className="align-items-end">
+            <Row className="align-items-center">
               <Col md={9}>
                 <h4>Privacy Policy</h4>
               </Col>
               <Col md={3}>
-                <a
-                  className={styles.link}
-                  rel="noreferrer"
-                  href={"/privacy-policy"}
-                  target={"_blank"}
-                >
-                  <h6 className={styles.readmore}>
-                    Read More
-                    <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
-                  </h6>
-                </a>
+                <External className={styles.link} href="/privacy-policy">Read More</External>
               </Col>
               <hr className={styles.hr} />
               <Col md={10}>
@@ -52,22 +43,12 @@ export default function TermsOfServiceModal({
                 </ul>
               </Col>
             </Row>
-            <Row className="align-items-end">
+            <Row className="align-items-center">
               <Col md={9}>
                 <h4>Terms of Service</h4>
               </Col>
               <Col md={3}>
-                <a
-                  className={styles.link}
-                  rel="noreferrer"
-                  href={"/terms-of-service"}
-                  target={"_blank"}
-                >
-                  <h6 className={styles.readmore}>
-                    Read More
-                    <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
-                  </h6>
-                </a>
+                <External className={styles.link} href="/terms-of-service">Read More</External>
               </Col>
 
               <hr className={styles.hr} />

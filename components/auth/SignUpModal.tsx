@@ -67,7 +67,6 @@ export default function SignUpModal({
   }, [tosStep])
 
   useEffect(() =>{
-    console.log(isSubmitSuccessful)
     if (isSubmitSuccessful)
       onSuccessfulSubmit
 
@@ -81,7 +80,7 @@ export default function SignUpModal({
         aria-labelledby="sign-up-modal"
         centered
         size="lg"
-        className={clsx(showTos && "d-none")}
+        className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
           <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>

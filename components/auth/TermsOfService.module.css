@@ -4,27 +4,10 @@
   font-weight: 500;
 }
 
-.agreebox {
-  background-color: #eae7e7;
-  border-radius: 10px;
-  padding: 12px;
-}
-
-.checkbox {
-  color: #1a3185;
-  background: transparent;
-}
-
 .hr {
   color: black;
   background-color: black;
   height: 10px;
-}
-
-.readmore {
-  color: #1a3185;
-  background: transparent;
-  white-space: nowrap;
 }
 
 .button {
@@ -37,9 +20,4 @@
 
 .link {
   text-decoration: none;
-}
-
-.svg {
-  margin-left: 8px;
-  margin-bottom: 5px;
 }
