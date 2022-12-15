@@ -51,18 +51,19 @@ export function EditProfileForm({
     displayName,
     about,
     organization,
+    private: isPrivate,
     public: isPublic,
     social,
     profileImage
   }: Profile = profile
 
   const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
-    isPublic ? "Enable" : "Enabled"
+    isPrivate === "yes" ? "Enabled" : "Enable"
   )
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
-    setProfileSettings(isPublic ? "Enable" : "Enabled")
+    setProfileSettings(isPrivate === "yes" ? "Enabled" : "Enable")
   }
 
   const testimony = usePublishedTestimonyListing({

@@ -18,6 +18,7 @@ export type Profile = {
   fullName?: string
   representative?: ProfileMember
   senator?: ProfileMember
+  private?: string
   public?: boolean
   about?: string
   social?: SocialLinks

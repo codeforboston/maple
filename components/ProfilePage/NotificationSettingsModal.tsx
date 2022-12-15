@@ -12,6 +12,7 @@ type UpdateProfileData = {
   aboutYou: string
   twitter: string
   linkedIn: string
+  private: string
   public: boolean
   organization: boolean
   profileImage: any
@@ -34,9 +35,9 @@ async function updateProfile(
   }: { profile: Profile; actions: ProfileHook; uid?: string },
   data: UpdateProfileData
 ) {
-  const { updateIsPublic } = actions
+  const { updateIsPrivate } = actions
 
-  await updateIsPublic(data.public)
+  await updateIsPrivate(data.private)
 }
 
 export default function NotificationSettingsModal({
@@ -55,6 +56,7 @@ export default function NotificationSettingsModal({
     displayName,
     about,
     organization,
+    private: isPrivate,
     public: isPublic,
     social,
     profileImage
@@ -73,7 +75,8 @@ export default function NotificationSettingsModal({
     onSettingsModalClose()
   })
 
-  console.log("isPublic: ", isPublic)
+  /* to be removed */
+  console.log("isPrivate: ", isPrivate)
 
   return (
     <Modal
@@ -163,8 +166,8 @@ export default function NotificationSettingsModal({
             Don't make my profile public. (Your name will still be associated
             with your testimony.)
           </Col>
-          {/* <Button
-            // {...register("public")}
+          <Button
+            {...register("private")}
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -178,16 +181,10 @@ export default function NotificationSettingsModal({
                 profileSettings === "Enable" ? "Enabled" : "Enable"
               )
             }
-            // value={profileSettings === "Enabled" ? true : false}
+            value={profileSettings === "Enabled" ? "yes" : ""}
           >
             {profileSettings}
-          </Button> */}
-          <Form.Check
-            {...register("public")}
-            className={`form-check-input:checked ms-auto pe-5`}
-            type="checkbox"
-            defaultChecked={isPublic}
-          />
+          </Button>
         </Stack>
         <Stack
           className={`d-flex justify-content-end pt-4`}
