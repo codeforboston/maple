@@ -1,21 +1,13 @@
-import { AnyARecord } from "dns"
 import { useState, Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import { useForm } from "react-hook-form"
-import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
+import { Button, Col, Image, Modal, Stack } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
 
 type UpdateProfileData = {
-  name: string
-  aboutYou: string
-  twitter: string
-  linkedIn: string
   private: string
-  public: boolean
-  organization: boolean
-  profileImage: any
 }
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
@@ -28,11 +20,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
 }
 
 async function updateProfile(
-  {
-    profile,
-    actions,
-    uid
-  }: { profile: Profile; actions: ProfileHook; uid?: string },
+  { actions }: { actions: ProfileHook },
   data: UpdateProfileData
 ) {
   const { updateIsPrivate } = actions
@@ -47,20 +35,11 @@ export default function NotificationSettingsModal({
   profile,
   profileSettings,
   setProfileSettings,
-  show,
-  uid
+  show
 }: Props) {
   const { register, handleSubmit } = useForm<UpdateProfileData>()
 
-  const {
-    displayName,
-    about,
-    organization,
-    private: isPrivate,
-    public: isPublic,
-    social,
-    profileImage
-  }: Profile = profile
+  const { private: isPrivate }: Profile = profile
 
   const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
     "Enable"
@@ -70,13 +49,10 @@ export default function NotificationSettingsModal({
   >("Monthly") //replace initial state with User data
 
   const onSubmit = handleSubmit(async update => {
-    await updateProfile({ profile, actions }, update)
+    await updateProfile({ actions }, update)
 
     onSettingsModalClose()
   })
-
-  /* to be removed */
-  console.log("isPrivate: ", isPrivate)
 
   return (
     <Modal
@@ -207,7 +183,8 @@ export default function NotificationSettingsModal({
   Modal State -> Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
                  from parent EditProfilePage.tsx
                  / make sure Cancelling and coming back doesn't leave unsaved edits?
-  Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
+  Continue Button -> [ ] Update Backend with Notifications & 
+                     [x] Profile Settings State 
                      [x] then Close Modal
 
   ?

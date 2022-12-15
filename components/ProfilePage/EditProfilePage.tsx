@@ -47,15 +47,7 @@ export function EditProfileForm({
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
-  const {
-    displayName,
-    about,
-    organization,
-    private: isPrivate,
-    public: isPublic,
-    social,
-    profileImage
-  }: Profile = profile
+  const { private: isPrivate }: Profile = profile
 
   const [profileSettings, setProfileSettings] = useState<"yes" | "">(
     isPrivate === "yes" ? "yes" : ""
