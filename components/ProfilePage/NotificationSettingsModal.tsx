@@ -23,7 +23,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   onSettingsModalClose: () => void
   profile: Profile
   profileSettings: string
-  setProfileSettings: Dispatch<SetStateAction<"Enable" | "Enabled">>
+  setProfileSettings: Dispatch<SetStateAction<"yes" | "">>
   uid?: string
 }
 
@@ -171,19 +171,17 @@ export default function NotificationSettingsModal({
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                profileSettings === "Enable"
+                profileSettings === ""
                   ? "btn-outline-secondary"
                   : "btn-secondary"
               }
             `}
             onClick={() =>
-              setProfileSettings(
-                profileSettings === "Enable" ? "Enabled" : "Enable"
-              )
+              setProfileSettings(profileSettings === "yes" ? "" : "yes")
             }
-            value={profileSettings === "Enabled" ? "yes" : ""}
+            value={profileSettings}
           >
-            {profileSettings}
+            {profileSettings === "yes" ? "Enabled" : "Enable"}
           </Button>
         </Stack>
         <Stack
@@ -214,5 +212,5 @@ export default function NotificationSettingsModal({
 
   ?
   EditProfilePage -> when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
-                     however, View your profile is still active dispite appearing otherwise                    
+                     however, View your profile is still active dispite appearing otherwise                 
 */
