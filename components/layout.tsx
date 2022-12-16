@@ -11,6 +11,12 @@ import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import styles from "./layout.module.css"
 
+// Signout, and redirect to the home page.
+const handleSignout = () => {
+  auth.signOut()
+  location.assign(`/`) // Redirect to the home page.
+}
+
 export type LayoutProps = {
   title?: string
 }
@@ -31,7 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       <PageFooter
         authenticated={authenticated}
         user={user as any}
-        signOut={() => void auth.signOut()}
+        signOut={handleSignout}
       />
     </>
   )
@@ -138,7 +144,7 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
+                <NavLink handleClick={handleSignout}>Sign Out</NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
