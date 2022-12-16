@@ -12,7 +12,7 @@ const handleSignout = () => {
  * redirect the user to the login page. */
 const SignOut: React.FC<ButtonProps> = props => {
   return (
-    <Button {...props} onClick={() => handleSignout()}>
+    <Button {...props} onClick={handleSignout}>
       Sign out
     </Button>
   )
