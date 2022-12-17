@@ -1,7 +1,6 @@
-import { useAppDispatch } from "components/hooks"
 import { Button } from "../bootstrap"
-import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
-
+import { useAppDispatch } from "../hooks"
+import { AuthFlowStep, authStepChanged } from "./redux"
 
 interface Props {
   label?: string
