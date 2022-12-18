@@ -22,7 +22,9 @@ export default function TermsOfServiceModal({
                 <h4>Privacy Policy</h4>
               </Col>
               <Col md={3}>
-                <External className={styles.link} href="/privacy-policy">Read More</External>
+                <External className={styles.link} href="/privacy-policy">
+                  Read More
+                </External>
               </Col>
               <hr className={styles.hr} />
               <Col md={10}>
@@ -48,7 +50,9 @@ export default function TermsOfServiceModal({
                 <h4>Terms of Service</h4>
               </Col>
               <Col md={3}>
-                <External className={styles.link} href="/terms-of-service">Read More</External>
+                <External className={styles.link} href="/terms-of-service">
+                  Read More
+                </External>
               </Col>
 
               <hr className={styles.hr} />

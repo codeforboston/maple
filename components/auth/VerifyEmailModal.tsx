@@ -5,7 +5,7 @@ import SVG from "react-inlinesvg"
 
 export default function VerifyEmailModal({
   show,
-  onHide,
+  onHide
 }: Pick<ModalProps, "show" | "onHide">) {
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
@@ -16,8 +16,6 @@ export default function VerifyEmailModal({
         <Col md={12} className="mx-auto">
           <Stack gap={3} className="mb-4">
             This is the email verify modal
-            
-    
           </Stack>
         </Col>
       </Modal.Body>

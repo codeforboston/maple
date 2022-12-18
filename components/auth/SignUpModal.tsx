@@ -16,18 +16,18 @@ import TermsOfServiceModal from "./TermsOfServiceModal"
 
 export default function SignUpModal({
   show,
-  onHide, 
+  onHide,
   onSuccessfulSubmit
 }: Pick<ModalProps, "show" | "onHide"> & {
   onSuccessfulSubmit: () => void
-})  {
+}) {
   const {
     register,
     handleSubmit,
     reset,
     getValues,
     trigger,
-    formState: { errors, isSubmitSuccessful}
+    formState: { errors, isSubmitSuccessful }
   } = useForm<CreateUserWithEmailAndPasswordData>()
 
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
@@ -66,10 +66,8 @@ export default function SignUpModal({
     }
   }, [tosStep])
 
-  useEffect(() =>{
-    if (isSubmitSuccessful)
-      onSuccessfulSubmit
-
+  useEffect(() => {
+    if (isSubmitSuccessful) onSuccessfulSubmit
   }, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (

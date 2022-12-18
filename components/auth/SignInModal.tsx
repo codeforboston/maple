@@ -15,7 +15,7 @@ import SocialSignOnButtons from "./SocialSignOnButtons"
 export default function SignInModal({
   show,
   onHide,
-  onForgotPasswordClick, 
+  onForgotPasswordClick
 }: Pick<ModalProps, "show" | "onHide"> & {
   onForgotPasswordClick: () => void
 }) {
@@ -37,11 +37,9 @@ export default function SignInModal({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log(isSubmitSuccessful)
-    if (isSubmitSuccessful)
-      onHide
-
+    if (isSubmitSuccessful) onHide
   }, [isSubmitSuccessful, onHide])
 
   const onSubmit = handleSubmit(credentials => {
