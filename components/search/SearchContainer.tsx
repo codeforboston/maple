@@ -126,4 +126,10 @@ export const SearchContainer = styled.div`
     background-image: unset;
     border-color: var(--bs-body-bg);
   }
+
+  .ais-FilterButton-has-refinements {
+    background: var(--bs-blue-100);
+    border-color: var(--bs-blue-100);
+    color: var(--bs-blue);
+  }
 `

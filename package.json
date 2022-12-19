@@ -22,7 +22,7 @@
     "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage tests/integration/exportedTestData",
     "export:nolint": "next build --no-lint && next export",
     "fix": "next lint --fix && prettier --write .",
-    "postinstall": "yarn --cwd functions install --frozen-lockfile",
+    "postinstall": "yarn --cwd functions install --frozen-lockfile --ignore-engines",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "serve": "firebase emulators:start --only hosting",
@@ -34,6 +34,9 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chromatic": "chromatic --project-token=f8618e690599"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "browserslist": {
     "production": [
@@ -67,6 +70,7 @@
     "bootstrap": "5.1.3",
     "clsx": "^1.2.1",
     "copy-to-clipboard": "^3.3.1",
+    "date-fns": "^2.29.3",
     "dompurify": "^2.3.10",
     "firebase": "^9.6.10",
     "fuse.js": "6.5.3",
