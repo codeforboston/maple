@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import { useForm } from "react-hook-form"
-import { Button, Col, Image, Modal, Stack } from "../bootstrap"
+import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
 
@@ -67,18 +67,19 @@ export default function NotificationSettingsModal({
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.modalContainer}>
-        <Stack>
-          &nbsp; Notifications
-          <hr className={`mt-0`} />
-        </Stack>
-        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
-          <Col className={`col-8`}>
-            Would you like to receive updates about bills/organizations you
-            follow through email?
-          </Col>
-          <Button
-            {...register("notificationActive")}
-            className={`
+        <Form onSubmit={onSubmit}>
+          <Stack>
+            &nbsp; Notifications
+            <hr className={`mt-0`} />
+          </Stack>
+          <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
+            <Col className={`col-8`}>
+              Would you like to receive updates about bills/organizations you
+              follow through email?
+            </Col>
+            <Button
+              {...register("notificationActive")}
+              className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
                 notificationsEnabled === "On"
@@ -86,67 +87,69 @@ export default function NotificationSettingsModal({
                   : "btn-outline-secondary"
               }
             `}
-            onClick={() =>
-              setNotificationsEnabled(notificationsEnabled === "On" ? "" : "On")
-            }
-            value={notificationsEnabled}
-          >
-            <Image
-              className={`pe-1`}
-              src="/mail-2.svg"
-              alt="open envelope with letter, toggles update frequency options"
-              width="22"
-              height="19"
-            />
-            {notificationsEnabled === "On" ? "Enabled" : "Enable"}
-          </Button>
-        </Stack>
-        <Stack
-          className={`
+              onClick={() =>
+                setNotificationsEnabled(
+                  notificationsEnabled === "On" ? "" : "On"
+                )
+              }
+              value={notificationsEnabled}
+            >
+              <Image
+                className={`pe-1`}
+                src="/mail-2.svg"
+                alt="open envelope with letter, toggles update frequency options"
+                width="22"
+                height="19"
+              />
+              {notificationsEnabled === "On" ? "Enabled" : "Enable"}
+            </Button>
+          </Stack>
+          <Stack
+            className={`
             pt-3 ${styles.modalFontSize} 
             ${notificationsEnabled === "On" ? "" : "invisible"} 
           `}
-          direction={`horizontal`}
-        >
-          <Col className={`col-8`}>
-            How often would you like to receive emails?
-          </Col>
-          <Dropdown className={`d-inline-block ms-auto`}>
-            <Dropdown.Toggle
-              {...register("notification")}
-              className={`btn-sm py-1 ${styles.modalButtonLength}`}
-              variant="outline-secondary"
-              id="dropdown-basic"
-              value={notifications}
-            >
-              {notifications}
-            </Dropdown.Toggle>
+            direction={`horizontal`}
+          >
+            <Col className={`col-8`}>
+              How often would you like to receive emails?
+            </Col>
+            <Dropdown className={`d-inline-block ms-auto`}>
+              <Dropdown.Toggle
+                {...register("notification")}
+                className={`btn-sm py-1 ${styles.modalButtonLength}`}
+                variant="outline-secondary"
+                id="dropdown-basic"
+                value={notifications}
+              >
+                {notifications}
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setNotifications("Daily")}>
-                Daily
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setNotifications("Weekly")}>
-                Weekly
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setNotifications("Monthly")}>
-                Monthly
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Stack>
-        <Stack className={`pt-4`}>
-          &nbsp; Profile Settings
-          <hr className={`mt-0`} />
-        </Stack>
-        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
-          <Col className={`col-8`}>
-            Don't make my profile public. (Your name will still be associated
-            with your testimony.)
-          </Col>
-          <Button
-            {...register("private")}
-            className={`
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                  Daily
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setNotifications("Weekly")}>
+                  Weekly
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setNotifications("Monthly")}>
+                  Monthly
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Stack>
+          <Stack className={`pt-4`}>
+            &nbsp; Profile Settings
+            <hr className={`mt-0`} />
+          </Stack>
+          <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
+            <Col className={`col-8`}>
+              Don't make my profile public. (Your name will still be associated
+              with your testimony.)
+            </Col>
+            <Button
+              {...register("private")}
+              className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
                 profileSettings === ""
@@ -154,28 +157,32 @@ export default function NotificationSettingsModal({
                   : "btn-secondary"
               }
             `}
-            onClick={() =>
-              setProfileSettings(profileSettings === "yes" ? "" : "yes")
-            }
-            value={profileSettings}
+              onClick={() =>
+                setProfileSettings(profileSettings === "yes" ? "" : "yes")
+              }
+              value={profileSettings}
+            >
+              {profileSettings === "yes" ? "Enabled" : "Enable"}
+            </Button>
+          </Stack>
+          <Stack
+            className={`d-flex justify-content-end pt-4`}
+            direction={`horizontal`}
           >
-            {profileSettings === "yes" ? "Enabled" : "Enable"}
-          </Button>
-        </Stack>
-        <Stack
-          className={`d-flex justify-content-end pt-4`}
-          direction={`horizontal`}
-        >
-          <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
-            Continue
-          </Button>
-          <Button
-            className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onSettingsModalClose}
-          >
-            Cancel
-          </Button>
-        </Stack>
+            {/* <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
+              Continue
+            </Button> */}
+            <Button className={`btn btn-sm mx-3 py-1`} type="submit">
+              Continue
+            </Button>
+            <Button
+              className={`btn btn-sm btn-outline-secondary py-1`}
+              onClick={onSettingsModalClose}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </Form>
       </Modal.Body>
     </Modal>
   )
