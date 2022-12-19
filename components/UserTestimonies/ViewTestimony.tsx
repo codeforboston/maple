@@ -85,10 +85,14 @@ export const SortTestimonyDropDown = ({
 const TestimonyItemContentStyle = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `
 const TestimonyItemHeader = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+
+  width: 100%;
 `
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   const profile = usePublicProfile(testimony.authorUid)
@@ -136,63 +140,59 @@ export const TestimonyItem = ({
   const { result: bill } = useBill(testimony.billId)
 
   return (
-    <div
-      className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}
-      style={{ display: "flex", flexDirection: "row" }}
-    >
+    <div style={{ display: "flex", flexDirection: "row" }}>
       {/* USER IMAGE and POSITION */}
       <PositionLabel position={testimony.position} />
-      <TestimonyItemContentStyle className={`bg-white border-0 h5 d-flex`}>
-        <div>
-          {/* NAME OF USER/ORGANIZATION */}
-          <Author testimony={testimony} className="flex-grow-1" />
-          {isMobile && showControls && (
-            <>
-              <Internal href={formUrl(testimony.billId)}>
-                <Image
-                  className="px-2 ms-auto align-self-center"
-                  src="/edit-testimony.svg"
-                  alt="Edit icon"
-                  height={50}
-                  width={50}
-                />
-              </Internal>
+      <TestimonyItemContentStyle>
+        <TestimonyItemHeader>
+          <>
+            {/* NAME OF USER/ORGANIZATION */}
+            <Author testimony={testimony} />
+            {isMobile && showControls && (
+              <>
+                <Internal href={formUrl(testimony.billId)}>
+                  <Image
+                    src="/edit-testimony.svg"
+                    alt="Edit icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
 
-              <Internal href={`/bill?id=${testimony.billId}`}>
-                <Image
-                  className="px-2 align-self-center"
-                  src="/delete-testimony.svg"
-                  alt="Delete testimony icon"
-                  height={50}
-                  width={50}
-                />
-              </Internal>
-            </>
-          )}
-        </div>
-        <div>
-          {showBillNumber && (
-            <>
-              <Internal href={`/bill?id=${testimony.billId}`}>
-                {formatBillId(testimony.billId)}
-              </Internal>
-              {" · "}
-            </>
-          )}
-          {/* DATE */}
-          {`${published} · `}
-          <Internal
-            href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-          >
-            Full Text
-          </Internal>
-        </div>
+                <Internal href={`/bill?id=${testimony.billId}`}>
+                  <Image
+                    src="/delete-testimony.svg"
+                    alt="Delete testimony icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
+              </>
+            )}
+          </>
+          <div>
+            {showBillNumber && (
+              <>
+                <Internal href={`/bill?id=${testimony.billId}`}>
+                  {formatBillId(testimony.billId)}
+                </Internal>
+                {" · "}
+              </>
+            )}
+            {/* DATE */}
+            {`${published} · `}
+            <Internal
+              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+            >
+              Full Text
+            </Internal>
+          </div>
+        </TestimonyItemHeader>
         <hr />
         {/*WRITTEN TESTIMONY*/}
         <FormattedTestimonyContent testimony={testimony.content} />
         {showControls && (
           <div
-            className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
             style={{
               fontFamily: "nunito",
               borderLeft: "1px solid rgb(200, 200, 200)",
@@ -222,7 +222,6 @@ export const FormattedTestimonyContent = ({
       {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
         <>
           <div
-            className="col m2"
             dangerouslySetInnerHTML={formatTestimonyLinks(
               testimony,
               TESTIMONY_CHAR_LIMIT
@@ -236,10 +235,7 @@ export const FormattedTestimonyContent = ({
           </Button>
         </>
       ) : (
-        <div
-          className="col m2"
-          dangerouslySetInnerHTML={formatTestimonyLinks(testimony)}
-        />
+        <div dangerouslySetInnerHTML={formatTestimonyLinks(testimony)} />
       )}
     </>
   )
