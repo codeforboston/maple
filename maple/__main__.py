@@ -1,4 +1,8 @@
 import argparse
+<<<<<<< HEAD
+=======
+import ast
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 import code
 import csv
 from collections import defaultdict
@@ -10,7 +14,12 @@ from tqdm import tqdm
 
 from maple.classification import regex_classification
 from maple.db import connect
+<<<<<<< HEAD
 from maple.types import Action, ActionType, Bill, Branch, UnknownValue
+=======
+from maple.types import (Action, ActionType, Bill, Branch, Committee,
+                         UnknownValue)
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 from maple.util import parse_datetime
 
 
@@ -62,6 +71,48 @@ def load_command(args: argparse.Namespace) -> None:
             db.add_bill(bill)
 
 
+<<<<<<< HEAD
+=======
+def dump_command(args: argparse.Namespace) -> None:
+    with connect(args.db_path) as db:
+
+        actions = {}
+        bill_ids = {}
+        action_labels = defaultdict(list)
+        for (action_id, bill_id, action, labels) in db.actions_and_labels():
+            actions[action_id] = action
+            bill_ids[action_id] = bill_id
+            action_labels[action_id].extend([label.value for label in labels])
+
+        rows = []
+        for action_id in actions:
+            action = actions[action_id]
+            labels = action_labels[action_id]
+
+            match action.committee:
+                case Committee(name=name):
+                    committee=name
+                case UnknownValue(name=_):
+                    committee="unknown"
+                case _:
+                    committee="unknown"
+
+            rows.append(
+                {
+                    "action_id": action_id,
+                    "labels": labels,
+                    "bill_id": bill_ids[action_id],
+                    "branch": action.branch.value,
+                    "action": action.action,
+                    "when": action.when,
+                    "committee": committee,
+                }
+            )
+
+        pd.DataFrame(rows).to_csv(args.labels_file, index=False)
+
+
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 def regex_command(args: argparse.Namespace) -> None:
     with connect(args.db_path) as db:
 
@@ -70,12 +121,22 @@ def regex_command(args: argparse.Namespace) -> None:
         predictions = []
         labels = []
 
+<<<<<<< HEAD
         for id, action, label in db.actions_and_labels():
             predicted = regex_classification(action)
             ids.append(id)
             actions.append(action.action)
             predictions.append(predicted.value)
             labels.append(label.value if label is not None else None)
+=======
+        for id, _, action, labels in db.actions_and_labels():
+            for label in labels:
+                predicted = regex_classification(action)
+                ids.append(id)
+                actions.append(action.action)
+                predictions.append(predicted.value)
+                labels.append(label.value if label is not None else None)
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 
         df = pd.DataFrame(
             data={
@@ -153,8 +214,27 @@ def regex_command(args: argparse.Namespace) -> None:
 def label_command(args: argparse.Namespace) -> None:
     with connect(args.db_path) as db:
         df = pd.read_csv(args.labels_file)
+<<<<<<< HEAD
         labeled = df[~pd.isna(df.label)]
         db.relabel(zip(labeled.action_id, labeled.label.map(lambda x: ActionType[x])))
+=======
+        df.labels = df.labels.map(ast.literal_eval)
+        db.relabel(
+            zip(df.action_id, df.labels.map(lambda xs: [ActionType[x] for x in xs]))
+        )
+
+
+def drop_labels_command(args: argparse.Namespace) -> None:
+    print("Do you really want to drop all labels? This cannot be undone ")
+    answer = input("y/n: ")
+
+    if answer != "y":
+        print("Canceled")
+        raise SystemExit(1)
+
+    with connect(args.db_path) as db:
+        db.drop_labels()
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 
 
 def repl_command(args: argparse.Namespace) -> None:
@@ -174,6 +254,14 @@ if __name__ == "__main__":
     load.add_argument("--bills-file", type=Path, required=True)
     load.set_defaults(func=load_command)
 
+<<<<<<< HEAD
+=======
+    dump = subparsers.add_parser("dump-labels", help="export labels to a CSV file")
+    dump.add_argument("--db-path", type=Path, required=True)
+    dump.add_argument("--labels-file", type=Path, required=True)
+    dump.set_defaults(func=dump_command)
+
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
     regex = subparsers.add_parser(
         "predict-regex", help="predict action types for actions in the database"
     )
@@ -181,6 +269,15 @@ if __name__ == "__main__":
     regex.add_argument("--predictions-file", type=Path, required=False)
     regex.set_defaults(func=regex_command)
 
+<<<<<<< HEAD
+=======
+    drop_labels = subparsers.add_parser(
+        "drop-labels", help="drop all labels, please be careful"
+    )
+    drop_labels.add_argument("--db-path", type=Path, required=True)
+    drop_labels.set_defaults(func=drop_labels_command)
+
+>>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
     label = subparsers.add_parser("label", help="update labels stored in the database")
     label.add_argument("--db-path", type=Path, required=True)
     label.add_argument("--labels-file", type=Path, required=True)
