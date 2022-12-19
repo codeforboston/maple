@@ -16,7 +16,7 @@ import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
-import { Card } from "components/Card"
+import { Card as MapleCard } from "components/Card"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -37,10 +37,8 @@ const ViewTestimony = (
   const testimony = items.result ?? []
 
   const [orderBy, setOrderBy] = useState<string>()
-
-  return (
+  const body = (
     <TitledSectionCard
-      title={"Testimony"}
       className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
@@ -63,6 +61,7 @@ const ViewTestimony = (
       {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )
+  return <MapleCard header="Testimonies" body={body} />
 }
 
 export const SortTestimonyDropDown = ({
@@ -129,7 +128,11 @@ export const TestimonyItem = ({
   const { result: bill } = useBill(testimony.billId)
 
   return (
-    <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
+    <div
+      className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}
+      style={{ display: "flex", flexDirection: "row" }}
+    >
+      <PositionLabel position={testimony.position} />
       <div className={`bg-white border-0 h5 d-flex`}>
         <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
@@ -176,9 +179,7 @@ export const TestimonyItem = ({
           </Col>
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          >
-            <PositionLabel position={testimony.position} />
-          </Col>
+          ></Col>
         </Row>
         <Row className={`col m2`}>
           <Col className={`p-4 ps-3`} style={{ whiteSpace: "pre-wrap" }}>
