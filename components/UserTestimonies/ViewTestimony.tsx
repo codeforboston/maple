@@ -134,6 +134,7 @@ export const TestimonyItem = ({
     >
       <PositionLabel position={testimony.position} />
       <div className={`bg-white border-0 h5 d-flex`}>
+        {/* NAME OF USER/ORGANIZATION */}
         <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
           <>
@@ -170,6 +171,7 @@ export const TestimonyItem = ({
                 {" · "}
               </>
             )}
+            {/* DATE */}
             {`${published} · `}
             <Internal
               href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
@@ -183,6 +185,7 @@ export const TestimonyItem = ({
         </Row>
         <Row className={`col m2`}>
           <Col className={`p-4 ps-3`} style={{ whiteSpace: "pre-wrap" }}>
+            {/*WRITTEN TESTIMONY*/}
             <FormattedTestimonyContent testimony={testimony.content} />
           </Col>
           {showControls && (
