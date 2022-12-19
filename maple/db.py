@@ -29,11 +29,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-<<<<<<< HEAD
 from typing import Iterable, Iterator, Type
-=======
-from typing import Iterable, Iterator, List, Type
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 
 import peewee as pw
 
@@ -107,13 +103,7 @@ class CommitteeF(pw.Field):
     def db_value(self, value: Committee) -> str:
         return value.name
 
-<<<<<<< HEAD
     def python_value(self, value: str) -> Committee:
-=======
-    def python_value(self, value: str) -> Committee | UnknownValue:
-        if value is None:
-            return UnknownValue("unknown")
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
         return Committee(value)
 
 
@@ -170,31 +160,17 @@ class TrainingDB:
 
         return counts
 
-<<<<<<< HEAD
     def relabel(self, labels: Iterable[tuple[int, ActionType]]) -> None:
-=======
-    def relabel(self, labels: Iterable[tuple[int, List[ActionType]]]) -> None:
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
         """Drop existing labels, and apply new ones. """
 
         with _database.atomic() as transaction:
             try:
-<<<<<<< HEAD
                 # Drop existing labels
                 LabelM.delete().execute()  # type: ignore
 
                 # Apply new labels
                 for action_id, label in labels:
                     LabelM.create(action=action_id, label=label)
-=======
-                for action_id, action_labels in labels:
-                    # Drop existing labels for the action
-                    LabelM.delete().where(LabelM.action_id == action_id).execute()  # type: ignore
-
-                    # Apply new labels for this action
-                    for action_label in action_labels:
-                        LabelM.create(action=action_id, label=action_label)
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
             except:
                 transaction.rollback()
                 raise
@@ -226,13 +202,7 @@ class TrainingDB:
 
         return billM
 
-<<<<<<< HEAD
     def actions_and_labels(self) -> Iterator[tuple[int, Action, ActionType | None]]:
-=======
-    def actions_and_labels(
-        self,
-    ) -> Iterator[tuple[int, int, Action, List[ActionType]]]:
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
         actions = (
             (ActionM)
             .select(ActionM, LabelM)
@@ -242,7 +212,6 @@ class TrainingDB:
             .iterator()  # type: ignore
         )
 
-<<<<<<< HEAD
         for actionm in actions:
             action = actionm.to_action()
 
@@ -251,17 +220,6 @@ class TrainingDB:
             else:
                 for label in actionm.labels:
                     yield actionm.id, action, label.label
-=======
-        for actionm in set(actions):
-            action = actionm.to_action()
-
-            yield actionm.id, actionm.bill_id, action, [
-                label.label for label in actionm.labels
-            ]
-
-    def drop_labels(self) -> None:
-        LabelM.delete().execute()
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 
 
 @contextmanager

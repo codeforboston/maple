@@ -33,11 +33,7 @@ class Branch(Enum):
 class ActionType(Enum):
     uncategorized = "uncategorized"
     signed_by_governor = "signed_by_governor"
-<<<<<<< HEAD
     engrossement = "engrossment"
-=======
-    engrossment = "engrossment"
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
     hearing_scheduled = "hearing_scheduled"
     study_order = "study_order"
     referred = "referred"
@@ -47,7 +43,6 @@ class ActionType(Enum):
     reading = "reading"
     cancellation = "cancellation"
     rules_note = "rules_note"
-<<<<<<< HEAD
     reported_that_the_matters = "reported_that_the_matters"
     read_second_order_third = "read_second_order_third"
     enacted = "enacted"
@@ -119,9 +114,6 @@ class ActionType(Enum):
     engrossed = "engrossed"
     accompanied = "accompanied"
     multi="multi"
-=======
-    chamber_committee = "chamber_committee"
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
 
 
 @dataclass(frozen=True)
@@ -147,9 +139,5 @@ class Bill:
     history: list[Action]
 
     def status(self, on: datetime) -> Status:
-<<<<<<< HEAD
         """The status of the bill, as of some date."""
-=======
-        """The status of the bill, as of some date. """
->>>>>>> bb06ab5c677e19a2d2d5ca09eebc250b9d24ec8b
         raise NotImplementedError()

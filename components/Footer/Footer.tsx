@@ -27,7 +27,7 @@ function MapleContainer() {
   return (
     <div style={{ maxWidth: "220px" }}>
       <Row style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "1em", color: "#fff" }}>Follow MAPLE</p>
+        <p style={{ fontSize: "12px", color: "#fff" }}>Follow MAPLE</p>
       </Row>
       <Row style={{ justifyContent: "center" }}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
