@@ -132,8 +132,10 @@ export const TestimonyItem = ({
       className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}
       style={{ display: "flex", flexDirection: "row" }}
     >
+      {/* USER IMAGE and POSITION */}
       <PositionLabel position={testimony.position} />
       <div className={`bg-white border-0 h5 d-flex`}>
+        <div></div>
         {/* NAME OF USER/ORGANIZATION */}
         <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
@@ -161,47 +163,37 @@ export const TestimonyItem = ({
         )}
       </div>
       <div>
-        <Row className={`justify-content-between`}>
-          <Col className={`h5 fw-bold align-self-center`}>
-            {showBillNumber && (
-              <>
-                <Internal href={`/bill?id=${testimony.billId}`}>
-                  {formatBillId(testimony.billId)}
-                </Internal>
-                {" · "}
-              </>
-            )}
-            {/* DATE */}
-            {`${published} · `}
-            <Internal
-              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-            >
-              Full Text
+        {showBillNumber && (
+          <>
+            <Internal href={`/bill?id=${testimony.billId}`}>
+              {formatBillId(testimony.billId)}
             </Internal>
-          </Col>
-          <Col
-            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          ></Col>
-        </Row>
-        <Row className={`col m2`}>
-          <Col className={`p-4 ps-3`} style={{ whiteSpace: "pre-wrap" }}>
-            {/*WRITTEN TESTIMONY*/}
-            <FormattedTestimonyContent testimony={testimony.content} />
-          </Col>
-          {showControls && (
-            <Col
-              className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
-              style={{
-                fontFamily: "nunito",
-                borderLeft: "1px solid rgb(200, 200, 200)",
-                minWidth: "20%"
-              }}
-            >
-              <Internal href={formUrl(testimony.billId)}>Edit</Internal>
-              <Internal href={`/bill?id=${testimony.billId}`}>Delete</Internal>
-            </Col>
-          )}
-        </Row>
+            {" · "}
+          </>
+        )}
+        {/* DATE */}
+        {`${published} · `}
+        <Internal
+          href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+        >
+          Full Text
+        </Internal>
+        <hr />
+        {/*WRITTEN TESTIMONY*/}
+        <FormattedTestimonyContent testimony={testimony.content} />
+        {showControls && (
+          <div
+            className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
+            style={{
+              fontFamily: "nunito",
+              borderLeft: "1px solid rgb(200, 200, 200)",
+              minWidth: "20%"
+            }}
+          >
+            <Internal href={formUrl(testimony.billId)}>Edit</Internal>
+            <Internal href={`/bill?id=${testimony.billId}`}>Delete</Internal>
+          </div>
+        )}
         <ViewAttachment testimony={testimony} />
       </div>
     </div>
@@ -227,14 +219,12 @@ export const FormattedTestimonyContent = ({
               TESTIMONY_CHAR_LIMIT
             )}
           />
-          <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
-            <Button
-              variant="link"
-              onClick={() => setShowAllTestimony(!showAllTestimony)}
-            >
-              Show More
-            </Button>
-          </Col>
+          <Button
+            variant="link"
+            onClick={() => setShowAllTestimony(!showAllTestimony)}
+          >
+            Show More
+          </Button>
         </>
       ) : (
         <div
