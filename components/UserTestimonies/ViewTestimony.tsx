@@ -16,6 +16,7 @@ import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
+import { Card } from "components/Card"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
