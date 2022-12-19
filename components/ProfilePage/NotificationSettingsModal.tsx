@@ -31,6 +31,8 @@ async function updateProfile(
   const { updateNotification } = actions
   const { updateNotificationActive } = actions
 
+  console.log("D: ", data)
+
   await updateIsPrivate(data.private)
   await updateNotification(data.notification)
   await updateNotificationActive(data.notificationActive)
@@ -78,15 +80,16 @@ export default function NotificationSettingsModal({
               follow through email?
             </Col>
             <Button
-              {...register("notificationActive")}
+              // {...register("notificationActive")}
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-              ${
-                notificationsEnabled === "On"
-                  ? "btn-secondary"
-                  : "btn-outline-secondary"
-              }
-            `}
+                btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
+                ${
+                  notificationsEnabled === "On"
+                    ? "btn-secondary"
+                    : "btn-outline-secondary"
+                }
+              `}
+              id="button-one"
               onClick={() =>
                 setNotificationsEnabled(
                   notificationsEnabled === "On" ? "" : "On"
@@ -104,6 +107,13 @@ export default function NotificationSettingsModal({
               {notificationsEnabled === "On" ? "Enabled" : "Enable"}
             </Button>
           </Stack>
+          <input
+            {...register("notificationActive")}
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            placeholder="Enter email"
+          />
           <Stack
             className={`
             pt-3 ${styles.modalFontSize} 
@@ -169,9 +179,6 @@ export default function NotificationSettingsModal({
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
-            {/* <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
-              Continue
-            </Button> */}
             <Button className={`btn btn-sm mx-3 py-1`} type="submit">
               Continue
             </Button>
