@@ -1,7 +1,11 @@
 import { createMeta } from "stories/utils"
+import { ComponentStory } from "@storybook/react"
+import { BillTestimonies } from "../../components/bill/BillTestimonies"
+import { type } from "os"
+import { MemberReference } from "functions/src/members/types"
 
 // TODO: move into components directory
-const BillTestimonyListCard = () => <div>TODO</div>
+const BillTestimonyListCard = BillTestimonies
 
 export default createMeta({
   title: "Bill Detail/BillTestimonyListCard",
@@ -10,4 +14,24 @@ export default createMeta({
   component: BillTestimonyListCard
 })
 
-export const Primary = () => <BillTestimonyListCard />
+var first = { Id: "test", Name: "tes", Type: 0 }
+
+const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
+  return <BillTestimonyListCard {...props} />
+}
+
+export const Primary = Template.bind({})
+Primary.args = {
+  bill: {
+    Title: "An Act fostering voting opportunities, trust, equity, and security",
+    BillNumber: "H805",
+    DocketNumber: "string",
+    GeneralCourtNumber: 999,
+    PrimarySponsor: first,
+    Cosponsors: [first],
+    LegislationTypeName: "string",
+    Pinslip: "string",
+    DocumentText: "string"
+  },
+  className: "janet"
+}
