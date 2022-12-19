@@ -82,6 +82,14 @@ export const SortTestimonyDropDown = ({
   )
 }
 
+const TestimonyItemContentStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const TestimonyItemHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+`
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   const profile = usePublicProfile(testimony.authorUid)
 
@@ -134,50 +142,51 @@ export const TestimonyItem = ({
     >
       {/* USER IMAGE and POSITION */}
       <PositionLabel position={testimony.position} />
-      <div className={`bg-white border-0 h5 d-flex`}>
-        <div></div>
-        {/* NAME OF USER/ORGANIZATION */}
-        <Author testimony={testimony} className="flex-grow-1" />
-        {isMobile && showControls && (
-          <>
-            <Internal href={formUrl(testimony.billId)}>
-              <Image
-                className="px-2 ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt="Edit icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
+      <TestimonyItemContentStyle className={`bg-white border-0 h5 d-flex`}>
+        <div>
+          {/* NAME OF USER/ORGANIZATION */}
+          <Author testimony={testimony} className="flex-grow-1" />
+          {isMobile && showControls && (
+            <>
+              <Internal href={formUrl(testimony.billId)}>
+                <Image
+                  className="px-2 ms-auto align-self-center"
+                  src="/edit-testimony.svg"
+                  alt="Edit icon"
+                  height={50}
+                  width={50}
+                />
+              </Internal>
 
-            <Internal href={`/bill?id=${testimony.billId}`}>
-              <Image
-                className="px-2 align-self-center"
-                src="/delete-testimony.svg"
-                alt="Delete testimony icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
-          </>
-        )}
-      </div>
-      <div>
-        {showBillNumber && (
-          <>
-            <Internal href={`/bill?id=${testimony.billId}`}>
-              {formatBillId(testimony.billId)}
-            </Internal>
-            {" · "}
-          </>
-        )}
-        {/* DATE */}
-        {`${published} · `}
-        <Internal
-          href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-        >
-          Full Text
-        </Internal>
+              <Internal href={`/bill?id=${testimony.billId}`}>
+                <Image
+                  className="px-2 align-self-center"
+                  src="/delete-testimony.svg"
+                  alt="Delete testimony icon"
+                  height={50}
+                  width={50}
+                />
+              </Internal>
+            </>
+          )}
+        </div>
+        <div>
+          {showBillNumber && (
+            <>
+              <Internal href={`/bill?id=${testimony.billId}`}>
+                {formatBillId(testimony.billId)}
+              </Internal>
+              {" · "}
+            </>
+          )}
+          {/* DATE */}
+          {`${published} · `}
+          <Internal
+            href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+          >
+            Full Text
+          </Internal>
+        </div>
         <hr />
         {/*WRITTEN TESTIMONY*/}
         <FormattedTestimonyContent testimony={testimony.content} />
@@ -195,7 +204,7 @@ export const TestimonyItem = ({
           </div>
         )}
         <ViewAttachment testimony={testimony} />
-      </div>
+      </TestimonyItemContentStyle>
     </div>
   )
 }
