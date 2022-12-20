@@ -3,6 +3,7 @@ import { Timestamp } from "firebase/firestore"
 import React, { useRef } from "react"
 import { Provider as ReduxProvider } from "react-redux"
 import { reducer as auth } from "./auth/redux"
+import { api } from "./db/api"
 import { reducer as profile } from "./db/profile/redux"
 import { reducer as publish } from "./publish/redux"
 import { rejectionLogger } from "./utils"
@@ -18,8 +19,11 @@ export const createStore = () =>
           ignoredPaths: ["auth.user", "publish.service"],
           ignoredActions: ["auth/authChanged", "publish/bindService"]
         }
-      }).concat(rejectionLogger),
+      })
+        .concat(api.middleware)
+        .concat(rejectionLogger),
     reducer: {
+      [api.reducerPath]: api.reducer,
       publish,
       auth,
       profile
