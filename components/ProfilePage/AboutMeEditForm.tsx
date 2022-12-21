@@ -16,8 +16,6 @@ type UpdateProfileData = {
   aboutYou: string
   twitter: string
   linkedIn: string
-  // private: string
-  // public: boolean
   organization: boolean
   profileImage: any
 }
@@ -34,15 +32,9 @@ async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  const {
-    // updateIsPublic,
-    updateSocial,
-    updateAbout,
-    updateDisplayName,
-    updateFullName
-  } = actions
+  const { updateSocial, updateAbout, updateDisplayName, updateFullName } =
+    actions
 
-  // await updateIsPublic(data.public)
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateAbout(data.aboutYou)
@@ -63,15 +55,8 @@ export function AboutMeEditForm({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  const {
-    displayName,
-    about,
-    organization,
-    // private: isPrivate,
-    // public: isPublic,
-    social,
-    profileImage
-  }: Profile = profile
+  const { displayName, about, organization, social, profileImage }: Profile =
+    profile
 
   const { updateIsOrganization } = actions
 
@@ -99,22 +84,7 @@ export function AboutMeEditForm({
   return (
     <TitledSectionCard className={className}>
       <Form onSubmit={onSubmit}>
-        <Header
-          title={"About You"}
-          // bug={
-          //   <Row className={`justify-content-center align-items-center`}>
-          //     <Form.Check
-          //       {...register("public")}
-          //       className={`col-auto about-me-checkbox`}
-          //       type="checkbox"
-          //       defaultChecked={isPublic}
-          //     />
-          //     <Form.Label htmlFor="public" className={`col my-1`}>
-          //       Allow others to see your profile
-          //     </Form.Label>
-          //   </Row>
-          // }
-        ></Header>
+        <Header title={"About You"}></Header>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           {/* <Form.FloatingLabel label="User Type" className="mb-3">
             <Form.Select

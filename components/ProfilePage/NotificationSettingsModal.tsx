@@ -186,7 +186,7 @@ export default function NotificationSettingsModal({
 }
 
 /*
-  Modal State -> [x] Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
+  Modal State ->     [x] Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
                      from parent EditProfilePage.tsx
                      / make sure Cancelling and coming back doesn't leave unsaved edits?
   Continue Button -> [x] Update Backend with Notifications & 
