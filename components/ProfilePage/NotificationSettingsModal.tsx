@@ -20,7 +20,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   notificationsEnabled: string
   setNotificationsEnabled: Dispatch<SetStateAction<"On" | "">>
   profileSettings: string
-  setProfileSettings: Dispatch<SetStateAction<"yes" | "">>
+  setProfileSettings: Dispatch<SetStateAction<"On" | "">>
 }
 
 async function updateProfile(
@@ -152,26 +152,23 @@ export default function NotificationSettingsModal({
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                profileSettings === ""
-                  ? "btn-outline-secondary"
-                  : "btn-secondary"
+                profileSettings === "On"
+                  ? "btn-secondary"
+                  : "btn-outline-secondary"
               }
             `}
               onClick={() =>
-                setProfileSettings(profileSettings === "yes" ? "" : "yes")
+                setProfileSettings(profileSettings === "On" ? "" : "On")
               }
               value={profileSettings}
             >
-              {profileSettings === "yes" ? "Enabled" : "Enable"}
+              {profileSettings === "On" ? "Enabled" : "Enable"}
             </Button>
           </Stack>
           <Stack
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
-            {/* <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
-              Continue
-            </Button> */}
             <Button className={`btn btn-sm mx-3 py-1`} type="submit">
               Continue
             </Button>
