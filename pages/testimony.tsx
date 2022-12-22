@@ -16,12 +16,12 @@ export default createPage({
       author = params.string(router, "author"),
       court = params.number(router, "court") ?? 192
 
-    const { data } = useTestimonyDetailPageDataQuery(
+    const result = useTestimonyDetailPageDataQuery(
       author && court && billId
         ? { authorUid: author, billId, court }
         : skipToken
     )
 
-    return data ? <TestimonyDetailPage {...data} /> : <LoadingPage />
+    return <LoadingPage result={result} Page={TestimonyDetailPage} />
   }
 })

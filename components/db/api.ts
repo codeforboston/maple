@@ -32,7 +32,6 @@ export type PublicProfileQuery = {
 export class DbService {
   private getDocData = async <T>(path: string, ...pathSegments: string[]) => {
     const snap = await getDoc(doc(firestore, path, ...pathSegments))
-    console.log("snap", snap, snap.data())
     if (snap.exists()) return snap.data() as T
   }
 
@@ -60,6 +59,7 @@ export class DbService {
     const snap = first(result.docs)
     if (snap?.exists()) return snap.data() as Testimony
   }
+
   getBill = ({ court, billId }: BillQuery) =>
     this.getDocData<Bill>("generalCourts", court.toString(), "bills", billId)
 
