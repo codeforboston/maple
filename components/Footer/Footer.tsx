@@ -102,10 +102,10 @@ const ResourcesLinks = () => (
 
 const BrowseLinks = () => (
   <>
-    <NavLink className={styles.footerLink} href="#testimony">
+    {/* <NavLink className={styles.footerLink} href="#testimony">
       Testimonies
-    </NavLink>
-    <NavLink className={styles.footerLink} href="#Policies">
+    </NavLink> */}
+    <NavLink className={styles.footerLink} href="/bills">
       Policies
     </NavLink>
   </>
