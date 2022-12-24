@@ -1,7 +1,6 @@
+import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const BillStatus = () => <div>TODO</div>
+import BillStatus, { Status } from "components/bill/BillStatus"
 
 export default createMeta({
   title: "Bill Detail/BillStatus",
@@ -10,4 +9,18 @@ export default createMeta({
   component: BillStatus
 })
 
-export const Primary = () => <BillStatus />
+const Template: ComponentStory<typeof BillStatus> = props => {
+  return (
+    <div className="d-flex">
+      <div className="col">
+        <BillStatus {...props} />
+      </div>
+    </div>
+  )
+}
+
+export const Primary = Template.bind({})
+
+Primary.args = {
+  currentStage: Status.firstChamber
+}
