@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithModal, useAuth } from "./auth"
+import { SignInWithModal, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
@@ -10,12 +10,6 @@ import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import styles from "./layout.module.css"
-
-// Signout, and redirect to the home page.
-const handleSignout = () => {
-  auth.signOut()
-  location.assign(`/`) // Redirect to the home page.
-}
 
 export type LayoutProps = {
   title?: string
@@ -37,7 +31,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       <PageFooter
         authenticated={authenticated}
         user={user as any}
-        signOut={handleSignout}
+        signOut={signOutAndRedirectToHome}
       />
     </>
   )
@@ -144,7 +138,9 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={handleSignout}>Sign Out</NavLink>
+                <NavLink handleClick={signOutAndRedirectToHome}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
