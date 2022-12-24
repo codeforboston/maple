@@ -25,7 +25,6 @@ service cloud.firestore {
       // Only writable by the user.
       // Do not allow users to delete their profile, set the role field.
       // Only normal "user" roles can toggle visibility.
-      // or if the profile is an organization.
       allow read: if resource.data.public || request.auth.uid == uid
       allow create, update: if request.auth.uid == uid && validRoleChange() && validPublicChange()
     }
@@ -41,8 +40,9 @@ service cloud.firestore {
         allow read, write: if request.auth.uid == uid
       }
       match /archivedTestimony/{id} {
-        // Not accessible by users, for record keeping.
-        allow read, write: if false
+        // Publicly readable, for posterity.
+        allow read: if true 
+        allow write: if false
       }
     }
   }

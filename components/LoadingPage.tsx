@@ -31,10 +31,8 @@ const Error: FC<{ error: DataError }> = ({ error }) => {
       <Alert variant="danger">
         <div>{message}</div>
         <div>
-          <a href="" onClick={() => Router.reload()}>
-            Reload
-          </a>{" "}
-          to try again.
+          <Alert.Link onClick={() => Router.reload()}>Reload</Alert.Link> to try
+          again.
         </div>
       </Alert>
     </Container>

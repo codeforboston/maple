@@ -1,27 +1,15 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query"
 import { LoadingPage } from "components/LoadingPage"
 import {
   TestimonyDetailPage,
-  useTestimonyDetailPageDataQuery
+  useFetchPageData
 } from "components/testimony/TestimonyDetailPage"
-import { params } from "components/utils"
-import { useRouter } from "next/router"
 import { createPage } from "../components/page"
 
 export default createPage({
   title: "Testimony",
   Page: () => {
-    const router = useRouter()
-    const billId = params.string(router, "billId"),
-      author = params.string(router, "author"),
-      court = params.number(router, "court") ?? 192
-
-    const result = useTestimonyDetailPageDataQuery(
-      author && court && billId
-        ? { authorUid: author, billId, court }
-        : skipToken
+    return (
+      <LoadingPage result={useFetchPageData()} Page={TestimonyDetailPage} />
     )
-
-    return <LoadingPage result={result} Page={TestimonyDetailPage} />
   }
 })

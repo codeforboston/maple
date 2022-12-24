@@ -1,11 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { firestore } from "components/firebase"
+import { isNotNull } from "components/utils"
 import {
+  collection,
   collectionGroup,
   doc,
   getDoc,
   getDocs,
   limit,
+  orderBy,
   query,
   where
 } from "firebase/firestore"
@@ -25,9 +28,11 @@ export type BillQuery = {
   court: number
 }
 
-export type PublicProfileQuery = {
+export type ProfileQuery = {
   uid: string
 }
+
+export type UserProfile = Profile & { uid: string }
 
 export class DbService {
   private getDocData = async <T>(path: string, ...pathSegments: string[]) => {
@@ -35,11 +40,30 @@ export class DbService {
     if (snap.exists()) return snap.data() as T
   }
 
+  getArchivedTestimony = async ({
+    authorUid,
+    billId,
+    court
+  }: TestimonyQuery): Promise<Testimony[]> => {
+    const result = await getDocs(
+      query(
+        collection(firestore, `/users/${authorUid}/archivedTestimony`),
+        where("billId", "==", billId),
+        where("court", "==", court),
+        orderBy("version", "desc")
+      )
+    )
+    const archive = result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as Testimony[]
+    return archive
+  }
+
   getPublishedTestimony = async ({
     authorUid,
     billId,
     court
-  }: TestimonyQuery) => {
+  }: TestimonyQuery): Promise<Testimony | undefined> => {
     await this.getDocData<Testimony>(
       "users",
       authorUid,
@@ -60,10 +84,12 @@ export class DbService {
     if (snap?.exists()) return snap.data() as Testimony
   }
 
-  getBill = ({ court, billId }: BillQuery) =>
+  getBill = ({ court, billId }: BillQuery): Promise<Bill | undefined> =>
     this.getDocData<Bill>("generalCourts", court.toString(), "bills", billId)
 
-  getPublicProfile = async ({ uid }: PublicProfileQuery) => {
+  getProfile = async ({
+    uid
+  }: ProfileQuery): Promise<UserProfile | undefined> => {
     try {
       const profile = await this.getDocData<Profile>(`/profiles`, uid)
       return profile && { ...profile, uid }
@@ -77,5 +103,13 @@ export class DbService {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery(),
-  endpoints: () => ({})
+  endpoints: () => ({}),
+  tagTypes: ["Bill", "Testimony", ""]
 })
+
+export class ApiResponse {
+  static notFound = (message = "Resource not found") => ({
+    error: { status: 404, data: message }
+  })
+  static ok = <T>(data: T) => ({ data })
+}

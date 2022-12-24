@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react"
+import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import styles from "./Card.module.css"
 import { CardListItems, ListItem } from "./CardListItem"
