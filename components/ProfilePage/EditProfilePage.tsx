@@ -43,15 +43,14 @@ export function EditProfileForm({
   actions: ProfileHook
   uid: string
 }) {
-  const [key, setKey] = useState("AboutYou")
-  const [formUpdated, setFormUpdated] = useState(false)
-  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-
   const {
     public: isPublic,
     notificationFrequency: notificationFrequency
   }: Profile = profile
 
+  const [key, setKey] = useState("AboutYou")
+  const [formUpdated, setFormUpdated] = useState(false)
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<
     "Daily" | "Weekly" | "Monthly" | "None"
   >(notificationFrequency ? notificationFrequency : "Monthly")
@@ -64,6 +63,8 @@ export function EditProfileForm({
     setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
     setIsProfilePublic(isPublic ? isPublic : false)
   }
+
+  const close = () => setSettingsModal(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -103,7 +104,10 @@ export function EditProfileForm({
     }
   ]
 
-  const close = () => setSettingsModal(null)
+  let profileLocation = `/profile?id=${uid}`
+  if (!!formUpdated) {
+    profileLocation = `javascript:void(0)`
+  }
 
   return (
     <Container>
@@ -119,7 +123,7 @@ export function EditProfileForm({
               {"Settings"}
             </GearButton>
           </Internal>
-          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
+          <Internal className={`ml-2`} href={profileLocation}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View your profile"

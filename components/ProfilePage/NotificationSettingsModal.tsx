@@ -40,6 +40,7 @@ export default function NotificationSettingsModal({
     await updateNotification(notifications)
   }
 
+  // button classNames weren't properly updating on iOS
   let buttonSecondary = "btn-secondary"
   if (notifications === "None") {
     buttonSecondary = "btn-outline-secondary"
@@ -70,7 +71,6 @@ export default function NotificationSettingsModal({
               className={`
                 btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
               `}
-              // ${notifications === "None" ? "btn-outline-secondary" : "btn-secondary"}
               onClick={() =>
                 setNotifications(notifications === "None" ? "Monthly" : "None")
               }
@@ -170,8 +170,7 @@ export default function NotificationSettingsModal({
                      [x] Profile Settings State 
                      [x] then Close Modal
 
-  ?
-  EditProfilePage -> when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
+  EditProfilePage -> [x] fix issue: when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
                      however, View your profile is still active dispite appearing otherwise
                      
   if you're already at your profile page and sign out/on, your profile doesn't update until you refresh the page
