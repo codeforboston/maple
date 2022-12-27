@@ -59,7 +59,7 @@ export function EditProfileForm({
   const [notifications, setNotifications] = useState<
     "Daily" | "Weekly" | "Monthly"
   >(notificationFrequency ? notificationFrequency : "Monthly")
-  const [profileSettings, setProfileSettings] = useState<false | true>(
+  const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
   )
 
@@ -67,7 +67,7 @@ export function EditProfileForm({
     setSettingsModal("show")
     setNotificationsEnabled(notificationOn ? notificationOn : "")
     setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
-    setProfileSettings(isPublic ? isPublic : false)
+    setIsProfilePublic(isPublic ? isPublic : false)
   }
 
   const testimony = usePublishedTestimonyListing({
@@ -162,8 +162,8 @@ export function EditProfileForm({
         setNotificationsEnabled={setNotificationsEnabled}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
-        profileSettings={profileSettings}
-        setProfileSettings={setProfileSettings}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
         show={settingsModal === "show"}
       />
     </Container>

@@ -13,8 +13,8 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   setNotifications: Dispatch<SetStateAction<"Daily" | "Weekly" | "Monthly">>
   notificationsEnabled: string
   setNotificationsEnabled: Dispatch<SetStateAction<"On" | "">>
-  profileSettings: boolean
-  setProfileSettings: Dispatch<SetStateAction<false | true>>
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<false | true>>
 }
 
 export default function NotificationSettingsModal({
@@ -25,8 +25,8 @@ export default function NotificationSettingsModal({
   setNotificationsEnabled,
   onHide,
   onSettingsModalClose,
-  profileSettings,
-  setProfileSettings,
+  isProfilePublic,
+  setIsProfilePublic,
   show
 }: Props) {
   const handleContinue = async () => {
@@ -39,7 +39,7 @@ export default function NotificationSettingsModal({
     const { updateNotification } = actions
     const { updateNotificationActive } = actions
 
-    await updateIsPublic(profileSettings)
+    await updateIsPublic(isProfilePublic)
     await updateNotification(notifications)
     await updateNotificationActive(notificationsEnabled)
   }
@@ -136,16 +136,16 @@ export default function NotificationSettingsModal({
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                profileSettings === false
+                isProfilePublic === false
                   ? "btn-secondary"
                   : "btn-outline-secondary"
               }
             `}
               onClick={() =>
-                setProfileSettings(profileSettings === false ? true : false)
+                setIsProfilePublic(isProfilePublic === false ? true : false)
               }
             >
-              {profileSettings === false ? "Enabled" : "Enable"}
+              {isProfilePublic === false ? "Enabled" : "Enable"}
             </Button>
           </Stack>
           <Stack
