@@ -18,7 +18,6 @@ export type Profile = {
   fullName?: string
   representative?: ProfileMember
   senator?: ProfileMember
-  private?: Enabled
   public?: boolean
   notificationFrequency?: Frequency
   notificationActive?: Enabled

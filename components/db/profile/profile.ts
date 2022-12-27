@@ -13,7 +13,6 @@ type ProfileState = {
   loading: boolean
   updatingRep: boolean
   updatingSenator: boolean
-  updatingIsPrivate: boolean
   updatingIsPublic: boolean
   updatingNotification: boolean
   updatingNotificationActive: boolean
@@ -41,7 +40,6 @@ export function useProfile() {
         loading: true,
         updatingRep: false,
         updatingSenator: false,
-        updatingIsPrivate: false,
         updatingIsPublic: false,
         updatingNotification: false,
         updatingNotificationActive: false,
@@ -72,13 +70,6 @@ export function useProfile() {
           dispatch({ updatingRep: true })
           await updateRepresentative(uid, rep)
           dispatch({ updatingRep: false })
-        }
-      },
-      updateIsPrivate: async (isPrivate: string) => {
-        if (uid) {
-          dispatch({ updatingIsPrivate: true })
-          await updateIsPrivate(uid, isPrivate)
-          dispatch({ updatingIsPrivate: false })
         }
       },
       updateIsPublic: async (isPublic: boolean) => {
@@ -194,10 +185,6 @@ function updateSenator(uid: string, senator: ProfileMember | null) {
     { senator: senator ?? deleteField() },
     { merge: true }
   )
-}
-
-function updateIsPrivate(uid: string, isPrivate: string) {
-  return setDoc(profileRef(uid), { private: isPrivate }, { merge: true })
 }
 
 function updateIsPublic(uid: string, isPublic: boolean) {

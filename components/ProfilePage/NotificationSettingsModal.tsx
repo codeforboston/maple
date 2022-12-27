@@ -13,8 +13,8 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   setNotifications: Dispatch<SetStateAction<"Daily" | "Weekly" | "Monthly">>
   notificationsEnabled: string
   setNotificationsEnabled: Dispatch<SetStateAction<"On" | "">>
-  profileSettings: string
-  setProfileSettings: Dispatch<SetStateAction<"On" | "">>
+  profileSettings: boolean
+  setProfileSettings: Dispatch<SetStateAction<false | true>>
 }
 
 export default function NotificationSettingsModal({
@@ -29,22 +29,20 @@ export default function NotificationSettingsModal({
   setProfileSettings,
   show
 }: Props) {
-  const onSubmit = async () => {
+  const handleContinue = async () => {
     await updateProfile({ actions })
     onSettingsModalClose()
   }
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
-    const { updateIsPrivate } = actions
+    const { updateIsPublic } = actions
     const { updateNotification } = actions
     const { updateNotificationActive } = actions
 
-    await updateIsPrivate(profileSettings)
+    await updateIsPublic(profileSettings)
     await updateNotification(notifications)
     await updateNotificationActive(notificationsEnabled)
   }
-
-  console.log("Private: ", profileSettings)
 
   return (
     <Modal
@@ -81,6 +79,7 @@ export default function NotificationSettingsModal({
                   notificationsEnabled === "On" ? "" : "On"
                 )
               }
+              value={notificationsEnabled}
             >
               <Image
                 className={`pe-1`}
@@ -137,23 +136,23 @@ export default function NotificationSettingsModal({
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                profileSettings === "On"
+                profileSettings === false
                   ? "btn-secondary"
                   : "btn-outline-secondary"
               }
             `}
               onClick={() =>
-                setProfileSettings(profileSettings === "On" ? "" : "On")
+                setProfileSettings(profileSettings === false ? true : false)
               }
             >
-              {profileSettings === "On" ? "Enabled" : "Enable"}
+              {profileSettings === false ? "Enabled" : "Enable"}
             </Button>
           </Stack>
           <Stack
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
-            <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
+            <Button className={`btn btn-sm mx-3 py-1`} onClick={handleContinue}>
               Continue
             </Button>
             <Button
