@@ -104,11 +104,6 @@ export function EditProfileForm({
     }
   ]
 
-  let profileLocation = `/profile?id=${uid}`
-  if (!!formUpdated) {
-    profileLocation = `javascript:void(0)`
-  }
-
   return (
     <Container>
       <Header>
@@ -123,7 +118,10 @@ export function EditProfileForm({
               {"Settings"}
             </GearButton>
           </Internal>
-          <Internal className={`ml-2`} href={profileLocation}>
+          <Internal
+            className={`ml-2`}
+            href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+          >
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View your profile"
