@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef } from "react"
+import { Dispatch, MutableRefObject, SetStateAction, useRef } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import { Frequency } from "../auth"
@@ -44,7 +44,8 @@ export default function NotificationSettingsModal({
     await updateNotificationActive(notificationsEnabled)
   }
 
-  const notificationActiveButton = useRef(null)
+  const notificationActiveButton =
+    useRef() as MutableRefObject<HTMLButtonElement>
 
   const handleNotificationsActive = () => {
     setNotificationsEnabled(notificationsEnabled === "On" ? "" : "On")
