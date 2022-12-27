@@ -24,19 +24,6 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   setProfileSettings: Dispatch<SetStateAction<"On" | "">>
 }
 
-async function updateProfile(
-  { actions }: { actions: ProfileHook },
-  data: UpdateProfileData
-) {
-  const { updateIsPrivate } = actions
-  const { updateNotification } = actions
-  const { updateNotificationActive } = actions
-
-  await updateIsPrivate(data.private)
-  await updateNotification(data.notificationFrequency)
-  await updateNotificationActive(data.notificationActive)
-}
-
 export default function NotificationSettingsModal({
   actions,
   notifications,
@@ -56,6 +43,22 @@ export default function NotificationSettingsModal({
 
     onSettingsModalClose()
   })
+
+  async function updateProfile(
+    { actions }: { actions: ProfileHook },
+    data: UpdateProfileData
+  ) {
+    const { updateIsPrivate } = actions
+    const { updateNotification } = actions
+    const { updateNotificationActive } = actions
+
+    await updateIsPrivate(profileSettings)
+    // await updateIsPrivate(data.private)
+    await updateNotification(data.notificationFrequency)
+    await updateNotificationActive(data.notificationActive)
+  }
+
+  console.log("Private: ", profileSettings)
 
   return (
     <Modal
@@ -149,7 +152,7 @@ export default function NotificationSettingsModal({
               with your testimony.)
             </Col>
             <Button
-              {...register("private")}
+              // {...register("private")}
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -161,7 +164,7 @@ export default function NotificationSettingsModal({
               onClick={() =>
                 setProfileSettings(profileSettings === "On" ? "" : "On")
               }
-              value={profileSettings}
+              // value={profileSettings}
             >
               {profileSettings === "On" ? "Enabled" : "Enable"}
             </Button>
