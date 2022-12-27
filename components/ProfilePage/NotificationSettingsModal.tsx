@@ -1,10 +1,17 @@
-import { Dispatch, SetStateAction, useRef } from "react"
+import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { Frequency } from "../auth"
+// import { useForm } from "react-hook-form"
+import { Enabled, Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
+
+type UpdateProfileData = {
+  private: string
+  notificationFrequency: Frequency
+  notificationActive: Enabled
+}
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -29,12 +36,21 @@ export default function NotificationSettingsModal({
   setProfileSettings,
   show
 }: Props) {
+  // const { register, handleSubmit } = useForm<UpdateProfileData>()
+
+  // const onSubmit = handleSubmit(async update => {
+  //   await updateProfile({ actions }, update)
+
+  //   onSettingsModalClose()
+  // })
+
   const onSubmit = async () => {
     await updateProfile({ actions })
     onSettingsModalClose()
   }
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
+    // data: UpdateProfileData
     const { updateIsPrivate } = actions
     const { updateNotification } = actions
     const { updateNotificationActive } = actions
@@ -44,12 +60,7 @@ export default function NotificationSettingsModal({
     await updateNotificationActive(notificationsEnabled)
   }
 
-  const notificationActiveButton = useRef(null)
-
-  const handleNotificationsActive = () => {
-    setNotificationsEnabled(notificationsEnabled === "On" ? "" : "On")
-    notificationActiveButton?.current.blur()
-  }
+  console.log("Private: ", profileSettings)
 
   return (
     <Modal
@@ -62,7 +73,8 @@ export default function NotificationSettingsModal({
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.modalContainer}>
-        <Form>
+        {/* <Form onSubmit={onSubmit}> */}
+        <Form onSubmit={onSubmit}>
           <Stack>
             &nbsp; Notifications
             <hr className={`mt-0`} />
@@ -73,6 +85,7 @@ export default function NotificationSettingsModal({
               follow through email?
             </Col>
             <Button
+              // {...register("notificationActive")}
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -81,8 +94,12 @@ export default function NotificationSettingsModal({
                   : "btn-outline-secondary"
               }
             `}
-              onClick={handleNotificationsActive}
-              ref={notificationActiveButton}
+              onClick={() =>
+                setNotificationsEnabled(
+                  notificationsEnabled === "On" ? "" : "On"
+                )
+              }
+              // value={notificationsEnabled}
             >
               <Image
                 className={`pe-1`}
@@ -106,9 +123,11 @@ export default function NotificationSettingsModal({
             </Col>
             <Dropdown className={`d-inline-block ms-auto`}>
               <Dropdown.Toggle
+                // {...register("notificationFrequency")}
                 className={`btn-sm py-1 ${styles.modalButtonLength}`}
                 variant="outline-secondary"
                 id="dropdown-basic"
+                // value={notifications}
               >
                 {notifications}
               </Dropdown.Toggle>
@@ -136,6 +155,7 @@ export default function NotificationSettingsModal({
               with your testimony.)
             </Col>
             <Button
+              // {...register("private")}
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -147,6 +167,7 @@ export default function NotificationSettingsModal({
               onClick={() =>
                 setProfileSettings(profileSettings === "On" ? "" : "On")
               }
+              // value={profileSettings}
             >
               {profileSettings === "On" ? "Enabled" : "Enable"}
             </Button>
@@ -155,6 +176,7 @@ export default function NotificationSettingsModal({
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
+            {/* <Button className={`btn btn-sm mx-3 py-1`} type="submit"> */}
             <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
               Continue
             </Button>
@@ -173,8 +195,8 @@ export default function NotificationSettingsModal({
 
 /*
   Modal State ->     [x] Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
-                         from parent EditProfilePage.tsx
-                         / make sure Cancelling and coming back doesn't leave unsaved edits?
+                     from parent EditProfilePage.tsx
+                     / make sure Cancelling and coming back doesn't leave unsaved edits?
   Continue Button -> [x] Update Backend with Notifications & 
                      [x] Profile Settings State 
                      [x] then Close Modal
