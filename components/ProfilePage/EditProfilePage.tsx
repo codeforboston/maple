@@ -151,12 +151,12 @@ export function EditProfileForm({
       </TabContainer>
       <NotificationSettingsModal
         actions={actions}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
         notifications={notifications}
         setNotifications={setNotifications}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
-        isProfilePublic={isProfilePublic}
-        setIsProfilePublic={setIsProfilePublic}
         show={settingsModal === "show"}
       />
     </Container>

@@ -40,6 +40,11 @@ export default function NotificationSettingsModal({
     await updateNotification(notifications)
   }
 
+  let buttonSecondary = "btn-secondary"
+  if (notifications === "None") {
+    buttonSecondary = "btn-outline-secondary"
+  }
+
   return (
     <Modal
       show={show}
@@ -63,13 +68,9 @@ export default function NotificationSettingsModal({
             </Col>
             <Button
               className={`
-                btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-                ${
-                  notifications === "None"
-                    ? "btn-outline-secondary"
-                    : "btn-secondary"
-                }
+                btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
               `}
+              // ${notifications === "None" ? "btn-outline-secondary" : "btn-secondary"}
               onClick={() =>
                 setNotifications(notifications === "None" ? "Monthly" : "None")
               }
