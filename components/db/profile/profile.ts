@@ -15,7 +15,6 @@ type ProfileState = {
   updatingSenator: boolean
   updatingIsPublic: boolean
   updatingNotification: boolean
-  updatingNotificationActive: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
@@ -42,7 +41,6 @@ export function useProfile() {
         updatingSenator: false,
         updatingIsPublic: false,
         updatingNotification: false,
-        updatingNotificationActive: false,
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
@@ -84,13 +82,6 @@ export function useProfile() {
           dispatch({ updatingNotification: true })
           await updateNotification(uid, notificationFrequency)
           dispatch({ updatingNotification: false })
-        }
-      },
-      updateNotificationActive: async (notificationOn: string) => {
-        if (uid) {
-          dispatch({ updatingNotificationActive: true })
-          await updateNotificationActive(uid, notificationOn)
-          dispatch({ updatingNotificationActive: false })
         }
       },
       updateIsOrganization: async (isOrganization: boolean) => {
@@ -195,14 +186,6 @@ function updateNotification(uid: string, notificationFrequency: Frequency) {
   return setDoc(
     profileRef(uid),
     { notificationFrequency: notificationFrequency },
-    { merge: true }
-  )
-}
-
-function updateNotificationActive(uid: string, notificationOn: string) {
-  return setDoc(
-    profileRef(uid),
-    { notificationActive: notificationOn },
     { merge: true }
   )
 }

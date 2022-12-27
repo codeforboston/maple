@@ -1,4 +1,4 @@
-import { Enabled, Frequency, Role } from "../../auth"
+import { Frequency, Role } from "../../auth"
 
 export type ProfileMember = {
   district: string
@@ -20,7 +20,6 @@ export type Profile = {
   senator?: ProfileMember
   public?: boolean
   notificationFrequency?: Frequency
-  notificationActive?: Enabled
   about?: string
   social?: SocialLinks
   organization?: boolean

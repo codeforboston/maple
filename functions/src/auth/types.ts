@@ -14,8 +14,5 @@ export const Claim = Record({
 })
 export type Claim = Static<typeof Claim>
 
-export const Frequency = Union(L("Daily"), L("Weekly"), L("Monthly"))
+export const Frequency = Union(L("Daily"), L("Weekly"), L("Monthly"), L("None"))
 export type Frequency = Static<typeof Frequency>
-
-export const Enabled = Union(L("On"), L(""))
-export type Enabled = Static<typeof Enabled>

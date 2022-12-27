@@ -10,23 +10,21 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
   onSettingsModalClose: () => void
   notifications: Frequency
-  setNotifications: Dispatch<SetStateAction<"Daily" | "Weekly" | "Monthly">>
-  notificationsEnabled: string
-  setNotificationsEnabled: Dispatch<SetStateAction<"On" | "">>
+  setNotifications: Dispatch<
+    SetStateAction<"Daily" | "Weekly" | "Monthly" | "None">
+  >
   isProfilePublic: boolean
   setIsProfilePublic: Dispatch<SetStateAction<false | true>>
 }
 
 export default function NotificationSettingsModal({
   actions,
-  notifications,
-  setNotifications,
-  notificationsEnabled,
-  setNotificationsEnabled,
-  onHide,
-  onSettingsModalClose,
   isProfilePublic,
   setIsProfilePublic,
+  notifications,
+  setNotifications,
+  onHide,
+  onSettingsModalClose,
   show
 }: Props) {
   const handleContinue = async () => {
@@ -37,11 +35,9 @@ export default function NotificationSettingsModal({
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
     const { updateNotification } = actions
-    const { updateNotificationActive } = actions
 
     await updateIsPublic(isProfilePublic)
     await updateNotification(notifications)
-    await updateNotificationActive(notificationsEnabled)
   }
 
   return (
@@ -67,19 +63,16 @@ export default function NotificationSettingsModal({
             </Col>
             <Button
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-              ${
-                notificationsEnabled === "On"
-                  ? "btn-secondary"
-                  : "btn-outline-secondary"
-              }
-            `}
+                btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
+                ${
+                  notifications === "None"
+                    ? "btn-outline-secondary"
+                    : "btn-secondary"
+                }
+              `}
               onClick={() =>
-                setNotificationsEnabled(
-                  notificationsEnabled === "On" ? "" : "On"
-                )
+                setNotifications(notifications === "None" ? "Monthly" : "None")
               }
-              value={notificationsEnabled}
             >
               <Image
                 className={`pe-1`}
@@ -88,13 +81,13 @@ export default function NotificationSettingsModal({
                 width="22"
                 height="19"
               />
-              {notificationsEnabled === "On" ? "Enabled" : "Enable"}
+              {notifications === "None" ? "Enable" : "Enabled"}
             </Button>
           </Stack>
           <Stack
             className={`
             pt-3 ${styles.modalFontSize} 
-            ${notificationsEnabled === "On" ? "" : "invisible"} 
+            ${notifications === "None" ? "invisible" : ""} 
           `}
             direction={`horizontal`}
           >

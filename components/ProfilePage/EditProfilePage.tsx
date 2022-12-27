@@ -49,15 +49,11 @@ export function EditProfileForm({
 
   const {
     public: isPublic,
-    notificationFrequency: notificationFrequency,
-    notificationActive: notificationOn
+    notificationFrequency: notificationFrequency
   }: Profile = profile
 
-  const [notificationsEnabled, setNotificationsEnabled] = useState<"On" | "">(
-    notificationOn ? notificationOn : ""
-  )
   const [notifications, setNotifications] = useState<
-    "Daily" | "Weekly" | "Monthly"
+    "Daily" | "Weekly" | "Monthly" | "None"
   >(notificationFrequency ? notificationFrequency : "Monthly")
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
@@ -65,7 +61,6 @@ export function EditProfileForm({
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
-    setNotificationsEnabled(notificationOn ? notificationOn : "")
     setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
     setIsProfilePublic(isPublic ? isPublic : false)
   }
@@ -158,8 +153,6 @@ export function EditProfileForm({
         actions={actions}
         notifications={notifications}
         setNotifications={setNotifications}
-        notificationsEnabled={notificationsEnabled}
-        setNotificationsEnabled={setNotificationsEnabled}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         isProfilePublic={isProfilePublic}
