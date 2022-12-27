@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { useForm } from "react-hook-form"
-import { Frequency } from "../auth"
+// import { useForm } from "react-hook-form"
+import { Enabled, Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
@@ -10,13 +10,13 @@ import styles from "./NotificationSettingsModal.module.css"
 type UpdateProfileData = {
   private: string
   notificationFrequency: Frequency
-  notificationActive: string
+  notificationActive: Enabled
 }
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
   onSettingsModalClose: () => void
-  notifications: string
+  notifications: Frequency
   setNotifications: Dispatch<SetStateAction<"Daily" | "Weekly" | "Monthly">>
   notificationsEnabled: string
   setNotificationsEnabled: Dispatch<SetStateAction<"On" | "">>
@@ -36,26 +36,28 @@ export default function NotificationSettingsModal({
   setProfileSettings,
   show
 }: Props) {
-  const { register, handleSubmit } = useForm<UpdateProfileData>()
+  // const { register, handleSubmit } = useForm<UpdateProfileData>()
 
-  const onSubmit = handleSubmit(async update => {
-    await updateProfile({ actions }, update)
+  // const onSubmit = handleSubmit(async update => {
+  //   await updateProfile({ actions }, update)
 
+  //   onSettingsModalClose()
+  // })
+
+  const onSubmit = async () => {
+    await updateProfile({ actions })
     onSettingsModalClose()
-  })
+  }
 
-  async function updateProfile(
-    { actions }: { actions: ProfileHook },
-    data: UpdateProfileData
-  ) {
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    // data: UpdateProfileData
     const { updateIsPrivate } = actions
     const { updateNotification } = actions
     const { updateNotificationActive } = actions
 
     await updateIsPrivate(profileSettings)
-    // await updateIsPrivate(data.private)
-    await updateNotification(data.notificationFrequency)
-    await updateNotificationActive(data.notificationActive)
+    await updateNotification(notifications)
+    await updateNotificationActive(notificationsEnabled)
   }
 
   console.log("Private: ", profileSettings)
@@ -71,6 +73,7 @@ export default function NotificationSettingsModal({
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.modalContainer}>
+        {/* <Form onSubmit={onSubmit}> */}
         <Form onSubmit={onSubmit}>
           <Stack>
             &nbsp; Notifications
@@ -82,7 +85,7 @@ export default function NotificationSettingsModal({
               follow through email?
             </Col>
             <Button
-              {...register("notificationActive")}
+              // {...register("notificationActive")}
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
@@ -96,7 +99,7 @@ export default function NotificationSettingsModal({
                   notificationsEnabled === "On" ? "" : "On"
                 )
               }
-              value={notificationsEnabled}
+              // value={notificationsEnabled}
             >
               <Image
                 className={`pe-1`}
@@ -120,11 +123,11 @@ export default function NotificationSettingsModal({
             </Col>
             <Dropdown className={`d-inline-block ms-auto`}>
               <Dropdown.Toggle
-                {...register("notificationFrequency")}
+                // {...register("notificationFrequency")}
                 className={`btn-sm py-1 ${styles.modalButtonLength}`}
                 variant="outline-secondary"
                 id="dropdown-basic"
-                value={notifications}
+                // value={notifications}
               >
                 {notifications}
               </Dropdown.Toggle>
@@ -173,7 +176,8 @@ export default function NotificationSettingsModal({
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
-            <Button className={`btn btn-sm mx-3 py-1`} type="submit">
+            {/* <Button className={`btn btn-sm mx-3 py-1`} type="submit"> */}
+            <Button className={`btn btn-sm mx-3 py-1`} onClick={onSubmit}>
               Continue
             </Button>
             <Button
