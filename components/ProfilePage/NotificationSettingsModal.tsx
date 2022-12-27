@@ -129,16 +129,16 @@ export default function NotificationSettingsModal({
               className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                isProfilePublic === false
-                  ? "btn-secondary"
-                  : "btn-outline-secondary"
+                isProfilePublic === true
+                  ? "btn-outline-secondary"
+                  : "btn-secondary"
               }
             `}
               onClick={() =>
-                setIsProfilePublic(isProfilePublic === false ? true : false)
+                setIsProfilePublic(isProfilePublic === true ? false : true)
               }
             >
-              {isProfilePublic === false ? "Enabled" : "Enable"}
+              {isProfilePublic === true ? "Enable" : "Enabled"}
             </Button>
           </Stack>
           <Stack
