@@ -20,7 +20,7 @@ export type Profile = {
   senator?: ProfileMember
   private?: Enabled
   public?: boolean
-  notification?: Frequency
+  notificationFrequency?: Frequency
   notificationActive?: Enabled
   about?: string
   social?: SocialLinks

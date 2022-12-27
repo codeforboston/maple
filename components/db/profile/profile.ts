@@ -2,6 +2,7 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
+import { Enabled, Frequency, Role } from "../../auth"
 import { useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
@@ -88,7 +89,7 @@ export function useProfile() {
           dispatch({ updatingIsPublic: false })
         }
       },
-      updateNotification: async (notificationFrequency: string) => {
+      updateNotification: async (notificationFrequency: Frequency) => {
         if (uid) {
           dispatch({ updatingNotification: true })
           await updateNotification(uid, notificationFrequency)
@@ -204,10 +205,10 @@ function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
 }
 
-function updateNotification(uid: string, notificationFrequency: string) {
+function updateNotification(uid: string, notificationFrequency: Frequency) {
   return setDoc(
     profileRef(uid),
-    { notification: notificationFrequency },
+    { notificationFrequency: notificationFrequency },
     { merge: true }
   )
 }

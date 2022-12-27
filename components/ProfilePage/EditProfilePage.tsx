@@ -49,7 +49,7 @@ export function EditProfileForm({
 
   const {
     private: isPrivate,
-    notification: notificationFrequency,
+    notificationFrequency: notificationFrequency,
     notificationActive: notificationOn
   }: Profile = profile
 

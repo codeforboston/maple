@@ -4,11 +4,12 @@ import Dropdown from "react-bootstrap/Dropdown"
 import { useForm } from "react-hook-form"
 import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
+import { Enabled, Frequency, Role } from "../auth"
 import styles from "./NotificationSettingsModal.module.css"
 
 type UpdateProfileData = {
   private: string
-  notification: string
+  notificationFrequency: Frequency
   notificationActive: string
 }
 
@@ -32,7 +33,7 @@ async function updateProfile(
   const { updateNotificationActive } = actions
 
   await updateIsPrivate(data.private)
-  await updateNotification(data.notification)
+  await updateNotification(data.notificationFrequency)
   await updateNotificationActive(data.notificationActive)
 }
 
@@ -116,7 +117,7 @@ export default function NotificationSettingsModal({
             </Col>
             <Dropdown className={`d-inline-block ms-auto`}>
               <Dropdown.Toggle
-                {...register("notification")}
+                {...register("notificationFrequency")}
                 className={`btn-sm py-1 ${styles.modalButtonLength}`}
                 variant="outline-secondary"
                 id="dropdown-basic"
