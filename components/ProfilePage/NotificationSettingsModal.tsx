@@ -8,13 +8,13 @@ import styles from "./NotificationSettingsModal.module.css"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
-  onSettingsModalClose: () => void
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<false | true>>
   notifications: Frequency
   setNotifications: Dispatch<
     SetStateAction<"Daily" | "Weekly" | "Monthly" | "None">
   >
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<false | true>>
+  onSettingsModalClose: () => void
 }
 
 export default function NotificationSettingsModal({
@@ -40,7 +40,7 @@ export default function NotificationSettingsModal({
     await updateNotification(notifications)
   }
 
-  // button classNames weren't properly updating on iOS
+  // button classNames weren't otherwise properly updating on iOS
   let buttonSecondary = "btn-secondary"
   if (notifications === "None") {
     buttonSecondary = "btn-outline-secondary"
