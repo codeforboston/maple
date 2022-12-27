@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import { useForm } from "react-hook-form"
+import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
-import { Enabled, Frequency, Role } from "../auth"
 import styles from "./NotificationSettingsModal.module.css"
 
 type UpdateProfileData = {
