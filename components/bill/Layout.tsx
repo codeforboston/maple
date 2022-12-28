@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Col, Container, Row } from "../bootstrap"
+import { Button, Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber } from "./BillNumber"
@@ -28,6 +28,9 @@ export const Layout = ({ bill }: BillProps) => {
         <Col xs={6} className="d-flex justify-content-end">
           <Status bill={bill} />
         </Col>
+      </Row>
+      <Row>
+        <Button>Proto Follow Toggle Button</Button>
       </Row>
       <Row className="mt-2">
         <Col>
