@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import BillStatus, { Status } from "components/bill/BillStatus"
+import BillStatus, { Stage } from "components/bill/BillStatus"
 
 export default createMeta({
   title: "Bill Detail/BillStatus",
@@ -22,5 +22,6 @@ const Template: ComponentStory<typeof BillStatus> = props => {
 export const Primary = Template.bind({})
 
 Primary.args = {
-  currentStage: Status.firstChamber
+  currentStage: Stage.firstChamber,
+  id: "H2346"
 }
