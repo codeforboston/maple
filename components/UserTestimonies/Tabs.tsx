@@ -19,13 +19,13 @@ export const Tab = (props: {
 }
 
 export const Tabs = (props: {
-  children: ReactElement[]
+  childTabs: ReactElement[]
   onChange: onClickEventFunction
   selectedTab: Number
 }) => {
-  const { children, onChange, selectedTab } = props
+  const { childTabs, onChange, selectedTab } = props
 
-  const tabs = children?.map(child => {
+  const tabs = childTabs?.map(child => {
     const handleClick = (e: Event) => {
       onChange(e, child.props.value)
     }

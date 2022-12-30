@@ -58,7 +58,7 @@ const ViewTestimony = (
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
       <Tabs
-        children={tabs}
+        childTabs={tabs}
         onChange={handleClick}
         selectedTab={activeTab}
       ></Tabs>
