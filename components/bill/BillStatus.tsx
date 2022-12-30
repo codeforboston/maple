@@ -1,42 +1,15 @@
 import { Card as MapleCard } from "components/Card/Card"
+import { Stage, useBillStatus } from "components/db/useBillStatus"
 import { useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
-import {Bill, getBill} from "../../components/db/bills"
+import { Bill, getBill } from "../../components/db/bills"
 
-export enum Stage {
-  billIntroduced = "Bill Introduced",
-  firstCommittee = "First Committee",
-  secondCommittee = "Second Committee",
-  firstChamber = "First Chamber",
-  secondChamber = "Second Chamber",
-  signed = "Signed By Governor"
-}
-
-
-
-
-export default function BillStatus({ id, currentStage }: { id: string, currentStage: Stage }) {
-
-  const [bill, setBill] = useState<Bill | undefined>()
-
-  useEffect(() => {
-    let active = true
-    loadBill()
-    return () => {active = false}
-
-
-    async function loadBill(){
-      const res = await getBill(id)
-      if (!active) return 
-      setBill(res)
-    }
-  }, [id])
-
-
-  
-  console.log(bill?.history)
-
-  
+export default function BillStatusView({
+  id
+}: {
+  id: string
+}) {
+  const { currentStage } :{currentStage: Stage} = useBillStatus(id)
 
   const body = (
     <BillStatusBody>
@@ -48,8 +21,6 @@ export default function BillStatus({ id, currentStage }: { id: string, currentSt
   return <MapleCard header="Bill Status" body={body} />
 }
 
-
-
 export const BillStageStrip = ({
   stage,
   currentStage,
@@ -57,21 +28,21 @@ export const BillStageStrip = ({
   className
 }: {
   stage: Stage
-  currentStage: Stage,
-  info?: string,
+  currentStage: Stage
+  info?: string
   className?: string
 }) => {
   const statuses = Object.values(Stage)
-  
 
-  const isCurrentStage = statuses.indexOf(stage) === statuses.indexOf(currentStage)
+  const isCurrentStage =
+    statuses.indexOf(stage) === statuses.indexOf(currentStage)
   const isPastStage = statuses.indexOf(stage) < statuses.indexOf(currentStage)
 
   const color = isCurrentStage
-      ? "var(--bs-green)"
-      : isPastStage
-      ? "#8EBC81"
-      : "var(--bs-gray)"
+    ? "var(--bs-green)"
+    : isPastStage
+    ? "#8EBC81"
+    : "var(--bs-gray)"
 
   return (
     <div className={className}>
@@ -182,4 +153,3 @@ const StyledBillStageStrip = styled(BillStageStrip)`
     background-color: var(--bs-green);
   }
 `
-

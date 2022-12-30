@@ -1,19 +1,19 @@
-import { ComponentStory } from "@storybook/react"
+import { ComponentStory, Meta } from "@storybook/react"
+import BillStatusView from "components/bill/BillStatus"
 import { createMeta } from "stories/utils"
-import BillStatus, { Stage } from "components/bill/BillStatus"
 
 export default createMeta({
   title: "Bill Detail/BillStatus",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=249%3A18636",
-  component: BillStatus
-})
+  component: BillStatusView})
 
-const Template: ComponentStory<typeof BillStatus> = props => {
+
+const Template: ComponentStory<typeof BillStatusView> = props => {
   return (
     <div className="d-flex">
       <div className="col">
-        <BillStatus {...props} />
+        <BillStatusView {...props} />
       </div>
     </div>
   )
@@ -22,6 +22,5 @@ const Template: ComponentStory<typeof BillStatus> = props => {
 export const Primary = Template.bind({})
 
 Primary.args = {
-  currentStage: Stage.firstChamber,
-  id: "H2346"
+  id: "S2729"
 }
