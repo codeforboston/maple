@@ -1,0 +1,8 @@
+FROM alexjball/firebase-tools:latest-node-16
+
+USER root
+RUN apk update && apk add curl
+
+WORKDIR /app
+RUN chown -R node:node .
+USER node
