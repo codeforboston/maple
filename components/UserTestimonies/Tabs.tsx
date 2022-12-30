@@ -1,32 +1,45 @@
-import { ReactElement } from "react"
+import { MouseEventHandler, ReactElement } from "react"
 import React from "react"
 import styled from "styled-components"
+import { Button } from "react-bootstrap"
 
+type onClickEventFunction = (e: Event, value: number) => void
 export const Tab = (props: {
   label: string
+  value: number
   active: boolean
-  onClick: () => void
+  onClick?: MouseEventHandler
 }) => {
   const { label, onClick, active } = props
-  return <h3 onClick={onClick}>{label}</h3>
+  return (
+    <TabStyle onClick={onClick}>
+      <h3> {label}</h3>
+    </TabStyle>
+  )
 }
 
 export const Tabs = (props: {
   children: ReactElement[]
-  onChange: (e: Event, any: any) => void
+  onChange: onClickEventFunction
   selectedTab: Number
 }) => {
   const { children, onChange, selectedTab } = props
+
   const tabs = children?.map(child => {
     const handleClick = (e: Event) => {
       onChange(e, child.props.value)
     }
-    return React.cloneElement(child, {
-      active: child.props.value === selectedTab,
-      onClick: handleClick
-    })
+    return (
+      <React.Fragment key={child.props.label}>
+        {React.cloneElement(child, {
+          active: child.props.value === selectedTab,
+          onClick: handleClick
+        })}
+      </React.Fragment>
+    )
   })
-  return <div>{tabs}</div>
+
+  return <TabsContainer>{tabs}</TabsContainer>
 }
 
 export const TabPanel = () => {
@@ -36,3 +49,14 @@ export const TabPanel = () => {
     </div>
   )
 }
+
+const TabsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const TabStyle = styled.button`
+  margin: 2rem;
+  background: none;
+  border: none;
+`

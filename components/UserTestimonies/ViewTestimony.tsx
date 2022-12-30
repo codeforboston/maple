@@ -38,32 +38,33 @@ const ViewTestimony = (
   const testimony = items.result ?? []
 
   const [orderBy, setOrderBy] = useState<string>()
-  const tabs = [
-    <Tab
-      label="All Testimonies"
-      active={false}
-      onClick={() => console.log("hey")}
-    />,
-    <Tab
-      label="Users Only"
-      active={false}
-      onClick={() => console.log("hey")}
-    />,
-    <Tab
-      label="Organizations Only"
-      active={false}
-      onClick={() => console.log("hey")}
-    />
-  ]
-  const handleClick = () => {
-    console.log("hey")
+
+  const [activeTab, setActiveTab] = useState(1)
+
+  const handleClick = (e: Event, value: number) => {
+    console.log("handleClick is working")
+    console.log("active tab: " + activeTab)
+    setActiveTab(value)
   }
+
+  const tabs = [
+    <Tab key="at" label="All Testimonies" active={false} value={1} />,
+    <Tab key="uo" label="Users Only" active={false} value={2} />,
+    <Tab key="oo" label="Organizations Only" active={false} value={3} />
+  ]
   const body = (
     <TitledSectionCard
       className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      <Tabs children={tabs} onChange={handleClick} selectedTab={3} />
+      <Tabs
+        children={tabs}
+        onChange={handleClick}
+        selectedTab={activeTab}
+      ></Tabs>
+      <h1>ACTIVE TAB</h1>
+      <h2>{activeTab}</h2>
+
       {testimony.length > 0 ? (
         testimony.map(t => (
           <TestimonyItem
