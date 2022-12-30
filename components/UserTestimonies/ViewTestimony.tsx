@@ -17,6 +17,7 @@ import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Card as MapleCard } from "components/Card"
+import { Tabs, Tab } from "./Tabs"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -37,11 +38,32 @@ const ViewTestimony = (
   const testimony = items.result ?? []
 
   const [orderBy, setOrderBy] = useState<string>()
+  const tabs = [
+    <Tab
+      label="All Testimonies"
+      active={false}
+      onClick={() => console.log("hey")}
+    />,
+    <Tab
+      label="Users Only"
+      active={false}
+      onClick={() => console.log("hey")}
+    />,
+    <Tab
+      label="Organizations Only"
+      active={false}
+      onClick={() => console.log("hey")}
+    />
+  ]
+  const handleClick = () => {
+    console.log("hey")
+  }
   const body = (
     <TitledSectionCard
       className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
+      <Tabs children={tabs} onChange={handleClick} selectedTab={3} />
       {testimony.length > 0 ? (
         testimony.map(t => (
           <TestimonyItem

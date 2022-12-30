@@ -1,8 +1,6 @@
 import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
 import { BillTestimonies } from "../../components/bill/BillTestimonies"
-import { type } from "os"
-import { MemberReference } from "functions/src/members/types"
 
 // TODO: move into components directory
 const BillTestimonyListCard = BillTestimonies
