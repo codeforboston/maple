@@ -1,6 +1,6 @@
 import { MouseEventHandler, ReactElement } from "react"
 import React from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { Button } from "react-bootstrap"
 
 type onClickEventFunction = (e: Event, value: number) => void
@@ -12,7 +12,7 @@ export const Tab = (props: {
 }) => {
   const { label, onClick, active } = props
   return (
-    <TabStyle onClick={onClick}>
+    <TabStyle onClick={onClick} active={active}>
       <h3> {label}</h3>
     </TabStyle>
   )
@@ -42,21 +42,17 @@ export const Tabs = (props: {
   return <TabsContainer>{tabs}</TabsContainer>
 }
 
-export const TabPanel = () => {
-  return (
-    <div>
-      <h3>Tab Panel</h3>
-    </div>
-  )
-}
-
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
 `
 
-const TabStyle = styled.button`
-  margin: 2rem;
+const TabStyle = styled.div<{ active: boolean }>`
+  margin: 1rem;
   background: none;
+  color: ${props => (props.active ? "orange" : "black")};
   border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
 `
