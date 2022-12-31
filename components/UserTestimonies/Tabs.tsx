@@ -51,7 +51,7 @@ export const Tabs = (props: {
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
-      if (child.props.active !== selectedTab) {
+      if (child.props.value !== selectedTab) {
         onChange(e, child.props.value)
         setSliderWidth(child.props.width)
       }
