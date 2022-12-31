@@ -6,9 +6,7 @@ import {
   useState
 } from "react"
 import React from "react"
-import styled, { css } from "styled-components"
-import { Button } from "react-bootstrap"
-import index from "instantsearch.js/es/widgets/index/index"
+import styled, { keyframes } from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 export const Tab = (props: {
@@ -32,13 +30,16 @@ export const Tabs = (props: {
 }) => {
   const containerRef = useRef(null)
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
-  const [sliderWidth, setSliderWidth] = useState(0)
-  const [sliderPos, setSliderPos] = useState(0)
   const { childTabs, onChange, selectedTab } = props
+  const [sliderWidth, setSliderWidth] = useState(222)
+  const [sliderPos, setSliderPos] = useState(selectedTab * 10)
   const sliderPositionOffset = 16
 
   useEffect(() => {
-    if (tabRefs.current[selectedTab - 1] !== null) {
+    if (
+      tabRefs.current[selectedTab - 1] !== null &&
+      tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
+    ) {
       setSliderWidth(
         tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
       )
@@ -47,7 +48,7 @@ export const Tabs = (props: {
           sliderPositionOffset
       )
     }
-  }, [tabRefs, selectedTab])
+  }, [selectedTab])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
@@ -71,7 +72,7 @@ export const Tabs = (props: {
   return (
     <div ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
-      <TabSlider width={sliderWidth} position={sliderPos} />
+      <TabSlider width={sliderWidth ?? 200} position={sliderPos} />
     </div>
   )
 }
@@ -92,9 +93,9 @@ const TabStyle = styled.div<{ active: boolean }>`
 `
 
 const TabSlider = styled.div<{ width: number; position: number }>`
-  width: ${props => props.width}px;
+  transition: all 1.5s;
+  width: ${props => `${props.width}px`};
   height: 10px;
   background-color: orange;
-  transition: 1.5s;
   transform: ${props => `translateX(${props.position}px)`};
 `
