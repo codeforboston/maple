@@ -42,8 +42,6 @@ const ViewTestimony = (
   const [activeTab, setActiveTab] = useState(1)
 
   const handleClick = (e: Event, value: number) => {
-    console.log("handleClick is working")
-    console.log("active tab: " + activeTab)
     setActiveTab(value)
   }
 

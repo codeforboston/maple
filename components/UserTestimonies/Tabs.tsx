@@ -1,4 +1,10 @@
-import { MouseEventHandler, ReactElement } from "react"
+import {
+  MouseEventHandler,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import React from "react"
 import styled, { css } from "styled-components"
 import { Button } from "react-bootstrap"
@@ -21,13 +27,17 @@ export const Tab = (props: {
 export const Tabs = (props: {
   childTabs: ReactElement[]
   onChange: onClickEventFunction
-  selectedTab: Number
+  selectedTab: number
 }) => {
+  const containerRef = useRef(null)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const [sliderWidth, setSliderWidth] = useState(0)
   const { childTabs, onChange, selectedTab } = props
 
   const tabs = childTabs?.map(child => {
     const handleClick = (e: Event) => {
       onChange(e, child.props.value)
+      setSliderWidth(child.props.width)
     }
     return (
       <React.Fragment key={child.props.label}>
@@ -39,7 +49,12 @@ export const Tabs = (props: {
     )
   })
 
-  return <TabsContainer>{tabs}</TabsContainer>
+  return (
+    <div>
+      <TabsContainer>{tabs}</TabsContainer>
+      <TabSlider width={100} index={selectedTab} />
+    </div>
+  )
 }
 
 const TabsContainer = styled.div`
@@ -55,4 +70,12 @@ const TabStyle = styled.div<{ active: boolean }>`
   font: inherit;
   cursor: pointer;
   outline: none;
+`
+
+const TabSlider = styled.div<{ width: number; index: number }>`
+  width: ${props => props.width}px;
+  height: 10px;
+  background-color: orange;
+  transition: 0.4s;
+  transform: ${props => `translateX(${props.width * props.index}px)`};
 `
