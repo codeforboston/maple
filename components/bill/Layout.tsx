@@ -30,7 +30,7 @@ export const Layout = ({ bill }: BillProps) => {
         </Col>
       </Row>
       <Row>
-        <Button>Proto Follow Toggle Button</Button>
+        <Button className="btn btn-outline-secondary col-1">Follow</Button>
       </Row>
       <Row className="mt-2">
         <Col>
