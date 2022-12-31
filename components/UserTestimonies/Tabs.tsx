@@ -72,7 +72,10 @@ export const Tabs = (props: {
   return (
     <div ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
-      <TabSlider width={sliderWidth ?? 200} position={sliderPos} />
+      <TabSliderContainer>
+        <TabSliderLine />
+        <TabSlider width={sliderWidth ?? 200} position={sliderPos} />
+      </TabSliderContainer>
     </div>
   )
 }
@@ -98,4 +101,15 @@ const TabSlider = styled.div<{ width: number; position: number }>`
   height: 10px;
   background-color: orange;
   transform: ${props => `translateX(${props.position}px)`};
+  position: absolute;
+  z-index: 9;
+`
+const TabSliderContainer = styled.div`
+  position: relative;
+  margin: 1px;
+`
+const TabSliderLine = styled.div`
+  border: black solid 1px;
+  width: 100%;
+  position: absolute;
 `
