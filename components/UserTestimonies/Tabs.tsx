@@ -41,7 +41,9 @@ export const Tabs = (props: {
       setSliderWidth(
         tabRefs.current[selectedTab - 1].getBoundingClientRect().width
       )
-      setSliderPos(tabRefs.current[selectedTab - 1].getBoundingClientRect().x)
+      setSliderPos(
+        tabRefs.current[selectedTab - 1].getBoundingClientRect().x - 16
+      )
     }
   }, [tabRefs, selectedTab])
 
