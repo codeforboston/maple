@@ -60,8 +60,6 @@ const ViewTestimony = (
         onChange={handleClick}
         selectedTab={activeTab}
       ></Tabs>
-      <h1>ACTIVE TAB</h1>
-      <h2>{activeTab}</h2>
 
       {testimony.length > 0 ? (
         testimony.map(t => (
