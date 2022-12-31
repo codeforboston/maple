@@ -65,3 +65,13 @@ export const Layout = ({ bill }: BillProps) => {
     </StyledContainer>
   )
 }
+
+/*
+  Follow Button   -> [x] follow/unfollow button only appears if auth user is signed in
+                     [ ] add array of bill #s followed to profile
+                     [ ] connect Follow button to updating profile with current bill number
+                         if bill number is not already in array
+                     [ ] toggle Follow button to Unfollow button is bill is currently in the array
+                   
+  Unfollow Button -> [ ] filter out current bill number from bills followed array                  
+*/
