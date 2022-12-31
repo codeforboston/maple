@@ -17,9 +17,9 @@ export const Tab = (props: {
   active: boolean
   onClick?: MouseEventHandler
 }) => {
-  const { label, onClick, active, ref } = props
+  const { label, onClick, active } = props
   return (
-    <TabStyle onClick={onClick} active={active} ref={ref}>
+    <TabStyle onClick={onClick} active={active}>
       <h3> {label}</h3>
     </TabStyle>
   )
@@ -35,22 +35,26 @@ export const Tabs = (props: {
   const [sliderWidth, setSliderWidth] = useState(0)
   const [sliderPos, setSliderPos] = useState(0)
   const { childTabs, onChange, selectedTab } = props
+  const sliderPositionOffset = 16
 
   useEffect(() => {
-    if (tabRefs.current.length > 0) {
+    if (tabRefs.current[selectedTab - 1] !== null) {
       setSliderWidth(
-        tabRefs.current[selectedTab - 1].getBoundingClientRect().width
+        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
       )
       setSliderPos(
-        tabRefs.current[selectedTab - 1].getBoundingClientRect().x - 16
+        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().x -
+          sliderPositionOffset
       )
     }
   }, [tabRefs, selectedTab])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
-      onChange(e, child.props.value)
-      setSliderWidth(child.props.width)
+      if (child.props.active !== selectedTab) {
+        onChange(e, child.props.value)
+        setSliderWidth(child.props.width)
+      }
     }
     return (
       <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
@@ -91,6 +95,6 @@ const TabSlider = styled.div<{ width: number; position: number }>`
   width: ${props => props.width}px;
   height: 10px;
   background-color: orange;
-  transition: 5s;
+  transition: 1.5s;
   transform: ${props => `translateX(${props.position}px)`};
 `
