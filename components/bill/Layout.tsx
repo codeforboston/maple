@@ -8,12 +8,20 @@ import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
+import { useAuth } from "../auth"
+import { Profile, ProfileHook, useProfile } from "../db"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
 
 export const Layout = ({ bill }: BillProps) => {
+  const { user } = useAuth()
+  const uid = user?.uid
+  const result = useProfile()
+
+  console.log("Result: ", result)
+
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -29,9 +37,17 @@ export const Layout = ({ bill }: BillProps) => {
           <Status bill={bill} />
         </Col>
       </Row>
+
       <Row>
-        <Button className="btn btn-outline-secondary col-1">Follow</Button>
+        <Button
+          className={`btn btn-outline-secondary col-1
+            ${uid ? "" : "visually-hidden"}
+          `}
+        >
+          Follow
+        </Button>
       </Row>
+
       <Row className="mt-2">
         <Col>
           <Summary bill={bill} />
