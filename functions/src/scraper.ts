@@ -133,7 +133,8 @@ export function createScraper<T>({
               ...resource,
               fetchedAt: Timestamp.now(),
               lastFetch: FieldValue.delete(),
-              id
+              id,
+              court
             },
             { merge: true }
           )

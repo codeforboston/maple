@@ -57,6 +57,7 @@ export type Bill = Static<typeof Bill>
 export const Bill = withDefaults(
   Record({
     id: Id,
+    court: Number,
     content: BillContent,
     cosponsorCount: Number,
     testimonyCount: Number,
@@ -74,6 +75,7 @@ export const Bill = withDefaults(
     city: Optional(String)
   }),
   {
+    court: 0,
     cosponsorCount: 0,
     testimonyCount: 0,
     endorseCount: 0,

@@ -106,7 +106,8 @@
     "typesense": "^1.2.2",
     "typesense-instantsearch-adapter": "^2.4.0",
     "usehooks-ts": "^2.5.3",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",

@@ -7,6 +7,7 @@ export {
   updateBillSearchIndex,
   upgradeBillSearchIndex
 } from "./bills"
+export { updateBillTracker } from "./analysis"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
   fetchCommitteeBatch,
