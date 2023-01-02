@@ -20,6 +20,7 @@ type ProfileState = {
   updatingFullName: boolean
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
+  updatingBillsFollowing: boolean
   profile: Profile | undefined
 }
 
@@ -48,6 +49,7 @@ export function useProfile() {
           linkedIn: false,
           twitter: false
         },
+        updatingBillsFollowing: false,
         profile
       }
     )
@@ -134,6 +136,13 @@ export function useProfile() {
             }
           })
         }
+      },
+      updateBillsFollowing: async (billsFollowing: string[]) => {
+        if (uid) {
+          dispatch({ updatingBillsFollowing: true })
+          await updateBillsFollowing(uid, billsFollowing)
+          dispatch({ updatingBillsFollowing: false })
+        }
       }
     }),
     [uid, state.updatingSocial]
@@ -209,6 +218,14 @@ function updateFullName(uid: string, fullName: string) {
   return setDoc(
     profileRef(uid),
     { fullName: fullName ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updateBillsFollowing(uid: string, billsFollowing: string[]) {
+  return setDoc(
+    profileRef(uid),
+    { billsFollowing: billsFollowing ?? deleteField() },
     { merge: true }
   )
 }

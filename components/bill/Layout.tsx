@@ -22,6 +22,18 @@ export const Layout = ({ bill }: BillProps) => {
 
   console.log("Result: ", result)
 
+  const handleFollowClick = () => {
+    console.log("Bill Id: ", bill.id)
+    console.log(result.profile?.billsFollowing?.includes(bill.id))
+    if (result.profile?.billsFollowing == undefined) {
+      console.log("undefined -> update")
+      return
+    }
+    result.profile?.billsFollowing?.includes(bill.id)
+      ? console.log("record exists, don't update")
+      : console.log("record doesn't exisit -> update")
+  }
+
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -43,6 +55,7 @@ export const Layout = ({ bill }: BillProps) => {
           className={`btn btn-outline-secondary col-1
             ${uid ? "" : "visually-hidden"}
           `}
+          onClick={handleFollowClick}
         >
           Follow
         </Button>
@@ -68,9 +81,9 @@ export const Layout = ({ bill }: BillProps) => {
 
 /*
   Follow Button   -> [x] follow/unfollow button only appears if auth user is signed in
-                     [ ] add array of bill #s followed to profile
+                     [x] add array of bill #s followed to profile
                      [ ] connect Follow button to updating profile with current bill number
-                         if bill number is not already in array
+                           if bill number is not already in array
                      [ ] toggle Follow button to Unfollow button is bill is currently in the array
                    
   Unfollow Button -> [ ] filter out current bill number from bills followed array                  
