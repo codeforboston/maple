@@ -15,10 +15,19 @@ const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
 
-export const Layout = ({ bill }: BillProps) => {
+export const Layout = ({
+  bill,
+  actions
+}: BillProps & { actions: ProfileHook }) => {
   const { user } = useAuth()
   const uid = user?.uid
   const result = useProfile()
+
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateBillsFollowing } = actions
+
+    await updateBillsFollowing(billsFollowing)
+  }
 
   console.log("Result: ", result)
 
