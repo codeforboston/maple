@@ -16,9 +16,10 @@ const StyledContainer = styled(Container)`
 `
 
 export const Layout = ({
+  actions,
   bill,
-  actions
-}: BillProps & { actions: ProfileHook }) => {
+  billsFollowing
+}: { actions: ProfileHook } & BillProps & { billsFollowing: string[] }) => {
   const { user } = useAuth()
   const uid = user?.uid
   const result = useProfile()
