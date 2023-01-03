@@ -12,6 +12,10 @@ service cloud.firestore {
       allow write: if false;
     }
     match /profiles/{uid} {
+      function validUser() {
+        return request.auth.uid == uid
+      }
+
       function validRoleChange() {
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
       }
@@ -27,7 +31,8 @@ service cloud.firestore {
       // Only normal "user" roles can toggle visibility.
       // or if the profile is an organization.
       allow read: if resource.data.public || request.auth.uid == uid
-      allow create, update: if request.auth.uid == uid && validRoleChange() && validPublicChange()
+      allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
+      allow update: if validUser() && validRoleChange() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
