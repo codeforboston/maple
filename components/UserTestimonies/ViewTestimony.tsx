@@ -9,6 +9,7 @@ import { Button, Col, Form, Row } from "../bootstrap"
 import {
   Testimony,
   useBill,
+  profileImageUrl,
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
@@ -157,13 +158,14 @@ export const TestimonyItem = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
-
+  const profileImg = profileImageUrl(testimony.authorUid)
   const { result: bill } = useBill(testimony.billId)
 
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       {/* USER IMAGE and POSITION */}
-      <PositionLabel position={testimony.position} />
+      {/* {profileImg && <img src={profileImg}/>} */}
+      <PositionLabel position={testimony.position} avatar="maple.png" />
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
           <>
