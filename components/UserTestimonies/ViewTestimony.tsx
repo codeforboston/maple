@@ -55,11 +55,13 @@ const ViewTestimony = (
       className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
-      <Tabs
-        childTabs={tabs}
-        onChange={handleClick}
-        selectedTab={activeTab}
-      ></Tabs>
+      {testimony.length > 0 && (
+        <Tabs
+          childTabs={tabs}
+          onChange={handleClick}
+          selectedTab={activeTab}
+        ></Tabs>
+      )}
 
       {testimony.length > 0 ? (
         testimony.map(t => (
