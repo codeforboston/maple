@@ -1,15 +1,15 @@
 import { FC } from "react"
 import { Col, Container, Row } from "react-bootstrap"
+import { BillTitle } from "./BillTitle"
 import { PolicyActions } from "./PolicyActions"
-import { RevisionHistory } from "./RevisionHIstory"
+import { RevisionHistory } from "./RevisionHistory"
 import { TestimonyDetail } from "./TestimonyDetail"
-import { Title } from "./Title"
 
 export const TestimonyDetailPage: FC = () => {
   return (
-    <Container className="mt-3">
+    <Container className="mt-3" fluid="xl">
       <Row>
-        <Title />
+        <BillTitle />
       </Row>
 
       <Row>

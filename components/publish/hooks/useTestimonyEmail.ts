@@ -1,6 +1,7 @@
+import { splitParagraphs } from "components/testimony"
 import { useEffect, useState } from "react"
 import { getPublishedTestimonyAttachmentUrl, useProfile } from "../../db"
-import { formatBillId, splitParagraphs } from "../../formatting"
+import { formatBillId } from "../../formatting"
 import { siteUrl } from "../../links"
 import { positionActions } from "../content"
 import { usePublishState } from "./usePublishState"

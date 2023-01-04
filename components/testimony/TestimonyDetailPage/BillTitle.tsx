@@ -1,10 +1,10 @@
 import { formatBillId } from "components/formatting"
 import { Internal } from "components/links"
 import styled from "styled-components"
-import { useTestimonyDetails } from "./testimonyDetailSlice"
+import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 
-export const Title = styled(props => {
-  const { bill } = useTestimonyDetails()
+export const BillTitle = styled(props => {
+  const { bill } = useCurrentTestimonyDetails()
 
   const href = `/bill?id=${bill.content.BillNumber}`
   const title = `${formatBillId(bill.content.BillNumber)}: ${

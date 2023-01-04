@@ -2,10 +2,10 @@ import { Position } from "components/db"
 import { ViewAttachment } from "components/ViewAttachment"
 import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
-import { useTestimonyDetails } from "./testimonyDetailSlice"
+import { TestimonyContent } from "./TestimonyContent"
+import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 
 const Container = styled.div`
-  white-space: pre-wrap;
   font-family: "Nunito";
   background-color: white;
   border-radius: 0.75rem;
@@ -13,18 +13,15 @@ const Container = styled.div`
 `
 
 const Testimony = styled(props => {
-  const { testimony, author } = useTestimonyDetails()
-  const authorNickname = author?.displayName ?? testimony.authorDisplayName
+  const { revision, authorNickname } = useCurrentTestimonyDetails()
 
   return (
     <div {...props}>
       <div className="fs-4">What {authorNickname} says</div>
-      <div>{testimony.content}</div>
+      <TestimonyContent {...revision} />
     </div>
   )
-})`
-  white-space: pre-wrap;
-`
+})``
 
 export const positionInfo = {
   neutral: {
@@ -44,14 +41,14 @@ const PositionIcon: FC<
 }
 
 const Header = styled(props => {
-  const { testimony, author } = useTestimonyDetails(),
-    position = testimony.position,
-    isEdited = testimony.version > 0
+  const { revision, authorLink, authorTitle, isEdited } =
+      useCurrentTestimonyDetails(),
+    position = revision.position
 
-  const authorTitle = author ? (
-    <a href={`/profile?id=${author.uid}`}>{author.fullName}</a>
+  const authorInfo = authorLink ? (
+    <a href={authorLink}>{authorTitle}</a>
   ) : (
-    testimony.authorDisplayName
+    authorTitle
   )
 
   return (
@@ -59,9 +56,9 @@ const Header = styled(props => {
       <PositionIcon className="positionIcon" position={position} />
       <div className="author ms-2 me-auto">
         <div className="fs-4">
-          {authorTitle} {positionInfo[position].action} this policy
+          {authorInfo} {positionInfo[position].action} this policy
         </div>
-        <div>{testimony.publishedAt.toDate().toLocaleDateString()}</div>
+        <div>{revision.publishedAt.toDate().toLocaleDateString()}</div>
       </div>
       {isEdited && <div className="edited">Edited</div>}
     </div>
@@ -76,6 +73,7 @@ const Header = styled(props => {
   }
 
   .edited {
+    // TODO
     background: blue;
     color: white;
     align-self: flex-end;
@@ -90,7 +88,7 @@ const Separator = styled.div`
 `
 
 export const TestimonyDetail: FC = () => {
-  const { testimony } = useTestimonyDetails()
+  const { revision } = useCurrentTestimonyDetails()
 
   return (
     <Container>
@@ -98,7 +96,7 @@ export const TestimonyDetail: FC = () => {
       <Separator />
       <Testimony />
       <div className="mt-2">
-        <ViewAttachment testimony={testimony} />
+        <ViewAttachment testimony={revision} />
       </div>
     </Container>
   )

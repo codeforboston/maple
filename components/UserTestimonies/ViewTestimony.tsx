@@ -1,5 +1,6 @@
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
+import { formatTestimonyLinks } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -12,7 +13,7 @@ import {
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
-import { formatBillId, formatTestimonyLinks } from "../formatting"
+import { formatBillId } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"

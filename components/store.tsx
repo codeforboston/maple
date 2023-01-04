@@ -6,6 +6,7 @@ import { reducer as auth } from "./auth/redux"
 import { api } from "./db/api"
 import { reducer as profile } from "./db/profile/redux"
 import { reducer as publish } from "./publish/redux"
+import { slice as testimonyDetail } from "./testimony/TestimonyDetailPage"
 import { rejectionLogger } from "./utils"
 
 export const createStore = () =>
@@ -26,7 +27,8 @@ export const createStore = () =>
       [api.reducerPath]: api.reducer,
       publish,
       auth,
-      profile
+      profile,
+      [testimonyDetail.name]: testimonyDetail.reducer
     }
   })
 
@@ -42,3 +44,4 @@ export const Provider: React.FC<{}> = ({ children }) => {
 export type AppStore = ReturnType<typeof createStore>
 export type RootState = ReturnType<AppStore["getState"]>
 export type AppDispatch = AppStore["dispatch"]
+export type AppSelector<Return> = (state: RootState) => Return

@@ -1,5 +1,5 @@
 import { AttachmentLink } from "components/CommentModal/Attachment"
-import { formatTestimonyLinks } from "components/formatting"
+import { formatTestimonyLinks } from "components/testimony"
 import { ReactNode } from "react"
 import styled from "styled-components"
 import { Position, useDraftTestimonyAttachmentInfo } from "../db"
