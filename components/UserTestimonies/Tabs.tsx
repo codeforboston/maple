@@ -31,8 +31,8 @@ export const Tabs = (props: {
   const containerRef = useRef(null)
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
   const { childTabs, onChange, selectedTab } = props
-  const [sliderWidth, setSliderWidth] = useState(222)
-  const [sliderPos, setSliderPos] = useState(selectedTab * 10)
+  const [sliderWidth, setSliderWidth] = useState(0)
+  const [sliderPos, setSliderPos] = useState(0)
   const sliderPositionOffset = 16
 
   useEffect(() => {
