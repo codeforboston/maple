@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { useState } from "react"
 import { Button, Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
@@ -15,33 +16,44 @@ const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
 
-export const Layout = ({
-  actions,
-  bill,
-  billsFollowing
-}: { actions: ProfileHook } & BillProps & { billsFollowing: string[] }) => {
+export const Layout = ({ bill }: BillProps) => {
   const { user } = useAuth()
   const uid = user?.uid
   const result = useProfile()
+  const profile = result.profile
+  const actions = result
+
+  let userBillList = result.profile?.billsFollowing
+    ? result.profile.billsFollowing
+    : []
+  // const [userBillList, setUserBillList] = useState(
+  //   result.profile?.billsFollowing ? result.profile.billsFollowing : []
+  // )
+
+  console.log("actions: ", actions)
+  console.log("Profile: ", result.profile)
+  console.log("Local Bills Following: ", userBillList)
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
+    const { updateAbout } = actions
 
-    await updateBillsFollowing(billsFollowing)
+    await updateBillsFollowing(userBillList)
+    await updateAbout("yo")
+    console.log("updating")
   }
 
-  console.log("Result: ", result)
-
-  const handleFollowClick = () => {
-    console.log("Bill Id: ", bill.id)
-    console.log(result.profile?.billsFollowing?.includes(bill.id))
-    if (result.profile?.billsFollowing == undefined) {
-      console.log("undefined -> update")
-      return
+  const handleFollowClick = async () => {
+    const id = bill.id
+    console.log("Bill Id: ", id)
+    console.log(userBillList?.includes(id))
+    if (userBillList == undefined) {
+      userBillList = [id]
     }
-    result.profile?.billsFollowing?.includes(bill.id)
-      ? console.log("record exists, don't update")
-      : console.log("record doesn't exisit -> update")
+    userBillList.includes(id) ? null : (userBillList = [...userBillList, id])
+    console.log("bill list to be updated: ", userBillList)
+    await updateProfile({ actions })
+    console.log("Profile 2: ", result.profile)
   }
 
   return (
