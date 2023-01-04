@@ -32,7 +32,7 @@ export default function AboutSection() {
               ></AboutInfoCard>
               <AboutInfoCard
                 title="When"
-                bodytext="Committees generally accept testimony up until the scheduled hearing date for a bill. The relevant committee dates are listed on the bill pages of this website. "
+                bodytext="MAPLE welcomes testimony at any time, but we recommend submitting your testimony before the scheduled hearing date for the greatest impact. The relevant committee dates are listed on the bill pages of this website. "
               ></AboutInfoCard>
               <AboutInfoCard
                 title="Why"
