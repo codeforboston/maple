@@ -12,12 +12,26 @@ export function PositionLabel({
   avatar: string
 }) {
   return (
-    <div
-      className={` bg-${position} px-4 py-1 text-white rounded-pill`}
-      style={{ width: "max-content" }}
-    >
+    <Container pos={position}>
       {capitalize(position)}
       <Image src={avatar} width="100" height="100" />
-    </div>
+    </Container>
   )
 }
+
+const Container = styled.div<{ pos: Position }>`
+  border: solid 2px;
+  border-color: ${p => {
+    switch (p.pos) {
+      case "endorse":
+        return "green"
+      case "neutral":
+        return "black"
+      case "oppose":
+        return "orange"
+    }
+  }};
+  width: fit-content;
+  border-radius: 255px;
+  padding: 0;
+`
