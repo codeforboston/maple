@@ -13,14 +13,21 @@ export function PositionLabel({
 }) {
   return (
     <Container pos={position}>
-      <img src={`thumbs-${position}.svg`} />
-      <img src={avatar} width="100" height="100" />
+      <ImageContainer>
+        <Image className="avatar" src={avatar} width="70" height="70" />
+      </ImageContainer>
+      <Image className="position" src={`thumbs-${position}.svg`} />
     </Container>
   )
 }
 
+const ImageContainer = styled.div`
+  padding: 3px;
+`
 const Container = styled.div<{ pos: Position }>`
+  display: flex;
   border: solid 2px;
+  justify-content: center;
   border-color: ${p => {
     switch (p.pos) {
       case "endorse":
@@ -31,7 +38,18 @@ const Container = styled.div<{ pos: Position }>`
         return "orange"
     }
   }};
-  width: fit-content;
   border-radius: 500px;
+
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+
   padding: 0;
+
+  .position {
+    position: absolute;
+    bottom: 0px;
+    top: 60px;
+    align-self: flex-end;
+  }
 `

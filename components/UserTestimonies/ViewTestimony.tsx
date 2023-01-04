@@ -158,14 +158,12 @@ export const TestimonyItem = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
-  const profileImg = profileImageUrl(testimony.authorUid)
   const { result: bill } = useBill(testimony.billId)
 
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       {/* USER IMAGE and POSITION */}
-      {/* {profileImg && <img src={profileImg}/>} */}
-      <PositionLabel position={testimony.position} avatar="maple.png" />
+      <PositionLabel position={testimony.position} avatar="leaf-asset.png" />
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
           <>
