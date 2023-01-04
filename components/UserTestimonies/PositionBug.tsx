@@ -13,8 +13,8 @@ export function PositionLabel({
 }) {
   return (
     <Container pos={position}>
-      {capitalize(position)}
-      <Image src={avatar} width="100" height="100" />
+      <img src={`thumbs-${position}.svg`} />
+      <img src={avatar} width="100" height="100" />
     </Container>
   )
 }
@@ -32,6 +32,6 @@ const Container = styled.div<{ pos: Position }>`
     }
   }};
   width: fit-content;
-  border-radius: 255px;
+  border-radius: 500px;
   padding: 0;
 `
