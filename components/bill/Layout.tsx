@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { useState } from "react"
 import { Button, Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
@@ -10,50 +9,34 @@ import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useAuth } from "../auth"
-import { Profile, ProfileHook, useProfile } from "../db"
+import { ProfileHook, useProfile } from "../db"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
 
 export const Layout = ({ bill }: BillProps) => {
+  const bid = bill.id
   const { user } = useAuth()
   const uid = user?.uid
-  const result = useProfile()
-  const profile = result.profile
-  const actions = result
+  const actions = useProfile()
+  const profile = actions.profile
 
-  let userBillList = result.profile?.billsFollowing
-    ? result.profile.billsFollowing
-    : []
-  // const [userBillList, setUserBillList] = useState(
-  //   result.profile?.billsFollowing ? result.profile.billsFollowing : []
-  // )
-
-  console.log("actions: ", actions)
-  console.log("Profile: ", result.profile)
-  console.log("Local Bills Following: ", userBillList)
+  let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
-    const { updateAbout } = actions
-
     await updateBillsFollowing(userBillList)
-    await updateAbout("yo")
-    console.log("updating")
   }
 
   const handleFollowClick = async () => {
-    const id = bill.id
-    console.log("Bill Id: ", id)
-    console.log(userBillList?.includes(id))
-    if (userBillList == undefined) {
-      userBillList = [id]
-    }
-    userBillList.includes(id) ? null : (userBillList = [...userBillList, id])
-    console.log("bill list to be updated: ", userBillList)
+    userBillList.includes(bid) ? null : (userBillList = [...userBillList, bid])
     await updateProfile({ actions })
-    console.log("Profile 2: ", result.profile)
+  }
+
+  const handleUnfollowClick = async () => {
+    userBillList = userBillList.filter(bill => bill !== bid)
+    await updateProfile({ actions })
   }
 
   return (
@@ -77,9 +60,13 @@ export const Layout = ({ bill }: BillProps) => {
           className={`btn btn-outline-secondary col-1
             ${uid ? "" : "visually-hidden"}
           `}
-          onClick={handleFollowClick}
+          onClick={
+            userBillList?.includes(bid)
+              ? handleUnfollowClick
+              : handleFollowClick
+          }
         >
-          Follow
+          {userBillList?.includes(bid) ? "Unfollow" : "Follow"}
         </Button>
       </Row>
 
@@ -104,9 +91,11 @@ export const Layout = ({ bill }: BillProps) => {
 /*
   Follow Button   -> [x] follow/unfollow button only appears if auth user is signed in
                      [x] add array of bill #s followed to profile
-                     [ ] connect Follow button to updating profile with current bill number
-                           if bill number is not already in array
-                     [ ] toggle Follow button to Unfollow button is bill is currently in the array
+                     [x] connect Follow button to updating profile with current bill number
+                           if bill number is not already in array                    
+                     [x] toggle Follow button to Unfollow button is bill is currently in the array
                    
-  Unfollow Button -> [ ] filter out current bill number from bills followed array                  
+  Unfollow Button -> [x] filter out current bill number from bills followed array
+  
+  Buttons         -> [ ] style Follow/Unfollow buttons to Figma?
 */
