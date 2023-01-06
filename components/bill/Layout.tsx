@@ -1,9 +1,10 @@
 import styled from "styled-components"
-import { Button, Col, Container, Row } from "../bootstrap"
+import { Button, Col, Container, Row, Stack } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
+import { formatBillId } from "../formatting"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
@@ -54,10 +55,10 @@ export const Layout = ({ bill }: BillProps) => {
           <Status bill={bill} />
         </Col>
       </Row>
-
-      <Row>
+      <Stack className={`mb-4`} direction={`horizontal`}>
+        <Col className={`col-8`} />
         <Button
-          className={`btn btn-outline-secondary col-1
+          className={`btn btn-primary btn-sm ms-auto py-2
             ${uid ? "" : "visually-hidden"}
           `}
           onClick={
@@ -66,10 +67,10 @@ export const Layout = ({ bill }: BillProps) => {
               : handleFollowClick
           }
         >
-          {userBillList?.includes(bid) ? "Unfollow" : "Follow"}
+          {userBillList?.includes(bid) ? "Following " : "Follow "}
+          {formatBillId(bill.id)}
         </Button>
-      </Row>
-
+      </Stack>
       <Row className="mt-2">
         <Col>
           <Summary bill={bill} />
@@ -87,15 +88,3 @@ export const Layout = ({ bill }: BillProps) => {
     </StyledContainer>
   )
 }
-
-/*
-  Follow Button   -> [x] follow/unfollow button only appears if auth user is signed in
-                     [x] add array of bill #s followed to profile
-                     [x] connect Follow button to updating profile with current bill number
-                           if bill number is not already in array                    
-                     [x] toggle Follow button to Unfollow button is bill is currently in the array
-                   
-  Unfollow Button -> [x] filter out current bill number from bills followed array
-  
-  Buttons         -> [ ] style Follow/Unfollow buttons to Figma?
-*/
