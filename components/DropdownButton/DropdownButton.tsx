@@ -22,10 +22,11 @@ DropdownButtonProps) {
             Last 6 Weeks
           </Dropdown.Toggle>
     
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+          <Dropdown.Menu className={styles.dropdown}>
+            
+            <Dropdown.Item href="#/action-1" className = {styles.item}>Action</Dropdown.Item>
+            <Dropdown.Item href="#/action-2" className = {styles.item}>Another action</Dropdown.Item>
+            <Dropdown.Item href="#/action-3" className = {styles.item}>Something else</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       );

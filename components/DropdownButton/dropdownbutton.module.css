@@ -10,4 +10,10 @@
     padding: 2px 4px;
     border-color: #000000;
     background-color: transparent;
+    min-width: 160px;
+}
+
+.item:hover {
+    background-color: #1A3185;
+    color: #ffff
 }
