@@ -1,7 +1,8 @@
 import { createMeta } from "stories/utils"
+import   DropdownButton   from "../../../components/DropdownButton/DropdownButton"
 
 // TODO: move into components directory
-const DropdownButton = () => <div>TODO</div>
+//const DropdownButton = () => <div>TODO</div>
 
 export default createMeta({
   title: "Components/Buttons/DropdownButton",
@@ -10,4 +11,4 @@ export default createMeta({
   component: DropdownButton
 })
 
-export const Primary = () => <DropdownButton />
+export const Primary = () => <DropdownButton title="Dropdown"> Test </DropdownButton> 
