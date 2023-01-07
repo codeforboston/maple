@@ -19,7 +19,7 @@ DropdownButtonProps) {
           <Dropdown.Toggle className={styles.dropdown}
               variant="outline-secondary"
               id="dropdown-basic">
-            Last 6 Weeks
+            {title}
           </Dropdown.Toggle>
     
           <Dropdown.Menu className={styles.dropdown}>
