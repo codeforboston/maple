@@ -46,8 +46,9 @@ service cloud.firestore {
         allow read, write: if request.auth.uid == uid
       }
       match /archivedTestimony/{id} {
-        // Not accessible by users, for record keeping.
-        allow read, write: if false
+        // Publicly readable, for posterity.
+        allow read: if true 
+        allow write: if false
       }
     }
   }
