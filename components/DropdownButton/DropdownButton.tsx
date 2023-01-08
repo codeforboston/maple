@@ -6,7 +6,7 @@ import styles from "./dropdownbutton.module.css"
 
 export type DropdownButtonProps = {
   title: string
-  children?: any
+  children?: Array<string>
 }
 
 export default function DropdownButton({
@@ -14,6 +14,8 @@ export default function DropdownButton({
   children
 }: 
 DropdownButtonProps) {
+
+    const childElement = children.map((item,i) => (<Dropdown.Item key={i} className = {styles.item}>{item}</Dropdown.Item>))
     return (
         <Dropdown >
           <Dropdown.Toggle className={styles.dropdown}
@@ -23,10 +25,7 @@ DropdownButtonProps) {
           </Dropdown.Toggle>
     
           <Dropdown.Menu className={styles.dropdown}>
-            
-            <Dropdown.Item href="#/action-1" className = {styles.item}>Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2" className = {styles.item}>Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3" className = {styles.item}>Something else</Dropdown.Item>
+            {childElement}
           </Dropdown.Menu>
         </Dropdown>
       );
