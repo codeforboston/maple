@@ -7,7 +7,7 @@ import styles from "./dropdownbutton.module.css"
 
 export type DropdownButtonProps = {
   title?: string
-  children?: Array<string>
+  children: Array<string>
 }
 
 export default function DropdownButton({
@@ -18,7 +18,7 @@ DropdownButtonProps) {
 
     const [value,setValue]= React.useState(title? title: children[0][0]);
 
-    const handleSelect=(e)=>{
+    const handleSelect=(e: React.SetStateAction<any>)=>{
         console.log(e);
         setValue(e)
     }
