@@ -16,10 +16,11 @@ export default function DropdownButton({
 }: 
 DropdownButtonProps) {
 
-    const [selectedValue, setSelectedValue] = React.useState(null)
+    const [value,setValue]= React.useState('');
 
     const handleSelect=(e)=>{
         console.log(e);
+        setValue(e)
     }
 
 
