@@ -4,6 +4,7 @@ import styles from "./dropdownbutton.module.css"
 
 
 
+
 export type DropdownButtonProps = {
   title: string
   children?: Array<string>
@@ -15,9 +16,16 @@ export default function DropdownButton({
 }: 
 DropdownButtonProps) {
 
-    const childElement = children.map((item,i) => (<Dropdown.Item href={item[1]} key={i} className = {styles.item}>{item[0]}</Dropdown.Item>))
+    const [selectedValue, setSelectedValue] = React.useState(null)
+
+    const handleSelect=(e)=>{
+        console.log(e);
+    }
+
+
+    const childElement = children.map((item,i) => (<Dropdown.Item eventKey={item[1]} key={i} className = {styles.item}>{item[0]}</Dropdown.Item>))
     return (
-        <Dropdown >
+        <Dropdown onSelect={handleSelect} >
           <Dropdown.Toggle className={styles.dropdown}
               variant="outline-secondary"
               id="dropdown-basic">
