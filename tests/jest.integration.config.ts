@@ -14,6 +14,7 @@ const config: Config.InitialOptions = {
     "<rootDir>/tests/seed",
     "<rootDir>/functions"
   ],
+  modulePaths: ['<rootDir>'],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"]
 }
 

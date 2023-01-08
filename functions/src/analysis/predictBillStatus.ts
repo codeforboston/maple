@@ -1,4 +1,4 @@
-import { BillHistory, BillHistoryAction } from "../bills/types"
+import { BillHistory } from "../bills/types"
 import { Stage } from "./types"
 
 const chamberCommittees = [
@@ -65,7 +65,7 @@ const stageChecks: MatchStatus[] = [
   [hasFirstCommittees, Stage.firstCommittee]
 ]
 
-export function calculateBillStatus(newHistory: BillHistory): Stage {
+export function predictBillStatus(newHistory: BillHistory): Stage {
   for (let [p, r] of stageChecks) {
     if (p(newHistory.reverse())) {
       return r

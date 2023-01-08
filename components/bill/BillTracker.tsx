@@ -1,15 +1,26 @@
 import { Card as MapleCard } from "components/Card/Card"
-import { Stage, useBillStatus } from "components/db/useBillStatus"
-import { useEffect, useMemo, useState } from "react"
+import { Stage, useBillTracker } from "components/db/useBillStatus"
+import { Bill } from "functions/src/bills/types"
 import styled from "styled-components"
-import { Bill, getBill } from "../../components/db/bills"
+import { BillProps, BillTracker } from "./types"
 
-export default function BillStatusView({
-  id
+export default function BillTrackerConnectedView({
+  bill
+}: BillProps): JSX.Element {
+  const { result , loading, error} = useBillTracker(bill.id, 192)
+  console.log(result, loading , error)
+  return <BillTrackerView tracker={result} />
+}
+
+const BillTrackerView = ({
+  tracker
 }: {
-  id: string
-}) {
-  const { currentStage } :{currentStage: Stage} = useBillStatus(id)
+  tracker: BillTracker | undefined
+}): JSX.Element => {
+  const currentStage =
+    tracker?.label?.status ??
+    tracker?.prediction?.status ??
+    Stage.billIntroduced
 
   const body = (
     <BillStatusBody>
@@ -18,7 +29,7 @@ export default function BillStatusView({
       ))}
     </BillStatusBody>
   )
-  return <MapleCard header="Bill Status" body={body} />
+  return <MapleCard header="Bill Tracker" body={body} />
 }
 
 export const BillStageStrip = ({

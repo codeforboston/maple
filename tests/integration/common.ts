@@ -14,24 +14,35 @@ export const signInUser2 = () => signInUser("test2@example.com")
 export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
 
-export async function createFakeBill() {
-  const billId = nanoid()
+export async function createNewBill(props?: Partial<Bill>) {
+  const billId = props?.id ?? nanoid(),
+    court = props?.court ?? 192
   const content: BillContent = {
     Pinslip: null,
     Title: "fake",
     PrimarySponsor: null,
     Cosponsors: []
   }
-  const bill = {
+  const bill: Bill = {
     content,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
-    testimonyCount: 0
+    testimonyCount: 0,
+    court: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0,
+    history: [],
+    similar: [],
+    ...props
   }
-  await testDb.doc(`/generalCourts/192/bills/${billId}`).create(bill)
-  return billId
+  const path = `/generalCourts/${court}/bills/${billId}`
+  await testDb.doc(path).create(bill)
+  return { path, id: billId, bill }
 }
+
+export const createFakeBill = () => createNewBill().then(b => b.id)
 
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn

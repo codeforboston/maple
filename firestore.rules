@@ -11,6 +11,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    match /billTracker/{document=**} {
+      // public, read-only 
+      allow read: if true;
+      allow write: if false;
+    }
     match /profiles/{uid} {
       function validRoleChange() {
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])

@@ -1,8 +1,13 @@
 import { waitFor } from "@testing-library/react"
 import { BillHistory } from "components/db"
-import { getDoc, updateDoc } from "firebase/firestore"
-import { calculateBillStatus } from "functions/src/analysis/calculateBillTracker"
-import { Stage } from "functions/src/analysis/types"
+import { billTrackerPath } from "functions/src/analysis"
+import { predictBillStatus } from "functions/src/analysis/predictBillStatus"
+import { BillTracker, Stage } from "functions/src/analysis/types"
+import { nanoid } from "nanoid"
+import { testDb, testTimestamp } from "tests/testUtils"
+import { createNewBill } from "./common"
+
+// yarn firebase-admin -e local run-script touchBills --court 192 --bills='H1011 H1225 H1035 H2147 H100'
 
 // Bill with status "bill introduced"
 // billid = any, no history
@@ -217,65 +222,158 @@ const signedHistory: BillHistory = [
   }
 ]
 
+const getBillTracker = (billId: string, court: number) =>
+  testDb
+    .doc(billTrackerPath(billId, court))
+    .get()
+    .then(s => {
+      if (s.exists) return s.data() as BillTracker
+    })
+
 describe("billTracker", () => {
   describe("calculate status", () => {
     test("detects bill Introduced", () => {
-      const billIntroduced = calculateBillStatus(noHistory)
+      const billIntroduced = predictBillStatus(noHistory)
       expect(billIntroduced).toBe(Stage.billIntroduced)
     })
+
     test("detects first committee", () => {
-      const firstCommittee = calculateBillStatus(firstCommitteeHistory)
+      const firstCommittee = predictBillStatus(firstCommitteeHistory)
       expect(firstCommittee).toBe(Stage.firstCommittee)
     })
 
     test("detects chamber committee", () => {
-      const secondCommittee = calculateBillStatus(secondCommitteeHistory)
+      const secondCommittee = predictBillStatus(secondCommitteeHistory)
       expect(secondCommittee).toBe(Stage.secondCommittee)
     })
 
     test("detects first chamber", () => {
-      const firstChamber = calculateBillStatus(firstChamberHistory)
+      const firstChamber = predictBillStatus(firstChamberHistory)
       expect(firstChamber).toBe(Stage.firstChamber)
     })
 
     test("detects second chamber", () => {
-      const secondCommittee = calculateBillStatus(secondCommitteeHistory)
+      const secondCommittee = predictBillStatus(secondCommitteeHistory)
       expect(secondCommittee).toBe(Stage.secondCommittee)
     })
 
     test("detects signed", () => {
-      const signed = calculateBillStatus(signedHistory)
+      const signed = predictBillStatus(signedHistory)
       expect(signed).toBe(Stage.signed)
     })
   })
 
   describe("on bill document change", () => {
-    xtest("creates new tracker doc for new bill", async () => {
+    let court: number, billId: string, billPath: string
+    beforeAll(async () => {
+      court = 192
+      billId = nanoid()
+
       // Check that no tracker doc exists
-      // todo
+      const tracker = await getBillTracker(billId, court)
+      expect(tracker).toBeUndefined()
 
       // Update a bill doc with new history
-      await updateDoc("bills/...", someNewHistory)
+      const b = await createNewBill({
+        id: billId,
+        court,
+        history: firstCommitteeHistory
+      })
+      billPath = b.path
+    })
 
+    const expectBillStage = (
+      check: Stage | ((tracker: BillTracker | undefined) => any),
+      id = billId,
+      c = court
+    ) =>
+      waitFor(
+        async () => {
+          const tracker = await getBillTracker(id, c)
+          if (typeof check === "function") await check(tracker)
+          else
+            expect(tracker).toMatchObject({
+              court,
+              id: billId,
+              prediction: { status: check }
+            } as BillTracker)
+        },
+        { interval: 100, timeout: 500 }
+      )
+
+    test("creates new tracker doc for new bill", async () => {
       // Wait for tracker doc to be created with expected status
+      await expectBillStage(Stage.firstCommittee)
+    })
+
+    test("updates tracker doc for updated history", async () => {
+      // Update bill doc again
+      await testDb.doc(billPath).update({ history: signedHistory })
+      // Wait for updated tracker doc
+      await expectBillStage(Stage.signed)
+    })
+
+    test("does nothing if history does not change", async () => {
+      // Update an unrelated bill field
+      await testDb.doc(billPath).update({ testimonyCount: 10 })
+
+      // Bill
       await waitFor(async () => {
-        const tracker = await getDoc("/billTracker/...")
-        expect(tracker).toMatchObject({})
+        const snap = await testDb.doc(billPath).get()
+        expect(snap.data()?.testimonyCount).toEqual(10)
+      })
+
+      // Tracker does not change
+      await expect(() =>
+        expectBillStage(tracker =>
+          expect(tracker?.prediction?.status).not.toEqual(Stage.signed)
+        )
+      ).rejects.toThrow()
+    })
+
+    test("updates tracker doc if version is different", async () => {
+      const tracker = await getBillTracker(billId, court)
+      await testDb
+        .doc(billTrackerPath(billId, court))
+        .update({ prediction: { version: tracker!.prediction!.version + 1 } })
+      // Update bill doc
+      await testDb.doc(billPath).update({ testimonyCount: 123 })
+      // Wait for updated tracker doc
+      await expectBillStage(updated => {
+        expect(updated?.prediction?.createdAt).not.toEqual(
+          tracker?.prediction?.createdAt
+        )
       })
     })
 
-    xtest("updates tracker doc for existing history", () => {
-      // Update a bill doc with history
-      // Wait for tracker doc to exist as above
-      // Update bill doc again
-      // Wait for updated tracker doc
-    })
+    test("retains labels", async () => {
+      const court = 192,
+        billId = nanoid()
 
-    xtest("does nothing if history does not change", async () => {
-      // Update a bill doc with history
-      // Wait for tracker doc to exist as above
-      // update bill doc but don't change history
-      // Verify that tracker doc is not updated in given time period
+      await testDb.doc(billTrackerPath(billId, court)).set({
+        id: billId,
+        court: court,
+        label: {
+          attribution: "alex",
+          createdAt: testTimestamp.now(),
+          status: Stage.signed
+        }
+      } as BillTracker)
+
+      await createNewBill({
+        id: billId,
+        court,
+        history: firstCommitteeHistory
+      })
+
+      await expectBillStage(
+        tracker => {
+          expect(tracker?.label?.status).toEqual(Stage.signed)
+          expect(tracker?.prediction?.status).toEqual(Stage.firstCommittee)
+        },
+        billId,
+        court
+      )
     })
   })
 })

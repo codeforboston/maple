@@ -1,12 +1,12 @@
 import { runWith } from "firebase-functions"
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
-import { db } from "../firebase"
-import { calculateBillStatus } from "./calculateBillTracker"
+import { db, Timestamp } from "../firebase"
+import { predictBillStatus } from "./predictBillStatus"
 import { BillTracker } from "./types"
 
 const currentTrackerVersion = 1
-const billTrackerPath = (billId: string, court: number) =>
+export const billTrackerPath = (billId: string, court: number) =>
   `/billTracker/${court}-${billId}`
 
 export const updateBillTracker = runWith({
@@ -14,11 +14,13 @@ export const updateBillTracker = runWith({
 })
   .firestore.document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (change, context) => {
-    const { billId, court } = context.params
+    const params = context.params,
+      billId = String(params.billId),
+      court = Number(params.court)
     const previousBill = change.before.exists
       ? Bill.checkWithDefaults(change.before.data())
       : undefined
-    const newBill = change.before.exists
+    const newBill = change.after.exists
       ? Bill.checkWithDefaults(change.after.data())
       : undefined
 
@@ -26,10 +28,13 @@ export const updateBillTracker = runWith({
       const tracker: BillTracker = {
         id: billId,
         court: court,
-        version: currentTrackerVersion,
-        status: calculateBillStatus(newBill!.history, previousBill?.history)
+        prediction: {
+          version: currentTrackerVersion,
+          status: predictBillStatus(newBill!.history),
+          createdAt: Timestamp.now()
+        }
       }
-      await db.doc(billTrackerPath(billId, court)).set(tracker)
+      await db.doc(billTrackerPath(billId, court)).set(tracker, { merge: true })
     }
   })
 
@@ -39,17 +44,21 @@ async function shouldUpdateBillTracker(
   newBill: Bill | undefined,
   previousBill: Bill | undefined
 ) {
+  // Leave the tracker if the bill was deleted
   if (!newBill) return false
 
   const historyChanged = !isEqual(previousBill?.history, newBill.history)
 
+  // Update if history changes
   if (historyChanged) return true
 
   const snap = await db.doc(billTrackerPath(newBill.id, court)).get()
 
+  // Create if new bill
   if (!snap.exists) return true
 
   const tracker = snap.data() as BillTracker
 
-  return tracker.version !== currentTrackerVersion
+  // Only update if prediction logic changes
+  return tracker.prediction?.version !== currentTrackerVersion
 }
