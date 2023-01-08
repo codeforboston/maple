@@ -16,7 +16,7 @@ export default function DropdownButton({
 }: 
 DropdownButtonProps) {
 
-    const [value,setValue]= React.useState('');
+    const [value,setValue]= React.useState(children[0][0]);
 
     const handleSelect=(e)=>{
         console.log(e);
@@ -27,16 +27,17 @@ DropdownButtonProps) {
     const childElement = children.map((item,i) => (<Dropdown.Item eventKey={item[1]} key={i} className = {styles.item}>{item[0]}</Dropdown.Item>))
     return (
         <Dropdown onSelect={handleSelect} >
-          <Dropdown.Toggle className={styles.dropdown}
+     <Dropdown.Toggle className={styles.dropdown}
               variant="outline-secondary"
               id="dropdown-basic">
-            {title}
+            {value}
           </Dropdown.Toggle>
     
-          <Dropdown.Menu className={styles.dropdown}>
+          <Dropdown.Menu className={styles.dropdown} >
             {childElement}
           </Dropdown.Menu>
         </Dropdown>
+        
       );
   
 }
