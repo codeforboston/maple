@@ -15,7 +15,7 @@ export default function DropdownButton({
 }: 
 DropdownButtonProps) {
 
-    const childElement = children.map((item,i) => (<Dropdown.Item key={i} className = {styles.item}>{item}</Dropdown.Item>))
+    const childElement = children.map((item,i) => (<Dropdown.Item href={item[1]} key={i} className = {styles.item}>{item[0]}</Dropdown.Item>))
     return (
         <Dropdown >
           <Dropdown.Toggle className={styles.dropdown}
