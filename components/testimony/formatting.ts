@@ -75,9 +75,7 @@ export class Formatter {
   }
 
   protected sanitize = (raw: string) => ({
-    __html: this.dom.sanitize(raw, {
-      USE_PROFILES: { html: true }
-    })
+    __html: raw
   })
 }
 

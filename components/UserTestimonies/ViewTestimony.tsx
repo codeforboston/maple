@@ -1,6 +1,6 @@
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
-import { formatTestimonyLinks } from "components/testimony"
+import { formatTestimony } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -218,10 +218,9 @@ export const FormattedTestimonyContent = ({
         <>
           <div
             className="col m2"
-            dangerouslySetInnerHTML={formatTestimonyLinks(
-              testimony,
-              TESTIMONY_CHAR_LIMIT
-            )}
+            // TODO: Add char limit. May be easiest to trim it here
+            // and fade it out to hide any formatting it breaks.
+            dangerouslySetInnerHTML={formatTestimony(testimony)}
           />
           <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
             <Button
@@ -235,7 +234,7 @@ export const FormattedTestimonyContent = ({
       ) : (
         <div
           className="col m2"
-          dangerouslySetInnerHTML={formatTestimonyLinks(testimony)}
+          dangerouslySetInnerHTML={formatTestimony(testimony)}
         />
       )}
     </>

@@ -1,12 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { firestore } from "components/firebase"
 import { isNotNull } from "components/utils"
+import { FirebaseError } from "firebase/app"
 import {
   collection,
   collectionGroup,
   doc,
-  getDoc,
-  getDocs,
+  getDoc as getFbDoc,
+  getDocs as getFbDocs,
   limit,
   orderBy,
   query,
@@ -34,9 +35,21 @@ export type ProfileQuery = {
 
 export type UserProfile = Profile & { uid: string }
 
+const handleFailure = (name: string, e: any, ...json: any) => {
+  if (e instanceof FirebaseError)
+    console.error(name, ...json.map((s: any) => JSON.stringify(s, null, 2)), e)
+  throw e
+}
+
 export class DbService {
+  private getDocs: typeof getFbDocs = q =>
+    getFbDocs(q).catch(e => handleFailure("getDocs", e, q))
+
   private getDocData = async <T>(path: string, ...pathSegments: string[]) => {
-    const snap = await getDoc(doc(firestore, path, ...pathSegments))
+    const snap = await getFbDoc(doc(firestore, path, ...pathSegments)).catch(
+      e => handleFailure("getDocData", e, path, pathSegments.join("/"))
+    )
+
     if (snap.exists()) return snap.data() as T
   }
 
@@ -45,7 +58,7 @@ export class DbService {
     billId,
     court
   }: TestimonyQuery): Promise<Testimony[]> => {
-    const result = await getDocs(
+    const result = await this.getDocs(
       query(
         collection(firestore, `/users/${authorUid}/archivedTestimony`),
         where("billId", "==", billId),
@@ -71,7 +84,7 @@ export class DbService {
       billId
     )
 
-    const result = await getDocs(
+    const result = await this.getDocs(
       query(
         collectionGroup(firestore, "publishedTestimony"),
         where("authorUid", "==", authorUid),
