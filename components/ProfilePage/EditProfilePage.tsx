@@ -13,6 +13,7 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
@@ -98,6 +99,19 @@ export function EditProfileForm({
           {...testimony}
           showControls={true}
           showBillNumber
+          className="mt-3 mb-4"
+        />
+      )
+    },
+    {
+      title: "Following",
+      eventKey: "Following",
+      content: (
+        <FollowingTab
+          profile={profile}
+          actions={actions}
+          uid={uid}
+          setFormUpdated={setFormUpdated}
           className="mt-3 mb-4"
         />
       )
