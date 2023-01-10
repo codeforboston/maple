@@ -1,6 +1,6 @@
 import type { ModalProps } from "react-bootstrap"
-import { Button, Col, Modal, Row, Stack } from "../bootstrap"
-import styles from "./TermsOfService.module.css"
+import { Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
+import styles from "./VerifyEmailModal.module.css"
 import SVG from "react-inlinesvg"
 
 export default function VerifyEmailModal({
@@ -8,14 +8,22 @@ export default function VerifyEmailModal({
   onHide
 }: Pick<ModalProps, "show" | "onHide">) {
   return (
-    <Modal show={show} onHide={onHide} centered size="lg">
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton className={styles.modalHeader}>
         <Modal.Title id="tos-modal">Sign Up</Modal.Title>
       </Modal.Header>
-      <Modal.Body className={styles.text}>
-        <Col md={12} className="mx-auto">
-          <Stack gap={3} className="mb-4">
-            This is the email verify modal
+      <Modal.Body>
+        <Col md={11} className="mx-auto">
+          <Stack gap={3} direction="vertical" className="mb-4 text-center">
+            <Image
+              fluid
+              className={styles.image}
+              src="mailverify.svg"
+              alt="Mail illustration"
+            />
+            <h2 className={styles.title}>Verify your email address</h2>
+            <h6 className={styles.body}>Please verify your email for you account by clicking the verification link we send to your email. If you fail to do so, you will not be able to submit your testimonies.</h6>
+            
           </Stack>
         </Col>
       </Modal.Body>

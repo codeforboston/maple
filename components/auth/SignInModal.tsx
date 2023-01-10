@@ -38,8 +38,12 @@ export default function SignInModal({
   }, [show, reset])
 
   useEffect(() => {
+    console.log("submit was ")
     console.log(isSubmitSuccessful)
-    if (isSubmitSuccessful) onHide
+    if (isSubmitSuccessful) {
+      console.log("hiding");
+      onHide
+    }
   }, [isSubmitSuccessful, onHide])
 
   const onSubmit = handleSubmit(credentials => {
