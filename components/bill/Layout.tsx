@@ -18,12 +18,14 @@ const StyledContainer = styled(Container)`
 
 export const Layout = ({ bill }: BillProps) => {
   const bid = bill.id
+  const btitle = bill.content.Title
   const { user } = useAuth()
   const uid = user?.uid
   const actions = useProfile()
   const profile = actions.profile
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
+  let checkBill = userBillList.map(item => item?.id).includes(bid)
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
@@ -31,12 +33,14 @@ export const Layout = ({ bill }: BillProps) => {
   }
 
   const handleFollowClick = async () => {
-    userBillList.includes(bid) ? null : (userBillList = [...userBillList, bid])
+    checkBill
+      ? null
+      : (userBillList = [...userBillList, { id: bid, title: btitle }])
     await updateProfile({ actions })
   }
 
   const handleUnfollowClick = async () => {
-    userBillList = userBillList.filter(bill => bill !== bid)
+    userBillList = userBillList.filter(bill => bill.id !== bid)
     await updateProfile({ actions })
   }
 
@@ -61,13 +65,9 @@ export const Layout = ({ bill }: BillProps) => {
           className={`btn btn-primary btn-sm ms-auto py-2
             ${uid ? "" : "visually-hidden"}
           `}
-          onClick={
-            userBillList?.includes(bid)
-              ? handleUnfollowClick
-              : handleFollowClick
-          }
+          onClick={checkBill ? handleUnfollowClick : handleFollowClick}
         >
-          {userBillList?.includes(bid) ? "Following " : "Follow "}
+          {checkBill ? "Following " : "Follow "}
           {formatBillId(bill.id)}
         </Button>
       </Stack>
