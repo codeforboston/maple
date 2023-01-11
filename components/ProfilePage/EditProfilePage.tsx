@@ -111,7 +111,10 @@ export function EditProfileForm({
         <Col className={`d-flex justify-content-end`}>
           <Internal className={`ml-2`} href={`javascript:void(0)`}>
             <GearButton
-              className={`btn btn-lg btn-outline-secondary me-4`}
+              /* remove invisible className for testing and/or after Soft Launch when we're
+                 ready to show Email related element to users
+               */
+              className={`btn btn-lg btn-outline-secondary me-4 invisible`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
