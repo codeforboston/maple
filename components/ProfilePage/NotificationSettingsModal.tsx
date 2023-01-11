@@ -153,7 +153,7 @@ export default function NotificationSettingsModal({
           >
             Cancel
           </Button>
-        </Stack> 
+        </Stack>
       </Modal.Body>
     </Modal>
   )
