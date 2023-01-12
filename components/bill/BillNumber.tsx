@@ -3,7 +3,7 @@ import { billLink, External } from "../links"
 import { FC } from "../types"
 import { BillProps } from "./types"
 
-const Styled = styled.div`
+export const Styled = styled.div`
   font-size: 4rem;
   a {
     text-decoration: none;

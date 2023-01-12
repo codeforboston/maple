@@ -2,11 +2,10 @@ import styled from "styled-components"
 import { Button, Col, Container, Row, Stack } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
-import { BillNumber } from "./BillNumber"
+import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import { formatBillId } from "../formatting"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
-import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useAuth } from "../auth"
@@ -56,21 +55,19 @@ export const Layout = ({ bill }: BillProps) => {
           <BillNumber bill={bill} />
         </Col>
         <Col xs={6} className="d-flex justify-content-end">
-          <Status bill={bill} />
+          <Styled>
+            <Button
+              className={`btn btn-primary btn-sm ms-auto py-2
+                ${uid ? "" : "visually-hidden"}
+              `}
+              onClick={checkBill ? handleUnfollowClick : handleFollowClick}
+            >
+              {checkBill ? "Following " : "Follow "}
+              {formatBillId(bill.id)}
+            </Button>
+          </Styled>
         </Col>
       </Row>
-      <Stack className={`mb-4`} direction={`horizontal`}>
-        <Col className={`col-8`} />
-        <Button
-          className={`btn btn-primary btn-sm ms-auto py-2
-            ${uid ? "" : "visually-hidden"}
-          `}
-          onClick={checkBill ? handleUnfollowClick : handleFollowClick}
-        >
-          {checkBill ? "Following " : "Follow "}
-          {formatBillId(bill.id)}
-        </Button>
-      </Stack>
       <Row className="mt-2">
         <Col>
           <Summary bill={bill} />
