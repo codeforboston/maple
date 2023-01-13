@@ -114,7 +114,7 @@ export function EditProfileForm({
               /* remove invisible className for testing and/or after Soft Launch when we're
                  ready to show Email related element to users
                */
-              className={`btn btn-lg btn-outline-secondary me-4 invisible`}
+              className={`btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
@@ -125,10 +125,10 @@ export function EditProfileForm({
             className={`ml-2`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
               {!profile.organization
-                ? "View your profile"
-                : "View your organization page"}
+                ? "View My Profile"
+                : "View My Organization"}
             </Button>
           </Internal>
         </Col>
