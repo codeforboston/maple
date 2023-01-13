@@ -20,6 +20,7 @@ export default function SignUpModal({
   onSuccessfulSubmit
 }: Pick<ModalProps, "show" | "onHide"> & {
   onSuccessfulSubmit: () => void
+  onHide: () => void
 }) {
   const {
     register,
@@ -67,7 +68,7 @@ export default function SignUpModal({
   }, [tosStep])
 
   useEffect(() => {
-    if (isSubmitSuccessful) onSuccessfulSubmit()
+    if (isSubmitSuccessful) {onSuccessfulSubmit()}
   }, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (

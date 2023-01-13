@@ -43,7 +43,7 @@ export default function SignInModal({
   }, [isSubmitSuccessful, onHide])
 
   const onSubmit = handleSubmit(credentials => {
-    signIn.execute(credentials)
+    signIn.execute(credentials) 
   })
 
   return (
