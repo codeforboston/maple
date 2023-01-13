@@ -18,6 +18,7 @@ export default function SignInModal({
   onForgotPasswordClick
 }: Pick<ModalProps, "show" | "onHide"> & {
   onForgotPasswordClick: () => void
+  onHide: () => void
 }) {
   const {
     register,
@@ -38,12 +39,7 @@ export default function SignInModal({
   }, [show, reset])
 
   useEffect(() => {
-    console.log("submit was ")
-    console.log(isSubmitSuccessful)
-    if (isSubmitSuccessful) {
-      console.log("hiding");
-      onHide
-    }
+    if (isSubmitSuccessful) onHide()  
   }, [isSubmitSuccessful, onHide])
 
   const onSubmit = handleSubmit(credentials => {

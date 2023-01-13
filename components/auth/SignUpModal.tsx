@@ -67,7 +67,7 @@ export default function SignUpModal({
   }, [tosStep])
 
   useEffect(() => {
-    if (isSubmitSuccessful) onSuccessfulSubmit
+    if (isSubmitSuccessful) onSuccessfulSubmit()
   }, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (

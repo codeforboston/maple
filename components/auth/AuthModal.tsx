@@ -27,12 +27,12 @@ export default function AuthModal() {
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
       <SignUpModal
-        show={currentModal === "verifyEmail"}
+        show={currentModal === "signUp"}
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
       <VerifyEmailModal 
-        show={currentModal === "signUp"} 
+        show={currentModal === "verifyEmail"} 
         onHide={close} 
       />
       <ForgotPasswordModal
