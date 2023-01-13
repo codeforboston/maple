@@ -13,6 +13,7 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
@@ -43,9 +44,28 @@ export function EditProfileForm({
   actions: ProfileHook
   uid: string
 }) {
+  const {
+    public: isPublic,
+    notificationFrequency: notificationFrequency
+  }: Profile = profile
+
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+  const [notifications, setNotifications] = useState<
+    "Daily" | "Weekly" | "Monthly" | "None"
+  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
+    isPublic ? isPublic : false
+  )
+
+  const onSettingsModalOpen = () => {
+    setSettingsModal("show")
+    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setIsProfilePublic(isPublic ? isPublic : false)
+  }
+
+  const close = () => setSettingsModal(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -82,10 +102,21 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
+    },
+    {
+      title: "Following",
+      eventKey: "Following",
+      content: (
+        <FollowingTab
+          profile={profile}
+          actions={actions}
+          uid={uid}
+          setFormUpdated={setFormUpdated}
+          className="mt-3 mb-4"
+        />
+      )
     }
   ]
-
-  const close = () => setSettingsModal(null)
 
   return (
     <Container>
@@ -99,12 +130,15 @@ export function EditProfileForm({
                */
               className={`btn btn-lg btn-outline-secondary me-4 invisible`}
               disabled={!!formUpdated}
-              onClick={() => setSettingsModal("show")}
+              onClick={() => onSettingsModalOpen()}
             >
               {"Settings"}
             </GearButton>
           </Internal>
-          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
+          <Internal
+            className={`ml-2`}
+            href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+          >
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View your profile"
@@ -135,9 +169,14 @@ export function EditProfileForm({
         </StyledTabContent>
       </TabContainer>
       <NotificationSettingsModal
-        show={settingsModal === "show"}
+        actions={actions}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
+        notifications={notifications}
+        setNotifications={setNotifications}
         onHide={close}
-        onClickCloseModal={() => setSettingsModal(null)}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
       />
     </Container>
   )

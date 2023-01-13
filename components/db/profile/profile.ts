@@ -2,7 +2,7 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { useAuth } from "../../auth"
+import { Frequency, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks } from "./types"
@@ -14,6 +14,7 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingNotification: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
@@ -40,6 +41,7 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingNotification: false,
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
@@ -75,6 +77,13 @@ export function useProfile() {
           dispatch({ updatingIsPublic: true })
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
+        }
+      },
+      updateNotification: async (notificationFrequency: Frequency) => {
+        if (uid) {
+          dispatch({ updatingNotification: true })
+          await updateNotification(uid, notificationFrequency)
+          dispatch({ updatingNotification: false })
         }
       },
       updateIsOrganization: async (isOrganization: boolean) => {
@@ -182,6 +191,14 @@ function updateSenator(uid: string, senator: ProfileMember | null) {
 
 function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
+}
+
+function updateNotification(uid: string, notificationFrequency: Frequency) {
+  return setDoc(
+    profileRef(uid),
+    { notificationFrequency: notificationFrequency },
+    { merge: true }
+  )
 }
 
 function updateIsOrganization(uid: string, isOrganization: boolean) {
