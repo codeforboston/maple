@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { ChangeEvent, useEffect, useState } from "react"
 import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Button, Form, Image, Row, Col } from "../bootstrap"
+import { Button, Col, Form, Image, Row } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
@@ -26,11 +26,17 @@ export function FollowingTab({
   className,
   setFormUpdated
 }: Props) {
+  console.log("P ", profile)
+
   return (
     <TitledSectionCard className={className}>
-      <Header title={"Following"} />
       <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-        {"Bills You Follow"}
+        <Col>
+          <h2>Bills You Follow</h2>
+          {profile.billsFollowing?.map(bill => (
+            <Row key={bill.id}>{bill.id}</Row>
+          ))}
+        </Col>
       </div>
     </TitledSectionCard>
   )
