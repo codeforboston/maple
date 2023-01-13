@@ -6,7 +6,7 @@ We are creating a new web platform called MAPLE (the Massachusetts Platform for 
 
 ## Essentials
 
-Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#legislative-testimony` channel. Ask to join the Zenhub and Zeplin projects.
+Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#maple-testimony` channel. Ask to join the Zenhub and Zeplin projects.
 
 Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-boston/events/) and join our group.
 
