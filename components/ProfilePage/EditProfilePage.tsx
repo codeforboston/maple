@@ -79,7 +79,11 @@ export function EditProfileForm({
 
   const tabs = [
     {
-      title: "About You",
+      /* 
+        Change in Figma
+       */
+      // title: "About You",
+      title: "Personal Information",
       eventKey: "AboutYou",
       content: (
         <AboutMeEditForm
@@ -153,9 +157,13 @@ export function EditProfileForm({
             <Nav.Item key={t.eventKey}>
               <Nav.Link
                 eventKey={t.eventKey}
-                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
+                // className={`rounded-top
+                //   ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}
+                //   py-0`}
+                className={`rounded-top m-0 p-0`}
               >
-                {t.title}
+                <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+                <hr className={`my-0`} />
               </Nav.Link>
             </Nav.Item>
           ))}

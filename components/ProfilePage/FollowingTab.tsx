@@ -82,11 +82,13 @@ export function FollowingTab({
                     await updateProfile({ actions })
                   }}
                 >
-                  <button className={`btn btn-link text-decoration-none`}>
+                  <button
+                    className={`btn btn-link d-flex align-items-start p-0 text-decoration-none`}
+                  >
                     <h6>Unfollow</h6>
                   </button>
                 </Col>
-                <hr />
+                <hr className={`mt-3`} />
               </Row>
             </Styled>
           ))}
@@ -95,3 +97,9 @@ export function FollowingTab({
     </TitledSectionCard>
   )
 }
+
+/*
+FollowingTab -> [ ] make bill items responsive
+
+Individual Bill Following Buttons -> [ ] remove bill number, add check icon when following
+*/
