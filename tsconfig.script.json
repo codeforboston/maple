@@ -1,6 +1,10 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "ts-node": {
-    "files": true
+    "files": true,
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+    "baseUrl": "./"
   }
 }
