@@ -4,9 +4,12 @@ import styles from "./LegislativeCard.module.css"
 const LegislativeCard = ({ title, children }) => {
   return (
     <Card className={styles.card}>
-       <Card.Title as="h2" className={`mx-auto ${styles.title}`}>
-          {title}
-        </Card.Title>
+      <Card.Header
+        as="h1"
+        className={`text-center text-white ${styles.header}`}
+      >
+        {title}
+      </Card.Header>
       <Card.Body className={styles.body}>{children}</Card.Body>
     </Card>
   )

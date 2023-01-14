@@ -21,9 +21,7 @@ const LegislativeCardContent = ({ children, src, alt, index }) => {
         </Col>
       </Row>
     </Container>
-    
   )
 }
 
 export default LegislativeCardContent
-

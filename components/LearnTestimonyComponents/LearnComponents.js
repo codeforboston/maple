@@ -273,9 +273,12 @@ const Legislative = () => {
     <Container>
       <Row className={styles.container}>
         <Col>
-          <h1 className={styles.pageHeading}>Understanding the Massachusetts Legislative Process</h1>
+          <h1 className={styles.pageHeading}>
+            Understanding the Massachusetts Legislative Process
+          </h1>
           <p className={styles.subHeading}>
-          Some of the key steps in the legislative process for how most bills become laws in MA.
+            Some of the key steps in the legislative process for how most bills
+            become laws in MA.
           </p>
 
           {LegislativeContent.map((value, index) => (
@@ -289,8 +292,6 @@ const Legislative = () => {
               </LegislativeCardContent>
             </LegislativeCard>
           ))}
-
-          
         </Col>
       </Row>
     </Container>
