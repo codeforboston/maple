@@ -7,25 +7,23 @@ import Col from "react-bootstrap/Col"
 const LegislativeCardContent = ({ children, src, alt, index }) => {
   return (
     <Container fluid>
-      <Row className="my-auto">
-        <Col
-          className={`align-self-center ${styles.colRow}`}
-          lg={6}
-          xl={{ order: index % 2 == 0 ? 1 : 4 }}
-        >
-          <Image fluid src={src} alt={alt} className={`${styles.image}`} />
+      <Row className="align-items-center flex-row-reverse">
+        <Col xs={12} md={8}>
+          <p>{children.P1}</p>
         </Col>
         <Col
           className={`text-center align-self-center justify-content-xs-center ${styles.colRow}`}
           lg={{ order: 2 }}
         >
           <div className={`h1 ${styles.text}`}>
-            <p>{children.P1}</p>
+            <Image fluid src={src} alt={alt} className={`${styles.image}`} />
           </div>
         </Col>
       </Row>
     </Container>
+    
   )
 }
 
 export default LegislativeCardContent
+
