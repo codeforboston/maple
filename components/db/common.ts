@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { Null, Nullish, Optional, Runtype, String } from "runtypes"
 import { firestore } from "../firebase"
 
-export const currentGeneralCourt = 192
+export const currentGeneralCourt = 193
 
 export async function loadDoc(path: string) {
   const d = await getDoc(doc(firestore, path))
