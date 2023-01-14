@@ -32,7 +32,14 @@ export function External({
 }: LinkProps & { plain?: boolean; as?: React.FC | "a" }) {
   return (
     <C href={href} target="_blank" rel="noreferrer" className={className}>
-      {children} {!plain && <FontAwesomeIcon icon={faExternalLinkAlt} />}
+      {children}{" "}
+      {
+        !plain
+        /*
+         Icon removed from current Figma 
+         */
+        // && <FontAwesomeIcon icon={faExternalLinkAlt} />
+      }
     </C>
   )
 }
