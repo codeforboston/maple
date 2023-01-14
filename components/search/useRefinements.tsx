@@ -1,5 +1,6 @@
 import {
   RefinementListUiComponent,
+  useInstantSearch,
   useRefinementListUiProps
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
@@ -17,6 +18,12 @@ export const FilterButton = styled(Button)`
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   align-self: flex-start;
 `
+
+const useHasRefinements = () => {
+  const { results } = useInstantSearch()
+  const refinements = results.getRefinements()
+  return refinements.length !== 0
+}
 
 export const useRefinements = () => {
   const inline = useMediaQuery("(min-width: 768px)")
@@ -59,6 +66,7 @@ export const useRefinements = () => {
       ))}
     </>
   )
+  const hasRefinements = useHasRefinements()
 
   return {
     options: inline ? (
@@ -76,7 +84,12 @@ export const useRefinements = () => {
       </Offcanvas>
     ),
     show: inline ? null : (
-      <FilterButton variant="secondary" active={show} onClick={handleOpen}>
+      <FilterButton
+        variant="secondary"
+        active={show}
+        onClick={handleOpen}
+        className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+      >
         <FontAwesomeIcon icon={faFilter} /> Filter
       </FilterButton>
     )

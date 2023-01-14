@@ -3,6 +3,7 @@ import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
+import { GearButton } from "../buttons"
 import {
   Profile,
   ProfileHook,
@@ -12,6 +13,7 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
   StyledTabContent,
@@ -43,6 +45,7 @@ export function EditProfileForm({
 }) {
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -82,12 +85,23 @@ export function EditProfileForm({
     }
   ]
 
+  const close = () => setSettingsModal(null)
+
   return (
     <Container>
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Internal href={`/profile?id=${uid}`}>
+          <Internal className={`ml-2`} href={`javascript:void(0)`}>
+            <GearButton
+              className={`btn btn-lg btn-outline-secondary me-4`}
+              disabled={!!formUpdated}
+              onClick={() => setSettingsModal("show")}
+            >
+              {"Settings"}
+            </GearButton>
+          </Internal>
+          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
             <Button className={`btn btn-lg`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View your profile"
@@ -117,6 +131,11 @@ export function EditProfileForm({
           ))}
         </StyledTabContent>
       </TabContainer>
+      <NotificationSettingsModal
+        show={settingsModal === "show"}
+        onHide={close}
+        onClickCloseModal={() => setSettingsModal(null)}
+      />
     </Container>
   )
 }
