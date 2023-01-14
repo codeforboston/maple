@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { check } from "./utils"
 
 export const FeatureFlags = z.object({
   testimonyDiffing: z.boolean().default(false)
@@ -18,7 +17,7 @@ const defaults: Record<typeof process.env.NODE_ENV, FeatureFlags> = {
   }
 }
 
-const values = check(defaults[process.env.NODE_ENV])
+const values = FeatureFlags.parse(defaults[process.env.NODE_ENV])
 
-// Add a function call of indirection to allow reloading values
+// Add a function call of indirection to allow reloading values in the future
 export const flags = () => values
