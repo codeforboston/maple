@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
-import { currentGeneralCourt, nullableQuery } from "../common"
+import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
 
@@ -96,7 +96,6 @@ async function listTestimony(
     nullableQuery(
       testimonyRef,
       ...getWhere(refinement),
-      where("court", "==", currentGeneralCourt),
       orderBy("publishedAt", "desc"),
       limit(limitCount),
       startAfterKey !== null && startAfter(startAfterKey)
