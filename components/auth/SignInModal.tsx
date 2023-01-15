@@ -38,12 +38,11 @@ export default function SignInModal({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [show, reset])
 
-  useEffect(() => {
-    if (isSubmitSuccessful) onHide()  
-  }, [isSubmitSuccessful, onHide])
-
   const onSubmit = handleSubmit(credentials => {
-    signIn.execute(credentials) 
+    const promise = signIn.execute(credentials)
+    promise.then(
+      onHide
+    ).catch((err)=>{})
   })
 
   return (

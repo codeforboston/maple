@@ -50,7 +50,8 @@ export default function SignUpModal({
   }, [show, reset])
 
   const onSubmit = handleSubmit(newUser => {
-    createUserWithEmailAndPassword.execute(newUser)
+    const promise = createUserWithEmailAndPassword.execute(newUser)
+    promise.then(onSuccessfulSubmit).catch((err) =>{})
   })
 
   async function handleContinueClick() {
@@ -66,10 +67,6 @@ export default function SignUpModal({
       loadingbtn?.click()
     }
   }, [tosStep])
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {onSuccessfulSubmit()}
-  }, [isSubmitSuccessful, onSuccessfulSubmit])
 
   return (
     <>
