@@ -96,7 +96,7 @@ const Overview = ({ className }: { className: string }) => (
       </div>
     </div>
     <div>
-      <Image className="ms-4 " alt="" src="writing.svg" />
+      <Image className="ms-4 " alt="" src="/writing.svg" />
     </div>
   </div>
 )
@@ -201,7 +201,7 @@ const SponsorList = styled.div`
         <Label>and it is sponsored by</Label>
         <SponsorList>
           <Chip>
-            <Image alt="Primary Sponsor" src="star.svg" />
+            <Image alt="Primary Sponsor" src="/star.svg" />
             {primarySponsor.Name}
           </Chip>
           {shown.map(m => (

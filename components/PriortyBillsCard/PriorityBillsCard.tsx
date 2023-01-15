@@ -80,7 +80,7 @@ const EditButton = () => {
     <EditBtnStyle onClick={() => console.log("edit")}>
       <p className="editTitle">edit</p>
       <SvgStyle>
-        <Image className="svg" alt="" src="edit-testimony.svg" />
+        <Image className="svg" alt="" src="/edit-testimony.svg" />
       </SvgStyle>
     </EditBtnStyle>
   )

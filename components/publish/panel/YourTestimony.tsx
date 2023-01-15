@@ -101,7 +101,7 @@ const EditTestimonyButton = ({ className }: ClsProps) => {
     <ImageButton
       alt="edit testimony"
       tooltip="Edit Testimony"
-      src="edit-testimony.svg"
+      src="/edit-testimony.svg"
       href={url}
       className={clsx("testimony-button", className)}
     />
@@ -113,7 +113,7 @@ const DeleteTestimonyButton = (props: ImageProps) => {
     <ImageButton
       alt="delete testimony"
       tooltip="Delete Testimony"
-      src="delete-testimony.svg"
+      src="/delete-testimony.svg"
       className="testimony-button"
       {...props}
     />

@@ -16,7 +16,7 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
       fluid
       className={`${positionStyles[position]}`}
       alt={`${position}`}
-      src="VoteHand.png"
+      src="/VoteHand.png"
     />
   )
 }

@@ -32,7 +32,7 @@ const Cta = ({
   return (
     <Styled className={className}>
       <div className="text-center title">{title}</div>
-      <Image alt="" className="mt-2 mb-2" src="testimony-panel-empty.svg" />
+      <Image alt="" className="mt-2 mb-2" src="/testimony-panel-empty.svg" />
       {cta}
     </Styled>
   )
