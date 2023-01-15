@@ -5,11 +5,6 @@ import PolicyPage from "components/Policies/PolicyPage"
 export default createPage({
   title: "MAPLE for Organizations",
   Page: () => {
-    
-    return (
-      <PolicyPage />
-    )
+    return <PolicyPage />
   }
-}) 
-
-
+})

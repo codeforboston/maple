@@ -31,10 +31,7 @@ export default function AuthModal() {
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
-      <VerifyEmailModal 
-        show={currentModal === "verifyEmail"} 
-        onHide={close} 
-      />
+      <VerifyEmailModal show={currentModal === "verifyEmail"} onHide={close} />
       <ForgotPasswordModal
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}

@@ -40,9 +40,7 @@ export default function SignInModal({
 
   const onSubmit = handleSubmit(credentials => {
     const promise = signIn.execute(credentials)
-    promise.then(
-      onHide
-    ).catch((err)=>{})
+    promise.then(onHide).catch(err => {})
   })
 
   return (

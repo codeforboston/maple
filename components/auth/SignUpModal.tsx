@@ -51,7 +51,7 @@ export default function SignUpModal({
 
   const onSubmit = handleSubmit(newUser => {
     const promise = createUserWithEmailAndPassword.execute(newUser)
-    promise.then(onSuccessfulSubmit).catch((err) =>{})
+    promise.then(onSuccessfulSubmit).catch(err => {})
   })
 
   async function handleContinueClick() {

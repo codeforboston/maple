@@ -1,7 +1,7 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
 import styles from "./VerifyEmailModal.module.css"
-import SVG from "react-inlinesvg"
+import { Internal } from "components/links"
 
 export default function VerifyEmailModal({
   show,
@@ -22,8 +22,14 @@ export default function VerifyEmailModal({
               alt="Mail illustration"
             />
             <h2 className={styles.title}>Verify your email address</h2>
-            <h6 className={styles.body}>Please verify your email for you account by clicking the verification link we send to your email. If you fail to do so, you will not be able to submit your testimonies.</h6>
-            
+            <h6 className={styles.body}>
+              Please verify your email for you account by clicking the
+              verification link we send to your email. If you fail to do so, you
+              will not be able to submit your testimonies.
+            </h6>
+            <Internal href="/editprofile" className="view-edit-profile">
+              <Button onClick={onHide} >Continue With Setting Up Profile</Button>
+            </Internal>
           </Stack>
         </Col>
       </Modal.Body>
