@@ -6,6 +6,7 @@ import {
   SearchBox,
   useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
+import { currentGeneralCourt } from "components/db/common"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../bootstrap"
@@ -31,6 +32,11 @@ export const BillSearch = () => (
   <SearchErrorBoundary>
     <InstantSearch
       indexName={initialSortByValue}
+      initialUiState={{
+        [initialSortByValue]: {
+          refinementList: { court: [String(currentGeneralCourt)] }
+        }
+      }}
       searchClient={searchClient}
       routing={useRouting()}
     >
