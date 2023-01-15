@@ -21,6 +21,11 @@ export default createPage<{ bill: Bill }>({
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
+  ctx.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  )
+
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
   const bill = await api().getBill(query.data)
