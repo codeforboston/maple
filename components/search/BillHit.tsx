@@ -16,6 +16,7 @@ type BillRecord = {
   number: string
   title: string
   city?: string
+  court?: number
   currentCommittee?: string
   testimonyCount: number
   endorseCount: number
@@ -121,7 +122,11 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
             <div className="d-flex">
               <Col className="left">
                 <div className="d-flex justify-content-between">
+                  {hit.court && (
+                    <span className="blurb me-2">Court {hit.court}</span>
+                  )}
                   <span className="blurb">{hit.city}</span>
+                  <span style={{ flex: "1" }} />
                   <TestimonyCount hit={hit} />
                 </div>
                 <Card.Title as="h6">

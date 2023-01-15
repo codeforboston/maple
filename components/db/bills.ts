@@ -41,6 +41,7 @@ export type BillContent = {
 
 export type Bill = {
   id: string
+  court: number
   content: BillContent
   cosponsorCount: number
   testimonyCount: number
