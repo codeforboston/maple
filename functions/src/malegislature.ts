@@ -64,6 +64,7 @@ export type MemberListing = {
 /** The general court is the name for a session of the legislature, which lasts
  * two years. */
 export const currentGeneralCourt = 193
+export const supportedGeneralCourts = [192, 193]
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"
