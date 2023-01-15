@@ -4,7 +4,7 @@ import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "../functions/src/testimony/types"
-import { BillContent, MemberContent } from "./db"
+import { Bill, MemberContent } from "./db"
 import { currentGeneralCourt } from "./db/common"
 import { formatBillId } from "./formatting"
 
@@ -48,15 +48,18 @@ export const Wrap: React.FC<{ href: string }> = ({ href, children }) => (
  *
  * @example
  *
- * siteUrl('bill?id=H1000') === "https://digital-testimony-dev.web.app/bill?id=H1000"
+ * siteUrl('bills/192/H1000') === "https://digital-testimony-dev.web.app/bills/192/H1000"
  */
 export function siteUrl(path?: string) {
   const base = typeof location === "undefined" ? "" : location.origin
   return path ? new URL(path, base).href : base
 }
 
-export function billURL(billNumber: string) {
-  return `https://malegislature.gov/Bills/192/${billNumber}`
+export const maple = {
+  home: () => "/",
+  billSearch: () => `/bills`,
+  bill: ({ court, id }: { court: number; id: string }) =>
+    `/bills/${court}/${id}`
 }
 
 /** Not all bills have pdf's, only those without document text */
@@ -64,12 +67,9 @@ export function billPdfUrl(id: string) {
   return `https://malegislature.gov/Bills/${currentGeneralCourt}/${id}.pdf`
 }
 
-export function billLink(bill: BillContent) {
-  return (
-    <External href={billURL(bill.BillNumber)}>
-      {formatBillId(bill.BillNumber)}
-    </External>
-  )
+export function externalBillLink(bill: Bill) {
+  const url = `https://malegislature.gov/Bills/${bill.court}/${bill.id}`
+  return <External href={url}>{formatBillId(bill.id)}</External>
 }
 
 export function committeeURL(CommitteeCode: string) {

@@ -5,6 +5,7 @@ import {
   faTimesCircle
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { maple } from "components/links"
 import { format, fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
@@ -16,7 +17,7 @@ type BillRecord = {
   number: string
   title: string
   city?: string
-  court?: number
+  court: number
   currentCommittee?: string
   testimonyCount: number
   endorseCount: number
@@ -113,7 +114,7 @@ const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
 }
 
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
-  const url = `/bill?id=${hit.number}`
+  const url = maple.bill({ id: hit.number, court: hit.court })
   return (
     <Link href={url}>
       <a style={{ all: "unset" }} className="w-100">

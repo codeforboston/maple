@@ -1,7 +1,7 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import { External } from "components/links"
+import { External, maple } from "components/links"
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
@@ -260,7 +260,7 @@ const ShareButtons = () => {
   const dispatch = useAppDispatch()
   const redirectToBill = useCallback(() => {
     dispatch(setShowThankYou(true))
-    router.push(`/bill?id=${bill!.id}`)
+    router.push(maple.bill(bill!))
   }, [bill, dispatch, router])
   const [sent, setSent] = useState(false)
 

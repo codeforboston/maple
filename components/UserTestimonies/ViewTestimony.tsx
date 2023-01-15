@@ -13,7 +13,7 @@ import {
   UsePublishedTestimonyListing
 } from "../db"
 import { formatBillId, formatTestimonyLinks } from "../formatting"
-import { Internal } from "../links"
+import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 
@@ -124,7 +124,10 @@ export const TestimonyItem = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
-
+  const billLink = maple.bill({
+    id: testimony.billId,
+    court: testimony.court
+  })
   const { result: bill } = useBill(testimony.billId)
 
   return (
@@ -143,7 +146,7 @@ export const TestimonyItem = ({
               />
             </Internal>
 
-            <Internal href={`/bill?id=${testimony.billId}`}>
+            <Internal href={billLink}>
               <Image
                 className="px-2 align-self-center"
                 src="/delete-testimony.svg"
@@ -160,7 +163,7 @@ export const TestimonyItem = ({
           <Col className={`h5 fw-bold align-self-center`}>
             {showBillNumber && (
               <>
-                <Internal href={`/bill?id=${testimony.billId}`}>
+                <Internal href={billLink}>
                   {formatBillId(testimony.billId)}
                 </Internal>
                 {" · "}
@@ -193,7 +196,7 @@ export const TestimonyItem = ({
               }}
             >
               <Internal href={formUrl(testimony.billId)}>Edit</Internal>
-              <Internal href={`/bill?id=${testimony.billId}`}>Delete</Internal>
+              <Internal href={billLink}>Delete</Internal>
             </Col>
           )}
         </Row>

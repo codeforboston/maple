@@ -72,7 +72,7 @@ const Form = ({
   return (
     <FormContainer>
       <links.Internal
-        href={`/bill?id=${bill!.id}`}
+        href={links.maple.bill(bill)}
         className={clsx(!synced && "pe-none")}
       >
         Back to Bill
