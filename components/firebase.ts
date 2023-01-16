@@ -9,8 +9,16 @@ import {
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
 import { first } from "lodash"
-import { useEffect } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createService } from "./service"
+
+// Necessary for compatibility with react admin firebase
+// https://github.com/benwinding/react-admin-firebase/issues/225
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
+import "firebase/compat/functions"
+import "firebase/compat/storage"
+import "firebase/compat/firestore"
 
 // It's OK to check in the dev keys since they're bundled into the client and it
 // makes it easier to contribute.
@@ -30,9 +38,9 @@ const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
   ? JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG)
   : devConfig
 
-const initialized = first(getApps())
+const initialized = first(firebase.apps)
 
-export const app = initialized ?? initializeApp(config)
+export const app = initialized ?? firebase.initializeApp(config)
 
 export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
@@ -66,6 +74,7 @@ export const storage = getStorage()
 export const functions = getFunctions()
 
 if (!initialized && process.env.NODE_ENV !== "production") {
+  console.log("env.NODE_ENV in firebase.ts", process.env.NODE_ENV)
   const useEmulator = process.env.NEXT_PUBLIC_USE_EMULATOR
   switch (useEmulator) {
     case "1":
@@ -89,6 +98,14 @@ function connectEmulators() {
   connectFunctionsEmulator(functions, host, 5001)
   connectStorageEmulator(storage, host, 9199)
   connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true })
+
+  app.firestore().useEmulator(host, 8080)
+  app.functions().useEmulator(host, 5001)
+  app.storage().useEmulator(host, 9199)
+  ;(app.auth().useEmulator as any)(`http://${host}:9099`, {
+    disableWarnings: true
+  })
+
   if (process.env.NODE_ENV === "development")
     console.log("Connected to emulators")
 }
