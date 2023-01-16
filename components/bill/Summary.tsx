@@ -66,7 +66,7 @@ export const Summary = ({
             ) : (
               <links.External
                 className="fst-normal fs-body"
-                href={links.billPdfUrl(bill.id)}
+                href={links.billPdfUrl(bill.court, bill.id)}
               >
                 Download PDF
               </links.External>

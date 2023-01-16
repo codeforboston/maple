@@ -37,7 +37,7 @@ export const BillDetails = ({ bill }: BillProps) => {
       <Row>
         <Col md={8}>
           <SponsorsAndCommittees bill={bill} className="mt-4" />
-          <BillTestimonies bill={bill.content} className="mt-4" />
+          <BillTestimonies bill={bill} className="mt-4" />
         </Col>
         <Col md={4} className="mt-4">
           <TestimonyFormPanel bill={bill} />

@@ -34,11 +34,12 @@ export default createPage({
   title: "Testimony",
   Page: () => {
     const router = useRouter()
-    const { billId, author } = router.query
+    const { billId, author, court } = router.query
     const {
       items: { result, status }
     } = usePublishedTestimonyListing({
       uid: author as string,
+      court: Number(court),
       billId: billId as string
     })
     const testimony =
@@ -48,7 +49,7 @@ export default createPage({
         ? result[0]
         : undefined
 
-    const { result: bill, loading } = useBill(billId as string)
+    const { result: bill, loading } = useBill(Number(court), billId as string)
 
     const profile = usePublicProfile(testimony?.authorUid)
     const authorPublic = profile.result?.public

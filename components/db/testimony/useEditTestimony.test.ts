@@ -19,6 +19,7 @@ beforeEach(async () => {
 afterAll(terminateFirebase)
 
 let billId: string
+const court = 192
 beforeEach(async () => {
   billId = await createFakeBill()
 })
@@ -54,7 +55,7 @@ beforeEach(() => {
 
 describe("useEditTestimony", () => {
   it("Initializes for bill without testimony", async () => {
-    const { result } = renderHook(() => useEditTestimony(uid, billId))
+    const { result } = renderHook(() => useEditTestimony(uid, court, billId))
 
     await expectFinishLoading(result)
 
@@ -66,7 +67,7 @@ describe("useEditTestimony", () => {
   it("Initializes for a bill with existing testimony and drafts", async () => {
     const billId = "H1"
     const { uid } = await signInUser3()
-    const { result } = renderHook(() => useEditTestimony(uid, billId))
+    const { result } = renderHook(() => useEditTestimony(uid, court, billId))
 
     await expectFinishLoading(result)
 
@@ -77,7 +78,7 @@ describe("useEditTestimony", () => {
   it("Uses initial uid and billId", async () => {
     const { result, rerender } = renderHook(
       ({ uid, billId }: { uid: string; billId: string }) =>
-        useEditTestimony(uid, billId),
+        useEditTestimony(uid, court, billId),
       { initialProps: { uid, billId } }
     )
 
@@ -89,7 +90,7 @@ describe("useEditTestimony", () => {
   })
 
   async function renderAndDraft() {
-    const { result } = renderHook(() => useEditTestimony(uid, billId))
+    const { result } = renderHook(() => useEditTestimony(uid, court, billId))
     await expectFinishLoading(result)
     await act(() => result.current.saveDraft.execute(draft))
     await expectFinishLoading(result)
@@ -118,7 +119,7 @@ describe("useEditTestimony", () => {
   })
 
   async function renderAndPublish() {
-    const { result } = renderHook(() => useEditTestimony(uid, billId))
+    const { result } = renderHook(() => useEditTestimony(uid, court, billId))
     await expectFinishLoading(result)
     await act(() => result.current.saveDraft.execute(draft))
     await expectFinishLoading(result)

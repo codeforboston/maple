@@ -5,7 +5,6 @@ import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, MemberContent } from "./db"
-import { currentGeneralCourt } from "./db/common"
 import { formatBillId } from "./formatting"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
@@ -63,8 +62,8 @@ export const maple = {
 }
 
 /** Not all bills have pdf's, only those without document text */
-export function billPdfUrl(id: string) {
-  return `https://malegislature.gov/Bills/${currentGeneralCourt}/${id}.pdf`
+export function billPdfUrl(court: number, id: string) {
+  return `https://malegislature.gov/Bills/${court}/${id}.pdf`
 }
 
 export function externalBillLink(bill: Bill) {

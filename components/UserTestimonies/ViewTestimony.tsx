@@ -128,7 +128,6 @@ export const TestimonyItem = ({
     id: testimony.billId,
     court: testimony.court
   })
-  const { result: bill } = useBill(testimony.billId)
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
@@ -136,7 +135,7 @@ export const TestimonyItem = ({
         <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
           <>
-            <Internal href={formUrl(testimony.billId)}>
+            <Internal href={formUrl(testimony.billId, testimony.court)}>
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
@@ -195,7 +194,9 @@ export const TestimonyItem = ({
                 minWidth: "20%"
               }}
             >
-              <Internal href={formUrl(testimony.billId)}>Edit</Internal>
+              <Internal href={formUrl(testimony.billId, testimony.court)}>
+                Edit
+              </Internal>
               <Internal href={billLink}>Delete</Internal>
             </Col>
           )}

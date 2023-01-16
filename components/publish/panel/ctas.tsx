@@ -39,9 +39,9 @@ const Cta = ({
 }
 
 const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
-  const billId = usePublishState().bill?.id!
+  const bill = usePublishState().bill!
   return (
-    <Wrap href={formUrl(billId)}>
+    <Wrap href={formUrl(bill.id, bill.court)}>
       <Button variant="primary" {...props}>
         {label}
       </Button>

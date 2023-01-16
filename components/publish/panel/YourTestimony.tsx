@@ -95,8 +95,8 @@ const MainPanel = styled(({ ...rest }) => {
 `
 
 const EditTestimonyButton = ({ className }: ClsProps) => {
-  const billId = usePublishState().bill?.id!,
-    url = formUrl(billId)
+  const bill = usePublishState().bill!,
+    url = formUrl(bill.id, bill.court)
   return (
     <ImageButton
       alt="edit testimony"

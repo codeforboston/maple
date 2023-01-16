@@ -24,6 +24,7 @@ export async function createFakeBill() {
   }
   const bill = {
     content,
+    court: 192,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
