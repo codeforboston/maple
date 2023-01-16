@@ -151,13 +151,12 @@ export const usePageParams = () => {
     const required = p.all({
       billId: p.string("billId"),
       authorUid: p.string("author"),
-      court: p.number("court") ?? 192
+      court: p.number("court")
     })
 
     if (required)
       return {
         ...required,
-        court: p.number("court") ?? 192,
         currentVersion: p.number("version")
       }
   })

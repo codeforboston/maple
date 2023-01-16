@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { formatTestimony, formatTestimonyDiff } from "../formatting"
 import { Revision } from "./testimonyDetailSlice"
 
-export const TestimonyContent = styled<Revision & { showDiff: boolean }>(
+export const TestimonyContent = styled<Revision & { showDiff?: boolean }>(
   ({ content, previous, className, showDiff }) => {
     const prevContent = previous?.content
     const htmlContent = useMemo(() => {

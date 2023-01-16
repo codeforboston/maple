@@ -58,7 +58,16 @@ export const maple = {
   home: () => "/",
   billSearch: () => `/bills`,
   bill: ({ court, id }: { court: number; id: string }) =>
-    `/bills/${court}/${id}`
+    `/bills/${court}/${id}`,
+  testimony: ({
+    court,
+    authorUid,
+    billId
+  }: {
+    court: number
+    authorUid: string
+    billId: string
+  }) => `/testimony?court=${court}&author=${authorUid}&billId=${billId}`
 }
 
 export function billSiteURL(billNumber: string) {
@@ -98,14 +107,8 @@ export function memberLink(member: MemberContent) {
   return <External href={memberURL(member)}>{member.Name}</External>
 }
 
-export const getDirectTestimonyLink = (testimony: Testimony) => {
-  const { billId, authorUid } = testimony
-
-  return siteUrl(`testimony?billId=${billId}&author=${authorUid}`)
-}
-
 export const twitterShareLink = (publication: Testimony) => {
-  const link = getDirectTestimonyLink(publication),
+  const link = siteUrl(maple.testimony(publication)),
     billNumber = formatBillId(publication.billId),
     tweet = encodeURIComponent(
       `I provided testimony on Bill ${billNumber}. See ${link} for details.`

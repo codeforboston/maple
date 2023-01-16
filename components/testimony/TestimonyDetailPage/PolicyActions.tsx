@@ -24,7 +24,7 @@ export const PolicyActions = () => {
         <PolicyActionItem
           key="add-testimony"
           billName={`Add Testimony for ${billLabel}`}
-          href={formUrl(bill.id)}
+          href={formUrl(bill.id, bill.court)}
         />
       ]}
     />
