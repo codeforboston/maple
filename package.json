@@ -100,6 +100,7 @@
     "react-overlays": "^5.1.1",
     "react-redux": "^8.0.2",
     "react-select": "^5.2.2",
+    "react-timestamp": "^6.0.0",
     "react-twitter-embed": "^4.0.4",
     "runtypes": "6.5.1",
     "sidebar-v2": "^0.4.0",

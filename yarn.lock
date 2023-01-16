@@ -16451,6 +16451,11 @@ react-select@^5.2.2:
     prop-types "^15.6.0"
     react-transition-group "^4.3.0"
 
+react-timestamp@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-timestamp/-/react-timestamp-6.0.0.tgz#ba5bdcbcb716066fcfc946f45b0c6173a79732bd"
+  integrity sha512-ZVyVuVp1MBWQGmcip3Nzb9n1uzAqkyGJgngiAa7WbQbWuw+IS3qlnYBoXThlHAt1Yby9eOuzMZse/jRQfq/LeQ==
+
 react-transition-group@^4.3.0:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
