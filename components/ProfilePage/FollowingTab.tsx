@@ -54,52 +54,66 @@ export function FollowingTab({
     await updateBillsFollowing(userBillList)
   }
 
+  const handleUnfollowClick = async (bid: string) => {
+    userBillList = userBillList.filter(item => item.id !== bid)
+    await updateProfile({ actions })
+  }
+
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
 
   console.log("P ", profile)
   console.log("local bills following: ", userBillList)
 
   return (
-    <TitledSectionCard className={className}>
-      <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-        <Stack>
-          <h2>Bills You Follow</h2>
-          {profile.billsFollowing?.map(bill => (
-            <Styled key={bill.id}>
-              <External href={billURL(bill.id)}>
-                {formatBillId(bill.id)}
-              </External>
-              <Row>
-                <Col className={`col-10`}>
-                  <h6>{bill.title}</h6>
-                </Col>
-                <Col
-                  className={`text-center`}
-                  onClick={async () => {
-                    userBillList = userBillList.filter(
-                      item => item.id !== bill.id
-                    )
-                    await updateProfile({ actions })
-                  }}
-                >
-                  <button
-                    className={`btn btn-link d-flex align-items-start p-0 text-decoration-none`}
+    <>
+      <TitledSectionCard className={className}>
+        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
+          <Stack>
+            <h2>Bills You Follow</h2>
+            {profile.billsFollowing?.map(bill => (
+              <Styled key={bill.id}>
+                <External href={billURL(bill.id)}>
+                  {formatBillId(bill.id)}
+                </External>
+                <Row>
+                  <Col className={`col-10`}>
+                    <h6>{bill.title}</h6>
+                  </Col>
+                  <Col
+                    className={`text-center`}
+                    onClick={async () => {
+                      handleUnfollowClick(bill.id)
+                    }}
                   >
-                    <h6>Unfollow</h6>
-                  </button>
-                </Col>
-                <hr className={`mt-3`} />
-              </Row>
-            </Styled>
-          ))}
-        </Stack>
-      </div>
-    </TitledSectionCard>
+                    <button
+                      className={`btn btn-link d-flex align-items-start p-0 text-decoration-none`}
+                    >
+                      <h6>Unfollow</h6>
+                    </button>
+                  </Col>
+                  <hr className={`mt-3`} />
+                </Row>
+              </Styled>
+            ))}
+          </Stack>
+        </div>
+      </TitledSectionCard>
+      <TitledSectionCard className={className}>
+        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
+          <Stack>
+            <h2>Organizations You Follow</h2>
+          </Stack>
+        </div>
+      </TitledSectionCard>
+    </>
   )
 }
 
 /*
-FollowingTab -> [ ] make bill items responsive
+  FollowingTab                      -> [ ] make bill items responsive
 
-Individual Bill Following Buttons -> [ ] remove bill number, add check icon when following
+  Individual Bill Pages             -> [ ] red headers get replaced by blue restyled headers
+
+  Individual Bill Following Buttons -> [ ] remove bill number, add check icon when following
+                                    -> [ ] substitute unfollow Bill Modal for handleUnfollowClick
 */

@@ -34,7 +34,7 @@ export const Layout = ({ bill }: BillProps) => {
   const handleFollowClick = async () => {
     checkBill
       ? null
-      : (userBillList = [...userBillList, { id: bid, title: btitle }])
+      : (userBillList = [{ id: bid, title: btitle }, ...userBillList])
     await updateProfile({ actions })
   }
 
