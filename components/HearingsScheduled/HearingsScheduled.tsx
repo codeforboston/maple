@@ -8,7 +8,7 @@ import { useCalendarEvents } from "./calendarEvents"
 
 export type EventData = {
   index: number
-  type: string
+  type: "hearing" | "session"
   name: string
   id: number
   location: string
@@ -68,10 +68,8 @@ export const EventCard = ({
         </div>
         <div>
           <p className={styles.name}>
-            {type === "hearings" ? (
-              <a title="testing" href={`${hearingBaseURL}${id}`}>
-                {truncateEntry(name)}
-              </a>
+            {type === "hearing" ? (
+              <a href={`${hearingBaseURL}${id}`}>{truncateEntry(name)}</a>
             ) : (
               <a href={`${sessionBaseURL}${id}`}>{truncateEntry(name)}</a>
             )}
