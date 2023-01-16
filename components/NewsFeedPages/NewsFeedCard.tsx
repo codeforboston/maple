@@ -7,9 +7,9 @@ type Props = {
   newsFeed: string
 }
 
-export function NewsFeedCard({}: Props) {
+export function NewsFeedCard({ Date, nameFeed, newsFeed }: Props) {
   const date = "Mon Jan 16 2023 16:37:14 GMT-0500 (Eastern Standard Time)"
-  console.log(new Date())
+
   return (
     <Container>
       <Header>
