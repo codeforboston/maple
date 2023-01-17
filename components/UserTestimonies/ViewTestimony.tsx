@@ -5,7 +5,7 @@ import { useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, Row } from "../bootstrap"
+import { Button, Col, Form, Row, Dropdown } from "../bootstrap"
 import {
   Testimony,
   useBill,
@@ -63,7 +63,18 @@ const ViewTestimony = (
           selectedTab={activeTab}
         ></Tabs>
       )}
+      <div>
+        <Dropdown>
+          <Dropdown.Toggle variant="success" id="dropdown-basic">
+            Dropdown Button
+          </Dropdown.Toggle>
 
+          <Dropdown.Menu>
+            <Dropdown.Item href="#/action-1">Most Recent</Dropdown.Item>
+            <Dropdown.Item href="#/action-2">Latest</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       {testimony.length > 0 ? (
         testimony.map(t => (
           <TestimonyItem
