@@ -1,20 +1,35 @@
+import { billSiteURL, Wrap } from "components/links"
 import styled from "styled-components"
 import { BillHistory } from "../db"
 
 export type HistoryProps = { billHistory: BillHistory }
 
+const linkConnectedBills = (action: string): JSX.Element => {
+  /* regex must have capture group for split to work */
+  const billRegex = new RegExp(/([HS]\d+)/) 
+  
+  if (!billRegex.test(action)) {
+    return <>{action}</>
+  }
+  const words = action.split(billRegex)
+  const wordMap = words.map(w =>
+    billRegex.test(w) ? <Wrap href={billSiteURL(w)}>{w}</Wrap> : w
+  )
+  return <>{wordMap}</>
+}
+
 const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
   return (
     <>
       {billHistory.map((billHistoryItem, index) => {
+        const { Date, Action, Branch } = billHistoryItem
         return (
           <tr key={index}>
             <td>
-              {billHistoryItem.Date.substring(5, 10)}-
-              {billHistoryItem.Date.substring(0, 4)}
+              {Date.substring(5, 10)}-{Date.substring(0, 4)}
             </td>
-            <td>{billHistoryItem.Action}</td>
-            <td>{billHistoryItem.Branch}</td>
+            <td>{linkConnectedBills(Action)}</td>
+            <td>{Branch}</td>
           </tr>
         )
       })}
