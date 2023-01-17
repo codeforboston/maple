@@ -1,7 +1,7 @@
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
-import { useState } from "react"
+import { useState, ReactEventHandler } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -19,6 +19,7 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Card as MapleCard } from "components/Card"
 import { Tabs, Tab } from "./Tabs"
+import { current } from "@reduxjs/toolkit"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -38,12 +39,17 @@ const ViewTestimony = (
   } = props
   const testimony = items.result ?? []
 
-  const [orderBy, setOrderBy] = useState<string>()
+  const [orderBy, setOrderBy] = useState<string>("Most Recent")
 
   const [activeTab, setActiveTab] = useState(1)
 
   const handleClick = (e: Event, value: number) => {
     setActiveTab(value)
+  }
+
+  const handleOrderClick = (e: React.MouseEvent<Element>) => {
+    e.preventDefault()
+    console.log("hey")
   }
 
   const tabs = [
@@ -64,16 +70,7 @@ const ViewTestimony = (
         ></Tabs>
       )}
       <div>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            Dropdown Button
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Most Recent</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Latest</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <DropDownMenu cliik={handleOrderClick} currentOrder={orderBy} />
       </div>
       {testimony.length > 0 ? (
         testimony.map(t => (
@@ -273,4 +270,22 @@ export const FormattedTestimonyContent = ({
   )
 }
 
+export const DropDownMenu = (props: {
+  currentOrder: string
+  cliik?: ReactEventHandler
+}) => {
+  const { cliik, currentOrder } = props
+  return (
+    <Dropdown>
+      <Dropdown.Toggle variant="success" id="dropdown-basic">
+        {currentOrder}
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={cliik}>Most Recent</Dropdown.Item>
+        <Dropdown.Item onClick={cliik}>Oldest</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+}
 export default ViewTestimony
