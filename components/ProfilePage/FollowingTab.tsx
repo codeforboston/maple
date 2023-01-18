@@ -8,6 +8,8 @@ import { TitledSectionCard } from "../shared"
 import { ImageInput } from "./ImageInput"
 import UnfollowModal from "./UnfollowModal"
 
+import BillFollowingTitle from "./BillFollowingTitle"
+
 type Props = {
   actions: ProfileHook
   className?: string
@@ -46,8 +48,8 @@ export function FollowingTab({ actions, className, profile }: Props) {
     await updateBillsFollowing(userBillList)
   }
 
-  const handleUnfollowClick = async (bid: string) => {
-    userBillList = userBillList.filter(item => item.id !== bid)
+  const handleUnfollowClick = async (billId: string) => {
+    userBillList = userBillList.filter(item => item !== billId)
     await updateProfile({ actions })
     setUnfollowModal(null)
   }
@@ -60,20 +62,20 @@ export function FollowingTab({ actions, className, profile }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>Bills You Follow</h2>
-            {profile.billsFollowing?.map(bill => (
-              <Styled key={bill.id}>
-                <External href={billURL(bill.id)}>
-                  {formatBillId(bill.id)}
+            {profile.billsFollowing?.map(billId => (
+              <Styled key={billId}>
+                <External href={billURL(billId)}>
+                  {formatBillId(billId)}
                 </External>
                 <Row>
                   <Col className={`col-10`}>
-                    <h6>{bill.title}</h6>
+                    <BillFollowingTitle billId={billId} />
                   </Col>
                   <Col
                     className={`text-center`}
                     onClick={() => {
                       setUnfollowModal("show")
-                      setCurrentBill(bill.id)
+                      setCurrentBill(billId)
                     }}
                   >
                     <button

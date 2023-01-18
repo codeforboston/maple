@@ -22,15 +22,15 @@ const StyledImage = styled(Image)`
 `
 
 export const Layout = ({ bill }: BillProps) => {
-  const bid = bill.id
-  const btitle = bill.content.Title
+  const billId = bill.id
+  const billTitle = bill.content.Title
   const { user } = useAuth()
   const uid = user?.uid
   const actions = useProfile()
   const profile = actions.profile
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
-  let checkBill = userBillList.map(item => item?.id).includes(bid)
+  let checkBill = userBillList.map(item => item).includes(billId)
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
@@ -38,14 +38,12 @@ export const Layout = ({ bill }: BillProps) => {
   }
 
   const handleFollowClick = async () => {
-    checkBill
-      ? null
-      : (userBillList = [{ id: bid, title: btitle }, ...userBillList])
+    checkBill ? null : (userBillList = [billId, ...userBillList])
     await updateProfile({ actions })
   }
 
   const handleUnfollowClick = async () => {
-    userBillList = userBillList.filter(bill => bill.id !== bid)
+    userBillList = userBillList.filter(item => item !== billId)
     await updateProfile({ actions })
   }
 

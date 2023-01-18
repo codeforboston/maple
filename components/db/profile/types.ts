@@ -24,5 +24,5 @@ export type Profile = {
   social?: SocialLinks
   organization?: boolean
   profileImage?: string
-  billsFollowing?: { id: string; title: string }[]
+  billsFollowing?: string[]
 }

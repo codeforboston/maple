@@ -146,9 +146,7 @@ export function useProfile() {
           })
         }
       },
-      updateBillsFollowing: async (
-        billsFollowing: { id: string; title: string }[]
-      ) => {
+      updateBillsFollowing: async (billsFollowing: string[]) => {
         if (uid) {
           dispatch({ updatingBillsFollowing: true })
           await updateBillsFollowing(uid, billsFollowing)
@@ -241,10 +239,7 @@ function updateFullName(uid: string, fullName: string) {
   )
 }
 
-function updateBillsFollowing(
-  uid: string,
-  billsFollowing: { id: string; title: string }[]
-) {
+function updateBillsFollowing(uid: string, billsFollowing: string[]) {
   return setDoc(
     profileRef(uid),
     { billsFollowing: billsFollowing ?? deleteField() },
