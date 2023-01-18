@@ -46,7 +46,7 @@ const tabs: TabsType[] = [
   },
   {
     label: "The MA Legislative Process",
-    slug: "The MA Legislative Process",
+    slug: "legislative-process",
     index: 4,
     Component: Legislative
   }
