@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import { Col, Image, Row, Stack } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
@@ -49,12 +49,10 @@ export function FollowingTab({ actions, className, profile }: Props) {
   const handleUnfollowClick = async (bid: string) => {
     userBillList = userBillList.filter(item => item.id !== bid)
     await updateProfile({ actions })
+    setUnfollowModal(null)
   }
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
-
-  console.log("P ", profile)
-  console.log("local bills following: ", userBillList)
 
   return (
     <>
@@ -73,9 +71,6 @@ export function FollowingTab({ actions, className, profile }: Props) {
                   </Col>
                   <Col
                     className={`text-center`}
-                    // onClick={async () => {
-                    //   handleUnfollowClick(bill.id)
-                    // }}
                     onClick={() => {
                       setUnfollowModal("show")
                       setCurrentBill(bill.id)
@@ -103,6 +98,7 @@ export function FollowingTab({ actions, className, profile }: Props) {
       </TitledSectionCard>
       <UnfollowModal
         currentBill={currentBill}
+        handleUnfollowClick={handleUnfollowClick}
         onHide={close}
         onUnfollowModalClose={() => setUnfollowModal(null)}
         show={unfollowModal === "show"}
@@ -112,10 +108,9 @@ export function FollowingTab({ actions, className, profile }: Props) {
 }
 
 /*
-  FollowingTab                      -> [ ] make bill items responsive
+  FollowingTab                          --> [ ] make various tabs and elements responsive
+                                        --> [x] replace handleUnfollowClick with unfollow Bill Modal 
 
-  Individual Bill Pages             -> [ ] red headers get replaced by blue restyled headers
-
-  Individual Bill Following Buttons -> [ ] remove bill number, add check icon when following
-                                    -> [ ] substitute unfollow Bill Modal for handleUnfollowClick
+  Individual Bill --> Pages             --> [ ] red headers get replaced by blue restyled headers
+                  --> Following Buttons --> [ ] remove bill number, add check icon when following
 */
