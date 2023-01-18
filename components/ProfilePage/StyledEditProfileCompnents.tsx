@@ -8,7 +8,6 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
 }))`
   display: flex;
   justify-content: space-around;
-  /* height: 2.5em; */
   height: 2.5em;
 
   .nav-item {

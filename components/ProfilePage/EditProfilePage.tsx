@@ -114,8 +114,6 @@ export function EditProfileForm({
         <FollowingTab
           profile={profile}
           actions={actions}
-          uid={uid}
-          setFormUpdated={setFormUpdated}
           className="mt-3 mb-4"
         />
       )

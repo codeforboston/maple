@@ -1,24 +1,17 @@
-import clsx from "clsx"
-import { ChangeEvent, useEffect, useState } from "react"
-import { FormCheck, FormControlProps } from "react-bootstrap"
-import { useForm } from "react-hook-form"
+import { useCallback, useState } from "react"
 import styled from "styled-components"
-import { Button, Col, Form, Image, Row, Stack } from "../bootstrap"
+import { Col, Image, Row, Stack } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
-import Input from "../forms/Input"
-import { TitledSectionCard } from "../shared"
-import { Header } from "../shared/TitledSectionCard"
-import { ImageInput } from "./ImageInput"
-import { YourLegislators } from "./YourLegislators"
 import { formatBillId } from "../formatting"
 import { billLink, billURL, External } from "../links"
+import { TitledSectionCard } from "../shared"
+import { ImageInput } from "./ImageInput"
+import UnfollowModal from "./UnfollowModal"
 
 type Props = {
-  profile: Profile
   actions: ProfileHook
-  uid?: string
-  setFormUpdated?: any
   className?: string
+  profile: Profile
 }
 
 export const Styled = styled.div`
@@ -42,13 +35,12 @@ export const Styled = styled.div`
   }
 `
 
-export function FollowingTab({
-  profile,
-  actions,
-  uid,
-  className,
-  setFormUpdated
-}: Props) {
+export function FollowingTab({ actions, className, profile }: Props) {
+  const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
+  const [currentBill, setCurrentBill] = useState<string>("")
+
+  const close = () => setUnfollowModal(null)
+
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
     await updateBillsFollowing(userBillList)
@@ -81,8 +73,12 @@ export function FollowingTab({
                   </Col>
                   <Col
                     className={`text-center`}
-                    onClick={async () => {
-                      handleUnfollowClick(bill.id)
+                    // onClick={async () => {
+                    //   handleUnfollowClick(bill.id)
+                    // }}
+                    onClick={() => {
+                      setUnfollowModal("show")
+                      setCurrentBill(bill.id)
                     }}
                   >
                     <button
@@ -105,6 +101,12 @@ export function FollowingTab({
           </Stack>
         </div>
       </TitledSectionCard>
+      <UnfollowModal
+        currentBill={currentBill}
+        onHide={close}
+        onUnfollowModalClose={() => setUnfollowModal(null)}
+        show={unfollowModal === "show"}
+      />
     </>
   )
 }
