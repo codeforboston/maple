@@ -1,0 +1,165 @@
+.header:first-child {
+  border-radius: 0 5rem 5rem 0;
+}
+
+.LearnTabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 2rem;
+  border-bottom: none;
+  background-color: none;
+}
+
+.LearnTabs button {
+  border: none !important;
+}
+
+.LearnTabs button.active {
+  color: var(--bs-blue) !important;
+}
+
+.header {
+  background-color: var(--bs-blue);
+  width: max-content;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 4rem;
+  padding-left: 2rem;
+  height: 5rem;
+  transform: translate(-3rem, -40%);
+  overflow: hidden;
+  line-height: 5rem;
+  font-weight: 900;
+}
+
+.card {
+  margin: 8rem 5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 12px;
+}
+
+.title {
+  font-family: "Nunito";
+  font-size: 3rem;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -1.88px;
+  text-align: left;
+  color: #000;
+}
+
+.subheader {
+  flex-grow: 0;
+  font-family: "Nunito";
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.63px;
+  text-align: left;
+  color: #000;
+}
+
+.text {
+  flex-grow: 0;
+  font-family: "Nunito";
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.63px;
+  text-align: left;
+  color: #000;
+}
+
+.colRow {
+  padding-right: 4rem;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cardBody {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Responsive Queries */
+
+@media (max-width: 62em) {
+  .text {
+    padding-top: 1.5rem;
+  }
+}
+
+/* bootstrap: medium > 768px */
+@media (max-width: 48em) {
+  .header {
+    font-size: 1.5rem;
+    padding-right: 3rem;
+    padding-left: 1.5rem;
+    height: 4rem;
+    line-height: 4rem;
+    transform: translate(-2rem, -40%);
+  }
+  .card {
+    margin: 8rem 3rem;
+  }
+  .subheader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .title {
+    padding-left: 1rem;
+    font-size: 2.5rem;
+  }
+}
+
+/* bootstrap: small > 576px */
+@media (max-width: 36em) {
+  .header {
+    font-size: 1.125rem;
+    padding-right: 3rem;
+    padding-left: 1.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    transform: translate(-1.5rem, -40%);
+  }
+  .title {
+    padding-left: 1.7rem;
+    font-size: 2.25rem;
+  }
+  .subheader {
+    font-size: 1.25rem;
+    padding-left: 2rem;
+  }
+  .image {
+    width: 12rem;
+  }
+  .text {
+    font-size: 1.125rem;
+    padding-top: 1rem;
+  }
+}
+
+/* bootstrap: xs < 576px
+   this break at 464px */
+@media (max-width: 29em) {
+  .title {
+    font-size: 2rem;
+  }
+  .image {
+    width: 10rem;
+  }
+  .colRow {
+    padding-right: 2rem;
+    padding-left: 1rem;
+  }
+}
