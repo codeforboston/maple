@@ -89,7 +89,7 @@ export function FollowingTab({ actions, className, profile }: Props) {
           </Stack>
         </div>
       </TitledSectionCard>
-      <TitledSectionCard className={className}>
+      <TitledSectionCard className={`${className} invisible`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>Organizations You Follow</h2>
@@ -108,9 +108,6 @@ export function FollowingTab({ actions, className, profile }: Props) {
 }
 
 /*
-  FollowingTab                          --> [ ] make various tabs and elements responsive
-                                        --> [x] replace handleUnfollowClick with unfollow Bill Modal 
-
   Individual Bill --> Pages             --> [ ] red headers get replaced by blue restyled headers
                   --> Following Buttons --> [ ] remove bill number, add check icon when following
 */

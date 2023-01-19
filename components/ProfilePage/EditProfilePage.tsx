@@ -125,12 +125,15 @@ export function EditProfileForm({
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Internal className={`ml-2`} href={`javascript:void(0)`}>
+          <Internal
+            className={`d-flex text-decoration-none`}
+            href={`javascript:void(0)`}
+          >
             <GearButton
               /* remove invisible className for testing and/or after Soft Launch when we're
                  ready to show Email related element to users
                */
-              className={`btn btn-lg btn-outline-secondary me-4 invisible`}
+              className={`align-self-stretch btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
@@ -138,13 +141,16 @@ export function EditProfileForm({
             </GearButton>
           </Internal>
           <Internal
-            className={`ml-2`}
+            className={`d-flex ml-2 text-decoration-none`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+            <Button
+              className={`align-self-stretch btn btn-lg py-1`}
+              disabled={!!formUpdated}
+            >
               {!profile.organization
-                ? "View your profile"
-                : "View your organization page"}
+                ? "View My Profile"
+                : "View My Organization"}
             </Button>
           </Internal>
         </Col>
@@ -153,13 +159,7 @@ export function EditProfileForm({
         <StyledTabNav>
           {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link
-                eventKey={t.eventKey}
-                // className={`rounded-top
-                //   ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}
-                //   py-0`}
-                className={`rounded-top m-0 p-0`}
-              >
+              <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
                 <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
                 <hr className={`my-0`} />
               </Nav.Link>

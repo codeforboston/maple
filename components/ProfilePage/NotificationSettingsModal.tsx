@@ -161,19 +161,3 @@ export default function NotificationSettingsModal({
     </Modal>
   )
 }
-
-/*
-  Modal State ->     [x] Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
-                         from parent EditProfilePage.tsx
-                         / make sure Cancelling and coming back doesn't leave unsaved edits?
-  Continue Button -> [x] Update Backend with Notifications & 
-                     [x] Profile Settings State 
-                     [x] then Close Modal
-
-  EditProfilePage -> [x] fix issue: when AboutMeEditForm tab isDirty, both Settings and View your profile buttons appear disabled
-                     however, View your profile is still active dispite appearing otherwise
-                     
-  if you're already at your profile page and sign out/on, your profile doesn't update until you refresh the page
-
-  updateProfileImage does not appear implemented on AboutMeEditForm
-*/
