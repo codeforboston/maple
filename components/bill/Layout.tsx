@@ -1,10 +1,9 @@
 import styled from "styled-components"
-import { Button, Col, Container, Row, Stack } from "../bootstrap"
+import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
-import { formatBillId } from "../formatting"
 import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
@@ -13,6 +12,13 @@ import { ProfileHook, useProfile } from "../db"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
+`
+
+const StyledImage = styled(Image)`
+  width: 14.77px;
+  height: 12.66px;
+
+  margin-left: 8px;
 `
 
 export const Layout = ({ bill }: BillProps) => {
@@ -62,8 +68,10 @@ export const Layout = ({ bill }: BillProps) => {
               `}
               onClick={checkBill ? handleUnfollowClick : handleFollowClick}
             >
-              {checkBill ? "Following " : "Follow "}
-              {formatBillId(bill.id)}
+              {checkBill ? "Following" : "Follow"}
+              {checkBill ? (
+                <StyledImage src="/check-white.svg" alt="checkmark" />
+              ) : null}
             </Button>
           </Styled>
         </Col>
