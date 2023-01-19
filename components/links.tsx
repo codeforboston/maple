@@ -66,6 +66,10 @@ export function billURL(billNumber: string) {
   return `https://malegislature.gov/Bills/192/${billNumber}`
 }
 
+export function billSiteURL(billNumber: string) {
+  return siteUrl(`bill?id=${billNumber}`)
+}
+
 /** Not all bills have pdf's, only those without document text */
 export function billPdfUrl(id: string) {
   return `https://malegislature.gov/Bills/${currentGeneralCourt}/${id}.pdf`
