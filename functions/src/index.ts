@@ -28,3 +28,6 @@ export {
   upgradeTestimonySearchIndex
 } from "./testimony"
 export * from "./triggerPubsubFunction"
+
+// Export the health check last so it is loaded last.
+export * from "./healthCheck"
