@@ -188,9 +188,9 @@ const TwitterButton = (props: ClsProps) => {
 }
 
 const EmailButton = (props: ClsProps) => {
-  const { publication, bill: { id: billId } = {} } = usePublishState()
+  const { publication, bill: { id: billId, court } = {} } = usePublishState()
   return publication ? (
-    <Wrap href={formUrl(billId!, "share")}>
+    <Wrap href={formUrl(billId!, court!, "share")}>
       <Cta {...props}>Email Your Published Testimony </Cta>
     </Wrap>
   ) : null
