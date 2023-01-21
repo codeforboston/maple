@@ -1,9 +1,14 @@
 import { Position } from "components/db"
 import { ViewAttachment } from "components/ViewAttachment"
+import dynamic from "next/dynamic"
 import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
-import { TestimonyContent } from "./TestimonyContent"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
+
+const TestimonyContent = dynamic(
+  () => import("./TestimonyContent").then(m => m.TestimonyContent),
+  { ssr: false }
+)
 
 const Container = styled.div`
   font-family: "Nunito";

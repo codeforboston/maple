@@ -81,23 +81,14 @@ export class DbService {
   }
 
   getPublishedTestimony = async ({
-    authorUid,
-    billId,
-    court
-  }: TestimonyQuery): Promise<Testimony | undefined> => {
-    await this.getDocData<Testimony>(
-      "users",
-      authorUid,
-      "publishedTestimony",
-      billId
-    )
-
+    publishedId
+  }: {
+    publishedId: string
+  }): Promise<Testimony | undefined> => {
     const result = await this.getDocs(
       query(
         collectionGroup(firestore, "publishedTestimony"),
-        where("authorUid", "==", authorUid),
-        where("billId", "==", billId),
-        where("court", "==", court),
+        where("id", "==", publishedId),
         limit(1)
       )
     )

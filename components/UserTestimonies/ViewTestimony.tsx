@@ -170,7 +170,9 @@ export const TestimonyItem = ({
               </>
             )}
             {`${published} · `}
-            <Internal href={maple.testimony(testimony)}>Full Text</Internal>
+            <Internal href={maple.testimony({ publishedId: testimony.id })}>
+              Full Text
+            </Internal>
           </Col>
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}

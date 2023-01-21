@@ -1,12 +1,12 @@
 import { formatBillId } from "components/formatting"
-import { Internal } from "components/links"
+import { Internal, maple } from "components/links"
 import styled from "styled-components"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 
 export const BillTitle = styled(props => {
   const { bill } = useCurrentTestimonyDetails()
 
-  const href = `/bill?id=${bill.content.BillNumber}`
+  const href = maple.bill(bill)
   const title = `${formatBillId(bill.content.BillNumber)}: ${
     bill.content.Title
   }`

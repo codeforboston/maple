@@ -14547,6 +14547,11 @@ next-on-netlify@^2.9.0:
     fs-extra "^9.0.1"
     jimp "^0.16.1"
 
+next-redux-wrapper@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/next-redux-wrapper/-/next-redux-wrapper-8.1.0.tgz#d9c135f1ceeb2478375bdacd356eb9db273d3a07"
+  integrity sha512-2hIau0hcI6uQszOtrvAFqgc0NkZegKYhBB7ZAKiG3jk7zfuQb4E7OV9jfxViqqojh3SEHdnFfPkN9KErttUKuw==
+
 next@^12.1.5:
   version "12.3.0"
   resolved "https://registry.yarnpkg.com/next/-/next-12.3.0.tgz#0e4c1ed0092544c7e8f4c998ca57cf6529e286cb"
