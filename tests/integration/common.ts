@@ -1,3 +1,4 @@
+import { currentGeneralCourt } from "components/db/common"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
@@ -24,13 +25,15 @@ export async function createFakeBill() {
   }
   const bill = {
     content,
-    court: 192,
+    court: currentGeneralCourt,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
     testimonyCount: 0
   }
-  await testDb.doc(`/generalCourts/192/bills/${billId}`).create(bill)
+  await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
+    .create(bill)
   return billId
 }
 
@@ -55,7 +58,9 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
 }
 
 export async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
+  const doc = await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
+    .get()
   return doc.data() as any
 }
 

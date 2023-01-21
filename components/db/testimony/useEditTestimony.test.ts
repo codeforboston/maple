@@ -1,13 +1,15 @@
 import { waitFor } from "@testing-library/react"
 import { act, renderHook } from "@testing-library/react-hooks"
 import { User } from "firebase/auth"
+import { nanoid } from "nanoid"
 import { DraftTestimony, Testimony, useEditTestimony } from "."
 import {
   createFakeBill,
   signInUser1,
   signInUser3
 } from "../../../tests/integration/common"
-import { terminateFirebase } from "../../../tests/testUtils"
+import { terminateFirebase, testDb } from "../../../tests/testUtils"
+import { currentGeneralCourt } from "../common"
 
 let uid: string
 let user: User
@@ -19,7 +21,7 @@ beforeEach(async () => {
 afterAll(terminateFirebase)
 
 let billId: string
-const court = 192
+const court = currentGeneralCourt
 beforeEach(async () => {
   billId = await createFakeBill()
 })
@@ -31,7 +33,7 @@ let draft: DraftTestimony,
 beforeEach(() => {
   draft = {
     billId,
-    court: 192,
+    court: court,
     content: "fake testimony",
     position: "endorse"
   }
@@ -40,7 +42,7 @@ beforeEach(() => {
     authorDisplayName: user.displayName!,
     billId,
     content: draft.content,
-    court: 192,
+    court: court,
     position: draft.position,
     version: 1
   }
@@ -65,8 +67,27 @@ describe("useEditTestimony", () => {
   })
 
   it("Initializes for a bill with existing testimony and drafts", async () => {
-    const billId = "H1"
+    const billId = await createFakeBill()
     const { uid } = await signInUser3()
+
+    const existingPub = testDb.doc(
+      `users/${uid}/publishedTestimony/${nanoid()}`
+    )
+    await existingPub.create({
+      ...testimony,
+      billId,
+      id: existingPub.id,
+      authorUid: uid
+    })
+
+    const existingDraft = testDb.doc(`users/${uid}/draftTestimony/${nanoid()}`)
+    await existingDraft.create({
+      ...draft,
+      billId,
+      id: existingDraft.id,
+      authorUid: uid
+    })
+
     const { result } = renderHook(() => useEditTestimony(uid, court, billId))
 
     await expectFinishLoading(result)
