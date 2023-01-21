@@ -61,6 +61,10 @@ export const maple = {
     `/bills/${court}/${id}`
 }
 
+export function billSiteURL(billNumber: string) {
+  return siteUrl(`bill?id=${billNumber}`)
+}
+
 /** Not all bills have pdf's, only those without document text */
 export function billPdfUrl(court: number, id: string) {
   return `https://malegislature.gov/Bills/${court}/${id}.pdf`
