@@ -6,8 +6,8 @@ export type HistoryProps = { billHistory: BillHistory }
 
 const linkConnectedBills = (action: string): JSX.Element => {
   /* regex must have capture group for split to work */
-  const billRegex = new RegExp(/([HS]\d+)/) 
-  
+  const billRegex = new RegExp(/([HS]\d+)/)
+
   if (!billRegex.test(action)) {
     return <>{action}</>
   }
