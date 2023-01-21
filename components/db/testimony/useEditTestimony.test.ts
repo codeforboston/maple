@@ -94,6 +94,9 @@ describe("useEditTestimony", () => {
 
     expect(result.current.draft?.billId).toEqual(billId)
     expect(result.current.publication).toMatchObject({ billId, authorUid: uid })
+
+    await existingPub.delete()
+    await existingDraft.delete()
   })
 
   it("Uses initial uid and billId", async () => {
