@@ -185,7 +185,7 @@ HeaderWithItemsAndItemElements.args = {
   cardItems:
     HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args.cardItems?.map(
       item => {
-        return { ...item, element: <img src="edit-testimony.svg" /> }
+        return { ...item, element: <img src="/edit-testimony.svg" /> }
       }
     )
 }

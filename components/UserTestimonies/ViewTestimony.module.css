@@ -1,5 +1,5 @@
 .toggleIcon::after {
-  content: url("../../public/angle-down-solid.svg");
+  content: url("/angle-down-solid.svg");
   display: inline-block;
   width: 1rem;
   margin-left: 0.25rem;

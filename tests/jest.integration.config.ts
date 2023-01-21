@@ -14,7 +14,8 @@ const config: Config.InitialOptions = {
     "<rootDir>/tests/seed",
     "<rootDir>/functions"
   ],
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"]
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"],
+  modulePaths: ["<rootDir>"]
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest

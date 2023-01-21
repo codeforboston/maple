@@ -95,13 +95,13 @@ const MainPanel = styled(({ ...rest }) => {
 `
 
 const EditTestimonyButton = ({ className }: ClsProps) => {
-  const billId = usePublishState().bill?.id!,
-    url = formUrl(billId)
+  const bill = usePublishState().bill!,
+    url = formUrl(bill.id, bill.court)
   return (
     <ImageButton
       alt="edit testimony"
       tooltip="Edit Testimony"
-      src="edit-testimony.svg"
+      src="/edit-testimony.svg"
       href={url}
       className={clsx("testimony-button", className)}
     />
@@ -113,7 +113,7 @@ const DeleteTestimonyButton = (props: ImageProps) => {
     <ImageButton
       alt="delete testimony"
       tooltip="Delete Testimony"
-      src="delete-testimony.svg"
+      src="/delete-testimony.svg"
       className="testimony-button"
       {...props}
     />
@@ -188,9 +188,9 @@ const TwitterButton = (props: ClsProps) => {
 }
 
 const EmailButton = (props: ClsProps) => {
-  const { publication, bill: { id: billId } = {} } = usePublishState()
+  const { publication, bill: { id: billId, court } = {} } = usePublishState()
   return publication ? (
-    <Wrap href={formUrl(billId!, "share")}>
+    <Wrap href={formUrl(billId!, court!, "share")}>
       <Cta {...props}>Email Your Published Testimony </Cta>
     </Wrap>
   ) : null

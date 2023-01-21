@@ -47,7 +47,7 @@ export default function ForgotPasswordModal({
       <Modal.Body>
         <Col md={10} className="mx-auto">
           <Stack direction="vertical" className="align-items-center mb-2">
-            <Image src="mail.png" alt="Mail entering mailbox" fluid />
+            <Image src="/mail.png" alt="Mail entering mailbox" fluid />
 
             {sendPasswordResetEmail.status === "success" ? (
               <div role="alert" className="h5 text-center">

@@ -41,6 +41,14 @@ const handleFailure = (name: string, e: any, ...json: any) => {
   throw e
 }
 
+export const dbService = (() => {
+  let service: DbService | undefined
+  return () => {
+    if (!service) service = new DbService()
+    return service
+  }
+})()
+
 export class DbService {
   private getDocs: typeof getFbDocs = q =>
     getFbDocs(q).catch(e => handleFailure("getDocs", e, q))
