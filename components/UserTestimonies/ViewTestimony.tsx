@@ -13,7 +13,7 @@ import {
   UsePublishedTestimonyListing
 } from "../db"
 import { formatBillId, formatTestimonyLinks } from "../formatting"
-import { Internal } from "../links"
+import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 
@@ -124,8 +124,10 @@ export const TestimonyItem = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
-
-  const { result: bill } = useBill(testimony.billId)
+  const billLink = maple.bill({
+    id: testimony.billId,
+    court: testimony.court
+  })
 
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
@@ -133,7 +135,7 @@ export const TestimonyItem = ({
         <Author testimony={testimony} className="flex-grow-1" />
         {isMobile && showControls && (
           <>
-            <Internal href={formUrl(testimony.billId)}>
+            <Internal href={formUrl(testimony.billId, testimony.court)}>
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
@@ -143,7 +145,7 @@ export const TestimonyItem = ({
               />
             </Internal>
 
-            <Internal href={`/bill?id=${testimony.billId}`}>
+            <Internal href={billLink}>
               <Image
                 className="px-2 align-self-center"
                 src="/delete-testimony.svg"
@@ -160,7 +162,7 @@ export const TestimonyItem = ({
           <Col className={`h5 fw-bold align-self-center`}>
             {showBillNumber && (
               <>
-                <Internal href={`/bill?id=${testimony.billId}`}>
+                <Internal href={billLink}>
                   {formatBillId(testimony.billId)}
                 </Internal>
                 {" · "}
@@ -192,8 +194,10 @@ export const TestimonyItem = ({
                 minWidth: "20%"
               }}
             >
-              <Internal href={formUrl(testimony.billId)}>Edit</Internal>
-              <Internal href={`/bill?id=${testimony.billId}`}>Delete</Internal>
+              <Internal href={formUrl(testimony.billId, testimony.court)}>
+                Edit
+              </Internal>
+              <Internal href={billLink}>Delete</Internal>
             </Col>
           )}
         </Row>

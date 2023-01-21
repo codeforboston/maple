@@ -5,6 +5,8 @@ import {
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { generalCourts } from "components/db/common"
+import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -37,6 +39,21 @@ export const useRefinements = () => {
 
   const baseProps = { limit: 5, searchable: true }
   const refinementProps = [
+    useRefinementListUiProps({
+      transformItems: useCallback(
+        (i: RefinementListItem[]) =>
+          i
+            .map(i => ({
+              ...i,
+              label: generalCourts[i.value as any]?.Name ?? i.label
+            }))
+            .sort((a, b) => Number(b.value) - Number(a.value)),
+        []
+      ),
+      attribute: "court",
+      searchablePlaceholder: "General Court",
+      ...baseProps
+    }),
     useRefinementListUiProps({
       attribute: "city",
       searchablePlaceholder: "City",

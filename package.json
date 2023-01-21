@@ -10,12 +10,15 @@
     "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions,storage",
     "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions,storage",
     "dev": "next dev",
-    "dev:backend": "yarn compose up --wait && yarn compose logs -f firebase next fn-builder",
-    "dev:backend:update": "yarn compose down -v && yarn compose up --build",
+    "dev:ps": "yarn compose ps",
+    "dev:up": "yarn compose up --wait && yarn dev:logs",
+    "dev:logs": "yarn compose logs -f firebase next fn-builder",
+    "dev:down": "yarn compose down",
+    "dev:update": "yarn compose down -v && yarn compose build",
     "dev:backfill": "sh ./scripts/backfill-dev.sh",
     "emulators:start": "firebase --project demo-dtp emulators:start --only auth,functions,pubsub,firestore,storage --import tests/integration/exportedTestData",
-    "typesense-admin": "ts-node -P tsconfig.script.json scripts/typesense-admin.ts",
-    "firebase-admin": "ts-node -P tsconfig.script.json scripts/firebase-admin",
+    "typesense-admin": "ts-node -P tsconfig.script.json scripts/typesense-admin.ts --swc",
+    "firebase-admin": "ts-node -P tsconfig.script.json scripts/firebase-admin --swc",
     "generate-stories": "ts-node -P tsconfig.script.json scripts/generate-stories",
     "compose": "docker compose -f infra/docker-compose.yml",
     "dev:functions": "yarn --cwd functions dev",
@@ -107,7 +110,8 @@
     "typesense": "^1.2.2",
     "typesense-instantsearch-adapter": "^2.4.0",
     "usehooks-ts": "^2.5.3",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
@@ -157,6 +161,7 @@
     "storybook-addon-designs": "^6.3.1",
     "storybook-addon-next": "^1.6.9",
     "ts-node": "^10.5.0",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "4.5.5",
     "yargs": "^17.5.1"
   }

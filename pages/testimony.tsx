@@ -1,4 +1,4 @@
-import { Internal } from "components/links"
+import { Internal, maple } from "components/links"
 import { useRouter } from "next/router"
 import { Spinner } from "react-bootstrap"
 import styled from "styled-components"
@@ -34,11 +34,12 @@ export default createPage({
   title: "Testimony",
   Page: () => {
     const router = useRouter()
-    const { billId, author } = router.query
+    const { billId, author, court } = router.query
     const {
       items: { result, status }
     } = usePublishedTestimonyListing({
       uid: author as string,
+      court: Number(court),
       billId: billId as string
     })
     const testimony =
@@ -48,13 +49,11 @@ export default createPage({
         ? result[0]
         : undefined
 
-    const { result: bill, loading } = useBill(billId as string)
+    const { result: bill, loading } = useBill(Number(court), billId as string)
 
     const profile = usePublicProfile(testimony?.authorUid)
     const authorPublic = profile.result?.public
     const authorLink = "/profile?id=" + author
-    const billLink = "/bill?id=" + bill?.content.BillNumber
-
     return (
       <Container className="mt-3">
         {testimony ? (
@@ -62,7 +61,7 @@ export default createPage({
             <div>
               <h3>
                 {bill ? (
-                  <Internal href={billLink}>{`${formatBillId(
+                  <Internal href={maple.bill(bill)}>{`${formatBillId(
                     bill.content.BillNumber
                   )}: ${bill.content.Title}`}</Internal>
                 ) : loading ? (
