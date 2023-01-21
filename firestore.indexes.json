@@ -736,6 +736,11 @@
       "collectionGroup": "publishedTestimony",
       "fieldPath": "publishedAt",
       "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "DESCENDING" }]
+    },
+    {
+      "collectionGroup": "bills",
+      "fieldPath": "id",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
     }
   ]
 }
