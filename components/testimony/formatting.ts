@@ -16,6 +16,18 @@ export const formatTestimonyDiff = (
   return new DiffFormatter().parse(currentMarkdown, previousMarkdown)
 }
 
+let plainTextFormatter: ReturnType<typeof createDOMPurify> | undefined
+export const formatTestimonyPlaintext = (markdown: string) => {
+  if (!plainTextFormatter) {
+    plainTextFormatter = createDOMPurify()
+    plainTextFormatter.setConfig({
+      ALLOWED_TAGS: ["#text"],
+      KEEP_CONTENT: true
+    })
+  }
+  return plainTextFormatter.sanitize(formatTestimony(markdown).__html)
+}
+
 /** Converts markdown to renderable HTML. */
 export class Formatter {
   parse = (markdown: string) => this.sanitize(marked.parse(markdown))

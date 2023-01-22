@@ -77,6 +77,8 @@ const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
     author,
     publishedId: testimony.id,
     version: revision.version,
+    currentVersion: testimony.version,
+    isCurrentVersion: revision.version === testimony.version,
     ...rest
   }
 })

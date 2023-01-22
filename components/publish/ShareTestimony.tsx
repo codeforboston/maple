@@ -2,6 +2,7 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
 import { External, maple } from "components/links"
+import { isNotNull } from "components/utils"
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
@@ -244,11 +245,13 @@ const useEmailRecipients = () => {
         committeeChairs: committeeCallouts
           .map(([id]) => id)
           .filter(isString)
-          .map(id => legislatorsById[id]),
+          .map(id => legislatorsById[id])
+          .filter(isNotNull),
         userLegislators: userLegislatorsCallouts
           .map(([id]) => id)
           .filter(isString)
           .map(id => legislatorsById[id])
+          .filter(isNotNull)
       })
     )
   }, [currentCommittee, dispatch, index, representative, senator])

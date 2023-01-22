@@ -1,14 +1,10 @@
 import { Position } from "components/db"
 import { ViewAttachment } from "components/ViewAttachment"
-import dynamic from "next/dynamic"
 import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
-
-const TestimonyContent = dynamic(
-  () => import("./TestimonyContent").then(m => m.TestimonyContent),
-  { ssr: false }
-)
+import { TestimonyContent } from "../TestimonyContent"
+import { flags } from "components/featureFlags"
 
 const Container = styled.div`
   font-family: "Nunito";
@@ -19,11 +15,14 @@ const Container = styled.div`
 
 const Testimony = styled(props => {
   const { revision, authorNickname } = useCurrentTestimonyDetails()
+  const previous = flags().testimonyDiffing
+    ? revision.previous?.content
+    : undefined
 
   return (
     <div {...props}>
       <div className="fs-4">What {authorNickname} says</div>
-      <TestimonyContent {...revision} />
+      <TestimonyContent testimony={revision.content} previous={previous} />
     </div>
   )
 })``
@@ -42,7 +41,7 @@ const PositionIcon: FC<
   ImgHTMLAttributes<HTMLImageElement> & { position: Position }
 > = ({ position, ...props }) => {
   const { action, ...positionProps } = positionInfo[position]
-  return <img {...props} {...positionProps} />
+  return <img aria-label={action} {...props} {...positionProps} />
 }
 
 const Header = styled(props => {
@@ -78,8 +77,9 @@ const Header = styled(props => {
   }
 
   .edited {
-    // TODO
-    background: blue;
+    background: var(--bs-blue);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
     color: white;
     align-self: flex-end;
   }
