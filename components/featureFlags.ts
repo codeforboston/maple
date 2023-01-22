@@ -1,19 +1,26 @@
 import { z } from "zod"
 
 export const FeatureFlags = z.object({
-  testimonyDiffing: z.boolean().default(false)
+  /** Testimony diffing in the detail page */
+  testimonyDiffing: z.boolean().default(false),
+  /** Notifications and follows */
+  notifications: z.boolean().default(false)
 })
+
 export type FeatureFlags = z.infer<typeof FeatureFlags>
 
 const defaults: Record<typeof process.env.NODE_ENV, FeatureFlags> = {
   development: {
-    testimonyDiffing: false
+    testimonyDiffing: false,
+    notifications: false
   },
   production: {
-    testimonyDiffing: false
+    testimonyDiffing: false,
+    notifications: false
   },
   test: {
-    testimonyDiffing: false
+    testimonyDiffing: false,
+    notifications: false
   }
 }
 

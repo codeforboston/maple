@@ -10,8 +10,8 @@ export const TestimonyDetailPage: FC = () => {
   return (
     <>
       <VersionBanner fluid="xl" />
-      <Container fluid="xl">
-        <Row className="mt-3">
+      <Container className="mb-5" fluid="xl">
+        <Row className="mt-4 mb-4">
           <BillTitle />
         </Row>
 
@@ -21,7 +21,7 @@ export const TestimonyDetailPage: FC = () => {
           </Col>
 
           <Col md={4}>
-            <PolicyActions />
+            <PolicyActions className="mb-4" />
             <RevisionHistory />
           </Col>
         </Row>

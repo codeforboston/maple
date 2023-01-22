@@ -17,6 +17,7 @@ export const BillTitle = styled(props => {
     </h3>
   )
 })`
+  font-size: 2rem;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

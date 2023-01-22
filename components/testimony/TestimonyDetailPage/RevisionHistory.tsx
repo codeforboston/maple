@@ -7,8 +7,9 @@ import {
   useCurrentTestimonyDetails,
   versionSelected
 } from "./testimonyDetailSlice"
+import { FC } from "react"
 
-const HistoryItem = styled<{ revision: Revision }>(({ revision: t }) => {
+const HistoryItem: FC<{ revision: Revision }> = ({ revision: t }) => {
   const dispatch = useAppDispatch()
   const { version: currentVersion } = useCurrentTestimonyDetails()
 
@@ -38,17 +39,22 @@ const HistoryItem = styled<{ revision: Revision }>(({ revision: t }) => {
       <div>version: {t.version}</div>
     </ListGroup.Item>
   )
-})``
+}
 
-export const RevisionHistory = () => {
+export const RevisionHistory = styled(props => {
   const { revisions } = useCurrentTestimonyDetails()
 
   return (
     <Card
+      className={props.className}
       header={`Revision History (${revisions.length})`}
       items={revisions.map(t => (
         <HistoryItem key={t.version} revision={t} />
       ))}
     />
   )
-}
+})`
+  .list-group-item {
+    background: white;
+  }
+`
