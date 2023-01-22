@@ -6,8 +6,10 @@ on:
 
 jobs:
   build_and_deploy:
+    # Disable while transitioning to Vercel
+    if: false
     # Don't deploy forks, even if actions are enabled
-    if: github.repository_owner == 'codeforboston'
+    # if: github.repository_owner == 'codeforboston'
     runs-on: ubuntu-latest
     environment: dev
     steps:
