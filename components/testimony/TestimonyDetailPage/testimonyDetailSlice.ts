@@ -9,11 +9,12 @@ import { HYDRATE } from "next-redux-wrapper"
 export type PageQuery = TestimonyQuery & { version?: number }
 
 export type PageData = {
-  testimony: Testimony | null
+  testimony: Testimony
   bill: Bill
   author: (Profile & { uid: string }) | null
   /** Archived testimony, in descending version order */
   archive: Testimony[]
+  version: number
 }
 
 export type TestimonyDetailState = {
@@ -32,16 +33,13 @@ export const slice = createSlice({
   reducers: {
     pageDataLoaded(_, action: PayloadAction<PageData>) {
       const data = action.payload,
-        latestVersion = check(maxBy(data.archive, a => a.version)).version,
-        latestTestimony = check(
-          data.archive.find(a => a.version === latestVersion)
-        )
+        selected = check(data.archive.find(a => a.version === data.version))
       return {
         data,
-        selectedVersion: latestVersion,
-        authorUid: latestTestimony.authorUid,
-        billId: latestTestimony.billId,
-        court: latestTestimony.court
+        selectedVersion: data.version,
+        authorUid: selected.authorUid,
+        billId: selected.billId,
+        court: selected.court
       }
     },
     versionSelected(state, action: PayloadAction<number>) {
@@ -61,7 +59,7 @@ export const {
 
 const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
   const {
-    data: { archive, bill, author },
+    data: { archive, bill, author, testimony },
     selectedVersion,
     ...rest
   } = check(testimonyDetail)
@@ -77,6 +75,7 @@ const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
     isEdited: revision.version > 1,
     bill,
     author,
+    publishedId: testimony.id,
     version: revision.version,
     ...rest
   }
