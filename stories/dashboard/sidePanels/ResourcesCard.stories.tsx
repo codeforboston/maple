@@ -1,7 +1,5 @@
+import { ResourcesCard } from "components/dashboard"
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const ResourcesCard = () => <div>TODO</div>
 
 export default createMeta({
   title: "Dashboard/Side Panels/ResourcesCard",

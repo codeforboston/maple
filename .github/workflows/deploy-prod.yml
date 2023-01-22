@@ -15,17 +15,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Build Environment
         uses: ./.github/actions/setup-repo
-      - name: Build Frontend
-        run: yarn run export
-        env:
-          NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
-          NEXT_PUBLIC_TYPESENSE_API_URL: ${{ secrets.TYPESENSE_API_URL }}
-          NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
-          NEXT_PUBLIC_LOG_ROCKET_ID: ${{ secrets.LOG_ROCKET_ID }}
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --force --only hosting,firestore,functions,storage
+          args: deploy --force --only firestore,functions,storage
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           PROJECT_ID: digital-testimony-prod

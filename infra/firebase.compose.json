@@ -41,6 +41,18 @@
     "storage": {
       "port": 9199,
       "host": "0.0.0.0"
+    },
+    "hub": {
+      "port": "4400",
+      "host": "0.0.0.0"
+    },
+    "eventarc": {
+      "port": "9299",
+      "host": "0.0.0.0"
+    },
+    "logging": {
+      "port": "4500",
+      "host": "0.0.0.0"
     }
   },
   "storage": {

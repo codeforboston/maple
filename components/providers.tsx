@@ -6,9 +6,8 @@ import { Provider as Firebase } from "./firebase"
 import { LogRocketProvider as LogRocket } from "./logRocket"
 import { Provider as Search } from "./search"
 import { ServiceProvider } from "./service"
-import { Provider as Redux } from "./store"
 
-const providers = [Firebase, Redux, Auth, Profile, Search, LogRocket]
+const providers = [Firebase, Auth, Profile, Search, LogRocket]
 
 export const Providers: React.FC = ({ children }) => (
   <AriaSSRProvider>

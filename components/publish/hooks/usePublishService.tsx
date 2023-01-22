@@ -16,14 +16,25 @@ usePublishService.Provider = Provider
 function Provider() {
   const state = usePublishState(),
     billId = state.bill?.id,
+    court = state.bill?.court,
     uid = state.authorUid,
     key = `${billId}-${uid}`
 
-  return billId && uid ? <Binder billId={billId} uid={uid} key={key} /> : null
+  return billId && uid && court ? (
+    <Binder billId={billId} court={court} uid={uid} key={key} />
+  ) : null
 }
 
-function Binder({ billId, uid }: { billId: string; uid: string }) {
-  const edit = useEditTestimony(uid, billId)
+function Binder({
+  billId,
+  court,
+  uid
+}: {
+  billId: string
+  court: number
+  uid: string
+}) {
+  const edit = useEditTestimony(uid, court, billId)
   useBinding(edit)
   useFormSync(edit)
 

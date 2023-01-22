@@ -1,0 +1,23 @@
+.dropdown {
+  border-radius: 0px;
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 125%;
+  letter-spacing: 0.015em;
+  color: #000000;
+  padding: 2px 4px;
+  border-color: #000000;
+  background-color: transparent;
+  min-width: 160px;
+}
+
+.item:hover {
+  background-color: #1a3185;
+  color: #ffff;
+}
+
+.item {
+  color: #979797;
+}
