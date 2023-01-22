@@ -1,4 +1,6 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { firestore } from "components/firebase"
+import { isNotNull } from "components/utils"
 import { FirebaseError } from "firebase/app"
 import {
   collection,
@@ -39,7 +41,7 @@ const handleFailure = (name: string, e: any, ...json: any) => {
   throw e
 }
 
-export const api = (() => {
+export const dbService = (() => {
   let service: DbService | undefined
   return () => {
     if (!service) service = new DbService()
@@ -74,28 +76,19 @@ export class DbService {
     )
     const archive = result.docs
       .map(snap => snap.data())
-      .filter(Boolean) as Testimony[]
+      .filter(isNotNull) as Testimony[]
     return archive
   }
 
   getPublishedTestimony = async ({
-    authorUid,
-    billId,
-    court
-  }: TestimonyQuery): Promise<Testimony | undefined> => {
-    await this.getDocData<Testimony>(
-      "users",
-      authorUid,
-      "publishedTestimony",
-      billId
-    )
-
+    publishedId
+  }: {
+    publishedId: string
+  }): Promise<Testimony | undefined> => {
     const result = await this.getDocs(
       query(
         collectionGroup(firestore, "publishedTestimony"),
-        where("authorUid", "==", authorUid),
-        where("billId", "==", billId),
-        where("court", "==", court),
+        where("id", "==", publishedId),
         limit(1)
       )
     )
@@ -117,4 +110,18 @@ export class DbService {
       return undefined
     }
   }
+}
+
+export const api = createApi({
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery(),
+  endpoints: () => ({}),
+  tagTypes: ["Bill", "Testimony", ""]
+})
+
+export class ApiResponse {
+  static notFound = (message = "Resource not found") => ({
+    error: { status: 404, data: message }
+  })
+  static ok = <T>(data: T) => ({ data })
 }

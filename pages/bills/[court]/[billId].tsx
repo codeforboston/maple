@@ -1,4 +1,4 @@
-import { api } from "components/db/api"
+import { dbService } from "components/db/api"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BillDetails } from "../../../components/bill"
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
-  const bill = await api().getBill(query.data)
+  const bill = await dbService().getBill(query.data)
   if (!bill) return { notFound: true }
   return { props: { bill: JSON.parse(JSON.stringify(bill)) } }
 }

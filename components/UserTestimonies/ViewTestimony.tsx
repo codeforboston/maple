@@ -1,5 +1,6 @@
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
+import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -8,11 +9,10 @@ import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Form, Row } from "../bootstrap"
 import {
   Testimony,
-  useBill,
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
-import { formatBillId, formatTestimonyLinks } from "../formatting"
+import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
@@ -169,9 +169,7 @@ export const TestimonyItem = ({
               </>
             )}
             {`${published} · `}
-            <Internal
-              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-            >
+            <Internal href={maple.testimony({ publishedId: testimony.id })}>
               Full Text
             </Internal>
           </Col>
@@ -182,7 +180,7 @@ export const TestimonyItem = ({
           </Col>
         </Row>
         <Row className={`col m2`}>
-          <Col className={`p-4 ps-3`} style={{ whiteSpace: "pre-wrap" }}>
+          <Col className={`p-4 ps-3`}>
             <FormattedTestimonyContent testimony={testimony.content} />
           </Col>
           {showControls && (
@@ -212,34 +210,23 @@ export const FormattedTestimonyContent = ({
 }: {
   testimony: string
 }) => {
-  const TESTIMONY_CHAR_LIMIT = 442
+  const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
+  const snippet = showAllTestimony
+    ? testimony
+    : testimony.slice(0, snippetChars)
+  const canExpand = snippet.length !== testimony.length
 
   return (
     <>
-      {testimony.length > TESTIMONY_CHAR_LIMIT && !showAllTestimony ? (
-        <>
-          <div
-            className="col m2"
-            dangerouslySetInnerHTML={formatTestimonyLinks(
-              testimony,
-              TESTIMONY_CHAR_LIMIT
-            )}
-          />
-          <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
-            <Button
-              variant="link"
-              onClick={() => setShowAllTestimony(!showAllTestimony)}
-            >
-              Show More
-            </Button>
-          </Col>
-        </>
-      ) : (
-        <div
-          className="col m2"
-          dangerouslySetInnerHTML={formatTestimonyLinks(testimony)}
-        />
+      <TestimonyContent className="col m2" testimony={snippet} />
+
+      {canExpand && (
+        <Col className="ms-auto d-flex justify-content-start justify-content-sm-end">
+          <Button variant="link" onClick={() => setShowAllTestimony(true)}>
+            Show More
+          </Button>
+        </Col>
       )}
     </>
   )
