@@ -273,17 +273,31 @@ export const DropDownMenu = (props: {
   handleOrder?: ReactEventHandler
 }) => {
   const { handleOrder, currentOrder } = props
+
   return (
-    <Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
+    <DropdownContainer>
+      <StyledDropdown variant="success" id="dropdown-basic">
         {currentOrder}
-      </Dropdown.Toggle>
+      </StyledDropdown>
 
       <Dropdown.Menu>
         <Dropdown.Item onClick={handleOrder}>Most Recent</Dropdown.Item>
         <Dropdown.Item onClick={handleOrder}>Oldest</Dropdown.Item>
       </Dropdown.Menu>
-    </Dropdown>
+    </DropdownContainer>
   )
 }
 export default ViewTestimony
+const DropdownContainer = styled(Dropdown)`
+  display: flex;
+  flex-direction: row-reverse;
+`
+const StyledDropdown = styled(Dropdown.Toggle)`
+  background-color: white;
+  border: 1px solid black;
+  &:active,
+  &:focus,
+  &:hover {
+    background-color: white !important;
+  }
+`
