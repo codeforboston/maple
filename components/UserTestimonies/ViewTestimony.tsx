@@ -291,13 +291,36 @@ export default ViewTestimony
 const DropdownContainer = styled(Dropdown)`
   display: flex;
   flex-direction: row-reverse;
+  margin: 5px;
 `
 const StyledDropdown = styled(Dropdown.Toggle)`
+  display: flex;
+  flex-direction: space-between;
+  align-items: center;
+  padding: 5px;
+  width: 25%;
+
+  font-size: 1.5rem;
+  font-family: Nunito;
+
   background-color: white;
   border: 1px solid black;
+
   &:active,
   &:focus,
   &:hover {
     background-color: white !important;
+  }
+  :after {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    vertical-align: none;
+    content: "▼";
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    font-size: 30px;
   }
 `
