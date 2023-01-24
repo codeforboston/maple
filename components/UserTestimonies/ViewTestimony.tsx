@@ -304,12 +304,17 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   font-family: Nunito;
 
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid lightgrey;
 
   &:active,
   &:focus,
   &:hover {
     background-color: white !important;
+    border-color: black !important;
+  }
+  &:active,
+  &:focus {
+    box-shadow: 0px 0px 10px 4px orange !important;
   }
   :after {
     display: flex;
