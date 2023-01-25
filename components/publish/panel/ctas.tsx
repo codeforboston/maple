@@ -32,16 +32,16 @@ const Cta = ({
   return (
     <Styled className={className}>
       <div className="text-center title">{title}</div>
-      <Image alt="" className="mt-2 mb-2" src="testimony-panel-empty.svg" />
+      <Image alt="" className="mt-2 mb-2" src="/testimony-panel-empty.svg" />
       {cta}
     </Styled>
   )
 }
 
 const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
-  const billId = usePublishState().bill?.id!
+  const bill = usePublishState().bill!
   return (
-    <Wrap href={formUrl(billId)}>
+    <Wrap href={formUrl(bill.id, bill.court)}>
       <Button variant="primary" {...props}>
         {label}
       </Button>

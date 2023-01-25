@@ -1,6 +1,7 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
+import { currentGeneralCourt } from "components/db/common"
 import { first } from "lodash"
 import { nanoid } from "nanoid"
 import { CollectionAliasSchema } from "typesense/lib/Typesense/Aliases"
@@ -8,17 +9,16 @@ import { Timestamp } from "../../functions/src/firebase"
 import { createClient } from "../../functions/src/search/client"
 import { SearchIndexer } from "../../functions/src/search/SearchIndexer"
 import { testDb } from "../testUtils"
+import { createFakeBill } from "./common"
 
 // Backfill operation can take some time. Consider doing a partial backfil in
 // test.
-// TODO: Do a partial backfill or backfill a test collection
-const timeoutMs = 50000
+const timeoutMs = 10000
 jest.setTimeout(timeoutMs)
 
 const client = createClient()
 const testAlias = "bills"
 const mediumTimeout = { timeout: 5000, interval: 1000 }
-const reallyLongTimeout = { timeout: 40000, interval: 1000 }
 
 describe("Upgrades", () => {
   it("upgrades collections when schemas are missing", async () => {
@@ -68,7 +68,7 @@ describe("Upgrades", () => {
       url: "http://localhost:5001/demo-dtp/us-central1/triggerPubsubFunction",
       params: {
         pubsub: "checkSearchIndexVersion",
-        data: '{"check":true}'
+        data: JSON.stringify({ check: true, numBatches: 1 })
       }
     })
   }
@@ -90,25 +90,32 @@ describe("Upgrades", () => {
         .retrieve()
       expect(alias.name).toBe(testAlias)
       expect(collection.num_documents).toBeGreaterThan(0)
-    }, reallyLongTimeout)
+    }, mediumTimeout)
     return alias!
   }
 })
 
 describe("Sync", () => {
   let existing: DocumentSnapshot
-  let id: string
+  let existingId: string
+  let billId: string
+  let searchId: string
   let newBill: any
   let newBillPath: string
+  const court = currentGeneralCourt
 
   beforeEach(async () => {
     await clearCollections()
     await clearAliases()
 
-    id = `test-bill-${nanoid()}`
-    newBillPath = `/generalCourts/192/bills/${id}`
-    existing = await testDb.doc(`/generalCourts/192/bills/H1`).get()
-    newBill = { ...existing.data()!, id }
+    billId = `test-bill-${nanoid()}`
+    searchId = `${court}-${billId}`
+    newBillPath = `/generalCourts/${court}/bills/${billId}`
+    existingId = await createFakeBill()
+    existing = await testDb
+      .doc(`/generalCourts/${court}/bills/${existingId}`)
+      .get()
+    newBill = { ...existing.data()!, id: billId }
   })
 
   it("Creates documents on create", async () => {
@@ -140,7 +147,7 @@ describe("Sync", () => {
   async function assertDocumentExists() {
     await waitFor(async () => {
       const doc = await getDoc()
-      expect(doc.id).toEqual(id)
+      expect(doc.id).toEqual(searchId)
     }, mediumTimeout)
   }
 
@@ -154,7 +161,10 @@ describe("Sync", () => {
   async function getDoc() {
     const collection = first(await client.collections().retrieve())
     expect(collection).toBeTruthy()
-    return client.collections(collection!.name).documents(id).retrieve() as any
+    return client
+      .collections(collection!.name)
+      .documents(searchId)
+      .retrieve() as any
   }
 })
 

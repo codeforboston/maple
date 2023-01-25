@@ -2,6 +2,7 @@ import { act, renderHook } from "@testing-library/react-hooks"
 import { useTestimonyListing } from "."
 import { signInUser2, signInUser3 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
+import { currentGeneralCourt } from "../common"
 
 // jest.setTimeout(10000)
 
@@ -50,7 +51,7 @@ describe("useTestimonyListing", () => {
     await act(async () => {
       await testDb.collection(`users/${uid}/draftTestimony`).add({
         billId: "H1010",
-        court: 192,
+        court: currentGeneralCourt,
         content: "fake testimony",
         position: "endorse"
       })

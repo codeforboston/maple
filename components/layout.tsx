@@ -3,14 +3,14 @@ import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
+import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
-import styles from "./layout.module.css"
-import AuthModal from "./auth/AuthModal"
 
 export type LayoutProps = {
   title?: string
@@ -27,14 +27,16 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <TopNav />
-      {children}
-      <AuthModal />
-      <PageFooter
-        authenticated={authenticated}
-        user={user as any}
-        signOut={() => void auth.signOut()}
-      />
+      <div className={styles.pageContainer}>
+        <TopNav />
+        <AuthModal />
+        <div className={styles.content}>{children}</div>
+        <PageFooter
+          authenticated={authenticated}
+          user={user as any}
+          signOut={() => void auth.signOut()}
+        />
+      </div>
     </>
   )
 }
@@ -117,7 +119,7 @@ const TopNav: React.FC = () => {
                 <NavLink href="/learn/basics-of-testimony">
                   Learn About Testimony
                 </NavLink>
-                <NavLink href="/learn/legislative-process">
+                <NavLink href="/learn/communicating-with-legislators">
                   Communicating with Legislators
                 </NavLink>
                 <NavLink href="/learn/additional-resources">

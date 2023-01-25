@@ -1,0 +1,142 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`formatTestimonyDiff diff 1`] = `
+"- type: space
+  raw: |+
+
+- type: paragraph
+  raw: Testimony Version 2
+  text: Testimony Version 2
+  tokens:
+    - type: text
+      raw: Testimony Version 2
+      text: Testimony Version 2
+- type: space
+  raw: |+
+
+
+- type: paragraph
+  raw: |-
+    1. List **should** be ~~__converted__~~ to \`parag<a/>raph\`
+    2. Same parag<a></asdf>raph
+  text: |-
+    1. List **should** be ~~__converted__~~ to \`parag<a/>raph\`
+    2. Same parag<a></asdf>raph
+  tokens:
+    - type: text
+      raw: '1. List '
+      text: '1. List '
+    - type: strong
+      raw: '**should**'
+      text: should
+      tokens:
+        - type: text
+          raw: should
+          text: should
+    - type: text
+      raw: ' be '
+      text: ' be '
+    - type: del
+      raw: ~~__converted__~~
+      text: __converted__
+      tokens:
+        - type: strong
+          raw: __converted__
+          text: converted
+          tokens:
+            - type: text
+              raw: converted
+              text: converted
+    - type: text
+      raw: ' to '
+      text: ' to '
+    - type: codespan
+      raw: '\`parag<a/>raph\`'
+      text: parag&lt;a/&gt;raph
+    - type: br
+      raw: |+
+
+    - type: text
+      raw: 2. Same parag
+      text: 2. Same parag
+    - type: html
+      raw: <a>
+      inLink: false
+      inRawBlock: false
+      text: <a>
+    - type: html
+      raw: </asdf>
+      inLink: false
+      inRawBlock: false
+      text: </asdf>
+    - type: text
+      raw: raph
+      text: raph
+- type: space
+  raw: |+
+
+
+- type: paragraph
+  raw: '![image][./image.png]'
+  text: '![image][./image.png]'
+  tokens:
+    - type: text
+      raw: '![image][./image.png]'
+      text: '![image][./image.png]'
+- type: space
+  raw: |+
+
+
+- type: html
+  raw: |+
+    <div>This should be <a>a normal</a> paragraph too</div>
+
+  pre: false
+  text: |+
+    <div>This should be <a>a normal</a> paragraph too</div>
+
+- type: paragraph
+  raw: |
+    Ending Paragraph.
+  text: Ending Paragraph.
+  tokens:
+    - type: text
+      raw: Ending Paragraph.
+      text: Ending Paragraph.
+"
+`;
+
+exports[`formatTestimonyDiff diff 2`] = `
+"- count: 41
+  value: |-
+    space
+    paragraph text
+    space
+    paragraph text
+- count: 70
+  removed: true
+  value: ' strong text text del strong text text codespan br text html html text'
+- count: 28
+  value: |
+
+    space
+    paragraph text
+    space
+- count: 5
+  removed: true
+  value: |
+    html
+- count: 14
+  value: paragraph text
+"
+`;
+
+exports[`formatTestimonyDiff diff 3`] = `
+"<p>Testimony Version 2</p>
+<p>1. List <strong>should</strong> be <del><strong>converted</strong></del> to <code>parag&lt;a/&gt;raph</code><br>2. Same parag&lt;a&gt;&lt;/asdf&gt;raph</p>
+<p>![image][./image.png]</p>
+&lt;div&gt;This should be &lt;a&gt;a normal&lt;/a&gt; paragraph too&lt;/div&gt;
+
+<p>Ending Paragraph.</p>
+"
+`;

@@ -143,7 +143,7 @@ const LearnLinks = () => (
       Testimony Explained
     </NavLink>
     <NavLink
-      href="/learn/legislative-process"
+      href="/learn/communicating-with-legislators"
       other={{ className: `${styles.footerLink}` }}
     >
       Contacting Legislators

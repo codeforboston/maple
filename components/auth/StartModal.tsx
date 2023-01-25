@@ -23,7 +23,7 @@ export default function StartModal({
           <Stack gap={3} direction="vertical" className="mb-4 text-center">
             <Image
               fluid
-              src="fancy-govt-with-bg.png"
+              src="/fancy-govt-with-bg.png"
               alt="Government Building"
             />
 
