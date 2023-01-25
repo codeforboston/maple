@@ -6,7 +6,7 @@ import {
   useState
 } from "react"
 import React from "react"
-import styled, { keyframes } from "styled-components"
+import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 export const Tab = (props: {
