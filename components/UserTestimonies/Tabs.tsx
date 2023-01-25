@@ -1,14 +1,24 @@
-import {
+import React, {
   MouseEventHandler,
   ReactElement,
   useEffect,
   useRef,
   useState
 } from "react"
-import React from "react"
 import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
+
+export const TabSlider = (props: { width: number; position: number }) => {
+  const { width, position } = props
+  return <TabSliderStyle width={width ?? 200} position={position} />
+}
+
+export const TabSliderContainer = (props: { children?: JSX.Element }) => {
+  const { children } = props
+  return <TabSliderContainerStyle>{props.children}</TabSliderContainerStyle>
+}
+
 export const Tab = (props: {
   label: string
   value: number
@@ -73,7 +83,7 @@ export const Tabs = (props: {
     <div ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
-        <TabSlider width={sliderWidth ?? 200} position={sliderPos} />
+        <TabSlider width={sliderWidth} position={sliderPos} />
       </TabSliderContainer>
     </div>
   )
@@ -93,7 +103,7 @@ const TabStyle = styled.div<{ active: boolean }>`
   cursor: pointer;
   outline: none;
 `
-const TabSliderContainer = styled.div`
+const TabSliderContainerStyle = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -103,7 +113,7 @@ const TabSliderContainer = styled.div`
   position: absolute;
   margin-bottom: 1%;
 `
-const TabSlider = styled.div<{ width: number; position: number }>`
+export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 1.5s;
   width: ${props => `${props.width}px`};
   height: 10px;
