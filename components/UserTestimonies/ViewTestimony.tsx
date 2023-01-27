@@ -19,6 +19,7 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Card as MapleCard } from "components/Card"
 import { Tabs, Tab } from "./Tabs"
+import { UserFilterDropDown } from "./UserFilterDropdown"
 import { current } from "@reduxjs/toolkit"
 import { RelevantSortConnector } from "instantsearch.js/es/connectors/relevant-sort/connectRelevantSort"
 
@@ -41,6 +42,7 @@ const ViewTestimony = (
   const testimony = items.result ?? []
 
   const [orderBy, setOrderBy] = useState<string>("Most Recent")
+  const [shown, setShown] = useState<string>("All Published Testimonies")
 
   const [activeTab, setActiveTab] = useState(1)
 
@@ -68,6 +70,7 @@ const ViewTestimony = (
         ></Tabs>
       )}
       <div>
+        <UserFilterDropDown handleUsers={handleOrderClick} users={shown} />
         <OrderFilterDropDownMenu
           handleOrder={handleOrderClick}
           currentOrder={orderBy}
