@@ -8,8 +8,6 @@ export const UserFilterDropDown = (props: {
 }) => {
   const { handleUsers, users } = props
 
-  const [orderBy, setOrderBy] = useState<string>("All Published Testimonies")
-
   return (
     <DropdownContainer>
       <StyledDropdown variant="success" id="dropdown-basic">
@@ -41,6 +39,7 @@ const StyledDropdown = styled(Dropdown.Toggle)`
 
   font-size: 1.5rem;
   font-family: Nunito;
+  color: white;
 
   background-color: #1a3185;
   border: 1px solid lightgrey;
@@ -48,6 +47,7 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   &:active,
   &:focus,
   &:hover {
+    color: black;
     background-color: white !important;
     border-color: black !important;
   }
