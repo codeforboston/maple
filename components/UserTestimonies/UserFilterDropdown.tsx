@@ -35,14 +35,13 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   flex-direction: space-between;
   align-items: center;
   padding: 5px;
-  width: 25%;
 
   font-size: 1.5rem;
   font-family: Nunito;
   color: white;
 
   background-color: #1a3185;
-  border: 1px solid lightgrey;
+  border: 1px solid #1a3185;
 
   &:active,
   &:focus,

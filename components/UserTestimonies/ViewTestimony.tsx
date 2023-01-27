@@ -69,13 +69,13 @@ const ViewTestimony = (
           selectedTab={activeTab}
         ></Tabs>
       )}
-      <div>
+      <DropDownsContainerStyle>
         <UserFilterDropDown handleUsers={handleOrderClick} users={shown} />
         <OrderFilterDropDownMenu
           handleOrder={handleOrderClick}
           currentOrder={orderBy}
         />
-      </div>
+      </DropDownsContainerStyle>
       {testimony.length > 0 ? (
         testimony.map(t => (
           <TestimonyItem
@@ -304,7 +304,6 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   flex-direction: space-between;
   align-items: center;
   padding: 5px;
-  width: 25%;
 
   font-size: 1.5rem;
   font-family: Nunito;
@@ -334,6 +333,11 @@ const StyledDropdown = styled(Dropdown.Toggle)`
     border-left: none;
     font-size: 30px;
   }
+  &:focus-visible {
+    background-color: red !important;
+  }
 `
 
-const TabStyle = styled(Tabs)``
+const DropDownsContainerStyle = styled.div`
+  display: flex;
+`
