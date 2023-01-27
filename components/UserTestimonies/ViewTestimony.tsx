@@ -68,7 +68,10 @@ const ViewTestimony = (
         ></Tabs>
       )}
       <div>
-        <DropDownMenu handleOrder={handleOrderClick} currentOrder={orderBy} />
+        <OrderFilterDropDownMenu
+          handleOrder={handleOrderClick}
+          currentOrder={orderBy}
+        />
       </div>
       {testimony.length > 0 ? (
         testimony.map(t => (
@@ -268,7 +271,7 @@ export const FormattedTestimonyContent = ({
   )
 }
 
-export const DropDownMenu = (props: {
+export const OrderFilterDropDownMenu = (props: {
   currentOrder: string
   handleOrder?: ReactEventHandler
 }) => {
@@ -329,3 +332,5 @@ const StyledDropdown = styled(Dropdown.Toggle)`
     font-size: 30px;
   }
 `
+
+const TabStyle = styled(Tabs)``
