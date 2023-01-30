@@ -1,6 +1,7 @@
 import { PolicyContent } from "./PolicyContent"
 import { Button, Stack, Container } from "react-bootstrap"
 import { ButtonHTMLAttributes, useState } from "react"
+import style from "./PolicyPage.module.css"
 
 export default function PolicyPage() {
   const [policycontent, setpolicy] = useState<
@@ -11,7 +12,7 @@ export default function PolicyPage() {
   }
 
   return (
-    <Container>
+    <Container className={style.policyContent}>
       <h1>Policies</h1>
       <Stack direction="horizontal">
         <Button id="privacy-policy" onClick={handleOnClick}>

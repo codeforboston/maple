@@ -2,6 +2,18 @@
   font-weight: bold;
 }
 
+/* ---------- Policy Links --------------*/
+.policyContent button {
+  background: none;
+  color: #000;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 30%);
+  border-radius: 0!important;
+}
+
+
+/* ---------- Policy Content ------------*/
 .policyContent ul {
   background: #fff;
   list-style-type: none;
