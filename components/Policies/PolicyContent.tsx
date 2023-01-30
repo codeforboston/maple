@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
+import style from "./PolicyPage.module.css"
 
 export const PolicyContent = (props: { policy: string | undefined }) => {
   const [content, setContent] = useState("")
@@ -13,7 +14,7 @@ export const PolicyContent = (props: { policy: string | undefined }) => {
 
   return (
     <div>
-      <ReactMarkdown>{content}</ReactMarkdown>
+      <ReactMarkdown className={style.policyContent}>{content}</ReactMarkdown>
     </div>
   )
 }

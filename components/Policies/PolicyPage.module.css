@@ -1,3 +1,48 @@
 .h1 {
   font-weight: bold;
 }
+
+.policyContent ul {
+  background: #fff;
+  list-style-type: none;
+  padding: 0 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+}
+
+.policyContent:last-child {
+  margin-bottom: 50px;
+}
+
+.policyContent hr {
+  background: transparent;
+}
+
+.policyContent ul hr {
+  background: #000;
+  height: 2px;
+}
+
+.policyContent ul + li{
+  list-style-type: circle;
+}
+
+.policyContent ul li ul li  {
+  list-style-type: initial;
+}
+
+.policyContent h2 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+  padding-top: 20px;
+}
+
+.policyContent h3 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+
+
