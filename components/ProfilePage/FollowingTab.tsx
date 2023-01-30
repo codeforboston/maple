@@ -5,10 +5,18 @@ import { Profile, ProfileHook } from "../db"
 import { formatBillId } from "../formatting"
 import { billLink, billURL, External } from "../links"
 import { TitledSectionCard } from "../shared"
+import BillFollowingTitle from "./BillFollowingTitle"
 import { ImageInput } from "./ImageInput"
 import UnfollowModal from "./UnfollowModal"
 
-import BillFollowingTitle from "./BillFollowingTitle"
+import { collection, doc, query, where, getDocs } from "firebase/firestore"
+import { firestore, storage } from "../firebase"
+import { Frequency, useAuth } from "../auth"
+import {
+  currentGeneralCourt,
+  parseApiDateTime
+} from "../../functions/src/malegislature"
+import { db } from "../../functions/src/firebase"
 
 type Props = {
   actions: ProfileHook
@@ -55,6 +63,20 @@ export function FollowingTab({ actions, className, profile }: Props) {
   }
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
+
+  // async function TestQuery() {
+  //   const q = query(
+  //     collection(firestore, `/profiles`),
+  //     where("Document ID", "==", "MDXkFoEM3qaJgRgEJEwCLpCvvxz1")
+  //   )
+  //   const querySnapshot = await getDocs(q)
+  //   querySnapshot.forEach(doc => {
+  //     // doc.data() is never undefined for query doc snapshots
+  //     console.log(doc.id, " => ", doc.data())
+  //   })
+  // }
+
+  // TestQuery()
 
   return (
     <>
