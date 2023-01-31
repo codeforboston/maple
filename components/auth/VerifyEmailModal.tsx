@@ -28,7 +28,7 @@ export default function VerifyEmailModal({
               will not be able to submit your testimonies.
             </h6>
             <Internal href="/editprofile" className="view-edit-profile">
-              <Button onClick={onHide} >Continue With Setting Up Profile</Button>
+              <Button onClick={onHide}>Continue With Setting Up Profile</Button>
             </Internal>
           </Stack>
         </Col>

@@ -1,5 +1,7 @@
 .policyContent {
-  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";  /* color: red; */
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* color: red; */
 }
 
 /* ---------- Policy Links --------------*/
@@ -15,15 +17,15 @@
   font-weight: bold;
   padding-bottom: 10px;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 30%);
-  border-radius: 0!important;
+  border-bottom: 5px solid rgba(0, 0, 0, 30%);
+  border-radius: 0 !important;
 }
 
 .policyContent button:focus {
   color: initial;
   background: initial;
   border: initial;
-  box-shadow: none!important;
+  box-shadow: none !important;
 }
 
 .policyContent br {
@@ -31,10 +33,8 @@
 }
 
 .policyContent button.currentTab {
-  /* background: green!important; */
-  border-bottom: inset 4px #902323 !important;
+  border-bottom: inset 5px #902323 !important;
   color: #902323;
-  /* font-size: 5rem!important; */
 }
 
 .btn-primary:hover,
@@ -66,11 +66,11 @@
   height: 2px;
 }
 
-.policyContent ul + li{
+.policyContent ul + li {
   list-style-type: circle;
 }
 
-.policyContent ul li ul li  {
+.policyContent ul li ul li {
   list-style-type: initial;
 }
 
@@ -91,16 +91,14 @@
   font-weight: bold;
 }
 
-
-@media(max-width: 768px){
+@media (max-width: 768px) {
   .policyContent button {
     min-height: 90px;
   }
 }
 
-@media(max-width: 400px){
+@media (max-width: 400px) {
   .policyContent button {
     min-height: 125px;
   }
 }
-

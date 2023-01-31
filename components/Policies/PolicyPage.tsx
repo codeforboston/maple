@@ -8,7 +8,7 @@ export default function PolicyPage() {
     "terms-of-service" | "privacy-policy" | "code-of-conduct"
   >("privacy-policy")
 
-  const [toggleCurrentTab, setToggleTab] = useState(1);
+  const [toggleCurrentTab, setToggleTab] = useState(1)
 
   const handleOnClick = (e: any, index: any) => {
     setToggleTab(index)
@@ -18,16 +18,28 @@ export default function PolicyPage() {
   return (
     <Container className={style.policyContent}>
       <h1>Policies</h1>
-      
+
       <Stack direction="horizontal">
-        <Button className={`${style[toggleCurrentTab === 1 ? "currentTab" : "tab"]}`} id="privacy-policy" onClick={(e) => handleOnClick(e,1)}>
-          Privacy <br/> Policy
+        <Button
+          className={`${style[toggleCurrentTab === 1 ? "currentTab" : "tab"]}`}
+          id="privacy-policy"
+          onClick={e => handleOnClick(e, 1)}
+        >
+          Privacy <br /> Policy
         </Button>
-        <Button className={`${style[toggleCurrentTab === 2 ? "currentTab" : "tab"]}`} id="terms-of-service" onClick={(e) => handleOnClick(e,2)}>
-          Terms <br/> of Service
+        <Button
+          className={`${style[toggleCurrentTab === 2 ? "currentTab" : "tab"]}`}
+          id="terms-of-service"
+          onClick={e => handleOnClick(e, 2)}
+        >
+          Terms <br /> of Service
         </Button>
-        <Button className={`${style[toggleCurrentTab === 3 ? "currentTab" : "tab"]}`} id="code-of-conduct" onClick={(e) => handleOnClick(e,3)}>
-          Code of <br/> Conduct
+        <Button
+          className={`${style[toggleCurrentTab === 3 ? "currentTab" : "tab"]}`}
+          id="code-of-conduct"
+          onClick={e => handleOnClick(e, 3)}
+        >
+          Code of <br /> Conduct
         </Button>
       </Stack>
 
