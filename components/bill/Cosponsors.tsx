@@ -66,7 +66,7 @@ export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
     <>
       <StyledButton
         variant="link"
-        className="m-1"
+        className="m-1 text-dark"
         onClick={handleShowBillCosponsors}
       >
         {children}
