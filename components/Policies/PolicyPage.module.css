@@ -17,7 +17,7 @@
   font-weight: bold;
   padding-bottom: 10px;
   border: none;
-  border-bottom: 5px solid rgba(0, 0, 0, 30%);
+  border-bottom: 1px solid rgba(0, 0, 0, 30%);
   border-radius: 0 !important;
 }
 
@@ -33,15 +33,15 @@
 }
 
 .policyContent button.currentTab {
-  border-bottom: inset 5px #902323 !important;
+  border-bottom: inset 5px #902323;
   color: #902323;
 }
 
-.btn-primary:hover,
+.policyContent button:hover,
 .policyContent button.currentTab:hover {
   color: #fff;
   background-color: #902323;
-  border-color: #902323;
+  border-bottom: inset 5px #902323;
 }
 
 /* ---------- Policy Content ------------*/
