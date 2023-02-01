@@ -87,9 +87,9 @@ export default function NotificationSettingsModal({
           </Stack>
           <Stack
             className={`
-            pt-3 ${styles.modalFontSize} 
-            ${notifications === "None" ? "invisible" : ""} 
-          `}
+              pt-3 ${styles.modalFontSize} 
+              ${notifications === "None" ? "invisible" : ""} 
+            `}
             direction={`horizontal`}
           >
             <Col className={`col-8`}>

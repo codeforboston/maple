@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
 import styled from "styled-components"
-import { Bill, BillContent, MemberReference, useMember } from "../db"
+import { MemberReference, useMember } from "../db"
 import { memberLink } from "../links"
 import { FC } from "../types"
 import { BillProps } from "./types"

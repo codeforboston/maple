@@ -1,4 +1,4 @@
-import { Button, Col, Container, Image, Row, Stack } from "../bootstrap"
+import { Row } from "../bootstrap"
 import { External } from "../links"
 import { LabeledIcon } from "../shared"
 import { FC } from "../types"
@@ -51,7 +51,10 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
       </Row>
       <div className={className}>
         <div
-          className={`mt-2 pb-3 d-flex justify-content-right ${styles.borderBottom}`}
+          className={`
+            mt-2 pb-3 d-flex justify-content-right 
+            ${more ? styles.borderBottom : ""}
+          `}
         >
           <LabeledIcon
             idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
