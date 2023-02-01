@@ -4,7 +4,7 @@ import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
-import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
+import { Committees, SponsorsAndCommittees } from "./SponsorsAndCommittees"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useAuth } from "../auth"
@@ -84,7 +84,8 @@ export const Layout = ({ bill }: BillProps) => {
           <SponsorsAndCommittees bill={bill} className="mt-4 pb-1" />
           <BillTestimonies bill={bill.content} className="mt-4" />
         </Col>
-        <Col md={4} className="mt-4">
+        <Col md={4}>
+          <Committees bill={bill} className="mt-4 pb-1" />
           <TestimonyFormPanel bill={bill} />
         </Col>
       </Row>

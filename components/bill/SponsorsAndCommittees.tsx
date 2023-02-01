@@ -11,31 +11,35 @@ export const SponsorsAndCommittees: FC<BillProps> = ({ bill, className }) => {
   return (
     <LabeledContainer className={className}>
       <Sponsors bill={bill} />
-      <Committees bill={bill} />
+      {/* <Committees bill={bill} /> */}
     </LabeledContainer>
   )
 }
 
-const Committees: FC<BillProps> = ({ bill }) => {
+export const Committees: FC<BillProps> = ({ bill, className }) => {
   const current = bill.currentCommittee
   if (!current) return null
   return (
-    <div>
-      <div className="title">Committee</div>
+    <LabeledContainer className={className}>
+      <Row className={`bg-secondary text-light ${styles.subHeader}`}>
+        Committee
+      </Row>
       <div className="d-flex justify-content-around">
         <LabeledIcon
           idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
-          mainText="Committee"
+          // mainText="Committee"
+          mainText=""
           subText={
             <External
               href={`https://malegislature.gov/Committees/Detail/${current.id}`}
             >
               {current.name}
+              {console.log("Current", current)}
             </External>
           }
         />
       </div>
-    </div>
+    </LabeledContainer>
   )
 }
 
