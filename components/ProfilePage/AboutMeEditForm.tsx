@@ -128,13 +128,13 @@ export function AboutMeEditForm({
           </div>
           <Row className="align-items-center justify-content-center mb-3">
             <Col className="align-items-center" xs="auto">
-              <Button className="flex-grow-0 mt-5 mx-auto" type="submit">
+              <Button className="flex-grow-0 mt-5 mx-auto py-1" type="submit">
                 Save Profile
               </Button>
             </Col>
             <Col className="align-items-center" xs="auto">
               <Button
-                className="flex-grow-0 mt-5 mx-auto"
+                className="flex-grow-0 mt-5 mx-auto py-1"
                 href="/profile"
                 style={{ backgroundColor: "var(--bs-blue)" }}
               >
