@@ -90,7 +90,7 @@ export const Summary = ({
         </TitleFormat>
 
         <Divider xs="auto" />
-        <Col xs="auto">
+        <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
       </Row>
