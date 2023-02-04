@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithModal, useAuth } from "./auth"
+import { SignInWithModal, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
@@ -26,15 +26,13 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.pageContainer}>
-        <TopNav />
-        <div className={styles.content}>{children}</div>
-        <PageFooter
-          authenticated={authenticated}
-          user={user as any}
-          signOut={() => void auth.signOut()}
-        />
-      </div>
+      <TopNav />
+      {children}
+      <PageFooter
+        authenticated={authenticated}
+        user={user as any}
+        signOut={signOutAndRedirectToHome}
+      />
     </>
   )
 }
@@ -140,7 +138,9 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
+                <NavLink handleClick={signOutAndRedirectToHome}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
