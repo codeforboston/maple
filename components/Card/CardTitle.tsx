@@ -15,7 +15,6 @@ export const CardTitle = (props: CardTitleProps) => {
   return (
     <CardBootstrap.Body className={`${styles.text} ${styles.body}`}>
       {imgSrc && <CardBootstrap.Img className={styles.img} src={imgSrc} />}
-
       <CardBootstrap.Body>
         {header && (
           <CardBootstrap.Title className={styles.title}>
