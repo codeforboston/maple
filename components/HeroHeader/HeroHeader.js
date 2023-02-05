@@ -1,4 +1,4 @@
-import { SignInWithModal } from "../auth"
+import { SignInWithButton } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
@@ -58,7 +58,7 @@ const HeroHeader = ({ authenticated }) => {
                   <div className="text-end m-5">
                     {!authenticated && (
                       <div className={styles.btncontainer}>
-                        <SignInWithModal label="Sign in to Testify" />
+                        <SignInWithButton label="Sign in to Testify" />
                       </div>
                     )}
                     <Wrap href="/bills">

@@ -1,7 +1,7 @@
 import { Row, Col } from "../../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./ForTestifiersCardContent.module.css"
-import { SignInWithModal } from "../../auth"
+import { SignInWithButton } from "../../auth"
 import Link from "next/link"
 
 const WhyMAPLECardContent = () => (
@@ -113,7 +113,7 @@ const ChallengeCardContent = () => (
     </p>
     <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">
       <div className={styles.btncontainer}>
-        <SignInWithModal label="Click here to sign up for your MAPLE account" />
+        <SignInWithButton label="Click here to sign up for your MAPLE account" />
       </div>
     </h3>
     <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>

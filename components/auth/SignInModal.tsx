@@ -18,12 +18,13 @@ export default function SignInModal({
   onForgotPasswordClick
 }: Pick<ModalProps, "show" | "onHide"> & {
   onForgotPasswordClick: () => void
+  onHide: () => void
 }) {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors, isSubmitSuccessful }
   } = useForm<SignInWithEmailAndPasswordData>()
 
   const signIn = useSignInWithEmailAndPassword()
@@ -38,7 +39,8 @@ export default function SignInModal({
   }, [show, reset])
 
   const onSubmit = handleSubmit(credentials => {
-    signIn.execute(credentials)
+    const promise = signIn.execute(credentials)
+    promise.then(onHide).catch(err => {})
   })
 
   return (
