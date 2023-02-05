@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, useAuth } from "./auth"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
@@ -34,7 +34,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         <PageFooter
           authenticated={authenticated}
           user={user as any}
-          signOut={() => void auth.signOut()}
+          signOut={signOutAndRedirectToHome}
         />
       </div>
     </>
@@ -142,7 +142,9 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
+                <NavLink handleClick={signOutAndRedirectToHome}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
