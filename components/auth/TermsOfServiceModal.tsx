@@ -30,17 +30,17 @@ export default function TermsOfServiceModal({
               <Col md={10}>
                 <ul>
                   <li>
-                    We hvae established this Privacy Policy so you can
-                    understand the care with which we intend ot treat your
+                    We have established this Privacy Policy so you can
+                    understand the care with which we intend to treat your
                     personal information.
                   </li>
                   <li>
                     We store your name, email address, state representative,
-                    senator, and password
+                    senator, and password.
                   </li>
                   <li>
                     Everything you share with us, other than your email and
-                    password, will be available on our website, MAPLE
+                    password, will be available on our website, MAPLE.
                   </li>
                 </ul>
               </Col>
@@ -67,7 +67,7 @@ export default function TermsOfServiceModal({
                     We may send newsletters via email to MAPLE members. You can
                     unsubscribe from these newsletters at any time by using the
                     "Unsubscribe" link in the emails themselves. We never share
-                    with or sell your email to third party providers
+                    with or sell your email to third party providers.
                   </li>
                 </ul>
               </Col>

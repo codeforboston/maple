@@ -23,12 +23,12 @@ export default function VerifyEmailModal({
             />
             <h2 className={styles.title}>Verify your email address</h2>
             <h6 className={styles.body}>
-              Please verify your email for you account by clicking the
-              verification link we send to your email. If you fail to do so, you
-              will not be able to submit your testimonies.
+              Please verify your email for your account by clicking the
+              verification link we sent to your email. You will be required to
+              verify your email before submitting testimony.
             </h6>
             <Internal href="/editprofile" className="view-edit-profile">
-              <Button onClick={onHide}>Continue With Setting Up Profile</Button>
+              <Button onClick={onHide}>Set Up Your Profile</Button>
             </Internal>
           </Stack>
         </Col>
