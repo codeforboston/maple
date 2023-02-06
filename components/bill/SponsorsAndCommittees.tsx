@@ -1,3 +1,5 @@
+import { format, fromUnixTime } from "date-fns"
+import styled from "styled-components"
 import { Row } from "../bootstrap"
 import { External } from "../links"
 import { LabeledIcon } from "../shared"
@@ -6,6 +8,18 @@ import { Cosponsors } from "./Cosponsors"
 import { LabeledContainer } from "./LabeledContainer"
 import styles from "./SponsorsAndCommittees.module.css"
 import { BillProps } from "./types"
+
+const HearingDate = styled.div`
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 125%;
+
+  text-align: center;
+  color: #ffffff;
+
+  align-self: stretch;
+  max-width: 202px;
+`
 
 export const SponsorsAndCommittees: FC<BillProps> = ({ bill, className }) => {
   return (
@@ -34,12 +48,28 @@ export const Committees: FC<BillProps> = ({ bill, className }) => {
               href={`https://malegislature.gov/Committees/Detail/${current.id}`}
             >
               {current.name}
-              {console.log("Current", current)}
             </External>
           }
         />
       </div>
     </LabeledContainer>
+  )
+}
+
+export const Hearing: FC<BillProps> = ({ bill, className }) => {
+  return (
+    <>
+      {!bill.nextHearingAt?.seconds ? null : (
+        <LabeledContainer className={className}>
+          <HearingDate>
+            Hearing Scheduled for{" "}
+            {bill.nextHearingAt?.seconds
+              ? format(fromUnixTime(bill.nextHearingAt?.seconds), "MMM d, y p")
+              : null}
+          </HearingDate>
+        </LabeledContainer>
+      )}
+    </>
   )
 }
 

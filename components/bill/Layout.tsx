@@ -4,7 +4,11 @@ import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
-import { Committees, SponsorsAndCommittees } from "./SponsorsAndCommittees"
+import {
+  Committees,
+  Hearing,
+  SponsorsAndCommittees
+} from "./SponsorsAndCommittees"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useAuth } from "../auth"
@@ -23,7 +27,6 @@ const StyledImage = styled(Image)`
 
 export const Layout = ({ bill }: BillProps) => {
   const billId = bill.id
-  const billTitle = bill.content.Title
   const { user } = useAuth()
   const uid = user?.uid
   const actions = useProfile()
@@ -46,6 +49,8 @@ export const Layout = ({ bill }: BillProps) => {
     userBillList = userBillList.filter(item => item !== billId)
     await updateProfile({ actions })
   }
+
+  console.log("Bill: ", bill)
 
   return (
     <StyledContainer className="mt-3 mb-3">
@@ -86,6 +91,10 @@ export const Layout = ({ bill }: BillProps) => {
         </Col>
         <Col md={4}>
           <Committees bill={bill} className="mt-4 pb-1" />
+          <Hearing
+            bill={bill}
+            className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
+          />
           <TestimonyFormPanel bill={bill} />
         </Col>
       </Row>
