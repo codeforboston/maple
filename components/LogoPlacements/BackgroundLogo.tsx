@@ -12,7 +12,7 @@ export default function BackgroundLogo() {
         opacity: 0.1
       }}
     >
-      <Image fluid alt="" src="maple-1.png" />
+      <Image fluid alt="" src="/maple-1.png" />
     </div>
   )
 }

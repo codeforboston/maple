@@ -39,8 +39,8 @@ export type MemberSearchIndex = {
   senators: (MemberSearchIndexItem & { Branch: "Senate" })[]
 }
 
-export function useMember(id?: string) {
-  const { loading, result } = useAsync(getMember, [id])
+export function useMember(court: number, id?: string) {
+  const { loading, result } = useAsync(getMember, [court, id])
   return useMemo(
     () => ({
       member: result,
@@ -56,12 +56,11 @@ export function useMemberSearch() {
 }
 
 async function getMember(
+  court: number,
   memberCode?: string
 ): Promise<MemberContent | undefined> {
   if (!memberCode) return undefined
-  const member = await loadDoc(
-    `/generalCourts/${currentGeneralCourt}/members/${memberCode}`
-  )
+  const member = await loadDoc(`/generalCourts/${court}/members/${memberCode}`)
   return member?.content
 }
 

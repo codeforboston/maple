@@ -1,7 +1,6 @@
+import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const Tag = () => <div>TODO</div>
+import { Tag } from "../../components/Tag/Tag"
 
 export default createMeta({
   title: "Components/Tag",
@@ -10,4 +9,13 @@ export default createMeta({
   component: Tag
 })
 
-export const Primary = () => <Tag />
+const Template: ComponentStory<typeof Tag> = args => <Tag {...args} />
+
+export const Senate = Template.bind({})
+Senate.args = { chamber: "senate" }
+
+export const House = Template.bind({})
+House.args = { chamber: "house" }
+
+export const Joint = Template.bind({})
+Joint.args = { chamber: "joint" }

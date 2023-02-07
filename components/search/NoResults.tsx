@@ -18,7 +18,7 @@ const Container = styled.div`
 export const NoResults: React.FC = ({ children }) => {
   return (
     <Container>
-      <Image src="no-results.png" alt="No results" />
+      <Image src="/no-results.png" alt="No results" />
       <div className="fs-3">Looks Pretty Empty Here</div>
       <div className="text-center">{children}</div>
     </Container>

@@ -1,4 +1,5 @@
-import React, { ReactElement, useState } from "react"
+import clsx from "clsx"
+import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import styles from "./Card.module.css"
 import { CardListItems, ListItem } from "./CardListItem"
@@ -24,6 +25,7 @@ interface CardProps {
   headerElement?: ReactElement
   body?: ReactElement
   initialRowCount?: number
+  className?: string
 }
 
 export const Card = (CardProps: CardProps) => {
@@ -38,7 +40,8 @@ export const Card = (CardProps: CardProps) => {
     inHeaderElement,
     headerElement,
     body,
-    initialRowCount = 3
+    initialRowCount = 3,
+    className
   } = CardProps
 
   const headerContent = header ? (
@@ -89,7 +92,7 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={styles.container}>
+    <CardBootstrap className={clsx(className, styles.container)}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}

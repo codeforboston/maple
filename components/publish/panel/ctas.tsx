@@ -1,7 +1,7 @@
 import { ReactElement } from "react"
 import { Button, ButtonProps, Image } from "react-bootstrap"
 import styled from "styled-components"
-import { SignInWithModal, useAuth } from "../../auth"
+import { SignInWithButton, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
 
@@ -32,16 +32,16 @@ const Cta = ({
   return (
     <Styled className={className}>
       <div className="text-center title">{title}</div>
-      <Image alt="" className="mt-2 mb-2" src="testimony-panel-empty.svg" />
+      <Image alt="" className="mt-2 mb-2" src="/testimony-panel-empty.svg" />
       {cta}
     </Styled>
   )
 }
 
 const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
-  const billId = usePublishState().bill?.id!
+  const bill = usePublishState().bill!
   return (
-    <Wrap href={formUrl(billId)}>
+    <Wrap href={formUrl(bill.id, bill.court)}>
       <Button variant="primary" {...props}>
         {label}
       </Button>
@@ -73,7 +73,7 @@ export const CompleteTestimony = () => (
 export const SignedOut = () => (
   <Cta
     title="Sign In to Add Testimony"
-    cta={<SignInWithModal label="Sign In/Sign Up" />}
+    cta={<SignInWithButton label="Sign In/Sign Up" />}
   />
 )
 

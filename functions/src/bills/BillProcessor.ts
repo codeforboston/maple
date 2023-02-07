@@ -1,6 +1,5 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
 import { runWith } from "firebase-functions"
-import { Runtype } from "runtypes"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -93,7 +92,19 @@ export default abstract class BillProcessor {
       .then(this.load(Member))
   }
 
-  protected load<T extends { id: string }>(Entity: Runtype<T>) {
-    return (snap: QuerySnapshot) => snap.docs.map(d => Entity.check(d.data()))
+  protected load<T extends { id: string }>(Entity: {
+    check?: (v: unknown) => T
+    checkWithDefaults?: (v: unknown) => T
+  }) {
+    return (snap: QuerySnapshot) =>
+      snap.docs.map(d => {
+        const v = d.data()
+        try {
+          return (Entity.checkWithDefaults ?? Entity.check)!(v)
+        } catch (e) {
+          console.warn(v, (e as any)?.details)
+          throw e
+        }
+      })
   }
 }

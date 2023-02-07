@@ -1,10 +1,11 @@
 import { renderHook } from "@testing-library/react-hooks"
-import { terminateFirebase } from "../../tests/testUtils"
+import { terminateFirebase, testDb, testTimestamp } from "../../tests/testUtils"
 import { useUpcomingBills } from "./useUpcomingBills"
 
 import { DateTime } from "luxon"
-import { midnight } from "./common"
+import { currentGeneralCourt, midnight } from "./common"
 import { useUpcomingEvents } from "./events"
+import { createFakeBill } from "tests/integration/common"
 
 const mockedMidnight = jest.mocked(midnight)
 
@@ -15,6 +16,13 @@ describe("useUpcomingBills", () => {
     // Test the seeded events
     const cutoff = DateTime.utc(2022, 3, 8)
     mockedMidnight.mockReturnValue(cutoff.toJSDate())
+
+    const billId = await createFakeBill()
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
+      .update({
+        nextHearingAt: testTimestamp.now()
+      })
 
     const { waitFor, result } = renderHook(() => useUpcomingBills())
 
