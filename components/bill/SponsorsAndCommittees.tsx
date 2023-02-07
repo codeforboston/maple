@@ -21,15 +21,6 @@ const HearingDate = styled.div`
   max-width: 202px;
 `
 
-export const SponsorsAndCommittees: FC<BillProps> = ({ bill, className }) => {
-  return (
-    <LabeledContainer className={className}>
-      <Sponsors bill={bill} />
-      {/* <Committees bill={bill} /> */}
-    </LabeledContainer>
-  )
-}
-
 export const Committees: FC<BillProps> = ({ bill, className }) => {
   const current = bill.currentCommittee
   if (!current) return null
@@ -38,7 +29,7 @@ export const Committees: FC<BillProps> = ({ bill, className }) => {
       <Row className={`bg-secondary text-light ${styles.subHeader}`}>
         Committee
       </Row>
-      <div className="d-flex justify-content-around">
+      <div className={`d-flex justify-content-around`}>
         <LabeledIcon
           idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
           // mainText="Committee"
@@ -73,13 +64,13 @@ export const Hearing: FC<BillProps> = ({ bill, className }) => {
   )
 }
 
-const Sponsors: FC<BillProps> = ({ bill, className }) => {
+export const Sponsors: FC<BillProps> = ({ bill, className }) => {
   const primary = bill.content.PrimarySponsor
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary.Id)
   const more = cosponsors.length > 2
 
   return (
-    <>
+    <LabeledContainer className={className}>
       <Row className={`bg-secondary text-light ${styles.subHeader}`}>
         Sponsors
       </Row>
@@ -127,6 +118,6 @@ const Sponsors: FC<BillProps> = ({ bill, className }) => {
           )}
         </div>
       </div>
-    </>
+    </LabeledContainer>
   )
 }
