@@ -8,6 +8,7 @@ export type Firebase = typeof firebase
 export type Api = typeof api
 
 export type Context = {
+  env: "dev" | "prod" | "local"
   firebase: Firebase
   db: Database
   admin: Admin

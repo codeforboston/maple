@@ -1,12 +1,14 @@
 import * as analytics from "firebase/analytics"
-import { FirebaseOptions, initializeApp } from "firebase/app"
+import { FirebaseOptions, getApps, initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth } from "firebase/auth"
 import {
   connectFirestoreEmulator,
+  getFirestore,
   initializeFirestore
 } from "firebase/firestore"
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
+import { first } from "lodash"
 import { useEffect } from "react"
 import { createService } from "./service"
 
@@ -28,7 +30,9 @@ const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
   ? JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG)
   : devConfig
 
-export const app = initializeApp(config)
+const initialized = first(getApps())
+
+export const app = initialized ?? initializeApp(config)
 
 export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
@@ -52,14 +56,16 @@ export const { Provider } = createService(() => {
   }, [])
 })
 
-export const firestore = initializeFirestore(app, {
-  ignoreUndefinedProperties: true
-})
-export const auth = getAuth(app)
-export const storage = getStorage(app)
-export const functions = getFunctions(app)
+export const firestore = initialized
+  ? getFirestore()
+  : initializeFirestore(app, {
+      ignoreUndefinedProperties: true
+    })
+export const auth = getAuth()
+export const storage = getStorage()
+export const functions = getFunctions()
 
-if (process.env.NODE_ENV !== "production") {
+if (!initialized && process.env.NODE_ENV !== "production") {
   const useEmulator = process.env.NEXT_PUBLIC_USE_EMULATOR
   switch (useEmulator) {
     case "1":
@@ -78,10 +84,11 @@ if (process.env.NODE_ENV !== "production") {
 
 /** Connect emulators according to `firebase.json` */
 function connectEmulators() {
-  connectFirestoreEmulator(firestore, "localhost", 8080)
-  connectFunctionsEmulator(functions, "localhost", 5001)
-  connectStorageEmulator(storage, "localhost", 9199)
-  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true })
+  const host = typeof window === "undefined" ? "firebase" : "localhost"
+  connectFirestoreEmulator(firestore, host, 8080)
+  connectFunctionsEmulator(functions, host, 5001)
+  connectStorageEmulator(storage, host, 9199)
+  connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true })
   if (process.env.NODE_ENV === "development")
     console.log("Connected to emulators")
 }

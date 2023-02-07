@@ -2,14 +2,15 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithModal, useAuth } from "./auth"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
+import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
-import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -26,13 +27,16 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <TopNav />
-      {children}
-      <PageFooter
-        authenticated={authenticated}
-        user={user as any}
-        signOut={() => void auth.signOut()}
-      />
+      <div className={styles.pageContainer}>
+        <TopNav />
+        <AuthModal />
+        <div className={styles.content}>{children}</div>
+        <PageFooter
+          authenticated={authenticated}
+          user={user as any}
+          signOut={signOutAndRedirectToHome}
+        />
+      </div>
     </>
   )
 }
@@ -90,7 +94,7 @@ const TopNav: React.FC = () => {
                     displayName={profile?.displayName}
                   />
                 ) : (
-                  !sticky && <SignInWithModal />
+                  !sticky && <SignInWithButton />
                 )}
               </Nav>
             </div>
@@ -115,7 +119,7 @@ const TopNav: React.FC = () => {
                 <NavLink href="/learn/basics-of-testimony">
                   Learn About Testimony
                 </NavLink>
-                <NavLink href="/learn/legislative-process">
+                <NavLink href="/learn/communicating-with-legislators">
                   Communicating with Legislators
                 </NavLink>
                 <NavLink href="/learn/additional-resources">
@@ -138,12 +142,14 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
+                <NavLink handleClick={signOutAndRedirectToHome}>
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
           {sticky && !authenticated ? (
-            <SignInWithModal className={styles.mobile_nav_auth} />
+            <SignInWithButton className={styles.mobile_nav_auth} />
           ) : null}
         </Container>
       </Navbar>

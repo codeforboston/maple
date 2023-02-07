@@ -2,6 +2,7 @@ import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Modal, Row, Stack } from "../bootstrap"
 import styles from "./TermsOfService.module.css"
 import SVG from "react-inlinesvg"
+import { External } from "components/links"
 
 export default function TermsOfServiceModal({
   show,
@@ -16,58 +17,42 @@ export default function TermsOfServiceModal({
       <Modal.Body className={styles.text}>
         <Col md={12} className="mx-auto">
           <Stack gap={3} className="mb-4">
-            <Row className="align-items-end">
+            <Row className="align-items-center">
               <Col md={9}>
                 <h4>Privacy Policy</h4>
               </Col>
               <Col md={3}>
-                <a
-                  className={styles.link}
-                  rel="noreferrer"
-                  href={"./privacy-policy"}
-                  target={"_blank"}
-                >
-                  <h6 className={styles.readmore}>
-                    Read More
-                    <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
-                  </h6>
-                </a>
+                <External className={styles.link} href="/policies">
+                  Read More
+                </External>
               </Col>
               <hr className={styles.hr} />
               <Col md={10}>
                 <ul>
                   <li>
-                    We hvae established this Privacy Policy so you can
-                    understand the care with which we intend ot treat your
+                    We have established this Privacy Policy so you can
+                    understand the care with which we intend to treat your
                     personal information.
                   </li>
                   <li>
                     We store your name, email address, state representative,
-                    senator, and password
+                    senator, and password.
                   </li>
                   <li>
                     Everything you share with us, other than your email and
-                    password, will be available on our website, MAPLE
+                    password, will be available on our website, MAPLE.
                   </li>
                 </ul>
               </Col>
             </Row>
-            <Row className="align-items-end">
+            <Row className="align-items-center">
               <Col md={9}>
                 <h4>Terms of Service</h4>
               </Col>
               <Col md={3}>
-                <a
-                  className={styles.link}
-                  rel="noreferrer"
-                  href={"./terms-of-service"}
-                  target={"_blank"}
-                >
-                  <h6 className={styles.readmore}>
-                    Read More
-                    <SVG className={styles.svg} src={"/openlinkicon.svg"}></SVG>
-                  </h6>
-                </a>
+                <External className={styles.link} href="/policies">
+                  Read More
+                </External>
               </Col>
 
               <hr className={styles.hr} />
@@ -82,7 +67,7 @@ export default function TermsOfServiceModal({
                     We may send newsletters via email to MAPLE members. You can
                     unsubscribe from these newsletters at any time by using the
                     "Unsubscribe" link in the emails themselves. We never share
-                    with or sell your email to third party providers
+                    with or sell your email to third party providers.
                   </li>
                 </ul>
               </Col>

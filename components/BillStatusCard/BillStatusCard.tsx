@@ -1,6 +1,5 @@
-import { Card as MapleCard } from "../Card/Card"
 import styled from "styled-components"
-import bill from "pages/bill"
+import { Card as MapleCard } from "../Card/Card"
 
 type history = {
   date: string

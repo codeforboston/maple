@@ -1,12 +1,10 @@
 import { createPage } from "../components/page"
+import { Button, Stack } from "react-bootstrap"
+import PolicyPage from "components/Policies/PolicyPage"
 
 export default createPage({
   title: "MAPLE for Organizations",
   Page: () => {
-    return (
-      <div>
-        <h1>Terms of Service</h1>
-      </div>
-    )
+    return <PolicyPage />
   }
 })

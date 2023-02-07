@@ -1,5 +1,5 @@
 import { AttachmentLink } from "components/CommentModal/Attachment"
-import { formatTestimonyLinks } from "components/formatting"
+import { TestimonyContent } from "components/testimony"
 import { ReactNode } from "react"
 import styled from "styled-components"
 import { Position, useDraftTestimonyAttachmentInfo } from "../db"
@@ -59,7 +59,7 @@ export const TestimonyPreview = styled(props => {
       )}
       {snippet && (
         <div className="content-section">
-          <span dangerouslySetInnerHTML={formatTestimonyLinks(snippet)} />
+          <TestimonyContent testimony={snippet} />
         </div>
       )}
       {info && <AttachmentLink className="attachment-link" attachment={info} />}

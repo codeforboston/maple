@@ -5,8 +5,11 @@ import { PublishState, resolveBill, usePublishState } from "."
 import { createAppThunk, useAppDispatch } from "../../hooks"
 import { setStep, Step } from "../redux"
 
-export const formUrl = (billId: string, step: Step = "position") =>
-  `/submit-testimony?billId=${billId}&step=${step}`
+export const formUrl = (
+  billId: string,
+  court: number,
+  step: Step = "position"
+) => `/submit-testimony?billId=${billId}&court=${court}&step=${step}`
 
 /** Changes to the appropriate form step if users access a step that is
  * currently invalid (i.e. entering content before position, trying to share
@@ -56,6 +59,8 @@ const validators: Record<Step, Validator> = {
 }
 
 const stringOrUndefined = (s: any) => (typeof s === "string" ? s : undefined)
+const numberOrUndefined = (s: any) =>
+  !isNaN(Number(s)) ? Number(s) : undefined
 
 /** Syncs changes between the store and the form URL. */
 export const useSyncRouterAndStore = () => {
@@ -79,7 +84,7 @@ const routeChanged = createAppThunk(
 
     const billId = getState().publish.bill?.id
     if (route.billId && route.billId !== billId) {
-      await dispatch(resolveBill({ billId: route.billId }))
+      await dispatch(resolveBill({ court: route.court, billId: route.billId }))
     }
 
     const step = getState().publish.step
@@ -95,10 +100,11 @@ const storeChanged = createAppThunk(
     const state = getState(),
       billId = state.publish.bill?.id,
       step = state.publish.step,
+      court = state.publish.bill?.court,
       route = currentRoute()
 
-    if (billId && !isEqual(route, { billId, step })) {
-      Router.push(`?billId=${billId}&step=${step}`, undefined, {
+    if (billId && !isEqual(route, { billId, court, step })) {
+      Router.push(`?billId=${billId}&court=${court}&step=${step}`, undefined, {
         shallow: true
       })
     }
@@ -106,6 +112,7 @@ const storeChanged = createAppThunk(
 )
 
 const currentRoute = () => ({
+  court: numberOrUndefined(Router.query.court),
   billId: stringOrUndefined(Router.query.billId),
   step: stringOrUndefined(Router.query.step)
 })

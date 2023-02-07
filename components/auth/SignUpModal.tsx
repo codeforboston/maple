@@ -13,19 +13,22 @@ import {
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
-import { required } from "yargs"
 
 export default function SignUpModal({
   show,
-  onHide
-}: Pick<ModalProps, "show" | "onHide">) {
+  onHide,
+  onSuccessfulSubmit
+}: Pick<ModalProps, "show" | "onHide"> & {
+  onSuccessfulSubmit: () => void
+  onHide: () => void
+}) {
   const {
     register,
     handleSubmit,
     reset,
     getValues,
     trigger,
-    formState: { errors }
+    formState: { errors, isSubmitSuccessful }
   } = useForm<CreateUserWithEmailAndPasswordData>()
 
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
@@ -47,13 +50,12 @@ export default function SignUpModal({
   }, [show, reset])
 
   const onSubmit = handleSubmit(newUser => {
-    createUserWithEmailAndPassword.execute(newUser)
+    const promise = createUserWithEmailAndPassword.execute(newUser)
+    promise.then(onSuccessfulSubmit).catch(err => {})
   })
 
   async function handleContinueClick() {
     const isValid = await trigger()
-    console.log(isValid)
-    console.log("triggered form")
     if (isValid) {
       setTosStep("reading")
     }
@@ -74,7 +76,7 @@ export default function SignUpModal({
         aria-labelledby="sign-up-modal"
         centered
         size="lg"
-        className={clsx(showTos && "d-none")}
+        className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
           <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>

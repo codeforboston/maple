@@ -28,3 +28,13 @@
 .navbar_box:last-child > * {
   margin-left: auto;
 }
+
+.pageContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}

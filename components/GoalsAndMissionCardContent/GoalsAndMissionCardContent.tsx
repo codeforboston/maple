@@ -1,7 +1,7 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./GoalsAndMissionCardContent.module.css"
-import { SignInWithModal } from "../auth"
+import { SignInWithButton } from "../auth"
 
 const OurGoalsCardContent = () => (
   <>
@@ -188,7 +188,7 @@ const OurMissionCardContent = () => (
 
     <Row className="text-center mb-3">
       <Col>
-        <SignInWithModal />
+        <SignInWithButton />
       </Col>
     </Row>
   </>
