@@ -3,7 +3,8 @@ import styled from "styled-components"
 import { Col, Image, Row, Stack } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import { formatBillId } from "../formatting"
-import { billLink, billURL, External } from "../links"
+// import { billLink, billURL, External } from "../links"
+import { externalBillLink, External } from "../links"
 import { TitledSectionCard } from "../shared"
 import BillFollowingTitle from "./BillFollowingTitle"
 import { ImageInput } from "./ImageInput"
@@ -86,9 +87,10 @@ export function FollowingTab({ actions, className, profile }: Props) {
             <h2>Bills You Follow</h2>
             {profile.billsFollowing?.map(billId => (
               <Styled key={billId}>
-                <External href={billURL(billId)}>
+                {/* <External href={externalBillLink(billId)}>
                   {formatBillId(billId)}
-                </External>
+                </External> */}
+                {externalBillLink(billId)}
                 <Row>
                   <Col className={`col-10`}>
                     <BillFollowingTitle billId={billId} />
