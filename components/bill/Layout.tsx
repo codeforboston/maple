@@ -46,8 +46,6 @@ export const Layout = ({ bill }: BillProps) => {
     await updateProfile({ actions })
   }
 
-  console.log("Bill: ", bill)
-
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -82,7 +80,6 @@ export const Layout = ({ bill }: BillProps) => {
       </Row>
       <Row>
         <Col md={8}>
-          {/* <SponsorsAndCommittees bill={bill} className="mt-4 pb-1" /> */}
           <Sponsors bill={bill} className="mt-4 pb-1" />
           <BillTestimonies bill={bill.content} className="mt-4" />
         </Col>
