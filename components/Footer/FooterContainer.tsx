@@ -35,13 +35,13 @@ export const FooterContainer = styled(Container)`
     border: none;
     color: transparent;
     border: none;
-    background: url("angle-right-solid.svg") no-repeat;
+    background: url("/angle-right-solid.svg") no-repeat;
     background-size: 0.75em;
     background-position: right;
   }
 
   .dropdown-toggle[aria-expanded="true"]::after {
-    background: url("angle-down-solid.svg") no-repeat;
+    background: url("/angle-down-solid.svg") no-repeat;
     background-position: right;
   }
 

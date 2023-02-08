@@ -1,10 +1,10 @@
 import clsx from "clsx"
-import { ReactElement, ReactNode } from "react"
+import { ReactElement } from "react"
 import { ListGroupItemProps } from "react-bootstrap"
 import ListGroup from "react-bootstrap/ListGroup"
 import styles from "./CardListItem.module.css"
 
-type ListItemProps = {
+export type ListItemProps = {
   billName: string
   billNameElement?: ReactElement | undefined
   billDescription?: string

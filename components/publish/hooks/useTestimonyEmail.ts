@@ -1,7 +1,8 @@
+import { formatTestimony, formatTestimonyPlaintext } from "components/testimony"
 import { useEffect, useState } from "react"
 import { getPublishedTestimonyAttachmentUrl, useProfile } from "../../db"
-import { formatBillId, splitParagraphs } from "../../formatting"
-import { siteUrl } from "../../links"
+import { formatBillId } from "../../formatting"
+import { maple, siteUrl } from "../../links"
 import { positionActions } from "../content"
 import { usePublishState } from "./usePublishState"
 
@@ -28,11 +29,9 @@ export const useTestimonyEmail = () => {
     intro = `As your constituent, I am writing to let you know that I ${
       positionActions[position!]
     } bill ${billId}: "${bill?.content.Title.trim()}".`,
-    billUrl = siteUrl(`/bills?billId=${bill?.id!}`),
-    attachmentSection = attachment?.url
-      ? `Read more of my testimony at ${attachment.url}`
-      : null,
-    cta = `Please see more testimony for this bill at ${billUrl}`,
+    testimonyUrl =
+      publication && siteUrl(maple.testimony({ publishedId: publication.id })),
+    cta = `You can see my full testimony at ${testimonyUrl}`,
     ending = `Thank you for taking the time to read this email.\n\nSincerely,\n${
       profile?.fullName ?? ""
     }`,
@@ -44,21 +43,19 @@ export const useTestimonyEmail = () => {
         : "Opinion on",
     subject = `${subjectPosition} Bill ${billId}`
 
-  const sections = [
-      intro,
-      ...splitParagraphs(content!),
-      attachmentSection,
-      cta,
-      ending
-    ].filter(Boolean),
-    body = sections.join("\n\n")
+  const markdownBody = [intro, content, cta, ending]
+    .filter(Boolean)
+    .join("\n\n")
+
+  const plainBody = formatTestimonyPlaintext(markdownBody),
+    htmlBody = formatTestimony(markdownBody).__html
 
   const mailToUrl = `mailto:test@example.com?subject=${encodeURIComponent(
     subject
-  )}&body=${encodeURIComponent(body)}`
+  )}&body=${encodeURIComponent(plainBody)}`
 
   if (attachment && profile) {
-    return { ready: true, mailToUrl, body, to } as const
+    return { ready: true, mailToUrl, body: htmlBody, to } as const
   } else {
     return { ready: false } as const
   }

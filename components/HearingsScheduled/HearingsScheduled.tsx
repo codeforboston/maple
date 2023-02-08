@@ -109,7 +109,7 @@ export const HearingsScheduled = () => {
         <Col xs={{ order: 1 }} md={{ span: 5, order: 0 }}>
           <Image
             className={`ml-5 ${styles.podium}`}
-            src="speaker-podium.png"
+            src="/speaker-podium.png"
             alt="speaker at podium"
           />
         </Col>

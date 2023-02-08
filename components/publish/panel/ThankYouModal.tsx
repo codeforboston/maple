@@ -41,10 +41,10 @@ export const ThankYouModal = styled(({ ...rest }) => {
   return (
     <Modal show={show} onHide={hide} centered {...rest}>
       <Modal.Body className=" d-flex align-items-center">
-        <Image alt="" src="leaf-bundle.png" className="leaves-ul" />
-        <Image alt="" src="leaf-bundle.png" className="leaves-br" />
+        <Image alt="" src="/leaf-bundle.png" className="leaves-ul" />
+        <Image alt="" src="/leaf-bundle.png" className="leaves-br" />
         <div className="thank-you">Thank You For Submitting Testimony!</div>
-        <Image alt="" src="bill-thank-you.svg" />
+        <Image alt="" src="/bill-thank-you.svg" />
       </Modal.Body>
     </Modal>
   )

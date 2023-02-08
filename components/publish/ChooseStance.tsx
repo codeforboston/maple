@@ -39,13 +39,13 @@ const PositionButton = styled<
     neutral: (
       <Image
         alt=""
-        src="thumbs-up.svg"
+        src="/thumbs-up.svg"
         style={{ transform: "scaleY(-1) rotate(-0.25turn)" }}
       />
     ),
-    endorse: <Image alt="" src="thumbs-up.svg" />,
+    endorse: <Image alt="" src="/thumbs-up.svg" />,
     oppose: (
-      <Image alt="" src="thumbs-up.svg" style={{ transform: "scaleY(-1)" }} />
+      <Image alt="" src="/thumbs-up.svg" style={{ transform: "scaleY(-1)" }} />
     )
   }
   return (
