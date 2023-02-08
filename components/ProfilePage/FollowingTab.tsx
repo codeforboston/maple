@@ -6,7 +6,7 @@ import { formatBillId } from "../formatting"
 // import { billLink, billURL, External } from "../links"
 import { externalBillLink, External } from "../links"
 import { TitledSectionCard } from "../shared"
-import BillFollowingTitle from "./BillFollowingTitle"
+// import BillFollowingTitle from "./BillFollowingTitle"
 import { ImageInput } from "./ImageInput"
 import UnfollowModal from "./UnfollowModal"
 
@@ -94,7 +94,8 @@ export function FollowingTab({ actions, className, profile }: Props) {
                 External Bill Link
                 <Row>
                   <Col className={`col-10`}>
-                    <BillFollowingTitle billId={billId} />
+                    {/* <BillFollowingTitle billId={billId} /> */}
+                    <div>Bill Following Title</div>
                   </Col>
                   <Col
                     className={`text-center`}
