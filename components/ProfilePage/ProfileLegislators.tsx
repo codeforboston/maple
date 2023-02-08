@@ -9,7 +9,7 @@ const DisplayLegislator = ({
 }: {
   legislator?: ProfileMemberPlus
 }) => {
-  const [idphoto, setIdphoto] = useState<string>("leaf-asset.png")
+  const [idphoto, setIdphoto] = useState<string>("/leaf-asset.png")
 
   useEffect(() => {
     setIdphoto(

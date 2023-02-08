@@ -1,0 +1,103 @@
+.policyContent {
+  margin-top: 1rem;
+  font-family: "Nunito";
+}
+
+/* ---------- Policy Links --------------*/
+.policyContent button {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background: none;
+  color: #000;
+  width: 100%;
+  margin-bottom: 24px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding-bottom: 10px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 30%);
+  border-radius: 0 !important;
+}
+
+.policyContent button:focus {
+  color: initial;
+  background: initial;
+  border: initial;
+  box-shadow: none !important;
+}
+
+.policyContent br {
+  display: none;
+}
+
+.policyContent button.currentTab {
+  border-bottom: inset 5px #902323;
+  color: #902323;
+}
+
+.policyContent button:hover,
+.policyContent button.currentTab:hover {
+  color: #fff;
+  background-color: #902323;
+  border-bottom: inset 5px #902323;
+}
+
+/* ---------- Policy Content ------------*/
+.policyContent ul {
+  background: #fff;
+  list-style-type: none;
+  padding: 0 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+}
+
+.policyContent:last-child {
+  margin-bottom: 50px;
+}
+
+.policyContent hr {
+  background: transparent;
+}
+
+.policyContent ul hr {
+  background: #000;
+  height: 2px;
+}
+
+.policyContent ul + li {
+  list-style-type: circle;
+}
+
+.policyContent ul li ul li {
+  list-style-type: initial;
+}
+
+.policyContent h1 {
+  margin: 0px 0px 24px 0px;
+}
+
+.policyContent h2 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+  padding-top: 45px;
+}
+
+.policyContent h3 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .policyContent button {
+    min-height: 90px;
+  }
+}
+
+@media (max-width: 400px) {
+  .policyContent button {
+    min-height: 125px;
+  }
+}

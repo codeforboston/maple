@@ -1,5 +1,5 @@
 import { User } from "firebase/auth"
-import { useRouter } from "next/router"
+import Router, { useRouter } from "next/router"
 import React, { useEffect } from "react"
 import { auth } from "../firebase"
 import { useAppDispatch } from "../hooks"
@@ -39,4 +39,12 @@ export function requireAuth(Component: React.FC<{ user: User }>) {
 
     return user ? <Component user={user} /> : null
   }
+}
+
+/**
+ * Redirects user after logging out.
+ */
+export async function signOutAndRedirectToHome() {
+  await auth.signOut()
+  Router.push("/")
 }

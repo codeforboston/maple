@@ -31,6 +31,7 @@ const init: (args: unknown) => Context = args => {
   const firebase = require("../../functions/src/firebase")
   const api = require("../../functions/src/malegislature")
   return {
+    env,
     firebase,
     auth: firebase.auth,
     db: firebase.db,

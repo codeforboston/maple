@@ -1,3 +1,4 @@
+import { currentGeneralCourt } from "components/db/common"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import {
   addDoc,
@@ -54,7 +55,7 @@ const positions = ["endorse", "oppose", "neutral"] as const
 const createDraft = (billId: string) => {
   const draft = {
     billId,
-    court: 192,
+    court: currentGeneralCourt,
     position: positions[Math.floor(Math.random() * positions.length)],
     content: loremIpsum({ count: 4, units: "paragraphs" })
   }
@@ -65,7 +66,7 @@ async function expectCreateDraft(draft?: any) {
   draft = draft ?? {
     billId: "H1",
     content: "system test testimony",
-    court: 192,
+    court: currentGeneralCourt,
     position: "endorse"
   }
 

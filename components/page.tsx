@@ -5,10 +5,10 @@ import { Layout, LayoutProps } from "./layout"
 
 export type ApplyLayout = (page: ReactElement) => ReactNode
 
-export type AppPage = NextPage & LayoutProps
+export type AppPage<P> = NextPage<P> & LayoutProps
 
 export type AppPropsWithLayout = AppProps & {
-  Component: AppPage
+  Component: AppPage<any>
 }
 
 export function applyLayout({ Component, pageProps }: AppPropsWithLayout) {
@@ -16,14 +16,14 @@ export function applyLayout({ Component, pageProps }: AppPropsWithLayout) {
   return <Layout title={Component.title}>{page}</Layout>
 }
 
-export type PageOptions = {
+export type PageOptions<P> = {
   title?: string
   fullWidth?: boolean
-  Page: NextPage
+  Page: NextPage<P>
 }
 
-export function createPage(options: PageOptions): AppPage {
-  const page: AppPage = options.Page
+export function createPage<P>(options: PageOptions<P>): AppPage<P> {
+  const page: AppPage<P> = options.Page
   page.title = options.title
   return page
 }

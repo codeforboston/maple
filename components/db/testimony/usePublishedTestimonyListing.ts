@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
-import { currentGeneralCourt, nullableQuery } from "../common"
+import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
 
@@ -17,13 +17,19 @@ type Refinement = {
   senatorId?: string
   representativeId?: string
   uid?: string
+  court?: number
   billId?: string
 }
 
-const initialRefinement = (uid?: string, billId?: string): Refinement => ({
+const initialRefinement = (
+  uid?: string,
+  court?: number,
+  billId?: string
+): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   uid,
+  court,
   billId
 })
 
@@ -42,19 +48,22 @@ export type UsePublishedTestimonyListing = ReturnType<
 >
 export function usePublishedTestimonyListing({
   uid,
+  court,
   billId
 }: {
   uid?: string
+  court?: number
   billId?: string
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, billId)
+    initialRefinement(uid, court, billId)
   )
 
   useEffect(() => {
     if (refinement.uid !== uid) refine({ uid })
     if (refinement.billId !== billId) refine({ billId })
-  }, [billId, refine, refinement, uid])
+    if (refinement.court !== court) refine({ court })
+  }, [billId, court, refine, refinement, uid])
 
   return useMemo(
     () => ({
@@ -75,6 +84,7 @@ function getWhere({
   uid,
   billId,
   representativeId,
+  court,
   senatorId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
@@ -83,6 +93,7 @@ function getWhere({
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
+  if (court) constraints.push(["court", "==", court])
   return constraints.map(c => where(...c))
 }
 
@@ -96,7 +107,6 @@ async function listTestimony(
     nullableQuery(
       testimonyRef,
       ...getWhere(refinement),
-      where("court", "==", currentGeneralCourt),
       orderBy("publishedAt", "desc"),
       limit(limitCount),
       startAfterKey !== null && startAfter(startAfterKey)

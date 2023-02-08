@@ -1,22 +1,48 @@
-import { Alert, Row, Spinner } from "../bootstrap"
-import { useBill } from "../db"
-import { Layout } from "./Layout"
+import styled from "styled-components"
+import { Col, Container, Row } from "../bootstrap"
+import { TestimonyFormPanel } from "../publish"
+import { Back } from "./Back"
+import { BillNumber } from "./BillNumber"
+import { BillTestimonies } from "./BillTestimonies"
+import { SponsorsAndCommittees } from "./SponsorsAndCommittees"
+import { Status } from "./Status"
+import { Summary } from "./Summary"
+import { BillProps } from "./types"
 
-export const BillDetails = ({ billId }: { billId: string }) => {
-  const { loading, error, result: bill } = useBill(billId)
+const StyledContainer = styled(Container)`
+  font-family: "Nunito";
+`
 
-  if (loading) {
-    return (
+export const BillDetails = ({ bill }: BillProps) => {
+  return (
+    <StyledContainer className="mt-3 mb-3">
       <Row>
-        <Spinner animation="border" className="mx-auto" />
+        <Col>
+          <Back href="/bills">Back to List of Bills</Back>
+        </Col>
       </Row>
-    )
-  } else if (error) {
-    return (
-      <Alert variant="danger">An error occured. Please refresh the page.</Alert>
-    )
-  } else if (bill) {
-    return <Layout bill={bill} />
-  }
-  return null
+      <Row>
+        <Col>
+          <BillNumber bill={bill} />
+        </Col>
+        <Col xs={6} className="d-flex justify-content-end">
+          <Status bill={bill} />
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col>
+          <Summary bill={bill} />
+        </Col>
+      </Row>
+      <Row>
+        <Col md={8}>
+          <SponsorsAndCommittees bill={bill} className="mt-4" />
+          <BillTestimonies bill={bill} className="mt-4" />
+        </Col>
+        <Col md={4} className="mt-4">
+          <TestimonyFormPanel bill={bill} />
+        </Col>
+      </Row>
+    </StyledContainer>
+  )
 }

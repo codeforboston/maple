@@ -551,6 +551,21 @@
         }
       ]
     },
+    // recent
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
     // user
     {
       "collectionGroup": "publishedTestimony",
@@ -716,6 +731,16 @@
         { "queryScope": "COLLECTION", "order": "DESCENDING" },
         { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
       ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "publishedAt",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "DESCENDING" }]
+    },
+    {
+      "collectionGroup": "bills",
+      "fieldPath": "id",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
     }
   ]
 }

@@ -10,8 +10,12 @@ import { firestore } from "../../firebase"
 import { DraftTestimony, Testimony } from "./types"
 
 /** Resolves the current draft and publication refs for a given user and bill. */
-export const resolveBillTestimony = async (uid: string, billId: string) => {
-  const published = await getPublishedTestimony(uid, billId)
+export const resolveBillTestimony = async (
+  uid: string,
+  court: number,
+  billId: string
+) => {
+  const published = await getPublishedTestimony(uid, court, billId)
   const draft = await getDraftTestimony(uid, billId)
   return {
     draft: first(draft.docs)?.ref,
@@ -19,8 +23,12 @@ export const resolveBillTestimony = async (uid: string, billId: string) => {
   }
 }
 
-export const getBillTestimony = async (uid: string, billId: string) => {
-  const published = await getPublishedTestimony(uid, billId)
+export const getBillTestimony = async (
+  uid: string,
+  court: number,
+  billId: string
+) => {
+  const published = await getPublishedTestimony(uid, court, billId)
   const draft = await getDraftTestimony(uid, billId)
   return {
     draft: first(draft.docs)?.data() as DraftTestimony | undefined,
@@ -28,12 +36,13 @@ export const getBillTestimony = async (uid: string, billId: string) => {
   }
 }
 
-function getPublishedTestimony(uid: string, billId: string) {
+function getPublishedTestimony(uid: string, court: number, billId: string) {
   return getDocs(
     query(
       collectionGroup(firestore, "publishedTestimony"),
       where("authorUid", "==", uid),
-      where("billId", "==", billId)
+      where("billId", "==", billId),
+      where("court", "==", court)
     )
   )
 }

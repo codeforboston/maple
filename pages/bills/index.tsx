@@ -1,6 +1,6 @@
-import { Container } from "../components/bootstrap"
-import { createPage } from "../components/page"
-import { BillSearch } from "../components/search"
+import { Container } from "components/bootstrap"
+import { createPage } from "components/page"
+import { BillSearch } from "components/search"
 
 export default createPage({
   title: "Browse Bills",
@@ -8,7 +8,6 @@ export default createPage({
     return (
       <Container fluid="md" className="mt-3">
         <h1>All Bills</h1>
-        <h3>Current session: 2021-2022</h3>
         <BillSearch />
       </Container>
     )

@@ -1,7 +1,7 @@
 import { Row, Col } from "../../bootstrap"
 import Image from "react-bootstrap/Image"
 import styles from "./ForLegislatorsCardContent.module.css"
-import { SignInWithModal } from "../../auth"
+import { SignInWithButton } from "../../auth"
 import Link from "next/link"
 
 const WhyMAPLECardContent = () => (
