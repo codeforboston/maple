@@ -284,7 +284,7 @@ const EditProfileButton = () => {
   return (
     <Col className={`d-flex justify-content-end w-100`}>
       <Internal href="/editprofile" className="view-edit-profile">
-        <Button className={`btn btn-lg`}>Edit&nbsp;Profile</Button>
+        <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
       </Internal>
     </Col>
   )

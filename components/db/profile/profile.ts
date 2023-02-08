@@ -2,7 +2,7 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { useAuth } from "../../auth"
+import { Frequency, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks } from "./types"
@@ -14,12 +14,14 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingNotification: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingDisplayName: boolean
   updatingFullName: boolean
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
+  updatingBillsFollowing: boolean
   profile: Profile | undefined
 }
 
@@ -39,6 +41,7 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingNotification: false,
         updatingIsOrganization: false,
         updatingAbout: false,
         updatingDisplayName: false,
@@ -48,6 +51,7 @@ export function useProfile() {
           linkedIn: false,
           twitter: false
         },
+        updatingBillsFollowing: false,
         profile
       }
     )
@@ -73,6 +77,13 @@ export function useProfile() {
           dispatch({ updatingIsPublic: true })
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
+        }
+      },
+      updateNotification: async (notificationFrequency: Frequency) => {
+        if (uid) {
+          dispatch({ updatingNotification: true })
+          await updateNotification(uid, notificationFrequency)
+          dispatch({ updatingNotification: false })
         }
       },
       updateIsOrganization: async (isOrganization: boolean) => {
@@ -134,6 +145,13 @@ export function useProfile() {
             }
           })
         }
+      },
+      updateBillsFollowing: async (billsFollowing: string[]) => {
+        if (uid) {
+          dispatch({ updatingBillsFollowing: true })
+          await updateBillsFollowing(uid, billsFollowing)
+          dispatch({ updatingBillsFollowing: false })
+        }
       }
     }),
     [uid, state.updatingSocial]
@@ -173,6 +191,14 @@ function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
 }
 
+function updateNotification(uid: string, notificationFrequency: Frequency) {
+  return setDoc(
+    profileRef(uid),
+    { notificationFrequency: notificationFrequency },
+    { merge: true }
+  )
+}
+
 function updateIsOrganization(uid: string, isOrganization: boolean) {
   return setDoc(
     profileRef(uid),
@@ -209,6 +235,14 @@ function updateFullName(uid: string, fullName: string) {
   return setDoc(
     profileRef(uid),
     { fullName: fullName ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updateBillsFollowing(uid: string, billsFollowing: string[]) {
+  return setDoc(
+    profileRef(uid),
+    { billsFollowing: billsFollowing ?? deleteField() },
     { merge: true }
   )
 }

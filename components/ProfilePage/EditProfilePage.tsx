@@ -13,6 +13,7 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
@@ -43,9 +44,28 @@ export function EditProfileForm({
   actions: ProfileHook
   uid: string
 }) {
+  const {
+    public: isPublic,
+    notificationFrequency: notificationFrequency
+  }: Profile = profile
+
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+  const [notifications, setNotifications] = useState<
+    "Daily" | "Weekly" | "Monthly" | "None"
+  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
+    isPublic ? isPublic : false
+  )
+
+  const onSettingsModalOpen = () => {
+    setSettingsModal("show")
+    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setIsProfilePublic(isPublic ? isPublic : false)
+  }
+
+  const close = () => setSettingsModal(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -59,7 +79,11 @@ export function EditProfileForm({
 
   const tabs = [
     {
-      title: "About You",
+      /* 
+        Change in Figma
+       */
+      // title: "About You",
+      title: "Personal Information",
       eventKey: "AboutYou",
       content: (
         <AboutMeEditForm
@@ -82,30 +106,51 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
+    },
+    {
+      title: "Following",
+      eventKey: "Following",
+      content: (
+        <FollowingTab
+          profile={profile}
+          actions={actions}
+          className="mt-3 mb-4"
+        />
+      )
     }
   ]
-
-  const close = () => setSettingsModal(null)
 
   return (
     <Container>
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Internal className={`ml-2`} href={`javascript:void(0)`}>
+          <Internal
+            className={`d-flex text-decoration-none`}
+            href={`javascript:void(0)`}
+          >
             <GearButton
-              className={`btn btn-lg btn-outline-secondary me-4`}
+              /* remove invisible className for testing and/or after Soft Launch when we're
+                 ready to show Email related element to users
+               */
+              className={`align-self-stretch btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
-              onClick={() => setSettingsModal("show")}
+              onClick={() => onSettingsModalOpen()}
             >
               {"Settings"}
             </GearButton>
           </Internal>
-          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
-            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+          <Internal
+            className={`d-flex ml-2 text-decoration-none`}
+            href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+          >
+            <Button
+              className={`align-self-stretch btn btn-lg py-1`}
+              disabled={!!formUpdated}
+            >
               {!profile.organization
-                ? "View your profile"
-                : "View your organization page"}
+                ? "View My Profile"
+                : "View My Organization"}
             </Button>
           </Internal>
         </Col>
@@ -114,11 +159,9 @@ export function EditProfileForm({
         <StyledTabNav>
           {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link
-                eventKey={t.eventKey}
-                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
-              >
-                {t.title}
+              <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
+                <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+                <hr className={`my-0`} />
               </Nav.Link>
             </Nav.Item>
           ))}
@@ -132,9 +175,14 @@ export function EditProfileForm({
         </StyledTabContent>
       </TabContainer>
       <NotificationSettingsModal
-        show={settingsModal === "show"}
+        actions={actions}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
+        notifications={notifications}
+        setNotifications={setNotifications}
         onHide={close}
-        onClickCloseModal={() => setSettingsModal(null)}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
       />
     </Container>
   )
