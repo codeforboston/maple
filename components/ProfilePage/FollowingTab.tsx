@@ -90,7 +90,8 @@ export function FollowingTab({ actions, className, profile }: Props) {
                 {/* <External href={externalBillLink(billId)}>
                   {formatBillId(billId)}
                 </External> */}
-                {externalBillLink(billId)}
+                {/* {externalBillLink(billId)} */}
+                External Bill Link
                 <Row>
                   <Col className={`col-10`}>
                     <BillFollowingTitle billId={billId} />
