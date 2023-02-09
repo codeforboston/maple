@@ -97,7 +97,7 @@ export const CopyButton = ({
     <>
       <CopyToClipboard
         text={text}
-        options={{ format: "text/plain" }}
+        options={{ format: "text/html" }}
         onCopy={(_, success) => {
           if (success) {
             clearTimeout(closeTimeout.current)

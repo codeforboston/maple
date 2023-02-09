@@ -16,7 +16,7 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
       fluid
       className={`${positionStyles[position]}`}
       alt={`${position}`}
-      src="VoteHand.png"
+      src="/VoteHand.png"
     />
   )
 }
@@ -176,11 +176,11 @@ function trimContent(content: string, length: number) {
 }
 
 export default function TestimonyCallout(props: Testimony) {
-  const { billId } = props
+  const { billId, court } = props
 
   return (
     <links.Internal
-      href={`/bill?id=${billId}`}
+      href={links.maple.bill({ id: billId, court })}
       className="text-decoration-none"
     >
       <Callout {...props}></Callout>

@@ -3,7 +3,8 @@ import { createPage } from "../../components/page"
 import {
   Basics,
   Role,
-  Write
+  Write,
+  Legislative
 } from "../../components/LearnTestimonyComponents/LearnComponents"
 import Tabs from "../../components/Tabs/Tabs"
 import { GetStaticPaths, GetStaticProps } from "next/types"
@@ -42,6 +43,12 @@ const tabs: TabsType[] = [
     slug: "writing-effective-testimony",
     index: 3,
     Component: Write
+  },
+  {
+    label: "The MA Legislative Process",
+    slug: "legislative-process",
+    index: 4,
+    Component: Legislative
   }
 ]
 

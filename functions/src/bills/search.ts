@@ -1,6 +1,5 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
-import { currentGeneralCourt } from "../malegislature"
 import { createSearchIndexer } from "../search"
 import { Bill } from "./types"
 
@@ -8,15 +7,14 @@ export const {
   syncToSearchIndex: syncBillToSearchIndex,
   upgradeSearchIndex: upgradeBillSearchIndex
 } = createSearchIndexer({
-  sourceCollection: db.collection(
-    `/generalCourts/${currentGeneralCourt}/bills`
-  ),
-  documentTrigger: `generalCourts/${currentGeneralCourt}/bills/{id}`,
+  sourceCollection: db.collectionGroup("bills"),
+  documentTrigger: `generalCourts/{court}/bills/{id}`,
   alias: "bills",
   idField: "id",
   schema: {
     fields: [
       { name: "number", type: "string", facet: false },
+      { name: "court", type: "int32", facet: true },
       { name: "title", type: "string", facet: false },
       { name: "body", type: "string", facet: false, optional: true },
       { name: "city", type: "string", facet: true, optional: true },
@@ -45,7 +43,8 @@ export const {
     }
     const bill = Bill.checkWithDefaults(data)
     return {
-      id: bill.id,
+      id: `${bill.court}-${bill.id}`,
+      court: bill.court,
       number: bill.id,
       title: bill.content.Title,
       body: bill.content.DocumentText,

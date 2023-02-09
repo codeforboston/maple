@@ -63,7 +63,7 @@ export const BillStageStrip = ({
       </div>
       <div className="stage-description">
         <div className="stage-title">{stage}</div>
-        <div className="info">info</div>
+        <div className="info">{info}</div>
       </div>
     </div>
   )

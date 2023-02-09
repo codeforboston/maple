@@ -1,3 +1,4 @@
+import { currentGeneralCourt } from "components/db/common"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
@@ -25,11 +26,11 @@ export async function createNewBill(props?: Partial<Bill>) {
   }
   const bill: Bill = {
     content,
+    court: currentGeneralCourt,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
     testimonyCount: 0,
-    court: 0,
     endorseCount: 0,
     neutralCount: 0,
     opposeCount: 0,
@@ -37,12 +38,13 @@ export async function createNewBill(props?: Partial<Bill>) {
     similar: [],
     ...props
   }
-  const path = `/generalCourts/${court}/bills/${billId}`
-  await testDb.doc(path).create(bill)
-  return { path, id: billId, bill }
+  await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
+    .create(bill)
+  return billId
 }
 
-export const createFakeBill = () => createNewBill().then(b => b.id)
+export const createFakeBill = () => createNewBill().then(b => b)
 
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
@@ -65,7 +67,9 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
 }
 
 export async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb.doc(`/generalCourts/192/bills/${id}`).get()
+  const doc = await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
+    .get()
   return doc.data() as any
 }
 

@@ -4,7 +4,7 @@
     "clean": "rimraf lib",
     "copy-files": "copyfiles -u 1 src/ssl/* lib/",
     "build": "yarn clean && tsc && yarn copy-files",
-    "build:watch": "yarn clean && yarn copy-files && tsc --watch --preserveWatchOutput",
+    "build:watch": "tsc --watch --preserveWatchOutput",
     "dev": "node dev-functions.js",
     "logs": "firebase functions:log",
     "test": "jest",

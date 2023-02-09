@@ -62,14 +62,14 @@
 .carouselControlNextIcon {
   width: 2.3125rem;
   height: 2.3125rem;
-  background-image: url("../../public/carousel-right.png");
+  background-image: url("/carousel-right.png");
   background-repeat: no-repeat;
 }
 
 .carouselControlPrevIcon {
   width: 2.3125rem;
   height: 2.3125rem;
-  background-image: url("../../public/carousel-left.png");
+  background-image: url("/carousel-left.png");
   background-repeat: no-repeat;
 }
 

@@ -65,7 +65,7 @@ export const logFetchError = (label: string, id?: string) => (e: any) => {
 }
 
 // In particular, reject "/" in ID strings
-const simpleId = /^[A-Za-z0-9-_]+$/
+const simpleId = /^[A-Za-z0-9-_ ]+$/
 /** Validates firestore-compatible ID's */
 export const Id = String.withConstraint(s => simpleId.test(s))
 

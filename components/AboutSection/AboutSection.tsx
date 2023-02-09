@@ -28,19 +28,19 @@ export default function AboutSection() {
             >
               <AboutInfoCard
                 title="Who"
-                bodytext="Anyone can submit testimony to the MA legislature. Legislators tend to value testimony most when it comes from their own constituents, so testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district."
+                bodytext="Anyone can submit testimony to the MA legislature. Testimony from MA residents is typically directed to the committee leading the bill and your district House and Senate legislators."
               ></AboutInfoCard>
               <AboutInfoCard
                 title="When"
-                bodytext="Committees generally accept testimony up until the hearing date designated for a bill. You can use the bill pages on this website to identify relevant committee dates. Although some committees will accept testimony after this date, for the greatest impact you should submit your testimony before the hearing."
+                bodytext="MAPLE welcomes testimony at any time, but we recommend submitting your testimony before the scheduled hearing date for the greatest impact. The relevant committee dates are listed on the bill pages of this website. "
               ></AboutInfoCard>
               <AboutInfoCard
                 title="Why"
-                bodytext="The key role of testimony is to let your legislators know how you feel about an issue. If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives."
+                bodytext="Let your legislators know how you feel about an issue, so policymakers can make better informed decisions about the laws that govern all our lives."
               ></AboutInfoCard>
               <AboutInfoCard
                 title="Where"
-                bodytext="Testimony is generally accepted by committees of the legislature by sending an email to their Chairs. This website, MAPLE, will help you to do this by making it easy to find a bill you want to testify in and then generate an email, which you fully control, which you can then send to the relevant personnel."
+                bodytext="Testimony is generally accepted by sending an email to the committee Chairs. The MAPLE website will help you easily find a bill you want to testify in and draft an email to send to the relevant personnel."
               ></AboutInfoCard>
               <AboutInfoCard
                 title="What"

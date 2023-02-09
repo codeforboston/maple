@@ -1,4 +1,4 @@
-import { SignInWithModal } from "../auth"
+import { SignInWithButton } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
@@ -16,7 +16,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.skyline}`}
-              src="skyline.png"
+              src="/skyline.png"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -26,7 +26,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.clouds} opacity-50`}
-              src="clouds.png"
+              src="/clouds.png"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -39,7 +39,7 @@ const HeroHeader = ({ authenticated }) => {
               >
                 <Image
                   className={`${styles.statehouse}`}
-                  src="statehouse.png"
+                  src="/statehouse.png"
                   alt="statehouse"
                 ></Image>
               </Col>
@@ -58,7 +58,7 @@ const HeroHeader = ({ authenticated }) => {
                   <div className="text-end m-5">
                     {!authenticated && (
                       <div className={styles.btncontainer}>
-                        <SignInWithModal label="Sign in to Testify" />
+                        <SignInWithButton label="Sign in to Testify" />
                       </div>
                     )}
                     <Wrap href="/bills">

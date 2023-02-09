@@ -1,5 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
+import { currentGeneralCourt } from "components/db/common"
 import { PartialTestimony } from "../../functions/src/bills/backfillTestimonyCounts"
 import { terminateFirebase, testDb } from "../testUtils"
 import { createFakeBill, getBill } from "./common"
@@ -19,30 +20,32 @@ describe("backfillTestimonyCounts", () => {
     await setPublication("user-1", "t-1", {
       position: "endorse",
       billId,
-      court: 192
+      court: currentGeneralCourt
     })
     await setPublication("user-2", "t-2", {
       position: "neutral",
       billId,
-      court: 192
+      court: currentGeneralCourt
     })
     await setPublication("user-3", "t-3", {
       position: "oppose",
       billId,
-      court: 192
+      court: currentGeneralCourt
     })
     await setPublication("user-4", "t-4", {
       position: "endorse",
       billId,
-      court: 192
+      court: currentGeneralCourt
     })
 
-    await testDb.doc(`/generalCourts/192/bills/${billId}`).update({
-      testimonyCount: 0,
-      endorseCount: 0,
-      opposeCount: 0,
-      neutralCount: 0
-    })
+    await testDb
+      .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
+      .update({
+        testimonyCount: 0,
+        endorseCount: 0,
+        opposeCount: 0,
+        neutralCount: 0
+      })
 
     await triggerBackfill([billId])
 

@@ -1,9 +1,9 @@
 {
   "name": "search/billSearchIndex.json",
   "bucket": "demo-dtp.appspot.com",
-  "contentType": "application/json",
   "metageneration": 1,
   "generation": 1649718216284,
+  "contentType": "application/json",
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=43200",
