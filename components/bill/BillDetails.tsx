@@ -1,5 +1,20 @@
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { useCallback, useState } from "react"
 import styled from "styled-components"
+import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row, Stack } from "../bootstrap"
+import { ProfileHook, useProfile } from "../db"
+import { firestore, storage } from "../firebase"
 import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
@@ -8,8 +23,6 @@ import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { useAuth } from "../auth"
-import { ProfileHook, useProfile } from "../db"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -28,9 +41,52 @@ export const BillDetails = ({ bill }: BillProps) => {
   const uid = user?.uid
   const actions = useProfile()
   const profile = actions.profile
+  const subscriptionRef = collection(firestore, `/users/${uid}/subscriptions/`)
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
-  let checkBill = userBillList.map(item => item).includes(billId)
+  // let checkBill = userBillList.map(item => item).includes(billId)
+
+  const [queryResult, setQueryResult] = useState("")
+
+  const billQuery = async () => {
+    const q = query(subscriptionRef, where("topicName", "==", `bill-${billId}`))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.data().topicName)
+      setQueryResult(doc.data().topicName)
+    })
+  }
+
+  uid ? billQuery() : console.log("no uid")
+
+  console.log("test", queryResult)
+
+  queryResult ? console.log("matched") : console.log("unmatched")
+
+  // const thing = async () => await getDoc(doc(subscriptionRef, billId))
+
+  // !thing
+  //   ? console.log("No such document!")
+  //   : console.log("Document data:", thing)
+
+  // const docSnap = async () => {
+  //   await getDoc(doc(subscriptionRef, billId))
+  // }
+
+  // const getSubscription = () => {
+  //   docSnap()
+  // }
+
+  // getSubscription()
+  // console.log(docSnap)
+
+  // if (docSnap.exists()) {
+  //   console.log("Document data:", docSnap.data())
+  // } else {
+  //   // doc.data() will be undefined in this case
+  //   console.log("No such document!")
+  // }
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateBillsFollowing } = actions
@@ -38,13 +94,31 @@ export const BillDetails = ({ bill }: BillProps) => {
   }
 
   const handleFollowClick = async () => {
-    checkBill ? null : (userBillList = [billId, ...userBillList])
-    await updateProfile({ actions })
+    // checkBill ? null : (userBillList = [billId, ...userBillList])
+    // await updateProfile({ actions })
+
+    const topic = "bill-"
+    const topicName = topic.concat(billId)
+    const subscriptionData = {
+      user: uid,
+      topicName: topicName
+    }
+
+    await setDoc(doc(subscriptionRef, billId), {
+      user: uid,
+      topicName: topicName
+    })
+
+    console.log("follow")
+    setQueryResult(topicName)
   }
 
   const handleUnfollowClick = async () => {
-    userBillList = userBillList.filter(item => item !== billId)
-    await updateProfile({ actions })
+    // userBillList = userBillList.filter(item => item !== billId)
+    // await updateProfile({ actions })
+    await deleteDoc(doc(subscriptionRef, billId))
+    setQueryResult("")
+    console.log("delete")
   }
 
   return (
@@ -69,10 +143,10 @@ export const BillDetails = ({ bill }: BillProps) => {
                 className={`btn btn-primary btn-sm ms-auto py-2
                 ${uid ? "" : "visually-hidden"}
               `}
-                onClick={checkBill ? handleUnfollowClick : handleFollowClick}
+                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
               >
-                {checkBill ? "Following" : "Follow"}
-                {checkBill ? (
+                {queryResult ? "Following" : "Follow"}
+                {queryResult ? (
                   <StyledImage src="/check-white.svg" alt="checkmark" />
                 ) : null}
               </Button>
@@ -81,21 +155,23 @@ export const BillDetails = ({ bill }: BillProps) => {
         )}
       </Row>
       {bill.history.length > 0 ? (
-        <Row className="mb-4">
-          <Col xs={12} className="d-flex justify-content-end">
-            <Button
-              className={`btn btn-primary btn-sm ms-auto py-2 w-auto
+        <>
+          <Row className="mb-4">
+            <Col xs={12} className="d-flex justify-content-end">
+              <Button
+                className={`btn btn-primary btn-sm ms-auto py-2 w-auto
                 ${uid ? "" : "visually-hidden"}
               `}
-              onClick={checkBill ? handleUnfollowClick : handleFollowClick}
-            >
-              {checkBill ? "Following" : "Follow"}
-              {checkBill ? (
-                <StyledImage src="/check-white.svg" alt="checkmark" />
-              ) : null}
-            </Button>
-          </Col>
-        </Row>
+                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+              >
+                {queryResult ? "Following" : "Follow"}
+                {queryResult ? (
+                  <StyledImage src="/check-white.svg" alt="checkmark" />
+                ) : null}
+              </Button>
+            </Col>
+          </Row>
+        </>
       ) : null}
       <Row className="mt-2">
         <Col>

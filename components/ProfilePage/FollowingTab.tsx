@@ -65,20 +65,6 @@ export function FollowingTab({ actions, className, profile }: Props) {
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
 
-  // async function TestQuery() {
-  //   const q = query(
-  //     collection(firestore, `/profiles`),
-  //     where("Document ID", "==", "MDXkFoEM3qaJgRgEJEwCLpCvvxz1")
-  //   )
-  //   const querySnapshot = await getDocs(q)
-  //   querySnapshot.forEach(doc => {
-  //     // doc.data() is never undefined for query doc snapshots
-  //     console.log(doc.id, " => ", doc.data())
-  //   })
-  // }
-
-  // TestQuery()
-
   return (
     <>
       <TitledSectionCard className={className}>
