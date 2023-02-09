@@ -200,10 +200,10 @@ const SponsorList = styled.div`
       <>
         <Label>and it is sponsored by</Label>
         <SponsorList>
-          <Chip>
+          {primarySponsor && <Chip>
             <Image alt="Primary Sponsor" src="/star.svg" />
             {primarySponsor.Name}
-          </Chip>
+          </Chip>}
           {shown.map(m => (
             <Chip key={m.Id}>{m.Name}</Chip>
           ))}
