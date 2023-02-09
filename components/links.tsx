@@ -5,6 +5,7 @@ import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, MemberContent } from "./db"
+import { currentGeneralCourt } from "./db/common"
 import { formatBillId } from "./formatting"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
@@ -63,8 +64,8 @@ export const maple = {
     `/testimony/${publishedId}`
 }
 
-export function billSiteURL(billNumber: string) {
-  return siteUrl(`bill?id=${billNumber}`)
+export function billSiteURL(billNumber: string, generalCourt?: string) {
+  return siteUrl(`bills/${generalCourt ?? currentGeneralCourt}/${billNumber}`)
 }
 
 /** Not all bills have pdf's, only those without document text */
