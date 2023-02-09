@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 import { Col, Image, Row, Stack } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
@@ -6,11 +6,18 @@ import { formatBillId } from "../formatting"
 // import { billLink, billURL, External } from "../links"
 import { externalBillLink, External } from "../links"
 import { TitledSectionCard } from "../shared"
-// import BillFollowingTitle from "./BillFollowingTitle"
+import BillFollowingTitle from "./BillFollowingTitle"
 import { ImageInput } from "./ImageInput"
 import UnfollowModal from "./UnfollowModal"
 
-import { collection, doc, query, where, getDocs } from "firebase/firestore"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore"
 import { firestore, storage } from "../firebase"
 import { Frequency, useAuth } from "../auth"
 import {
@@ -49,6 +56,7 @@ export const Styled = styled.div`
 export function FollowingTab({ actions, className, profile }: Props) {
   const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
   const [currentBill, setCurrentBill] = useState<string>("")
+  const [billsFollowing, setBillsFollowing] = useState<string[]>([])
 
   const close = () => setUnfollowModal(null)
 
@@ -58,12 +66,42 @@ export function FollowingTab({ actions, className, profile }: Props) {
   }
 
   const handleUnfollowClick = async (billId: string) => {
-    userBillList = userBillList.filter(item => item !== billId)
-    await updateProfile({ actions })
+    // userBillList = userBillList.filter(item => item !== billId)
+    // await updateProfile({ actions })
+    await deleteDoc(doc(subscriptionRef, billId))
+
     setUnfollowModal(null)
   }
 
   let userBillList = profile?.billsFollowing ? profile.billsFollowing : []
+
+  const { user } = useAuth()
+  const uid = user?.uid
+  const subscriptionRef = collection(firestore, `/users/${uid}/subscriptions/`)
+
+  let billList = []
+
+  const billsFollowingQuery = async () => {
+    const q = query(subscriptionRef, where("user", "==", `${uid}`))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.data().billLookup)
+      billList.push(doc.data().billLookup)
+    })
+    console.log("final bill list: ", billList)
+    console.log(billsFollowing)
+
+    if (billsFollowing.length === 0 && billList.length != 0) {
+      setBillsFollowing(billList)
+    } else {
+      console.log("full", billsFollowing)
+    }
+  }
+
+  useEffect(() => {
+    uid ? billsFollowingQuery() : console.log("no uid")
+  })
 
   return (
     <>
@@ -71,23 +109,25 @@ export function FollowingTab({ actions, className, profile }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>Bills You Follow</h2>
-            {profile.billsFollowing?.map(billId => (
-              <Styled key={billId}>
-                {/* <External href={externalBillLink(billId)}>
-                  {formatBillId(billId)}
-                </External> */}
-                {/* {externalBillLink(billId)} */}
-                External Bill Link
+            {billsFollowing.map(element => (
+              <Styled key={element}>
+                <External
+                  href={`https://malegislature.gov/Bills/${element.court}/${element.bill}`}
+                >
+                  {formatBillId(element.bill)}
+                </External>
                 <Row>
                   <Col className={`col-10`}>
-                    {/* <BillFollowingTitle billId={billId} /> */}
-                    <div>Bill Following Title</div>
+                    <BillFollowingTitle
+                      court={element.court}
+                      id={element.bill}
+                    />
                   </Col>
                   <Col
                     className={`text-center`}
                     onClick={() => {
                       setUnfollowModal("show")
-                      setCurrentBill(billId)
+                      setCurrentBill(element.bill)
                     }}
                   >
                     <button
