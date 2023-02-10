@@ -149,3 +149,7 @@ export const BillDetails = ({ bill }: BillProps) => {
     </StyledContainer>
   )
 }
+
+/*
+replace nameTopic with bill-courtID-billId format
+*/
