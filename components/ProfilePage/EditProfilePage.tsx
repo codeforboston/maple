@@ -127,7 +127,7 @@ export function EditProfileForm({
               /* remove invisible className for testing and/or after Soft Launch when we're
                  ready to show Email related element to users
                */
-              className={`align-self-stretch btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
+              className={`btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
@@ -138,9 +138,7 @@ export function EditProfileForm({
             className={`d-flex ml-2 text-decoration-none`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button
-              className={`align-self-stretch btn btn-lg py-1`}
-              disabled={!!formUpdated}
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}
             >
               {!profile.organization
                 ? "View My Profile"
