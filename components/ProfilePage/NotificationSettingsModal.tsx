@@ -69,8 +69,8 @@ export default function NotificationSettingsModal({
             </Col>
             <Button
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
-            `}
+                btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
+              `}
               onClick={() =>
                 setNotifications(notifications === "None" ? "Monthly" : "None")
               }
@@ -87,9 +87,9 @@ export default function NotificationSettingsModal({
           </Stack>
           <Stack
             className={`
-          pt-3 ${styles.modalFontSize} 
-          ${notifications === "None" ? "invisible" : ""} 
-        `}
+              pt-3 ${styles.modalFontSize} 
+              ${notifications === "None" ? "invisible" : ""} 
+            `}
             direction={`horizontal`}
           >
             <Col className={`col-8`}>
