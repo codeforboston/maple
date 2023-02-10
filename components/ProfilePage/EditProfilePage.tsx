@@ -13,6 +13,7 @@ import {
 import { Internal } from "../links"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
+import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
   Header,
@@ -78,7 +79,11 @@ export function EditProfileForm({
 
   const tabs = [
     {
-      title: "About You",
+      /* 
+        Change in Figma
+       */
+      // title: "About You",
+      title: "Personal Information",
       eventKey: "AboutYou",
       content: (
         <AboutMeEditForm
@@ -101,6 +106,11 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
+    },
+    {
+      title: "Following",
+      eventKey: "Following",
+      content: <FollowingTab className="mt-3 mb-4" />
     }
   ]
 
@@ -109,7 +119,10 @@ export function EditProfileForm({
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
-          <Internal className={`ml-2`} href={`javascript:void(0)`}>
+          <Internal
+            className={`d-flex text-decoration-none`}
+            href={`javascript:void(0)`}
+          >
             <GearButton
               /* remove invisible className for testing and/or after Soft Launch when we're
                  ready to show Email related element to users
@@ -122,10 +135,11 @@ export function EditProfileForm({
             </GearButton>
           </Internal>
           <Internal
-            className={`ml-2`}
+            className={`d-flex ml-2 text-decoration-none`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}
+            >
               {!profile.organization
                 ? "View My Profile"
                 : "View My Organization"}
@@ -137,11 +151,9 @@ export function EditProfileForm({
         <StyledTabNav>
           {tabs.map((t, i) => (
             <Nav.Item key={t.eventKey}>
-              <Nav.Link
-                eventKey={t.eventKey}
-                className={`rounded-top ${i == 0 ? "ms-0 me-2" : "ms-2 me-0"}`}
-              >
-                {t.title}
+              <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
+                <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+                <hr className={`my-0`} />
               </Nav.Link>
             </Nav.Item>
           ))}
