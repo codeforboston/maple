@@ -110,13 +110,7 @@ export function EditProfileForm({
     {
       title: "Following",
       eventKey: "Following",
-      content: (
-        <FollowingTab
-          profile={profile}
-          actions={actions}
-          className="mt-3 mb-4"
-        />
-      )
+      content: <FollowingTab className="mt-3 mb-4" />
     }
   ]
 
