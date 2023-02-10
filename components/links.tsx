@@ -64,8 +64,8 @@ export const maple = {
     `/testimony/${publishedId}`
 }
 
-export function billSiteURL(billNumber: string, generalCourt?: string) {
-  return siteUrl(`bills/${generalCourt ?? currentGeneralCourt}/${billNumber}`)
+export function billSiteURL(billNumber: string, court: number) {
+  return maple.bill({ court: court, id: billNumber })
 }
 
 /** Not all bills have pdf's, only those without document text */
