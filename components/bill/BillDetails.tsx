@@ -7,7 +7,7 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
@@ -49,7 +49,9 @@ export const BillDetails = ({ bill }: BillProps) => {
     })
   }
 
-  uid ? billQuery() : null
+  useEffect(() => {
+    uid ? billQuery() : null
+  })
 
   const handleFollowClick = async () => {
     const topic = "bill-"
