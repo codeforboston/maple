@@ -43,9 +43,28 @@ export function EditProfileForm({
   actions: ProfileHook
   uid: string
 }) {
+  const {
+    public: isPublic,
+    notificationFrequency: notificationFrequency
+  }: Profile = profile
+
   const [key, setKey] = useState("AboutYou")
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+  const [notifications, setNotifications] = useState<
+    "Daily" | "Weekly" | "Monthly" | "None"
+  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
+    isPublic ? isPublic : false
+  )
+
+  const onSettingsModalOpen = () => {
+    setSettingsModal("show")
+    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setIsProfilePublic(isPublic ? isPublic : false)
+  }
+
+  const close = () => setSettingsModal(null)
 
   const testimony = usePublishedTestimonyListing({
     uid: uid
@@ -85,8 +104,6 @@ export function EditProfileForm({
     }
   ]
 
-  const close = () => setSettingsModal(null)
-
   return (
     <Container>
       <Header>
@@ -94,18 +111,24 @@ export function EditProfileForm({
         <Col className={`d-flex justify-content-end`}>
           <Internal className={`ml-2`} href={`javascript:void(0)`}>
             <GearButton
-              className={`btn btn-lg btn-outline-secondary me-4`}
+              /* remove invisible className for testing and/or after Soft Launch when we're
+                 ready to show Email related element to users
+               */
+              className={`btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
-              onClick={() => setSettingsModal("show")}
+              onClick={() => onSettingsModalOpen()}
             >
               {"Settings"}
             </GearButton>
           </Internal>
-          <Internal className={`ml-2`} href={`/profile?id=${uid}`}>
-            <Button className={`btn btn-lg`} disabled={!!formUpdated}>
+          <Internal
+            className={`ml-2`}
+            href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+          >
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
               {!profile.organization
-                ? "View your profile"
-                : "View your organization page"}
+                ? "View My Profile"
+                : "View My Organization"}
             </Button>
           </Internal>
         </Col>
@@ -132,9 +155,14 @@ export function EditProfileForm({
         </StyledTabContent>
       </TabContainer>
       <NotificationSettingsModal
-        show={settingsModal === "show"}
+        actions={actions}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
+        notifications={notifications}
+        setNotifications={setNotifications}
         onHide={close}
-        onClickCloseModal={() => setSettingsModal(null)}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
       />
     </Container>
   )

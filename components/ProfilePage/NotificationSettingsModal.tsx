@@ -1,25 +1,50 @@
-import { useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { Button, Col, Image, Modal, Stack } from "../bootstrap"
+import { Frequency } from "../auth"
+import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
+import { ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
 
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  actions: ProfileHook
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<false | true>>
+  notifications: Frequency
+  setNotifications: Dispatch<
+    SetStateAction<"Daily" | "Weekly" | "Monthly" | "None">
+  >
+  onSettingsModalClose: () => void
+}
+
 export default function NotificationSettingsModal({
-  show,
+  actions,
+  isProfilePublic,
+  setIsProfilePublic,
+  notifications,
+  setNotifications,
   onHide,
-  onClickCloseModal
-}: Pick<ModalProps, "show" | "onHide"> & {
-  onClickCloseModal: () => void
-}) {
-  const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
-  const [notificationFrequency, setNotificationFrequency] = useState<
-    "Daily" | "Weekly" | "Monthly"
-  >("Monthly") //replace initial state with User data
-  const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
+  onSettingsModalClose,
+  show
+}: Props) {
+  const handleContinue = async () => {
+    await updateProfile({ actions })
+    onSettingsModalClose()
+  }
+
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateIsPublic } = actions
+    const { updateNotification } = actions
+
+    await updateIsPublic(isProfilePublic)
+    await updateNotification(notifications)
+  }
+
+  // button classNames weren't otherwise properly updating on iOS
+  let buttonSecondary = "btn-secondary"
+  if (notifications === "None") {
+    buttonSecondary = "btn-outline-secondary"
+  }
 
   return (
     <Modal
@@ -43,17 +68,10 @@ export default function NotificationSettingsModal({
           </Col>
           <Button
             className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-              ${
-                notifications === "Enable"
-                  ? "btn-outline-secondary"
-                  : "btn-secondary"
-              }
+              btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
             `}
             onClick={() =>
-              setNotifications(
-                notifications === "Enable" ? "Enabled" : "Enable"
-              )
+              setNotifications(notifications === "None" ? "Monthly" : "None")
             }
           >
             <Image
@@ -63,14 +81,14 @@ export default function NotificationSettingsModal({
               width="22"
               height="19"
             />
-            {notifications}
+            {notifications === "None" ? "Enable" : "Enabled"}
           </Button>
         </Stack>
         <Stack
           className={`
-            pt-3 ${styles.modalFontSize} 
-            ${notifications === "Enable" ? "invisible" : null} 
-          `}
+          pt-3 ${styles.modalFontSize} 
+          ${notifications === "None" ? "invisible" : ""} 
+        `}
           direction={`horizontal`}
         >
           <Col className={`col-8`}>
@@ -82,19 +100,16 @@ export default function NotificationSettingsModal({
               variant="outline-secondary"
               id="dropdown-basic"
             >
-              {notificationFrequency}
+              {notifications}
             </Dropdown.Toggle>
-
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Daily")}>
+              <Dropdown.Item onClick={() => setNotifications("Daily")}>
                 Daily
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Weekly")}>
+              <Dropdown.Item onClick={() => setNotifications("Weekly")}>
                 Weekly
               </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => setNotificationFrequency("Monthly")}
-              >
+              <Dropdown.Item onClick={() => setNotifications("Monthly")}>
                 Monthly
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -113,33 +128,28 @@ export default function NotificationSettingsModal({
             className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
               ${
-                profileSettings === "Enable"
+                isProfilePublic === true
                   ? "btn-outline-secondary"
                   : "btn-secondary"
               }
-            `}
+              `}
             onClick={() =>
-              setProfileSettings(
-                profileSettings === "Enable" ? "Enabled" : "Enable"
-              )
+              setIsProfilePublic(isProfilePublic === true ? false : true)
             }
           >
-            {profileSettings}
+            {isProfilePublic === true ? "Enable" : "Enabled"}
           </Button>
         </Stack>
         <Stack
           className={`d-flex justify-content-end pt-4`}
           direction={`horizontal`}
         >
-          <Button
-            className={`btn btn-sm mx-3 py-1`}
-            onClick={onClickCloseModal}
-          >
+          <Button className={`btn btn-sm mx-3 py-1`} onClick={handleContinue}>
             Continue
           </Button>
           <Button
             className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onClickCloseModal}
+            onClick={onSettingsModalClose}
           >
             Cancel
           </Button>
@@ -148,10 +158,3 @@ export default function NotificationSettingsModal({
     </Modal>
   )
 }
-
-/*
-  Modal State -> Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
-                 from parent EditProfilePage.tsx
-  Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
-                     [x] then Close Modal
-*/
