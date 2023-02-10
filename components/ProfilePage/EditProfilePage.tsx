@@ -110,13 +110,7 @@ export function EditProfileForm({
     {
       title: "Following",
       eventKey: "Following",
-      content: (
-        <FollowingTab
-          profile={profile}
-          actions={actions}
-          className="mt-3 mb-4"
-        />
-      )
+      content: <FollowingTab className="mt-3 mb-4" />
     }
   ]
 
@@ -144,7 +138,8 @@ export function EditProfileForm({
             className={`d-flex ml-2 text-decoration-none`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}
+            >
               {!profile.organization
                 ? "View My Profile"
                 : "View My Organization"}

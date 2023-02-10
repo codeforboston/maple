@@ -43,23 +43,13 @@ const tabs: TabsType[] = [
     slug: "writing-effective-testimony",
     index: 3,
     Component: Write
+  },
+  {
+    label: "The MA Legislative Process",
+    slug: "legislative-process",
+    index: 4,
+    Component: Legislative
   }
-  /*
-   error - Conflicting paths returned from getStaticPaths, paths must be unique per page. 
-   See more info here: https://nextjs.org/docs/messages/conflicting-ssg-paths
-
-   path: "/learn/legislative-process" from page: "/learn/[slug]" conflicts with path: "/learn/legislative-process" 
-
-   error Command failed with exit code 1.
-   info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
-   */
-
-  // {
-  //   label: "The MA Legislative Process",
-  //   slug: "legislative-process",
-  //   index: 4,
-  //   Component: Legislative
-  // }
 ]
 
 export default createPage({

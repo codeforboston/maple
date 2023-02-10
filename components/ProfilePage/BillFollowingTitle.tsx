@@ -1,8 +1,14 @@
 import { Alert, Row, Spinner } from "../bootstrap"
 import { useBill } from "../db"
 
-export default function BillFollowingTitle({ billId }: { billId: string }) {
-  const { loading, error, result: bill } = useBill(billId)
+export default function BillFollowingTitle({
+  court,
+  id
+}: {
+  court: number
+  id: string
+}) {
+  const { loading, error, result: bill } = useBill(court, id)
 
   if (loading) {
     return (
