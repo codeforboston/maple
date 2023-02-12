@@ -15,9 +15,6 @@ helmCharts:
       storageClassName: linode-block-storage-retain
       secretName: typesense
 
-resources:
-  - ./typesense-secrets.yml
-
 patches:
   # https://github.com/traefik/traefik/issues/8786#issuecomment-1237273950
   - patch: |-
