@@ -80,15 +80,18 @@ export const Tabs = (props: {
   })
 
   return (
-    <div ref={containerRef}>
+    <ComponentContainer ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
         <TabSlider width={sliderWidth} position={sliderPos} />
       </TabSliderContainer>
-    </div>
+    </ComponentContainer>
   )
 }
 
+const ComponentContainer = styled.div`
+  margin-bottom:2%;
+`
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -108,11 +111,10 @@ const TabSliderContainerStyle = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  background-color: black;
+  /*background-color: black; visible track for slider */
   width: 100%;
   height: 1px;
   position: absolute;
-  margin-bottom: 1%;
 `
 export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 1.5s;
