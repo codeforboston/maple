@@ -54,6 +54,10 @@ const ViewTestimony = (
     setOrderBy((e.currentTarget as HTMLElement).innerText)
   }
 
+  const handleShownClick = (e: React.MouseEvent<Element>) => {
+    setShown((e.currentTarget as HTMLElement).innerText)
+  }
+
   const tabs = [
     <Tab key="at" label="All Testimonies" active={false} value={1} />,
     <Tab key="uo" label="Users Only" active={false} value={2} />,
@@ -69,7 +73,7 @@ const ViewTestimony = (
         ></Tabs>
       )}
       <DropDownsContainerStyle>
-        <UserFilterDropDown handleUsers={handleOrderClick} users={shown} />
+        <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
         <OrderFilterDropDownMenu
           handleOrder={handleOrderClick}
           currentOrder={orderBy}
