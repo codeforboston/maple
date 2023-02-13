@@ -60,8 +60,8 @@ const ViewTestimony = (
 
   const tabs = [
     <Tab key="at" label="All Testimonies" active={false} value={1} />,
-    <Tab key="uo" label="Users Only" active={false} value={2} />,
-    <Tab key="oo" label="Organizations Only" active={false} value={3} />
+    <Tab key="uo" label="Individuals" active={false} value={2} />,
+    <Tab key="oo" label="Organizations" active={false} value={3} />
   ]
   const body = (
     <TitledSectionCard className={className}>
