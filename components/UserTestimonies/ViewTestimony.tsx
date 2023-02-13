@@ -51,7 +51,6 @@ const ViewTestimony = (
   }
 
   const handleOrderClick = (e: React.MouseEvent<Element>) => {
-    e.preventDefault()
     setOrderBy((e.currentTarget as HTMLElement).innerText)
   }
 
@@ -281,8 +280,12 @@ export const OrderFilterDropDownMenu = (props: {
   const { handleOrder, currentOrder } = props
 
   return (
-    <DropdownContainer>
-      <StyledDropdown variant="success" id="dropdown-basic">
+    <DropdownContainer className="doodads">
+      <StyledDropdown
+        variant="success"
+        id="dropdown-basic"
+        className="order-filter"
+      >
         {currentOrder}
       </StyledDropdown>
 
@@ -298,6 +301,7 @@ const DropdownContainer = styled(Dropdown)`
   display: flex;
   flex-direction: row-reverse;
   margin: 5px;
+  background: none !important;
 `
 const StyledDropdown = styled(Dropdown.Toggle)`
   display: flex;
@@ -333,7 +337,8 @@ const StyledDropdown = styled(Dropdown.Toggle)`
     border-left: none;
     font-size: 30px;
   }
-  &:focus-visible {
+  &: .order-filter {
+    color: red !important;
     background-color: red !important;
   }
 `
