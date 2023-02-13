@@ -8,14 +8,15 @@ helmCharts:
   - name: app
     # include the traefik CRD's
     includeCRDs: true
-    releaseName: dev
+    releaseName: mapledev
+    namespace: dev
     valuesInline:
       apiDomain: maple.aballslab.com
       storageClassName: local-path
       secretName: typesense
 
 resources:
-  - ./typesense-secrets.yml
+  - namespace.yml
 
 patches:
   # https://github.com/traefik/traefik/issues/8786#issuecomment-1237273950
@@ -25,4 +26,4 @@ patches:
     target:
       version: v1
       kind: Deployment
-      name: dev-traefik
+      name: mapledev-traefik

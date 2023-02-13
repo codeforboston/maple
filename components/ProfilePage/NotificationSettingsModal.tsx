@@ -69,8 +69,8 @@ export default function NotificationSettingsModal({
             </Col>
             <Button
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
-            `}
+                btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
+              `}
               onClick={() =>
                 setNotifications(notifications === "None" ? "Monthly" : "None")
               }

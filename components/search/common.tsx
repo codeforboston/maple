@@ -1,7 +1,7 @@
 import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 const devConfig = {
-  key: "n65zE6pZ7bH0EHCL4OhWfDID5Qj7xZuK",
+  key: "E6ZSivCQqMGARFs3zu4siJqDjYc7ucdy",
   url: "https://maple.aballslab.com/search"
 }
 

@@ -138,8 +138,7 @@ export function EditProfileForm({
             className={`d-flex ml-2 text-decoration-none`}
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
-            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}
-            >
+            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
               {!profile.organization
                 ? "View My Profile"
                 : "View My Organization"}
