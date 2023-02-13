@@ -41,8 +41,8 @@ const ViewTestimony = (
   } = props
   const testimony = items.result ?? []
 
-  const [orderBy, setOrderBy] = useState<string>("Most Recent")
-  const [shown, setShown] = useState<string>("All Published Testimonies")
+  // const [orderBy, setOrderBy] = useState<string>("Most Recent")
+  // const [shown, setShown] = useState<string>("All Published Testimonies")
 
   const [activeTab, setActiveTab] = useState(1)
 
@@ -50,13 +50,13 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const handleOrderClick = (e: React.MouseEvent<Element>) => {
-    setOrderBy((e.currentTarget as HTMLElement).innerText)
-  }
+  // const handleOrderClick = (e: React.MouseEvent<Element>) => {
+  //   setOrderBy((e.currentTarget as HTMLElement).innerText)
+  // }
 
-  const handleShownClick = (e: React.MouseEvent<Element>) => {
-    setShown((e.currentTarget as HTMLElement).innerText)
-  }
+  // const handleShownClick = (e: React.MouseEvent<Element>) => {
+  //   setShown((e.currentTarget as HTMLElement).innerText)
+  // }
 
   const tabs = [
     <Tab key="at" label="All Testimonies" active={false} value={1} />,

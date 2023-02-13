@@ -92,12 +92,13 @@ export const Tabs = (props: {
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
   margin: 1rem;
   background: none;
-  color: ${props => (props.active ? "orange" : "black")};
+  color: ${props => (props.active ? "#C71E32" : "black")};
   border: none;
   font: inherit;
   cursor: pointer;
@@ -116,8 +117,8 @@ const TabSliderContainerStyle = styled.div`
 export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 1.5s;
   width: ${props => `${props.width}px`};
-  height: 10px;
-  background-color: orange;
+  height: 5px;
+  background-color: #C71E32;
   transform: ${props => `translateX(${props.position}px)`};
   position: absolute;
   z-index: 9;
