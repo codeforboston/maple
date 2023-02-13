@@ -178,7 +178,7 @@ export const TestimonyItem = ({
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       {/* USER IMAGE and POSITION */}
-      <PositionLabel position={testimony.position} avatar="leaf-asset.png" />
+      <PositionLabel position={testimony.position} avatar="individualUser.svg" />
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
           <>
@@ -216,12 +216,7 @@ export const TestimonyItem = ({
               </>
             )}
             {/* DATE */}
-            {`${published} · `}
-            <Internal
-              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-            >
-              Full Text
-            </Internal>
+            {`${published}`}
           </div>
         </TestimonyItemHeader>
         <hr />
@@ -240,6 +235,11 @@ export const TestimonyItem = ({
           </div>
         )}
         <ViewAttachment testimony={testimony} />
+            <Internal
+              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+            >
+              Show More
+            </Internal>
       </TestimonyItemContentStyle>
     </div>
   )
