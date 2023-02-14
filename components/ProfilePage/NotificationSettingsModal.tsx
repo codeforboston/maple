@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
+import styled from "styled-components"
 import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
@@ -16,6 +17,18 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   >
   onSettingsModalClose: () => void
 }
+
+const StyledButton = styled(Button)`
+  width: 110px;
+`
+
+const StyledDropdownToggle = styled(Dropdown.Toggle)`
+  width: 110px;
+`
+
+const StyledModalBody = styled(Modal.Body)`
+  padding: 0.8rem;
+`
 
 export default function NotificationSettingsModal({
   actions,
@@ -56,7 +69,7 @@ export default function NotificationSettingsModal({
       <Modal.Header closeButton>
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
-      <Modal.Body className={styles.modalContainer}>
+      <StyledModalBody>
         <Form>
           <Stack>
             &nbsp; Notifications
@@ -67,9 +80,9 @@ export default function NotificationSettingsModal({
               Would you like to receive updates about bills/organizations you
               follow through email?
             </Col>
-            <Button
+            <StyledButton
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
+              btn btn-sm ms-auto py-1 ${buttonSecondary}
             `}
               onClick={() =>
                 setNotifications(notifications === "None" ? "Monthly" : "None")
@@ -83,7 +96,7 @@ export default function NotificationSettingsModal({
                 height="19"
               />
               {notifications === "None" ? "Enable" : "Enabled"}
-            </Button>
+            </StyledButton>
           </Stack>
           <Stack
             className={`
@@ -96,13 +109,13 @@ export default function NotificationSettingsModal({
               How often would you like to receive emails?
             </Col>
             <Dropdown className={`d-inline-block ms-auto`}>
-              <Dropdown.Toggle
-                className={`btn-sm py-1 ${styles.modalButtonLength}`}
+              <StyledDropdownToggle
+                className={`btn-sm py-1`}
                 variant="outline-secondary"
                 id="dropdown-basic"
               >
                 {notifications}
-              </Dropdown.Toggle>
+              </StyledDropdownToggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => setNotifications("Daily")}>
                   Daily
@@ -125,9 +138,9 @@ export default function NotificationSettingsModal({
               Don't make my profile public. (Your name will still be associated
               with your testimony.)
             </Col>
-            <Button
+            <StyledButton
               className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
+              btn btn-sm ms-auto py-1
                 ${
                   isProfilePublic === true
                     ? "btn-outline-secondary"
@@ -139,7 +152,7 @@ export default function NotificationSettingsModal({
               }
             >
               {isProfilePublic === true ? "Enable" : "Enabled"}
-            </Button>
+            </StyledButton>
           </Stack>
           <Stack
             className={`d-flex justify-content-end pt-4`}
@@ -156,7 +169,7 @@ export default function NotificationSettingsModal({
             </Button>
           </Stack>
         </Form>
-      </Modal.Body>
+      </StyledModalBody>
     </Modal>
   )
 }

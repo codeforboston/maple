@@ -1,16 +1,26 @@
 import type { ModalProps } from "react-bootstrap"
+import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
-import styles from "./NotificationSettingsModal.module.css"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   currentBill: string
-  handleUnfollowClick: (bid: string) => Promise<void>
+  currentCourt: number
+  handleUnfollowClick: (billId: string, courtId: number) => Promise<void>
   onUnfollowModalClose: () => void
 }
 
+const StyledButton = styled(Button)`
+  width: 110px;
+`
+
+const StyledModalBody = styled(Modal.Body)`
+  padding: 0.8rem;
+`
+
 export default function UnfollowModal({
   currentBill,
+  currentCourt,
   handleUnfollowClick,
   onHide,
   onUnfollowModalClose,
@@ -26,29 +36,29 @@ export default function UnfollowModal({
       <Modal.Header closeButton>
         <Modal.Title id="unfollow-modal">Unfollow</Modal.Title>
       </Modal.Header>
-      <Modal.Body className={`ms-auto me-auto ${styles.modalContainer}`}>
-        <Stack className={`${styles.unfollowFontSize}`}>
+      <StyledModalBody className={`ms-auto me-auto`}>
+        <Stack>
           Are you sure you want to unfollow Bill {formatBillId(currentBill)}?
         </Stack>
         <Stack className={`mt-4`} direction={`horizontal`}>
-          <Button
+          <StyledButton
             className={`
-                btn btn-sm btn-outline-secondary ms-auto py-1 ${styles.modalButtonLength}`}
+                btn btn-sm btn-outline-secondary ms-auto py-1`}
             onClick={onUnfollowModalClose}
           >
             No
-          </Button>
-          <Button
+          </StyledButton>
+          <StyledButton
             className={`
-                btn btn-sm ms-3 me-auto py-1 ${styles.modalButtonLength}`}
+                btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(currentBill)
+              handleUnfollowClick(currentBill, currentCourt)
             }}
           >
             Yes
-          </Button>
+          </StyledButton>
         </Stack>
-      </Modal.Body>
+      </StyledModalBody>
     </Modal>
   )
 }

@@ -44,16 +44,24 @@ export const Styled = styled.div`
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
   const uid = user?.uid
-  const subscriptionRef = collection(firestore, `/users/${uid}/subscriptions/`)
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubcriptions/`
+  )
   let billList: string[] = []
-  const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
-  const [currentBill, setCurrentBill] = useState<string>("")
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
+  const [currentBill, setCurrentBill] = useState<string>("")
+  const [currentCourt, setCurrentCourt] = useState<number>(0)
+  const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
 
   const close = () => setUnfollowModal(null)
 
-  const handleUnfollowClick = async (billId: string) => {
-    await deleteDoc(doc(subscriptionRef, billId))
+  const handleUnfollowClick = async (billId: string, courtId: number) => {
+    const topicName = "bill-"
+      .concat(courtId.toString())
+      .concat("-")
+      .concat(billId)
+    await deleteDoc(doc(subscriptionRef, topicName))
 
     setBillsFollowing([])
     setUnfollowModal(null)
@@ -85,22 +93,23 @@ export function FollowingTab({ className }: Props) {
             {billsFollowing.map((element: any) => (
               <Styled key={element}>
                 <External
-                  href={`https://malegislature.gov/Bills/${element.court}/${element.bill}`}
+                  href={`https://malegislature.gov/Bills/${element.court}/${element.billId}`}
                 >
-                  {formatBillId(element.bill)}
+                  {formatBillId(element.billId)}
                 </External>
                 <Row>
                   <Col className={`col-10`}>
                     <BillFollowingTitle
                       court={element.court}
-                      id={element.bill}
+                      id={element.billId}
                     />
                   </Col>
                   <Col
                     className={`text-center`}
                     onClick={() => {
                       setUnfollowModal("show")
-                      setCurrentBill(element.bill)
+                      setCurrentBill(element.billId)
+                      setCurrentCourt(element.court)
                     }}
                   >
                     <button
@@ -125,6 +134,7 @@ export function FollowingTab({ className }: Props) {
       </TitledSectionCard>
       <UnfollowModal
         currentBill={currentBill}
+        currentCourt={currentCourt}
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
         onUnfollowModalClose={() => setUnfollowModal(null)}

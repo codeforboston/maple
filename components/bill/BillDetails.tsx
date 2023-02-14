@@ -35,13 +35,23 @@ const StyledImage = styled(Image)`
 export const BillDetails = ({ bill }: BillProps) => {
   const billId = bill.id
   const courtId = bill.court
+  const topicName = "bill-"
+    .concat(courtId.toString())
+    .concat("-")
+    .concat(billId)
   const { user } = useAuth()
   const uid = user?.uid
-  const subscriptionRef = collection(firestore, `/users/${uid}/subscriptions/`)
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubcriptions/`
+  )
   const [queryResult, setQueryResult] = useState("")
 
   const billQuery = async () => {
-    const q = query(subscriptionRef, where("topicName", "==", `bill-${billId}`))
+    const q = query(
+      subscriptionRef,
+      where("topicName", "==", `bill-${courtId}-${billId}`)
+    )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
@@ -54,14 +64,11 @@ export const BillDetails = ({ bill }: BillProps) => {
   })
 
   const handleFollowClick = async () => {
-    const topic = "bill-"
-    const topicName = topic.concat(billId)
-
-    await setDoc(doc(subscriptionRef, billId), {
-      user: uid,
+    await setDoc(doc(subscriptionRef, topicName), {
       topicName: topicName,
+      user: uid,
       billLookup: {
-        bill: billId,
+        billId: billId,
         court: courtId
       }
     })
@@ -70,7 +77,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   }
 
   const handleUnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, billId))
+    await deleteDoc(doc(subscriptionRef, topicName))
 
     setQueryResult("")
   }
@@ -149,7 +156,3 @@ export const BillDetails = ({ bill }: BillProps) => {
     </StyledContainer>
   )
 }
-
-/*
-replace nameTopic with bill-courtID-billId format
-*/
