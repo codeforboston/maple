@@ -127,7 +127,7 @@ export function EditProfileForm({
               /* remove invisible className for testing and/or after Soft Launch when we're
                  ready to show Email related element to users
                */
-              className={`btn btn-lg btn-outline-secondary me-4 py-1 `}
+              className={`btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
