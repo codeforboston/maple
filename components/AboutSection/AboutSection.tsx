@@ -4,8 +4,11 @@ import BackgroundLogo from "../LogoPlacements/BackgroundLogo"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./AboutSection.module.css"
+import AboutContent from "./AboutSectionContent.json"
 
 export default function AboutSection() {
+  const { who, when, how, why, what } = AboutContent.about
+
   return (
     <Container fluid>
       <Row className={`${styles.angledTop}`}>
@@ -27,24 +30,24 @@ export default function AboutSection() {
               className={`g-4 justify-content-center py-5`}
             >
               <AboutInfoCard
-                title="Who"
-                bodytext="Anyone can submit testimony to the MA legislature. Testimony from MA residents is typically directed to the committee leading the bill and your district House and Senate legislators."
+                title={what.title}
+                bodytext={what.bodytext}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="When"
-                bodytext="MAPLE welcomes testimony at any time, but we recommend submitting your testimony before the scheduled hearing date for the greatest impact. The relevant committee dates are listed on the bill pages of this website. "
+                title={why.title}
+                bodytext={why.bodytext}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="Why"
-                bodytext="Let your legislators know how you feel about an issue, so policymakers can make better informed decisions about the laws that govern all our lives."
+                title={how.title}
+                bodytext={how.bodytext}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="Where"
-                bodytext="Testimony is generally accepted by sending an email to the committee Chairs. The MAPLE website will help you easily find a bill you want to testify in and draft an email to send to the relevant personnel."
+                title={when.title}
+                bodytext={when.bodytext}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="What"
-                bodytext="Your testimony will be most impactful when it feels distinctive and relevant, so be sure to write your own text and explain why you are interested in an issue.            "
+                title={who.title}
+                bodytext={who.bodytext}
               ></AboutInfoCard>
             </Row>
           </Col>
