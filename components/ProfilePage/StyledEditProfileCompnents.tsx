@@ -86,11 +86,12 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
   className: `${props.className}`
 }))`
   margin: 0;
+  max-height: 108px;
   font-family: Nunito;
   font-weight: 500;
   font-size: 39px;
   letter-spacing: -0.015em;
-  text-align: justify;
+  text-align: left;
   color: #000;
 
   .firstName {

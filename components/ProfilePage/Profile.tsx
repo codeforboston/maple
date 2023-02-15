@@ -37,6 +37,7 @@ const StyledContainer = styled(Container)`
 
   .edit-profile-header {
     flex-direction: column !important;
+    height: auto;
   }
 
   .your-legislators-width {
@@ -233,7 +234,7 @@ export const ProfileHeader = ({
     : ["user", "user"]
 
   return (
-    <Header className={`d-flex edit-profile-header`}>
+    <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
           <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
@@ -243,49 +244,33 @@ export const ProfileHeader = ({
           <UserIcon className={`col d-none d-md-flex`} />
         </Col>
       )}
-
-      {displayName ? (
-        <Col xs={"auto"} className={"col-auto"}>
-          <ProfileDisplayName
-            className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
-          >
-            <div
-              className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
-            >
-              {firstName}
-            </div>
-            <div className={`lastName text-capitalize`}>{lastName}</div>
+      <Col className={``}>
+        <div className={``}>
+          <ProfileDisplayName className={`overflow-hidden`}>
+            {displayName ? `${displayName}` : "Anonymous User"}
           </ProfileDisplayName>
-
-          {isOrganization && (
-            <VerifiedBadge>
-              <div className={"verifiedText"}>verified organization</div>
-            </VerifiedBadge>
-          )}
-        </Col>
-      ) : (
-        <ProfileDisplayName
-          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
-        >
-          <div
-            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
-          >
-            Anonymous
-          </div>
-          <div className={`lastName text-capitalize`}>User</div>
-        </ProfileDisplayName>
-      )}
-      {isUser && <EditProfileButton />}
+          <Col>
+            <Button className={`btn btn-lg py-1`}>Follow</Button>
+          </Col>
+        </div>
+      </Col>
+      {isUser && <EditProfileButton isMobile={isMobile} />}
     </Header>
   )
 }
 
-const EditProfileButton = () => {
+const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
   return (
-    <Col className={`d-flex justify-content-end w-100`}>
-      <Internal href="/editprofile" className="view-edit-profile">
-        <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
-      </Internal>
+    <Col
+      className={`d-flex w-100 ${
+        !isMobile ? "justify-content-end" : "justify-content-start"
+      }`}
+    >
+      <div>
+        <Internal href="/editprofile" className="view-edit-profile">
+          <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
+        </Internal>
+      </div>
     </Col>
   )
 }
