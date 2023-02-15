@@ -74,65 +74,72 @@ export default function NotificationSettingsModal({
       </Modal.Header>
       <StyledModalBody>
         <Form>
-          <Stack>
-            &nbsp; Notifications
-            <hr className={`mt-0`} />
-          </Stack>
-          <StyledRow>
-            <Col className={`col-8`}>
-              Would you like to receive updates about bills/organizations you
-              follow through email?
-            </Col>
-            <Col>
-              <StyledButton
-                className={`btn btn-sm d-flex justify-content-end ms-auto py-1 ${buttonSecondary}`}
-                onClick={() =>
-                  setNotifications(
-                    notifications === "None" ? "Monthly" : "None"
-                  )
-                }
-              >
-                <Image
-                  className={`pe-1`}
-                  src="/mail-2.svg"
-                  alt="open envelope with letter, toggles update frequency options"
-                  width="22"
-                  height="19"
-                />
-                {notifications === "None" ? "Enable" : "Enabled"}
-              </StyledButton>
-            </Col>
-          </StyledRow>
-          <StyledRow
-            className={`pt-3 ${notifications === "None" ? "invisible" : ""}`}
-            direction={`horizontal`}
+          <div
+            /* remove "div w/ d-none" for testing and/or after Soft Launch 
+               when we're ready to show Email related element to users
+            */
+            className={`d-none`}
           >
-            <Col className={`col-8`}>
-              How often would you like to receive emails?
-            </Col>
-            <Col className={`d-flex justify-content-end`}>
-              <Dropdown className={`d-inline-block ms-auto`}>
-                <StyledDropdownToggle
-                  className={`btn-sm py-1`}
-                  variant="outline-secondary"
-                  id="dropdown-basic"
+            <Stack>
+              &nbsp; Notifications
+              <hr className={`mt-0`} />
+            </Stack>
+            <StyledRow>
+              <Col className={`col-8`}>
+                Would you like to receive updates about bills/organizations you
+                follow through email?
+              </Col>
+              <Col>
+                <StyledButton
+                  className={`btn btn-sm d-flex justify-content-end ms-auto py-1 ${buttonSecondary}`}
+                  onClick={() =>
+                    setNotifications(
+                      notifications === "None" ? "Monthly" : "None"
+                    )
+                  }
                 >
-                  {notifications}
-                </StyledDropdownToggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setNotifications("Daily")}>
-                    Daily
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setNotifications("Weekly")}>
-                    Weekly
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setNotifications("Monthly")}>
-                    Monthly
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-          </StyledRow>
+                  <Image
+                    className={`pe-1`}
+                    src="/mail-2.svg"
+                    alt="open envelope with letter, toggles update frequency options"
+                    width="22"
+                    height="19"
+                  />
+                  {notifications === "None" ? "Enable" : "Enabled"}
+                </StyledButton>
+              </Col>
+            </StyledRow>
+            <StyledRow
+              className={`pt-3 ${notifications === "None" ? "invisible" : ""}`}
+              direction={`horizontal`}
+            >
+              <Col className={`col-8`}>
+                How often would you like to receive emails?
+              </Col>
+              <Col className={`d-flex justify-content-end`}>
+                <Dropdown className={`d-inline-block ms-auto`}>
+                  <StyledDropdownToggle
+                    className={`btn-sm py-1`}
+                    variant="outline-secondary"
+                    id="dropdown-basic"
+                  >
+                    {notifications}
+                  </StyledDropdownToggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                      Daily
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setNotifications("Weekly")}>
+                      Weekly
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setNotifications("Monthly")}>
+                      Monthly
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+            </StyledRow>
+          </div>
           <Stack className={`pt-4`}>
             &nbsp; Profile Settings
             <hr className={`mt-0`} />

@@ -7,7 +7,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
 }))`
   display: flex;
-  justify-content: space-around;
+
   height: 2.5em;
 
   .nav-item {
@@ -88,7 +88,8 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
   margin: 0;
   font-family: Nunito;
   font-weight: 500;
-  letter-spacing: -0.63px;
+  font-size: 39px;
+  letter-spacing: -0.015em;
   text-align: justify;
   color: #000;
 
