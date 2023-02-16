@@ -68,7 +68,7 @@ export function FollowingTab({ className }: Props) {
   }
 
   const billsFollowingQuery = async () => {
-    const q = query(subscriptionRef, where("user", "==", `${uid}`))
+    const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots

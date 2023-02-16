@@ -1,6 +1,15 @@
 import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
-import { useCallback } from "react"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { useCallback, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -8,6 +17,7 @@ import { useAuth } from "../auth"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
+import { firestore } from "../firebase"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -78,6 +88,13 @@ const StyledContainer = styled(Container)`
   }
 `
 
+const StyledImage = styled(Image)`
+  width: 14.77px;
+  height: 12.66px;
+
+  margin-left: 8px;
+`
+
 export function ProfilePage({ id }: { id: string }) {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(id)
@@ -130,6 +147,8 @@ export function ProfilePage({ id }: { id: string }) {
               isOrganization={isOrganization || false}
               profileImage={profileImage || "/profile-icon.svg"}
               isMobile={isMobile}
+              uid={user?.uid}
+              orgId={id}
             />
 
             {isUser && !user.emailVerified ? (
@@ -221,17 +240,53 @@ export const ProfileHeader = ({
   isUser,
   isOrganization,
   profileImage,
-  isMobile
+  isMobile,
+  uid,
+  orgId
 }: {
   displayName?: string
   isUser: boolean
   isOrganization: boolean
   profileImage?: string
   isMobile: boolean
+  uid?: string
+  orgId: string
 }) => {
-  const [firstName, lastName] = displayName
-    ? displayName.split(" ")
-    : ["user", "user"]
+  const topicName = "org-".concat(orgId)
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubcriptions/`
+  )
+  const [queryResult, setQueryResult] = useState("")
+
+  const orgQuery = async () => {
+    const q = query(subscriptionRef, where("topicName", "==", `org-${orgId}`))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      setQueryResult(doc.data().topicName)
+    })
+  }
+
+  useEffect(() => {
+    uid ? orgQuery() : null
+  })
+
+  const handleFollowClick = async () => {
+    await setDoc(doc(subscriptionRef, topicName), {
+      topicName: topicName,
+      uid: uid,
+      orgId: orgId
+    })
+
+    setQueryResult(topicName)
+  }
+
+  const handleUnfollowClick = async () => {
+    await deleteDoc(doc(subscriptionRef, topicName))
+
+    setQueryResult("")
+  }
 
   return (
     <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
@@ -244,14 +299,28 @@ export const ProfileHeader = ({
           <UserIcon className={`col d-none d-md-flex`} />
         </Col>
       )}
-      <Col className={``}>
-        <div className={``}>
+      <Col>
+        <div>
           <ProfileDisplayName className={`overflow-hidden`}>
             {displayName ? `${displayName}` : "Anonymous User"}
           </ProfileDisplayName>
-          <Col>
-            <Button className={`btn btn-lg py-1`}>Follow</Button>
-          </Col>
+          {isOrganization ? (
+            <Col>
+              <Button
+                className={`btn btn-primary btn-sm py-1 ${
+                  uid ? "" : "visually-hidden"
+                }`}
+                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+              >
+                {queryResult ? "Following" : "Follow"}
+                {queryResult ? (
+                  <StyledImage src="/check-white.svg" alt="checkmark" />
+                ) : null}
+              </Button>
+            </Col>
+          ) : (
+            <></>
+          )}
         </div>
       </Col>
       {isUser && <EditProfileButton isMobile={isMobile} />}

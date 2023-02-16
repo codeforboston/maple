@@ -66,7 +66,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   const handleFollowClick = async () => {
     await setDoc(doc(subscriptionRef, topicName), {
       topicName: topicName,
-      user: uid,
+      uid: uid,
       billLookup: {
         billId: billId,
         court: courtId
@@ -101,9 +101,9 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Col xs={6} className="d-flex justify-content-end">
             <Styled>
               <Button
-                className={`btn btn-primary btn-sm ms-auto py-2
-                ${uid ? "" : "visually-hidden"}
-              `}
+                className={`btn btn-primary btn-sm ms-auto py-1 ${
+                  uid ? "" : "visually-hidden"
+                }`}
                 onClick={queryResult ? handleUnfollowClick : handleFollowClick}
               >
                 {queryResult ? "Following" : "Follow"}
@@ -120,9 +120,9 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Row className="mb-4">
             <Col xs={12} className="d-flex justify-content-end">
               <Button
-                className={`btn btn-primary btn-sm ms-auto py-2 w-auto
-                ${uid ? "" : "visually-hidden"}
-              `}
+                className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
+                  uid ? "" : "visually-hidden"
+                }`}
                 onClick={queryResult ? handleUnfollowClick : handleFollowClick}
               >
                 {queryResult ? "Following" : "Follow"}
