@@ -4,8 +4,12 @@ import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
+import { useTranslation } from "next-i18next"
+import {capitalize} from 'lodash'
 
 const HeroHeader = ({ authenticated }) => {
+  const { t } = useTranslation("common")
+  
   return (
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
@@ -49,11 +53,9 @@ const HeroHeader = ({ authenticated }) => {
                 md={{ order: "last", span: 6 }}
               >
                 <div className={`m-5`}>
-                  <div className={styles.title}>Let your voice be heard!</div>
+                  <div className={styles.title}>{t('common:let_your_voice_be_heard')}</div>
                   <p className={styles.subtitle}>
-                    MAPLE makes it easy for anyone to view and submit testimony
-                    to the Massachusetts Legislature about the bills that will
-                    shape our future.
+                    {t('short_description')}
                   </p>
                   <div className="text-end m-5">
                     {!authenticated && (
@@ -63,7 +65,7 @@ const HeroHeader = ({ authenticated }) => {
                     )}
                     <Wrap href="/bills">
                       <div className={styles.btncontainer}>
-                        <Button variant="outline-secondary">Browse</Button>
+                        <Button variant="outline-secondary">{capitalize(t('browse'))}</Button>
                       </div>
                     </Wrap>
                   </div>

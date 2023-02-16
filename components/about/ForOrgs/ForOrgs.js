@@ -5,8 +5,12 @@ import {
   BenefitsCardContent,
   ChallengeCardContent
 } from "../ForOrgsCardContent/ForOrgsCardContent"
+import { useTranslation } from "next-i18next"
 
 const ForOrgs = () => {
+  
+  const {t} = useTranslation("fororgs")
+  
   return (
     <Container>
       <Row>
@@ -18,7 +22,7 @@ const ForOrgs = () => {
           <AboutPagesCard title="What we offer">
             <BenefitsCardContent />
           </AboutPagesCard>
-          <AboutPagesCard title="Rise to the challenge for the 193rd">
+          <AboutPagesCard title={t('challenge.title')}>
             <ChallengeCardContent />
           </AboutPagesCard>
         </Col>

@@ -3,6 +3,7 @@ import { AppProps } from "next/app"
 import { ReactElement, ReactNode } from "react"
 import { Layout, LayoutProps } from "./layout"
 
+
 export type ApplyLayout = (page: ReactElement) => ReactNode
 
 export type AppPage<P> = NextPage<P> & LayoutProps

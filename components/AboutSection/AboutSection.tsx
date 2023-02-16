@@ -4,10 +4,10 @@ import BackgroundLogo from "../LogoPlacements/BackgroundLogo"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./AboutSection.module.css"
-import AboutContent from "./AboutSectionContent.json"
+import { useTranslation } from "next-i18next"
 
 export default function AboutSection() {
-  const { who, when, how, why, what } = AboutContent.about
+  const { t } = useTranslation("homepage")
 
   return (
     <Container fluid>
@@ -20,7 +20,7 @@ export default function AboutSection() {
           </ScrollTrackerContainer>
 
           <Col xs={10}>
-            <h1 className="text-white">About MAPLE</h1>
+            <h1 className="text-white">{t("About_MAPLE")}</h1>
           </Col>
           <Col xs={10} xxl={9}>
             <Row
@@ -30,24 +30,24 @@ export default function AboutSection() {
               className={`g-4 justify-content-center py-5`}
             >
               <AboutInfoCard
-                title={what.title}
-                bodytext={what.bodytext}
+                title={t("what.title")}
+                bodytext={t("what.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title={why.title}
-                bodytext={why.bodytext}
+                title={t("why.title")}
+                bodytext={t("why.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title={how.title}
-                bodytext={how.bodytext}
+                title={t("how.title")}
+                bodytext={t("how.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title={when.title}
-                bodytext={when.bodytext}
+                title={t("when.title")}
+                bodytext={t("when.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title={who.title}
-                bodytext={who.bodytext}
+                title={t("who.title")}
+                bodytext={t("who.bodytext")}
               ></AboutInfoCard>
             </Row>
           </Col>
