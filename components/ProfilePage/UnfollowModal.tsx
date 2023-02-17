@@ -42,7 +42,6 @@ export default function UnfollowModal({
     }
   }
 
-  console.log("Type", currentType)
   return (
     <Modal
       show={show}

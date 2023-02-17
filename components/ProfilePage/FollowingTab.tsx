@@ -9,13 +9,17 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Col, Image, Row, Spinner, Stack } from "../bootstrap"
-import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
+import { Alert, Col, Image, Row, Spinner, Stack } from "../bootstrap"
+import {
+  Profile,
+  useBill,
+  usePublicProfile,
+  usePublishedTestimonyListing
+} from "../db"
 import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
-import { External } from "../links"
+import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import BillFollowingTitle from "./BillFollowingTitle"
 import {
   Header,
   ProfileDisplayName,
@@ -50,14 +54,14 @@ export const Styled = styled.div`
 
 export const OrgIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: props.src || "/profile-icon.svg",
+  src: props.src || "/profile-org-icon.svg",
   className: props.className
 }))`
   height: 3rem;
   width: 3rem;
   margin: 1rem;
   border-radius: 50%;
-  background-color: var(--bs-blue);
+  background-color: var(--bs-white);
   flex: 0;
 `
 
@@ -68,16 +72,16 @@ export function FollowingTab({ className }: Props) {
     firestore,
     `/users/${uid}/activeTopicSubcriptions/`
   )
+
   let billList: string[] = []
-  let orgsList: string[] = []
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
+  let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
   const [currentCourt, setCurrentCourt] = useState<number>(0)
   const [currentOrgName, setCurrentOrgName] = useState<string>("")
   const [currentType, setCurrentType] = useState<string>("")
   const [currentTypeId, setCurrentTypeId] = useState<string>("")
-
   const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
 
   const close = () => setUnfollowModal(null)
@@ -143,9 +147,6 @@ export function FollowingTab({ className }: Props) {
     uid ? orgsFollowingQuery() : null
   })
 
-  console.log("Bills Following: ", billsFollowing)
-  console.log("Orgs Following: ", orgsFollowing)
-
   return (
     <>
       <TitledSectionCard className={className}>
@@ -153,38 +154,15 @@ export function FollowingTab({ className }: Props) {
           <Stack>
             <h2>Bills You Follow</h2>
             {billsFollowing.map((element: any, index: number) => (
-              <Styled key={index}>
-                <External
-                  href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-                >
-                  {formatBillId(element?.billId)}
-                </External>
-                <Row>
-                  <Col className={`col-10`}>
-                    <BillFollowingTitle
-                      court={element?.court}
-                      id={element?.billId}
-                    />
-                  </Col>
-                  <Col
-                    className={`text-center`}
-                    onClick={() => {
-                      setCurrentCourt(element?.court)
-                      setCurrentOrgName("")
-                      setCurrentType("bill")
-                      setCurrentTypeId(element?.billId)
-                      setUnfollowModal("show")
-                    }}
-                  >
-                    <button
-                      className={`btn btn-link d-flex align-items-start p-0 text-decoration-none`}
-                    >
-                      <h6>Unfollow</h6>
-                    </button>
-                  </Col>
-                  <hr className={`mt-3`} />
-                </Row>
-              </Styled>
+              <FollowedBill
+                key={index}
+                element={element}
+                setCurrentCourt={setCurrentCourt}
+                setCurrentOrgName={setCurrentOrgName}
+                setCurrentType={setCurrentType}
+                setCurrentTypeId={setCurrentTypeId}
+                setUnfollowModal={setUnfollowModal}
+              />
             ))}
           </Stack>
         </div>
@@ -221,7 +199,72 @@ export function FollowingTab({ className }: Props) {
   )
 }
 
-export function FollowedOrg({
+function FollowedBill({
+  key,
+  element,
+  setCurrentCourt,
+  setCurrentOrgName,
+  setCurrentType,
+  setCurrentTypeId,
+  setUnfollowModal
+}: {
+  key: number
+  element: any
+  setCurrentCourt: Dispatch<SetStateAction<number>>
+  setCurrentOrgName: Dispatch<SetStateAction<string>>
+  setCurrentType: Dispatch<SetStateAction<string>>
+  setCurrentTypeId: Dispatch<SetStateAction<string>>
+  setUnfollowModal: Dispatch<SetStateAction<"show" | null>>
+}) {
+  return (
+    <Styled key={key}>
+      <External
+        href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
+      >
+        {formatBillId(element?.billId)}
+      </External>
+      <Row>
+        <Col className={`col-10`}>
+          <BillFollowingTitle court={element?.court} id={element?.billId} />
+        </Col>
+        <Col
+          className={`text-center`}
+          onClick={() => {
+            setCurrentCourt(element?.court)
+            setCurrentOrgName("")
+            setCurrentType("bill")
+            setCurrentTypeId(element?.billId)
+            setUnfollowModal("show")
+          }}
+        >
+          <UnfollowButton />
+        </Col>
+        <hr className={`mt-3`} />
+      </Row>
+    </Styled>
+  )
+}
+
+function BillFollowingTitle({ court, id }: { court: number; id: string }) {
+  const { loading, error, result: bill } = useBill(court, id)
+
+  if (loading) {
+    return (
+      <Row>
+        <Spinner animation="border" className="mx-auto" />
+      </Row>
+    )
+  } else if (error) {
+    return (
+      <Alert variant="danger">An error occured. Please refresh the page.</Alert>
+    )
+  } else if (bill) {
+    return <h6>{bill?.content.Title}</h6>
+  }
+  return null
+}
+
+function FollowedOrg({
   key,
   orgId,
   setCurrentCourt,
@@ -245,8 +288,6 @@ export function FollowedOrg({
     displayName = profile.displayName
   }
 
-  console.log("Pro: ", profile)
-
   return (
     <>
       {loading ? (
@@ -254,33 +295,44 @@ export function FollowedOrg({
           <Spinner animation="border" className="mx-auto" />
         </Row>
       ) : (
-        <Row key={key}>
-          <Col xs={"auto"} className={"col-auto"}>
-            <OrgIcon
-              className={`col d-none d-sm-flex`}
-              src={profile?.profileImage}
-            />
-          </Col>
-          <Col>{displayName}</Col>
-          <Col
-            className={`text-center`}
-            onClick={() => {
-              setCurrentCourt(0)
-              setCurrentOrgName(displayName)
-              setCurrentType("org")
-              setCurrentTypeId(orgId)
-              setUnfollowModal("show")
-            }}
-          >
-            <button
-              className={`btn btn-link d-flex align-items-start p-0 text-decoration-none`}
+        <Styled>
+          <Row className={`d-flex align-items-center`} key={key}>
+            <Col xs={"auto"} className={"col-auto"}>
+              <OrgIcon
+                className={`col d-none d-sm-flex`}
+                src={profile?.profileImage}
+              />
+            </Col>
+            <Internal className={`col-9`} href={`profile?id=${orgId}`}>
+              {displayName}
+            </Internal>
+            <Col
+              className={`text-center`}
+              onClick={() => {
+                setCurrentCourt(0)
+                setCurrentOrgName(displayName)
+                setCurrentType("org")
+                setCurrentTypeId(orgId)
+                setUnfollowModal("show")
+              }}
+              style={{ paddingLeft: "0" }}
             >
-              <h6>Unfollow</h6>
-            </button>
-          </Col>
-          <hr className={`mt-3`} />
-        </Row>
+              <UnfollowButton />
+            </Col>
+            <hr className={`mt-3`} />
+          </Row>
+        </Styled>
       )}
     </>
+  )
+}
+
+function UnfollowButton() {
+  return (
+    <button
+      className={`btn btn-link d-flex align-items p-0 text-decoration-none`}
+    >
+      <h6>Unfollow</h6>
+    </button>
   )
 }
