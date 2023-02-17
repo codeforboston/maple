@@ -70,7 +70,8 @@ export const BillDetails = ({ bill }: BillProps) => {
       billLookup: {
         billId: billId,
         court: courtId
-      }
+      },
+      type: "bill"
     })
 
     setQueryResult(topicName)

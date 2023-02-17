@@ -151,14 +151,11 @@ export default function NotificationSettingsModal({
             </Col>
             <Col>
               <StyledButton
-                className={`
-                  btn btn-sm d-flex justify-content-center ms-auto py-1
-                  ${
-                    isProfilePublic === true
-                      ? "btn-outline-secondary"
-                      : "btn-secondary"
-                  }
-                `}
+                className={`btn btn-sm d-flex justify-content-center ms-auto py-1 ${
+                  isProfilePublic === true
+                    ? "btn-outline-secondary"
+                    : "btn-secondary"
+                }`}
                 onClick={() =>
                   setIsProfilePublic(isProfilePublic === true ? false : true)
                 }

@@ -4,9 +4,15 @@ import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  currentBill: string
   currentCourt: number
-  handleUnfollowClick: (billId: string, courtId: number) => Promise<void>
+  currentOrgName: string
+  currentType: string
+  currentTypeId: string
+  handleUnfollowClick: (
+    courtId: number,
+    type: string,
+    typeId: string
+  ) => Promise<void>
   onUnfollowModalClose: () => void
 }
 
@@ -19,13 +25,24 @@ const StyledModalBody = styled(Modal.Body)`
 `
 
 export default function UnfollowModal({
-  currentBill,
   currentCourt,
+  currentOrgName,
+  currentType,
+  currentTypeId,
   handleUnfollowClick,
   onHide,
   onUnfollowModalClose,
   show
 }: Props) {
+  const handleTopic = () => {
+    if (currentType == "bill") {
+      return ` Bill ${formatBillId(currentTypeId)}`
+    } else {
+      return ` ${currentOrgName}`
+    }
+  }
+
+  console.log("Type", currentType)
   return (
     <Modal
       show={show}
@@ -38,7 +55,8 @@ export default function UnfollowModal({
       </Modal.Header>
       <StyledModalBody className={`ms-auto me-auto`}>
         <Stack>
-          Are you sure you want to unfollow Bill {formatBillId(currentBill)}?
+          Are you sure you want to unfollow
+          {handleTopic()}?
         </Stack>
         <Stack className={`mt-4`} direction={`horizontal`}>
           <StyledButton
@@ -52,7 +70,7 @@ export default function UnfollowModal({
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(currentBill, currentCourt)
+              handleUnfollowClick(currentCourt, currentType, currentTypeId)
             }}
           >
             Yes

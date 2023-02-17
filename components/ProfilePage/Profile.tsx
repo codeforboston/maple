@@ -276,7 +276,8 @@ export const ProfileHeader = ({
     await setDoc(doc(subscriptionRef, topicName), {
       topicName: topicName,
       uid: uid,
-      orgId: orgId
+      orgId: orgId,
+      type: "org"
     })
 
     setQueryResult(topicName)
