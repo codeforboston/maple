@@ -123,12 +123,15 @@ const TestimonyItemContentStyle = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  button {
+    align-self: flex-end;
+  }
 `
 const TestimonyItemHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
+  margin-bottom: -15px;
   width: 100%;
 `
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
@@ -178,7 +181,10 @@ export const TestimonyItem = ({
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       {/* USER IMAGE and POSITION */}
-      <PositionLabel position={testimony.position} avatar="individualUser.svg" />
+      <PositionLabel
+        position={testimony.position}
+        avatar="individualUser.svg"
+      />
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
           <>
@@ -217,6 +223,12 @@ export const TestimonyItem = ({
             )}
             {/* DATE */}
             {`${published}`}
+            {/* Need to research meaning of Full Text and it's relationship with "Show more" */}
+            {/* <Internal
+              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+            >
+              Full Text
+            </Internal> */}
           </div>
         </TestimonyItemHeader>
         <hr />
@@ -235,11 +247,6 @@ export const TestimonyItem = ({
           </div>
         )}
         <ViewAttachment testimony={testimony} />
-            <Internal
-              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
-            >
-              Show More
-            </Internal>
       </TestimonyItemContentStyle>
     </div>
   )
@@ -301,6 +308,7 @@ export const OrderFilterDropDownMenu = (props: {
   )
 }
 export default ViewTestimony
+
 const DropdownContainer = styled(Dropdown)`
   display: flex;
   flex-direction: row-reverse;
