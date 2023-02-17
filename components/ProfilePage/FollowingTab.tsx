@@ -10,22 +10,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Image, Row, Spinner, Stack } from "../bootstrap"
-import {
-  Profile,
-  useBill,
-  usePublicProfile,
-  usePublishedTestimonyListing
-} from "../db"
+import { useBill, usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import {
-  Header,
-  ProfileDisplayName,
-  UserIcon,
-  VerifiedBadge
-} from "./StyledEditProfileCompnents"
+import { OrgIconSmall } from "./StyledEditProfileCompnents"
 import UnfollowModal from "./UnfollowModal"
 
 type Props = {
@@ -50,19 +40,6 @@ export const Styled = styled.div`
     max-height: 2rem;
     max-height: 2rem;
   }
-`
-
-export const OrgIcon = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-org-icon.svg",
-  className: props.className
-}))`
-  height: 3rem;
-  width: 3rem;
-  margin: 1rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
 `
 
 export function FollowingTab({ className }: Props) {
@@ -298,7 +275,7 @@ function FollowedOrg({
         <Styled>
           <Row className={`d-flex align-items-center`} key={key}>
             <Col xs={"auto"} className={"col-auto"}>
-              <OrgIcon
+              <OrgIconSmall
                 className={`col d-none d-sm-flex`}
                 src={profile?.profileImage}
               />

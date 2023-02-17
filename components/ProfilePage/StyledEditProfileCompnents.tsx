@@ -105,16 +105,43 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: props.src || "/profile-icon.svg",
+  src: props.src || "/profile-individual-icon.svg",
   className: props.className
 }))`
   height: 8rem;
   width: 8rem;
   margin: 1rem;
   border-radius: 50%;
-  background-color: var(--bs-blue);
+  background-color: var(--bs-white);
   flex: 0;
 `
+
+export const OrgIconLarge = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 8rem;
+  width: 8rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
+export const OrgIconSmall = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 3rem;
+  width: 3rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
 export const VerifiedBadge = styled.div.attrs(props => ({
   className: props.className
 }))`

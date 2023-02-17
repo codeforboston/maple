@@ -25,6 +25,7 @@ import { ProfileLegislators } from "./ProfileLegislators"
 import {
   Header,
   ProfileDisplayName,
+  OrgIconLarge,
   UserIcon,
   VerifiedBadge
 } from "./StyledEditProfileCompnents"
@@ -145,7 +146,7 @@ export function ProfilePage({ id }: { id: string }) {
               displayName={displayName}
               isUser={isUser}
               isOrganization={isOrganization || false}
-              profileImage={profileImage || "/profile-icon.svg"}
+              profileImage={profileImage || "/profile-org-icon.svg"}
               isMobile={isMobile}
               uid={user?.uid}
               orgId={id}
@@ -289,11 +290,14 @@ export const ProfileHeader = ({
     setQueryResult("")
   }
 
+  console.log(isOrganization)
+  console.log(profileImage)
+
   return (
     <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
+          <OrgIconLarge className={`col d-none d-sm-flex`} src={profileImage} />
         </Col>
       ) : (
         <Col xs={"auto"} className={"col-auto"}>
