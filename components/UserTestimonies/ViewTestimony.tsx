@@ -122,7 +122,7 @@ export const SortTestimonyDropDown = ({
 const TestimonyItemContentStyle = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   button {
     align-self: flex-end;
   }
@@ -179,7 +179,13 @@ export const TestimonyItem = ({
   const { result: bill } = useBill(testimony.billId)
 
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        padding: "0 5%"
+      }}
+    >
       {/* USER IMAGE and POSITION */}
       <PositionLabel
         position={testimony.position}
@@ -223,7 +229,7 @@ export const TestimonyItem = ({
             )}
             {/* DATE */}
             {`${published}`}
-            {/* Need to research meaning of Full Text and it's relationship with "Show more" */}
+            {/* Need to research meaning of Full Text and it's relationship with Show more" */}
             {/* <Internal
               href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
             >
