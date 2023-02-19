@@ -90,7 +90,7 @@ export const Tabs = (props: {
 }
 
 const ComponentContainer = styled.div`
-  margin-bottom:2%;
+  margin-bottom: 2%;
 `
 const TabsContainer = styled.div`
   display: flex;
@@ -120,7 +120,7 @@ export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 1.5s;
   width: ${props => `${props.width}px`};
   height: 5px;
-  background-color: #C71E32;
+  background-color: #c71e32;
   transform: ${props => `translateX(${props.position}px)`};
   position: absolute;
   z-index: 9;
