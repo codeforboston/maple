@@ -10,10 +10,6 @@ storageClassName: ""
 secretName: ""
 
 traefik:
-  image:
-    name: traefik
-    tag: "v2.8.4"
-
   ports:
     websecure:
       tls:
