@@ -12,7 +12,7 @@ import { Timestamp } from "../firebase"
 
 // export type Stage3 =
 //   | {
-//       stage: 
+//       stage:
 //       billId: string
 //       introducedBy: string
 //     }

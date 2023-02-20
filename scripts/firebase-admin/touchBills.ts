@@ -11,6 +11,6 @@ export const script: Script = async ({ db, args }) => {
     await db
       .doc(`/generalCourts/${court}/bills/${id}`)
       .update({ updatedAt: Timestamp.now() })
-    console.log('Updated', id)
+    console.log("Updated", id)
   }
 }

@@ -7,8 +7,8 @@ import { BillProps, BillTracker } from "./types"
 export default function BillTrackerConnectedView({
   bill
 }: BillProps): JSX.Element {
-  const { result , loading, error} = useBillTracker(bill.id, 192)
-  console.log(result, loading , error)
+  const { result, loading, error } = useBillTracker(bill.id, 192)
+  console.log(result, loading, error)
   return <BillTrackerView tracker={result} />
 }
 

@@ -86,8 +86,7 @@ function hasFirstCommittees(history: BillHistory) {
 function hasSecondCommittees(history: BillHistory) {
   for (let h of history) {
     for (let c of chamberCommittees) {
-      if (h.Action.match(c)) 
-      {
+      if (h.Action.match(c)) {
         console.log(c)
         return true
       }
