@@ -130,7 +130,10 @@ const OurMissionCardContent = () => {
       <Row>
         <Col>
           <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
-            {t('mission.publish')}
+            {t('mission.publish1')}
+          </p>
+          <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
+            {t('mission.publish2')}
           </p>
         </Col>
       </Row>

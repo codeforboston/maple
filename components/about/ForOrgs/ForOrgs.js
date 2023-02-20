@@ -15,14 +15,14 @@ const ForOrgs = () => {
     <Container>
       <Row>
         <Col>
-          <h1 className="fw-bold m-5">MAPLE for Organizations</h1>
-          <AboutPagesCard title="Why use MAPLE">
+          <h1 className="fw-bold m-5">{t('title')}</h1>
+          <AboutPagesCard title={t('callToAction.header')}>
             <WhyMAPLECardContent />
           </AboutPagesCard>
-          <AboutPagesCard title="What we offer">
+          <AboutPagesCard title={t('benefits.header')}>
             <BenefitsCardContent />
           </AboutPagesCard>
-          <AboutPagesCard title={t('challenge.title')}>
+          <AboutPagesCard title={t('challenge.header')}>
             <ChallengeCardContent />
           </AboutPagesCard>
         </Col>

@@ -1,22 +1,20 @@
-import { Row, Col } from "../../bootstrap"
-import Image from "react-bootstrap/Image"
-import styles from "./ForOrgsCardContent.module.css"
-import { SignInWithButton } from "../../auth"
-import Link from "next/link"
 import { useTranslation } from "next-i18next"
+import Link from "next/link"
+import { SignInWithButton } from "../../auth"
+import { Col, Row } from "../../bootstrap"
+import styles from "./ForOrgsCardContent.module.css"
 
 const WhyMAPLECardContent = () => {
   const { t } = useTranslation("fororgs")
   return (
-  <>
-    <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
-      {t('callToAction.title')}
-    </h3>
-    <p>
-      {t('callToAction.bodytext')}
-    </p>
-  </>
-)}
+    <>
+      <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
+        {t("callToAction.title")}
+      </h3>
+      <p>{t("callToAction.bodytext")}</p>
+    </>
+  )
+}
 
 const BenefitsCardContent = () => {
   const { t } = useTranslation("fororgs")
@@ -79,7 +77,13 @@ const BenefitsCardContent = () => {
       </h3>
       <Row className="mb-3">
         <Col>
-          <p>{t("benefits.legislativeResearch.bodytext")}</p>
+          <p>
+            {t("benefits.legislativeResearch.bodytext1")}{" "}
+            <Link href="/bills">
+              <a>{t("benefits.legislativeResearch.linkText")}</a>
+            </Link>{" "}
+            {t("benefits.legislativeResearch.bodytext2")}
+          </p>
         </Col>
       </Row>
 
@@ -113,7 +117,7 @@ const ChallengeCardContent = () => {
   return (
     <>
       <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">
-        {t("challenge.header")}
+        {t("challenge.title")}
       </h3>
       <p>{t("challenge.p1")}</p>
       <p>{t("challenge.p2")} </p>

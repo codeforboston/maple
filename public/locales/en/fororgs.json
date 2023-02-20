@@ -1,11 +1,14 @@
 {
+  "title": "MAPLE for Organizations",
   "callToAction": {
+    "header": "Why use MAPLE", 
     "title": "MAPLE is a powerful communication tool for organizations, offered completely for free.",
     "bodytext": "It takes only a couple minutes to sign up for your organization's account on MAPLE, giving you immediate access to publish and share your testimony, designate your priority bills, connect with your members and followers, and research legislation."
   },
   "benefits": {
+    "header": "What we offer",
     "reach": {
-      "title": "Help your priorities &amp; positions reach a wider audience",
+      "title": "Help your priorities & positions reach a wider audience",
       "bodytext": " Your organization's testimony will be highlighted to MAPLE visitors when they look up bills, with easy tools for sharing on social media. Testimony published on MAPLE will be seen by legislators, residents, members of the media, and other stakeholders.  The more organizations share their testimony on the platform, the more people will see it. You can even designate bills as your legislative priorities to signal your focus for each session."
     },
     "connect": {
@@ -26,11 +29,13 @@
     },
     "curateHistory": {
       "title": "Curate your testimony history",
-      "bodytext": "When you submit your testimony through MAPLE, it automatically appears in an indexed &amp; organized listing on your profile page. Use your profile to automatically generate a record of your lobbying efforts for your website, for member communications, or for semi-annual filings. You can also publish previously submitted tesitmony on MAPLE at any time."
+      "bodytext": "When you submit your testimony through MAPLE, it automatically appears in an indexed & organized listing on your profile page. Use your profile to automatically generate a record of your lobbying efforts for your website, for member communications, or for semi-annual filings. You can also publish previously submitted tesitmony on MAPLE at any time."
     },
     "legislativeResearch": {
       "title": "Speed up your legislative research",
-      "bodytext": " MAPLE is fast. (Really fast.) Try <Link href='/bills'> <a>searching for a bill</a> </Link>} to see just how much MAPLE can speed up your legislative research process; no sign in required!"
+      "bodytext1": "MAPLE is fast. (Really fast.). Try",
+      "linkText": "searching for a bill", 
+      "bodytext2": "to see just how much MAPLE can speed up your legislative research process; no sign in required!"
     },
     "changeNorms": {
       "title": "Help change the norms in Massachusetts",
@@ -39,11 +44,11 @@
     "signUp": "Ready to sign up for MAPLE?"
   },
   "challenge": {
-    "title": "Rise to the challenge for the 193rd",
-    "header": "Join MAPLE's Coalition to make the 193rd General Court the most transparent in Massachusetts history!",
+    "header": "Rise to the challenge for the 193rd",
+    "title": "Join MAPLE's Coalition to make the 193rd General Court the most transparent in Massachusetts history!",
     "p1": "Organizations that join MAPLE's Coalition of Lead Organizations (CLO) commit to publishing all of their public testimony submitted to the 193rd General Court through the MAPLE platform. The 193rd General Court is the session that runs from January of 2023 through 2024.",
     "p2": "In addition to all the benefits outlined above, these organizations will have their profiles featured prominently on the MAPLE website during the two-year legislative session. Any organization can contact MAPLE to be considered for membership in the CLO. Organizations will be prioritized to join the CLO based on the size of the constituency they represent.",
     "p3": "Maple is a nonpartisan project and does not take political positions; membership in the CLO does not indicate endorsement of any political position by MAPLE or its parent organization, members, or collaborators.",
-    "callToAction": "Join the MAPLE coalition&mdash;reach out to mapletestimony@gmail.com"
+    "callToAction": "Join the MAPLE coalition-reach out to mapletestimony@gmail.com"
   }
 }
