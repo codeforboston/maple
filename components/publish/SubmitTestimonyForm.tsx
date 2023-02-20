@@ -200,10 +200,12 @@ const SponsorList = styled.div`
       <>
         <Label>and it is sponsored by</Label>
         <SponsorList>
-          {primarySponsor && <Chip>
-            <Image alt="Primary Sponsor" src="/star.svg" />
-            {primarySponsor.Name}
-          </Chip>}
+          {primarySponsor && (
+            <Chip>
+              <Image alt="Primary Sponsor" src="/star.svg" />
+              {primarySponsor.Name}
+            </Chip>
+          )}
           {shown.map(m => (
             <Chip key={m.Id}>{m.Name}</Chip>
           ))}
