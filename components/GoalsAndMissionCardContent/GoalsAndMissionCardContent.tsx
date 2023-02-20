@@ -8,7 +8,7 @@ const OurGoalsCardContent = () => {
   const { t } = useTranslation("goalsandmission")
   return (
     <>
-      <h3 className={styles.goalsHeader}>{t('goals.overview')}</h3>
+      <h3 className={styles.goalsHeader}>{t("goals.overview")}</h3>
       <Row className="mb-4">
         <Col md={6}>
           <figure className="text-center mb-3">
@@ -77,12 +77,12 @@ const OurMissionCardContent = () => {
   return (
     <>
       <h3 className={`text-center fw-bold ${styles.missionHeader}`}>
-        {t('mission.overview')}
+        {t("mission.overview")}
       </h3>
 
       <Row className="mb-4">
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
-          <p className={styles.body}>{t('mission.connect')}</p>
+          <p className={styles.body}>{t("mission.connect")}</p>
         </Col>
         <Col
           xs={{ span: 12, order: 1 }}
@@ -124,16 +124,16 @@ const OurMissionCardContent = () => {
       </Row>
       <Row>
         <Col className={`p-3 ${styles.body}`}>
-          <p className="text-center">{t('mission.callout')}</p>
+          <p className="text-center">{t("mission.callout")}</p>
         </Col>
       </Row>
       <Row>
         <Col>
           <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
-            {t('mission.publish1')}
+            {t("mission.publish1")}
           </p>
           <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
-            {t('mission.publish2')}
+            {t("mission.publish2")}
           </p>
         </Col>
       </Row>
@@ -177,7 +177,7 @@ const OurMissionCardContent = () => {
       <Row className="text-center">
         <Col>
           <h3 className={`fw-bold mt-3 ${styles.submitTestimony}`}>
-            {t('mission.submit_now')}
+            {t("mission.submit_now")}
           </h3>
         </Col>
       </Row>
