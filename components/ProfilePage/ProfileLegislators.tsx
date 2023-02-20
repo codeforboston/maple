@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
+import { Card as MapleCard } from "components/Card"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 
@@ -44,16 +45,21 @@ export function ProfileLegislators({
   className
 }: ProfileLegislatorsProps) {
   return (
-    <TitledSectionCard title={`Legislators`} className={className}>
-      <div className="ms-5">
-        <DisplayLegislator
-          legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
-        />
-        <hr></hr>
-        <DisplayLegislator
-          legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
-        />
-      </div>
-    </TitledSectionCard>
+    <MapleCard
+      header={`Legislators`}
+      body={
+        <div className="ms-5">
+          <DisplayLegislator
+            legislator={
+              { ...rep, title: "Representative" } as ProfileMemberPlus
+            }
+          />
+          <hr></hr>
+          <DisplayLegislator
+            legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
+          />
+        </div>
+      }
+    ></MapleCard>
   )
 }
