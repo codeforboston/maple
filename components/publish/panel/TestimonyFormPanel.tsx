@@ -19,10 +19,10 @@ export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
     dispatch(resolveBill({ bill }))
   }, [authorUid, bill, dispatch])
   return (
-    <>
+    <div className="mt-4">
       <ThankYouModal />
       <Panel />
-    </>
+    </div>
   )
 }
 

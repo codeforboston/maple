@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: typesense-deployment
+  namespace: {{.Release.Namespace}}
 spec:
   selector:
     matchLabels:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
         - name: typesense
-          image: typesense/typesense:0.23.1
+          image: typesense/typesense:0.24.0
           ports:
             - containerPort: 8108
           resources:

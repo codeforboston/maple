@@ -2,6 +2,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: typesense-strip-prefix
+  namespace: {{.Release.Namespace}}
 spec:
   stripPrefix:
     prefixes:
@@ -11,6 +12,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: typesense-ingress
+  namespace: {{.Release.Namespace}}
 spec:
   entryPoints:
     - websecure
