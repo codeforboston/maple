@@ -279,7 +279,7 @@ describe("billTracker", () => {
         court,
         history: firstCommitteeHistory
       })
-      billPath = b.path
+      billPath = b
     })
 
     const expectBillStage = (
