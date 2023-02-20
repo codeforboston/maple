@@ -7,6 +7,7 @@ import {
   getDocs
 } from "firebase/firestore"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Image, Row, Spinner, Stack } from "../bootstrap"
@@ -147,7 +148,28 @@ export function FollowingTab({ className }: Props) {
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
-            <h2>Organizations You Follow</h2>
+            <Row>
+              <Col>
+                <h2>Organizations You Follow</h2>
+              </Col>
+              <Col className={`d-flex justify-content-end`}>
+                <Dropdown className={`d-inline-block invisible ms-auto`}>
+                  <Dropdown.Toggle
+                    className={`btn-sm py-1`}
+                    variant="secondary"
+                    id="dropdown-basic"
+                  >
+                    Add an
+                    organization&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => null}>
+                      Input Form
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+            </Row>
             {orgsFollowing.map((orgId: string, index: number) => (
               <FollowedOrg
                 key={index}
@@ -274,15 +296,13 @@ function FollowedOrg({
       ) : (
         <Styled>
           <Row className={`d-flex align-items-center`} key={key}>
-            <Col xs={"auto"} className={"col-auto"}>
+            <Col className={"col-10 d-flex align-items-center"}>
               <OrgIconSmall
-                className={`col d-none d-sm-flex`}
+                className={`d-none d-sm-flex`}
                 src={profile?.profileImage}
               />
+              <Internal href={`profile?id=${orgId}`}>{displayName}</Internal>
             </Col>
-            <Internal className={`col-9`} href={`profile?id=${orgId}`}>
-              {displayName}
-            </Internal>
             <Col
               className={`text-center`}
               onClick={() => {
@@ -292,7 +312,6 @@ function FollowedOrg({
                 setCurrentTypeId(orgId)
                 setUnfollowModal("show")
               }}
-              style={{ paddingLeft: "0" }}
             >
               <UnfollowButton />
             </Col>
