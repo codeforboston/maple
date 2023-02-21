@@ -9,9 +9,19 @@ import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 
-export const TabSlider = (props: { width: number; position: number }) => {
-  const { width, position } = props
-  return <TabSliderStyle width={width ?? 200} position={position} />
+export const TabSlider = (props: {
+  width: number
+  position: number
+  resizing: boolean
+}) => {
+  const { width, position, resizing } = props
+  return (
+    <TabSliderStyle
+      width={width ?? 200}
+      position={position}
+      resizing={resizing}
+    />
+  )
 }
 
 export const TabSliderContainer = (props: { children?: JSX.Element }) => {
@@ -42,6 +52,8 @@ export const Tabs = (props: {
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
   const { childTabs, onChange, selectedTab } = props
   const [sliderWidth, setSliderWidth] = useState(0)
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
+  const [resizing, setResizing] = useState(false)
   const [sliderPos, setSliderPos] = useState(0)
   const sliderPositionOffset = 16
 
@@ -57,8 +69,18 @@ export const Tabs = (props: {
         tabRefs.current[selectedTab - 1]!.getBoundingClientRect().x -
           sliderPositionOffset
       )
+      resizing && setResizing(false)
     }
-  }, [selectedTab])
+  }, [selectedTab, viewportWidth])
+
+  useEffect(() => {
+    function handleResize() {
+      setViewportWidth(window.innerWidth)
+      setResizing(true)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
@@ -83,7 +105,11 @@ export const Tabs = (props: {
     <ComponentContainer ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
-        <TabSlider width={sliderWidth} position={sliderPos} />
+        <TabSlider
+          width={sliderWidth}
+          position={sliderPos}
+          resizing={resizing}
+        />
       </TabSliderContainer>
     </ComponentContainer>
   )
@@ -116,8 +142,12 @@ const TabSliderContainerStyle = styled.div`
   height: 1px;
   position: absolute;
 `
-export const TabSliderStyle = styled.div<{ width: number; position: number }>`
-  transition: all 1.5s;
+export const TabSliderStyle = styled.div<{
+  width: number
+  position: number
+  resizing: boolean
+}>`
+  transition: all ${props => (props.resizing ? "0s" : "0.5s")};
   width: ${props => `${props.width}px`};
   height: 5px;
   background-color: #c71e32;
