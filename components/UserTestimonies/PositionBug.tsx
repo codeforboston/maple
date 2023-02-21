@@ -26,7 +26,7 @@ const ImageContainer = styled.div`
 `
 const Container = styled.div<{ pos: Position }>`
   display: flex;
-  border: solid 2px;
+  border: solid 3px;
   justify-content: center;
   border-color: ${p => {
     switch (p.pos) {
@@ -45,6 +45,7 @@ const Container = styled.div<{ pos: Position }>`
   position: relative;
 
   padding: 0;
+  margin: 10px;
 
   .position {
     position: absolute;

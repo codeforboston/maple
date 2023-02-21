@@ -122,9 +122,13 @@ export const SortTestimonyDropDown = ({
 const TestimonyItemContentStyle = styled.div`
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 100%;
   button {
     align-self: flex-end;
+  }
+  hr {
+    height: 3px;
+    background-color: grey;
   }
 `
 const TestimonyItemHeader = styled.div`
@@ -183,7 +187,7 @@ export const TestimonyItem = ({
       style={{
         display: "flex",
         flexDirection: "row",
-        padding: "0 5%"
+        margin: "5%"
       }}
     >
       {/* USER IMAGE and POSITION */}
