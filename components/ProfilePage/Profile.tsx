@@ -290,9 +290,6 @@ export const ProfileHeader = ({
     setQueryResult("")
   }
 
-  console.log(isOrganization)
-  console.log(profileImage)
-
   return (
     <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
       {isOrganization ? (

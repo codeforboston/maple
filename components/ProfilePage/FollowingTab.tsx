@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Alert, Col, Image, Row, Spinner, Stack } from "../bootstrap"
+import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
 import { useBill, usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
@@ -125,6 +125,10 @@ export function FollowingTab({ className }: Props) {
     uid ? orgsFollowingQuery() : null
   })
 
+  const onSubmit = async () => {
+    console.log("submitted")
+  }
+
   return (
     <>
       <TitledSectionCard className={className}>
@@ -147,13 +151,13 @@ export function FollowingTab({ className }: Props) {
       </TitledSectionCard>
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-          <Stack>
+          <Styled>
             <Row>
               <Col>
-                <h2>Organizations You Follow</h2>
+                <h2 className={``}>Organizations You Follow</h2>
               </Col>
-              <Col className={`d-flex justify-content-end`}>
-                <Dropdown className={`d-inline-block invisible ms-auto`}>
+              <Col className={`d-flex invisible justify-content-end`}>
+                <Dropdown className={`d-inline-block `}>
                   <Dropdown.Toggle
                     className={`btn-sm py-1`}
                     variant="secondary"
@@ -164,7 +168,7 @@ export function FollowingTab({ className }: Props) {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={() => null}>
-                      Input Form
+                      Org Search
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -181,7 +185,7 @@ export function FollowingTab({ className }: Props) {
                 setUnfollowModal={setUnfollowModal}
               />
             ))}
-          </Stack>
+          </Styled>
         </div>
       </TitledSectionCard>
       <UnfollowModal
@@ -223,11 +227,10 @@ function FollowedBill({
         {formatBillId(element?.billId)}
       </External>
       <Row>
-        <Col className={`col-10`}>
+        <Col>
           <BillFollowingTitle court={element?.court} id={element?.billId} />
         </Col>
         <Col
-          className={`text-center`}
           onClick={() => {
             setCurrentCourt(element?.court)
             setCurrentOrgName("")
@@ -295,16 +298,12 @@ function FollowedOrg({
         </Row>
       ) : (
         <Styled>
-          <Row className={`d-flex align-items-center`} key={key}>
-            <Col className={"col-10 d-flex align-items-center"}>
-              <OrgIconSmall
-                className={`d-none d-sm-flex`}
-                src={profile?.profileImage}
-              />
+          <Row className={`align-items-center`} key={key}>
+            <Col className={"align-items-center d-flex"}>
+              <OrgIconSmall src={profile?.profileImage} />
               <Internal href={`profile?id=${orgId}`}>{displayName}</Internal>
             </Col>
             <Col
-              className={`text-center`}
               onClick={() => {
                 setCurrentCourt(0)
                 setCurrentOrgName(displayName)
@@ -325,9 +324,7 @@ function FollowedOrg({
 
 function UnfollowButton() {
   return (
-    <button
-      className={`btn btn-link d-flex align-items p-0 text-decoration-none`}
-    >
+    <button className={`btn btn-link d-flex ms-auto p-0 text-decoration-none`}>
       <h6>Unfollow</h6>
     </button>
   )
