@@ -9,7 +9,7 @@ export type ProfileMember = {
 export const SOCIAL_NETWORKS = ["linkedIn", "twitter"] as const
 
 export type SocialLinks = Partial<
-  Record<(typeof SOCIAL_NETWORKS)[number], string>
+  Record<typeof SOCIAL_NETWORKS[number], string>
 >
 
 export type Profile = {
