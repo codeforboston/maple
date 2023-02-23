@@ -13,6 +13,7 @@ import {
   WorkingDraft
 } from "../db"
 import { Maybe } from "../db/common"
+import { containsSocialSecurityNumber } from "../db/testimony/validation"
 
 export type Service = UseEditTestimony
 
@@ -275,7 +276,10 @@ const validateForm = ({ content, position, errors }: State) => {
   if (!content) errors.content = "Testimony content must not be empty"
   else if (content && content.length > maxTestimonyLength)
     errors.content = "Testimony content is too long"
-  else errors.content = undefined
+  else if (containsSocialSecurityNumber(content)) {
+    // TODO: include the offending number(s) in the error string.
+    errors.content = "Testimony must not contain social security numbers"
+  } else errors.content = undefined
 }
 
 /** Reset the form, carrying over context props */

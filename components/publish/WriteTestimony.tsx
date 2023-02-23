@@ -131,7 +131,8 @@ const Text = ({
   errors,
   inputProps
 }: UseWriteTestimony & { inputProps?: InputProps }) => {
-  const [touched, setTouched] = useState(false)
+  const didLoadSavedContent = !!content
+  const [touched, setTouched] = useState(didLoadSavedContent)
   return (
     <Input
       className="mt-3"
