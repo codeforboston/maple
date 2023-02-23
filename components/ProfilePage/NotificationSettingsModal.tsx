@@ -1,25 +1,50 @@
-import { useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { Button, Col, Image, Modal, Stack } from "../bootstrap"
+import { Frequency } from "../auth"
+import { Button, Col, Form, Image, Modal, Stack } from "../bootstrap"
+import { ProfileHook } from "../db"
 import styles from "./NotificationSettingsModal.module.css"
 
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  actions: ProfileHook
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<false | true>>
+  notifications: Frequency
+  setNotifications: Dispatch<
+    SetStateAction<"Daily" | "Weekly" | "Monthly" | "None">
+  >
+  onSettingsModalClose: () => void
+}
+
 export default function NotificationSettingsModal({
-  show,
+  actions,
+  isProfilePublic,
+  setIsProfilePublic,
+  notifications,
+  setNotifications,
   onHide,
-  onClickCloseModal
-}: Pick<ModalProps, "show" | "onHide"> & {
-  onClickCloseModal: () => void
-}) {
-  const [notifications, setNotifications] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
-  const [notificationFrequency, setNotificationFrequency] = useState<
-    "Daily" | "Weekly" | "Monthly"
-  >("Monthly") //replace initial state with User data
-  const [profileSettings, setProfileSettings] = useState<"Enable" | "Enabled">(
-    "Enable"
-  ) //replace initial state with User data
+  onSettingsModalClose,
+  show
+}: Props) {
+  const handleContinue = async () => {
+    await updateProfile({ actions })
+    onSettingsModalClose()
+  }
+
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateIsPublic } = actions
+    const { updateNotification } = actions
+
+    await updateIsPublic(isProfilePublic)
+    await updateNotification(notifications)
+  }
+
+  // button classNames weren't otherwise properly updating on iOS
+  let buttonSecondary = "btn-secondary"
+  if (notifications === "None") {
+    buttonSecondary = "btn-outline-secondary"
+  }
 
   return (
     <Modal
@@ -32,126 +57,107 @@ export default function NotificationSettingsModal({
         <Modal.Title id="notifications-modal">Settings</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.modalContainer}>
-        <Stack>
-          &nbsp; Notifications
-          <hr className={`mt-0`} />
-        </Stack>
-        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
-          <Col className={`col-8`}>
-            Would you like to receive updates about bills/organizations you
-            follow through email?
-          </Col>
-          <Button
-            className={`
-              btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-              ${
-                notifications === "Enable"
-                  ? "btn-outline-secondary"
-                  : "btn-secondary"
-              }
+        <Form>
+          <Stack>
+            &nbsp; Notifications
+            <hr className={`mt-0`} />
+          </Stack>
+          <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
+            <Col className={`col-8`}>
+              Would you like to receive updates about bills/organizations you
+              follow through email?
+            </Col>
+            <Button
+              className={`
+              btn btn-sm ms-auto py-1 ${styles.modalButtonLength} ${buttonSecondary}
             `}
-            onClick={() =>
-              setNotifications(
-                notifications === "Enable" ? "Enabled" : "Enable"
-              )
-            }
-          >
-            <Image
-              className={`pe-1`}
-              src="/mail-2.svg"
-              alt="open envelope with letter, toggles update frequency options"
-              width="22"
-              height="19"
-            />
-            {notifications}
-          </Button>
-        </Stack>
-        <Stack
-          className={`
-            pt-3 ${styles.modalFontSize} 
-            ${notifications === "Enable" ? "invisible" : null} 
-          `}
-          direction={`horizontal`}
-        >
-          <Col className={`col-8`}>
-            How often would you like to receive emails?
-          </Col>
-          <Dropdown className={`d-inline-block ms-auto`}>
-            <Dropdown.Toggle
-              className={`btn-sm py-1 ${styles.modalButtonLength}`}
-              variant="outline-secondary"
-              id="dropdown-basic"
+              onClick={() =>
+                setNotifications(notifications === "None" ? "Monthly" : "None")
+              }
             >
-              {notificationFrequency}
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Daily")}>
-                Daily
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setNotificationFrequency("Weekly")}>
-                Weekly
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => setNotificationFrequency("Monthly")}
-              >
-                Monthly
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Stack>
-        <Stack className={`pt-4`}>
-          &nbsp; Profile Settings
-          <hr className={`mt-0`} />
-        </Stack>
-        <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
-          <Col className={`col-8`}>
-            Don't make my profile public. (Your name will still be associated
-            with your testimony.)
-          </Col>
-          <Button
+              <Image
+                className={`pe-1`}
+                src="/mail-2.svg"
+                alt="open envelope with letter, toggles update frequency options"
+                width="22"
+                height="19"
+              />
+              {notifications === "None" ? "Enable" : "Enabled"}
+            </Button>
+          </Stack>
+          <Stack
             className={`
+          pt-3 ${styles.modalFontSize} 
+          ${notifications === "None" ? "invisible" : ""} 
+        `}
+            direction={`horizontal`}
+          >
+            <Col className={`col-8`}>
+              How often would you like to receive emails?
+            </Col>
+            <Dropdown className={`d-inline-block ms-auto`}>
+              <Dropdown.Toggle
+                className={`btn-sm py-1 ${styles.modalButtonLength}`}
+                variant="outline-secondary"
+                id="dropdown-basic"
+              >
+                {notifications}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                  Daily
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setNotifications("Weekly")}>
+                  Weekly
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setNotifications("Monthly")}>
+                  Monthly
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Stack>
+          <Stack className={`pt-4`}>
+            &nbsp; Profile Settings
+            <hr className={`mt-0`} />
+          </Stack>
+          <Stack className={`${styles.modalFontSize}`} direction={`horizontal`}>
+            <Col className={`col-8`}>
+              Don't make my profile public. (Your name will still be associated
+              with your testimony.)
+            </Col>
+            <Button
+              className={`
               btn btn-sm ms-auto py-1 ${styles.modalButtonLength}
-              ${
-                profileSettings === "Enable"
-                  ? "btn-outline-secondary"
-                  : "btn-secondary"
+                ${
+                  isProfilePublic === true
+                    ? "btn-outline-secondary"
+                    : "btn-secondary"
+                }
+              `}
+              onClick={() =>
+                setIsProfilePublic(isProfilePublic === true ? false : true)
               }
-            `}
-            onClick={() =>
-              setProfileSettings(
-                profileSettings === "Enable" ? "Enabled" : "Enable"
-              )
-            }
+            >
+              {isProfilePublic === true ? "Enable" : "Enabled"}
+            </Button>
+          </Stack>
+          <Stack
+            className={`d-flex justify-content-end pt-4`}
+            direction={`horizontal`}
           >
-            {profileSettings}
-          </Button>
-        </Stack>
-        <Stack
-          className={`d-flex justify-content-end pt-4`}
-          direction={`horizontal`}
-        >
-          <Button
-            className={`btn btn-sm mx-3 py-1`}
-            onClick={onClickCloseModal}
-          >
-            Continue
-          </Button>
-          <Button
-            className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={onClickCloseModal}
-          >
-            Cancel
-          </Button>
-        </Stack>
+            <Button className={`btn btn-sm mx-3 py-1`} onClick={handleContinue}>
+              Continue
+            </Button>
+            <Button
+              className={`btn btn-sm btn-outline-secondary py-1`}
+              onClick={onSettingsModalClose}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </Form>
       </Modal.Body>
     </Modal>
   )
 }
-
-/*
-  Modal State -> Get User data from backend for initial Modal State when Modal onClick of "Settings Component"
-                 from parent EditProfilePage.tsx
-  Continue Button -> [ ] Update Backend with Notifications & Profile Settings State 
-                     [x] then Close Modal
-*/
