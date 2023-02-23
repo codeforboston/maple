@@ -157,7 +157,7 @@
     "js-yaml": "^4.1.0",
     "lorem-ipsum": "^2.0.4",
     "mustache": "^4.2.0",
-    "prettier": "2.5.1",
+    "prettier": "2.8.3",
     "sass": "^1.49.0",
     "sb": "^6.5.10",
     "storybook-addon-designs": "^6.3.1",
