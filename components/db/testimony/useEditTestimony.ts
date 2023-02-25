@@ -247,7 +247,7 @@ function useSaveDraft(
           })
         }
       },
-      [billId, court, dispatch, draftLoading, draftRef, uid]
+      [billId, dispatch, draftLoading, draftRef, uid, court]
     ),
     { onError: error => dispatch({ type: "error", error }) }
   )
