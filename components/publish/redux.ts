@@ -30,6 +30,7 @@ export const stepsInOrder = Step.alternatives.map(s => s.value)
 export const isComplete = (current: Step, step: Step) => {
   return !!current && stepsInOrder.indexOf(current) > stepsInOrder.indexOf(step)
 }
+export const isCurrent = (current: Step, step: Step) => current === step
 
 export type Legislator = MemberSearchIndexItem & {
   Branch: "House" | "Senate"
@@ -75,6 +76,9 @@ export type State = {
 
   /** Current publication document */
   publication?: Testimony
+
+  /** Member codes of legislators that will receive the email, stored on the draft. */
+  recipientMemberCodes?: string[]
 
   /** State related to the share step */
   share: ShareState
@@ -200,6 +204,7 @@ export const {
       state.attachmentId = payload.attachmentId ?? undefined
       state.content = payload.content
       state.position = payload.position
+      state.recipientMemberCodes = payload.recipientMemberCodes ?? undefined
       state.draft = payload
       validateForm(state)
     },
@@ -222,35 +227,49 @@ export const {
       state.share = initialShareState
     },
     resolvedLegislatorSearch(
-      { share },
+      state,
       {
         payload
       }: PayloadAction<
         Pick<ShareState, "committeeChairs" | "options" | "userLegislators">
       >
     ) {
+      const { share } = state
       share.loading = false
       share.committeeChairs = payload.committeeChairs
       share.options = payload.options
       share.userLegislators = payload.userLegislators
-      share.recipients = [
-        ...payload.committeeChairs,
-        ...payload.userLegislators
-      ]
+      if (!state.recipientMemberCodes)
+        updateRecipients(state, [
+          ...payload.committeeChairs,
+          ...payload.userLegislators
+        ])
+      else
+        share.recipients = share.options.filter(o =>
+          state.recipientMemberCodes?.includes(o.MemberCode)
+        )
     },
-    setRecipients({ share }, action: PayloadAction<Legislator[]>) {
-      share.recipients = action.payload
+    setRecipients(state, action: PayloadAction<Legislator[]>) {
+      updateRecipients(state, action.payload)
     },
-    addCommittee({ share }) {
-      share.recipients = uniqBy(
-        [...share.recipients, ...share.committeeChairs],
-        m => m.MemberCode
+    addCommittee(state) {
+      const { share } = state
+      updateRecipients(
+        state,
+        uniqBy(
+          [...share.recipients, ...share.committeeChairs],
+          m => m.MemberCode
+        )
       )
     },
-    addMyLegislators({ share }) {
-      share.recipients = uniqBy(
-        [...share.recipients, ...share.userLegislators],
-        m => m.MemberCode
+    addMyLegislators(state) {
+      const { share } = state
+      updateRecipients(
+        state,
+        uniqBy(
+          [...share.recipients, ...share.userLegislators],
+          m => m.MemberCode
+        )
       )
     },
     setShowThankYou(state, action: PayloadAction<boolean>) {
@@ -266,6 +285,11 @@ export const {
     })
   }
 })
+
+const updateRecipients = (state: State, recipients: Legislator[]) => {
+  state.share.recipients = recipients
+  state.recipientMemberCodes = recipients.map(r => r.MemberCode)
+}
 
 /** Check form for errors */
 const validateForm = ({ content, position, errors }: State) => {

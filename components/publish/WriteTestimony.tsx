@@ -11,6 +11,7 @@ import { Loading } from "../legislatorSearch"
 import { useFormRedirection, usePublishState } from "./hooks"
 import * as nav from "./NavigationButtons"
 import { setAttachmentId, setContent } from "./redux"
+import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
 
 type TabKey = "text" | "import"
@@ -54,6 +55,8 @@ export const WriteTestimony = styled(({ ...rest }) => {
         <Loading />
       ) : (
         <>
+          <SelectRecipients className="mt-4" />
+
           <Tabs
             activeKey={tabs.activeKey}
             onSelect={tabs.onSelect}

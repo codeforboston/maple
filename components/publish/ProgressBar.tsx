@@ -21,7 +21,7 @@ export const ProgressBar = styled<{ currentStep: Step }>(
           Write your testimony
         </StepBox>
         <Divider />
-        <StepBox step={3}>Let your voice be heard</StepBox>
+        <StepBox step={3}>Confirm and Send</StepBox>
       </div>
     )
   }

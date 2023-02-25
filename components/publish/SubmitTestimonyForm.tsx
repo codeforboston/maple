@@ -87,12 +87,12 @@ const Form = ({
 const Overview = ({ className }: { className: string }) => (
   <div className={clsx("d-flex", className)}>
     <div>
-      <h1>Write a Testimonial</h1>
+      <h1>Write your Testimony</h1>
       <Divider className="me-5" />
       <div className="mt-2">
-        Let your voice be heard, MAPLE gives users the ability to send their
-        unfiltered feedback on policies to legislators, comittees, and other
-        relevant parties. <b>Writing a testimonial is as easy as 1-2-3!</b>
+        Let your voice be heard! MAPLE gives users the ability to send their
+        unfiltered feedback on bills to legislators, comittees, and other
+        relevant parties. <b>Writing testimony is as easy as 1-2-3!</b>
       </div>
     </div>
     <div>

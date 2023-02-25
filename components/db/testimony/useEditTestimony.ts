@@ -213,7 +213,7 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
 
 type SaveDraftRequest = Pick<
   WorkingDraft,
-  "position" | "content" | "attachmentId"
+  "position" | "content" | "attachmentId" | "recipientMemberCodes"
 >
 function useSaveDraft(
   { draftRef, draftLoading, billId, uid, court }: State,
@@ -221,7 +221,12 @@ function useSaveDraft(
 ) {
   return useAsyncCallback(
     useCallback(
-      async ({ position, content, attachmentId }: SaveDraftRequest) => {
+      async ({
+        position,
+        content,
+        attachmentId,
+        recipientMemberCodes
+      }: SaveDraftRequest) => {
         if (draftLoading) {
           return
         } else if (!draftRef) {
@@ -230,6 +235,7 @@ function useSaveDraft(
             content,
             court,
             position,
+            recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null
           }
           const result = await addDoc(
@@ -243,6 +249,7 @@ function useSaveDraft(
             position,
             content,
             attachmentId: attachmentId ?? null,
+            recipientMemberCodes: recipientMemberCodes ?? null,
             publishedVersion: deleteField()
           })
         }

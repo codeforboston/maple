@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import {
+  Array,
   InstanceOf,
   Literal as L,
   Number,
@@ -50,7 +51,9 @@ export const Testimony = BaseTestimony.extend({
 export type WorkingDraft = Partial<DraftTestimony>
 export type DraftTestimony = Static<typeof DraftTestimony>
 export const DraftTestimony = BaseTestimony.extend({
-  publishedVersion: Optional(Number)
+  publishedVersion: Optional(Number),
+  /** If present, array of legislator member codes */
+  recipientMemberCodes: Maybe(Array(String))
 })
 
 export type WithId<T> = { id: string; value: T }
