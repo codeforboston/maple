@@ -17,7 +17,7 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
-- [Figma Designs](https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?t=N7wquH4vslGiB1tK-0), where UI designs are organized
+- [Figma Designs](<https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?t=N7wquH4vslGiB1tK-0>), where UI designs are organized
 - [Chromatic Storybook Library](https://www.chromatic.com/library?appId=634f3926f2a0d0f0195eefd7&branch=main), where our React UI component library is documented.
 - [Maple Documentation on the Wiki](https://github.com/codeforboston/maple/wiki)
 
