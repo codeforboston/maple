@@ -49,7 +49,7 @@ service cloud.firestore {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
-      match /activeTopicSubcriptions/{topicName} {
+      match /activeTopicSubscriptions/{topicName} {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
