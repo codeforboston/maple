@@ -14,6 +14,10 @@ const PublishTestimonyRequest = Record({
   draftId: Id
 })
 
+const INITIAL_VERSION = 1,
+  MAX_EDITS = 5,
+  MAX_VERSION = INITIAL_VERSION + MAX_EDITS
+
 export const publishTestimony = https.onCall(async (data, context) => {
   const checkEmailVerification = true
   const uid = checkAuth(context, checkEmailVerification)
@@ -208,12 +212,17 @@ class PublishTestimonyTransaction {
         .limit(1)
     )
 
-    if (archived.size === 0) {
-      return 1
-    } else {
-      const data = archived.docs[0].data()
-      return Testimony.checkWithDefaults(data).version + 1
-    }
+    if (archived.size === 0) return INITIAL_VERSION
+
+    const data = archived.docs[0].data(),
+      nextVersion = Testimony.checkWithDefaults(data).version + 1
+
+    if (nextVersion > MAX_VERSION)
+      throw new Error(
+        "Cannot update testimony. Max number of edits reached: " + MAX_EDITS
+      )
+
+    return nextVersion
   }
 
   private async resolvePublication() {
