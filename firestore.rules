@@ -44,13 +44,11 @@ service cloud.firestore {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
-
       match /userNotificationFeed/{id} {
         // TODO: do not allow users to modify content, only view status.
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
-
       match /activeTopicSubscriptions/{topicName} {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
