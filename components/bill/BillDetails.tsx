@@ -43,7 +43,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   const uid = user?.uid
   const subscriptionRef = collection(
     firestore,
-    `/users/${uid}/activeTopicSubcriptions/`
+    `/users/${uid}/activeTopicSubscriptions/`
   )
   const [queryResult, setQueryResult] = useState("")
 

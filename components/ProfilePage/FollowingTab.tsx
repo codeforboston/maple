@@ -48,7 +48,7 @@ export function FollowingTab({ className }: Props) {
   const uid = user?.uid
   const subscriptionRef = collection(
     firestore,
-    `/users/${uid}/activeTopicSubcriptions/`
+    `/users/${uid}/activeTopicSubscriptions/`
   )
 
   let billList: string[] = []
