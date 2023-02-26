@@ -1,5 +1,5 @@
-import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
+import { createMeta } from "stories/utils"
 import { BillTestimonies } from "../../components/bill/BillTestimonies"
 
 // TODO: move into components directory
@@ -8,7 +8,7 @@ const BillTestimonyListCard = BillTestimonies
 export default createMeta({
   title: "Bill Detail/BillTestimonyListCard",
   figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=180%3A7916",
+    "https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?node-id=4009%3A15950&t=3gd7s59zbYBA1CZP-4",
   component: BillTestimonyListCard
 })
 
