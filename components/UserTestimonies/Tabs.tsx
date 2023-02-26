@@ -43,20 +43,12 @@ export const Tabs = (props: {
   const { childTabs, onChange, selectedTab } = props
   const [sliderWidth, setSliderWidth] = useState(0)
   const [sliderPos, setSliderPos] = useState(0)
-  const sliderPositionOffset = 16
 
   useEffect(() => {
-    if (
-      tabRefs.current[selectedTab - 1] !== null &&
-      tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
-    ) {
-      setSliderWidth(
-        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
-      )
-      setSliderPos(
-        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().x -
-          sliderPositionOffset
-      )
+    const selected = tabRefs.current[selectedTab - 1]
+    if (selected) {
+      setSliderWidth(selected.clientWidth)
+      setSliderPos(selected.offsetLeft)
     }
   }, [selectedTab])
 
@@ -69,12 +61,10 @@ export const Tabs = (props: {
     }
     return (
       <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
-        <React.Fragment>
-          {React.cloneElement(child, {
-            active: child.props.value === selectedTab,
-            onClick: handleClick
-          })}
-        </React.Fragment>
+        {React.cloneElement(child, {
+          active: child.props.value === selectedTab,
+          onClick: handleClick
+        })}
       </div>
     )
   })
@@ -99,7 +89,7 @@ const TabsContainer = styled.div`
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
-  margin: 1rem;
+  padding: 1rem;
   background: none;
   color: ${props => (props.active ? "#C71E32" : "black")};
   border: none;
@@ -117,7 +107,7 @@ const TabSliderContainerStyle = styled.div`
   position: absolute;
 `
 export const TabSliderStyle = styled.div<{ width: number; position: number }>`
-  transition: all 1.5s;
+  transition: all 0.4s;
   width: ${props => `${props.width}px`};
   height: 5px;
   background-color: #c71e32;
