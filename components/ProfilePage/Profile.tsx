@@ -253,7 +253,7 @@ export const ProfileHeader = ({
   uid?: string
   orgId: string
 }) => {
-  const topicName = "org-".concat(orgId)
+  const topicName = `org-${orgId}`
   const subscriptionRef = collection(
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`

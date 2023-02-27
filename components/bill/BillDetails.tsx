@@ -37,10 +37,7 @@ const StyledImage = styled(Image)`
 export const BillDetails = ({ bill }: BillProps) => {
   const billId = bill.id
   const courtId = bill.court
-  const topicName = "bill-"
-    .concat(courtId.toString())
-    .concat("-")
-    .concat(billId)
+  const topicName = `bill-${courtId}-${billId}`
   const { user } = useAuth()
   const uid = user?.uid
   const subscriptionRef = collection(

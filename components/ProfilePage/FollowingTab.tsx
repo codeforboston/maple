@@ -64,25 +64,6 @@ export function FollowingTab({ className }: Props) {
 
   const close = () => setUnfollowModal(null)
 
-  const handleUnfollowClick = async (
-    courtId: number,
-    type: string,
-    typeId: string
-  ) => {
-    let topicName = ""
-    if (type == "bill") {
-      topicName = "bill-".concat(courtId.toString()).concat("-").concat(typeId)
-    } else {
-      topicName = "org-".concat(typeId)
-    }
-
-    await deleteDoc(doc(subscriptionRef, topicName))
-
-    setBillsFollowing([])
-    setOrgsFollowing([])
-    setUnfollowModal(null)
-  }
-
   const billsFollowingQuery = async () => {
     const q = query(
       subscriptionRef,
@@ -125,10 +106,24 @@ export function FollowingTab({ className }: Props) {
     uid ? orgsFollowingQuery() : null
   })
 
-  const onSubmit = async () => {
-    console.log("submitted")
-  }
+  const handleUnfollowClick = async (
+    courtId: number,
+    type: string,
+    typeId: string
+  ) => {
+    let topicName = ""
+    if (type == "bill") {
+      topicName = `bill-${courtId.toString()}-${typeId}`
+    } else {
+      topicName = `org-${typeId}`
+    }
 
+    await deleteDoc(doc(subscriptionRef, topicName))
+
+    setBillsFollowing([])
+    setOrgsFollowing([])
+    setUnfollowModal(null)
+  }
   return (
     <>
       <TitledSectionCard className={className}>
