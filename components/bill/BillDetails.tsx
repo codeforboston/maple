@@ -37,7 +37,10 @@ export const BillDetails = ({ bill }: BillProps) => {
   const courtId = bill.court
   const { user } = useAuth()
   const uid = user?.uid
-  const subscriptionRef = collection(firestore, `/users/${uid}/subscriptions/`)
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubscriptions/`
+  )
   const [queryResult, setQueryResult] = useState("")
 
   const billQuery = async () => {

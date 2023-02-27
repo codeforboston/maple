@@ -8,7 +8,7 @@ const logRocketId = process.env.NEXT_PUBLIC_LOG_ROCKET_ID ?? "a9zjgu/maple"
 export const { Provider: LogRocketProvider } = createService(() => {
   useEffect(() => {
     LogRocket.init(logRocketId)
-  }, [logRocketId])
+  }, [])
   const { user } = useAuth()
   useEffect(() => {
     if (user && user.email) {

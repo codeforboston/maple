@@ -1,0 +1,21 @@
+{
+  "header": "Our Goals and Mission",
+  "goals": {
+    "title": "Our Goals",
+    "overview": "MAPLE is a free public platform for submitting and reading testimony on Massachusetts legislation. We aim to achieve these goals:",
+    "increase": "Increase access to legislative information and opportunities to contribute to the legislative process.",
+    "engage": "Engage a wider set of stakeholders and perspectives in policy-making.",
+    "strengthen": "Strengthen the relationships between constituents and  legislators.",
+    "encourage": "Encourage common understanding and illuminate consensus."
+  },
+  "mission": {
+    "title": "Our Mission",
+    "overview": "Make it easy to meaningfully fulfill your civic responsibilities in Massachusetts",
+    "connect": "MAPLE seeks to better connect its constituents to one another, and to our legislators. We hope to create a space for you to meaningfully engage in state government, learn about proposed legislation that impacts our lives in the Commonwealth, and share your expertise and stories. MAPLE aims to meaningfully channel and focus your civic energy towards productive actions for our state and local communities.",
+    "disclosure": "Today, there is no legal obligation for the MA legislature (formally known as “The General Court”) to disclose what written testimony they receive and, in practice, such disclosure very rarely happens. As a result, it can be difficult to understand what communications and perspectives are informing our legislators' decisions. Often, even members of the legislature cannot easily access the public testimony given on a bill.",
+    "callout": "MAPLE seeks to fill this void.",
+    "publish1": "When you submit testimony via the MAPLE platform, you can publish it in a freely accessible online database (this website) so that all other stakeholders can read your perspective. We also help you find the right recipients in the legislature for your testimony, and prepare the email for you to send.",
+    "publish2": "We hope this will help foster a greater capacity and means for self-governance  and lead to better policy outcomes, with greater alignment to the needs, values, and objectives of the population of Massachusetts. While you certainly do not have to submit testimony via this website, we hope you will. Every piece of testimony published , and allows more people to gain from your knowledge and experience.",
+    "submit_now": "Submit your testimony now!"
+  }
+}
