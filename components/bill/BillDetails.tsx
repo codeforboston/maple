@@ -1,13 +1,15 @@
 import {
   collection,
+  CollectionReference,
   deleteDoc,
   doc,
+  DocumentData,
   getDocs,
   query,
   setDoc,
   where
 } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
@@ -63,26 +65,6 @@ export const BillDetails = ({ bill }: BillProps) => {
     uid ? billQuery() : null
   })
 
-  const handleFollowClick = async () => {
-    await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      billLookup: {
-        billId: billId,
-        court: courtId
-      },
-      type: "bill"
-    })
-
-    setQueryResult(topicName)
-  }
-
-  const handleUnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, topicName))
-
-    setQueryResult("")
-  }
-
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -103,9 +85,12 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Row className="mb-4">
             <Col xs={12} className="d-flex justify-content-end">
               <FollowButton
-                handleFollowClick={handleFollowClick}
-                handleUnfollowClick={handleUnfollowClick}
+                billId={billId}
+                courtId={courtId}
                 queryResult={queryResult}
+                setQueryResult={setQueryResult}
+                subscriptionRef={subscriptionRef}
+                topicName={topicName}
                 uid={uid}
               />
             </Col>
@@ -119,9 +104,12 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Col xs={6} className="d-flex justify-content-end">
             <Styled>
               <FollowButton
-                handleFollowClick={handleFollowClick}
-                handleUnfollowClick={handleUnfollowClick}
+                billId={billId}
+                courtId={courtId}
                 queryResult={queryResult}
+                setQueryResult={setQueryResult}
+                subscriptionRef={subscriptionRef}
+                topicName={topicName}
                 uid={uid}
               />
             </Styled>
@@ -152,16 +140,42 @@ export const BillDetails = ({ bill }: BillProps) => {
 }
 
 const FollowButton = ({
-  handleFollowClick,
-  handleUnfollowClick,
+  billId,
+  courtId,
   queryResult,
+  setQueryResult,
+  subscriptionRef,
+  topicName,
   uid
 }: {
-  handleFollowClick: () => void
-  handleUnfollowClick: () => void
+  billId: string
+  courtId: number
   queryResult: string
+  setQueryResult: Dispatch<SetStateAction<string>>
+  subscriptionRef: CollectionReference<DocumentData>
+  topicName: string
   uid: string | undefined
 }) => {
+  const handleFollowClick = async () => {
+    await setDoc(doc(subscriptionRef, topicName), {
+      topicName: topicName,
+      uid: uid,
+      billLookup: {
+        billId: billId,
+        court: courtId
+      },
+      type: "bill"
+    })
+
+    setQueryResult(topicName)
+  }
+
+  const handleUnfollowClick = async () => {
+    await deleteDoc(doc(subscriptionRef, topicName))
+
+    setQueryResult("")
+  }
+
   return (
     <Button
       className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
