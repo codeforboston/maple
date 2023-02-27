@@ -110,6 +110,32 @@ export class DbService {
       return undefined
     }
   }
+
+  getAllProfiles = async (): Promise<Profile [] | undefined> => {
+    const result = await this.getDocs(
+      query(
+        collectionGroup(firestore, "users"),
+        limit(10)
+      )
+    )
+    const profiles = result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as Profile[]
+    return profiles
+  }
+
+  getFlaggedTestionies = async (): Promise<Testimony [] | undefined> => {
+    const result = await this.getDocs(
+      query(
+        collectionGroup(firestore, "publishedTestimony"), 
+        // where("flagged", "==" , true)
+      )
+    )
+    const testimonies = result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as Testimony[]
+    return testimonies
+  }
 }
 
 export const api = createApi({
