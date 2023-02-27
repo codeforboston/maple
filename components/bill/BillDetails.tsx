@@ -90,51 +90,44 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Back href="/bills">Back to List of Bills</Back>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <BillNumber bill={bill} />
-        </Col>
-        {bill.history.length > 0 ? (
-          <Col xs={6} className="d-flex justify-content-end">
-            <Status bill={bill} />
-          </Col>
-        ) : (
-          <Col xs={6} className="d-flex justify-content-end">
-            <Styled>
-              <Button
-                className={`btn btn-primary btn-sm ms-auto py-1 ${
-                  uid ? "" : "visually-hidden"
-                }`}
-                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
-              >
-                {queryResult ? "Following" : "Follow"}
-                {queryResult ? (
-                  <StyledImage src="/check-white.svg" alt="checkmark" />
-                ) : null}
-              </Button>
-            </Styled>
-          </Col>
-        )}
-      </Row>
       {bill.history.length > 0 ? (
         <>
+          <Row>
+            <Col>
+              <BillNumber bill={bill} />
+            </Col>
+            <Col xs={6} className="d-flex justify-content-end">
+              <Status bill={bill} />
+            </Col>
+          </Row>
           <Row className="mb-4">
             <Col xs={12} className="d-flex justify-content-end">
-              <Button
-                className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
-                  uid ? "" : "visually-hidden"
-                }`}
-                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
-              >
-                {queryResult ? "Following" : "Follow"}
-                {queryResult ? (
-                  <StyledImage src="/check-white.svg" alt="checkmark" />
-                ) : null}
-              </Button>
+              <FollowButton
+                handleFollowClick={handleFollowClick}
+                handleUnfollowClick={handleUnfollowClick}
+                queryResult={queryResult}
+                uid={uid}
+              />
             </Col>
           </Row>
         </>
-      ) : null}
+      ) : (
+        <Row>
+          <Col>
+            <BillNumber bill={bill} />
+          </Col>
+          <Col xs={6} className="d-flex justify-content-end">
+            <Styled>
+              <FollowButton
+                handleFollowClick={handleFollowClick}
+                handleUnfollowClick={handleUnfollowClick}
+                queryResult={queryResult}
+                uid={uid}
+              />
+            </Styled>
+          </Col>
+        </Row>
+      )}
       <Row className="mt-2">
         <Col>
           <Summary bill={bill} />
@@ -155,5 +148,31 @@ export const BillDetails = ({ bill }: BillProps) => {
         </Col>
       </Row>
     </StyledContainer>
+  )
+}
+
+const FollowButton = ({
+  handleFollowClick,
+  handleUnfollowClick,
+  queryResult,
+  uid
+}: {
+  handleFollowClick: () => void
+  handleUnfollowClick: () => void
+  queryResult: string
+  uid: string | undefined
+}) => {
+  return (
+    <Button
+      className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
+        uid ? "" : "visually-hidden"
+      }`}
+      onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+    >
+      {queryResult ? "Following" : "Follow"}
+      {queryResult ? (
+        <StyledImage src="/check-white.svg" alt="checkmark" />
+      ) : null}
+    </Button>
   )
 }
