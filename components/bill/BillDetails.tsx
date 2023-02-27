@@ -1,15 +1,13 @@
 import {
   collection,
-  CollectionReference,
   deleteDoc,
   doc,
-  DocumentData,
   getDocs,
   query,
   setDoc,
   where
 } from "firebase/firestore"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
@@ -35,33 +33,6 @@ const StyledImage = styled(Image)`
 `
 
 export const BillDetails = ({ bill }: BillProps) => {
-  const billId = bill.id
-  const courtId = bill.court
-  const topicName = `bill-${courtId}-${billId}`
-  const { user } = useAuth()
-  const uid = user?.uid
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
-  const [queryResult, setQueryResult] = useState("")
-
-  const billQuery = async () => {
-    const q = query(
-      subscriptionRef,
-      where("topicName", "==", `bill-${courtId}-${billId}`)
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      setQueryResult(doc.data().topicName)
-    })
-  }
-
-  useEffect(() => {
-    uid ? billQuery() : null
-  })
-
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -81,15 +52,7 @@ export const BillDetails = ({ bill }: BillProps) => {
           </Row>
           <Row className="mb-4">
             <Col xs={12} className="d-flex justify-content-end">
-              <FollowButton
-                billId={billId}
-                courtId={courtId}
-                queryResult={queryResult}
-                setQueryResult={setQueryResult}
-                subscriptionRef={subscriptionRef}
-                topicName={topicName}
-                uid={uid}
-              />
+              <FollowButton bill={bill} />
             </Col>
           </Row>
         </>
@@ -100,15 +63,7 @@ export const BillDetails = ({ bill }: BillProps) => {
           </Col>
           <Col xs={6} className="d-flex justify-content-end">
             <Styled>
-              <FollowButton
-                billId={billId}
-                courtId={courtId}
-                queryResult={queryResult}
-                setQueryResult={setQueryResult}
-                subscriptionRef={subscriptionRef}
-                topicName={topicName}
-                uid={uid}
-              />
+              <FollowButton bill={bill} />
             </Styled>
           </Col>
         </Row>
@@ -136,23 +91,34 @@ export const BillDetails = ({ bill }: BillProps) => {
   )
 }
 
-const FollowButton = ({
-  billId,
-  courtId,
-  queryResult,
-  setQueryResult,
-  subscriptionRef,
-  topicName,
-  uid
-}: {
-  billId: string
-  courtId: number
-  queryResult: string
-  setQueryResult: Dispatch<SetStateAction<string>>
-  subscriptionRef: CollectionReference<DocumentData>
-  topicName: string
-  uid: string | undefined
-}) => {
+const FollowButton = ({ bill }: BillProps) => {
+  const billId = bill.id
+  const courtId = bill.court
+  const topicName = `bill-${courtId}-${billId}`
+  const { user } = useAuth()
+  const uid = user?.uid
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubscriptions/`
+  )
+  const [queryResult, setQueryResult] = useState("")
+
+  const billQuery = async () => {
+    const q = query(
+      subscriptionRef,
+      where("topicName", "==", `bill-${courtId}-${billId}`)
+    )
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      setQueryResult(doc.data().topicName)
+    })
+  }
+
+  useEffect(() => {
+    uid ? billQuery() : null
+  })
+
   const handleFollowClick = async () => {
     await setDoc(doc(subscriptionRef, topicName), {
       topicName: topicName,
