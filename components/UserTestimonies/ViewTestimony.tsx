@@ -7,7 +7,7 @@ import { ListGroup, ListGroupItem } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, Row } from "../bootstrap"
+import { Button, Col, Form, OverlayTrigger, Row } from "../bootstrap"
 import {
   Testimony,
   usePublicProfile,
@@ -115,39 +115,29 @@ const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   }
 `
 
-// https://stackoverflow.com/a/42234988/4531028
-function useOutsideClick(ref: RefObject<HTMLDivElement>, action: () => void) {
-  function handleClickOutside(event: MouseEvent) {
-    // TODO: type safety?
-    if (ref.current && !ref.current.contains(event.target as Node)) {
-      action()
-    }
-  }
-  document.addEventListener("mousedown", handleClickOutside)
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside)
-  }
-}
-
 const MoreButton = ({ children }: { children: React.ReactChild }) => {
-  const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  useOutsideClick(menuRef, () => setIsOpen(false))
   return (
-    <div style={{ position: "relative" }}>
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      placement="bottom-end"
+      overlay={
+        <div
+          ref={menuRef}
+          style={{ position: "absolute", background: "white" }}
+        >
+          {children}
+        </div>
+      }
+    >
       <button
         style={{ border: "none", background: "none" }}
         aria-label="more actions"
-        onClick={() => {
-          setIsOpen(open => !open)
-        }}
       >
         ...
       </button>
-      <div ref={menuRef} style={{ position: "absolute", background: "white" }}>
-        {isOpen && children}
-      </div>
-    </div>
+    </OverlayTrigger>
   )
 }
 
