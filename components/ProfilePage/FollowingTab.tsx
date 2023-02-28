@@ -151,23 +151,6 @@ export function FollowingTab({ className }: Props) {
               <Col>
                 <h2 className={``}>Organizations You Follow</h2>
               </Col>
-              <Col className={`d-flex invisible justify-content-end`}>
-                <Dropdown className={`d-inline-block `}>
-                  <Dropdown.Toggle
-                    className={`btn-sm py-1`}
-                    variant="secondary"
-                    id="dropdown-basic"
-                  >
-                    Add an
-                    organization&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => null}>
-                      Org Search
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Col>
             </Row>
             {orgsFollowing.map((orgId: string, index: number) => (
               <FollowedOrg
