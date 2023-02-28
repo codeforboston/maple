@@ -149,10 +149,11 @@ export function FollowingTab({ className }: Props) {
               </Col>
             </Row>
             {orgsFollowing.map((element: string, index: number) => (
-              <FollowedOrg
+              <FollowedItem
                 key={index}
                 element={element}
                 setUnfollow={setUnfollow}
+                type={"org"}
               />
             ))}
           </Styled>
@@ -180,34 +181,60 @@ function FollowedItem({
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
+  const { result: profile, loading } = usePublicProfile(element)
+
+  let displayName = ""
+  if (profile?.displayName) {
+    displayName = profile.displayName
+  }
+
   return (
-    <>
-      <Styled key={key}>
-        <External
-          href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-        >
-          {formatBillId(element?.billId)}
-        </External>
-        <Row>
-          <Col>
-            <BillFollowingTitle court={element?.court} id={element?.billId} />
-          </Col>
-          <Col
-            onClick={() => {
-              setUnfollow({
-                court: element?.court,
-                orgName: "",
-                type: "bill",
-                typeId: element?.billId
-              })
-            }}
+    <Styled key={key}>
+      {type === "bill" ? (
+        <>
+          <External
+            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
           >
-            <UnfollowButton />
-          </Col>
-          <hr className={`mt-3`} />
-        </Row>
-      </Styled>
-    </>
+            {formatBillId(element?.billId)}
+          </External>
+          <Row>
+            <Col>
+              <BillFollowingTitle court={element?.court} id={element?.billId} />
+            </Col>
+            <UnfollowButton
+              displayName={displayName}
+              element={element}
+              setUnfollow={setUnfollow}
+              type={type}
+            />
+          </Row>
+        </>
+      ) : (
+        <>
+          {loading ? (
+            <Row>
+              <Spinner animation="border" className="mx-auto" />
+            </Row>
+          ) : (
+            <Row className={`align-items-center`}>
+              <Col className={"align-items-center d-flex"}>
+                <OrgIconSmall src={profile?.profileImage} />
+                <Internal href={`profile?id=${element}`}>
+                  {displayName}
+                </Internal>
+              </Col>
+              <UnfollowButton
+                displayName={displayName}
+                element={element}
+                setUnfollow={setUnfollow}
+                type={type}
+              />
+            </Row>
+          )}
+        </>
+      )}
+      <hr className={`mt-3`} />
+    </Styled>
   )
 }
 
@@ -230,59 +257,46 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
   return null
 }
 
-function FollowedOrg({
-  key,
+function UnfollowButton({
+  displayName,
   element,
-  setUnfollow
+  setUnfollow,
+  type
 }: {
-  key: number
-  element: string
+  displayName: string
+  element: any
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  type: string
 }) {
-  const { result: profile, loading } = usePublicProfile(element)
-
-  let displayName = ""
-  if (profile?.displayName) {
-    displayName = profile.displayName
+  const handleClick = () => {
+    if (type === "bill") {
+      setUnfollow({
+        court: element?.court,
+        orgName: "",
+        type: "bill",
+        typeId: element?.billId
+      })
+    } else {
+      setUnfollow({
+        court: 0,
+        orgName: displayName,
+        type: "org",
+        typeId: element
+      })
+    }
   }
 
   return (
-    <>
-      {loading ? (
-        <Row>
-          <Spinner animation="border" className="mx-auto" />
-        </Row>
-      ) : (
-        <Styled>
-          <Row className={`align-items-center`} key={key}>
-            <Col className={"align-items-center d-flex"}>
-              <OrgIconSmall src={profile?.profileImage} />
-              <Internal href={`profile?id=${element}`}>{displayName}</Internal>
-            </Col>
-            <Col
-              onClick={() => {
-                setUnfollow({
-                  court: 0,
-                  orgName: displayName,
-                  type: "org",
-                  typeId: element
-                })
-              }}
-            >
-              <UnfollowButton />
-            </Col>
-            <hr className={`mt-3`} />
-          </Row>
-        </Styled>
-      )}
-    </>
-  )
-}
-
-function UnfollowButton() {
-  return (
-    <button className={`btn btn-link d-flex ms-auto p-0 text-decoration-none`}>
-      <h6>Unfollow</h6>
-    </button>
+    <Col
+      onClick={() => {
+        handleClick()
+      }}
+    >
+      <button
+        className={`btn btn-link d-flex ms-auto p-0 text-decoration-none`}
+      >
+        <h6>Unfollow</h6>
+      </button>
+    </Col>
   )
 }
