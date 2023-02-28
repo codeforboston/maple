@@ -2,18 +2,12 @@ import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
+import { UnfollowModalConfig } from "./FollowingTab"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  currentCourt: number
-  currentOrgName: string
-  currentType: string
-  currentTypeId: string
-  handleUnfollowClick: (
-    courtId: number,
-    type: string,
-    typeId: string
-  ) => Promise<void>
-  onUnfollowModalClose: () => void
+  handleUnfollowClick: (unfollow: UnfollowModalConfig | null) => Promise<void>
+  onUnfollowClose: () => void
+  unfollow: UnfollowModalConfig | null
 }
 
 const StyledButton = styled(Button)`
@@ -24,21 +18,18 @@ const StyledModalBody = styled(Modal.Body)`
   padding: 0.8rem;
 `
 
-export default function UnfollowModal({
-  currentCourt,
-  currentOrgName,
-  currentType,
-  currentTypeId,
+export default function unfollow({
   handleUnfollowClick,
   onHide,
-  onUnfollowModalClose,
-  show
+  onUnfollowClose,
+  show,
+  unfollow
 }: Props) {
   const handleTopic = () => {
-    if (currentType == "bill") {
-      return ` Bill ${formatBillId(currentTypeId)}`
+    if (unfollow?.type == "bill") {
+      return ` Bill ${formatBillId(unfollow?.typeId)}`
     } else {
-      return ` ${currentOrgName}`
+      return ` ${unfollow?.orgName}`
     }
   }
 
@@ -61,7 +52,7 @@ export default function UnfollowModal({
           <StyledButton
             className={`
                 btn btn-sm btn-outline-secondary ms-auto py-1`}
-            onClick={onUnfollowModalClose}
+            onClick={onUnfollowClose}
           >
             No
           </StyledButton>
@@ -69,7 +60,7 @@ export default function UnfollowModal({
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(currentCourt, currentType, currentTypeId)
+              handleUnfollowClick(unfollow)
             }}
           >
             Yes

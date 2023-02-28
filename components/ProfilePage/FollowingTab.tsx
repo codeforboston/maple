@@ -7,7 +7,6 @@ import {
   getDocs
 } from "firebase/firestore"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
@@ -21,6 +20,13 @@ import UnfollowModal from "./UnfollowModal"
 
 type Props = {
   className?: string
+}
+
+export type UnfollowModalConfig = {
+  court: number
+  orgName: string
+  type: string
+  typeId: string
 }
 
 export const Styled = styled.div`
@@ -50,19 +56,13 @@ export function FollowingTab({ className }: Props) {
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`
   )
+  const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
+  const close = () => setUnfollow(null)
 
   let billList: string[] = []
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
   let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
-
-  const [currentCourt, setCurrentCourt] = useState<number>(0)
-  const [currentOrgName, setCurrentOrgName] = useState<string>("")
-  const [currentType, setCurrentType] = useState<string>("")
-  const [currentTypeId, setCurrentTypeId] = useState<string>("")
-  const [unfollowModal, setUnfollowModal] = useState<"show" | null>(null)
-
-  const close = () => setUnfollowModal(null)
 
   const billsFollowingQuery = async () => {
     const q = query(
@@ -106,39 +106,35 @@ export function FollowingTab({ className }: Props) {
     uid ? orgsFollowingQuery() : null
   })
 
-  const handleUnfollowClick = async (
-    courtId: number,
-    type: string,
-    typeId: string
-  ) => {
-    let topicName = ""
-    if (type == "bill") {
-      topicName = `bill-${courtId.toString()}-${typeId}`
-    } else {
-      topicName = `org-${typeId}`
+  const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
+    if (unfollow !== null) {
+      let topicName = ""
+      if (unfollow.type == "bill") {
+        topicName = `bill-${unfollow.court.toString()}-${unfollow.typeId}`
+      } else {
+        topicName = `org-${unfollow.typeId}`
+      }
+
+      await deleteDoc(doc(subscriptionRef, topicName))
+
+      setBillsFollowing([])
+      setOrgsFollowing([])
+      setUnfollow(null)
     }
-
-    await deleteDoc(doc(subscriptionRef, topicName))
-
-    setBillsFollowing([])
-    setOrgsFollowing([])
-    setUnfollowModal(null)
   }
+
   return (
     <>
       <TitledSectionCard className={className}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>Bills You Follow</h2>
-            {billsFollowing.map((element: any, index: number) => (
-              <FollowedBill
+            {billsFollowing.map((element: string, index: number) => (
+              <FollowedItem
                 key={index}
                 element={element}
-                setCurrentCourt={setCurrentCourt}
-                setCurrentOrgName={setCurrentOrgName}
-                setCurrentType={setCurrentType}
-                setCurrentTypeId={setCurrentTypeId}
-                setUnfollowModal={setUnfollowModal}
+                setUnfollow={setUnfollow}
+                type={"bill"}
               />
             ))}
           </Stack>
@@ -152,76 +148,66 @@ export function FollowingTab({ className }: Props) {
                 <h2 className={``}>Organizations You Follow</h2>
               </Col>
             </Row>
-            {orgsFollowing.map((orgId: string, index: number) => (
+            {orgsFollowing.map((element: string, index: number) => (
               <FollowedOrg
                 key={index}
-                orgId={orgId}
-                setCurrentCourt={setCurrentCourt}
-                setCurrentOrgName={setCurrentOrgName}
-                setCurrentType={setCurrentType}
-                setCurrentTypeId={setCurrentTypeId}
-                setUnfollowModal={setUnfollowModal}
+                element={element}
+                setUnfollow={setUnfollow}
               />
             ))}
           </Styled>
         </div>
       </TitledSectionCard>
       <UnfollowModal
-        currentCourt={currentCourt}
-        currentOrgName={currentOrgName}
-        currentType={currentType}
-        currentTypeId={currentTypeId}
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
-        onUnfollowModalClose={() => setUnfollowModal(null)}
-        show={unfollowModal === "show"}
+        onUnfollowClose={() => setUnfollow(null)}
+        show={unfollow ? true : false}
+        unfollow={unfollow}
       />
     </>
   )
 }
 
-function FollowedBill({
+function FollowedItem({
   key,
   element,
-  setCurrentCourt,
-  setCurrentOrgName,
-  setCurrentType,
-  setCurrentTypeId,
-  setUnfollowModal
+  setUnfollow,
+  type
 }: {
   key: number
   element: any
-  setCurrentCourt: Dispatch<SetStateAction<number>>
-  setCurrentOrgName: Dispatch<SetStateAction<string>>
-  setCurrentType: Dispatch<SetStateAction<string>>
-  setCurrentTypeId: Dispatch<SetStateAction<string>>
-  setUnfollowModal: Dispatch<SetStateAction<"show" | null>>
+  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  type: string
 }) {
   return (
-    <Styled key={key}>
-      <External
-        href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-      >
-        {formatBillId(element?.billId)}
-      </External>
-      <Row>
-        <Col>
-          <BillFollowingTitle court={element?.court} id={element?.billId} />
-        </Col>
-        <Col
-          onClick={() => {
-            setCurrentCourt(element?.court)
-            setCurrentOrgName("")
-            setCurrentType("bill")
-            setCurrentTypeId(element?.billId)
-            setUnfollowModal("show")
-          }}
+    <>
+      <Styled key={key}>
+        <External
+          href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
         >
-          <UnfollowButton />
-        </Col>
-        <hr className={`mt-3`} />
-      </Row>
-    </Styled>
+          {formatBillId(element?.billId)}
+        </External>
+        <Row>
+          <Col>
+            <BillFollowingTitle court={element?.court} id={element?.billId} />
+          </Col>
+          <Col
+            onClick={() => {
+              setUnfollow({
+                court: element?.court,
+                orgName: "",
+                type: "bill",
+                typeId: element?.billId
+              })
+            }}
+          >
+            <UnfollowButton />
+          </Col>
+          <hr className={`mt-3`} />
+        </Row>
+      </Styled>
+    </>
   )
 }
 
@@ -246,22 +232,14 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 
 function FollowedOrg({
   key,
-  orgId,
-  setCurrentCourt,
-  setCurrentOrgName,
-  setCurrentType,
-  setCurrentTypeId,
-  setUnfollowModal
+  element,
+  setUnfollow
 }: {
   key: number
-  orgId: string
-  setCurrentCourt: Dispatch<SetStateAction<number>>
-  setCurrentOrgName: Dispatch<SetStateAction<string>>
-  setCurrentType: Dispatch<SetStateAction<string>>
-  setCurrentTypeId: Dispatch<SetStateAction<string>>
-  setUnfollowModal: Dispatch<SetStateAction<"show" | null>>
+  element: string
+  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
 }) {
-  const { result: profile, loading } = usePublicProfile(orgId)
+  const { result: profile, loading } = usePublicProfile(element)
 
   let displayName = ""
   if (profile?.displayName) {
@@ -279,15 +257,16 @@ function FollowedOrg({
           <Row className={`align-items-center`} key={key}>
             <Col className={"align-items-center d-flex"}>
               <OrgIconSmall src={profile?.profileImage} />
-              <Internal href={`profile?id=${orgId}`}>{displayName}</Internal>
+              <Internal href={`profile?id=${element}`}>{displayName}</Internal>
             </Col>
             <Col
               onClick={() => {
-                setCurrentCourt(0)
-                setCurrentOrgName(displayName)
-                setCurrentType("org")
-                setCurrentTypeId(orgId)
-                setUnfollowModal("show")
+                setUnfollow({
+                  court: 0,
+                  orgName: displayName,
+                  type: "org",
+                  typeId: element
+                })
               }}
             >
               <UnfollowButton />
