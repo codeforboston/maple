@@ -38,7 +38,7 @@ services:
       test: curl -f localhost:5001/demo-dtp/us-central1/healthCheck || exit 1
       interval: 30s
       timeout: 5s
-      retries: 3
+      retries: 30
       start_period: 30s
     volumes:
       - ..:/app

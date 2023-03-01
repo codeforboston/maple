@@ -118,7 +118,9 @@ export const SearchContainer = styled.div`
     box-shadow: none;
   }
 
-  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(.ais-Pagination-item--disabled)
+  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(
+      .ais-Pagination-item--disabled
+    )
     .ais-Pagination-link:hover,
   .ais-Pagination-item--selected .ais-Pagination-link {
     background-color: var(--bs-blue-100);
