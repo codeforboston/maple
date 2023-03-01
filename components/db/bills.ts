@@ -29,7 +29,7 @@ export type BillContent = {
   BillNumber: string
   DocketNumber: string
   GeneralCourtNumber: number
-  PrimarySponsor: MemberReference
+  PrimarySponsor?: MemberReference
   Cosponsors: MemberReference[]
   LegislationTypeName: string
   Pinslip: string
