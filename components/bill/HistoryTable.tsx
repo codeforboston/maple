@@ -15,8 +15,14 @@ const LinkConnectedBills = ({ action }: { action: string }): JSX.Element => {
     return <>{action}</>
   }
   const words = action.split(billRegex)
-  const wordMap = words.map(w =>
-    billRegex.test(w) ? <Wrap href={billSiteURL(w, court)}>{w}</Wrap> : w
+  const wordMap = words.map((w, i) =>
+    billRegex.test(w) ? (
+      <Wrap key={i} href={billSiteURL(w, court)}>
+        {w}
+      </Wrap>
+    ) : (
+      w
+    )
   )
 
   return <>{wordMap}</>
