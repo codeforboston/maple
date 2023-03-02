@@ -1,4 +1,4 @@
-import Handlebars from "handlebars"
+import Handlebars from "handlebars/dist/handlebars"
 import { FC, useEffect, useState } from "react"
 
 /** Given a URL to a handlebars template, render it using the provided context data. */
