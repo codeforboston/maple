@@ -1,18 +1,39 @@
 <html>
   <head>
-    <title>Digest Email</title>
+    <title>Digest Email Title</title>
+    <link rel="stylesheet" type="text/css" href="/email/header.css" />
   </head>
   <body>
-    {{> header }}
-    <h2>Here is your weekly report!</h2>
-    <p>{{startDate}} - {{endDate}}</p>
+    <div>
+      <nav>
+        <!-- swap bldg-64-blu.png for nav-logo.svg -->
+        <div class="bg-blue center">
+          <img src="/bldg-64-blu.png" alt="Maple Logo" />
+        </div>
+      </nav>
 
-    {{> bills }}
-
-    {{> orgs }}
-
-    {{> newsFeedLink}}
-
-    {{> footer}}
+      <h2 class="center">Here is your {{notificationFrequency}} report!</h2>
+    </div>
   </body>
 </html>
+
+{{!--  
+  TODO:
+    [ ] figure out svg -> handlebars compatibility
+      if not possible, use pngs but inform devs who are standardizing pngs into svgs
+
+    [ ] set up path for handlebars to:
+      locate partials
+      register helpers
+
+    [ ] ask: will edits in node_modules carry over when other devs use yarn install?
+
+    [ ] review folder locations & conventions:
+      style={{}} seems to throw errors in children of CreateMeta:
+        most likely works with .tsx but not .handlebars files
+
+      currently using css with: 
+        <link rel="stylesheet" href="/email/<cssFileName>.css" />
+      currently located at:
+        /public/email/<cssFileName>.css
+--}}

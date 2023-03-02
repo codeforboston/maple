@@ -1,8 +1,11 @@
 import { ComponentStory } from "@storybook/react"
+import digestEmail from "functions/src/email/digestEmail.handlebars"
 import example1 from "functions/src/email/example1.handlebars"
 import example2 from "functions/src/email/example2.handlebars"
 import { createMeta } from "stories/utils"
 import { EmailTemplateRenderer } from "./email-template-renderer"
+
+import { Container, Row, Col } from "../../components/bootstrap"
 
 export default createMeta({
   title: "Email Templates/Digest",
@@ -56,5 +59,13 @@ Example2.args = {
       '<i>Lawrence Peter "Yogi" Berra (May 12, 1925 - September 22, 2015) was an American professional baseball catcher, manager, and coach who played 19 seasons in Major League Baseball (MLB) (1946 - 63, 1965), all but the last for the New York Yankees. An 18-time All-Star and 10-time World Series champion as a player, Berra had a career batting average of .285, while compiling 358 home runs and 1,430 runs batted in.</i>',
     url: "http://yogiberramuseum.org/",
     text: "Yogi Berra Museum"
+  }
+}
+
+export const DigestEmail = Template.bind({})
+DigestEmail.args = {
+  templateSrcUrl: digestEmail,
+  context: {
+    notificationFrequency: "weekly"
   }
 }
