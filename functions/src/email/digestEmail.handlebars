@@ -1,8 +1,9 @@
 <html>
   <head>
-    <title>Digest Email Title</title>
+    <title>Digest Email</title>
     <link rel="stylesheet" type="text/css" href="/email/header.css" />
   </head>
+
   <body class="font">
     <div id="logo" class="logo">
       <img src="/nav-logo.svg" alt="Maple Logo" />
@@ -14,18 +15,24 @@
       </div>
       <img src="/Mail Report.svg" alt="Maple Logo" />
     </header>
+
     <section>
       <div class="sectionHeader">
         <h6 class="sectionTitle">Bills</h6>
         <div class="sectionLine"></div>
       </div>
     </section>
+
     <section>
       <div class="sectionHeader">
         <h6 class="sectionTitle">Organizations</h6>
         <div class="sectionLine"></div>
       </div>
     </section>
+
+    <nav>News Feed Button</nav>
+
+    <footer>Legal Stuff</footer>
   </body>
 </html>
 
@@ -40,9 +47,9 @@
 
     -----
     header.handlebars 
-    {{ logo }}
-    {{ report.frequency }}
-    {{ report.dates }}
+    {{> logo }}
+    {{> report.frequency }}
+    {{> report.dates }}
 
   TODO:
     [x] figure out svg -> handlebars compatibility
