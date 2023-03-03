@@ -33,16 +33,43 @@
   margin: 0px;
 }
 
-.basicline {
+.subheadline {
   font-weight: 600;
   font-size: 12px;
   line-height: 125%;
 
-  color: #1A3185;
   margin: 0px;
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 125%;
+
+  color: #C71E32;
+  margin-right: 20px;
+  margin-left: 47.5px;
+  margin-bottom: 0px;
+}
+
+.sectionLine {
+  border: 1px solid #C71E32;
+  height: 0px;
+  flex-grow: 1;
+  min-width: max-content;
+  margin-right: 47.5px;
+}
+
 /* modifiers */
+.bg-blue {
+  color: #1A3185;
+}
 
 .center {
   display: flex;

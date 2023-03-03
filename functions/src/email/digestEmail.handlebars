@@ -10,10 +10,22 @@
     <header class="header">
       <div>
         <h2 class="headline">Here is your {{notificationFrequency}} report!</h2>
-        <p class="basicline center">{{startDate}} - {{endDate}}</p>
+        <p class="subheadline bg-blue center">{{startDate}} - {{endDate}}</p>
       </div>
       <img src="/Mail Report.svg" alt="Maple Logo" />
     </header>
+    <section>
+      <div class="sectionHeader">
+        <h6 class="sectionTitle">Bills</h6>
+        <div class="sectionLine"></div>
+      </div>
+    </section>
+    <section>
+      <div class="sectionHeader">
+        <h6 class="sectionTitle">Organizations</h6>
+        <div class="sectionLine"></div>
+      </div>
+    </section>
   </body>
 </html>
 
@@ -40,8 +52,6 @@
     [ ] set up path for handlebars to:
       locate partials
       register helpers
-
-    [ ] ask: will edits in node_modules carry over when other devs use yarn install?
 
     [ ] review folder locations & conventions:
       style={{}} seems to throw errors in children of CreateMeta:
