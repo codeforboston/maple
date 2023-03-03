@@ -3,24 +3,39 @@
     <title>Digest Email Title</title>
     <link rel="stylesheet" type="text/css" href="/email/header.css" />
   </head>
-  <body>
-    <div>
-      <nav>
-        <!-- swap bldg-64-blu.png for nav-logo.svg -->
-        <div class="bg-blue center">
-          <img src="/bldg-64-blu.png" alt="Maple Logo" />
-        </div>
-      </nav>
-
-      <h2 class="center">Here is your {{notificationFrequency}} report!</h2>
+  <body class="font">
+    <div id="logo" class="logo">
+      <img src="/nav-logo.svg" alt="Maple Logo" />
     </div>
+    <header class="header">
+      <div>
+        <h2 class="headline">Here is your {{notificationFrequency}} report!</h2>
+        <p class="basicline center">{{startDate}} - {{endDate}}</p>
+      </div>
+      <img src="/Mail Report.svg" alt="Maple Logo" />
+    </header>
   </body>
 </html>
 
-{{!--  
+{{!--
+  Intended Layout:
+
+    {{> header }}  
+    {{> bills }}
+    {{> orgs }}
+    {{> newsFeedLink}}
+    {{> footer}}
+
+    -----
+    header.handlebars 
+    {{ logo }}
+    {{ report.frequency }}
+    {{ report.dates }}
+
   TODO:
-    [ ] figure out svg -> handlebars compatibility
-      if not possible, use pngs but inform devs who are standardizing pngs into svgs
+    [x] figure out svg -> handlebars compatibility
+    
+    [x] figure out better way to preview svgs in VSCode
 
     [ ] set up path for handlebars to:
       locate partials
@@ -36,4 +51,9 @@
         <link rel="stylesheet" href="/email/<cssFileName>.css" />
       currently located at:
         /public/email/<cssFileName>.css
+
+      when attempting to use location in /functions/...
+        Refused to apply style from 'http://localhost:6006/functions/src/email/digestEmail.css'
+        because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict
+        MIME checking is enabled.
 --}}

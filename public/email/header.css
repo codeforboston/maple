@@ -1,9 +1,50 @@
-.bg-blue {
+.font {
+  font-family: 'Nunito';
+  font-style: normal;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px 216px 16px 50px;
+  gap: 10px;
+
   background-color: #1a3185;
 }
 
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0px 12px;
+  gap: 16px;
+
+  background: #FFFFFF;
+}
+
+.headline {
+  font-weight: 700;
+  font-size: 31px;
+  line-height: 125%;
+
+  color: #1A3185;
+  margin: 0px;
+}
+
+.basicline {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 125%;
+
+  color: #1A3185;
+  margin: 0px;
+}
+
+/* modifiers */
+
 .center {
   display: flex;
-  align-items: center;
   justify-content: center;
 }

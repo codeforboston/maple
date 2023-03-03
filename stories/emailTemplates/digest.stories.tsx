@@ -5,8 +5,6 @@ import example2 from "functions/src/email/example2.handlebars"
 import { createMeta } from "stories/utils"
 import { EmailTemplateRenderer } from "./email-template-renderer"
 
-import { Container, Row, Col } from "../../components/bootstrap"
-
 export default createMeta({
   title: "Email Templates/Digest",
   figmaUrl:
@@ -66,6 +64,8 @@ export const DigestEmail = Template.bind({})
 DigestEmail.args = {
   templateSrcUrl: digestEmail,
   context: {
-    notificationFrequency: "weekly"
+    notificationFrequency: "weekly",
+    startDate: "2/1/2023",
+    endDate: "2/7/2023"
   }
 }
