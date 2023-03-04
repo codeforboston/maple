@@ -1,3 +1,5 @@
+import { authStepChanged } from "components/auth/redux"
+import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
@@ -141,6 +143,7 @@ const OurTeamLinks = () => (
 )
 
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
+  const dispatch = useAppDispatch()
   return authenticated ? (
     <>
       <NavLink
@@ -158,7 +161,7 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
     </>
   ) : (
     <NavLink
-      handleClick={() => console.log("SignIn clicked")}
+      handleClick={() => dispatch(authStepChanged("start"))}
       other={{ className: `${styles.footerLink}` }}
     >
       Sign In
@@ -297,18 +300,10 @@ const PageFooter = (props: PageFooterProps) => {
           </Col>
           <Col className="col">
             <NavLink
-              href="/privacy-policy"
+              href="/policies"
               other={{ className: `${styles.footerLink}` }}
             >
-              Privacy Policy
-            </NavLink>
-          </Col>
-          <Col className="col">
-            <NavLink
-              href="/terms-of-service"
-              other={{ className: `${styles.footerLink}` }}
-            >
-              Terms of Service
+              Our Policies and Terms of Service
             </NavLink>
           </Col>
         </Row>
