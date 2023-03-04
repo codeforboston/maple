@@ -24,7 +24,7 @@ export const updateBillTracker = runWith({
       ? Bill.checkWithDefaults(change.after.data())
       : undefined
 
-    if (await shouldUpdateBillTracker(court, newBill, previousBill)) {
+    if (await shouldUpdateBillTracker(newBill, previousBill)) {
       const tracker: BillTracker = {
         id: billId,
         court: court,
@@ -39,8 +39,6 @@ export const updateBillTracker = runWith({
   })
 
 async function shouldUpdateBillTracker(
-  // TODO: use court from bill document once included.
-  court: number,
   newBill: Bill | undefined,
   previousBill: Bill | undefined
 ) {
@@ -52,7 +50,7 @@ async function shouldUpdateBillTracker(
   // Update if history changes
   if (historyChanged) return true
 
-  const snap = await db.doc(billTrackerPath(newBill.id, court)).get()
+  const snap = await db.doc(billTrackerPath(newBill.id, newBill.court)).get()
 
   // Create if new bill
   if (!snap.exists) return true

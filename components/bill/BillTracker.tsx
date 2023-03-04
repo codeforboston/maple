@@ -1,29 +1,30 @@
 import { Card as MapleCard } from "components/Card/Card"
 import { Stage, useBillTracker } from "components/db/useBillStatus"
-import { Bill } from "functions/src/bills/types"
 import styled from "styled-components"
 import { BillProps, BillTracker } from "./types"
 
 export default function BillTrackerConnectedView({
-  bill
-}: BillProps): JSX.Element {
-  const { result, loading, error } = useBillTracker(bill.id, 192)
-  console.log(result, loading, error)
-  return <BillTrackerView tracker={result} />
+  bill,
+  className
+}: BillProps & { className?: string }) {
+  const { result } = useBillTracker(bill.id, bill.court)
+  return result ? (
+    <BillTrackerView tracker={result} className={className} />
+  ) : null
 }
 
 const BillTrackerView = ({
-  tracker
+  tracker,
+  className
 }: {
-  tracker: BillTracker | undefined
+  tracker: BillTracker
+  className?: string
 }): JSX.Element => {
   const currentStage =
-    tracker?.label?.status ??
-    tracker?.prediction?.status ??
-    Stage.billIntroduced
+    tracker.label?.status ?? tracker.prediction?.status ?? Stage.billIntroduced
 
   const body = (
-    <BillStatusBody>
+    <BillStatusBody className={className}>
       {Object.values(Stage).map(s => (
         <StyledBillStageStrip key={s} stage={s} currentStage={currentStage} />
       ))}
