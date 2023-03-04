@@ -6,7 +6,6 @@ import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
-import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
@@ -50,18 +49,6 @@ const TopNav: React.FC = () => {
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      // when a user clicks the sign out button, the navbar is left open.
-      // this fixes that
-      if (user === null) {
-        closeNav()
-      }
-    })
-
-    return unsubscribe
-  }, [])
 
   useEffect(() => setSticky(isMobile), [isMobile])
 
@@ -142,7 +129,12 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={signOutAndRedirectToHome}>
+                <NavLink
+                  handleClick={() => {
+                    closeNav()
+                    void signOutAndRedirectToHome()
+                  }}
+                >
                   Sign Out
                 </NavLink>
               )}
