@@ -4,6 +4,14 @@ import { Maybe } from "../db/common"
 import { useAppSelector } from "../hooks"
 import { Claim } from "./types"
 
+export type AuthFlowStep =
+  | "start"
+  | "signIn"
+  | "signUp"
+  | "forgotPassword"
+  | "verifyEmail"
+  | null
+
 export interface State {
   /** null if the user is signed out, undefined if the auth state hasn't been
    * initialized */
@@ -12,16 +20,18 @@ export interface State {
   claims?: Claim
   /** True iff user is signed in */
   authenticated: boolean
+  authFlowStep: AuthFlowStep
 }
 
 const initialState: State = {
   authenticated: false,
-  user: undefined
+  user: undefined,
+  authFlowStep: null
 }
 
 export const {
   reducer,
-  actions: { authChanged }
+  actions: { authChanged, authStepChanged }
 } = createSlice({
   name: "auth",
   initialState,
@@ -33,6 +43,9 @@ export const {
       state.user = payload.user
       state.claims = payload.claims
       state.authenticated = Boolean(payload.user)
+    },
+    authStepChanged(state, action: PayloadAction<AuthFlowStep>) {
+      state.authFlowStep = action.payload
     }
   }
 })

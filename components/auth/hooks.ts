@@ -69,7 +69,9 @@ export function useCreateUserWithEmailAndPassword() {
       await Promise.all([
         setProfile(credentials.user.uid, {
           displayName: nickname,
-          fullName
+          fullName,
+          role: "user",
+          public: false
         }),
         sendEmailVerification(credentials.user)
       ])

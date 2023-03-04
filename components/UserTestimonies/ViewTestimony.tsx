@@ -2,11 +2,12 @@ import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import { useState } from "react"
+import React, { RefObject, useRef, useState } from "react"
+import { ListGroup, ListGroupItem } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, Row } from "../bootstrap"
+import { Button, Col, Form, OverlayTrigger, Row } from "../bootstrap"
 import {
   Testimony,
   usePublicProfile,
@@ -16,6 +17,7 @@ import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
+import { ReportModal } from "./ReportModal"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -113,6 +115,32 @@ const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   }
 `
 
+const MoreButton = ({ children }: { children: React.ReactChild }) => {
+  const menuRef = useRef<HTMLDivElement>(null)
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      placement="bottom-end"
+      overlay={
+        <div
+          ref={menuRef}
+          style={{ position: "absolute", background: "white" }}
+        >
+          {children}
+        </div>
+      }
+    >
+      <button
+        style={{ border: "none", background: "none" }}
+        aria-label="more actions"
+      >
+        ...
+      </button>
+    </OverlayTrigger>
+  )
+}
+
 export const TestimonyItem = ({
   testimony,
   showControls,
@@ -129,10 +157,19 @@ export const TestimonyItem = ({
     court: testimony.court
   })
 
+  const [isReporting, setIsReporting] = useState(false)
+
   return (
     <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
       <div className={`bg-white border-0 h5 d-flex`}>
         <Author testimony={testimony} className="flex-grow-1" />
+        <MoreButton>
+          <ListGroup>
+            <ListGroup.Item action onClick={() => setIsReporting(true)}>
+              Report
+            </ListGroup.Item>
+          </ListGroup>
+        </MoreButton>
         {isMobile && showControls && (
           <>
             <Internal href={formUrl(testimony.billId, testimony.court)}>
@@ -144,7 +181,6 @@ export const TestimonyItem = ({
                 width={50}
               />
             </Internal>
-
             <Internal href={billLink}>
               <Image
                 className="px-2 align-self-center"
@@ -200,6 +236,22 @@ export const TestimonyItem = ({
           )}
         </Row>
         <ViewAttachment testimony={testimony} />
+        {isReporting && (
+          <ReportModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => {
+              // TODO: connect to API call to add a report from this user
+              console.log({ report })
+            }}
+            reasons={[
+              "Personal Information",
+              "Offensive",
+              "Violent",
+              "Spam",
+              "Phishing"
+            ]}
+          />
+        )}
       </div>
     </div>
   )

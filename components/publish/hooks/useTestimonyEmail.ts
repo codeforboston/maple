@@ -29,7 +29,8 @@ export const useTestimonyEmail = () => {
     intro = `As your constituent, I am writing to let you know that I ${
       positionActions[position!]
     } bill ${billId}: "${bill?.content.Title.trim()}".`,
-    testimonyUrl = siteUrl(maple.testimony({ publishedId: publication!.id })),
+    testimonyUrl =
+      publication && siteUrl(maple.testimony({ publishedId: publication.id })),
     cta = `You can see my full testimony at ${testimonyUrl}`,
     ending = `Thank you for taking the time to read this email.\n\nSincerely,\n${
       profile?.fullName ?? ""

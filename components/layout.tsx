@@ -2,10 +2,10 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithModal, useAuth } from "./auth"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
 import { Container, Nav, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
-import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
 import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
@@ -28,11 +28,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </Head>
       <div className={styles.pageContainer}>
         <TopNav />
+        <AuthModal />
         <div className={styles.content}>{children}</div>
         <PageFooter
           authenticated={authenticated}
           user={user as any}
-          signOut={() => void auth.signOut()}
+          signOut={signOutAndRedirectToHome}
         />
       </div>
     </>
@@ -48,18 +49,6 @@ const TopNav: React.FC = () => {
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      // when a user clicks the sign out button, the navbar is left open.
-      // this fixes that
-      if (user === null) {
-        closeNav()
-      }
-    })
-
-    return unsubscribe
-  }, [])
 
   useEffect(() => setSticky(isMobile), [isMobile])
 
@@ -92,7 +81,7 @@ const TopNav: React.FC = () => {
                     displayName={profile?.displayName}
                   />
                 ) : (
-                  !sticky && <SignInWithModal />
+                  !sticky && <SignInWithButton />
                 )}
               </Nav>
             </div>
@@ -140,12 +129,19 @@ const TopNav: React.FC = () => {
               </Container>
 
               {authenticated && (
-                <NavLink handleClick={() => auth.signOut()}>Sign Out</NavLink>
+                <NavLink
+                  handleClick={() => {
+                    closeNav()
+                    void signOutAndRedirectToHome()
+                  }}
+                >
+                  Sign Out
+                </NavLink>
               )}
             </Nav>
           </Navbar.Collapse>
           {sticky && !authenticated ? (
-            <SignInWithModal className={styles.mobile_nav_auth} />
+            <SignInWithButton className={styles.mobile_nav_auth} />
           ) : null}
         </Container>
       </Navbar>
