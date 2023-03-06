@@ -1,6 +1,15 @@
 import { useSendEmailVerification } from "components/auth/hooks"
 import { User } from "firebase/auth"
-import { useCallback } from "react"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { useCallback, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -8,6 +17,7 @@ import { useAuth } from "../auth"
 import { Alert, Button, Col, Container, Row, Spinner } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { Profile, usePublicProfile, usePublishedTestimonyListing } from "../db"
+import { firestore } from "../firebase"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
@@ -15,6 +25,7 @@ import { ProfileLegislators } from "./ProfileLegislators"
 import {
   Header,
   ProfileDisplayName,
+  OrgIconLarge,
   UserIcon,
   VerifiedBadge
 } from "./StyledEditProfileCompnents"
@@ -37,6 +48,7 @@ const StyledContainer = styled(Container)`
 
   .edit-profile-header {
     flex-direction: column !important;
+    height: auto;
   }
 
   .your-legislators-width {
@@ -75,6 +87,13 @@ const StyledContainer = styled(Container)`
       width: auto;
     }
   }
+`
+
+const StyledImage = styled(Image)`
+  width: 14.77px;
+  height: 12.66px;
+
+  margin-left: 8px;
 `
 
 export function ProfilePage({ id }: { id: string }) {
@@ -127,8 +146,10 @@ export function ProfilePage({ id }: { id: string }) {
               displayName={displayName}
               isUser={isUser}
               isOrganization={isOrganization || false}
-              profileImage={profileImage || "/profile-icon.svg"}
+              profileImage={profileImage || "/profile-org-icon.svg"}
               isMobile={isMobile}
+              uid={user?.uid}
+              orgId={id}
             />
 
             {isUser && !user.emailVerified ? (
@@ -220,72 +241,107 @@ export const ProfileHeader = ({
   isUser,
   isOrganization,
   profileImage,
-  isMobile
+  isMobile,
+  uid,
+  orgId
 }: {
   displayName?: string
   isUser: boolean
   isOrganization: boolean
   profileImage?: string
   isMobile: boolean
+  uid?: string
+  orgId: string
 }) => {
-  const [firstName, lastName] = displayName
-    ? displayName.split(" ")
-    : ["user", "user"]
+  const topicName = `org-${orgId}`
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubscriptions/`
+  )
+  const [queryResult, setQueryResult] = useState("")
+
+  const orgQuery = async () => {
+    const q = query(subscriptionRef, where("topicName", "==", `org-${orgId}`))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      setQueryResult(doc.data().topicName)
+    })
+  }
+
+  useEffect(() => {
+    uid ? orgQuery() : null
+  })
+
+  const handleFollowClick = async () => {
+    await setDoc(doc(subscriptionRef, topicName), {
+      topicName: topicName,
+      uid: uid,
+      orgId: orgId,
+      type: "org"
+    })
+
+    setQueryResult(topicName)
+  }
+
+  const handleUnfollowClick = async () => {
+    await deleteDoc(doc(subscriptionRef, topicName))
+
+    setQueryResult("")
+  }
 
   return (
-    <Header className={`d-flex edit-profile-header`}>
+    <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
       {isOrganization ? (
         <Col xs={"auto"} className={"col-auto"}>
-          <UserIcon className={`col d-none d-sm-flex`} src={profileImage} />
+          <OrgIconLarge className={`col d-none d-sm-flex`} src={profileImage} />
         </Col>
       ) : (
         <Col xs={"auto"} className={"col-auto"}>
           <UserIcon className={`col d-none d-md-flex`} />
         </Col>
       )}
-
-      {displayName ? (
-        <Col xs={"auto"} className={"col-auto"}>
-          <ProfileDisplayName
-            className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
-          >
-            <div
-              className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
-            >
-              {firstName}
-            </div>
-            <div className={`lastName text-capitalize`}>{lastName}</div>
+      <Col>
+        <div>
+          <ProfileDisplayName className={`overflow-hidden`}>
+            {displayName ? `${displayName}` : "Anonymous User"}
           </ProfileDisplayName>
-
-          {isOrganization && (
-            <VerifiedBadge>
-              <div className={"verifiedText"}>verified organization</div>
-            </VerifiedBadge>
+          {isOrganization ? (
+            <Col>
+              <Button
+                className={`btn btn-primary btn-sm py-1 ${
+                  uid ? "" : "visually-hidden"
+                }`}
+                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+              >
+                {queryResult ? "Following" : "Follow"}
+                {queryResult ? (
+                  <StyledImage src="/check-white.svg" alt="checkmark" />
+                ) : null}
+              </Button>
+            </Col>
+          ) : (
+            <></>
           )}
-        </Col>
-      ) : (
-        <ProfileDisplayName
-          className={`align-items-center ${!isMobile ? "d-block" : "d-flex"}`}
-        >
-          <div
-            className={`${!isMobile ? "firstName" : "me-2"} text-capitalize`}
-          >
-            Anonymous
-          </div>
-          <div className={`lastName text-capitalize`}>User</div>
-        </ProfileDisplayName>
-      )}
-      {isUser && <EditProfileButton />}
+        </div>
+      </Col>
+      {isUser && <EditProfileButton isMobile={isMobile} />}
     </Header>
   )
 }
 
-const EditProfileButton = () => {
+const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
   return (
-    <Col className={`d-flex justify-content-end w-100`}>
-      <Internal href="/editprofile" className="view-edit-profile">
-        <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
-      </Internal>
+    <Col
+      className={`d-flex w-100 ${
+        !isMobile ? "justify-content-end" : "justify-content-start"
+      }`}
+    >
+      <div>
+        <Internal href="/editprofile" className="view-edit-profile">
+          <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
+        </Internal>
+      </div>
     </Col>
   )
 }
