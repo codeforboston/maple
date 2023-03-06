@@ -5,13 +5,15 @@
   </head>
 
   <body class="font">
-    <div id="logo" class="logo">
+    <div id="logo" class="logo bg-blue">
       <img src="/nav-logo.svg" alt="Maple Logo" />
     </div>
     <header class="header">
       <div>
-        <h2 class="headline">Here is your {{notificationFrequency}} report!</h2>
-        <p class="subheadline bg-blue center">{{startDate}} - {{endDate}}</p>
+        <h2 class="headline blue">Here is your
+          {{notificationFrequency}}
+          report!</h2>
+        <p class="subheadline blue center">{{startDate}} - {{endDate}}</p>
       </div>
       <img src="/Mail Report.svg" alt="Maple Logo" />
     </header>
@@ -30,7 +32,17 @@
       </div>
     </section>
 
-    <nav>News Feed Button</nav>
+    <nav class="navHeader bg-blue white">
+      <p class="navText">see more at your</p>
+      <button
+        onclick="window.location.href='https://mapletestimony.org/';"
+        class="navButton bg-blue"
+      >
+        <!-- add link to newsfeed page on maple website when available -->
+        <img src="/Newsfeed Icon.svg" alt="Newsfeed Icon" />
+        <p class="navButtonText white">Newsfeed</p>
+      </button>
+    </nav>
 
     <footer>Legal Stuff</footer>
   </body>
@@ -73,4 +85,6 @@
         Refused to apply style from 'http://localhost:6006/functions/src/email/digestEmail.css'
         because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict
         MIME checking is enabled.
+
+    [ ] add link to newsfeed page on maple website when available   
 --}}
