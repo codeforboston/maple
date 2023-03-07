@@ -2,6 +2,7 @@ import { Card as MapleCard } from "components/Card"
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
+import { type } from "os"
 import { ReactEventHandler, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
@@ -19,6 +20,8 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Tab, Tabs } from "./Tabs"
 
+type TestimonyFilter = "All" | "Individuals" | "Organizations"
+
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
@@ -35,6 +38,8 @@ const ViewTestimony = (
     showBillNumber = false,
     className
   } = props
+
+  const [testimonyFilter, setTestimonyFilter] = useState("All")
   const testimony = items.result ?? []
 
   // const [orderBy, setOrderBy] = useState<string>("Most Recent")
@@ -59,6 +64,8 @@ const ViewTestimony = (
     <Tab key="uo" label="Individuals" active={false} value={2} />,
     <Tab key="oo" label="Organizations" active={false} value={3} />
   ]
+  //MARK add filter here. state and filter to mapping! but also... the hook?
+
   const body = (
     <TitledSectionCard className={className}>
       {testimony.length > 0 && (
