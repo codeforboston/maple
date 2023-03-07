@@ -9,19 +9,9 @@ import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 
-export const TabSlider = (props: {
-  width: number
-  position: number
-  resizing: boolean
-}) => {
-  const { width, position, resizing } = props
-  return (
-    <TabSliderStyle
-      width={width ?? 200}
-      position={position}
-      resizing={resizing}
-    />
-  )
+export const TabSlider = (props: { width: number; position: number }) => {
+  const { width, position } = props
+  return <TabSliderStyle width={width ?? 200} position={position} />
 }
 
 export const TabSliderContainer = (props: { children?: JSX.Element }) => {
@@ -55,31 +45,13 @@ export const Tabs = (props: {
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
   const [resizing, setResizing] = useState(false)
   const [sliderPos, setSliderPos] = useState(0)
-  const sliderPositionOffset = 16
 
   useEffect(() => {
-    if (
-      tabRefs.current[selectedTab - 1] !== null &&
-      tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
-    ) {
-      setSliderWidth(
-        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().width
-      )
-      setSliderPos(
-        tabRefs.current[selectedTab - 1]!.getBoundingClientRect().x -
-          sliderPositionOffset
-      )
-      resizing && setResizing(false)
+    const selected = tabRefs.current[selectedTab - 1]
+    if (selected) {
+      setSliderWidth(selected.clientWidth)
+      setSliderPos(selected.offsetLeft)
     }
-  }, [selectedTab, viewportWidth])
-
-  useEffect(() => {
-    function handleResize() {
-      setViewportWidth(window.innerWidth)
-      setResizing(true)
-    }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const tabs = childTabs?.map((child, index) => {
@@ -91,12 +63,10 @@ export const Tabs = (props: {
     }
     return (
       <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
-        <React.Fragment>
-          {React.cloneElement(child, {
-            active: child.props.value === selectedTab,
-            onClick: handleClick
-          })}
-        </React.Fragment>
+        {React.cloneElement(child, {
+          active: child.props.value === selectedTab,
+          onClick: handleClick
+        })}
       </div>
     )
   })
@@ -105,11 +75,7 @@ export const Tabs = (props: {
     <ComponentContainer ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
-        <TabSlider
-          width={sliderWidth}
-          position={sliderPos}
-          resizing={resizing}
-        />
+        <TabSlider width={sliderWidth} position={sliderPos} />
       </TabSliderContainer>
     </ComponentContainer>
   )
@@ -125,7 +91,7 @@ const TabsContainer = styled.div`
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
-  margin: 1rem;
+  padding: 1rem;
   background: none;
   color: ${props => (props.active ? "#C71E32" : "black")};
   border: none;
@@ -142,12 +108,8 @@ const TabSliderContainerStyle = styled.div`
   height: 1px;
   position: absolute;
 `
-export const TabSliderStyle = styled.div<{
-  width: number
-  position: number
-  resizing: boolean
-}>`
-  transition: all ${props => (props.resizing ? "0s" : "0.5s")};
+export const TabSliderStyle = styled.div<{ width: number; position: number }>`
+  transition: all 0.4s;
   width: ${props => `${props.width}px`};
   height: 5px;
   background-color: #c71e32;

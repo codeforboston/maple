@@ -1,15 +1,15 @@
+import { Card as MapleCard } from "components/Card"
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
-import { useState, ReactEventHandler } from "react"
+import { ReactEventHandler, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, Row, Dropdown } from "../bootstrap"
+import { Button, Dropdown, Form } from "../bootstrap"
 import {
   Testimony,
   useBill,
-  profileImageUrl,
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
@@ -17,11 +17,7 @@ import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
-import { Card as MapleCard } from "components/Card"
-import { Tabs, Tab } from "./Tabs"
-import { UserFilterDropDown } from "./UserFilterDropdown"
-import { current } from "@reduxjs/toolkit"
-import { RelevantSortConnector } from "instantsearch.js/es/connectors/relevant-sort/connectRelevantSort"
+import { Tab, Tabs } from "./Tabs"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -359,7 +355,7 @@ const StyledDropdown = styled(Dropdown.Toggle)`
     border-left: none;
     font-size: 30px;
   }
-  &: .order-filter {
+  & .order-filter {
     color: red !important;
     background-color: red !important;
   }
