@@ -65,8 +65,8 @@ export const Hearing: FC<BillProps> = ({ bill, className }) => {
 }
 
 export const Sponsors: FC<BillProps> = ({ bill, className }) => {
-  const primary = bill.content.PrimarySponsor
-  const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary.Id)
+  const primary = bill.content?.PrimarySponsor
+  const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const more = cosponsors.length > 2
 
   return (
@@ -81,19 +81,21 @@ export const Sponsors: FC<BillProps> = ({ bill, className }) => {
             ${more ? styles.borderBottom : ""}
           `}
         >
-          <LabeledIcon
-            idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
-            mainText="Lead Sponsor"
-            subText={
-              <External
-                href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
-              >
-                {primary.Name}
-              </External>
-            }
-          />
+          {primary && (
+            <LabeledIcon
+              idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
+              mainText="Lead Sponsor"
+              subText={
+                <External
+                  href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
+                >
+                  {primary.Name}
+                </External>
+              }
+            />
+          )}
 
-          {bill.content.Cosponsors.filter(s => s.Id !== primary.Id)
+          {bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
             .slice(0, 2)
             .map(s => (
               <LabeledIcon

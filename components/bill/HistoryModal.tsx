@@ -6,9 +6,9 @@ import { BillProps } from "./types"
 
 export const HistoryModal = ({ bill }: BillProps) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
-
   const handleShowBillHistory = () => setShowBillHistory(true)
   const handleCloseBillHistory = () => setShowBillHistory(false)
+
   return (
     <>
       <Button variant="primary" className="m-1" onClick={handleShowBillHistory}>

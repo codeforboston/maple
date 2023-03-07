@@ -1,3 +1,5 @@
+import { authStepChanged } from "components/auth/redux"
+import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
@@ -33,6 +35,7 @@ function MapleContainer() {
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="light"
+            href="https://www.instagram.com/mapletestimony/?hl=en"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
           >
             <svg
@@ -48,6 +51,7 @@ function MapleContainer() {
           <Button
             variant="light"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            href="https://twitter.com/MapleTestimony"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -98,6 +102,17 @@ const ResourcesLinks = () => (
   </>
 )
 
+const BrowseLinks = () => (
+  <>
+    {/* <NavLink className={styles.footerLink} href="#testimony">
+      Testimonies
+    </NavLink> */}
+    <NavLink className={styles.footerLink} href="/bills">
+      Policies
+    </NavLink>
+  </>
+)
+
 const OurTeamLinks = () => (
   <>
     <ExternalNavLink
@@ -112,10 +127,23 @@ const OurTeamLinks = () => (
     >
       Code for Boston
     </ExternalNavLink>
+    <ExternalNavLink
+      href="https://www.bc.edu/bc-web/schools/law"
+      className={styles.footerLink}
+    >
+      Boston College Law School
+    </ExternalNavLink>
+    <ExternalNavLink
+      href="https://cyber.harvard.edu/"
+      className={styles.footerLink}
+    >
+      Harvard Berkman Klein Center
+    </ExternalNavLink>
   </>
 )
 
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
+  const dispatch = useAppDispatch()
   return authenticated ? (
     <>
       <NavLink
@@ -131,16 +159,23 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
         Sign Out
       </NavLink>
     </>
-  ) : null
+  ) : (
+    <NavLink
+      handleClick={() => dispatch(authStepChanged("start"))}
+      other={{ className: `${styles.footerLink}` }}
+    >
+      Sign In
+    </NavLink>
+  )
 }
 
 const LearnLinks = () => (
   <>
     <NavLink
-      href="/learn/basics-of-testimony"
+      href="/learn/writing-effective-testimony"
       other={{ className: `${styles.footerLink}` }}
     >
-      Testimony Explained
+      Writing Effective Testimony
     </NavLink>
     <NavLink
       href="/learn/communicating-with-legislators"
@@ -184,14 +219,11 @@ const PageFooter = (props: PageFooterProps) => {
         <Navbar variant="dark" expand="lg" className="d-md-none">
           <Nav>
             <CustomDropdown title="Browse">
-              <NavLink href="/bills">Bills</NavLink>
+              <BrowseLinks />
             </CustomDropdown>
-
-            {props.authenticated && (
-              <CustomDropdown title="Account">
-                <AccountLinks {...props} />
-              </CustomDropdown>
-            )}
+            <CustomDropdown title="Account">
+              <AccountLinks {...props} />
+            </CustomDropdown>
 
             <CustomDropdown title="Learn">
               <LearnLinks />
@@ -222,18 +254,9 @@ const PageFooter = (props: PageFooterProps) => {
         >
           <Col style={{ alignContent: "flex-start" }}>
             <TextHeader>Browse</TextHeader>
-            <NavLink
-              href="/bills"
-              other={{ className: `${styles.footerLink}` }}
-            >
-              Bills
-            </NavLink>
-            {props.authenticated && (
-              <>
-                <TextHeader>Account</TextHeader>
-                <AccountLinks {...props} />
-              </>
-            )}
+            <BrowseLinks />
+            <TextHeader>Account</TextHeader>
+            <AccountLinks {...props} />
           </Col>
           <Col>
             <TextHeader>Learn</TextHeader>
@@ -260,6 +283,30 @@ const PageFooter = (props: PageFooterProps) => {
         >
           {<MapleContainer />}
         </Col>
+        <Row
+          style={{
+            color: "rgba(255, 255, 255, 0.55)",
+            margin: "0 0 0 0.05em"
+          }}
+        >
+          <Col
+            className="col-auto"
+            style={{ marginTop: "0.5em", padding: "0 2.5em 0 0" }}
+          >
+            <p>
+              MAPLE is an independent project, not affiliated with the
+              Massachusetts legislature
+            </p>
+          </Col>
+          <Col className="col">
+            <NavLink
+              href="/policies"
+              other={{ className: `${styles.footerLink}` }}
+            >
+              Our Policies and Terms of Service
+            </NavLink>
+          </Col>
+        </Row>
         <Col
           className="d-xs-flex d-md-none"
           style={{
