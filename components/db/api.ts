@@ -128,7 +128,7 @@ export class DbService {
     const result = await this.getDocs(
       query(
         collectionGroup(firestore, "publishedTestimony"), 
-        // where("flagged", "==" , true)
+        where("flagged", "==" , true)
       )
     )
     const testimonies = result.docs

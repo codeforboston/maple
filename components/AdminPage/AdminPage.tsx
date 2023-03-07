@@ -1,5 +1,7 @@
 
-export default function AdminPage ({ admindata }: any) {
+import { AdminData } from "components/db/admin"
+
+export default function AdminPage ({admindata}: any ) {
 
     return(
         <div>

@@ -1,4 +1,5 @@
 import { requireAuth } from "../../components/auth"
+import { useAuth } from "../../components/auth"
 import { dbService } from "components/db/api"
 import { AdminData } from "components/db/admin"
 import { createPage } from "../../components/page"
@@ -13,6 +14,7 @@ const Query = z.object({court: z.coerce.number(), billId: z.string({})})
 export default createPage<{ admindata: AdminData}>({
   title: "Admin View",
   Page: ({ admindata }) => {
+    const { authenticated, user} = useAuth()
     return <AdminPage admindata = {admindata}/>
   }
 })
@@ -38,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
       const flagged_testimonies = await dbService().getFlaggedTestionies()
       if (!flagged_testimonies) return { notFound: true }
-      return { props: { admindata: JSON.stringify(flagged_testimonies)} }
+      return { props: { admindata: JSON.parse(JSON.stringify(flagged_testimonies))} }
 
     } else {
       console.log("error")
