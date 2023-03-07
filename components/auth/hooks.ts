@@ -49,6 +49,7 @@ export type CreateUserWithEmailAndPasswordData = {
   fullName: string
   nickname: string
   password: string
+  requestingForOrg: boolean
   confirmedPassword: string
 }
 
@@ -58,6 +59,7 @@ export function useCreateUserWithEmailAndPassword() {
       email,
       fullName,
       nickname,
+      requestingForOrg,
       password
     }: CreateUserWithEmailAndPasswordData) => {
       const credentials = await createUserWithEmailAndPassword(
@@ -71,6 +73,7 @@ export function useCreateUserWithEmailAndPassword() {
           displayName: nickname,
           fullName,
           role: "user",
+          requestingToBeOrg: requestingForOrg,
           public: false
         }),
         sendEmailVerification(credentials.user)

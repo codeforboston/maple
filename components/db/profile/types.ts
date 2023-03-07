@@ -25,4 +25,5 @@ export type Profile = {
   organization?: boolean
   profileImage?: string
   billsFollowing?: string[]
+  requestingToBeOrg?: boolean
 }

@@ -1,8 +1,10 @@
 import SignInModal from "./SignInModal"
-import SignUpModal from "./SignUpModal"
+import UserSignUpModal from "./UserSignUpModal"
+import OrgSignUpModal from "./OrgSignUpModal"
 import StartModal from "./StartModal"
 import ForgotPasswordModal from "./ForgotPasswordModal"
 import VerifyEmailModal from "./VerifyEmailModal"
+import ProfileTypeModal from "./ProfileTypeModal"
 import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import { useAppDispatch } from "components/hooks"
 
@@ -19,15 +21,26 @@ export default function AuthModal() {
         show={currentModal === "start"}
         onHide={close}
         onSignInClick={() => setCurrentModal("signIn")}
-        onSignUpClick={() => setCurrentModal("signUp")}
+        onSignUpClick={() => setCurrentModal("chooseProfileType")}
+      />
+      <ProfileTypeModal 
+        show={currentModal === "chooseProfileType"}
+        onHide={close}
+        onIndividualUserClick={() => setCurrentModal("userSignUp")}
+        onOrgUserClick={() => setCurrentModal("orgSignUp")} 
       />
       <SignInModal
         show={currentModal === "signIn"}
         onHide={close}
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
-      <SignUpModal
-        show={currentModal === "signUp"}
+      <UserSignUpModal
+        show={currentModal === "userSignUp"}
+        onHide={close}
+        onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
+      />
+      <OrgSignUpModal 
+        show={currentModal === "orgSignUp"}
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />

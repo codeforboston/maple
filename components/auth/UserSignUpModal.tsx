@@ -14,7 +14,7 @@ import {
 import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
 
-export default function SignUpModal({
+export default function UserSignUpModal({
   show,
   onHide,
   onSuccessfulSubmit
@@ -95,6 +95,13 @@ export default function SignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
+              <Form.Control 
+                type="Checkbox"
+                id="requestingForOrg"
+                checked={false}
+                readOnly={true}
+                style={{display: 'none'}}
+               />
               <Stack gap={3} className="mb-4">
                 <Input
                   label="Email"
