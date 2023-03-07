@@ -6,7 +6,7 @@ We are creating a new web platform called MAPLE (the Massachusetts Platform for 
 
 ## Essentials
 
-Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#maple-testimony` channel. Ask to join the Zenhub and Zeplin projects.
+Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#maple-testimony` channel. Ask to join the Zenhub project and to be added as a collaborator on Github, and provide your Github username.
 
 Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-boston/events/) and join our group.
 
@@ -17,7 +17,7 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 ## Links
 
 - [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
-- [Figma Designs](https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE), where UI designs are organized
+- [Figma Designs](<https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?t=N7wquH4vslGiB1tK-0>), where UI designs are organized
 - [Chromatic Storybook Library](https://www.chromatic.com/library?appId=634f3926f2a0d0f0195eefd7&branch=main), where our React UI component library is documented.
 - [Maple Documentation on the Wiki](https://github.com/codeforboston/maple/wiki)
 

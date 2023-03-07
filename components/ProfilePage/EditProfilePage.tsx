@@ -124,10 +124,7 @@ export function EditProfileForm({
             href={`javascript:void(0)`}
           >
             <GearButton
-              /* remove invisible className for testing and/or after Soft Launch when we're
-                 ready to show Email related element to users
-               */
-              className={`btn btn-lg btn-outline-secondary me-4 py-1 invisible`}
+              className={`btn btn-lg btn-outline-secondary me-4 py-1`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >

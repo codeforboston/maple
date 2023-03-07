@@ -7,7 +7,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
 }))`
   display: flex;
-  justify-content: space-around;
+
   height: 2.5em;
 
   .nav-item {
@@ -86,10 +86,12 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
   className: `${props.className}`
 }))`
   margin: 0;
+  max-height: 108px;
   font-family: Nunito;
   font-weight: 500;
-  letter-spacing: -0.63px;
-  text-align: justify;
+  font-size: 39px;
+  letter-spacing: -0.015em;
+  text-align: left;
   color: #000;
 
   .firstName {
@@ -103,16 +105,43 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: props.src || "/profile-icon.svg",
+  src: props.src || "/profile-individual-icon.svg",
   className: props.className
 }))`
   height: 8rem;
   width: 8rem;
   margin: 1rem;
   border-radius: 50%;
-  background-color: var(--bs-blue);
+  background-color: var(--bs-white);
   flex: 0;
 `
+
+export const OrgIconLarge = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 8rem;
+  width: 8rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
+export const OrgIconSmall = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 3rem;
+  width: 3rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
 export const VerifiedBadge = styled.div.attrs(props => ({
   className: props.className
 }))`
