@@ -18,14 +18,14 @@
       <img src="/Mail Report.svg" alt="Maple Logo" />
     </header>
 
-    <section>
+    <section class="sectionBill">
       <div class="sectionHeader">
         <h6 class="sectionTitle">Bills</h6>
         <div class="sectionLine"></div>
       </div>
     </section>
 
-    <section>
+    <section class="sectionOrg">
       <div class="sectionHeader">
         <h6 class="sectionTitle">Organizations</h6>
         <div class="sectionLine"></div>
@@ -44,7 +44,19 @@
       </button>
     </nav>
 
-    <footer>Legal Stuff</footer>
+    <footer class="footer">
+      <div class="footerLine"></div>
+      <p class="footerContent">This is an automatically-generated email from
+        MAPLE that you opted into from your settings.
+        <br />
+        <br />
+        <!-- Unsubscribe -> add link to User's profile - notifications model -->
+        <!--   or backend function that handles Unsubscribe -->
+        <!-- Terms & Cond -> add link to appropriate Maple subpage -->
+        <!-- Privacy and Comm -> add link to appropriate Maple subpage -->
+        Unsubscribe | Terms & Conditions | Privacy and Community Guidelines
+      </p>
+    </footer>
   </body>
 </html>
 
@@ -86,5 +98,10 @@
         because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict
         MIME checking is enabled.
 
-    [ ] add link to newsfeed page on maple website when available   
+    [ ] add link to newsfeed page on maple website when available
+
+    [ ] add links to footer section
+      [ ]  Unsubscribe
+      [ ]  Terms & Cond
+      [ ]  Privacy and Comm
 --}}

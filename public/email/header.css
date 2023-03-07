@@ -38,6 +38,28 @@
   margin: 0px;
 }
 
+/* major section types start*/
+
+.sectionBill, .sectionOrg, .footer {
+  margin-left: 47.5px;
+  margin-right: 47.5px;
+}
+
+.sectionBill {
+  margin-bottom: 56px;
+}
+
+.sectionOrg {
+  margin-bottom: 32px;
+}
+
+.footer {
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+/* major section types end*/
+
 .sectionHeader, .navHeader {
   display: flex;
   justify-content: center;
@@ -51,7 +73,6 @@
 
   color: #C71E32;
   margin-right: 20px;
-  margin-left: 47.5px;
   margin-bottom: 0px;
 }
 
@@ -60,7 +81,6 @@
   height: 0px;
   flex-grow: 1;
   min-width: max-content;
-  margin-right: 47.5px;
 }
 
 .navText {
@@ -95,6 +115,25 @@
   letter-spacing: 0.015em;
 
   margin-bottom: 0px;
+}
+
+.footerLine {
+  border: 1px solid #979797;
+  height: 0px;
+  flex-grow: 1;
+  min-width: max-content;
+}
+
+.footerContent {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 125%;
+  letter-spacing: 0.03em; 
+  color: #000000;
+
+  display: inline-block;
+  margin-top: 36px;
+  margin-bottom: 36px;
 }
 
 /* modifiers */
