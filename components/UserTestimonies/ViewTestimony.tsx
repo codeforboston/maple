@@ -57,7 +57,7 @@ const ViewTestimony = (
 
   useEffect(() => {
     setTestimony(GetFilteredList() ?? [])
-  }, [testimonyFilter])
+  }, [testimonyFilter, items])
 
   const [activeTab, setActiveTab] = useState(1)
 
@@ -93,7 +93,6 @@ const ViewTestimony = (
       action={() => handleFilter("Organizations")}
     />
   ]
-  //MARK add filter here. state and filter to mapping! but also... the hook?
 
   const body = (
     <TitledSectionCard className={className}>
