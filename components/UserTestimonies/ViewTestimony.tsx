@@ -19,6 +19,18 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { ReportModal } from "./ReportModal"
 
+import { Card as MapleCard } from "../Card"
+import { Card as BootstrapCard } from "react-bootstrap"
+
+const Container = styled.div`
+  font-family: Nunito;
+`
+const Head = styled(BootstrapCard.Header)`
+  background-color: var(--bs-blue);
+  color: white;
+  font-size: 22px;
+`
+
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
@@ -28,41 +40,38 @@ const ViewTestimony = (
   }
 ) => {
   const {
-    pagination,
     items,
     setFilter,
     showControls = false,
-    showBillNumber = false,
-    className
+    showBillNumber = false
   } = props
   const testimony = items.result ?? []
 
-  const [orderBy, setOrderBy] = useState<string>()
-
   return (
-    <TitledSectionCard
-      title={"Testimony"}
-      className={className}
-      // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
-    >
-      {testimony.length > 0 ? (
-        testimony.map(t => (
-          <TestimonyItem
-            key={t.authorUid + t.billId}
-            testimony={t}
-            showControls={showControls}
-            showBillNumber={showBillNumber}
-          />
-        ))
-      ) : (
-        <NoResults>
-          There is no testimony here. <br />
-          <b>Be the first and add one!</b>
-        </NoResults>
-      )}
-      <div className="p-3" />
-      {/* <PaginationButtons pagination={pagination} /> */}
-    </TitledSectionCard>
+    <Container>
+      <MapleCard
+        headerElement={<Head>Testimony</Head>}
+        body={
+          <BootstrapCard.Body>
+            {testimony.length > 0 ? (
+              testimony.map(t => (
+                <TestimonyItem
+                  key={t.authorUid + t.billId}
+                  testimony={t}
+                  showControls={showControls}
+                  showBillNumber={showBillNumber}
+                />
+              ))
+            ) : (
+              <NoResults>
+                There is no testimony here. <br />
+                <b>Be the first and add one!</b>
+              </NoResults>
+            )}
+          </BootstrapCard.Body>
+        }
+      />
+    </Container>
   )
 }
 
