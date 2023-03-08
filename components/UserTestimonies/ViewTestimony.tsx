@@ -39,7 +39,7 @@ const ViewTestimony = (
     className
   } = props
 
-  const [testimonyFilter, setTestimonyFilter] = useState("All")
+  const [testimonyFilter, setTestimonyFilter] = useState<TestimonyFilter>("All")
 
   const GetFilteredList = () => {
     switch (testimonyFilter) {
