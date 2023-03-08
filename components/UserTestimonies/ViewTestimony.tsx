@@ -3,7 +3,7 @@ import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
 import { type } from "os"
-import { ReactEventHandler, useState } from "react"
+import { ReactEventHandler, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -39,29 +39,25 @@ const ViewTestimony = (
     showBillNumber = false,
     className
   } = props
-
   const [testimonyFilter, setTestimonyFilter] = useState<TestimonyFilter>("All")
+  const [testimony, setTestimony] = useState<Testimony[]>([])
+
   const GetFilteredList = () => {
     switch (testimonyFilter) {
       case "Organizations":
-        return items.result?.filter(
-          item => !("authorType" in item) || item.authorType === "Organization"
-        )
+        return items.result?.filter(item => item.authorType === "Organization")
 
       case "Individuals":
-        return items.result?.filter(
-          item => !("authorType" in item) || item.authorType !== "Organization"
-        )
+        return items.result?.filter(item => item.authorType !== "Organization")
 
       default:
         return items.result
     }
   }
 
-  const [testimony, setTestimony] = useState(GetFilteredList() ?? [])
-
-  // const [orderBy, setOrderBy] = useState<string>("Most Recent")
-  // const [shown, setShown] = useState<string>("All Published Testimonies")
+  useEffect(() => {
+    setTestimony(GetFilteredList() ?? [])
+  }, [testimonyFilter])
 
   const [activeTab, setActiveTab] = useState(1)
 
@@ -69,18 +65,10 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const TryMethod = (string: TestimonyFilter) => {
-    setTestimonyFilter(string)
-    console.log(string)
+  const handleFilter = (filter: TestimonyFilter) => {
+    setTestimonyFilter(filter)
+    console.log(testimonyFilter)
   }
-
-  // const handleOrderClick = (e: React.MouseEvent<Element>) => {
-  //   setOrderBy((e.currentTarget as HTMLElement).innerText)
-  // }
-
-  // const handleShownClick = (e: React.MouseEvent<Element>) => {
-  //   setShown((e.currentTarget as HTMLElement).innerText)
-  // }
 
   const tabs = [
     <Tab
@@ -88,21 +76,21 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => TryMethod("All")}
+      action={() => handleFilter("All")}
     />,
     <Tab
       key="uo"
       label="Individuals"
       active={false}
       value={2}
-      action={() => TryMethod("Individuals")}
+      action={() => handleFilter("Individuals")}
     />,
     <Tab
       key="oo"
       label="Organizations"
       active={false}
       value={3}
-      action={() => TryMethod("Organizations")}
+      action={() => handleFilter("Organizations")}
     />
   ]
   //MARK add filter here. state and filter to mapping! but also... the hook?
