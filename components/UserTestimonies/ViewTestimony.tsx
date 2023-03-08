@@ -78,9 +78,27 @@ const ViewTestimony = (
   // }
 
   const tabs = [
-    <Tab key="at" label="All Testimonies" active={false} value={1} />,
-    <Tab key="uo" label="Individuals" active={false} value={2} />,
-    <Tab key="oo" label="Organizations" active={false} value={3} />
+    <Tab
+      key="at"
+      label="All Testimonies"
+      active={false}
+      value={1}
+      action={"All"}
+    />,
+    <Tab
+      key="uo"
+      label="Individuals"
+      active={false}
+      value={2}
+      action={"Individuals"}
+    />,
+    <Tab
+      key="oo"
+      label="Organizations"
+      active={false}
+      value={3}
+      action={"Organizations"}
+    />
   ]
   //MARK add filter here. state and filter to mapping! but also... the hook?
 

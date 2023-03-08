@@ -23,6 +23,7 @@ export const Tab = (props: {
   label: string
   value: number
   active: boolean
+  action: string
   onClick?: MouseEventHandler
 }) => {
   const { label, onClick, active } = props
@@ -52,7 +53,7 @@ export const Tabs = (props: {
       setSliderWidth(selected.clientWidth)
       setSliderPos(selected.offsetLeft)
     }
-  }, [])
+  }, [selectedTab])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
