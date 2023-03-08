@@ -40,7 +40,25 @@ const ViewTestimony = (
   } = props
 
   const [testimonyFilter, setTestimonyFilter] = useState("All")
-  const testimony = items.result ?? []
+
+  const GetFilteredList = () => {
+    switch (testimonyFilter) {
+      case "Organizations":
+        return items.result?.filter(
+          item => !("authorType" in item) || item.authorType === "Organization"
+        )
+
+      case "Individuals":
+        return items.result?.filter(
+          item => !("authorType" in item) || item.authorType !== "Organization"
+        )
+
+      default:
+        return items.result
+    }
+  }
+
+  const testimony = GetFilteredList() ?? []
 
   // const [orderBy, setOrderBy] = useState<string>("Most Recent")
   // const [shown, setShown] = useState<string>("All Published Testimonies")
