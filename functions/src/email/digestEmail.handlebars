@@ -18,32 +18,83 @@
       <img src="/Mail Report.svg" alt="Maple Logo" />
     </header>
 
-    <section class="sectionBill">
+    <section class="Bills">
       <div class="sectionHeader">
         <h6 class="sectionTitle">Bills</h6>
         <div class="sectionLine"></div>
       </div>
+      <div class="sectionBills">
+        <!-- individual Bills to be iterated over by the backend in a partial template -->
+        <article class="bill">
+          <div class="billTitle">
+            {{Bill1.Title}}
+          </div>
+          <div class="billSubtitle">
+            {{Bill1.Subtitle}}
+          </div>
+          <div class="billContent">
+            grid counters
+          </div>
+        </article>
+
+        <article class="bill">
+          <div class="billTitle">
+            {{Bill2.Title}}
+          </div>
+          <div class="billSubtitle">
+            {{Bill2.Subtitle}}
+          </div>
+          <div class="billContent">
+            grid counters
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="sectionOrg">
+    <section class="Orgs">
       <div class="sectionHeader">
         <h6 class="sectionTitle">Organizations</h6>
         <div class="sectionLine"></div>
+      </div>
+      <div class="sectionOrgs">
+        <!-- individual Orgs to be iterated over by the backend in a partial template -->
+        <article class="org">
+          <div class="orgTitle">
+            {{Org1.Title}}
+          </div>
+          <div class="orgContent">
+            grid stuff
+          </div>
+        </article>
+
+        <article class="org">
+          <div class="orgTitle">
+            {{Org2.Title}}
+          </div>
+          <div class="orgContent">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+          </div>
+        </article>
       </div>
     </section>
 
     <nav class="navHeader bg-blue white">
       <p class="navText">see more at your</p>
+
+      <!-- change link to newsfeed page on maple website when available -->
       <button
         onclick="window.location.href='https://mapletestimony.org/';"
         class="navButton bg-blue"
       >
-        <!-- add link to newsfeed page on maple website when available -->
         <img src="/Newsfeed Icon.svg" alt="Newsfeed Icon" />
         <p class="navButtonText white">Newsfeed</p>
       </button>
     </nav>
-
     <footer class="footer">
       <div class="footerLine"></div>
       <p class="footerContent">This is an automatically-generated email from

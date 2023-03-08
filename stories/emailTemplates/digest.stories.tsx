@@ -66,6 +66,23 @@ DigestEmail.args = {
   context: {
     notificationFrequency: "weekly",
     startDate: "2/1/2023",
-    endDate: "2/7/2023"
+    endDate: "2/7/2023",
+    BillTitle2: "H.98",
+    BillSubtitle2: "An Act to further govt. transparency",
+    Bill1: {
+      Title: "H.1289",
+      Subtitle:
+        "An Act to protect the civil rights and safety of all Massachusetts residents"
+    },
+    Bill2: {
+      Title: "H.98",
+      Subtitle: "An Act to further govt. transparency"
+    },
+    Org1: {
+      Title: "Boston’s Teacher Union"
+    },
+    Org2: {
+      Title: "Moms for Liberty"
+    }
   }
 }

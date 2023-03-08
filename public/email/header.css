@@ -40,17 +40,17 @@
 
 /* major section types start*/
 
-.sectionBill, .sectionOrg, .footer {
+.Bills, .Orgs, .footer {
   margin-left: 47.5px;
   margin-right: 47.5px;
 }
 
-.sectionBill {
-  margin-bottom: 56px;
+.Bills {
+  padding-bottom: 20px;
 }
 
-.sectionOrg {
-  margin-bottom: 32px;
+.Orgs {
+  padding-bottom: 12px;
 }
 
 .footer {
@@ -64,6 +64,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.sectionHeader {
+  margin-bottom: 20px;
 }
 
 .sectionTitle {
@@ -81,6 +85,89 @@
   height: 0px;
   flex-grow: 1;
   min-width: max-content;
+}
+
+.sectionBills {
+
+}
+
+.bill {
+
+}
+
+.billTitle {
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 125%;
+  text-decoration-line: underline;
+  
+  color: #000000;
+}
+
+.billSubtitle {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 125%;  
+  letter-spacing: 0.03em;
+   
+  color: #000000;
+}
+
+.billContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 36px;
+  gap: 31px;
+
+  background: #EAE7E7;
+  border-radius: 250px;
+
+  margin-bottom: 36px;
+}
+
+.sectionOrgs {
+
+}
+
+.org {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0px 26px 24px;
+  gap: 4px;
+  
+  background: #EAE7E7;
+  border-radius: 12px;
+
+  margin-bottom: 20px;
+}
+
+.orgTitle {
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 125%;
+  
+  color: #000000;
+
+  margin-right: auto;
+}
+
+.orgContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  margin-right: auto;
+}
+
+.orgTestimonyCount {
+
+}
+
+.orgTestimonyTitle {
+  
 }
 
 .navText {
