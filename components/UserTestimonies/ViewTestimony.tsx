@@ -7,6 +7,7 @@ import { ReactEventHandler, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
+import { string } from "yargs"
 import { Button, Dropdown, Form } from "../bootstrap"
 import {
   Testimony,
@@ -40,7 +41,6 @@ const ViewTestimony = (
   } = props
 
   const [testimonyFilter, setTestimonyFilter] = useState<TestimonyFilter>("All")
-
   const GetFilteredList = () => {
     switch (testimonyFilter) {
       case "Organizations":
@@ -58,7 +58,7 @@ const ViewTestimony = (
     }
   }
 
-  const testimony = GetFilteredList() ?? []
+  const [testimony, setTestimony] = useState(GetFilteredList() ?? [])
 
   // const [orderBy, setOrderBy] = useState<string>("Most Recent")
   // const [shown, setShown] = useState<string>("All Published Testimonies")
@@ -67,6 +67,11 @@ const ViewTestimony = (
 
   const handleTabClick = (e: Event, value: number) => {
     setActiveTab(value)
+  }
+
+  const TryMethod = (string: TestimonyFilter) => {
+    setTestimonyFilter(string)
+    console.log(string)
   }
 
   // const handleOrderClick = (e: React.MouseEvent<Element>) => {
@@ -83,34 +88,32 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={"All"}
+      action={() => TryMethod("All")}
     />,
     <Tab
       key="uo"
       label="Individuals"
       active={false}
       value={2}
-      action={"Individuals"}
+      action={() => TryMethod("Individuals")}
     />,
     <Tab
       key="oo"
       label="Organizations"
       active={false}
       value={3}
-      action={"Organizations"}
+      action={() => TryMethod("Organizations")}
     />
   ]
   //MARK add filter here. state and filter to mapping! but also... the hook?
 
   const body = (
     <TitledSectionCard className={className}>
-      {testimony.length > 0 && (
-        <Tabs
-          childTabs={tabs}
-          onChange={handleTabClick}
-          selectedTab={activeTab}
-        ></Tabs>
-      )}
+      <Tabs
+        childTabs={tabs}
+        onChange={handleTabClick}
+        selectedTab={activeTab}
+      ></Tabs>
       {/* <DropDownsContainerStyle>
         <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
         <OrderFilterDropDownMenu

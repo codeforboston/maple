@@ -23,7 +23,7 @@ export const Tab = (props: {
   label: string
   value: number
   active: boolean
-  action: string
+  action: () => void
   onClick?: MouseEventHandler
 }) => {
   const { label, onClick, active } = props
@@ -60,6 +60,7 @@ export const Tabs = (props: {
       if (child.props.value !== selectedTab) {
         onChange(e, child.props.value)
         setSliderWidth(child.props.width)
+        child.props.action()
       }
     }
     return (
