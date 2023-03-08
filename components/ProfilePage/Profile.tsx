@@ -1,4 +1,5 @@
 import { useSendEmailVerification } from "components/auth/hooks"
+import { Card as MapleCard } from "components/Card"
 import { User } from "firebase/auth"
 import {
   collection,
@@ -171,7 +172,7 @@ export function ProfilePage({ id }: { id: string }) {
               )}
             </Row>
 
-            <Row>
+            <Row className={"mb-4"}>
               <Col xs={12}>
                 <ViewTestimony
                   {...testimony}
@@ -200,14 +201,17 @@ export const ProfileAboutSection = ({
     profile?.social ?? {}
 
   return (
-    <TitledSectionCard
-      className={`${className} h-100`}
-      title={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
-      bug={<Socials twit={twitter} linkedIn={linkedIn} />}
-      footer={<></>}
-    >
-      <div className="mx-5 my-2">{profile?.about ?? "State your purpose"}</div>
-    </TitledSectionCard>
+    <MapleCard
+      header={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
+      inHeaderElement={<Socials twit={twitter} linkedIn={linkedIn} />}
+      className={`h-100`}
+      body={
+        <div className="mx-5 my-2 h-100">
+          {" "}
+          {profile?.about ?? "State your purpose"}{" "}
+        </div>
+      }
+    ></MapleCard>
   )
 }
 
