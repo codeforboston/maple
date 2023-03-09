@@ -12,7 +12,8 @@
       <div>
         <h2 class="headline blue">Here is your
           {{notificationFrequency}}
-          report!</h2>
+          report!
+        </h2>
         <p class="subheadline blue center">{{startDate}} - {{endDate}}</p>
       </div>
       <img src="/Mail Report.svg" alt="Maple Logo" />
@@ -63,7 +64,24 @@
             {{Org1.Title}}
           </div>
           <div class="orgContent">
-            grid stuff
+            <div class="orgCounterBox">
+              <div class="orgCounterNum">{{Org1.Counter}}</div>
+              <div class="orgCounterTitle">New Testimonies</div>
+            </div>
+            <ul class="orgList">
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org1.Item1}}
+                </div>
+                <img src="/thumbs-endorse.svg" alt="Endorse" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org1.Item2}}
+                </div>
+                <img src="/thumbs-neutral.svg" alt="Neutral" />
+              </li>
+            </ul>
           </div>
         </article>
 
@@ -72,12 +90,101 @@
             {{Org2.Title}}
           </div>
           <div class="orgContent">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
-            <div>6</div>
+            <div class="orgCounterBox">
+              <div class="orgCounterNum">{{Org2.Counter}}</div>
+              <div class="orgCounterTitle">New Testimonies</div>
+            </div>
+            <ul class="orgList">
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item1}}
+                </div>
+                <img src="/thumbs-endorse.svg" alt="Endorse" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item2}}
+                </div>
+                <img src="/thumbs-neutral.svg" alt="Neutral" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item3}}
+                </div>
+                <img src="/thumbs-oppose.svg" alt="Oppose" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item4}}
+                </div>
+                <img src="/thumbs-endorse.svg" alt="Endorse" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item5}}
+                </div>
+                <img src="/thumbs-neutral.svg" alt="Neutral" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org2.Item6}}
+                </div>
+                <img src="/thumbs-oppose.svg" alt="Oppose" />
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="org">
+          <div class="orgTitle">
+            {{Org3.Title}}
+          </div>
+          <div class="orgContent">
+            <div class="orgCounterBox">
+              <div class="orgCounterNum">{{Org3.Counter}}</div>
+              <div class="orgCounterTitle">New Testimonies</div>
+            </div>
+            <ul class="orgList">
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org3.Item1}}
+                </div>
+                <img src="/thumbs-endorse.svg" alt="Endorse" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org3.Item2}}
+                </div>
+                <img src="/thumbs-neutral.svg" alt="Neutral" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org3.Item3}}
+                </div>
+                <img src="/thumbs-oppose.svg" alt="Oppose" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org3.Item4}}
+                </div>
+                <img src="/thumbs-endorse.svg" alt="Endorse" />
+              </li>
+              <li class="orgItem">
+                <div class="orgItemText">
+                  {{Org3.Item5}}
+                </div>
+                <img src="/thumbs-neutral.svg" alt="Neutral" />
+              </li>
+              <li class="orgItem blue">
+                <div class="orgItemText">
+                  see more
+                </div>
+                <nbsp></nbsp>
+                <div>
+                  +
+                </div>
+              </li>
+            </ul>
           </div>
         </article>
       </div>

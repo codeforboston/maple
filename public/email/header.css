@@ -127,10 +127,6 @@
   margin-bottom: 36px;
 }
 
-.sectionOrgs {
-
-}
-
 .org {
   display: flex;
   flex-direction: column;
@@ -156,18 +152,68 @@
 }
 
 .orgContent {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  display: flex;
+  margin-right: auto;
+
+}
+
+.orgCounterBox {
+  margin-right: 24px;
+}
+
+.orgCounterNum {
+  width: 37px;
+  height: 76px;
+   
+  font-weight: 600;
+  font-size: 61px;
+  line-height: 125%;  
+  letter-spacing: -0.03em;
+    
+  color: #1A3185;
+  margin-left: auto;
   margin-right: auto;
 }
 
-.orgTestimonyCount {
+.orgCounterTitle {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 125%;
+  letter-spacing: 0.015em;
 
+  color: #000000;
+  width: 135px;
 }
 
-.orgTestimonyTitle {
+.orgList {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.orgItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 110px;
+  height: 28px;
+
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 125%;
+  letter-spacing: 0.015em;
   
+  color: #000000;
+  margin-right: 30px;
+}
+
+.orgItemText {
+  text-decoration-line: underline;
 }
 
 .navText {

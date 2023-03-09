@@ -79,10 +79,32 @@ DigestEmail.args = {
       Subtitle: "An Act to further govt. transparency"
     },
     Org1: {
-      Title: "Boston’s Teacher Union"
+      Title: "Boston’s Teacher Union",
+      Counter: "2",
+      Item1: "S.77",
+      Item2: "S.1022"
     },
     Org2: {
-      Title: "Moms for Liberty"
+      Title: "Moms for Liberty",
+      Counter: "6",
+      Item1: "S.128",
+      Item2: "S.1000",
+      Item3: "S.543",
+      Item4: "S.767",
+      Item5: "S.992",
+      Item6: "S.1"
+    },
+    Org3: {
+      Title: "La Le Lu Le Lo",
+      Counter: "8",
+      Item1: "S.128",
+      Item2: "S.1000",
+      Item3: "S.543",
+      Item4: "S.767",
+      Item5: "S.992",
+      Item6: "S.1",
+      Item7: "S.22",
+      Item8: "S.393"
     }
   }
 }
