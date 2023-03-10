@@ -87,14 +87,6 @@
   min-width: max-content;
 }
 
-.sectionBills {
-
-}
-
-.bill {
-
-}
-
 .billTitle {
   font-weight: 500;
   font-size: 22px;
@@ -115,16 +107,49 @@
 
 .billContent {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 12px 36px;
-  gap: 31px;
+  padding: 12px 0px 12px 36px;
 
   background: #EAE7E7;
   border-radius: 250px;
 
   margin-bottom: 36px;
+}
+
+.billContentRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.billContentNum {
+  height: 49px;
+
+  font-weight: 500;
+  font-size: 39px;
+  line-height: 125%; 
+  letter-spacing: -0.015em;
+  
+  color: #000000;
+}
+
+.billContentNumInner {
+  display: flex;
+  justify-content: center;
+}
+
+.billContentTitle {
+  width: max-content;
+  height: 20px; 
+  
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 125%;
+  letter-spacing: 0.015em;
+  
+  margin-right: 31px;
+  color: #3E3E3E;  
 }
 
 .org {
@@ -274,6 +299,19 @@
 .center {
   display: flex;
   justify-content: center;
+}
+
+.numBox1 {
+  margin-right: 31px;
+  width: 131px;
+}
+
+.numBox2 {
+  width: 141.5px;
+}
+
+.numBox3 {
+  width: 164px;
 }
 
 /* modifiers - colors */
