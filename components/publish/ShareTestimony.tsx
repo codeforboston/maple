@@ -30,7 +30,7 @@ export const ShareTestimony = styled(({ ...rest }) => {
   )
 })``
 
-const CopyTestimony = styled(props => {
+export const CopyTestimony = styled(props => {
   const email = useTestimonyEmail()
   return (
     <CopyButton
@@ -39,16 +39,11 @@ const CopyTestimony = styled(props => {
       disabled={!email.body}
       className={clsx("copy-btn", props.className)}
     >
-      <FontAwesomeIcon icon={faCopy} />
+      <FontAwesomeIcon icon={faCopy} /> Copy Email Body
     </CopyButton>
   )
 })`
-  position: absolute;
-  right: 1.5rem;
-  top: 1.5rem;
-  width: 2rem;
-  height: 2rem;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
 `
 
 const EmailHelp = (props: { className?: string }) => {
@@ -62,7 +57,7 @@ const EmailHelp = (props: { className?: string }) => {
   )
 }
 
-const ShareButtons = () => {
+export const ShareButtons = () => {
   const { share, bill } = usePublishState()
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -74,14 +69,14 @@ const ShareButtons = () => {
 
   const buttons = []
 
-  if (!share.loading && !sent) {
-    buttons.push(
-      <FinishWithoutEmailing
-        key="finish-without-saving"
-        onConfirm={redirectToBill}
-      />
-    )
-  }
+  // if (!share.loading && !sent) {
+  //   buttons.push(
+  //     <FinishWithoutEmailing
+  //       key="finish-without-saving"
+  //       onConfirm={redirectToBill}
+  //     />
+  //   )
+  // }
 
   if (sent) {
     buttons.push(

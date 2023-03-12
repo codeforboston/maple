@@ -4,8 +4,7 @@ import { ReactNode } from "react"
 import styled from "styled-components"
 import { Position, useDraftTestimonyAttachmentInfo } from "../db"
 import { usePublishState } from "./hooks"
-
-const maxLength = 1000
+import { CopyTestimony } from "./ShareTestimony"
 
 export const positionActions: Record<Position, ReactNode> = {
   neutral: (
@@ -13,43 +12,30 @@ export const positionActions: Record<Position, ReactNode> = {
       are <b className="neutral-position">neutral</b> on
     </span>
   ),
-  endorse: <b className="endorse-position">endorse</b>,
+  endorse: <b className="endorse-position">support</b>,
   oppose: <b className="oppose-position">oppose</b>
 }
 
 export const YourTestimony = styled(({ className, children }) => {
   return (
     <div className={className}>
-      {children}
-      <div className="title">Your Testimony</div>
+      <div className="d-flex justify-content-between mb-2">
+        <div className="title">Your Testimony</div>
+        <CopyTestimony />
+      </div>
       <TestimonyPreview />
     </div>
   )
 })`
-  @media (min-width: 768px) {
-    padding: 3rem 4rem 3rem 4rem !important;
-  }
-
-  color: white;
-  padding: 1rem;
-  background-color: var(--bs-blue);
   border-radius: 1rem;
 
-  .attachment-link {
-    color: white;
-  }
-
   .title {
-    font-weight: bold;
     font-size: 1.25rem;
-    text-align: center;
-    margin-bottom: 1rem;
   }
 `
 
 export const TestimonyPreview = styled(props => {
   const { position, content, attachmentId, authorUid } = usePublishState()
-  const snippet = clampString(content, maxLength)
   const info = useDraftTestimonyAttachmentInfo(authorUid, attachmentId)
 
   return (
@@ -57,22 +43,47 @@ export const TestimonyPreview = styled(props => {
       {position && (
         <p className="text-center">You {positionActions[position]} this bill</p>
       )}
-      {snippet && (
+      {content && (
         <div className="content-section">
-          <TestimonyContent testimony={snippet} />
+          <TestimonyContent testimony={content} />
         </div>
       )}
-      {info && <AttachmentLink className="attachment-link" attachment={info} />}
+      {info && (
+        <AttachmentLink className="mt-3 attachment-link" attachment={info} />
+      )}
     </div>
   )
 })`
-  .content-section {
-    overflow-x: auto;
+  border-radius: 1rem;
+  background: var(--bs-body-bg);
+  padding: 1rem;
 
-    a {
-      color: currentColor;
+  .content-section {
+    overflow-y: auto;
+    max-height: 70vh;
+    overflow-wrap: break-word;
+    padding-right: 0.25rem;
+    margin-right: -0.75rem;
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      border-radius: 1rem;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+
+      :hover {
+        background: rgba(0, 0, 0, 0.6);
+      }
     }
   }
+
+  a {
+    color: currentColor;
+  }
+
   .attachment-link {
     display: block;
   }

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createAppThunk } from "components/hooks"
 import { indexOf, isEqual, uniqBy } from "lodash"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
@@ -19,9 +20,9 @@ export type Service = UseEditTestimony
 
 export const Step = Union(
   L("position"),
+  L("selectLegislators"),
   L("write"),
   L("publish"),
-  L("selectLegislators"),
   L("share")
 )
 export type Step = Static<typeof Step>
@@ -120,8 +121,6 @@ export const {
     syncTestimony,
     setStep,
     setPosition,
-    nextStep,
-    previousStep,
     resolvedLegislatorSearch,
     clearLegislatorSearch,
     addCommittee,
@@ -163,18 +162,6 @@ export const {
     },
     setStep(state, action: PayloadAction<Step>) {
       state.step = action.payload
-    },
-    nextStep(state) {
-      const i = indexOf(stepsInOrder, state.step)
-      if (i !== -1 && i + 1 < stepsInOrder.length) {
-        state.step = stepsInOrder[i + 1]
-      }
-    },
-    previousStep(state) {
-      const i = indexOf(stepsInOrder, state.step)
-      if (i - 1 >= 0) {
-        state.step = stepsInOrder[i - 1]
-      }
     },
     setPosition(state, action: PayloadAction<Maybe<Position>>) {
       state.position = action.payload ?? undefined
@@ -313,3 +300,38 @@ const resetForm = (state: State) => ({
   authorUid: state.authorUid,
   service: state.service
 })
+
+export const nextStep = createAppThunk("publish/nextStep", async (_, api) => {
+  const {
+    profile: { profile },
+    publish: { step }
+  } = api.getState()
+  const hasLegislators = Boolean(profile?.representative && profile.senator)
+
+  let i = indexOf(stepsInOrder, step)
+  let nextStep = i !== -1 && stepsInOrder[i + 1]
+
+  if (nextStep === "selectLegislators" && hasLegislators)
+    nextStep = stepsInOrder[i + 2]
+
+  if (nextStep) api.dispatch(setStep(nextStep))
+})
+
+export const previousStep = createAppThunk(
+  "publish/previousStep",
+  async (_, api) => {
+    const {
+      profile: { profile },
+      publish: { step }
+    } = api.getState()
+    const hasLegislators = Boolean(profile?.representative && profile.senator)
+
+    let i = indexOf(stepsInOrder, step)
+    let nextStep = stepsInOrder[i - 1]
+
+    if (nextStep === "selectLegislators" && hasLegislators)
+      nextStep = stepsInOrder[i - 2]
+
+    if (nextStep) api.dispatch(setStep(nextStep))
+  }
+)

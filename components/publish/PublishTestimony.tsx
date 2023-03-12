@@ -9,10 +9,12 @@ import {
   usePublishState
 } from "./hooks"
 import * as nav from "./NavigationButtons"
+import { SelectRecipients } from "./SelectRecipients"
+import { ShareButtons } from "./ShareTestimony"
 import { StepHeader } from "./StepHeader"
 import { YourTestimony } from "./TestimonyPreview"
 
-type UsePublisTestimony = ReturnType<typeof usePublishTestimony>
+type UsePublishTestimony = ReturnType<typeof usePublishTestimony>
 function usePublishTestimony() {
   const dispatch = useAppDispatch()
   const { sync, draft, publication } = usePublishState()
@@ -37,29 +39,38 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
   return (
     <div {...rest}>
-      <StepHeader>Confirm Your Choices</StepHeader>
+      <StepHeader>Confirm and Send</StepHeader>
+      <SelectRecipients className="mt-4" />
       <YourTestimony className="mt-4" />
 
       {error && <div className="mt-2 text-danger">Error: {error.message}</div>}
 
       <nav.FormNavigation
         left={<nav.Previous />}
-        right={<PublishButton publish={publish} />}
+        right={<PublishAndSend publish={publish} />}
       />
     </div>
   )
 })``
 
-const PublishButton = ({ publish }: { publish: UsePublisTestimony }) => {
+const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
+  if (publish.alreadyPublished) {
+    return <ShareButtons />
+  } else {
+    return <PublishButton publish={publish} />
+  }
+}
+
+const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
   return (
     <LoadingButton
-      disabled={publish.alreadyPublished || !publish.synced}
+      disabled={!publish.synced}
       loading={publish.publish.loading}
       className="form-navigation-btn"
-      variant="secondary"
+      variant="danger"
       onClick={publish.publish.execute}
     >
-      {publish.alreadyPublished ? "Already Published" : "Publish & Proceed"}
+      Publish and Send
     </LoadingButton>
   )
 }

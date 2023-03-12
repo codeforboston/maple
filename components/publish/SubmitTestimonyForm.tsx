@@ -64,10 +64,10 @@ const Form = ({
 }) => {
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
+    selectLegislators: <SelectLegislatorsCta />,
     write: <WriteTestimony />,
     publish: <PublishTestimony />,
-    selectLegislators: <SelectLegislatorsCta />,
-    share: <ShareTestimony />
+    share: <PublishTestimony />
   }
   return (
     <FormContainer>

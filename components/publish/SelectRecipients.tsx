@@ -85,13 +85,6 @@ const RecipientControls = styled(({ className }) => {
   const email = useTestimonyEmail()
   const buttons = []
 
-  if (email.to)
-    buttons.push(
-      <CopyButton key="copy" variant="link" text={email.to}>
-        <FontAwesomeIcon icon={faCopy} /> Copy Recipients
-      </CopyButton>
-    )
-
   if (share.committeeChairs.length > 0)
     buttons.push(
       <Button
@@ -114,10 +107,27 @@ const RecipientControls = styled(({ className }) => {
       </Button>
     )
 
+  if (email.to)
+    buttons.push(
+      <CopyButton
+        key="copy"
+        variant="outline-secondary"
+        text={email.to}
+        className="copy"
+      >
+        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+      </CopyButton>
+    )
+
   return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
 })`
-  button {
-    font-size: 0.75rem;
+  flex-wrap: wrap;
+
+  .copy {
+    padding: 0.25rem 0.5rem;
+  }
+
+  button:not(.copy) {
     padding: 0;
     justify-self: flex-end;
   }
