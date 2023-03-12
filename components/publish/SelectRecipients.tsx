@@ -29,17 +29,13 @@ export const SelectRecipients = styled(props => {
   return (
     <div {...props}>
       <div className="d-flex justify-content-between">
-        <div className="email-recipients">Email Recipients</div>
+        <div className="fs-4">Email Recipients</div>
         <RecipientControls />
       </div>
       <SelectLegislatorEmails className="mt-2" />
     </div>
   )
 })`
-  .email-recipients {
-    font-size: 1.25rem;
-  }
-
   .label-callout {
     font-size: 0.75rem;
     font-style: italic;

@@ -20,7 +20,7 @@ export const YourTestimony = styled(({ className, children }) => {
   return (
     <div className={className}>
       <div className="d-flex justify-content-between mb-2">
-        <div className="title">Your Testimony</div>
+        <div className="title fs-4">Your Testimony</div>
         <CopyTestimony />
       </div>
       <TestimonyPreview />
@@ -28,10 +28,6 @@ export const YourTestimony = styled(({ className, children }) => {
   )
 })`
   border-radius: 1rem;
-
-  .title {
-    font-size: 1.25rem;
-  }
 `
 
 export const TestimonyPreview = styled(props => {

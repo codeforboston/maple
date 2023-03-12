@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
@@ -13,6 +14,7 @@ import * as nav from "./NavigationButtons"
 import { setAttachmentId, setContent } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
+import * as links from "../links"
 
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
@@ -37,50 +39,62 @@ function useWriteTestimony() {
   }
 }
 
-export const WriteTestimony = styled(({ ...rest }) => {
+export const WriteTestimony = styled(props => {
   const write = useWriteTestimony()
-  const tabs = useTabs(write)
+  // const tabs = useTabs(write)
 
-  let valid: boolean = false
-  if (tabs.activeKey === "text") {
-    valid = !!write.content && !write.attachmentId
-  } else if (tabs.activeKey === "import") {
-    valid = !!write.content && !!write.attachmentId
-  }
+  const valid = !!write.content
 
   return (
-    <div {...rest}>
+    <div {...props}>
       <StepHeader step={2}>Write Your Testimony</StepHeader>
-      {tabs.loading ? (
-        <Loading />
-      ) : (
-        <>
-          <SelectRecipients className="mt-4" />
+      <SelectRecipients className="my-4" />
 
-          <Tabs
-            activeKey={tabs.activeKey}
-            onSelect={tabs.onSelect}
-            id="write-testimony"
-            className="mt-4"
-          >
-            <Tab eventKey="text" title="Text">
-              <Text {...write} />
-            </Tab>
-            <Tab eventKey="import" title="Import">
-              <Import {...write} />
-            </Tab>
-          </Tabs>
+      <div className="divider" />
 
-          <nav.FormNavigation
-            left={<nav.Previous />}
-            right={<nav.Next disabled={!valid} />}
-            status
-          />
-        </>
-      )}
+      <div className="mt-4">
+        <Text {...write} className="text-container" />
+        <div>
+          Need help? Read our{" "}
+          <links.Internal href="/learn/writing-effective-testimony">
+            testimony writing tips
+          </links.Internal>
+        </div>
+
+        <div>
+          <links.Internal href="/policies/code-of-conduct">
+            View our code of conduct
+          </links.Internal>
+        </div>
+
+        <Attachment
+          className="mt-3"
+          attachment={write.attachment}
+          confirmRemove={true}
+        />
+      </div>
+
+      <nav.FormNavigation
+        left={<nav.Previous />}
+        right={<nav.Next disabled={!valid} />}
+        status
+      />
     </div>
   )
-})``
+})`
+  display: flex;
+  flex-direction: column;
+
+  .text-container label {
+    font-size: 1.5rem;
+  }
+
+  .divider {
+    height: 1px;
+    flex: auto;
+    background: var(--bs-gray-500);
+  }
+`
 
 const useTabs = ({
   sync: syncState,
@@ -111,10 +125,10 @@ const useTabs = ({
   return { onSelect, activeKey, loading: activeKey === undefined }
 }
 
-const Import = (write: UseWriteTestimony) => {
+const AttachmentInput = (write: UseWriteTestimony) => {
   return (
     <div>
-      <Text
+      {/* <Text
         {...write}
         inputProps={{
           label: "Description",
@@ -122,8 +136,7 @@ const Import = (write: UseWriteTestimony) => {
           rows: 3,
           help: undefined
         }}
-      />
-      <Attachment className="mt-3" attachment={write.attachment} />
+      /> */}
     </div>
   )
 }
@@ -132,18 +145,19 @@ const Text = ({
   content,
   setContent,
   errors,
-  inputProps
-}: UseWriteTestimony & { inputProps?: InputProps }) => {
+  inputProps,
+  className
+}: UseWriteTestimony & { inputProps?: InputProps; className?: string }) => {
   const didLoadSavedContent = !!content
   const [touched, setTouched] = useState(didLoadSavedContent)
   return (
     <Input
-      className="mt-3"
-      label="Testimony Text"
+      className={clsx(className)}
+      label="Testimony"
       placeholder="Add your testimony here"
       as="textarea"
       floating={false}
-      rows={6}
+      rows={12}
       value={content}
       help="Testimony is limited to 10,000 characters."
       onChange={e => {

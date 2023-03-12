@@ -1,6 +1,6 @@
 import { useId } from "@react-aria/utils"
 import clsx from "clsx"
-import { forwardRef } from "react"
+import { forwardRef, ReactElement, ReactNode } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { FloatingLabel, Form } from "../bootstrap"
 
@@ -12,7 +12,7 @@ export type InputProps = Omit<
   label: string
   error?: string
   floating?: boolean
-  help?: string
+  help?: ReactNode
   placeholder?: string
 
   /** Used when `as="textarea"` */
