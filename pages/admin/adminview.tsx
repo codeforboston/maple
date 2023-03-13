@@ -1,11 +1,10 @@
 import { requireAuth } from "../../components/auth"
 import { createPage } from "../../components/page"
-import AdminPage from "../../components/AdminPage/AdminPage"
-
+import AdminDashboard  from "../../components/Admin/AdminDashboard"
 
 export default createPage({
   title: "Admin View",
   Page: requireAuth(({ user }) => {
-    return <AdminPage />
+    return <AdminDashboard />
   })
 })

@@ -35,7 +35,7 @@ export default function OrgSignUpModal({
 
   const showTos = tosStep === "reading"
 
-  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword()
+  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword(true)
 
   useEffect(() => {
     if (!show) {
@@ -93,12 +93,7 @@ export default function OrgSignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
-              <Form.Control 
-                type="Checkbox"
-                id="requestingForOrg"
-                checked={true}
-                style={{display: 'none'}}
-               />
+            
               <Stack gap={3} className="mb-4">
                 <Input
                   label="Organization Email"

@@ -1,0 +1,1 @@
+This folder contains server-side firebase admin code 

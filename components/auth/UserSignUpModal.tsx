@@ -37,7 +37,7 @@ export default function UserSignUpModal({
 
   const showTos = tosStep === "reading"
 
-  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword()
+  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword(false)
 
   useEffect(() => {
     if (!show) {
@@ -95,13 +95,7 @@ export default function UserSignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
-              <Form.Control 
-                type="Checkbox"
-                id="requestingForOrg"
-                checked={false}
-                readOnly={true}
-                style={{display: 'none'}}
-               />
+        
               <Stack gap={3} className="mb-4">
                 <Input
                   label="Email"

@@ -49,17 +49,15 @@ export type CreateUserWithEmailAndPasswordData = {
   fullName: string
   nickname: string
   password: string
-  requestingForOrg: boolean
   confirmedPassword: string
 }
 
-export function useCreateUserWithEmailAndPassword() {
+export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
   return useFirebaseFunction(
     async ({
       email,
       fullName,
       nickname,
-      requestingForOrg,
       password
     }: CreateUserWithEmailAndPasswordData) => {
       const credentials = await createUserWithEmailAndPassword(
@@ -73,7 +71,7 @@ export function useCreateUserWithEmailAndPassword() {
           displayName: nickname,
           fullName,
           role: "user",
-          requestingToBeOrg: requestingForOrg,
+          requestingToBeOrg: isOrg,
           public: false
         }),
         sendEmailVerification(credentials.user)
