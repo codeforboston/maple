@@ -15,13 +15,14 @@ import {
   usePublicProfile,
   UsePublishedTestimonyListing
 } from "../db"
+import { AuthorType } from "../db"
 import { formatBillId, formatTestimonyLinks } from "../formatting"
 import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Tab, Tabs } from "./Tabs"
 
-type TestimonyFilter = "All" | "Individuals" | "Organizations"
+type TestimonyFilter = undefined | "Individuals" | "Organizations"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -39,24 +40,29 @@ const ViewTestimony = (
     showBillNumber = false,
     className
   } = props
-  const [testimonyFilter, setTestimonyFilter] = useState<TestimonyFilter>("All")
+  const [testimonyFilter, setTestimonyFilter] = useState<AuthorType>(undefined)
   const [testimony, setTestimony] = useState<Testimony[]>([])
 
-  const GetFilteredList = () => {
-    switch (testimonyFilter) {
-      case "Organizations":
-        return items.result?.filter(item => item.authorType === "Organization")
+  // const GetFilteredList = () => {
+  //   switch (testimonyFilter) {
+  //     case "Organizations":
+  //       return items.result?.filter(item => {
+  //         if (item.authorType) {
+  //           return item.authorType === "Organization"
+  //         }
+  //       })
 
-      case "Individuals":
-        return items.result?.filter(item => item.authorType !== "Organization")
+  //     case "Individuals":
+  //       return items.result?.filter(item => item.authorType !== "Organization")
 
-      default:
-        return items.result
-    }
-  }
+  //     default:
+  //       return items.result
+  //   }
+  // }
 
   useEffect(() => {
-    setTestimony(GetFilteredList() ?? [])
+    //setTestimony(GetFilteredList() ?? [])
+    setTestimony(items.result ?? [])
   }, [testimonyFilter, items])
 
   const [activeTab, setActiveTab] = useState(1)
@@ -65,8 +71,9 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const handleFilter = (filter: TestimonyFilter) => {
+  const handleFilter = (filter: AuthorType) => {
     setTestimonyFilter(filter)
+    setFilter({ authorType: filter })
     console.log(testimonyFilter)
   }
 
@@ -76,7 +83,7 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => handleFilter("All")}
+      action={() => handleFilter(undefined)}
     />,
     <Tab
       key="uo"
