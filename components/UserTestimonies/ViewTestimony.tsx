@@ -22,7 +22,7 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Tab, Tabs } from "./Tabs"
 
-type TestimonyFilter = undefined | "Individuals" | "Organizations"
+//type TestimonyFilter = undefined | "Individuals" | "Organizations"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -40,7 +40,7 @@ const ViewTestimony = (
     showBillNumber = false,
     className
   } = props
-  const [testimonyFilter, setTestimonyFilter] = useState<AuthorType>(undefined)
+  //const [testimonyFilter, setTestimonyFilter] = useState<AuthorType>(undefined)
   const [testimony, setTestimony] = useState<Testimony[]>([])
 
   // const GetFilteredList = () => {
@@ -63,7 +63,7 @@ const ViewTestimony = (
   useEffect(() => {
     //setTestimony(GetFilteredList() ?? [])
     setTestimony(items.result ?? [])
-  }, [testimonyFilter, items])
+  }, [items])
 
   const [activeTab, setActiveTab] = useState(1)
 
@@ -72,9 +72,8 @@ const ViewTestimony = (
   }
 
   const handleFilter = (filter: AuthorType) => {
-    setTestimonyFilter(filter)
+    //setTestimonyFilter(filter)
     setFilter({ authorType: filter })
-    console.log(testimonyFilter)
   }
 
   const tabs = [
