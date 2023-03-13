@@ -5,19 +5,7 @@
   </head>
 
   <body class="font">
-    <div id="logo" class="logo bg-blue">
-      <img src="/nav-logo.svg" alt="Maple Logo" />
-    </div>
-    <header class="header">
-      <div>
-        <h2 class="headline blue">Here is your
-          {{notificationFrequency}}
-          report!
-        </h2>
-        <p class="subheadline blue center">{{startDate}} - {{endDate}}</p>
-      </div>
-      <img src="/Mail Report.svg" alt="Maple Logo" />
-    </header>
+    {{> header }}
 
     <section class="Bills">
       <div class="sectionHeader">
@@ -125,9 +113,9 @@
             <ul class="orgList">
               <li class="orgItem">
                 <div class="orgItemText">
-                  {{Org1.Item1}}
+                  {{Org1.Item1.Title}}
                 </div>
-                <img src="/thumbs-endorse.svg" alt="Endorse" />
+                <img src="/thumbs-{{Org1.Item1.Icon}}.svg" alt={{Org1.Item1.Icon}} />
               </li>
               <li class="orgItem">
                 <div class="orgItemText">
@@ -265,31 +253,8 @@
       </div>
     </section>
 
-    <nav class="navHeader bg-blue white">
-      <p class="navText">see more at your</p>
-
-      <!-- change link to newsfeed page on maple website when available -->
-      <button
-        onclick="window.location.href='https://mapletestimony.org/';"
-        class="navButton bg-blue"
-      >
-        <img src="/Newsfeed Icon.svg" alt="Newsfeed Icon" />
-        <p class="navButtonText white">Newsfeed</p>
-      </button>
-    </nav>
-    <footer class="footer">
-      <div class="footerLine"></div>
-      <p class="footerContent">This is an automatically-generated email from
-        MAPLE that you opted into from your settings.
-        <br />
-        <br />
-        <!-- Unsubscribe -> add link to User's profile - notifications model -->
-        <!--   or backend function that handles Unsubscribe -->
-        <!-- Terms & Cond -> add link to appropriate Maple subpage -->
-        <!-- Privacy and Comm -> add link to appropriate Maple subpage -->
-        Unsubscribe | Terms & Conditions | Privacy and Community Guidelines
-      </p>
-    </footer>
+    {{> newsFeedLink }}
+    {{> footer }}
   </body>
 </html>
 
@@ -299,7 +264,7 @@
     {{> header }}  
     {{> bills }}
     {{> orgs }}
-    {{> newsFeedLink}}
+    {{> newsFeedLink }}
     {{> footer}}
 
     -----

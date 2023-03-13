@@ -85,7 +85,10 @@ DigestEmail.args = {
     Org1: {
       Title: "Boston’s Teacher Union",
       Counter: "3",
-      Item1: "S.77",
+      Item1: {
+        Title: "S.77",
+        Icon: "endorse"
+      },
       Item2: "S.1022",
       Item3: "S.64"
     },

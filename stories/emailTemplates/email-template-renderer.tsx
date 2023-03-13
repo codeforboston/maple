@@ -3,8 +3,9 @@ import { FC, useEffect, useState } from "react"
 
 import footer from "functions/src/email/partials/footer.handlebars"
 import header from "functions/src/email/partials/header.handlebars"
+import newsFeedLink from "functions/src/email/partials/newsFeedLink.handlebars"
 
-const partials = { footer, header }
+const partials = { footer, header, newsFeedLink }
 let loadedPartials: Promise<any> | undefined
 const loadPartials = async () => {
   if (loadedPartials) return loadPartials
