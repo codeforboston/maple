@@ -64,23 +64,25 @@ export const DigestEmail = Template.bind({})
 DigestEmail.args = {
   templateSrcUrl: digestEmail,
   context: {
-    notificationFrequency: "weekly",
+    notificationFrequency: "Monthly",
     startDate: "2/1/2023",
     endDate: "2/7/2023",
-    Bill1: {
-      Title: "H.1289",
-      Subtitle:
-        "An Act to protect the civil rights and safety of all Massachusetts residents",
-      Testimonies: "12",
-      Cosponsors: "2",
-      HearingDate: "Jan 31"
-    },
-    Bill2: {
-      Title: "H.98",
-      Subtitle: "An Act to further govt. transparency",
-      Testimonies: "2",
-      Cosponsors: "0",
-      HearingDate: "-"
+    bill: {
+      1: {
+        title: "H.1289",
+        subtitle:
+          "An Act to protect the civil rights and safety of all Massachusetts residents",
+        testimonies: "12",
+        cosponsors: "2",
+        hearingDate: "Jan 31"
+      },
+      2: {
+        title: "H.98",
+        subtitle: "An Act to further govt. transparency",
+        testimonies: "2",
+        cosponsors: "0",
+        hearingDate: "-"
+      }
     },
     Org1: {
       Title: "Boston’s Teacher Union",

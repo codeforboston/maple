@@ -7,280 +7,35 @@
   <body class="font">
     {{> header }}
 
-    <section class="Bills">
-      <div class="sectionHeader">
-        <h6 class="sectionTitle">Bills</h6>
-        <div class="sectionLine"></div>
-      </div>
-      <div class="sectionBills">
-        <!-- individual Bills to be iterated over by the backend in a partial template -->
-        <article class="bill">
-          <div class="billTitle">
-            {{Bill1.Title}}
-          </div>
-          <div class="billSubtitle">
-            {{Bill1.Subtitle}}
-          </div>
-          <div class="billContent">
-            <div class="billContentRow">
-              <div class="billContentNum numBox1">
-                <div class="billContentNumInner">
-                  {{Bill1.Testimonies}}
-                </div>
-              </div>
-              <div class="billContentNum numBox2">
-                <div class="billContentNumInner">
-                  {{Bill1.Cosponsors}}
-                </div>
-              </div>
-              <div class="billContentNum numBox3">
-                <div class="billContentNumInner">
-                  {{Bill1.HearingDate}}
-                </div>
-              </div>
-            </div>
-            <div class="billContentRow">
-              <div class="billContentTitle">
-                New Testimonies
-              </div>
-              <div class="billContentTitle">
-                New Co-Sponsors
-              </div>
-              <div class="billContentTitle">
-                Hearing Date
-              </div>
-            </div>
-          </div>
-        </article>
+    {{#if bill.1.title}}
+      {{> bills }}
+    {{else}}
+      {{> noUpdates }}
+    {{/if}}
 
-        <article class="bill">
-          <div class="billTitle">
-            {{Bill2.Title}}
-          </div>
-          <div class="billSubtitle">
-            {{Bill2.Subtitle}}
-          </div>
-          <div class="billContent">
-            <div class="billContentRow">
-              <div class="billContentNum numBox1">
-                <div class="billContentNumInner">
-                  {{Bill2.Testimonies}}
-                </div>
-              </div>
-              <div class="billContentNum numBox2">
-                <div class="billContentNumInner">
-                  {{Bill2.Cosponsors}}
-                </div>
-              </div>
-              <div class="billContentNum numBox3">
-                <div class="billContentNumInner">
-                  {{Bill2.HearingDate}}
-                </div>
-              </div>
-            </div>
-            <div class="billContentRow">
-              <div class="billContentTitle">
-                New Testimonies
-              </div>
-              <div class="billContentTitle">
-                New Co-Sponsors
-              </div>
-              <div class="billContentTitle">
-                Hearing Date
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="Orgs">
-      <div class="sectionHeader">
-        <h6 class="sectionTitle">Organizations</h6>
-        <div class="sectionLine"></div>
-      </div>
-      <div class="sectionOrgs">
-        <!-- individual Orgs to be iterated over by the backend in a partial template -->
-        <article class="org">
-          <div class="orgTitle">
-            {{Org1.Title}}
-          </div>
-          <div class="orgContent">
-            <div class="orgCounterBox">
-              <div class="orgCounterNum">{{Org1.Counter}}</div>
-              <div class="orgCounterTitle">New Testimonies</div>
-            </div>
-            <ul class="orgList">
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org1.Item1.Title}}
-                </div>
-                <img src="/thumbs-{{Org1.Item1.Icon}}.svg" alt={{Org1.Item1.Icon}} />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org1.Item2}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org1.Item3}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  <nbsp></nbsp>
-                </div>
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  <nbsp></nbsp>
-                </div>
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  <nbsp></nbsp>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="org">
-          <div class="orgTitle">
-            {{Org2.Title}}
-          </div>
-          <div class="orgContent">
-            <div class="orgCounterBox">
-              <div class="orgCounterNum">{{Org2.Counter}}</div>
-              <div class="orgCounterTitle">New Testimonies</div>
-            </div>
-            <ul class="orgList">
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item1}}
-                </div>
-                <img src="/thumbs-endorse.svg" alt="Endorse" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item2}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item3}}
-                </div>
-                <img src="/thumbs-oppose.svg" alt="Oppose" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item4}}
-                </div>
-                <img src="/thumbs-endorse.svg" alt="Endorse" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item5}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org2.Item6}}
-                </div>
-                <img src="/thumbs-oppose.svg" alt="Oppose" />
-              </li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="org">
-          <div class="orgTitle">
-            {{Org3.Title}}
-          </div>
-          <div class="orgContent">
-            <div class="orgCounterBox">
-              <div class="orgCounterNum">{{Org3.Counter}}</div>
-              <div class="orgCounterTitle">New Testimonies</div>
-            </div>
-            <ul class="orgList">
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org3.Item1}}
-                </div>
-                <img src="/thumbs-endorse.svg" alt="Endorse" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org3.Item2}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org3.Item3}}
-                </div>
-                <img src="/thumbs-oppose.svg" alt="Oppose" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org3.Item4}}
-                </div>
-                <img src="/thumbs-endorse.svg" alt="Endorse" />
-              </li>
-              <li class="orgItem">
-                <div class="orgItemText">
-                  {{Org3.Item5}}
-                </div>
-                <img src="/thumbs-neutral.svg" alt="Neutral" />
-              </li>
-              <li class="orgItem blue">
-                <div class="orgItemText">
-                  see more
-                </div>
-                <nbsp></nbsp>
-                <div>
-                  +
-                </div>
-              </li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </section>
+    {{#if Org1.Title}}
+      {{> orgs }}
+    {{else}}
+      {{> noUpdates }}
+    {{/if}}
 
     {{> newsFeedLink }}
+
     {{> footer }}
   </body>
 </html>
 
 {{!--
-  Intended Layout:
-
-    {{> header }}  
-    {{> bills }}
-    {{> orgs }}
-    {{> newsFeedLink }}
-    {{> footer}}
-
-    -----
-    header.handlebars 
-    {{> logo }}
-    {{> report.frequency }}
-    {{> report.dates }}
-
   TODO:
     [x] figure out svg -> handlebars compatibility
     
     [x] figure out better way to preview svgs in VSCode
 
     [ ] set up path for handlebars to:
-      locate partials
-      register helpers
+      [x] locate partials
+      [ ] register helpers
+
+    [ ] helper to format {{notificationFrequency}} for header and noResults  
 
     [ ] review folder locations & conventions:
       style={{}} seems to throw errors in children of CreateMeta:
@@ -302,4 +57,13 @@
       [ ]  Unsubscribe
       [ ]  Terms & Cond
       [ ]  Privacy and Comm
+
+    [ ] bills 
+      [ ] individual bill links
+        [ ] add court id to DigestEmail.args.context ?
+
+    [ ] orgs 
+      [ ] individual bill links
+      [ ] `see more +` link to org's page 
+        [ ] add Org Id to DigestEmail.args.context ?
 --}}

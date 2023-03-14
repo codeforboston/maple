@@ -1,11 +1,15 @@
 import Handlebars from "handlebars/dist/handlebars"
 import { FC, useEffect, useState } from "react"
 
+import bill from "functions/src/email/partials/bills/bill.handlebars"
+import bills from "functions/src/email/partials/bills/bills.handlebars"
 import footer from "functions/src/email/partials/footer.handlebars"
 import header from "functions/src/email/partials/header.handlebars"
 import newsFeedLink from "functions/src/email/partials/newsFeedLink.handlebars"
+import noUpdates from "functions/src/email/partials/noUpdates.handlebars"
+import orgs from "functions/src/email/partials/orgs/orgs.handlebars"
 
-const partials = { footer, header, newsFeedLink }
+const partials = { bill, bills, footer, header, newsFeedLink, noUpdates, orgs }
 let loadedPartials: Promise<any> | undefined
 const loadPartials = async () => {
   if (loadedPartials) return loadPartials
