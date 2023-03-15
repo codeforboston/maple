@@ -99,7 +99,7 @@ const BenefitsCardContent = () => {
         </Col>
       </Row>
 
-      {!authenticated && 
+      {!authenticated && (
         <>
           <Row className="text-center">
             <Col>
@@ -114,7 +114,7 @@ const BenefitsCardContent = () => {
             </Col>
           </Row>
         </>
-      }
+      )}
     </>
   )
 }
