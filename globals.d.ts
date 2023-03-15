@@ -5,5 +5,6 @@ declare module "*.handlebars" {
 
 declare module "handlebars/dist/handlebars" {
   export const compile: (s: string) => (s: string) => string
-  export const registerPartial: (s: string, x: string) =>  void
+  export const registerPartial: (s: string, x: string) => void
+  export const registerHelper: typeof import("handlebars").registerHelper
 }
