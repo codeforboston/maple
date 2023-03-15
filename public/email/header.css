@@ -70,14 +70,31 @@
   margin-bottom: 20px;
 }
 
-.sectionTitle {
+.sectionTitle, .noUpdatesTitle {
   font-weight: 600;
   font-size: 25px;
   line-height: 125%;
 
+  margin-bottom: 0px;
+}
+
+.sectionTitle {
   color: #C71E32;
   margin-right: 20px;
-  margin-bottom: 0px;
+}
+
+.noUpdatesTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.noUpdatesIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 12px;
+  padding-bottom: 20px;
 }
 
 .sectionLine {
@@ -85,6 +102,10 @@
   height: 0px;
   flex-grow: 1;
   min-width: max-content;
+}
+
+.billNoUpdates{
+  margin-bottom: 12px;
 }
 
 .billTitle {
@@ -163,6 +184,10 @@
   background: #EAE7E7;
   border-radius: 12px;
 
+  margin-bottom: 20px;
+}
+
+.orgNoUpdates{
   margin-bottom: 20px;
 }
 
