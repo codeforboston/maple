@@ -262,16 +262,26 @@ export async function updateProfileImage(uid: string, image: File) {
   })
 }
 
-export function usePublicProfile(uid?: string) {
+export function usePublicProfile(uid?: string, verifyisorg?: boolean) {
+
+  if(verifyisorg && uid){
+    console.log(verifyisorg)
+  }
   return useAsync(
-    () => (uid ? getProfile(uid) : Promise.resolve(undefined)),
-    [uid]
+    () => (uid ? getProfile(uid, verifyisorg) : Promise.resolve(undefined)),
+    [uid, verifyisorg]
   )
 }
 
-export async function getProfile(uid: string) {
+export async function getProfile(uid: string, verifyisorg?: boolean) {
   const snap = await getDoc(profileRef(uid))
+  if(verifyisorg){
+    return snap.exists() && snap.data().organization ? (snap.data() as Profile) : undefined
+  }
+
   return snap.exists() ? (snap.data() as Profile) : undefined
+
+  
 }
 
 export function setProfile(uid: string, profileData: Partial<Profile>) {

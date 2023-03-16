@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { ChangeEvent, useEffect, useState } from "react"
-import { FormCheck, FormControlProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import { Button, Form, Image, Row, Col } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
@@ -9,7 +8,6 @@ import { TitledSectionCard } from "../shared"
 import { Header } from "../shared/TitledSectionCard"
 import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
-import { Internal } from "../links"
 
 type UpdateProfileData = {
   name: string
