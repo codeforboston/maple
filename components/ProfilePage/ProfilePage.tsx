@@ -1,5 +1,4 @@
 import { ProfileAboutSection } from "./ProfileAboutSection"
-import { useCallback } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -8,6 +7,7 @@ import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
+import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 
 export function ProfilePage( profileprops : {id: string, verifyisorg? : boolean}) {
@@ -21,19 +21,15 @@ export function ProfilePage( profileprops : {id: string, verifyisorg? : boolean}
     uid: profileprops.id
   })
 
-  const { items } = testimony
-
-  const refreshtable = useCallback(() => {
-    items.execute()
-  }, [items])
-
   const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
 
   return (
     <>
-      {loading ? (
+      {profile ? (
+      <>
+          {loading ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
@@ -98,6 +94,8 @@ export function ProfilePage( profileprops : {id: string, verifyisorg? : boolean}
           </StyledContainer>
         </>
       )}
+      
+      </> ) : (<ErrorPage statusCode={404} withDarkMode={false} />)}
     </>
   )
 }
