@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>Digest Email</title>
-    <link rel="stylesheet" type="text/css" href="/email/header.css" />
+    <link rel="stylesheet" type="text/css" href="/email/style.css" />
   </head>
 
   <body class="font">
@@ -9,11 +9,7 @@
 
     {{> bills }}
 
-    {{#if Org1.Title}}
-      {{> orgs }}
-    {{else}}
-      {{> noUpdates }}
-    {{/if}}
+    {{> orgs }}
 
     {{> newsFeedLink }}
 
@@ -47,7 +43,8 @@
         because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict
         MIME checking is enabled.
 
-    [ ] add link to newsfeed page on maple website when available   /newsfeed
+    [x] add link to newsfeed page on maple website when available
+          /newsfeed to be eventual internal link
 
     [ ] add links to footer section
       [ ]  Unsubscribe

@@ -4,6 +4,8 @@ import footer from "./footer.handlebars"
 import header from "./header.handlebars"
 import newsFeedLink from "./newsFeedLink.handlebars"
 import noUpdates from "./noUpdates.handlebars"
+import org from "./orgs/org.handlebars"
+import orgItemEmpty from "./orgs/orgItemEmpty.handlebars"
 import orgs from "./orgs/orgs.handlebars"
 
 export const partials = {
@@ -13,5 +15,7 @@ export const partials = {
   header,
   newsFeedLink,
   noUpdates,
+  org,
+  orgItemEmpty,
   orgs
 }

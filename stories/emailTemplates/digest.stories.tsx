@@ -84,6 +84,94 @@ DigestEmail.args = {
         hearingDate: "-"
       }
     },
+    org: {
+      1: {
+        orgTitle: "Boston’s Teacher Union",
+        counter: "3",
+        item: {
+          1: {
+            title: "S.77",
+            icon: "endorse"
+          },
+          2: {
+            title: "S.77",
+            icon: "neutral"
+          },
+          3: {
+            title: "S.77",
+            icon: "neutral"
+          }
+        }
+      },
+      2: {
+        orgTitle: "Moms for Liberty",
+        counter: "6",
+        item: {
+          1: {
+            title: "S.128",
+            icon: "endorse"
+          },
+          2: {
+            title: "S.1000",
+            icon: "neutral"
+          },
+          3: {
+            title: "S.543",
+            icon: "oppose"
+          },
+          4: {
+            title: "S.767",
+            icon: "endorse"
+          },
+          5: {
+            title: "S.992",
+            icon: "neutral"
+          },
+          6: {
+            title: "S.1",
+            icon: "oppose"
+          }
+        }
+      },
+      3: {
+        orgTitle: "La Le Lu Le Lo",
+        counter: "8",
+        item: {
+          1: {
+            title: "S.128",
+            icon: "endorse"
+          },
+          2: {
+            title: "S.1000",
+            icon: "neutral"
+          },
+          3: {
+            title: "S.543",
+            icon: "oppose"
+          },
+          4: {
+            title: "S.767",
+            icon: "endorse"
+          },
+          5: {
+            title: "S.992",
+            icon: "neutral"
+          },
+          6: {
+            title: "S.1",
+            icon: "oppose"
+          },
+          7: {
+            title: "S.22",
+            icon: "oppose"
+          },
+          8: {
+            title: "S.393",
+            icon: "neutral"
+          }
+        }
+      }
+    },
     Org1: {
       Title: "Boston’s Teacher Union",
       Counter: "3",
