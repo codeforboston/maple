@@ -45,11 +45,10 @@ export function ProfileLegislators({
 }: ProfileLegislatorsProps) {
   return (
     <TitledSectionCard title={`Legislators`} className={className}>
-      <div className="ms-5">
+      <div>
         <DisplayLegislator
           legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
         />
-        <hr></hr>
         <DisplayLegislator
           legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
         />

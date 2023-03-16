@@ -12,6 +12,8 @@ export const Header = styled(Row)`
   font-family: Nunito;
   font-weight: 500;
   align-items: center;
+  margin: 2.5rem 0;
+
 `
 
 export const Banner = styled(Row)`
@@ -31,9 +33,7 @@ export const UserIcon = styled(Image).attrs(props => ({
   className: props.className
 }))`
   height: 7rem;
-  margin: 1rem;
   border-radius: 50%;
-  border: 1rem solid #12266f;
   background-color: var(--bs-white);
   flex: 0;
 `

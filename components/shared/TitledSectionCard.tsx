@@ -10,7 +10,7 @@ const StyledCard = styled(Card)`
   border: none;
 `
 
-export const HeaderTitle = styled.div.attrs({
+const StyledHeader = styled.div.attrs({
   className: "text-capitalize"
 })`
   display: flex;
@@ -25,27 +25,32 @@ export const HeaderTitle = styled.div.attrs({
   border-radius: 1rem 1rem 0 0;
 
 `
+const StyledBody = styled(Card.Body)`
+  padding: 1.5rem 2rem;
 
-export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+`
+const StyledFooter = styled(Card.Body)`
+  border-radius: 0 0 1rem 1rem;
+  border-top: 2px solid #D8D8D8;
+  padding-right: 2rem;
+  align-items: center;
+`
+
+const Header = ({ title }: { title: string}) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
     <Row className="align-items-start">
       <Col>
-        <HeaderTitle>{title}</HeaderTitle>
+        <StyledHeader>{title}</StyledHeader>
       </Col>
     </Row>
   )
 }
 
-export const StyledBody = styled(Card.Body).attrs({
-  className: `mx-1 mx-md-3`
-})``
-
 type TitledSectionCardProps = {
   title?: string
   footer?: React.ReactElement
-  bug?: React.ReactElement
   className?: string
   children: React.ReactNode
 }
@@ -53,12 +58,18 @@ type TitledSectionCardProps = {
 const TitledSectionCard = ({
   title,
   children,
+  footer,
   className
 }: TitledSectionCardProps) => {
   return (
     <StyledCard className={className}>
       {title && <Header title={title}/>}
-      <div className={`h-100`}>{children}</div>
+      <StyledBody>{children}</StyledBody>
+      {footer && (
+        <StyledFooter>
+          {footer}
+        </StyledFooter>
+      )}
     </StyledCard>
   )
 }

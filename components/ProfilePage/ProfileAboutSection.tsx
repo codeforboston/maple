@@ -17,10 +17,10 @@ export const ProfileAboutSection = ({
       <TitledSectionCard
         className={`${className} h-100`}
         title={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
-        bug={<Socials twit={twitter} linkedIn={linkedIn} />}
-        footer={<></>}
+        footer={
+           <Socials twit={twitter} linkedIn={linkedIn} />}
       >
-        <div className="mx-5 my-2">{profile?.about ?? "State your purpose"}</div>
+        <div>{profile?.about ?? "State your purpose"}</div>
       </TitledSectionCard>
     )
   }

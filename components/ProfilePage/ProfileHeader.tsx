@@ -68,14 +68,14 @@ export const ProfileHeader = ({
     }
   
     return (
-      <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
+      <Header className={`d-flex edit-profile-header`}>
         {isOrganization ? (
           <Col xs={"auto"} className={"col-auto"}>
             <OrgIconLarge className={`col d-none d-sm-flex`} src={profileImage} />
           </Col>
         ) : (
           <Col xs={"auto"} className={"col-auto"}>
-            <UserIcon className={`col d-none d-md-flex`} />
+            <UserIcon />
           </Col>
         )}
         <Col>
