@@ -5,7 +5,7 @@ import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import ViewTestimony from "../UserTestimonies/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
-import { StyledContainer } from "./StyledProfileComponents"
+import { StyledContainer, Banner } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
@@ -36,20 +36,9 @@ export function ProfilePage( profileprops : {id: string, verifyisorg? : boolean}
       ) : (
         <>
           {isUser && (
-            <StyledContainer
-              fluid
-              className={`text-white text-center text-middle`}
-              style={{
-                fontFamily: "nunito",
-                fontSize: "20px",
-                position: "absolute",
-                height: 0,
-                paddingBottom: "2rem",
-                backgroundColor: "var(--bs-orange)"
-              }}
-            >
-              <p>Currently viewing your profile</p>
-            </StyledContainer>
+            <Banner>
+              Currently viewing your profile
+            </Banner>
           )}
           <StyledContainer>
             <ProfileHeader

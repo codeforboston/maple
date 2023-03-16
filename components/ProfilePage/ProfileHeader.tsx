@@ -10,8 +10,7 @@ import {
 import { firestore } from "../firebase"
 import { Button, Col } from "../bootstrap"
 import { useState, useEffect } from "react"
-import {  Header, ProfileDisplayName, OrgIconLarge, UserIcon } from "../EditProfilePage/StyledEditProfileCompnents"
-import { StyledImage } from "./StyledProfileComponents"
+import { Header, StyledImage, ProfileDisplayName, OrgIconLarge, UserIcon } from "./StyledProfileComponents"
 import { EditProfileButton } from "./EditProfileButton"
 
 export const ProfileHeader = ({

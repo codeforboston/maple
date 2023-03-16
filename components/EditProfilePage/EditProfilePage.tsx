@@ -19,7 +19,7 @@ import {
   Header,
   StyledTabContent,
   StyledTabNav
-} from "./StyledEditProfileCompnents"
+} from "./StyledEditProfileComponents"
 
 export function EditProfile() {
   const { user } = useAuth()

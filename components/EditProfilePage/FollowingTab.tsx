@@ -15,7 +15,7 @@ import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import { OrgIconSmall } from "./StyledEditProfileCompnents"
+import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
 
 type Props = {
