@@ -21,8 +21,7 @@ import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Tab, Tabs } from "./Tabs"
-
-//type TestimonyFilter = undefined | "Individuals" | "Organizations"
+import { PaginationButtons } from "components/table"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -40,29 +39,11 @@ const ViewTestimony = (
     showBillNumber = false,
     className
   } = props
-  //const [testimonyFilter, setTestimonyFilter] = useState<AuthorType>(undefined)
   const [testimony, setTestimony] = useState<Testimony[]>([])
 
-  // const GetFilteredList = () => {
-  //   switch (testimonyFilter) {
-  //     case "Organizations":
-  //       return items.result?.filter(item => {
-  //         if (item.authorType) {
-  //           return item.authorType === "Organization"
-  //         }
-  //       })
-
-  //     case "Individuals":
-  //       return items.result?.filter(item => item.authorType !== "Organization")
-
-  //     default:
-  //       return items.result
-  //   }
-  // }
-
   useEffect(() => {
-    //setTestimony(GetFilteredList() ?? [])
     setTestimony(items.result ?? [])
+    console.log(pagination)
   }, [items])
 
   const [activeTab, setActiveTab] = useState(1)
@@ -72,7 +53,6 @@ const ViewTestimony = (
   }
 
   const handleFilter = (filter: AuthorType) => {
-    //setTestimonyFilter(filter)
     setFilter({ authorType: filter })
   }
 
@@ -130,7 +110,7 @@ const ViewTestimony = (
         </NoResults>
       )}
       <div className="p-3" />
-      {/* <PaginationButtons pagination={pagination} /> */}
+      <PaginationButtons pagination={pagination} />
     </TitledSectionCard>
   )
   return <MapleCard header="Testimonies" body={body} />
