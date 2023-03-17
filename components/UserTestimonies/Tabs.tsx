@@ -89,11 +89,10 @@ const ComponentContainer = styled.div`
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
-  padding: 1rem;
   background: none;
   color: ${props => (props.active ? "#C71E32" : "black")};
   border: none;
