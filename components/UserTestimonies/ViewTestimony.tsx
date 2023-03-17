@@ -2,6 +2,7 @@ import { Card as MapleCard } from "components/Card"
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { ViewAttachment } from "components/ViewAttachment"
+import { PaginationButtons } from "components/table"
 import { type } from "os"
 import { ReactEventHandler, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -21,7 +22,6 @@ import { Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { Tab, Tabs } from "./Tabs"
-import { PaginationButtons } from "components/table"
 
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
@@ -43,7 +43,6 @@ const ViewTestimony = (
 
   useEffect(() => {
     setTestimony(items.result ?? [])
-    console.log(pagination)
   }, [items])
 
   const [activeTab, setActiveTab] = useState(1)
