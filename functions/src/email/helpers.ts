@@ -7,14 +7,16 @@ export function toLowerCase(aString: string) {
 }
 
 export function noUpdatesFormat(aString: string) {
+  let result = ""
   switch (aString) {
     case "Monthly":
-      return "this month"
+      result = "this month"
       break
     case "Weekly":
-      return "this week"
+      result = "this week"
       break
     default:
-      return "today"
+      result = "today"
   }
+  return result
 }
