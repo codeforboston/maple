@@ -16,7 +16,7 @@ export const TabSlider = (props: { width: number; position: number }) => {
 
 export const TabSliderContainer = (props: { children?: JSX.Element }) => {
   const { children } = props
-  return <TabSliderContainerStyle>{props.children}</TabSliderContainerStyle>
+  return <TabSliderContainerStyle>{children}</TabSliderContainerStyle>
 }
 
 export const Tab = (props: {
@@ -25,6 +25,7 @@ export const Tab = (props: {
   active: boolean
   action?: () => void
   onClick?: MouseEventHandler
+  width?: number
 }) => {
   const { label, onClick, active } = props
   return (
@@ -59,9 +60,11 @@ export const Tabs = (props: {
     const handleClick = (e: Event) => {
       if (child.props.value !== selectedTab) {
         onChange(e, child.props.value)
-        setSliderWidth(child.props.width)
         child.props.action()
       }
+
+      setSliderWidth(child.props.width)
+      console.log(child.props.width)
     }
     return (
       <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
