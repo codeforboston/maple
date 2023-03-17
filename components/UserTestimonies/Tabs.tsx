@@ -52,7 +52,6 @@ export const Tabs = (props: {
     if (selected) {
       setSliderWidth(selected.clientWidth)
       setSliderPos(selected.offsetLeft)
-      console.log(selected.clientWidth)
     }
   }, [selectedTab])
 
