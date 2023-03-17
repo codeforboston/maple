@@ -23,7 +23,7 @@ export const Tab = (props: {
   label: string
   value: number
   active: boolean
-  action: () => void
+  action?: () => void
   onClick?: MouseEventHandler
 }) => {
   const { label, onClick, active } = props
