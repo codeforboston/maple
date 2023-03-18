@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { SignInWithButton } from "../../auth"
 import { Col, Row } from "../../bootstrap"
+import { useAuth } from "../../auth"
 import styles from "./ForOrgsCardContent.module.css"
 
 const WhyMAPLECardContent = () => {
@@ -18,6 +19,8 @@ const WhyMAPLECardContent = () => {
 
 const BenefitsCardContent = () => {
   const { t } = useTranslation("fororgs")
+  const { authenticated } = useAuth()
+
   return (
     <>
       <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
@@ -96,18 +99,22 @@ const BenefitsCardContent = () => {
         </Col>
       </Row>
 
-      <Row className="text-center">
-        <Col>
-          <h3 className={`fw-bold mt-3 ${styles.calltoaction}`}>
-            {t("benefits.signUp")}
-          </h3>
-        </Col>
-      </Row>
-      <Row className="text-center mb-3">
-        <Col>
-          <SignInWithButton />
-        </Col>
-      </Row>
+      {!authenticated && (
+        <>
+          <Row className="text-center">
+            <Col>
+              <h3 className={`fw-bold mt-3 ${styles.calltoaction}`}>
+                {t("benefits.signUp")}
+              </h3>
+            </Col>
+          </Row>
+          <Row className="text-center mb-3">
+            <Col>
+              <SignInWithButton />
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   )
 }
