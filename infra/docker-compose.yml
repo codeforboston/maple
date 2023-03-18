@@ -5,25 +5,25 @@
 
 version: "3"
 name: maple
-# services:
-#   search:
-#     build:
-#       dockerfile: Dockerfile.search
-#     volumes:
-#       - search:/app/data
-#     ports:
-#       - 8108:8108
-#     environment:
-#       TYPESENSE_DATA_DIR: /app/data
-#       TYPESENSE_API_KEY: test-api-key
-#       TYPESENSE_ENABLE_CORS: "true"
-#     cpu_count: 2
-#     healthcheck:
-#       test: curl -f localhost:8108/health || exit 1
-#       interval: 10s
-#       timeout: 2s
-#       retries: 3
-#       start_period: 5s
+services:
+  search:
+    build:
+      dockerfile: Dockerfile.search
+    volumes:
+      - search:/app/data
+    ports:
+      - 8108:8108
+    environment:
+      TYPESENSE_DATA_DIR: /app/data
+      TYPESENSE_API_KEY: test-api-key
+      TYPESENSE_ENABLE_CORS: "true"
+    cpu_count: 2
+    healthcheck:
+      test: curl -f localhost:8108/health || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
 
   firebase:
     build:
@@ -59,20 +59,20 @@ name: maple
       - 4500:4500
       - 9299:9299
 
-  # search-backfill:
-  #   build:
-  #     dockerfile: Dockerfile.node
-  #   command: yarn dev:backfill
-  #   environment:
-  #     FIREBASE_HOST: firebase
-  #   working_dir: /app
-  #   depends_on:
-  #     firebase:
-  #       condition: service_healthy
-  #     search:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ..:/app
+  search-backfill:
+    build:
+      dockerfile: Dockerfile.node
+    command: yarn dev:backfill
+    environment:
+      FIREBASE_HOST: firebase
+    working_dir: /app
+    depends_on:
+      firebase:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    volumes:
+      - ..:/app
 
   init:
     build:
