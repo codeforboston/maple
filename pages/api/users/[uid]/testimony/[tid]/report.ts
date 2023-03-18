@@ -1,8 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Timestamp } from "firebase/firestore";
+import admin from "firebase-admin";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { auth, db } from "../../../../../../components/server-api/init-firebase-admin";
+import { ensureAuthenticated } from "../../../../../../components/server-api/middleware-fns";
+
+export const Timestamp = admin.firestore.Timestamp
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch(req.method) {
@@ -24,10 +27,11 @@ const QuerySchema = z.object({
 })
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
-  const {query, body, headers} = req;
-  console.log({authorization: headers.authorization})
-  // const token = await auth.verifyIdToken(headers.authorization?.slice('Bearer '.length) || '')
-  // console.log({token})
+  const {query, body } = req;
+  const token = await ensureAuthenticated(req, res);
+  if(!token) {
+    return;
+  }
   const reportValidation = ReportSchema.safeParse(body);
   const queryValidation = QuerySchema.safeParse(query);
   if(!queryValidation.success) {
@@ -59,7 +63,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   const report = {
     ...reportValidation.data,
     version: testimonySnap.data()!.version,
-    reporterUid: 'test-reporter-uid', // TODO
+    reporterUid: token.uid,
     reportDate: Timestamp.fromDate(new Date()),
     testimonyId: tid,
     id,
