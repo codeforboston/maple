@@ -5,9 +5,10 @@ type Props = {
   reasons: string[]
   onClose: () => void
   onReport: (report: { reason: string; additionalInformation: string }) => void
+  isLoading: boolean
 }
 
-export function ReportModal({ reasons, onClose, onReport }: Props) {
+export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
   const [selectedReason, setSelectedReason] = useState<string | null>(null)
   const [additionalInformation, setAdditionalInformation] = useState<string>("")
   const [validationError, setValidationError] = useState<string>("")
@@ -77,8 +78,8 @@ export function ReportModal({ reasons, onClose, onReport }: Props) {
           <Button variant="secondary" onClick={onClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit">
-            Report
+          <Button variant="primary" type="submit" disabled={isLoading}>
+            {isLoading ? "Reporting" : "Report"}
           </Button>
         </Modal.Footer>
       </Form>

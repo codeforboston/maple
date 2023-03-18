@@ -6,10 +6,11 @@ import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
+import { auth } from "../firebase"
+import { useEffect } from "react"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
-
   return (
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>

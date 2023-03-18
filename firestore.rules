@@ -39,6 +39,15 @@ service cloud.firestore {
       allow read: if true
       allow write: if false
     }
+    match /reports/{rid} {
+      function isAdmin() {
+          return request.auth.token.get("role", "user") == "admin"
+      }
+      // Anyone can report
+      allow create: if true
+      // Only admins can do anything with it
+      allow read, update, delete: if isAdmin()
+    }
     match /users/{uid} {
       match /draftTestimony/{id} {
         // private, only accessible by the user
