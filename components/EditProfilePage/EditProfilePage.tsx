@@ -136,7 +136,7 @@ export function EditProfileForm({
             href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
           >
             <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
-              {!profile.organization
+              {profile.role !== "organization"
                 ? "View My Profile"
                 : "View My Organization"}
             </Button>

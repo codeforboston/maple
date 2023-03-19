@@ -12,25 +12,27 @@ import { Button, Col } from "../bootstrap"
 import { useState, useEffect } from "react"
 import { Header, StyledImage, ProfileDisplayName, OrgIconLarge, UserIcon } from "./StyledProfileComponents"
 import { EditProfileButton } from "./EditProfileButton"
+import { OrgContactInfo } from "./OrgContactInfo"
+import { Profile } from "../db"
 
 export const ProfileHeader = ({
-    displayName,
     isUser,
     isOrganization,
-    profileImage,
     isMobile,
     uid,
-    orgId
+    profileid, 
+    profile
   }: {
-    displayName?: string
     isUser: boolean
     isOrganization: boolean
-    profileImage?: string
     isMobile: boolean
     uid?: string
-    orgId: string
+    profileid: string
+    profile: Profile 
   }) => {
-    const topicName = `org-${orgId}`
+    const displayName = profile.displayName ? profile.displayName : "Anonymous User"
+    const imageSrc = profile.profileImage ? profile.profileImage :  "/profile-org-icon.svg"
+    const topicName = `org-${profileid}`
     const subscriptionRef = collection(
       firestore,
       `/users/${uid}/activeTopicSubscriptions/`
@@ -38,7 +40,7 @@ export const ProfileHeader = ({
     const [queryResult, setQueryResult] = useState("")
   
     const orgQuery = async () => {
-      const q = query(subscriptionRef, where("topicName", "==", `org-${orgId}`))
+      const q = query(subscriptionRef, where("topicName", "==", `org-${profileid}`))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach(doc => {
         // doc.data() is never undefined for query doc snapshots
@@ -54,7 +56,7 @@ export const ProfileHeader = ({
       await setDoc(doc(subscriptionRef, topicName), {
         topicName: topicName,
         uid: uid,
-        orgId: orgId,
+        profileid: profileid,
         type: "org"
       })
   
@@ -68,41 +70,56 @@ export const ProfileHeader = ({
     }
   
     return (
-      <Header className={`d-flex edit-profile-header`}>
+      <Header className={`gx-0 d-flex edit-profile-header`}>
         {isOrganization ? (
           <Col xs={"auto"} className={"col-auto"}>
-            <OrgIconLarge className={`col d-none d-sm-flex`} src={profileImage} />
+            <OrgIconLarge className={`col d-none d-sm-flex`} src={imageSrc} />
           </Col>
         ) : (
-          <Col xs={"auto"} className={"col-auto"}>
+          <Col xs={"auto"}>
             <UserIcon />
           </Col>
         )}
         <Col>
           <div>
             <ProfileDisplayName className={`overflow-hidden`}>
-              {displayName ? `${displayName}` : "Anonymous User"}
+              {displayName}
             </ProfileDisplayName>
-            {isOrganization ? (
-              <Col>
-                <Button
-                  className={`btn btn-primary btn-sm py-1 ${
-                    uid ? "" : "visually-hidden"
-                  }`}
-                  onClick={queryResult ? handleUnfollowClick : handleFollowClick}
-                >
-                  {queryResult ? "Following" : "Follow"}
-                  {queryResult ? (
-                    <StyledImage src="/check-white.svg" alt="checkmark" />
-                  ) : null}
-                </Button>
-              </Col>
-            ) : (
-              <></>
-            )}
+            <Col>
+              {isOrganization && (
+                <>
+                {isUser ? (
+                  <EditProfileButton isMobile={isMobile} />
+                ) : (
+                  <Button
+                    className={`btn btn-primary btn-sm py-1 ${
+                      uid ? "" : "visually-hidden"
+                    }`}
+                    onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+                  >
+                    {queryResult ? "Following" : "Follow"}
+                    {queryResult ? (
+                      <StyledImage src="/check-white.svg" alt="checkmark" />
+                    ) : null}
+                  </Button>
+
+                  )
+
+                }
+                </>
+              )}
+            </Col>
           </div>
         </Col>
-        {isUser && <EditProfileButton isMobile={isMobile} />}
+        <Col>
+        {isOrganization ? (
+          <OrgContactInfo profile={profile}/>
+        ) : (
+        <div>
+          {isUser && <EditProfileButton isMobile={isMobile} />}
+        </div>)}
+        </Col>
+        
       </Header>
     )
   }

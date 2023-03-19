@@ -1,6 +1,6 @@
 import { Profile } from "../db"
 import { TitledSectionCard } from "../shared"
-import { Socials } from "./Socials"
+import { SocialMediaIcons } from "./SocialMediaIcons"
 
 export const ProfileAboutSection = ({
     profile,
@@ -10,7 +10,7 @@ export const ProfileAboutSection = ({
     className?: string
     isMobile?: boolean
   }) => {
-    const { twitter, linkedIn }: { twitter?: string; linkedIn?: string } =
+    const { twitter, linkedIn, instagram, fb }: { twitter?: string; linkedIn?: string; instagram?:string; fb?: string } =
       profile?.social ?? {}
   
     return (
@@ -18,7 +18,7 @@ export const ProfileAboutSection = ({
         className={`${className} h-100`}
         title={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
         footer={
-           <Socials twit={twitter} linkedIn={linkedIn} />}
+           <SocialMediaIcons twitter={twitter} linkedIn={linkedIn} instagram={instagram} fb={fb}/>}
       >
         <div>{profile?.about ?? "State your purpose"}</div>
       </TitledSectionCard>

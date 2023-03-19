@@ -53,7 +53,7 @@ export function AboutMeEditForm({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  const { displayName, about, organization, social, profileImage }: Profile =
+  const { displayName, about, role, social, profileImage }: Profile =
     profile
 
   const { updateIsOrganization } = actions
@@ -61,6 +61,8 @@ export function AboutMeEditForm({
   const handleChooseUserType = async (e: ChangeEvent<HTMLSelectElement>) => {
     await updateIsOrganization(e.target.value === "organization")
   }
+
+  const isOrganization = role === "organization"
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
@@ -70,7 +72,7 @@ export function AboutMeEditForm({
 
   const handleRedirect = () => {
     //redirect user to profile page
-    profile.organization
+    isOrganization
       ? location.assign(`/organization?id=${uid}`)
       : location.assign(`/profile?=${uid}`)
   }
@@ -107,8 +109,8 @@ export function AboutMeEditForm({
             label="Write something about yourself"
             defaultValue={about}
           />
-          <div className={clsx("w-100", organization && "row")}>
-            {organization && <ImageInput />}
+          <div className={clsx("w-100", isOrganization && "row")}>
+            {isOrganization && <ImageInput />}
             <div className="row">
               <Input
                 label="Twitter Username"
@@ -142,7 +144,7 @@ export function AboutMeEditForm({
           </Row>
         </div>
       </Form>
-      {!organization && (
+      {!isOrganization && (
         <>
           <Header title="Your Legislators"></Header>
           <YourLegislators />

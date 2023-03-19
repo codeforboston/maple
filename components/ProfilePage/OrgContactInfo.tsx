@@ -1,15 +1,19 @@
 import { Row, Col, Image } from "react-bootstrap"
 import { External } from "components/links"
+import { Profile } from "../db"
 
-export const Socials = ({
-    twit: twitter,
-    linkedIn
+export const OrgContactInfo = ({
+    profile
   }: {
-    twit?: string
-    linkedIn?: string
-  }) => (
-    <div>
-        <Row xs="auto" className="justify-content-end align-items-center">
+    profile?: Profile
+  }) => {
+
+    const { twitter, linkedIn, instagram, fb }: { twitter?: string; linkedIn?: string; instagram?:string; fb?: string } =
+      profile?.social ?? {}
+
+    return(
+        <div>
+        <Row xs="auto">
             <Col>
                 {twitter && (
                 <External plain href={`https://www.twitter.com/${twitter}`}>
@@ -27,6 +31,6 @@ export const Socials = ({
         </Row>
 
     </div>
-    
-  )
-  
+
+    )
+  }

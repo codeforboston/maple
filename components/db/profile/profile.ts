@@ -276,7 +276,7 @@ export function usePublicProfile(uid?: string, verifyisorg?: boolean) {
 export async function getProfile(uid: string, verifyisorg?: boolean) {
   const snap = await getDoc(profileRef(uid))
   if(verifyisorg){
-    return snap.exists() && snap.data().organization ? (snap.data() as Profile) : undefined
+    return snap.exists() && snap.data().role == "organization" ? (snap.data() as Profile) : undefined
   }
 
   return snap.exists() ? (snap.data() as Profile) : undefined

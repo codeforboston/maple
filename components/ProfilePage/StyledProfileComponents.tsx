@@ -13,8 +13,11 @@ export const Header = styled(Row)`
   font-weight: 500;
   align-items: center;
   margin: 2.5rem 0;
+  padding-right: 0;
+  padding-left: 0;
 
 `
+
 
 export const Banner = styled(Row)`
   font-family: Nunito;
@@ -36,6 +39,7 @@ export const UserIcon = styled(Image).attrs(props => ({
   border-radius: 50%;
   background-color: var(--bs-white);
   flex: 0;
+  margin-right: 2rem;
 `
 
 export const ProfileDisplayName = styled(Col).attrs(props => ({

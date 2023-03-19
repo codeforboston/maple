@@ -38,7 +38,7 @@ export const Testimony = BaseTestimony.extend({
   id: Id,
   authorDisplayName: String,
   version: Number,
-  publishedAt: InstanceOf(Timestamp),
+  publishedAt: Optional(InstanceOf(Timestamp)),
   representativeId: Optional(String),
   senatorId: Optional(String),
   senatorDistrict: Optional(String),

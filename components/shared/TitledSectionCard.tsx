@@ -31,9 +31,10 @@ const StyledBody = styled(Card.Body)`
 `
 const StyledFooter = styled(Card.Body)`
   border-radius: 0 0 1rem 1rem;
-  border-top: 2px solid #D8D8D8;
   padding-right: 2rem;
   align-items: center;
+  display: flex;
+  justify-content: end;
 `
 
 const Header = ({ title }: { title: string}) => {
