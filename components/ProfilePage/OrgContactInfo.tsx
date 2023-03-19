@@ -1,6 +1,8 @@
 import { Row, Col, Image } from "react-bootstrap"
 import { External } from "components/links"
 import { Profile } from "../db"
+import { ContactInfoRow } from "./StyledProfileComponents"
+
 
 export const OrgContactInfo = ({
     profile
@@ -8,29 +10,60 @@ export const OrgContactInfo = ({
     profile?: Profile
   }) => {
 
-    const { twitter, linkedIn, instagram, fb }: { twitter?: string; linkedIn?: string; instagram?:string; fb?: string } =
-      profile?.social ?? {}
+    const { email, phone, website }: { email?: string; phone?: string; website?:string} =
+      profile?.orgContactInfo ?? {}
+    
+    const location = profile?.location ?? null
 
     return(
-        <div>
-        <Row xs="auto">
-            <Col>
-                {twitter && (
-                <External plain href={`https://www.twitter.com/${twitter}`}>
-                    <Image alt="twitter" src="/twitter.svg" />
-                </External>
-                )}
-            </Col>
-            <Col>
-                {linkedIn && (
-                <External plain href={`https://www.linkedin.com/in/${linkedIn}`}>
-                    <Image alt="linkedIn" src="/linkedin.svg" />
-                </External>
-                )}
-            </Col>
-        </Row>
 
-    </div>
+      <div>
+        
+        {email && (
+          <ContactInfoRow>
+            <div className="d-flex justify-content-end">
+              {email}
+            </div>
+
+          </ContactInfoRow>
+        )}
+
+        {phone && (
+          <ContactInfoRow>
+            <div className="d-flex justify-content-end">
+              {phone}
+
+            </div>
+    
+
+          </ContactInfoRow>
+        )}  
+
+        {website && (
+          <ContactInfoRow>
+            <External className="d-flex justify-content-end" plain href={website}>
+                {website}
+            </External>
+
+          </ContactInfoRow>
+        )}
+
+        {location && (
+          <ContactInfoRow>
+            <div className="d-flex justify-content-end fw-bold">
+              {location}
+
+            </div>
+    
+
+          </ContactInfoRow>
+        )} 
+
+ 
+   
+
+      </div>
+
 
     )
   }

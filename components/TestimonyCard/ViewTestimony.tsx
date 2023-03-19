@@ -12,25 +12,27 @@ import { Timestamp } from "firebase/firestore"
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    showControls?: boolean
+    isUser?: boolean
     showBillNumber?: boolean
     className?: string
+    isOrg?: boolean
   }
 ) => {
   const {
     // pagination,
     // items,
     // setFilter,
-    showControls = false,
+    isUser = false,
     showBillNumber = false,
-    className
+    className, 
+    isOrg
   } = props
   // const testimony = items.result ?? []
 
   const neutralpos:Position = "neutral"
 
   const testimony1:Testimony = {
-    billId: "",
+    billId: "H1234",
     court: 123,
     position: neutralpos,
     content: "constent",
@@ -45,7 +47,7 @@ const ViewTestimony = (
 
   return (
     <TitledSectionCard
-      title={"Testimony"}
+      title={isOrg? "Our Testimonies" : "Testimony"}
       className={className}
       // bug={<SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />}
     >
@@ -54,7 +56,7 @@ const ViewTestimony = (
           <TestimonyItem
             key={t.authorUid + t.billId}
             testimony={t}
-            showControls={showControls}
+            isUser={isUser}
             showBillNumber={showBillNumber}
           />
         ))
@@ -69,12 +71,12 @@ const ViewTestimony = (
 
           <TestimonyItem
             testimony={testimony1}
-            showControls={showControls}
+            isUser={isUser}
             showBillNumber={showBillNumber}
           />
           <TestimonyItem
             testimony={testimony1}
-            showControls={showControls}
+            isUser={isUser}
             showBillNumber={showBillNumber}
           />
         

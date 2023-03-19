@@ -20,7 +20,7 @@ const StyledHeader = styled.div.attrs({
   font-family: Nunito;
   background-color: var(--bs-blue);
   height: 2.5rem;
-  padding: 1.5rem 2rem;
+  padding: 1.65rem 2rem;
   min-width: 15rem;
   border-radius: 1rem 1rem 0 0;
 
@@ -31,9 +31,9 @@ const StyledBody = styled(Card.Body)`
 `
 const StyledFooter = styled(Card.Body)`
   border-radius: 0 0 1rem 1rem;
-  padding-right: 2rem;
   align-items: center;
   display: flex;
+  padding-right: 2rem;
   justify-content: end;
 `
 

@@ -11,7 +11,7 @@ import {
   usePublishedTestimonyListing
 } from "../db"
 import { Internal } from "../links"
-import ViewTestimony from "../UserTestimonies/ViewTestimony"
+import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { AboutMeEditForm } from "./AboutMeEditForm"
 import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"

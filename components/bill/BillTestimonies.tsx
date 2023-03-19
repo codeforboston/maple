@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { BillContent, usePublishedTestimonyListing } from "../db"
-import ViewTestimony from "../UserTestimonies/ViewTestimony"
+import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { BillProps } from "./types"
 
 export const BillTestimonies = (

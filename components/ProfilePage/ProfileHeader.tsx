@@ -8,7 +8,7 @@ import {
     where
 } from "firebase/firestore"
 import { firestore } from "../firebase"
-import { Button, Col } from "../bootstrap"
+import { Button, Col, Stack } from "../bootstrap"
 import { useState, useEffect } from "react"
 import { Header, StyledImage, ProfileDisplayName, OrgIconLarge, UserIcon } from "./StyledProfileComponents"
 import { EditProfileButton } from "./EditProfileButton"
@@ -17,14 +17,14 @@ import { Profile } from "../db"
 
 export const ProfileHeader = ({
     isUser,
-    isOrganization,
+    isOrg,
     isMobile,
     uid,
     profileid, 
     profile
   }: {
     isUser: boolean
-    isOrganization: boolean
+    isOrg: boolean
     isMobile: boolean
     uid?: string
     profileid: string
@@ -70,8 +70,8 @@ export const ProfileHeader = ({
     }
   
     return (
-      <Header className={`gx-0 d-flex edit-profile-header`}>
-        {isOrganization ? (
+      <Header className={`gx-0 edit-profile-header`}>
+        {isOrg ? (
           <Col xs={"auto"} className={"col-auto"}>
             <OrgIconLarge className={`col d-none d-sm-flex`} src={imageSrc} />
           </Col>
@@ -81,38 +81,41 @@ export const ProfileHeader = ({
           </Col>
         )}
         <Col>
-          <div>
-            <ProfileDisplayName className={`overflow-hidden`}>
+          <Stack gap={2}>
+          <ProfileDisplayName className={`overflow-hidden`}>
               {displayName}
             </ProfileDisplayName>
-            <Col>
-              {isOrganization && (
-                <>
-                {isUser ? (
-                  <EditProfileButton isMobile={isMobile} />
-                ) : (
-                  <Button
-                    className={`btn btn-primary btn-sm py-1 ${
-                      uid ? "" : "visually-hidden"
-                    }`}
-                    onClick={queryResult ? handleUnfollowClick : handleFollowClick}
-                  >
-                    {queryResult ? "Following" : "Follow"}
-                    {queryResult ? (
-                      <StyledImage src="/check-white.svg" alt="checkmark" />
-                    ) : null}
-                  </Button>
+          
+            {isOrg && (
+              <>
+              {isUser ? (
+                <EditProfileButton isMobile={isMobile} />
+              ) : (
+                <Button
+                  className={`btn btn-primary btn-sm${
+                    uid ? "" : "visually-hidden"
+                  }`}
+                  onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+                >
+                  {queryResult ? "Following" : "Follow"}
+                  {queryResult ? (
+                    <StyledImage src="/check-white.svg" alt="checkmark" />
+                  ) : null}
+                </Button>
 
-                  )
+                )
 
-                }
-                </>
-              )}
-            </Col>
-          </div>
+              }
+              </>
+            )}
+
+          </Stack>
+            
+   
+     
         </Col>
         <Col>
-        {isOrganization ? (
+        {isOrg ? (
           <OrgContactInfo profile={profile}/>
         ) : (
         <div>

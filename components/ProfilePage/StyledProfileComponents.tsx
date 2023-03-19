@@ -17,7 +17,11 @@ export const Header = styled(Row)`
   padding-left: 0;
 
 `
-
+export const ContactInfoRow = styled(Row)`
+  font-size: 18px;
+  font-family: Nunito;
+  font-weight: 500;
+`
 
 export const Banner = styled(Row)`
   font-family: Nunito;
@@ -69,7 +73,7 @@ export const OrgIconLarge = styled(Image).attrs(props => ({
 }))`
   height: 8rem;
   width: 8rem;
-  margin: 1rem;
+  margin-right: 2rem;
   border-radius: 50%;
   background-color: var(--bs-white);
   flex: 0;

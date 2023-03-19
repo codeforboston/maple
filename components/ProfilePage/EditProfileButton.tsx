@@ -4,9 +4,7 @@ import { Internal } from "components/links"
 export const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
     return (
       <Col
-        className={`d-flex w-100 ${
-          !isMobile ? "justify-content-end" : "justify-content-start"
-        }`}
+        className={`d-flex w-100 justify-content-start`}
       >
         <div>
           <Internal href="/editprofile" className="view-edit-profile">

@@ -31,14 +31,14 @@ export const SocialMediaIcons = ({
             <Col>
                 {instagram && (
                 <External plain href={`https://www.instagram.com/${instagram}`}>
-                    <Image alt="instagram" src="/instagram.svg" />
+                    <Image alt="instagram" src="/linkedin.svg" />
                 </External>
                 )}
             </Col>
             <Col>
                 {fb && (
                 <External plain href={`https://www.facebook.com/${linkedIn}`}>
-                    <Image alt="facebook" src="/facebook.svg" />
+                    <Image alt="facebook" src="/twitter.svg" />
                 </External>
                 )}
             </Col>

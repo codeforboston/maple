@@ -2,7 +2,7 @@ import { formUrl } from "components/publish/hooks"
 import { ListGroup } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { Col, Row } from "../bootstrap"
+import { Col, Row, Stack } from "../bootstrap"
 import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
@@ -11,14 +11,15 @@ import { ReportModal } from "./ReportModal"
 import { useState } from "react"
 import { FormattedTestimonyContent } from "./FormattedTestimonyItem"
 import { ViewAttachment } from "components/ViewAttachment"
+import styles from "./ViewTestimony.module.css"
 
 export const TestimonyItem = ({
     testimony,
-    showControls,
+    isUser,
     showBillNumber
   }: {
     testimony: Testimony
-    showControls: boolean
+    isUser: boolean
     showBillNumber: boolean
   }) => {
     const isMobile = useMediaQuery("(max-width: 768px)")
@@ -33,9 +34,9 @@ export const TestimonyItem = ({
     const [isReporting, setIsReporting] = useState(false)
   
     return (
-      <div className={`border-bottom`}>
+      <div className={styles.itemrow}>
         <div className={`border-0 h5 d-flex`}>
-          {isMobile && showControls && (
+          {isMobile && isUser && (
             <>
               <Internal href={formUrl(testimony.billId, testimony.court)}>
                 <Image
@@ -58,21 +59,29 @@ export const TestimonyItem = ({
             </>
           )}
         </div>
-  
-          <Row className={`justify-content-between`}>
-            <Col className={`h5 align-self-center`}>
+            <Stack gap={2}>
+
+          <Row className={`justify-content-between align-items-center`}>
+            <Col xs="auto" >
               {showBillNumber && (
-                <>
-                  <Internal className="link" href={billLink}>
+         
+                    <h3 className="mt-0 mb-0">
+                    <Internal className="link" href={billLink}>
                     {formatBillId(testimony.billId)}
                   </Internal>
-                  {" · "}
-                </>
+
+                    </h3>
+                 
+                
               )}
-              <PositionLabel position={testimony.position} />
+              
+            </Col>
+                
+            <Col xs="auto">
+            <PositionLabel position={testimony.position} />
             </Col>
             <Col
-              className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
+              className={`ms-auto d-flex justify-content-sm-end`}
             >
               {`${published}`}
             </Col>
@@ -80,36 +89,40 @@ export const TestimonyItem = ({
           <Row className={`col m2`}>
               <FormattedTestimonyContent testimony={testimony.content} />
           </Row>
-          <Row className={`col m2`}>
-            <Col className={`p-4 ps-3`}>
+          <Row  xs="auto"className={`col m2`}>
+            <Col>
               
               <Internal href={maple.testimony({ publishedId: testimony.id })}>
                 More Details
               </Internal>
             </Col>
-            {showControls ? (
-              <div>
+            {isUser ? (
+              <>
                 <Col>
                   <Internal href={formUrl(testimony.billId, testimony.court)}>
                     Edit
                   </Internal>
                 </Col>
-              <Col>              
-                <Internal href={billLink}>Delete</Internal>
-              </Col>
+                <Col>              
+                    <Internal href={billLink}>Delete</Internal>
+                </Col>
   
-              </div>
+              </>
               
             ) : (
-              <ListGroup>
+                <Col>
+            
                 <ListGroup.Item action onClick={() => setIsReporting(true)}>
                   Report
                 </ListGroup.Item>
-              </ListGroup>
+     
+                </Col>
+              
             )}
             
           </Row>
-    
+          </Stack>
+
   
           
           <ViewAttachment testimony={testimony} />

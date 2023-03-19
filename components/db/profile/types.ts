@@ -8,8 +8,8 @@ export type ProfileMember = {
 
 export type ContactInfo = {
   email: string
-  phone: string
-  website: string
+  phone?: string
+  website?: string
 }
 
 export const SOCIAL_NETWORKS = ["linkedIn", "twitter", "instagram", "fb"] as const
@@ -31,5 +31,6 @@ export type Profile = {
   profileImage?: string
   billsFollowing?: string[]
   requestingToBeOrg?: boolean
-  orgContactInfo?: ContactInfo
+  orgContactInfo?: ContactInfo, 
+  location?: string
 }
