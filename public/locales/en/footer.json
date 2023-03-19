@@ -1,0 +1,31 @@
+{
+  "headers": {
+    "follow": "Follow MAPLE",
+    "browse": "Browse",
+    "account": "Account",
+    "learn": "Learn",
+    "about": "About",
+    "resources": "Resources",
+    "team": "Our Team"
+  },
+  "links": {
+    "browsePolicies": "Policies",
+    "accountSignIn": "Sign In",
+    "accountSignOut": "Sign Out",
+    "accountProfile": "Profile",
+    "learnWriting": "Writing Effective Testimony",
+    "learnLegislators": "Contacting Legislators",
+    "learnResources": "Additional Resources",
+    "aboutMission": "Our Mission & Goals",
+    "aboutTeam": "Our Team",
+    "resourcesLegislators": "Find your Legislators",
+    "teamNEU": "Northeastern University NuLawLab",
+    "teamCFB": "Code for Boston",
+    "teamBC": "Boston College Law School",
+    "teamHarvard": "Harvard Berkman Klein Center"
+  },
+  "legal": {
+    "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",
+    "TOS": "Our Policies and Terms of Service"
+  }
+}
