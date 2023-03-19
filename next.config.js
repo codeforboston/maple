@@ -22,9 +22,9 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/policies',
-        destination: '/policies/privacy-policy',
-      },
+        source: "/policies",
+        destination: "/policies/privacy-policy"
+      }
     ]
   }
 }
