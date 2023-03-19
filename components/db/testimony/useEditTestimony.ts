@@ -213,7 +213,11 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
 
 type SaveDraftRequest = Pick<
   WorkingDraft,
-  "position" | "content" | "attachmentId" | "recipientMemberCodes"
+  | "position"
+  | "content"
+  | "attachmentId"
+  | "recipientMemberCodes"
+  | "editReason"
 >
 function useSaveDraft(
   { draftRef, draftLoading, billId, uid, court }: State,
@@ -225,7 +229,8 @@ function useSaveDraft(
         position,
         content,
         attachmentId,
-        recipientMemberCodes
+        recipientMemberCodes,
+        editReason
       }: SaveDraftRequest) => {
         if (draftLoading) {
           return
@@ -235,6 +240,7 @@ function useSaveDraft(
             content,
             court,
             position,
+            editReason: editReason ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null
           }
@@ -250,6 +256,7 @@ function useSaveDraft(
             content,
             attachmentId: attachmentId ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
+            editReason: editReason ?? null,
             publishedVersion: deleteField()
           })
         }

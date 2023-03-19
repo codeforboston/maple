@@ -29,7 +29,8 @@ export const BaseTestimony = R({
   court: Number,
   position: Position,
   content: Content,
-  attachmentId: Maybe(String)
+  attachmentId: Maybe(String),
+  editReason: Maybe(String)
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 
@@ -44,8 +45,7 @@ export const Testimony = BaseTestimony.extend({
   senatorId: Optional(String),
   senatorDistrict: Optional(String),
   representativeDistrict: Optional(String),
-  draftAttachmentId: Maybe(String),
-  editReason: Optional(String)
+  draftAttachmentId: Maybe(String)
 })
 
 export type WorkingDraft = Partial<DraftTestimony>

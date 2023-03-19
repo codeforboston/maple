@@ -15,7 +15,7 @@ import { setAttachmentId, setContent } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
 import * as links from "../links"
-
+import { TextArea } from "../forms/Input"
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 
@@ -35,7 +35,7 @@ function useWriteTestimony() {
     attachment,
     attachmentId,
     sync,
-    errors
+    error: errors.content
   }
 }
 
@@ -53,7 +53,13 @@ export const WriteTestimony = styled(props => {
       <div className="divider" />
 
       <div className="mt-4">
-        <Text {...write} className="text-container" />
+        <TextArea
+          {...write}
+          label="Testimony"
+          placeholder="Add your testimony here"
+          help="Testimony is limited to 10,000 characters."
+          className="text-container"
+        />
         <div>
           Need help? Read our{" "}
           <links.Internal href="/learn/writing-effective-testimony">
@@ -138,35 +144,5 @@ const AttachmentInput = (write: UseWriteTestimony) => {
         }}
       /> */}
     </div>
-  )
-}
-
-const Text = ({
-  content,
-  setContent,
-  errors,
-  inputProps,
-  className
-}: UseWriteTestimony & { inputProps?: InputProps; className?: string }) => {
-  const didLoadSavedContent = !!content
-  const [touched, setTouched] = useState(didLoadSavedContent)
-  return (
-    <Input
-      className={clsx(className)}
-      label="Testimony"
-      placeholder="Add your testimony here"
-      as="textarea"
-      floating={false}
-      rows={12}
-      value={content}
-      help="Testimony is limited to 10,000 characters."
-      onChange={e => {
-        setTouched(true)
-        setContent(e.target.value)
-      }}
-      onBlur={() => setTouched(true)}
-      error={touched ? errors.content : undefined}
-      {...inputProps}
-    />
   )
 }

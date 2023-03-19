@@ -41,6 +41,7 @@ export type Legislator = MemberSearchIndexItem & {
 export type Errors = {
   position?: string
   content?: string
+  editReason?: string
 }
 
 /** Syncs form values to the draft in firestore. */
@@ -67,6 +68,9 @@ export type State = {
 
   /** ID of storage object for the attachment */
   attachmentId?: string
+
+  /** Reason for editing the testimony */
+  editReason?: string
 
   /** Form validation errors */
   errors: Errors
@@ -125,6 +129,7 @@ export const {
     clearLegislatorSearch,
     addCommittee,
     addMyLegislators,
+    setEditReason,
     setRecipients,
     setShowThankYou,
     setContent,
@@ -171,6 +176,10 @@ export const {
       state.content = action.payload ?? undefined
       validateForm(state)
     },
+    setEditReason(state, action: PayloadAction<Maybe<string>>) {
+      state.editReason = action.payload ?? undefined
+      validateForm(state)
+    },
     setAttachmentId(state, action: PayloadAction<Maybe<string>>) {
       state.attachmentId = action.payload ?? undefined
     },
@@ -192,6 +201,7 @@ export const {
       state.content = payload.content
       state.position = payload.position
       state.recipientMemberCodes = payload.recipientMemberCodes ?? undefined
+      state.editReason = payload.editReason ?? undefined
       state.draft = payload
       validateForm(state)
     },
@@ -279,7 +289,14 @@ const updateRecipients = (state: State, recipients: Legislator[]) => {
 }
 
 /** Check form for errors */
-const validateForm = ({ content, position, errors }: State) => {
+const validateForm = ({
+  content,
+  position,
+  editReason,
+  publication,
+  draft,
+  errors
+}: State) => {
   const validated = Position.validate(position)
   if (!validated.success) errors.position = "Invalid position"
   else errors.position = undefined
@@ -291,6 +308,10 @@ const validateForm = ({ content, position, errors }: State) => {
     // TODO: include the offending number(s) in the error string.
     errors.content = "Testimony must not contain social security numbers"
   } else errors.content = undefined
+
+  if (!draft?.publishedVersion && publication && !editReason)
+    errors.editReason = "You must provide a reason for editing your testimony"
+  else errors.editReason = undefined
 }
 
 /** Reset the form, carrying over context props */

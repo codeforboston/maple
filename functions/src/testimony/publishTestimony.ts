@@ -4,7 +4,7 @@ import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
-import { db, Timestamp } from "../firebase"
+import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts } from "../malegislature"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
@@ -70,16 +70,18 @@ class PublishTestimonyTransaction {
     await this.resolveProfile()
     await this.resolveAttachments()
 
+    const publishInfo = await this.getPublishInfo()
+
     const newPublication: Testimony = {
       id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
+      authorRole: this.profile.role,
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,
       position: this.draft.position,
-      version: await this.getNextPublicationVersion(),
-      publishedAt: Timestamp.now(),
+      ...publishInfo,
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId
     }
@@ -121,7 +123,9 @@ class PublishTestimonyTransaction {
 
   private updateDraft(newPublication: Testimony) {
     const update: DocUpdate<DraftTestimony> = {
-      publishedVersion: newPublication.version
+      publishedVersion: newPublication.version,
+      // Remove the edit reason to clear the form for the next edit.
+      editReason: FieldValue.delete()
     }
     this.t.update(this.draftSnap.ref, update)
   }
@@ -200,6 +204,19 @@ class PublishTestimonyTransaction {
         `Draft testimony has invalid court number ${court}`
       )
     }
+  }
+
+  private async getPublishInfo() {
+    const version = await this.getNextPublicationVersion(),
+      reason = this.draft.editReason
+
+    let editReason: string | undefined
+    if (version > 1) {
+      if (!reason) throw fail("invalid-argument", "Edit reason is required.")
+      editReason = reason
+    }
+
+    return { version, editReason, publishedAt: Timestamp.now() }
   }
 
   private async getNextPublicationVersion() {

@@ -1,6 +1,7 @@
 import { useId } from "@react-aria/utils"
 import clsx from "clsx"
-import { forwardRef, ReactElement, ReactNode } from "react"
+import { Maybe } from "components/db/common"
+import { forwardRef, ReactElement, ReactNode, useState } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { FloatingLabel, Form } from "../bootstrap"
 
@@ -28,6 +29,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
       floating = true,
       help,
       className,
+      children,
       ...restProps
     },
     ref
@@ -61,6 +63,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
         ) : (
           <>
             <Form.Label>{label}</Form.Label>
+            {children}
             {control}
           </>
         )}
@@ -72,3 +75,32 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
 Input.displayName = "Input"
 
 export default Input
+
+export const TextArea = ({
+  content,
+  setContent,
+  error,
+  ...inputProps
+}: {
+  content?: Maybe<string>
+  setContent: (c: string) => void
+  error?: string
+} & InputProps) => {
+  const didLoadSavedContent = !!content
+  const [touched, setTouched] = useState(didLoadSavedContent)
+  return (
+    <Input
+      as="textarea"
+      floating={false}
+      rows={12}
+      value={content ?? undefined}
+      onChange={e => {
+        setTouched(true)
+        setContent(e.target.value)
+      }}
+      onBlur={() => setTouched(true)}
+      error={touched ? error : undefined}
+      {...inputProps}
+    />
+  )
+}
