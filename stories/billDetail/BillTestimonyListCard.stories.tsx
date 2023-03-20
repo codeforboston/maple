@@ -51,15 +51,3 @@ Primary.args = {
     ]
   }
 }
-// {
-//   Title: "An Act fostering voting opportunities, trust, equity, and security",
-//   BillNumber: "H805",
-//   DocketNumber: "string",
-//   GeneralCourtNumber: 999,
-//   PrimarySponsor: first,
-//   Cosponsors: [first],
-//   LegislationTypeName: "string",
-//   Pinslip: "string",
-//   DocumentText: "string"
-// },
-// className: "janet"
