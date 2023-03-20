@@ -99,6 +99,18 @@ const ViewTestimony = (
         headerElement={<Head>Testimony</Head>}
         body={
           <BootstrapCard.Body>
+            <Tabs
+              childTabs={tabs}
+              onChange={handleTabClick}
+              selectedTab={activeTab}
+            ></Tabs>
+            {/* <DropDownsContainerStyle>
+        <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
+        <OrderFilterDropDownMenu
+          handleOrder={handleOrderClick}
+          currentOrder={orderBy}
+        />
+      </DropDownsContainerStyle> */}
             {testimony.length > 0 ? (
               testimony.map(t => (
                 <TestimonyItem
@@ -114,6 +126,8 @@ const ViewTestimony = (
                 <b>Be the first and add one!</b>
               </NoResults>
             )}
+            <div className="p-3" />
+            <PaginationButtons pagination={pagination} />
           </BootstrapCard.Body>
         }
       />
