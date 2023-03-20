@@ -14,7 +14,7 @@ export const TabSlider = (props: { width: number; position: number }) => {
   return <TabSliderStyle width={width ?? 200} position={position} />
 }
 
-export const TabSliderContainer = (props: { children?: JSX.Element }) => {
+export const TabSliderContainer = (props: { children?: JSX.Element[] }) => {
   const { children } = props
   return <TabSliderContainerStyle>{children}</TabSliderContainerStyle>
 }
@@ -76,6 +76,7 @@ export const Tabs = (props: {
     <ComponentContainer ref={containerRef}>
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
+        <TabSliderTrackStyle />
         <TabSlider width={sliderWidth} position={sliderPos} />
       </TabSliderContainer>
     </ComponentContainer>
@@ -99,15 +100,25 @@ const TabStyle = styled.div<{ active: boolean }>`
   cursor: pointer;
   outline: none;
 `
+//track
 const TabSliderContainerStyle = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
-  /*background-color: black; visible track for slider */
   width: 100%;
   height: 1px;
   position: absolute;
 `
+const TabSliderTrackStyle = styled.div`
+  background-color: lightgrey;
+  align-self: center;
+  width: 80%;
+  height: 1px;
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  transform: translateX(-50%);
+`
+
 export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 0.4s;
   width: ${props => `${props.width}px`};
