@@ -15,10 +15,9 @@ export const Header = styled(Row)`
   margin: 2.5rem 0;
   padding-right: 0;
   padding-left: 0;
-
 `
 export const ContactInfoRow = styled(Row)`
-  font-size: 18px;
+  font-size: 1.375rem;
   font-family: Nunito;
   font-weight: 500;
 `
@@ -26,12 +25,11 @@ export const ContactInfoRow = styled(Row)`
 export const Banner = styled(Row)`
   font-family: Nunito;
   font-size: 25px;
-  text-align:center;
+  text-align: center;
   justify-content: center;
   padding: 0.75rem;
   color: white;
-  background-color: #FF8600
-
+  background-color: #ff8600;
 `
 
 export const UserIcon = styled(Image).attrs(props => ({
@@ -78,7 +76,6 @@ export const OrgIconLarge = styled(Image).attrs(props => ({
   background-color: var(--bs-white);
   flex: 0;
 `
-
 
 export const StyledContainer = styled(Container)`
   .about-me-checkbox input {

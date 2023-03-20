@@ -37,7 +37,8 @@ export default function UserSignUpModal({
 
   const showTos = tosStep === "reading"
 
-  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword(false)
+  const createUserWithEmailAndPassword =
+    useCreateUserWithEmailAndPassword(false)
 
   useEffect(() => {
     if (!show) {
@@ -95,7 +96,7 @@ export default function UserSignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
-        
+
               <Stack gap={3} className="mb-4">
                 <Input
                   label="Email"

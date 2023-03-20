@@ -53,8 +53,7 @@ export function AboutMeEditForm({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  const { displayName, about, role, social, profileImage }: Profile =
-    profile
+  const { displayName, about, role, social, profileImage }: Profile = profile
 
   const { updateIsOrganization } = actions
 

@@ -7,13 +7,11 @@
   top: 0.38rem;
 }
 
-.a {
+.link {
   text-decoration: none;
-
 }
 
 .itemrow {
   padding: 1rem 2rem;
   border-bottom: 1px solid;
-  }
-
+}

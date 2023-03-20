@@ -23,11 +23,9 @@ const StyledHeader = styled.div.attrs({
   padding: 1.65rem 2rem;
   min-width: 15rem;
   border-radius: 1rem 1rem 0 0;
-
 `
 const StyledBody = styled(Card.Body)`
   padding: 1.5rem 2rem;
-
 `
 const StyledFooter = styled(Card.Body)`
   border-radius: 0 0 1rem 1rem;
@@ -37,7 +35,7 @@ const StyledFooter = styled(Card.Body)`
   justify-content: end;
 `
 
-const Header = ({ title }: { title: string}) => {
+const Header = ({ title }: { title: string }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
@@ -64,13 +62,9 @@ const TitledSectionCard = ({
 }: TitledSectionCardProps) => {
   return (
     <StyledCard className={className}>
-      {title && <Header title={title}/>}
+      {title && <Header title={title} />}
       <StyledBody>{children}</StyledBody>
-      {footer && (
-        <StyledFooter>
-          {footer}
-        </StyledFooter>
-      )}
+      {footer && <StyledFooter>{footer}</StyledFooter>}
     </StyledCard>
   )
 }

@@ -7,12 +7,17 @@ export type ProfileMember = {
 }
 
 export type ContactInfo = {
-  email: string
-  phone?: string
+  publicEmail: string
+  publicPhone?: number
   website?: string
 }
 
-export const SOCIAL_NETWORKS = ["linkedIn", "twitter", "instagram", "fb"] as const
+export const SOCIAL_NETWORKS = [
+  "linkedIn",
+  "twitter",
+  "instagram",
+  "fb"
+] as const
 
 export type SocialLinks = Partial<
   Record<(typeof SOCIAL_NETWORKS)[number], string>
@@ -31,6 +36,6 @@ export type Profile = {
   profileImage?: string
   billsFollowing?: string[]
   requestingToBeOrg?: boolean
-  orgContactInfo?: ContactInfo, 
+  orgContactInfo?: ContactInfo
   location?: string
 }

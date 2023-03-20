@@ -77,7 +77,9 @@ export default function OrgSignUpModal({
         className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="sign-up-modal">Sign Up As An Organization</Modal.Title>
+          <Modal.Title id="sign-up-modal">
+            Sign Up As An Organization
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Col md={12} className="mx-auto">
@@ -93,7 +95,7 @@ export default function OrgSignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
-            
+
               <Stack gap={3} className="mb-4">
                 <Input
                   label="Organization Email"
@@ -145,20 +147,24 @@ export default function OrgSignUpModal({
                   </Col>
                 </Row>
               </Stack>
-                {tosStep == "agreed" ? (
-                  <LoadingButton
-                    id="loading-button"
-                    type="submit"
-                    className="w-100"
-                    loading={createUserWithEmailAndPassword.loading}
-                  >
-                    Sign up
-                  </LoadingButton>
-                ) : (
-                  <Button className="w-100" type="button" onClick={handleContinueClick}>
-                    Continue
-                  </Button>
-                )}
+              {tosStep == "agreed" ? (
+                <LoadingButton
+                  id="loading-button"
+                  type="submit"
+                  className="w-100"
+                  loading={createUserWithEmailAndPassword.loading}
+                >
+                  Sign up
+                </LoadingButton>
+              ) : (
+                <Button
+                  className="w-100"
+                  type="button"
+                  onClick={handleContinueClick}
+                >
+                  Continue
+                </Button>
+              )}
             </Form>
           </Col>
         </Modal.Body>

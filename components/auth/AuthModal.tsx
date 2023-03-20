@@ -23,11 +23,11 @@ export default function AuthModal() {
         onSignInClick={() => setCurrentModal("signIn")}
         onSignUpClick={() => setCurrentModal("chooseProfileType")}
       />
-      <ProfileTypeModal 
+      <ProfileTypeModal
         show={currentModal === "chooseProfileType"}
         onHide={close}
         onIndividualUserClick={() => setCurrentModal("userSignUp")}
-        onOrgUserClick={() => setCurrentModal("orgSignUp")} 
+        onOrgUserClick={() => setCurrentModal("orgSignUp")}
       />
       <SignInModal
         show={currentModal === "signIn"}
@@ -39,7 +39,7 @@ export default function AuthModal() {
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
-      <OrgSignUpModal 
+      <OrgSignUpModal
         show={currentModal === "orgSignUp"}
         onHide={close}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}

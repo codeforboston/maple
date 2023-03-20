@@ -1,14 +1,12 @@
 import React from "react"
 import styled from "styled-components"
-import {
-  Testimony,
-  usePublicProfile,
-} from "../db"
+import { Testimony, usePublicProfile } from "../db"
 import { Internal } from "../links"
 
-export const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
+export const Author = styled<{ testimony: Testimony }>(
+  ({ testimony, ...props }) => {
     const profile = usePublicProfile(testimony.authorUid)
-  
+
     const authorName = profile.loading
       ? ""
       : profile.result?.fullName ?? testimony.authorDisplayName ?? "Anonymous"
@@ -24,4 +22,5 @@ export const Author = styled<{ testimony: Testimony }>(({ testimony, ...props })
         )}
       </div>
     )
-  })
+  }
+)
