@@ -90,6 +90,7 @@ const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  margin-top: 15px;
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
@@ -109,7 +110,7 @@ const TabSliderContainerStyle = styled.div`
   position: absolute;
 `
 const TabSliderTrackStyle = styled.div`
-  background-color: lightgrey;
+  background-color: #f1f1f1;
   align-self: center;
   width: 80%;
   height: 1px;
@@ -122,7 +123,7 @@ const TabSliderTrackStyle = styled.div`
 export const TabSliderStyle = styled.div<{ width: number; position: number }>`
   transition: all 0.4s;
   width: ${props => `${props.width}px`};
-  height: 5px;
+  height: 3px;
   background-color: #c71e32;
   transform: ${props => `translateX(${props.position}px)`};
   position: absolute;

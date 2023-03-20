@@ -142,7 +142,7 @@ const TestimonyItemContentStyle = styled.div`
   }
   hr {
     height: 3px;
-    background-color: grey;
+    background-color: #aaa;
   }
 `
 const TestimonyItemHeader = styled.div`
@@ -159,11 +159,8 @@ const TestimonyItemHeader = styled.div`
     padding: 0px 5px;
     margin: 0px 10px;
     background-color: #1a3185;
-
     border-radius: 15px;
-
     color: #fff;
-
     font-family: nunito;
     font-size: 10px;
     text-align: center;
@@ -267,7 +264,6 @@ export const TestimonyItem = ({
             )}
             {/* DATE */}
             {`${published}`}
-            {/* Need to research meaning of Full Text and it's relationship with Show more" */}
             {/* <Internal
               href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
             >

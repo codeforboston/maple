@@ -46,6 +46,7 @@ const Container = styled.div<{ pos: Position }>`
 
   padding: 0;
   margin: 10px;
+  margin-right: 3%;
 
   .position {
     position: absolute;
