@@ -155,6 +155,19 @@ const TestimonyItemHeader = styled.div`
     display: flex;
     align-items: center;
   }
+  .version {
+    padding: 0px 5px;
+    margin: 0px 10px;
+    background-color: #1a3185;
+
+    border-radius: 15px;
+
+    color: #fff;
+
+    font-family: nunito;
+    font-size: 10px;
+    text-align: center;
+  }
 `
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   const profile = usePublicProfile(testimony.authorUid)
@@ -219,7 +232,7 @@ export const TestimonyItem = ({
             {/* NAME OF USER/ORGANIZATION */}
             <div className="authorAndVersion">
               <Author testimony={testimony} />
-              <h2>edited</h2>
+              {testimony.version > 1 && <p className="version">Edited</p>}
             </div>
             {isMobile && showControls && (
               <>
