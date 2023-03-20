@@ -58,10 +58,10 @@ export const Tabs = (props: {
   const [sliderPos, setSliderPos] = useState(0)
 
   const handleResize = () => {
-    setResizing(true)
+    // setResizing(true)
     setViewportWidth(window.innerWidth)
-    if (tabRefs.current[selectedTab - 1]?.offsetLeft === sliderPos)
-      setResizing(false)
+    // if (tabRefs.current[selectedTab - 1]?.offsetLeft === sliderPos)
+    //   setResizing(false)
   }
 
   useEffect(() => {
