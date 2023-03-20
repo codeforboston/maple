@@ -1,14 +1,13 @@
-import { Card as MapleCard } from "components/Card"
 import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import React, { RefObject, useRef, useState } from "react"
+import React, { RefObject, useRef, useState, ReactEventHandler } from "react"
 import { ListGroup, ListGroupItem } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, OverlayTrigger, Row } from "../bootstrap"
+import { Button, Col, Form, OverlayTrigger, Row, Dropdown } from "../bootstrap"
 import {
   Testimony,
   usePublicProfile,
@@ -74,7 +73,6 @@ const ViewTestimony = (
       />
     </Container>
   )
-  return <MapleCard header="Testimonies" body={body} />
 }
 
 export const SortTestimonyDropDown = ({
@@ -256,7 +254,7 @@ export const TestimonyItem = ({
           <Col
             className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
           >
-            <PositionLabel position={testimony.position} />
+            <PositionLabel position={testimony.position} avatar="sw" />
           </Col>
         </Row>
         <Row className={`col m2`}>
