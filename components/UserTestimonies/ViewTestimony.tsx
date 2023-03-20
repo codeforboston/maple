@@ -262,81 +262,82 @@ export const TestimonyItem = ({
   const [isReporting, setIsReporting] = useState(false)
 
   return (
-    <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
-      <div className={`bg-white border-0 h5 d-flex`}>
-        <Author testimony={testimony} className="flex-grow-1" />
-        <MoreButton>
-          <ListGroup>
-            <ListGroup.Item action onClick={() => setIsReporting(true)}>
-              Report
-            </ListGroup.Item>
-          </ListGroup>
-        </MoreButton>
-        {isMobile && showControls && (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        margin: "5%"
+      }}
+    >
+      <PositionLabel
+        position={testimony.position}
+        avatar="individualUser.svg"
+      />
+      <TestimonyItemContentStyle>
+        <TestimonyItemHeader>
           <>
-            <Internal href={formUrl(testimony.billId, testimony.court)}>
-              <Image
-                className="px-2 ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt="Edit icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
-            <Internal href={billLink}>
-              <Image
-                className="px-2 align-self-center"
-                src="/delete-testimony.svg"
-                alt="Delete testimony icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
+            {/* NAME OF USER/ORGANIZATION */}
+            <div className="authorAndVersion">
+              <Author testimony={testimony} />
+              {testimony.version > 1 && <p className="version">Edited</p>}
+            </div>
+            {isMobile && showControls && (
+              <>
+                <Internal href={formUrl(testimony.billId, testimony.court)}>
+                  <Image
+                    src="/edit-testimony.svg"
+                    alt="Edit icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
+
+                <Internal href={`/bill?id=${testimony.billId}`}>
+                  <Image
+                    src="/delete-testimony.svg"
+                    alt="Delete testimony icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
+              </>
+            )}
           </>
-        )}
-      </div>
-      <div>
-        <Row className={`justify-content-between`}>
-          <Col className={`h5 fw-bold align-self-center`}>
+          <div>
             {showBillNumber && (
               <>
-                <Internal href={billLink}>
+                <Internal href={`/bill?id=${testimony.billId}`}>
                   {formatBillId(testimony.billId)}
                 </Internal>
                 {" · "}
               </>
             )}
-            {`${published} · `}
-            <Internal href={maple.testimony({ publishedId: testimony.id })}>
-              Full Text
-            </Internal>
-          </Col>
-          <Col
-            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          >
-            <PositionLabel position={testimony.position} avatar="sw" />
-          </Col>
-        </Row>
-        <Row className={`col m2`}>
-          <Col className={`p-4 ps-3`}>
-            <FormattedTestimonyContent testimony={testimony.content} />
-          </Col>
-          {showControls && (
-            <Col
-              className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
-              style={{
-                fontFamily: "nunito",
-                borderLeft: "1px solid rgb(200, 200, 200)",
-                minWidth: "20%"
-              }}
+            {/* DATE */}
+            {`${published}`}
+            {/* <Internal
+              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
             >
-              <Internal href={formUrl(testimony.billId, testimony.court)}>
-                Edit
-              </Internal>
-              <Internal href={billLink}>Delete</Internal>
-            </Col>
-          )}
-        </Row>
+              Full Text
+            </Internal> */}
+          </div>
+        </TestimonyItemHeader>
+        <hr />
+        {/*WRITTEN TESTIMONY*/}
+        <FormattedTestimonyContent testimony={testimony.content} />
+        {showControls && (
+          <div
+            style={{
+              fontFamily: "nunito",
+              borderLeft: "1px solid rgb(200, 200, 200)",
+              minWidth: "20%"
+            }}
+          >
+            <Internal href={formUrl(testimony.billId, testimony.court)}>
+              Edit
+            </Internal>
+            <Internal href={billLink}>Delete</Internal>
+          </div>
+        )}
         <ViewAttachment testimony={testimony} />
         {isReporting && (
           <ReportModal
@@ -354,7 +355,7 @@ export const TestimonyItem = ({
             ]}
           />
         )}
-      </div>
+      </TestimonyItemContentStyle>
     </div>
   )
 }
