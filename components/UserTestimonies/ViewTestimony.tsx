@@ -151,6 +151,10 @@ const TestimonyItemHeader = styled.div`
   justify-content: space-between;
   margin-bottom: -15px;
   width: 100%;
+  .authorAndVersion {
+    display: flex;
+    align-items: center;
+  }
 `
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   const profile = usePublicProfile(testimony.authorUid)
@@ -213,7 +217,10 @@ export const TestimonyItem = ({
         <TestimonyItemHeader>
           <>
             {/* NAME OF USER/ORGANIZATION */}
-            <Author testimony={testimony} />
+            <div className="authorAndVersion">
+              <Author testimony={testimony} />
+              <h2>edited</h2>
+            </div>
             {isMobile && showControls && (
               <>
                 <Internal href={formUrl(testimony.billId)}>
