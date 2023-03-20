@@ -75,7 +75,7 @@ export const Tabs = (props: {
     const selected = tabRefs.current[selectedTab - 1]
     if (selected) {
       setSliderWidth(selected.clientWidth)
-      setSliderPos(selected.offsetLeft)
+      setSliderPos(selected.offsetLeft - 16)
     }
   }, [selectedTab, viewportWidth])
 
@@ -141,10 +141,12 @@ const TabSliderTrackStyle = styled.div`
   align-self: center;
   width: 80%;
   height: 1px;
+  margin: 0;
+  padding: 0;
   position: absolute;
   z-index: 9;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-52.5%);
 `
 
 export const TabSliderStyle = styled.div<{
