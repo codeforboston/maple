@@ -2,7 +2,13 @@ import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import React, { RefObject, useRef, useState, ReactEventHandler } from "react"
+import React, {
+  RefObject,
+  useRef,
+  useState,
+  ReactEventHandler,
+  useEffect
+} from "react"
 import { ListGroup, ListGroupItem } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
@@ -17,7 +23,10 @@ import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
+import { PaginationButtons } from "components/table"
 import { ReportModal } from "./ReportModal"
+import { Tab, Tabs } from "./Tabs"
+import { AuthorType } from "../db"
 
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
@@ -40,13 +49,50 @@ const ViewTestimony = (
   }
 ) => {
   const {
+    pagination,
     items,
     setFilter,
     showControls = false,
     showBillNumber = false
   } = props
-  const testimony = items.result ?? []
+  const [testimony, setTestimony] = useState<Testimony[]>([])
+  useEffect(() => {
+    setTestimony(items.result ?? [])
+  }, [items])
 
+  const [activeTab, setActiveTab] = useState(1)
+
+  const handleTabClick = (e: Event, value: number) => {
+    setActiveTab(value)
+  }
+
+  const handleFilter = (filter: AuthorType) => {
+    setFilter({ authorType: filter })
+  }
+
+  const tabs = [
+    <Tab
+      key="at"
+      label="All Testimonies"
+      active={false}
+      value={1}
+      action={() => handleFilter("")}
+    />,
+    <Tab
+      key="uo"
+      label="Individuals"
+      active={false}
+      value={2}
+      action={() => handleFilter("Individual")}
+    />,
+    <Tab
+      key="oo"
+      label="Organizations"
+      active={false}
+      value={3}
+      action={() => handleFilter("Organization")}
+    />
+  ]
   return (
     <Container>
       <MapleCard
