@@ -12,6 +12,6 @@ export const checkSearchIndexVersion = runWith({
     if (message.json.check !== true)
       throw Error('Expected { "check": true } message')
     for (const config of getRegisteredConfigs()) {
-      await new SearchIndexer(config).scheduleUpgradeIfNeeded()
+      await new SearchIndexer(config).scheduleUpgradeIfNeeded(message.json)
     }
   })

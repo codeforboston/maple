@@ -7,6 +7,12 @@ import { ImportError, ObjectNotFound } from "typesense/lib/Typesense/Errors"
 import { db, DocumentSnapshot, FieldValue, QuerySnapshot } from "../firebase"
 import { createClient } from "./client"
 import { CollectionConfig } from "./config"
+import { z } from "zod"
+
+export const BackfillConfig = z.object({
+  numBatches: z.number().positive().optional()
+})
+export type BackfillConfig = z.infer<typeof BackfillConfig>
 
 export class SearchIndexer {
   private readonly batchSize = 100
@@ -25,21 +31,26 @@ export class SearchIndexer {
 
   static upgradePath = (alias: string) => `/search/upgrade-${alias}`
 
-  async scheduleUpgradeIfNeeded() {
+  async scheduleUpgradeIfNeeded(backfillConfig: unknown) {
+    const config = BackfillConfig.parse(backfillConfig)
     const { alias } = this.config
     const isCollectionUpToDate =
       this.collectionName === (await this.getCurrentCollectionName())
     if (!isCollectionUpToDate) {
       const upgradeDoc = db.doc(SearchIndexer.upgradePath(alias))
       await upgradeDoc.delete()
-      await upgradeDoc.create({ createdAt: FieldValue.serverTimestamp() })
+      await upgradeDoc.create({
+        createdAt: FieldValue.serverTimestamp(),
+        ...config
+      })
     }
   }
 
-  async performUpgrade() {
+  async performUpgrade(backfillConfig: unknown) {
+    const config = BackfillConfig.parse(backfillConfig)
     // Ensure collection exists
     await this.getCollection()
-    await this.backfill()
+    await this.backfill(config)
     await this.upgradeAlias()
   }
 
@@ -85,9 +96,13 @@ export class SearchIndexer {
       .create({ name: this.collectionName, ...this.config.schema })
   }
 
-  private async backfill() {
+  private async backfill({ numBatches }: BackfillConfig) {
     const { convert } = this.config
+    let currentBatch = 0
     for await (const batch of this.listCollection()) {
+      currentBatch++
+      if (numBatches && currentBatch > numBatches) return
+
       const docs = batch.map(d => convert(d.data()))
       const collection = await this.getCollection()
       try {

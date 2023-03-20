@@ -9,7 +9,7 @@ const SummaryContainer = styled(Container)`
   background-color: white;
   border-radius: 0.75rem;
   padding: 1rem;
-  background-image: url("quote-left.svg");
+  background-image: url("/quote-left.svg");
   background-repeat: no-repeat;
   background-size: 4rem;
   background-position: 0.5rem 0.5rem;
@@ -66,7 +66,7 @@ export const Summary = ({
             ) : (
               <links.External
                 className="fst-normal fs-body"
-                href={links.billPdfUrl(bill.id)}
+                href={links.billPdfUrl(bill.court, bill.id)}
               >
                 Download PDF
               </links.External>
@@ -90,7 +90,7 @@ export const Summary = ({
         </TitleFormat>
 
         <Divider xs="auto" />
-        <Col xs="auto">
+        <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
       </Row>

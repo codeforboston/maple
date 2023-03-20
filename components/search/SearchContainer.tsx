@@ -74,7 +74,7 @@ export const SearchContainer = styled.div`
   }
 
   .ais-RefinementList-item--selected .ais-RefinementList-checkbox {
-    background-image: url("check-solid.svg");
+    background-image: url("/check-solid.svg");
     background-size: 0.75rem;
     background-position: center;
     background-repeat: no-repeat;
@@ -82,7 +82,7 @@ export const SearchContainer = styled.div`
 
   .ais-SearchBox-form::after {
     background-color: var(--bs-blue);
-    mask: url("search-solid.svg");
+    mask: url("/search-solid.svg");
     content: "";
     height: 1rem;
     right: 0.5rem;
@@ -118,12 +118,20 @@ export const SearchContainer = styled.div`
     box-shadow: none;
   }
 
-  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(.ais-Pagination-item--disabled)
+  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(
+      .ais-Pagination-item--disabled
+    )
     .ais-Pagination-link:hover,
   .ais-Pagination-item--selected .ais-Pagination-link {
     background-color: var(--bs-blue-100);
     color: black;
     background-image: unset;
     border-color: var(--bs-body-bg);
+  }
+
+  .ais-FilterButton-has-refinements {
+    background: var(--bs-blue-100);
+    border-color: var(--bs-blue-100);
+    color: var(--bs-blue);
   }
 `

@@ -1,16 +1,22 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
 import styled from "styled-components"
-import { Bill, BillContent, MemberReference, useMember } from "../db"
+import { MemberReference, useMember } from "../db"
 import { memberLink } from "../links"
 import { FC } from "../types"
 import { BillProps } from "./types"
 
-const CoSponsorRow = ({ coSponsor }: { coSponsor: MemberReference }) => {
+const CoSponsorRow = ({
+  court,
+  coSponsor
+}: {
+  court: number
+  coSponsor: MemberReference
+}) => {
   const url = coSponsor
     ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}`
     : ""
-  const { member, loading } = useMember(coSponsor.Id)
+  const { member, loading } = useMember(court, coSponsor.Id)
   if (loading) {
     return null
   } else if (!member) {
@@ -32,11 +38,17 @@ const CoSponsorRow = ({ coSponsor }: { coSponsor: MemberReference }) => {
   }
 }
 
-const CoSponsorRows = ({ coSponsors }: { coSponsors: MemberReference[] }) => {
+const CoSponsorRows = ({
+  court,
+  coSponsors
+}: {
+  court: number
+  coSponsors: MemberReference[]
+}) => {
   return (
     <>
       {coSponsors.map((coSponsor, index) => {
-        return <CoSponsorRow coSponsor={coSponsor} key={index} />
+        return <CoSponsorRow court={court} coSponsor={coSponsor} key={index} />
       })}
     </>
   )
@@ -52,6 +64,7 @@ const StyledButton = styled(Button)`
 
 export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
   const billNumber = bill.id
+  const court = bill.court
   const coSponsors = bill.content.Cosponsors
   const numCoSponsors = coSponsors ? coSponsors.length : 0
   const [showBillCosponsors, setShowBillCosponsors] = useState(false)
@@ -66,7 +79,7 @@ export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
     <>
       <StyledButton
         variant="link"
-        className="m-1"
+        className="m-1 text-dark"
         onClick={handleShowBillCosponsors}
       >
         {children}
@@ -83,7 +96,7 @@ export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
           <>
             <Table responsive striped bordered hover>
               <tbody>
-                <CoSponsorRows coSponsors={coSponsors} />
+                <CoSponsorRows court={court} coSponsors={coSponsors} />
               </tbody>
             </Table>
           </>

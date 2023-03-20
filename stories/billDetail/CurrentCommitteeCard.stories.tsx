@@ -1,7 +1,6 @@
+import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-
-// TODO: move into components directory
-const CurrentCommitteeCard = () => <div>TODO</div>
+import { CurrentCommitteeCard } from "../../components/CurrentCommitteeCard/CurrentCommitteeCard"
 
 export default createMeta({
   title: "Bill Detail/CurrentCommitteeCard",
@@ -10,4 +9,9 @@ export default createMeta({
   component: CurrentCommitteeCard
 })
 
-export const Primary = () => <CurrentCommitteeCard />
+const Template: ComponentStory<typeof CurrentCommitteeCard> = args => (
+  <CurrentCommitteeCard {...args} />
+)
+
+export const Primary = Template.bind({})
+Primary.args = { chamber: "House", committee: "Committee of Ways and Means" }

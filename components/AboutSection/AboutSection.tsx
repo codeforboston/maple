@@ -4,8 +4,11 @@ import BackgroundLogo from "../LogoPlacements/BackgroundLogo"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./AboutSection.module.css"
+import { useTranslation } from "next-i18next"
 
 export default function AboutSection() {
+  const { t } = useTranslation("homepage")
+
   return (
     <Container fluid>
       <Row className={`${styles.angledTop}`}>
@@ -17,7 +20,7 @@ export default function AboutSection() {
           </ScrollTrackerContainer>
 
           <Col xs={10}>
-            <h1 className="text-white">About MAPLE</h1>
+            <h1 className="text-white">{t("About_MAPLE")}</h1>
           </Col>
           <Col xs={10} xxl={9}>
             <Row
@@ -27,24 +30,24 @@ export default function AboutSection() {
               className={`g-4 justify-content-center py-5`}
             >
               <AboutInfoCard
-                title="Who"
-                bodytext="Anyone can submit testimony to the MA legislature. Legislators tend to value testimony most when it comes from their own constituents, so testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district."
+                title={t("what.title")}
+                bodytext={t("what.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="When"
-                bodytext="Committees generally accept testimony up until the hearing date designated for a bill. You can use the bill pages on this website to identify relevant committee dates. Although some committees will accept testimony after this date, for the greatest impact you should submit your testimony before the hearing."
+                title={t("why.title")}
+                bodytext={t("why.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="Why"
-                bodytext="The key role of testimony is to let your legislators know how you feel about an issue. If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives."
+                title={t("how.title")}
+                bodytext={t("how.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="Where"
-                bodytext="Testimony is generally accepted by committees of the legislature by sending an email to their Chairs. This website, MAPLE, will help you to do this by making it easy to find a bill you want to testify in and then generate an email, which you fully control, which you can then send to the relevant personnel."
+                title={t("when.title")}
+                bodytext={t("when.bodytext")}
               ></AboutInfoCard>
               <AboutInfoCard
-                title="What"
-                bodytext="Your testimony will be most impactful when it feels distinctive and relevant, so be sure to write your own text and explain why you are interested in an issue.            "
+                title={t("who.title")}
+                bodytext={t("who.bodytext")}
               ></AboutInfoCard>
             </Row>
           </Col>

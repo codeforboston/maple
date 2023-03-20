@@ -3,7 +3,29 @@ import { DateTime } from "luxon"
 import { Null, Nullish, Optional, Runtype, String } from "runtypes"
 import { firestore } from "../firebase"
 
-export const currentGeneralCourt = 192
+export const currentGeneralCourt = 193
+
+type GeneralCourt = {
+  Name: string
+  Number: number
+  FirstYear: number
+  SecondYear: number
+}
+
+export const generalCourts: Record<number, GeneralCourt | undefined> = {
+  193: {
+    Name: "193rd (Current)",
+    Number: 193,
+    FirstYear: 2023,
+    SecondYear: 2024
+  },
+  192: {
+    Name: "192nd (2021 - 2022)",
+    Number: 192,
+    FirstYear: 2021,
+    SecondYear: 2022
+  }
+}
 
 export async function loadDoc(path: string) {
   const d = await getDoc(doc(firestore, path))

@@ -5,7 +5,7 @@ import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, Timestamp } from "../firebase"
-import { currentGeneralCourt } from "../malegislature"
+import { supportedGeneralCourts } from "../malegislature"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
@@ -188,10 +188,7 @@ class PublishTestimonyTransaction {
   }
 
   private async checkValidCourt(court: number) {
-    // TODO: Generate court documents and check for existence of the document
-    // const doc = await db.doc(`/generalCourts/${court}`).get()
-    // const valid = doc.exists
-    const valid = court === currentGeneralCourt
+    const valid = supportedGeneralCourts.includes(court)
 
     if (!valid) {
       throw fail(

@@ -12,6 +12,10 @@ service cloud.firestore {
       allow write: if false;
     }
     match /profiles/{uid} {
+      function validUser() {
+        return request.auth.uid == uid
+      }
+
       function validRoleChange() {
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
       }
@@ -25,9 +29,9 @@ service cloud.firestore {
       // Only writable by the user.
       // Do not allow users to delete their profile, set the role field.
       // Only normal "user" roles can toggle visibility.
-      // or if the profile is an organization.
       allow read: if resource.data.public || request.auth.uid == uid
-      allow create, update: if request.auth.uid == uid && validRoleChange() && validPublicChange()
+      allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
+      allow update: if validUser() && validRoleChange() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
@@ -40,9 +44,19 @@ service cloud.firestore {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
+      match /userNotificationFeed/{id} {
+        // TODO: do not allow users to modify content, only view status.
+        // private, only accessible by the user
+        allow read, write: if request.auth.uid == uid
+      }
+      match /activeTopicSubscriptions/{topicName} {
+        // private, only accessible by the user
+        allow read, write: if request.auth.uid == uid
+      }
       match /archivedTestimony/{id} {
-        // Not accessible by users, for record keeping.
-        allow read, write: if false
+        // Publicly readable, for posterity.
+        allow read: if true 
+        allow write: if false
       }
     }
   }

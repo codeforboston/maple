@@ -13,7 +13,9 @@ import "instantsearch.css/themes/satellite.css"
 
 import { applyLayout, AppPropsWithLayout } from "../components/page"
 import { Providers } from "../components/providers"
-
+import { wrapper } from "../components/store"
+import { Provider as Redux } from "react-redux"
+import { appWithTranslation } from "next-i18next"
 /**
  * The root React component of the application. Next.js renders this, passing
  * the component of the current page. When you navigate to a new page, Next.js
@@ -24,8 +26,15 @@ import { Providers } from "../components/providers"
  *
  * See https://nextjs.org/docs/basic-features/layouts for the pattern.
  */
-function App(props: AppPropsWithLayout) {
-  return <Providers>{applyLayout(props)}</Providers>
+function App({ Component, ...rest }: AppPropsWithLayout) {
+  const { store, props } = wrapper.useWrappedStore(rest)
+  return (
+    <Redux store={store}>
+      <Providers>{applyLayout({ Component, ...props })}</Providers>
+    </Redux>
+  )
 }
 
-export default App
+const WrappedApp = appWithTranslation(App)
+
+export default WrappedApp

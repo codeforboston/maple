@@ -1,9 +1,12 @@
 import {
   RefinementListUiComponent,
+  useInstantSearch,
   useRefinementListUiProps
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { generalCourts } from "components/db/common"
+import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -18,6 +21,12 @@ export const FilterButton = styled(Button)`
   align-self: flex-start;
 `
 
+const useHasRefinements = () => {
+  const { results } = useInstantSearch()
+  const refinements = results.getRefinements()
+  return refinements.length !== 0
+}
+
 export const useRefinements = () => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -30,6 +39,21 @@ export const useRefinements = () => {
 
   const baseProps = { limit: 5, searchable: true }
   const refinementProps = [
+    useRefinementListUiProps({
+      transformItems: useCallback(
+        (i: RefinementListItem[]) =>
+          i
+            .map(i => ({
+              ...i,
+              label: generalCourts[i.value as any]?.Name ?? i.label
+            }))
+            .sort((a, b) => Number(b.value) - Number(a.value)),
+        []
+      ),
+      attribute: "court",
+      searchablePlaceholder: "General Court",
+      ...baseProps
+    }),
     useRefinementListUiProps({
       attribute: "city",
       searchablePlaceholder: "City",
@@ -59,6 +83,7 @@ export const useRefinements = () => {
       ))}
     </>
   )
+  const hasRefinements = useHasRefinements()
 
   return {
     options: inline ? (
@@ -76,7 +101,12 @@ export const useRefinements = () => {
       </Offcanvas>
     ),
     show: inline ? null : (
-      <FilterButton variant="secondary" active={show} onClick={handleOpen}>
+      <FilterButton
+        variant="secondary"
+        active={show}
+        onClick={handleOpen}
+        className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+      >
         <FontAwesomeIcon icon={faFilter} /> Filter
       </FilterButton>
     )

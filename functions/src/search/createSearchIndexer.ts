@@ -12,8 +12,8 @@ export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
       secrets: ["TYPESENSE_API_KEY"]
     })
       .firestore.document(SearchIndexer.upgradePath(config.alias))
-      .onCreate(async () => {
-        await new SearchIndexer(config).performUpgrade()
+      .onCreate(async snap => {
+        await new SearchIndexer(config).performUpgrade(snap.data())
       }),
     syncToSearchIndex: runWith({
       timeoutSeconds: 30,

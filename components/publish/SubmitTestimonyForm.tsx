@@ -72,7 +72,7 @@ const Form = ({
   return (
     <FormContainer>
       <links.Internal
-        href={`/bill?id=${bill!.id}`}
+        href={links.maple.bill(bill)}
         className={clsx(!synced && "pe-none")}
       >
         Back to Bill
@@ -96,7 +96,7 @@ const Overview = ({ className }: { className: string }) => (
       </div>
     </div>
     <div>
-      <Image className="ms-4 " alt="" src="writing.svg" />
+      <Image className="ms-4 " alt="" src="/writing.svg" />
     </div>
   </div>
 )
@@ -200,10 +200,12 @@ const SponsorList = styled.div`
       <>
         <Label>and it is sponsored by</Label>
         <SponsorList>
-          <Chip>
-            <Image alt="Primary Sponsor" src="star.svg" />
-            {primarySponsor.Name}
-          </Chip>
+          {primarySponsor && (
+            <Chip>
+              <Image alt="Primary Sponsor" src="/star.svg" />
+              {primarySponsor.Name}
+            </Chip>
+          )}
           {shown.map(m => (
             <Chip key={m.Id}>{m.Name}</Chip>
           ))}

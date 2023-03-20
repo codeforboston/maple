@@ -1,6 +1,14 @@
 import { readFileSync } from "fs"
 import papa from "papaparse"
-import { Array, Literal, Optional, Record, String, Tuple } from "runtypes"
+import {
+  Array,
+  Literal,
+  Optional,
+  Record,
+  String,
+  Tuple,
+  Union
+} from "runtypes"
 import { performDeleteTestimony } from "../../functions/src/testimony"
 import { Script } from "./types"
 
@@ -11,7 +19,7 @@ const Csv = Record({
 })
 const Args = Record({
   publicationsCsvPath: String,
-  force: Optional(Literal("true"))
+  force: Optional(Union(Literal("true"), Literal(true)))
 })
 
 /**

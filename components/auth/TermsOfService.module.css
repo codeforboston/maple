@@ -1,0 +1,23 @@
+.text {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.hr {
+  color: black;
+  background-color: black;
+  height: 10px;
+}
+
+.button {
+  width: 100%;
+}
+
+.warning {
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: none;
+}

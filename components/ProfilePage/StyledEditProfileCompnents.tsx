@@ -7,35 +7,25 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
 }))`
   display: flex;
-  justify-content: center;
+
   height: 2.5em;
 
   .nav-item {
-    width: 50%;
-  }
-
-  @media (min-width: 768px) {
-    justify-content: flex-start;
-    height: 2.25em;
-
-    .nav-item {
-      width: auto;
-    }
+    flex-grow: 1;
+    width: auto;
   }
 
   text-align: center;
-  margin: 0 1rem;
   font-family: Nunito;
   font-size: 1.25rem;
   color: var(--bs-dark);
 
   .nav-link.active {
-    height: 4.4rem;
+    color: #c71e32;
   }
 
   .nav-link {
     cursor: pointer;
-    background-color: white;
     overflow: visible;
     width: auto;
     margin: 0 1rem;
@@ -70,8 +60,16 @@ export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   }
 `
 export const StyledTabContent = styled(TabContent)`
-  margin-top: -0.5rem;
+  margin-top: 3.5rem;
   z-index: -1;
+
+  @media (min-width: 329px) {
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 517px) {
+    margin-top: -0.5rem;
+  }
 `
 
 export const Header = styled(Row)`
@@ -82,21 +80,18 @@ export const Header = styled(Row)`
   margin-left: 1rem;
   height: 16rem;
   align-items: center;
-  /* flex-direction: column ; */
-
-  /* @media only screen and (min-width: 576px) {
-    flex-direction: row ;
-  } */
 `
 
 export const ProfileDisplayName = styled(Col).attrs(props => ({
   className: `${props.className}`
 }))`
   margin: 0;
+  max-height: 108px;
   font-family: Nunito;
   font-weight: 500;
-  letter-spacing: -0.63px;
-  text-align: justify;
+  font-size: 39px;
+  letter-spacing: -0.015em;
+  text-align: left;
   color: #000;
 
   .firstName {
@@ -110,16 +105,43 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
 
 export const UserIcon = styled(Image).attrs(props => ({
   alt: "",
-  src: props.src || "profile-icon.svg",
+  src: props.src || "/profile-individual-icon.svg",
   className: props.className
 }))`
   height: 8rem;
   width: 8rem;
   margin: 1rem;
   border-radius: 50%;
-  background-color: var(--bs-blue);
+  background-color: var(--bs-white);
   flex: 0;
 `
+
+export const OrgIconLarge = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 8rem;
+  width: 8rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
+export const OrgIconSmall = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 3rem;
+  width: 3rem;
+  margin: 1rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
 export const VerifiedBadge = styled.div.attrs(props => ({
   className: props.className
 }))`

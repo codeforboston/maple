@@ -1,3 +1,4 @@
+import { currentGeneralCourt } from "components/db/common"
 import { User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
@@ -132,7 +133,7 @@ describe("publishTestimony", () => {
   })
 
   it("Publishes testimony on scraped bills", async () => {
-    const { draftId } = await createDraft(uid, "H1")
+    const { draftId } = await createDraft(uid, "H1", 192)
     const res = await publishTestimony({ draftId })
     const publication = await getPublication(uid, res.data.publicationId)
     expect(publication).toBeDefined()
@@ -237,9 +238,7 @@ describe("publishTestimony", () => {
       setDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`), {})
     )
 
-    await expectPermissionDenied(
-      getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
-    )
+    await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
   })
 
   describe("attachments", () => {
@@ -428,12 +427,16 @@ async function createDraftAttachment(uid: string, id: string, content: string) {
   })
 }
 
-async function createDraft(uid: string, billId: string) {
+async function createDraft(
+  uid: string,
+  billId: string,
+  court = currentGeneralCourt
+) {
   const draftId = "test-draft-id"
   const draft: DraftTestimony = {
     billId,
     content: "test testimony",
-    court: 192,
+    court,
     position: "endorse",
     attachmentId: null
   }

@@ -4,10 +4,11 @@
 #   https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command
 
 version: "3"
-name: dtp-backend
+name: maple
 services:
   search:
-    image: typesense/typesense:0.23.1
+    build:
+      dockerfile: Dockerfile.search
     volumes:
       - search:/app/data
     ports:
@@ -17,18 +18,28 @@ services:
       TYPESENSE_API_KEY: test-api-key
       TYPESENSE_ENABLE_CORS: "true"
     cpu_count: 2
+    healthcheck:
+      test: curl -f localhost:8108/health || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
 
   firebase:
     build:
       context: ..
-      dockerfile: infra/Dockerfile
-      target: firebase
-    command: >
-      yarn firebase
-      --project demo-dtp emulators:start
-      --only auth,functions,pubsub,firestore,storage
-      --import tests/integration/exportedTestData
+      dockerfile: infra/Dockerfile.firebase
+    command: yarn emulators:start
     working_dir: /app
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: curl -f localhost:5001/demo-dtp/us-central1/healthCheck || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
     volumes:
       - ..:/app
 
@@ -37,10 +48,6 @@ services:
 
       # Override firebase.json to bind to all container interfaces
       - ./firebase.compose.json:/app/firebase.json
-
-      # Prevent host node_modules from overriding the image modules.
-      - /app/node_modules/
-      - /app/functions/node_modules/
     ports:
       - 9099:9099
       - 5001:5001
@@ -48,29 +55,56 @@ services:
       - 3010:3010
       - 8085:8085
       - 9199:9199
+      - 4400:4400
+      - 4500:4500
+      - 9299:9299
 
-  builder:
-    image: node:16-alpine
+  search-backfill:
+    build:
+      dockerfile: Dockerfile.node
+    command: yarn dev:backfill
+    environment:
+      FIREBASE_HOST: firebase
+    working_dir: /app
+    depends_on:
+      firebase:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    volumes:
+      - ..:/app
+
+  init:
+    build:
+      dockerfile: Dockerfile.node
+    command: sh -c 'yarn --immutable && yarn --cwd functions build'
+    working_dir: /app
+    volumes:
+      - ..:/app
+
+  fn-builder:
+    build:
+      dockerfile: Dockerfile.node
     command: yarn --cwd functions build:watch
     working_dir: /app
+    depends_on:
+      init:
+        condition: service_completed_successfully
     volumes:
       - ..:/app
 
   next:
     build:
-      context: ..
-      dockerfile: infra/Dockerfile
-      target: firebase
+      dockerfile: Dockerfile.node
     command: yarn dev
     working_dir: /app
+    depends_on:
+      init:
+        condition: service_completed_successfully
     ports:
       - 3000:3000
     volumes:
       - ..:/app
-
-      # Prevent host node_modules from overriding the image modules.
-      - /app/node_modules/
-      - /app/functions/node_modules/
     environment:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108

@@ -11,7 +11,6 @@ import {
 import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
 import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import { firestore } from "../../firebase"
-import { currentGeneralCourt } from "../common"
 import { resolveBillTestimony } from "./resolveTestimony"
 import {
   deleteTestimony,
@@ -84,12 +83,14 @@ export interface UseEditTestimony {
  */
 export function useEditTestimony(
   uid: string,
+  court: number,
   billId: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
     uid,
+    court,
     billId
   })
 
@@ -128,17 +129,17 @@ export function useEditTestimony(
 }
 
 function useTestimony(
-  { uid, billId, draftRef, publicationRef }: State,
+  { uid, billId, draftRef, publicationRef, court }: State,
   dispatch: Dispatch<Action>
 ) {
   useEffect(() => {
-    resolveBillTestimony(uid, billId)
+    resolveBillTestimony(uid, court, billId)
       .then(({ draft, publication }) => {
         dispatch({ type: "resolveDraft", id: draft?.id })
         dispatch({ type: "resolvePublication", id: publication?.id })
       })
       .catch(error => dispatch({ type: "error", error }))
-  }, [billId, dispatch, uid])
+  }, [billId, court, dispatch, uid])
 
   useEffect(() => {
     if (draftRef)
@@ -215,7 +216,7 @@ type SaveDraftRequest = Pick<
   "position" | "content" | "attachmentId"
 >
 function useSaveDraft(
-  { draftRef, draftLoading, billId, uid }: State,
+  { draftRef, draftLoading, billId, uid, court }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
@@ -227,7 +228,7 @@ function useSaveDraft(
           const newDraft: WorkingDraft = {
             billId,
             content,
-            court: currentGeneralCourt,
+            court,
             position,
             attachmentId: attachmentId ?? null
           }
@@ -246,13 +247,14 @@ function useSaveDraft(
           })
         }
       },
-      [billId, dispatch, draftLoading, draftRef, uid]
+      [billId, dispatch, draftLoading, draftRef, uid, court]
     ),
     { onError: error => dispatch({ type: "error", error }) }
   )
 }
 
 type State = {
+  court: number
   uid: string
   billId: string
   error?: Error
