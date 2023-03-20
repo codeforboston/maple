@@ -324,6 +324,13 @@ export const TestimonyItem = ({
         <hr />
         {/*WRITTEN TESTIMONY*/}
         <FormattedTestimonyContent testimony={testimony.content} />
+        <MoreButton>
+          <ListGroup>
+            <ListGroup.Item action onClick={() => setIsReporting(true)}>
+              Report
+            </ListGroup.Item>
+          </ListGroup>
+        </MoreButton>
         {showControls && (
           <div
             style={{
