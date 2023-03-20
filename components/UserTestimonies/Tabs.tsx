@@ -47,13 +47,24 @@ export const Tabs = (props: {
   const [resizing, setResizing] = useState(false)
   const [sliderPos, setSliderPos] = useState(0)
 
+  const handleResize = () => {
+    setViewportWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
   useEffect(() => {
     const selected = tabRefs.current[selectedTab - 1]
     if (selected) {
       setSliderWidth(selected.clientWidth)
       setSliderPos(selected.offsetLeft)
     }
-  }, [selectedTab])
+  }, [selectedTab, viewportWidth])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
