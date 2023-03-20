@@ -9,9 +9,19 @@ import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 
-export const TabSlider = (props: { width: number; position: number }) => {
-  const { width, position } = props
-  return <TabSliderStyle width={width ?? 200} position={position} />
+export const TabSlider = (props: {
+  width: number
+  position: number
+  resizing: boolean
+}) => {
+  const { width, position, resizing } = props
+  return (
+    <TabSliderStyle
+      width={width ?? 200}
+      position={position}
+      resizing={resizing}
+    />
+  )
 }
 
 export const TabSliderContainer = (props: { children?: JSX.Element[] }) => {
@@ -48,7 +58,10 @@ export const Tabs = (props: {
   const [sliderPos, setSliderPos] = useState(0)
 
   const handleResize = () => {
+    setResizing(true)
     setViewportWidth(window.innerWidth)
+    if (tabRefs.current[selectedTab - 1]?.offsetLeft === sliderPos)
+      setResizing(false)
   }
 
   useEffect(() => {
@@ -88,7 +101,11 @@ export const Tabs = (props: {
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
         <TabSliderTrackStyle />
-        <TabSlider width={sliderWidth} position={sliderPos} />
+        <TabSlider
+          width={sliderWidth}
+          position={sliderPos}
+          resizing={resizing}
+        />
       </TabSliderContainer>
     </ComponentContainer>
   )
@@ -112,7 +129,6 @@ const TabStyle = styled.div<{ active: boolean }>`
   cursor: pointer;
   outline: none;
 `
-//track
 const TabSliderContainerStyle = styled.div`
   display: flex;
   align-items: center;
@@ -131,8 +147,12 @@ const TabSliderTrackStyle = styled.div`
   transform: translateX(-50%);
 `
 
-export const TabSliderStyle = styled.div<{ width: number; position: number }>`
-  transition: all 0.4s;
+export const TabSliderStyle = styled.div<{
+  width: number
+  position: number
+  resizing: boolean
+}>`
+  transition: ${props => `${props.resizing ? "0s" : "all 0.4s"}`};
   width: ${props => `${props.width}px`};
   height: 3px;
   background-color: #c71e32;

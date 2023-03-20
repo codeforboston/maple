@@ -61,21 +61,21 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => handleFilter(undefined)}
+      action={() => handleFilter("")}
     />,
     <Tab
       key="uo"
       label="Individuals"
       active={false}
       value={2}
-      action={() => handleFilter("Individuals")}
+      action={() => handleFilter("Individual")}
     />,
     <Tab
       key="oo"
       label="Organizations"
       active={false}
       value={3}
-      action={() => handleFilter("Organizations")}
+      action={() => handleFilter("Organization")}
     />
   ]
 
