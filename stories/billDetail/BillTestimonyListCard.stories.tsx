@@ -1,6 +1,7 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { BillTestimonies } from "../../components/bill/BillTestimonies"
+import { Timestamp } from "firebase/firestore"
 
 // TODO: move into components directory
 const BillTestimonyListCard = BillTestimonies
@@ -21,15 +22,44 @@ const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
 export const Primary = Template.bind({})
 Primary.args = {
   bill: {
-    Title: "An Act fostering voting opportunities, trust, equity, and security",
-    BillNumber: "H805",
-    DocketNumber: "string",
-    GeneralCourtNumber: 999,
-    PrimarySponsor: first,
-    Cosponsors: [first],
-    LegislationTypeName: "string",
-    Pinslip: "string",
-    DocumentText: "string"
-  },
-  className: "janet"
+    id: "H805",
+    court: 192,
+    content: {
+      Title:
+        "An Act fostering voting opportunities, trust, equity, and security",
+      BillNumber: "H805",
+      DocketNumber: "string",
+      GeneralCourtNumber: 999,
+      PrimarySponsor: first,
+      Cosponsors: [first],
+      LegislationTypeName: "string",
+      Pinslip: "string",
+      DocumentText: "string"
+    },
+    cosponsorCount: 0,
+    testimonyCount: 0,
+    endorseCount: 0,
+    opposeCount: 0,
+    neutralCount: 0,
+    fetchedAt: Timestamp.fromMillis(0),
+    history: [
+      {
+        Date: "1",
+        Branch: "1",
+        Action: "1"
+      }
+    ]
+  }
 }
+// {
+//   Title: "An Act fostering voting opportunities, trust, equity, and security",
+//   BillNumber: "H805",
+//   DocketNumber: "string",
+//   GeneralCourtNumber: 999,
+//   PrimarySponsor: first,
+//   Cosponsors: [first],
+//   LegislationTypeName: "string",
+//   Pinslip: "string",
+//   DocumentText: "string"
+// },
+// className: "janet"
