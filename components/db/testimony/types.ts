@@ -28,7 +28,8 @@ export const BaseTestimony = R({
   court: Number,
   position: Position,
   content: Content,
-  attachmentId: Maybe(String)
+  attachmentId: Maybe(String),
+  authorType: String
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 export type AuthorType = undefined | "Individuals" | "Organizations"
@@ -36,7 +37,6 @@ export type Testimony = Static<typeof Testimony>
 export const Testimony = BaseTestimony.extend({
   authorUid: Id,
   id: Id,
-  authorType: String,
   authorDisplayName: String,
   version: Number,
   publishedAt: InstanceOf(Timestamp),
