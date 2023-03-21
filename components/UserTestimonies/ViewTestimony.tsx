@@ -126,7 +126,7 @@ const ViewTestimony = (
                 <b>Be the first and add one!</b>
               </NoResults>
             )}
-            <div className="p-3" />
+            {/* <div className="p-3" /> */}
             <PaginationButtons pagination={pagination} />
           </BootstrapCard.Body>
         }
