@@ -49,7 +49,9 @@ export function useProfile() {
         updatingProfileImage: false,
         updatingSocial: {
           linkedIn: false,
-          twitter: false
+          twitter: false,
+          instagram: false,
+          fb: false
         },
         updatingBillsFollowing: false,
         profile

@@ -16,6 +16,7 @@ const maxTestimonyLength = 10_000
 const BaseTestimony = R({
   billId: Id,
   court: Number,
+  billTitle: RtString,
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString.withConstraint(
     s => s.length > 0 && s.length < maxTestimonyLength

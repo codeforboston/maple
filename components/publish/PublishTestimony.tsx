@@ -12,7 +12,7 @@ import * as nav from "./NavigationButtons"
 import { StepHeader } from "./StepHeader"
 import { YourTestimony } from "./TestimonyPreview"
 
-type UsePublisTestimony = ReturnType<typeof usePublishTestimony>
+type UsePublishTestimony = ReturnType<typeof usePublishTestimony>
 function usePublishTestimony() {
   const dispatch = useAppDispatch()
   const { sync, draft, publication } = usePublishState()
@@ -50,7 +50,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
   )
 })``
 
-const PublishButton = ({ publish }: { publish: UsePublisTestimony }) => {
+const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
   return (
     <LoadingButton
       disabled={publish.alreadyPublished || !publish.synced}

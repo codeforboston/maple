@@ -91,7 +91,7 @@ export const ProfileHeader = ({
         </Col>
       ) : (
         <Col xs={"auto"}>
-          <UserIcon />
+          <UserIcon src={imageSrc} />
         </Col>
       )}
       <Col>
@@ -103,7 +103,7 @@ export const ProfileHeader = ({
           {isOrg && (
             <>
               {isUser ? (
-                <EditProfileButton isMobile={isMobile} />
+                <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
                 <FollowButton
                   onFollowClick={() => handleFollowClick()}
@@ -120,7 +120,9 @@ export const ProfileHeader = ({
         {isOrg ? (
           <OrgContactInfo profile={profile} />
         ) : (
-          <div>{isUser && <EditProfileButton isMobile={isMobile} />}</div>
+          <div className="justify-content-end d-flex">
+            {isUser && <EditProfileButton isOrg={isOrg} isMobile={isMobile} />}
+          </div>
         )}
       </Col>
     </Header>

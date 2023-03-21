@@ -2,28 +2,35 @@ import { formUrl } from "components/publish/hooks"
 import { ListGroup } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { Col, Row, Stack } from "../bootstrap"
+import { Col, Row, Stack, Button } from "../bootstrap"
+import styled from "styled-components"
 import { Testimony } from "../db"
-import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
-import { PositionLabel } from "./PositionBug"
+import { UserInfoHeader } from "./UserInfoHeader"
+import { BillInfoHeader } from "./BillInfoHeader"
 import { ReportModal } from "./ReportModal"
 import { useState } from "react"
-import { FormattedTestimonyContent } from "./FormattedTestimonyItem"
+import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
+
+const FooterButton = styled(Button)`
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+`
 
 export const TestimonyItem = ({
   testimony,
   isUser,
-  showBillNumber
+  showBillInfo
 }: {
   testimony: Testimony
   isUser: boolean
-  showBillNumber: boolean
+  showBillInfo: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const published = testimony.publishedAt.toDate().toLocaleDateString()
+  const publishedDate = testimony.publishedAt.toDate().toLocaleDateString()
 
   const billLink = maple.bill({
     id: testimony.billId,
@@ -31,6 +38,15 @@ export const TestimonyItem = ({
   })
 
   const [isReporting, setIsReporting] = useState(false)
+
+  const testimonyContent = testimony.content
+
+  const snippetChars = 500
+  const [showAllTestimony, setShowAllTestimony] = useState(false)
+  const snippet = showAllTestimony
+    ? testimonyContent
+    : testimonyContent.slice(0, snippetChars)
+  const canExpand = snippet.length !== testimonyContent.length
 
   return (
     <div className={styles.itemrow}>
@@ -63,62 +79,66 @@ export const TestimonyItem = ({
       </div>
       <Stack gap={2}>
         <Row className={`justify-content-between align-items-center`}>
-          <Col xs="auto">
-            {showBillNumber && (
-              <h3 className="mt-0 mb-0">
-                <Internal className={styles.link} href={billLink}>
-                  {formatBillId(testimony.billId)}
-                </Internal>
-              </h3>
-            )}
-          </Col>
-
-          <Col xs="auto">
-            <PositionLabel position={testimony.position} />
-          </Col>
-          <Col className={`ms-auto d-flex justify-content-sm-end`}>
-            {`${published}`}
-          </Col>
+          {showBillInfo ? (
+            <BillInfoHeader
+              testimony={testimony}
+              billLink={billLink}
+              publishedDate={publishedDate}
+            />
+          ) : (
+            <UserInfoHeader
+              testimony={testimony}
+              billLink={billLink}
+              publishedDate={publishedDate}
+            />
+          )}
         </Row>
         <Row className={`col m2`}>
-          <FormattedTestimonyContent testimony={testimony.content} />
+          <TestimonyContent className="col m2" testimony={snippet} />
         </Row>
         <Row xs="auto" className={`col m2`}>
-          <Col>
-            <Internal
-              className={styles.link}
-              href={maple.testimony({ publishedId: testimony.id })}
-            >
-              More Details
-            </Internal>
-          </Col>
           {isUser ? (
-            <>
-              <Col>
+            <Col>
+              <FooterButton variant="link">
                 <Internal
                   className={styles.link}
-                  href={formUrl(testimony.billId, testimony.court)}
+                  href={maple.testimony({ publishedId: testimony.id })}
                 >
-                  Edit
+                  More Details
                 </Internal>
+              </FooterButton>
+            </Col>
+          ) : (
+            <>
+              <Col>
+                <FooterButton
+                  variant="link"
+                  onClick={() => setIsReporting(true)}
+                >
+                  Report
+                </FooterButton>
               </Col>
               <Col>
-                <Internal className={styles.link} href={billLink}>
-                  Delete
-                </Internal>
+                <FooterButton variant="link">
+                  <ViewAttachment testimony={testimony} />
+                </FooterButton>
+              </Col>
+
+              <Col>
+                {canExpand && (
+                  <FooterButton
+                    variant="link"
+                    onClick={() => setShowAllTestimony(true)}
+                  >
+                    Show More
+                  </FooterButton>
+                )}
               </Col>
             </>
-          ) : (
-            <Col>
-              <ListGroup.Item action onClick={() => setIsReporting(true)}>
-                Report
-              </ListGroup.Item>
-            </Col>
           )}
         </Row>
       </Stack>
 
-      <ViewAttachment testimony={testimony} />
       {isReporting && (
         <ReportModal
           onClose={() => setIsReporting(false)}

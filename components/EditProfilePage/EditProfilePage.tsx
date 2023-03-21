@@ -12,7 +12,7 @@ import {
 } from "../db"
 import { Internal } from "../links"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
-import { AboutMeEditForm } from "./AboutMeEditForm"
+import { PersonalInfoTab } from "./PersonalInfoTab"
 import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
 import {
@@ -20,6 +20,7 @@ import {
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileComponents"
+import { TestimoniesTab } from "./TestimoniesTab"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -86,7 +87,7 @@ export function EditProfileForm({
       title: "Personal Information",
       eventKey: "AboutYou",
       content: (
-        <AboutMeEditForm
+        <PersonalInfoTab
           profile={profile}
           actions={actions}
           uid={uid}
@@ -98,14 +99,7 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: (
-        <ViewTestimony
-          {...testimony}
-          showControls={true}
-          showBillNumber
-          className="mt-3 mb-4"
-        />
-      )
+      content: <TestimoniesTab {...testimony} className="mt-3 mb-4" />
     },
     {
       title: "Following",

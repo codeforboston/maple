@@ -84,14 +84,16 @@ export interface UseEditTestimony {
 export function useEditTestimony(
   uid: string,
   court: number,
-  billId: string
+  billId: string,
+  billTitle: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
     uid,
     court,
-    billId
+    billId,
+    billTitle
   })
 
   useTestimony(state, dispatch)
@@ -216,7 +218,7 @@ type SaveDraftRequest = Pick<
   "position" | "content" | "attachmentId"
 >
 function useSaveDraft(
-  { draftRef, draftLoading, billId, uid, court }: State,
+  { draftRef, draftLoading, billId, billTitle, uid, court }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
@@ -227,6 +229,7 @@ function useSaveDraft(
         } else if (!draftRef) {
           const newDraft: WorkingDraft = {
             billId,
+            billTitle,
             content,
             court,
             position,
@@ -247,7 +250,7 @@ function useSaveDraft(
           })
         }
       },
-      [billId, dispatch, draftLoading, draftRef, uid, court]
+      [billId, billTitle, dispatch, draftLoading, draftRef, uid, court]
     ),
     { onError: error => dispatch({ type: "error", error }) }
   )
@@ -257,6 +260,7 @@ type State = {
   court: number
   uid: string
   billId: string
+  billTitle: string
   error?: Error
 
   draft?: WorkingDraft

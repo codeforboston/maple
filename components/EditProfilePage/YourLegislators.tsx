@@ -5,7 +5,7 @@ import { SelectLegislators } from "../ProfilePage/SelectLegislators"
 
 export const YourLegislators = () => {
   return (
-    <StyledBody>
+    <>
       <Row className="row-cols-2 m-0">
         <Col className="your-legislators-width">
           <SelectLegislators />
@@ -24,6 +24,6 @@ export const YourLegislators = () => {
           </p>
         </Col>
       </Row>
-    </StyledBody>
+    </>
   )
 }

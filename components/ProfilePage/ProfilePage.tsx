@@ -9,13 +9,7 @@ import { StyledContainer, Banner } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import {
-  Profile,
-  ProfileMember,
-  SocialLinks,
-  Testimony,
-  ContactInfo
-} from "../db"
+import { ProfileMember } from "../db"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -43,13 +37,13 @@ export function ProfilePage(profileprops: {
 
   return (
     <>
-      {profile ? (
+      {loading ? (
+        <Row>
+          <Spinner animation="border" className="mx-auto" />
+        </Row>
+      ) : (
         <>
-          {loading ? (
-            <Row>
-              <Spinner animation="border" className="mx-auto" />
-            </Row>
-          ) : (
+          {profile ? (
             <>
               {isUser && <Banner>Currently viewing your profile</Banner>}
               <StyledContainer>
@@ -90,7 +84,7 @@ export function ProfilePage(profileprops: {
                     <ViewTestimony
                       {...testimony}
                       isUser={isUser}
-                      showBillNumber
+                      showBillInfo={true}
                       className="mb-4"
                       isOrg
                     />
@@ -98,11 +92,11 @@ export function ProfilePage(profileprops: {
                 </Row>
               </StyledContainer>
             </>
+          ) : (
+            <ErrorPage statusCode={404} withDarkMode={false} />
           )}
         </>
-      ) : (
-        <ErrorPage statusCode={404} withDarkMode={false} />
-      )}
+      )}{" "}
     </>
   )
 }

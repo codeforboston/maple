@@ -24,7 +24,7 @@ const StyledHeader = styled.div.attrs({
   min-width: 15rem;
   border-radius: 1rem 1rem 0 0;
 `
-const StyledBody = styled(Card.Body)`
+export const StyledBody = styled(Card.Body)`
   padding: 1.5rem 2rem;
 `
 const StyledFooter = styled(Card.Body)`
@@ -35,7 +35,7 @@ const StyledFooter = styled(Card.Body)`
   justify-content: end;
 `
 
-const Header = ({ title }: { title: string }) => {
+export const Header = ({ title }: { title: string }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (

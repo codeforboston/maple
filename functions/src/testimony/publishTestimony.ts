@@ -71,6 +71,7 @@ class PublishTestimonyTransaction {
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
       billId: this.draft.billId,
+      billTitle: this.draft.billTitle,
       content: this.draft.content,
       court: this.draft.court,
       position: this.draft.position,
