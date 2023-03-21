@@ -58,6 +58,9 @@ const ViewTestimony = (
   const [testimony, setTestimony] = useState<Testimony[]>([])
   useEffect(() => {
     setTestimony(items.result ?? [])
+    if (testimony.length > 0) {
+      testimony.forEach(item => console.log(item.authorUid))
+    }
   }, [items])
 
   const [activeTab, setActiveTab] = useState(1)
@@ -66,8 +69,8 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const handleFilter = (filter: AuthorType) => {
-    setFilter({ authorType: filter })
+  const handleFilter = (filter: AuthorType | null) => {
+    setFilter(filter ? { authorType: filter } : null)
   }
 
   const tabs = [
@@ -76,7 +79,7 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => handleFilter("")}
+      action={() => handleFilter(null)}
     />,
     <Tab
       key="uo"
