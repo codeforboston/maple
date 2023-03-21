@@ -271,7 +271,11 @@ export const TestimonyItem = ({
     >
       <PositionLabel
         position={testimony.position}
-        avatar="individualUser.svg"
+        avatar={
+          testimony.authorType === "Organization"
+            ? "organization.svg"
+            : "individualUser.svg"
+        }
       />
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
