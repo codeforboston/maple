@@ -15,7 +15,7 @@ const OurGoalsCardContent = () => {
             <Image
               className={styles.imgsize}
               fluid
-              src="/gov_key.png"
+              src="/gov-with-key.svg"
               alt="government building with key"
             />
             <figcaption className={`fw-bold ${styles.caption}`}>
@@ -29,7 +29,7 @@ const OurGoalsCardContent = () => {
             <Image
               className={styles.imgsize}
               fluid
-              src="/doc_arrows_people.png"
+              src="/doc-with-arrows-from-people.svg"
               alt="government building with key"
             />
             <figcaption className={`fw-bold ${styles.caption}`}>
@@ -45,7 +45,7 @@ const OurGoalsCardContent = () => {
             <Image
               className={styles.imgsize}
               fluid
-              src="/doc_arrows_people.png"
+              src="/doc-with-arrows-to-people.svg"
               alt="government building with key"
             />
             <figcaption className={`fw-bold ${styles.caption}`}>
@@ -59,7 +59,7 @@ const OurGoalsCardContent = () => {
             <Image
               className={styles.imgsize}
               fluid
-              src="/gov_key.png"
+              src="/gov-with-key.svg"
               alt="government building with key"
             />
             <figcaption className={`fw-bold ${styles.caption}`}>
@@ -93,7 +93,7 @@ const OurMissionCardContent = () => {
           <Image
             className={styles.missionImages}
             fluid
-            src="/leg_magnifying_glass.png"
+            src="/leg-with-mag-glass.svg"
             alt="document with magnifying glass"
           />
         </Col>
@@ -109,7 +109,7 @@ const OurMissionCardContent = () => {
           <Image
             className={styles.missionImages}
             fluid
-            src="/doc_treasure_box.png"
+            src="/doc-treasure-box.svg"
             alt="document with magnifying glass"
           />
         </Col>
