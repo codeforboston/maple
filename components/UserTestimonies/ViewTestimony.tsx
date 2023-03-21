@@ -58,9 +58,6 @@ const ViewTestimony = (
   const [testimony, setTestimony] = useState<Testimony[]>([])
   useEffect(() => {
     setTestimony(items.result ?? [])
-    if (testimony.length > 0) {
-      testimony.forEach(item => console.log(item.authorUid))
-    }
   }, [items])
 
   const [activeTab, setActiveTab] = useState(1)
