@@ -14,6 +14,8 @@ type UpdateProfileData = {
   aboutYou: string
   twitter: string
   linkedIn: string
+  instagram: string
+  fb: string
   organization: boolean
   profileImage: any
 }
@@ -30,11 +32,14 @@ async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
+  console.log("updating")
   const { updateSocial, updateAbout, updateDisplayName, updateFullName } =
     actions
 
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
+  await updateSocial("instagram", data.instagram)
+  await updateSocial("fb", data.fb)
   await updateAbout(data.aboutYou)
   await updateDisplayName(data.name)
   await updateFullName(data.name)
@@ -65,9 +70,7 @@ export function PersonalInfoTab({
 
   const handleRedirect = () => {
     //redirect user to profile page
-    isOrganization
-      ? location.assign(`/organization?id=${uid}`)
-      : location.assign(`/profile?=${uid}`)
+    location.assign(`/profile?=${uid}`)
   }
 
   useEffect(() => {
@@ -75,9 +78,10 @@ export function PersonalInfoTab({
   }, [isDirty, setFormUpdated])
 
   return (
-    <>
+
+      <Form onSubmit={onSubmit}>
       <TitledSectionCard className={className}>
-        <Form onSubmit={onSubmit}>
+        
           <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
             <Input
               label="Name"
@@ -91,7 +95,7 @@ export function PersonalInfoTab({
               label="Write something about yourself"
               defaultValue={about}
             />
-            <div className={clsx("w-100", isOrganization && "row")}>
+            <div className="mb-3">
               {isOrganization && <ImageInput />}
               <div className="row">
                 <Input
@@ -106,25 +110,45 @@ export function PersonalInfoTab({
                   className="w-50"
                   {...register("linkedIn")}
                 />
-              </div>
+                </div>
+                {isOrganization && (
+                  <div className="row mt-3">
+                  <Input
+                  label="Instagram Username"
+                  defaultValue={social?.instagram}
+                  className="w-50"
+                  {...register("instagram")}
+                />
+                <Input
+                  label="Facebook Username"
+                  defaultValue={social?.fb}
+                  className="w-50"
+                  {...register("fb")}
+                />
+                  </div>
+                  
+
+                )}
+              
             </div>
           </div>
-        </Form>
+
       </TitledSectionCard>
-      <TitledSectionCard>
+      
         {!isOrganization && (
-          <>
+          <TitledSectionCard>
             <h2>Your Legislators</h2>
             <YourLegislators />
-          </>
+          </TitledSectionCard>
         )}
-      </TitledSectionCard>
+     
       <Row>
         <Col>
         <StyledSaveButton type="submit">Save Personal Information</StyledSaveButton>
 
         </Col>
       </Row>
-    </>
+      </Form>
+
   )
 }

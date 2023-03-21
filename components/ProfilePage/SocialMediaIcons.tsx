@@ -14,34 +14,40 @@ export const SocialMediaIcons = ({
 }) => (
   <div>
     <Row xs="auto">
-      <Col>
+     
         {twitter && (
+        <Col>
           <External plain href={`https://www.twitter.com/${twitter}`}>
             <Image alt="twitter" src="/twitter.svg" />
           </External>
+          </Col>
         )}
-      </Col>
-      <Col>
+      
+      
         {linkedIn && (
+            <Col>
           <External plain href={`https://www.linkedin.com/in/${linkedIn}`}>
             <Image alt="linkedIn" src="/linkedin.svg" />
           </External>
+          </Col>
         )}
-      </Col>
-      <Col>
+
         {instagram && (
+            <Col>
           <External plain href={`https://www.instagram.com/${instagram}`}>
             <Image alt="instagram" src="/linkedin.svg" />
           </External>
+          </Col>
         )}
-      </Col>
-      <Col>
+    
         {fb && (
+              <Col>
           <External plain href={`https://www.facebook.com/${linkedIn}`}>
             <Image alt="facebook" src="/twitter.svg" />
           </External>
+          </Col>
         )}
-      </Col>
+ 
     </Row>
   </div>
 )

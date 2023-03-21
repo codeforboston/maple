@@ -229,7 +229,7 @@ function FollowedItem({
             <Row className={`align-items-center`}>
               <Col className={"align-items-center d-flex"}>
                 <OrgIconSmall src={profile?.profileImage} />
-                <Internal href={`profile?id=${element}`}>
+                <Internal href={`organizations/${element}`}>
                   {displayName}
                 </Internal>
               </Col>

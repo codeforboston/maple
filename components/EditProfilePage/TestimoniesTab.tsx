@@ -23,9 +23,9 @@ export const TestimoniesTab = (
 
 
   return (
-    < div className="mb-5">
+    <div className="mb-5">
         <Row>
-            <Col xs={9}>
+            <Col xs={8}>
             <TitledSectionCard className={className} >
         <Row>
             <Col>
@@ -60,13 +60,11 @@ export const TestimoniesTab = (
       </TitledSectionCard>
       <TitledSectionCard className={className}>
         <h2>Draft Testimonies</h2>
+                
       </TitledSectionCard>
             </Col>
             <Col>
-            <TitledSectionCard className={className}>
-                <Col>
-                </Col>
-            </TitledSectionCard>
+            <TestimonyFAQ className={className}></TestimonyFAQ>
 
             </Col>
         </Row>
