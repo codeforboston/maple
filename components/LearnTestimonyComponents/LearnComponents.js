@@ -12,7 +12,7 @@ const BasicsContent = [
     title: "Anyone can submit testimony to the MA legislature",
     paragraph:
       "Legislators tend to value testimony most when it comes from their own constituents. Testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district.",
-    src: "WHO.png",
+    src: "who.svg",
     alt: "Who"
   },
   {
@@ -20,7 +20,7 @@ const BasicsContent = [
       "Your testimony will be most impactful when it feels distinctive and relevant",
     paragraph:
       "Be sure to write your own text and explain why you are interested in an issue.",
-    src: "WHAT.png",
+    src: "what.svg",
     alt: "What"
   },
   {
@@ -28,7 +28,7 @@ const BasicsContent = [
       "Committees generally accept testimony up until the hearing date designated for a bill",
     paragraph:
       " You can use the bill pages on this website to identify relevant committee dates. Although some committees will accept testimony after this date, for the greatest impact you should submit your testimony before the hearing.",
-    src: "WHEN.png",
+    src: "when.svg",
     alt: "When"
   },
   {
@@ -36,7 +36,7 @@ const BasicsContent = [
       "Testimony is generally accepted by committees of the legislature by sending an email to their Chairs",
     paragraph:
       "This website, MAPLE, will help you to do this by making it easy to find a bill you want to testify in and then generate an email, which you fully control, which you can then send to the relevant personnel.",
-    src: "WHERE.png",
+    src: "where.svg",
     alt: "Where"
   },
   {
@@ -44,7 +44,7 @@ const BasicsContent = [
       "The key role of testimony is to let your legislators know how you feel about an issue",
     paragraph:
       "If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives.",
-    src: "WHY.png",
+    src: "why.svg",
     alt: "why"
   }
 ]
