@@ -1,7 +1,7 @@
 import { TabContent } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { Col, Nav, NavDropdown, Row } from "../bootstrap"
+import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
 
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
@@ -34,6 +34,13 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   .nav-link:first-child {
     margin-left: 0;
   }
+`
+
+export const StyledSaveButton = styled(Button)`
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  border-radius: 4px;
 `
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className

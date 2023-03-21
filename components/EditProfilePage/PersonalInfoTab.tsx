@@ -5,7 +5,7 @@ import { Button, Form, Row, Col } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
-import { Header } from "./StyledEditProfileComponents"
+import { StyledSaveButton } from "./StyledEditProfileComponents"
 import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
 
@@ -120,7 +120,10 @@ export function PersonalInfoTab({
         )}
       </TitledSectionCard>
       <Row>
-        <Button type="submit">Save Personal Information</Button>
+        <Col>
+        <StyledSaveButton type="submit">Save Personal Information</StyledSaveButton>
+
+        </Col>
       </Row>
     </>
   )

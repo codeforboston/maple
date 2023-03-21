@@ -22,6 +22,11 @@ type Props = {
   className?: string
 }
 
+export const StyledHeader = styled(External)`
+  text-decoration:none;
+  font-weight: 1rem;
+`
+
 export type UnfollowModalConfig = {
   court: number
   orgName: string
@@ -94,7 +99,7 @@ export function FollowingTab({ className }: Props) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      orgsList.push(doc.data().orgId)
+      orgsList.push(doc.data().profileid)
     })
 
     if (orgsFollowing.length === 0 && orgsList.length != 0) {
@@ -183,7 +188,7 @@ function FollowedItem({
 }) {
   const { result: profile, loading } = usePublicProfile(element)
 
-  let displayName = ""
+  let displayName = "default"
   if (profile?.displayName) {
     displayName = profile.displayName
   }
@@ -192,21 +197,26 @@ function FollowedItem({
     <Styled key={key}>
       {type === "bill" ? (
         <>
-          <External
-            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-          >
+        <StyledHeader href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}>
+       
             {formatBillId(element?.billId)}
-          </External>
+         
+
+        </StyledHeader>
+          
           <Row>
-            <Col>
+            <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
+            <Col >
             <UnfollowButton
               displayName={displayName}
               element={element}
               setUnfollow={setUnfollow}
               type={type}
             />
+            </Col>
+            
           </Row>
         </>
       ) : (

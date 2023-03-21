@@ -68,15 +68,11 @@ export function EditProfileForm({
 
   const close = () => setSettingsModal(null)
 
-  const testimony = usePublishedTestimonyListing({
+  const publishedTestimonies = usePublishedTestimonyListing({
     uid: uid
   })
 
-  const { items } = testimony
-
-  const refreshtable = useCallback(() => {
-    items.execute()
-  }, [items])
+  const isOrg = profile.role === "organization"
 
   const tabs = [
     {
@@ -99,7 +95,7 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <TestimoniesTab {...testimony} className="mt-3 mb-4" />
+      content: <TestimoniesTab {...publishedTestimonies} className="mt-3 mb-4"/>
     },
     {
       title: "Following",
@@ -116,7 +112,7 @@ export function EditProfileForm({
           <Internal
             className={`d-flex text-decoration-none`}
             href={`javascript:void(0)`}
-          >
+          > {!isOrg && (
             <GearButton
               className={`btn btn-lg btn-outline-secondary me-4 py-1`}
               disabled={!!formUpdated}
@@ -124,6 +120,9 @@ export function EditProfileForm({
             >
               {"Settings"}
             </GearButton>
+
+            )}
+            
           </Internal>
           <Internal
             className={`d-flex ml-2 text-decoration-none`}
