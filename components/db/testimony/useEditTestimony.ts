@@ -85,7 +85,6 @@ export function useEditTestimony(
   uid: string,
   court: number,
   billId: string,
-  billTitle: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
@@ -93,7 +92,6 @@ export function useEditTestimony(
     uid,
     court,
     billId,
-    billTitle
   })
 
   useTestimony(state, dispatch)
@@ -176,6 +174,7 @@ function usePublishTestimony(
       DraftTestimony.check(workingDraft)
       // TODO: don't publish again if draft.publishedVersion is defined
       if (draftRef) {
+        console.log("following")
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }
@@ -218,7 +217,7 @@ type SaveDraftRequest = Pick<
   "position" | "content" | "attachmentId"
 >
 function useSaveDraft(
-  { draftRef, draftLoading, billId, billTitle, uid, court }: State,
+  { draftRef, draftLoading, billId, uid, court }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
@@ -229,7 +228,6 @@ function useSaveDraft(
         } else if (!draftRef) {
           const newDraft: WorkingDraft = {
             billId,
-            billTitle,
             content,
             court,
             position,
@@ -250,7 +248,7 @@ function useSaveDraft(
           })
         }
       },
-      [billId, billTitle, dispatch, draftLoading, draftRef, uid, court]
+      [billId, dispatch, draftLoading, draftRef, uid, court]
     ),
     { onError: error => dispatch({ type: "error", error }) }
   )
@@ -260,7 +258,6 @@ type State = {
   court: number
   uid: string
   billId: string
-  billTitle: string
   error?: Error
 
   draft?: WorkingDraft

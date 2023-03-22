@@ -10,13 +10,13 @@ import {
 } from "runtypes"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
+import { Role } from "../auth/types"
 
 const maxTestimonyLength = 10_000
 
 const BaseTestimony = R({
   billId: Id,
   court: Number,
-  billTitle: RtString,
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString.withConstraint(
     s => s.length > 0 && s.length < maxTestimonyLength
@@ -30,6 +30,8 @@ export const Testimony = withDefaults(
     id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
+    authorRole: Role,
+    billTitle: RtString,
     version: Number,
     publishedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),

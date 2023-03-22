@@ -66,12 +66,13 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         password
       )
 
+      const role = isOrg ? "pendingUpgrade" : "user"
+
       await Promise.all([
         setProfile(credentials.user.uid, {
           displayName: nickname,
           fullName,
-          role: "user",
-          requestingToBeOrg: isOrg,
+          role: role,
           public: false
         }),
         sendEmailVerification(credentials.user)

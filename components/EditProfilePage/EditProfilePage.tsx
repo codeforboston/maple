@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -11,7 +11,6 @@ import {
   usePublishedTestimonyListing
 } from "../db"
 import { Internal } from "../links"
-import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import { FollowingTab } from "./FollowingTab"
 import NotificationSettingsModal from "./NotificationSettingsModal"
@@ -21,6 +20,7 @@ import {
   StyledTabNav
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
+import { dbService } from "components/db/api"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -72,7 +72,9 @@ export function EditProfileForm({
     uid: uid
   })
 
-  const isOrg = profile.role === "organization"
+  const draftTestimonies =  dbService().getDraftTestimonies({authorUid:uid})
+
+  const isOrg = profile.role === "organization" || profile.role === "pendingUpgrade"
 
   const tabs = [
     {
@@ -87,6 +89,7 @@ export function EditProfileForm({
           profile={profile}
           actions={actions}
           uid={uid}
+          isOrg={isOrg}
           setFormUpdated={setFormUpdated}
           className="mt-3 mb-4"
         />
@@ -95,7 +98,7 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <TestimoniesTab {...publishedTestimonies} className="mt-3 mb-4"/>
+      content: <TestimoniesTab {...publishedTestimonies} {...draftTestimonies} className="mt-3 mb-4"/>
     },
     {
       title: "Following",
@@ -112,7 +115,7 @@ export function EditProfileForm({
           <Internal
             className={`d-flex text-decoration-none`}
             href={`javascript:void(0)`}
-          > {!isOrg && (
+          > 
             <GearButton
               className={`btn btn-lg btn-outline-secondary me-4 py-1`}
               disabled={!!formUpdated}
@@ -121,7 +124,7 @@ export function EditProfileForm({
               {"Settings"}
             </GearButton>
 
-            )}
+            
             
           </Internal>
           <Internal

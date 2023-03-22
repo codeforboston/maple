@@ -1,7 +1,6 @@
-import clsx from "clsx"
-import { ChangeEvent, useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { Button, Form, Row, Col } from "../bootstrap"
+import { Form, Row, Col } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
@@ -16,6 +15,9 @@ type UpdateProfileData = {
   linkedIn: string
   instagram: string
   fb: string
+  publicEmail: string
+  publicPhone: number
+  website: string
   organization: boolean
   profileImage: any
 }
@@ -26,15 +28,19 @@ type Props = {
   uid?: string
   setFormUpdated?: any
   className?: string
+  isOrg?: boolean
 }
 
 async function updateProfile(
   { profile, actions, uid }: Props,
   data: UpdateProfileData
 ) {
-  console.log("updating")
-  const { updateSocial, updateAbout, updateDisplayName, updateFullName } =
+  const { updateSocial, updateAbout, updateDisplayName, updateFullName, updateContactInfo } =
     actions
+
+  await updateContactInfo("publicEmail", data.publicEmail)
+  await updateContactInfo("publicPhone", data.publicPhone)
+  await updateContactInfo("website", data.website)
 
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
@@ -50,7 +56,8 @@ export function PersonalInfoTab({
   actions,
   uid,
   className,
-  setFormUpdated
+  setFormUpdated, 
+  isOrg
 }: Props) {
   const {
     register,
@@ -58,9 +65,8 @@ export function PersonalInfoTab({
     handleSubmit
   } = useForm<UpdateProfileData>()
 
-  const { displayName, about, role, social, profileImage }: Profile = profile
+  const { displayName, about, role, social, contactInfo, profileImage }: Profile = profile
 
-  const isOrganization = role === "organization"
 
   const onSubmit = handleSubmit(async update => {
     await updateProfile({ profile, actions }, update)
@@ -82,7 +88,8 @@ export function PersonalInfoTab({
       <Form onSubmit={onSubmit}>
       <TitledSectionCard className={className}>
         
-          <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
+          <div className={`mx-4 mt-3 d-flex flex-column`}>
+          <h4 className="mb-3">General Information</h4>
             <Input
               label="Name"
               {...register("name")}
@@ -92,11 +99,13 @@ export function PersonalInfoTab({
               as="textarea"
               {...register("aboutYou")}
               style={{ height: "20rem" }}
+              className="mt-3"
               label="Write something about yourself"
               defaultValue={about}
             />
             <div className="mb-3">
-              {isOrganization && <ImageInput />}
+              {/* {isOrg && <ImageInput />} */}
+              <h4 className="mb-3 mt-5">Social Media</h4>
               <div className="row">
                 <Input
                   label="Twitter Username"
@@ -111,7 +120,9 @@ export function PersonalInfoTab({
                   {...register("linkedIn")}
                 />
                 </div>
-                {isOrganization && (
+                {isOrg && (
+                  <>
+                
                   <div className="row mt-3">
                   <Input
                   label="Instagram Username"
@@ -126,7 +137,33 @@ export function PersonalInfoTab({
                   {...register("fb")}
                 />
                   </div>
-                  
+                  <h4 className="mb-3 mt-5">Contact Information</h4>
+                  <Row>
+                  <Input
+                     label="Contact Email"
+                     defaultValue={contactInfo?.publicEmail}
+                     {...register("publicEmail")}
+                   />
+
+                  </Row>
+                     <Row className="mt-3">
+                     <Input
+                     label="Contact Phone Number"
+                     defaultValue={contactInfo?.publicPhone}
+                     {...register("publicPhone")}
+                   />
+
+                     </Row>
+                  <Row className="mt-3">
+                  <Input
+                     label="Website"
+                     defaultValue={contactInfo?.website}
+                     {...register("website")}
+                   />
+
+                  </Row>
+                   
+                    </>
 
                 )}
               
@@ -135,7 +172,7 @@ export function PersonalInfoTab({
 
       </TitledSectionCard>
       
-        {!isOrganization && (
+        {!isOrg && (
           <TitledSectionCard>
             <h2>Your Legislators</h2>
             <YourLegislators />

@@ -5,7 +5,7 @@ import { useAsync } from "react-async-hook"
 import { Frequency, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
-import { Profile, ProfileMember, SocialLinks } from "./types"
+import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -19,6 +19,7 @@ type ProfileState = {
   updatingAbout: boolean
   updatingDisplayName: boolean
   updatingFullName: boolean
+  updatingContactInfo: Record<keyof ContactInfo, boolean>
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
@@ -47,6 +48,11 @@ export function useProfile() {
         updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
+        updatingContactInfo: {
+          publicEmail: false, 
+          publicPhone: false,
+          website: false
+        },
         updatingSocial: {
           linkedIn: false,
           twitter: false,
@@ -148,6 +154,23 @@ export function useProfile() {
           })
         }
       },
+      updateContactInfo: async ( contactType: keyof ContactInfo, contact: string | number) => {
+        if (uid) {
+          dispatch({
+            updatingContactInfo: {
+              ...state.updatingContactInfo,
+              [contactType]: true
+            }
+          })
+          await updateContactInfo(uid, contactType, contact)
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [contactType]: false
+            }
+          })
+        }
+      },
       updateBillsFollowing: async (billsFollowing: string[]) => {
         if (uid) {
           dispatch({ updatingBillsFollowing: true })
@@ -156,7 +179,7 @@ export function useProfile() {
         }
       }
     }),
-    [uid, state.updatingSocial]
+    [uid, state.updatingSocial, state.updatingContactInfo]
   )
 
   return useMemo(
@@ -214,6 +237,15 @@ function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
     profileRef(uid),
     { social: { [network]: link ?? deleteField() } },
     { merge: true }
+  )
+}
+
+
+function updateContactInfo(uid: string, contactType: keyof ContactInfo, contact: string | number) {
+  return setDoc(
+    profileRef(uid), 
+    { contactInfo : { [contactType]: contact ?? deleteField()}},
+    { merge: true}
   )
 }
 

@@ -25,7 +25,6 @@ export type Content = Static<typeof Content>
 
 export const BaseTestimony = R({
   billId: String,
-  billTitle: String,
   court: Number,
   position: Position,
   content: Content,
@@ -39,6 +38,7 @@ export const Testimony = BaseTestimony.extend({
   id: Id,
   authorDisplayName: String,
   authorRole: String,
+  billTitle: String,
   version: Number,
   publishedAt: InstanceOf(Timestamp),
   representativeId: Optional(String),

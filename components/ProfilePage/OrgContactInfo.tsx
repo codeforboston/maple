@@ -10,7 +10,7 @@ export const OrgContactInfo = ({ profile }: { profile?: Profile }) => {
     publicPhone,
     website
   }: { publicEmail?: string; publicPhone?: number; website?: string } =
-    profile?.orgContactInfo ?? {}
+    profile?.contactInfo ?? {}
 
   const {
     twitter,

@@ -41,6 +41,8 @@ const isPublic = (profile: Profile | undefined, role: Role) => {
     case "admin":
       return false
     case "legislator":
+    case "pendingUpgrade":
+      return false
     case "organization":
       return true
     case "user":

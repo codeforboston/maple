@@ -10,11 +10,6 @@ const StyledCard = styled(Card)`
   font-family: Nunito;
   padding: 1.5rem 2rem;
 
-  Image{
-    height: 100%;
-  }
-
-
 `
 
 
@@ -24,8 +19,8 @@ export const TestimonyFAQ = ( {className} : {className:string}) => {
          
             <Card.Body>
                 <h2>Testimony FAQ</h2>
-                <div className=" m-4 d-flex justify-content-center">
-                <Image alt="writing icon" src="/writing.svg"></Image>
+                <div className="p-4 m-3 d-flex justify-content-center">
+                <Image className="w-100"fluid alt="writing icon" src="/writing.svg"></Image>
 
                 </div>
                

@@ -35,7 +35,6 @@ export type Profile = {
   social?: SocialLinks
   profileImage?: string
   billsFollowing?: string[]
-  requestingToBeOrg?: boolean
-  orgContactInfo?: ContactInfo
+  contactInfo?: ContactInfo
   location?: string
 }

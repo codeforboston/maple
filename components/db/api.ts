@@ -96,6 +96,23 @@ export class DbService {
     if (snap?.exists()) return snap.data() as Testimony
   }
 
+  getDraftTestimonies = async ({
+    authorUid
+  }: {
+    authorUid: string
+  }): Promise<Testimony[]> => {
+    const result = await this.getDocs(
+      query(
+        collection(firestore, `/users/${authorUid}/archivedTestimony`)
+      )
+    )
+    const archive = result.docs
+    .map(snap => snap.data())
+    .filter(isNotNull) as Testimony[]
+    
+    return archive
+  }
+
   getBill = ({ court, billId }: BillQuery): Promise<Bill | undefined> =>
     this.getDocData<Bill>("generalCourts", court.toString(), "bills", billId)
 
