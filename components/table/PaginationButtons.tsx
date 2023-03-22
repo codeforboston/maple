@@ -20,11 +20,12 @@ export const PaginationButtons = ({
 }: {
   pagination: Pagination
 }) => {
-  const pages = [1, 2, 3, 4]
+  //setPage intends to GoTo specific page
+  // const pages = [1, 2, 3, 4]
 
-  const handleSetPage = (pageNumber: number) => {
-    console.log(pageNumber)
-  }
+  // const handleSetPage = (pageNumber: number) => {
+  //   console.log(pageNumber)
+  //}
 
   return (
     <div className="d-flex justify-content-center my-3">
@@ -40,8 +41,9 @@ export const PaginationButtons = ({
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </NextStyle>
 
-      {/* 
-      //filler nonfunctional pagination
+      {/*
+      //filler nonfunctional pagination. 
+
       <PreviousStyle
         variant="secondary"
         onClick={previousPage}
