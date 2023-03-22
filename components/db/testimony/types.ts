@@ -8,7 +8,8 @@ import {
   Record as R,
   Static,
   String,
-  Union
+  Union,
+  Null
 } from "runtypes"
 import { functions } from "../../firebase"
 import { Id, Maybe } from "../common"
@@ -23,7 +24,7 @@ export const Content = String.withConstraint(
 ).withConstraint(s => s.length < maxTestimonyLength || "Content is too long")
 export type Content = Static<typeof Content>
 
-export const authorRole = Union(L("individual"), L("organization"))
+export const authorRole = Union(L("individual"), L("organization"), Null)
 export type authorRole = Static<typeof authorRole>
 
 export const BaseTestimony = R({
