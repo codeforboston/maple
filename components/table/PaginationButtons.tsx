@@ -28,32 +28,28 @@ export const PaginationButtons = ({
 
   return (
     <div className="d-flex justify-content-center my-3">
-      {/* <Button
-      variant="primary"
-      style={{ marginRight: 15 }}
-      onClick={previousPage}
-      disabled={!hasPreviousPage}
-    >
-      <FontAwesomeIcon icon={faAngleLeft} />
-    </Button>
-    <span className="align-self-center">Page {currentPage}</span>
-    <Button
-      variant="primary"
-      style={{ marginLeft: 15 }}
-      onClick={nextPage}
-      disabled={!hasNextPage}
-    >
-      <FontAwesomeIcon icon={faAngleRight} />
-    </Button> */}
-      {/* /////////////////////////////// */}
-      <Button
+      <PreviousStyle
         variant="secondary"
-        style={{ marginRight: 15 }}
         onClick={previousPage}
         disabled={!hasPreviousPage}
       >
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
-      </Button>
+      </PreviousStyle>
+      <span className="align-self-center">Page {currentPage}</span>
+      <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
+        <FontAwesomeIcon icon={faAngleDoubleRight} />
+      </NextStyle>
+
+      {/* 
+      //filler nonfunctional pagination
+      <PreviousStyle
+        variant="secondary"
+        onClick={previousPage}
+        disabled={!hasPreviousPage}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleLeft} />
+      </PreviousStyle>
+
       {pages.map((page, index) => (
         <SetPageStyle
           onClick={() => handleSetPage(index + 1)}
@@ -64,19 +60,25 @@ export const PaginationButtons = ({
         </SetPageStyle>
       ))}
 
-      <Button
-        variant="secondary"
-        style={{ marginLeft: 15 }}
-        onClick={nextPage}
-        disabled={!hasNextPage}
-      >
+      <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
         <FontAwesomeIcon icon={faAngleDoubleRight} />
-      </Button>
+      </NextStyle> */}
     </div>
   )
 }
 
 const SetPageStyle = styled(Button)`
   background-color: #1a3185;
-  margin: 1px;
+  margin: 2px;
+  border-radius: 0;
+`
+const NextStyle = styled(Button)`
+  background-color: #1a3185;
+  margin: 2px;
+  border-radius: 0px 15px 15px 0px;
+`
+const PreviousStyle = styled(Button)`
+  background-color: #1a3185;
+  margin: 2px;
+  border-radius: 15px 0px 0px 15px;
 `
