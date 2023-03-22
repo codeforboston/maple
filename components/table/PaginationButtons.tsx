@@ -1,7 +1,13 @@
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
+import {
+  faAngleLeft,
+  faAngleRight,
+  faAngleDoubleLeft,
+  faAngleDoubleRight
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button } from "../bootstrap"
 import { Pagination } from "../db"
+import styled from "styled-components"
 
 export const PaginationButtons = ({
   pagination: {
@@ -15,7 +21,7 @@ export const PaginationButtons = ({
   pagination: Pagination
 }) => (
   <div className="d-flex justify-content-center my-3">
-    <Button
+    {/* <Button
       variant="primary"
       style={{ marginRight: 15 }}
       onClick={previousPage}
@@ -31,6 +37,32 @@ export const PaginationButtons = ({
       disabled={!hasNextPage}
     >
       <FontAwesomeIcon icon={faAngleRight} />
+    </Button> */}
+    {/* /////////////////////////////// */}
+    <Button
+      variant="secondary"
+      style={{ marginRight: 15 }}
+      onClick={previousPage}
+      disabled={!hasPreviousPage}
+    >
+      <FontAwesomeIcon icon={faAngleDoubleLeft} />
+    </Button>
+
+    <SetPageStyle variant="secondary" disabled={false}>
+      1
+    </SetPageStyle>
+
+    <Button
+      variant="secondary"
+      style={{ marginLeft: 15 }}
+      onClick={nextPage}
+      disabled={!hasNextPage}
+    >
+      <FontAwesomeIcon icon={faAngleDoubleRight} />
     </Button>
   </div>
 )
+
+const SetPageStyle = styled(Button)`
+  background-color: #1a3185;
+`
