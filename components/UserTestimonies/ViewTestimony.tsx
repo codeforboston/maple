@@ -26,7 +26,7 @@ import { PositionLabel } from "./PositionBug"
 import { PaginationButtons } from "components/table"
 import { ReportModal } from "./ReportModal"
 import { Tab, Tabs } from "./Tabs"
-import { AuthorType } from "../db"
+import { authorRole } from "../db"
 
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
@@ -66,8 +66,8 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const handleFilter = (filter: AuthorType | null) => {
-    setFilter(filter ? { authorType: filter } : null)
+  const handleFilter = (filter: authorRole | null) => {
+    setFilter(filter ? { authorRole: filter } : null)
   }
 
   const tabs = [
@@ -272,7 +272,7 @@ export const TestimonyItem = ({
       <PositionLabel
         position={testimony.position}
         avatar={
-          testimony.authorType === "Organization"
+          testimony.authorRole === "Organization"
             ? "organization.svg"
             : "individualUser.svg"
         }

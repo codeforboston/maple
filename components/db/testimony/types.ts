@@ -23,8 +23,8 @@ export const Content = String.withConstraint(
 ).withConstraint(s => s.length < maxTestimonyLength || "Content is too long")
 export type Content = Static<typeof Content>
 
-export const AuthorType = Union(L("Individual"), L("Organization"))
-export type AuthorType = Static<typeof AuthorType>
+export const authorRole = Union(L("Individual"), L("Organization"))
+export type authorRole = Static<typeof authorRole>
 
 export const BaseTestimony = R({
   billId: String,
@@ -32,7 +32,7 @@ export const BaseTestimony = R({
   position: Position,
   content: Content,
   attachmentId: Maybe(String),
-  authorType: AuthorType
+  authorRole: authorRole
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 

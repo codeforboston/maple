@@ -36,7 +36,7 @@ beforeEach(() => {
     court: court,
     content: "fake testimony",
     position: "endorse",
-    authorType: "Individual"
+    authorRole: "Individual"
   }
   testimony = {
     authorUid: uid,
@@ -45,7 +45,7 @@ beforeEach(() => {
     content: draft.content,
     court: court,
     position: draft.position,
-    authorType: "Individual",
+    authorRole: "Individual",
     version: 1
   }
   updatedDraft = { ...draft, content: "update", position: "oppose" }

@@ -11,12 +11,12 @@ import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
-import { Testimony, AuthorType } from "./types"
+import { Testimony, authorRole } from "./types"
 
 type Refinement = {
   senatorId?: string
   representativeId?: string
-  authorType?: AuthorType
+  authorRole?: authorRole
   uid?: string
   court?: number
   billId?: string
@@ -32,7 +32,7 @@ const initialRefinement = (
   uid,
   court,
   billId,
-  authorType: undefined
+  authorRole: undefined
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -44,7 +44,7 @@ const useTable = createTableHook<Testimony, Refinement, unknown>({
 export type TestimonyFilterOptions =
   | { representativeId: string }
   | { senatorId: string }
-  | { authorType: AuthorType }
+  | { authorRole: authorRole }
 
 export type UsePublishedTestimonyListing = ReturnType<
   typeof usePublishedTestimonyListing
@@ -75,7 +75,7 @@ export function usePublishedTestimonyListing({
         refine({
           representativeId: undefined,
           senatorId: undefined,
-          authorType: undefined,
+          authorRole: undefined,
           ...r
         }),
       items
@@ -87,7 +87,7 @@ export function usePublishedTestimonyListing({
 function getWhere({
   uid,
   billId,
-  authorType,
+  authorRole,
   representativeId,
   court,
   senatorId
@@ -95,7 +95,7 @@ function getWhere({
   const constraints: Parameters<typeof where>[] = []
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
-  if (authorType) constraints.push(["authorType", "==", authorType])
+  if (authorRole) constraints.push(["authorRole", "==", authorRole])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
