@@ -83,14 +83,14 @@ const ViewTestimony = (
       label="Individuals"
       active={false}
       value={2}
-      action={() => handleFilter("Individual")}
+      action={() => handleFilter("individual")}
     />,
     <Tab
       key="oo"
       label="Organizations"
       active={false}
       value={3}
-      action={() => handleFilter("Organization")}
+      action={() => handleFilter("organization")}
     />
   ]
   return (
@@ -272,7 +272,7 @@ export const TestimonyItem = ({
       <PositionLabel
         position={testimony.position}
         avatar={
-          testimony.authorRole === "Organization"
+          testimony.authorRole === "organization"
             ? "organization.svg"
             : "individualUser.svg"
         }
