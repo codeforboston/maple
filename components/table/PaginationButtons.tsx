@@ -36,7 +36,9 @@ export const PaginationButtons = ({
       >
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </PreviousStyle>
-      <span className="align-self-center">Page {currentPage}</span>
+      <SpanStyle variant="secondary" className="align-self-center">
+        Page {currentPage}
+      </SpanStyle>
       <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </NextStyle>
@@ -70,7 +72,15 @@ export const PaginationButtons = ({
 }
 
 const SetPageStyle = styled(Button)`
+  font-family: nunito;
   background-color: #1a3185;
+  margin: 2px;
+  border-radius: 0;
+`
+const SpanStyle = styled(Button)`
+  background-color: #1a3185;
+  color: white;
+  font-family: nunito;
   margin: 2px;
   border-radius: 0;
 `
