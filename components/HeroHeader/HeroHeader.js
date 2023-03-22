@@ -20,7 +20,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.skyline}`}
-              src="/skyline.png"
+              src="/skyline.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -30,7 +30,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.clouds} opacity-50`}
-              src="/clouds.png"
+              src="/clouds.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -43,7 +43,7 @@ const HeroHeader = ({ authenticated }) => {
               >
                 <Image
                   className={`${styles.statehouse}`}
-                  src="/statehouse.png"
+                  src="/statehouse.svg"
                   alt="statehouse"
                 ></Image>
               </Col>
