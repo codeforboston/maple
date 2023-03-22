@@ -146,7 +146,7 @@ const OurMissionCardContent = () => {
           <Image
             className={styles.stepsImages}
             fluid
-            src="/step_1.png"
+            src="/step-1.svg"
             alt="step 1 of the legislative process"
           />
         </Col>
@@ -157,7 +157,7 @@ const OurMissionCardContent = () => {
           <Image
             className={styles.stepsImages}
             fluid
-            src="/step_2.png"
+            src="/step-2.svg"
             alt="step 2 of the legislative process"
           />
         </Col>
@@ -168,7 +168,7 @@ const OurMissionCardContent = () => {
           <Image
             className={styles.stepsImages}
             fluid
-            src="/step_3.png"
+            src="/step-3.svg"
             alt="step 3 of the legislative process"
           />
         </Col>
