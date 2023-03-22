@@ -19,9 +19,11 @@ export const PaginationButtons = ({
   }
 }: {
   pagination: Pagination
-}) => (
-  <div className="d-flex justify-content-center my-3">
-    {/* <Button
+}) => {
+  const pages = [1, 2, 3, 4]
+  return (
+    <div className="d-flex justify-content-center my-3">
+      {/* <Button
       variant="primary"
       style={{ marginRight: 15 }}
       onClick={previousPage}
@@ -38,31 +40,34 @@ export const PaginationButtons = ({
     >
       <FontAwesomeIcon icon={faAngleRight} />
     </Button> */}
-    {/* /////////////////////////////// */}
-    <Button
-      variant="secondary"
-      style={{ marginRight: 15 }}
-      onClick={previousPage}
-      disabled={!hasPreviousPage}
-    >
-      <FontAwesomeIcon icon={faAngleDoubleLeft} />
-    </Button>
+      {/* /////////////////////////////// */}
+      <Button
+        variant="secondary"
+        style={{ marginRight: 15 }}
+        onClick={previousPage}
+        disabled={!hasPreviousPage}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleLeft} />
+      </Button>
+      {pages.map((page, index) => (
+        <SetPageStyle variant="secondary" disabled={false}>
+          1
+        </SetPageStyle>
+      ))}
 
-    <SetPageStyle variant="secondary" disabled={false}>
-      1
-    </SetPageStyle>
-
-    <Button
-      variant="secondary"
-      style={{ marginLeft: 15 }}
-      onClick={nextPage}
-      disabled={!hasNextPage}
-    >
-      <FontAwesomeIcon icon={faAngleDoubleRight} />
-    </Button>
-  </div>
-)
+      <Button
+        variant="secondary"
+        style={{ marginLeft: 15 }}
+        onClick={nextPage}
+        disabled={!hasNextPage}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleRight} />
+      </Button>
+    </div>
+  )
+}
 
 const SetPageStyle = styled(Button)`
   background-color: #1a3185;
+  margin: 1px;
 `
