@@ -21,6 +21,11 @@ export const PaginationButtons = ({
   pagination: Pagination
 }) => {
   const pages = [1, 2, 3, 4]
+
+  const handleSetPage = (pageNumber: number) => {
+    console.log(pageNumber)
+  }
+
   return (
     <div className="d-flex justify-content-center my-3">
       {/* <Button
@@ -50,8 +55,12 @@ export const PaginationButtons = ({
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </Button>
       {pages.map((page, index) => (
-        <SetPageStyle variant="secondary" disabled={false}>
-          1
+        <SetPageStyle
+          onClick={() => handleSetPage(index + 1)}
+          variant="secondary"
+          disabled={false}
+        >
+          {index + 1}
         </SetPageStyle>
       ))}
 
