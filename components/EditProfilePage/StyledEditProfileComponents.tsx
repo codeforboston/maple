@@ -83,9 +83,8 @@ export const Header = styled(Row)`
   font-size: 3rem;
   font-family: Nunito;
   font-weight: 500;
-  margin-right: 1rem;
-  margin-left: 1rem;
-  height: 16rem;
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
   align-items: center;
 `
 

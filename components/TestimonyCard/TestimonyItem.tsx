@@ -23,14 +23,16 @@ const FooterButton = styled(Button)`
 export const TestimonyItem = ({
   testimony,
   isUser,
+  isEditing,
   showBillInfo
 }: {
   testimony: Testimony
   isUser: boolean
+  isEditing?: boolean
   showBillInfo: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const publishedDate = testimony.publishedAt.toDate().toLocaleDateString()
+  const publishedDate = testimony.publishedAt ? testimony.publishedAt.toDate().toLocaleDateString() : ""
 
   const billLink = maple.bill({
     id: testimony.billId,
@@ -77,7 +79,7 @@ export const TestimonyItem = ({
           </>
         )}
       </div>
-      <Stack gap={2}>
+      <Stack gap={1}>
         <Row className={`justify-content-between align-items-center`}>
           {showBillInfo ? (
             <BillInfoHeader
@@ -98,6 +100,7 @@ export const TestimonyItem = ({
         </Row>
         <Row xs="auto" className={`col m2`}>
           {isUser ? (
+            <>
             <Col>
               <FooterButton variant="link">
                 <Internal
@@ -108,6 +111,33 @@ export const TestimonyItem = ({
                 </Internal>
               </FooterButton>
             </Col>
+
+            {isEditing && (
+              <>
+              <Col>
+              <FooterButton
+                  variant="link" >
+                    <Internal className={styles.link2} href={formUrl(testimony.billId, testimony.court)}>
+                    Edit
+
+                    </Internal>
+                </FooterButton>
+                </Col>
+                <Col>
+                <FooterButton
+                  variant="link">
+                    <Internal className={styles.link2} href={billLink}>
+                    Rescind
+
+                    </Internal>
+                  
+                </FooterButton>
+              </Col>
+              </>
+
+
+            )}
+            </>
           ) : (
             <>
               <Col>

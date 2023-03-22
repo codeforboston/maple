@@ -131,7 +131,7 @@ export function PersonalInfoTab({
                   {...register("instagram")}
                 />
                 <Input
-                  label="Facebook Username"
+                  label="Facebook Link"
                   defaultValue={social?.fb}
                   className="w-50"
                   {...register("fb")}

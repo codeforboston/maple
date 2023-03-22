@@ -17,10 +17,10 @@ export const UserInfoHeader = ({
   return (
     <>
       <Col xs="auto">
-        <h3 className="mt-0 mb-0">{testimony.authorDisplayName}</h3>
+        <h4 className={styles.heading}>{testimony.authorDisplayName}</h4>
       </Col>
 
-      <Col className={`ms-auto d-flex justify-content-sm-end`}>
+      <Col className={`mb-0 ms-auto d-flex justify-content-sm-end`}>
         {`${publishedDate}`}
       </Col>
     </>

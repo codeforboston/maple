@@ -5,23 +5,21 @@ import { TitledSectionCard } from "../shared"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { SortTestimonyDropDown } from "components/TestimonyCard/SortTestimonyDropDown"
 import { TestimonyFAQ } from "./TestimonyFAQ"
+import { Testimony } from "../db"
 import { Title } from "react-admin"
 
 
 export const TestimoniesTab = (
-   props: UsePublishedTestimonyListing & {
+   {publishedTestimonies, draftTestimonies, className} :  {
+    publishedTestimonies: Testimony[] | undefined, 
+    draftTestimonies: Testimony[] | undefined,
     className: string
    }
 ) => {
-    const {
-        items, 
-        className
-    } = props
 
-  const publishedTestimonies = items.result ?? []
-  const [orderBy, setOrderBy] = useState<string>()
+    const [orderBy, setOrderBy] = useState<string>()
 
-
+    console.log(draftTestimonies)
   return (
     <div className="mb-5">
         <Row>
@@ -29,9 +27,9 @@ export const TestimoniesTab = (
             <TitledSectionCard className={className} >
         <Row>
             <Col>
-            <h2>Testimonies</h2>
+            <h2>Published Testimonies</h2>
             </Col>
-            <Col>
+            <Col xs="auto">
             <SortTestimonyDropDown
                   orderBy={orderBy}
                   setOrderBy={setOrderBy}
@@ -39,8 +37,8 @@ export const TestimoniesTab = (
             </Col>
         </Row>
        
-        {publishedTestimonies
-            .sort((a, b) =>
+        {publishedTestimonies && 
+            publishedTestimonies.sort((a, b) =>
               orderBy === "Oldest First"
                 ? a.publishedAt > b.publishedAt
                   ? 1
@@ -55,11 +53,23 @@ export const TestimoniesTab = (
                 testimony={t}
                 isUser={true}
                 showBillInfo={true}
+                isEditing={true}
               />
             ))}
       </TitledSectionCard>
       <TitledSectionCard className={className}>
         <h2>Draft Testimonies</h2>
+        {draftTestimonies && 
+            draftTestimonies
+            .map(t => (
+              <TestimonyItem
+                key={t.authorUid + t.billId}
+                testimony={t}
+                isUser={true}
+                showBillInfo={true}
+                isEditing={true}
+              />
+            ))}
                 
       </TitledSectionCard>
             </Col>

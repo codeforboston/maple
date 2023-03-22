@@ -42,7 +42,7 @@ export const SocialMediaIcons = ({
     
         {fb && (
               <Col>
-          <External plain href={`https://www.facebook.com/${linkedIn}`}>
+          <External plain href={`${linkedIn}`}>
             <Image alt="facebook" src="/facebook.svg" />
           </External>
           </Col>

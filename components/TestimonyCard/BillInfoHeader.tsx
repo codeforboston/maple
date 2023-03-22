@@ -18,20 +18,23 @@ export const BillInfoHeader = ({
     <>
       <Row>
         <Col xs="auto">
-          <h3 className="mt-0 mb-0">
+          <h4 className="mt-0 mb-0">
             <Internal className={styles.link} href={billLink}>
               {formatBillId(testimony.billId)}
             </Internal>
-          </h3>
+          </h4>
         </Col>
-        <Col xs="auto">
+        <Col xs="auto" className="p-0 align-items-center d-flex">
           <PositionLabel position={testimony.position} />
         </Col>
       </Row>
-      <Row>
-        <Col></Col>
+      <Row className="mt-1 mb-2">
+        <Col>
+        <h5 className={styles.heading}> {testimony.billTitle ? testimony.billTitle : "Bill Title"}</h5>
+       
+        </Col>
         <Col className={`ms-auto d-flex justify-content-sm-end`}>
-          {`${publishedDate}`}
+          <p className={`mb-0`}>{publishedDate}</p>
         </Col>
       </Row>
     </>

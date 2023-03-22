@@ -1,14 +1,15 @@
-import { capitalize } from "lodash"
+import { Image } from "react-bootstrap"
 
 export type Position = "endorse" | "neutral" | "oppose"
 
 export function PositionLabel({ position }: { position: Position }) {
+
+  const iconSrc = `./thumbs-${position}.svg`
+
   return (
-    <div
-      className={` bg-${position} px-4 py-1 text-white rounded-pill`}
-      style={{ width: "max-content" }}
-    >
-      {capitalize(position)}
+    <div>
+      <Image alt = "thumbs up icon" src= {iconSrc}/>
+    
     </div>
   )
 }

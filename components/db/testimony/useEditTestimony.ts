@@ -174,7 +174,6 @@ function usePublishTestimony(
       DraftTestimony.check(workingDraft)
       // TODO: don't publish again if draft.publishedVersion is defined
       if (draftRef) {
-        console.log("following")
         const result = await publishTestimony({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }

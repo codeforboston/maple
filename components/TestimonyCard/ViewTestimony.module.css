@@ -11,7 +11,16 @@
   text-decoration: none;
 }
 
+.link2 {
+  text-decoration: none;
+  color: var(color)
+}
+
 .itemrow {
   padding: 1rem 2rem;
   border-bottom: 1px solid;
+}
+
+.heading {
+  margin-bottom: 0;
 }

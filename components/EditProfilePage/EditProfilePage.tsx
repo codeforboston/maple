@@ -7,20 +7,21 @@ import { GearButton } from "../buttons"
 import {
   Profile,
   ProfileHook,
+  useDraftTestimonyListing,
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
 import { Internal } from "../links"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import { FollowingTab } from "./FollowingTab"
-import NotificationSettingsModal from "./NotificationSettingsModal"
+import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
   Header,
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
-import { dbService } from "components/db/api"
+import { Banner } from "components/ProfilePage/StyledProfileComponents"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -35,6 +36,7 @@ export function EditProfile() {
     </Row>
   )
 }
+
 
 export function EditProfileForm({
   profile,
@@ -70,11 +72,15 @@ export function EditProfileForm({
 
   const publishedTestimonies = usePublishedTestimonyListing({
     uid: uid
-  })
+  }) 
 
-  const draftTestimonies =  dbService().getDraftTestimonies({authorUid:uid})
+
+  const draftTestimonies = useDraftTestimonyListing({uid:uid})
+
 
   const isOrg = profile.role === "organization" || profile.role === "pendingUpgrade"
+
+  const isPendingUpgrade = profile.role === "pendingUpgrade"
 
   const tabs = [
     {
@@ -98,7 +104,7 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <TestimoniesTab {...publishedTestimonies} {...draftTestimonies} className="mt-3 mb-4"/>
+      content: <TestimoniesTab publishedTestimonies={publishedTestimonies.items.result} draftTestimonies={draftTestimonies.result} className="mt-3 mb-4"/>
     },
     {
       title: "Following",
@@ -108,7 +114,12 @@ export function EditProfileForm({
   ]
 
   return (
+    <>
+
+    {isPendingUpgrade && <Banner>Request to be an organization account pending approval</Banner>}
+
     <Container>
+
       <Header>
         <Col>Edit Profile</Col>
         <Col className={`d-flex justify-content-end`}>
@@ -158,8 +169,9 @@ export function EditProfileForm({
           ))}
         </StyledTabContent>
       </TabContainer>
-      <NotificationSettingsModal
+      <ProfileSettingsModal
         actions={actions}
+        role={profile.role}
         isProfilePublic={isProfilePublic}
         setIsProfilePublic={setIsProfilePublic}
         notifications={notifications}
@@ -169,5 +181,7 @@ export function EditProfileForm({
         show={settingsModal === "show"}
       />
     </Container>
+    </>
   )
+  
 }
