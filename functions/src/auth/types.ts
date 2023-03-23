@@ -4,6 +4,7 @@ export const Role = Union(
   L("user"),
   L("admin"),
   L("legislator"),
+  L("pendingUpgrade"),
   L("organization")
 )
 export type Role = Static<typeof Role>

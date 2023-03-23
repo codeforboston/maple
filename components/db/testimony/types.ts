@@ -1,3 +1,4 @@
+import { Role } from "components/auth"
 import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import {
@@ -37,6 +38,8 @@ export const Testimony = BaseTestimony.extend({
   authorUid: Id,
   id: Id,
   authorDisplayName: String,
+  // Missing is treated as "user"
+  authorRole: Optional(Role),
   version: Number,
   publishedAt: InstanceOf(Timestamp),
   representativeId: Optional(String),
