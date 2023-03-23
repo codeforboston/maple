@@ -37,6 +37,8 @@ function MapleContainer() {
             variant="light"
             href="https://www.instagram.com/mapletestimony/?hl=en"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,6 +54,8 @@ function MapleContainer() {
             variant="light"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
             href="https://twitter.com/MapleTestimony"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
