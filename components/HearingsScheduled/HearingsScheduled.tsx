@@ -69,9 +69,21 @@ export const EventCard = ({
         <div>
           <p className={styles.name}>
             {type === "hearing" ? (
-              <a href={`${hearingBaseURL}${id}`}>{truncateEntry(name)}</a>
+              <a
+                href={`${hearingBaseURL}${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {truncateEntry(name)}
+              </a>
             ) : (
-              <a href={`${sessionBaseURL}${id}`}>{truncateEntry(name)}</a>
+              <a
+                href={`${sessionBaseURL}${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {truncateEntry(name)}
+              </a>
             )}
           </p>
           <p className={styles.location}>{truncateEntry(location)}</p>
