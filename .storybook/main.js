@@ -17,5 +17,13 @@ module.exports = {
   core: {
     builder: "@storybook/builder-webpack5"
   },
+  webpackFinal: async (config, { configType }) => {
+    config.module.rules.push({
+      test: /\.handlebars$/,
+      use: ["file-loader"]
+    })
+
+    return config
+  },
   staticDirs: ["../public", "../stories/assets"]
 }

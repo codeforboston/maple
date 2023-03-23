@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Digest Email</title>
+    <link rel="stylesheet" type="text/css" href="/email/style.css" />
+  </head>
+
+  <body class="font">
+    {{> header }}
+
+    {{> bills }}
+
+    {{> orgs }}
+
+    {{> newsFeedLink }}
+
+    {{> footer }}
+  </body>
+</html>
+
+{{!--
+  TODO:
+    [x] figure out svg -> handlebars compatibility
+    
+    [x] figure out better way to preview svgs in VSCode
+
+    [x] set up path for handlebars to:
+      [x] locate partials
+      [x] register helpers
+
+    [x] helpers to format {{notificationFrequency}} for header and noResults  
+
+    [ ] review folder locations & conventions:
+      style={{}} seems to throw errors in children of CreateMeta:
+        most likely works with .tsx but not .handlebars files
+
+      currently using css with: 
+        <link rel="stylesheet" href="/email/<cssFileName>.css" />
+      currently located at:
+        /public/email/<cssFileName>.css
+
+      when attempting to use location in /functions/...
+        Refused to apply style from 'http://localhost:6006/functions/src/email/digestEmail.css'
+        because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict
+        MIME checking is enabled.
+
+    [x] add link to newsfeed page on maple website when available
+          /newsfeed to be eventual internal link
+
+    [ ] add links to footer section
+      [ ]  Unsubscribe
+      [x]  Terms & Cond
+      [x]  Privacy and Comm
+
+    [x] `see more +` link to org's page 
+      [x] add Org Id to DigestEmail.args.context ?
+--}}
