@@ -67,7 +67,17 @@ const ViewTestimony = (
   }
 
   const handleFilter = (filter: authorRole | null) => {
-    setFilter(filter ? { authorRole: filter } : null)
+    if (filter === "organization") {
+      setFilter({ authorRole: "organization" })
+    } else {
+      const authorRole =
+        filter === null
+          ? null
+          : ["user", "admin", "legislator", "pendingUpgrade"].includes(filter)
+          ? filter
+          : null
+      setFilter(authorRole ? { authorRole } : null)
+    }
   }
 
   const tabs = [
@@ -83,7 +93,7 @@ const ViewTestimony = (
       label="Individuals"
       active={false}
       value={2}
-      action={() => handleFilter("individual")}
+      action={() => handleFilter("user")}
     />,
     <Tab
       key="oo"
