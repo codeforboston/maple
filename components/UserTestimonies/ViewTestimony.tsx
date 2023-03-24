@@ -73,7 +73,13 @@ const ViewTestimony = (
       const authorRole =
         filter === null
           ? null
-          : ["user", "admin", "legislator", "pendingUpgrade"].includes(filter)
+          : [
+              "user",
+              "admin",
+              "legislator",
+              "pendingUpgrade",
+              undefined
+            ].includes(filter)
           ? filter
           : null
       setFilter(authorRole ? { authorRole } : null)
