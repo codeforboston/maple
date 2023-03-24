@@ -32,6 +32,7 @@ import { Card as BootstrapCard } from "react-bootstrap"
 
 const Container = styled.div`
   font-family: Nunito;
+  justify-content: center;
 `
 const Head = styled(BootstrapCard.Header)`
   background-color: var(--bs-blue);
@@ -280,7 +281,7 @@ export const TestimonyItem = ({
   const [isReporting, setIsReporting] = useState(false)
 
   return (
-    <BlockContainer>
+    <TestimonyItemContainer>
       <PositionLabel
         position={testimony.position}
         avatar={
@@ -366,24 +367,26 @@ export const TestimonyItem = ({
         )}
       </TestimonyItemContentStyle>
 
-      {
-        <ButtonContainer
-          style={{
-            fontFamily: "nunito",
-            minWidth: "20%"
-          }}
-        >
-          <ButtonStyle variant="secondary">
-            <Internal href={formUrl(testimony.billId, testimony.court)}>
-              Edit
-            </Internal>
-          </ButtonStyle>
-          <ButtonStyle>
-            <Internal href={billLink}>Rescind</Internal>
-          </ButtonStyle>
-        </ButtonContainer>
-      }
-    </BlockContainer>
+      {showControls && (
+        <>
+          <ButtonContainer
+            style={{
+              fontFamily: "nunito",
+              minWidth: "20%"
+            }}
+          >
+            <ButtonStyle variant="secondary">
+              <Internal href={formUrl(testimony.billId, testimony.court)}>
+                Edit
+              </Internal>
+            </ButtonStyle>
+            <ButtonStyle>
+              <Internal href={billLink}>Rescind</Internal>
+            </ButtonStyle>
+          </ButtonContainer>
+        </>
+      )}
+    </TestimonyItemContainer>
   )
 }
 
@@ -438,7 +441,7 @@ export const OrderFilterDropDownMenu = (props: {
   )
 }
 export default ViewTestimony
-const BlockContainer = styled.div`
+const TestimonyItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   margin: 5%;
@@ -469,6 +472,8 @@ const ButtonContainer = styled.div`
     justify-content: center;
     button {
       width: 50%;
+      margin: 5%;
+      margin-top: 0;
     }
   }
 `

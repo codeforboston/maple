@@ -11,12 +11,12 @@ import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
-import { Testimony, authorRole } from "./types"
+import { Testimony } from "./types"
 
 type Refinement = {
   senatorId?: string
   representativeId?: string
-  authorRole?: authorRole
+  authorRole?: string
   uid?: string
   court?: number
   billId?: string
@@ -29,10 +29,10 @@ const initialRefinement = (
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
+  authorRole: undefined,
   uid,
   court,
-  billId,
-  authorRole: undefined
+  billId
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -44,7 +44,7 @@ const useTable = createTableHook<Testimony, Refinement, unknown>({
 export type TestimonyFilterOptions =
   | { representativeId: string }
   | { senatorId: string }
-  | { authorRole: authorRole }
+  | { authorRole: string }
 
 export type UsePublishedTestimonyListing = ReturnType<
   typeof usePublishedTestimonyListing
@@ -68,8 +68,8 @@ export function usePublishedTestimonyListing({
     if (refinement.court !== court) refine({ court })
   }, [billId, court, refine, refinement, uid])
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    return {
       pagination,
       setFilter: (r: TestimonyFilterOptions | null) =>
         refine({
@@ -79,9 +79,8 @@ export function usePublishedTestimonyListing({
           ...r
         }),
       items
-    }),
-    [pagination, items, refine]
-  )
+    }
+  }, [pagination, items, refine])
 }
 
 function getWhere({
@@ -95,11 +94,11 @@ function getWhere({
   const constraints: Parameters<typeof where>[] = []
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
-  if (authorRole) constraints.push(["authorRole", "==", authorRole])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
   if (court) constraints.push(["court", "==", court])
+  if (authorRole) constraints.push(["authorRole", "==", authorRole])
   return constraints.map(c => where(...c))
 }
 
