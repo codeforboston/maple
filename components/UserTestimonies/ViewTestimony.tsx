@@ -92,7 +92,7 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => handleFilter(null)}
+      action={() => handleFilter(undefined)}
     />,
     <Tab
       key="uo"

@@ -36,7 +36,7 @@ beforeEach(() => {
     court: court,
     content: "fake testimony",
     position: "endorse",
-    authorRole: "user"
+    authorRole: undefined
   }
   testimony = {
     authorUid: uid,
