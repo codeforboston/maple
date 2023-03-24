@@ -9,9 +9,7 @@ import {
   Record as R,
   Static,
   String,
-  Union,
-  Null,
-  Undefined
+  Union
 } from "runtypes"
 import { functions } from "../../firebase"
 import { Id, Maybe } from "../common"
@@ -34,8 +32,7 @@ export const BaseTestimony = R({
   court: Number,
   position: Position,
   content: Content,
-  attachmentId: Maybe(String),
-  authorRole: authorRole
+  attachmentId: Maybe(String)
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 
