@@ -372,8 +372,8 @@ export const TestimonyItem = ({
         )}
       </TestimonyItemContentStyle>
 
-      {!showControls && (
-        <div
+      {showControls && (
+        <ButtonContainer
           style={{
             fontFamily: "nunito",
             minWidth: "20%"
@@ -387,7 +387,7 @@ export const TestimonyItem = ({
           <ButtonStyle>
             <Internal href={billLink}>Rescind</Internal>
           </ButtonStyle>
-        </div>
+        </ButtonContainer>
       )}
     </div>
   )
@@ -446,11 +446,21 @@ export const OrderFilterDropDownMenu = (props: {
 export default ViewTestimony
 
 const ButtonStyle = styled(Button)`
+  border-radius: 10px;
+
+  margin: 5%;
+  margin-right: 0;
   font-family: nunito;
   a {
+    font-size: 1.5rem;
     color: white;
     text-decoration: none;
   }
+`
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 `
 
 const DropdownContainer = styled(Dropdown)`
