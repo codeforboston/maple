@@ -280,13 +280,7 @@ export const TestimonyItem = ({
   const [isReporting, setIsReporting] = useState(false)
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        margin: "5%"
-      }}
-    >
+    <BlockContainer>
       <PositionLabel
         position={testimony.position}
         avatar={
@@ -303,7 +297,7 @@ export const TestimonyItem = ({
               <Author testimony={testimony} />
               {testimony.version > 1 && <p className="version">Edited</p>}
             </div>
-            {isMobile && showControls && (
+            {/* {isMobile && showControls && (
               <>
                 <Internal href={formUrl(testimony.billId, testimony.court)}>
                   <Image
@@ -323,7 +317,7 @@ export const TestimonyItem = ({
                   />
                 </Internal>
               </>
-            )}
+            )} */}
           </>
           <div>
             {showBillNumber && (
@@ -372,7 +366,7 @@ export const TestimonyItem = ({
         )}
       </TestimonyItemContentStyle>
 
-      {showControls && (
+      {
         <ButtonContainer
           style={{
             fontFamily: "nunito",
@@ -388,8 +382,8 @@ export const TestimonyItem = ({
             <Internal href={billLink}>Rescind</Internal>
           </ButtonStyle>
         </ButtonContainer>
-      )}
-    </div>
+      }
+    </BlockContainer>
   )
 }
 
@@ -444,6 +438,15 @@ export const OrderFilterDropDownMenu = (props: {
   )
 }
 export default ViewTestimony
+const BlockContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 5%;
+
+  @media (max-width: 740px) {
+    flex-direction: column;
+  }
+`
 
 const ButtonStyle = styled(Button)`
   border-radius: 10px;
@@ -461,6 +464,13 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-content: center;
+  @media (max-width: 740px) {
+    flex-direction: row;
+    justify-content: center;
+    button {
+      width: 50%;
+    }
+  }
 `
 
 const DropdownContainer = styled(Dropdown)`
