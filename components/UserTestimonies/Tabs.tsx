@@ -39,7 +39,7 @@ export const Tab = (props: {
   const { label, onClick, active } = props
   return (
     <TabStyle onClick={onClick} active={active}>
-      <h3> {label}</h3>
+      <p> {label}</p>
     </TabStyle>
   )
 }
@@ -126,8 +126,13 @@ const TabStyle = styled.div<{ active: boolean }>`
   color: ${props => (props.active ? "#C71E32" : "black")};
   border: none;
   font: inherit;
+  font-size: 1.5rem;
   cursor: pointer;
   outline: none;
+
+  @media (max-width: 740px) {
+    font-size: 1rem;
+  }
 `
 const TabSliderContainerStyle = styled.div`
   display: flex;
