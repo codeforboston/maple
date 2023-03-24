@@ -11,8 +11,8 @@ import { Internal } from "../links"
 
 export function UnsubscribeConfirm() {
   const { user } = useAuth()
-  const uid = user?.uid
-  const result = useProfile()
+  // const uid = user?.uid
+  // const result = useProfile()
 
   const handleClick = async () => {
     // await updateProfile({ actions })
@@ -37,6 +37,8 @@ export function UnsubscribeConfirm() {
 
   return (
     <>
+      <div>if logged out; instructions for logging in first</div>
+      <br />
       <div>
         Confirm that you would like to Unsubscribe from Notification Emails
       </div>

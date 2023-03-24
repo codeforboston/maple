@@ -4,7 +4,7 @@ import { UnsubscribeConfirm } from "../components/Email/unsubscribe"
 
 export default createPage({
   title: "Unsubscribe",
-  Page: requireAuth(({ user }) => {
+  Page: () => {
     return <UnsubscribeConfirm />
-  })
+  }
 })
