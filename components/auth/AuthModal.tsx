@@ -14,7 +14,7 @@ export default function AuthModal() {
   const close = () => dispatch(authStepChanged(null))
 
   return (
-    <span>
+    <>
       <StartModal
         show={currentModal === "start"}
         onHide={close}
@@ -36,6 +36,6 @@ export default function AuthModal() {
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}
       />
-    </span>
+    </>
   )
 }
