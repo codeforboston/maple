@@ -75,7 +75,7 @@ export const Bill = withDefaults(
     city: Optional(String)
   }),
   {
-    court: 192,
+    court: 0,
     cosponsorCount: 0,
     testimonyCount: 0,
     endorseCount: 0,

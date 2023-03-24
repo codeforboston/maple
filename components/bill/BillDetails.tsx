@@ -1,3 +1,4 @@
+import { flags } from "components/featureFlags"
 import {
   collection,
   deleteDoc,
@@ -16,6 +17,7 @@ import { TestimonyFormPanel } from "../publish"
 import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
+import BillTrackerConnectedView from "./BillTracker"
 import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
@@ -85,6 +87,9 @@ export const BillDetails = ({ bill }: BillProps) => {
             className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
           />
           <TestimonyFormPanel bill={bill} />
+          {flags().billTracker && (
+            <BillTrackerConnectedView bill={bill} className="mt-4" />
+          )}
         </Col>
       </Row>
     </StyledContainer>
