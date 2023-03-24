@@ -4,12 +4,18 @@ import { Alert } from "react-bootstrap"
 import { User } from "firebase/auth"
 import { LoadingButton } from "components/buttons"
 
-export const VerifyAccountSection = ({ user }: { user: User }) => {
+export const VerifyAccountSection = ({
+  user,
+  className
+}: {
+  user: User
+  className: string
+}) => {
   const sendEmailVerification = useSendEmailVerification()
 
   return (
-    <TitledSectionCard title={"Verify Your Account"} className="col">
-      <div className="px-5 pt-2 pb-4">
+    <TitledSectionCard title={"Verify Your Account"} className={className}>
+      <div>
         <p className="fw-bold text-info">
           We sent a link to your email to verify your account, but you haven't
           clicked it yet. If you don't see it, be sure to check your spam

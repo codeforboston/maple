@@ -13,12 +13,12 @@
 
 .link2 {
   text-decoration: none;
-  color: var(color)
+  color: var(color);
 }
 
 .itemrow {
   padding: 1rem 2rem;
-  border-bottom: 1px solid;
+  border-bottom: 1px solid #cecece;
 }
 
 .heading {

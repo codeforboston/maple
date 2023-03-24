@@ -8,6 +8,7 @@ const StyledCard = styled(Card)`
   border-radius: 1rem;
   background: var(--bs-white);
   border: none;
+  font-family: Nunito;
 `
 
 const StyledHeader = styled.div.attrs({

@@ -2,7 +2,7 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { Frequency, useAuth } from "../../auth"
+import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
@@ -17,6 +17,7 @@ type ProfileState = {
   updatingNotification: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
+  updatingOrgCategory: boolean
   updatingDisplayName: boolean
   updatingFullName: boolean
   updatingContactInfo: Record<keyof ContactInfo, boolean>
@@ -48,8 +49,9 @@ export function useProfile() {
         updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
+        updatingOrgCategory: false,
         updatingContactInfo: {
-          publicEmail: false, 
+          publicEmail: false,
           publicPhone: false,
           website: false
         },
@@ -154,7 +156,10 @@ export function useProfile() {
           })
         }
       },
-      updateContactInfo: async ( contactType: keyof ContactInfo, contact: string | number) => {
+      updateContactInfo: async (
+        contactType: keyof ContactInfo,
+        contact: string | number
+      ) => {
         if (uid) {
           dispatch({
             updatingContactInfo: {
@@ -169,6 +174,13 @@ export function useProfile() {
               [contactType]: false
             }
           })
+        }
+      },
+      updateOrgCategory: async (category: OrgCategory) => {
+        if (uid) {
+          dispatch({ updatingOrgCategory: true })
+          await updateOrgCategory(uid, category)
+          dispatch({ updatingOrgCategory: false })
         }
       },
       updateBillsFollowing: async (billsFollowing: string[]) => {
@@ -232,6 +244,10 @@ function updateIsOrganization(uid: string, isOrganization: boolean) {
   )
 }
 
+function updateOrgCategory(uid: string, category: OrgCategory) {
+  return setDoc(profileRef(uid), { orgCategories: [category] }, { merge: true })
+}
+
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
   return setDoc(
     profileRef(uid),
@@ -240,12 +256,15 @@ function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
   )
 }
 
-
-function updateContactInfo(uid: string, contactType: keyof ContactInfo, contact: string | number) {
+function updateContactInfo(
+  uid: string,
+  contactType: keyof ContactInfo,
+  contact: string | number
+) {
   return setDoc(
-    profileRef(uid), 
-    { contactInfo : { [contactType]: contact ?? deleteField()}},
-    { merge: true}
+    profileRef(uid),
+    { contactInfo: { [contactType]: contact ?? deleteField() } },
+    { merge: true }
   )
 }
 

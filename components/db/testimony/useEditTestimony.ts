@@ -84,14 +84,14 @@ export interface UseEditTestimony {
 export function useEditTestimony(
   uid: string,
   court: number,
-  billId: string,
+  billId: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
     publicationLoading: true,
     uid,
     court,
-    billId,
+    billId
   })
 
   useTestimony(state, dispatch)

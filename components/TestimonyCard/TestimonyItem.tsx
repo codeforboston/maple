@@ -1,7 +1,7 @@
-import { formUrl } from "components/publish/hooks"
-import { ListGroup } from "react-bootstrap"
+import { formUrl, usePublishState } from "components/publish/hooks"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
+import { usePublishService } from "components/publish/hooks"
 import { Col, Row, Stack, Button } from "../bootstrap"
 import styled from "styled-components"
 import { Testimony } from "../db"
@@ -13,26 +13,78 @@ import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
+import { Spinner } from "../bootstrap"
+import { UseAsyncReturn } from "react-async-hook"
 
 const FooterButton = styled(Button)`
   margin: 0;
   padding: 0;
   text-decoration: none;
 `
+const StyledCol = styled(Col)`
+  font-size: 0.75rem;
+
+  .choice {
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    border-radius: 0.75rem;
+    color: white;
+    margin: 0;
+    font-size: 0.75rem;
+
+    align-items: center;
+  }
+`
+
+const ArchiveTestimonyConfirmation = ({
+  show,
+  onHide,
+  archiveTestimony
+}: {
+  show: boolean
+  onHide: () => void
+  archiveTestimony: UseAsyncReturn<void, []> | undefined
+}) => {
+  return (
+    <>
+      <StyledCol>Are you sure you want to delete your testimony?</StyledCol>
+      <StyledCol>
+        <Button
+          className="choice me-4"
+          variant="secondary"
+          onClick={archiveTestimony?.execute}
+          disabled={archiveTestimony === undefined || archiveTestimony.loading}
+        >
+          {archiveTestimony?.loading ? (
+            <Spinner size="sm" animation="border" />
+          ) : (
+            "Yes"
+          )}
+        </Button>
+        <Button className="choice" variant="primary" onClick={onHide}>
+          No
+        </Button>
+      </StyledCol>
+    </>
+  )
+}
 
 export const TestimonyItem = ({
   testimony,
   isUser,
-  isEditing,
+  canEdit,
+  canDelete,
   showBillInfo
 }: {
   testimony: Testimony
   isUser: boolean
-  isEditing?: boolean
+  canEdit?: boolean
+  canDelete?: boolean
   showBillInfo: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const publishedDate = testimony.publishedAt ? testimony.publishedAt.toDate().toLocaleDateString() : ""
+  const publishedDate = testimony.publishedAt
+    ? testimony.publishedAt.toDate().toLocaleDateString()
+    : ""
 
   const billLink = maple.bill({
     id: testimony.billId,
@@ -49,6 +101,10 @@ export const TestimonyItem = ({
     ? testimonyContent
     : testimonyContent.slice(0, snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
+
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  const { deleteTestimony } = usePublishService() ?? {}
 
   return (
     <div className={styles.itemrow}>
@@ -98,45 +154,54 @@ export const TestimonyItem = ({
         <Row className={`col m2`}>
           <TestimonyContent className="col m2" testimony={snippet} />
         </Row>
-        <Row xs="auto" className={`col m2`}>
+        <Row xs="auto" className={`d-flex align-items-center`}>
           {isUser ? (
             <>
-            <Col>
-              <FooterButton variant="link">
-                <Internal
-                  className={styles.link}
-                  href={maple.testimony({ publishedId: testimony.id })}
-                >
-                  More Details
-                </Internal>
-              </FooterButton>
-            </Col>
-
-            {isEditing && (
-              <>
               <Col>
-              <FooterButton
-                  variant="link" >
-                    <Internal className={styles.link2} href={formUrl(testimony.billId, testimony.court)}>
-                    Edit
-
-                    </Internal>
-                </FooterButton>
-                </Col>
-                <Col>
-                <FooterButton
-                  variant="link">
-                    <Internal className={styles.link2} href={billLink}>
-                    Rescind
-
-                    </Internal>
-                  
+                <FooterButton variant="link">
+                  <Internal
+                    className={styles.link}
+                    href={maple.testimony({ publishedId: testimony.id })}
+                  >
+                    More Details
+                  </Internal>
                 </FooterButton>
               </Col>
-              </>
 
+              {canEdit && (
+                <Col>
+                  <FooterButton variant="link">
+                    <Internal
+                      className={styles.link2}
+                      href={formUrl(testimony.billId, testimony.court)}
+                    >
+                      Edit
+                    </Internal>
+                  </FooterButton>
+                </Col>
+              )}
 
-            )}
+              {canDelete && (
+                <>
+                  <Col>
+                    <FooterButton
+                      style={{ color: "#c71e32" }}
+                      onClick={() => setShowConfirm(s => !s)}
+                      variant="link"
+                    >
+                      Rescind
+                    </FooterButton>
+                  </Col>
+
+                  {showConfirm && (
+                    <ArchiveTestimonyConfirmation
+                      show={showConfirm}
+                      onHide={() => setShowConfirm(false)}
+                      archiveTestimony={deleteTestimony}
+                    />
+                  )}
+                </>
+              )}
             </>
           ) : (
             <>

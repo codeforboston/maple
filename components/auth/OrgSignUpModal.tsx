@@ -2,9 +2,19 @@ import { useEffect, useState } from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import {
+  Alert,
+  Button,
+  Col,
+  FloatingLabel,
+  Form,
+  Modal,
+  Row,
+  Stack
+} from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
+import { OrgCategories, OrgCategory } from "./types"
 import PasswordInput from "../forms/PasswordInput"
 import {
   CreateUserWithEmailAndPasswordData,
@@ -26,12 +36,14 @@ export default function OrgSignUpModal({
     reset,
     getValues,
     trigger,
-    formState: { errors, isSubmitSuccessful }
+    formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
 
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
     "not-agreed"
   )
+
+  const categories = OrgCategories
 
   const showTos = tosStep === "reading"
 
@@ -65,6 +77,8 @@ export default function OrgSignUpModal({
       loadingbtn?.click()
     }
   }, [tosStep])
+
+  const [category, setCategory] = useState<OrgCategory>(OrgCategories[0])
 
   return (
     <>
@@ -112,6 +126,23 @@ export default function OrgSignUpModal({
                   })}
                   error={errors.fullName?.message}
                 />
+                <Form.Group controlId="orgCategory">
+                  <Form.FloatingLabel label="Select an organization cateogry">
+                    <Form.Select
+                      as="select"
+                      value={category}
+                      {...register("orgCategory", {
+                        onChange: e => setCategory(e.value)
+                      })}
+                    >
+                      {categories.map(c => (
+                        <>
+                          <option value={c}>{c}</option>
+                        </>
+                      ))}
+                    </Form.Select>
+                  </Form.FloatingLabel>
+                </Form.Group>
 
                 <Row className="g-3">
                   <Col md={6}>

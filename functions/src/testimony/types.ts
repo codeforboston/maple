@@ -66,6 +66,7 @@ export const TestimonySearchRecord = R({
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString,
   authorUid: RtString,
+  authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
   publishedAt: Number

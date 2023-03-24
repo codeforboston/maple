@@ -1,4 +1,5 @@
 import { Frequency, Role } from "../../auth"
+import { OrgCategory } from "../../auth"
 
 export type ProfileMember = {
   district: string
@@ -37,4 +38,5 @@ export type Profile = {
   billsFollowing?: string[]
   contactInfo?: ContactInfo
   location?: string
+  orgCategories?: OrgCategory[] | ""
 }

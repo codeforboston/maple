@@ -81,7 +81,6 @@ const ViewTestimony = (
         </NoResults>
       )}
 
-      <div className="p-3" />
       {/* <PaginationButtons pagination={pagination} /> */}
     </TitledSectionCard>
   )

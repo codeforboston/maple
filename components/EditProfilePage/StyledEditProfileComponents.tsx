@@ -9,6 +9,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   display: flex;
 
   height: 2.5em;
+  margin-bottom: 1rem;
 
   .nav-item {
     flex-grow: 1;
@@ -77,6 +78,11 @@ export const StyledTabContent = styled(TabContent)`
   @media (min-width: 517px) {
     margin-top: -0.5rem;
   }
+`
+
+export const StyledHr = styled.hr`
+  height: 2px !important;
+  opacity: 100%;
 `
 
 export const Header = styled(Row)`

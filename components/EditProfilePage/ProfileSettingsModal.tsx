@@ -35,15 +35,15 @@ const StyledRow = styled(Row)`
   font-size: 12px;
 `
 
-function renderPrivacyText( role: Role, isPublic: boolean) {
-  switch (role){
-    case 'organization':
+function renderPrivacyText(role: Role, isPublic: boolean) {
+  switch (role) {
+    case "organization":
       return "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private."
-    case 'pendingUpgrade':
+    case "pendingUpgrade":
       return "Your profile is private until your request to be an Organization account is approved."
-    case 'user':
+    case "user":
       if (isPublic) {
-        return "Your profile is currently public. Others can view your profile page" 
+        return "Your profile is currently public. Others can view your profile page"
       }
       return "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
   }
@@ -99,12 +99,8 @@ export default function ProfileSettingsModal({
             */
             className="d-none"
           >
-     
-             
-      
             <StyledRow className="p-2">
-              <h5 className="p-0"> &nbsp; Notifications
-              </h5>
+              <h5 className="p-0"> &nbsp; Notifications</h5>
               <hr className={`mt-0`} />
               <Col className={`col-8`}>
                 Would you like to receive updates about bills/organizations you
@@ -161,39 +157,28 @@ export default function ProfileSettingsModal({
               </Col>
             </StyledRow>
           </div>
-   
+
           <StyledRow className="p-2">
-          <h5 className="p-0">
-          &nbsp; Privacy Settings
-        </h5>
-        <hr />
+            <h5 className="p-0">&nbsp; Privacy Settings</h5>
+            <hr />
 
+            <Col>{privacyText}</Col>
+            {role === "user" && (
+              <Col xs={4}>
+                <StyledButton
+                  className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
+                    isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
+                  }`}
+                  onClick={() =>
+                    setIsProfilePublic(isProfilePublic ? false : true)
+                  }
+                >
+                  {isProfilePublic ? "Make Private" : "Make Public"}
+                </StyledButton>
+              </Col>
+            )}
+          </StyledRow>
 
-          <Col>
-            {privacyText}
-          </Col>
-          {role === "user" && (
-            <Col xs={4} >
-            <StyledButton
-              className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
-                isProfilePublic 
-                  ? "btn-outline-secondary"
-                  : "btn-secondary"
-              }`}
-              onClick={() =>
-                setIsProfilePublic(isProfilePublic ? false : true)
-              }
-            >
-              {isProfilePublic ? "Make Private" : "Make Public"}
-            </StyledButton>
-          </Col>
-
-          )}
-          
-        </StyledRow>
-
-         
-          
           <Stack
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}

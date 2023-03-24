@@ -57,7 +57,11 @@ export function ProfilePage(profileprops: {
                 />
 
                 {isUser && !user.emailVerified ? (
-                  <VerifyAccountSection user={user} />
+                  <Row>
+                    <Col>
+                      <VerifyAccountSection className="mb-4" user={user} />
+                    </Col>
+                  </Row>
                 ) : null}
 
                 <Row>

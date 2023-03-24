@@ -23,7 +23,7 @@ type Props = {
 }
 
 export const StyledHeader = styled(External)`
-  text-decoration:none;
+  text-decoration: none;
   font-weight: 1rem;
 `
 
@@ -197,26 +197,24 @@ function FollowedItem({
     <Styled key={key}>
       {type === "bill" ? (
         <>
-        <StyledHeader href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}>
-       
+          <StyledHeader
+            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
+          >
             {formatBillId(element?.billId)}
-         
+          </StyledHeader>
 
-        </StyledHeader>
-          
           <Row>
             <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
-            <Col >
-            <UnfollowButton
-              displayName={displayName}
-              element={element}
-              setUnfollow={setUnfollow}
-              type={type}
-            />
+            <Col>
+              <UnfollowButton
+                displayName={displayName}
+                element={element}
+                setUnfollow={setUnfollow}
+                type={type}
+              />
             </Col>
-            
           </Row>
         </>
       ) : (

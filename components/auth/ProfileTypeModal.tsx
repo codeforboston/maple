@@ -46,41 +46,52 @@ export default function ProfileTypeModal({
           <Stack gap={2} direction="vertical">
             <h2>Register as</h2>
             <Stack gap={4} direction="horizontal">
-       
-                <StyledButton type="button" variant="secondary" onClick={onIndividualUserClick}>
-                  <Row>
-                    <Col xs="auto" className="d-flex align-items-center">
-                    <Image alt="profile icon" src="profile-individual-white.svg" />
-                    </Col>
-                    
-              
-                    <Col>
-                    <p><b>Individual User</b></p>
-                    <p>An individual user, which also includes any non-incorporated Massachusetts based organizations</p>
-                    </Col>
-                  </Row>
-                </StyledButton>
-      
-                <StyledButton type="button" variant="secondary" onClick={onOrgUserClick}>
-                
+              <StyledButton
+                type="button"
+                variant="secondary"
+                onClick={onIndividualUserClick}
+              >
                 <Row>
-                <Col xs="auto" className="d-flex align-items-center">
-                <Image alt="profile icon" src="profile-org-white.svg" />
-                    </Col>
-                   
+                  <Col xs="auto" className="d-flex align-items-center">
+                    <Image
+                      alt="profile icon"
+                      src="profile-individual-white.svg"
+                    />
+                  </Col>
 
-                    
-              
-                    <Col>
-                    <p><b>Organization</b></p>
-                    <p>Only available for incorporated Massachusetts Organizations</p>
-                    </Col>
-
+                  <Col>
+                    <p>
+                      <b>Individual User</b>
+                    </p>
+                    <p>
+                      An individual user, which also includes any
+                      non-incorporated Massachusetts based organizations
+                    </p>
+                  </Col>
                 </Row>
-                
-                  
-                </StyledButton>
+              </StyledButton>
 
+              <StyledButton
+                type="button"
+                variant="secondary"
+                onClick={onOrgUserClick}
+              >
+                <Row>
+                  <Col xs="auto" className="d-flex align-items-center">
+                    <Image alt="profile icon" src="profile-org-white.svg" />
+                  </Col>
+
+                  <Col>
+                    <p>
+                      <b>Organization</b>
+                    </p>
+                    <p>
+                      Only available for incorporated Massachusetts
+                      Organizations
+                    </p>
+                  </Col>
+                </Row>
+              </StyledButton>
             </Stack>
             <p>
               All Organization types have to go through a request and approval

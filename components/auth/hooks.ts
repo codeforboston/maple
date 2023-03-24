@@ -11,6 +11,9 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
+import { OrgCategory } from "./types"
+import { setRoleAtSignUp } from "functions/src/auth/setRoleAtSignUp"
+import { Role } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -50,6 +53,7 @@ export type CreateUserWithEmailAndPasswordData = {
   nickname: string
   password: string
   confirmedPassword: string
+  orgCategory?: OrgCategory
 }
 
 export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
@@ -58,7 +62,8 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       email,
       fullName,
       nickname,
-      password
+      password,
+      orgCategory
     }: CreateUserWithEmailAndPasswordData) => {
       const credentials = await createUserWithEmailAndPassword(
         auth,
@@ -66,17 +71,31 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         password
       )
 
-      const role = isOrg ? "pendingUpgrade" : "user"
+      const categories = orgCategory ? [orgCategory] : ""
 
-      await Promise.all([
-        setProfile(credentials.user.uid, {
-          displayName: nickname,
-          fullName,
-          role: role,
-          public: false
-        }),
-        sendEmailVerification(credentials.user)
-      ])
+      if (isOrg) {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            displayName: fullName,
+            fullName,
+            role: "user",
+            public: false,
+            orgCategories: categories
+          }),
+          sendEmailVerification(credentials.user)
+          // setRoleAtSignUp(credentials.user.uid, "pendingUpgrade")
+        ])
+      } else {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            displayName: nickname,
+            fullName,
+            role: "user",
+            public: false
+          }),
+          sendEmailVerification(credentials.user)
+        ])
+      }
 
       return credentials
     }

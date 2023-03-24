@@ -37,7 +37,6 @@ export function EditProfile() {
   )
 }
 
-
 export function EditProfileForm({
   profile,
   actions,
@@ -72,22 +71,17 @@ export function EditProfileForm({
 
   const publishedTestimonies = usePublishedTestimonyListing({
     uid: uid
-  }) 
+  })
 
+  const draftTestimonies = useDraftTestimonyListing({ uid: uid })
 
-  const draftTestimonies = useDraftTestimonyListing({uid:uid})
-
-
-  const isOrg = profile.role === "organization" || profile.role === "pendingUpgrade"
+  const isOrg =
+    profile.role === "organization" || profile.role === "pendingUpgrade"
 
   const isPendingUpgrade = profile.role === "pendingUpgrade"
 
   const tabs = [
     {
-      /* 
-        Change in Figma
-       */
-      // title: "About You",
       title: "Personal Information",
       eventKey: "AboutYou",
       content: (
@@ -104,7 +98,13 @@ export function EditProfileForm({
     {
       title: "Testimonies",
       eventKey: "Testimonies",
-      content: <TestimoniesTab publishedTestimonies={publishedTestimonies.items.result} draftTestimonies={draftTestimonies.result} className="mt-3 mb-4"/>
+      content: (
+        <TestimoniesTab
+          publishedTestimonies={publishedTestimonies.items.result}
+          draftTestimonies={draftTestimonies.result}
+          className="mt-3 mb-4"
+        />
+      )
     },
     {
       title: "Following",
@@ -115,73 +115,74 @@ export function EditProfileForm({
 
   return (
     <>
+      {isPendingUpgrade && (
+        <Banner>
+          Your request to be an organization account is pending approval
+        </Banner>
+      )}
 
-    {isPendingUpgrade && <Banner>Request to be an organization account pending approval</Banner>}
-
-    <Container>
-
-      <Header>
-        <Col>Edit Profile</Col>
-        <Col className={`d-flex justify-content-end`}>
-          <Internal
-            className={`d-flex text-decoration-none`}
-            href={`javascript:void(0)`}
-          > 
-            <GearButton
-              className={`btn btn-lg btn-outline-secondary me-4 py-1`}
-              disabled={!!formUpdated}
-              onClick={() => onSettingsModalOpen()}
+      <Container>
+        <Header>
+          <Col>Edit Profile</Col>
+          <Col className={`d-flex justify-content-end`}>
+            <Internal
+              className={`d-flex text-decoration-none`}
+              href={`javascript:void(0)`}
             >
-              {"Settings"}
-            </GearButton>
-
-            
-            
-          </Internal>
-          <Internal
-            className={`d-flex ml-2 text-decoration-none`}
-            href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
-          >
-            <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
-              {profile.role !== "organization"
-                ? "View My Profile"
-                : "View My Organization"}
-            </Button>
-          </Internal>
-        </Col>
-      </Header>
-      <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-        <StyledTabNav>
-          {tabs.map((t, i) => (
-            <Nav.Item key={t.eventKey}>
-              <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
-                <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
-                <hr className={`my-0`} />
-              </Nav.Link>
-            </Nav.Item>
-          ))}
-        </StyledTabNav>
-        <StyledTabContent>
-          {tabs.map(t => (
-            <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
-              {t.content}
-            </TabPane>
-          ))}
-        </StyledTabContent>
-      </TabContainer>
-      <ProfileSettingsModal
-        actions={actions}
-        role={profile.role}
-        isProfilePublic={isProfilePublic}
-        setIsProfilePublic={setIsProfilePublic}
-        notifications={notifications}
-        setNotifications={setNotifications}
-        onHide={close}
-        onSettingsModalClose={() => setSettingsModal(null)}
-        show={settingsModal === "show"}
-      />
-    </Container>
+              <GearButton
+                className={`btn btn-lg btn-outline-secondary me-4 py-1`}
+                disabled={!!formUpdated}
+                onClick={() => onSettingsModalOpen()}
+              >
+                {"Settings"}
+              </GearButton>
+            </Internal>
+            <Internal
+              className={`d-flex ml-2 text-decoration-none`}
+              href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+            >
+              <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
+                {profile.role !== "organization"
+                  ? "View My Profile"
+                  : "View My Organization"}
+              </Button>
+            </Internal>
+          </Col>
+        </Header>
+        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
+          <StyledTabNav>
+            {tabs.map((t, i) => (
+              <Nav.Item key={t.eventKey}>
+                <Nav.Link
+                  eventKey={t.eventKey}
+                  className={`rounded-top m-0 p-0`}
+                >
+                  <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+                  <hr className={`my-0`} />
+                </Nav.Link>
+              </Nav.Item>
+            ))}
+          </StyledTabNav>
+          <StyledTabContent>
+            {tabs.map(t => (
+              <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+                {t.content}
+              </TabPane>
+            ))}
+          </StyledTabContent>
+        </TabContainer>
+        <ProfileSettingsModal
+          actions={actions}
+          role={profile.role}
+          isProfilePublic={isProfilePublic}
+          setIsProfilePublic={setIsProfilePublic}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          onHide={close}
+          onSettingsModalClose={() => setSettingsModal(null)}
+          show={settingsModal === "show"}
+        />
+      </Container>
     </>
   )
-  
 }

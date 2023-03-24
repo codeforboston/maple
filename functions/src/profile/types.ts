@@ -16,6 +16,7 @@ export const Profile = Record({
   public: Optional(Boolean),
   about: Optional(String),
   social: Optional(Dictionary(String)),
-  organization: Optional(Boolean)
+  organization: Optional(Boolean),
+  orgCategories: Optional(String)
 })
 export type Profile = Static<typeof Profile>

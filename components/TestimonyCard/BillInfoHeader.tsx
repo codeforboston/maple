@@ -30,8 +30,10 @@ export const BillInfoHeader = ({
       </Row>
       <Row className="mt-1 mb-2">
         <Col>
-        <h5 className={styles.heading}> {testimony.billTitle ? testimony.billTitle : "Bill Title"}</h5>
-       
+          <h5 className={styles.heading}>
+            {" "}
+            {testimony.billTitle ? testimony.billTitle : "Bill Title"}
+          </h5>
         </Col>
         <Col className={`ms-auto d-flex justify-content-sm-end`}>
           <p className={`mb-0`}>{publishedDate}</p>
