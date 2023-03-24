@@ -1,20 +1,30 @@
 import { billSiteURL, Wrap } from "components/links"
+import { useContext } from "react"
 import styled from "styled-components"
 import { BillHistory } from "../db"
+import { CourtContext } from "./Status"
 
 export type HistoryProps = { billHistory: BillHistory }
 
-const linkConnectedBills = (action: string): JSX.Element => {
+const LinkConnectedBills = ({ action }: { action: string }): JSX.Element => {
   /* regex must have capture group for split to work */
   const billRegex = new RegExp(/([HS]\d+)/)
 
+  const court = useContext(CourtContext)
   if (!billRegex.test(action)) {
     return <>{action}</>
   }
   const words = action.split(billRegex)
-  const wordMap = words.map(w =>
-    billRegex.test(w) ? <Wrap href={billSiteURL(w)}>{w}</Wrap> : w
+  const wordMap = words.map((w, i) =>
+    billRegex.test(w) ? (
+      <Wrap key={i} href={billSiteURL(w, court)}>
+        {w}
+      </Wrap>
+    ) : (
+      w
+    )
   )
+
   return <>{wordMap}</>
 }
 
@@ -28,7 +38,9 @@ const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
             <td>
               {Date.substring(5, 10)}-{Date.substring(0, 4)}
             </td>
-            <td>{linkConnectedBills(Action)}</td>
+            <td>
+              <LinkConnectedBills action={Action} />
+            </td>
             <td>{Branch}</td>
           </tr>
         )

@@ -1,0 +1,124 @@
+<article class="org">
+  <div class="orgTitle">
+    {{this.orgTitle}}
+  </div>
+  <div class="orgContent">
+    <div class="orgCounterBox">
+      <div class="orgCounterNum">{{this.counter}}</div>
+      <div class="orgCounterTitle">New Testimonies</div>
+    </div>
+    <ul class="orgList">
+      {{!-- the possibility of the 6th item being handled differently and
+            the possibility of more than 6 data points makes iterating 
+            through an array of items difficult --}}
+
+      {{!-- Item 1 --}}
+
+      {{#if this.item.1.title}}
+        <li class="orgItem">
+          <div class="orgItemText">
+            {{this.item.1.title}}
+          </div>
+          <img
+            src="/thumbs-{{this.item.1.icon}}.svg"
+            alt={{this.item.1.icon}}
+          />
+        </li>
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+
+      {{!-- Item 2 --}}
+
+      {{#if this.item.2.title}}
+        <li class="orgItem">
+          <div class="orgItemText">
+            {{this.item.2.title}}
+          </div>
+          <img
+            src="/thumbs-{{this.item.2.icon}}.svg"
+            alt={{this.item.2.icon}}
+          />
+        </li>
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+
+      {{!-- Item 3 --}}
+
+      {{#if this.item.3.title}}
+        <li class="orgItem">
+          <div class="orgItemText">
+            {{this.item.3.title}}
+          </div>
+          <img
+            src="/thumbs-{{this.item.3.icon}}.svg"
+            alt={{this.item.3.icon}}
+          />
+        </li>
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+
+      {{!-- Item 4 --}}
+
+      {{#if this.item.4.title}}
+        <li class="orgItem">
+          <div class="orgItemText">
+            {{this.item.4.title}}
+          </div>
+          <img
+            src="/thumbs-{{this.item.4.icon}}.svg"
+            alt={{this.item.4.icon}}
+          />
+        </li>
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+
+      {{!-- Item 5 --}}
+
+      {{#if this.item.5.title}}
+        <li class="orgItem">
+          <div class="orgItemText">
+            {{this.item.5.title}}
+          </div>
+          <img
+            src="/thumbs-{{this.item.5.icon}}.svg"
+            alt={{this.item.5.icon}}
+          />
+        </li>
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+
+      {{!-- Item 6 --}}
+
+      {{#if this.item.6.title}}
+        {{#if this.item.7.title}}
+          <li class="orgItem blue">
+            <a class="orgItemText" href="https://mapletestimony.org/profile?id={{this.orgId}}">
+              see more
+            </a>
+            <nbsp></nbsp>
+            <div>
+              +
+            </div>
+          </li>
+        {{else}}
+          <li class="orgItem">
+            <div class="orgItemText">
+              {{this.item.6.title}}
+            </div>
+            <img
+              src="/thumbs-{{this.item.6.icon}}.svg"
+              alt={{this.item.6.icon}}
+            />
+          </li>
+        {{/if}}
+      {{else}}
+        {{> orgItemEmpty }}
+      {{/if}}
+    </ul>
+  </div>
+</article>

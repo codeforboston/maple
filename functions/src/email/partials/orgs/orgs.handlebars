@@ -1,0 +1,17 @@
+<section class="Orgs">
+  <div class="sectionHeader">
+    <h5 class="sectionTitle">Organizations</h5>
+    <div class="sectionLine"></div>
+  </div>
+  <div class="sectionOrgs">
+    {{#if org.1.orgTitle}}
+      {{#each org}}
+        {{> org }}
+      {{/each}}
+    {{else}}
+      <article class="orgNoUpdates">
+        {{> noUpdates }}
+      </article>
+    {{/if}}
+  </div>
+</section>

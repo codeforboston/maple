@@ -7,20 +7,24 @@ const NuLawLabCardContent = () => {
     <>
       <Row className="mb-5">
         <Col className="text-center align-self-center" md={6}>
-          <Image fluid src="/nulawlabicon.png" alt="NuLawLab icon" />
+          <Image
+            fluid
+            src="/nu_school_of_law.png"
+            alt="Northeatern School of Law icon"
+          />
         </Col>
         <Col className="align-self-center" md={6}>
           <p className={styles.content}>
-            The NuLawLab is the interdisciplinary innovation laboratory at{" "}
-            <a href="https://www.northeastern.edu/law/">
+            The <a href="https://www.nulawlab.org/">NuLawLab</a> is the
+            interdisciplinary innovation laboratory at{" "}
+            <a href="https://law.northeastern.edu/">
               Northeastern University School of Law
             </a>
-            .<br></br>
-            <br></br> NuLawLab's researchers are leaders in the emerging global{" "}
-            <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3644302">
-              Legal Design movement
-            </a>
-            .
+            . The Lab is a leader in the{" "}
+            <a href="https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/">
+              global legal design movement
+            </a>{" "}
+            and incubates projects that advance the democratization of law.
           </p>
         </Col>
       </Row>
