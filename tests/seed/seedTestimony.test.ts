@@ -27,7 +27,6 @@ const createDraft = (billId: string) => {
     billId,
     court: currentGeneralCourt,
     position: positions[Math.floor(Math.random() * positions.length)],
-    authorRole: "user",
     content: loremIpsum({ count: 4, units: "paragraphs" })
   }
   return draft
