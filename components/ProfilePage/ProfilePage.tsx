@@ -29,7 +29,7 @@ export function ProfilePage(profileprops: {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isUser = user?.uid === profileprops.id
-  const isOrg: boolean = profile?.role === "organization" || false
+  const isOrg: boolean = profile?.role === "organization" || profile?.role === "pendingUpgrade" || false
 
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
