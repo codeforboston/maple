@@ -16,7 +16,7 @@ export function PositionLabel({
       <ImageContainer>
         <Image className="avatar" src={avatar} width="70" height="70" />
       </ImageContainer>
-      <Image className="position" src={`thumbs-${position}.svg`} />
+      <Image className="position" src={`/thumbs-${position}.svg`} />
     </Container>
   )
 }

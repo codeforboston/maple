@@ -291,8 +291,8 @@ export const TestimonyItem = ({
         position={testimony.position}
         avatar={
           testimony.authorRole === "organization"
-            ? "organization.svg"
-            : "individualUser.svg"
+            ? "/organization.svg"
+            : "/individualUser.svg"
         }
       />
       <TestimonyItemContentStyle>
