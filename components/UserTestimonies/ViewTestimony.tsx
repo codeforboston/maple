@@ -353,20 +353,6 @@ export const TestimonyItem = ({
             </ListGroup.Item>
           </ListGroup>
         </MoreButton>
-        {showControls && (
-          <div
-            style={{
-              fontFamily: "nunito",
-              borderLeft: "1px solid rgb(200, 200, 200)",
-              minWidth: "20%"
-            }}
-          >
-            <Internal href={formUrl(testimony.billId, testimony.court)}>
-              Edit
-            </Internal>
-            <Internal href={billLink}>Delete</Internal>
-          </div>
-        )}
         <ViewAttachment testimony={testimony} />
         {isReporting && (
           <ReportModal
@@ -385,6 +371,24 @@ export const TestimonyItem = ({
           />
         )}
       </TestimonyItemContentStyle>
+
+      {!showControls && (
+        <div
+          style={{
+            fontFamily: "nunito",
+            minWidth: "20%"
+          }}
+        >
+          <ButtonStyle variant="secondary">
+            <Internal href={formUrl(testimony.billId, testimony.court)}>
+              Edit
+            </Internal>
+          </ButtonStyle>
+          <ButtonStyle>
+            <Internal href={billLink}>Rescind</Internal>
+          </ButtonStyle>
+        </div>
+      )}
     </div>
   )
 }
@@ -440,6 +444,14 @@ export const OrderFilterDropDownMenu = (props: {
   )
 }
 export default ViewTestimony
+
+const ButtonStyle = styled(Button)`
+  font-family: nunito;
+  a {
+    color: white;
+    text-decoration: none;
+  }
+`
 
 const DropdownContainer = styled(Dropdown)`
   display: flex;
