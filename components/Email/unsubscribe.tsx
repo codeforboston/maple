@@ -1,66 +1,71 @@
-import { is } from "immer/dist/internal"
-import { useCallback, useState } from "react"
+import { Card as MapleCard } from "components/Card"
+import Router from "next/router"
+import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
-import {
-  Profile,
-  ProfileHook,
-  useProfile,
-  usePublishedTestimonyListing
-} from "../db"
-import { Internal } from "../links"
+import { Button, Col, Container, Stack } from "../bootstrap"
+import { ProfileHook, useProfile } from "../db"
+
+const StyledContainer = styled(Container)`
+  @media (min-width: 768px) {
+  }
+`
+
+const StyledBody = styled(Stack)`
+  padding: 0.8rem;
+`
 
 export function UnsubscribeConfirm() {
   const { user } = useAuth()
   const isUser = user?.uid !== undefined
-  // const uid = user?.uid
-  // const result = useProfile()
+  const actions = useProfile()
 
   const handleClick = async () => {
-    // await updateProfile({ actions })
-    // onSettingsModalClose()
-
-    console.log()
-
-    // update profile
-    // then go to home/profile page
+    await updateProfile({ actions })
+    Router.push("/", "/", { shallow: true })
   }
 
-  const handleCancel = async () => {
-    // await updateProfile({ actions })
-    // onSettingsModalClose()
-
-    console.log()
-
-    // go to home/profile page
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateNotification } = actions
+    await updateNotification("None")
   }
 
   return (
-    <>
-      {isUser ? (
-        <>
-          <div>
-            Confirm that you would like to Unsubscribe from Notification Emails
-          </div>
-          <div>
-            You can change these settings at any time from Edit Profile page
-            with the '* Settings' button
-          </div>
-          <Button className={`btn btn-sm mx-3 py-1`} onClick={handleClick}>
-            Continue
-          </Button>
-          <Button
-            className={`btn btn-sm btn-outline-secondary py-1`}
-            onClick={handleCancel}
-          >
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <>
-          <div>if logged out; instructions for logging in first</div>
-        </>
-      )}
-    </>
+    <StyledContainer>
+      <MapleCard
+        className={"mt-5"}
+        header={`Unsubscribe`}
+        body={
+          <StyledBody>
+            <div>
+              {isUser ? (
+                "Confirm that you would like to unsubscribe from Notification Emails"
+              ) : (
+                <br />
+              )}
+            </div>
+            <div className={`${isUser ? "" : "mx-auto"}`}>
+              {isUser
+                ? "You can change these settings later from Edit Profile page with the Settings button"
+                : "Please log in"}
+            </div>
+            <Col className="mx-auto pt-4">
+              <Button
+                className={`btn btn-sm me-3 py-1`}
+                disabled={isUser ? false : true}
+                onClick={handleClick}
+              >
+                Continue
+              </Button>
+              <Button
+                className={`btn btn-sm btn-outline-secondary py-1`}
+                href="/"
+              >
+                Cancel
+              </Button>
+            </Col>
+          </StyledBody>
+        }
+      ></MapleCard>
+    </StyledContainer>
   )
 }
