@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Hello Handlebars</title>
+    <style type="text/css">
+      .redText { color: red; } .blueText { color: blue; } .greenText { color:
+      green; }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <h3>Favorite {{name}} Quotes</h3>
+      <ol>
+        {{#each quotes}}
+          <li>{{quote}}</li>
+        {{/each}}
+      </ol>
+
+      {{{yogiBio}}}<br /><br />
+
+      <a href={{url}}>{{text}}</a>
+    </div>
+  </body>
+</html>

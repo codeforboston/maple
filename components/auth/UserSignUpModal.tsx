@@ -176,7 +176,7 @@ export default function UserSignUpModal({
 
                 <Divider className="px-4">or</Divider>
 
-                <SocialSignOnButtons />
+                <SocialSignOnButtons onComplete={onHide} />
               </Stack>
             </Form>
           </Col>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
+import { Card as MapleCard } from "components/Card"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 

@@ -24,7 +24,7 @@ export const BillTestimonies = (
     <>
       <ViewTestimony
         {...testimony}
-        showControls={false}
+        isUser={false}
         className={props.className}
       />
     </>

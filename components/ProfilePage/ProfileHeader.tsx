@@ -8,11 +8,10 @@ import {
   where
 } from "firebase/firestore"
 import { firestore } from "../firebase"
-import { Button, Col, Stack } from "../bootstrap"
+import { Col, Stack } from "../bootstrap"
 import { useState, useEffect } from "react"
 import {
   Header,
-  StyledImage,
   ProfileDisplayName,
   OrgIconLarge,
   UserIcon
@@ -37,10 +36,7 @@ export const ProfileHeader = ({
   profileid: string
   profile: Profile
 }) => {
-  const displayName = profile.displayName
-    ? profile.displayName
-    : "Anonymous User"
-  const imageSrc = profile.profileImage
+  const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
   const topicName = `org-${profileid}`
@@ -87,19 +83,18 @@ export const ProfileHeader = ({
     <Header className={`gx-0 edit-profile-header`}>
       {isOrg ? (
         <Col xs={"auto"} className={"col-auto"}>
-          <OrgIconLarge className={`col d-none d-sm-flex`} src={imageSrc} />
+          <OrgIconLarge className={`col d-none d-sm-flex`} src={orgImageSrc} />
         </Col>
       ) : (
         <Col xs={"auto"}>
-          <UserIcon src={imageSrc} />
+          <UserIcon src="./profile-individual-icon.svg" />
         </Col>
       )}
       <Col>
         <Stack gap={2}>
           <ProfileDisplayName className={`overflow-hidden`}>
-            {displayName}
+            {profile.displayName}
           </ProfileDisplayName>
-
           {isOrg && (
             <>
               {isUser ? (

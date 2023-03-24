@@ -1,0 +1,17 @@
+<section class="Bills">
+  <div class="sectionHeader">
+    <h5 class="sectionTitle">Bills</h5>
+    <div class="sectionLine"></div>
+  </div>
+  <div class="sectionBills">
+    {{#if bill.1.title}}
+      {{#each bill}}
+        {{> bill }}
+      {{/each}}
+    {{else}}
+      <article class="billNoUpdates">
+        {{> noUpdates }}
+      </article>
+    {{/if}}
+  </div>
+</section>
