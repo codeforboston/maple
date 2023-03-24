@@ -10,7 +10,8 @@ import {
   Static,
   String,
   Union,
-  Null
+  Null,
+  Undefined
 } from "runtypes"
 import { functions } from "../../firebase"
 import { Id, Maybe } from "../common"
@@ -30,7 +31,8 @@ export const authorRole = Union(
   L("admin"),
   L("legislator"),
   L("pendingUpgrade"),
-  L("organization")
+  L("organization"),
+  Undefined
 )
 export type authorRole = Static<typeof authorRole>
 
