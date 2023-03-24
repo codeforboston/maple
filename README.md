@@ -63,7 +63,8 @@ git pull upstream main
 
 - `yarn dev`: Start the Next.js development server. Use this if you're working on frontend features. View the app in your browser at [localhost:3000](http://localhost:3000). Make some changes to `components/` and `pages/`. The site will automatically update. Your local site will share the same backend as the live development site.
 - `yarn dev:storybook`: Start the Storybook development server. Use this if you're working on UI components. View your storybook at [localhost:6006](http://localhost:6006). It will update as you make changes to the stories in `stories/`.
-- `yarn dev:up`: Run the full application locally using Docker Compose. Use this if you're working on full-stack or backend features in `functions/`. You can access the emulator UI at http://localhost:3010. The application continues running after you exit this command.
+- `yarn dev:up`: Run the full application locally using Docker Compose. Use this if you're working on full-stack or backend features in `functions/`. You can access the emulator UI at http://localhost:3010.
+- `yarn dev:up:detach`: Run the application, and keep it running once you stop this command.
 - `yarn dev:down`: Stop the application.
 - `yarn dev:update`: Update the application images. Run this whenever dependencies in `package.json` change.
 - `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
