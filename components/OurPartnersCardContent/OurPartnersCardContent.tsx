@@ -15,13 +15,28 @@ const NuLawLabCardContent = () => {
         </Col>
         <Col className="align-self-center" md={6}>
           <p className={styles.content}>
-            The <a href="https://www.nulawlab.org/">NuLawLab</a> is the
-            interdisciplinary innovation laboratory at{" "}
-            <a href="https://law.northeastern.edu/">
+            The{" "}
+            <a
+              href="https://www.nulawlab.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              NuLawLab
+            </a>{" "}
+            is the interdisciplinary innovation laboratory at{" "}
+            <a
+              href="https://law.northeastern.edu/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Northeastern University School of Law
             </a>
             . The Lab is a leader in the{" "}
-            <a href="https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/">
+            <a
+              href="https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               global legal design movement
             </a>{" "}
             and incubates projects that advance the democratization of law.
@@ -51,12 +66,20 @@ const CodeForBostonCardContent = () => {
             <br></br> They foster relationships between government, nonprofit,
             academic, for-profit companies, residents, civic technologists,
             analysts, designers, and many more.{" "}
-            <a href="https://github.com/codeforboston/maple/graphs/contributors">
+            <a
+              href="https://github.com/codeforboston/maple/graphs/contributors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Code for Boston's volunteer contributors
             </a>{" "}
             have led the technical implementation and development of this
             website and platform as an open source project (
-            <a href="https://github.com/codeforboston/maple">
+            <a
+              href="https://github.com/codeforboston/maple"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               see our repository on GitHub
             </a>
             ).
