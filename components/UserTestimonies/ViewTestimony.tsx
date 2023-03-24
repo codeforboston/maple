@@ -26,7 +26,6 @@ import { PositionLabel } from "./PositionBug"
 import { PaginationButtons } from "components/table"
 import { ReportModal } from "./ReportModal"
 import { Tab, Tabs } from "./Tabs"
-import { authorRole } from "../db"
 
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
@@ -66,24 +65,25 @@ const ViewTestimony = (
     setActiveTab(value)
   }
 
-  const handleFilter = (filter: authorRole | null) => {
+  const handleFilter = (filter: string | null) => {
     if (filter === "organization") {
       setFilter({ authorRole: "organization" })
-    } else {
-      const authorRole =
-        filter === null
-          ? null
-          : [
-              "user",
-              "admin",
-              "legislator",
-              "pendingUpgrade",
-              undefined
-            ].includes(filter)
-          ? filter
-          : null
-      setFilter(authorRole ? { authorRole } : null)
     }
+    if (filter === "user") {
+      setFilter({ authorRole: "user" })
+    }
+    if (filter === "") {
+      setFilter({ authorRole: "" })
+    }
+    // } else {
+    //   const authorRole =
+    //     filter === null
+    //       ? null
+    //       : ["user", "admin", "legislator", "pendingUpgrade"].includes(filter)
+    //       ? filter
+    //       : null
+    //   setFilter(authorRole ? { authorRole } : null)
+    // }
   }
 
   const tabs = [
@@ -92,7 +92,7 @@ const ViewTestimony = (
       label="All Testimonies"
       active={false}
       value={1}
-      action={() => handleFilter(undefined)}
+      action={() => handleFilter("")}
     />,
     <Tab
       key="uo"
@@ -115,11 +115,13 @@ const ViewTestimony = (
         headerElement={<Head>Testimony</Head>}
         body={
           <BootstrapCard.Body>
-            <Tabs
-              childTabs={tabs}
-              onChange={handleTabClick}
-              selectedTab={activeTab}
-            ></Tabs>
+            {!showControls && (
+              <Tabs
+                childTabs={tabs}
+                onChange={handleTabClick}
+                selectedTab={activeTab}
+              ></Tabs>
+            )}
             {/* <DropDownsContainerStyle>
         <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
         <OrderFilterDropDownMenu
