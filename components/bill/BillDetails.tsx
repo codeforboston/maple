@@ -78,7 +78,9 @@ export const BillDetails = ({ bill }: BillProps) => {
       <Row>
         <Col md={8}>
           <Sponsors bill={bill} className="mt-4 pb-1" />
-          <BillTestimonies bill={bill} className="mt-4" />
+          <div className="mt-4">
+            <BillTestimonies bill={bill} />
+          </div>
         </Col>
         <Col md={4}>
           <Committees bill={bill} className="mt-4 pb-1" />
@@ -87,9 +89,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
           />
           <TestimonyFormPanel bill={bill} />
-          {flags().billTracker && (
-            <BillTrackerConnectedView bill={bill} className="mt-4" />
-          )}
+          {flags().billTracker && <BillTrackerConnectedView bill={bill} />}
         </Col>
       </Row>
     </StyledContainer>
