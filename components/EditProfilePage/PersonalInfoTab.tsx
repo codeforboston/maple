@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { Form, Row, Col } from "../bootstrap"
+import { Form, Row, Col, Button} from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
 import { StyledSaveButton } from "./StyledEditProfileComponents"
-import { ImageInput } from "./ImageInput"
 import { YourLegislators } from "./YourLegislators"
 import { OrgCategory, OrgCategories } from "components/auth"
-import { minLength } from "ra-core"
+import { TooltipButton } from "components/buttons"
 
 type UpdateProfileData = {
-  name: string
+  fullName: string
+  displayName: string
   aboutYou: string
   twitter: string
   linkedIn: string
@@ -57,8 +57,8 @@ async function updateProfile(
   await updateSocial("instagram", data.instagram)
   await updateSocial("fb", data.fb)
   await updateAbout(data.aboutYou)
-  await updateDisplayName(data.name)
-  await updateFullName(data.name)
+  await updateDisplayName(data.displayName)
+  await updateFullName(data.fullName)
 }
 
 export function PersonalInfoTab({
@@ -78,6 +78,7 @@ export function PersonalInfoTab({
 
   const {
     displayName,
+    fullName,
     about,
     role,
     social,
@@ -102,30 +103,52 @@ export function PersonalInfoTab({
   }, [isDirty, setFormUpdated])
 
   const [category, setCategory] = useState(
-    profile.orgCategories ? profile.orgCategories : OrgCategories[0]
+    orgCategories ? orgCategories : OrgCategories[0]
   )
+
+  const tooltip = "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way."
 
   return (
     <Form onSubmit={onSubmit}>
       <TitledSectionCard className={className}>
         <div className={`mx-4 mt-3 d-flex flex-column`}>
           <h4 className="mb-3">General Information</h4>
+          <Row>
           <Input
-            label="Name"
-            {...register("name", {
+            label="Full Name"
+            {...register("fullName", {
               required: "A name is required"
             })}
-            defaultValue={displayName}
-            error={errors.name?.message}
+            className="w-50"
+            defaultValue={fullName}
+            error={errors.fullName?.message}
           />
+          <Input
+            label="Nickname"
+            className="w-50"
+            {...register("displayName")}
+            defaultValue={displayName}
+            error={errors.displayName?.message}
+          />
+
+          </Row>
+          
           <Input
             as="textarea"
             {...register("aboutYou")}
-            style={{ height: "20rem" }}
+            style={{ height: "10rem" }}
             className="mt-3"
             label="Write something about yourself"
             defaultValue={about}
           />
+          <Row xs="auto" className="mt-2">
+            <Col>
+            <TooltipButton text="What should you write?" tooltip={tooltip} variant="link" />
+
+            </Col>
+
+
+          </Row>
           {isOrg && (
             <Form.Group className="mt-3" controlId="orgCategory">
               <Form.FloatingLabel label="Select an organization cateogry">
@@ -154,12 +177,14 @@ export function PersonalInfoTab({
                 label="Twitter Username"
                 defaultValue={social?.twitter}
                 className=" w-50"
+                iconSrc="./twitter.svg"
                 {...register("twitter")}
               />
               <Input
                 label="LinkedIn Username"
                 defaultValue={social?.linkedIn}
                 className="w-50"
+                iconSrc="./linkedin.svg"
                 {...register("linkedIn")}
               />
             </div>
@@ -170,12 +195,16 @@ export function PersonalInfoTab({
                     label="Instagram Username"
                     defaultValue={social?.instagram}
                     className="w-50"
+                    iconSrc="./instagram.svg"
+
                     {...register("instagram")}
                   />
                   <Input
                     label="Facebook Link"
                     defaultValue={social?.fb}
                     className="w-50"
+                    iconSrc="./facebook.svg"
+
                     {...register("fb")}
                   />
                 </div>

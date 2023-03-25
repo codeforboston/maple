@@ -51,7 +51,7 @@ export const TestimoniesTab = ({
                     key={t.authorUid + t.billId}
                     testimony={t}
                     isUser={true}
-                    showBillInfo={true}
+                    onProfilePage={true}
                     canEdit={true}
                     canDelete={true}
                   />
@@ -65,7 +65,7 @@ export const TestimoniesTab = ({
                   key={t.authorUid + t.billId}
                   testimony={t}
                   isUser={true}
-                  showBillInfo={true}
+                  onProfilePage={true}
                   canEdit={true}
                   canDelete={false}
                 />

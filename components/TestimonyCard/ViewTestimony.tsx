@@ -22,7 +22,7 @@ const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
     isUser?: boolean
-    showBillInfo?: boolean
+    onProfilePage?: boolean
     className?: string
     isOrg?: boolean
   }
@@ -31,7 +31,7 @@ const ViewTestimony = (
     items,
     setFilter,
     isUser = false,
-    showBillInfo = false,
+    onProfilePage = false,
     className,
     isOrg
   } = props
@@ -49,7 +49,7 @@ const ViewTestimony = (
           <BootstrapCard.Body>
             {testimony.length > 0 ? (
               <div>
-                {showBillInfo ? (
+                {onProfilePage ? (
                   <Row className="justify-content-between mb-4">
                     <Col className="d-flex align-items-center">
                       Showing 1 - {testimony.length} out of {testimony.length}
@@ -82,7 +82,7 @@ const ViewTestimony = (
                       key={t.authorUid + t.billId}
                       testimony={t}
                       isUser={isUser}
-                      showBillInfo={showBillInfo}
+                      onProfilePage={onProfilePage}
                     />
                   ))}
               </div>

@@ -42,7 +42,7 @@ export const Styled = styled.div`
 
     font-family: "Nunito";
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 25px;
     line-height: 125%;
 
@@ -147,12 +147,9 @@ export function FollowingTab({ className }: Props) {
       </TitledSectionCard>
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-          <Styled>
-            <Row>
-              <Col>
-                <h2 className={``}>Organizations You Follow</h2>
-              </Col>
-            </Row>
+          <Stack>
+           
+            <h2 className="pb-3">Organizations You Follow</h2>
             {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
@@ -161,7 +158,7 @@ export function FollowingTab({ className }: Props) {
                 type={"org"}
               />
             ))}
-          </Styled>
+          </Stack>
         </div>
       </TitledSectionCard>
       <UnfollowModal
@@ -226,7 +223,7 @@ function FollowedItem({
           ) : (
             <Row className={`align-items-center`}>
               <Col className={"align-items-center d-flex"}>
-                <OrgIconSmall src={profile?.profileImage} />
+                <OrgIconSmall className="mr-4 mt-0 mb-0 ms-0" src={profile?.profileImage} />
                 <Internal href={`organizations/${element}`}>
                   {displayName}
                 </Internal>

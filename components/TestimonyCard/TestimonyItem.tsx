@@ -73,13 +73,13 @@ export const TestimonyItem = ({
   isUser,
   canEdit,
   canDelete,
-  showBillInfo
+  onProfilePage
 }: {
   testimony: Testimony
   isUser: boolean
   canEdit?: boolean
   canDelete?: boolean
-  showBillInfo: boolean
+  onProfilePage: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const publishedDate = testimony.publishedAt
@@ -137,7 +137,7 @@ export const TestimonyItem = ({
       </div>
       <Stack gap={1}>
         <Row className={`justify-content-between align-items-center`}>
-          {showBillInfo ? (
+          {onProfilePage ? (
             <BillInfoHeader
               testimony={testimony}
               billLink={billLink}
