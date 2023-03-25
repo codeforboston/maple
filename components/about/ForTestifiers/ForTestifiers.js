@@ -5,8 +5,11 @@ import {
   BenefitsCardContent,
   ChallengeCardContent
 } from "../ForTestifiersCardContent/ForTestifiersCardContent"
+import { useAuth } from "components/auth"
 
 const ForTestifiers = () => {
+  const { authenticated } = useAuth()
+
   return (
     <Container>
       <Row>
@@ -18,9 +21,11 @@ const ForTestifiers = () => {
           <AboutPagesCard title="What we offer">
             <BenefitsCardContent />
           </AboutPagesCard>
-          <AboutPagesCard title="Get started with MAPLE today!">
-            <ChallengeCardContent />
-          </AboutPagesCard>
+          {!authenticated && (
+            <AboutPagesCard title="Get started with MAPLE today!">
+              <ChallengeCardContent />
+            </AboutPagesCard>
+          )}
         </Col>
       </Row>
     </Container>
