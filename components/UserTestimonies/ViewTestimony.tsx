@@ -65,13 +65,16 @@ const ViewTestimony = (
       <BootstrapCard.Body>
         {testimony.length > 0 ? (
           testimony.map(t => (
-            <TestimonyItem
-              key={t.authorUid + t.billId}
-              testimony={t}
-              showControls={showControls}
-              showBillNumber={showBillNumber}
-              billsPage={billsPage}
-            />
+            <>
+              <TestimonyItem
+                key={t.authorUid + t.billId}
+                testimony={t}
+                showControls={showControls}
+                showBillNumber={showBillNumber}
+                billsPage={billsPage}
+              />
+              {!billsPage && <hr />}
+            </>
           ))
         ) : (
           <NoResults>
@@ -322,6 +325,7 @@ export const TestimonyItem = ({
           </ButtonContainer>
         </>
       )}
+      <hr />
     </TestimonyItemContainer>
   )
 }
