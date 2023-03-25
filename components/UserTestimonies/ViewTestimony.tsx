@@ -57,101 +57,38 @@ const ViewTestimony = (
     showControls = false,
     showBillNumber = false
   } = props
-  const [testimony, setTestimony] = useState<Testimony[]>([])
-  useEffect(() => {
-    setTestimony(items.result ?? [])
-  }, [items])
 
-  const [activeTab, setActiveTab] = useState(1)
+  const testimony = items.result ?? []
 
-  const handleTabClick = (e: Event, value: number) => {
-    setActiveTab(value)
-  }
-
-  const handleFilter = (filter: string | null) => {
-    if (filter === "organization") {
-      setFilter({ authorRole: "organization" })
-    }
-    if (filter === "user") {
-      setFilter({ authorRole: "user" })
-    }
-    if (filter === "") {
-      setFilter({ authorRole: "" })
-    }
-    // } else {
-    //   const authorRole =
-    //     filter === null
-    //       ? null
-    //       : ["user", "admin", "legislator", "pendingUpgrade"].includes(filter)
-    //       ? filter
-    //       : null
-    //   setFilter(authorRole ? { authorRole } : null)
-    // }
-  }
-
-  const tabs = [
-    <Tab
-      key="at"
-      label="All Testimonies"
-      active={false}
-      value={1}
-      action={() => handleFilter("")}
-    />,
-    <Tab
-      key="uo"
-      label="Individuals"
-      active={false}
-      value={2}
-      action={() => handleFilter("user")}
-    />,
-    <Tab
-      key="oo"
-      label="Organizations"
-      active={false}
-      value={3}
-      action={() => handleFilter("organization")}
-    />
-  ]
   return (
     <Container>
-      <MapleCard
-        headerElement={<Head>Testimony</Head>}
-        body={
-          <BootstrapCard.Body>
-            {billsPage && (
-              <Tabs
-                childTabs={tabs}
-                onChange={handleTabClick}
-                selectedTab={activeTab}
-              ></Tabs>
-            )}
-            {/* <DropDownsContainerStyle>
+      <BootstrapCard.Body>
+        {/* <DropDownsContainerStyle>
         <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
         <OrderFilterDropDownMenu
           handleOrder={handleOrderClick}
           currentOrder={orderBy}
         />
       </DropDownsContainerStyle> */}
-            {testimony.length > 0 ? (
-              testimony.map(t => (
-                <TestimonyItem
-                  key={t.authorUid + t.billId}
-                  testimony={t}
-                  showControls={showControls}
-                  showBillNumber={showBillNumber}
-                />
-              ))
-            ) : (
-              <NoResults>
-                There is no testimony here. <br />
-                <b>Be the first and add one!</b>
-              </NoResults>
-            )}
-            {/* <div className="p-3" /> */}
-            <PaginationButtons pagination={pagination} />
-          </BootstrapCard.Body>
-        }
-      />
+        {testimony.length > 0 ? (
+          testimony.map(t => (
+            <TestimonyItem
+              key={t.authorUid + t.billId}
+              testimony={t}
+              showControls={showControls}
+              showBillNumber={showBillNumber}
+              billsPage={billsPage}
+            />
+          ))
+        ) : (
+          <NoResults>
+            There is no testimony here. <br />
+            <b>Be the first and add one!</b>
+          </NoResults>
+        )}
+        {/* <div className="p-3" /> */}
+        <PaginationButtons pagination={pagination} />
+      </BootstrapCard.Body>
     </Container>
   )
 }
@@ -267,11 +204,13 @@ const MoreButton = ({ children }: { children: React.ReactChild }) => {
 export const TestimonyItem = ({
   testimony,
   showControls,
-  showBillNumber
+  showBillNumber,
+  billsPage
 }: {
   testimony: Testimony
   showControls: boolean
   showBillNumber: boolean
+  billsPage: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
@@ -284,14 +223,16 @@ export const TestimonyItem = ({
 
   return (
     <TestimonyItemContainer>
-      <PositionLabel
-        position={testimony.position}
-        avatar={
-          testimony.authorRole === "organization"
-            ? "/organization.svg"
-            : "/individualUser.svg"
-        }
-      />
+      {billsPage && (
+        <PositionLabel
+          position={testimony.position}
+          avatar={
+            testimony.authorRole === "organization"
+              ? "/organization.svg"
+              : "/individualUser.svg"
+          }
+        />
+      )}
       <TestimonyItemContentStyle>
         <TestimonyItemHeader>
           <>
@@ -448,7 +389,7 @@ const TestimonyItemContainer = styled.div`
   flex-direction: row;
   margin: 5%;
 
-  @media (max-width: 740px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `
