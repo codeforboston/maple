@@ -92,7 +92,7 @@ export default function NotificationSettingsModal({
             /* remove "div w/ d-none" for testing and/or after Soft Launch 
                when we're ready to show Email related element to users
             */
-            className=""
+            className="d-none"
           >
             <Stack>
               &nbsp; Notifications
