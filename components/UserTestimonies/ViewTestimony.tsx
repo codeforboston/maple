@@ -25,7 +25,6 @@ import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
 import { PaginationButtons } from "components/table"
 import { ReportModal } from "./ReportModal"
-import { Tab, Tabs } from "./Tabs"
 
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
