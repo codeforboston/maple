@@ -65,16 +65,15 @@ const ViewTestimony = (
       <BootstrapCard.Body>
         {testimony.length > 0 ? (
           testimony.map(t => (
-            <>
+            <div key={t.authorUid + t.billId}>
               <TestimonyItem
-                key={t.authorUid + t.billId}
                 testimony={t}
                 showControls={showControls}
                 showBillNumber={showBillNumber}
                 billsPage={billsPage}
               />
               {!billsPage && <hr />}
-            </>
+            </div>
           ))
         ) : (
           <NoResults>
