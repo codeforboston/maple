@@ -19,18 +19,24 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
 
 const StyledButton = styled(Button)`
   &:focus {
-    color: #1a3185;
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+    /* color: #1a3185;
     background-color: white;
-    border-color: #1a3185;
+    border-color: #1a3185; */
   }
   width: 110px;
 `
 
 const StyledOutlineButton = styled(Button)`
   &:focus {
-    color: white;
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+    /* color: white;
     background-color: #1a3185;
-    border-color: white;
+    border-color: white; */
   }
   width: 110px;
 `
