@@ -25,7 +25,7 @@
     "compose": "docker compose -f infra/docker-compose.yml",
     "dev:functions": "yarn --cwd functions dev",
     "export": "next build && next export",
-    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage tests/integration/exportedTestData",
+    "export-test-data": "firebase --project demo-dtp emulators:export --only firestore,storage,auth tests/integration/exportedTestData",
     "export:nolint": "next build --no-lint && next export",
     "fix": "next lint --fix && prettier --write .",
     "postinstall": "yarn --cwd functions install --frozen-lockfile --ignore-engines",
