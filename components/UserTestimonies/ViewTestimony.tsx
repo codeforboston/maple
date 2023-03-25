@@ -63,13 +63,6 @@ const ViewTestimony = (
   return (
     <Container>
       <BootstrapCard.Body>
-        {/* <DropDownsContainerStyle>
-        <UserFilterDropDown handleUsers={handleShownClick} users={shown} />
-        <OrderFilterDropDownMenu
-          handleOrder={handleOrderClick}
-          currentOrder={orderBy}
-        />
-      </DropDownsContainerStyle> */}
         {testimony.length > 0 ? (
           testimony.map(t => (
             <TestimonyItem

@@ -52,11 +52,13 @@ export type UsePublishedTestimonyListing = ReturnType<
 export function usePublishedTestimonyListing({
   uid,
   court,
-  billId
+  billId,
+  authorRole
 }: {
   uid?: string
   court?: number
   billId?: string
+  authorRole?: string
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
     initialRefinement(uid, court, billId)
@@ -66,6 +68,7 @@ export function usePublishedTestimonyListing({
     if (refinement.uid !== uid) refine({ uid })
     if (refinement.billId !== billId) refine({ billId })
     if (refinement.court !== court) refine({ court })
+    if (refinement.authorRole !== authorRole) refine({ authorRole })
   }, [billId, court, refine, refinement, uid])
 
   return useMemo(() => {

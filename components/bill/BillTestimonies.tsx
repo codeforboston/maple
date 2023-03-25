@@ -12,10 +12,12 @@ export const BillTestimonies = (
     className?: string
   }
 ) => {
+  const [authorRole, setAuthorRole] = useState("")
   const { id, court } = props.bill
   const testimony = usePublishedTestimonyListing({
     billId: id,
-    court
+    court,
+    authorRole: authorRole
   })
 
   const { items, setFilter } = testimony
@@ -23,20 +25,25 @@ export const BillTestimonies = (
   const refreshtable = useCallback(() => {
     items.execute()
   }, [items])
+
   const [activeTab, setActiveTab] = useState(1)
 
   const handleTabClick = (e: Event, value: number) => {
     setActiveTab(value)
   }
-  const handleFilter = (filter: string | null) => {
+
+  const handleFilter = (filter: string | undefined) => {
     if (filter === "organization") {
-      setFilter({ authorRole: "organization" })
+      //setFilter({ authorRole: "organization" })
+      setAuthorRole(filter)
     }
     if (filter === "user") {
-      setFilter({ authorRole: "user" })
+      //setFilter({ authorRole: "user" })
+      setAuthorRole(filter)
     }
     if (filter === "") {
-      setFilter({ authorRole: "" })
+      //setFilter({ authorRole: "" })
+      setAuthorRole("")
     }
     // } else {
     //   const authorRole =
