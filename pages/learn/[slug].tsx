@@ -9,6 +9,7 @@ import {
 import Tabs from "../../components/Tabs/Tabs"
 import { GetStaticPaths, GetStaticProps } from "next/types"
 import { ParsedUrlQuery } from "querystring"
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 type TabsType = {
   label: string
@@ -52,12 +53,12 @@ const tabs: TabsType[] = [
   }
 ]
 
-export default createPage({
+export default createPage<{ params: IParams }>({
   title: "Learn",
   Page: props => {
     const router = useRouter()
 
-    const { slug } = props as Props
+    const { slug } = props.params as Props
 
     const [selectedTab] = tabs.filter(t => t.slug === slug)
 
@@ -89,6 +90,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const props = context.params as IParams
-  return { props }
+  const params = context.params as IParams
+  const locale = context.locale as string
+
+  return {
+    props: {
+      params,
+      ...(await serverSideTranslations(locale, ["common", "footer"]))
+    }
+  }
 }
