@@ -15,7 +15,6 @@ export const BillTestimonies = (
   })
 
   const { items } = testimony
-
   const refreshtable = useCallback(() => {
     items.execute()
   }, [items])
@@ -26,6 +25,7 @@ export const BillTestimonies = (
         {...testimony}
         showControls={false}
         className={props.className}
+        billsPage={true}
       />
     </>
   )

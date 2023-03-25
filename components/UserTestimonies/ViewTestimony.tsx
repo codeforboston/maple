@@ -43,6 +43,7 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
+    billsPage?: boolean
     showControls?: boolean
     showBillNumber?: boolean
     className?: string
@@ -52,6 +53,7 @@ const ViewTestimony = (
     pagination,
     items,
     setFilter,
+    billsPage = false,
     showControls = false,
     showBillNumber = false
   } = props
@@ -116,7 +118,7 @@ const ViewTestimony = (
         headerElement={<Head>Testimony</Head>}
         body={
           <BootstrapCard.Body>
-            {!showControls && (
+            {billsPage && (
               <Tabs
                 childTabs={tabs}
                 onChange={handleTabClick}
