@@ -16,8 +16,7 @@ export const BillTestimonies = (
   const { id, court } = props.bill
   const testimony = usePublishedTestimonyListing({
     billId: id,
-    court,
-    authorRole: authorRole
+    court
   })
 
   const { items, setFilter } = testimony
@@ -34,16 +33,16 @@ export const BillTestimonies = (
 
   const handleFilter = (filter: string | undefined) => {
     if (filter === "organization") {
-      //setFilter({ authorRole: "organization" })
-      setAuthorRole(filter)
+      setFilter({ authorRole: "organization" })
+      //setAuthorRole(filter)
     }
     if (filter === "user") {
-      //setFilter({ authorRole: "user" })
-      setAuthorRole(filter)
+      setFilter({ authorRole: "user" })
+      //setAuthorRole(filter)
     }
     if (filter === "") {
-      //setFilter({ authorRole: "" })
-      setAuthorRole("")
+      setFilter({ authorRole: "" })
+      //setAuthorRole("")
     }
     // } else {
     //   const authorRole =
