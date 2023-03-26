@@ -18,10 +18,7 @@ export default createPage({
   }
 })
 
-export const getStaticProps: GetStaticProps = ctx => ({ props: ctx.params! })
-
 export const getStaticPaths: GetStaticPaths = async ctx => {
-  console.log("asdf")
   return {
     paths: [
       { params: { docName: ["privacy-policy"] } },
@@ -29,5 +26,18 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
       { params: { docName: ["terms-of-service"] } }
     ],
     fallback: false
+  }
+}
+
+// this must only be on pages in the pages folder
+// it will throw an error if it's in the components folder
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common", "footer"]))
+      // Will be passed to the page component as props
+    }
   }
 }
