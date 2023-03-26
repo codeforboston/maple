@@ -12,6 +12,7 @@ import { useEffect } from "react"
 import { z } from "zod"
 import { createPage } from "../../components/page"
 import { first } from "lodash"
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 export default createPage({
   title: "Testimony",
@@ -144,6 +145,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
         version: q.version
       })
     )
-    return { props: {} }
+
+    const locale = ctx.locale as string
+
+    return {
+      props: { ...(await serverSideTranslations(locale, ["common", "footer"])) }
+    }
   }
 )
