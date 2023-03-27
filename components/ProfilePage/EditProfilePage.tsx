@@ -106,12 +106,16 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
-    },
+    }
+    /*
+      Following Tab hidden until post soft launch
+      
     {
       title: "Following",
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
     }
+    */
   ]
 
   return (
