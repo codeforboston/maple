@@ -1,7 +1,6 @@
 import { app } from "components/firebase"
-import { Admin, DataProvider, ListGuesser, Resource } from "react-admin"
+import { Admin, DataProvider, Resource } from "react-admin"
 import {
-  FirebaseAuthProvider,
   FirebaseDataProvider
 } from "react-admin-firebase"
 import {
@@ -20,10 +19,9 @@ import {
 import { ListProfiles, ListPublishedTestimony, ListReports } from "./listsViews"
 import { ShowProfile, ShowReports } from "./showViews"
 
-import * as dbCalls from "./dataProviderDbCalls"
-import * as firestore from "firebase/firestore"
 import * as fb from "components/firebase"
-import { MyLayout } from "./common"
+import * as firestore from "firebase/firestore"
+import * as dbCalls from "./dataProviderDbCalls"
 
 const App = () => {
   console.log("data provider loading in moderation .txs")

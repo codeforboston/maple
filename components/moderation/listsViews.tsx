@@ -1,3 +1,5 @@
+import _ from "lodash"
+import { useCallback } from "react"
 import {
   Button,
   ChipField,
@@ -7,9 +9,9 @@ import {
   List,
   ReferenceOneField,
   TextField,
-  TextInput,
-  useNotify,
-  useRedirect
+  Toolbar,
+  useListController,
+  useNotify
 } from "react-admin"
 import { MemorableId, StatusField } from "./common"
 import { Report } from "./types"
@@ -50,10 +52,41 @@ export function ListPublishedTestimony() {
   )
 }
 
+const UserRoleToolBar = ({
+  filterValues,
+  setFilters
+}: {
+  filterValues: object
+  setFilters: any
+}) => {
+  const toggleFilter = useCallback(() => {
+    _.isEmpty(filterValues)
+      ? setFilters({ userRole: "pendingUpgrade" }, [], true)
+      : setFilters({}, [], true)
+  }, [filterValues, setFilters])
+
+  return (
+    <Toolbar sx={{ width: "100%" }}>
+      <Button
+        label={_.isEmpty(filterValues) ? "View Requests" : "View All Profiles"}
+        variant="outlined"
+        onClick={toggleFilter}
+      />
+    </Toolbar>
+  )
+}
+
 export function ListProfiles() {
   const notify = useNotify()
+
+  const { filterValues, setFilters } = useListController()
+
   return (
-    <List filter={{ userRole: "pendingUpgrade" }}>
+    <List
+      actions={
+        <UserRoleToolBar filterValues={filterValues} setFilters={setFilters} />
+      }
+    >
       <Datagrid rowClick="show">
         <TextField source="id" />
         <TextField source="displayName" />
@@ -65,10 +98,6 @@ export function ListProfiles() {
         <TextField source="request" />
         <TextField source="userRole" />
         <Button label="upgrade" onClick={() => notify("user upgraded")} />
-        <Button
-          label="close request"
-          onClick={() => notify("request closed")}
-        />
         <EditButton />
       </Datagrid>
     </List>

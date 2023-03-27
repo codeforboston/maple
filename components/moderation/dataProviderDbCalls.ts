@@ -18,7 +18,6 @@ import {
   GetManyResult,
   GetOneParams,
   GetOneResult,
-  ListParams,
   UpdateManyParams,
   UpdateManyResult,
   UpdateParams,
@@ -29,7 +28,6 @@ export async function queryCollectionGroup(
   resource: string,
   params?: GetListParams
 ) {
-  console.log(params)
   const filters = Object.entries(params?.filter)
   const myquery = query(
     collectionGroup(firestore, resource),
@@ -43,7 +41,6 @@ export async function queryCollectionSingle(
   params?: GetListParams
 ) {
   const filters = Object.entries(params?.filter)
-
   const myCollection = collection(firestore, resource)
   const q = query(myCollection, ...filters.map(([k, v]) => where(k, "==", v)))
   const snap = await getDocs(q)
@@ -117,7 +114,6 @@ export async function updateMyOne(
   console.log("updating my one", params)
   const { id, data, previousData } = params
   const ref = doc(firestore, resource, id as string)
-  console.log(ref.path)
   await setDoc(ref, data, { merge: true })
   return { data: data }
 }
@@ -137,10 +133,8 @@ export const getMyListGroup = async (
   resource: string,
   params: GetListParams = listParamsDefault
 ) => {
-  console.log("inside list group", resource)
   let snap = await queryCollectionSingle(resource, params)
   if (snap.empty) {
-    console.log("singleCollectionEmpty")
     snap = await queryCollectionGroup(resource, params)
   }
   const docs = snap.docs

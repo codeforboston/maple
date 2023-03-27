@@ -19,8 +19,9 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
-    match /profiles/{uid} {}
-
+    match /{path=**}/profiles/{uid}{
+      allow read, write: if true; // temp for dev
+    }
     match /users/{uid} {
       function validUser() {
         return request.auth.uid != null
