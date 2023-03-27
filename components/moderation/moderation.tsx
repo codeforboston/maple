@@ -1,8 +1,6 @@
 import { app } from "components/firebase"
 import { Admin, DataProvider, Resource } from "react-admin"
-import {
-  FirebaseDataProvider
-} from "react-admin-firebase"
+import { FirebaseDataProvider } from "react-admin-firebase"
 import {
   createMyOne,
   getMyListGroup,
