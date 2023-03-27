@@ -11,13 +11,23 @@ import {
   getMyOne,
   updateMyOne
 } from "./dataProviderDbCalls"
-import { CreateReport, EditReports } from "./editViews"
-import { ListPublishedTestimony, ListReports } from "./listsViews"
-import { ShowReports } from "./showViews"
+import {
+  CreateProfile,
+  CreateReport,
+  EditProfile,
+  EditReports
+} from "./editViews"
+import { ListProfiles, ListPublishedTestimony, ListReports } from "./listsViews"
+import { ShowProfile, ShowReports } from "./showViews"
+
+import * as dbCalls from "./dataProviderDbCalls"
+import * as firestore from "firebase/firestore"
+import * as fb from "components/firebase"
+import { MyLayout } from "./common"
 
 const App = () => {
   console.log("data provider loading in moderation .txs")
-  const authProvider = FirebaseAuthProvider(app.options, {})
+  // const authProvider = FirebaseAuthProvider(app.options, {})
   const dataProvider = FirebaseDataProvider(app.options)
   const myDataProvider: DataProvider = {
     ...dataProvider,
@@ -26,6 +36,10 @@ const App = () => {
     getMany: getMyMany,
     create: createMyOne,
     update: updateMyOne
+  }
+
+  if (!("dbCalls" in window)) {
+    Object.assign(window as any, { dbCalls, firestore, fb })
   }
 
   return (
@@ -38,7 +52,13 @@ const App = () => {
         create={CreateReport}
       />
       <Resource name="publishedTestimony" list={ListPublishedTestimony} />
-      <Resource name="users" list={ListGuesser} />
+      <Resource
+        name="profiles"
+        list={ListProfiles}
+        show={ShowProfile}
+        edit={EditProfile}
+        create={CreateProfile}
+      />
     </Admin>
   )
 }

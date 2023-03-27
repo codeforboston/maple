@@ -18,20 +18,35 @@ import {
   GetManyResult,
   GetOneParams,
   GetOneResult,
+  ListParams,
   UpdateManyParams,
   UpdateManyResult,
   UpdateParams,
   UpdateResult
 } from "react-admin"
 
-export async function queryCollectionGroup(resource: string) {
-  const myquery = query(collectionGroup(firestore, resource))
+export async function queryCollectionGroup(
+  resource: string,
+  params?: GetListParams
+) {
+  console.log(params)
+  const filters = Object.entries(params?.filter)
+  const myquery = query(
+    collectionGroup(firestore, resource),
+    ...filters.map(([k, v]) => where(k, "==", v))
+  )
   const querySnapshot = await getDocs(myquery)
   return querySnapshot
 }
-export async function queryCollectionSingle(resource: string) {
+export async function queryCollectionSingle(
+  resource: string,
+  params?: GetListParams
+) {
+  const filters = Object.entries(params?.filter)
+
   const myCollection = collection(firestore, resource)
-  const snap = await getDocs(myCollection)
+  const q = query(myCollection, ...filters.map(([k, v]) => where(k, "==", v)))
+  const snap = await getDocs(q)
   return snap
 }
 
@@ -46,11 +61,12 @@ export const getMyOne = async (
   resource: string,
   params: GetOneParams
 ): Promise<GetOneResult> => {
-  console.log("getMyONe")
-  const docRef = doc(firestore, params.id)
-  const data = await getDoc(docRef).then(doc => doc.data())
-  const raData = data && { ...data, id: docRef.path }
-  return { data: raData }
+  const docRef = doc(firestore, resource, params.id)
+  return await getDoc(docRef).then(doc => {
+    const data = doc.data()
+    const raData = data && { ...data, id: docRef.id }
+    return { data: raData }
+  })
 }
 
 const listParamsDefault = {
@@ -100,7 +116,7 @@ export async function updateMyOne(
 ): Promise<UpdateResult> {
   console.log("updating my one", params)
   const { id, data, previousData } = params
-  const ref = doc(firestore, id as string)
+  const ref = doc(firestore, resource, id as string)
   console.log(ref.path)
   await setDoc(ref, data, { merge: true })
   return { data: data }
@@ -112,7 +128,7 @@ export async function createMyOne(
 ): Promise<CreateResult> {
   console.log("creating my one")
   const { data, meta } = params
-  const ref = doc(firestore, data.id)
+  const ref = doc(firestore, resource, data.id)
   await setDoc(ref, data)
   return { data: data }
 }
@@ -121,17 +137,21 @@ export const getMyListGroup = async (
   resource: string,
   params: GetListParams = listParamsDefault
 ) => {
-  const snap = await queryCollectionGroup(resource)
+  console.log("inside list group", resource)
+  let snap = await queryCollectionSingle(resource, params)
+  if (snap.empty) {
+    console.log("singleCollectionEmpty")
+    snap = await queryCollectionGroup(resource, params)
+  }
   const docs = snap.docs
   const result: ListResult = {
     data: docs.map(doc => {
       const baseData = doc.data()
-      return { id: doc.ref.path, ...baseData } as RaRecord
+      return { id: doc.ref.id, ...baseData } as RaRecord
     }),
     total: snap.size,
     pageInfo: null
   }
-
   return result
 }
 
@@ -143,7 +163,8 @@ export const getMyListCollection = async (
   const docs = snap.docs
   const result: ListResult = {
     data: docs.map(doc => {
-      return { id: doc.ref.path, ...doc.data() }
+      const baseData = doc.data()
+      return { id: doc.ref.id, ...baseData } as RaRecord
     }),
     total: snap.size,
     pageInfo: null

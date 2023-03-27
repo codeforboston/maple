@@ -102,10 +102,10 @@ function connectEmulators() {
   app.firestore().useEmulator(host, 8080)
   app.functions().useEmulator(host, 5001)
   app.storage().useEmulator(host, 9199)
-  ;(app.auth().useEmulator as any)(`http://${host}:9099`, {
-    disableWarnings: true
-  })
-
+  // ;(app.auth().useEmulator as any)(`http://${host}:9099`, {
+  //   disableWarnings: true
+  // })
+  app.auth().useEmulator(`http://${host}:9099`)
   if (process.env.NODE_ENV === "development")
     console.log("Connected to emulators")
 }

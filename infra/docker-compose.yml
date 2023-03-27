@@ -58,6 +58,7 @@ services:
       - 4400:4400
       - 4500:4500
       - 9299:9299
+      - 9150:9150
 
   search-backfill:
     build:

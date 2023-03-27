@@ -1,10 +1,13 @@
+import { MenuItem } from "@mui/material"
 import { Testimony } from "components/db"
 import {
   Labeled,
   RaRecord,
   useGetOne,
   useInput,
-  useRecordContext
+  useRecordContext,
+  Menu,
+  Layout
 } from "react-admin"
 import { Report } from "./types"
 
@@ -99,3 +102,13 @@ export const StatusField = ({ label }: { label?: string }) => {
 
   return <div>{status}</div>
 }
+
+export const MyMenu = () => (
+  <Menu>
+    <Menu.ResourceItem name="reports" />
+    <Menu.ResourceItem name="publishedTestimonies" />
+    <Menu.ResourceItem name="profiles" />
+  </Menu>
+)
+
+export const MyLayout = () => <Layout menu={MyMenu} />

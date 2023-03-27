@@ -1,8 +1,50 @@
 import { Card, CardContent, CardHeader, Stack } from "@mui/material"
-import { DateField, Show, WithRecord } from "react-admin"
+import {
+  Button,
+  DateField,
+  Show,
+  SimpleShowLayout,
+  TextField,
+  WithRecord
+} from "react-admin"
 import { MemorableId, StatusField, TestimonyContent } from "./common"
 import { Report } from "./types"
 
+/**
+ * temp for reference: 
+ * fullName: string
+  displayName: string
+  aboutYou: string
+  twitter: string
+  linkedIn: string
+  instagram: string
+  fb: string
+  publicEmail: string
+  publicPhone: number
+  website: string
+  organization: boolean
+  profileImage: any
+  orgCategory: OrgCategory
+ */
+
+export const ShowProfile = () => {
+  return (
+    <Show>
+      <SimpleShowLayout>
+        <TextField source="request" />
+        <TextField source="userRole" />
+        <TextField source="displayName" />
+        <TextField source="orgCategory" label="category" />
+        <TextField source="publicEmail" />
+        <TextField source="publicPhone" />
+        <TextField source="website" />
+        <TextField source="aboutYou" />
+        <Button label="upgrade" onClick={() => alert("user upgraded")} />
+        <Button label="close request" onClick={() => alert("request closed")} />
+      </SimpleShowLayout>
+    </Show>
+  )
+}
 export const ShowReports = () => {
   return (
     <Show>

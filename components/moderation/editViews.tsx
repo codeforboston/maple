@@ -30,14 +30,45 @@ import {
 } from "./common"
 import { Report } from "./types"
 
+export function EditProfile() {
+  const { record, save } = useEditController()
+
+  return (
+    <Edit>
+      <Form>
+        <TextInput source="request" />
+        <TextInput source="userRole" />
+        <TextInput source="displayName" />
+        <TextInput source="publicEmail" />
+        {/* <TextInput source="aboutYou" /> */}
+        <TextInput source="id" />
+        <button type="submit">submit</button>
+      </Form>
+    </Edit>
+  )
+}
+export function CreateProfile() {
+  return (
+    <Create>
+      <Form>
+        <TextInput source="request" />
+        <TextInput source="userRole" />
+        <TextInput source="displayName" />
+        <TextInput source="publicEmail" />
+        <TextInput source="aboutYou" />
+      </Form>
+    </Create>
+  )
+}
+
 export function EditReports() {
   const { isLoading, record, resource, data } = useEditController()
   const dp = useDataProvider()
   if (isLoading) return null
 
   const editSubmit = async (event: FieldValues) => {
-    const params = { id: record.id, data: event, previousData: data }
-    const res = await dp.update(resource, params)
+    const params = { id: data.id, data: event, previousData: data }
+    await dp.update(resource, params)
   }
 
   return (
@@ -138,7 +169,7 @@ export const CreateReport = () => {
     console.log(res)
   }
 
-  const reportId = `reports/${nanoid()}`
+  const reportId = `${nanoid()}`
   const reportDate = new Timestamp(
     Math.round(Math.random() * 1_000_000_000),
     Math.round(Math.random() * 1_000_000_000)
