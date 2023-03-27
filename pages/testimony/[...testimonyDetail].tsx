@@ -9,6 +9,7 @@ import Router from "next/router"
 import { useEffect } from "react"
 import { z } from "zod"
 import { createPage } from "../../components/page"
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 export default createPage({
   title: "Testimony",
@@ -77,6 +78,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
         version
       })
     )
-    return { props: {} }
+
+    const locale = ctx.locale as string
+
+    return {
+      props: { ...(await serverSideTranslations(locale, ["common", "footer"])) }
+    }
   }
 )
