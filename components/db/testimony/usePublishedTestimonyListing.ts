@@ -92,13 +92,28 @@ function getWhere({
   senatorId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
+  const singularUserRoles: string[] = [
+    "user",
+    "admin",
+    "upgradePending",
+    "legislator"
+  ]
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
   if (court) constraints.push(["court", "==", court])
-  if (authorRole) constraints.push(["authorRole", "==", authorRole])
+  if (authorRole)
+    constraints.push(
+      authorRole == "organization"
+        ? ["authorRole", "==", authorRole]
+        : [
+            "authorRole",
+            "in",
+            singularUserRoles.filter(role => role !== "organization")
+          ]
+    )
   return constraints.map(c => where(...c))
 }
 
