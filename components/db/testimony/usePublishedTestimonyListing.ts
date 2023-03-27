@@ -108,11 +108,7 @@ function getWhere({
     constraints.push(
       authorRole == "organization"
         ? ["authorRole", "==", authorRole]
-        : [
-            "authorRole",
-            "in",
-            singularUserRoles.filter(role => role !== "organization")
-          ]
+        : ["authorRole", "in", singularUserRoles]
     )
   return constraints.map(c => where(...c))
 }
