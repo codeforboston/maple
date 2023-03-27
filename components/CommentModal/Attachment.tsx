@@ -85,7 +85,11 @@ export const AttachmentLink = ({
   attachment: AttachmentInfo
   className?: string
 }) => {
-  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
+  const linkLabel = [
+    "Attached",
+    name ?? "Testimony",
+    size ? formatSize(size) : null
+  ]
     .filter(Boolean)
     .join(" - ")
   return (

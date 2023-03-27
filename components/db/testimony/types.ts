@@ -56,6 +56,23 @@ export const DraftTestimony = BaseTestimony.extend({
   recipientMemberCodes: Maybe(Array(String))
 })
 
+/** Returns true if both values are either falsy or strictly equal. */
+const eqish = (a: any, b: any) => (a || undefined) === (b || undefined)
+
+/** Returns true if the draft has user-visibly changed from the published
+ * version./ */
+export function hasDraftChanged(
+  draft?: WorkingDraft,
+  published?: Testimony
+): boolean {
+  if (!draft || !published) return false
+  return (
+    !eqish(published.position, draft.position) ||
+    !eqish(published.content, draft.content) ||
+    !eqish(published.draftAttachmentId, draft.attachmentId)
+  )
+}
+
 export type WithId<T> = { id: string; value: T }
 
 export const deleteTestimony = httpsCallable<

@@ -1,10 +1,18 @@
+import { faCopy } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import clsx from "clsx"
 import { AttachmentLink } from "components/CommentModal/Attachment"
 import { TestimonyContent } from "components/testimony"
-import { ReactNode } from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Position, useDraftTestimonyAttachmentInfo } from "../db"
-import { usePublishState } from "./hooks"
-import { CopyTestimony } from "./ShareTestimony"
+import { CopyButton } from "../buttons"
+import {
+  getDraftTestimonyAttachmentInfo,
+  Position,
+  getPublishedTestimonyAttachmentInfo,
+  AttachmentInfo
+} from "../db"
+import { usePublishState, useTestimonyEmail } from "./hooks"
 
 export const positionActions: Record<Position, ReactNode> = {
   neutral: (
@@ -16,40 +24,74 @@ export const positionActions: Record<Position, ReactNode> = {
   oppose: <b className="oppose-position">oppose</b>
 }
 
-export const YourTestimony = styled(({ className, children }) => {
+export const CopyTestimony = styled(props => {
+  const email = useTestimonyEmail()
   return (
-    <div className={className}>
-      <div className="d-flex justify-content-between mb-2">
-        <div className="title fs-4">Your Testimony</div>
-        <CopyTestimony />
-      </div>
-      <TestimonyPreview />
-    </div>
+    <CopyButton
+      variant="outline-secondary"
+      text={email.body ?? ""}
+      disabled={!email.body}
+      className={clsx("copy-btn", props.className)}
+    >
+      <FontAwesomeIcon icon={faCopy} /> Copy Email Body
+    </CopyButton>
   )
 })`
+  padding: 0.25rem 0.5rem;
+`
+
+export const YourTestimony = styled<{ type: "draft" | "published" }>(
+  ({ className, children, type }) => {
+    return (
+      <div className={className}>
+        <div className="d-flex justify-content-between mb-2">
+          <div className="title fs-4">Your Testimony</div>
+          <CopyTestimony />
+        </div>
+        <TestimonyPreview type={type} />
+      </div>
+    )
+  }
+)`
   border-radius: 1rem;
 `
 
-export const TestimonyPreview = styled(props => {
-  const { position, content, attachmentId, authorUid } = usePublishState()
-  const info = useDraftTestimonyAttachmentInfo(authorUid, attachmentId)
+export const TestimonyPreview = styled<{ type: "draft" | "published" }>(
+  props => {
+    const { draft, publication, authorUid } = usePublishState()
+    const { position, content, attachmentId } =
+      (props.type === "draft" ? draft : publication) ?? {}
 
-  return (
-    <div {...props}>
-      {position && (
-        <p className="text-center">You {positionActions[position]} this bill</p>
-      )}
-      {content && (
-        <div className="content-section">
-          <TestimonyContent testimony={content} />
-        </div>
-      )}
-      {info && (
-        <AttachmentLink className="mt-3 attachment-link" attachment={info} />
-      )}
-    </div>
-  )
-})`
+    const [info, setAttachmentInfo] = useState<AttachmentInfo | undefined>()
+    useEffect(() => {
+      if (authorUid && attachmentId) {
+        const info =
+          props.type === "draft"
+            ? getDraftTestimonyAttachmentInfo(authorUid, attachmentId)
+            : getPublishedTestimonyAttachmentInfo(attachmentId)
+        info.then(i => setAttachmentInfo(i))
+      }
+    }, [attachmentId, authorUid, props.type])
+
+    return (
+      <div {...props}>
+        {position && (
+          <p className="text-center">
+            You {positionActions[position]} this bill
+          </p>
+        )}
+        {content && (
+          <div className="content-section">
+            <TestimonyContent testimony={content} />
+          </div>
+        )}
+        {info && (
+          <AttachmentLink className="mt-3 attachment-link" attachment={info} />
+        )}
+      </div>
+    )
+  }
+)`
   border-radius: 1rem;
   background: var(--bs-body-bg);
   padding: 1rem;

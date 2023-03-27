@@ -15,6 +15,7 @@ import {
 } from "../db"
 import { Maybe } from "../db/common"
 import { containsSocialSecurityNumber } from "../db/testimony/validation"
+import { hasDraftChanged } from "../db/testimony"
 
 export type Service = UseEditTestimony
 
@@ -167,6 +168,7 @@ export const {
     },
     setStep(state, action: PayloadAction<Step>) {
       state.step = action.payload
+      validateForm(state)
     },
     setPosition(state, action: PayloadAction<Maybe<Position>>) {
       state.position = action.payload ?? undefined
@@ -182,6 +184,7 @@ export const {
     },
     setAttachmentId(state, action: PayloadAction<Maybe<string>>) {
       state.attachmentId = action.payload ?? undefined
+      validateForm(state)
     },
     // Reset the form whenever the bill changes
     setBill(state, action: PayloadAction<Bill>) {
@@ -219,6 +222,7 @@ export const {
       const { draft, publication } = action.payload
       state.publication = publication
       state.draft = draft
+      validateForm(state)
     },
     clearLegislatorSearch(state) {
       state.share = initialShareState
@@ -236,7 +240,9 @@ export const {
       share.committeeChairs = payload.committeeChairs
       share.options = payload.options
       share.userLegislators = payload.userLegislators
-      if (!state.recipientMemberCodes)
+      // Auto-populate recipients if they haven't been set yet and the user is not
+      // editing existing testimony.
+      if (!state.recipientMemberCodes && !state.publication)
         updateRecipients(state, [
           ...payload.committeeChairs,
           ...payload.userLegislators
@@ -309,7 +315,7 @@ const validateForm = ({
     errors.content = "Testimony must not contain social security numbers"
   } else errors.content = undefined
 
-  if (!draft?.publishedVersion && publication && !editReason)
+  if (hasDraftChanged(draft, publication) && !editReason)
     errors.editReason = "You must provide a reason for editing your testimony"
   else errors.editReason = undefined
 }

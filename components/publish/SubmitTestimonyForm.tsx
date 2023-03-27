@@ -11,6 +11,7 @@ import { PublishTestimony } from "./PublishTestimony"
 import { QuickInfo } from "./QuickInfo"
 import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
+import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
 
 const Background = styled.div`
@@ -72,7 +73,7 @@ const Form = ({
     selectLegislators: <SelectLegislatorsCta />,
     write: <WriteTestimony />,
     publish: <PublishTestimony />,
-    share: <PublishTestimony />
+    share: <ShareTestimony />
   }
   return (
     <FormContainer>

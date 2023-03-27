@@ -15,6 +15,7 @@ import { resolveBillTestimony } from "./resolveTestimony"
 import {
   deleteTestimony,
   DraftTestimony,
+  hasDraftChanged,
   publishTestimony,
   Testimony,
   WorkingDraft
@@ -220,7 +221,7 @@ type SaveDraftRequest = Pick<
   | "editReason"
 >
 function useSaveDraft(
-  { draftRef, draftLoading, billId, uid, court }: State,
+  { draftRef, draftLoading, billId, uid, court, publication, draft }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
@@ -251,13 +252,14 @@ function useSaveDraft(
           dispatch({ type: "resolveDraft", id: result.id })
         } else if (draftRef) {
           dispatch({ type: "loadingDraft" })
+          const hasChanges = hasDraftChanged(draft, publication)
           await updateDoc(draftRef, {
             position,
             content,
             attachmentId: attachmentId ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
             editReason: editReason ?? null,
-            publishedVersion: deleteField()
+            publishedVersion: hasChanges ? deleteField() : undefined
           })
         }
       },

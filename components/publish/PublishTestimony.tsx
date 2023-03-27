@@ -8,7 +8,8 @@ import { useAppDispatch } from "../hooks"
 import {
   publishTestimonyAndProceed,
   useFormRedirection,
-  usePublishState
+  usePublishState,
+  useTestimonyEmail
 } from "./hooks"
 import * as nav from "./NavigationButtons"
 import { setEditReason } from "./redux"
@@ -16,6 +17,7 @@ import { SelectRecipients } from "./SelectRecipients"
 import { ShareButtons } from "./ShareTestimony"
 import { StepHeader } from "./StepHeader"
 import { YourTestimony } from "./TestimonyPreview"
+import { hasDraftChanged } from "components/db"
 
 const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
@@ -30,20 +32,18 @@ function usePublishTestimony() {
     // pass error through to useAsync
     if (isRejected(result)) throw result.error
   })
-  const alreadyPublished = Boolean(
-      draft?.publishedVersion !== undefined && publication
-    ),
-    isEdit = Boolean(draft?.publishedVersion === undefined && publication),
+  const publishedAndDraftChanged =
+      publication && hasDraftChanged(draft, publication),
+    canShare = publication && !publishedAndDraftChanged,
     synced = sync === "synced" || sync === "error"
 
   useFormRedirection()
 
-  console.log(isEmpty(errors), errors)
   return {
     synced,
-    alreadyPublished,
+    publishedAndDraftChanged,
     publish,
-    isEdit,
+    canShare,
     editReason,
     errors,
     valid: Object.values(errors).every(v => !v),
@@ -59,7 +59,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
     <div {...rest}>
       <StepHeader>Confirm and Send</StepHeader>
       <SelectRecipients className="mt-4" />
-      <YourTestimony className="mt-4" />
+      <YourTestimony type="draft" className="mt-4" />
 
       <EditReason className="mt-4" />
 
@@ -79,10 +79,12 @@ const ChangeNotice = styled(props => {
   const { position, content, attachmentId, publication } = usePublishState()
   if (!publication) return null
 
+  const publishedAttachmentId = publication.draftAttachmentId || undefined
+
   const changes = [
     position !== publication.position && "Position",
     content !== publication.content && "Content",
-    attachmentId !== publication.draftAttachmentId && "Attachment"
+    attachmentId !== publishedAttachmentId && "Attachment"
   ]
     .filter(Boolean)
     .map((s, i) => (
@@ -91,13 +93,16 @@ const ChangeNotice = styled(props => {
       </span>
     ))
 
-  const editsRemaining = 6 - publication.version
+  const editsRemaining = Math.max(0, 6 - publication.version)
 
   return (
     <div {...props}>
       <div className="changes">{changes}</div>
       <p>
-        <b>You may edit your testimony up to {editsRemaining} more times.</b>{" "}
+        <b>
+          You may edit your testimony up to {editsRemaining} more{" "}
+          {editsRemaining === 1 ? "time" : "times"}.
+        </b>{" "}
         Before you publish updates to your testimony, please provide a reason
         for your changes.
       </p>
@@ -121,8 +126,9 @@ const ChangeNotice = styled(props => {
 `
 
 export const EditReason = styled(props => {
-  const { isEdit, editReason, setEditReason, errors } = usePublishTestimony()
-  if (!isEdit) return null
+  const { publishedAndDraftChanged, editReason, setEditReason, errors } =
+    usePublishTestimony()
+  if (!publishedAndDraftChanged) return null
 
   return (
     <div {...props}>
@@ -145,7 +151,7 @@ export const EditReason = styled(props => {
 `
 
 const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
-  if (publish.alreadyPublished) {
+  if (publish.canShare) {
     return <ShareButtons />
   } else {
     return <PublishButton publish={publish} />
@@ -153,13 +159,19 @@ const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
 }
 
 const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
+  const { ready, mailToUrl } = useTestimonyEmail()
+
+  if (!ready) return null
   return (
     <LoadingButton
       disabled={!publish.synced || !publish.valid}
       loading={publish.publish.loading}
       className="form-navigation-btn"
       variant="danger"
-      onClick={publish.publish.execute}
+      onClick={() => {
+        window.open(mailToUrl, "_blank", "noopener,noreferrer")
+        void publish.publish.execute()
+      }}
     >
       Publish and Send
     </LoadingButton>

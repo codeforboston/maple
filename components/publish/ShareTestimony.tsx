@@ -1,12 +1,9 @@
-import { faCopy } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
 import { External, maple } from "components/links"
 import { useRouter } from "next/router"
 import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
-import { CopyButton } from "../buttons"
 import { useAppDispatch } from "../hooks"
 import { useFormRedirection, usePublishState, useTestimonyEmail } from "./hooks"
 import * as nav from "./NavigationButtons"
@@ -16,35 +13,18 @@ import { SendEmailButton } from "./SendEmailButton"
 import { StepHeader } from "./StepHeader"
 import { YourTestimony } from "./TestimonyPreview"
 
+/** Allow sharing a user's published testimony. */
 export const ShareTestimony = styled(({ ...rest }) => {
   useFormRedirection()
   return (
     <div {...rest}>
-      <StepHeader step={3}>Confirm and Send</StepHeader>
+      <StepHeader>Share</StepHeader>
       <SelectRecipients className="mt-4" />
-      <YourTestimony className="mt-4 position-relative">
-        <CopyTestimony />
-      </YourTestimony>
+      <YourTestimony type="published" className="mt-4" />
       <nav.FormNavigation right={<ShareButtons />} />
     </div>
   )
 })``
-
-export const CopyTestimony = styled(props => {
-  const email = useTestimonyEmail()
-  return (
-    <CopyButton
-      variant="outline-secondary"
-      text={email.body ?? ""}
-      disabled={!email.body}
-      className={clsx("copy-btn", props.className)}
-    >
-      <FontAwesomeIcon icon={faCopy} /> Copy Email Body
-    </CopyButton>
-  )
-})`
-  padding: 0.25rem 0.5rem;
-`
 
 const EmailHelp = (props: { className?: string }) => {
   return (
@@ -69,15 +49,6 @@ export const ShareButtons = () => {
 
   const buttons = []
 
-  // if (!share.loading && !sent) {
-  //   buttons.push(
-  //     <FinishWithoutEmailing
-  //       key="finish-without-saving"
-  //       onConfirm={redirectToBill}
-  //     />
-  //   )
-  // }
-
   if (sent) {
     buttons.push(
       <Button
@@ -96,6 +67,13 @@ export const ShareButtons = () => {
         key="send-email"
         className="form-navigation-btn"
         onClick={() => setSent(true)}
+      />
+    )
+  } else if (!share.loading && !sent) {
+    buttons.push(
+      <FinishWithoutEmailing
+        key="finish-without-saving"
+        onConfirm={redirectToBill}
       />
     )
   }

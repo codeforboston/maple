@@ -18,7 +18,5 @@ export const publishTestimonyAndProceed = createAppThunk(
     DraftTestimony.check(draft)
 
     await edit?.publishTestimony.execute()
-
-    dispatch(setStep("share"))
   }
 )
