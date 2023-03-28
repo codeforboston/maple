@@ -84,7 +84,7 @@ if (!initialized && process.env.NODE_ENV !== "production") {
 
 /** Connect emulators according to `firebase.json` */
 function connectEmulators() {
-  const host = typeof window === "undefined" ? "firebase" : "localhost"
+  const host = typeof window === "undefined" ? "firebase" : "127.0.0.1"
   connectFirestoreEmulator(firestore, host, 8080)
   connectFunctionsEmulator(functions, host, 5001)
   connectStorageEmulator(storage, host, 9199)

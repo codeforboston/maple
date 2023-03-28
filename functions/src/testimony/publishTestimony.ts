@@ -44,6 +44,12 @@ type TransactionOutput = {
   attachments: PublishedAttachmentState
 }
 
+type PublishInfo = {
+  version: number
+  editReason?: string
+  publishedAt: Timestamp
+}
+
 class PublishTestimonyTransaction {
   private t
   private draftId
@@ -76,7 +82,7 @@ class PublishTestimonyTransaction {
       id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
-      authorRole: this.profile.role,
+      authorRole: this.profile.role ?? "user",
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,
@@ -206,17 +212,18 @@ class PublishTestimonyTransaction {
     }
   }
 
-  private async getPublishInfo() {
+  private async getPublishInfo(): Promise<PublishInfo> {
     const version = await this.getNextPublicationVersion(),
       reason = this.draft.editReason
 
-    let editReason: string | undefined
+    const info: PublishInfo = { version, publishedAt: Timestamp.now() }
+
     if (version > 1) {
       if (!reason) throw fail("invalid-argument", "Edit reason is required.")
-      editReason = reason
+      info.editReason = reason
     }
 
-    return { version, editReason, publishedAt: Timestamp.now() }
+    return info
   }
 
   private async getNextPublicationVersion() {
