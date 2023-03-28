@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { hasDraftChanged } from "components/db"
 import { useState } from "react"
 import { UseAsyncReturn } from "react-async-hook"
 import { Collapse, ImageProps } from "react-bootstrap"
@@ -21,8 +22,8 @@ export const YourTestimony = () => {
 }
 
 const MainPanel = styled(({ ...rest }) => {
-  const { draft, deleteTestimony } = usePublishService() ?? {}
-  const unpublishedDraft = draft?.publishedVersion === undefined
+  const { draft, deleteTestimony, publication } = usePublishService() ?? {}
+  const unpublishedDraft = hasDraftChanged(draft, publication)
 
   const [showConfirm, setShowConfirm] = useState(false)
   return (
@@ -39,7 +40,7 @@ const MainPanel = styled(({ ...rest }) => {
         deleteTestimony={deleteTestimony}
       />
       <div className="divider mt-3 mb-3" />
-      <TestimonyPreview className="mb-2" />
+      <TestimonyPreview type="draft" className="mb-2" />
       {unpublishedDraft && <div className="draft-badge">Draft</div>}
     </div>
   )
