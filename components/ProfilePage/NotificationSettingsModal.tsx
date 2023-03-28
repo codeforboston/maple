@@ -22,9 +22,11 @@ const StyledButton = styled(Button)`
     color: white;
     background-color: #1a3185;
     border-color: white;
-    /* color: #1a3185;
+  }
+  &:hover {
+    color: #1a3185;
     background-color: white;
-    border-color: #1a3185; */
+    border-color: #1a3185;
   }
   width: 110px;
 `
@@ -34,11 +36,26 @@ const StyledOutlineButton = styled(Button)`
     color: #1a3185;
     background-color: white;
     border-color: #1a3185;
-    /* color: white;
+  }
+  &:hover {
+    color: white;
     background-color: #1a3185;
-    border-color: white; */
+    border-color: white;
   }
   width: 110px;
+`
+
+const StyledOutlineButton2 = styled(Button)`
+  &:focus {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
+  &:hover {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
 `
 
 const StyledDropdownToggle = styled(Dropdown.Toggle)`
@@ -200,12 +217,12 @@ export default function NotificationSettingsModal({
             <Button className={`btn btn-sm mx-3 py-1`} onClick={handleContinue}>
               Continue
             </Button>
-            <Button
+            <StyledOutlineButton2
               className={`btn btn-sm btn-outline-secondary py-1`}
               onClick={onSettingsModalClose}
             >
               Cancel
-            </Button>
+            </StyledOutlineButton2>
           </Stack>
         </Form>
       </StyledModalBody>

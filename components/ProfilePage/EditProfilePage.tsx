@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
+import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import { GearButton } from "../buttons"
@@ -20,6 +21,19 @@ import {
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileCompnents"
+
+const StyledOutlineButton = styled(GearButton)`
+  &:focus {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
+  &:hover {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
+`
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -127,13 +141,13 @@ export function EditProfileForm({
             className={`d-flex text-decoration-none`}
             href={`javascript:void(0)`}
           >
-            <GearButton
+            <StyledOutlineButton
               className={`btn btn-lg btn-outline-secondary me-4 py-1`}
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
               {"Settings"}
-            </GearButton>
+            </StyledOutlineButton>
           </Internal>
           <Internal
             className={`d-flex ml-2 text-decoration-none`}
