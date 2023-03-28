@@ -3,6 +3,7 @@ import Image from "react-bootstrap/Image"
 import styles from "./GoalsAndMissionCardContent.module.css"
 import { SignInWithButton } from "../auth"
 import { useTranslation } from "next-i18next"
+import { useAuth } from "components/auth"
 
 const OurGoalsCardContent = () => {
   const { t } = useTranslation("goalsandmission")
@@ -74,6 +75,7 @@ const OurGoalsCardContent = () => {
 
 const OurMissionCardContent = () => {
   const { t } = useTranslation("goalsandmission")
+  const { authenticated } = useAuth()
   return (
     <>
       <h3 className={`text-center fw-bold ${styles.missionHeader}`}>
@@ -173,20 +175,23 @@ const OurMissionCardContent = () => {
           />
         </Col>
       </Row>
+      {!authenticated && (
+        <>
+          <Row className="text-center">
+            <Col>
+              <h3 className={`fw-bold mt-3 ${styles.submitTestimony}`}>
+                {t("mission.submit_now")}
+              </h3>
+            </Col>
+          </Row>
 
-      <Row className="text-center">
-        <Col>
-          <h3 className={`fw-bold mt-3 ${styles.submitTestimony}`}>
-            {t("mission.submit_now")}
-          </h3>
-        </Col>
-      </Row>
-
-      <Row className="text-center mb-3">
-        <Col>
-          <SignInWithButton />
-        </Col>
-      </Row>
+          <Row className="text-center mb-3">
+            <Col>
+              <SignInWithButton />
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   )
 }
