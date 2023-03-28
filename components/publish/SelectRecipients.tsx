@@ -45,7 +45,7 @@ export const SelectRecipients = styled(props => {
   .leg-search__control {
     background-color: var(--bs-body-bg);
     border-color: var(--bs-body-bg);
-    background-image: url("/mail-bg.svg");
+    background-image: url("/mail.svg");
     background-repeat: no-repeat;
     background-position: bottom right 20%;
     background-size: auto 6rem;
