@@ -7,7 +7,7 @@ const Leaf = ({ position }) => {
       <Image
         className={styles[position]}
         fluid
-        src="/leaf-asset.png"
+        src="/leaf.svg"
         alt="leaf"
       />
     </div>

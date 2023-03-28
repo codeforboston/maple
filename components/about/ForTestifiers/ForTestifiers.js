@@ -5,10 +5,12 @@ import {
   BenefitsCardContent,
   ChallengeCardContent
 } from "../ForTestifiersCardContent/ForTestifiersCardContent"
+import { useAuth } from "components/auth"
 import { useTranslation } from "next-i18next"
 
 const ForTestifiers = () => {
   const { t } = useTranslation("fortestifiers")
+  const { authenticated } = useAuth()
 
   return (
     <Container>
@@ -21,9 +23,11 @@ const ForTestifiers = () => {
           <AboutPagesCard title={t("benefits.header")}>
             <BenefitsCardContent />
           </AboutPagesCard>
-          <AboutPagesCard title={t("challenge.header")}>
-            <ChallengeCardContent />
-          </AboutPagesCard>
+          {!authenticated && (
+            <AboutPagesCard title={t("challenge.header")}>
+              <ChallengeCardContent />
+            </AboutPagesCard>
+          )}
         </Col>
       </Row>
     </Container>
