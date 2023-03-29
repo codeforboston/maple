@@ -70,7 +70,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
-      await createProfile({requestedRole: isOrg ? "organization" : "user"})
+      await createProfile({ requestedRole: isOrg ? "organization" : "user" })
 
       const categories = orgCategory ? [orgCategory] : ""
 
@@ -87,7 +87,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         await Promise.all([
           setProfile(credentials.user.uid, {
             displayName: nickname,
-            fullName,
+            fullName
           }),
           sendEmailVerification(credentials.user)
         ])

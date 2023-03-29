@@ -254,21 +254,19 @@ export const TestimonyItem = ({
         />
       )}
       <div
-          style={{
-            position: "fixed",
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20,
-            pointerEvents: "none"
-          }}
-        >
-          <ToastContainer position={"bottom-end"}>
-            {didReport && (
-              <ReportToast isSuccessful={reportMutation.isSuccess} />
-            )}
-          </ToastContainer>
-        </div>
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+          bottom: 20,
+          left: 20,
+          pointerEvents: "none"
+        }}
+      >
+        <ToastContainer position={"bottom-end"}>
+          {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
+        </ToastContainer>
+      </div>
     </div>
   )
 }

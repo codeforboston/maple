@@ -64,20 +64,15 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
       </>
     )
 
-
     return (
       <Form.Group controlId={id} className={className}>
         {floating ? (
           <Form.Floating>
             {control}
             <label className="d-flex justify-content-center" htmlFor={id}>
-              {iconSrc && (
-                 <StyledIcon alt="icon" src={iconSrc}/>
-
-              )}
+              {iconSrc && <StyledIcon alt="icon" src={iconSrc} />}
               {label}
             </label>
-          
           </Form.Floating>
         ) : (
           <>

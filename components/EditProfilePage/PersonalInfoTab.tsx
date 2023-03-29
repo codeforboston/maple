@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { Form, Row, Col, Button} from "../bootstrap"
+import { Form, Row, Col, Button } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
@@ -106,7 +106,8 @@ export function PersonalInfoTab({
     orgCategories ? orgCategories : OrgCategories[0]
   )
 
-  const tooltip = "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way."
+  const tooltip =
+    "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way."
 
   return (
     <Form onSubmit={onSubmit}>
@@ -114,25 +115,24 @@ export function PersonalInfoTab({
         <div className={`mx-4 mt-3 d-flex flex-column`}>
           <h4 className="mb-3">General Information</h4>
           <Row>
-          <Input
-            label="Full Name"
-            {...register("fullName", {
-              required: "A name is required"
-            })}
-            className="w-50"
-            defaultValue={fullName}
-            error={errors.fullName?.message}
-          />
-          <Input
-            label="Nickname"
-            className="w-50"
-            {...register("displayName")}
-            defaultValue={displayName}
-            error={errors.displayName?.message}
-          />
-
+            <Input
+              label="Full Name"
+              {...register("fullName", {
+                required: "A name is required"
+              })}
+              className="w-50"
+              defaultValue={fullName}
+              error={errors.fullName?.message}
+            />
+            <Input
+              label="Nickname"
+              className="w-50"
+              {...register("displayName")}
+              defaultValue={displayName}
+              error={errors.displayName?.message}
+            />
           </Row>
-          
+
           <Input
             as="textarea"
             {...register("aboutYou")}
@@ -143,11 +143,12 @@ export function PersonalInfoTab({
           />
           <Row xs="auto" className="mt-2">
             <Col>
-            <TooltipButton text="What should you write?" tooltip={tooltip} variant="link" />
-
+              <TooltipButton
+                text="What should you write?"
+                tooltip={tooltip}
+                variant="link"
+              />
             </Col>
-
-
           </Row>
           {isOrg && (
             <Form.Group className="mt-3" controlId="orgCategory">
@@ -196,7 +197,6 @@ export function PersonalInfoTab({
                     defaultValue={social?.instagram}
                     className="w-50"
                     iconSrc="./instagram.svg"
-
                     {...register("instagram")}
                   />
                   <Input
@@ -204,7 +204,6 @@ export function PersonalInfoTab({
                     defaultValue={social?.fb}
                     className="w-50"
                     iconSrc="./facebook.svg"
-
                     {...register("fb")}
                   />
                 </div>

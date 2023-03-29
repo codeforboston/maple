@@ -11,7 +11,7 @@ import {
   Static,
   String
 } from "runtypes"
-import { ZodTypeAny , z} from "zod"
+import { ZodTypeAny, z } from "zod"
 /** Parse the request and return the result or fail. */
 export function checkRequest<A>(type: Runtype<A>, data: any) {
   const validationResult = type.validate(data)
@@ -25,13 +25,13 @@ export function checkRequest<A>(type: Runtype<A>, data: any) {
 }
 
 /** Parse the request and return the result or fail. */
-export function checkRequestZod<T extends ZodTypeAny>(type: T, data: any): z.infer<T> {
+export function checkRequestZod<T extends ZodTypeAny>(
+  type: T,
+  data: any
+): z.infer<T> {
   const validationResult = type.safeParse(data)
   if (!validationResult.success) {
-    throw fail(
-      "invalid-argument",
-      validationResult.error.message
-    )
+    throw fail("invalid-argument", validationResult.error.message)
   }
   return validationResult.data
 }

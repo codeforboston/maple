@@ -148,7 +148,6 @@ export function FollowingTab({ className }: Props) {
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
-           
             <h2 className="pb-3">Organizations You Follow</h2>
             {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
@@ -223,7 +222,10 @@ function FollowedItem({
           ) : (
             <Row className={`align-items-center`}>
               <Col className={"align-items-center d-flex"}>
-                <OrgIconSmall className="mr-4 mt-0 mb-0 ms-0" src={profile?.profileImage} />
+                <OrgIconSmall
+                  className="mr-4 mt-0 mb-0 ms-0"
+                  src={profile?.profileImage}
+                />
                 <Internal href={`organizations/${element}`}>
                   {displayName}
                 </Internal>

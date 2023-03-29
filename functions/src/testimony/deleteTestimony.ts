@@ -15,8 +15,9 @@ const DeleteTestimonyRequest = Record({
 const enabled = false
 
 export const deleteTestimony = https.onCall(async (data, context) => {
-  if (!enabled) fail("permission-denied", "Deleting testimony is not allowed by policy")
-  
+  if (!enabled)
+    fail("permission-denied", "Deleting testimony is not allowed by policy")
+
   const uid = checkAuth(context)
   const { publicationId } = checkRequest(DeleteTestimonyRequest, data)
 

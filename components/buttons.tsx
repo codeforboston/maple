@@ -84,10 +84,11 @@ export const ImageButton = styled<
   padding: 1px;
 `
 
-
-export const TooltipButton = styled<
-  { tooltip: string; text:string; variant?:string }
->(({ tooltip, text, variant, ...rest }) => {
+export const TooltipButton = styled<{
+  tooltip: string
+  text: string
+  variant?: string
+}>(({ tooltip, text, variant, ...rest }) => {
   return (
     <OverlayTrigger
       delay={500}
@@ -116,7 +117,6 @@ export const TooltipButton = styled<
 
   padding: 1px;
 `
-
 
 export const CopyButton = ({
   text,
