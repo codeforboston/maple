@@ -17528,7 +17528,7 @@ react-overlays@^5.1.1:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
-react-query@^3.39.3:
+react-query@^3.32.1, react-query@^3.39.3:
   version "3.39.3"
   resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.39.3.tgz#4cea7127c6c26bdea2de5fb63e51044330b03f35"
   integrity sha512-nLfLz7GiohKTJDuT4us4X3h/8unOh+00MLb2yJoGTPjxKs2bc1iDhkNx2bd5MKklXnOD3NrVZ+J2UXujA5In4g==
@@ -17991,6 +17991,11 @@ remove-accents@0.4.2:
   resolved "https://registry.yarnpkg.com/remove-accents/-/remove-accents-0.4.2.tgz#0a43d3aaae1e80db919e07ae254b285d9e1c7bb5"
   integrity sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==
 
+remove-accents@^0.4.2:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/remove-accents/-/remove-accents-0.4.4.tgz#73704abf7dae3764295d475d2b6afac4ea23e4d9"
+  integrity sha512-EpFcOa/ISetVHEXqu+VwI96KZBmq+a8LJnGkaeFw45epGlxIZz5dhEEnNZMsQXgORu3qaMoLX4qJCzOik6ytAg==
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
@@ -18211,7 +18216,7 @@ rimraf@2, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rimraf@3.0.2, rimraf@3.0.2, rimraf@^3.0.0, rimraf@^3.0.2:
+rimraf@3.0.2, rimraf@^3.0.0, rimraf@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-3.0.2.tgz#f1a5402ba6220ad52cc1282bac1ae3aa49fd061a"
   integrity sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
@@ -20295,14 +20300,6 @@ universalify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
   integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
-
-unload@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/unload/-/unload-2.2.0.tgz#ccc88fdcad345faa06a92039ec0f80b488880ef7"
-  integrity sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA==
-  dependencies:
-    "@babel/runtime" "^7.6.2"
-    detect-node "^2.0.4"
 
 unload@2.2.0:
   version "2.2.0"

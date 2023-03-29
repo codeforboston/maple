@@ -6,4 +6,4 @@ export * from "../../functions/src/auth/types"
 export const createProfile = httpsCallable<
   { requestedRole: "user" | "organization" },
   void
->(functions, "deleteTestimony")
+>(functions, "createProfile")
