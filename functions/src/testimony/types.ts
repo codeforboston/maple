@@ -8,6 +8,7 @@ import {
   String as RtString,
   Union
 } from "runtypes"
+import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
@@ -42,6 +43,7 @@ export const Testimony = withDefaults(
     draftAttachmentId: Maybe(RtString)
   }),
   {
+    authorRole: "user",
     // ID is backfilled
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),

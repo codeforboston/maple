@@ -2,12 +2,12 @@ import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import React, { RefObject, useRef, useState } from "react"
+import React, { ReactEventHandler, RefObject, useRef, useState } from "react"
 import { ListGroup, ListGroupItem, Toast } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Form, OverlayTrigger, Row } from "../bootstrap"
+import { Button, Col, Form, OverlayTrigger, Row, Dropdown } from "../bootstrap"
 import {
   Testimony,
   usePublicProfile,
@@ -17,6 +17,7 @@ import { formatBillId } from "../formatting"
 import { Internal, maple } from "../links"
 import { TitledSectionCard } from "../shared"
 import { PositionLabel } from "./PositionBug"
+import { PaginationButtons } from "components/table"
 import { ReportModal } from "./ReportModal"
 
 import { Card as MapleCard } from "../Card"
@@ -27,6 +28,7 @@ import ToastContainer from "react-bootstrap/ToastContainer"
 
 const Container = styled.div`
   font-family: Nunito;
+  justify-content: center;
 `
 const Head = styled(BootstrapCard.Header)`
   background-color: var(--bs-blue);
@@ -37,43 +39,47 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
+    billsPage?: boolean
     showControls?: boolean
     showBillNumber?: boolean
     className?: string
   }
 ) => {
   const {
+    pagination,
     items,
     setFilter,
+    billsPage = false,
     showControls = false,
     showBillNumber = false
   } = props
+
   const testimony = items.result ?? []
 
   return (
     <Container>
-      <MapleCard
-        headerElement={<Head>Testimony</Head>}
-        body={
-          <BootstrapCard.Body>
-            {testimony.length > 0 ? (
-              testimony.map(t => (
-                <TestimonyItem
-                  key={t.authorUid + t.billId}
-                  testimony={t}
-                  showControls={showControls}
-                  showBillNumber={showBillNumber}
-                />
-              ))
-            ) : (
-              <NoResults>
-                There is no testimony here. <br />
-                <b>Be the first and add one!</b>
-              </NoResults>
-            )}
-          </BootstrapCard.Body>
-        }
-      />
+      <BootstrapCard.Body>
+        {testimony.length > 0 ? (
+          testimony.map(t => (
+            <div key={t.authorUid + t.billId}>
+              <TestimonyItem
+                testimony={t}
+                showControls={showControls}
+                showBillNumber={showBillNumber}
+                billsPage={billsPage}
+              />
+              {!billsPage && <hr />}
+            </div>
+          ))
+        ) : (
+          <NoResults>
+            There is no testimony here. <br />
+            <b>Be the first and add one!</b>
+          </NoResults>
+        )}
+        {/* <div className="p-3" /> */}
+        <PaginationButtons pagination={pagination} />
+      </BootstrapCard.Body>
     </Container>
   )
 }
@@ -96,6 +102,39 @@ export const SortTestimonyDropDown = ({
   )
 }
 
+const TestimonyItemContentStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  button {
+    align-self: flex-end;
+  }
+  hr {
+    height: 3px;
+    background-color: #aaa;
+  }
+`
+const TestimonyItemHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: -15px;
+  width: 100%;
+  .authorAndVersion {
+    display: flex;
+    align-items: center;
+  }
+  .version {
+    padding: 0px 5px;
+    margin: 0px 10px;
+    background-color: #1a3185;
+    border-radius: 15px;
+    color: #fff;
+    font-family: nunito;
+    font-size: 10px;
+    text-align: center;
+  }
+`
 const Author = styled<{ testimony: Testimony }>(({ testimony, ...props }) => {
   const profile = usePublicProfile(testimony.authorUid)
 
@@ -156,11 +195,13 @@ const MoreButton = ({ children }: { children: React.ReactChild }) => {
 export const TestimonyItem = ({
   testimony,
   showControls,
-  showBillNumber
+  showBillNumber,
+  billsPage
 }: {
   testimony: Testimony
   showControls: boolean
   showBillNumber: boolean
+  billsPage: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const published = testimony.publishedAt.toDate().toLocaleDateString()
@@ -174,9 +215,68 @@ export const TestimonyItem = ({
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
   return (
-    <div className={`bg-white border-0 border-bottom p-3 p-sm-4 p-md-5`}>
-      <div className={`bg-white border-0 h5 d-flex`}>
-        <Author testimony={testimony} className="flex-grow-1" />
+    <TestimonyItemContainer>
+      {billsPage && (
+        <PositionLabel
+          position={testimony.position}
+          avatar={
+            testimony.authorRole === "organization"
+              ? "/OrganizationUser.svg"
+              : "/individualUser.svg"
+          }
+        />
+      )}
+      <TestimonyItemContentStyle>
+        <TestimonyItemHeader>
+          <>
+            {/* NAME OF USER/ORGANIZATION */}
+            <div className="authorAndVersion">
+              <Author testimony={testimony} />
+              {testimony.version > 1 && <p className="version">Edited</p>}
+            </div>
+            {/* {isMobile && showControls && (
+              <>
+                <Internal href={formUrl(testimony.billId, testimony.court)}>
+                  <Image
+                    src="/edit-testimony.svg"
+                    alt="Edit icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
+
+                <Internal href={`/bill?id=${testimony.billId}`}>
+                  <Image
+                    src="/delete-testimony.svg"
+                    alt="Delete testimony icon"
+                    height={50}
+                    width={50}
+                  />
+                </Internal>
+              </>
+            )} */}
+          </>
+          <div>
+            {showBillNumber && (
+              <>
+                <Internal href={`/bill?id=${testimony.billId}`}>
+                  {formatBillId(testimony.billId)}
+                </Internal>
+                {" · "}
+              </>
+            )}
+            {/* DATE */}
+            {`${published}`}
+            {/* <Internal
+              href={`/testimony?author=${testimony.authorUid}&billId=${testimony.billId}`}
+            >
+              Full Text
+            </Internal> */}
+          </div>
+        </TestimonyItemHeader>
+        <hr />
+        {/*WRITTEN TESTIMONY*/}
+        <FormattedTestimonyContent testimony={testimony.content} />
         <MoreButton>
           <ListGroup>
             <ListGroup.Item action onClick={() => setIsReporting(true)}>
@@ -184,71 +284,6 @@ export const TestimonyItem = ({
             </ListGroup.Item>
           </ListGroup>
         </MoreButton>
-        {isMobile && showControls && (
-          <>
-            <Internal href={formUrl(testimony.billId, testimony.court)}>
-              <Image
-                className="px-2 ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt="Edit icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
-            <Internal href={billLink}>
-              <Image
-                className="px-2 align-self-center"
-                src="/delete-testimony.svg"
-                alt="Delete testimony icon"
-                height={50}
-                width={50}
-              />
-            </Internal>
-          </>
-        )}
-      </div>
-      <div>
-        <Row className={`justify-content-between`}>
-          <Col className={`h5 fw-bold align-self-center`}>
-            {showBillNumber && (
-              <>
-                <Internal href={billLink}>
-                  {formatBillId(testimony.billId)}
-                </Internal>
-                {" · "}
-              </>
-            )}
-            {`${published} · `}
-            <Internal href={maple.testimony({ publishedId: testimony.id })}>
-              Full Text
-            </Internal>
-          </Col>
-          <Col
-            className={`ms-auto d-flex justify-content-start justify-content-sm-end`}
-          >
-            <PositionLabel position={testimony.position} />
-          </Col>
-        </Row>
-        <Row className={`col m2`}>
-          <Col className={`p-4 ps-3`}>
-            <FormattedTestimonyContent testimony={testimony.content} />
-          </Col>
-          {showControls && (
-            <Col
-              className={`d-none d-md-flex flex-column col-auto justify-content-center px-5 my-5 fs-5`}
-              style={{
-                fontFamily: "nunito",
-                borderLeft: "1px solid rgb(200, 200, 200)",
-                minWidth: "20%"
-              }}
-            >
-              <Internal href={formUrl(testimony.billId, testimony.court)}>
-                Edit
-              </Internal>
-              <Internal href={billLink}>Delete</Internal>
-            </Col>
-          )}
-        </Row>
         <ViewAttachment testimony={testimony} />
         {isReporting && (
           <ReportModal
@@ -266,24 +301,43 @@ export const TestimonyItem = ({
             ]}
           />
         )}
-        <div
-          style={{
-            position: "fixed",
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20,
-            pointerEvents: "none"
-          }}
-        >
-          <ToastContainer position={"bottom-end"}>
-            {didReport && (
-              <ReportToast isSuccessful={reportMutation.isSuccess} />
-            )}
-          </ToastContainer>
-        </div>
+      </TestimonyItemContentStyle>
+
+      {showControls && (
+        <>
+          <ButtonContainer
+            style={{
+              fontFamily: "nunito",
+              minWidth: "20%"
+            }}
+          >
+            <ButtonStyle variant="secondary">
+              <Internal href={formUrl(testimony.billId, testimony.court)}>
+                Edit
+              </Internal>
+            </ButtonStyle>
+            <ButtonStyle>
+              <Internal href={billLink}>Rescind</Internal>
+            </ButtonStyle>
+          </ButtonContainer>
+        </>
+      )}
+      <hr />
+      <div
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+          bottom: 20,
+          left: 20,
+          pointerEvents: "none"
+        }}
+      >
+        <ToastContainer position={"bottom-end"}>
+          {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
+        </ToastContainer>
       </div>
-    </div>
+    </TestimonyItemContainer>
   )
 }
 
@@ -314,4 +368,113 @@ export const FormattedTestimonyContent = ({
   )
 }
 
+export const OrderFilterDropDownMenu = (props: {
+  currentOrder: string
+  handleOrder?: ReactEventHandler
+}) => {
+  const { handleOrder, currentOrder } = props
+
+  return (
+    <DropdownContainer className="doodads">
+      <StyledDropdown
+        variant="success"
+        id="dropdown-basic"
+        className="order-filter"
+      >
+        {currentOrder}
+      </StyledDropdown>
+
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={handleOrder}>Most Recent</Dropdown.Item>
+        <Dropdown.Item onClick={handleOrder}>Oldest</Dropdown.Item>
+      </Dropdown.Menu>
+    </DropdownContainer>
+  )
+}
 export default ViewTestimony
+const TestimonyItemContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 5%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`
+
+const ButtonStyle = styled(Button)`
+  border-radius: 10px;
+
+  margin: 5%;
+  margin-right: 0;
+  font-family: nunito;
+  a {
+    font-size: 1.5rem;
+    color: white;
+    text-decoration: none;
+  }
+`
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  @media (max-width: 740px) {
+    flex-direction: row;
+    justify-content: center;
+    button {
+      width: 50%;
+      margin: 5%;
+      margin-top: 0;
+    }
+  }
+`
+
+const DropdownContainer = styled(Dropdown)`
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 5px;
+  background: none !important;
+`
+const StyledDropdown = styled(Dropdown.Toggle)`
+  display: flex;
+  flex-direction: space-between;
+  align-items: center;
+  padding: 5px;
+
+  font-size: 1.5rem;
+  font-family: Nunito;
+
+  background-color: white;
+  border: 1px solid lightgrey;
+
+  &:active,
+  &:focus,
+  &:hover {
+    background-color: white !important;
+    border-color: black !important;
+  }
+  &:active,
+  &:focus {
+    box-shadow: 0px 0px 10px 4px orange !important;
+  }
+  :after {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    vertical-align: none;
+    content: "▼";
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    font-size: 30px;
+  }
+  & .order-filter {
+    color: red !important;
+    background-color: red !important;
+  }
+`
+
+const DropDownsContainerStyle = styled.div`
+  display: flex;
+`

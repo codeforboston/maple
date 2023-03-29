@@ -174,11 +174,15 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row className={"mb-4"}>
               <Col xs={12}>
-                <ViewTestimony
-                  {...testimony}
-                  showControls={isUser}
-                  showBillNumber
-                  className="mb-4"
+                <MapleCard
+                  body={
+                    <ViewTestimony
+                      {...testimony}
+                      showControls={isUser}
+                      showBillNumber
+                      className="mb-4"
+                    />
+                  }
                 />
               </Col>
             </Row>

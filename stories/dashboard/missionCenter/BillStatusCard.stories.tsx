@@ -1,11 +1,11 @@
-import { createMeta } from "stories/utils"
-import { BillStatusCard } from "components/BillStatusCard/BillStatusCard"
 import { ComponentStory } from "@storybook/react"
+import { BillStatusCard } from "components/BillStatusCard/BillStatusCard"
+import { createMeta } from "stories/utils"
 
 export default createMeta({
   title: "Dashboard/Mission Center/BillStatusCard",
   figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A13623",
+    "https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE?node-id=2184%3A23094&t=yQ7oQ6AqkJc2pZNR-4",
   component: BillStatusCard
 })
 

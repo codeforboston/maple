@@ -38,6 +38,7 @@ export const setRole = async ({
 
 const isPublic = (profile: Profile | undefined, role: Role) => {
   switch (role) {
+    case "pendingUpgrade":
     case "admin":
       return false
     case "legislator":
