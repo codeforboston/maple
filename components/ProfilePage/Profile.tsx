@@ -174,11 +174,15 @@ export function ProfilePage({ id }: { id: string }) {
 
             <Row className={"mb-4"}>
               <Col xs={12}>
-                <ViewTestimony
-                  {...testimony}
-                  showControls={isUser}
-                  showBillNumber
-                  className="mb-4"
+                <MapleCard
+                  body={
+                    <ViewTestimony
+                      {...testimony}
+                      showControls={isUser}
+                      showBillNumber
+                      className="mb-4"
+                    />
+                  }
                 />
               </Col>
             </Row>
@@ -312,17 +316,26 @@ export const ProfileHeader = ({
           </ProfileDisplayName>
           {isOrganization ? (
             <Col>
-              <Button
-                className={`btn btn-primary btn-sm py-1 ${
-                  uid ? "" : "visually-hidden"
-                }`}
-                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+              <div
+                /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                   when we're ready to show Email related element to users
+                */
+                className="d-none"
               >
-                {queryResult ? "Following" : "Follow"}
-                {queryResult ? (
-                  <StyledImage src="/check-white.svg" alt="checkmark" />
-                ) : null}
-              </Button>
+                <Button
+                  className={`btn btn-primary btn-sm py-1 ${
+                    uid ? "" : "visually-hidden"
+                  }`}
+                  onClick={
+                    queryResult ? handleUnfollowClick : handleFollowClick
+                  }
+                >
+                  {queryResult ? "Following" : "Follow"}
+                  {queryResult ? (
+                    <StyledImage src="/check-white.svg" alt="checkmark" />
+                  ) : null}
+                </Button>
+              </div>
             </Col>
           ) : (
             <></>
