@@ -4,7 +4,7 @@ import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
-import { Container, Nav, Navbar } from "./bootstrap"
+import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import PageFooter from "./Footer/Footer"
 import styles from "./layout.module.css"
@@ -88,48 +88,96 @@ const TopNav: React.FC = () => {
           </div>
           <Navbar.Collapse id="topnav">
             <Nav className="me-auto">
-              <NavLink href="/" handleClick={closeNav}>
+              <NavLink
+                className={"navLink-primary"}
+                href="/"
+                handleClick={closeNav}
+              >
                 Home
               </NavLink>
-              <NavLink href="/bills" handleClick={closeNav}>
-                Bills
+              <NavLink
+                className={"navLink-primary"}
+                href="/bills"
+                handleClick={closeNav}
+              >
+                Browse Bills
               </NavLink>
-              {/* <NavLink href="/testimonies" handleClick={closeNav}>
-                Testimony
-              </NavLink> */}
 
-              <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
-              <Container
-                style={{ alignContent: "flex-end" }}
-                onClick={closeNav}
-              >
-                <NavLink href="/learn/basics-of-testimony">
-                  Learn About Testimony
-                </NavLink>
-                <NavLink href="/learn/communicating-with-legislators">
-                  Communicating with Legislators
-                </NavLink>
-                <NavLink href="/learn/additional-resources">
-                  Additional Resources
-                </NavLink>
-              </Container>
+              <NavDropdown className={"navLink-primary"} title={"Learn"}>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/learn/basics-of-testimony"
+                    handleClick={closeNav}
+                  >
+                    Learn About Testimony
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/learn/communicating-with-legislators"
+                    handleClick={closeNav}
+                  >
+                    Communicating with Legislators
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/learn/additional-resources"
+                    handleClick={closeNav}
+                  >
+                    Additional Resources
+                  </NavLink>
+                </NavDropdown.Item>
+              </NavDropdown>
 
-              <Navbar.Text className="navbar-section-header">About</Navbar.Text>
-              <Container
-                style={{ alignContent: "flex-end" }}
-                onClick={closeNav}
+              <NavDropdown className={"navLink-primary"} title={"About"}>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/about/mission-and-goals"
+                    handleClick={closeNav}
+                  >
+                    Our Mission &amp; Goals
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/about/our-team" handleClick={closeNav}>
+                    Our Team
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/about/how-to-support-maple"
+                    handleClick={closeNav}
+                  >
+                    How to Support MAPLE
+                  </NavLink>
+                </NavDropdown.Item>
+              </NavDropdown>
+
+              <NavDropdown
+                className={"navLink-primary"}
+                title={"Why Use MAPLE"}
               >
-                <NavLink href="/about/mission-and-goals">
-                  Our Mission &amp; Goals
-                </NavLink>
-                <NavLink href="/about/our-team">Our Team</NavLink>
-                <NavLink href="/about/for-testifiers">For Testifiers</NavLink>
-                <NavLink href="/about/for-orgs">For Organizations</NavLink>
-                <NavLink href="/about/for-legislators">For Legislators</NavLink>
-              </Container>
+                <NavDropdown.Item>
+                  <NavLink href="/about/for-testifiers" handleClick={closeNav}>
+                    For Individuals
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/about/for-orgs" handleClick={closeNav}>
+                    For Organizations
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/about/for-legislators" handleClick={closeNav}>
+                    For Legislators
+                  </NavLink>
+                </NavDropdown.Item>
+              </NavDropdown>
 
               {authenticated && (
                 <NavLink
+                  className={"navLink-primary"}
                   handleClick={() => {
                     closeNav()
                     void signOutAndRedirectToHome()
