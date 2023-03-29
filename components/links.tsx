@@ -68,7 +68,16 @@ export const maple = {
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
-    `/testimony/${publishedId}`
+    `/testimony/${publishedId}`,
+  userTestimony: ({
+    authorUid,
+    billId,
+    court
+  }: {
+    authorUid: string
+    billId: string
+    court: number
+  }) => `/testimony/${authorUid}/${court}/${billId}`
 }
 
 export function billSiteURL(billNumber: string, court: number) {

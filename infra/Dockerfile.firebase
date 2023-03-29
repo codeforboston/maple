@@ -1,7 +1,12 @@
-FROM alexjball/firebase-tools:latest-node-16
+FROM andreysenov/firebase-tools:latest-node-16
 
 USER root
 RUN apk update && apk add curl
+
+# Required for pubsub emulator
+# https://github.com/firebase/firebase-tools/issues/5256#issuecomment-1383228506
+RUN apk --no-cache add gcompat
+ENV LD_PRELOAD=/lib/libgcompat.so.0
 
 WORKDIR /app
 RUN chown -R node:node .

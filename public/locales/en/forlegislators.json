@@ -1,0 +1,38 @@
+{
+  "title": "MAPLE for Legislators",
+  "callToAction": {
+    "header": "Why use MAPLE", 
+    "title": "MAPLE is a free, nonpartisan, nonprofit platform that makes it easy for legislative offices to see what constituents from around the Commonwealth are saying about bills sitting in any Committee.",
+    "bodytextOne": "Even before you create your own account, you can search our lightning-fast platform for all testimony submitted by MAPLE users about any bill. Our advanced features let you filter to bills sponsored by your office, bills concerning your city, or bills that you choose to follow.",
+    "bodytextTwo": "Why trust MAPLE? We are a nonpartisan, nonprofit, volunteer-developed civic technology initiative focused on increasing engagement between the legislature and its constituents. We offer our product as an open source public good; we are committed not to charging our users and we will never sell the data from our platform."
+  },
+  "benefits": {
+    "header": "What we offer",
+    "constituents": {
+      "title": "Find out what constituents are saying about your priority bills",
+      "bodytext": "When you visit any bill page on MAPLE, you can see every piece of testimony submitted by MAPLE users along with their district information. You can easily seek out your own constituents' testimony and see how opinions vary across the Commonwealth."
+    },
+    "seeTestimony": {
+      "title": "See testimony on all bills before all committees in one place",
+      "bodytext": "MAPLE makes it easy for users to submit testimony on any bill, before any committee. Anyone can see testimony on a bill as soon as it is submitted."
+    },
+    "simplifyTestimony": {
+      "title": "Simplify the testimony process for your constituents",
+      "bodytext": "Do your constituents need assistance finding the right committee, the right chairperson, and the right email address to submit their testimony on a bill? Send them to MAPLE! Our platform makes it easy for anyone to direct their testimony to the right committee chairpersons as well as to their own constituents."
+    },
+    "languageAccess": {
+      "title": "Extend access to constituents who speak any language",
+      "bodytext": "MAPLE uses machine translation to make the legislative process more accessible to non-native English speakers. Both our website content and the testimonies we post can be automatically translated to any language on demand, meaning that non-English speakers can write testimony in the language in which they are most comfortable and legislative offices can click a button to translate it to English. While machine translation is not perfect, it offers a big step forward in language accessibility for constituents who do not have access to expert translation."
+    },
+    "advancedStatistics": {
+      "title": "Get access to advanced bill & testimony statistics",
+      "bodytext": "Go beyond the text of written testimony. MAPLE's bill pages show you how many people support and oppose legislation, how that opinion has changed over time, how many people have submitted testimony, and how interest and support is distributed across the state."
+    }
+  },
+  "challenge": {
+    "header": "Get started with MAPLE!",
+    "title": "Start using MAPLE today to put your finger on the pulse of your constituents!",
+    "bodytext": "You can browse testimony submitted by constituents across the state on MAPLE, with or without creating your own account.",
+    "contact": "Any questions? We're here to help! Reach out to mapletestimony@gmail.com"
+  }
+}

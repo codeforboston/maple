@@ -1,0 +1,39 @@
+{
+  "title": "MAPLE for Testifiers",
+  "callToAction": {
+    "header": "Why use MAPLE",
+    "title": "MAPLE makes it easy for you to join the Commonwealth-wide conversation about the bills that will shape our future.",
+    "bodytext": "With a quick search on MAPLE, you can see what bills the state legislature is considering about the topics that matter to you. You can find out what policy changes are proposed, see what other constituents and organizations are saying about them, and-most important-you can submit written testimony directly to our representatives in the State House to make your perspective part of the conversation."
+  },
+  "benefits": {
+    "header": "What we offer",
+    "youMatter": {
+      "title": "Weigh in on the issues that matter to you",
+      "bodytext": "Before the Massachusetts state legislature can pass a bill, they convene three committees to hear public testimony on the policy changes that bill proposes. Don't miss out on the chance to make your perspective heard; submit your testimony to use your voice to shape public policy for our Commonwealth."
+    },
+    "multipleSides": {
+      "title": "Hear from multiples sides and perspectives",
+      "bodytext": "As a non-partisan platform, all stakeholders can use MAPLE to share their perspective on issues and bills. See what others are saying to get more informed about the most important public policy issues of the day."
+    },
+    "trustedOrgs": {
+      "title": "See what the organizations you trust are saying",
+      "bodytext": "Organizations use MAPLE to share their priorities and positions with the world. Look for testimony from the groups you belong to and trust on MAPLE to help you learn about the issues that matter to you."
+    },
+    "anyLanguage": {
+      "title": "Read and write testimony in any language",
+      "bodytext": "Both our website content and the testimonies we post can be automatically translated to any language on demand, so non-English speakers can write testimony in any language and legislators can click a button to automatically translate it to English. While machine translation is not perfect, it offers a big step forward in language accessibility for testifiers who do not have access to expert translation."
+    },
+    "stayInformed": {
+      "title": "Find out what's happening on the issues you care about",
+      "bodytext": "The legislative process on any bill or policy issue can be long and complicated. Use MAPLE to get easy access to up-to-date, contextualized information on the status, debate, and next steps for every bill before the legislature."
+    }
+  },
+  "challenge": {
+    "header": "Get started with MAPLE today!",
+    "title": "Sign up for your account today to make your voice heard.",
+    "bodytextOne": "When you sign up for a MAPLE account, you can immediately start submitting your own testimony on any bill.",
+    "bodytextTwo": "Creating a MAPLE account is completely free and takes only a couple minutes.",
+    "signUp": "Click here to sign up for your MAPLE account",
+    "contact": "Any questions? Reach out to mapletestimony@gmail.com"
+  }
+}
