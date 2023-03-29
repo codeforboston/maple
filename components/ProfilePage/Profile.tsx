@@ -30,6 +30,7 @@ import {
   UserIcon,
   VerifiedBadge
 } from "./StyledEditProfileCompnents"
+import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   .about-me-checkbox input {
@@ -117,7 +118,7 @@ export function ProfilePage({ id }: { id: string }) {
   const isOrganization: boolean = profile?.role === "organization" || false
   const displayName = profile?.displayName
   const profileImage = profile?.profileImage
-
+  const { t } = useTranslation("profile")
   return (
     <>
       {loading ? (
@@ -139,7 +140,9 @@ export function ProfilePage({ id }: { id: string }) {
                 backgroundColor: "var(--bs-orange)"
               }}
             >
-              <p>Currently viewing your profile</p>
+              <p>
+                {t("content.viewingProfile")}
+              </p>
             </StyledContainer>
           )}
           <StyledContainer>
@@ -200,15 +203,17 @@ export const ProfileAboutSection = ({
   const { twitter, linkedIn }: { twitter?: string; linkedIn?: string } =
     profile?.social ?? {}
 
+  const { t } = useTranslation("profile")
+
   return (
     <MapleCard
-      header={`About ${profile?.displayName?.split(" ")[0] ?? "User"}`}
+      header={t("aboutHeader", { firstName: profile?.displayName?.split(" ")[0] ?? "User" }).toString() ?? ""}
       inHeaderElement={<Socials twit={twitter} linkedIn={linkedIn} />}
       className={`h-100`}
       body={
         <div className="mx-5 my-2 h-100">
           {" "}
-          {profile?.about ?? "State your purpose"}{" "}
+          {profile?.about ?? t("content.statePurpose")}{" "}
         </div>
       }
     ></MapleCard>
@@ -294,6 +299,8 @@ export const ProfileHeader = ({
     setQueryResult("")
   }
 
+  const { t } = useTranslation("profile")
+
   return (
     <Header className={`d-flex edit-profile-header ${!isUser ? "" : "pt-4"}`}>
       {isOrganization ? (
@@ -308,17 +315,17 @@ export const ProfileHeader = ({
       <Col>
         <div>
           <ProfileDisplayName className={`overflow-hidden`}>
-            {displayName ? `${displayName}` : "Anonymous User"}
+            {displayName ? `${displayName}` : t("anonymousUser")}
           </ProfileDisplayName>
           {isOrganization ? (
             <Col>
               <Button
                 className={`btn btn-primary btn-sm py-1 ${
-                  uid ? "" : "visually-hidden"
+                  uid ? "" : t("button.hidden")
                 }`}
                 onClick={queryResult ? handleUnfollowClick : handleFollowClick}
               >
-                {queryResult ? "Following" : "Follow"}
+                {queryResult ? t("button.following") : t("button.follow")}
                 {queryResult ? (
                   <StyledImage src="/check-white.svg" alt="checkmark" />
                 ) : null}
@@ -335,6 +342,7 @@ export const ProfileHeader = ({
 }
 
 const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
+  const { t } = useTranslation("profile")
   return (
     <Col
       className={`d-flex w-100 ${
@@ -343,7 +351,7 @@ const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
     >
       <div>
         <Internal href="/editprofile" className="view-edit-profile">
-          <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
+          <Button className={`btn btn-lg py-1`}>{t("button.editProfile")}</Button>
         </Internal>
       </div>
     </Col>
@@ -352,18 +360,16 @@ const EditProfileButton = ({ isMobile }: { isMobile: boolean }) => {
 
 export const VerifyAccountSection = ({ user }: { user: User }) => {
   const sendEmailVerification = useSendEmailVerification()
-
+  const { t } = useTranslation("profile")
   return (
     <TitledSectionCard title={"Verify Your Account"} className="col">
       <div className="px-5 pt-2 pb-4">
         <p className="fw-bold text-info">
-          We sent a link to your email to verify your account, but you haven't
-          clicked it yet. If you don't see it, be sure to check your spam
-          folder.
+          t("content.sendVerification")
         </p>
 
         {sendEmailVerification.status === "success" ? (
-          <Alert variant="success">Check your email!</Alert>
+          <Alert variant="success">t("content.checkEmail")</Alert>
         ) : null}
 
         {sendEmailVerification.status === "error" ? (
@@ -377,7 +383,7 @@ export const VerifyAccountSection = ({ user }: { user: User }) => {
             loading={sendEmailVerification.loading}
             onClick={() => sendEmailVerification.execute(user)}
           >
-            Send Another Link
+            t("button.sendAnotherLink")
           </LoadingButton>
         ) : null}
       </div>
