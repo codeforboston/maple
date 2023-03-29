@@ -20,7 +20,44 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
 }
 
 const StyledButton = styled(Button)`
+  &:focus {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
+  &:hover {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
   width: 110px;
+`
+
+const StyledOutlineButton = styled(Button)`
+  &:focus {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
+  &:hover {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
+  width: 110px;
+`
+
+const StyledOutlineButton2 = styled(Button)`
+  &:focus {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
+  &:hover {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
 `
 
 const StyledDropdownToggle = styled(Dropdown.Toggle)`
@@ -107,23 +144,35 @@ export default function ProfileSettingsModal({
                 follow through email?
               </Col>
               <Col>
-                <StyledButton
-                  className={`btn btn-sm d-flex justify-content-end ms-auto py-1 ${buttonSecondary}`}
-                  onClick={() =>
-                    setNotifications(
-                      notifications === "None" ? "Monthly" : "None"
-                    )
-                  }
-                >
-                  <Image
-                    className={`pe-1`}
-                    src="/mail-icon-sized-for-buttons.svg"
-                    alt="open envelope with letter, toggles update frequency options"
-                    width="22"
-                    height="19"
-                  />
-                  {notifications === "None" ? "Enable" : "Enabled"}
-                </StyledButton>
+                {notifications === "None" ? (
+                  <StyledOutlineButton
+                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-outline-secondary`}
+                    onClick={() => setNotifications("Monthly")}
+                  >
+                    <Image
+                      className={`pe-1`}
+                      src="/mail-2.svg"
+                      alt="open envelope with letter, toggles update frequency options"
+                      width="22"
+                      height="19"
+                    />
+                    {"Enable"}
+                  </StyledOutlineButton>
+                ) : (
+                  <StyledButton
+                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-secondary`}
+                    onClick={() => setNotifications("None")}
+                  >
+                    <Image
+                      className={`pe-1`}
+                      src="/mail-icon-sized-for-buttons.svg"
+                      alt="open envelope with letter, toggles update frequency options"
+                      width="22"
+                      height="19"
+                    />
+                    {"Enabled"}
+                  </StyledButton>
+                )}
               </Col>
             </StyledRow>
             <StyledRow
@@ -186,12 +235,12 @@ export default function ProfileSettingsModal({
             <Button className={`btn btn-sm mx-3 py-1`} onClick={handleSave}>
               Save
             </Button>
-            <Button
+            <StyledOutlineButton2
               className={`btn btn-sm btn-outline-secondary py-1`}
               onClick={onSettingsModalClose}
             >
               Cancel
-            </Button>
+            </StyledOutlineButton2>
           </Stack>
         </Form>
       </StyledModalBody>

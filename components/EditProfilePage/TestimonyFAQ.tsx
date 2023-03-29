@@ -35,9 +35,10 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
           Provide an edit reason to inform your fellow users on why you changed
           a particular stance/message.
         </p>
+        {/* hiding for soft launch
         <hr></hr>
         <h4>Rescinding testimony </h4>
-        <p>Testimonies can't be deleted but are hidden from the platform</p>
+        <p>Testimonies can't be deleted but are hidden from the platform</p> */}
       </Card.Body>
     </StyledCard>
   )

@@ -8,6 +8,8 @@ import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
 import styled from "styled-components"
+import { PaginationButtons } from "components/table"
+import { Tabs, Tab } from "./Tabs"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -33,12 +35,53 @@ const ViewTestimony = (
     isUser = false,
     onProfilePage = false,
     className,
+    pagination,
     isOrg
   } = props
 
   const testimony = items.result ?? []
-
   const [orderBy, setOrderBy] = useState<string>()
+  const [activeTab, setActiveTab] = useState(1)
+
+  const handleTabClick = (e: Event, value: number) => {
+    setActiveTab(value)
+  }
+
+  const handleFilter = (filter: string | undefined) => {
+    if (filter === "organization") {
+      setFilter({ authorRole: "organization" })
+    }
+    if (filter === "user") {
+      setFilter({ authorRole: "user" })
+    }
+    if (filter === "") {
+      setFilter({ authorRole: "" })
+    }
+  }
+
+  const tabs = [
+    <Tab
+      key="at"
+      label="All Testimonies"
+      active={false}
+      value={1}
+      action={() => handleFilter("")}
+    />,
+    <Tab
+      key="uo"
+      label="Individuals"
+      active={false}
+      value={2}
+      action={() => handleFilter("user")}
+    />,
+    <Tab
+      key="oo"
+      label="Organizations"
+      active={false}
+      value={3}
+      action={() => handleFilter("organization")}
+    />
+  ]
 
   return (
     <Container>
@@ -47,9 +90,19 @@ const ViewTestimony = (
         headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
         body={
           <BootstrapCard.Body>
+            {!onProfilePage && (
+              <Row>
+                <Tabs
+                  childTabs={tabs}
+                  onChange={handleTabClick}
+                  selectedTab={activeTab}
+                />
+              </Row>
+            )}
+
             {testimony.length > 0 ? (
               <div>
-                {onProfilePage ? (
+                {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <Col className="d-flex align-items-center">
                       Showing 1 - {testimony.length} out of {testimony.length}
@@ -61,10 +114,6 @@ const ViewTestimony = (
                       />
                     </Col>
                   </Row>
-                ) : (
-                  <>
-                    {/* Insert the individuals/orgs/alltestimonies tabs from mark's code  */}
-                  </>
                 )}
 
                 {testimony
@@ -85,6 +134,10 @@ const ViewTestimony = (
                       onProfilePage={onProfilePage}
                     />
                   ))}
+
+                {testimony.length > 10 && (
+                  <PaginationButtons pagination={pagination} />
+                )}
               </div>
             ) : (
               <NoResults>
@@ -94,8 +147,6 @@ const ViewTestimony = (
           </BootstrapCard.Body>
         }
       />
-
-      {/* <PaginationButtons pagination={pagination} /> */}
     </Container>
   )
 }

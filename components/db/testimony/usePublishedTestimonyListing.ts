@@ -16,6 +16,7 @@ import { Testimony } from "./types"
 type Refinement = {
   senatorId?: string
   representativeId?: string
+  authorRole?: string
   uid?: string
   court?: number
   billId?: string
@@ -28,6 +29,7 @@ const initialRefinement = (
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
+  authorRole: undefined,
   uid,
   court,
   billId
@@ -42,6 +44,7 @@ const useTable = createTableHook<Testimony, Refinement, unknown>({
 export type TestimonyFilterOptions =
   | { representativeId: string }
   | { senatorId: string }
+  | { authorRole: string }
 
 export type UsePublishedTestimonyListing = ReturnType<
   typeof usePublishedTestimonyListing
@@ -65,35 +68,48 @@ export function usePublishedTestimonyListing({
     if (refinement.court !== court) refine({ court })
   }, [billId, court, refine, refinement, uid])
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    return {
       pagination,
       setFilter: (r: TestimonyFilterOptions | null) =>
         refine({
           representativeId: undefined,
           senatorId: undefined,
+          authorRole: undefined,
           ...r
         }),
       items
-    }),
-    [pagination, items, refine]
-  )
+    }
+  }, [pagination, items, refine])
 }
 
 function getWhere({
   uid,
   billId,
+  authorRole,
   representativeId,
   court,
   senatorId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
+  const singularUserRoles: string[] = [
+    "user",
+    "admin",
+    "upgradePending",
+    "legislator"
+  ]
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
   if (court) constraints.push(["court", "==", court])
+  if (authorRole)
+    constraints.push(
+      authorRole == "organization"
+        ? ["authorRole", "==", authorRole]
+        : ["authorRole", "in", singularUserRoles]
+    )
   return constraints.map(c => where(...c))
 }
 

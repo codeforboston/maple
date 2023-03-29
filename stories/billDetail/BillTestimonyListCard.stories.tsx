@@ -1,13 +1,53 @@
+import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
+import { BillTestimonies } from "../../components/bill/BillTestimonies"
+import { Timestamp } from "firebase/firestore"
 
 // TODO: move into components directory
-const BillTestimonyListCard = () => <div>TODO</div>
+const BillTestimonyListCard = BillTestimonies
 
 export default createMeta({
   title: "Bill Detail/BillTestimonyListCard",
   figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=180%3A7916",
+    "https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?node-id=4009%3A15950&t=3gd7s59zbYBA1CZP-4",
   component: BillTestimonyListCard
 })
 
-export const Primary = () => <BillTestimonyListCard />
+var first = { Id: "test", Name: "tes", Type: 0 }
+
+const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
+  return <BillTestimonyListCard {...props} />
+}
+
+export const Primary = Template.bind({})
+Primary.args = {
+  bill: {
+    id: "H805",
+    court: 192,
+    content: {
+      Title:
+        "An Act fostering voting opportunities, trust, equity, and security",
+      BillNumber: "H805",
+      DocketNumber: "string",
+      GeneralCourtNumber: 999,
+      PrimarySponsor: first,
+      Cosponsors: [first],
+      LegislationTypeName: "string",
+      Pinslip: "string",
+      DocumentText: "string"
+    },
+    cosponsorCount: 0,
+    testimonyCount: 0,
+    endorseCount: 0,
+    opposeCount: 0,
+    neutralCount: 0,
+    fetchedAt: Timestamp.fromMillis(0),
+    history: [
+      {
+        Date: "1",
+        Branch: "1",
+        Action: "1"
+      }
+    ]
+  }
+}

@@ -110,7 +110,9 @@ export const TestimonyItem = ({
   const { deleteTestimony } = usePublishService() ?? {}
 
   return (
-    <div className={styles.itemrow}>
+    <div
+      className={onProfilePage ? styles.bottomborder : styles.nobottomborder}
+    >
       <div className={`border-0 h5 d-flex`}>
         {isMobile && isUser && (
           <>
@@ -208,29 +210,30 @@ export const TestimonyItem = ({
             </>
           ) : (
             <>
-              <Col>
+              {/* hiding for soft launch
+              <Col xs="auto">
                 <FooterButton
                   variant="link"
                   onClick={() => setIsReporting(true)}
                 >
                   Report
                 </FooterButton>
-              </Col>
-              <Col>
-                <FooterButton variant="link">
-                  <ViewAttachment testimony={testimony} />
-                </FooterButton>
-              </Col>
-
-              <Col>
-                {canExpand && (
+              </Col> */}
+              {canExpand && (
+                <Col className="justify-content-end d-flex">
                   <FooterButton
                     variant="link"
                     onClick={() => setShowAllTestimony(true)}
                   >
                     Show More
                   </FooterButton>
-                )}
+                </Col>
+              )}
+
+              <Col className="justify-content-end d-flex">
+                <FooterButton variant="link">
+                  <ViewAttachment testimony={testimony} />
+                </FooterButton>
               </Col>
             </>
           )}

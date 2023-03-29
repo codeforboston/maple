@@ -13,7 +13,7 @@ export const createProfile = functions.https.onCall(async (data, context) => {
 
   const { requestedRole } = await checkRequestZod(CreateProfileRequest, data)
 
-  const role = requestedRole === "user" ? "user" : "pendingUpgrade"
+  const role = requestedRole === "user" ? "user" : "organization"
 
   await setRole({ role, auth, db, uid })
 })

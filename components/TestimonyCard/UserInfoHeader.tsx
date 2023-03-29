@@ -1,9 +1,9 @@
-import { Col } from "react-bootstrap"
+import { Col, Stack } from "react-bootstrap"
 import { Internal } from "components/links"
 import { Testimony } from "components/db"
 import { formatBillId } from "components/formatting"
 import styles from "./ViewTestimony.module.css"
-import { PositionLabel } from "./PositionBug"
+import { ProfilePositionLabel } from "./ProfilePositionBug"
 
 export const UserInfoHeader = ({
   testimony,
@@ -15,14 +15,23 @@ export const UserInfoHeader = ({
   publishedDate: string
 }) => {
   return (
-    <>
+    <Stack direction="horizontal" gap={3} className="pb-3">
       <Col xs="auto">
-        <h4 className={styles.heading}>{testimony.authorDisplayName}</h4>
+        <ProfilePositionLabel
+          position={testimony.position}
+          avatar={
+            testimony.authorRole === "organization"
+              ? "/OrganizationUser.svg"
+              : "/individualUser.svg"
+          }
+        />
       </Col>
+      <Col className="justify-content-start">
+        <h6>{testimony.authorDisplayName}</h6>
 
-      <Col className={`mb-0 ms-auto d-flex justify-content-sm-end`}>
-        {`${publishedDate}`}
+        {publishedDate}
+        <hr className={styles.hr}></hr>
       </Col>
-    </>
+    </Stack>
   )
 }

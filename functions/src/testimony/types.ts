@@ -43,6 +43,7 @@ export const Testimony = withDefaults(
     draftAttachmentId: Maybe(RtString)
   }),
   {
+    authorRole: "user",
     // ID is backfilled
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
