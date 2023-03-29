@@ -28,6 +28,20 @@
   margin-bottom: 0;
 }
 
+.editbug {
+  margin-bottom: 0;
+  font-size: 14px;
+  background-color: #1a3185;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.publishdate {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
 .hr {
   margin: 0;
   border-bottom: 3px solid #cecece;

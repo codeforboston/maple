@@ -1,26 +1,26 @@
 import React from "react"
 import styled from "styled-components"
-import { Testimony, usePublicProfile } from "../db"
+import { usePublicProfile } from "../db"
 import { Internal } from "../links"
 
-export const Author = styled<{ testimony: Testimony }>(
-  ({ testimony, ...props }) => {
-    const profile = usePublicProfile(testimony.authorUid)
+const StyledName = styled(Internal)`
+  text-decoration: none;
+`
 
-    const authorName = profile.loading
-      ? ""
-      : profile.result?.fullName ?? testimony.authorDisplayName ?? "Anonymous"
-    const linkToProfile = !!profile.result
-    return (
-      <div {...props}>
-        {linkToProfile ? (
-          <Internal href={`/profile?id=${testimony.authorUid}`}>
-            {authorName}
-          </Internal>
-        ) : (
-          authorName
-        )}
-      </div>
-    )
-  }
-)
+export const Author = ({ uid, name }: { uid: string; name: string }) => {
+  const profile = usePublicProfile(uid)
+
+  const authorName = profile.loading ? "" : profile.result?.displayName
+  const linkToProfile = !!profile.result
+  return (
+    <div>
+      {linkToProfile ? (
+        <h6>
+          <StyledName href={`/profile?id=${uid}`}>{authorName}</StyledName>
+        </h6>
+      ) : (
+        <h6>{name}</h6>
+      )}
+    </div>
+  )
+}

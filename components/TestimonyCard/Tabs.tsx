@@ -11,7 +11,7 @@ type onClickEventFunction = (e: Event, value: number) => void
 
 export const TabSlider = (props: { position: number; resizing: boolean }) => {
   const { position, resizing } = props
-  return <TabSliderStyle width={250} position={position} resizing={resizing} />
+  return <TabSliderStyle width={220} position={position} resizing={resizing} />
 }
 
 export const TabSliderContainer = (props: { children?: JSX.Element[] }) => {
@@ -65,7 +65,7 @@ export const Tabs = (props: {
   useEffect(() => {
     const selected = tabRefs.current[selectedTab - 1]
     if (selected) {
-      setSliderPos(selected.offsetLeft - 100)
+      setSliderPos(selected.offsetLeft - 70)
     }
   }, [selectedTab, viewportWidth])
 

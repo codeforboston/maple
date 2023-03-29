@@ -1,8 +1,7 @@
 import React, { useRef } from "react"
-
 import { OverlayTrigger } from "../bootstrap"
 
-const MoreButton = ({ children }: { children: React.ReactChild }) => {
+export const MoreButton = ({ children }: { children: React.ReactChild }) => {
   const menuRef = useRef<HTMLDivElement>(null)
   return (
     <OverlayTrigger
