@@ -1,8 +1,11 @@
-import { formUrl, usePublishState } from "components/publish/hooks"
+import { formUrl } from "components/publish/hooks"
 import Image from "react-bootstrap/Image"
+import { ToastContainer } from "react-bootstrap"
+import { useReportTestimony } from "components/api/report"
+import ReportToast from "./ReportToast"
 import { useMediaQuery } from "usehooks-ts"
 import { usePublishService } from "components/publish/hooks"
-import { Col, Row, Stack, Button } from "../bootstrap"
+import { Col, Row, Stack, Button, Spinner } from "../bootstrap"
 import styled from "styled-components"
 import { Testimony } from "../db"
 import { Internal, maple } from "../links"
@@ -13,7 +16,6 @@ import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
-import { Spinner } from "../bootstrap"
 import { UseAsyncReturn } from "react-async-hook"
 
 const FooterButton = styled(Button)`
@@ -92,6 +94,8 @@ export const TestimonyItem = ({
   })
 
   const [isReporting, setIsReporting] = useState(false)
+  const reportMutation = useReportTestimony()
+  const didReport = reportMutation.isError || reportMutation.isSuccess
 
   const testimonyContent = testimony.content
 
@@ -103,7 +107,6 @@ export const TestimonyItem = ({
   const canExpand = snippet.length !== testimonyContent.length
 
   const [showConfirm, setShowConfirm] = useState(false)
-
   const { deleteTestimony } = usePublishService() ?? {}
 
   return (
@@ -238,9 +241,9 @@ export const TestimonyItem = ({
         <ReportModal
           onClose={() => setIsReporting(false)}
           onReport={report => {
-            // TODO: connect to API call to add a report from this user
-            console.log({ report })
+            reportMutation.mutate({ report, testimony })
           }}
+          isLoading={reportMutation.isLoading}
           reasons={[
             "Personal Information",
             "Offensive",
@@ -250,6 +253,22 @@ export const TestimonyItem = ({
           ]}
         />
       )}
+      <div
+          style={{
+            position: "fixed",
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20,
+            pointerEvents: "none"
+          }}
+        >
+          <ToastContainer position={"bottom-end"}>
+            {didReport && (
+              <ReportToast isSuccessful={reportMutation.isSuccess} />
+            )}
+          </ToastContainer>
+        </div>
     </div>
   )
 }

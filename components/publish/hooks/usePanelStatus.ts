@@ -1,3 +1,4 @@
+import { hasDraftChanged } from "components/db"
 import { isUndefined } from "lodash"
 import { useAuth } from "../../auth"
 import { usePublishState } from "./usePublishState"
@@ -27,7 +28,7 @@ export const usePanelStatus = (): PanelStatus => {
     return "noTestimony"
   } else if (draft && !publication) {
     return "createInProgress"
-  } else if (draft && isUndefined(draft.publishedVersion)) {
+  } else if (draft && hasDraftChanged(draft, publication)) {
     return "editInProgress"
   } else {
     return "published"

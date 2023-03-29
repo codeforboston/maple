@@ -10,7 +10,11 @@ const content = [
       P1: (
         <>
           The MA Legislature has an{" "}
-          <a href="https://malegislature.gov/Search/FindMyLegislator">
+          <a
+            href="https://malegislature.gov/Search/FindMyLegislator"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             online tool
           </a>{" "}
           you can use to identify your legislators based on your home address.
@@ -23,7 +27,11 @@ const content = [
       P1: (
         <>
           The MA Legislature publishes a{" "}
-          <a href="https://www.mass.gov/doc/the-legislative-process-0/download">
+          <a
+            href="https://www.mass.gov/doc/the-legislative-process-0/download"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             document on the legislative process.
           </a>
         </>
@@ -35,7 +43,11 @@ const content = [
       P1: (
         <>
           Mass Legal Services published a 2007 guide to The{" "}
-          <a href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0">
+          <a
+            href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Legislative Process in Massachusetts.
           </a>
         </>
@@ -66,3 +78,16 @@ export default createPage({
     )
   }
 })
+
+// this must only be on pages in the pages folder
+// it will throw an error if it's in the components folder
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common", "footer"]))
+      // Will be passed to the page component as props
+    }
+  }
+}

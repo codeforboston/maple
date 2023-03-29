@@ -1,0 +1,31 @@
+<svg width="151" height="150" viewBox="0 0 151 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4621_12581)">
+<path d="M139.215 79.2756C173.736 41.4563 117.481 11.5259 84.9231 8.27176C64.7143 6.25194 7.81003 23.3049 9.92165 42.2714C12.3954 64.491 32.691 72.4737 16.9217 89.2719C-13.0368 106.795 16.4879 148.526 46.8313 142.366C77.1746 136.206 94.5056 142.623 113.923 136.272C135.189 129.316 104.694 117.095 139.215 79.2756Z" fill="#FF8600"/>
+<rect x="10.7827" y="24" width="127.99" height="92.0074" rx="7" fill="white" stroke="#1A3185" stroke-width="2"/>
+<path d="M9.78271 105.793H139.783" stroke="#1A3185" stroke-width="2"/>
+<rect x="70.9028" y="116.387" width="10.999" height="8.53532" fill="white" stroke="#1A3185" stroke-width="2"/>
+<path d="M35.2076 131C35.7074 126.204 39.7626 122.465 44.6911 122.465H108.926C113.855 122.465 117.91 126.204 118.41 131H35.2076Z" fill="white" stroke="#1A3185" stroke-width="2"/>
+<path d="M46.7827 69.5H100.783M50.2827 58H104.283" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<path d="M46.7827 92.5H100.783M50.2827 81H104.283M46.7827 87H83.2827M87.2827 87H104.283" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="46.7827" y1="40" x2="57.7827" y2="40" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="62.7827" y1="40" x2="101.783" y2="40" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="54.7827" y1="46" x2="93.7827" y2="46" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="40" y2="-1" transform="matrix(1 0 0 -1 53.7827 97)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="40" y2="-1" transform="matrix(1 0 0 -1 53.7827 63)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="46.7827" y1="46" x2="48.7827" y2="46" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="3" y2="-1" transform="matrix(1 0 0 -1 45.7827 97)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="3" y2="-1" transform="matrix(1 0 0 -1 45.7827 63)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="3" y2="-1" transform="matrix(1 0 0 -1 56.7827 75)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="97.7827" y1="46" x2="103.783" y2="46" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="7" y2="-1" transform="matrix(1 0 0 -1 96.7827 97)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="7" y2="-1" transform="matrix(1 0 0 -1 96.7827 63)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="1" y1="-1" x2="7" y2="-1" transform="matrix(1 0 0 -1 45.7827 75)" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<line x1="46.7827" y1="52" x2="101.783" y2="52" stroke="#1A3185" stroke-width="2" stroke-linecap="round"/>
+<path d="M38.7827 36C38.7827 34.3431 40.1259 33 41.7827 33H109.783C111.44 33 112.783 34.3431 112.783 36V106H38.7827V36Z" stroke="#1A3185" stroke-width="2"/>
+</g>
+<defs>
+<clipPath id="clip0_4621_12581">
+<rect width="150" height="150" fill="white" transform="translate(0.783203)"/>
+</clipPath>
+</defs>
+</svg>

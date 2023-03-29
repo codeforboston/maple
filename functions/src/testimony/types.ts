@@ -21,7 +21,9 @@ const BaseTestimony = R({
   content: RtString.withConstraint(
     s => s.length > 0 && s.length < maxTestimonyLength
   ),
-  attachmentId: Maybe(RtString)
+  attachmentId: Maybe(RtString),
+  /** Only present if testimony was edited (has a version greater than 1) */
+  editReason: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>

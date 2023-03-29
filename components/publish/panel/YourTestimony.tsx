@@ -1,3 +1,4 @@
+import { hasDraftChanged } from "components/db"
 import { useState } from "react"
 import styled from "styled-components"
 import { Button, Stack } from "../../bootstrap"
@@ -20,12 +21,11 @@ export const YourTestimony = () => {
 }
 
 const MainPanel = styled(({ ...rest }) => {
-  const { draft, deleteTestimony } = usePublishService() ?? {}
+  const { draft, deleteTestimony, publication } = usePublishService() ?? {}
+  const unpublishedDraft = hasDraftChanged(draft, publication)
+  const [showConfirm, setShowConfirm] = useState(false)
   const bill = usePublishState().bill!
 
-  const unpublishedDraft = draft?.publishedVersion === undefined
-
-  const [showConfirm, setShowConfirm] = useState(false)
   return (
     <div {...rest}>
       <div className="d-flex">
@@ -44,7 +44,7 @@ const MainPanel = styled(({ ...rest }) => {
         archiveTestimony={deleteTestimony}
       />
       <div className="divider mt-3 mb-3" />
-      <TestimonyPreview className="mb-2" />
+      <TestimonyPreview type="draft" className="mb-2" />
       {unpublishedDraft && <div className="draft-badge">Draft</div>}
     </div>
   )

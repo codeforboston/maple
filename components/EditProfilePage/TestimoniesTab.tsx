@@ -53,7 +53,7 @@ export const TestimoniesTab = ({
                     isUser={true}
                     onProfilePage={true}
                     canEdit={true}
-                    canDelete={true}
+                    canDelete={false}
                   />
                 ))}
           </TitledSectionCard>

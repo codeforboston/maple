@@ -94,9 +94,9 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-export async function getPublishedTestimonyAttachmentUrl(id: string) {
+export async function getPublishedTestimonyAttachmentInfo(id: string) {
   const info = await getAttachmentInfo(publishedAttachment(id))
-  return info.url
+  return info
 }
 
 export async function getDraftTestimonyAttachmentInfo(uid: string, id: string) {
@@ -122,8 +122,8 @@ export function useDraftTestimonyAttachmentInfo(uid?: string, id?: string) {
 export function usePublishedTestimonyAttachment(id: string) {
   const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
-    getPublishedTestimonyAttachmentUrl(id)
-      .then(setUrl)
+    getPublishedTestimonyAttachmentInfo(id)
+      .then(i => setUrl(i.url))
       .catch(e => {
         console.warn("Error getting published attachment info", e)
       })

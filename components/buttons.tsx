@@ -148,7 +148,7 @@ export const CopyButton = ({
         </Button>
       </CopyToClipboard>
       <Overlay target={target} show={show} placement="top">
-        {props => <Tooltip {...props}>Copied!</Tooltip>}
+        {props => <Tooltip {...props}>Copied to Clipboard!</Tooltip>}
       </Overlay>
     </>
   )

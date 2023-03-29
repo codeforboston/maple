@@ -117,7 +117,7 @@ export default function ProfileSettingsModal({
                 >
                   <Image
                     className={`pe-1`}
-                    src="/mail-2.svg"
+                    src="/mail-icon-sized-for-buttons.svg"
                     alt="open envelope with letter, toggles update frequency options"
                     width="22"
                     height="19"
