@@ -8,7 +8,6 @@ import {
   String as RtString,
   Union
 } from "runtypes"
-import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
