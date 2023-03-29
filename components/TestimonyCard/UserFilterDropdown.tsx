@@ -1,5 +1,5 @@
 import { Dropdown } from "react-bootstrap"
-import { useState, ReactEventHandler } from "react"
+import { ReactEventHandler } from "react"
 import styled from "styled-components"
 
 export const UserFilterDropDown = (props: {

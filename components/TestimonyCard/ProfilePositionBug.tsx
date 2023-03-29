@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 export type Position = "endorse" | "neutral" | "oppose"
 
-export function PositionLabel({
+export function ProfilePositionLabel({
   position,
   avatar
 }: {
@@ -14,12 +14,22 @@ export function PositionLabel({
   return (
     <Container pos={position}>
       <ImageContainer>
-        <Image className="avatar" src={avatar} width="70" height="70" />
+        <StyledImage alt="profile image" src={avatar} />
       </ImageContainer>
-      <Image className="position" src={`/thumbs-${position}.svg`} />
+      <Image
+        alt="thumbs icon"
+        className="position"
+        src={`/thumbs-${position}.svg`}
+      />
     </Container>
   )
 }
+
+const StyledImage = styled(Image)`
+  width: 60;
+  height: 60;
+  border-radius: 50%;
+`
 
 const ImageContainer = styled.div`
   padding: 3px;
@@ -38,20 +48,23 @@ const Container = styled.div<{ pos: Position }>`
         return "orange"
     }
   }};
-  border-radius: 500px;
-
+  border-radius: 50%;
   width: fit-content;
   height: fit-content;
   position: relative;
 
   padding: 0;
-  margin: 10px;
-  margin-right: 3%;
 
   .position {
     position: absolute;
-    bottom: 0px;
-    top: 60px;
+    top: ${p => {
+      switch (p.pos) {
+        case "endorse":
+          return "40px"
+        default:
+          return "45px"
+      }
+    }};
     align-self: flex-end;
   }
 `

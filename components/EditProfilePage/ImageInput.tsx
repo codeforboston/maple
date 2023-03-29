@@ -41,6 +41,7 @@ export const ImageInput = ({ className }: ImageInputProps) => {
       ></Image>
       {updatingProfileImage && <Spinner animation="border" />}
       <div className="d-flex flex-column justify-content-center align-items-start col mx-3">
+        <h5>Input an image for your organization's profile</h5>
         <input
           id="profileimage"
           className={`bg-white d-block`}

@@ -1,19 +1,16 @@
 import { Col, Row } from "../bootstrap"
 import { External } from "../links"
 import { StyledBody } from "../shared/TitledSectionCard"
-import { SelectLegislators } from "./SelectLegislators"
+import { SelectLegislators } from "../ProfilePage/SelectLegislators"
 
 export const YourLegislators = () => {
   return (
-    <StyledBody>
-      <Row className="row-cols-2 m-0">
-        <Col className="your-legislators-width">
-          <div style={{ fontFamily: "Nunito", fontSize: "31px" }}>
-            Your Legislators
-          </div>
+    <>
+      <Row className="mt-3 mb-3">
+        <Col xs="auto" className="me-4 your-legislators-width">
           <SelectLegislators />
         </Col>
-        <Col className="bg-secondary text-white rounded d-flex justify-content-center align-items-center mt-4 pt-4 your-legislators-width">
+        <Col className="bg-secondary text-white rounded d-flex justify-content-center align-items-center pt-4 your-legislators-width">
           <p className="flex-grow-1 mx-3">
             Please use the{" "}
             <External
@@ -27,6 +24,6 @@ export const YourLegislators = () => {
           </p>
         </Col>
       </Row>
-    </StyledBody>
+    </>
   )
 }

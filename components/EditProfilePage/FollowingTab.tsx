@@ -15,12 +15,17 @@ import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import { OrgIconSmall } from "./StyledEditProfileCompnents"
+import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
 
 type Props = {
   className?: string
 }
+
+export const StyledHeader = styled(External)`
+  text-decoration: none;
+  font-weight: 1rem;
+`
 
 export type UnfollowModalConfig = {
   court: number
@@ -37,7 +42,7 @@ export const Styled = styled.div`
 
     font-family: "Nunito";
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 25px;
     line-height: 125%;
 
@@ -94,7 +99,7 @@ export function FollowingTab({ className }: Props) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      orgsList.push(doc.data().orgId)
+      orgsList.push(doc.data().profileid)
     })
 
     if (orgsFollowing.length === 0 && orgsList.length != 0) {
@@ -142,12 +147,8 @@ export function FollowingTab({ className }: Props) {
       </TitledSectionCard>
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-          <Styled>
-            <Row>
-              <Col>
-                <h2 className={``}>Organizations You Follow</h2>
-              </Col>
-            </Row>
+          <Stack>
+            <h2 className="pb-3">Organizations You Follow</h2>
             {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
@@ -156,7 +157,7 @@ export function FollowingTab({ className }: Props) {
                 type={"org"}
               />
             ))}
-          </Styled>
+          </Stack>
         </div>
       </TitledSectionCard>
       <UnfollowModal
@@ -183,7 +184,7 @@ function FollowedItem({
 }) {
   const { result: profile, loading } = usePublicProfile(element)
 
-  let displayName = ""
+  let displayName = "default"
   if (profile?.displayName) {
     displayName = profile.displayName
   }
@@ -192,21 +193,24 @@ function FollowedItem({
     <Styled key={key}>
       {type === "bill" ? (
         <>
-          <External
+          <StyledHeader
             href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
           >
             {formatBillId(element?.billId)}
-          </External>
+          </StyledHeader>
+
           <Row>
-            <Col>
+            <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
-            <UnfollowButton
-              displayName={displayName}
-              element={element}
-              setUnfollow={setUnfollow}
-              type={type}
-            />
+            <Col>
+              <UnfollowButton
+                displayName={displayName}
+                element={element}
+                setUnfollow={setUnfollow}
+                type={type}
+              />
+            </Col>
           </Row>
         </>
       ) : (
@@ -218,8 +222,11 @@ function FollowedItem({
           ) : (
             <Row className={`align-items-center`}>
               <Col className={"align-items-center d-flex"}>
-                <OrgIconSmall src={profile?.profileImage} />
-                <Internal href={`profile?id=${element}`}>
+                <OrgIconSmall
+                  className="mr-4 mt-0 mb-0 ms-0"
+                  src={profile?.profileImage}
+                />
+                <Internal href={`organizations/${element}`}>
                   {displayName}
                 </Internal>
               </Col>

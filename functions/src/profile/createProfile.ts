@@ -1,9 +1,19 @@
 import * as functions from "firebase-functions"
-import { db } from "../firebase"
-import { Profile } from "./types"
+import { db, auth } from "../firebase"
+import { z } from "zod"
+import { checkRequestZod, checkAuth } from "../common"
+import { setRole } from "../auth"
 
-export const createProfile = functions.auth.user().onCreate(async user => {
-  const profile: Profile = { role: "user", public: false }
-  if (user.displayName) profile.displayName = user.displayName
-  await db.doc(`/profiles/${user.uid}`).set(profile, { merge: true })
+const CreateProfileRequest = z.object({
+  requestedRole: z.enum(["user", "organization"])
+})
+
+export const createProfile = functions.https.onCall(async (data, context) => {
+  const uid = checkAuth(context, false)
+
+  const { requestedRole } = await checkRequestZod(CreateProfileRequest, data)
+
+  const role = requestedRole === "user" ? "user" : "organization"
+
+  await setRole({ role, auth, db, uid })
 })

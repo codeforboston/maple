@@ -5,10 +5,12 @@ import styled from "styled-components"
 import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
+import { Role } from "../auth"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
   isProfilePublic: boolean
+  role: Role
   setIsProfilePublic: Dispatch<SetStateAction<false | true>>
   notifications: Frequency
   setNotifications: Dispatch<
@@ -70,9 +72,24 @@ const StyledRow = styled(Row)`
   font-size: 12px;
 `
 
-export default function NotificationSettingsModal({
+function renderPrivacyText(role: Role, isPublic: boolean) {
+  switch (role) {
+    case "organization":
+      return "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private."
+    case "pendingUpgrade":
+      return "Your profile is private until your request to be an Organization account is approved."
+    case "user":
+      if (isPublic) {
+        return "Your profile is currently public. Others can view your profile page"
+      }
+      return "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
+  }
+}
+
+export default function ProfileSettingsModal({
   actions,
   isProfilePublic,
+  role,
   setIsProfilePublic,
   notifications,
   setNotifications,
@@ -80,7 +97,7 @@ export default function NotificationSettingsModal({
   onSettingsModalClose,
   show
 }: Props) {
-  const handleContinue = async () => {
+  const handleSave = async () => {
     await updateProfile({ actions })
     onSettingsModalClose()
   }
@@ -92,6 +109,14 @@ export default function NotificationSettingsModal({
     await updateIsPublic(isProfilePublic)
     await updateNotification(notifications)
   }
+
+  // button classNames weren't otherwise properly updating on iOS
+  let buttonSecondary = "btn-secondary"
+  if (notifications === "None") {
+    buttonSecondary = "btn-outline-secondary"
+  }
+
+  const privacyText = renderPrivacyText(role, isProfilePublic)
 
   return (
     <Modal
@@ -111,11 +136,9 @@ export default function NotificationSettingsModal({
             */
             className="d-none"
           >
-            <Stack>
-              &nbsp; Notifications
+            <StyledRow className="p-2">
+              <h5 className="p-0"> &nbsp; Notifications</h5>
               <hr className={`mt-0`} />
-            </Stack>
-            <StyledRow>
               <Col className={`col-8`}>
                 Would you like to receive updates about bills/organizations you
                 follow through email?
@@ -153,7 +176,7 @@ export default function NotificationSettingsModal({
               </Col>
             </StyledRow>
             <StyledRow
-              className={`pt-3 ${notifications === "None" ? "invisible" : ""}`}
+              className={`p-2 ${notifications === "None" ? "invisible" : ""}`}
               direction={`horizontal`}
             >
               <Col className={`col-8`}>
@@ -183,39 +206,34 @@ export default function NotificationSettingsModal({
               </Col>
             </StyledRow>
           </div>
-          <Stack className={`pt-4`}>
-            &nbsp; Profile Settings
-            <hr className={`mt-0`} />
-          </Stack>
-          <StyledRow>
-            <Col className={`col-8`}>
-              Don't make my profile public. (Your name will still be associated
-              with your testimony.)
-            </Col>
-            <Col>
-              {isProfilePublic === true ? (
-                <StyledOutlineButton
-                  className={`btn btn-sm d-flex justify-content-center ms-auto py-1 btn-outline-secondary`}
-                  onClick={() => setIsProfilePublic(false)}
-                >
-                  {"Enable"}
-                </StyledOutlineButton>
-              ) : (
+
+          <StyledRow className="p-2">
+            <h5 className="p-0">&nbsp; Privacy Settings</h5>
+            <hr />
+
+            <Col>{privacyText}</Col>
+            {role === "user" && (
+              <Col xs={4}>
                 <StyledButton
-                  className={`btn btn-sm d-flex justify-content-center ms-auto py-1 btn-secondary`}
-                  onClick={() => setIsProfilePublic(true)}
+                  className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
+                    isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
+                  }`}
+                  onClick={() =>
+                    setIsProfilePublic(isProfilePublic ? false : true)
+                  }
                 >
-                  {"Enabled"}
+                  {isProfilePublic ? "Make Private" : "Make Public"}
                 </StyledButton>
-              )}
-            </Col>
+              </Col>
+            )}
           </StyledRow>
+
           <Stack
             className={`d-flex justify-content-end pt-4`}
             direction={`horizontal`}
           >
-            <Button className={`btn btn-sm mx-3 py-1`} onClick={handleContinue}>
-              Continue
+            <Button className={`btn btn-sm mx-3 py-1`} onClick={handleSave}>
+              Save
             </Button>
             <StyledOutlineButton2
               className={`btn btn-sm btn-outline-secondary py-1`}

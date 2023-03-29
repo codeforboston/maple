@@ -40,8 +40,8 @@ export const Testimony = BaseTestimony.extend({
   authorUid: Id,
   id: Id,
   authorDisplayName: String,
-  // Missing is treated as "user"
-  authorRole: Optional(Role),
+  authorRole: Role,
+  billTitle: String,
   version: Number,
   publishedAt: InstanceOf(Timestamp),
   representativeId: Optional(String),

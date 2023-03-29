@@ -20,13 +20,6 @@ export const PaginationButtons = ({
 }: {
   pagination: Pagination
 }) => {
-  //setPage intends to GoTo specific page
-  // const pages = [1, 2, 3, 4]
-
-  // const handleSetPage = (pageNumber: number) => {
-  //   console.log(pageNumber)
-  //}
-
   return (
     <div className="d-flex justify-content-center my-3">
       <PreviousStyle
@@ -42,31 +35,6 @@ export const PaginationButtons = ({
       <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </NextStyle>
-
-      {/*
-      //filler nonfunctional pagination. 
-
-      <PreviousStyle
-        variant="secondary"
-        onClick={previousPage}
-        disabled={!hasPreviousPage}
-      >
-        <FontAwesomeIcon icon={faAngleDoubleLeft} />
-      </PreviousStyle>
-
-      {pages.map((page, index) => (
-        <SetPageStyle
-          onClick={() => handleSetPage(index + 1)}
-          variant="secondary"
-          disabled={false}
-        >
-          {index + 1}
-        </SetPageStyle>
-      ))}
-
-      <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
-        <FontAwesomeIcon icon={faAngleDoubleRight} />
-      </NextStyle> */}
     </div>
   )
 }

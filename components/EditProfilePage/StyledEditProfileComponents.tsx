@@ -1,7 +1,7 @@
 import { TabContent } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { Col, Nav, NavDropdown, Row } from "../bootstrap"
+import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
 
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
@@ -9,6 +9,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   display: flex;
 
   height: 2.5em;
+  margin-bottom: 1rem;
 
   .nav-item {
     flex-grow: 1;
@@ -34,6 +35,13 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   .nav-link:first-child {
     margin-left: 0;
   }
+`
+
+export const StyledSaveButton = styled(Button)`
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  border-radius: 4px;
 `
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className
@@ -72,61 +80,18 @@ export const StyledTabContent = styled(TabContent)`
   }
 `
 
+export const StyledHr = styled.hr`
+  height: 2px !important;
+  opacity: 100%;
+`
+
 export const Header = styled(Row)`
   font-size: 3rem;
   font-family: Nunito;
   font-weight: 500;
-  margin-right: 1rem;
-  margin-left: 1rem;
-  height: 16rem;
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
   align-items: center;
-`
-
-export const ProfileDisplayName = styled(Col).attrs(props => ({
-  className: `${props.className}`
-}))`
-  margin: 0;
-  max-height: 108px;
-  font-family: Nunito;
-  font-weight: 500;
-  font-size: 39px;
-  letter-spacing: -0.015em;
-  text-align: left;
-  color: #000;
-
-  .firstName {
-    font-size: 1.5rem;
-  }
-
-  .lastName {
-    font-size: 2.75rem;
-  }
-`
-
-export const UserIcon = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-individual-icon.svg",
-  className: props.className
-}))`
-  height: 8rem;
-  width: 8rem;
-  margin: 1rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
-`
-
-export const OrgIconLarge = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-org-icon.svg",
-  className: props.className
-}))`
-  height: 8rem;
-  width: 8rem;
-  margin: 1rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
 `
 
 export const OrgIconSmall = styled(Image).attrs(props => ({

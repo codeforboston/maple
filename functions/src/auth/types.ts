@@ -17,3 +17,45 @@ export type Claim = Static<typeof Claim>
 
 export const Frequency = Union(L("Daily"), L("Weekly"), L("Monthly"), L("None"))
 export type Frequency = Static<typeof Frequency>
+
+export const OrgCategories = [
+  "Agriculture",
+  "Animal Rights",
+  "Automotive",
+  "Civil Rights",
+  "Communications",
+  "Consumer Goods",
+  "Criminal Justice",
+  "Prison Reform",
+  "Education",
+  "Elder Care",
+  "Employment/Labor",
+  "Environment",
+  "Financial",
+  "Food",
+  "Good Government",
+  "Human Rights",
+  "Children's Rights",
+  "Death Penalty",
+  "Disabeled Rights",
+  "LGBTQ+ Rights",
+  "Housing",
+  "Immigration",
+  "Insurance",
+  "Internet & Technology",
+  "Legal",
+  "Medical/Health",
+  "Poverty",
+  "Privacy",
+  "Racial Justice",
+  "Regional",
+  "Refugee",
+  "Reproductive Health",
+  "Pharmaceuticals",
+  "Small & Local Business",
+  "Taxes",
+  "Water",
+  "Women's Rights"
+] as const
+
+export type OrgCategory = (typeof OrgCategories)[number]

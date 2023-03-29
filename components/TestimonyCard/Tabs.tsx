@@ -9,19 +9,9 @@ import styled from "styled-components"
 
 type onClickEventFunction = (e: Event, value: number) => void
 
-export const TabSlider = (props: {
-  width: number
-  position: number
-  resizing: boolean
-}) => {
-  const { width, position, resizing } = props
-  return (
-    <TabSliderStyle
-      width={width ?? 200}
-      position={position}
-      resizing={resizing}
-    />
-  )
+export const TabSlider = (props: { position: number; resizing: boolean }) => {
+  const { position, resizing } = props
+  return <TabSliderStyle width={250} position={position} resizing={resizing} />
 }
 
 export const TabSliderContainer = (props: { children?: JSX.Element[] }) => {
@@ -52,7 +42,6 @@ export const Tabs = (props: {
   const containerRef = useRef(null)
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
   const { childTabs, onChange, selectedTab } = props
-  const [sliderWidth, setSliderWidth] = useState(0)
   const [viewportWidth, setViewportWidth] = useState(
     typeof window ? undefined : window.innerWidth
   )
@@ -76,8 +65,7 @@ export const Tabs = (props: {
   useEffect(() => {
     const selected = tabRefs.current[selectedTab - 1]
     if (selected) {
-      setSliderWidth(selected.clientWidth)
-      setSliderPos(selected.offsetLeft)
+      setSliderPos(selected.offsetLeft - 100)
     }
   }, [selectedTab, viewportWidth])
 
@@ -103,24 +91,22 @@ export const Tabs = (props: {
       <TabsContainer>{tabs}</TabsContainer>
       <TabSliderContainer>
         <TabSliderTrackStyle />
-        <TabSlider
-          width={sliderWidth}
-          position={sliderPos}
-          resizing={resizing}
-        />
+        <TabSlider position={sliderPos} resizing={resizing} />
       </TabSliderContainer>
     </ComponentContainer>
   )
 }
 
 const ComponentContainer = styled.div`
-  margin-bottom: 2%;
+  margin-bottom: 1rem;
+  padding: 1rem 2rem;
 `
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  margin-top: 15px;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  justify-content: space-between;
 `
 
 const TabStyle = styled.div<{ active: boolean }>`
@@ -139,21 +125,14 @@ const TabStyle = styled.div<{ active: boolean }>`
 const TabSliderContainerStyle = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
   height: 1px;
-  position: absolute;
 `
 const TabSliderTrackStyle = styled.div`
   background-color: #f1f1f1;
   align-self: center;
-  width: 80%;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-  position: absolute;
+  width: 100%;
+  height: 2px;
   z-index: 9;
-  left: 50%;
-  transform: translateX(-50%);
 `
 
 export const TabSliderStyle = styled.div<{

@@ -2,19 +2,27 @@ import { useEffect, useState } from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
+import {
+  Alert,
+  Button,
+  Col,
+  FloatingLabel,
+  Form,
+  Modal,
+  Row,
+  Stack
+} from "../bootstrap"
 import { LoadingButton } from "../buttons"
-import Divider from "../Divider/Divider"
 import Input from "../forms/Input"
+import { OrgCategories, OrgCategory } from "./types"
 import PasswordInput from "../forms/PasswordInput"
 import {
   CreateUserWithEmailAndPasswordData,
   useCreateUserWithEmailAndPassword
 } from "./hooks"
-import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
 
-export default function SignUpModal({
+export default function OrgSignUpModal({
   show,
   onHide,
   onSuccessfulSubmit
@@ -28,16 +36,18 @@ export default function SignUpModal({
     reset,
     getValues,
     trigger,
-    formState: { errors, isSubmitSuccessful }
+    formState: { errors }
   } = useForm<CreateUserWithEmailAndPasswordData>()
 
   const [tosStep, setTosStep] = useState<"not-agreed" | "reading" | "agreed">(
     "not-agreed"
   )
 
+  const categories = OrgCategories
+
   const showTos = tosStep === "reading"
 
-  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword()
+  const createUserWithEmailAndPassword = useCreateUserWithEmailAndPassword(true)
 
   useEffect(() => {
     if (!show) {
@@ -68,6 +78,8 @@ export default function SignUpModal({
     }
   }, [tosStep])
 
+  const [category, setCategory] = useState<OrgCategory>(OrgCategories[0])
+
   return (
     <>
       <Modal
@@ -79,7 +91,9 @@ export default function SignUpModal({
         className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
+          <Modal.Title id="sign-up-modal">
+            Sign Up As An Organization
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Col md={12} className="mx-auto">
@@ -95,31 +109,40 @@ export default function SignUpModal({
                 onHide={() => setTosStep("not-agreed")}
                 onAgree={() => setTosStep("agreed")}
               />
+
               <Stack gap={3} className="mb-4">
                 <Input
-                  label="Email"
+                  label="Organization Email"
                   type="email"
                   {...register("email", { required: "An email is required." })}
                   error={errors.email?.message}
                 />
 
                 <Input
-                  label="Full Name"
+                  label="Organization Name"
                   type="text"
                   {...register("fullName", {
                     required: "A full name is required."
                   })}
                   error={errors.fullName?.message}
                 />
-
-                <Input
-                  label="Nickname"
-                  type="text"
-                  {...register("nickname", {
-                    required: "A nickname is required."
-                  })}
-                  error={errors.nickname?.message}
-                />
+                <Form.Group controlId="orgCategory">
+                  <Form.FloatingLabel label="Select an organization cateogry">
+                    <Form.Select
+                      as="select"
+                      value={category}
+                      {...register("orgCategory", {
+                        onChange: e => setCategory(e.value)
+                      })}
+                    >
+                      {categories.map(c => (
+                        <>
+                          <option value={c}>{c}</option>
+                        </>
+                      ))}
+                    </Form.Select>
+                  </Form.FloatingLabel>
+                </Form.Group>
 
                 <Row className="g-3">
                   <Col md={6}>
@@ -155,27 +178,24 @@ export default function SignUpModal({
                   </Col>
                 </Row>
               </Stack>
-
-              <Stack gap={4}>
-                {tosStep == "agreed" ? (
-                  <LoadingButton
-                    id="loading-button"
-                    type="submit"
-                    className="w-100"
-                    loading={createUserWithEmailAndPassword.loading}
-                  >
-                    Sign up
-                  </LoadingButton>
-                ) : (
-                  <Button type="button" onClick={handleContinueClick}>
-                    Continue
-                  </Button>
-                )}
-
-                <Divider className="px-4">or</Divider>
-
-                <SocialSignOnButtons onComplete={onHide} />
-              </Stack>
+              {tosStep == "agreed" ? (
+                <LoadingButton
+                  id="loading-button"
+                  type="submit"
+                  className="w-100"
+                  loading={createUserWithEmailAndPassword.loading}
+                >
+                  Sign up
+                </LoadingButton>
+              ) : (
+                <Button
+                  className="w-100"
+                  type="button"
+                  onClick={handleContinueClick}
+                >
+                  Continue
+                </Button>
+              )}
             </Form>
           </Col>
         </Modal.Body>

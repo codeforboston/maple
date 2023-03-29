@@ -1,8 +1,0 @@
-.toggleIcon::after {
-  content: url("/angle-down-solid.svg");
-  display: inline-block;
-  width: 1rem;
-  margin-left: 0.25rem;
-  position: relative;
-  top: 0.38rem;
-}
