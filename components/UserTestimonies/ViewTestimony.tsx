@@ -222,7 +222,7 @@ export const TestimonyItem = ({
           position={testimony.position}
           avatar={
             testimony.authorRole === "organization"
-              ? "/organization.svg"
+              ? "/OrganizationUser.svg"
               : "/individualUser.svg"
           }
         />
