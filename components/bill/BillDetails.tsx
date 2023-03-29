@@ -54,7 +54,14 @@ export const BillDetails = ({ bill }: BillProps) => {
           </Row>
           <Row className="mb-4">
             <Col xs={12} className="d-flex justify-content-end">
-              <FollowButton bill={bill} />
+              <div
+                /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                   when we're ready to show Email related element to users
+                */
+                className="d-none"
+              >
+                <FollowButton bill={bill} />
+              </div>
             </Col>
           </Row>
         </>
@@ -65,7 +72,14 @@ export const BillDetails = ({ bill }: BillProps) => {
           </Col>
           <Col xs={6} className="d-flex justify-content-end">
             <Styled>
-              <FollowButton bill={bill} />
+              <div
+                /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                   when we're ready to show Email related element to users
+                */
+                className="d-none"
+              >
+                <FollowButton bill={bill} />
+              </div>
             </Styled>
           </Col>
         </Row>
