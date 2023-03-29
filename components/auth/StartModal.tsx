@@ -21,11 +21,7 @@ export default function StartModal({
       <Modal.Body>
         <Col md={7} className="mx-auto">
           <Stack gap={3} direction="vertical" className="mb-4 text-center">
-            <Image
-              fluid
-              src="/gov-with-mics.svg"
-              alt="Government Building"
-            />
+            <Image fluid src="/gov-with-mics.svg" alt="Government Building" />
 
             <p className="h5">
               Add your voice to the conversation by becoming a member!

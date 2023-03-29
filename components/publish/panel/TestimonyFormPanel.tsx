@@ -28,6 +28,10 @@ export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
 
 const Panel = () => {
   const status = usePanelStatus()
+  console.log({ status })
+  // // TODO: remove
+  // return <CreateTestimony />
+
   switch (status) {
     case "loading":
       return null

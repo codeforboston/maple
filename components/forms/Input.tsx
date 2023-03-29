@@ -1,8 +1,11 @@
 import { useId } from "@react-aria/utils"
 import clsx from "clsx"
-import { forwardRef } from "react"
+import { Maybe } from "components/db/common"
+import { forwardRef, ReactElement, ReactNode, useState } from "react"
 import type { FormControlProps } from "react-bootstrap"
-import { FloatingLabel, Form } from "../bootstrap"
+import { Form } from "../bootstrap"
+import { Image } from "../bootstrap"
+import styled from "styled-components"
 
 export type InputProps = Omit<
   FormControlProps,
@@ -12,12 +15,18 @@ export type InputProps = Omit<
   label: string
   error?: string
   floating?: boolean
-  help?: string
+  help?: ReactNode
   placeholder?: string
+  iconSrc?: string
 
   /** Used when `as="textarea"` */
   rows?: number
 }
+
+const StyledIcon = styled(Image)`
+  margin-right: 0.5rem;
+  margin-bottom: 0.1rem;
+`
 
 const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
   (
@@ -28,6 +37,8 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
       floating = true,
       help,
       className,
+      iconSrc,
+      children,
       ...restProps
     },
     ref
@@ -52,15 +63,21 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
         {help && <Form.Text>{help}</Form.Text>}
       </>
     )
+
     return (
       <Form.Group controlId={id} className={className}>
         {floating ? (
-          <FloatingLabel controlId={id} label={label}>
+          <Form.Floating>
             {control}
-          </FloatingLabel>
+            <label className="d-flex justify-content-center" htmlFor={id}>
+              {iconSrc && <StyledIcon alt="icon" src={iconSrc} />}
+              {label}
+            </label>
+          </Form.Floating>
         ) : (
           <>
             <Form.Label>{label}</Form.Label>
+            {children}
             {control}
           </>
         )}
@@ -72,3 +89,32 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
 Input.displayName = "Input"
 
 export default Input
+
+export const TextArea = ({
+  content,
+  setContent,
+  error,
+  ...inputProps
+}: {
+  content?: Maybe<string>
+  setContent: (c: string) => void
+  error?: string
+} & InputProps) => {
+  const didLoadSavedContent = !!content
+  const [touched, setTouched] = useState(didLoadSavedContent)
+  return (
+    <Input
+      as="textarea"
+      floating={false}
+      rows={12}
+      value={content ?? undefined}
+      onChange={e => {
+        setTouched(true)
+        setContent(e.target.value)
+      }}
+      onBlur={() => setTouched(true)}
+      error={touched ? error : undefined}
+      {...inputProps}
+    />
+  )
+}

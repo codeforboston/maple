@@ -1,7 +1,9 @@
 import styled from "styled-components"
-import { isComplete, Step } from "./redux"
+import { isComplete, isCurrent, Step } from "./redux"
 import { chipHeight, StepChip } from "./StepChip"
-
+import { faCheck } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { join } from "lodash"
 const Divider = styled.div`
   height: 1px;
   background-color: var(--bs-gray-500);
@@ -11,17 +13,23 @@ const Divider = styled.div`
 
 export const ProgressBar = styled<{ currentStep: Step }>(
   ({ currentStep, ...rest }) => {
+    const renderStep = (idx: number, step: Step, label: string) => (
+      <StepBox
+        key={step}
+        step={idx}
+        current={isCurrent(currentStep, step)}
+        complete={isComplete(currentStep, step)}
+      >
+        {label}
+      </StepBox>
+    )
     return (
       <div {...rest}>
-        <StepBox step={1} active={isComplete(currentStep, "position")}>
-          Choose your stance
-        </StepBox>
+        {renderStep(1, "position", "Choose your stance")}
         <Divider />
-        <StepBox step={2} active={isComplete(currentStep, "write")}>
-          Write your testimony
-        </StepBox>
+        {renderStep(2, "write", "Write your testimony")}
         <Divider />
-        <StepBox step={3}>Let your voice be heard</StepBox>
+        {renderStep(3, "publish", "Confirm and Send")}
       </div>
     )
   }
@@ -32,14 +40,16 @@ export const ProgressBar = styled<{ currentStep: Step }>(
   font-size: 0.75rem;
 `
 
-const StepBox: React.FC<{ step: number; active?: boolean }> = ({
-  step,
-  active,
-  children
-}) => {
+const StepBox: React.FC<{
+  step: number
+  current?: boolean
+  complete?: boolean
+}> = ({ step, current, complete, children }) => {
   return (
     <div>
-      <StepChip className="m-auto mb-2" step={step} active={active} />
+      <StepChip className="m-auto mb-2" active={current || complete}>
+        {complete ? <FontAwesomeIcon icon={faCheck} /> : step}
+      </StepChip>
       {children}
     </div>
   )

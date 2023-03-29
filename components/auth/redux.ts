@@ -7,9 +7,11 @@ import { Claim } from "./types"
 export type AuthFlowStep =
   | "start"
   | "signIn"
-  | "signUp"
+  | "userSignUp"
+  | "orgSignUp"
   | "forgotPassword"
   | "verifyEmail"
+  | "chooseProfileType"
   | null
 
 export interface State {

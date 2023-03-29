@@ -7,17 +7,20 @@ export const StyledColLabels = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding-left: 0.5em;
+  padding-left: 0.75em;
   font-size: 0.75rem;
+  font-family: Nunito;
 
   .main-text {
-    font-weight: 900;
+    font-weight: 500;
+    font-size: 0.75rem;
     margin: 0;
     flex: 0;
   }
 
   .sub-text {
     font-weight: 500;
+    font-size: 1rem;
     margin: 0;
     flex: 0;
   }
@@ -44,7 +47,7 @@ export const LabeledIcon = ({
   subText: ReactNode
 }) => {
   return (
-    <div className={`d-flex flex-grow-1`}>
+    <div className={`d-flex flex-grow-1 mb-2`}>
       <CircleImage>
         <img src={idImage} alt={`${mainText} image`} className={`image`} />
       </CircleImage>

@@ -7,10 +7,12 @@ import { External } from "../links"
 
 export function Attachment({
   attachment,
-  className
+  className,
+  confirmRemove = false
 }: {
   attachment: UseDraftTestimonyAttachment
   className?: string
+  confirmRemove?: boolean
 }) {
   const { upload, error, id } = attachment
   const [key, setKey] = useState(0),
@@ -34,7 +36,7 @@ export function Attachment({
     <Form.Group className={className} controlId="testimonyAttachment">
       <Label attachment={attachment} />
       {id ? (
-        <Attached attachment={attachment} />
+        <Attached attachment={attachment} confirmRemove={confirmRemove} />
       ) : (
         <InputGroup>
           <Form.Control
@@ -65,7 +67,9 @@ const Label = ({
 }) => {
   return (
     <Form.Label>
-      <span className="me-1">Upload Your Testimony as an Attachment</span>
+      <span className="me-1">
+        (Optional) Provide your testimony as a file attachment
+      </span>
       {status === "loading" && <Spinner animation="border" size="sm" />}
       {status === "error" && (
         <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
@@ -81,7 +85,11 @@ export const AttachmentLink = ({
   attachment: AttachmentInfo
   className?: string
 }) => {
-  const linkLabel = ["Attached", name, size ? formatSize(size) : null]
+  const linkLabel = [
+    "Attached",
+    name ?? "Testimony",
+    size ? formatSize(size) : null
+  ]
     .filter(Boolean)
     .join(" - ")
   return (
@@ -92,11 +100,20 @@ export const AttachmentLink = ({
 }
 
 const Attached = ({
-  attachment
+  attachment,
+  confirmRemove
 }: {
   attachment: UseDraftTestimonyAttachment
+  confirmRemove: boolean
 }) => {
   const { url, name, size, id, remove, status } = attachment
+  const onClick = () => {
+    if (
+      !confirmRemove ||
+      confirm("Are you sure you want to remove your attachment?")
+    )
+      remove()
+  }
   return (
     <Row className="align-items-center">
       <Col md="auto">
@@ -108,7 +125,7 @@ const Attached = ({
         <Button
           variant="secondary"
           className="py-1 px-2"
-          onClick={remove}
+          onClick={onClick}
           disabled={status === "loading"}
         >
           Remove
