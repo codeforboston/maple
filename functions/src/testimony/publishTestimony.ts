@@ -82,7 +82,7 @@ class PublishTestimonyTransaction {
       id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
-      authorRole: this.profile.role ?? "user",
+      authorRole: this.profile?.role ?? "user",
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,

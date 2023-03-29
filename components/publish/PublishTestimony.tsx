@@ -152,7 +152,7 @@ export const EditReason = styled(props => {
 
 const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
   if (publish.canShare) {
-    return <ShareButtons />
+    return <ShareButtons initialSent />
   } else {
     return <PublishButton publish={publish} />
   }
