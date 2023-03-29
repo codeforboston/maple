@@ -132,7 +132,7 @@ const TabStyle = styled.div<{ active: boolean }>`
   cursor: pointer;
   outline: none;
 
-  @media (max-width: 740px) {
+  @media (max-width: 768px) {
     font-size: 1rem;
   }
 `
