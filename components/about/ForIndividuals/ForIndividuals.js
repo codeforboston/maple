@@ -4,12 +4,12 @@ import {
   WhyMAPLECardContent,
   BenefitsCardContent,
   ChallengeCardContent
-} from "../ForTestifiersCardContent/ForTestifiersCardContent"
+} from "../ForIndividualsCardContent/ForIndividualsCardContent"
 import { useAuth } from "components/auth"
 import { useTranslation } from "next-i18next"
 
-const ForTestifiers = () => {
-  const { t } = useTranslation("fortestifiers")
+const ForIndividuals = () => {
+  const { t } = useTranslation("forindividuals")
   const { authenticated } = useAuth()
 
   return (
@@ -34,4 +34,4 @@ const ForTestifiers = () => {
   )
 }
 
-export default ForTestifiers
+export default ForIndividuals
