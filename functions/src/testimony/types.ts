@@ -21,7 +21,9 @@ const BaseTestimony = R({
   content: RtString.withConstraint(
     s => s.length > 0 && s.length < maxTestimonyLength
   ),
-  attachmentId: Maybe(RtString)
+  attachmentId: Maybe(RtString),
+  /** Only present if testimony was edited (has a version greater than 1) */
+  editReason: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>
@@ -30,8 +32,8 @@ export const Testimony = withDefaults(
     id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
-    /** Missing is treated as "user" */
-    authorRole: Role,
+    /** "user", "organization", or "admin". Missing is treated as "user" */
+    authorRole: Optional(RtString),
     version: Number,
     publishedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),

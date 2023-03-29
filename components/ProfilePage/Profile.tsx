@@ -316,17 +316,26 @@ export const ProfileHeader = ({
           </ProfileDisplayName>
           {isOrganization ? (
             <Col>
-              <Button
-                className={`btn btn-primary btn-sm py-1 ${
-                  uid ? "" : "visually-hidden"
-                }`}
-                onClick={queryResult ? handleUnfollowClick : handleFollowClick}
+              <div
+                /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                   when we're ready to show Email related element to users
+                */
+                className="d-none"
               >
-                {queryResult ? "Following" : "Follow"}
-                {queryResult ? (
-                  <StyledImage src="/check-white.svg" alt="checkmark" />
-                ) : null}
-              </Button>
+                <Button
+                  className={`btn btn-primary btn-sm py-1 ${
+                    uid ? "" : "visually-hidden"
+                  }`}
+                  onClick={
+                    queryResult ? handleUnfollowClick : handleFollowClick
+                  }
+                >
+                  {queryResult ? "Following" : "Follow"}
+                  {queryResult ? (
+                    <StyledImage src="/check-white.svg" alt="checkmark" />
+                  ) : null}
+                </Button>
+              </div>
             </Col>
           ) : (
             <></>

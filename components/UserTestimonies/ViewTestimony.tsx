@@ -2,14 +2,8 @@ import { formUrl } from "components/publish/hooks"
 import { NoResults } from "components/search/NoResults"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import React, {
-  RefObject,
-  useRef,
-  useState,
-  ReactEventHandler,
-  useEffect
-} from "react"
-import { ListGroup, ListGroupItem } from "react-bootstrap"
+import React, { ReactEventHandler, RefObject, useRef, useState } from "react"
+import { ListGroup, ListGroupItem, Toast } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -28,6 +22,9 @@ import { ReportModal } from "./ReportModal"
 
 import { Card as MapleCard } from "../Card"
 import { Card as BootstrapCard } from "react-bootstrap"
+import { useReportTestimony } from "../api/report"
+import ReportToast from "./ReportToast"
+import ToastContainer from "react-bootstrap/ToastContainer"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -214,6 +211,8 @@ export const TestimonyItem = ({
   })
 
   const [isReporting, setIsReporting] = useState(false)
+  const reportMutation = useReportTestimony()
+  const didReport = reportMutation.isError || reportMutation.isSuccess
 
   return (
     <TestimonyItemContainer>
@@ -290,9 +289,9 @@ export const TestimonyItem = ({
           <ReportModal
             onClose={() => setIsReporting(false)}
             onReport={report => {
-              // TODO: connect to API call to add a report from this user
-              console.log({ report })
+              reportMutation.mutate({ report, testimony })
             }}
+            isLoading={reportMutation.isLoading}
             reasons={[
               "Personal Information",
               "Offensive",
@@ -324,6 +323,20 @@ export const TestimonyItem = ({
         </>
       )}
       <hr />
+      <div
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+          bottom: 20,
+          left: 20,
+          pointerEvents: "none"
+        }}
+      >
+        <ToastContainer position={"bottom-end"}>
+          {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
+        </ToastContainer>
+      </div>
     </TestimonyItemContainer>
   )
 }

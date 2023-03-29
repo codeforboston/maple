@@ -18,5 +18,13 @@ const config = {
 }
 
 module.exports = {
-  ...config
+  ...config,
+  async rewrites() {
+    return [
+      {
+        source: "/policies",
+        destination: "/policies/privacy-policy"
+      }
+    ]
+  }
 }

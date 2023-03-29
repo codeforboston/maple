@@ -23,7 +23,7 @@ export const FormNavigation = ({
   return (
     <div className={clsx("mt-4 mb-4", className)}>
       {status && <SyncStatus />}
-      <div className="d-flex justify-content-between flex-wrap gap-2 mt-1">
+      <div className="d-flex align-items-end justify-content-between flex-wrap gap-2 mt-1">
         {left}
         {right}
       </div>
