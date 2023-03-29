@@ -9,7 +9,7 @@ export const setRole = async ({
   uid,
   role,
   auth,
-  db
+  db,
 }: {
   email?: string
   uid?: string

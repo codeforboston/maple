@@ -2,7 +2,7 @@ import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, DocUpdate, Id, Maybe } from "../common"
+import { checkAuth, checkRequest, DocUpdate, Id, Maybe, fail } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
@@ -12,7 +12,11 @@ const DeleteTestimonyRequest = Record({
   publicationId: Id
 })
 
+const enabled = false
+
 export const deleteTestimony = https.onCall(async (data, context) => {
+  if (!enabled) fail("permission-denied", "Deleting testimony is not allowed by policy")
+  
   const uid = checkAuth(context)
   const { publicationId } = checkRequest(DeleteTestimonyRequest, data)
 

@@ -11,7 +11,7 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
-import { OrgCategory } from "./types"
+import { createProfile, OrgCategory } from "./types"
 import { setRoleAtSignUp } from "functions/src/auth/setRoleAtSignUp"
 import { Role } from "./types"
 
@@ -70,6 +70,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
+      await createProfile({requestedRole: isOrg ? "organization" : "user"})
 
       const categories = orgCategory ? [orgCategory] : ""
 
@@ -78,20 +79,15 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
           setProfile(credentials.user.uid, {
             displayName: fullName,
             fullName,
-            role: "user",
-            public: false,
             orgCategories: categories
           }),
           sendEmailVerification(credentials.user)
-          // setRoleAtSignUp(credentials.user.uid, "pendingUpgrade")
         ])
       } else {
         await Promise.all([
           setProfile(credentials.user.uid, {
             displayName: nickname,
             fullName,
-            role: "user",
-            public: false
           }),
           sendEmailVerification(credentials.user)
         ])
