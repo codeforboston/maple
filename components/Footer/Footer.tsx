@@ -8,6 +8,7 @@ import { ExternalNavLink, NavLink } from "../Navlink"
 import CustomDropdown from "./CustomFooterDropdown"
 import styles from "./Footer.module.css"
 import { FooterContainer } from "./FooterContainer"
+import { useTranslation } from "next-i18next"
 
 export type PageFooterProps = {
   children?: any
@@ -26,10 +27,11 @@ const TextHeader = styled.p`
 `
 
 function MapleContainer() {
+  const { t } = useTranslation("footer")
   return (
     <div style={{ maxWidth: "220px" }}>
       <Row style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "1em", color: "#fff" }}>Follow MAPLE</p>
+        <p style={{ fontSize: "1em", color: "#fff" }}>{t("headers.follow")}</p>
       </Row>
       <Row style={{ justifyContent: "center" }}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
@@ -37,6 +39,8 @@ function MapleContainer() {
             variant="light"
             href="https://www.instagram.com/mapletestimony/?hl=en"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,6 +56,8 @@ function MapleContainer() {
             variant="light"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
             href="https://twitter.com/MapleTestimony"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,18 +70,18 @@ function MapleContainer() {
             </svg>
           </Button>
           <Button
-            variant="dark"
-            style={{ borderRadius: 50, padding: 0, margin: 5 }}
+            variant="light"
+            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            href="https://www.linkedin.com/company/maple-testimony"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="42"
-              height="42"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
-            </svg>
+            <img
+              src="Linked In.svg"
+              alt="LinkedIn Icon"
+              width="24"
+              height="24"
+            ></img>
           </Button>
         </Col>
       </Row>
@@ -91,72 +97,82 @@ function MapleContainer() {
   )
 }
 
-const ResourcesLinks = () => (
-  <>
-    <ExternalNavLink
-      className={styles.footerLink}
-      href="https://malegislature.gov/Search/FindMyLegislator"
-    >
-      Find your Legislators
-    </ExternalNavLink>
-  </>
-)
+const ResourcesLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <ExternalNavLink
+        className={styles.footerLink}
+        href="https://malegislature.gov/Search/FindMyLegislator"
+      >
+        {t("links.resourcesLegislators")}
+      </ExternalNavLink>
+    </>
+  )
+}
 
-const BrowseLinks = () => (
-  <>
-    {/* <NavLink className={styles.footerLink} href="#testimony">
-      Testimonies
-    </NavLink> */}
-    <NavLink className={styles.footerLink} href="/bills">
-      Policies
-    </NavLink>
-  </>
-)
+const BrowseLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      {/* <NavLink className={styles.footerLink} href="#testimony">
+        Testimonies
+      </NavLink> */}
+      <NavLink className={styles.footerLink} href="/bills">
+        {t("links.browsePolicies")}
+      </NavLink>
+    </>
+  )
+}
 
-const OurTeamLinks = () => (
-  <>
-    <ExternalNavLink
-      href="https://www.nulawlab.org"
-      className={styles.footerLink}
-    >
-      Northeastern University NuLawLab
-    </ExternalNavLink>
-    <ExternalNavLink
-      href="https://www.codeforboston.org/"
-      className={styles.footerLink}
-    >
-      Code for Boston
-    </ExternalNavLink>
-    <ExternalNavLink
-      href="https://www.bc.edu/bc-web/schools/law"
-      className={styles.footerLink}
-    >
-      Boston College Law School
-    </ExternalNavLink>
-    <ExternalNavLink
-      href="https://cyber.harvard.edu/"
-      className={styles.footerLink}
-    >
-      Harvard Berkman Klein Center
-    </ExternalNavLink>
-  </>
-)
+const OurTeamLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <ExternalNavLink
+        href="https://www.nulawlab.org"
+        className={styles.footerLink}
+      >
+        {t("links.teamNEU")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        href="https://www.codeforboston.org/"
+        className={styles.footerLink}
+      >
+        {t("links.teamCFB")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        href="https://www.bc.edu/bc-web/schools/law"
+        className={styles.footerLink}
+      >
+        {t("links.teamBC")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        href="https://cyber.harvard.edu/"
+        className={styles.footerLink}
+      >
+        {t("links.teamHarvard")}
+      </ExternalNavLink>
+    </>
+  )
+}
 
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
   const dispatch = useAppDispatch()
+  const { t } = useTranslation("footer")
   return authenticated ? (
     <>
       <NavLink
         href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
         other={{ className: `${styles.footerLink}` }}
       >
-        Profile
+        {t("links.accountProfile")}
       </NavLink>
       <NavLink
         handleClick={() => signOut()}
         other={{ className: `${styles.footerLink}` }}
       >
-        Sign Out
+        {t("links.accountSignOut")}
       </NavLink>
     </>
   ) : (
@@ -164,52 +180,59 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
       handleClick={() => dispatch(authStepChanged("start"))}
       other={{ className: `${styles.footerLink}` }}
     >
-      Sign In
+      {t("links.accountSignIn")}
     </NavLink>
   )
 }
 
-const LearnLinks = () => (
-  <>
-    <NavLink
-      href="/learn/writing-effective-testimony"
-      other={{ className: `${styles.footerLink}` }}
-    >
-      Writing Effective Testimony
-    </NavLink>
-    <NavLink
-      href="/learn/communicating-with-legislators"
-      other={{ className: `${styles.footerLink}` }}
-    >
-      Contacting Legislators
-    </NavLink>
-    <NavLink
-      href="/learn/additional-resources"
-      other={{ className: `${styles.footerLink}` }}
-    >
-      Additional Resources
-    </NavLink>
-  </>
-)
+const LearnLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <NavLink
+        href="/learn/writing-effective-testimony"
+        other={{ className: `${styles.footerLink}` }}
+      >
+        {t("links.learnWriting")}
+      </NavLink>
+      <NavLink
+        href="/learn/communicating-with-legislators"
+        other={{ className: `${styles.footerLink}` }}
+      >
+        {t("links.learnLegislators")}
+      </NavLink>
+      <NavLink
+        href="/learn/additional-resources"
+        other={{ className: `${styles.footerLink}` }}
+      >
+        {t("links.learnResources")}
+      </NavLink>
+    </>
+  )
+}
 
-const AboutLinks = () => (
-  <>
-    <NavLink
-      href="/about/mission-and-goals"
-      other={{ className: `${styles.footerLink}` }}
-    >
-      Our Mission &amp; Goals
-    </NavLink>
-    <NavLink
-      href="/about/our-team"
-      other={{ className: `${styles.footerLink}` }}
-    >
-      Our Team
-    </NavLink>
-  </>
-)
+const AboutLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <NavLink
+        href="/about/mission-and-goals"
+        other={{ className: `${styles.footerLink}` }}
+      >
+        {t("links.aboutMission")}
+      </NavLink>
+      <NavLink
+        href="/about/our-team"
+        other={{ className: `${styles.footerLink}` }}
+      >
+        {t("links.aboutTeam")}
+      </NavLink>
+    </>
+  )
+}
 
 const PageFooter = (props: PageFooterProps) => {
+  const { t } = useTranslation("footer")
   return (
     <FooterContainer
       fluid
@@ -218,26 +241,26 @@ const PageFooter = (props: PageFooterProps) => {
       <Row style={{ padding: "2.5em 1.5em 0 1.5em" }}>
         <Navbar variant="dark" expand="lg" className="d-md-none">
           <Nav>
-            <CustomDropdown title="Browse">
+            <CustomDropdown title={t("headers.browse")}>
               <BrowseLinks />
             </CustomDropdown>
-            <CustomDropdown title="Account">
+            <CustomDropdown title={t("headers.account")}>
               <AccountLinks {...props} />
             </CustomDropdown>
 
-            <CustomDropdown title="Learn">
+            <CustomDropdown title={t("headers.learn")}>
               <LearnLinks />
             </CustomDropdown>
 
-            <CustomDropdown title="About">
+            <CustomDropdown title={t("headers.about")}>
               <AboutLinks />
             </CustomDropdown>
 
-            <CustomDropdown title="Resources">
+            <CustomDropdown title={t("headers.resources")}>
               <ResourcesLinks />
             </CustomDropdown>
 
-            <CustomDropdown title="Our Team">
+            <CustomDropdown title={t("headers.team")}>
               <OurTeamLinks />
             </CustomDropdown>
           </Nav>
@@ -253,23 +276,23 @@ const PageFooter = (props: PageFooterProps) => {
           }}
         >
           <Col style={{ alignContent: "flex-start" }}>
-            <TextHeader>Browse</TextHeader>
+            <TextHeader>{t("headers.browse")}</TextHeader>
             <BrowseLinks />
-            <TextHeader>Account</TextHeader>
+            <TextHeader>{t("headers.account")}</TextHeader>
             <AccountLinks {...props} />
           </Col>
           <Col>
-            <TextHeader>Learn</TextHeader>
+            <TextHeader>{t("headers.learn")}</TextHeader>
             <LearnLinks />
 
-            <TextHeader>About</TextHeader>
+            <TextHeader>{t("headers.about")}</TextHeader>
             <AboutLinks />
           </Col>
 
           <Col md={"auto"}>
-            <TextHeader>Resources</TextHeader>
+            <TextHeader>{t("headers.resources")}</TextHeader>
             <ResourcesLinks />
-            <TextHeader>Our Team</TextHeader>
+            <TextHeader>{t("headers.team")}</TextHeader>
             <OurTeamLinks />
           </Col>
         </Col>
@@ -293,17 +316,14 @@ const PageFooter = (props: PageFooterProps) => {
             className="col-auto"
             style={{ marginTop: "0.5em", padding: "0 2.5em 0 0" }}
           >
-            <p>
-              MAPLE is an independent project, not affiliated with the
-              Massachusetts legislature
-            </p>
+            <p>{t("legal.disclaimer")}</p>
           </Col>
           <Col className="col">
             <NavLink
               href="/policies"
               other={{ className: `${styles.footerLink}` }}
             >
-              Our Policies and Terms of Service
+              {t("legal.TOS")}
             </NavLink>
           </Col>
         </Row>

@@ -58,6 +58,7 @@ services:
       - 4400:4400
       - 4500:4500
       - 9299:9299
+      - 9150:9150
 
   search-backfill:
     build:
@@ -78,6 +79,7 @@ services:
     build:
       dockerfile: Dockerfile.node
     command: sh -c 'yarn --immutable && yarn --cwd functions build'
+    # command: "true"
     working_dir: /app
     volumes:
       - ..:/app
@@ -110,6 +112,12 @@ services:
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
       NEXT_PUBLIC_USE_EMULATOR: "true"
       NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
+      GCLOUD_PROJECT: "demo-dtp"
+      FIRESTORE_EMULATOR_HOST: "firebase:8080"
+      FIREBASE_AUTH_EMULATOR_HOST: "firebase:9099"
+      FIREBASE_STORAGE_EMULATOR_HOST: "firebase:9199"
+      TYPESENSE_API_URL: "http://firebase:8108"
+      TYPESENSE_API_KEY: "test-api-key"
 
 volumes:
   search: {}

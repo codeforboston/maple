@@ -4,7 +4,7 @@ import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
-import { db, Timestamp } from "../firebase"
+import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts } from "../malegislature"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
@@ -13,6 +13,10 @@ import { updateTestimonyCounts } from "./updateTestimonyCounts"
 const PublishTestimonyRequest = Record({
   draftId: Id
 })
+
+const INITIAL_VERSION = 1,
+  MAX_EDITS = 5,
+  MAX_VERSION = INITIAL_VERSION + MAX_EDITS
 
 export const publishTestimony = https.onCall(async (data, context) => {
   const checkEmailVerification = true
@@ -38,6 +42,12 @@ export const publishTestimony = https.onCall(async (data, context) => {
 type TransactionOutput = {
   publicationId: string
   attachments: PublishedAttachmentState
+}
+
+type PublishInfo = {
+  version: number
+  editReason?: string
+  publishedAt: Timestamp
 }
 
 class PublishTestimonyTransaction {
@@ -66,16 +76,18 @@ class PublishTestimonyTransaction {
     await this.resolveProfile()
     await this.resolveAttachments()
 
+    const publishInfo = await this.getPublishInfo()
+
     const newPublication: Testimony = {
       id: this.publicationRef.id,
       authorUid: this.uid,
       authorDisplayName: this.getDisplayName(),
+      authorRole: this.profile.role ?? "user",
       billId: this.draft.billId,
       content: this.draft.content,
       court: this.draft.court,
       position: this.draft.position,
-      version: await this.getNextPublicationVersion(),
-      publishedAt: Timestamp.now(),
+      ...publishInfo,
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId
     }
@@ -117,7 +129,9 @@ class PublishTestimonyTransaction {
 
   private updateDraft(newPublication: Testimony) {
     const update: DocUpdate<DraftTestimony> = {
-      publishedVersion: newPublication.version
+      publishedVersion: newPublication.version,
+      // Remove the edit reason to clear the form for the next edit.
+      editReason: FieldValue.delete()
     }
     this.t.update(this.draftSnap.ref, update)
   }
@@ -198,6 +212,20 @@ class PublishTestimonyTransaction {
     }
   }
 
+  private async getPublishInfo(): Promise<PublishInfo> {
+    const version = await this.getNextPublicationVersion(),
+      reason = this.draft.editReason
+
+    const info: PublishInfo = { version, publishedAt: Timestamp.now() }
+
+    if (version > 1) {
+      if (!reason) throw fail("invalid-argument", "Edit reason is required.")
+      info.editReason = reason
+    }
+
+    return info
+  }
+
   private async getNextPublicationVersion() {
     const archived = await this.t.get(
       db
@@ -208,12 +236,17 @@ class PublishTestimonyTransaction {
         .limit(1)
     )
 
-    if (archived.size === 0) {
-      return 1
-    } else {
-      const data = archived.docs[0].data()
-      return Testimony.checkWithDefaults(data).version + 1
-    }
+    if (archived.size === 0) return INITIAL_VERSION
+
+    const data = archived.docs[0].data(),
+      nextVersion = Testimony.checkWithDefaults(data).version + 1
+
+    if (nextVersion > MAX_VERSION)
+      throw new Error(
+        "Cannot update testimony. Max number of edits reached: " + MAX_EDITS
+      )
+
+    return nextVersion
   }
 
   private async resolvePublication() {
