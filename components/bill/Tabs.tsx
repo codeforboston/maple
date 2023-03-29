@@ -53,7 +53,9 @@ export const Tabs = (props: {
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
   const { childTabs, onChange, selectedTab } = props
   const [sliderWidth, setSliderWidth] = useState(0)
-  const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window ? undefined : window.innerWidth
+  )
   const [resizing, setResizing] = useState(false)
   const [sliderPos, setSliderPos] = useState(0)
 
