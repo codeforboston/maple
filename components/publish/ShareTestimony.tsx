@@ -37,7 +37,11 @@ const EmailHelp = (props: { className?: string }) => {
   )
 }
 
-export const ShareButtons = () => {
+export const ShareButtons = ({
+  initialSent = false
+}: {
+  initialSent?: boolean
+}) => {
   const { share, bill } = usePublishState()
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -45,21 +49,9 @@ export const ShareButtons = () => {
     dispatch(setShowThankYou(true))
     router.push(maple.bill(bill!))
   }, [bill, dispatch, router])
-  const [sent, setSent] = useState(false)
+  const [sent, setSent] = useState(initialSent)
 
   const buttons = []
-
-  if (sent) {
-    buttons.push(
-      <Button
-        variant="outline-secondary"
-        className="form-navigation-btn"
-        onClick={redirectToBill}
-      >
-        Back to Bill
-      </Button>
-    )
-  }
 
   if (share.recipients.length > 0) {
     buttons.push(
@@ -78,10 +70,22 @@ export const ShareButtons = () => {
     )
   }
 
+  if (sent) {
+    buttons.push(
+      <Button
+        variant="success"
+        className="form-navigation-btn text-white"
+        onClick={redirectToBill}
+      >
+        Finished! Back to Bill
+      </Button>
+    )
+  }
+
   return (
     <div className="d-flex flex-column align-items-end">
       {sent && <EmailHelp className="mb-2 text-info" />}
-      <div className="d-flex gap-2 flex-wrap">{buttons}</div>
+      <div className="d-flex flex-column gap-2 flex-wrap">{buttons}</div>
     </div>
   )
 }
