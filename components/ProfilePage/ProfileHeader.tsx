@@ -100,12 +100,19 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                <FollowButton
-                  onFollowClick={() => handleFollowClick()}
-                  onUnfollowClick={() => handleUnfollowClick()}
-                  isMobile={isMobile}
-                  isFollowing={queryResult}
-                />
+                /*
+                 remove comment when Notification Emails and related Follow functionality
+                 is ready for production
+                */
+
+                // <FollowButton
+                //   onFollowClick={() => handleFollowClick()}
+                //   onUnfollowClick={() => handleUnfollowClick()}
+                //   isMobile={isMobile}
+                //   isFollowing={queryResult}
+                // />
+
+                <></>
               )}
             </>
           )}
