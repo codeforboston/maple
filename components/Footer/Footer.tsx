@@ -77,7 +77,7 @@ function MapleContainer() {
             rel="noopener noreferrer"
           >
             <img
-              src="Linked In.svg"
+              src="/Linked In.svg"
               alt="LinkedIn Icon"
               width="24"
               height="24"

@@ -8,7 +8,7 @@ const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization"])
 })
 
-export const createProfile = functions.https.onCall(async (data, context) => {
+export const finishSignup = functions.https.onCall(async (data, context) => {
   const uid = checkAuth(context, false)
 
   const { requestedRole } = await checkRequestZod(CreateProfileRequest, data)

@@ -3,7 +3,7 @@ import { httpsCallable } from "firebase/functions"
 
 export * from "../../functions/src/auth/types"
 
-export const createProfile = httpsCallable<
+export const finishSignup = httpsCallable<
   { requestedRole: "user" | "organization" },
   void
->(functions, "createProfile")
+>(functions, "finishSignup")
