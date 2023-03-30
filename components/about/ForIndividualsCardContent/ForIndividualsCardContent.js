@@ -1,12 +1,12 @@
 import { Row, Col } from "../../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./ForTestifiersCardContent.module.css"
+import styles from "./ForIndividualsCardContent.module.css"
 import { SignInWithButton } from "../../auth"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 
 const WhyMAPLECardContent = () => {
-  const { t } = useTranslation("fortestifiers")
+  const { t } = useTranslation("forindividuals")
   return (
     <>
       <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
@@ -18,7 +18,7 @@ const WhyMAPLECardContent = () => {
 }
 
 const BenefitsCardContent = () => {
-  const { t } = useTranslation("fortestifiers")
+  const { t } = useTranslation("forindividuals")
   return (
     <>
       <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`}>
@@ -70,7 +70,7 @@ const BenefitsCardContent = () => {
 }
 
 const ChallengeCardContent = () => {
-  const { t } = useTranslation("fortestifiers")
+  const { t } = useTranslation("forindividuals")
   return (
     <>
       <h3 className={`text-left fw-bold mb-4 ${styles.orgsheader}`} id="clo">

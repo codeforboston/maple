@@ -160,19 +160,36 @@ export const TestimonyItem = ({
           <TestimonyContent className="col m2" testimony={snippet} />
         </Row>
         <Row xs="auto" className={`d-flex align-items-center`}>
+          {canExpand && (
+            <Col className="justify-content-end d-flex">
+              <FooterButton
+                variant="link"
+                onClick={() => setShowAllTestimony(true)}
+              >
+                Expand
+              </FooterButton>
+            </Col>
+          )}
+
+          <Col>
+            <FooterButton variant="link">
+              <Internal
+                className={styles.link}
+                href={maple.testimony({ publishedId: testimony.id })}
+              >
+                More Details
+              </Internal>
+            </FooterButton>
+          </Col>
+
+          <Col className="justify-content-end d-flex">
+            <FooterButton variant="link">
+              <ViewAttachment testimony={testimony} />
+            </FooterButton>
+          </Col>
+
           {isUser ? (
             <>
-              <Col>
-                <FooterButton variant="link">
-                  <Internal
-                    className={styles.link}
-                    href={maple.testimony({ publishedId: testimony.id })}
-                  >
-                    More Details
-                  </Internal>
-                </FooterButton>
-              </Col>
-
               {canEdit && (
                 <Col>
                   <FooterButton variant="link">
@@ -219,22 +236,6 @@ export const TestimonyItem = ({
                   Report
                 </FooterButton>
               </Col> */}
-              {canExpand && (
-                <Col className="justify-content-end d-flex">
-                  <FooterButton
-                    variant="link"
-                    onClick={() => setShowAllTestimony(true)}
-                  >
-                    Show More
-                  </FooterButton>
-                </Col>
-              )}
-
-              <Col className="justify-content-end d-flex">
-                <FooterButton variant="link">
-                  <ViewAttachment testimony={testimony} />
-                </FooterButton>
-              </Col>
             </>
           )}
         </Row>

@@ -42,7 +42,7 @@ export const useTestimonyEmail = () => {
   const plainBody = formatTestimonyPlaintext(markdownBody),
     htmlBody = formatTestimony(markdownBody).__html
 
-  const mailToUrl = `mailto:test@example.com?subject=${encodeURIComponent(
+  const mailToUrl = `mailto:${to}?subject=${encodeURIComponent(
     subject
   )}&body=${encodeURIComponent(plainBody)}`
 

@@ -1,10 +1,10 @@
 import { createPage } from "../../components/page"
-import ForTestifiers from "../../components/about/ForTestifiers/ForTestifiers"
+import ForIndividuals from "../../components/about/ForIndividuals/ForIndividuals"
 
 export default createPage({
-  title: "MAPLE for Testifiers",
+  title: "MAPLE for Individuals",
   Page: () => {
-    return <ForTestifiers />
+    return <ForIndividuals />
   }
 })
 
@@ -17,7 +17,7 @@ export async function getStaticProps({ locale }: any) {
     props: {
       ...(await serverSideTranslations(locale, [
         "common",
-        "fortestifiers",
+        "forindividuals",
         "footer"
       ]))
       // Will be passed to the page component as props

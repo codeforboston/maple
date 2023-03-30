@@ -156,17 +156,26 @@ const TopNav: React.FC = () => {
                 title={"Why Use MAPLE"}
               >
                 <NavDropdown.Item>
-                  <NavLink href="/about/for-testifiers" handleClick={closeNav}>
+                  <NavLink
+                    href="/why-use-maple/for-individuals"
+                    handleClick={closeNav}
+                  >
                     For Individuals
                   </NavLink>
                 </NavDropdown.Item>
                 <NavDropdown.Item>
-                  <NavLink href="/about/for-orgs" handleClick={closeNav}>
+                  <NavLink
+                    href="/why-use-maple/for-orgs"
+                    handleClick={closeNav}
+                  >
                     For Organizations
                   </NavLink>
                 </NavDropdown.Item>
                 <NavDropdown.Item>
-                  <NavLink href="/about/for-legislators" handleClick={closeNav}>
+                  <NavLink
+                    href="/why-use-maple/for-legislators"
+                    handleClick={closeNav}
+                  >
                     For Legislators
                   </NavLink>
                 </NavDropdown.Item>
