@@ -5,7 +5,6 @@ import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { SortTestimonyDropDown } from "components/TestimonyCard/SortTestimonyDropDown"
 import { TestimonyFAQ } from "./TestimonyFAQ"
 import { Testimony } from "../db"
-import { Title } from "react-admin"
 
 export const TestimoniesTab = ({
   publishedTestimonies,

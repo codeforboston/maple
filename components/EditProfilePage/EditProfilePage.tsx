@@ -105,12 +105,17 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
-    },
-    {
-      title: "Following",
-      eventKey: "Following",
-      content: <FollowingTab className="mt-3 mb-4" />
     }
+    /*
+      remove comment when Notification Emails and related Follow functionality
+      is ready for production
+    */
+
+    // {
+    //   title: "Following",
+    //   eventKey: "Following",
+    //   content: <FollowingTab className="mt-3 mb-4" />
+    // }
   ]
 
   return (
