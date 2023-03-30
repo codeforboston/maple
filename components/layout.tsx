@@ -145,10 +145,7 @@ const TopNav: React.FC = () => {
                   </NavLink>
                 </NavDropdown.Item>
                 <NavDropdown.Item>
-                  <NavLink
-                    href="/about/how-to-support-maple"
-                    handleClick={closeNav}
-                  >
+                  <NavLink href="/about/support-maple" handleClick={closeNav}>
                     How to Support MAPLE
                   </NavLink>
                 </NavDropdown.Item>
