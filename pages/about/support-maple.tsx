@@ -1,5 +1,5 @@
 import { createPage } from "../../components/page"
-import SupportMaple from "../../components/About/SupportMaple/SupportMaple"
+import SupportMaple from "../../components/about/SupportMaple/SupportMaple"
 
 export default createPage({
   title: "How to Support MAPLE",
