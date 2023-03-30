@@ -23,7 +23,7 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 
 ## Live Sites
 
-- [Development site](https://digital-testimony-dev.web.app), for testing and development. Feel free to play with the site!
+- [Development site](https://maple-dev.vercel.app/), for testing and development. Feel free to play with the site!
 - [Production site](https://mapletestimony.org), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
 
