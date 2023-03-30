@@ -158,9 +158,9 @@ export function EditProfileForm({
           ))}
         </StyledTabNav>
         <StyledTabContent>
-          {tabs.map(tb => (
-            <TabPane key={tb.eventKey} title={tb.title} eventKey={tb.eventKey}>
-              {tb.content}
+          {tabs.map(t => (
+            <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+              {t.content}
             </TabPane>
           ))}
         </StyledTabContent>
