@@ -8,11 +8,12 @@ const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization"])
 })
 
-export const createProfile = functions.https.onCall(async (data, context) => {
+export const finishSignup = functions.https.onCall(async (data, context) => {
   const uid = checkAuth(context, false)
 
-  const { requestedRole } = await checkRequestZod(CreateProfileRequest, data)
+  const { requestedRole } = checkRequestZod(CreateProfileRequest, data)
 
+  // TODO: set role to pendingUpgrade if user requests to be an organization
   const role = requestedRole === "user" ? "user" : "organization"
 
   await setRole({ role, auth, db, uid })

@@ -1,4 +1,3 @@
-import { Row, Col, Image } from "react-bootstrap"
 import { External } from "components/links"
 import { Profile } from "../db"
 import { ContactInfoRow } from "./StyledProfileComponents"

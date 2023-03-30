@@ -136,9 +136,9 @@ export default function OrgSignUpModal({
                       })}
                     >
                       {categories.map(c => (
-                        <>
-                          <option value={c}>{c}</option>
-                        </>
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.FloatingLabel>

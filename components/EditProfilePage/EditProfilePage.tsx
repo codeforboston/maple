@@ -130,28 +130,24 @@ export function EditProfileForm({
         <Header>
           <Col>Edit Profile</Col>
           <Col className={`d-flex justify-content-end`}>
-            <Internal
-              className={`d-flex text-decoration-none`}
-              href={`javascript:void(0)`}
+            <GearButton
+              variant="outline-secondary"
+              size="lg"
+              className={`me-4 py-1`}
+              disabled={!!formUpdated}
+              onClick={() => onSettingsModalOpen()}
             >
-              <GearButton
-                className={`btn btn-lg btn-outline-secondary me-4 py-1`}
-                disabled={!!formUpdated}
-                onClick={() => onSettingsModalOpen()}
-              >
-                {"Settings"}
-              </GearButton>
-            </Internal>
-            <Internal
-              className={`d-flex ml-2 text-decoration-none`}
-              href={!!formUpdated ? `javascript:void(0)` : `/profile?id=${uid}`}
+              {"Settings"}
+            </GearButton>
+            <Button
+              className={`btn-lg py-1 ml-2 text-decoration-none`}
+              disabled={!!formUpdated}
+              href={`/profile?id=${uid}`}
             >
-              <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
-                {profile.role !== "organization"
-                  ? "View My Profile"
-                  : "View My Organization"}
-              </Button>
-            </Internal>
+              {profile.role !== "organization"
+                ? "View My Profile"
+                : "View My Organization"}
+            </Button>
           </Col>
         </Header>
         <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>

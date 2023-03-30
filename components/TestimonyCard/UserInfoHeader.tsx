@@ -1,7 +1,7 @@
-import { Col, Stack } from "react-bootstrap"
+import { Col, Row, Stack } from "react-bootstrap"
 import { Internal } from "components/links"
+import { Author } from "./Author"
 import { Testimony } from "components/db"
-import { formatBillId } from "components/formatting"
 import styles from "./ViewTestimony.module.css"
 import { ProfilePositionLabel } from "./ProfilePositionBug"
 
@@ -26,10 +26,17 @@ export const UserInfoHeader = ({
           }
         />
       </Col>
-      <Col className="justify-content-start">
-        <h6>{testimony.authorDisplayName}</h6>
+      <Col>
+        <Author uid={testimony.authorUid} name={testimony.authorDisplayName} />
 
-        {publishedDate}
+        <Row className="justify-content-between mb-1">
+          <Col className={styles.publishdate} xs="auto">
+            {publishedDate}
+          </Col>
+          <Col xs="auto" className="justify-content-end d-flex">
+            {testimony.version > 1 && <p className={styles.editbug}>Edited</p>}
+          </Col>
+        </Row>
         <hr className={styles.hr}></hr>
       </Col>
     </Stack>

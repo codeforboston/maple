@@ -11,7 +11,7 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
-import { createProfile, OrgCategory } from "./types"
+import { finishSignup, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -68,7 +68,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
-      await createProfile({ requestedRole: isOrg ? "organization" : "user" })
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
       const categories = orgCategory ? [orgCategory] : ""
 
