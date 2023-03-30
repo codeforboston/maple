@@ -5,6 +5,7 @@ import { useAppDispatch } from "../../hooks"
 import { createService } from "../../service"
 import { profileRef } from "./profile"
 import { profileChanged } from "./redux"
+import { Profile } from "./types"
 
 export const { Provider } = createService(() => {
   const uid = useAuth().user?.uid
@@ -12,7 +13,7 @@ export const { Provider } = createService(() => {
   useEffect(() => {
     if (uid) {
       const unsubscribe = onSnapshot(profileRef(uid), snapshot => {
-        dispatch(profileChanged(snapshot.data()))
+        dispatch(profileChanged(snapshot.data() as Profile))
       })
       return () => {
         unsubscribe()

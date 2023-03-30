@@ -40,6 +40,8 @@ beforeEach(() => {
   testimony = {
     authorUid: uid,
     authorDisplayName: user.displayName!,
+    authorRole: "user",
+    billTitle: "fake bill",
     billId,
     content: draft.content,
     court: court,
