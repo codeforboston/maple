@@ -10,3 +10,4 @@ exportedTestData
 dist.yml
 analysis/data
 dist
+*.handlebars

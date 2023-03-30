@@ -6,10 +6,11 @@ import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
+import { auth } from "../firebase"
+import { useEffect } from "react"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
-
   return (
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
@@ -20,7 +21,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.skyline}`}
-              src="/skyline.png"
+              src="/skyline.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -30,7 +31,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.clouds} opacity-50`}
-              src="/clouds.png"
+              src="/clouds.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -43,7 +44,7 @@ const HeroHeader = ({ authenticated }) => {
               >
                 <Image
                   className={`${styles.statehouse}`}
-                  src="/statehouse.png"
+                  src="/statehouse.svg"
                   alt="statehouse"
                 ></Image>
               </Col>

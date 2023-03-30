@@ -8,7 +8,9 @@ afterAll(terminateFirebase)
 
 describe("useCreateUserWithEmailAndPassword", () => {
   it("creates user and profile", async () => {
-    const { result } = renderHook(() => useCreateUserWithEmailAndPassword())
+    const { result } = renderHook(() =>
+      useCreateUserWithEmailAndPassword(false)
+    )
     const info = {
       email: `${nanoid()}@example.com`,
       password: "password",

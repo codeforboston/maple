@@ -7,6 +7,7 @@ export {
   updateBillSearchIndex,
   upgradeBillSearchIndex
 } from "./bills"
+export { updateBillTracker } from "./analysis"
 export { fetchCityBatch, startCityBatches } from "./cities"
 export {
   fetchCommitteeBatch,
@@ -19,7 +20,7 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { createProfile } from "./profile"
+export { finishSignup } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,

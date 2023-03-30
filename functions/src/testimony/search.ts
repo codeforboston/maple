@@ -38,6 +38,7 @@ export const {
       position: testimony.position,
       content: testimony.content,
       authorUid: testimony.authorUid,
+      authorRole: testimony.authorRole,
       version: testimony.version,
       publishedAt: testimony.publishedAt.toMillis()
     }

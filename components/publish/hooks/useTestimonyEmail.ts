@@ -1,6 +1,5 @@
 import { formatTestimony, formatTestimonyPlaintext } from "components/testimony"
-import { useEffect, useState } from "react"
-import { getPublishedTestimonyAttachmentUrl, useProfile } from "../../db"
+import { useProfile } from "../../db"
 import { formatBillId } from "../../formatting"
 import { maple, siteUrl } from "../../links"
 import { positionActions } from "../content"
@@ -8,19 +7,8 @@ import { usePublishState } from "./usePublishState"
 
 /** Generates the email sent to legislators. */
 export const useTestimonyEmail = () => {
-  const { share, position, bill, content, publication } = usePublishState()
+  const { share, position, bill, content, authorUid } = usePublishState()
   const { profile } = useProfile()
-
-  const [attachment, setAttachment] = useState<{ url?: string } | undefined>()
-  useEffect(() => {
-    if (publication) {
-      if (publication?.attachmentId)
-        getPublishedTestimonyAttachmentUrl(publication.attachmentId).then(url =>
-          setAttachment({ url })
-        )
-      else setAttachment({})
-    }
-  }, [publication])
 
   const to = share.recipients
       .map(r => `${r.Name} <${r.EmailAddress}>`)
@@ -30,7 +18,11 @@ export const useTestimonyEmail = () => {
       positionActions[position!]
     } bill ${billId}: "${bill?.content.Title.trim()}".`,
     testimonyUrl =
-      publication && siteUrl(maple.testimony({ publishedId: publication.id })),
+      authorUid &&
+      bill &&
+      siteUrl(
+        maple.userTestimony({ authorUid, billId: bill.id, court: bill.court })
+      ),
     cta = `You can see my full testimony at ${testimonyUrl}`,
     ending = `Thank you for taking the time to read this email.\n\nSincerely,\n${
       profile?.fullName ?? ""
@@ -50,11 +42,11 @@ export const useTestimonyEmail = () => {
   const plainBody = formatTestimonyPlaintext(markdownBody),
     htmlBody = formatTestimony(markdownBody).__html
 
-  const mailToUrl = `mailto:test@example.com?subject=${encodeURIComponent(
+  const mailToUrl = `mailto:${to}?subject=${encodeURIComponent(
     subject
   )}&body=${encodeURIComponent(plainBody)}`
 
-  if (attachment && profile) {
+  if (profile) {
     return { ready: true, mailToUrl, body: htmlBody, to } as const
   } else {
     return { ready: false } as const

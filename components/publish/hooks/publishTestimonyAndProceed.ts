@@ -18,12 +18,5 @@ export const publishTestimonyAndProceed = createAppThunk(
     DraftTestimony.check(draft)
 
     await edit?.publishTestimony.execute()
-
-    const hasLegislators = Boolean(profile?.representative && profile.senator)
-    if (hasLegislators) {
-      dispatch(setStep("share"))
-    } else {
-      dispatch(setStep("selectLegislators"))
-    }
   }
 )

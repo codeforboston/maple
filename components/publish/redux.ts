@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createAppThunk } from "components/hooks"
 import { indexOf, isEqual, uniqBy } from "lodash"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
@@ -14,14 +15,15 @@ import {
 } from "../db"
 import { Maybe } from "../db/common"
 import { containsSocialSecurityNumber } from "../db/testimony/validation"
+import { hasDraftChanged } from "../db/testimony"
 
 export type Service = UseEditTestimony
 
 export const Step = Union(
   L("position"),
+  L("selectLegislators"),
   L("write"),
   L("publish"),
-  L("selectLegislators"),
   L("share")
 )
 export type Step = Static<typeof Step>
@@ -30,6 +32,7 @@ export const stepsInOrder = Step.alternatives.map(s => s.value)
 export const isComplete = (current: Step, step: Step) => {
   return !!current && stepsInOrder.indexOf(current) > stepsInOrder.indexOf(step)
 }
+export const isCurrent = (current: Step, step: Step) => current === step
 
 export type Legislator = MemberSearchIndexItem & {
   Branch: "House" | "Senate"
@@ -39,6 +42,7 @@ export type Legislator = MemberSearchIndexItem & {
 export type Errors = {
   position?: string
   content?: string
+  editReason?: string
 }
 
 /** Syncs form values to the draft in firestore. */
@@ -66,6 +70,9 @@ export type State = {
   /** ID of storage object for the attachment */
   attachmentId?: string
 
+  /** Reason for editing the testimony */
+  editReason?: string
+
   /** Form validation errors */
   errors: Errors
 
@@ -75,6 +82,9 @@ export type State = {
 
   /** Current publication document */
   publication?: Testimony
+
+  /** Member codes of legislators that will receive the email, stored on the draft. */
+  recipientMemberCodes?: string[]
 
   /** State related to the share step */
   share: ShareState
@@ -116,12 +126,11 @@ export const {
     syncTestimony,
     setStep,
     setPosition,
-    nextStep,
-    previousStep,
     resolvedLegislatorSearch,
     clearLegislatorSearch,
     addCommittee,
     addMyLegislators,
+    setEditReason,
     setRecipients,
     setShowThankYou,
     setContent,
@@ -159,18 +168,7 @@ export const {
     },
     setStep(state, action: PayloadAction<Step>) {
       state.step = action.payload
-    },
-    nextStep(state) {
-      const i = indexOf(stepsInOrder, state.step)
-      if (i !== -1 && i + 1 < stepsInOrder.length) {
-        state.step = stepsInOrder[i + 1]
-      }
-    },
-    previousStep(state) {
-      const i = indexOf(stepsInOrder, state.step)
-      if (i - 1 >= 0) {
-        state.step = stepsInOrder[i - 1]
-      }
+      validateForm(state)
     },
     setPosition(state, action: PayloadAction<Maybe<Position>>) {
       state.position = action.payload ?? undefined
@@ -180,8 +178,13 @@ export const {
       state.content = action.payload ?? undefined
       validateForm(state)
     },
+    setEditReason(state, action: PayloadAction<Maybe<string>>) {
+      state.editReason = action.payload ?? undefined
+      validateForm(state)
+    },
     setAttachmentId(state, action: PayloadAction<Maybe<string>>) {
       state.attachmentId = action.payload ?? undefined
+      validateForm(state)
     },
     // Reset the form whenever the bill changes
     setBill(state, action: PayloadAction<Bill>) {
@@ -200,6 +203,8 @@ export const {
       state.attachmentId = payload.attachmentId ?? undefined
       state.content = payload.content
       state.position = payload.position
+      state.recipientMemberCodes = payload.recipientMemberCodes ?? undefined
+      state.editReason = payload.editReason ?? undefined
       state.draft = payload
       validateForm(state)
     },
@@ -217,40 +222,57 @@ export const {
       const { draft, publication } = action.payload
       state.publication = publication
       state.draft = draft
+      validateForm(state)
     },
     clearLegislatorSearch(state) {
       state.share = initialShareState
     },
     resolvedLegislatorSearch(
-      { share },
+      state,
       {
         payload
       }: PayloadAction<
         Pick<ShareState, "committeeChairs" | "options" | "userLegislators">
       >
     ) {
+      const { share } = state
       share.loading = false
       share.committeeChairs = payload.committeeChairs
       share.options = payload.options
       share.userLegislators = payload.userLegislators
-      share.recipients = [
-        ...payload.committeeChairs,
-        ...payload.userLegislators
-      ]
+      // Auto-populate recipients if they haven't been set yet and the user is not
+      // editing existing testimony.
+      if (!state.recipientMemberCodes && !state.publication)
+        updateRecipients(state, [
+          ...payload.committeeChairs,
+          ...payload.userLegislators
+        ])
+      else
+        share.recipients = share.options.filter(o =>
+          state.recipientMemberCodes?.includes(o.MemberCode)
+        )
     },
-    setRecipients({ share }, action: PayloadAction<Legislator[]>) {
-      share.recipients = action.payload
+    setRecipients(state, action: PayloadAction<Legislator[]>) {
+      updateRecipients(state, action.payload)
     },
-    addCommittee({ share }) {
-      share.recipients = uniqBy(
-        [...share.recipients, ...share.committeeChairs],
-        m => m.MemberCode
+    addCommittee(state) {
+      const { share } = state
+      updateRecipients(
+        state,
+        uniqBy(
+          [...share.recipients, ...share.committeeChairs],
+          m => m.MemberCode
+        )
       )
     },
-    addMyLegislators({ share }) {
-      share.recipients = uniqBy(
-        [...share.recipients, ...share.userLegislators],
-        m => m.MemberCode
+    addMyLegislators(state) {
+      const { share } = state
+      updateRecipients(
+        state,
+        uniqBy(
+          [...share.recipients, ...share.userLegislators],
+          m => m.MemberCode
+        )
       )
     },
     setShowThankYou(state, action: PayloadAction<boolean>) {
@@ -267,8 +289,20 @@ export const {
   }
 })
 
+const updateRecipients = (state: State, recipients: Legislator[]) => {
+  state.share.recipients = recipients
+  state.recipientMemberCodes = recipients.map(r => r.MemberCode)
+}
+
 /** Check form for errors */
-const validateForm = ({ content, position, errors }: State) => {
+const validateForm = ({
+  content,
+  position,
+  editReason,
+  publication,
+  draft,
+  errors
+}: State) => {
   const validated = Position.validate(position)
   if (!validated.success) errors.position = "Invalid position"
   else errors.position = undefined
@@ -280,6 +314,10 @@ const validateForm = ({ content, position, errors }: State) => {
     // TODO: include the offending number(s) in the error string.
     errors.content = "Testimony must not contain social security numbers"
   } else errors.content = undefined
+
+  if (hasDraftChanged(draft, publication) && !editReason)
+    errors.editReason = "You must provide a reason for editing your testimony"
+  else errors.editReason = undefined
 }
 
 /** Reset the form, carrying over context props */
@@ -289,3 +327,38 @@ const resetForm = (state: State) => ({
   authorUid: state.authorUid,
   service: state.service
 })
+
+export const nextStep = createAppThunk("publish/nextStep", async (_, api) => {
+  const {
+    profile: { profile },
+    publish: { step }
+  } = api.getState()
+  const hasLegislators = Boolean(profile?.representative && profile.senator)
+
+  let i = indexOf(stepsInOrder, step)
+  let nextStep = i !== -1 && stepsInOrder[i + 1]
+
+  if (nextStep === "selectLegislators" && hasLegislators)
+    nextStep = stepsInOrder[i + 2]
+
+  if (nextStep) api.dispatch(setStep(nextStep))
+})
+
+export const previousStep = createAppThunk(
+  "publish/previousStep",
+  async (_, api) => {
+    const {
+      profile: { profile },
+      publish: { step }
+    } = api.getState()
+    const hasLegislators = Boolean(profile?.representative && profile.senator)
+
+    let i = indexOf(stepsInOrder, step)
+    let nextStep = stepsInOrder[i - 1]
+
+    if (nextStep === "selectLegislators" && hasLegislators)
+      nextStep = stepsInOrder[i - 2]
+
+    if (nextStep) api.dispatch(setStep(nextStep))
+  }
+)

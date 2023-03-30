@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
+import { Card as MapleCard } from "components/Card"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 
@@ -9,7 +10,7 @@ const DisplayLegislator = ({
 }: {
   legislator?: ProfileMemberPlus
 }) => {
-  const [idphoto, setIdphoto] = useState<string>("/leaf-asset.png")
+  const [idphoto, setIdphoto] = useState<string>("/leaf.svg")
 
   useEffect(() => {
     setIdphoto(
@@ -45,11 +46,10 @@ export function ProfileLegislators({
 }: ProfileLegislatorsProps) {
   return (
     <TitledSectionCard title={`Legislators`} className={className}>
-      <div className="ms-5">
+      <div>
         <DisplayLegislator
           legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
         />
-        <hr></hr>
         <DisplayLegislator
           legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
         />
