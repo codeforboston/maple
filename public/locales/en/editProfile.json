@@ -1,0 +1,12 @@
+{
+    "header": "Edit Profile",
+    "setting": "Settings",
+    "viewMyProfile": "View My Profile",
+    "viewOrgProfile": "View My Organization",
+    "tabs":{
+        "personalInfo":"Personal Information",
+        "testimonies": "Testimonies",
+        "following": "Following"
+    }
+    
+}

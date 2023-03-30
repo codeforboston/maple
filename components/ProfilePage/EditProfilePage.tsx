@@ -20,6 +20,7 @@ import {
   StyledTabContent,
   StyledTabNav
 } from "./StyledEditProfileCompnents"
+import { useTranslation } from "next-i18next"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -77,13 +78,15 @@ export function EditProfileForm({
     items.execute()
   }, [items])
 
+  const { t } = useTranslation("editProfile")
+
   const tabs = [
     {
       /* 
         Change in Figma
        */
       // title: "About You",
-      title: "Personal Information",
+      title: t("tabs.personalInfo"),
       eventKey: "AboutYou",
       content: (
         <AboutMeEditForm
@@ -96,7 +99,7 @@ export function EditProfileForm({
       )
     },
     {
-      title: "Testimonies",
+      title: t("tabs.testimonies"),
       eventKey: "Testimonies",
       content: (
         <ViewTestimony
@@ -108,7 +111,7 @@ export function EditProfileForm({
       )
     },
     {
-      title: "Following",
+      title: t("tabs.following"),
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
     }
@@ -117,7 +120,7 @@ export function EditProfileForm({
   return (
     <Container>
       <Header>
-        <Col>Edit Profile</Col>
+        <Col>{t("header")}</Col>
         <Col className={`d-flex justify-content-end`}>
           <Internal
             className={`d-flex text-decoration-none`}
@@ -128,7 +131,7 @@ export function EditProfileForm({
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
-              {"Settings"}
+              {t("setting")}
             </GearButton>
           </Internal>
           <Internal
@@ -137,8 +140,8 @@ export function EditProfileForm({
           >
             <Button className={`btn btn-lg py-1`} disabled={!!formUpdated}>
               {!profile.organization
-                ? "View My Profile"
-                : "View My Organization"}
+                ? t("viewMyProfile")
+                : t("viewOrgProfile")}
             </Button>
           </Internal>
         </Col>
@@ -155,9 +158,9 @@ export function EditProfileForm({
           ))}
         </StyledTabNav>
         <StyledTabContent>
-          {tabs.map(t => (
-            <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
-              {t.content}
+          {tabs.map(tb => (
+            <TabPane key={tb.eventKey} title={tb.title} eventKey={tb.eventKey}>
+              {tb.content}
             </TabPane>
           ))}
         </StyledTabContent>
