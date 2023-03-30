@@ -24,7 +24,7 @@ const LegislatorForm: React.FC<{
   profile: ProfileHook
 }> = ({ index, profile }) => {
   return (
-    <Form>
+    <div>
       <Form.Group className="mb-4">
         <Form.Label>Representative</Form.Label>
         <Search
@@ -46,6 +46,6 @@ const LegislatorForm: React.FC<{
           update={profile.updateSenator}
         />
       </Form.Group>
-    </Form>
+    </div>
   )
 }

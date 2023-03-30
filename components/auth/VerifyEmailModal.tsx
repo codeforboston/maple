@@ -18,7 +18,7 @@ export default function VerifyEmailModal({
             <Image
               fluid
               className={styles.image}
-              src="/mailverify.svg"
+              src="/mailbox.svg"
               alt="Mail illustration"
             />
             <h2 className={styles.title}>Verify your email address</h2>
