@@ -8,7 +8,7 @@ import {
 } from "../SupportMapleCardContent/SupportMapleCardContent"
 import { useTranslation } from "next-i18next"
 
-const ForLegislators = () => {
+const SupportMaple = () => {
   const { t } = useTranslation("supportmaple")
 
   return (
@@ -34,4 +34,4 @@ const ForLegislators = () => {
   )
 }
 
-export default ForLegislators
+export default SupportMaple
