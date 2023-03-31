@@ -35,7 +35,7 @@ export const PolicyActions: FC<PolicyActionsProps> = ({
   items.push(
     <PolicyActionItem
       key="add-testimony"
-      billName={`Add Testimony for ${billLabel}`}
+      billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
       href={formUrl(bill.id, bill.court)}
     />
   )
