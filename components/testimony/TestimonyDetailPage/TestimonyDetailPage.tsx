@@ -26,7 +26,7 @@ export const TestimonyDetailPage: FC = () => {
           </Col>
 
           <Col md={4}>
-            <PolicyActions className="mb-4" />
+            <PolicyActions className="mb-4" isUser={isUser} />
             <RevisionHistory />
           </Col>
         </Row>
