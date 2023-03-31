@@ -6,11 +6,19 @@ import { isNotNull } from "components/utils"
 import { FC, ReactElement } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 
+interface PolicyActionsProps {
+  className?: string
+  isUser?: boolean
+}
+
 const PolicyActionItem: FC<ListItemProps> = props => (
   <ListItem action active={false} variant="secondary" {...props} />
 )
 
-export const PolicyActions: FC<{ className?: string }> = ({ className }) => {
+export const PolicyActions: FC<PolicyActionsProps> = ({
+  className,
+  isUser
+}) => {
   const { bill } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
 
