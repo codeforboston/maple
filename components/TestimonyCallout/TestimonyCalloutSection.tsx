@@ -1,5 +1,6 @@
 import { Carousel, CarouselItem } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
+import { deleteTestimony } from "../api/delete-testimony"
 import { Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
