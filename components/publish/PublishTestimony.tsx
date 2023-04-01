@@ -26,7 +26,8 @@ const INITIAL_VERSION = 1,
 type UsePublishTestimony = ReturnType<typeof usePublishTestimony>
 function usePublishTestimony() {
   const dispatch = useAppDispatch()
-  const { sync, draft, publication, editReason, errors } = usePublishState()
+  const { sync, draft, publication, editReason, errors, share } =
+    usePublishState()
   const publish = useAsyncCallback(async () => {
     const result = await dispatch(publishTestimonyAndProceed())
     // pass error through to useAsync
@@ -35,7 +36,8 @@ function usePublishTestimony() {
   const publishedAndDraftChanged =
       publication && hasDraftChanged(draft, publication),
     canShare = publication && !publishedAndDraftChanged,
-    synced = sync === "synced" || sync === "error"
+    synced = sync === "synced" || sync === "error",
+    hasRecipients = !isEmpty(share.recipients)
 
   useFormRedirection()
 
@@ -45,6 +47,7 @@ function usePublishTestimony() {
     publish,
     canShare,
     editReason,
+    hasRecipients,
     errors,
     valid: Object.values(errors).every(v => !v),
     setEditReason: (reason: string) => dispatch(setEditReason(reason))
@@ -169,11 +172,12 @@ const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
       className="form-navigation-btn"
       variant="danger"
       onClick={() => {
-        window.open(mailToUrl, "_blank", "noopener,noreferrer")
+        if (publish.hasRecipients)
+          window.open(mailToUrl, "_blank", "noopener,noreferrer")
         void publish.publish.execute()
       }}
     >
-      Publish and Send
+      Publish {publish.hasRecipients && "and Send"}
     </LoadingButton>
   )
 }
