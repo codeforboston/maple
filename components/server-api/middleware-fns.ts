@@ -30,14 +30,31 @@ async function getToken(request: NextApiRequest) {
   return await auth.verifyIdToken(token, true)
 }
 
+const AUTHENTICATION_FAILED_MESSAGE = "authentication failed"
+
 export async function ensureAuthenticated(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  const token = getToken(request)
+  const token = await getToken(request)
   if (!token) {
-    response.status(401).json({ error: "authentication failed" })
+    response.status(401).json({ error: AUTHENTICATION_FAILED_MESSAGE })
     return undefined
+  }
+  return token
+}
+
+export async function ensureAdminAuthenticated(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
+  const token = await ensureAuthenticated(request, response)
+  if (!token) {
+    return
+  }
+  if (token.role !== "admin") {
+    response.status(403).json({ error: AUTHENTICATION_FAILED_MESSAGE })
+    return
   }
   return token
 }
