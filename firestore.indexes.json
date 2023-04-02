@@ -6,7 +6,7 @@
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
-          "fieldPath": "authorUid",
+          "fieldPath": "authorRole",
           "order": "ASCENDING"
         },
         {
