@@ -134,4 +134,14 @@ export const SearchContainer = styled.div`
     border-color: var(--bs-blue-100);
     color: var(--bs-blue);
   }
+
+  .ais-RefinementList-labelText {
+    white-space: normal;
+    display: inline-block;
+    width: 75%;
+  }
+
+  .ais-RefinementList-label {
+    border-bottom: dashed 1px;
+  }
 `

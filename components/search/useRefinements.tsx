@@ -55,6 +55,11 @@ export const useRefinements = () => {
       ...baseProps
     }),
     useRefinementListUiProps({
+      attribute: "currentCommittee",
+      ...baseProps,
+      searchablePlaceholder: "Current Committee"
+    }),
+    useRefinementListUiProps({
       attribute: "city",
       searchablePlaceholder: "City",
       ...baseProps
@@ -68,11 +73,6 @@ export const useRefinements = () => {
       attribute: "cosponsors",
       ...baseProps,
       searchablePlaceholder: "Cosponsor"
-    }),
-    useRefinementListUiProps({
-      attribute: "currentCommittee",
-      ...baseProps,
-      searchablePlaceholder: "Current Committee"
     })
   ]
 

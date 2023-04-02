@@ -190,7 +190,7 @@ export const TestimonyItem = ({
 
           {isUser ? (
             <>
-              {canEdit && (
+              {onProfilePage && (
                 <Col>
                   <FooterButton variant="link">
                     <Internal

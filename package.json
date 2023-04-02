@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build:dev": "MAPLE_ENV=dev next build",
+    "build:prod": "MAPLE_ENV=prod next build",
     "build:functions": "next lint -d functions/src && yarn --cwd functions build",
     "check-formatting": "prettier --check .",
     "check-types": "tsc --noEmit",
