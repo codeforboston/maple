@@ -41,7 +41,7 @@ async function _delete(req: NextApiRequest, res: NextApiResponse) {
   }
   const { uid, tid } = queryValidation.data
 
-  const testimonyRef = await db.doc(`users/${uid}/publishedTestimony/${tid}`)
+  const testimonyRef = db.doc(`users/${uid}/publishedTestimony/${tid}`)
   const testimonySnapshot = await testimonyRef.get()
   if (!testimonySnapshot.exists) {
     return res.status(404).json({
@@ -50,11 +50,16 @@ async function _delete(req: NextApiRequest, res: NextApiResponse) {
   }
   const testimony = testimonySnapshot.data()
 
-  // add to archived
-  await db.doc(`users/${uid}/archivedTestimony/${tid}`).set({ ...testimony })
+  const moveToArchivedBatch = db.batch()
 
   // remove from published
-  await testimonyRef.delete()
+  moveToArchivedBatch.delete(testimonyRef)
+
+  // add to archived
+  const archivedRef = db.doc(`users/${uid}/archivedTestimony/${tid}`)
+  moveToArchivedBatch.set(archivedRef, { ...testimony })
+
+  await moveToArchivedBatch.commit()
 
   // ChatGPT recommmended this as the best return code for a DELETE
   res.status(204).end()
