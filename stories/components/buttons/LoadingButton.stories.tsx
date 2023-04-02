@@ -62,7 +62,7 @@ WithImage.args = {
   spinnerProps: { className: "me-4" },
   children: (
     <>
-      <Image src="/google-icon.png" alt="Google" className="me-4" />
+      <Image src="/google-icon.svg" alt="Google" className="me-4" />
       With Image
     </>
   )

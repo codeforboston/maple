@@ -1,1 +1,1 @@
-export * from "./createProfile"
+export * from "./finishSignup"

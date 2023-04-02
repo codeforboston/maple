@@ -1,18 +1,23 @@
 import { PolicyContent } from "./PolicyContent"
 import { Button, Stack, Container } from "react-bootstrap"
-import { ButtonHTMLAttributes, useState } from "react"
+import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
+import Router from "next/router"
 
-export default function PolicyPage() {
-  const [policycontent, setpolicy] = useState<
-    "terms-of-service" | "privacy-policy" | "code-of-conduct"
-  >("privacy-policy")
+const policies = [
+  "terms-of-service",
+  "privacy-policy",
+  "code-of-conduct"
+] as const
+export type Policy = (typeof policies)[number]
 
-  const [toggleCurrentTab, setToggleTab] = useState(1)
-
-  const handleOnClick = (e: any, index: any) => {
-    setToggleTab(index)
-    setpolicy(e.target.id)
+export default function PolicyPage({
+  policy = "privacy-policy"
+}: {
+  policy?: Policy
+}) {
+  const handleOnClick = (p: Policy) => {
+    Router.push(`/policies/${p}`)
   }
 
   return (
@@ -21,29 +26,35 @@ export default function PolicyPage() {
 
       <Stack direction="horizontal">
         <Button
-          className={`${style[toggleCurrentTab === 1 ? "currentTab" : "tab"]}`}
+          className={`${
+            style[policy === "privacy-policy" ? "currentTab" : "tab"]
+          }`}
           id="privacy-policy"
-          onClick={e => handleOnClick(e, 1)}
+          onClick={e => handleOnClick("privacy-policy")}
         >
           Privacy <br /> Policy
         </Button>
         <Button
-          className={`${style[toggleCurrentTab === 2 ? "currentTab" : "tab"]}`}
+          className={`${
+            style[policy === "terms-of-service" ? "currentTab" : "tab"]
+          }`}
           id="terms-of-service"
-          onClick={e => handleOnClick(e, 2)}
+          onClick={e => handleOnClick("terms-of-service")}
         >
           Terms <br /> of Service
         </Button>
         <Button
-          className={`${style[toggleCurrentTab === 3 ? "currentTab" : "tab"]}`}
+          className={`${
+            style[policy === "code-of-conduct" ? "currentTab" : "tab"]
+          }`}
           id="code-of-conduct"
-          onClick={e => handleOnClick(e, 3)}
+          onClick={e => handleOnClick("code-of-conduct")}
         >
           Code of <br /> Conduct
         </Button>
       </Stack>
 
-      <PolicyContent policy={policycontent} />
+      <PolicyContent policy={policy} />
     </Container>
   )
 }

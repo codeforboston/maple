@@ -1,0 +1,26 @@
+{
+  "title": "How to Support MAPLE",
+  "donate": {
+    "header": "Donate",
+    "bodytextOne": "MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open Collective Foundation (OCF).",
+    "donorsLink": "You can see a full list of our donors and expenditures on our Open Collective webpage.",
+    "bodytextTwo": "This is where you can view the details of every donation we've received and every dollar we've spent - we are 100% transparent. We would be grateful for your financial support. "
+  },
+  "volunteer": {
+    "header": "Volunteer",
+    "bodytextOne": "MAPLE is volunteer-powered. Over 40 developers have worked on ",
+    "githubLink": "our github",
+    "bodytextTwo": "and that doesn't include our design, management and communication teams! If you'd like to get involved, email "
+  },
+  "feedback": {
+    "header": "Feedback",
+    "bodytextOne": "If you would like to share thoughts on your experience using MAPLE or suggest improvements for the platform, please use our ",
+    "feedbackForm": "feedback form!",
+    "bodytextTwo": "You can also let us know about 'bugs' you've encountered in our ",
+    "bugForm": "report a bug form."
+  },
+  "useMAPLE": {
+    "header": "Use our Platform!",
+    "bodytext": "Finally, the best way to support MAPLE is by using our platform and sharing it with friends and colleagues! That is the best endorsement we could receive."
+  }
+}

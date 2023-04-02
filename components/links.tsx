@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
-import { Testimony } from "../functions/src/testimony/types"
+import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { currentGeneralCourt } from "./db/common"
 import { formatBillId } from "./formatting"
@@ -68,7 +68,16 @@ export const maple = {
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
-    `/testimony/${publishedId}`
+    `/testimony/${publishedId}`,
+  userTestimony: ({
+    authorUid,
+    billId,
+    court
+  }: {
+    authorUid: string
+    billId: string
+    court: number
+  }) => `/testimony/${authorUid}/${court}/${billId}`
 }
 
 export function billSiteURL(billNumber: string, court: number) {

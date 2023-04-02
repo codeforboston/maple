@@ -15,6 +15,7 @@ import { resolveBillTestimony } from "./resolveTestimony"
 import {
   deleteTestimony,
   DraftTestimony,
+  hasDraftChanged,
   publishTestimony,
   Testimony,
   WorkingDraft
@@ -213,15 +214,25 @@ function useDiscardDraft({ draftRef }: State, dispatch: Dispatch<Action>) {
 
 type SaveDraftRequest = Pick<
   WorkingDraft,
-  "position" | "content" | "attachmentId"
+  | "position"
+  | "content"
+  | "attachmentId"
+  | "recipientMemberCodes"
+  | "editReason"
 >
 function useSaveDraft(
-  { draftRef, draftLoading, billId, uid, court }: State,
+  { draftRef, draftLoading, billId, uid, court, publication, draft }: State,
   dispatch: Dispatch<Action>
 ) {
   return useAsyncCallback(
     useCallback(
-      async ({ position, content, attachmentId }: SaveDraftRequest) => {
+      async ({
+        position,
+        content,
+        attachmentId,
+        recipientMemberCodes,
+        editReason
+      }: SaveDraftRequest) => {
         if (draftLoading) {
           return
         } else if (!draftRef) {
@@ -230,6 +241,8 @@ function useSaveDraft(
             content,
             court,
             position,
+            editReason: editReason ?? null,
+            recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null
           }
           const result = await addDoc(
@@ -239,11 +252,14 @@ function useSaveDraft(
           dispatch({ type: "resolveDraft", id: result.id })
         } else if (draftRef) {
           dispatch({ type: "loadingDraft" })
+          const hasChanges = hasDraftChanged(draft, publication)
           await updateDoc(draftRef, {
             position,
             content,
             attachmentId: attachmentId ?? null,
-            publishedVersion: deleteField()
+            recipientMemberCodes: recipientMemberCodes ?? null,
+            editReason: editReason ?? null,
+            publishedVersion: hasChanges ? deleteField() : undefined
           })
         }
       },

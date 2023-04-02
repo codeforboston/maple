@@ -1,5 +1,29 @@
 {
   "indexes": [
+    //// Testimony Listing ////
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+
     //// Publication cloud functions ////
     {
       "collectionGroup": "archivedTestimony",

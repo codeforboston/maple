@@ -16,7 +16,7 @@ const WritingContent = () => (
       <Image
         className={`float-md-end ${styles.image}`}
         fluid
-        src="/computertextblob.png"
+        src="/computer-text-blob.svg"
         alt="computer display with lines representing text"
       />
     </Col>
@@ -29,7 +29,7 @@ const OralContent = () => (
       <Image
         className={styles.image}
         fluid
-        src="/micandpaper.png"
+        src="/mic-with-testify.svg"
         alt="microphone next to a sheet of paper"
       />
     </Col>
@@ -58,7 +58,7 @@ const WriteOrCallContent = () => (
       <Image
         className={`float-md-end ${styles.image}`}
         fluid
-        src="/envelopewithletter.png"
+        src="/open-envelope.svg"
         alt="envelope with letter sticking out"
       />
     </Col>

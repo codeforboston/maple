@@ -11,6 +11,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    match /billTracker/{document=**} {
+      // public, read-only 
+      allow read: if true;
+      allow write: if false;
+    }
     match /profiles/{uid} {
       function validUser() {
         return request.auth.uid == uid
@@ -38,6 +43,15 @@ service cloud.firestore {
       // public, read-only
       allow read: if true
       allow write: if false
+    }
+    match /reports/{rid} {
+      function isAdmin() {
+          return request.auth.token.get("role", "user") == "admin"
+      }
+      // Anyone can report
+      allow create: if true
+      // Only admins can do anything with it
+      allow read, update, delete: if isAdmin()
     }
     match /users/{uid} {
       match /draftTestimony/{id} {

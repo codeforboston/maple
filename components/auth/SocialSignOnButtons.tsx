@@ -15,7 +15,7 @@ const GoogleButton: AuthButton = ({ onClick, loading }) => (
     loading={loading}
     spinnerProps={{ className: "me-4" }}
   >
-    <Image src="/google-icon.png" alt="Google" className="me-4" />
+    <Image src="/google-icon.svg" alt="Google" className="me-4" />
     Continue with Google
   </LoadingButton>
 )
@@ -29,7 +29,7 @@ const buttons: ButtonWithProvider[] = [
   { provider: new GoogleAuthProvider(), SignOnButton: GoogleButton }
 ]
 
-export default function SocialSignOnButtons() {
+export default function SocialSignOnButtons(props: { onComplete: () => void }) {
   const signInWithPopUp = useSignInWithPopUp()
 
   const isLoading = (providerId: string) => {
@@ -46,7 +46,9 @@ export default function SocialSignOnButtons() {
         <SignOnButton
           key={provider.providerId}
           loading={isLoading(provider.providerId)}
-          onClick={() => signInWithPopUp.execute(provider)}
+          onClick={() =>
+            signInWithPopUp.execute(provider).then(props.onComplete)
+          }
         />
       ))}
     </Stack>
