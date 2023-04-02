@@ -2,7 +2,7 @@
  * @type {import('next-i18next').UserConfig}
  */
 module.exports = {
-  debug: process.env.NODE_ENV === "development",
+  debug: Boolean(process.env.I18N_DEBUG),
   i18n: {
     defaultLocale: "en",
     locales: ["en"]
