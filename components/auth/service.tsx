@@ -18,16 +18,12 @@ export const { Provider } = createService(() => {
       let claims: Claim | undefined = undefined
       if (user) {
         let token = await getToken(user)
-
         const fromToken = Claim.validate(token.claims)
-        console.log("auth changed", { user, validatedClaim: fromToken, token })
-
         if (fromToken.success) claims = fromToken.value
       }
       dispatch(authChanged({ user, claims }))
     })
     return () => {
-      console.log("unsubscribing from auth")
       unsubscribe()
     }
   }, [dispatch, getToken])
