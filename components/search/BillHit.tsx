@@ -102,7 +102,7 @@ const StyledCard = styled(Card)`
 
 const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   return (
-    <div className="testimonyCount">
+    <div className="testimonyCount, visually-hidden">
       <FontAwesomeIcon className="endorse" icon={faCheckCircle} />
       {hit.endorseCount}
       <FontAwesomeIcon className="neutral" icon={faMinusCircle} />
