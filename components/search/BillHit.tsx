@@ -102,6 +102,7 @@ const StyledCard = styled(Card)`
 
 const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   return (
+    // remove visually-hidden tag once Production search server is sorted out
     <div className="testimonyCount, visually-hidden">
       <FontAwesomeIcon className="endorse" icon={faCheckCircle} />
       {hit.endorseCount}
