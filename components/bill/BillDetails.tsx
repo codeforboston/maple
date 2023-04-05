@@ -36,7 +36,7 @@ const StyledImage = styled(Image)`
 `
 
 export const BillDetails = ({ bill }: BillProps) => {
-  const {t} = useTranslation("common")
+  const { t } = useTranslation("common")
   return (
     <StyledContainer className="mt-3 mb-3">
       <Row>
@@ -113,7 +113,7 @@ export const BillDetails = ({ bill }: BillProps) => {
 }
 
 const FollowButton = ({ bill }: BillProps) => {
-  const {t} = useTranslation("common")
+  const { t } = useTranslation("common")
   const billId = bill.id
   const courtId = bill.court
   const topicName = `bill-${courtId}-${billId}`
@@ -170,8 +170,8 @@ const FollowButton = ({ bill }: BillProps) => {
     >
       {queryResult ? t("Following") : t("Follow")}
       {queryResult ? (
-        <StyledImage src="/check-white.svg" alt={"checkmark"}/>
+        <StyledImage src="/check-white.svg" alt={"checkmark"} />
       ) : null}
     </Button>
-  )   
+  )
 }
