@@ -19,7 +19,7 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
   // Only an admin can approve organizations, after they've signed up initially
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
   if (requestedRole === "organization") {
-    role = "pendingUpgrade"
+    role = "organization" // set as organization for softlaunch/until admin process is implemented
   }
 
   await setRole({ role, auth, db, uid })

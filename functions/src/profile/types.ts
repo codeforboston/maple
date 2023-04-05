@@ -7,6 +7,15 @@ import {
   Static,
   String
 } from "runtypes"
+import {
+  Boolean,
+  Dictionary,
+  Optional,
+  Array,
+  Record,
+  Static,
+  String
+} from "runtypes"
 import { Role } from "../auth/types"
 import { Nullable } from "../common"
 
@@ -26,6 +35,6 @@ export const Profile = Record({
   about: Optional(String),
   social: Optional(Dictionary(String)),
   organization: Optional(Boolean),
-  orgCategories: Optional(Array(Nullable(String)))
+  orgCategories: Optional(Array(String))
 })
 export type Profile = Static<typeof Profile>

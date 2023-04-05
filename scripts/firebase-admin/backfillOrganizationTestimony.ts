@@ -14,9 +14,9 @@ export const script: Script = async ({ db, auth }) => {
   console.log(`Configuring ${allUsers.length} users roles`)
   for (const user of allUsers) {
     const existingRole = user.customClaims?.role
-    if (existingRole === "pendingUpgrade") {
+    if (existingRole === 'pendingUpgrade') {
       userUpdateCount++
-      await setRole({ uid: user.uid, auth, role: "organization", db })
+      await setRole({ uid: user.uid, auth, role: "organization",  db })
     }
   }
   console.log(`Updated ${userUpdateCount} users`)
