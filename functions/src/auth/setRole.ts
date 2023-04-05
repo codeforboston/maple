@@ -28,6 +28,9 @@ export const setRole = async ({
   const profile = db.doc(`/profiles/${user.uid}`)
   const profileData = await profile.get().then(s => s.data())
   const currentProfile = Profile.Or(Undefined).check(profileData)
+  const profile = db.doc(`/profiles/${user.uid}`)
+  const profileData = await profile.get().then(s => s.data())
+  const currentProfile = Profile.Or(Undefined).check(profileData)
   const profileUpdate: Partial<Profile> = {
     role,
     public: isPublic(currentProfile, role)
@@ -36,7 +39,7 @@ export const setRole = async ({
 
   await updateTestimony(db, {
     uid: user.uid,
-    fullName: currentProfile?.fullName ?? "Anonymous",
+    displayName: currentProfile?.displayName ?? "Anonymous",
     role
   })
 }
@@ -46,7 +49,7 @@ export const setRole = async ({
  */
 const updateTestimony = async (
   db: Database,
-  u: { uid: string; fullName: string; role: Role }
+  u: { uid: string; displayName: string; role: Role }
 ) => {
   const writer = db.bulkWriter()
   const publishedTestimony = await db
@@ -60,8 +63,8 @@ const updateTestimony = async (
       testimony.data()
 
     // If the authorRole field is already set, skip this document.
-    if (existingRole !== u.role || existingName !== u.fullName) {
-      const update = { authorRole: u.role, authorDisplayName: u.fullName }
+    if (existingRole !== u.role || existingName !== u.displayName) {
+      const update = { authorRole: u.role, authorDisplayName: u.displayName }
       void writer.update(testimony.ref, update)
     }
   }
