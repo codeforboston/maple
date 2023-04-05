@@ -2,6 +2,7 @@ import { UserRecord } from "firebase-admin/auth"
 import { setRole } from "functions/src/auth"
 import { Auth } from "functions/src/types"
 import { Script } from "./types"
+import { listAllUsers } from "./list-all-users"
 
 /** backfill the authorRole field on all publishedTestimony documents
  * and set user role claims to "user" if they don't have claims configured.
@@ -43,15 +44,4 @@ export const script: Script = async ({ db, auth }) => {
 
   await writer.close()
   console.log(`Updated ${testimonyUpdateCount} documents`)
-}
-
-/**  Returns a list of all users in firestore. */
-const listAllUsers = async (auth: Auth) => {
-  const users: UserRecord[] = []
-  let nextPageToken: string | undefined
-  do {
-    const result = await auth.listUsers(1000, nextPageToken)
-    users.push(...result.users)
-  } while (nextPageToken)
-  return users
 }
