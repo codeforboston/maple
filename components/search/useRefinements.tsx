@@ -37,7 +37,7 @@ export const useRefinements = () => {
     if (inline) setShow(false)
   }, [inline])
 
-  const baseProps = { limit: 5, searchable: true }
+  const baseProps = { limit: 500, searchable: true }
   const refinementProps = [
     useRefinementListUiProps({
       transformItems: useCallback(
