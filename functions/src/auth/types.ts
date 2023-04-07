@@ -55,7 +55,9 @@ export const OrgCategories = [
   "Small & Local Business",
   "Taxes",
   "Water",
-  "Women's Rights"
+  "Women's Rights",
+  "Multi-issue",
+  "Other"
 ] as const
 
 export type OrgCategory = (typeof OrgCategories)[number]
