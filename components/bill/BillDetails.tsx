@@ -40,6 +40,10 @@ export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
   return (
     <>
+      {/**
+       * replace bill.court !== 193 with function to check for
+       * latest court from an array of courts
+       */}
       {bill.court !== 193 && (
         <Banner>
           this bill is from session {bill.court} - not the current session
