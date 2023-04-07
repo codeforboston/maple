@@ -119,7 +119,7 @@ const BrowseLinks = () => {
         Testimonies
       </NavLink> */}
       <NavLink className={styles.footerLink} href="/bills">
-        {t("links.browsePolicies")}
+        {t("links.browseBills")}
       </NavLink>
     </>
   )
@@ -140,12 +140,6 @@ const OurTeamLinks = () => {
         className={styles.footerLink}
       >
         {t("links.teamCFB")}
-      </ExternalNavLink>
-      <ExternalNavLink
-        href="https://www.bc.edu/bc-web/schools/law"
-        className={styles.footerLink}
-      >
-        {t("links.teamBC")}
       </ExternalNavLink>
       <ExternalNavLink
         href="https://cyber.harvard.edu/"
