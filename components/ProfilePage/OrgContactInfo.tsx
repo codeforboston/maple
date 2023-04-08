@@ -37,7 +37,11 @@ export const OrgContactInfo = ({ profile }: { profile?: Profile }) => {
 
       {website && (
         <ContactInfoRow>
-          <External className="d-flex justify-content-end" plain href={website}>
+          <External
+            className="d-flex justify-content-end"
+            plain
+            href={`https://${website}`}
+          >
             {website}
           </External>
         </ContactInfoRow>
