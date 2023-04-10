@@ -321,7 +321,7 @@ export const ProfileHeader = ({
             <Col>
               <Button
                 className={`btn btn-primary btn-sm py-1 ${
-                  uid ? "" : t("button.hidden")
+                  uid ? "" : "visually-hidden"
                 }`}
                 onClick={queryResult ? handleUnfollowClick : handleFollowClick}
               >
