@@ -207,7 +207,7 @@ export const ProfileAboutSection = ({
 
   return (
     <MapleCard
-      header={t("aboutHeader", { firstName: profile?.displayName?.split(" ")[0] ?? "User" }).toString() ?? ""}
+      header={t("aboutHeader", { firstName: profile?.displayName?.split(" ")?.[0] ?? "User" }) ?? ""}
       inHeaderElement={<Socials twit={twitter} linkedIn={linkedIn} />}
       className={`h-100`}
       body={
