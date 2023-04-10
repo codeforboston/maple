@@ -1,107 +1,46 @@
-import React, { useState } from "react"
-import { Button, Modal, Table } from "react-bootstrap"
+import { format, fromUnixTime } from "date-fns"
 import styled from "styled-components"
-import { MemberReference, useMember } from "../db"
-import { memberLink } from "../links"
+import { Row } from "../bootstrap"
 import { FC } from "../types"
+import { LabeledContainer } from "./LabeledContainer"
+import styles from "./SponsorsAndCommittees.module.css"
 import { BillProps } from "./types"
+import { billSiteURL, Wrap } from "components/links"
+import { useContext } from "react"
+import { BillHistory } from "../db"
+import { CourtContext } from "./Status"
+import { Button, Modal, Table } from "react-bootstrap"
 
-const CoSponsorRow = ({
-  court,
-  coSponsor
-}: {
-  court: number
-  coSponsor: MemberReference
-}) => {
-  const url = coSponsor
-    ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}`
-    : ""
-  const { member, loading } = useMember(court, coSponsor.Id)
-  if (loading) {
-    return null
-  } else if (!member) {
+
+export const LobbyingTable: FC<BillProps> = ({ bill, className }) => {
+    const current = bill.currentCommittee
+    if (!current) return null
     return (
-      <tr>
-        <td>{coSponsor.Name}</td>
-        <td></td>
-        <td></td>
+        <LabeledContainer className={className}>
+        <Row className={`bg-secondary text-light ${styles.subHeader}`}>
+          Lobbying Parties
+        </Row>
+        <Table>
+        <thead>
+          <tr>
+            <th>Client Name</th>
+            <th>Position</th>
+            <th>Disclosure Date</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td>Example Name</td>
+        <td>Pro</td>
+        <td>April 10, 2023</td>
       </tr>
-    )
-  } else {
-    return (
       <tr>
-        <td>{memberLink(member)}</td>
-        <td>{member?.Branch}</td>
-        <td>{member?.District}</td>
+        <td>Example Name</td>
+        <td>Neutral</td>
+        <td>March 29, 2023</td>
       </tr>
+        </tbody>
+      </Table>
+      </LabeledContainer>
     )
   }
-}
-
-const CoSponsorRows = ({
-  court,
-  coSponsors
-}: {
-  court: number
-  coSponsors: MemberReference[]
-}) => {
-  return (
-    <>
-      {coSponsors.map((coSponsor, index) => {
-        return <CoSponsorRow court={court} coSponsor={coSponsor} key={index} />
-      })}
-    </>
-  )
-}
-
-const StyledButton = styled(Button)`
-  :focus {
-    box-shadow: none;
-  }
-  padding: 0;
-  margin: 0;
-`
-
-export const Cosponsors: FC<BillProps> = ({ bill, children }) => {
-  const billNumber = bill.id
-  const court = bill.court
-  const coSponsors = bill.content.Cosponsors
-  const numCoSponsors = coSponsors ? coSponsors.length : 0
-  const [showBillCosponsors, setShowBillCosponsors] = useState(false)
-
-  const handleShowBillCosponsors = () =>
-    numCoSponsors > 0
-      ? setShowBillCosponsors(true)
-      : setShowBillCosponsors(false)
-  const handleCloseBillCosponsors = () => setShowBillCosponsors(false)
-
-  return (
-    <>
-      <StyledButton
-        variant="link"
-        className="m-1 text-dark"
-        onClick={handleShowBillCosponsors}
-      >
-        {children}
-      </StyledButton>
-      <Modal
-        show={showBillCosponsors}
-        onHide={handleCloseBillCosponsors}
-        size="lg"
-      >
-        <Modal.Header closeButton onClick={handleCloseBillCosponsors}>
-          <Modal.Title>{billNumber + " CoSponsors"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <>
-            <Table responsive striped bordered hover>
-              <tbody>
-                <CoSponsorRows court={court} coSponsors={coSponsors} />
-              </tbody>
-            </Table>
-          </>
-        </Modal.Body>
-      </Modal>
-    </>
-  )
-}
