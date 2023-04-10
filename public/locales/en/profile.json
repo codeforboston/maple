@@ -1,5 +1,6 @@
 {
-  "aboutHeader": "About {{firstName}}","user": "User",
+  "aboutHeader": "About {{firstName}}",
+  "user": "User",
   "noUser": "no user",
   "anonymousUser": "Anonymous User",
   "button":{
