@@ -1,5 +1,6 @@
 {
-  "aboutHeader": "About {{firstName}}",
+  "aboutMe": "About {{firstName}}",
+  "aboutUs": "About Us",
   "user": "User",
   "noUser": "no user",
   "anonymousUser": "Anonymous User",
@@ -11,8 +12,17 @@
   "content": {
     "viewingProfile": "Currently viewing your profile",
     "statePurpose": "State your purpose",
-    "sendVerification": "We sent a link to your email to verify your account, but you haven't<br>clicked it yet. If you don't see it, be sure to check your spam<br>folder.",
+    "noLegislatorInfo": "No legislator information given"
+    },
+  "verifyAccountSection":{
+    "verifyAccount": "We sent a link to your email to verify your account, but you haven't<br>clicked it yet. If you don't see it, be sure to check your spam<br>folder.",
     "checkEmail": "Check your email!",
     "sendAnotherLink": "Send Another Link"
-    }
+  },
+  "legislator":{
+    "representative": "Representative",
+    "searchRepresentative": "Search your representative",
+    "senator": "Senator",
+    "searchSenator": "Search your senator"
+  }
 }

@@ -7,6 +7,16 @@
         "personalInfo":"Personal Information",
         "testimonies": "Testimonies",
         "following": "Following"
+    },
+    "content":{
+        "reqPending": "Your request to be an organization account is pending approval",
+        "uplaodOrgImg": "Input an image for your organization's profile",
+        "error": "An error occured. Please refresh the page."
+    },
+    "follow":{
+        "bills": "Bills You Follow",
+        "orgs": "Organizations You Follow",
+        "unfollow": "Unfollow"
     }
     
 }

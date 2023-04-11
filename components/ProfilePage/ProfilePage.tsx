@@ -10,6 +10,7 @@ import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 import { ProfileMember } from "../db"
+import { useTranslation } from "next-i18next"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -37,6 +38,7 @@ export function ProfilePage(profileprops: {
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
+  const { t } = useTranslation("profile")
 
   return (
     <>
@@ -48,7 +50,7 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
-              {isUser && <Banner>Currently viewing your profile</Banner>}
+              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
               <StyledContainer>
                 <ProfileHeader
                   isUser={isUser}
