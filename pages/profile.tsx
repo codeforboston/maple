@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 import { useAuth } from "../components/auth"
 import { createPage } from "../components/page"
-import { ProfilePage } from "../components/ProfilePage/Profile"
 import { useTranslation } from "next-i18next"
+import { ProfilePage } from "../components/ProfilePage"
 
 export default createPage({
   title: "Profile",

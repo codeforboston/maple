@@ -2,6 +2,7 @@ import { Card as MapleCard } from "components/Card/Card"
 import { Stage, useBillTracker } from "components/db/useBillStatus"
 import styled from "styled-components"
 import { BillProps, BillTracker } from "./types"
+import { Row } from "react-bootstrap"
 
 export default function BillTrackerConnectedView({
   bill,
@@ -24,13 +25,13 @@ const BillTrackerView = ({
     tracker.label?.status ?? tracker.prediction?.status ?? Stage.billIntroduced
 
   const body = (
-    <BillStatusBody className={className}>
+    <Row className="p-5">
       {Object.values(Stage).map(s => (
         <StyledBillStageStrip key={s} stage={s} currentStage={currentStage} />
       ))}
-    </BillStatusBody>
+    </Row>
   )
-  return <MapleCard header="Bill Tracker" body={body} />
+  return <MapleCard className={className} header="Bill Tracker" body={body} />
 }
 
 export const BillStageStrip = ({
@@ -116,11 +117,6 @@ const getRem = (pixelSize: string | number) => {
   return n / 16 + "rem"
 }
 
-const BillStatusBody = styled.div`
-  height: ${getRem(364)};
-  width: ${getRem(310)};
-  padding: 20px 24px 10px 24px;
-`
 const StyledBillStageStrip = styled(BillStageStrip)`
   height: ${getRem(49)};
   width: ${getRem(244)};

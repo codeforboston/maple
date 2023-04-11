@@ -82,12 +82,20 @@ function useSyncTestimonyToStore(edit: UseEditTestimony) {
 
 type DraftContent = ReturnType<typeof useFormDraft>
 function useFormDraft() {
-  const { attachmentId, content, position } = usePublishState()
-  return { attachmentId, content, position }
+  const { attachmentId, content, position, recipientMemberCodes, editReason } =
+    usePublishState()
+  return { attachmentId, content, position, recipientMemberCodes, editReason }
 }
 
 function usePersistedDraft(draft?: WorkingDraft): DraftContent | undefined {
   if (!draft) return
-  const { attachmentId, content, position } = draft
-  return { attachmentId: attachmentId ?? undefined, content, position }
+  const { attachmentId, content, position, recipientMemberCodes, editReason } =
+    draft
+  return {
+    attachmentId: attachmentId ?? undefined,
+    content,
+    position,
+    recipientMemberCodes: recipientMemberCodes ?? undefined,
+    editReason: editReason ?? undefined
+  }
 }

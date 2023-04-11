@@ -2,10 +2,11 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { Frequency, useAuth } from "../../auth"
+import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
-import { Profile, ProfileMember, SocialLinks } from "./types"
+import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
+import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -17,8 +18,10 @@ type ProfileState = {
   updatingNotification: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
+  updatingOrgCategory: boolean
   updatingDisplayName: boolean
   updatingFullName: boolean
+  updatingContactInfo: Record<keyof ContactInfo, boolean>
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
   updatingBillsFollowing: boolean
@@ -47,9 +50,17 @@ export function useProfile() {
         updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
+        updatingOrgCategory: false,
+        updatingContactInfo: {
+          publicEmail: false,
+          publicPhone: false,
+          website: false
+        },
         updatingSocial: {
           linkedIn: false,
-          twitter: false
+          twitter: false,
+          instagram: false,
+          fb: false
         },
         updatingBillsFollowing: false,
         profile
@@ -146,6 +157,33 @@ export function useProfile() {
           })
         }
       },
+      updateContactInfo: async (
+        contactType: keyof ContactInfo,
+        contact: string | number
+      ) => {
+        if (uid) {
+          dispatch({
+            updatingContactInfo: {
+              ...state.updatingContactInfo,
+              [contactType]: true
+            }
+          })
+          await updateContactInfo(uid, contactType, contact)
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [contactType]: false
+            }
+          })
+        }
+      },
+      updateOrgCategory: async (category: OrgCategory) => {
+        if (uid) {
+          dispatch({ updatingOrgCategory: true })
+          await updateOrgCategory(uid, category)
+          dispatch({ updatingOrgCategory: false })
+        }
+      },
       updateBillsFollowing: async (billsFollowing: string[]) => {
         if (uid) {
           dispatch({ updatingBillsFollowing: true })
@@ -154,7 +192,7 @@ export function useProfile() {
         }
       }
     }),
-    [uid, state.updatingSocial]
+    [uid, state.updatingSocial, state.updatingContactInfo]
   )
 
   return useMemo(
@@ -207,10 +245,33 @@ function updateIsOrganization(uid: string, isOrganization: boolean) {
   )
 }
 
+function updateOrgCategory(uid: string, category: OrgCategory) {
+  return setDoc(profileRef(uid), { orgCategories: [category] }, { merge: true })
+}
+
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
+  link = cleanSocialLinks(network, link)
+
   return setDoc(
     profileRef(uid),
     { social: { [network]: link ?? deleteField() } },
+    { merge: true }
+  )
+}
+
+function updateContactInfo(
+  uid: string,
+  contactType: keyof ContactInfo,
+  contact: string | number
+) {
+  if (contactType === "website") {
+    contact = contact.toString()
+    contact = cleanOrgURL(contact)
+  }
+
+  return setDoc(
+    profileRef(uid),
+    { contactInfo: { [contactType]: contact ?? deleteField() } },
     { merge: true }
   )
 }
@@ -262,15 +323,24 @@ export async function updateProfileImage(uid: string, image: File) {
   })
 }
 
-export function usePublicProfile(uid?: string) {
+export function usePublicProfile(uid?: string, verifyisorg?: boolean) {
+  if (verifyisorg && uid) {
+    console.log(verifyisorg)
+  }
   return useAsync(
-    () => (uid ? getProfile(uid) : Promise.resolve(undefined)),
-    [uid]
+    () => (uid ? getProfile(uid, verifyisorg) : Promise.resolve(undefined)),
+    [uid, verifyisorg]
   )
 }
 
-export async function getProfile(uid: string) {
+export async function getProfile(uid: string, verifyisorg?: boolean) {
   const snap = await getDoc(profileRef(uid))
+  if (verifyisorg) {
+    return snap.exists() && snap.data().role == "organization"
+      ? (snap.data() as Profile)
+      : undefined
+  }
+
   return snap.exists() ? (snap.data() as Profile) : undefined
 }
 

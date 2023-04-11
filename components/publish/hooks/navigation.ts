@@ -14,7 +14,7 @@ export const formUrl = (
 /** Changes to the appropriate form step if users access a step that is
  * currently invalid (i.e. entering content before position, trying to share
  * unpublished testimony). */
-export function useFormRedirection(validator?: Validator) {
+export function useFormRedirection() {
   const dispatch = useAppDispatch()
   const state = usePublishState(),
     sync = state.sync,
@@ -22,12 +22,11 @@ export function useFormRedirection(validator?: Validator) {
   useEffect(() => {
     if (sync === "synced" && billId) {
       let newStep = validateStep(state)
-      if (!newStep && validator) newStep = validator(state)
       if (newStep) {
         dispatch(setStep(newStep))
       }
     }
-  }, [billId, dispatch, state, sync, validator])
+  }, [billId, dispatch, state, sync])
 }
 
 type Validator = (state: PublishState) => Step | void
@@ -37,6 +36,9 @@ function validateStep(state: PublishState): Step | void {
 
 const validators: Record<Step, Validator> = {
   position() {},
+  selectLegislators(state) {
+    return this.write(state)
+  },
   write({ position, errors }) {
     if (!position || errors.position) return "position"
   },
@@ -45,16 +47,13 @@ const validators: Record<Step, Validator> = {
     if (positionError) return positionError
     if (!state.content || state.errors.content) return "write"
   },
-  selectLegislators(state) {
+  share(state) {
     const { publication } = state
     if (!publication) {
       const formError = this.publish(state)
       if (formError) return formError
       return "publish"
     }
-  },
-  share(state) {
-    return this.selectLegislators(state)
   }
 }
 

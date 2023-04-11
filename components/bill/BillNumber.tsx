@@ -6,7 +6,12 @@ import { BillProps } from "./types"
 export const Styled = styled.div`
   font-size: 4rem;
   a {
-    text-decoration: none;
+    /*
+    design team asked to put decoration back; remove comment if people change their minds
+    https://github.com/codeforboston/maple/issues/998
+    */
+
+    // text-decoration: none;
     display: inline-flex;
     align-items: baseline;
   }

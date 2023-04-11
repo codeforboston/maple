@@ -1,13 +1,13 @@
+import { ReactNode } from "react"
 import styled from "styled-components"
 
 export const chipHeight = 2
 
 export const StepChip = styled<{
   active?: boolean
-  step: number
   scale?: number
-}>(({ step, active, ...rest }) => {
-  return <div {...rest}>{step}</div>
+}>(({ active, ...rest }) => {
+  return <div {...rest} />
 })`
   background-color: var(
     ${({ active = false }) => (active ? "--bs-green" : "--bs-blue")}

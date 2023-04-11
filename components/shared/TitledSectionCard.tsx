@@ -8,65 +8,49 @@ const StyledCard = styled(Card)`
   border-radius: 1rem;
   background: var(--bs-white);
   border: none;
+  font-family: Nunito;
 `
 
-export const HeaderTitle = styled.div.attrs({
+const StyledHeader = styled.div.attrs({
   className: "text-capitalize"
 })`
   display: flex;
   align-items: center;
   color: white;
-  font-size: 1.25rem;
-  font-weight: bold;
-  border-radius: 0 5rem 5rem 0;
-  background-color: var(--bs-red);
+  font-size: 1.375rem;
+  font-family: Nunito;
+  background-color: var(--bs-blue);
   height: 2.5rem;
-  line-height: 2rem;
-  padding: 0 2rem;
-  width: fit-content;
+  padding: 1.65rem 2rem;
   min-width: 15rem;
-  margin-left: -1rem;
+  border-radius: 1rem 1rem 0 0;
+`
+export const StyledBody = styled(Card.Body)`
+  padding: 1.5rem 2rem;
+`
+const StyledFooter = styled(Card.Body)`
+  border-radius: 0 0 1rem 1rem;
+  align-items: center;
+  display: flex;
+  padding-right: 2rem;
+  justify-content: end;
 `
 
-const BugContainer = styled(Col)`
-  .header-bug {
-    color: #12266f;
-    font-size: 1rem;
-    border-color: #12266f;
-  }
-`
-
-export const Header = ({ title, bug }: { title: string; bug?: ReactNode }) => {
+export const Header = ({ title }: { title: string }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
-    <Row className="mt-4 align-items-start">
+    <Row className="align-items-start">
       <Col>
-        <HeaderTitle>{title}</HeaderTitle>
+        <StyledHeader>{title}</StyledHeader>
       </Col>
-      <BugContainer
-        className={`col-auto mt-2 mb-3 ${
-          isMobile ? "mx-4 mt-4 col-10" : "mx-5"
-        }`}
-      >
-        {bug && bug}
-      </BugContainer>
     </Row>
   )
 }
 
-export const StyledBody = styled(Card.Body).attrs({
-  className: `mx-1 mx-md-3`
-})``
-
-const StyledFooter = styled(Card.Footer)`
-  border-radius: 0 0 1rem 1rem;
-`
-
 type TitledSectionCardProps = {
   title?: string
   footer?: React.ReactElement
-  bug?: React.ReactElement
   className?: string
   children: React.ReactNode
 }
@@ -75,24 +59,13 @@ const TitledSectionCard = ({
   title,
   children,
   footer,
-  bug,
   className
 }: TitledSectionCardProps) => {
   return (
     <StyledCard className={className}>
-      {title && <Header title={title} bug={bug} />}
-      <div className={`h-100`}>{children}</div>
-      {footer && (
-        <Card.Footer
-          style={{
-            borderRadius: "0 0 1rem 1rem",
-            background: "var(--bs-secondary)",
-            justifySelf: "end"
-          }}
-        >
-          {footer}
-        </Card.Footer>
-      )}
+      {title && <Header title={title} />}
+      <StyledBody>{children}</StyledBody>
+      {footer && <StyledFooter>{footer}</StyledFooter>}
     </StyledCard>
   )
 }
