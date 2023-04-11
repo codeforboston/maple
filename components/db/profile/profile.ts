@@ -19,7 +19,6 @@ type ProfileState = {
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingOrgCategory: boolean
-  updatingDisplayName: boolean
   updatingFullName: boolean
   updatingContactInfo: Record<keyof ContactInfo, boolean>
   updatingProfileImage: boolean
@@ -47,7 +46,6 @@ export function useProfile() {
         updatingNotification: false,
         updatingIsOrganization: false,
         updatingAbout: false,
-        updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
         updatingOrgCategory: false,
@@ -109,13 +107,6 @@ export function useProfile() {
           dispatch({ updatingAbout: true })
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
-        }
-      },
-      updateDisplayName: async (displayName: string) => {
-        if (uid) {
-          dispatch({ updatingDisplayName: true })
-          await updateDisplayName(uid, displayName)
-          dispatch({ updatingDisplayName: false })
         }
       },
       updateFullName: async (fullName: string) => {
@@ -280,14 +271,6 @@ function updateAbout(uid: string, about: string) {
   return setDoc(
     profileRef(uid),
     { about: about ?? deleteField() },
-    { merge: true }
-  )
-}
-
-function updateDisplayName(uid: string, displayName: string) {
-  return setDoc(
-    profileRef(uid),
-    { displayName: displayName ?? deleteField() },
     { merge: true }
   )
 }

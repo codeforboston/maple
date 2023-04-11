@@ -10,7 +10,7 @@ const StyledName = styled(Internal)`
 export const Author = ({ uid, name }: { uid: string; name: string }) => {
   const profile = usePublicProfile(uid)
 
-  const authorName = profile.loading ? "" : profile.result?.displayName
+  const authorName = profile.loading ? "" : profile.result?.fullName
   const linkToProfile = !!profile.result
   return (
     <div>

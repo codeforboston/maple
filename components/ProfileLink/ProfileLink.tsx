@@ -5,22 +5,22 @@ import { Role, useAuth } from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
 
-const greeting = (role: Role, displayName?: string) => {
+const greeting = (role: Role, fullName?: string) => {
   switch (role) {
     case "user":
     case "legislator":
     case "organization":
-      return displayName ? `Hello, ${displayName}` : "Hello there"
+      return fullName ? `Hello, ${fullName}` : "Hello there"
     case "admin":
-      return `Hello, Admin ${displayName}`
+      return `Hello, Admin ${fullName}`
   }
 }
 
 const ProfileLink = ({
-  displayName,
+  fullName,
   role = "user"
 }: {
-  displayName?: string
+  fullName?: string
   role?: Role
 }) => {
   const { user } = useAuth()
@@ -43,7 +43,7 @@ const ProfileLink = ({
           />
           <Navbar expand="lg" className="p-0">
             <Navbar.Collapse id="topnav">
-              <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
+              <Navbar.Brand>{greeting(role, fullName)}</Navbar.Brand>
             </Navbar.Collapse>
           </Navbar>
         </div>
