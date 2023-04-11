@@ -7,6 +7,7 @@ import {
 } from "../db"
 import { Loading, Search } from "../legislatorSearch"
 import { useTranslation } from "next-i18next"
+import { useTranslation } from "next-i18next"
 
 export const SelectLegislators: React.FC = () => {
   const { index, loading: searchLoading } = useMemberSearch(),
@@ -24,13 +25,15 @@ const LegislatorForm: React.FC<{
   index: MemberSearchIndex
   profile: ProfileHook
 }> = ({ index, profile }) => {
-  const { t } = useTranslation("editProfile")
+  const { t } = useTranslation("profile")
 
   return (
     <div>
       <Form.Group className="mb-4">
         <Form.Label>{t("legislator.representative")}</Form.Label>
+        <Form.Label>{t("legislator.representative")}</Form.Label>
         <Search
+          placeholder={t("legislator.searchRepresentative")}
           placeholder={t("legislator.searchRepresentative")}
           index={index.representatives}
           isLoading={profile.updatingRep}
@@ -41,7 +44,9 @@ const LegislatorForm: React.FC<{
 
       <Form.Group>
         <Form.Label>{t("legislator.senator")}</Form.Label>
+        <Form.Label>{t("legislator.senator")}</Form.Label>
         <Search
+          placeholder={t("legislator.searchSenator")}
           placeholder={t("legislator.searchSenator")}
           index={index.senators}
           isLoading={profile.updatingSenator}
