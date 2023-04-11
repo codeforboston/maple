@@ -52,7 +52,7 @@ export class Attachments {
 
     const attachmentChanged = draftId !== publishedDraftId
     const id = attachmentChanged ? nanoid() : publishedId ?? null
-    const title = ["Testimony", draft.billId, profile?.displayName]
+    const title = ["Testimony", draft.billId, profile?.fullName]
       .filter(Boolean)
       .join(", ")
 

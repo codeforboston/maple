@@ -271,6 +271,6 @@ class PublishTestimonyTransaction {
   }
 
   private getDisplayName() {
-    return this.profile?.displayName ?? "Anonymous"
+    return this.profile?.fullName ?? "Anonymous"
   }
 }

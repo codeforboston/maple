@@ -17,7 +17,7 @@ export const ProfileMember = Record({
 export type ProfileMember = Static<typeof ProfileMember>
 
 export const Profile = Record({
-  displayName: Optional(String),
+  fullName: Optional(String),
   role: Optional(Role),
   representative: Optional(ProfileMember),
   senator: Optional(ProfileMember),

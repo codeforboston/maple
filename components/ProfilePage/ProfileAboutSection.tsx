@@ -22,7 +22,7 @@ export const ProfileAboutSection = ({
 
   const title = isOrg
     ? "About Us"
-    : `About ${profile?.displayName?.split(" ")[0] ?? "User"}`
+    : `About ${profile?.fullName?.split(" ")[0] ?? "User"}`
 
   return (
     <TitledSectionCard

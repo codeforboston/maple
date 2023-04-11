@@ -7,7 +7,7 @@ import { getProfile } from "./common"
 
 const fakeUser = () => ({
   uid: nanoid(),
-  displayName: "Conan O'Brien",
+  fullName: "Conan O'Brien",
   email: `${nanoid()}@example.com`,
   password: "password"
 })

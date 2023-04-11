@@ -15,7 +15,7 @@ import {
 
 const fakeUser = () => ({
   uid: nanoid(),
-  displayName: "Conan O'Brien",
+  fullName: "Conan O'Brien",
   email: `${nanoid()}@example.com`,
   password: "password"
 })
@@ -40,7 +40,7 @@ describe("profile", () => {
     const expected = fakeUser()
     await expect(getProfile(expected)).resolves.toBeUndefined()
     const profile = await expectProfile(expected)
-    expect(profile.displayName).toEqual(expected.displayName)
+    expect(profile.fullName).toEqual(expected.fullName)
     expect(profile.role).toEqual("user")
   })
 
@@ -91,12 +91,12 @@ describe("profile", () => {
 
     await signInUser1()
     await expectPermissionDenied(
-      setDoc(profileRef, { displayName: "test" }, { merge: true })
+      setDoc(profileRef, { fullName: "test" }, { merge: true })
     )
 
     await signInWithEmailAndPassword(auth, newUser.email, newUser.password)
     await expect(
-      setDoc(profileRef, { displayName: "test" }, { merge: true })
+      setDoc(profileRef, { fullName: "test" }, { merge: true })
     ).resolves.toBeUndefined()
   })
 
