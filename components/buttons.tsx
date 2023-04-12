@@ -84,6 +84,40 @@ export const ImageButton = styled<
   padding: 1px;
 `
 
+export const TooltipButton = styled<{
+  tooltip: string
+  text: string
+  variant?: string
+}>(({ tooltip, text, variant, ...rest }) => {
+  return (
+    <OverlayTrigger
+      delay={500}
+      placement="right"
+      overlay={<Tooltip>{tooltip}</Tooltip>}
+    >
+      <Button variant={variant} {...rest}>
+        {text}
+      </Button>
+    </OverlayTrigger>
+  )
+})`
+  font-size: 14px;
+
+  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
+  &:hover {
+    filter: brightness(70%);
+  }
+  &:active {
+    filter: brightness(50%);
+  }
+  &:focus {
+    outline: 3px solid var(--bs-blue-300);
+  }
+  border-radius: 3px;
+
+  padding: 1px;
+`
+
 export const CopyButton = ({
   text,
   tooltipDurationMs = 1000,

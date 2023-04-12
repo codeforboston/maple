@@ -11,6 +11,7 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
+import { finishSignup, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -50,31 +51,45 @@ export type CreateUserWithEmailAndPasswordData = {
   nickname: string
   password: string
   confirmedPassword: string
+  orgCategory?: OrgCategory
 }
 
-export function useCreateUserWithEmailAndPassword() {
+export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
   return useFirebaseFunction(
     async ({
       email,
       fullName,
       nickname,
-      password
+      password,
+      orgCategory
     }: CreateUserWithEmailAndPasswordData) => {
       const credentials = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       )
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
-      await Promise.all([
-        setProfile(credentials.user.uid, {
-          displayName: nickname,
-          fullName,
-          role: "user",
-          public: false
-        }),
-        sendEmailVerification(credentials.user)
-      ])
+      const categories = orgCategory ? [orgCategory] : ""
+
+      if (isOrg) {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            displayName: fullName,
+            fullName,
+            orgCategories: categories
+          }),
+          sendEmailVerification(credentials.user)
+        ])
+      } else {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            displayName: nickname,
+            fullName
+          }),
+          sendEmailVerification(credentials.user)
+        ])
+      }
 
       return credentials
     }

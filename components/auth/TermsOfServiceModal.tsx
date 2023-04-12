@@ -42,6 +42,10 @@ export default function TermsOfServiceModal({
                     Everything you share with us, other than your email and
                     password, will be available on our website, MAPLE.
                   </li>
+                  <li>
+                    We do not and will not sell any of your personal
+                    information.
+                  </li>
                 </ul>
               </Col>
             </Row>
@@ -63,12 +67,13 @@ export default function TermsOfServiceModal({
                     you are making it available to MAPLE under an express
                     license that allows reproduction
                   </li>
-                  <li>
+                  {/* Newsletter section commented out, will be reintroduced later with checkbox consent option */}
+                  {/* <li>
                     We may send newsletters via email to MAPLE members. You can
                     unsubscribe from these newsletters at any time by using the
                     "Unsubscribe" link in the emails themselves. We never share
                     with or sell your email to third party providers.
-                  </li>
+                  </li> */}
                 </ul>
               </Col>
             </Row>

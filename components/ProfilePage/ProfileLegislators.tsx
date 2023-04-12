@@ -45,21 +45,15 @@ export function ProfileLegislators({
   className
 }: ProfileLegislatorsProps) {
   return (
-    <MapleCard
-      header={`Legislators`}
-      body={
-        <div className="ms-5">
-          <DisplayLegislator
-            legislator={
-              { ...rep, title: "Representative" } as ProfileMemberPlus
-            }
-          />
-          <hr></hr>
-          <DisplayLegislator
-            legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
-          />
-        </div>
-      }
-    ></MapleCard>
+    <TitledSectionCard title={`Legislators`} className={className}>
+      <div>
+        <DisplayLegislator
+          legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
+        />
+        <DisplayLegislator
+          legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
+        />
+      </div>
+    </TitledSectionCard>
   )
 }

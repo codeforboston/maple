@@ -10,6 +10,7 @@ import {
 } from "runtypes"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
+import { Role } from "../auth/types"
 
 const maxTestimonyLength = 10_000
 
@@ -31,8 +32,8 @@ export const Testimony = withDefaults(
     id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
-    /** "user", "organization", or "admin". Missing is treated as "user" */
-    authorRole: Optional(RtString),
+    authorRole: Role,
+    billTitle: RtString,
     version: Number,
     publishedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),
@@ -68,6 +69,7 @@ export const TestimonySearchRecord = R({
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString,
   authorUid: RtString,
+  authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
   publishedAt: Number

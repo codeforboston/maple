@@ -3,7 +3,9 @@ import clsx from "clsx"
 import { Maybe } from "components/db/common"
 import { forwardRef, ReactElement, ReactNode, useState } from "react"
 import type { FormControlProps } from "react-bootstrap"
-import { FloatingLabel, Form } from "../bootstrap"
+import { Form } from "../bootstrap"
+import { Image } from "../bootstrap"
+import styled from "styled-components"
 
 export type InputProps = Omit<
   FormControlProps,
@@ -15,10 +17,16 @@ export type InputProps = Omit<
   floating?: boolean
   help?: ReactNode
   placeholder?: string
+  iconSrc?: string
 
   /** Used when `as="textarea"` */
   rows?: number
 }
+
+const StyledIcon = styled(Image)`
+  margin-right: 0.5rem;
+  margin-bottom: 0.1rem;
+`
 
 const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
   (
@@ -29,6 +37,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
       floating = true,
       help,
       className,
+      iconSrc,
       children,
       ...restProps
     },
@@ -54,12 +63,17 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
         {help && <Form.Text>{help}</Form.Text>}
       </>
     )
+
     return (
       <Form.Group controlId={id} className={className}>
         {floating ? (
-          <FloatingLabel controlId={id} label={label}>
+          <Form.Floating>
             {control}
-          </FloatingLabel>
+            <label className="d-flex justify-content-center" htmlFor={id}>
+              {iconSrc && <StyledIcon alt="icon" src={iconSrc} />}
+              {label}
+            </label>
+          </Form.Floating>
         ) : (
           <>
             <Form.Label>{label}</Form.Label>
