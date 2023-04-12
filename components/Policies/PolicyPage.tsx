@@ -5,7 +5,7 @@ import style from "./PolicyPage.module.css"
 import Router from "next/router"
 
 const policies = [
-  "terms-of-service",
+  "copyright",
   "privacy-policy",
   "code-of-conduct"
 ] as const
@@ -44,10 +44,10 @@ export default function PolicyPage({
         </Button>
         <Button
           className={`${
-            style[policy === "terms-of-service" ? "currentTab" : "tab"]
+            style[policy === "copyright" ? "currentTab" : "tab"]
           }`}
-          id="terms-of-service"
-          onClick={e => handleOnClick("terms-of-service")}
+          id="copyright"
+          onClick={e => handleOnClick("copyright")}
         >
           Copyright <br />
         </Button>

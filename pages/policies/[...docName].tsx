@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
     paths: [
       { params: { docName: ["privacy-policy"] } },
       { params: { docName: ["code-of-conduct"] } },
-      { params: { docName: ["terms-of-service"] } }
+      { params: { docName: ["copyright"] } }
     ],
     fallback: false
   }
