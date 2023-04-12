@@ -326,6 +326,14 @@ const PageFooter = (props: PageFooterProps) => {
               {t("legal.TOS")}
             </NavLink>
           </Col>
+          <Col className="col">
+            <NavLink
+              href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
+              other={{ className: `${styles.footerLink}`, target:"_blank", rel:"noopener noreferrer" }}
+            >
+              {t("Click here to subscribe to our newsletter")}
+            </NavLink>
+          </Col>
         </Row>
         <Col
           className="d-xs-flex d-md-none"
