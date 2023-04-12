@@ -1,5 +1,3 @@
-# Copyright
-
 + ## Copyright
 + ---
 + - If you believe that any content residing or accessible on or through MAPLE infringes a copyright, please contact us at mapletestimony@gmail.com. 
