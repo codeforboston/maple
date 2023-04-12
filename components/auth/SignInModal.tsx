@@ -93,9 +93,16 @@ export default function SignInModal({
                 Sign In
               </LoadingButton>
 
+              {
+              /*
+              Hiding social sign on buttons for now until we can get them working #TODO
+              See #1080
+
               <Divider className="px-4">or</Divider>
 
-              <SocialSignOnButtons onComplete={onHide} />
+              <SocialSignOnButtons onComplete={onHide} /> 
+              */
+              }
             </Stack>
           </Form>
         </Col>
