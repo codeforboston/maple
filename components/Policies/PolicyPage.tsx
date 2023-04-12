@@ -22,7 +22,15 @@ export default function PolicyPage({
 
   return (
     <Container className={style.policyContent}>
-      <h1>Policies</h1>
+      <h1>Terms of Use</h1>
+      <span>
+        <p className={style.subHeading}>Our Shared Values</p>
+        <hr className={style.bottomBorder}></hr>
+        <p className={style.subHeading2Underlined}>How we interact with each other determines what we can accomplish.</p>
+        <p className={style.subHeading2}>On this website, we ask you to act with:</p>
+        <p className={style.subHeading2Bold}>Compassion, Curiosity, and Humility</p>
+      </span>
+
 
       <Stack direction="horizontal">
         <Button
@@ -41,7 +49,7 @@ export default function PolicyPage({
           id="terms-of-service"
           onClick={e => handleOnClick("terms-of-service")}
         >
-          Terms <br /> of Service
+          Copyright <br />
         </Button>
         <Button
           className={`${
