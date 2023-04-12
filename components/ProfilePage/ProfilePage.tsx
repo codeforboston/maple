@@ -2,14 +2,18 @@ import { ProfileAboutSection } from "./ProfileAboutSection"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { usePublicProfile, usePublishedTestimonyListing } from "../db"
+import {
+  ProfileMember,
+  usePublicProfile,
+  usePublishedTestimonyListing
+} from "../db"
+import { Banner } from "../shared/StyledSharedComponents"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
-import { StyledContainer, Banner } from "./StyledProfileComponents"
+import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import { ProfileMember } from "../db"
 
 export function ProfilePage(profileprops: {
   id: string
