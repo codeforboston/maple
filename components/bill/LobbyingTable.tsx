@@ -1,116 +1,46 @@
+import { format, fromUnixTime } from "date-fns"
+import styled from "styled-components"
+import { Row } from "../bootstrap"
+import { FC } from "../types"
+import { LabeledContainer } from "./LabeledContainer"
+import styles from "./SponsorsAndCommittees.module.css"
+import { BillProps } from "./types"
 import { billSiteURL, Wrap } from "components/links"
 import { useContext } from "react"
-import styled from "styled-components"
 import { BillHistory } from "../db"
 import { CourtContext } from "./Status"
+import { Button, Modal, Table } from "react-bootstrap"
 
-export type HistoryProps = { billHistory: BillHistory }
 
-const LinkConnectedBills = ({ action }: { action: string }): JSX.Element => {
-  /* regex must have capture group for split to work */
-  const billRegex = new RegExp(/([HS]\d+)/)
-
-  const court = useContext(CourtContext)
-  if (!billRegex.test(action)) {
-    return <>{action}</>
-  }
-  const words = action.split(billRegex)
-  const wordMap = words.map((w, i) =>
-    billRegex.test(w) ? (
-      <Wrap key={i} href={billSiteURL(w, court)}>
-        {w}
-      </Wrap>
-    ) : (
-      w
-    )
-  )
-
-  return <>{wordMap}</>
-}
-
-const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
-  return (
-    <>
-      {billHistory.map((billHistoryItem, index) => {
-        const { Date, Action, Branch } = billHistoryItem
-        return (
-          <tr key={index}>
-            <td>
-              {Date.substring(5, 10)}-{Date.substring(0, 4)}
-            </td>
-            <td>
-              <LinkConnectedBills action={Action} />
-            </td>
-            <td>{Branch}</td>
-          </tr>
-        )
-      })}
-    </>
-  )
-}
-
-export const HistoryTable = ({ billHistory }: HistoryProps) => {
-  return (
-    <div className="text-center">
-      <StyledTable>
+export const LobbyingTable: FC<BillProps> = ({ bill, className }) => {
+    const current = bill.currentCommittee
+    if (!current) return null
+    return (
+        <LabeledContainer className={className}>
+        <Row className={`bg-secondary text-light ${styles.subHeader}`}>
+          Lobbying Parties
+        </Row>
+        <Table>
         <thead>
           <tr>
-            <th></th>
-            <th>Status History</th>
-            <th>Branch</th>
+            <th>Client Name</th>
+            <th>Position</th>
+            <th>Disclosure Date</th>
           </tr>
         </thead>
         <tbody>
-          <BillHistoryActionRows billHistory={billHistory} />
+        <tr>
+        <td>Example Name</td>
+        <td>Pro</td>
+        <td>April 10, 2023</td>
+      </tr>
+      <tr>
+        <td>Example Name</td>
+        <td>Neutral</td>
+        <td>March 29, 2023</td>
+      </tr>
         </tbody>
-      </StyledTable>
-    </div>
-  )
-}
-
-const StyledTable = styled.table`
-  table-layout: auto;
-  width: 100%;
-  font-family: "Nunito";
-
-  th {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 22px;
-    letter-spacing: -1.125px;
-    text-align: start;
-    color: white;
-    background-color: var(--bs-secondary);
-
-    padding: 0.5rem;
-    outline: 0.25rem solid white;
+      </Table>
+      </LabeledContainer>
+    )
   }
-
-  th:last-child {
-    width: 24%;
-    text-align: center;
-  }
-
-  tbody {
-    td {
-      font: {
-        family: Nunito;
-        size: 16px;
-        weight: 400;
-      }
-      line-height: 22px;
-      letter-spacing: -1.125px;
-      text-align: start;
-
-      padding: 0.5rem 0.75rem;
-      outline: 0.25rem solid white;
-    }
-    tr:nth-child(odd) {
-      background: hsla(353, 74%, 45%, 0.2);
-    }
-
-    td:last-child {
-      text-align: center;
-    }
-  }
-`
