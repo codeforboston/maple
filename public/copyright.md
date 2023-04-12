@@ -1,4 +1,4 @@
-# Terms of Service 
+# Copyright
 
 + ## Copyright
 + ---
