@@ -19,6 +19,7 @@ import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
 import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
+import { LobbyingTable } from "./LobbyingTable"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
@@ -95,6 +96,7 @@ export const BillDetails = ({ bill }: BillProps) => {
         <Col md={8}>
           <Sponsors bill={bill} className="mt-4 pb-1" />
           <BillTestimonies bill={bill} className="mt-4" />
+          <LobbyingTable bill={bill} className="mt-4 pb-1" />
         </Col>
         <Col md={4}>
           <Committees bill={bill} className="mt-4 pb-1" />
