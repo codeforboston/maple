@@ -2,8 +2,8 @@ import { SocialLinks } from ".."
 
 export function cleanSocialLinks(network: keyof SocialLinks, link: string) {
   let path = link
-  if (network !== "linkedIn") {
-    if (path.includes(".com/")) {
+  if (network && network !== "linkedIn") {
+    if (path && path.includes(".com/")) {
       const index: number = path.indexOf(".com/") + 5
       path = path.substring(index)
     }
