@@ -58,6 +58,9 @@ const HeroHeader = ({ authenticated }) => {
                     {t("common:let_your_voice_be_heard")}
                   </div>
                   <p className={styles.subtitle}>{t("short_description")}</p>
+                  <p>New to MAPLE? Check out <a href = "https://calendar.google.com/calendar/u/0?cid=OTk4ZjYyMzIzOTI2ZjBiMDA3NmU3ZjU3OGQzY2E3MmIxYmM5NGM0ZWZhMmYyNGJlNTdiMTFmNTJiMWI4ODU5NUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+                                              style = {{color: "white"}}
+                                              >our calendar</a> to see and join an upcoming training session!</p>
                   <div className="text-end m-5">
                     {!authenticated && (
                       <div className={styles.btncontainer}>
