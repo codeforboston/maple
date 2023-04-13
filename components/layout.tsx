@@ -133,34 +133,26 @@ const TopNav: React.FC = () => {
                     </NavDropdown.Item>
                   </NavDropdown>
 
-                  <NavDropdown className={"navLink-primary"} title={"About"}>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/about/mission-and-goals"
-                        handleClick={closeNav}
-                      >
-                        Our Mission &amp; Goals
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink href="/about/our-team" handleClick={closeNav}>
-                        Our Team
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/about/support-maple"
-                        handleClick={closeNav}
-                      >
-                        How to Support MAPLE
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink href="/policies" handleClick={closeNav}>
-                        Privacy Policy & Code of Conduct
-                      </NavLink>
-                    </NavDropdown.Item>
-                  </NavDropdown>
+              <NavDropdown className={"navLink-primary"} title={"About"}>
+                <NavDropdown.Item>
+                  <NavLink
+                    href="/about/mission-and-goals"
+                    handleClick={closeNav}
+                  >
+                    Our Mission &amp; Goals
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/about/our-team" handleClick={closeNav}>
+                    Our Team
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/about/support-maple" handleClick={closeNav}>
+                    How to Support MAPLE
+                  </NavLink>
+                </NavDropdown.Item>
+              </NavDropdown>
 
                   <NavDropdown
                     className={"navLink-primary"}

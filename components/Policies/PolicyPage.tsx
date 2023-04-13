@@ -5,7 +5,11 @@ import style from "./PolicyPage.module.css"
 import Router from "next/router"
 import classNames from "classnames"
 
-const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
+const policies = [
+  "terms-of-service",
+  "privacy-policy",
+  "code-of-conduct"
+] as const
 export type Policy = (typeof policies)[number]
 
 export default function PolicyPage({
@@ -18,8 +22,9 @@ export default function PolicyPage({
   }
 
   return (
-    <Container fluid className={style.policyContent}>
+    <Container className={style.policyContent}>
       <h1>Policies</h1>
+
       <Stack direction="horizontal">
         <Button
           className={`${
@@ -31,11 +36,13 @@ export default function PolicyPage({
           Privacy <br /> Policy
         </Button>
         <Button
-          className={`${style[policy === "copyright" ? "currentTab" : "tab"]}`}
-          id="copyright"
-          onClick={e => handleOnClick("copyright")}
+          className={`${
+            style[policy === "terms-of-service" ? "currentTab" : "tab"]
+          }`}
+          id="terms-of-service"
+          onClick={e => handleOnClick("terms-of-service")}
         >
-          Terms of Service <br />
+          Terms <br /> of Service
         </Button>
 
         <Button

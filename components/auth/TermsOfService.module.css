@@ -21,15 +21,3 @@
 .link {
   text-decoration: none;
 }
-
-.subscribe {
-  text-align: center;
-  font-size: 1.15rem;
-  margin-top: 5%;
-  margin-bottom: -2%;
-  color: var(--bs-blue);
-}
-
-.subscribe:a {
-  color: #1a3185;
-}

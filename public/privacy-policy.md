@@ -75,4 +75,5 @@ Administrative communications relating to your account (e.g., for purposes of ac
 
 + ## Where to Direct Questions or Concerns
 + ---
-+ - If you have any questions or concerns regarding our Privacy Policy, you can contact us at: info@mapletestimony.org
++ - If you have any questions or concerns regarding our Privacy Policy, you can contact us at: mapletestimony@gmail.com 
+

@@ -12,7 +12,6 @@ import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
-import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -267,8 +266,6 @@ function updateOrgCategory(uid: string, category: OrgCategory) {
 }
 
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
-  link = cleanSocialLinks(network, link)
-
   return setDoc(
     profileRef(uid),
     { social: { [network]: link ?? deleteField() } },
@@ -281,11 +278,6 @@ function updateContactInfo(
   contactType: keyof ContactInfo,
   contact: string | number
 ) {
-  if (contactType === "website") {
-    contact = contact.toString()
-    contact = cleanOrgURL(contact)
-  }
-
   return setDoc(
     profileRef(uid),
     { contactInfo: { [contactType]: contact ?? deleteField() } },

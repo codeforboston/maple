@@ -131,10 +131,7 @@ const BrowseLinks = () => {
         Testimonies
       </NavLink> */}
       <NavLink className={styles.footerLink} href="/bills">
-        {t("links.browseBills")}
-      </NavLink>
-      <NavLink className={styles.footerLink} href="/testimony">
-        {t("links.browseTestimony")}
+        {t("links.browsePolicies")}
       </NavLink>
     </>
   )
@@ -155,6 +152,18 @@ const OurTeamLinks = () => {
         className={styles.footerLink}
       >
         {t("links.teamCFB")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        href="https://www.bc.edu/bc-web/schools/law"
+        className={styles.footerLink}
+      >
+        {t("links.teamBC")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        href="https://cyber.harvard.edu/"
+        className={styles.footerLink}
+      >
+        {t("links.teamHarvard")}
       </ExternalNavLink>
     </>
   )
@@ -327,18 +336,6 @@ const PageFooter = (props: PageFooterProps) => {
               other={{ className: `${styles.footerLink}` }}
             >
               {t("legal.TOS")}
-            </NavLink>
-          </Col>
-          <Col className="col">
-            <NavLink
-              href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
-              other={{
-                className: `${styles.footerLink}`,
-                target: "_blank",
-                rel: "noopener noreferrer"
-              }}
-            >
-              {t("Click here to subscribe to our newsletter")}
             </NavLink>
           </Col>
         </Row>

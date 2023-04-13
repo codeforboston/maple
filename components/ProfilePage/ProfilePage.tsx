@@ -2,20 +2,14 @@ import { ProfileAboutSection } from "./ProfileAboutSection"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import {
-  ProfileMember,
-  usePublicProfile,
-  usePublishedTestimonyListing
-} from "../db"
-import { Banner } from "../shared/StyledSharedComponents"
+import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
-import { StyledContainer } from "./StyledProfileComponents"
+import { StyledContainer, Banner } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 import { ProfileMember } from "../db"
-import { useTranslation } from "next-i18next"
 
 export function ProfilePage(profileprops: {
   id: string

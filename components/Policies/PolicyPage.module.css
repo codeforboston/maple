@@ -3,61 +3,6 @@
   font-family: "Nunito";
 }
 
-.sharedValues {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1a3185;
-  text-align: justify;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.subHeading {
-  font-weight: bold;
-}
-
-.text1 {
-  font-weight: 400;
-}
-
-.text2 {
-  margin-bottom: 1.5rem;
-}
-
-.boxContainer {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.blueBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 325px;
-  height: 100px;
-  background: #1a3185;
-  border-radius: 10px;
-}
-
-.symbol {
-  width: 60px;
-  height: 55px;
-}
-
-.values {
-  font-family: "Nunito";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 1rem;
-  color: white;
-  padding-top: 1rem;
-}
-
-hr.bottomBorder {
-  border-bottom: 2px solid rgba(0, 0, 0, 100%);
-  width: 100%;
-}
-
 /* ---------- Policy Links --------------*/
 .policyContent button {
   display: flex;
