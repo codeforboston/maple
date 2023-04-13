@@ -21,7 +21,7 @@ import {
   StyledTabNav
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
-import { Banner } from "components/ProfilePage/StyledProfileComponents"
+import { Banner } from "components/shared/StyledSharedComponents"
 
 export function EditProfile() {
   const { user } = useAuth()
