@@ -3,7 +3,7 @@
 
 + ## Values
 + ---
-+ - We respect your online privacy and recognize your need for appropriate protection and management of the Personal Information that you share with us, which is your email address; your full name; your nickname; a password; and your district information.
++ - We respect your online privacy and recognize your need for appropriate protection and management of the Personal Information that you share with us, which is your email address; your full name; a password; and your district information.
 + - We will always be transparent, careful, and professional in all communications. 
 + - We will never sell your data or share any Personal Information that you have not consented to post publicly on our website, MAPLE.
 
