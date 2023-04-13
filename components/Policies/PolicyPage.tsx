@@ -22,7 +22,7 @@ export default function PolicyPage({
 
   return (
     <Container className={style.policyContent}>
-      <h1>Terms of Use</h1>
+      <h1>Terms of Service</h1>
       <span>
         <p className={style.subHeading}>Our Shared Values</p>
         <hr className={style.bottomBorder}></hr>

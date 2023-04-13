@@ -10,7 +10,7 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Terms of Use",
+  title: "Terms of Service",
   Page: () => {
     const policy =
       Query.parse(useRouter().query).docName?.[0] || "privacy-policy"
