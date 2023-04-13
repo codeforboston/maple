@@ -77,8 +77,3 @@ Administrative communications relating to your account (e.g., for purposes of ac
 + ---
 + - If you have any questions or concerns regarding our Privacy Policy, you can contact us at: mapletestimony@gmail.com 
 
----
-
-+ ## Newsletter
-+ ---
-+ - We may send newsletters via email to MAPLE members. You can unsubscribe from these newsletters at any time by using the “Unsubscribe” link in the emails themselves. We never share with or sell your email to third party providers. 
