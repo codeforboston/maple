@@ -1,6 +1,7 @@
 import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
 import { StyledImage } from "./StyledProfileComponents"
+import { useTranslation } from "next-i18next"
 
 export const FollowButton = ({
   isMobile,
@@ -13,7 +14,8 @@ export const FollowButton = ({
   onFollowClick: () => void
   onUnfollowClick: () => void
 }) => {
-  const text = isFollowing ? "Following" : "Follow"
+  const { t } = useTranslation("profile")
+  const text = isFollowing ? t("button.following") : t("button.follow")
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="checkmark" />
   ) : null
