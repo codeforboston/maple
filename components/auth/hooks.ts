@@ -118,7 +118,11 @@ export function useSendPasswordResetEmail() {
 }
 
 export function useSignInWithPopUp() {
-  return useFirebaseFunction((provider: AuthProvider) =>
-    signInWithPopup(auth, provider)
-  )
+  return useFirebaseFunction(async (provider: AuthProvider) => {
+    const credentials = await signInWithPopup(auth, provider)
+
+    await finishSignup({ requestedRole: "user" })
+
+    await setProfile(credentials.user.uid, {})
+  })
 }

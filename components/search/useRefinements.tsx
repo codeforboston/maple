@@ -37,7 +37,7 @@ export const useRefinements = () => {
     if (inline) setShow(false)
   }, [inline])
 
-  const baseProps = { limit: 5, searchable: true }
+  const baseProps = { limit: 500, searchable: true }
   const refinementProps = [
     useRefinementListUiProps({
       transformItems: useCallback(
@@ -55,6 +55,11 @@ export const useRefinements = () => {
       ...baseProps
     }),
     useRefinementListUiProps({
+      attribute: "currentCommittee",
+      ...baseProps,
+      searchablePlaceholder: "Current Committee"
+    }),
+    useRefinementListUiProps({
       attribute: "city",
       searchablePlaceholder: "City",
       ...baseProps
@@ -68,11 +73,6 @@ export const useRefinements = () => {
       attribute: "cosponsors",
       ...baseProps,
       searchablePlaceholder: "Cosponsor"
-    }),
-    useRefinementListUiProps({
-      attribute: "currentCommittee",
-      ...baseProps,
-      searchablePlaceholder: "Current Committee"
     })
   ]
 

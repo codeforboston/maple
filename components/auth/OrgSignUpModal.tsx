@@ -127,7 +127,7 @@ export default function OrgSignUpModal({
                   error={errors.fullName?.message}
                 />
                 <Form.Group controlId="orgCategory">
-                  <Form.FloatingLabel label="Select an organization cateogry">
+                  <Form.FloatingLabel label="Select an organization category">
                     <Form.Select
                       as="select"
                       value={category}

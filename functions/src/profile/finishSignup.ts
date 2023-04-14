@@ -3,6 +3,7 @@ import { db, auth } from "../firebase"
 import { z } from "zod"
 import { checkRequestZod, checkAuth } from "../common"
 import { setRole } from "../auth"
+import { Role } from "../auth/types"
 
 const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization"])
@@ -13,8 +14,21 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
 
   const { requestedRole } = checkRequestZod(CreateProfileRequest, data)
 
-  // TODO: set role to pendingUpgrade if user requests to be an organization
-  const role = requestedRole === "user" ? "user" : "organization"
+  let role: Role = "user"
+
+  // Only an admin can approve organizations, after they've signed up initially
+  // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
+  if (requestedRole === "organization") {
+    role = "organization" // set as organization for softlaunch/until admin process is implemented
+  }
 
   await setRole({ role, auth, db, uid })
+
+  // admin dashboard pulls from the users collection
+  await db.doc(`users/${uid}`).set(
+    {
+      role
+    },
+    { merge: true }
+  )
 })

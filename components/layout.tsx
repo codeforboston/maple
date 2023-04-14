@@ -149,6 +149,11 @@ const TopNav: React.FC = () => {
                     How to Support MAPLE
                   </NavLink>
                 </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink href="/policies" handleClick={closeNav}>
+                    Privacy Policy & Code of Conduct
+                  </NavLink>
+                </NavDropdown.Item>
               </NavDropdown>
 
               <NavDropdown
