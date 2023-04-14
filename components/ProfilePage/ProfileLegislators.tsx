@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
 import { Card as MapleCard } from "components/Card"
+import { useTranslation } from "next-i18next"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 
@@ -11,6 +12,7 @@ const DisplayLegislator = ({
   legislator?: ProfileMemberPlus
 }) => {
   const [idphoto, setIdphoto] = useState<string>("/leaf.svg")
+  const { t } = useTranslation("profile")
 
   useEffect(() => {
     setIdphoto(
@@ -27,7 +29,7 @@ const DisplayLegislator = ({
           subText={legislator.name}
         />
       ) : (
-        <div>No legislator information given</div>
+        <div>{t("content.noLegislatorInfo")}</div>
       )}
     </>
   )
@@ -44,14 +46,15 @@ export function ProfileLegislators({
   senator,
   className
 }: ProfileLegislatorsProps) {
+  const { t } = useTranslation("profile")
   return (
-    <TitledSectionCard title={`Legislators`} className={className}>
+    <TitledSectionCard title={t("legislators").toString()} className={className}>
       <div>
         <DisplayLegislator
-          legislator={{ ...rep, title: "Representative" } as ProfileMemberPlus}
+          legislator={{ ...rep, title: t("representative") } as ProfileMemberPlus}
         />
         <DisplayLegislator
-          legislator={{ ...senator, title: "Senator" } as ProfileMemberPlus}
+          legislator={{ ...senator, title: t("senator") } as ProfileMemberPlus}
         />
       </div>
     </TitledSectionCard>
