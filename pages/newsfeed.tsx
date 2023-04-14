@@ -1,11 +1,10 @@
 import { createPage } from "../components/page"
-import { UnsubscribeConfirm } from "../components/Email/unsubscribe"
-import { createGetStaticTranslationProps } from "components/translations"
+import { Newsfeed } from "components/Newsfeed/Newsfeed"
 
 export default createPage({
-  title: "Unsubscribe",
+  title: "Newsfeed",
   Page: () => {
-    return <UnsubscribeConfirm />
+    return <Newsfeed />
   }
 })
 
