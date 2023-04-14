@@ -97,7 +97,7 @@ export function ProfilePage(profileprops: {
                       isUser={isUser}
                       onProfilePage={true}
                       className="mb-4"
-                      isOrg
+                      isOrg={isOrg}
                     />
                   </Col>
                 </Row>
