@@ -10,7 +10,7 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Policies",
+  title: "Terms of Service",
   Page: () => {
     const policy =
       Query.parse(useRouter().query).docName?.[0] || "privacy-policy"
@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
     paths: [
       { params: { docName: ["privacy-policy"] } },
       { params: { docName: ["code-of-conduct"] } },
-      { params: { docName: ["terms-of-service"] } }
+      { params: { docName: ["copyright"] } }
     ],
     fallback: false
   }
