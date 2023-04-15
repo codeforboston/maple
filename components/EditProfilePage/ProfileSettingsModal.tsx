@@ -6,6 +6,7 @@ import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import { Role } from "../auth"
+import { useTranslation } from "next-i18next"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -117,6 +118,7 @@ export default function ProfileSettingsModal({
   }
 
   const privacyText = renderPrivacyText(role, isProfilePublic)
+  const { t } = useTranslation("editProfile")
 
   return (
     <Modal
@@ -126,7 +128,7 @@ export default function ProfileSettingsModal({
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="notifications-modal">Settings</Modal.Title>
+        <Modal.Title id="notifications-modal">{t("setting")}</Modal.Title>
       </Modal.Header>
       <StyledModalBody>
         <Form>
@@ -137,11 +139,10 @@ export default function ProfileSettingsModal({
             className="d-none"
           >
             <StyledRow className="p-2">
-              <h5 className="p-0"> &nbsp; Notifications</h5>
+              <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
               <hr className={`mt-0`} />
               <Col className={`col-8`}>
-                Would you like to receive updates about bills/organizations you
-                follow through email?
+                {t("forms.notificationText")}
               </Col>
               <Col>
                 {notifications === "None" ? (
@@ -208,7 +209,7 @@ export default function ProfileSettingsModal({
           </div>
 
           <StyledRow className="p-2">
-            <h5 className="p-0">&nbsp; Privacy Settings</h5>
+            <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>
             <hr />
 
             <Col>{privacyText}</Col>
@@ -222,7 +223,7 @@ export default function ProfileSettingsModal({
                     setIsProfilePublic(isProfilePublic ? false : true)
                   }
                 >
-                  {isProfilePublic ? "Make Private" : "Make Public"}
+                  {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
                 </StyledButton>
               </Col>
             )}
@@ -233,13 +234,13 @@ export default function ProfileSettingsModal({
             direction={`horizontal`}
           >
             <Button className={`btn btn-sm mx-3 py-1`} onClick={handleSave}>
-              Save
+              {t("save")}
             </Button>
             <StyledOutlineButton2
               className={`btn btn-sm btn-outline-secondary py-1`}
               onClick={onSettingsModalClose}
             >
-              Cancel
+              {t("cancel")}
             </StyledOutlineButton2>
           </Stack>
         </Form>

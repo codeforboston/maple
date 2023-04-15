@@ -1,6 +1,9 @@
 {
     "header": "Edit Profile",
     "setting": "Settings",
+    "privacySetting": "Privacy Settings",
+    "save": "Save",
+    "cancel": "Cancel",
     "viewMyProfile": "View My Profile",
     "viewOrgProfile": "View My Organization",
     "saveChanges":"Save Personal Information",
@@ -25,16 +28,23 @@
         "searchRepresentative": "Search your representative",
         "senator": "Senator",
         "searchSenator": "Search your senator",
-        "yourLegislators": "Your Legislators"
+        "yourLegislators": "Your Legislators",
+        "politeWords": "Please use the ",
+        "findTool": "find your legislator tool",
+        "findToolTip": " and select your State Representative and Senator."
     },
     "forms": {
         "generalInfo": "General Information",
         "fullName": "Full Name",
         "nickname": "Nickname",
+        "makePublic": "Make Public",
+        "makePrivate": "Make Private",
         "errNameRequired": "Name is required",
         "aboutYou": "Write something about yourself",
         "aboutYouTip":"What should you write?",
-        "selectOrgCategory": "Select an organization cateogry"
+        "selectOrgCategory": "Select an organization cateogry",
+        "notification": "Notifications",
+        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?"
     },
     "socialLinks": {
         "twitter": "Twitter Username",
