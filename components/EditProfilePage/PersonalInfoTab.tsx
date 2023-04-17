@@ -49,7 +49,7 @@ async function updateProfile(
 
   await updateContactInfo("publicEmail", data.publicEmail)
   await updateContactInfo("publicPhone", data.publicPhone)
-  await updateContactInfo("website", data.website)
+  data.website && (await updateContactInfo("website", data.website))
   await updateOrgCategory(data.orgCategory)
 
   await updateSocial("linkedIn", data.linkedIn)
