@@ -23,7 +23,10 @@ export const VerifyAccountSection = ({
         </p>
 
         {sendEmailVerification.status === "success" ? (
-          <Alert variant="success"> {t("verifyAccountSection.checkEmail")} </Alert>
+          <Alert variant="success">
+            {" "}
+            {t("verifyAccountSection.checkEmail")}{" "}
+          </Alert>
         ) : null}
 
         {sendEmailVerification.status === "error" ? (

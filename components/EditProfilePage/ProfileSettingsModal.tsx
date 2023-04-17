@@ -141,9 +141,7 @@ export default function ProfileSettingsModal({
             <StyledRow className="p-2">
               <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
               <hr className={`mt-0`} />
-              <Col className={`col-8`}>
-                {t("forms.notificationText")}
-              </Col>
+              <Col className={`col-8`}>{t("forms.notificationText")}</Col>
               <Col>
                 {notifications === "None" ? (
                   <StyledOutlineButton
@@ -223,7 +221,9 @@ export default function ProfileSettingsModal({
                     setIsProfilePublic(isProfilePublic ? false : true)
                   }
                 >
-                  {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
+                  {isProfilePublic
+                    ? t("forms.makePrivate")
+                    : t("forms.makePublic")}
                 </StyledButton>
               </Col>
             )}

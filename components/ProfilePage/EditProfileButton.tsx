@@ -20,7 +20,9 @@ export const EditProfileButton = ({
     >
       <div>
         <Internal href="/editprofile" className="view-edit-profile">
-          <Button className={`btn btn-lg py-1`}>{t("button.editProfile")}</Button>
+          <Button className={`btn btn-lg py-1`}>
+            {t("button.editProfile")}
+          </Button>
         </Internal>
       </div>
     </Col>

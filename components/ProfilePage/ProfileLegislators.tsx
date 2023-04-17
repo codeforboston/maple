@@ -48,10 +48,15 @@ export function ProfileLegislators({
 }: ProfileLegislatorsProps) {
   const { t } = useTranslation("profile")
   return (
-    <TitledSectionCard title={t("legislators").toString()} className={className}>
+    <TitledSectionCard
+      title={t("legislators").toString()}
+      className={className}
+    >
       <div>
         <DisplayLegislator
-          legislator={{ ...rep, title: t("representative") } as ProfileMemberPlus}
+          legislator={
+            { ...rep, title: t("representative") } as ProfileMemberPlus
+          }
         />
         <DisplayLegislator
           legislator={{ ...senator, title: t("senator") } as ProfileMemberPlus}

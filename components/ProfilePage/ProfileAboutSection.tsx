@@ -23,7 +23,9 @@ export const ProfileAboutSection = ({
   const { t } = useTranslation("profile")
   const title = isOrg
     ? t("aboutUs")
-    : t("aboutMe", {firstName: profile?.displayName?.split(" ")?.[0] ?? "User"})
+    : t("aboutMe", {
+        firstName: profile?.displayName?.split(" ")?.[0] ?? "User"
+      })
 
   return (
     <TitledSectionCard

@@ -260,9 +260,7 @@ export function PersonalInfoTab({
 
       <Row>
         <Col>
-          <StyledSaveButton type="submit">
-            {t("saveChanges")}
-          </StyledSaveButton>
+          <StyledSaveButton type="submit">{t("saveChanges")}</StyledSaveButton>
         </Col>
       </Row>
     </Form>

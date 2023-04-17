@@ -123,11 +123,7 @@ export function EditProfileForm({
 
   return (
     <>
-      {isPendingUpgrade && (
-        <Banner>
-          {t("content.reqPending")}
-        </Banner>
-      )}
+      {isPendingUpgrade && <Banner>{t("content.reqPending")}</Banner>}
 
       <Container>
         <Header>

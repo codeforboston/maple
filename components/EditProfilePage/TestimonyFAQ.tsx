@@ -28,13 +28,8 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
         </div>
 
         <h4>{t("testimonies.edit")}</h4>
-        <p>
-        {t("testimonies.editTip1")}
-        </p>
-        <p>
-          {" "}
-          {t("testimonies.editTip2")}
-        </p>
+        <p>{t("testimonies.editTip1")}</p>
+        <p> {t("testimonies.editTip2")}</p>
         {/* hiding for soft launch
         <hr></hr>
         <h4>Rescinding testimony </h4>
