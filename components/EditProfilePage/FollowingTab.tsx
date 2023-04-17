@@ -257,9 +257,7 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
       </Row>
     )
   } else if (error) {
-    return (
-      <Alert variant="danger">{t("content.error")}</Alert>
-    )
+    return <Alert variant="danger">{t("content.error")}</Alert>
   } else if (bill) {
     return <h6>{bill?.content.Title}</h6>
   }
