@@ -8,10 +8,14 @@ import {
   usePublishedTestimonyListing
 } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
-import { Header, StyledContainer } from "./StyledNewsfeedComponents"
+import {
+  Header,
+  HeaderTitle,
+  StyledContainer
+} from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
 
-export function Newsfeed() {
+export default function Newsfeed() {
   const { user } = useAuth()
   const { result: profile, loading } = usePublicProfile(user?.uid)
 
@@ -45,8 +49,14 @@ export function Newsfeed() {
             <>
               <StyledContainer>
                 <Header>
-                  <Col>Newsfeed</Col>
-                  <Col>boxes</Col>
+                  <HeaderTitle>Newsfeed</HeaderTitle>
+                  {isMobile ? (
+                    <FilterBox isMobile={isMobile} />
+                  ) : (
+                    <Col className="d-flex flex-column">
+                      <FilterBox isMobile={isMobile} />
+                    </Col>
+                  )}
                 </Header>
                 <AlertCard
                   header={`Green Sustainability`}
@@ -65,6 +75,47 @@ export function Newsfeed() {
           )}
         </>
       )}
+    </>
+  )
+}
+
+function FilterBox({ isMobile }: { isMobile: boolean }) {
+  return (
+    <>
+      <Row
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
+      >
+        <div className="form-check checkbox">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckDefault"
+          />
+          <label className="form-check-label" htmlFor="flexCheckDefault">
+            Organization Updates
+          </label>
+        </div>
+      </Row>
+      <Row
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
+      >
+        <div className="form-check checkbox">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckDefault"
+          />
+          <label className="form-check-label" htmlFor="flexCheckDefault">
+            Bill Updates
+          </label>
+        </div>
+      </Row>
     </>
   )
 }
