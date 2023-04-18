@@ -2,6 +2,13 @@ import styled from "styled-components"
 import { Container, Image, Col, Row } from "../bootstrap"
 
 export const Header = styled(Row)`
+  align-items: center;
+  margin: 2.5rem 0;
+  padding-right: 0;
+  padding-left: 0;
+`
+
+export const HeaderTitle = styled(Col)`
   font-family: "Nunito";
   font-style: normal;
   font-weight: 600;
@@ -10,11 +17,6 @@ export const Header = styled(Row)`
 
   letter-spacing: -0.03em;
   color: #000000;
-
-  align-items: center;
-  margin: 2.5rem 0;
-  padding-right: 0;
-  padding-left: 0;
 `
 
 export const UserIcon = styled(Image).attrs(props => ({
@@ -30,11 +32,22 @@ export const UserIcon = styled(Image).attrs(props => ({
 `
 
 export const StyledContainer = styled(Container)`
-  .about-me-checkbox input {
-    height: 25px;
-    width: 25px;
-    margin-top: 0;
+  .checkbox {
+    width: 187px;
+    padding: 0px;
+    color: #12266f;
+  }
+
+  .checkbox input {
+    height: 16px;
+    width: 16px;
+
+    background-color: transparent;
     border-color: #12266f;
+  }
+
+  .checkbox input:checked {
+    background-color: #12266f;
   }
 
   @media (min-width: 768px) {
