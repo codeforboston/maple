@@ -4,11 +4,7 @@ import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
 import Router from "next/router"
 
-const policies = [
-  "copyright",
-  "privacy-policy",
-  "code-of-conduct"
-] as const
+const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
 
 export default function PolicyPage({
@@ -26,11 +22,16 @@ export default function PolicyPage({
       <span>
         <p className={style.subHeading}>Our Shared Values</p>
         <hr className={style.bottomBorder}></hr>
-        <p className={style.subHeading2Underlined}>How we interact with each other determines what we can accomplish.</p>
-        <p className={style.subHeading2}>On this website, we ask you to act with:</p>
-        <p className={style.subHeading2Bold}>Compassion, Curiosity, and Humility</p>
+        <p className={style.subHeading2Underlined}>
+          How we interact with each other determines what we can accomplish.
+        </p>
+        <p className={style.subHeading2}>
+          On this website, we ask you to act with:
+        </p>
+        <p className={style.subHeading2Bold}>
+          Compassion, Curiosity, and Humility
+        </p>
       </span>
-
 
       <Stack direction="horizontal">
         <Button
@@ -43,9 +44,7 @@ export default function PolicyPage({
           Privacy <br /> Policy
         </Button>
         <Button
-          className={`${
-            style[policy === "copyright" ? "currentTab" : "tab"]
-          }`}
+          className={`${style[policy === "copyright" ? "currentTab" : "tab"]}`}
           id="copyright"
           onClick={e => handleOnClick("copyright")}
         >

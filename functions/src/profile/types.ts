@@ -8,6 +8,7 @@ import {
   String
 } from "runtypes"
 import { Role } from "../auth/types"
+import { Nullable } from "../common"
 
 export const ProfileMember = Record({
   district: String,
@@ -25,6 +26,6 @@ export const Profile = Record({
   about: Optional(String),
   social: Optional(Dictionary(String)),
   organization: Optional(Boolean),
-  orgCategories: Optional(Array(String))
+  orgCategories: Optional(Array(Nullable(String)))
 })
 export type Profile = Static<typeof Profile>
