@@ -16,8 +16,7 @@ export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
 
 export async function createNewBill(props?: Partial<Bill>) {
-  const billId = props?.id ?? nanoid(),
-    court = props?.court ?? 192
+  const billId = props?.id ?? nanoid()
   const content: BillContent = {
     Pinslip: null,
     Title: "fake",
