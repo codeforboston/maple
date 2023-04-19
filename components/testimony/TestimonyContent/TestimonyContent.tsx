@@ -8,9 +8,8 @@ export type Props = {
   previous?: string
   className?: string
 }
-
 export const TestimonyContent = styled<Props>(
-  ({ testimony, previous, className }) => {
+  ({ testimony, previous, className}) => {
     const htmlContent = useMemo(() => {
       if (previous) return formatTestimonyDiff(testimony, previous) as any
       return formatTestimony(testimony)
@@ -18,6 +17,7 @@ export const TestimonyContent = styled<Props>(
     return <div className={className} dangerouslySetInnerHTML={htmlContent} />
   }
 )`
+
   br {
     content: "";
     display: block;

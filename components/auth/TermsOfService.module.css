@@ -24,5 +24,11 @@
 
 .subscribe {
   text-align: center;
-  text-decoration: none;
+  font-size: 1.15rem;
+  margin-top: 5%;
+  margin-bottom: -2%;
+}
+
+.subscribe:a {
+  color: #1a3185;
 }
