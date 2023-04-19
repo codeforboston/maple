@@ -22,6 +22,7 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
+import { useTranslation } from "next-i18next"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -80,9 +81,11 @@ export function EditProfileForm({
 
   const isPendingUpgrade = profile.role === "pendingUpgrade"
 
+  const { t } = useTranslation("editProfile")
+
   const tabs = [
     {
-      title: "Personal Information",
+      title: t("tabs.personalInfo"),
       eventKey: "AboutYou",
       content: (
         <PersonalInfoTab
@@ -96,7 +99,7 @@ export function EditProfileForm({
       )
     },
     {
-      title: "Testimonies",
+      title: t("tabs.testimonies"),
       eventKey: "Testimonies",
       content: (
         <TestimoniesTab
@@ -120,15 +123,11 @@ export function EditProfileForm({
 
   return (
     <>
-      {isPendingUpgrade && (
-        <Banner>
-          Your request to be an organization account is pending approval
-        </Banner>
-      )}
+      {isPendingUpgrade && <Banner>{t("content.reqPending")}</Banner>}
 
       <Container>
         <Header>
-          <Col>Edit Profile</Col>
+          <Col>{t("header")}</Col>
           <Col className={`d-flex justify-content-end`}>
             <GearButton
               variant="outline-secondary"
@@ -137,7 +136,7 @@ export function EditProfileForm({
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
-              {"Settings"}
+              {t("settings")}
             </GearButton>
             <Button
               className={`btn-lg py-1 ml-2 text-decoration-none`}
@@ -145,8 +144,8 @@ export function EditProfileForm({
               href={`/profile?id=${uid}`}
             >
               {profile.role !== "organization"
-                ? "View My Profile"
-                : "View My Organization"}
+                ? t("viewMyProfile")
+                : t("viewOrgProfile")}
             </Button>
           </Col>
         </Header>
