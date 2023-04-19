@@ -21,19 +21,6 @@ export default function Newsfeed() {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
 
-  const header = {
-    header: "Green Sustainability",
-    subheader: "",
-    timestamp: "5:30PM",
-    imgSrc: ""
-  }
-
-  const body = {
-    imgSrc: "",
-    imgAltTxt: "",
-    text: ""
-  }
-
   console.log("P:", profile)
   console.log("U:", user)
 
@@ -58,15 +45,32 @@ export default function Newsfeed() {
                     </Col>
                   )}
                 </Header>
-                <AlertCard
-                  header={`Green Sustainability`}
-                  subheader={`test`}
-                  timestamp={`5:30PM`}
-                  headerImgSrc={``}
-                  bodyImgSrc={``}
-                  bodyImgAltTxt={``}
-                  bodyText={`body test`}
-                />
+                <div className="pb-4">
+                  <AlertCard
+                    header={`Green Sustainability`}
+                    subheader={``}
+                    timestamp={`5:30PM`}
+                    headerImgSrc={`${
+                      profile.profileImage
+                        ? profile.profileImage
+                        : "/profile-org-white.svg"
+                    }`}
+                    bodyImgSrc={``}
+                    bodyImgAltTxt={``}
+                    bodyText={`Green Sustainability released a testimony on S.1958 at https://digital-testimony-dev.web.app/bill?id=S1958.`}
+                  />
+                </div>
+                <div className="pb-4">
+                  <AlertCard
+                    header={`H.3340`}
+                    subheader={`An Act creating a green back to promote clean energy in Massachusetts`}
+                    timestamp={`5:30PM`}
+                    headerImgSrc={``}
+                    bodyImgSrc={``}
+                    bodyImgAltTxt={``}
+                    bodyText={`The reporting date was extended to Thursday June 30, 2022, pending concurrence.`}
+                  />
+                </div>
                 <div>Pagination</div>
               </StyledContainer>
             </>
