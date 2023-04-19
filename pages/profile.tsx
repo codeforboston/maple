@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Spinner } from "react-bootstrap"
 import { useAuth } from "../components/auth"
 import { createPage } from "../components/page"
+import { useTranslation } from "next-i18next"
 import { ProfilePage } from "../components/ProfilePage"
 
 export default createPage({
@@ -9,6 +10,7 @@ export default createPage({
   Page: () => {
     const { id, loading } = useProfileRouting()
     const { authenticated, user } = useAuth()
+    const { t } = useTranslation("profile")
 
     return (
       <div>
@@ -21,7 +23,7 @@ export default createPage({
         ) : id ? (
           <ProfilePage id={id} />
         ) : (
-          <div>no user</div>
+          <div>{t("noUser")}</div>
         )}
       </div>
     )
@@ -65,7 +67,12 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["common", "footer"]))
+      ...(await serverSideTranslations(locale, [
+        "common",
+        "footer",
+        "profile",
+        "editProfile"
+      ]))
       // Will be passed to the page component as props
     }
   }
