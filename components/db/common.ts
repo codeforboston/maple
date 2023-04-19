@@ -3,8 +3,6 @@ import { DateTime } from "luxon"
 import { Null, Nullish, Optional, Runtype, String } from "runtypes"
 import { firestore } from "../firebase"
 
-export const currentGeneralCourt = 193
-
 type GeneralCourt = {
   Name: string
   Number: number
@@ -26,6 +24,16 @@ export const generalCourts: Record<number, GeneralCourt | undefined> = {
     SecondYear: 2022
   }
 }
+
+export const supportedGeneralCourts = Object.keys(generalCourts)
+  .map(n => Number.parseInt(n))
+  .sort()
+  .reverse()
+
+export const currentGeneralCourt = supportedGeneralCourts[0]
+
+export const isCurrentCourt = (courtNumber: number) =>
+  courtNumber === currentGeneralCourt
 
 export async function loadDoc(path: string) {
   const d = await getDoc(doc(firestore, path))

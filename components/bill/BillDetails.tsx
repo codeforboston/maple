@@ -26,6 +26,7 @@ import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
+import { isCurrentCourt } from "components/db/common"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -42,11 +43,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
   return (
     <>
-      {/**
-       * replace bill.court !== 193 with function to check for
-       * latest court from an array of courts
-       */}
-      {bill.court !== 193 && (
+      {!isCurrentCourt(bill.court) && (
         <Banner>
           this bill is from session {bill.court} - not the current session
         </Banner>
@@ -70,7 +67,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
                 <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                  /* remove "div w/ d-none" for testing and/or after Soft Launch
                    when we're ready to show Email related element to users
                 */
                   className="d-none"
@@ -88,7 +85,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
                 <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch 
+                  /* remove "div w/ d-none" for testing and/or after Soft Launch
                    when we're ready to show Email related element to users
                 */
                   className="d-none"
