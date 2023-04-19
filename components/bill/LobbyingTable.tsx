@@ -11,16 +11,15 @@ import { BillHistory } from "../db"
 import { CourtContext } from "./Status"
 import { Button, Modal, Table } from "react-bootstrap"
 
-
 export const LobbyingTable: FC<BillProps> = ({ bill, className }) => {
-    const current = bill.currentCommittee
-    if (!current) return null
-    return (
-        <LabeledContainer className={className}>
-        <Row className={`bg-secondary text-light ${styles.subHeader}`}>
-          Lobbying Parties
-        </Row>
-        <Table>
+  const current = bill.currentCommittee
+  if (!current) return null
+  return (
+    <LabeledContainer className={className}>
+      <Row className={`bg-secondary text-light ${styles.subHeader}`}>
+        Lobbying Parties
+      </Row>
+      <Table>
         <thead>
           <tr>
             <th>Client Name</th>
@@ -29,18 +28,18 @@ export const LobbyingTable: FC<BillProps> = ({ bill, className }) => {
           </tr>
         </thead>
         <tbody>
-        <tr>
-        <td>Example Name</td>
-        <td>Pro</td>
-        <td>April 10, 2023</td>
-      </tr>
-      <tr>
-        <td>Example Name</td>
-        <td>Neutral</td>
-        <td>March 29, 2023</td>
-      </tr>
+          <tr>
+            <td>Example Name</td>
+            <td>Pro</td>
+            <td>April 10, 2023</td>
+          </tr>
+          <tr>
+            <td>Example Name</td>
+            <td>Neutral</td>
+            <td>March 29, 2023</td>
+          </tr>
         </tbody>
       </Table>
-      </LabeledContainer>
-    )
-  }
+    </LabeledContainer>
+  )
+}
