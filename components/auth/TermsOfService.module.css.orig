@@ -1,0 +1,39 @@
+.text {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.hr {
+  color: black;
+  background-color: black;
+  height: 10px;
+}
+
+.button {
+  width: 100%;
+}
+
+.warning {
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.subscribe {
+  text-align: center;
+<<<<<<< HEAD
+  text-decoration: none;
+}
+=======
+  font-size: 1.15rem;
+  margin-top: 5%;
+  margin-bottom: -2%;
+}
+
+.subscribe:a {
+  color: #1a3185;
+}
+>>>>>>> danielle
