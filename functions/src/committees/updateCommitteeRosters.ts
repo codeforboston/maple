@@ -4,13 +4,14 @@ import { db } from "../firebase"
 import * as api from "../malegislature"
 import { Member } from "../members/types"
 import { Committee } from "./types"
+import { currentGeneralCourt } from "../../../components/db/common"
 
 /** Updates the list of members in each committee.  */
 export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
   .pubsub.schedule("every 24 hours")
   .onRun(async () => {
     const members = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/members`)
+      .collection(`/generalCourts/${currentGeneralCourt}/members`)
       .get()
       .then(c => c.docs.map(d => d.data()).filter(Member.guard))
     const rosters = computeRosters(members)
@@ -21,7 +22,7 @@ export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
         members: roster.map(m => ({ id: m.id, name: m.content.Name }))
       }
       writer.set(
-        db.doc(`/generalCourts/${api.currentGeneralCourt}/committees/${id}`),
+        db.doc(`/generalCourts/${currentGeneralCourt}/committees/${id}`),
         update,
         { merge: true }
       )

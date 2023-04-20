@@ -1,11 +1,8 @@
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
-import { currentGeneralCourt } from "./db/common"
 import { formatBillId } from "./formatting"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
@@ -36,7 +33,7 @@ export function External({
       {
         !plain
         /*
-         Icon removed from current Figma 
+         Icon removed from current Figma
          */
         // && <FontAwesomeIcon icon={faExternalLinkAlt} />
       }
