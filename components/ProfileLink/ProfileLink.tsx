@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Container, Navbar, Nav} from "react-bootstrap"
+import { Container, Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { Role, signOutAndRedirectToHome, useAuth } from "../auth"
 import { NavLink } from "../Navlink"
@@ -45,7 +45,8 @@ const ProfileLink = ({
         sticky={sticky ? "top" : undefined}
         expand={false}
         expanded={isExpanded}
-        className="p-0">
+        className="p-0"
+      >
         <Container className={`py-0`}>
           <div className={styles.navbar_boxes_container}>
             <Navbar.Brand className="mx-2 p-0" onClick={toggleNav}>
@@ -53,8 +54,8 @@ const ProfileLink = ({
                 <Image
                   className={styles.profileLinkImage}
                   src="/profile-icon.svg"
-                  alt="profile icon">
-                </Image>
+                  alt="profile icon"
+                ></Image>
                 {greeting(role, displayName)}
               </Nav.Link>
             </Navbar.Brand>
@@ -64,20 +65,24 @@ const ProfileLink = ({
               <NavLink
                 className={"navLink-primary"}
                 href={"/profile" + search}
-                handleClick={closeNav}>
+                handleClick={closeNav}
+              >
                 View Profile
               </NavLink>
               <NavLink
                 className={"navLink-primary"}
                 href="/editprofile"
-                handleClick={closeNav}>
+                handleClick={closeNav}
+              >
                 Edit Profile
               </NavLink>
               <NavLink
                 className={"navLink-primary"}
                 handleClick={() => {
                   closeNav()
-                  void signOutAndRedirectToHome()}}>
+                  void signOutAndRedirectToHome()
+                }}
+              >
                 Sign Out
               </NavLink>
             </Nav>

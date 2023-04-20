@@ -177,36 +177,38 @@ export function PersonalInfoTab({
               <Input
                 label={t("socialLinks.twitter")}
                 defaultValue={social?.twitter}
-                className=" w-50"
+                className="col-sm-12 col-md-6 mb-1"
                 iconSrc="./twitter.svg"
                 {...register("twitter")}
               />
               <Input
                 label={t("socialLinks.linkedIn")}
                 defaultValue={social?.linkedIn}
-                className="w-50"
+                className="col-sm-12 col-md-6 mb-1"
                 iconSrc="./linkedin.svg"
                 {...register("linkedIn")}
               />
-            </div>
-            {isOrg && (
-              <>
-                <div className="row mt-3">
+              {isOrg && (
+                <>
                   <Input
                     label={t("socialLinks.instagram")}
                     defaultValue={social?.instagram}
-                    className="w-50"
+                    className="col-sm-12 col-md-6 mb-1"
                     iconSrc="./instagram.svg"
                     {...register("instagram")}
                   />
                   <Input
                     label={t("socialLinks.facebook")}
                     defaultValue={social?.fb}
-                    className="w-50"
+                    className="col-sm-12 col-md-6"
                     iconSrc="./facebook.svg"
                     {...register("fb")}
                   />
-                </div>
+                </>
+              )}
+            </div>
+            {isOrg && (
+              <>
                 <h4 className="mb-3 mt-5">Contact Information</h4>
                 <Row>
                   <Input
