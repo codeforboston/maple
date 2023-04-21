@@ -136,7 +136,7 @@ export function EditProfileForm({
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
-              {t("settings")}
+              {t("Settings")}
             </GearButton>
             <Button
               className={`btn-lg py-1 ml-2 text-decoration-none`}
