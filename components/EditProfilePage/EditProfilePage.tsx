@@ -23,6 +23,7 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
 import { useTranslation } from "next-i18next"
+import { isPending } from "@reduxjs/toolkit"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -136,7 +137,7 @@ export function EditProfileForm({
               disabled={!!formUpdated}
               onClick={() => onSettingsModalOpen()}
             >
-              {t("settings")}
+              {t("Settings")}
             </GearButton>
             <Button
               className={`btn-lg py-1 ml-2 text-decoration-none`}
