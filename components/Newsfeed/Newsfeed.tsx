@@ -1,4 +1,13 @@
+import {
+  collection,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore"
 import ErrorPage from "next/error"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -7,6 +16,7 @@ import {
   usePublicProfile,
   usePublishedTestimonyListing
 } from "../db"
+import { firestore } from "../firebase"
 import { Banner } from "../shared/StyledSharedComponents"
 import {
   Header,
@@ -16,13 +26,32 @@ import {
 import { AlertCard } from "components/AlertCard/AlertCard"
 
 export default function Newsfeed() {
-  const { user } = useAuth()
-  const { result: profile, loading } = usePublicProfile(user?.uid)
-
   const isMobile = useMediaQuery("(max-width: 768px)")
 
-  console.log("P:", profile)
-  console.log("U:", user)
+  const { user } = useAuth()
+  const { result: profile, loading } = usePublicProfile(user?.uid)
+  const uid = user?.uid
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/userNotificationFeed/`
+  )
+
+  let notificationList: string[] = []
+
+  const notificationQuery = async () => {
+    const q = query(subscriptionRef, where("uid", "==", `${uid}`))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      notificationList.push(doc.data().notification)
+    })
+  }
+
+  useEffect(() => {
+    uid ? notificationQuery() : null
+  })
+
+  console.log("Notif List: ", notificationList)
 
   return (
     <>
