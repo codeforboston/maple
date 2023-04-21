@@ -121,7 +121,6 @@ export function PersonalInfoTab({
               error={errors.fullName?.message}
             />
           </Row>
-          
           <Input
             as="textarea"
             {...register("aboutYou")}
