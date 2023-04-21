@@ -152,3 +152,14 @@ function FilterBox({ isMobile }: { isMobile: boolean }) {
     </>
   )
 }
+
+/**
+ * map array -> display bill/org element
+ *
+ * filter for bills/orgs
+ *
+ * format timestamp
+ *
+ * pagination
+ *
+ */
