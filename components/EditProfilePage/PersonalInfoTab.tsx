@@ -8,6 +8,7 @@ import { StyledSaveButton } from "./StyledEditProfileComponents"
 import { YourLegislators } from "./YourLegislators"
 import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
+import { useTranslation } from "next-i18next"
 
 type UpdateProfileData = {
   fullName: string
@@ -102,45 +103,45 @@ export function PersonalInfoTab({
     orgCategories ? orgCategories : OrgCategories[0]
   )
 
-  const tooltip =
-    "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way."
+  const { t } = useTranslation("editProfile")
 
   return (
     <Form onSubmit={onSubmit}>
       <TitledSectionCard className={className}>
         <div className={`mx-4 mt-3 d-flex flex-column`}>
-          <h4 className="mb-3">General Information</h4>
+          <h4 className="mb-3">{t("forms.generalInfo")}</h4>
           <Row>
             <Input
-              label="Full Name"
+              label={t("forms.fullName")}
               {...register("fullName", {
-                required: "A name is required"
+                required: t("forms.errNameRequired").toString()
               })}
-              className="w-50"
+              className="w-100"
               defaultValue={fullName}
               error={errors.fullName?.message}
             />
           </Row>
+          
           <Input
             as="textarea"
             {...register("aboutYou")}
             style={{ height: "10rem" }}
             className="mt-3"
-            label="Write something about yourself"
+            label={t("forms.aboutYou")}
             defaultValue={about}
           />
           <Row xs="auto" className="mt-2">
             <Col>
               <TooltipButton
-                text="What should you write?"
-                tooltip={tooltip}
+                text={t("forms.aboutYouTip")}
+                tooltip={t("tooltipText")}
                 variant="link"
               />
             </Col>
           </Row>
           {isOrg && (
             <Form.Group className="mt-3" controlId="orgCategory">
-              <Form.FloatingLabel label="Select an organization cateogry">
+              <Form.FloatingLabel label={t("forms.selectOrgCategory")}>
                 <Form.Select
                   as="select"
                   value={category}
@@ -163,65 +164,65 @@ export function PersonalInfoTab({
             <h4 className="mb-3 mt-5">Social Media</h4>
             <div className="row">
               <Input
-                label="Twitter Username"
+                label={t("socialLinks.twitter")}
                 defaultValue={social?.twitter}
-                className=" w-50"
+                className="col-sm-12 col-md-6 mb-1"
                 iconSrc="./twitter.svg"
                 {...register("twitter")}
               />
               <Input
-                label="LinkedIn Username"
+                label={t("socialLinks.linkedIn")}
                 defaultValue={social?.linkedIn}
-                className="w-50"
+                className="col-sm-12 col-md-6 mb-1"
                 iconSrc="./linkedin.svg"
                 {...register("linkedIn")}
               />
-            </div>
-            {isOrg && (
-              <>
-                <div className="row mt-3">
+              {isOrg && (
+                <>
                   <Input
-                    label="Instagram Username"
+                    label={t("socialLinks.instagram")}
                     defaultValue={social?.instagram}
-                    className="w-50"
+                    className="col-sm-12 col-md-6 mb-1"
                     iconSrc="./instagram.svg"
                     {...register("instagram")}
                   />
                   <Input
-                    label="Facebook Link"
+                    label={t("socialLinks.facebook")}
                     defaultValue={social?.fb}
-                    className="w-50"
+                    className="col-sm-12 col-md-6"
                     iconSrc="./facebook.svg"
                     {...register("fb")}
                   />
-                </div>
+                </>
+              )}
+            </div>
+            {isOrg && (
+              <>
                 <h4 className="mb-3 mt-5">Contact Information</h4>
                 <Row>
                   <Input
-                    label="Contact Email"
+                    label={t("contact.email")}
                     defaultValue={contactInfo?.publicEmail}
                     {...register("publicEmail")}
                   />
                 </Row>
                 <Row className="mt-3">
                   <Input
-                    label="Contact Phone Number"
+                    label={t("contact.phone")}
                     defaultValue={contactInfo?.publicPhone}
                     {...register("publicPhone", {
                       minLength: {
                         value: 10,
-                        message:
-                          "Your phone number should be at least 10 numbers long"
+                        message: t("contact.phoneLenWarning1")
                       },
                       maxLength: {
                         value: 10,
-                        message:
-                          "Your phone number can not be more than 10 numbers long"
+                        message: t("contact.phoneLenWarning2")
                       },
                       validate: () => {
                         const phoneNum = getValues("publicPhone")
                         return isNaN(phoneNum)
-                          ? "Please enter a phone number that only consists of numbers"
+                          ? t("contact.phoneNumWarning").toString()
                           : undefined
                       }
                     })}
@@ -230,7 +231,7 @@ export function PersonalInfoTab({
                 </Row>
                 <Row className="mt-3">
                   <Input
-                    label="Website"
+                    label={t("contact.website")}
                     defaultValue={contactInfo?.website}
                     {...register("website")}
                   />
@@ -243,16 +244,14 @@ export function PersonalInfoTab({
 
       {!isOrg && (
         <TitledSectionCard>
-          <h2>Your Legislators</h2>
+          <h2>{t("legislator.yourLegislators")}</h2>
           <YourLegislators />
         </TitledSectionCard>
       )}
 
       <Row>
         <Col>
-          <StyledSaveButton type="submit">
-            Save Personal Information
-          </StyledSaveButton>
+          <StyledSaveButton type="submit">{t("saveChanges")}</StyledSaveButton>
         </Col>
       </Row>
     </Form>

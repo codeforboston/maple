@@ -1,5 +1,6 @@
 import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
+import { useTranslation } from "next-i18next"
 
 export const EditProfileButton = ({
   isMobile,
@@ -8,6 +9,7 @@ export const EditProfileButton = ({
   isMobile: boolean
   isOrg: boolean
 }) => {
+  const { t } = useTranslation("profile")
   return (
     <Col
       className={
@@ -18,7 +20,9 @@ export const EditProfileButton = ({
     >
       <div>
         <Internal href="/editprofile" className="view-edit-profile">
-          <Button className={`btn btn-lg py-1`}>Edit&nbsp;Profile</Button>
+          <Button className={`btn btn-lg py-1`}>
+            {t("button.editProfile")}
+          </Button>
         </Internal>
       </div>
     </Col>

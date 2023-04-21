@@ -1,6 +1,7 @@
 import { Profile } from "../db"
 import { TitledSectionCard } from "../shared"
 import { SocialMediaIcons } from "./SocialMediaIcons"
+import { useTranslation } from "next-i18next"
 
 export const ProfileAboutSection = ({
   profile,
@@ -19,10 +20,12 @@ export const ProfileAboutSection = ({
     fb
   }: { twitter?: string; linkedIn?: string; instagram?: string; fb?: string } =
     profile?.social ?? {}
-
+  const { t } = useTranslation("profile")
   const title = isOrg
-    ? "About Us"
-    : `About ${profile?.fullName?.split(" ")[0] ?? "User"}`
+    ? t("aboutUs")
+    : t("aboutMe", {
+        firstName: profile?.fullName?.split(" ")?.[0] ?? "User"
+      })
 
   return (
     <TitledSectionCard
@@ -41,7 +44,7 @@ export const ProfileAboutSection = ({
         )
       }
     >
-      <div>{profile?.about ?? "State your purpose"}</div>
+      <div>{profile?.about ?? t("content.statePurpose")}</div>
     </TitledSectionCard>
   )
 }

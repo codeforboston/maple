@@ -5,6 +5,7 @@ import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { SortTestimonyDropDown } from "components/TestimonyCard/SortTestimonyDropDown"
 import { TestimonyFAQ } from "./TestimonyFAQ"
 import { Testimony } from "../db"
+import { useTranslation } from "next-i18next"
 
 export const TestimoniesTab = ({
   publishedTestimonies,
@@ -16,6 +17,7 @@ export const TestimoniesTab = ({
   className: string
 }) => {
   const [orderBy, setOrderBy] = useState<string>()
+  const { t } = useTranslation("editProfile")
 
   return (
     <div className="mb-4">
@@ -24,7 +26,7 @@ export const TestimoniesTab = ({
           <TitledSectionCard className={className}>
             <Row>
               <Col>
-                <h2>Published Testimonies</h2>
+                <h2>{t("testimonies.published")}</h2>
               </Col>
               <Col xs="auto">
                 <SortTestimonyDropDown
@@ -57,7 +59,7 @@ export const TestimoniesTab = ({
                 ))}
           </TitledSectionCard>
           <TitledSectionCard className={className}>
-            <h2>Draft Testimonies</h2>
+            <h2>{t("testimonies.draft")}</h2>
             {draftTestimonies &&
               draftTestimonies.map(t => (
                 <TestimonyItem
