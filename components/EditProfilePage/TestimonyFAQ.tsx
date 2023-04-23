@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { Card, Col, Image } from "react-bootstrap"
+import { useTranslation } from "next-i18next"
 
 const StyledCard = styled(Card)`
   flex-grow: 1;
@@ -12,10 +13,11 @@ const StyledCard = styled(Card)`
 `
 
 export const TestimonyFAQ = ({ className }: { className: string }) => {
+  const { t } = useTranslation("editProfile")
   return (
     <StyledCard className={className}>
       <Card.Body>
-        <h2>Testimony FAQ</h2>
+        <h2>{t("testimonies.faq")}</h2>
         <div className="p-4 m-3 d-flex justify-content-center">
           <Image
             className="w-100"
@@ -25,16 +27,9 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
           ></Image>
         </div>
 
-        <h4>Editing Testimony</h4>
-        <p>
-          Editing testimony is allowed but users will be able to see edit
-          history.
-        </p>
-        <p>
-          {" "}
-          Provide an edit reason to inform your fellow users on why you changed
-          a particular stance/message.
-        </p>
+        <h4>{t("testimonies.edit")}</h4>
+        <p>{t("testimonies.editTip1")}</p>
+        <p> {t("testimonies.editTip2")}</p>
         {/* hiding for soft launch
         <hr></hr>
         <h4>Rescinding testimony </h4>

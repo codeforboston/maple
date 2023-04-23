@@ -2,8 +2,10 @@ import { Col, Row } from "../bootstrap"
 import { External } from "../links"
 import { StyledBody } from "../shared/TitledSectionCard"
 import { SelectLegislators } from "../ProfilePage/SelectLegislators"
+import { useTranslation } from "next-i18next"
 
 export const YourLegislators = () => {
+  const { t } = useTranslation("editProfile")
   return (
     <>
       <Row className="mt-3 mb-3 gap-3">
@@ -12,15 +14,14 @@ export const YourLegislators = () => {
         </Col>
         <Col className="bg-secondary text-white rounded d-flex justify-content-center align-items-center pt-4 your-legislators-width">
           <p className="flex-grow-1">
-            Please use the{" "}
+            {t("legislator.politeWords")}
             <External
               href="https://malegislature.gov/Search/FindMyLegislator"
               className={"text-white"}
             >
-              {" "}
-              find your legislator tool
-            </External>{" "}
-            and select your State Representative and Senator.
+              {t("legislator.findTool")}
+            </External>
+            {t("legislator.findToolTip")}
           </p>
         </Col>
       </Row>

@@ -5,6 +5,7 @@ const billPathRe = /generalCourts\/(\d+)\/bills\/(\w+)/
 export const script: Script = async ({ db }) => {
   const writer = db.bulkWriter()
   const bills = await db.collectionGroup("bills").select().get()
+  console.log(`updating ${bills.size} documents`)
   bills.forEach(bill => {
     const match = bill.ref.path.match(billPathRe) ?? []
     const court = Number(match[1]),

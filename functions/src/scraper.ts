@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios"
 import { logger, runWith } from "firebase-functions"
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
-import { currentGeneralCourt } from "./malegislature"
+import { currentGeneralCourt } from "../../components/db/common"
 
 /** Batch documents trigger the batch fetch function to scrape `ids` */
 type Batch = {
