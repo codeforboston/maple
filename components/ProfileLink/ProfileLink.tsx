@@ -5,22 +5,22 @@ import { Role, signOutAndRedirectToHome, useAuth } from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
 
-const greeting = (role: Role, displayName?: string) => {
+const greeting = (role: Role, fullName?: string) => {
   switch (role) {
     case "user":
     case "legislator":
     case "organization":
-      return displayName ? `Hello, ${displayName}` : "Hello there"
+      return fullName ? `Hello, ${fullName}` : "Hello there"
     case "admin":
-      return `Hello, Admin ${displayName}`
+      return `Hello, Admin ${fullName}`
   }
 }
 
 const ProfileLink = ({
-  displayName,
+  fullName,
   role = "user"
 }: {
-  displayName?: string
+  fullName?: string
   role?: Role
 }) => {
   const { user } = useAuth()
@@ -56,7 +56,7 @@ const ProfileLink = ({
                   src="/profile-icon.svg"
                   alt="profile icon"
                 ></Image>
-                {greeting(role, displayName)}
+                {greeting(role, fullName)}
               </Nav.Link>
             </Navbar.Brand>
           </div>
@@ -87,20 +87,6 @@ const ProfileLink = ({
               </NavLink>
             </Nav>
           </Navbar.Collapse>
-          {/* <NavLink href={"/profile" + search} className="py-0">
-            <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
-              <Image
-                className={styles.profileLinkImage}
-                src="/profile-icon.svg"
-                alt="profile icon"
-              />
-              <Navbar expand="lg" className="p-0">
-                <Navbar.Collapse id="topnav">
-                  <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
-                </Navbar.Collapse>
-              </Navbar>
-            </div>
-          </NavLink> */}
         </Container>
       </Navbar>
     </>
