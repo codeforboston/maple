@@ -4,10 +4,9 @@ import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
-import * as api from "../malegislature"
 import { Member } from "../members/types"
 import { Bill } from "./types"
-import { currentGeneralCourt } from "../../../components/db/common"
+import { currentGeneralCourt } from "../shared"
 
 export type BillUpdates = Map<string, DocUpdate<Bill>>
 
