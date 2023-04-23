@@ -26,7 +26,7 @@ import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
-import { isCurrentCourt } from "components/db/common"
+import { isCurrentCourt } from "functions/src/shared"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";

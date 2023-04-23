@@ -1,10 +1,9 @@
 import { runWith } from "firebase-functions"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
-import * as api from "../malegislature"
 import { Member } from "../members/types"
 import { Committee } from "./types"
-import { currentGeneralCourt } from "../../../components/db/common"
+import { currentGeneralCourt } from "../shared"
 
 /** Updates the list of members in each committee.  */
 export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
