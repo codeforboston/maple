@@ -12,8 +12,8 @@ import type {
   CurrentCommittee
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
-import {loadDoc, midnight, nullableQuery } from "./common"
-import {currentGeneralCourt} from 'functions/src/shared'
+import { loadDoc, midnight, nullableQuery } from "./common"
+import { currentGeneralCourt } from "functions/src/shared"
 export type { BillHistory } from "../../functions/src/bills/types"
 
 export type MemberReference = {

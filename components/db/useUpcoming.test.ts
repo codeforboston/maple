@@ -3,7 +3,8 @@ import { terminateFirebase, testDb, testTimestamp } from "../../tests/testUtils"
 import { useUpcomingBills } from "./useUpcomingBills"
 
 import { DateTime } from "luxon"
-import { currentGeneralCourt, midnight } from "./common"
+import { currentGeneralCourt } from "functions/src/shared"
+import { midnight } from "./common"
 import { useUpcomingEvents } from "./events"
 import { createFakeBill } from "tests/integration/common"
 

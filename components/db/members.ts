@@ -2,7 +2,7 @@ import { Timestamp } from "firebase/firestore"
 import { useMemo } from "react"
 import { useAsync } from "react-async-hook"
 import { currentGeneralCourt } from "functions/src/shared"
-import {loadDoc} from './common'
+import { loadDoc } from "./common"
 export type CommitteeReference = {
   CommitteeCode: string
   GeneralCourtNumber: number

@@ -1,4 +1,3 @@
-
 export type GeneralCourt = {
   Name: string
   Number: number
