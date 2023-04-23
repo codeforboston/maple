@@ -14,7 +14,7 @@ import {
   SpecialEvent,
   SpecialEventContent
 } from "./types"
-import { currentGeneralCourt } from "../../../components/db/common"
+import { currentGeneralCourt } from "../shared"
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
