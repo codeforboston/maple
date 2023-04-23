@@ -5,6 +5,8 @@ import {
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { generalCourts } from "functions/src/shared"
+import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
