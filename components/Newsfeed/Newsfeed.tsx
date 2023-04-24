@@ -36,7 +36,29 @@ export default function Newsfeed() {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  let notificationList: string[] = []
+  let notificationList: {
+    bodyText: string
+    court: string
+    header: string
+    id: string
+    subheader: string
+    timestamp: string
+    topicName: string
+    type: string
+  }[] = []
+
+  const [notificationsDisplayed, setNotificationsDisplayed] = useState<
+    {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[]
+  >([])
 
   const notificationQuery = async () => {
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
@@ -45,13 +67,17 @@ export default function Newsfeed() {
       // doc.data() is never undefined for query doc snapshots
       notificationList.push(doc.data().notification)
     })
+
+    if (notificationsDisplayed.length === 0 && notificationList.length != 0) {
+      setNotificationsDisplayed(notificationList)
+    }
   }
 
   useEffect(() => {
     uid ? notificationQuery() : null
   })
 
-  console.log("Notif List: ", notificationList)
+  console.log("Notif List: ", notificationsDisplayed)
 
   return (
     <>
@@ -74,6 +100,38 @@ export default function Newsfeed() {
                     </Col>
                   )}
                 </Header>
+                {notificationsDisplayed.map(
+                  (
+                    element: {
+                      bodyText: string
+                      court: string
+                      header: string
+                      id: string
+                      subheader: string
+                      timestamp: string
+                      topicName: string
+                      type: string
+                    },
+                    index: number
+                  ) => (
+                    <div className="pb-4" key={index}>
+                      {element.type}
+                      <AlertCard
+                        header={element.header}
+                        subheader={element.subheader}
+                        timestamp={element.timestamp}
+                        headerImgSrc={`${
+                          profile.profileImage
+                            ? profile.profileImage
+                            : "/profile-org-white.svg"
+                        }`}
+                        bodyImgSrc={``}
+                        bodyImgAltTxt={``}
+                        bodyText={element.bodyText}
+                      />
+                    </div>
+                  )
+                )}
                 <div className="pb-4">
                   <AlertCard
                     header={`Green Sustainability`}
