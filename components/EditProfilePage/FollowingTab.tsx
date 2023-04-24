@@ -186,9 +186,9 @@ function FollowedItem({
 }) {
   const { result: profile, loading } = usePublicProfile(element)
 
-  let displayName = "default"
-  if (profile?.displayName) {
-    displayName = profile.displayName
+  let fullName = "default"
+  if (profile?.fullName) {
+    fullName = profile.fullName
   }
 
   return (
@@ -207,7 +207,7 @@ function FollowedItem({
             </Col>
             <Col>
               <UnfollowButton
-                displayName={displayName}
+                fullName={fullName}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={type}
@@ -229,11 +229,11 @@ function FollowedItem({
                   src={profile?.profileImage}
                 />
                 <Internal href={`organizations/${element}`}>
-                  {displayName}
+                  {fullName}
                 </Internal>
               </Col>
               <UnfollowButton
-                displayName={displayName}
+                fullName={fullName}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={type}
@@ -265,12 +265,12 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 }
 
 function UnfollowButton({
-  displayName,
+  fullName,
   element,
   setUnfollow,
   type
 }: {
-  displayName: string
+  fullName: string
   element: any
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
@@ -286,7 +286,7 @@ function UnfollowButton({
     } else {
       setUnfollow({
         court: 0,
-        orgName: displayName,
+        orgName: fullName,
         type: "org",
         typeId: element
       })

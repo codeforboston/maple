@@ -12,7 +12,6 @@ import { useTranslation } from "next-i18next"
 
 type UpdateProfileData = {
   fullName: string
-  displayName: string
   aboutYou: string
   twitter: string
   linkedIn: string
@@ -42,7 +41,6 @@ async function updateProfile(
   const {
     updateSocial,
     updateAbout,
-    updateDisplayName,
     updateFullName,
     updateContactInfo,
     updateOrgCategory
@@ -58,7 +56,6 @@ async function updateProfile(
   await updateSocial("instagram", data.instagram)
   await updateSocial("fb", data.fb)
   await updateAbout(data.aboutYou)
-  await updateDisplayName(data.displayName)
   await updateFullName(data.fullName)
 }
 
@@ -78,7 +75,6 @@ export function PersonalInfoTab({
   } = useForm<UpdateProfileData>()
 
   const {
-    displayName,
     fullName,
     about,
     role,
@@ -120,19 +116,11 @@ export function PersonalInfoTab({
               {...register("fullName", {
                 required: t("forms.errNameRequired").toString()
               })}
-              className="w-50"
+              className="w-100"
               defaultValue={fullName}
               error={errors.fullName?.message}
             />
-            <Input
-              label={t("forms.nickname")}
-              className="w-50"
-              {...register("displayName")}
-              defaultValue={displayName}
-              error={errors.displayName?.message}
-            />
           </Row>
-
           <Input
             as="textarea"
             {...register("aboutYou")}

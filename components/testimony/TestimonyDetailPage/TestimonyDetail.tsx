@@ -14,14 +14,14 @@ const Container = styled.div`
 `
 
 const Testimony = styled(props => {
-  const { revision, authorNickname } = useCurrentTestimonyDetails()
+  const { revision, authorTitle } = useCurrentTestimonyDetails()
   const previous = flags().testimonyDiffing
     ? revision.previous?.content
     : undefined
 
   return (
     <div {...props}>
-      <div className="fs-4">What {authorNickname} says</div>
+      <div className="fs-4">What {authorTitle} says</div>
       <TestimonyContent testimony={revision.content} previous={previous} />
     </div>
   )

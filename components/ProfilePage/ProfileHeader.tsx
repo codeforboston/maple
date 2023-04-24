@@ -93,7 +93,7 @@ export const ProfileHeader = ({
       <Col>
         <Stack gap={2}>
           <ProfileDisplayName className={`overflow-hidden`}>
-            {profile.displayName}
+            {profile.fullName}
           </ProfileDisplayName>
           {isOrg && (
             <>

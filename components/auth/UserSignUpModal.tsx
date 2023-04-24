@@ -114,15 +114,6 @@ export default function UserSignUpModal({
                   error={errors.fullName?.message}
                 />
 
-                <Input
-                  label="Nickname"
-                  type="text"
-                  {...register("nickname", {
-                    required: "A nickname is required."
-                  })}
-                  error={errors.nickname?.message}
-                />
-
                 <Row className="g-3">
                   <Col md={6}>
                     <PasswordInput
