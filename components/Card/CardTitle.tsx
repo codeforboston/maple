@@ -1,6 +1,6 @@
 import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
-import { Col, Row, Spinner } from "../bootstrap"
+import { Col } from "../bootstrap"
 import styles from "./CardTitle.module.css"
 
 interface CardTitleProps {
