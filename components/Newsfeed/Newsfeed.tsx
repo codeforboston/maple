@@ -1,23 +1,11 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import {
-  ProfileMember,
-  usePublicProfile,
-  usePublishedTestimonyListing
-} from "../db"
+import { usePublicProfile } from "../db"
 import { firestore } from "../firebase"
-import { Banner } from "../shared/StyledSharedComponents"
 import {
   Header,
   HeaderTitle,
@@ -77,8 +65,6 @@ export default function Newsfeed() {
     uid ? notificationQuery() : null
   })
 
-  console.log("Notif List: ", notificationsDisplayed)
-
   return (
     <>
       {loading ? (
@@ -115,15 +101,12 @@ export default function Newsfeed() {
                     index: number
                   ) => (
                     <div className="pb-4" key={index}>
-                      {element.type}
                       <AlertCard
                         header={element.header}
                         subheader={element.subheader}
                         timestamp={element.timestamp}
                         headerImgSrc={`${
-                          profile.profileImage
-                            ? profile.profileImage
-                            : "/profile-org-white.svg"
+                          element.type === `org` ? `/profile-org-white.svg` : ``
                         }`}
                         bodyImgSrc={``}
                         bodyImgAltTxt={``}
@@ -132,32 +115,6 @@ export default function Newsfeed() {
                     </div>
                   )
                 )}
-                <div className="pb-4">
-                  <AlertCard
-                    header={`Green Sustainability`}
-                    subheader={``}
-                    timestamp={`5:30PM`}
-                    headerImgSrc={`${
-                      profile.profileImage
-                        ? profile.profileImage
-                        : "/profile-org-white.svg"
-                    }`}
-                    bodyImgSrc={``}
-                    bodyImgAltTxt={``}
-                    bodyText={`Green Sustainability released a testimony on S.1958 at https://digital-testimony-dev.web.app/bill?id=S1958.`}
-                  />
-                </div>
-                <div className="pb-4">
-                  <AlertCard
-                    header={`H.3340`}
-                    subheader={`An Act creating a green back to promote clean energy in Massachusetts`}
-                    timestamp={`5:30PM`}
-                    headerImgSrc={``}
-                    bodyImgSrc={``}
-                    bodyImgAltTxt={``}
-                    bodyText={`The reporting date was extended to Thursday June 30, 2022, pending concurrence.`}
-                  />
-                </div>
                 <div>Pagination</div>
               </StyledContainer>
             </>
@@ -210,14 +167,3 @@ function FilterBox({ isMobile }: { isMobile: boolean }) {
     </>
   )
 }
-
-/**
- * map array -> display bill/org element
- *
- * filter for bills/orgs
- *
- * format timestamp
- *
- * pagination
- *
- */
