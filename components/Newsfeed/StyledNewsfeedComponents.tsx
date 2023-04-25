@@ -19,18 +19,6 @@ export const HeaderTitle = styled(Col)`
   color: #000000;
 `
 
-export const UserIcon = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-individual-icon.svg",
-  className: props.className
-}))`
-  height: 7rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
-  margin-right: 2rem;
-`
-
 export const StyledContainer = styled(Container)`
   .checkbox {
     width: 187px;
