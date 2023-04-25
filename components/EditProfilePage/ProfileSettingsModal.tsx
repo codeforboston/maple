@@ -205,6 +205,7 @@ export default function ProfileSettingsModal({
               </Col>
             </StyledRow>
           </div>
+
           <StyledRow className="p-2">
             <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>
             <hr />
