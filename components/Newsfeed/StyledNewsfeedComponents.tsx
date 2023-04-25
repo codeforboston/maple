@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Container, Image, Col, Row } from "../bootstrap"
+import { Container, Col, Row } from "../bootstrap"
 
 export const Header = styled(Row)`
   align-items: center;
