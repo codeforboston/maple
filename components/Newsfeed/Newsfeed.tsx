@@ -48,6 +48,9 @@ export default function Newsfeed() {
     }[]
   >([])
 
+  const [billFilter, setBillFilter] = useState<boolean>(false)
+  const [orgFilter, setOrgFilter] = useState<boolean>(false)
+
   const notificationQuery = async () => {
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
@@ -64,6 +67,8 @@ export default function Newsfeed() {
   useEffect(() => {
     uid ? notificationQuery() : null
   })
+
+  console.log("B Filter", billFilter)
 
   return (
     <>
