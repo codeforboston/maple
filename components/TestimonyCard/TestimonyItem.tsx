@@ -103,7 +103,7 @@ export const TestimonyItem = ({
   const [showAllTestimony, setShowAllTestimony] = useState(false)
   const snippet = showAllTestimony
     ? testimonyContent
-    : testimonyContent.slice(0, snippetChars).concat('...')
+    : testimonyContent.slice(0, snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
   const [showConfirm, setShowConfirm] = useState(false)
@@ -163,7 +163,12 @@ export const TestimonyItem = ({
           )}
         </Row>
         <Row className={`col m2`}>
-          <TestimonyContent className="col m2" testimony={snippet}/>      
+          <TestimonyContent className="col m2" testimony={snippet}/>    
+        </Row>
+        <Row className={`col m3`}>
+          {canExpand && (
+              <p className>...</p>
+          )}   
         </Row>
         <Row xs="auto" className={`d-flex align-items-center`}>
           {canExpand && (
