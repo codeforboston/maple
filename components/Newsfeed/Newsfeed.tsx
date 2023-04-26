@@ -1,12 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState
-} from "react"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -54,6 +48,31 @@ export default function Newsfeed() {
     }[]
   >([])
 
+  const [orgFilter, setOrgFilter] = useState<boolean>(true)
+  const [billFilter, setBillFilter] = useState<boolean>(true)
+
+  const onOrgFilterChange = () => {
+    const orgBox = document.getElementById("orgCheck") as HTMLInputElement
+    if (orgBox?.checked) {
+      setOrgFilter(true)
+      setNotificationsDisplayed([])
+    } else {
+      setOrgFilter(false)
+      setNotificationsDisplayed([])
+    }
+  }
+
+  const onBillFilterChange = () => {
+    const billBox = document.getElementById("billCheck") as HTMLInputElement
+    if (billBox?.checked) {
+      setBillFilter(true)
+      setNotificationsDisplayed([])
+    } else {
+      setBillFilter(false)
+      setNotificationsDisplayed([])
+    }
+  }
+
   const notificationQuery = async () => {
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
@@ -61,6 +80,18 @@ export default function Newsfeed() {
       // doc.data() is never undefined for query doc snapshots
       notificationList.push(doc.data().notification)
     })
+
+    if (orgFilter === false) {
+      notificationList = notificationList.filter(
+        notification => notification.type !== "org"
+      )
+    }
+
+    if (billFilter === false) {
+      notificationList = notificationList.filter(
+        notification => notification.type !== "bill"
+      )
+    }
 
     if (notificationsDisplayed.length === 0 && notificationList.length != 0) {
       setNotificationsDisplayed(notificationList)
@@ -71,28 +102,17 @@ export default function Newsfeed() {
     uid ? notificationQuery() : null
   })
 
-  const [orgFilter, setOrgFilter] = useState<boolean>(false)
-  const [billFilter, setBillFilter] = useState<boolean>(false)
-
-  const onOrgFilterChange = () => {
-    const orgBox = document.getElementById("orgCheck") as HTMLInputElement
-    if (orgBox?.checked) {
-      setOrgFilter(true)
-    } else {
-      setOrgFilter(false)
-    }
+  function Filters() {
+    return (
+      <FilterBoxs
+        isMobile={isMobile}
+        orgFilter={orgFilter}
+        onOrgFilterChange={onOrgFilterChange}
+        billFilter={billFilter}
+        onBillFilterChange={onBillFilterChange}
+      />
+    )
   }
-
-  const onBillFilterChange = () => {
-    const billBox = document.getElementById("billCheck") as HTMLInputElement
-    if (billBox?.checked) {
-      setBillFilter(true)
-    } else {
-      setBillFilter(false)
-    }
-  }
-
-  console.log("Org", orgFilter, "Bill", billFilter)
 
   return (
     <>
@@ -108,18 +128,10 @@ export default function Newsfeed() {
                 <Header>
                   <HeaderTitle>Newsfeed</HeaderTitle>
                   {isMobile ? (
-                    <FilterBox
-                      isMobile={isMobile}
-                      onOrgFilterChange={onOrgFilterChange}
-                      onBillFilterChange={onBillFilterChange}
-                    />
+                    <Filters />
                   ) : (
                     <Col className="d-flex flex-column">
-                      <FilterBox
-                        isMobile={isMobile}
-                        onOrgFilterChange={onOrgFilterChange}
-                        onBillFilterChange={onBillFilterChange}
-                      />
+                      <Filters />
                     </Col>
                   )}
                 </Header>
@@ -152,7 +164,7 @@ export default function Newsfeed() {
                     </div>
                   )
                 )}
-                <div>Pagination</div>
+                <div>Pagination Element</div>
               </StyledContainer>
             </>
           ) : (
@@ -164,13 +176,17 @@ export default function Newsfeed() {
   )
 }
 
-function FilterBox({
+function FilterBoxs({
   isMobile,
+  orgFilter,
   onOrgFilterChange,
+  billFilter,
   onBillFilterChange
 }: {
   isMobile: boolean
+  orgFilter: boolean
   onOrgFilterChange: any
+  billFilter: boolean
   onBillFilterChange: any
 }) {
   return (
@@ -189,6 +205,7 @@ function FilterBox({
             onChange={e => {
               onOrgFilterChange()
             }}
+            checked={orgFilter}
           />
           <label className="form-check-label" htmlFor="orgCheck">
             Organization Updates
@@ -209,6 +226,7 @@ function FilterBox({
             onChange={e => {
               onBillFilterChange()
             }}
+            checked={billFilter}
           />
           <label className="form-check-label" htmlFor="billCheck">
             Bill Updates
