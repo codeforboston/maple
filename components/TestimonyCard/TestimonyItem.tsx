@@ -167,7 +167,7 @@ export const TestimonyItem = ({
         </Row>
         <Row className={`col m3`}>
           {canExpand && (
-              <p className>...</p>
+              <p>...</p>
           )}   
         </Row>
         <Row xs="auto" className={`d-flex align-items-center`}>
