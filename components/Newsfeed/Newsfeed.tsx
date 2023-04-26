@@ -1,6 +1,12 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { useEffect, useState } from "react"
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState
+} from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -48,9 +54,6 @@ export default function Newsfeed() {
     }[]
   >([])
 
-  const [billFilter, setBillFilter] = useState<boolean>(false)
-  const [orgFilter, setOrgFilter] = useState<boolean>(false)
-
   const notificationQuery = async () => {
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
@@ -68,7 +71,28 @@ export default function Newsfeed() {
     uid ? notificationQuery() : null
   })
 
-  console.log("B Filter", billFilter)
+  const [orgFilter, setOrgFilter] = useState<boolean>(false)
+  const [billFilter, setBillFilter] = useState<boolean>(false)
+
+  const onOrgFilterChange = () => {
+    const orgBox = document.getElementById("orgCheck") as HTMLInputElement
+    if (orgBox?.checked) {
+      setOrgFilter(true)
+    } else {
+      setOrgFilter(false)
+    }
+  }
+
+  const onBillFilterChange = () => {
+    const billBox = document.getElementById("billCheck") as HTMLInputElement
+    if (billBox?.checked) {
+      setBillFilter(true)
+    } else {
+      setBillFilter(false)
+    }
+  }
+
+  console.log("Org", orgFilter, "Bill", billFilter)
 
   return (
     <>
@@ -84,10 +108,18 @@ export default function Newsfeed() {
                 <Header>
                   <HeaderTitle>Newsfeed</HeaderTitle>
                   {isMobile ? (
-                    <FilterBox isMobile={isMobile} />
+                    <FilterBox
+                      isMobile={isMobile}
+                      onOrgFilterChange={onOrgFilterChange}
+                      onBillFilterChange={onBillFilterChange}
+                    />
                   ) : (
                     <Col className="d-flex flex-column">
-                      <FilterBox isMobile={isMobile} />
+                      <FilterBox
+                        isMobile={isMobile}
+                        onOrgFilterChange={onOrgFilterChange}
+                        onBillFilterChange={onBillFilterChange}
+                      />
                     </Col>
                   )}
                 </Header>
@@ -132,7 +164,15 @@ export default function Newsfeed() {
   )
 }
 
-function FilterBox({ isMobile }: { isMobile: boolean }) {
+function FilterBox({
+  isMobile,
+  onOrgFilterChange,
+  onBillFilterChange
+}: {
+  isMobile: boolean
+  onOrgFilterChange: any
+  onBillFilterChange: any
+}) {
   return (
     <>
       <Row
@@ -145,9 +185,12 @@ function FilterBox({ isMobile }: { isMobile: boolean }) {
             className="form-check-input"
             type="checkbox"
             value=""
-            id="flexCheckDefault"
+            id="orgCheck"
+            onChange={e => {
+              onOrgFilterChange()
+            }}
           />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
+          <label className="form-check-label" htmlFor="orgCheck">
             Organization Updates
           </label>
         </div>
@@ -162,9 +205,12 @@ function FilterBox({ isMobile }: { isMobile: boolean }) {
             className="form-check-input"
             type="checkbox"
             value=""
-            id="flexCheckDefault"
+            id="billCheck"
+            onChange={e => {
+              onBillFilterChange()
+            }}
           />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
+          <label className="form-check-label" htmlFor="billCheck">
             Bill Updates
           </label>
         </div>
