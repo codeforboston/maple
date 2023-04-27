@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -24,16 +24,48 @@ export default function Newsfeed() {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  let notificationList: {
-    bodyText: string
-    court: string
-    header: string
-    id: string
-    subheader: string
-    timestamp: string
-    topicName: string
-    type: string
-  }[] = []
+  const [orgFilter, setOrgFilter] = useState<boolean>(true)
+  const [billFilter, setBillFilter] = useState<boolean>(true)
+  const [noResults, setNoResults] = useState<boolean>(true)
+
+  const [allResults, setAllResults] = useState<
+    {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[]
+  >([])
+
+  const [orgResults, setOrgResults] = useState<
+    {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[]
+  >([])
+
+  const [billResults, setBillResults] = useState<
+    {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[]
+  >([])
 
   const [notificationsDisplayed, setNotificationsDisplayed] = useState<
     {
@@ -48,32 +80,38 @@ export default function Newsfeed() {
     }[]
   >([])
 
-  const [orgFilter, setOrgFilter] = useState<boolean>(true)
-  const [billFilter, setBillFilter] = useState<boolean>(true)
-
-  const onOrgFilterChange = () => {
-    const orgBox = document.getElementById("orgCheck") as HTMLInputElement
-    if (orgBox?.checked) {
-      setOrgFilter(true)
-      setNotificationsDisplayed([])
-    } else {
-      setOrgFilter(false)
-      setNotificationsDisplayed([])
+  const checkDisplay = useCallback(() => {
+    setNoResults(false)
+    if (orgFilter == true && billFilter == true) {
+      return setNotificationsDisplayed(allResults)
+    } else if (orgFilter == true) {
+      return setNotificationsDisplayed(orgResults)
+    } else if (billFilter == true) {
+      return setNotificationsDisplayed(billResults)
     }
-  }
+    return setNoResults(true)
+  }, [allResults, orgFilter, orgResults, billFilter, billResults])
 
-  const onBillFilterChange = () => {
-    const billBox = document.getElementById("billCheck") as HTMLInputElement
-    if (billBox?.checked) {
-      setBillFilter(true)
-      setNotificationsDisplayed([])
+  const onFilterChange = (trolley: string, boxType: string) => {
+    const Box = document.getElementById(boxType) as HTMLInputElement
+    if (Box?.checked) {
+      trolley ? setOrgFilter(true) : setBillFilter(true)
     } else {
-      setBillFilter(false)
-      setNotificationsDisplayed([])
+      trolley ? setOrgFilter(false) : setBillFilter(false)
     }
   }
 
   const notificationQuery = async () => {
+    let notificationList: {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[] = []
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -81,19 +119,14 @@ export default function Newsfeed() {
       notificationList.push(doc.data().notification)
     })
 
-    if (orgFilter === false) {
-      notificationList = notificationList.filter(
-        notification => notification.type !== "org"
-      )
-    }
-
-    if (billFilter === false) {
-      notificationList = notificationList.filter(
-        notification => notification.type !== "bill"
-      )
-    }
-
     if (notificationsDisplayed.length === 0 && notificationList.length != 0) {
+      setAllResults(notificationList)
+      setOrgResults(
+        notificationList.filter(notification => notification.type === "org")
+      )
+      setBillResults(
+        notificationList.filter(notification => notification.type === "bill")
+      )
       setNotificationsDisplayed(notificationList)
     }
   }
@@ -102,14 +135,17 @@ export default function Newsfeed() {
     uid ? notificationQuery() : null
   })
 
+  useEffect(() => {
+    checkDisplay()
+  }, [checkDisplay, orgFilter, billFilter, notificationsDisplayed])
+
   function Filters() {
     return (
       <FilterBoxs
         isMobile={isMobile}
+        onFilterChange={onFilterChange}
         orgFilter={orgFilter}
-        onOrgFilterChange={onOrgFilterChange}
         billFilter={billFilter}
-        onBillFilterChange={onBillFilterChange}
       />
     )
   }
@@ -135,34 +171,52 @@ export default function Newsfeed() {
                     </Col>
                   )}
                 </Header>
-                {notificationsDisplayed.map(
-                  (
-                    element: {
-                      bodyText: string
-                      court: string
-                      header: string
-                      id: string
-                      subheader: string
-                      timestamp: string
-                      topicName: string
-                      type: string
-                    },
-                    index: number
-                  ) => (
-                    <div className="pb-4" key={index}>
-                      <AlertCard
-                        header={element.header}
-                        subheader={element.subheader}
-                        timestamp={element.timestamp}
-                        headerImgSrc={`${
-                          element.type === `org` ? `/profile-org-white.svg` : ``
-                        }`}
-                        bodyImgSrc={``}
-                        bodyImgAltTxt={``}
-                        bodyText={element.bodyText}
-                      />
-                    </div>
-                  )
+                {noResults ? (
+                  <div className="pb-4">
+                    <AlertCard
+                      header={"No Results"}
+                      subheader={"No Results"}
+                      timestamp={"No Results"}
+                      headerImgSrc={``}
+                      bodyImgSrc={``}
+                      bodyImgAltTxt={``}
+                      bodyText={"No Results"}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    {notificationsDisplayed.map(
+                      (
+                        element: {
+                          bodyText: string
+                          court: string
+                          header: string
+                          id: string
+                          subheader: string
+                          timestamp: string
+                          topicName: string
+                          type: string
+                        },
+                        index: number
+                      ) => (
+                        <div className="pb-4" key={index}>
+                          <AlertCard
+                            header={element.header}
+                            subheader={element.subheader}
+                            timestamp={element.timestamp}
+                            headerImgSrc={`${
+                              element.type === `org`
+                                ? `/profile-org-white.svg`
+                                : ``
+                            }`}
+                            bodyImgSrc={``}
+                            bodyImgAltTxt={``}
+                            bodyText={element.bodyText}
+                          />
+                        </div>
+                      )
+                    )}
+                  </>
                 )}
                 <div>Pagination Element</div>
               </StyledContainer>
@@ -178,16 +232,14 @@ export default function Newsfeed() {
 
 function FilterBoxs({
   isMobile,
+  onFilterChange,
   orgFilter,
-  onOrgFilterChange,
-  billFilter,
-  onBillFilterChange
+  billFilter
 }: {
   isMobile: boolean
+  onFilterChange: any
   orgFilter: boolean
-  onOrgFilterChange: any
   billFilter: boolean
-  onBillFilterChange: any
 }) {
   return (
     <>
@@ -203,7 +255,7 @@ function FilterBoxs({
             value=""
             id="orgCheck"
             onChange={e => {
-              onOrgFilterChange()
+              onFilterChange("non-empty", "orgCheck")
             }}
             checked={orgFilter}
           />
@@ -224,7 +276,7 @@ function FilterBoxs({
             value=""
             id="billCheck"
             onChange={e => {
-              onBillFilterChange()
+              onFilterChange("", "billCheck")
             }}
             checked={billFilter}
           />
