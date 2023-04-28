@@ -163,7 +163,7 @@ export const TestimonyItem = ({
           )}
         </Row>
         <Row className={`col m2`}>
-          <TestimonyContent className="col m2" testimony={snippet} canExpand={canExpand}/> 
+          <TestimonyContent className="col m2" testimony={snippet}/> 
           {canExpand && (
             <p onClick={() => setShowAllTestimony(true)}>
               ...
@@ -175,7 +175,7 @@ export const TestimonyItem = ({
             <Col className="justify-content-end d-flex">
               <FooterButton
                 variant="link"
-                
+                onClick={() => setShowAllTestimony(true)}
               >
                 Expand
               </FooterButton>
