@@ -163,19 +163,19 @@ export const TestimonyItem = ({
           )}
         </Row>
         <Row className={`col m2`}>
-          <TestimonyContent className="col m2" testimony={snippet}/>    
-        </Row>
-        <Row className={`col m3`}>
+          <TestimonyContent className="col m2" testimony={snippet} canExpand={canExpand}/> 
           {canExpand && (
-              <p>...</p>
-          )}   
+            <p onClick={() => setShowAllTestimony(true)}>
+              ...
+            </p>
+          )}      
         </Row>
         <Row xs="auto" className={`d-flex align-items-center`}>
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
                 variant="link"
-                onClick={() => setShowAllTestimony(true)}
+                
               >
                 Expand
               </FooterButton>
