@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -12,6 +12,19 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
+
+type ElementProps = {
+  bodyText: string
+  court: string
+  header: string
+  id: string
+  subheader: string
+  timestamp: string
+  topicName: string
+  type: string
+}
+
+type Props = ElementProps[]
 
 export default function Newsfeed() {
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -26,71 +39,13 @@ export default function Newsfeed() {
 
   const [orgFilter, setOrgFilter] = useState<boolean>(true)
   const [billFilter, setBillFilter] = useState<boolean>(true)
-  const [noResults, setNoResults] = useState<boolean>(true)
 
-  const [allResults, setAllResults] = useState<
-    {
-      bodyText: string
-      court: string
-      header: string
-      id: string
-      subheader: string
-      timestamp: string
-      topicName: string
-      type: string
-    }[]
-  >([])
+  const [allResults, setAllResults] = useState<Props>([])
+  const [orgResults, setOrgResults] = useState<Props>([])
+  const [billResults, setBillResults] = useState<Props>([])
 
-  const [orgResults, setOrgResults] = useState<
-    {
-      bodyText: string
-      court: string
-      header: string
-      id: string
-      subheader: string
-      timestamp: string
-      topicName: string
-      type: string
-    }[]
-  >([])
-
-  const [billResults, setBillResults] = useState<
-    {
-      bodyText: string
-      court: string
-      header: string
-      id: string
-      subheader: string
-      timestamp: string
-      topicName: string
-      type: string
-    }[]
-  >([])
-
-  const [notificationsDisplayed, setNotificationsDisplayed] = useState<
-    {
-      bodyText: string
-      court: string
-      header: string
-      id: string
-      subheader: string
-      timestamp: string
-      topicName: string
-      type: string
-    }[]
-  >([])
-
-  const checkDisplay = useCallback(() => {
-    setNoResults(false)
-    if (orgFilter == true && billFilter == true) {
-      return setNotificationsDisplayed(allResults)
-    } else if (orgFilter == true) {
-      return setNotificationsDisplayed(orgResults)
-    } else if (billFilter == true) {
-      return setNotificationsDisplayed(billResults)
-    }
-    return setNoResults(true)
-  }, [allResults, orgFilter, orgResults, billFilter, billResults])
+  const [notificationsDisplay, setNotificationsDisplay] = useState<Props>([])
+  const [noDisplay, setNoDisplay] = useState<boolean>(true)
 
   const onFilterChange = (trolley: string, boxType: string) => {
     const Box = document.getElementById(boxType) as HTMLInputElement
@@ -101,17 +56,20 @@ export default function Newsfeed() {
     }
   }
 
+  const checkDisplay = useCallback(() => {
+    setNoDisplay(false)
+    if (orgFilter == true && billFilter == true) {
+      return setNotificationsDisplay(allResults)
+    } else if (orgFilter == true) {
+      return setNotificationsDisplay(orgResults)
+    } else if (billFilter == true) {
+      return setNotificationsDisplay(billResults)
+    }
+    return setNoDisplay(true)
+  }, [allResults, orgFilter, orgResults, billFilter, billResults])
+
   const notificationQuery = async () => {
-    let notificationList: {
-      bodyText: string
-      court: string
-      header: string
-      id: string
-      subheader: string
-      timestamp: string
-      topicName: string
-      type: string
-    }[] = []
+    let notificationList: Props = []
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -119,7 +77,7 @@ export default function Newsfeed() {
       notificationList.push(doc.data().notification)
     })
 
-    if (notificationsDisplayed.length === 0 && notificationList.length != 0) {
+    if (notificationsDisplay.length === 0 && notificationList.length != 0) {
       setAllResults(notificationList)
       setOrgResults(
         notificationList.filter(notification => notification.type === "org")
@@ -127,7 +85,7 @@ export default function Newsfeed() {
       setBillResults(
         notificationList.filter(notification => notification.type === "bill")
       )
-      setNotificationsDisplayed(notificationList)
+      setNotificationsDisplay(allResults)
     }
   }
 
@@ -137,7 +95,7 @@ export default function Newsfeed() {
 
   useEffect(() => {
     checkDisplay()
-  }, [checkDisplay, orgFilter, billFilter, notificationsDisplayed])
+  }, [checkDisplay, orgFilter, billFilter, notificationsDisplay])
 
   function Filters() {
     return (
@@ -171,34 +129,22 @@ export default function Newsfeed() {
                     </Col>
                   )}
                 </Header>
-                {noResults ? (
+                {noDisplay ? (
                   <div className="pb-4">
                     <AlertCard
-                      header={"No Results"}
-                      subheader={"No Results"}
-                      timestamp={"No Results"}
+                      header={`No Results`}
+                      subheader={`No Results`}
+                      timestamp={``}
                       headerImgSrc={``}
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}
-                      bodyText={"No Results"}
+                      bodyText={`No Results`}
                     />
                   </div>
                 ) : (
                   <>
-                    {notificationsDisplayed.map(
-                      (
-                        element: {
-                          bodyText: string
-                          court: string
-                          header: string
-                          id: string
-                          subheader: string
-                          timestamp: string
-                          topicName: string
-                          type: string
-                        },
-                        index: number
-                      ) => (
+                    {notificationsDisplay.map(
+                      (element: ElementProps, index: number) => (
                         <div className="pb-4" key={index}>
                           <AlertCard
                             header={element.header}
