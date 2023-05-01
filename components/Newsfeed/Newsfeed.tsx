@@ -133,12 +133,12 @@ export default function Newsfeed() {
                   <div className="pb-4">
                     <AlertCard
                       header={`No Results`}
-                      subheader={`No Results`}
+                      subheader={``}
                       timestamp={``}
                       headerImgSrc={``}
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}
-                      bodyText={`No Results`}
+                      bodyText={`There are no news updates for your current followed topics`}
                     />
                   </div>
                 ) : (
