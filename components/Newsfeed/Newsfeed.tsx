@@ -3,7 +3,15 @@ import ErrorPage from "next/error"
 import { useCallback, useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { Col, Row, Spinner } from "../bootstrap"
+import {
+  Button,
+  Col,
+  Image,
+  Overlay,
+  OverlayTrigger,
+  Row,
+  Spinner
+} from "../bootstrap"
 import { usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import {
@@ -164,7 +172,15 @@ export default function Newsfeed() {
                     )}
                   </>
                 )}
-                <div>Pagination Element</div>
+                <Col className="d-none">
+                  <Button>
+                    <Image src="/chevrons-left.svg" alt="left select" />
+                  </Button>
+                  <div>Pagination Element</div>
+                  <Button>
+                    <Image src="/chevrons-right.svg" alt="right select" />
+                  </Button>
+                </Col>
               </StyledContainer>
             </>
           ) : (
