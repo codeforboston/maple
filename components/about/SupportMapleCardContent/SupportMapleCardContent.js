@@ -7,7 +7,7 @@ const DonateCardContent = () => {
       <p>
         <span>{`${t("donate.bodytextOne")} `}</span>
         <a
-          href="https://opencollective.com/maple-massachusetts-platform-for-legislative-engagement"
+          href="https://opencollective.com/mapletestimony"
           target="_blank"
           rel="noopener noreferrer"
         >
