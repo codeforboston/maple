@@ -36,7 +36,7 @@ export const setRole = async ({
 
   await updateTestimony(db, {
     uid: user.uid,
-    displayName: currentProfile?.displayName ?? "Anonymous",
+    fullName: currentProfile?.fullName ?? "Anonymous",
     role
   })
 }
@@ -46,7 +46,7 @@ export const setRole = async ({
  */
 const updateTestimony = async (
   db: Database,
-  u: { uid: string; displayName: string; role: Role }
+  u: { uid: string; fullName: string; role: Role }
 ) => {
   const writer = db.bulkWriter()
   const publishedTestimony = await db
@@ -60,8 +60,8 @@ const updateTestimony = async (
       testimony.data()
 
     // If the authorRole field is already set, skip this document.
-    if (existingRole !== u.role || existingName !== u.displayName) {
-      const update = { authorRole: u.role, authorDisplayName: u.displayName }
+    if (existingRole !== u.role || existingName !== u.fullName) {
+      const update = { authorRole: u.role, authorDisplayName: u.fullName }
       void writer.update(testimony.ref, update)
     }
   }

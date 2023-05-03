@@ -48,7 +48,6 @@ function useFirebaseFunction<Params, Result>(
 export type CreateUserWithEmailAndPasswordData = {
   email: string
   fullName: string
-  nickname: string
   password: string
   confirmedPassword: string
   orgCategory?: OrgCategory
@@ -59,7 +58,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
     async ({
       email,
       fullName,
-      nickname,
       password,
       orgCategory
     }: CreateUserWithEmailAndPasswordData) => {
@@ -75,7 +73,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       if (isOrg) {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            displayName: fullName,
             fullName,
             orgCategories: categories
           }),
@@ -84,7 +81,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       } else {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            displayName: nickname,
             fullName
           }),
           sendEmailVerification(credentials.user)

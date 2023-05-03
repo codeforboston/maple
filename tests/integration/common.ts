@@ -1,4 +1,4 @@
-import { currentGeneralCourt } from "components/db/common"
+import { currentGeneralCourt } from "functions/src/shared"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
@@ -16,8 +16,7 @@ export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
 
 export async function createNewBill(props?: Partial<Bill>) {
-  const billId = props?.id ?? nanoid(),
-    court = props?.court ?? 192
+  const billId = props?.id ?? nanoid()
   const content: BillContent = {
     Pinslip: null,
     Title: "fake",

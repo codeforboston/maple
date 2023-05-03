@@ -1,7 +1,7 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
-import { currentGeneralCourt } from "components/db/common"
+import { currentGeneralCourt } from "functions/src/shared"
 import { first } from "lodash"
 import { nanoid } from "nanoid"
 import { CollectionAliasSchema } from "typesense/lib/Typesense/Aliases"
