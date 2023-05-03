@@ -107,6 +107,18 @@ const ResourcesLinks = () => {
       >
         {t("links.resourcesLegislators")}
       </ExternalNavLink>
+      <ExternalNavLink
+        className={styles.footerLink}
+        href="https://github.com/codeforboston/maple"
+      >
+        {t("links.resourcesGitHub")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        className={styles.footerLink}
+        href="https://opencollective.com/mapletestimony"
+      >
+        {t("links.resourcesOpenCollective")}
+      </ExternalNavLink>
     </>
   )
 }
