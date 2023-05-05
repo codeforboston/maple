@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     "public, s-maxage=10, stale-while-revalidate=59"
   )
 
-  const locale = ctx.locale as string
+  const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
