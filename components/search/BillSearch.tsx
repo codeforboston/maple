@@ -6,7 +6,7 @@ import {
   SearchBox,
   useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
-import { currentGeneralCourt } from "components/db/common"
+import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../bootstrap"

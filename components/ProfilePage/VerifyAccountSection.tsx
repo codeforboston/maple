@@ -3,6 +3,7 @@ import { TitledSectionCard } from "components/shared"
 import { Alert } from "react-bootstrap"
 import { User } from "firebase/auth"
 import { LoadingButton } from "components/buttons"
+import { useTranslation } from "next-i18next"
 
 export const VerifyAccountSection = ({
   user,
@@ -12,18 +13,20 @@ export const VerifyAccountSection = ({
   className: string
 }) => {
   const sendEmailVerification = useSendEmailVerification()
+  const { t } = useTranslation("profile")
 
   return (
     <TitledSectionCard title={"Verify Your Account"} className={className}>
       <div>
         <p className="fw-bold text-info">
-          We sent a link to your email to verify your account, but you haven't
-          clicked it yet. If you don't see it, be sure to check your spam
-          folder.
+          {t("verifyAccountSection.verifyAccount")}
         </p>
 
         {sendEmailVerification.status === "success" ? (
-          <Alert variant="success">Check your email!</Alert>
+          <Alert variant="success">
+            {" "}
+            {t("verifyAccountSection.checkEmail")}{" "}
+          </Alert>
         ) : null}
 
         {sendEmailVerification.status === "error" ? (
@@ -37,7 +40,7 @@ export const VerifyAccountSection = ({
             loading={sendEmailVerification.loading}
             onClick={() => sendEmailVerification.execute(user)}
           >
-            Send Another Link
+            {t("verifyAccountSection.sendAnotherLink")}
           </LoadingButton>
         ) : null}
       </div>

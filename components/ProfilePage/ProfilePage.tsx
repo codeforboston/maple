@@ -2,14 +2,19 @@ import { ProfileAboutSection } from "./ProfileAboutSection"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { usePublicProfile, usePublishedTestimonyListing } from "../db"
+import {
+  ProfileMember,
+  usePublicProfile,
+  usePublishedTestimonyListing
+} from "../db"
+import { Banner } from "../shared/StyledSharedComponents"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { ProfileLegislators } from "./ProfileLegislators"
-import { StyledContainer, Banner } from "./StyledProfileComponents"
+import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import { ProfileMember } from "../db"
+import { useTranslation } from "next-i18next"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -37,6 +42,7 @@ export function ProfilePage(profileprops: {
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
+  const { t } = useTranslation("profile")
 
   return (
     <>
@@ -48,7 +54,7 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
-              {isUser && <Banner>Currently viewing your profile</Banner>}
+              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
               <StyledContainer>
                 <ProfileHeader
                   isUser={isUser}
@@ -93,7 +99,7 @@ export function ProfilePage(profileprops: {
                       isUser={isUser}
                       onProfilePage={true}
                       className="mb-4"
-                      isOrg
+                      isOrg={isOrg}
                     />
                   </Col>
                 </Row>

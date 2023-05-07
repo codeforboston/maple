@@ -17,6 +17,7 @@ import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
+import { useTranslation } from "next-i18next"
 
 type Props = {
   className?: string
@@ -127,13 +128,14 @@ export function FollowingTab({ className }: Props) {
       setUnfollow(null)
     }
   }
+  const { t } = useTranslation("editProfile")
 
   return (
     <>
       <TitledSectionCard className={className}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
-            <h2>Bills You Follow</h2>
+            <h2>{t("follow.bills")}</h2>
             {billsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
@@ -148,7 +150,7 @@ export function FollowingTab({ className }: Props) {
       <TitledSectionCard className={`${className}`}>
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
-            <h2 className="pb-3">Organizations You Follow</h2>
+            <h2 className="pb-3">{t("follow.orgs")}</h2>
             {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
@@ -184,9 +186,9 @@ function FollowedItem({
 }) {
   const { result: profile, loading } = usePublicProfile(element)
 
-  let displayName = "default"
-  if (profile?.displayName) {
-    displayName = profile.displayName
+  let fullName = "default"
+  if (profile?.fullName) {
+    fullName = profile.fullName
   }
 
   return (
@@ -205,7 +207,7 @@ function FollowedItem({
             </Col>
             <Col>
               <UnfollowButton
-                displayName={displayName}
+                fullName={fullName}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={type}
@@ -227,11 +229,11 @@ function FollowedItem({
                   src={profile?.profileImage}
                 />
                 <Internal href={`organizations/${element}`}>
-                  {displayName}
+                  {fullName}
                 </Internal>
               </Col>
               <UnfollowButton
-                displayName={displayName}
+                fullName={fullName}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={type}
@@ -247,7 +249,7 @@ function FollowedItem({
 
 function BillFollowingTitle({ court, id }: { court: number; id: string }) {
   const { loading, error, result: bill } = useBill(court, id)
-
+  const { t } = useTranslation("editProfile")
   if (loading) {
     return (
       <Row>
@@ -255,9 +257,7 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
       </Row>
     )
   } else if (error) {
-    return (
-      <Alert variant="danger">An error occured. Please refresh the page.</Alert>
-    )
+    return <Alert variant="danger">{t("content.error")}</Alert>
   } else if (bill) {
     return <h6>{bill?.content.Title}</h6>
   }
@@ -265,12 +265,12 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 }
 
 function UnfollowButton({
-  displayName,
+  fullName,
   element,
   setUnfollow,
   type
 }: {
-  displayName: string
+  fullName: string
   element: any
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
@@ -286,13 +286,13 @@ function UnfollowButton({
     } else {
       setUnfollow({
         court: 0,
-        orgName: displayName,
+        orgName: fullName,
         type: "org",
         typeId: element
       })
     }
   }
-
+  const { t } = useTranslation("editProfile")
   return (
     <Col
       onClick={() => {
@@ -302,7 +302,7 @@ function UnfollowButton({
       <button
         className={`btn btn-link d-flex ms-auto p-0 text-decoration-none`}
       >
-        <h6>Unfollow</h6>
+        <h6>{t("follow.unfollow")}</h6>
       </button>
     </Col>
   )

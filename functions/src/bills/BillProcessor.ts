@@ -4,9 +4,9 @@ import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
-import * as api from "../malegislature"
 import { Member } from "../members/types"
 import { Bill } from "./types"
+import { currentGeneralCourt } from "../shared"
 
 export type BillUpdates = Map<string, DocUpdate<Bill>>
 
@@ -56,9 +56,7 @@ export default abstract class BillProcessor {
   abstract process(): Promise<void>
 
   billPath(id?: string) {
-    return `/generalCourts/${api.currentGeneralCourt}/bills${
-      id ? `/${id}` : ""
-    }`
+    return `/generalCourts/${currentGeneralCourt}/bills${id ? `/${id}` : ""}`
   }
 
   protected async writeBills(updates: BillUpdates) {
@@ -79,15 +77,15 @@ export default abstract class BillProcessor {
       .then(snap => snap.docs.map(d => d.data()))
     this.billIds = this.bills.map(b => b.id)
     this.cities = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/cities`)
+      .collection(`/generalCourts/${currentGeneralCourt}/cities`)
       .get()
       .then(this.load(City))
     this.committees = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/committees`)
+      .collection(`/generalCourts/${currentGeneralCourt}/committees`)
       .get()
       .then(this.load(Committee))
     this.members = await db
-      .collection(`/generalCourts/${api.currentGeneralCourt}/members`)
+      .collection(`/generalCourts/${currentGeneralCourt}/members`)
       .get()
       .then(this.load(Member))
   }

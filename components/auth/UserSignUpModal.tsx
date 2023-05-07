@@ -114,15 +114,6 @@ export default function UserSignUpModal({
                   error={errors.fullName?.message}
                 />
 
-                <Input
-                  label="Nickname"
-                  type="text"
-                  {...register("nickname", {
-                    required: "A nickname is required."
-                  })}
-                  error={errors.nickname?.message}
-                />
-
                 <Row className="g-3">
                   <Col md={6}>
                     <PasswordInput
@@ -174,19 +165,14 @@ export default function UserSignUpModal({
                   </Button>
                 )}
 
-
-
-                {
-                /* 
+                {/* 
                 Hiding social sign on buttons for now until we can get them working #TODO
                 See #1080
 
+                */}
                 <Divider className="px-4">or</Divider>
 
-                <SocialSignOnButtons onComplete={onHide} /> 
-                */
-                }
-
+                <SocialSignOnButtons onComplete={onHide} />
               </Stack>
             </Form>
           </Col>

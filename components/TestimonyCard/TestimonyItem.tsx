@@ -128,7 +128,13 @@ export const TestimonyItem = ({
                 width={50}
               />
             </Internal>
-            <Internal className={styles.link} href={billLink}>
+            {/**
+             * visually-hidden until delete is ready at a later stage
+             */}
+            <Internal
+              className={`styles.link, visually-hidden`}
+              href={billLink}
+            >
               <Image
                 className="px-2 align-self-center"
                 src="/delete-testimony.svg"

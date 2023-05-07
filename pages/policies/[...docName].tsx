@@ -4,13 +4,14 @@ import { z } from "zod"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/router"
 import { createPage } from "components/page"
+import { createGetStaticTranslationProps } from "components/translations"
 
 const Query = z.object({
   docName: z.tuple([z.string()]).optional()
 })
 
 export default createPage({
-  title: "Policies",
+  title: "Terms of Service",
   Page: () => {
     const policy =
       Query.parse(useRouter().query).docName?.[0] || "privacy-policy"
@@ -23,21 +24,13 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
     paths: [
       { params: { docName: ["privacy-policy"] } },
       { params: { docName: ["code-of-conduct"] } },
-      { params: { docName: ["terms-of-service"] } }
+      { params: { docName: ["copyright"] } }
     ],
     fallback: false
   }
 }
 
-// this must only be on pages in the pages folder
-// it will throw an error if it's in the components folder
-import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-
-export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["common", "footer"]))
-      // Will be passed to the page component as props
-    }
-  }
-}
+export const getStaticProps = createGetStaticTranslationProps([
+  "common",
+  "footer"
+])
