@@ -28,6 +28,11 @@ export {
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex
 } from "./testimony"
+export {
+  publishNotifications,
+  cleanupNotifications,
+  deliverNotifications
+} from "./notifications"
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.
