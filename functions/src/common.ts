@@ -46,7 +46,7 @@ export function checkAuth(
   if (!uid) {
     throw fail(
       "unauthenticated",
-      "Caller must be signed in to publish testimony"
+      "Caller must be signed in"
     )
   }
 
@@ -60,6 +60,19 @@ export function checkAuth(
 
   return uid
 }
+
+/**
+ * Checks that the caller is an admin.
+ */
+export function checkAdmin(
+  context: https.CallableContext,
+) {
+  const callerRole = context.auth?.token.role
+  if (callerRole !== "admin") {
+    throw fail("permission-denied", "You must be an admin")
+  }
+}
+
 
 /** Constructs a new HTTPS error */
 export function fail(code: https.FunctionsErrorCode, message: string) {
