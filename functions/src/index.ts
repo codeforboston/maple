@@ -1,3 +1,4 @@
+export { modifyAccount } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
@@ -26,7 +27,8 @@ export {
   deleteTestimony,
   publishTestimony,
   syncTestimonyToSearchIndex,
-  upgradeTestimonySearchIndex
+  upgradeTestimonySearchIndex,
+  resolveReport
 } from "./testimony"
 export * from "./triggerPubsubFunction"
 

@@ -1,4 +1,5 @@
 import { Literal as L, Record, Static, Union } from "runtypes"
+import { z } from "zod"
 
 export const Role = Union(
   L("user"),
@@ -8,6 +9,14 @@ export const Role = Union(
   L("organization")
 )
 export type Role = Static<typeof Role>
+
+export const ZRole = z.enum([
+  "user",
+  "admin",
+  "legislator",
+  "pendingUpgrade",
+  "organization"
+])
 
 /** Custom-claim payload used for authorization. */
 export const Claim = Record({

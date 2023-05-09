@@ -67,8 +67,8 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
 
     // Set the claim for the JWT
     await auth.setCustomUserClaims(user.uid, { role })
-    // Set on the user's collection for the admin dashboard
-    await db.doc(`users/${uid}`).set(
+    // Set on the profiles collection for the admin dashboard
+    await db.doc(`profiles/${uid}`).set(
       {
         role
       },
@@ -77,7 +77,8 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       data: user
     })
-  } catch {
+  } catch(exception) {
+    console.error(exception)
     return res.status(404).json({
       error: "User doesn't exist."
     })
