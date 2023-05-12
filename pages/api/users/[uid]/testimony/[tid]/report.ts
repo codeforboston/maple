@@ -74,6 +74,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     reporterUid: token.uid,
     reportDate: Timestamp.fromDate(new Date()),
     testimonyId: tid,
+    authorUid: uid,
     id,
     reportId: id
   }

@@ -14,3 +14,9 @@ mapleClient.interceptors.request.use(async config => {
   }
   return config
 })
+
+mapleClient.interceptors.response.use(value => {
+  if (value.status === 401) {
+    // Ask user to reauthenticate
+  }
+})

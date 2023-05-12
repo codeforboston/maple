@@ -1,6 +1,6 @@
+import { Timestamp } from "@google-cloud/firestore"
 import { Role } from "components/auth"
 import { functions } from "components/firebase"
-import { Timestamp } from "@google-cloud/firestore"
 import { httpsCallable } from "firebase/functions"
 
 export type ReportStatus = "new" | "in process" | "resolved"
@@ -24,11 +24,24 @@ export type ReportResolution = {
   reason?: string
   moderatorUid: string
   resolvedAt: Timestamp
-  authorUid: string
+  authorUid?: string
   archivedTestimonyId: string
 }
 
 export const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   functions,
   "modifyAccount"
+)
+
+type Request = { uid: string; fullName: string; email: string }
+type Response = { uid: string; tid: string }
+
+export const createFakeOrg = httpsCallable<Request, void>(
+  functions,
+  "createFakeOrg"
+)
+
+export const createFakeTestimony = httpsCallable<Request, Response>(
+  functions,
+  "createFakeTestimony"
 )

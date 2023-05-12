@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material"
 import { Testimony } from "components/db"
 import { Timestamp } from "firebase/firestore"
-import { Edit, TextField, useEditController, useGetOne } from "react-admin"
+import { Edit, TextField, useEditController, useGetOne, useRefresh } from "react-admin"
 import { RemoveTestimonyForm } from "./RemoveTestimony"
 import { Report } from "./types"
 
 export function EditReports() {
   const { record, data } = useEditController<Report>()
+  const refresh = useRefresh()
 
   const { data: testimony, isLoading } = useGetOne("publishedTestimony", {
     id: data?.testimonyId || record?.testimonyId || "12345678"
@@ -31,12 +32,6 @@ export function EditReports() {
               Reporter Id
               <div>
                 <TextField source="reporterUid" label="reporter Id" />
-              </div>
-            </label>
-            <label>
-              Author Id
-              <div>
-                <TextField source="authorUid" label="author Id" />
               </div>
             </label>
             <label>
@@ -91,7 +86,10 @@ export const ReportContent = ({
         </Typography>
       </CardContent>
       <CardContent>
-        <label htmlFor="">Text of Testimony: </label>
+        <div>Testimony author uid: </div>
+        <div>{testimony?.authorUid}</div>
+        <br />
+        <div>Text of Testimony: </div>
         <div>{testimony?.content}</div>
       </CardContent>
     </Card>
