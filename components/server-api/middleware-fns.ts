@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
+
 import { auth } from "./init-firebase-admin"
+import { FirebaseError } from "firebase/app"
 
 // https://nextjs.org/docs/advanced-features/middleware#producing-a-response
 export const config = {
@@ -48,13 +50,26 @@ export async function ensureAdminAuthenticated(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  const token = await ensureAuthenticated(request, response)
-  if (!token) {
-    return
+  try {
+    const token = await ensureAuthenticated(request, response)
+    if (!token) {
+      return
+    }
+    if (token.role !== "admin") {
+      response.status(403).json({ error: AUTHENTICATION_FAILED_MESSAGE })
+      return
+    }
+    return token
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      if (e.code === 'auth/id-token-revoked') {
+        response.status(401).setHeader('WWW-Authenticate', 'Bearer').json({
+
+        });
+        return;
+      }
+    }
+
+    throw e;
   }
-  if (token.role !== "admin") {
-    response.status(403).json({ error: AUTHENTICATION_FAILED_MESSAGE })
-    return
-  }
-  return token
 }

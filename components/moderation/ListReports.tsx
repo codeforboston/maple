@@ -1,4 +1,5 @@
 import {
+  Button,
   Datagrid,
   EditButton,
   List,
@@ -7,10 +8,15 @@ import {
 } from "react-admin"
 import { Report } from "."
 import { StatusField } from "./common"
+import { CreateMockReport } from "./setUp/CreateMockReport"
+import { auth } from "components/firebase"
 
 export function ListReports() {
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <CreateMockReport />
+      </div>
       <List>
         <Datagrid rowClick={"edit"}>
           <TextField source="id" label="report id" />

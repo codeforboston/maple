@@ -2,11 +2,12 @@ import { Card, CardContent, CardHeader, Stack } from "@mui/material"
 import { deleteTestimony } from "components/api/delete-testimony"
 import { resolveReport } from "components/db"
 import { getAuth } from "firebase/auth"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp, doc, getDoc } from "firebase/firestore"
 import { FormEventHandler, useState } from "react"
-import { useRedirect, useNotify } from "react-admin"
+import { useRedirect, useNotify, useRefresh } from "react-admin"
 import { Report, Resolution } from "."
-import { Stack as stackbs } from "components/bootstrap"
+import { firestore } from "components/firebase"
+import { refreshToken } from "firebase-admin/app"
 
 export type ReportResponseValues = {
   reportId: string
@@ -19,9 +20,9 @@ export const onSubmitReport = async (
   resolution: Resolution,
   reason: string,
   authorUid: string,
-  testimonyId: string
+  testimonyId: string,
+  refresh: () => void
 ) => {
-  // If removing testimony, call deleteTestimony to move testimony from 'published' to 'archived'
   const r = await resolveReport({
     reportId,
     resolution,
@@ -32,20 +33,13 @@ export const onSubmitReport = async (
 
   if (r.data.status !== `success`) {
     alert(r.data.status)
-    return [`list`, `reports`]
   }
 
   if (resolution === "remove-testimony") {
+    // If removing testimony, call deleteTestimony to move testimony from 'published' to 'archived'
     const res = await deleteTestimony(authorUid, testimonyId)
-    if (res.status === 204) {
-      alert(`${testimonyId} deleted`)
-      return ["list", "reports"]
-    } else {
-      alert(
-        `${res.status} ${res.statusText} ${res.data} did not delete testimony`
-      )
-    }
   }
+  refresh()
 }
 
 export function RemoveTestimonyForm({ report }: { report: Report }) {
@@ -57,6 +51,7 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
   )
   const redirect = useRedirect()
   const auth = getAuth()
+  const refresh = useRefresh()
 
   const reportResolved = report.resolution?.resolution !== undefined
 
@@ -69,8 +64,10 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
         resolution,
         reason,
         report.authorUid,
-        report.testimonyId
+        report.testimonyId,
+        refresh
       )
+      refresh()
       redirect("list", "reports")
     } else {
       console.log("one of these not defined", resolution, reason, report.id)

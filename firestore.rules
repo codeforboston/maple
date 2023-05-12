@@ -16,6 +16,9 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    function isAdmin() {
+      return  request.auth.token.get("role", "user") == "admin"
+    }
     match /profiles/{uid} {
       function validUser() {
         return request.auth.uid == uid
@@ -30,46 +33,37 @@ service cloud.firestore {
           || request.auth.token.get("role", "user") == "user"
       }
 
-      function isAdmin() {
-        return  request.auth.token.get("role", "user") == "admin"
-      }
-
       // Always visible to the user and public if `public` is true.
       // Always visible to admins.
-      // Only writable by the user. 
+      // Only writable by the user & admin
       // Do not allow users to delete their profile, set the role field.
       // Only admins can delete a user profile, set the user role field. 
-      // Only normal "user" roles can toggle visibility.
-      allow read: if resource.data.public || request.auth.uid == uid || isAdmin()
+      // Only normal "user" roles & admins can toggle visibility.
+      allow read, write: if request.auth.token.get("role", "user") == "admin"
+      allow read: if resource.data.public || request.auth.uid == uid
       allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
-      allow update: if validUser() && validRoleChange() && validPublicChange() || isAdmin()
-    }
-    function isAdmin(){
-      return request.auth.token.get("role", "user") == "admin"
+      allow update: if validUser() && validRoleChange() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
 
-      // public, read-only
+      // public, read-only. all for admin
       allow read: if true
-      allow write: if false
-      allow read, update, delete: if isAdmin()
+      allow read, write: if request.auth.token.get("role", "user") == "admin"
 
     }
     match /reports/{rid} {
-      function isAdmin() {
-        return request.auth.token.get("role", "user") == "admin"
-      }
+
       // Anyone can report
       allow create: if true
       // Only admins can do anything with it
-      allow read, update, delete: if isAdmin()
+      allow read, write: if request.auth.token.get("role", "user") == "admin"
     }
     match /users/{uid} {
-      allow read, write: if isAdmin()
+      allow read, write: if request.auth.token.get("role", "user") == "admin"
       match /draftTestimony/{id} {
         // private, only accessible by the user 
-        allow read, write: if request.auth.uid == uid 
+        allow read, write: if request.auth.uid == uid
       }
       match /userNotificationFeed/{id} {
         // TODO: do not allow users to modify content, only view status.
@@ -83,7 +77,7 @@ service cloud.firestore {
       match /archivedTestimony/{id} {
         // Publicly readable, for posterity.
         allow read: if true 
-        allow write: if false
+        allow read, write: if request.auth.token.get("role", "user") == "admin"
       }
     }
   }

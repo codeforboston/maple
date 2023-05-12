@@ -1,5 +1,4 @@
-import { Timestamp } from "@google-cloud/firestore"
-import { Timestamp as fbts } from "firebase/firestore"
+import { Timestamp } from "firebase/firestore"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
 import { Report } from "../types"
@@ -40,7 +39,7 @@ export const createMockTestimony = (
     authorRole: "user",
     billTitle: "An act" + loremIpsum({ count: 2, units: "words" }),
     version: 2,
-    publishedAt: Timestamp.fromDate(new Date()) as fbts,
+    publishedAt: Timestamp.fromDate(new Date()),
     billId: billId ?? "H1002",
     court: 192,
     position: "oppose",

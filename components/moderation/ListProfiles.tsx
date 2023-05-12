@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { useCallback, useState } from "react"
+import { useCallback, useState, useEffect } from "react"
 import {
   Button,
   Datagrid,
@@ -17,6 +17,10 @@ import { upgradeOrganization } from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
+import { createFakeOrg } from "components/moderation"
+import { nanoid } from "nanoid"
+import { loremIpsum } from "lorem-ipsum"
+
 const UserRoleToolBar = ({
   filterValues,
   setFilters
@@ -29,10 +33,26 @@ const UserRoleToolBar = ({
       ? setFilters({ role: "pendingUpgrade" }, [], true)
       : setFilters({}, [], true)
   }, [filterValues, setFilters])
-  const {total} = useListContext()
+
+  const { data, refetch } = useListContext<Profile[] & RaRecord>()
+
+  const pendingCount =
+    data?.filter(d => d.role === "pendingUpgrade").length ?? 0
+
+  const waitForOrg = useCallback(async () => {
+    const uid = nanoid(8)
+    const fullName = loremIpsum({ count: 2, units: "words" })
+    const email = `${uid}@example.com`
+
+    const res = await createFakeOrg({ uid, fullName, email })
+    console.log(res.data)
+    refetch()
+    return res.data
+  }, [refetch])
+
   return (
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
-      <div>Upgrade Requests: {total} pending upgrades</div>
+      <div>Upgrade Requests: {pendingCount} pending upgrades</div>
       <Button
         label={
           _.isEmpty(filterValues) ? "Show Requests Only" : "Show All Profiles"
@@ -40,6 +60,13 @@ const UserRoleToolBar = ({
         variant="outlined"
         onClick={toggleFilter}
       />
+      {["development", "test"].includes(process.env.NODE_ENV) && (
+        <Button
+          label="add fake org request"
+          variant="outlined"
+          onClick={waitForOrg}
+        />
+      )}
     </Toolbar>
   )
 }
@@ -56,7 +83,6 @@ export function ListProfiles() {
 
       return
     }
-    // await modifyAccount({ uid: id, role: "organization" })
     const response = await upgradeOrganization(id)
     if (response.status === 200) {
       alert(`Upgraded account to organization.`)
