@@ -149,7 +149,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const locale = ctx.locale as string
 
     return {
-      props: { ...(await serverSideTranslations(locale, ["common", "footer"])) }
+      props: {
+        ...(await serverSideTranslations(locale, ["auth", "common", "footer"]))
+      }
     }
   }
 )
