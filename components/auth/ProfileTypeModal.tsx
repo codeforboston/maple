@@ -1,6 +1,7 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Modal, Row, Stack, Image } from "../bootstrap"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 export const StyledButton = styled(Button)`
   width: 100%;
@@ -30,6 +31,8 @@ export default function ProfileTypeModal({
   onIndividualUserClick: () => void
   onOrgUserClick: () => void
 }) {
+  const { t } = useTranslation("auth")
+
   return (
     <Modal
       show={show}
@@ -39,12 +42,12 @@ export default function ProfileTypeModal({
       size="lg"
     >
       <Modal.Header closeButton>
-        <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
+        <Modal.Title id="sign-up-modal">{t("signUp")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={12} className="mx-auto">
           <Stack gap={2} direction="vertical">
-            <h2>Register as</h2>
+            <h2>{t("registerAs")}</h2>
             <Stack gap={4} direction="horizontal">
               <StyledButton
                 type="button"
@@ -54,19 +57,16 @@ export default function ProfileTypeModal({
                 <Row>
                   <Col xs="auto" className="d-flex align-items-center">
                     <Image
-                      alt="profile icon"
+                      alt={t("profileIcon") ?? "profile icon"}
                       src="/profile-individual-white.svg"
                     />
                   </Col>
 
                   <Col>
                     <p>
-                      <b>Individual User</b>
+                      <b>{t("individualUser")}</b>
                     </p>
-                    <p>
-                      An individual user, which also includes any
-                      non-incorporated Massachusetts based organizations
-                    </p>
+                    <p>{t("individualDescription")}</p>
                   </Col>
                 </Row>
               </StyledButton>
@@ -78,29 +78,25 @@ export default function ProfileTypeModal({
               >
                 <Row>
                   <Col xs="auto" className="d-flex align-items-center">
-                    <Image alt="profile icon" src="/profile-org-white.svg" />
+                    <Image
+                      alt={t("profileIcon") ?? "profile icon"}
+                      src="/profile-org-white.svg"
+                    />
                   </Col>
 
                   <Col>
                     <p>
-                      <b>Organization</b>
+                      <b>{t("org")}</b>
                     </p>
-                    <p>
-                      Only available for incorporated Massachusetts
-                      Organizations
-                    </p>
+                    <p>{t("orgDescription")}</p>
                   </Col>
                 </Row>
               </StyledButton>
             </Stack>
-            <p>
-              All Organization types have to go through a request and approval
-              process ran by MAPLE admins. Once your request has been approved
-              you will recieve an email and be granted access into MAPLE
-            </p>
+            <p>{t("orgVetting")}</p>
             <hr />
             <Button type="button" onClick={onHide}>
-              Cancel
+              {t("cancel")}
             </Button>
           </Stack>
         </Col>
