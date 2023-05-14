@@ -58,7 +58,11 @@ const App = () => {
           list={ListProfiles}
           options={{ label: "Upgrade Requests" }}
         />
-        <Resource name="users" list={ListGuesser} options={{ label: `snd in as ${showAuth}` }} />
+        <Resource
+          name="users"
+          list={ListGuesser}
+          options={{ label: `snd in as ${showAuth}` }}
+        />
       </Admin>
     </QueryClientProvider>
   )

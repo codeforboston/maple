@@ -17,7 +17,6 @@ const deleteTestimonyHttps = httpsCallable<
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
-
 jest.setTimeout(30000)
 // afterAll(terminateFirebase)
 
@@ -117,7 +116,7 @@ describe("action functions", () => {
     // )
     // await localTestimonyRef.set(testimony)
     // await localReportRef.set(report)
-
+    const refresh = jest.fn()
     await expect(signInTestAdmin()).resolves.toBeDefined()
 
     const admin = testAuth.getUser(adminUid)
@@ -141,7 +140,14 @@ describe("action functions", () => {
 
     console.log(report)
 
-    await onSubmitReport(reportId, resolution, "reason", authorUid, testimonyId)
+    await onSubmitReport(
+      reportId,
+      resolution,
+      "reason",
+      authorUid,
+      testimonyId,
+      refresh
+    )
       .then(d => console.log(d))
       .catch(c => console.log(c))
 

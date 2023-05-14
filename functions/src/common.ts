@@ -44,10 +44,7 @@ export function checkAuth(
   const uid = context.auth?.uid
 
   if (!uid) {
-    throw fail(
-      "unauthenticated",
-      "Caller must be signed in"
-    )
+    throw fail("unauthenticated", "Caller must be signed in")
   }
 
   if (checkEmailVerification && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -64,15 +61,12 @@ export function checkAuth(
 /**
  * Checks that the caller is an admin.
  */
-export function checkAdmin(
-  context: https.CallableContext,
-) {
+export function checkAdmin(context: https.CallableContext) {
   const callerRole = context.auth?.token.role
   if (callerRole !== "admin") {
     throw fail("permission-denied", "You must be an admin")
   }
 }
-
 
 /** Constructs a new HTTPS error */
 export function fail(code: https.FunctionsErrorCode, message: string) {

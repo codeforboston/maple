@@ -1,7 +1,5 @@
 import { Typography } from "@mui/material"
-import {
-  useRecordContext
-} from "react-admin"
+import { useRecordContext } from "react-admin"
 
 export const StatusField = ({ label }: { label?: string }) => {
   const record = useRecordContext()
@@ -10,4 +8,3 @@ export const StatusField = ({ label }: { label?: string }) => {
 
   return <Typography>{status}</Typography>
 }
-

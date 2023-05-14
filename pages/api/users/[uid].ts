@@ -77,7 +77,7 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       data: user
     })
-  } catch(exception) {
+  } catch (exception) {
     console.error(exception)
     return res.status(404).json({
       error: "User doesn't exist."

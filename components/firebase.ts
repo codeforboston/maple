@@ -26,7 +26,7 @@ const projectId =
   process.env.NEXT_PUBLIC_PROJECT_ID_FOR_TEST ?? "digital-testimony-dev"
 const devConfig = {
   apiKey: "AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo",
-  authDomain:   `digital-testimony-dev.firebaseapp.com`, //`${projectId}.firebaseapp.com`,
+  authDomain: `digital-testimony-dev.firebaseapp.com`, //`${projectId}.firebaseapp.com`,
   projectId,
   storageBucket: `${projectId}.appspot.com`,
   messagingSenderId: "313437920642",
@@ -41,7 +41,7 @@ const config: FirebaseOptions = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
 const initialized = first(firebase.apps)
 
 export const app = initialized ?? firebase.initializeApp(config)
-export {getApps}
+export { getApps }
 export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
   return async () => {
@@ -114,6 +114,6 @@ function connectEmulators() {
 //   console.log('onAuthStateChanged', u)
 // })
 
-if (typeof window !== 'undefined') {
-  Object.assign((window as any), {auth, app, getApps})
+if (typeof window !== "undefined") {
+  Object.assign(window as any, { auth, app, getApps })
 }
