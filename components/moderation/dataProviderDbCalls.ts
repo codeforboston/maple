@@ -89,7 +89,7 @@ export const getMyOne = async (
       docId = docRef.id
     }
   }
-  const raData = data ? { ...data, id: docId } : {id: docId}
+  const raData = data ? { ...data, id: docId } : { id: docId }
   return { data: raData }
 }
 
@@ -177,5 +177,3 @@ export const getMyListGroup = async (
   }
   return result
 }
-
-

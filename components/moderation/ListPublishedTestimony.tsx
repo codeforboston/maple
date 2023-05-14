@@ -1,9 +1,4 @@
-import {
-  Datagrid,
-  List,
-  ShowButton,
-  TextField
-} from "react-admin"
+import { Datagrid, List, ShowButton, TextField } from "react-admin"
 
 export function ListPublishedTestimony() {
   return (

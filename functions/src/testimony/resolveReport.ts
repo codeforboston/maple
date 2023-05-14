@@ -11,7 +11,7 @@ export type Request = z.infer<typeof Request>
 const Request = z.object({
   reportId: z.string(),
   resolution: z.enum(["allow-testimony", "remove-testimony"]),
-  reason: z.string().min(1).optional(),
+  reason: z.string().min(1).optional()
 })
 
 export type Response = {
@@ -52,11 +52,9 @@ export const resolveReport = functions.https.onCall(
         .then(d => d.data())
     )
 
- 
-
     // ***archived testiomny Id === published testimony Id***
 
-    // 4 Get the archived testimony document 
+    // 4 Get the archived testimony document
     // const archivedTestimonyId = await db
     //   .collection(`/users/${testimony.authorUid}/archivedTestimony`)
     //   .where("billId", "==", testimony.billId)

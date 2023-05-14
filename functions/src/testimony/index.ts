@@ -1,4 +1,4 @@
 export * from "./deleteTestimony"
 export * from "./publishTestimony"
 export * from "./search"
-export * from './resolveReport'
+export * from "./resolveReport"

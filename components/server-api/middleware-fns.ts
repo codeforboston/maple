@@ -62,14 +62,12 @@ export async function ensureAdminAuthenticated(
     return token
   } catch (e) {
     if (e instanceof FirebaseError) {
-      if (e.code === 'auth/id-token-revoked') {
-        response.status(401).setHeader('WWW-Authenticate', 'Bearer').json({
-
-        });
-        return;
+      if (e.code === "auth/id-token-revoked") {
+        response.status(401).setHeader("WWW-Authenticate", "Bearer").json({})
+        return
       }
     }
 
-    throw e;
+    throw e
   }
 }
