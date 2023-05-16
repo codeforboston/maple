@@ -1,10 +1,7 @@
-import _ from "lodash"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 import {
   Button,
   Datagrid,
-  DateField,
-  Identifier,
   List,
   RaRecord,
   TextField,
@@ -19,24 +16,23 @@ import { upgradeOrganization } from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
+import { ButtonGroup } from "@mui/material"
+import { Role } from "components/auth"
 import { createFakeOrg } from "components/moderation"
-import { nanoid } from "nanoid"
 import { loremIpsum } from "lorem-ipsum"
+import { nanoid } from "nanoid"
 
-const UserRoleToolBar = ({
-  filterValues,
-  setFilters
-}: {
-  filterValues: object
-  setFilters: any
-}) => {
-  const toggleFilter = useCallback(() => {
-    _.isEmpty(filterValues)
-      ? setFilters({ role: "pendingUpgrade" }, [], true)
-      : setFilters({}, [], true)
-  }, [filterValues, setFilters])
+const UserRoleToolBar = () => {
+  const { data, refetch, filterValues, setFilters, displayedFilters } =
+    useListContext<Profile[] & RaRecord>()
 
-  const { data, refetch } = useListContext<Profile[] & RaRecord>()
+  const refresh = useRefresh()
+
+  const filterClick = (role?: Role) => {
+    const newFilter = filterValues["role"] === role ? { role: "" } : { role }
+    setFilters(newFilter, [], true)
+    refresh()
+  }
 
   const pendingCount =
     data?.filter(d => d.role === "pendingUpgrade").length ?? 0
@@ -47,19 +43,32 @@ const UserRoleToolBar = ({
     const email = `${uid}@example.com`
 
     await createFakeOrg({ uid, fullName, email })
+
+    setFilters({ role: "pendingUpgrade" }, [])
     refetch()
-  }, [refetch])
+  }, [refetch, setFilters])
 
   return (
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
       <div>Upgrade Requests: {pendingCount} pending upgrades</div>
-      <Button
-        label={
-          _.isEmpty(filterValues) ? "Show Requests Only" : "Show All Profiles"
-        }
-        variant="outlined"
-        onClick={toggleFilter}
-      />
+      <ButtonGroup title="Show only: ">
+        {["user", "pendingUpgrade", "organization"].map(role => {
+          return (
+            <Button
+              key={role}
+              label={`${role}s`}
+              value={role}
+              variant="outlined"
+              sx={{
+                backgroundColor:
+                  filterValues["role"] === role ? "lightblue" : ""
+              }}
+              onClick={() => filterClick(role as Role)}
+            />
+          )
+        })}
+      </ButtonGroup>
+
       {["development", "test"].includes(process.env.NODE_ENV) && (
         <Button
           label="add fake org request"
@@ -72,17 +81,30 @@ const UserRoleToolBar = ({
 }
 
 export const useTrackUpdatingRow = () => {
-  // const row = useRef<string>()
-
   const [updating, setUpdating] = useState<string>()
+  const [justUpdated, setJustUpdated] = useState<string>()
 
-  const getRow = () => updating
-  const setRow = (id: string) => {
+  const getUpdating = () => updating
+
+  const setIsUpdating = (id: string) => {
     setUpdating(id)
   }
-  const clearRow = () => setUpdating(undefined)
+  const clearUpdating = () => setUpdating(undefined)
 
-  return { getRow, setRow, clearRow }
+  const getJustUpdated = () => justUpdated
+  const setIsJustUpdated = (id: string) => setJustUpdated(id)
+  const clearJustUpdated = () => {
+    setJustUpdated(undefined)
+  }
+
+  return {
+    getUpdating,
+    setIsUpdating,
+    clearUpdating,
+    getJustUpdated,
+    setIsJustUpdated,
+    clearJustUpdated
+  }
 }
 
 export const ListProfiles = () => {
@@ -94,64 +116,47 @@ export function InnerListProfiles({
 }: {
   tracking: ReturnType<typeof useTrackUpdatingRow>
 }) {
-  const { getRow, setRow, clearRow } = tracking
-  const { filterValues, setFilters, refetch } = useListController()
+  const {
+    clearUpdating,
+    getJustUpdated,
+    setIsJustUpdated,
+  } = tracking
+  const { filterValues, setFilters } = useListController()
   const refresh = useRefresh()
 
-  const row = getRow()
-
-  const [highlightColor, setHighlightColor] = useState<string | undefined>(
-    "yellow"
-  )
+  const highlightPending = "lightyellow"
+  const highlightRecent = "lightblue"
 
   async function handleUpgrade(record: any) {
-    setRow(record.id)
-    setHighlightColor("yellow")
+    setIsJustUpdated(record.id)
     await upgradeOrganization(record.id)
-
+    clearUpdating()
     refresh()
-    // refetch()
+    filterValues["role"] === "pendingUpgrade" &&
+      setFilters({ role: "organization" }, [])
   }
 
-  useEffect(() => {
-    clearRow()
-  }, [clearRow])
-
   return (
-    <List
-      actions={
-        <UserRoleToolBar filterValues={filterValues} setFilters={setFilters} />
-      }
-    >
+    <List actions={<UserRoleToolBar />}>
       <Datagrid
         rowStyle={record => ({
           backgroundColor:
-            record.id === getRow() || record.role === "pendingUpgrade"
-              ? highlightColor
+            record.role === "pendingUpgrade"
+              ? highlightPending
+              : record.id === getJustUpdated()
+              ? highlightRecent
               : "",
-          transition: "backgroundColor 2s ease-in"
+          animationName: record.id === getJustUpdated() ? "fadeOut" : "",
+          animationDelay: "2s",
+          animationDuration: "2s",
+          animationFillMode: "forwards"
         })}
       >
         <TextField source="fullName" label="Organization" />
-        <TextField source="email" />
-        <TextField source="phoneNumber" />
-        <div aria-label="test">
-          getRow is {getRow() ? "defined" : "undefined"} {getRow()}
-        </div>
-        <WithRecord
-          render={record => (
-            <div
-              style={{
-                backgroundColor: record.id === row ? "blue" : "",
-                transition: "backgroundColor 2s linear"
-              }}
-            >
-              {record.id === getRow() ? "same" : "diff"}
-            </div>
-          )}
-        />
-        <TextField source="website" />
-        <DateField source="reportDate" />
+        <TextField source="contact.email" label="email" />
+        <TextField source="contact.phoneNumber" label="phone" />
+
+        <TextField source="contact.website" label="website" />
         <WithRecord
           render={(record: Profile & RaRecord) => {
             return (
@@ -171,7 +176,7 @@ export function InnerListProfiles({
               <Button
                 label="upgrade"
                 variant="outlined"
-                onClick={() => handleUpgrade(record)}
+                onClick={async () => await handleUpgrade(record)}
               />
             ) : (
               <div></div>
