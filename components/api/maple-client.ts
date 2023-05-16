@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { auth } from "../firebase"
 
 // This is for querying the backend api deployed on Next
@@ -15,8 +15,14 @@ mapleClient.interceptors.request.use(async config => {
   return config
 })
 
-mapleClient.interceptors.response.use(value => {
-  if (value.status === 401) {
-    // Ask user to reauthenticate
+mapleClient.interceptors.response.use(
+  value => {
+    console.log(value)
+    return value
+  },
+  value => {
+    if (value.status === 401) {
+      return "not logged in as admin"
+    }
   }
-})
+)

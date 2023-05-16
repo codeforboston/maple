@@ -13,8 +13,9 @@ import {
   writeBatch
 } from "firebase/firestore"
 import { first } from "lodash"
-import { GetListParams, RaRecord } from "ra-core/src/types"
 import {
+  GetListParams,
+  RaRecord,
   CreateParams,
   CreateResult,
   GetManyParams,
