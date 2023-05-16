@@ -1,6 +1,5 @@
 import { ReportModal } from "components/TestimonyCard/ReportModal"
 import { useReportTestimony } from "components/api/report"
-import { useAuth } from "components/auth"
 import { Testimony } from "components/db"
 import { auth, firestore } from "components/firebase"
 import { createFakeTestimony } from "components/moderation"
@@ -14,16 +13,11 @@ export const CreateMockReport = () => {
   const [testimony, setTestimony] = useState<Testimony>()
   const reportMutation = useReportTestimony()
   const [isReporting, setIsReporting] = useState(false)
-  const { authenticated, claims, user } = useAuth()
   const refresh = useRefresh()
-
-  const token = auth.currentUser?.getIdToken()
-  token?.then(d => {
-    console.log("current user: ", authenticated, user, claims)
-  })
 
   const onclick = async () => {
     console.log("CLICKING")
+    await auth.currentUser?.getIdTokenResult(true)
 
     const uid = nanoid(15).replace("/[^A-Za-z]/g", "A")
     console.log("uid", uid)

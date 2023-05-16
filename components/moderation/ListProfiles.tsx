@@ -1,16 +1,18 @@
 import _ from "lodash"
-import { useCallback, useState, useEffect } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   Button,
   Datagrid,
   DateField,
+  Identifier,
   List,
   RaRecord,
   TextField,
   Toolbar,
   WithRecord,
   useListContext,
-  useListController
+  useListController,
+  useRefresh
 } from "react-admin"
 
 import { upgradeOrganization } from "components/api/upgrade-org"
@@ -39,15 +41,13 @@ const UserRoleToolBar = ({
   const pendingCount =
     data?.filter(d => d.role === "pendingUpgrade").length ?? 0
 
-  const waitForOrg = useCallback(async () => {
+  const fakeOrgRequest = useCallback(async () => {
     const uid = nanoid(8)
     const fullName = loremIpsum({ count: 2, units: "words" })
     const email = `${uid}@example.com`
 
-    const res = await createFakeOrg({ uid, fullName, email })
-    console.log(res.data)
+    await createFakeOrg({ uid, fullName, email })
     refetch()
-    return res.data
   }, [refetch])
 
   return (
@@ -64,35 +64,58 @@ const UserRoleToolBar = ({
         <Button
           label="add fake org request"
           variant="outlined"
-          onClick={waitForOrg}
+          onClick={fakeOrgRequest}
         />
       )}
     </Toolbar>
   )
 }
 
-export function ListProfiles() {
-  const [updating, setUpdating] = useState<string>()
-  const { filterValues, setFilters, refetch } = useListController()
-  async function handleUpgrade(record: any) {
-    const { id, role } = record
-    setUpdating(id)
-    if (role !== "pendingUpgrade") {
-      console.log(`role wasn't pendingUpgrade, it was ${role}`)
-      setUpdating(undefined)
+export const useTrackUpdatingRow = () => {
+  // const row = useRef<string>()
 
-      return
-    }
-    const response = await upgradeOrganization(id)
-    if (response.status === 200) {
-      alert(`Upgraded account to organization.`)
-    } else {
-      alert("Something went wrong, please try again later.")
-    }
-    console.log(response)
-    setUpdating(undefined)
-    refetch()
+  const [updating, setUpdating] = useState<string>()
+
+  const getRow = () => updating
+  const setRow = (id: string) => {
+    setUpdating(id)
   }
+  const clearRow = () => setUpdating(undefined)
+
+  return { getRow, setRow, clearRow }
+}
+
+export const ListProfiles = () => {
+  const tracking = useTrackUpdatingRow()
+  return <InnerListProfiles tracking={tracking} />
+}
+export function InnerListProfiles({
+  tracking
+}: {
+  tracking: ReturnType<typeof useTrackUpdatingRow>
+}) {
+  const { getRow, setRow, clearRow } = tracking
+  const { filterValues, setFilters, refetch } = useListController()
+  const refresh = useRefresh()
+
+  const row = getRow()
+
+  const [highlightColor, setHighlightColor] = useState<string | undefined>(
+    "yellow"
+  )
+
+  async function handleUpgrade(record: any) {
+    setRow(record.id)
+    setHighlightColor("yellow")
+    await upgradeOrganization(record.id)
+
+    refresh()
+    // refetch()
+  }
+
+  useEffect(() => {
+    clearRow()
+  }, [clearRow])
 
   return (
     <List
@@ -101,16 +124,32 @@ export function ListProfiles() {
       }
     >
       <Datagrid
-        rowStyle={record => {
-          return {
-            backgroundColor: record.id === updating ? "" : ""
-            // transition: "backgroundColor 1s"
-          }
-        }}
+        rowStyle={record => ({
+          backgroundColor:
+            record.id === getRow() || record.role === "pendingUpgrade"
+              ? highlightColor
+              : "",
+          transition: "backgroundColor 2s ease-in"
+        })}
       >
         <TextField source="fullName" label="Organization" />
-        <TextField source="email" /> <br />
-        <TextField source="phoneNumber" /> <br />
+        <TextField source="email" />
+        <TextField source="phoneNumber" />
+        <div aria-label="test">
+          getRow is {getRow() ? "defined" : "undefined"} {getRow()}
+        </div>
+        <WithRecord
+          render={record => (
+            <div
+              style={{
+                backgroundColor: record.id === row ? "blue" : "",
+                transition: "backgroundColor 2s linear"
+              }}
+            >
+              {record.id === getRow() ? "same" : "diff"}
+            </div>
+          )}
+        />
         <TextField source="website" />
         <DateField source="reportDate" />
         <WithRecord

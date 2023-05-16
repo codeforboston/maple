@@ -39,12 +39,12 @@ const BodySchema = z.object({
 
 async function patch(req: NextApiRequest, res: NextApiResponse) {
   const { query, body } = req
-
   // only admins can access this
   const token = await ensureAdminAuthenticated(req, res)
   if (!token) {
     return
   }
+
   const queryValidation = QuerySchema.safeParse(query)
   const bodyValidation = BodySchema.safeParse(body)
 
