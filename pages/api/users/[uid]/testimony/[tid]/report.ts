@@ -90,7 +90,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       }
     })
   } catch (exception) {
-    console.error(exception)
     res.status(500).json({
       error: exception
     })

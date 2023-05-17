@@ -39,10 +39,9 @@ export async function ensureAuthenticated(
   response: NextApiResponse
 ) {
   const token = await getToken(request)
-  console.log('value of token', token.valueOf())
   if (!token) {
     response.status(401).json({ error: AUTHENTICATION_FAILED_MESSAGE })
-    return undefined
+    return
   }
   return token
 }
@@ -64,12 +63,10 @@ export async function ensureAdminAuthenticated(
   } catch (e) {
     if (e instanceof FirebaseError) {
       if (e.code === "auth/id-token-revoked") {
-        response.status(401).setHeader("WWW-Authenticate", "Bearer").json({
-          error: e.code
-        })
+        response.status(401).setHeader("WWW-Authenticate", "Bearer").json({})
         return
       }
     }
-    response.status(404).json({ error: "user note authenticated" })
+    console.log(e)
   }
 }

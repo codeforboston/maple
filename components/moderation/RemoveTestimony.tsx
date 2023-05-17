@@ -29,8 +29,6 @@ export const onSubmitReport = async (
     reason
   })
 
-  console.log(`${r.data.status}`)
-
   if (r.data.status !== `success`) {
     alert(r.data.status)
   }
@@ -58,7 +56,6 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
   const onSubmit: FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault()
     if (resolution && reason && report.id) {
-      console.log(report.id, resolution, reason)
       await onSubmitReport(
         report.id,
         resolution,
@@ -67,7 +64,6 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
         report.testimonyId,
         refresh
       )
-      refresh()
       redirect("list", "reports")
     } else {
       console.log("one of these not defined", resolution, reason, report.id)
@@ -132,7 +128,6 @@ export function RemoveTestimonyForm({ report }: { report: Report }) {
                   type="radio"
                   onChange={() => {
                     setResolution("allow-testimony")
-                    console.log(resolution, reason)
                   }}
                   id="resolveReportAllow"
                   value="allow-testimony"

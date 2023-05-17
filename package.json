@@ -11,6 +11,7 @@
     "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions,storage",
     "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions,storage",
     "dev": "next dev",
+    "dev:local": "NEXT_PUBLIC_PROJECT_ID_FOR_TEST=demo-dtp NEXT_PUBLIC_USE_EMULATOR=true next dev",
     "dev:ps": "yarn compose ps",
     "dev:up": "yarn compose up",
     "dev:up:detach": "yarn compose up --wait && yarn dev:logs",

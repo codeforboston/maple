@@ -23,8 +23,9 @@ import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
 
 const UserRoleToolBar = () => {
-  const { data, refetch, filterValues, setFilters, displayedFilters } =
-    useListContext<Profile[] & RaRecord>()
+  const { data, refetch, filterValues, setFilters } = useListContext<
+    Profile[] & RaRecord
+  >()
 
   const refresh = useRefresh()
 
@@ -44,7 +45,9 @@ const UserRoleToolBar = () => {
 
     await createFakeOrg({ uid, fullName, email })
 
-    setFilters({ role: "pendingUpgrade" }, [])
+    if (filterValues["role"] === "organization")
+      setFilters({ role: "pendingUpgrade" }, [])
+
     refetch()
   }, [refetch, setFilters])
 
@@ -52,7 +55,7 @@ const UserRoleToolBar = () => {
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
       <div>Upgrade Requests: {pendingCount} pending upgrades</div>
       <ButtonGroup title="Show only: ">
-        {["user", "pendingUpgrade", "organization"].map(role => {
+        {["pendingUpgrade", "organization"].map(role => {
           return (
             <Button
               key={role}
@@ -67,6 +70,13 @@ const UserRoleToolBar = () => {
             />
           )
         })}
+        <Button
+          key={"all"}
+          label={"clear filter"}
+          value={"all"}
+          variant="outlined"
+          onClick={() => filterClick()}
+        />{" "}
       </ButtonGroup>
 
       {["development", "test"].includes(process.env.NODE_ENV) && (
@@ -116,11 +126,7 @@ export function InnerListProfiles({
 }: {
   tracking: ReturnType<typeof useTrackUpdatingRow>
 }) {
-  const {
-    clearUpdating,
-    getJustUpdated,
-    setIsJustUpdated,
-  } = tracking
+  const { clearUpdating, getJustUpdated, setIsJustUpdated } = tracking
   const { filterValues, setFilters } = useListController()
   const refresh = useRefresh()
 
@@ -131,9 +137,9 @@ export function InnerListProfiles({
     setIsJustUpdated(record.id)
     await upgradeOrganization(record.id)
     clearUpdating()
-    refresh()
     filterValues["role"] === "pendingUpgrade" &&
       setFilters({ role: "organization" }, [])
+    refresh()
   }
 
   return (
