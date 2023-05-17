@@ -13,14 +13,11 @@ export const CreateMockReport = () => {
   const [testimony, setTestimony] = useState<Testimony>()
   const reportMutation = useReportTestimony()
   const [isReporting, setIsReporting] = useState(false)
-  const refresh = useRefresh()
 
   const onclick = async () => {
-    console.log("CLICKING")
-    await auth.currentUser?.getIdTokenResult(true)
+    await auth.currentUser?.getIdToken(true)
 
-    const uid = nanoid(15).replace("/[^A-Za-z]/g", "A")
-    console.log("uid", uid)
+    const uid = nanoid(15).replace("/[^A-Za-z]-/g", "A")
     const fullName = loremIpsum({ count: 2, units: "words" })
     const email = `${uid}@example.com`
 
@@ -29,34 +26,31 @@ export const CreateMockReport = () => {
       fullName,
       email
     })
-    if (!result) throw new Error("result now found")
-    const snap = getDoc(
+    if (!result) throw new Error("result not found")
+    const d = await getDoc(
       doc(
         firestore,
         `users/${result.data.uid}/publishedTestimony/${result.data.tid}`
       )
     )
 
-    if (!(await snap).exists()) {
-      throw new Error("snape does note exist")
-    }
-
-    snap.then(d => {
-      setTestimony(d.data() as Testimony)
-    })
+    setTestimony(d.data() as Testimony)
 
     setIsReporting(true)
   }
 
-  return isReporting ? (
+  return isReporting && testimony ? (
     <ReportModal
       onClose={async () => {
-        refresh()
         setTestimony(undefined)
         setIsReporting(false)
       }}
       onReport={report => {
-        testimony && reportMutation.mutate({ report, testimony })
+        try {
+          reportMutation.mutate({ report, testimony })
+        } catch (e) {
+          console.log({ e })
+        }
       }}
       isLoading={reportMutation.isLoading}
       reasons={[

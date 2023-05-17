@@ -2,7 +2,7 @@ import * as functions from "firebase-functions"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
 
-// for populating admin module for testing & demonstration--alert--no auth checked here.
+// for populating admin module for testing & demonstration
 //@TODO: remove
 
 export const createFakeOrg = functions.https.onCall(async (data, context) => {
@@ -21,13 +21,14 @@ export const createFakeOrg = functions.https.onCall(async (data, context) => {
   }
 
   const role = "pendingUpgrade"
-  console.log((await auth.listUsers()).users)
   const userRecord = await auth.createUser(newUser)
 
   await auth.setCustomUserClaims(newUser.uid, { role })
   await db.doc(`/profiles/${newUser.uid}`).set(newUser)
 
   const authUser = (await db.doc(`/profiles/${newUser.uid}`).get()).data()
+
+  console.log(authUser)
 
   return { ...authUser, uid: userRecord.uid }
 })

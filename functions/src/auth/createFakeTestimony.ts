@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions"
-// import { checkAdmin, checkAuth } from "../common"
+import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
 import { Testimony } from "../testimony/types"
 import { Timestamp } from "../firebase"
@@ -10,8 +10,8 @@ import { Timestamp } from "../firebase"
 export const createFakeTestimony = functions.https.onCall(
   async (data, context) => {
     console.log("running fake testimony")
-    // checkAuth(context, false)
-    // checkAdmin(context)
+    checkAuth(context, false)
+    checkAdmin(context)
 
     const { uid, fullName, email } = data
 

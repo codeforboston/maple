@@ -1,23 +1,33 @@
+import { firestore } from "components/firebase"
+import { collection, onSnapshot } from "firebase/firestore"
+import { useEffect } from "react"
 import {
-  Button,
   Datagrid,
   EditButton,
   List,
   TextField,
-  WithRecord
+  WithRecord,
+  useRefresh
 } from "react-admin"
 import { Report } from "."
 import { StatusField } from "./common"
 import { CreateMockReport } from "./setUp/CreateMockReport"
-import { auth } from "components/firebase"
 
 export function ListReports() {
+  const refresh = useRefresh()
+  useEffect(() => {
+    const reportsRef = collection(firestore, "reports")
+    const unsubscribe = onSnapshot(
+      reportsRef,
+      () => refresh(),
+      (e: Error) => console.log(e)
+    )
+
+    return () => unsubscribe()
+  }, [])
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <CreateMockReport />
-      </div>
-      <List>
+      <List actions={<CreateMockReport />}>
         <Datagrid rowClick={"edit"}>
           <TextField source="id" label="report id" />
           <TextField source="testimonyId" />
