@@ -31,7 +31,9 @@ function App({ Component, ...rest }: AppPropsWithLayout) {
   return (
     <Redux store={store}>
       {props.router.pathname === "/admin" ? (
-        <Component />
+        <Providers>
+          <Component />
+        </Providers>
       ) : (
         <Providers>{applyLayout({ Component, ...props })}</Providers>
       )}

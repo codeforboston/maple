@@ -27,7 +27,8 @@ export function ListReports() {
   }, [])
   return (
     <>
-      <List actions={<CreateMockReport />}>
+      <CreateMockReport />
+      <List>
         <Datagrid rowClick={"edit"}>
           <TextField source="id" label="report id" />
           <TextField source="testimonyId" />
