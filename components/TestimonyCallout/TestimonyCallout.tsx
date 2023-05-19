@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
+import { useTranslation } from "next-i18next"
 
 export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
   const positionStyles = {
@@ -10,12 +11,13 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
     neutral: "flipRotate",
     oppose: ""
   }
-
+  const { t } = useTranslation("testimony")
+  
   return (
     <Image
       fluid
       className={`${positionStyles[position]}`}
-      alt={`${position}`}
+      alt={t("testimonyCallout.position", {position1: position}) ?? position} 
       src="/VoteHand.png"
     />
   )
@@ -142,6 +144,9 @@ const Callout = ({
   billId: string
   authorDisplayName: string
 }) => {
+
+  const { t } = useTranslation("testimony")
+
   return (
     <CalloutBalloon>
       <div className="background">
@@ -155,7 +160,7 @@ const Callout = ({
         <div className="content-container">
           <div className="main-content">"{trimContent(content, 90)}"</div>
           <div className="footer">
-            <div className="bill">Bill{formatBillId(billId)}</div>
+            <div className="bill">{t("testimonyCallout.bill")}{formatBillId(billId)}</div>
             <div className="author">{authorDisplayName}</div>
           </div>
         </div>
