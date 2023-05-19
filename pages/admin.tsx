@@ -17,6 +17,9 @@ function requireAdmin(Component: React.FC<{}>) {
     const { user, authenticated, claims } = useAuth()
     const router = useRouter()
     useEffect(() => {
+      if (!authenticated) {
+        router.push({ pathname: "/" })
+      }
       if (authenticated === true && claims === undefined) {
         router.push({ pathname: "/" })
       }
