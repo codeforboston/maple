@@ -1,12 +1,14 @@
 import { Dropdown } from "react-bootstrap"
 import { ReactEventHandler } from "react"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 export const UserFilterDropDown = (props: {
   users: string
   handleUsers?: ReactEventHandler
 }) => {
   const { handleUsers, users } = props
+  const { t } = useTranslation("testimony")
 
   return (
     <DropdownContainer>
@@ -16,10 +18,10 @@ export const UserFilterDropDown = (props: {
 
       <Dropdown.Menu>
         <Dropdown.Item onClick={handleUsers}>
-          All Published Testimonies
+          {t("userFilterDropdown.publishedTestimonies")}
         </Dropdown.Item>
-        <Dropdown.Item onClick={handleUsers}>Users Only</Dropdown.Item>
-        <Dropdown.Item onClick={handleUsers}>Organizations Only</Dropdown.Item>
+        <Dropdown.Item onClick={handleUsers}>{t("userFilterDropdown.usersOnly")}</Dropdown.Item>
+        <Dropdown.Item onClick={handleUsers}>{t("userFilterDropdown.organizationsOnly")}</Dropdown.Item>
       </Dropdown.Menu>
     </DropdownContainer>
   )

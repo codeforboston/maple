@@ -4,6 +4,7 @@ import { Author } from "./Author"
 import { Testimony } from "components/db"
 import styles from "./ViewTestimony.module.css"
 import { ProfilePositionLabel } from "./ProfilePositionBug"
+import { useTranslation } from "next-i18next"
 
 export const UserInfoHeader = ({
   testimony,
@@ -14,6 +15,8 @@ export const UserInfoHeader = ({
   billLink: string
   publishedDate: string
 }) => {
+  const { t } = useTranslation("testimony")
+
   return (
     <Stack direction="horizontal" gap={3} className="pb-3">
       <Col xs="auto">
@@ -34,7 +37,7 @@ export const UserInfoHeader = ({
             {publishedDate}
           </Col>
           <Col xs="auto" className="justify-content-end d-flex">
-            {testimony.version > 1 && <p className={styles.editbug}>Edited</p>}
+            {testimony.version > 1 && <p className={styles.editbug}>{t("userInfoHeader.edited")}</p>}
           </Col>
         </Row>
         <hr className={styles.hr}></hr>
