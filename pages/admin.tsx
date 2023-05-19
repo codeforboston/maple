@@ -1,15 +1,27 @@
+import { useAuth } from "components/auth"
+import { App } from "components/moderation"
 import { createPage } from "components/page"
-import type { NextPage } from "next"
-import dynamic from "next/dynamic"
-const App = dynamic(() => import("components/moderation/moderation"), {
-  ssr: false
+import { useRouter } from "next/router"
+import { useEffect } from "react"
+
+// const Admin: NextPage = () => requireAdmin()
+// return <App />
+
+export default createPage({
+  title: "Admin",
+  Page: requireAdmin(() => <App />)
 })
 
-// TODO: move dynamic into moderation/index.tsx
-// import {App} from 'components/moderation'
+function requireAdmin(Component: React.FC<{}>) {
+  return function ProtectedRoute() {
+    const { user, authenticated, claims } = useAuth()
+    const router = useRouter()
+    useEffect(() => {
+      if (authenticated === true && claims === undefined) {
+        router.push({ pathname: "/" })
+      }
+    }, [user, router, authenticated])
 
-const Admin: NextPage = () => {
-  return <App />
+    return claims?.role === "admin" ? <Component /> : null
+  }
 }
-
-export default Admin
