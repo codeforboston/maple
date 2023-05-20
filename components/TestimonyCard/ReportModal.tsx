@@ -32,11 +32,14 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
   return (
     <Modal show onHide={onClose}>
       <Form validated={false} onSubmit={handleReport}>
-        <Modal.Header closeButton>{t("reportModal.reportTestimony")}</Modal.Header>
+        <Modal.Header closeButton>
+          {t("reportModal.reportTestimony")}
+        </Modal.Header>
         <Modal.Body>
           <Form.Group as="fieldset">
             <legend>
-            {t("reportModal.reason")}<span style={{ color: "red" }}>*</span>
+              {t("reportModal.reason")}
+              <span style={{ color: "red" }}>*</span>
             </legend>
             {reasons.map(reason => {
               return (
@@ -80,10 +83,10 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
-          {t("reportModal.close")}
+            {t("reportModal.close")}
           </Button>
           <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? t("reportModal.reporting"): t("reportModal.report")}
+            {isLoading ? t("reportModal.reporting") : t("reportModal.report")}
           </Button>
         </Modal.Footer>
       </Form>

@@ -37,7 +37,9 @@ export const UserInfoHeader = ({
             {publishedDate}
           </Col>
           <Col xs="auto" className="justify-content-end d-flex">
-            {testimony.version > 1 && <p className={styles.editbug}>{t("userInfoHeader.edited")}</p>}
+            {testimony.version > 1 && (
+              <p className={styles.editbug}>{t("userInfoHeader.edited")}</p>
+            )}
           </Col>
         </Row>
         <hr className={styles.hr}></hr>

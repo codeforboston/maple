@@ -15,8 +15,12 @@ export const SortTestimonyDropDown = ({
       className="bg-white w-100"
       onChange={e => setOrderBy(e.target.value)}
     >
-      <option value="Most Recent First">{t("sortTestimonyDropDown.recentFirst")}</option>
-      <option value="Oldest First">{t("sortTestimonyDropDown.oldestFirst")}</option>
+      <option value="Most Recent First">
+        {t("sortTestimonyDropDown.recentFirst")}
+      </option>
+      <option value="Oldest First">
+        {t("sortTestimonyDropDown.oldestFirst")}
+      </option>
     </Form.Select>
   )
 }

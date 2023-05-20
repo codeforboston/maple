@@ -33,7 +33,11 @@ function ReportToast({ isSuccessful }: Props) {
       delay={3000}
       autohide
     >
-      <Toast.Header>{t("reportToast.successful1", {successful1: MESSAGES["header"][successful]})}</Toast.Header>
+      <Toast.Header>
+        {t("reportToast.successful1", {
+          successful1: MESSAGES["header"][successful]
+        })}
+      </Toast.Header>
       <Toast.Body>{MESSAGES["body"][successful]}</Toast.Body>
     </Toast>
   )

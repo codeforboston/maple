@@ -43,5 +43,11 @@ export const PolicyActions: FC<PolicyActionsProps> = ({
 
   const { t } = useTranslation("testimony")
 
-  return <Card className={className} header={t("policyActions.actions") ?? "Actions"} items={items} />
+  return (
+    <Card
+      className={className}
+      header={t("policyActions.actions") ?? "Actions"}
+      items={items}
+    />
+  )
 }

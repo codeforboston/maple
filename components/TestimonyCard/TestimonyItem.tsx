@@ -48,7 +48,7 @@ const ArchiveTestimonyConfirmation = ({
   archiveTestimony: UseAsyncReturn<void, []> | undefined
 }) => {
   const { t } = useTranslation("testimony")
-  
+
   return (
     <>
       <StyledCol>{t("testimonyItem.deleteTestimonyConfirmation")}</StyledCol>
@@ -111,7 +111,7 @@ export const TestimonyItem = ({
 
   const [showConfirm, setShowConfirm] = useState(false)
   const { deleteTestimony } = usePublishService() ?? {}
-  
+
   const { t } = useTranslation("testimony")
 
   return (

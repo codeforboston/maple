@@ -24,7 +24,9 @@ const Testimony = styled(props => {
 
   return (
     <div {...props}>
-      <div className="fs-4">{t("testimonyDetail.what")} {authorTitle} {t("testimonyDetail.says")}</div>
+      <div className="fs-4">
+        {t("testimonyDetail.what")} {authorTitle} {t("testimonyDetail.says")}
+      </div>
       <TestimonyContent testimony={revision.content} previous={previous} />
     </div>
   )
@@ -65,7 +67,8 @@ const Header = styled(props => {
       <PositionIcon className="positionIcon" position={position} />
       <div className="author ms-2 me-auto">
         <div className="fs-4">
-          {authorInfo} {positionInfo[position].action} {t("testimonyDetail.thisPolicy")}
+          {authorInfo} {positionInfo[position].action}{" "}
+          {t("testimonyDetail.thisPolicy")}
         </div>
         <div>{revision.publishedAt.toDate().toLocaleDateString()}</div>
       </div>

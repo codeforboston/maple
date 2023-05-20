@@ -108,7 +108,10 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <Col className="d-flex align-items-center">
-                      {t("viewTestimony.showing1")}{testimony.length}{t("viewTestimony.outOf")}{testimony.length}
+                      {t("viewTestimony.showing1")}
+                      {testimony.length}
+                      {t("viewTestimony.outOf")}
+                      {testimony.length}
                     </Col>
                     <Col xs="auto">
                       <SortTestimonyDropDown
@@ -144,7 +147,8 @@ const ViewTestimony = (
               </div>
             ) : (
               <NoResults>
-                {t("viewTestimony.noTestimonies")}<br />
+                {t("viewTestimony.noTestimonies")}
+                <br />
               </NoResults>
             )}
           </BootstrapCard.Body>
