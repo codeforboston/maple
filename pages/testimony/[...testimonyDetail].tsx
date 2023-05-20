@@ -150,7 +150,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     return {
       props: {
-        ...(await serverSideTranslations(locale, ["auth", "common", "footer", "testimony"]))
+        ...(await serverSideTranslations(locale, [
+          "auth",
+          "common",
+          "footer",
+          "testimony"
+        ]))
       }
     }
   }

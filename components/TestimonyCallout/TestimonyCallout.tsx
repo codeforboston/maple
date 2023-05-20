@@ -12,12 +12,12 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
     oppose: ""
   }
   const { t } = useTranslation("testimony")
-  
+
   return (
     <Image
       fluid
       className={`${positionStyles[position]}`}
-      alt={t("testimonyCallout.position", {position1: position}) ?? position} 
+      alt={t("testimonyCallout.position", { position1: position }) ?? position}
       src="/VoteHand.png"
     />
   )
@@ -144,7 +144,6 @@ const Callout = ({
   billId: string
   authorDisplayName: string
 }) => {
-
   const { t } = useTranslation("testimony")
 
   return (
@@ -160,7 +159,10 @@ const Callout = ({
         <div className="content-container">
           <div className="main-content">"{trimContent(content, 90)}"</div>
           <div className="footer">
-            <div className="bill">{t("testimonyCallout.bill")}{formatBillId(billId)}</div>
+            <div className="bill">
+              {t("testimonyCallout.bill")}
+              {formatBillId(billId)}
+            </div>
             <div className="author">{authorDisplayName}</div>
           </div>
         </div>

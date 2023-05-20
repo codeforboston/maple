@@ -39,7 +39,9 @@ const HistoryItem: FC<{ revision: Revision }> = ({ revision: tr }) => {
       <div className="d-inline-flex justify-content-between w-100">
         <span>{date}</span> <span className="fw-bold ms-2">{changes}</span>
       </div>
-      <div>{t("revisionHistory.version")} {tr.version}</div>
+      <div>
+        {t("revisionHistory.version")} {tr.version}
+      </div>
     </ListGroup.Item>
   )
 }
@@ -52,7 +54,7 @@ export const RevisionHistory = styled(props => {
   return (
     <Card
       className={props.className}
-      header={t("revisionHistory.history")+`(${revisions.length})`}
+      header={t("revisionHistory.history") + `(${revisions.length})`}
       items={revisions.map(t => (
         <HistoryItem key={t.version} revision={t} />
       ))}

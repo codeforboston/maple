@@ -20,8 +20,12 @@ export const UserFilterDropDown = (props: {
         <Dropdown.Item onClick={handleUsers}>
           {t("userFilterDropdown.publishedTestimonies")}
         </Dropdown.Item>
-        <Dropdown.Item onClick={handleUsers}>{t("userFilterDropdown.usersOnly")}</Dropdown.Item>
-        <Dropdown.Item onClick={handleUsers}>{t("userFilterDropdown.organizationsOnly")}</Dropdown.Item>
+        <Dropdown.Item onClick={handleUsers}>
+          {t("userFilterDropdown.usersOnly")}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={handleUsers}>
+          {t("userFilterDropdown.organizationsOnly")}
+        </Dropdown.Item>
       </Dropdown.Menu>
     </DropdownContainer>
   )
