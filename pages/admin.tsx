@@ -14,17 +14,16 @@ export default createPage({
 
 function requireAdmin(Component: React.FC<{}>) {
   return function ProtectedRoute() {
-    const { user, authenticated, claims } = useAuth()
+    const { claims } = useAuth()
     const router = useRouter()
-    useEffect(() => {
-      if (!authenticated) {
-        router.push({ pathname: "/" })
-      }
-      if (authenticated === true && claims === undefined) {
-        router.push({ pathname: "/" })
-      }
-    }, [user, router, authenticated])
 
+    useEffect(() => {
+      if (claims && claims?.role !== "admin") {
+        router.push({ pathname: "/" })
+      }
+    }, [claims, router])
+
+    console.log({ claims })
     return claims?.role === "admin" ? <Component /> : null
   }
 }
