@@ -66,5 +66,6 @@ export const getStaticProps = createGetStaticTranslationProps([
   "common",
   "footer",
   "profile",
-  "editProfile"
+  "editProfile",
+  "testimony"
 ])

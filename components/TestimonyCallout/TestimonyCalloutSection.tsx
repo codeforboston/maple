@@ -4,16 +4,19 @@ import { Internal } from "components/links"
 import { Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
+import { useTranslation } from "next-i18next"
 
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
+  const { t } = useTranslation("testimony")
+
   return (
     <Container fluid>
       <Row className="mt-5 justify-content-center">
         <Col xs={10}>
-          <h1>What people are saying...</h1>
+          <h1>{t("testimonyCalloutSection.peopleSaying")}</h1>
         </Col>
       </Row>
       {isMobile ? (
