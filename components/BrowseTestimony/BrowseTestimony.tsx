@@ -11,7 +11,7 @@ import {
   Header,
   StyledTabContent,
   StyledTabNav
-} from "./StyledBrowseTestimonyComponents"
+} from "components/shared/StyledSharedComponents"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"

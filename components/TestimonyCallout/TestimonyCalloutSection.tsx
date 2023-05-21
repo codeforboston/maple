@@ -1,5 +1,6 @@
 import { Carousel, CarouselItem } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
+import { Internal } from "components/links"
 import { Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
@@ -53,6 +54,13 @@ export default function TestimonyCalloutSection() {
           </Col>
         </Row>
       )}
+      <Row className="mt-5 justify-content-center">
+        <Col xs={10}>
+          <h3>
+            <Internal href={"/browse-testimony"}>View all testimony</Internal>
+          </h3>
+        </Col>
+      </Row>
     </Container>
   )
 }
