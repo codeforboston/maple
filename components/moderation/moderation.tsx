@@ -1,4 +1,4 @@
-import { app, firestore } from "components/firebase"
+import { app } from "components/firebase"
 import { Admin, DataProvider, Resource } from "react-admin"
 import { FirebaseDataProvider } from "react-admin-firebase"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -13,6 +13,7 @@ import {
 } from "./dataProviderDbCalls"
 
 import * as fb from "components/firebase"
+import * as firestore from "firebase/firestore"
 import * as dbCalls from "./dataProviderDbCalls"
 
 const queryClient = new QueryClient()
