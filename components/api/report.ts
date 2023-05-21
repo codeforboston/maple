@@ -5,6 +5,8 @@ import { Report, ReportResponse } from "../server-api/types"
 import { mapleClient } from "./maple-client"
 
 export async function reportTestimony(testimony: Testimony, report: Report) {
+  console.log("reporting testimony")
+  console.log({ testimony })
   return mapleClient.post<ReportResponse>(
     `/api/users/${testimony.authorUid}/testimony/${testimony.id}/report`,
     report
@@ -16,9 +18,7 @@ export function useReportTestimony() {
     AxiosResponse<ReportResponse>,
     unknown,
     { testimony: Testimony; report: Report }
-  >(
-    "report-testimony",
-    ({ testimony, report }) => reportTestimony(testimony, report),
-    { onError: error => console.log({ error }) }
+  >("report-testimony", ({ testimony, report }) =>
+    reportTestimony(testimony, report)
   )
 }

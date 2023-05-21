@@ -39,12 +39,12 @@ const BodySchema = z.object({
 
 async function patch(req: NextApiRequest, res: NextApiResponse) {
   const { query, body } = req
+
   // only admins can access this
   const token = await ensureAdminAuthenticated(req, res)
   if (!token) {
     return
   }
-
   const queryValidation = QuerySchema.safeParse(query)
   const bodyValidation = BodySchema.safeParse(body)
 
@@ -67,8 +67,8 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
 
     // Set the claim for the JWT
     await auth.setCustomUserClaims(user.uid, { role })
-    // Set on the profiles collection for the admin dashboard
-    await db.doc(`profiles/${uid}`).set(
+    // Set on the user's collection for the admin dashboard
+    await db.doc(`users/${uid}`).set(
       {
         role
       },
@@ -77,8 +77,7 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       data: user
     })
-  } catch (exception) {
-    console.error(exception)
+  } catch {
     return res.status(404).json({
       error: "User doesn't exist."
     })

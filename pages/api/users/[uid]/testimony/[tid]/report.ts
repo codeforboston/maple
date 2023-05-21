@@ -74,7 +74,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     reporterUid: token.uid,
     reportDate: Timestamp.fromDate(new Date()),
     testimonyId: tid,
-    authorUid: uid,
     id,
     reportId: id
   }
@@ -90,6 +89,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       }
     })
   } catch (exception) {
+    console.error(exception)
     res.status(500).json({
       error: exception
     })

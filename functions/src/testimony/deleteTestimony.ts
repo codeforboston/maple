@@ -2,33 +2,24 @@ import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import {
-  checkAuth,
-  checkRequest,
-  DocUpdate,
-  Id,
-  Maybe,
-  checkAdmin
-} from "../common"
+import { checkAuth, checkRequest, DocUpdate, Id, Maybe, fail } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({
-  uid: Id,
   publicationId: Id
 })
 
+const enabled = false
+
 export const deleteTestimony = https.onCall(async (data, context) => {
-  checkAuth(context)
+  if (!enabled)
+    fail("permission-denied", "Deleting testimony is not allowed by policy")
 
-  // Only admins can delete testimony. Previously we used the caller's UID to
-  // select the testimony to delete, but admins need to be able to delete other
-  // users testimony so we require the uid to be specified in the request.
-  checkAdmin(context)
-
-  const { uid, publicationId } = checkRequest(DeleteTestimonyRequest, data)
+  const uid = checkAuth(context)
+  const { publicationId } = checkRequest(DeleteTestimonyRequest, data)
 
   return performDeleteTestimony(uid, publicationId)
 })

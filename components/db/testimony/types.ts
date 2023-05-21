@@ -14,7 +14,6 @@ import {
 } from "runtypes"
 import { functions } from "../../firebase"
 import { Id, Maybe } from "../common"
-import type * as report from "functions/src/testimony/resolveReport"
 
 export const maxTestimonyLength = 10_000
 
@@ -88,8 +87,3 @@ export const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
-
-export const resolveReport = httpsCallable<report.Request, report.Response>(
-  functions,
-  "resolveReport"
-)

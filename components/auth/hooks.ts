@@ -66,7 +66,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
-      await finishSignup({ requestedRole: isOrg ? "pendingUpgrade" : "user" })
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
       const categories = orgCategory ? [orgCategory] : ""
 

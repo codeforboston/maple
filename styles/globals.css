@@ -83,12 +83,3 @@
 .tooltip-inner {
   font-family: "Nunito";
 }
-
-@keyframes fadeOut {
-  0% {
-    background-color: lightblue;
-  }
-  100% {
-    background-color: inherit;
-  }
-}

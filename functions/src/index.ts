@@ -1,4 +1,3 @@
-export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
@@ -27,8 +26,7 @@ export {
   deleteTestimony,
   publishTestimony,
   syncTestimonyToSearchIndex,
-  upgradeTestimonySearchIndex,
-  resolveReport
+  upgradeTestimonySearchIndex
 } from "./testimony"
 export * from "./triggerPubsubFunction"
 

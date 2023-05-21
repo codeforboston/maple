@@ -30,13 +30,7 @@ function App({ Component, ...rest }: AppPropsWithLayout) {
   const { store, props } = wrapper.useWrappedStore(rest)
   return (
     <Redux store={store}>
-      {props.router.pathname === "/admin" ? (
-        <Providers>
-          <Component />
-        </Providers>
-      ) : (
-        <Providers>{applyLayout({ Component, ...props })}</Providers>
-      )}
+      <Providers>{applyLayout({ Component, ...props })}</Providers>
     </Redux>
   )
 }
