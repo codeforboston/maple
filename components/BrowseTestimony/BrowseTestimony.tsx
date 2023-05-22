@@ -1,8 +1,24 @@
+import {
+  CurrentRefinements,
+  Hits,
+  InstantSearch,
+  Pagination,
+  SearchBox,
+  useInstantSearch
+} from "@alexjball/react-instantsearch-hooks-web"
+import { getServerConfig } from "components/search/common"
+import { SearchContainer } from "components/search/SearchContainer"
+import { SearchErrorBoundary } from "components/search/SearchErrorBoundary"
+import { initialSortByValue, SortBy } from "components/search/SortBy"
+import { useRouting } from "components/search/useRouting"
+import { currentGeneralCourt } from "functions/src/shared"
 import ErrorPage from "next/error"
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
+import styled from "styled-components"
+import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
 import { AllTestimoniesTab } from "./AllTestimoniesTab"
 import { IndividualsTab } from "./IndividualsTab"
@@ -16,7 +32,54 @@ import { useAuth } from "../auth"
 import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
 
+const searchClient = new TypesenseInstantSearchAdapter({
+  server: getServerConfig(),
+  additionalSearchParameters: {
+    query_by: "number,title,body",
+    exclude_fields: "body"
+  }
+}).searchClient
+
 export default function BrowseTestimony() {
+  return (
+    <SearchErrorBoundary>
+      <InstantSearch
+        indexName={initialSortByValue}
+        initialUiState={{
+          [initialSortByValue]: {
+            refinementList: { court: [String(currentGeneralCourt)] }
+          }
+        }}
+        searchClient={searchClient}
+        routing={useRouting()}
+      >
+        <Layout />
+      </InstantSearch>
+    </SearchErrorBoundary>
+  )
+}
+
+const RefinementRow = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`
+
+const useSearchStatus = () => {
+  const { results } = useInstantSearch()
+
+  if (!results.query) {
+    return "loading"
+  } else if (results.nbHits === 0) {
+    return "empty"
+  } else {
+    return "results"
+  }
+}
+
+const Layout = () => {
   const [key, setKey] = useState("AllTestimonies")
 
   const { t } = useTranslation("browseTestimony")
@@ -52,14 +115,19 @@ export default function BrowseTestimony() {
             </Nav.Item>
           ))}
         </StyledTabNav>
-        <StyledTabContent>
+        {/* <StyledTabContent>
           {tabs.map(t => (
             <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
               {t.content}
             </TabPane>
           ))}
-        </StyledTabContent>
+        </StyledTabContent> */}
       </TabContainer>
+      <SearchContainer>
+        <Row>
+          <SearchBox placeholder="Search Testimonies" className="mt-2 mb-3" />
+        </Row>
+      </SearchContainer>
     </>
   )
 }
