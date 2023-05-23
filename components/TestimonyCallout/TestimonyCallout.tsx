@@ -133,7 +133,7 @@ const CalloutBalloon = styled.div`
   }
 `
 
-const Callout = ({
+export const Callout = ({
   position,
   content,
   billId,
