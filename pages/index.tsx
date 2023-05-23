@@ -5,6 +5,7 @@ import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
 import { createPage } from "../components/page"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   Page: () => {
@@ -32,20 +33,10 @@ export default createPage({
   }
 })
 
-// this must only be on pages in the pages folder
-// it will throw an error if it's in the components folder
-
-import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-
-export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, [
-        "common",
-        "homepage",
-        "footer"
-      ]))
-      // Will be passed to the page component as props
-    }
-  }
-}
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "homepage",
+  "footer",
+  "testimony"
+])

@@ -21,6 +21,7 @@ import {
   useCreateUserWithEmailAndPassword
 } from "./hooks"
 import TermsOfServiceModal from "./TermsOfServiceModal"
+import { useTranslation } from "next-i18next"
 
 export default function OrgSignUpModal({
   show,
@@ -80,6 +81,8 @@ export default function OrgSignUpModal({
 
   const [category, setCategory] = useState<OrgCategory>(OrgCategories[0])
 
+  const { t } = useTranslation("auth")
+
   return (
     <>
       <Modal
@@ -91,9 +94,7 @@ export default function OrgSignUpModal({
         className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="sign-up-modal">
-            Sign Up As An Organization
-          </Modal.Title>
+          <Modal.Title id="sign-up-modal">{t("signUpAsOrg")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Col md={12} className="mx-auto">
@@ -112,22 +113,24 @@ export default function OrgSignUpModal({
 
               <Stack gap={3} className="mb-4">
                 <Input
-                  label="Organization Email"
+                  label={t("orgEmail")}
                   type="email"
-                  {...register("email", { required: "An email is required." })}
+                  {...register("email", {
+                    required: t("emailIsRequired") ?? "An email is required."
+                  })}
                   error={errors.email?.message}
                 />
 
                 <Input
-                  label="Organization Name"
+                  label={t("orgName")}
                   type="text"
                   {...register("fullName", {
-                    required: "A full name is required."
+                    required: t("nameIsRequired") ?? "A full name is required."
                   })}
                   error={errors.fullName?.message}
                 />
                 <Form.Group controlId="orgCategory">
-                  <Form.FloatingLabel label="Select an organization category">
+                  <Form.FloatingLabel label={t("selectOrgCat")}>
                     <Form.Select
                       as="select"
                       value={category}
@@ -147,12 +150,14 @@ export default function OrgSignUpModal({
                 <Row className="g-3">
                   <Col md={6}>
                     <PasswordInput
-                      label="Password"
+                      label={t("password")}
                       {...register("password", {
-                        required: "A password is required.",
+                        required:
+                          t("passwordRequired") ?? "A password is required.",
                         minLength: {
                           value: 8,
                           message:
+                            t("passwordLength") ??
                             "Your password must be 8 characters or longer."
                         },
                         deps: ["confirmedPassword"]
@@ -163,13 +168,16 @@ export default function OrgSignUpModal({
 
                   <Col md={6}>
                     <PasswordInput
-                      label="Confirm Password"
+                      label={t("confirmPassword")}
                       {...register("confirmedPassword", {
-                        required: "You must confirm your password.",
+                        required:
+                          t("mustConfirmPassword") ??
+                          "You must confirm your password.",
                         validate: confirmedPassword => {
                           const password = getValues("password")
                           return confirmedPassword !== password
-                            ? "Confirmed password must match password."
+                            ? t("mustMatch") ??
+                                "Confirmed password must match password."
                             : undefined
                         }
                       })}
@@ -185,7 +193,7 @@ export default function OrgSignUpModal({
                   className="w-100"
                   loading={createUserWithEmailAndPassword.loading}
                 >
-                  Sign up
+                  {t("signUp")}
                 </LoadingButton>
               ) : (
                 <Button
@@ -193,7 +201,7 @@ export default function OrgSignUpModal({
                   type="button"
                   onClick={handleContinueClick}
                 >
-                  Continue
+                  {t("continue")}
                 </Button>
               )}
             </Form>
