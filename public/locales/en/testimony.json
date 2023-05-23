@@ -20,8 +20,9 @@
         "bill": "Bill",
         "position": "{{position1}}"
     },
-    "testimonyCalloutSection": {
-        "peopleSaying": "What people are saying..."
+    "testimonyCalloutSection":{
+            "peopleSaying": "What people are saying...",
+            "browseTestimony": "Browse All Testimony"
     },
     "reportModal": {
         "reportTestimony": "Report Testimony",
