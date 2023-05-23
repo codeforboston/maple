@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Toast } from "react-bootstrap"
+import { useTranslation } from "next-i18next"
 
 interface Props {
   isSuccessful: boolean
@@ -23,6 +24,7 @@ const MESSAGES = {
 function ReportToast({ isSuccessful }: Props) {
   const [show, setShow] = useState(true)
   const successful = isSuccessful ? "true" : "false"
+  const { t } = useTranslation("testimony")
   return (
     <Toast
       bg={MESSAGES.bg[successful]}
@@ -31,7 +33,11 @@ function ReportToast({ isSuccessful }: Props) {
       delay={3000}
       autohide
     >
-      <Toast.Header>{MESSAGES["header"][successful]}</Toast.Header>
+      <Toast.Header>
+        {t("reportToast.successful1", {
+          successful1: MESSAGES["header"][successful]
+        })}
+      </Toast.Header>
       <Toast.Body>{MESSAGES["body"][successful]}</Toast.Body>
     </Toast>
   )

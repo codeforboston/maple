@@ -91,12 +91,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async context => {
   const params = context.params as IParams
-  const locale = context.locale as string
+  const locale = context.locale ?? context.defaultLocale ?? "en"
 
   return {
     props: {
       params,
-      ...(await serverSideTranslations(locale, ["common", "footer"]))
+      ...(await serverSideTranslations(locale, [
+        "auth",
+        "common",
+        "footer",
+        "testimony"
+      ]))
     }
   }
 }

@@ -2,23 +2,27 @@ import { AuthProvider, GoogleAuthProvider } from "firebase/auth"
 import { Image, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { useSignInWithPopUp } from "./hooks"
+import { useTranslation } from "next-i18next"
 
 type AuthButton = (props: {
   onClick: () => void
   loading: boolean
 }) => JSX.Element
 
-const GoogleButton: AuthButton = ({ onClick, loading }) => (
-  <LoadingButton
-    variant="light"
-    onClick={onClick}
-    loading={loading}
-    spinnerProps={{ className: "me-4" }}
-  >
-    <Image src="/google-icon.svg" alt="Google" className="me-4" />
-    Continue with Google
-  </LoadingButton>
-)
+const GoogleButton: AuthButton = ({ onClick, loading }) => {
+  const { t } = useTranslation("auth")
+  return (
+    <LoadingButton
+      variant="light"
+      onClick={onClick}
+      loading={loading}
+      spinnerProps={{ className: "me-4" }}
+    >
+      <Image src="/google-icon.svg" alt="Google" className="me-4" />
+      {t("continueGoogle")}
+    </LoadingButton>
+  )
+}
 
 type ButtonWithProvider = {
   provider: AuthProvider

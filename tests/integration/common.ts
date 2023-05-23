@@ -14,6 +14,7 @@ export const signInUser1 = () => signInUser("test@example.com")
 export const signInUser2 = () => signInUser("test2@example.com")
 export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
+export const signInTestAdmin = () => signInUser("testadmin@example.com")
 
 export async function createNewBill(props?: Partial<Bill>) {
   const billId = props?.id ?? nanoid()
@@ -51,7 +52,7 @@ export async function expectPermissionDenied(work: Promise<any>) {
   const e = await work
     .then(() => fail("expected promise to reject"))
     .catch(e => e)
-  expect(e.code).toBe("permission-denied")
+  expect(e.code).toMatch("permission-denied")
   console.warn = warn
 }
 

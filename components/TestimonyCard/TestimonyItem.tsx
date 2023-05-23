@@ -17,6 +17,7 @@ import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
+import { useTranslation } from "next-i18next"
 
 const FooterButton = styled(Button)`
   margin: 0;
@@ -46,9 +47,11 @@ const ArchiveTestimonyConfirmation = ({
   onHide: () => void
   archiveTestimony: UseAsyncReturn<void, []> | undefined
 }) => {
+  const { t } = useTranslation("testimony")
+
   return (
     <>
-      <StyledCol>Are you sure you want to delete your testimony?</StyledCol>
+      <StyledCol>{t("testimonyItem.deleteTestimonyConfirmation")}</StyledCol>
       <StyledCol>
         <Button
           className="choice me-4"
@@ -63,7 +66,7 @@ const ArchiveTestimonyConfirmation = ({
           )}
         </Button>
         <Button className="choice" variant="primary" onClick={onHide}>
-          No
+          {t("testimonyItem.no")}
         </Button>
       </StyledCol>
     </>
@@ -109,6 +112,8 @@ export const TestimonyItem = ({
   const [showConfirm, setShowConfirm] = useState(false)
   const { deleteTestimony } = usePublishService() ?? {}
 
+  const { t } = useTranslation("testimony")
+
   return (
     <div
       className={onProfilePage ? styles.bottomborder : styles.nobottomborder}
@@ -123,7 +128,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt="Edit icon"
+                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
                 height={50}
                 width={50}
               />
@@ -138,7 +143,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 align-self-center"
                 src="/delete-testimony.svg"
-                alt="Delete testimony icon"
+                alt={t("testimonyItem.deleteIcon") ?? "Delete testimony icon"}
                 height={50}
                 width={50}
               />
@@ -172,7 +177,7 @@ export const TestimonyItem = ({
                 variant="link"
                 onClick={() => setShowAllTestimony(true)}
               >
-                Expand
+                {t("testimonyItem.expand")}
               </FooterButton>
             </Col>
           )}
@@ -183,7 +188,7 @@ export const TestimonyItem = ({
                 className={styles.link}
                 href={maple.testimony({ publishedId: testimony.id })}
               >
-                More Details
+                {t("testimonyItem.moreDetails")}
               </Internal>
             </FooterButton>
           </Col>
@@ -203,7 +208,7 @@ export const TestimonyItem = ({
                       className={styles.link2}
                       href={formUrl(testimony.billId, testimony.court)}
                     >
-                      Edit
+                      {t("testimonyItem.edit")}
                     </Internal>
                   </FooterButton>
                 </Col>
@@ -217,7 +222,7 @@ export const TestimonyItem = ({
                       onClick={() => setShowConfirm(s => !s)}
                       variant="link"
                     >
-                      Rescind
+                      {t("testimonyItem.rescind")}
                     </FooterButton>
                   </Col>
 
