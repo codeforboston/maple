@@ -175,7 +175,7 @@ export default function UserSignUpModal({
                   </Button>
                 )}
 
-                <Divider className="px-4">or</Divider>
+                <Divider className="px-4">{t("or")}</Divider>
 
                 <SocialSignOnButtons onComplete={onHide} />
               </Stack>
