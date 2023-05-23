@@ -21,7 +21,8 @@
         "position": "{{position1}}"
     },
     "testimonyCalloutSection":{
-            "peopleSaying": "What people are saying..."
+            "peopleSaying": "What people are saying...",
+            "browseTestimony": "Browse All Testimony"
     },
     "reportModal":{
             "reportTestimony": "Report Testimony",
@@ -50,7 +51,7 @@
     "userFilterDropdown":{
         "publishedTestimonies": "All Published Testimonies",
         "usersOnly": "Users Only",
-        "organizationsOnly": "Organizations Only" 
+        "organizationsOnly": "Organizations Only"
     },
     "userInfoHeader":{
         "edited": "Edited"

@@ -98,6 +98,13 @@ const TopNav: React.FC = () => {
             >
               Browse Bills
             </NavLink>
+            <NavLink
+              className={"navLink-primary"}
+              href="/testimony"
+              handleClick={closeNav}
+            >
+              Browse Testimony
+            </NavLink>
 
             <NavDropdown className={"navLink-primary"} title={"Learn"}>
               <NavDropdown.Item>
