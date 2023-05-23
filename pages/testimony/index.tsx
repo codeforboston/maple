@@ -1,6 +1,6 @@
 import { Container } from "components/bootstrap"
 import { createPage } from "components/page"
-import { TestimonySearch } from "components/search/TestimonySearch"
+import { TestimonySearch } from "components/search/testimony/TestimonySearch"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({

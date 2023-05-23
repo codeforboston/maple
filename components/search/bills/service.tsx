@@ -1,9 +1,9 @@
 import { getBytes, ref } from "firebase/storage"
 import Fuse from "fuse.js"
 import { useMemo } from "react"
-import type { BillSearchIndex } from "../../functions/src/bills/updateBillSearchIndex"
-import { storage } from "../firebase"
-import { createService } from "../service"
+import type { BillSearchIndex } from "../../../functions/src/bills/updateBillSearchIndex"
+import { storage } from "../../firebase"
+import { createService } from "../../service"
 
 export type SearchService = ReturnType<typeof useServiceChecked>
 export const { Provider, useServiceChecked } = createService(() => {

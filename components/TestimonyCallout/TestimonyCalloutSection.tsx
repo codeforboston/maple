@@ -22,7 +22,7 @@ export default function TestimonyCalloutSection() {
           <div>
             <Internal href="/testimony">
               <Button className={`btn btn-lg py-1`}>
-              {t("testimonyCalloutSection.browseTestimony")}
+                {t("testimonyCalloutSection.browseTestimony")}
               </Button>
             </Internal>
           </div>
