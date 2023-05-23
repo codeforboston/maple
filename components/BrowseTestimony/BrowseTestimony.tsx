@@ -127,6 +127,32 @@ const Layout = () => {
         <Row>
           <SearchBox placeholder="Search Testimonies" className="mt-2 mb-3" />
         </Row>
+        <Row>
+          {/* {refinements.options} */}
+          <Col xs={3} lg={3}>
+            Refinements
+          </Col>
+          <Col className="d-flex flex-column">
+            <RefinementRow>
+              {/* <ResultCount className="flex-grow-1 m-1" /> */}
+              <SortBy />
+              {/* {refinements.show} */}
+            </RefinementRow>
+            <CurrentRefinements className="mt-2 mb-2" />
+            {status === "empty" ? (
+              // <NoResults>
+              //   Your search has yielded zero results!
+              //   <br />
+              //   <b>Try another search term</b>
+              // </NoResults>
+              <b>Try another search term</b>
+            ) : (
+              // <Hits hitComponent={BillHit} />
+              <b>Hits!</b>
+            )}
+            <Pagination className="mx-auto mt-2 mb-3" />
+          </Col>
+        </Row>
       </SearchContainer>
     </>
   )
