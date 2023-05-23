@@ -1,17 +1,14 @@
+import {
+  InstantSearch,
+  Pagination
+} from "@alexjball/react-instantsearch-hooks-web"
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import {
-  Button,
-  Col,
-  Image,
-  Overlay,
-  OverlayTrigger,
-  Row,
-  Spinner
-} from "../bootstrap"
+import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
 import { firestore } from "../firebase"
 import {
@@ -20,21 +17,41 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
+import { getServerConfig } from "components/search/common"
+import { SearchContainer } from "components/search/SearchContainer"
+import { SearchErrorBoundary } from "components/search/SearchErrorBoundary"
+import { initialSortByValue } from "components/search/SortBy"
+import { currentGeneralCourt } from "functions/src/shared"
 
-type ElementProps = {
-  bodyText: string
-  court: string
-  header: string
-  id: string
-  subheader: string
-  timestamp: string
-  topicName: string
-  type: string
-}
-
-type Props = ElementProps[]
+const searchClient = new TypesenseInstantSearchAdapter({
+  server: getServerConfig(),
+  additionalSearchParameters: {
+    query_by: "number,title,body",
+    exclude_fields: "body"
+  }
+}).searchClient
 
 export default function Newsfeed() {
+  return (
+    <SearchErrorBoundary>
+      <InstantSearch
+        indexName={initialSortByValue}
+        initialUiState={{
+          [initialSortByValue]: {
+            refinementList: { court: [String(currentGeneralCourt)] }
+          }
+        }}
+        searchClient={searchClient}
+        routing={false}
+        // routing={useRouting()}
+      >
+        <Layout />
+      </InstantSearch>
+    </SearchErrorBoundary>
+  )
+}
+
+const Layout = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
@@ -45,39 +62,31 @@ export default function Newsfeed() {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  const [orgFilter, setOrgFilter] = useState<boolean>(true)
-  const [billFilter, setBillFilter] = useState<boolean>(true)
+  let notificationList: {
+    bodyText: string
+    court: string
+    header: string
+    id: string
+    subheader: string
+    timestamp: string
+    topicName: string
+    type: string
+  }[] = []
 
-  const [allResults, setAllResults] = useState<Props>([])
-  const [orgResults, setOrgResults] = useState<Props>([])
-  const [billResults, setBillResults] = useState<Props>([])
-
-  const [notificationsDisplay, setNotificationsDisplay] = useState<Props>([])
-  const [noDisplay, setNoDisplay] = useState<boolean>(true)
-
-  const onFilterChange = (trolley: string, boxType: string) => {
-    const Box = document.getElementById(boxType) as HTMLInputElement
-    if (Box?.checked) {
-      trolley ? setOrgFilter(true) : setBillFilter(true)
-    } else {
-      trolley ? setOrgFilter(false) : setBillFilter(false)
-    }
-  }
-
-  const checkDisplay = useCallback(() => {
-    setNoDisplay(false)
-    if (orgFilter == true && billFilter == true) {
-      return setNotificationsDisplay(allResults)
-    } else if (orgFilter == true) {
-      return setNotificationsDisplay(orgResults)
-    } else if (billFilter == true) {
-      return setNotificationsDisplay(billResults)
-    }
-    return setNoDisplay(true)
-  }, [allResults, orgFilter, orgResults, billFilter, billResults])
+  const [notificationsDisplayed, setNotificationsDisplayed] = useState<
+    {
+      bodyText: string
+      court: string
+      header: string
+      id: string
+      subheader: string
+      timestamp: string
+      topicName: string
+      type: string
+    }[]
+  >([])
 
   const notificationQuery = async () => {
-    let notificationList: Props = []
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -85,36 +94,14 @@ export default function Newsfeed() {
       notificationList.push(doc.data().notification)
     })
 
-    if (notificationsDisplay.length === 0 && notificationList.length != 0) {
-      setAllResults(notificationList)
-      setOrgResults(
-        notificationList.filter(notification => notification.type === "org")
-      )
-      setBillResults(
-        notificationList.filter(notification => notification.type === "bill")
-      )
-      setNotificationsDisplay(allResults)
+    if (notificationsDisplayed.length === 0 && notificationList.length != 0) {
+      setNotificationsDisplayed(notificationList)
     }
   }
 
   useEffect(() => {
     uid ? notificationQuery() : null
   })
-
-  useEffect(() => {
-    checkDisplay()
-  }, [checkDisplay, orgFilter, billFilter, notificationsDisplay])
-
-  function Filters() {
-    return (
-      <FilterBoxs
-        isMobile={isMobile}
-        onFilterChange={onFilterChange}
-        orgFilter={orgFilter}
-        billFilter={billFilter}
-      />
-    )
-  }
 
   return (
     <>
@@ -130,57 +117,45 @@ export default function Newsfeed() {
                 <Header>
                   <HeaderTitle>Newsfeed</HeaderTitle>
                   {isMobile ? (
-                    <Filters />
+                    <FilterBox isMobile={isMobile} />
                   ) : (
                     <Col className="d-flex flex-column">
-                      <Filters />
+                      <FilterBox isMobile={isMobile} />
                     </Col>
                   )}
                 </Header>
-                {noDisplay ? (
-                  <div className="pb-4">
-                    <AlertCard
-                      header={`No Results`}
-                      subheader={``}
-                      timestamp={``}
-                      headerImgSrc={``}
-                      bodyImgSrc={``}
-                      bodyImgAltTxt={``}
-                      bodyText={`There are no news updates for your current followed topics`}
-                    />
-                  </div>
-                ) : (
-                  <>
-                    {notificationsDisplay.map(
-                      (element: ElementProps, index: number) => (
-                        <div className="pb-4" key={index}>
-                          <AlertCard
-                            header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgSrc={`${
-                              element.type === `org`
-                                ? `/profile-org-white.svg`
-                                : ``
-                            }`}
-                            bodyImgSrc={``}
-                            bodyImgAltTxt={``}
-                            bodyText={element.bodyText}
-                          />
-                        </div>
-                      )
-                    )}
-                  </>
+                {notificationsDisplayed.map(
+                  (
+                    element: {
+                      bodyText: string
+                      court: string
+                      header: string
+                      id: string
+                      subheader: string
+                      timestamp: string
+                      topicName: string
+                      type: string
+                    },
+                    index: number
+                  ) => (
+                    <div className="pb-4" key={index}>
+                      <AlertCard
+                        header={element.header}
+                        subheader={element.subheader}
+                        timestamp={element.timestamp}
+                        headerImgSrc={`${
+                          element.type === `org` ? `/profile-org-white.svg` : ``
+                        }`}
+                        bodyImgSrc={``}
+                        bodyImgAltTxt={``}
+                        bodyText={element.bodyText}
+                      />
+                    </div>
+                  )
                 )}
-                <Col className="d-none">
-                  <Button>
-                    <Image src="/chevrons-left.svg" alt="left select" />
-                  </Button>
-                  <div>Pagination Element</div>
-                  <Button>
-                    <Image src="/chevrons-right.svg" alt="right select" />
-                  </Button>
-                </Col>
+                <SearchContainer>
+                  <Pagination className="d-flex justify-content-center mt-2 mb-3" />
+                </SearchContainer>
               </StyledContainer>
             </>
           ) : (
@@ -192,17 +167,7 @@ export default function Newsfeed() {
   )
 }
 
-function FilterBoxs({
-  isMobile,
-  onFilterChange,
-  orgFilter,
-  billFilter
-}: {
-  isMobile: boolean
-  onFilterChange: any
-  orgFilter: boolean
-  billFilter: boolean
-}) {
+function FilterBox({ isMobile }: { isMobile: boolean }) {
   return (
     <>
       <Row
@@ -215,13 +180,9 @@ function FilterBoxs({
             className="form-check-input"
             type="checkbox"
             value=""
-            id="orgCheck"
-            onChange={e => {
-              onFilterChange("non-empty", "orgCheck")
-            }}
-            checked={orgFilter}
+            id="flexCheckDefault"
           />
-          <label className="form-check-label" htmlFor="orgCheck">
+          <label className="form-check-label" htmlFor="flexCheckDefault">
             Organization Updates
           </label>
         </div>
@@ -236,13 +197,9 @@ function FilterBoxs({
             className="form-check-input"
             type="checkbox"
             value=""
-            id="billCheck"
-            onChange={e => {
-              onFilterChange("", "billCheck")
-            }}
-            checked={billFilter}
+            id="flexCheckDefault"
           />
-          <label className="form-check-label" htmlFor="billCheck">
+          <label className="form-check-label" htmlFor="flexCheckDefault">
             Bill Updates
           </label>
         </div>
