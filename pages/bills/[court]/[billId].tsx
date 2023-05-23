@@ -36,7 +36,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   return {
     props: {
       bill: JSON.parse(JSON.stringify(bill)),
-      ...(await serverSideTranslations(locale, ["common", "footer"]))
+      ...(await serverSideTranslations(locale, [
+        "auth",
+        "common",
+        "footer",
+        "testimony"
+      ]))
     }
   }
 }

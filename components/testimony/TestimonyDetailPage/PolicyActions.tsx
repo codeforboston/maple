@@ -5,6 +5,7 @@ import { formUrl } from "components/publish"
 import { isNotNull } from "components/utils"
 import { FC, ReactElement } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
+import { useTranslation } from "next-i18next"
 
 interface PolicyActionsProps {
   className?: string
@@ -40,5 +41,13 @@ export const PolicyActions: FC<PolicyActionsProps> = ({
     />
   )
 
-  return <Card className={className} header="Actions" items={items} />
+  const { t } = useTranslation("testimony")
+
+  return (
+    <Card
+      className={className}
+      header={t("policyActions.actions") ?? "Actions"}
+      items={items}
+    />
+  )
 }

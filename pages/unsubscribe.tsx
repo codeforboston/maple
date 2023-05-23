@@ -10,6 +10,8 @@ export default createPage({
 })
 
 export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
   "common",
-  "footer"
+  "footer",
+  "testimony"
 ])
