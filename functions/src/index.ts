@@ -1,4 +1,4 @@
-export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
+export { modifyAccount, createFakeOrg, createFakeTestimony, createAdmin } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
