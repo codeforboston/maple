@@ -106,30 +106,6 @@ const Layout = () => {
     return setNoDisplay(true)
   }, [allResults, orgFilter, orgResults, billFilter, billResults])
 
-  // let notificationList: {
-  //   bodyText: string
-  //   court: string
-  //   header: string
-  //   id: string
-  //   subheader: string
-  //   timestamp: string
-  //   topicName: string
-  //   type: string
-  // }[] = []
-
-  // const [notificationsDisplayed, setNotificationsDisplayed] = useState<
-  //   {
-  //     bodyText: string
-  //     court: string
-  //     header: string
-  //     id: string
-  //     subheader: string
-  //     timestamp: string
-  //     topicName: string
-  //     type: string
-  //   }[]
-  // >([])
-
   const notificationQuery = async () => {
     let notificationList: Props = []
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
