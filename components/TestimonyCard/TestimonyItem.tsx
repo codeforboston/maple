@@ -199,7 +199,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser ? (
+          {isUser && (
             <>
               {onProfilePage && (
                 <Col>
@@ -236,18 +236,12 @@ export const TestimonyItem = ({
                 </>
               )}
             </>
-          ) : (
-            <>
-              <Col xs="auto">
-                <FooterButton
-                  variant="link"
-                  onClick={() => setIsReporting(true)}
-                >
-                  {isUser ? "Report" : "Request to remove your testimony"}
-                </FooterButton>
-              </Col>
-            </>
           )}
+          <Col xs="auto">
+            <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+              {isUser ? "Request to rescind" : "Report"}
+            </FooterButton>
+          </Col>
         </Row>
       </Stack>
 
