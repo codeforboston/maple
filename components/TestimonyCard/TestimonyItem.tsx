@@ -251,29 +251,30 @@ export const TestimonyItem = ({
         </Row>
       </Stack>
 
-      {isReporting && isUser ? (
-        <RequestDeleteOwnTestimonyModal
-          onClose={() => setIsReporting(false)}
-          onReport={report => reportMutation.mutate({ report, testimony })}
-          isLoading={reportMutation.isLoading}
-        />
-      ) : (
-        <ReportModal
-          onClose={() => setIsReporting(false)}
-          onReport={report => {
-            reportMutation.mutate({ report, testimony })
-          }}
-          isLoading={reportMutation.isLoading}
-          additionalInformationLabel="Additional information:"
-          reasons={[
-            "Personal Information",
-            "Offensive",
-            "Violent",
-            "Spam",
-            "Phishing"
-          ]}
-        />
-      )}
+      {isReporting &&
+        (isUser ? (
+          <RequestDeleteOwnTestimonyModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => reportMutation.mutate({ report, testimony })}
+            isLoading={reportMutation.isLoading}
+          />
+        ) : (
+          <ReportModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => {
+              reportMutation.mutate({ report, testimony })
+            }}
+            isLoading={reportMutation.isLoading}
+            additionalInformationLabel="Additional information:"
+            reasons={[
+              "Personal Information",
+              "Offensive",
+              "Violent",
+              "Spam",
+              "Phishing"
+            ]}
+          />
+        ))}
       <div
         style={{
           position: "fixed",
