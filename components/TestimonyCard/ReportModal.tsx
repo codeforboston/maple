@@ -13,6 +13,8 @@ type Props = {
   children?: string | React.ReactNode
 }
 
+const ADDITIONAL_INFO_MAX_LENGTH_CHARS = 300
+
 export function ReportModal({
   reasons,
   onClose,
@@ -83,7 +85,7 @@ export function ReportModal({
             <Form.Control
               as="textarea"
               placeholder="There's some personal information here."
-              maxLength={300}
+              maxLength={ADDITIONAL_INFO_MAX_LENGTH_CHARS}
               style={{ height: "100px" }}
               value={additionalInformation}
               onChange={event => {
@@ -93,7 +95,8 @@ export function ReportModal({
             />
           </FloatingLabel>
           <div className="text-muted">
-            {additionalInformation.length}/200 characters
+            {additionalInformation.length}/{ADDITIONAL_INFO_MAX_LENGTH_CHARS}{" "}
+            characters
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -114,7 +117,7 @@ export function RequestDeleteOwnTestimonyModal({
   onReport,
   isLoading
 }: Pick<Props, "onClose" | "onReport" | "isLoading">) {
-  const { t } = useTranslation("testimony.reportModal", {
+  const { t } = useTranslation("testimony", {
     keyPrefix: "reportModal"
   })
   return (

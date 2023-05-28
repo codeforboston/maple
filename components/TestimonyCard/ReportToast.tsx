@@ -6,39 +6,37 @@ interface Props {
   isSuccessful: boolean
 }
 
-const MESSAGES = {
-  header: {
-    true: "Success!",
-    false: "Failed"
-  },
-  body: {
-    true: "Your report was filed.",
-    false: "Your report couldn't be filed. Please try again later."
-  },
-  bg: {
-    true: "success",
-    false: "danger"
-  }
-}
-
 function ReportToast({ isSuccessful }: Props) {
   const [show, setShow] = useState(true)
-  const successful = isSuccessful ? "true" : "false"
-  const { t } = useTranslation("testimony")
+  const onClose = () => setShow(false)
+  if (isSuccessful) {
+    return <SuccessfulToast show={show} onClose={onClose} />
+  } else {
+    return <FailedToast show={show} onClose={onClose} />
+  }
+}
+type ToastProps = { show: boolean; onClose: () => void }
+
+function FailedToast({ show, onClose }: ToastProps) {
+  const { t } = useTranslation("testimony", {
+    keyPrefix: "testimonyItem.toast.failed"
+  })
   return (
-    <Toast
-      bg={MESSAGES.bg[successful]}
-      show={show}
-      onClose={() => setShow(false)}
-      delay={3000}
-      autohide
-    >
-      <Toast.Header>
-        {t("reportToast.successful1", {
-          successful1: MESSAGES["header"][successful]
-        })}
-      </Toast.Header>
-      <Toast.Body>{MESSAGES["body"][successful]}</Toast.Body>
+    <Toast bg="danger" show={show} onClose={onClose} delay={3000} autohide>
+      <Toast.Header>{t("header")}</Toast.Header>
+      <Toast.Body>{t("body")}</Toast.Body>
+    </Toast>
+  )
+}
+
+function SuccessfulToast({ show, onClose }: ToastProps) {
+  const { t } = useTranslation("testimony", {
+    keyPrefix: "testimonyItem.toast.successful"
+  })
+  return (
+    <Toast bg="success" show={show} onClose={onClose} delay={3000} autohide>
+      <Toast.Header>{t("header")}</Toast.Header>
+      <Toast.Body>{t("body")}</Toast.Body>
     </Toast>
   )
 }

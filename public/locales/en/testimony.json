@@ -46,7 +46,17 @@
         "expand": "Expand",
         "moreDetails": "More Details",
         "edit": "Edit",
-        "rescind": "Rescind"
+        "rescind": "Rescind",
+        "toast": {
+            "successful": {
+                "header": "Success",
+                "body": "Your report was filed."
+            },
+            "failed": {
+                "header": "Failed",
+                "body": "Your report couldn't be filed. Please try again later."
+            }
+        }
     },
     "userFilterDropdown": {
         "publishedTestimonies": "All Published Testimonies",
