@@ -1,43 +1,43 @@
 {
-    "testimonyDetail":{
+    "testimonyDetail": {
         "what": "What",
         "says": "says",
         "thisPolicy": "this policy",
         "edited": "Edited"
     },
-    "revisionHistory":{
+    "revisionHistory": {
         "version": "version",
         "history": "Revision History"
     },
-    "policyActions":{
-        "actions":"Actions"
+    "policyActions": {
+        "actions": "Actions"
     },
-    "testimonyVersionBanner":{
+    "testimonyVersionBanner": {
         "viewingVersion": "Viewing out of date version of testimony",
         "backToVersion": "Back to Current Version"
     },
-    "testimonyCallout":{
+    "testimonyCallout": {
         "bill": "Bill",
         "position": "{{position1}}"
     },
-    "testimonyCalloutSection":{
-            "peopleSaying": "What people are saying..."
+    "testimonyCalloutSection": {
+        "peopleSaying": "What people are saying..."
     },
-    "reportModal":{
-            "reportTestimony": "Report Testimony",
-            "reason": "Reason",
-            "close": "Close",
-            "reporting": "Reporting",
-            "report": "Report"
+    "reportModal": {
+        "reportTestimony": "Report Testimony",
+        "reason": "Reason",
+        "close": "Close",
+        "reporting": "Reporting",
+        "report": "Report"
     },
-    "reportToast":{
+    "reportToast": {
         "success": "{{successful1}}"
     },
-    "sortTestimonyDropDown":{
+    "sortTestimonyDropDown": {
         "recentFirst": "Most Recent First",
         "oldestFirst": "Oldest First"
     },
-    "testimonyItem":{
+    "testimonyItem": {
         "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
         "no": "No",
         "editIcon": "Edit icon",
@@ -47,15 +47,15 @@
         "edit": "Edit",
         "rescind": "Rescind"
     },
-    "userFilterDropdown":{
+    "userFilterDropdown": {
         "publishedTestimonies": "All Published Testimonies",
         "usersOnly": "Users Only",
-        "organizationsOnly": "Organizations Only" 
+        "organizationsOnly": "Organizations Only"
     },
-    "userInfoHeader":{
+    "userInfoHeader": {
         "edited": "Edited"
     },
-    "viewTestimony":{
+    "viewTestimony": {
         "showing1": "Showing 1 - ",
         "outOf": " out of ",
         "noTestimonies": "There are no testimonies "
