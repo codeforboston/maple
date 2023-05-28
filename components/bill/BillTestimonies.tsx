@@ -17,7 +17,6 @@ export const BillTestimonies = (
     <>
       <ViewTestimony
         {...testimony}
-        isUser={false}
         className={props.className}
         onProfilePage={false}
       />

@@ -11,7 +11,7 @@ import { Testimony } from "../db"
 import { Internal, maple } from "../links"
 import { UserInfoHeader } from "./UserInfoHeader"
 import { BillInfoHeader } from "./BillInfoHeader"
-import { ReportModal } from "./ReportModal"
+import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
 import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
@@ -238,27 +238,33 @@ export const TestimonyItem = ({
             </>
           ) : (
             <>
-              {/* hiding for soft launch
               <Col xs="auto">
                 <FooterButton
                   variant="link"
                   onClick={() => setIsReporting(true)}
                 >
-                  Report
+                  {isUser ? "Report" : "Request to remove your testimony"}
                 </FooterButton>
-              </Col> */}
+              </Col>
             </>
           )}
         </Row>
       </Stack>
 
-      {isReporting && (
+      {isReporting && isUser ? (
+        <RequestDeleteOwnTestimonyModal
+          onClose={() => setIsReporting(false)}
+          onReport={report => reportMutation.mutate({ report, testimony })}
+          isLoading={reportMutation.isLoading}
+        />
+      ) : (
         <ReportModal
           onClose={() => setIsReporting(false)}
           onReport={report => {
             reportMutation.mutate({ report, testimony })
           }}
           isLoading={reportMutation.isLoading}
+          additionalInformationLabel="Additional information:"
           reasons={[
             "Personal Information",
             "Offensive",
