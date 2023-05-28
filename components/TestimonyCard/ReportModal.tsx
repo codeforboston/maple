@@ -110,3 +110,24 @@ export function ReportModal({
     </Modal>
   )
 }
+
+export function RequestDeleteOwnTestimonyModal({
+  onClose,
+  onReport,
+  isLoading
+}: Pick<Props, "onClose" | "onReport" | "isLoading">) {
+  return (
+    <ReportModal
+      onClose={onClose}
+      onReport={onReport}
+      isLoading={isLoading}
+      reasons={["Personal Information", "Wrong Bill"]}
+      additionalInformationLabel="Reason"
+      requireAdditionalInformation
+    >
+      You may only delete testimony from MAPLE if you made an error in the
+      testimony submission process (e.g., testified on the wrong bill) or if the
+      testimony contains personal information.
+    </ReportModal>
+  )
+}
