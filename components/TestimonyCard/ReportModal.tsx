@@ -7,9 +7,21 @@ type Props = {
   onClose: () => void
   onReport: (report: { reason: string; additionalInformation: string }) => void
   isLoading: boolean
+
+  additionalInformationLabel: string
+  requireAdditionalInformation?: boolean
+  children?: string | React.ReactNode
 }
 
-export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
+export function ReportModal({
+  reasons,
+  onClose,
+  onReport,
+  isLoading,
+  additionalInformationLabel,
+  requireAdditionalInformation = false,
+  children
+}: Props) {
   const [selectedReason, setSelectedReason] = useState<string | null>(null)
   const [additionalInformation, setAdditionalInformation] = useState<string>("")
   const [validationError, setValidationError] = useState<string>("")
@@ -36,6 +48,7 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
           {t("reportModal.reportTestimony")}
         </Modal.Header>
         <Modal.Body>
+          {children}
           <Form.Group as="fieldset">
             <legend>
               {t("reportModal.reason")}
@@ -64,17 +77,21 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
               {validationError || <>&nbsp;</>}
             </div>
           </Form.Group>
-
-          <FloatingLabel controlId="additional-info" label="Additional info">
+          {/* label="Additional info" */}
+          <FloatingLabel
+            controlId="additional-info"
+            label={additionalInformationLabel}
+          >
             <Form.Control
               as="textarea"
               placeholder="There's some personal information here."
-              maxLength={200}
+              maxLength={300}
               style={{ height: "100px" }}
               value={additionalInformation}
               onChange={event => {
                 setAdditionalInformation(event.target.value)
               }}
+              required={requireAdditionalInformation}
             />
           </FloatingLabel>
           <div className="text-muted">
