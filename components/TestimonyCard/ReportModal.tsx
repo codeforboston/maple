@@ -39,19 +39,17 @@ export function ReportModal({
     }
   }
 
-  const { t } = useTranslation("testimony")
+  const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
 
   return (
     <Modal show onHide={onClose}>
       <Form validated={false} onSubmit={handleReport}>
-        <Modal.Header closeButton>
-          {t("reportModal.reportTestimony")}
-        </Modal.Header>
+        <Modal.Header closeButton>{t("reportTestimony")}</Modal.Header>
         <Modal.Body>
           {children}
           <Form.Group as="fieldset">
             <legend>
-              {t("reportModal.reason")}
+              {t("reason")}
               <span style={{ color: "red" }}>*</span>
             </legend>
             {reasons.map(reason => {
@@ -100,10 +98,10 @@ export function ReportModal({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
-            {t("reportModal.close")}
+            {t("close")}
           </Button>
           <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? t("reportModal.reporting") : t("reportModal.report")}
+            {isLoading ? t("reporting") : t("report")}
           </Button>
         </Modal.Footer>
       </Form>
@@ -116,18 +114,19 @@ export function RequestDeleteOwnTestimonyModal({
   onReport,
   isLoading
 }: Pick<Props, "onClose" | "onReport" | "isLoading">) {
+  const { t } = useTranslation("testimony.reportModal", {
+    keyPrefix: "reportModal"
+  })
   return (
     <ReportModal
       onClose={onClose}
       onReport={onReport}
       isLoading={isLoading}
       reasons={["Personal Information", "Wrong Bill"]}
-      additionalInformationLabel="Reason"
+      additionalInformationLabel={t("reason")}
       requireAdditionalInformation
     >
-      You may only delete testimony from MAPLE if you made an error in the
-      testimony submission process (e.g., testified on the wrong bill) or if the
-      testimony contains personal information.
+      {t("rescind")}
     </ReportModal>
   )
 }
