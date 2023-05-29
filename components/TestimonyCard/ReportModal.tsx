@@ -7,9 +7,23 @@ type Props = {
   onClose: () => void
   onReport: (report: { reason: string; additionalInformation: string }) => void
   isLoading: boolean
+
+  additionalInformationLabel: string
+  requireAdditionalInformation?: boolean
+  children?: string | React.ReactNode
 }
 
-export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
+const ADDITIONAL_INFO_MAX_LENGTH_CHARS = 300
+
+export function ReportModal({
+  reasons,
+  onClose,
+  onReport,
+  isLoading,
+  additionalInformationLabel,
+  requireAdditionalInformation = false,
+  children
+}: Props) {
   const [selectedReason, setSelectedReason] = useState<string | null>(null)
   const [additionalInformation, setAdditionalInformation] = useState<string>("")
   const [validationError, setValidationError] = useState<string>("")
@@ -27,18 +41,17 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
     }
   }
 
-  const { t } = useTranslation("testimony")
+  const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
 
   return (
     <Modal show onHide={onClose}>
       <Form validated={false} onSubmit={handleReport}>
-        <Modal.Header closeButton>
-          {t("reportModal.reportTestimony")}
-        </Modal.Header>
+        <Modal.Header closeButton>{t("reportTestimony")}</Modal.Header>
         <Modal.Body>
+          {children}
           <Form.Group as="fieldset">
             <legend>
-              {t("reportModal.reason")}
+              {t("reason")}
               <span style={{ color: "red" }}>*</span>
             </legend>
             {reasons.map(reason => {
@@ -64,32 +77,59 @@ export function ReportModal({ reasons, onClose, onReport, isLoading }: Props) {
               {validationError || <>&nbsp;</>}
             </div>
           </Form.Group>
-
-          <FloatingLabel controlId="additional-info" label="Additional info">
+          {/* label="Additional info" */}
+          <FloatingLabel
+            controlId="additional-info"
+            label={additionalInformationLabel}
+          >
             <Form.Control
               as="textarea"
               placeholder="There's some personal information here."
-              maxLength={200}
+              maxLength={ADDITIONAL_INFO_MAX_LENGTH_CHARS}
               style={{ height: "100px" }}
               value={additionalInformation}
               onChange={event => {
                 setAdditionalInformation(event.target.value)
               }}
+              required={requireAdditionalInformation}
             />
           </FloatingLabel>
           <div className="text-muted">
-            {additionalInformation.length}/200 characters
+            {additionalInformation.length}/{ADDITIONAL_INFO_MAX_LENGTH_CHARS}{" "}
+            characters
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
-            {t("reportModal.close")}
+            {t("close")}
           </Button>
           <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? t("reportModal.reporting") : t("reportModal.report")}
+            {isLoading ? t("reporting") : t("report")}
           </Button>
         </Modal.Footer>
       </Form>
     </Modal>
+  )
+}
+
+export function RequestDeleteOwnTestimonyModal({
+  onClose,
+  onReport,
+  isLoading
+}: Pick<Props, "onClose" | "onReport" | "isLoading">) {
+  const { t } = useTranslation("testimony", {
+    keyPrefix: "reportModal"
+  })
+  return (
+    <ReportModal
+      onClose={onClose}
+      onReport={onReport}
+      isLoading={isLoading}
+      reasons={["Personal Information", "Wrong Bill"]}
+      additionalInformationLabel={t("reason")}
+      requireAdditionalInformation
+    >
+      {t("rescind")}
+    </ReportModal>
   )
 }

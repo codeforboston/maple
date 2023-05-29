@@ -11,7 +11,7 @@ import { Testimony } from "../db"
 import { Internal, maple } from "../links"
 import { UserInfoHeader } from "./UserInfoHeader"
 import { BillInfoHeader } from "./BillInfoHeader"
-import { ReportModal } from "./ReportModal"
+import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
 import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
@@ -199,7 +199,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser ? (
+          {isUser && (
             <>
               {onProfilePage && (
                 <Col>
@@ -236,38 +236,39 @@ export const TestimonyItem = ({
                 </>
               )}
             </>
-          ) : (
-            <>
-              {/* hiding for soft launch
-              <Col xs="auto">
-                <FooterButton
-                  variant="link"
-                  onClick={() => setIsReporting(true)}
-                >
-                  Report
-                </FooterButton>
-              </Col> */}
-            </>
           )}
+          <Col xs="auto">
+            <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+              {isUser ? "Request to rescind" : "Report"}
+            </FooterButton>
+          </Col>
         </Row>
       </Stack>
 
-      {isReporting && (
-        <ReportModal
-          onClose={() => setIsReporting(false)}
-          onReport={report => {
-            reportMutation.mutate({ report, testimony })
-          }}
-          isLoading={reportMutation.isLoading}
-          reasons={[
-            "Personal Information",
-            "Offensive",
-            "Violent",
-            "Spam",
-            "Phishing"
-          ]}
-        />
-      )}
+      {isReporting &&
+        (isUser ? (
+          <RequestDeleteOwnTestimonyModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => reportMutation.mutate({ report, testimony })}
+            isLoading={reportMutation.isLoading}
+          />
+        ) : (
+          <ReportModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => {
+              reportMutation.mutate({ report, testimony })
+            }}
+            isLoading={reportMutation.isLoading}
+            additionalInformationLabel="Additional information:"
+            reasons={[
+              "Personal Information",
+              "Offensive",
+              "Violent",
+              "Spam",
+              "Phishing"
+            ]}
+          />
+        ))}
       <div
         style={{
           position: "fixed",
