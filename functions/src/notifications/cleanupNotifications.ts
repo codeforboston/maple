@@ -1,4 +1,3 @@
-// Path: functions/src/shared/cleanupNotifications.ts
 // Function that runs periodically and deletes old notifications, topic events, and email documents.
 
 // Import necessary Firebase modules and libraries
