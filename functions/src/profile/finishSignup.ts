@@ -6,7 +6,7 @@ import { setRole } from "../auth"
 import { Role } from "../auth/types"
 
 const CreateProfileRequest = z.object({
-  requestedRole: z.enum(["user", "organization"])
+  requestedRole: z.enum(["user", "organization", "pendingUpgrade"])
 })
 
 export const finishSignup = functions.https.onCall(async (data, context) => {
@@ -19,13 +19,13 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
   // Only an admin can approve organizations, after they've signed up initially
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
   if (requestedRole === "organization") {
-    role = "organization" // set as organization for softlaunch/until admin process is implemented
+    role = "pendingUpgrade"
   }
 
   await setRole({ role, auth, db, uid })
 
-  // admin dashboard pulls from the users collection
-  await db.doc(`users/${uid}`).set(
+  // upgrade requests table pulls from the profiles collection
+  await db.doc(`profiles/${uid}`).set(
     {
       role
     },

@@ -33,5 +33,6 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
 export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
-  "footer"
+  "footer",
+  "testimony"
 ])

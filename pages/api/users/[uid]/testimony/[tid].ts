@@ -40,6 +40,7 @@ async function _delete(req: NextApiRequest, res: NextApiResponse) {
     })
   }
   const { uid, tid } = queryValidation.data
+  console.log(uid, tid)
 
   const testimonyRef = db.doc(`users/${uid}/publishedTestimony/${tid}`)
   const testimonySnapshot = await testimonyRef.get()
