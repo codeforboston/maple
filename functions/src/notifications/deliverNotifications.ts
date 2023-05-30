@@ -1,7 +1,7 @@
+// Path: functions/src/shared/deliverNotifications.ts
 // Function that finds all notification feed documents that are ready to be digested and emails them to the user.
-// Creates an email document in /notifications_mails to queue up the send.
-// TODO: Implement email/emailDelivery.ts , use it to take in the template, data and recipient, then generate the HTML and write the document
-// See: https://console.firebase.google.com/u/0/project/digital-testimony-dev/extensions/instances/firestore-send-email?tab=usage
+// Creates an email document in /notifications_mails to queue up the send, which is done by email/emailDelivery.ts
+  
 // runs at least every 24 hours, but can be more or less frequent, depending on the value stored in the user's userNotificationFeed document, as well as a nextDigestTime value stored in the user's userNotificationFeed document.
 
 // Import necessary Firebase modules and libraries
@@ -94,10 +94,11 @@ export const deliverNotifications = functions.pubsub
 
         return notification;
       });
-
+      
       // Register partials for the email template
       const partialsDir = path.join(__dirname, '../../functions/src/email/partials');
       registerPartials(partialsDir);
+
       // Render the email template using the digest data
       const emailTemplate = '../email/digestEmail.handlebars'; 
       const templateSource = fs.readFileSync(emailTemplate, 'utf8');
@@ -111,7 +112,9 @@ export const deliverNotifications = functions.pubsub
           subject: 'Your Notifications Digest',
           html: htmlString,
         },
+
         createdAt: admin.firestore.Timestamp.now(),
+
       });
 
       // Mark the notifications as delivered
@@ -124,6 +127,7 @@ export const deliverNotifications = functions.pubsub
       // DEBUG: set nextDigestAt as a Date object for testing, 
       // change this line to Timestamp? 
       const nextDigestAt = new Date(now.toMillis() + notificationFrequency * 24 * 60 * 60 * 1000);
+
       await doc.ref.update({ nextDigestAt });
     });
 
