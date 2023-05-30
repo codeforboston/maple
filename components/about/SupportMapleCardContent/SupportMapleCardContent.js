@@ -33,7 +33,7 @@ const VolunteerCardContent = () => {
           {t("volunteer.githubLink")}
         </a>
         <span>{`, ${t("volunteer.bodytextTwo")} `}</span>
-        <a href="mailto:help@mapletestimony.org">help@mapletestimony.org.</a>
+        <a href="mailto:info@mapletestimony.org">info@mapletestimony.org.</a>
       </p>
     </>
   )

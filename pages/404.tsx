@@ -6,6 +6,8 @@ export default function NotFound() {
 }
 
 export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
   "common",
-  "footer"
+  "footer",
+  "testimony"
 ])

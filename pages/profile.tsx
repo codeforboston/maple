@@ -62,8 +62,10 @@ const useProfileRouting = () => {
 }
 
 export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
   "common",
   "footer",
   "profile",
-  "editProfile"
+  "editProfile",
+  "testimony"
 ])

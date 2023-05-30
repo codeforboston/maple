@@ -1,6 +1,7 @@
 import { Button } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
 import { AuthFlowStep, authStepChanged } from "./redux"
+import { useTranslation } from "next-i18next"
 
 interface Props {
   label?: string
@@ -11,6 +12,7 @@ export default function SignInWithButton({
   label = "Log in / Sign up",
   className
 }: Props) {
+  const { t } = useTranslation("auth")
   const dispatch = useAppDispatch()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
@@ -22,7 +24,7 @@ export default function SignInWithButton({
         className="w-100"
         onClick={() => setCurrentModal("start")}
       >
-        {label}
+        {t("logInSignUp")}
       </Button>
     </span>
   )
