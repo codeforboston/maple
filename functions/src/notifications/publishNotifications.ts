@@ -1,4 +1,3 @@
-// Path: functions/src/shared/publishNotifications.ts
 // Sets up a document trigger for /topicEvents and queries the activeTopicSubscriptions collection group in Firestore for all subscriptions for the given topic event, then creates a notification document in the user's notification feed. 
 // This function runs every time a new topic event is created in the /topicEvents collection.
 // Creates a notification document in the user's notification feed for each active subscription.

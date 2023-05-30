@@ -18,6 +18,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^5.0.2",
     "@google-cloud/pubsub": "^3.0.1",
+    "@sendgrid/mail": "^7.7.0",
     "axios": "^0.25.0",
     "firebase-admin": "^10",
     "firebase-functions": "^3.22.0",
