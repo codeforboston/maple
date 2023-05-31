@@ -1,15 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { firestore } from "../firebase"
 import { Col, Stack } from "../bootstrap"
-import { useState, useEffect } from "react"
 import {
   Header,
   ProfileDisplayName,
@@ -26,20 +15,17 @@ export const ProfileHeader = ({
   isOrg,
   isMobile,
   profile,
-  profileid,
-  uid
+  profileid
 }: {
   isUser: boolean
   isOrg: boolean
   isMobile: boolean
   profile: Profile
   profileid: string
-  uid?: string
 }) => {
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
-  const elementType = "org"
 
   return (
     <Header className={`gx-0 edit-profile-header`}>
@@ -62,11 +48,7 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                <FollowButton
-                  elementType={elementType}
-                  profileid={profileid}
-                  uid={uid}
-                />
+                <FollowButton profileid={profileid} />
               )}
             </>
           )}
