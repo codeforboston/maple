@@ -23,6 +23,7 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
+import { isPending } from "@reduxjs/toolkit"
 
 export function EditProfile() {
   const { user } = useAuth()
