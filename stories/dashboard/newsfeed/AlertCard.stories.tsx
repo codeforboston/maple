@@ -58,7 +58,7 @@ BillWithSubheader.args = {
 
 export const BillWithNoSubheader = Template.bind({})
 BillWithNoSubheader.args = {
-  header: "Bill H.2241",
+  header: "Bille H.2241",
   timestamp: "Yesterday 10:05 PM",
   bodyText: "Senate concurred"
 }
