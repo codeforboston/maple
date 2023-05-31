@@ -13,6 +13,7 @@ import {
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
 import TermsOfServiceModal from "./TermsOfServiceModal"
+import { useTranslation } from "next-i18next"
 
 export default function UserSignUpModal({
   show,
@@ -69,6 +70,8 @@ export default function UserSignUpModal({
     }
   }, [tosStep])
 
+  const { t } = useTranslation("auth")
+
   return (
     <>
       <Modal
@@ -80,7 +83,7 @@ export default function UserSignUpModal({
         className={clsx(showTos && "opacity-0")}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="sign-up-modal">Sign Up</Modal.Title>
+          <Modal.Title id="sign-up-modal">{t("signUp")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Col md={12} className="mx-auto">
@@ -99,39 +102,34 @@ export default function UserSignUpModal({
 
               <Stack gap={3} className="mb-4">
                 <Input
-                  label="Email"
+                  label={t("email")}
                   type="email"
-                  {...register("email", { required: "An email is required." })}
+                  {...register("email", {
+                    required: t("emailIsRequired") ?? "An email is required."
+                  })}
                   error={errors.email?.message}
                 />
 
                 <Input
-                  label="Full Name"
+                  label={t("fullName")}
                   type="text"
                   {...register("fullName", {
-                    required: "A full name is required."
+                    required: t("nameIsRequired") ?? "A full name is required."
                   })}
                   error={errors.fullName?.message}
-                />
-
-                <Input
-                  label="Nickname"
-                  type="text"
-                  {...register("nickname", {
-                    required: "A nickname is required."
-                  })}
-                  error={errors.nickname?.message}
                 />
 
                 <Row className="g-3">
                   <Col md={6}>
                     <PasswordInput
-                      label="Password"
+                      label={t("password")}
                       {...register("password", {
-                        required: "A password is required.",
+                        required:
+                          t("passwordRequired") ?? "A password is required.",
                         minLength: {
                           value: 8,
                           message:
+                            t("passwordLength") ??
                             "Your password must be 8 characters or longer."
                         },
                         deps: ["confirmedPassword"]
@@ -142,13 +140,16 @@ export default function UserSignUpModal({
 
                   <Col md={6}>
                     <PasswordInput
-                      label="Confirm Password"
+                      label={t("confirmPassword")}
                       {...register("confirmedPassword", {
-                        required: "You must confirm your password.",
+                        required:
+                          t("mustConfirmPassword") ??
+                          "You must confirm your password.",
                         validate: confirmedPassword => {
                           const password = getValues("password")
                           return confirmedPassword !== password
-                            ? "Confirmed password must match password."
+                            ? t("mustMatch") ??
+                                "Confirmed password must match password."
                             : undefined
                         }
                       })}
@@ -166,20 +167,15 @@ export default function UserSignUpModal({
                     className="w-100"
                     loading={createUserWithEmailAndPassword.loading}
                   >
-                    Sign up
+                    {t("signUp")}
                   </LoadingButton>
                 ) : (
                   <Button type="button" onClick={handleContinueClick}>
-                    Continue
+                    {t("continue")}
                   </Button>
                 )}
 
-                {/* 
-                Hiding social sign on buttons for now until we can get them working #TODO
-                See #1080
-
-                */}
-                <Divider className="px-4">or</Divider>
+                <Divider className="px-4">{t("or")}</Divider>
 
                 <SocialSignOnButtons onComplete={onHide} />
               </Stack>
