@@ -39,6 +39,7 @@ export const ProfileHeader = ({
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
+  const elementType = "org"
 
   return (
     <Header className={`gx-0 edit-profile-header`}>
@@ -61,7 +62,11 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                <FollowButton profileid={profileid} uid={uid} />
+                <FollowButton
+                  elementType={elementType}
+                  profileid={profileid}
+                  uid={uid}
+                />
               )}
             </>
           )}

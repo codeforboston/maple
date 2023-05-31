@@ -14,9 +14,11 @@ import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
 
 export const FollowButton = ({
+  elementType,
   profileid,
   uid
 }: {
+  elementType: string
   profileid: string
   uid?: string
 }) => {
@@ -71,6 +73,28 @@ export const FollowButton = ({
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
+  return (
+    <>
+      (elementType == "org") ? (
+      <FollowOrg
+        checkmark={checkmark}
+        clickFunction={clickFunction}
+        text={text}
+      />
+      ) : (<></>)
+    </>
+  )
+}
+
+function FollowOrg({
+  checkmark,
+  clickFunction,
+  text
+}: {
+  checkmark: JSX.Element | null
+  clickFunction: any
+  text: string
+}) {
   return (
     <Col className={`d-flex w-100 justify-content-start`}>
       <div>
