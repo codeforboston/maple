@@ -40,7 +40,7 @@ export const FollowButton = ({
   )
   const [queryResult, setQueryResult] = useState("")
 
-  const Query = async () => {
+  const TopicQuery = async () => {
     const q = query(subscriptionRef, where("topicName", "==", topicName))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -50,7 +50,7 @@ export const FollowButton = ({
   }
 
   useEffect(() => {
-    uid ? Query() : null
+    uid ? TopicQuery() : null
   })
 
   const FollowClick = async () => {
