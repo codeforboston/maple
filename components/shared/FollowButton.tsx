@@ -7,35 +7,41 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
+import { useAuth } from "../auth"
+import { Bill } from "../db"
 import { firestore } from "../firebase"
+import { useTranslation } from "next-i18next"
 import { useState, useEffect } from "react"
 import { Col, Button } from "react-bootstrap"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
-import { useTranslation } from "next-i18next"
 
 export const FollowButton = ({
-  elementType,
-  profileid,
-  uid
+  bill,
+  profileid
 }: {
-  elementType: string
-  profileid: string
-  uid?: string
+  bill?: Bill
+  profileid?: string
 }) => {
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation("common")
 
-  const topicName = `org-${profileid}`
+  const { user } = useAuth()
+  const uid = user?.uid
+
+  const billId = bill?.id
+  const courtId = bill?.court
+  let topicName = ``
+  bill
+    ? (topicName = `bill-${courtId}-${billId}`)
+    : (topicName = `org-${profileid}`)
+
   const subscriptionRef = collection(
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`
   )
   const [queryResult, setQueryResult] = useState("")
 
-  const orgQuery = async () => {
-    const q = query(
-      subscriptionRef,
-      where("topicName", "==", `org-${profileid}`)
-    )
+  const Query = async () => {
+    const q = query(subscriptionRef, where("topicName", "==", topicName))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
@@ -44,16 +50,26 @@ export const FollowButton = ({
   }
 
   useEffect(() => {
-    uid ? orgQuery() : null
+    uid ? Query() : null
   })
 
   const FollowClick = async () => {
-    await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      profileid: profileid,
-      type: "org"
-    })
+    bill
+      ? await setDoc(doc(subscriptionRef, topicName), {
+          topicName: topicName,
+          uid: uid,
+          billLookup: {
+            billId: billId,
+            court: courtId
+          },
+          type: "bill"
+        })
+      : await setDoc(doc(subscriptionRef, topicName), {
+          topicName: topicName,
+          uid: uid,
+          profileid: profileid,
+          type: "org"
+        })
 
     setQueryResult(topicName)
   }
@@ -75,13 +91,20 @@ export const FollowButton = ({
 
   return (
     <>
-      (elementType == "org") ? (
-      <FollowOrg
-        checkmark={checkmark}
-        clickFunction={clickFunction}
-        text={text}
-      />
-      ) : (<></>)
+      {bill ? (
+        <FollowBill
+          checkmark={checkmark}
+          clickFunction={clickFunction}
+          text={text}
+          uid={uid}
+        />
+      ) : (
+        <FollowOrg
+          checkmark={checkmark}
+          clickFunction={clickFunction}
+          text={text}
+        />
+      )}
     </>
   )
 }
@@ -106,5 +129,29 @@ function FollowOrg({
         </div>
       </div>
     </Col>
+  )
+}
+
+function FollowBill({
+  checkmark,
+  clickFunction,
+  text,
+  uid
+}: {
+  checkmark: JSX.Element | null
+  clickFunction: any
+  text: string
+  uid?: string
+}) {
+  return (
+    <Button
+      className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
+        uid ? "" : "visually-hidden"
+      }`}
+      onClick={clickFunction}
+    >
+      {text}
+      {checkmark}
+    </Button>
   )
 }
