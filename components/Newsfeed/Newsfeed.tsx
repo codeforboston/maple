@@ -56,7 +56,6 @@ export default function Newsfeed() {
         }}
         searchClient={searchClient}
         routing={false}
-        // routing={useRouting()}
       >
         <Layout />
       </InstantSearch>
@@ -75,36 +74,38 @@ const Layout = () => {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  const [orgFilter, setOrgFilter] = useState<boolean>(true)
-  const [billFilter, setBillFilter] = useState<boolean>(true)
+  const [isFilteringOrgs, setIsFilteringOrgs] = useState<boolean>(false)
+  const [isFilteringBills, setIsFilteringBills] = useState<boolean>(false)
 
   const [allResults, setAllResults] = useState<Props>([])
   const [orgResults, setOrgResults] = useState<Props>([])
   const [billResults, setBillResults] = useState<Props>([])
 
   const [notificationsDisplay, setNotificationsDisplay] = useState<Props>([])
-  const [noDisplay, setNoDisplay] = useState<boolean>(true)
+  const [shouldDisplayResults, setShouldDisplayResults] =
+    useState<boolean>(true)
 
-  const onFilterChange = (trolley: string, boxType: string) => {
-    const Box = document.getElementById(boxType) as HTMLInputElement
-    if (Box?.checked) {
-      trolley ? setOrgFilter(true) : setBillFilter(true)
-    } else {
-      trolley ? setOrgFilter(false) : setBillFilter(false)
-    }
+  const onOrgFilterChange = (isFiltering: boolean) => {
+    setIsFilteringOrgs(!isFiltering)
+  }
+  const onBillFilterChange = (isFiltering: boolean) => {
+    setIsFilteringBills(!isFiltering)
   }
 
-  const checkDisplay = useCallback(() => {
-    setNoDisplay(false)
-    if (orgFilter == true && billFilter == true) {
-      return setNotificationsDisplay(allResults)
-    } else if (orgFilter == true) {
-      return setNotificationsDisplay(orgResults)
-    } else if (billFilter == true) {
+  const onFilterChange = () => {
+    console.log("is filtering bills", isFilteringBills)
+    console.log("is filtering orgs", isFilteringOrgs)
+    console.log("notifications", notificationsDisplay)
+    setShouldDisplayResults(true)
+    if (isFilteringOrgs && isFilteringBills) {
+      return setShouldDisplayResults(false)
+    } else if (isFilteringOrgs) {
       return setNotificationsDisplay(billResults)
+    } else if (isFilteringBills) {
+      return setNotificationsDisplay(orgResults)
     }
-    return setNoDisplay(true)
-  }, [allResults, orgFilter, orgResults, billFilter, billResults])
+    return setNotificationsDisplay(allResults)
+  }
 
   const notificationQuery = async () => {
     let notificationList: Props = []
@@ -131,17 +132,20 @@ const Layout = () => {
     uid ? notificationQuery() : null
   })
 
-  useEffect(() => {
-    checkDisplay()
-  }, [checkDisplay, orgFilter, billFilter, notificationsDisplay])
-
   function Filters() {
     return (
-      <FilterBoxs
+      <FilterBoxes
         isMobile={isMobile}
-        onFilterChange={onFilterChange}
-        orgFilter={orgFilter}
-        billFilter={billFilter}
+        onOrgFilterChange={(isFiltering: boolean) => {
+          onOrgFilterChange(isFiltering)
+          onFilterChange()
+        }}
+        onBillFilterChange={(isFiltering: boolean) => {
+          onBillFilterChange(isFiltering)
+          onFilterChange()
+        }}
+        isFilteringOrgs={isFilteringOrgs}
+        isFilteringBills={isFilteringBills}
       />
     )
   }
@@ -167,19 +171,7 @@ const Layout = () => {
                     </Col>
                   )}
                 </Header>
-                {noDisplay ? (
-                  <div className="pb-4">
-                    <AlertCard
-                      header={`No Results`}
-                      subheader={``}
-                      timestamp={``}
-                      headerImgSrc={``}
-                      bodyImgSrc={``}
-                      bodyImgAltTxt={``}
-                      bodyText={`There are no news updates for your current followed topics`}
-                    />
-                  </div>
-                ) : (
+                {shouldDisplayResults ? (
                   <>
                     {notificationsDisplay.map(
                       (element: ElementProps, index: number) => (
@@ -201,6 +193,18 @@ const Layout = () => {
                       )
                     )}
                   </>
+                ) : (
+                  <div className="pb-4">
+                    <AlertCard
+                      header={`No Results`}
+                      subheader={``}
+                      timestamp={``}
+                      headerImgSrc={``}
+                      bodyImgSrc={``}
+                      bodyImgAltTxt={``}
+                      bodyText={`There are no news updates for your current followed topics`}
+                    />
+                  </div>
                 )}
                 <SearchContainer>
                   <Pagination className="d-flex justify-content-center mt-2 mb-3" />
@@ -216,16 +220,18 @@ const Layout = () => {
   )
 }
 
-function FilterBoxs({
+function FilterBoxes({
   isMobile,
-  onFilterChange,
-  orgFilter,
-  billFilter
+  onOrgFilterChange,
+  onBillFilterChange,
+  isFilteringOrgs,
+  isFilteringBills
 }: {
   isMobile: boolean
-  onFilterChange: any
-  orgFilter: boolean
-  billFilter: boolean
+  onOrgFilterChange: any
+  onBillFilterChange: any
+  isFilteringOrgs: boolean
+  isFilteringBills: boolean
 }) {
   return (
     <>
@@ -241,9 +247,9 @@ function FilterBoxs({
             value=""
             id="orgCheck"
             onChange={e => {
-              onFilterChange("non-empty", "orgCheck")
+              onOrgFilterChange(isFilteringOrgs)
             }}
-            checked={orgFilter}
+            checked={!isFilteringOrgs}
           />
           <label className="form-check-label" htmlFor="orgCheck">
             Organization Updates
@@ -262,9 +268,9 @@ function FilterBoxs({
             value=""
             id="billCheck"
             onChange={e => {
-              onFilterChange("", "billCheck")
+              onBillFilterChange(isFilteringBills)
             }}
-            checked={billFilter}
+            checked={!isFilteringBills}
           />
           <label className="form-check-label" htmlFor="billCheck">
             Bill Updates
