@@ -70,46 +70,36 @@ export function FollowingTab({ className }: Props) {
   let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
-  const billsFollowingQuery = async () => {
+  const FollowingQuery = async (topic: string) => {
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
-      where("type", "==", "bill")
+      where("type", "==", `${topic}`)
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      billList.push(doc.data().billLookup)
+      topic == "bill"
+        ? billList.push(doc.data().billLookup)
+        : orgsList.push(doc.data().profileid)
     })
 
-    if (billsFollowing.length === 0 && billList.length != 0) {
-      setBillsFollowing(billList)
+    if (topic == "bill") {
+      if (billsFollowing.length === 0 && billList.length != 0) {
+        setBillsFollowing(billList)
+      }
+    } else {
+      if (orgsFollowing.length === 0 && orgsList.length != 0) {
+        setOrgsFollowing(orgsList)
+      }
     }
   }
 
   useEffect(() => {
-    uid ? billsFollowingQuery() : null
-  })
-
-  const orgsFollowingQuery = async () => {
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "org")
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      orgsList.push(doc.data().profileid)
-    })
-
-    if (orgsFollowing.length === 0 && orgsList.length != 0) {
-      setOrgsFollowing(orgsList)
-    }
-  }
-
-  useEffect(() => {
-    uid ? orgsFollowingQuery() : null
+    let topic = "bill"
+    uid ? FollowingQuery(topic) : null
+    topic = "org"
+    uid ? FollowingQuery(topic) : null
   })
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
