@@ -1,11 +1,6 @@
-import {
-  InstantSearch,
-  Pagination
-} from "@alexjball/react-instantsearch-hooks-web"
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
 import { useCallback, useEffect, useState } from "react"
-import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -17,11 +12,6 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
-import { getServerConfig } from "components/search/common"
-import { SearchContainer } from "components/search/SearchContainer"
-import { SearchErrorBoundary } from "components/search/SearchErrorBoundary"
-import { initialSortByValue } from "components/search/SortBy"
-import { currentGeneralCourt } from "functions/src/shared"
 
 type ElementProps = {
   bodyText: string
@@ -36,34 +26,7 @@ type ElementProps = {
 
 type Props = ElementProps[]
 
-const searchClient = new TypesenseInstantSearchAdapter({
-  server: getServerConfig(),
-  additionalSearchParameters: {
-    query_by: "number,title,body",
-    exclude_fields: "body"
-  }
-}).searchClient
-
 export default function Newsfeed() {
-  return (
-    <SearchErrorBoundary>
-      <InstantSearch
-        indexName={initialSortByValue}
-        initialUiState={{
-          [initialSortByValue]: {
-            refinementList: { court: [String(currentGeneralCourt)] }
-          }
-        }}
-        searchClient={searchClient}
-        routing={false}
-      >
-        <Layout />
-      </InstantSearch>
-    </SearchErrorBoundary>
-  )
-}
-
-const Layout = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
@@ -206,9 +169,9 @@ const Layout = () => {
                     />
                   </div>
                 )}
-                <SearchContainer>
-                  <Pagination className="d-flex justify-content-center mt-2 mb-3" />
-                </SearchContainer>
+                <div className="d-flex justify-content-center mt-2 mb-3">
+                  Pagination Element to be wired to backend
+                </div>
               </StyledContainer>
             </>
           ) : (
