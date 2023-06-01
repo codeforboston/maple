@@ -136,25 +136,23 @@ export default function Newsfeed() {
                 </Header>
                 {shouldDisplayResults ? (
                   <>
-                    {notificationsDisplay.map(
-                      (element: ElementProps, index: number) => (
-                        <div className="pb-4" key={index}>
-                          <AlertCard
-                            header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgSrc={`${
-                              element.type === `org`
-                                ? `/profile-org-white.svg`
-                                : ``
-                            }`}
-                            bodyImgSrc={``}
-                            bodyImgAltTxt={``}
-                            bodyText={element.bodyText}
-                          />
-                        </div>
-                      )
-                    )}
+                    {notificationsDisplay.map((element: ElementProps) => (
+                      <div className="pb-4" key={element.id}>
+                        <AlertCard
+                          header={element.header}
+                          subheader={element.subheader}
+                          timestamp={element.timestamp}
+                          headerImgSrc={`${
+                            element.type === `org`
+                              ? `/profile-org-white.svg`
+                              : ``
+                          }`}
+                          bodyImgSrc={``}
+                          bodyImgAltTxt={``}
+                          bodyText={element.bodyText}
+                        />
+                      </div>
+                    ))}
                   </>
                 ) : (
                   <div className="pb-4">
