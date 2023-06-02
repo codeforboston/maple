@@ -118,6 +118,7 @@ export function FollowingTab({ className }: Props) {
       setUnfollow(null)
     }
   }
+
   const { t } = useTranslation("editProfile")
 
   return (
@@ -126,9 +127,9 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>{t("follow.bills")}</h2>
-            {billsFollowing.map((element: string, index: number) => (
+            {billsFollowing.map((element: any) => (
               <FollowedItem
-                key={index}
+                key={element.billIid}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"bill"}
@@ -141,9 +142,9 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {orgsFollowing.map((element: string, index: number) => (
+            {orgsFollowing.map((element: any) => (
               <FollowedItem
-                key={index}
+                key={element}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"org"}
