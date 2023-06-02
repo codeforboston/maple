@@ -50,22 +50,36 @@ export default function Newsfeed() {
     useState<boolean>(true)
 
   const onOrgFilterChange = (isFiltering: boolean) => {
-    setIsFilteringOrgs(!isFiltering)
-  }
-  const onBillFilterChange = (isFiltering: boolean) => {
-    setIsFilteringBills(!isFiltering)
+    const filterUpdatingTo = !isFiltering
+    setIsFilteringOrgs(filterUpdatingTo)
+
+    // isFilteringOrgs has to be inverted because setState (i.e. setIsFilteringOrgs)
+    // doesn't happen until a batch at the end
+
+    setShouldDisplayResults(true)
+    if (!isFilteringOrgs && isFilteringBills) {
+      return setShouldDisplayResults(false)
+    } else if (!isFilteringOrgs) {
+      return setNotificationsDisplay(billResults)
+    } else if (isFilteringBills) {
+      return setNotificationsDisplay(orgResults)
+    }
+    return setNotificationsDisplay(allResults)
   }
 
-  const onFilterChange = () => {
-    console.log("is filtering bills", isFilteringBills)
-    console.log("is filtering orgs", isFilteringOrgs)
-    console.log("notifications", notificationsDisplay)
+  const onBillFilterChange = (isFiltering: boolean) => {
+    const filterUpdatingTo = !isFiltering
+    setIsFilteringBills(filterUpdatingTo)
+
+    // isFilteringBills has to be inverted because setState (i.e. setIsFilteringBills)
+    // doesn't happen until a batch at the end
+
     setShouldDisplayResults(true)
-    if (isFilteringOrgs && isFilteringBills) {
+    if (isFilteringOrgs && !isFilteringBills) {
       return setShouldDisplayResults(false)
     } else if (isFilteringOrgs) {
       return setNotificationsDisplay(billResults)
-    } else if (isFilteringBills) {
+    } else if (!isFilteringBills) {
       return setNotificationsDisplay(orgResults)
     }
     return setNotificationsDisplay(allResults)
@@ -102,11 +116,9 @@ export default function Newsfeed() {
         isMobile={isMobile}
         onOrgFilterChange={(isFiltering: boolean) => {
           onOrgFilterChange(isFiltering)
-          onFilterChange()
         }}
         onBillFilterChange={(isFiltering: boolean) => {
           onBillFilterChange(isFiltering)
-          onFilterChange()
         }}
         isFilteringOrgs={isFilteringOrgs}
         isFilteringBills={isFilteringBills}
