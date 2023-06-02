@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import ErrorPage from "next/error"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
