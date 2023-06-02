@@ -13,7 +13,7 @@ import {
 } from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
 
-type ElementProps = {
+type NotificationProps = {
   bodyText: string
   court: string
   header: string
@@ -24,14 +24,14 @@ type ElementProps = {
   type: string
 }
 
-type Props = ElementProps[]
+type Notifications = NotificationProps[]
 
 export default function Newsfeed() {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
-  const { result: profile, loading } = usePublicProfile(user?.uid)
   const uid = user?.uid
+  const { result: profile, loading } = usePublicProfile(uid)
   const subscriptionRef = collection(
     firestore,
     `/users/${uid}/userNotificationFeed/`
@@ -40,11 +40,12 @@ export default function Newsfeed() {
   const [isFilteringOrgs, setIsFilteringOrgs] = useState<boolean>(false)
   const [isFilteringBills, setIsFilteringBills] = useState<boolean>(false)
 
-  const [allResults, setAllResults] = useState<Props>([])
-  const [orgResults, setOrgResults] = useState<Props>([])
-  const [billResults, setBillResults] = useState<Props>([])
+  const [allResults, setAllResults] = useState<Notifications>([])
+  const [orgResults, setOrgResults] = useState<Notifications>([])
+  const [billResults, setBillResults] = useState<Notifications>([])
 
-  const [notificationsDisplay, setNotificationsDisplay] = useState<Props>([])
+  const [notificationsDisplay, setNotificationsDisplay] =
+    useState<Notifications>([])
   const [shouldDisplayResults, setShouldDisplayResults] =
     useState<boolean>(true)
 
@@ -71,7 +72,7 @@ export default function Newsfeed() {
   }
 
   const notificationQuery = async () => {
-    let notificationList: Props = []
+    let notificationList: Notifications = []
     const q = query(subscriptionRef, where("uid", "==", `${uid}`))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -136,7 +137,7 @@ export default function Newsfeed() {
                 </Header>
                 {shouldDisplayResults ? (
                   <>
-                    {notificationsDisplay.map((element: ElementProps) => (
+                    {notificationsDisplay.map((element: NotificationProps) => (
                       <div className="pb-4" key={element.id}>
                         <AlertCard
                           header={element.header}
@@ -205,7 +206,6 @@ function FilterBoxes({
           <input
             className="form-check-input"
             type="checkbox"
-            value=""
             id="orgCheck"
             onChange={e => {
               onOrgFilterChange(isFilteringOrgs)
@@ -226,7 +226,6 @@ function FilterBoxes({
           <input
             className="form-check-input"
             type="checkbox"
-            value=""
             id="billCheck"
             onChange={e => {
               onBillFilterChange(isFilteringBills)
