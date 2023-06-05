@@ -31,7 +31,7 @@ const searchClient = new TypesenseInstantSearchAdapter({
 
 const items: SortByItem[] = [
   {
-    label: "Sort by Next Hearing Date",
+    label: "Sort by Published Date",
     value: "publishedTestimony/sort/publishedAt:desc"
   }
 ]
