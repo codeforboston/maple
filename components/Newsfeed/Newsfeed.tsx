@@ -37,8 +37,8 @@ export default function Newsfeed() {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  const [isFilteringOrgs, setIsFilteringOrgs] = useState<boolean>(false)
-  const [isFilteringBills, setIsFilteringBills] = useState<boolean>(false)
+  const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
+  const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
 
   const [allResults, setAllResults] = useState<Notifications>([])
   const [orgResults, setOrgResults] = useState<Notifications>([])
@@ -49,40 +49,32 @@ export default function Newsfeed() {
   const [shouldDisplayResults, setShouldDisplayResults] =
     useState<boolean>(true)
 
-  const onOrgFilterChange = (isFiltering: boolean) => {
-    const filterUpdatingTo = !isFiltering
-    setIsFilteringOrgs(filterUpdatingTo)
-
-    // isFilteringOrgs has to be inverted because setState (i.e. setIsFilteringOrgs)
-    // doesn't happen until a batch at the end
+  const onOrgFilterChange = (isShowing: boolean) => {
+    setIsShowingOrgs(isShowing)
 
     setShouldDisplayResults(true)
-    if (!isFilteringOrgs && isFilteringBills) {
-      return setShouldDisplayResults(false)
-    } else if (!isFilteringOrgs) {
-      return setNotificationsDisplay(billResults)
-    } else if (isFilteringBills) {
+    if (isShowing && isShowingBills) {
+      return setNotificationsDisplay(allResults)
+    } else if (isShowing) {
       return setNotificationsDisplay(orgResults)
+    } else if (isShowingBills) {
+      return setNotificationsDisplay(billResults)
     }
-    return setNotificationsDisplay(allResults)
+    return setShouldDisplayResults(false)
   }
 
-  const onBillFilterChange = (isFiltering: boolean) => {
-    const filterUpdatingTo = !isFiltering
-    setIsFilteringBills(filterUpdatingTo)
-
-    // isFilteringBills has to be inverted because setState (i.e. setIsFilteringBills)
-    // doesn't happen until a batch at the end
+  const onBillFilterChange = (isShowing: boolean) => {
+    setIsShowingBills(isShowing)
 
     setShouldDisplayResults(true)
-    if (isFilteringOrgs && !isFilteringBills) {
-      return setShouldDisplayResults(false)
-    } else if (isFilteringOrgs) {
-      return setNotificationsDisplay(billResults)
-    } else if (!isFilteringBills) {
+    if (isShowingOrgs && isShowing) {
+      return setNotificationsDisplay(allResults)
+    } else if (isShowingOrgs) {
       return setNotificationsDisplay(orgResults)
+    } else if (isShowing) {
+      return setNotificationsDisplay(billResults)
     }
-    return setNotificationsDisplay(allResults)
+    return setShouldDisplayResults(false)
   }
 
   const notificationQuery = async () => {
@@ -120,8 +112,8 @@ export default function Newsfeed() {
         onBillFilterChange={(isFiltering: boolean) => {
           onBillFilterChange(isFiltering)
         }}
-        isFilteringOrgs={isFilteringOrgs}
-        isFilteringBills={isFilteringBills}
+        isShowingOrgs={isShowingOrgs}
+        isShowingBills={isShowingBills}
       />
     )
   }
@@ -198,14 +190,14 @@ function FilterBoxes({
   isMobile,
   onOrgFilterChange,
   onBillFilterChange,
-  isFilteringOrgs,
-  isFilteringBills
+  isShowingOrgs,
+  isShowingBills
 }: {
   isMobile: boolean
   onOrgFilterChange: any
   onBillFilterChange: any
-  isFilteringOrgs: boolean
-  isFilteringBills: boolean
+  isShowingOrgs: boolean
+  isShowingBills: boolean
 }) {
   return (
     <>
@@ -219,10 +211,11 @@ function FilterBoxes({
             className="form-check-input"
             type="checkbox"
             id="orgCheck"
-            onChange={e => {
-              onOrgFilterChange(isFilteringOrgs)
+            onChange={event => {
+              const inputDomElement = event.target
+              onOrgFilterChange(inputDomElement.checked)
             }}
-            checked={!isFilteringOrgs}
+            checked={isShowingOrgs}
           />
           <label className="form-check-label" htmlFor="orgCheck">
             Organization Updates
@@ -239,10 +232,11 @@ function FilterBoxes({
             className="form-check-input"
             type="checkbox"
             id="billCheck"
-            onChange={e => {
-              onBillFilterChange(isFilteringBills)
+            onChange={event => {
+              const inputDomElement = event.target
+              onBillFilterChange(inputDomElement.checked)
             }}
-            checked={!isFilteringBills}
+            checked={isShowingBills}
           />
           <label className="form-check-label" htmlFor="billCheck">
             Bill Updates
