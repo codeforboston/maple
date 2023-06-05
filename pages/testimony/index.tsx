@@ -8,7 +8,7 @@ export default createPage({
   Page: () => {
     return (
       <Container fluid="md" className="mt-3">
-        <h1>All Testimony</h1>
+        <h1 className="mb-3">Browse Testimony</h1>
         <TestimonySearch />
       </Container>
     )

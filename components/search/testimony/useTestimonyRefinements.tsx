@@ -18,6 +18,11 @@ export const useTestimonyRefinements = () => {
       attribute: "billId",
       ...baseProps,
       searchablePlaceholder: "Bill"
+    }),
+    useRefinementListUiProps({
+      attribute: "authorDisplayName",
+      ...baseProps,
+      searchablePlaceholder: "Author Name"
     })
   ]
 
