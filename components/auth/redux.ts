@@ -52,4 +52,4 @@ export const {
   }
 })
 
-export const useAuth = () => useAppSelector(({ auth }) => auth)
+export const useAuth = () => useAppSelector(state => state.auth)

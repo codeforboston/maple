@@ -53,8 +53,10 @@ export const CreateMockReport = () => {
         }
       }}
       isLoading={reportMutation.isLoading}
+      additionalInformationLabel="Additional Information"
       reasons={[
         "Personal Information",
+        "Wrong Bill",
         "Offensive",
         "Violent",
         "Spam",

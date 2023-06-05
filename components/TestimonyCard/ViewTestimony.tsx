@@ -11,6 +11,7 @@ import styled from "styled-components"
 import { PaginationButtons } from "components/table"
 import { Tabs, Tab } from "./Tabs"
 import { useTranslation } from "next-i18next"
+import { useAuth } from "../auth"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -24,7 +25,6 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    isUser?: boolean
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
@@ -33,12 +33,13 @@ const ViewTestimony = (
   const {
     items,
     setFilter,
-    isUser = false,
     onProfilePage = false,
     className,
     pagination,
     isOrg
   } = props
+
+  const { user } = useAuth()
 
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
@@ -136,7 +137,7 @@ const ViewTestimony = (
                     <TestimonyItem
                       key={t.authorUid + t.billId}
                       testimony={t}
-                      isUser={isUser}
+                      isUser={t.authorUid === user?.uid}
                       onProfilePage={onProfilePage}
                     />
                   ))}
