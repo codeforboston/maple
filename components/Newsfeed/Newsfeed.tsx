@@ -106,11 +106,11 @@ export default function Newsfeed() {
     return (
       <FilterBoxes
         isMobile={isMobile}
-        onOrgFilterChange={(isFiltering: boolean) => {
-          onOrgFilterChange(isFiltering)
+        onOrgFilterChange={(isShowing: boolean) => {
+          onOrgFilterChange(isShowing)
         }}
-        onBillFilterChange={(isFiltering: boolean) => {
-          onBillFilterChange(isFiltering)
+        onBillFilterChange={(isShowing: boolean) => {
+          onBillFilterChange(isShowing)
         }}
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
