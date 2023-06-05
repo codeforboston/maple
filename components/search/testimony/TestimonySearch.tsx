@@ -9,7 +9,7 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row } from "../../bootstrap"
+import { Col, Nav, Row } from "../../bootstrap"
 import { TestimonyHit } from "./TestimonyHit"
 import { getServerConfig } from "../common"
 import { NoResults } from "../NoResults"
@@ -20,6 +20,12 @@ import { SortBy } from "../SortBy"
 import { useRouting } from "../useRouting"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
+import { TabContainer } from "react-bootstrap"
+import { useState } from "react"
+import {
+  StyledTabNav,
+  StyledTabContent
+} from "components/EditProfilePage/StyledEditProfileComponents"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -31,12 +37,18 @@ const searchClient = new TypesenseInstantSearchAdapter({
 
 const items: SortByItem[] = [
   {
-    label: "Sort by Published Date",
+    label: "Sort by New -> Old",
     value: "publishedTestimony/sort/publishedAt:desc"
+  },
+  {
+    label: "Sort by Old -> New",
+    value: "publishedTestimony/sort/publishedAt:asc"
   }
 ]
 
 export const initialSortByValue = items[0].value
+
+const filters = ["All", "Individuals", "Organizations"]
 
 export const TestimonySearch = () => (
   <SearchErrorBoundary>
@@ -76,34 +88,53 @@ const useSearchStatus = () => {
 }
 
 const Layout = () => {
+  const [key, setKey] = useState<"All" | "Individuals" | "Organizations">("All")
   const refinements = useTestimonyRefinements()
   const status = useSearchStatus()
+
   return (
-    <SearchContainer>
-      <Row>
-        <SearchBox placeholder="Search For Testimony" className="mt-2 mb-3" />
-      </Row>
-      <Row>
-        {refinements.options}
-        <Col className="d-flex flex-column">
-          <RefinementRow>
-            <ResultCount className="flex-grow-1 m-1" />
-            <SortBy items={items} />
-            {refinements.show}
-          </RefinementRow>
-          <CurrentRefinements className="mt-2 mb-2" />
-          {status === "empty" ? (
-            <NoResults>
-              Your search has yielded zero results!
-              <br />
-              <b>Try another search term</b>
-            </NoResults>
-          ) : (
-            <Hits hitComponent={TestimonyHit} />
-          )}
-          <Pagination className="mx-auto mt-2 mb-3" />
-        </Col>
-      </Row>
-    </SearchContainer>
+    <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
+      <StyledTabNav>
+        {filters.map((t, i) => (
+          <Nav.Item key={t}>
+            <Nav.Link eventKey={t} className={`rounded-top m-0 p-0`}>
+              <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
+              <hr className={`my-0`} />
+            </Nav.Link>
+          </Nav.Item>
+        ))}
+      </StyledTabNav>
+      <StyledTabContent>
+        <SearchContainer>
+          <Row>
+            <SearchBox
+              placeholder="Search For Testimony"
+              className="mt-2 mb-3"
+            />
+          </Row>
+          <Row>
+            {refinements.options}
+            <Col className="d-flex flex-column">
+              <RefinementRow>
+                <ResultCount className="flex-grow-1 m-1" />
+                <SortBy items={items} />
+                {refinements.show}
+              </RefinementRow>
+              <CurrentRefinements className="mt-2 mb-2" />
+              {status === "empty" ? (
+                <NoResults>
+                  Your search has yielded zero results!
+                  <br />
+                  <b>Try another search term</b>
+                </NoResults>
+              ) : (
+                <Hits hitComponent={TestimonyHit} />
+              )}
+              <Pagination className="mx-auto mt-2 mb-3" />
+            </Col>
+          </Row>
+        </SearchContainer>
+      </StyledTabContent>
+    </TabContainer>
   )
 }
