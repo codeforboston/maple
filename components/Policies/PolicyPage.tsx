@@ -18,21 +18,7 @@ export default function PolicyPage({
 
   return (
     <Container className={style.policyContent}>
-      <h1>Terms of Service</h1>
-      <span>
-        <p className={style.subHeading}>Our Shared Values</p>
-        <hr className={style.bottomBorder}></hr>
-        <p className={style.subHeading2Underlined}>
-          How we interact with each other determines what we can accomplish.
-        </p>
-        <p className={style.subHeading2}>
-          On this website, we ask you to act with:
-        </p>
-        <p className={style.subHeading2Bold}>
-          Compassion, Curiosity, and Humility
-        </p>
-      </span>
-
+      <h1>Policies</h1>
       <Stack direction="horizontal">
         <Button
           className={`${
@@ -48,8 +34,9 @@ export default function PolicyPage({
           id="copyright"
           onClick={e => handleOnClick("copyright")}
         >
-          Copyright <br />
+          Terms of Service <br />
         </Button>
+
         <Button
           className={`${
             style[policy === "code-of-conduct" ? "currentTab" : "tab"]
@@ -62,6 +49,42 @@ export default function PolicyPage({
       </Stack>
 
       <PolicyContent policy={policy} />
+
+      <div className={style.sharedValues}>
+        <p className={style.subHeading}>Our Shared Values</p>
+        <hr className={style.bottomBorder}></hr>
+        <p className={style.text1}>
+          How we interact with each other determines what we can accomplish
+        </p>
+        <p className={style.text2}>On this website, we ask you to act with:</p>
+      </div>
+
+      <div className={style.boxContainer}>
+        <div className={style.blueBox}>
+          <img
+            src="handShake.jpg"
+            alt="hand shake"
+            className={style.symbol}
+          ></img>
+          <p className={style.values}>Humility</p>
+        </div>
+        <div className={style.blueBox}>
+          <img
+            src="compassion.png"
+            alt="cupped hand holding heart"
+            className={style.symbol}
+          ></img>
+          <p className={style.values}>Compassion</p>
+        </div>
+        <div className={style.blueBox}>
+          <img
+            src="lightBulb.png"
+            alt="lightbulb"
+            className={style.symbol}
+          ></img>
+          <p className={style.values}>Curiosity</p>
+        </div>
+      </div>
     </Container>
   )
 }

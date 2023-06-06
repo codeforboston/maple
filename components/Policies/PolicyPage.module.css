@@ -3,55 +3,71 @@
   font-family: "Nunito";
 }
 
+.sharedValues {
+  font-size: 1rem;
+  margin-left: 0.2rem;
+  letter-spacing: 0.015em;
+  text-align: justify;
+  font-style: normal;
+  font-weight: 700;
+  color: #1a3185;
+  line-height: 125%;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
 .subHeading {
-  font-size: 1.5rem;
   font-weight: bold;
   margin-top: 0;
-  margin-left: 0.2rem;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.625px;
-  text-align: center;
-  width: 100%;
 }
 
-.subHeading2 {
-  font-size: 1rem;
-  margin-top: 0;
-  margin-left: 0.2rem;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.625px;
-  text-align: center;
-  width: 100%;
+.text1 {
+  font-weight: 400;
 }
 
-.subHeading2Underlined {
-  font-size: 1rem;
-  text-decoration: underline;
-  margin-top: 0;
-  margin-left: 0.2rem;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.625px;
-  text-align: center;
-  width: 100%;
+.text2 {
+  margin-bottom: 1.5rem;
 }
 
-.subHeading2Bold {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 0;
-  margin-left: 0.2rem;
-  margin-bottom: 2rem;
-  letter-spacing: -0.625px;
-  text-align: center;
+.boxContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
+  height: 102.73px;
+}
+
+.blueBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 4px;
+  gap: 24px;
+  width: 324px;
+  height: 102.73px;
+  background: #1a3185;
+  border-radius: 10px;
+}
+
+.symbol {
+  width: 58.49px;
+  height: 52.85px;
+}
+
+.values {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 5px;
+  letter-spacing: 0.015em;
+  color: white;
 }
 
 hr.bottomBorder {
   border-bottom: 2px solid rgba(0, 0, 0, 100%);
-  width: 50%;
-  margin-top: 0;
-  margin-left: 25%;
-  margin-right: 25%;
+  width: 100%;
 }
 
 /* ---------- Policy Links --------------*/
