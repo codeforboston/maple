@@ -1,12 +1,12 @@
+import { collection, deleteDoc, doc } from "firebase/firestore"
+import { useTranslation } from "next-i18next"
 import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState
+} from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
@@ -15,9 +15,11 @@ import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
+import FollowingQuery from "./FollowingQuery"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
-import { useTranslation } from "next-i18next"
+
+import { Results } from "./FollowingQuery"
 
 type Props = {
   className?: string
@@ -58,51 +60,38 @@ export const Styled = styled.div`
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
   const uid = user?.uid
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
+
   const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
   const close = () => setUnfollow(null)
 
-  let billList: string[] = []
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
-  let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
-  const FollowingQuery = async (topic: string) => {
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", `${topic}`)
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      topic == "bill"
-        ? billList.push(doc.data().billLookup)
-        : orgsList.push(doc.data().profileid)
-    })
+  const handleQueryResults = useCallback(
+    (results: Results) => {
+      if (billsFollowing.length === 0 && results.bills.length != 0) {
+        setBillsFollowing(results.bills)
+      }
 
-    if (topic == "bill") {
-      if (billsFollowing.length === 0 && billList.length != 0) {
-        setBillsFollowing(billList)
+      if (orgsFollowing.length === 0 && results.orgs.length != 0) {
+        setOrgsFollowing(results.orgs)
       }
-    } else {
-      if (orgsFollowing.length === 0 && orgsList.length != 0) {
-        setOrgsFollowing(orgsList)
-      }
-    }
-  }
+    },
+    [billsFollowing.length, orgsFollowing.length]
+  )
 
   useEffect(() => {
-    let topic = "bill"
-    uid ? FollowingQuery(topic) : null
-    topic = "org"
-    uid ? FollowingQuery(topic) : null
-  })
+    uid
+      ? FollowingQuery(uid).then(results => handleQueryResults(results))
+      : null
+  }, [uid, setBillsFollowing, setOrgsFollowing, handleQueryResults])
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
+    const subscriptionRef = collection(
+      firestore,
+      `/users/${uid}/activeTopicSubscriptions/`
+    )
+
     if (unfollow !== null) {
       let topicName = ""
       if (unfollow.type == "bill") {
@@ -121,6 +110,8 @@ export function FollowingTab({ className }: Props) {
 
   const { t } = useTranslation("editProfile")
 
+  console.log("orgs following: ", orgsFollowing)
+
   return (
     <>
       <TitledSectionCard className={className}>
@@ -129,7 +120,7 @@ export function FollowingTab({ className }: Props) {
             <h2>{t("follow.bills")}</h2>
             {billsFollowing.map((element: any) => (
               <FollowedItem
-                key={element.billIid}
+                key={element.billId}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"bill"}
@@ -144,7 +135,7 @@ export function FollowingTab({ className }: Props) {
             <h2 className="pb-3">{t("follow.orgs")}</h2>
             {orgsFollowing.map((element: any) => (
               <FollowedItem
-                key={element}
+                key={element.profileid}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"org"}
@@ -165,17 +156,15 @@ export function FollowingTab({ className }: Props) {
 }
 
 function FollowedItem({
-  key,
   element,
   setUnfollow,
   type
 }: {
-  key: number
   element: any
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
-  const { result: profile, loading } = usePublicProfile(element)
+  const { result: profile, loading } = usePublicProfile(element.profileid)
 
   let fullName = "default"
   if (profile?.fullName) {
@@ -183,7 +172,7 @@ function FollowedItem({
   }
 
   return (
-    <Styled key={key}>
+    <Styled>
       {type === "bill" ? (
         <>
           <StyledHeader

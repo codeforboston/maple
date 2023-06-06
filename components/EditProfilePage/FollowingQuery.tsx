@@ -1,8 +1,10 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import { firestore } from "../firebase"
 
+export type Results = { [key: string]: string[] }
+
 export default async function FollowingQuery(uid: string | undefined) {
-  let results: { [key: string]: string[] } = {
+  let results: Results = {
     bills: [],
     orgs: []
   }
@@ -31,7 +33,7 @@ export default async function FollowingQuery(uid: string | undefined) {
   const querySnapshot2 = await getDocs(q2)
   querySnapshot2.forEach(doc => {
     // doc.data() is never undefined for query doc snapshots
-    doc.data().profileid ? results.orgs.push(doc.data().profileid) : null
+    doc.data().orgLookup ? results.orgs.push(doc.data().orgLookup) : null
   })
 
   return results
