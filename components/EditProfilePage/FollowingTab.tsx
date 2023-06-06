@@ -1,4 +1,3 @@
-import { collection, deleteDoc, doc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import {
   Dispatch,
@@ -11,15 +10,12 @@ import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
 import { useBill, usePublicProfile } from "../db"
-import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import FollowingQuery from "./FollowingQuery"
+import { deleteItem, FollowingQuery, Results } from "./FollowingQuery"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
-import UnfollowModal from "./UnfollowModal"
-
-import { Results } from "./FollowingQuery"
+import UnfollowModal, { UnfollowModalConfig } from "./UnfollowModal"
 
 type Props = {
   className?: string
@@ -29,13 +25,6 @@ export const StyledHeader = styled(External)`
   text-decoration: none;
   font-weight: 1rem;
 `
-
-export type UnfollowModalConfig = {
-  court: number
-  orgName: string
-  type: string
-  typeId: string
-}
 
 export const Styled = styled.div`
   font-size: 2rem;
@@ -86,31 +75,21 @@ export function FollowingTab({ className }: Props) {
       : null
   }, [uid, setBillsFollowing, setOrgsFollowing, handleQueryResults])
 
-  const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
-    const subscriptionRef = collection(
-      firestore,
-      `/users/${uid}/activeTopicSubscriptions/`
-    )
+  const handleUnfollowClick = async ({
+    uid,
+    unfollow
+  }: {
+    uid: string | undefined
+    unfollow: UnfollowModalConfig | null
+  }) => {
+    deleteItem({ uid, unfollow })
 
-    if (unfollow !== null) {
-      let topicName = ""
-      if (unfollow.type == "bill") {
-        topicName = `bill-${unfollow.court.toString()}-${unfollow.typeId}`
-      } else {
-        topicName = `org-${unfollow.typeId}`
-      }
-
-      await deleteDoc(doc(subscriptionRef, topicName))
-
-      setBillsFollowing([])
-      setOrgsFollowing([])
-      setUnfollow(null)
-    }
+    setBillsFollowing([])
+    setOrgsFollowing([])
+    setUnfollow(null)
   }
 
   const { t } = useTranslation("editProfile")
-
-  console.log("orgs following: ", orgsFollowing)
 
   return (
     <>
@@ -149,6 +128,7 @@ export function FollowingTab({ className }: Props) {
         onHide={close}
         onUnfollowClose={() => setUnfollow(null)}
         show={unfollow ? true : false}
+        uid={uid}
         unfollow={unfollow}
       />
     </>
@@ -230,6 +210,7 @@ function FollowedItem({
 function BillFollowingTitle({ court, id }: { court: number; id: string }) {
   const { loading, error, result: bill } = useBill(court, id)
   const { t } = useTranslation("editProfile")
+
   if (loading) {
     return (
       <Row>
@@ -272,7 +253,9 @@ function UnfollowButton({
       })
     }
   }
+
   const { t } = useTranslation("editProfile")
+
   return (
     <Col
       onClick={() => {
