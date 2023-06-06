@@ -67,7 +67,9 @@ export const FollowButton = ({
       : await setDoc(doc(subscriptionRef, topicName), {
           topicName: topicName,
           uid: uid,
-          profileid: profileid,
+          orgLookup: {
+            profileid: profileid
+          },
           type: "org"
         })
 
