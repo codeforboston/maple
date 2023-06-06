@@ -2,12 +2,25 @@ import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
-import { UnfollowModalConfig } from "./FollowingTab"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  handleUnfollowClick: (unfollow: UnfollowModalConfig | null) => Promise<void>
+  handleUnfollowClick: ({
+    uid,
+    unfollow
+  }: {
+    uid: string | undefined
+    unfollow: UnfollowModalConfig | null
+  }) => Promise<void>
   onUnfollowClose: () => void
+  uid: string | undefined
   unfollow: UnfollowModalConfig | null
+}
+
+export type UnfollowModalConfig = {
+  court: number
+  orgName: string
+  type: string
+  typeId: string
 }
 
 const StyledButton = styled(Button)`
@@ -23,6 +36,7 @@ export default function unfollow({
   onHide,
   onUnfollowClose,
   show,
+  uid,
   unfollow
 }: Props) {
   const handleTopic = () => {
@@ -60,7 +74,7 @@ export default function unfollow({
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(unfollow)
+              handleUnfollowClick({ uid, unfollow })
             }}
           >
             Yes

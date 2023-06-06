@@ -1,18 +1,27 @@
-import { collection, query, where, getDocs } from "firebase/firestore"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where
+} from "firebase/firestore"
 import { firestore } from "../firebase"
+import { UnfollowModalConfig } from "./UnfollowModal"
 
 export type Results = { [key: string]: string[] }
 
-export default async function FollowingQuery(uid: string | undefined) {
+function setSubscriptionRef(uid: string | undefined) {
+  return collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
+}
+
+export async function FollowingQuery(uid: string | undefined) {
   let results: Results = {
     bills: [],
     orgs: []
   }
 
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
+  const subscriptionRef = setSubscriptionRef(uid)
 
   const q1 = query(
     subscriptionRef,
@@ -37,4 +46,25 @@ export default async function FollowingQuery(uid: string | undefined) {
   })
 
   return results
+}
+
+export async function deleteItem({
+  uid,
+  unfollow
+}: {
+  uid: string | undefined
+  unfollow: UnfollowModalConfig | null
+}) {
+  const subscriptionRef = setSubscriptionRef(uid)
+
+  if (unfollow !== null) {
+    let topicName = ""
+    if (unfollow.type == "bill") {
+      topicName = `bill-${unfollow.court.toString()}-${unfollow.typeId}`
+    } else {
+      topicName = `org-${unfollow.typeId}`
+    }
+
+    await deleteDoc(doc(subscriptionRef, topicName))
+  }
 }
