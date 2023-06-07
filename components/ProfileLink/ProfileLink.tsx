@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react"
 import { Container, Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { Role, signOutAndRedirectToHome, useAuth } from "../auth"
+import {
+  Role,
+  SignInWithButton,
+  signOutAndRedirectToHome,
+  useAuth
+} from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
 
@@ -16,55 +21,55 @@ const greeting = (role: Role, fullName?: string) => {
   }
 }
 
-const ProfileLink = ({
-  fullName,
-  role = "user"
-}: {
+const ProfileMenuItem = (
+  label: string,
+  href: string,
+  handleClick: () => void
+) => (
+  <NavLink className={"navLink-primary"} href={href} handleClick={handleClick}>
+    {label}
+  </NavLink>
+)
+
+type ProfileLinkProps = {
   fullName?: string
   role?: Role
-}) => {
-  const { user } = useAuth()
-  const [search, setSearch] = useState("")
-  const [sticky, setSticky] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
+  sticky: boolean
+}
 
-  const toggleNav = () => setIsExpanded(!isExpanded)
+const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
+  const { authenticated, user } = useAuth()
+
+  const [isExpanded, setIsExpanded] = useState(false)
+  const toggleNav = () => setIsExpanded(expanded => !expanded)
   const closeNav = () => setIsExpanded(false)
 
-  useEffect(() => {
-    if (user?.uid) {
-      setSearch(`?id=${user.uid}`)
-    }
-  }, [user?.uid])
-
   return (
-    <>
-      <Navbar
-        bg="secondary"
-        variant="dark"
-        sticky={sticky ? "top" : undefined}
-        expand={false}
-        expanded={isExpanded}
-        className="p-0"
-      >
-        <Container className={`py-0`}>
-          <div className={styles.navbar_boxes_container}>
-            <Navbar.Brand className="mx-2 p-0" onClick={toggleNav}>
-              <Nav.Link className="p-0">
-                <Image
-                  className={styles.profileLinkImage}
-                  src="/profile-icon.svg"
-                  alt="profile icon"
-                ></Image>
-                {greeting(role, displayName)}
-              </Nav.Link>
-            </Navbar.Brand>
-          </div>
-          <Navbar.Collapse id="topnav">
-            <Nav className="me-auto">
+    <Navbar
+      expand={false}
+      expanded={isExpanded}
+      variant="dark"
+      bg="secondary"
+      collapseOnSelect={true}
+      className="d-flex justify-content-end"
+    >
+      {authenticated ? (
+        <>
+          <Navbar.Brand onClick={toggleNav}>
+            <Nav.Link className="p-0 text-white">
+              <Image
+                className={styles.profileLinkImage}
+                src="/profile-icon.svg"
+                alt="profile icon"
+              ></Image>
+              {greeting(role, fullName)}
+            </Nav.Link>
+          </Navbar.Brand>
+          <Navbar.Collapse id="profile-nav">
+            <Nav className="me-4 d-flex align-items-end">
               <NavLink
                 className={"navLink-primary"}
-                href={"/profile" + search}
+                href="/profile"
                 handleClick={closeNav}
               >
                 View Profile
@@ -87,23 +92,14 @@ const ProfileLink = ({
               </NavLink>
             </Nav>
           </Navbar.Collapse>
-          {/* <NavLink href={"/profile" + search} className="py-0">
-            <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
-              <Image
-                className={styles.profileLinkImage}
-                src="/profile-icon.svg"
-                alt="profile icon"
-              />
-              <Navbar expand="lg" className="p-0">
-                <Navbar.Collapse id="topnav">
-                  <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
-                </Navbar.Collapse>
-              </Navbar>
-            </div>
-          </NavLink> */}
-        </Container>
-      </Navbar>
-    </>
+        </>
+      ) : sticky ? (
+        <SignInWithButton />
+      ) : (
+        <></>
+      )}
+    </Navbar>
   )
 }
+
 export default ProfileLink
