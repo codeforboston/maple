@@ -13,7 +13,7 @@ import { useBill, usePublicProfile } from "../db"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import { deleteItem, FollowingQuery, Results } from "./FollowingQuery"
+import { deleteItem, FollowingQuery, Results } from "../shared/FollowingQueries"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal, { UnfollowModalConfig } from "./UnfollowModal"
 
@@ -50,8 +50,10 @@ export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
   const uid = user?.uid
 
-  const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
-  const close = () => setUnfollow(null)
+  const [unfollowItem, setUnfollowItem] = useState<UnfollowModalConfig | null>(
+    null
+  )
+  const close = () => setUnfollowItem(null)
 
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
@@ -77,16 +79,16 @@ export function FollowingTab({ className }: Props) {
 
   const handleUnfollowClick = async ({
     uid,
-    unfollow
+    unfollowItem
   }: {
     uid: string | undefined
-    unfollow: UnfollowModalConfig | null
+    unfollowItem: UnfollowModalConfig | null
   }) => {
-    deleteItem({ uid, unfollow })
+    deleteItem({ uid, unfollowItem })
 
     setBillsFollowing([])
     setOrgsFollowing([])
-    setUnfollow(null)
+    setUnfollowItem(null)
   }
 
   const { t } = useTranslation("editProfile")
@@ -101,7 +103,7 @@ export function FollowingTab({ className }: Props) {
               <FollowedItem
                 key={element.billId}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={"bill"}
               />
             ))}
@@ -116,7 +118,7 @@ export function FollowingTab({ className }: Props) {
               <FollowedItem
                 key={element.profileid}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={"org"}
               />
             ))}
@@ -126,10 +128,10 @@ export function FollowingTab({ className }: Props) {
       <UnfollowModal
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
-        onUnfollowClose={() => setUnfollow(null)}
-        show={unfollow ? true : false}
+        onUnfollowClose={() => setUnfollowItem(null)}
+        show={unfollowItem ? true : false}
         uid={uid}
-        unfollow={unfollow}
+        unfollowItem={unfollowItem}
       />
     </>
   )
@@ -137,11 +139,11 @@ export function FollowingTab({ className }: Props) {
 
 function FollowedItem({
   element,
-  setUnfollow,
+  setUnfollowItem,
   type
 }: {
   element: any
-  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
   const { result: profile, loading } = usePublicProfile(element.profileid)
@@ -169,7 +171,7 @@ function FollowedItem({
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={type}
               />
             </Col>
@@ -195,7 +197,7 @@ function FollowedItem({
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={type}
               />
             </Row>
@@ -228,24 +230,24 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 function UnfollowButton({
   fullName,
   element,
-  setUnfollow,
+  setUnfollowItem,
   type
 }: {
   fullName: string
   element: any
-  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
   const handleClick = () => {
     if (type === "bill") {
-      setUnfollow({
+      setUnfollowItem({
         court: element?.court,
         orgName: "",
         type: "bill",
         typeId: element?.billId
       })
     } else {
-      setUnfollow({
+      setUnfollowItem({
         court: 0,
         orgName: fullName,
         type: "org",

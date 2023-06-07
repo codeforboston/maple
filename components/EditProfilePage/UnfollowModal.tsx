@@ -6,14 +6,14 @@ import { formatBillId } from "../formatting"
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   handleUnfollowClick: ({
     uid,
-    unfollow
+    unfollowItem
   }: {
     uid: string | undefined
-    unfollow: UnfollowModalConfig | null
+    unfollowItem: UnfollowModalConfig | null
   }) => Promise<void>
   onUnfollowClose: () => void
   uid: string | undefined
-  unfollow: UnfollowModalConfig | null
+  unfollowItem: UnfollowModalConfig | null
 }
 
 export type UnfollowModalConfig = {
@@ -31,19 +31,19 @@ const StyledModalBody = styled(Modal.Body)`
   padding: 0.8rem;
 `
 
-export default function unfollow({
+export default function unfollowItem({
   handleUnfollowClick,
   onHide,
   onUnfollowClose,
   show,
   uid,
-  unfollow
+  unfollowItem
 }: Props) {
   const handleTopic = () => {
-    if (unfollow?.type == "bill") {
-      return ` Bill ${formatBillId(unfollow?.typeId)}`
+    if (unfollowItem?.type == "bill") {
+      return ` Bill ${formatBillId(unfollowItem?.typeId)}`
     } else {
-      return ` ${unfollow?.orgName}`
+      return ` ${unfollowItem?.orgName}`
     }
   }
 
@@ -74,7 +74,7 @@ export default function unfollow({
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick({ uid, unfollow })
+              handleUnfollowClick({ uid, unfollowItem })
             }}
           >
             Yes

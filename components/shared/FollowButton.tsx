@@ -1,18 +1,9 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { useAuth } from "../auth"
-import { Bill } from "../db"
-import { firestore } from "../firebase"
 import { useTranslation } from "next-i18next"
 import { useState, useEffect } from "react"
 import { Col, Button } from "react-bootstrap"
+import { useAuth } from "../auth"
+import { Bill } from "../db"
+import { setFollow, setUnfollow, TopicQuery } from "./FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 
 export const FollowButton = ({
@@ -34,51 +25,21 @@ export const FollowButton = ({
     ? (topicName = `bill-${courtId}-${billId}`)
     : (topicName = `org-${profileid}`)
 
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
   const [queryResult, setQueryResult] = useState("")
 
-  const TopicQuery = async () => {
-    const q = query(subscriptionRef, where("topicName", "==", topicName))
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      setQueryResult(doc.data().topicName)
-    })
-  }
-
   useEffect(() => {
-    uid ? TopicQuery() : null
-  })
+    uid
+      ? TopicQuery(uid, topicName).then(result => setQueryResult(result))
+      : null
+  }, [uid, topicName, setQueryResult])
 
   const FollowClick = async () => {
-    bill
-      ? await setDoc(doc(subscriptionRef, topicName), {
-          topicName: topicName,
-          uid: uid,
-          billLookup: {
-            billId: billId,
-            court: courtId
-          },
-          type: "bill"
-        })
-      : await setDoc(doc(subscriptionRef, topicName), {
-          topicName: topicName,
-          uid: uid,
-          orgLookup: {
-            profileid: profileid
-          },
-          type: "org"
-        })
-
+    setFollow(uid, topicName, bill, billId, courtId, profileid)
     setQueryResult(topicName)
   }
 
   const UnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, topicName))
-
+    setUnfollow(uid, topicName)
     setQueryResult("")
   }
 
