@@ -10,10 +10,12 @@ admin.initializeApp({
 export const testDb = admin.firestore()
 export const testStorage = admin.storage()
 export const testAuth = admin.auth()
+
+
 export const testTimestamp = admin.firestore.Timestamp
 export { admin as testAdmin }
 
-export async function terminateFirebase() {
+export async function  terminateFirebase() {
   await deleteApp(app)
   await terminate(firestore)
   await clearIndexedDbPersistence(firestore)
@@ -23,8 +25,8 @@ export async function terminateFirebase() {
   // above promises resolve before that occurs. So just live with the warning
   // and let firebase clean itself up.
   //
-  // await new Promise(r => setTimeout(r, 3000))
+  await new Promise(r => setTimeout(r, 3000))
 
   // Clean up the admin interface
-  admin.firestore().terminate()
+  await admin.firestore().terminate()
 }

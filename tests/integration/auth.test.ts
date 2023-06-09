@@ -12,7 +12,7 @@ const fakeUser = () => ({
   password: "password"
 })
 
-afterAll(terminateFirebase)
+// afterAll(terminateFirebase)
 
 describe("setRole", () => {
   const ctx = { auth: testAuth, db: testDb }
@@ -37,6 +37,7 @@ describe("setRole", () => {
     expect(profile.public).toBe(isPublic)
   }
 
+
   it.each<[string, (u: any) => any]>([
     ["uid", u => ({ uid: u.uid })],
     ["email", u => ({ email: u.email })]
@@ -47,11 +48,23 @@ describe("setRole", () => {
     expectUser(user, role, false)
   })
 
+  it.each<[string, (u: any) => any]>([
+    ["uid", u => ({ uid: u.uid })],
+    ["email", u => ({ email: u.email })]
+  ])("sets claims by %s", async (_, extract) => {
+    const user = await createUser()
+    const role = "organization"
+    await setRole({ ...extract(user), ...ctx, role })
+    expectUser(user, role, true)
+  })
+
+
   it.each<[Role, boolean]>([
     ["user", false],
     ["admin", false],
-    ["legislator", true],
-    ["organization", true]
+    ["legislator", false],
+    ["organization", true],
+    ["pendingUpgrade", false]
   ])("sets claims for %s", async (role, expectedPublic) => {
     const user = await createUser()
     await setRole({ uid: user.uid, ...ctx, role })

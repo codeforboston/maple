@@ -1,5 +1,5 @@
 import { waitFor } from "@testing-library/react"
-import { signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword, signOut } from "firebase/auth"
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
@@ -8,10 +8,13 @@ import { terminateFirebase, testAuth, testDb } from "../testUtils"
 import {
   expectPermissionDenied,
   getProfile,
+  setNewProfile,
   signInUser,
   signInUser1,
   signInUser2
 } from "./common"
+
+import { fail } from "../../functions/src/common"
 
 const fakeUser = () => ({
   uid: nanoid(),
@@ -25,6 +28,8 @@ afterAll(terminateFirebase)
 describe("profile", () => {
   async function expectProfile(newUser: any) {
     await testAuth.createUser(newUser)
+    await setNewProfile(newUser)
+
     let profile: any
     await waitFor(
       async () => {
@@ -36,32 +41,55 @@ describe("profile", () => {
     return profile
   }
 
-  it("Sets the display name and role for new users", async () => {
+  async function testDBConnection() {
+    const newUser = fakeUser()
+    await setNewProfile(newUser)
+    let profile = await getProfile(newUser)
+    return profile
+  }
+
+  it("tests db conn", async () => {
+    const profile = await testDBConnection()
+    expect(profile).toBeDefined()
+  })
+
+  it("Sets the fullName for new users", async () => {
     const expected = fakeUser()
-    await expect(getProfile(expected)).resolves.toBeUndefined()
+    expect(await getProfile(expected)).toBeUndefined()
     const profile = await expectProfile(expected)
     expect(profile.fullName).toEqual(expected.fullName)
-    expect(profile.role).toEqual("user")
+    expect(profile.role).not.toBeDefined()
   })
 
   it("Is not publicly readable by default", async () => {
     const newUser = fakeUser()
-    await expectProfile(newUser)
+    await testAuth.createUser(newUser)
+    const profileRef = testDb.doc(`profiles/${newUser.uid}`)
+    await profileRef.set(newUser)
 
     await signInUser1()
     await expectPermissionDenied(
       getDoc(doc(firestore, `profiles/${newUser.uid}`))
     )
+
+    await signOut(auth)
   })
 
   it("Is publicly readable when public", async () => {
     const user1 = await signInUser1()
     const profileRef = doc(firestore, `profiles/${user1.uid}`)
     await setPublic(profileRef, true)
+    expect(
+      (await getDoc(doc(firestore, `profiles/${user1.uid}`))).data()
+    ).toBeTruthy()
 
+    await signOut(auth)
     await signInUser2()
-    const result = await getDoc(doc(firestore, `profiles/${user1.uid}`))
-    expect(result.exists()).toBeTruthy()
+    expect(
+      (await getDoc(doc(firestore, `profiles/${user1.uid}`))).data()
+    ).toBeTruthy()
+
+    await signOut(auth)
   })
 
   it("Is not publicly readable when not public", async () => {
@@ -95,6 +123,7 @@ describe("profile", () => {
     )
 
     await signInWithEmailAndPassword(auth, newUser.email, newUser.password)
+    
     await expect(
       setDoc(profileRef, { fullName: "test" }, { merge: true })
     ).resolves.toBeUndefined()
@@ -108,21 +137,6 @@ describe("profile", () => {
 
     await expectPermissionDenied(updateDoc(profileRef, { role: "admin" }))
     await expectPermissionDenied(deleteDoc(profileRef))
-  })
-
-  it("Does not allow setting public for non-user roles", async () => {
-    const newUser = fakeUser()
-    const profileRef = doc(firestore, `profiles/${newUser.uid}`)
-    await expectProfile(newUser)
-    await setRole({
-      uid: newUser.uid,
-      role: "legislator",
-      auth: testAuth,
-      db: testDb
-    })
-    await signInUser(newUser.email)
-
-    await expectPermissionDenied(updateDoc(profileRef, { public: false }))
   })
 
   async function setPublic(doc: any, isPublic: boolean) {

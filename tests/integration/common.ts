@@ -1,9 +1,17 @@
 import { currentGeneralCourt } from "functions/src/shared"
-import { signInWithEmailAndPassword } from "firebase/auth"
+import {
+  GoogleAuthProvider,
+  User,
+  UserCredential,
+  signInWithEmailAndPassword
+} from "firebase/auth"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
-import { testDb, testTimestamp } from "../testUtils"
+import { testAdmin, testAuth, testDb, testTimestamp } from "../testUtils"
+import { fakeUser } from "components/moderation/setUp/MockRecords"
+import { admin } from "functions/src/firebase"
+import { fail } from "../../functions/src/common"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -50,7 +58,7 @@ export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
   const e = await work
-    .then(() => fail("expected promise to reject"))
+    .then(() => fail("permission-denied", "expected promise to reject"))
     .catch(e => e)
   expect(e.code).toMatch("permission-denied")
   console.warn = warn
@@ -60,7 +68,7 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
   const e = await work
-    .then(() => fail("expected promise to reject"))
+    .then(() => fail("unknown", "expected promise to reject"))
     .catch(e => e)
   expect(e.code).toBe("storage/unauthorized")
   console.warn = warn
@@ -78,3 +86,10 @@ export const getProfile = (user: { uid: string }) =>
     .doc(`/profiles/${user.uid}`)
     .get()
     .then(d => d.data())
+
+export const setNewProfile = (user: {
+  uid: string
+  fullName: string
+  email: string
+  password: string
+}) => testDb.doc(`/profiles/${user.uid}`).set(user)

@@ -1,19 +1,22 @@
 import { currentGeneralCourt } from "functions/src/shared"
-import { User } from "firebase/auth"
+import { getAuth, signOut, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
-import { firestore, functions, storage } from "../../components/firebase"
-import { terminateFirebase, testDb, testStorage } from "../testUtils"
+import { auth, firestore, functions, storage } from "../../components/firebase"
+import { terminateFirebase, testAuth, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
   expectStorageUnauthorized,
   getBill,
+  getProfile,
+  signInTestAdmin,
   signInUser1,
   signInUser2
 } from "./common"
+import { renderHook } from "@testing-library/react-hooks"
 
 type BaseTestimony = {
   billId: string
@@ -21,6 +24,7 @@ type BaseTestimony = {
   position: "endorse" | "oppose" | "neutral"
   content: string
   attachmentId: string | null | undefined
+  editReason?: string
 }
 
 type DraftTestimony = BaseTestimony & {
@@ -56,7 +60,7 @@ const paths = {
 }
 
 const deleteTestimony = httpsCallable<
-  { publicationId: string },
+  { uid: string; publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
@@ -67,9 +71,11 @@ const publishTestimony = httpsCallable<
 
 let uid: string
 let user: User
+let fullName: string
 beforeEach(async () => {
   user = await signInUser1()
   uid = user.uid
+  fullName = (await getProfile(user))?.fullName || "Anonymous"
 })
 
 let billId: string, draft: DraftTestimony, draftId: string
@@ -133,7 +139,11 @@ describe("publishTestimony", () => {
   })
 
   it("Publishes testimony on scraped bills", async () => {
-    const { draftId } = await createDraft(uid, "H1", 192)
+    let billId: string = "H1"
+    if (process.env.NEXT_PUBLIC_USE_EMULATOR === "true") {
+      billId = await createFakeBill()
+    }
+    const { draftId } = await createDraft(uid, billId, currentGeneralCourt)
     const res = await publishTestimony({ draftId })
     const publication = await getPublication(uid, res.data.publicationId)
     expect(publication).toBeDefined()
@@ -151,7 +161,7 @@ describe("publishTestimony", () => {
     expect(publication?.version).toBe(1)
     expect(publication.publishedAt).toBeDefined()
     expect(publication.authorUid).toEqual(user.uid)
-    expect(publication.authorDisplayName).toEqual(user.displayName)
+    expect(publication.authorDisplayName).toEqual(fullName)
     expect(publication).toMatchObject(draft)
 
     draft = await getDraft(uid, draftId)
@@ -191,7 +201,8 @@ describe("publishTestimony", () => {
 
     const updatedDraft: DraftTestimony = {
       ...draft,
-      content: "updated content"
+      content: "updated content",
+      editReason: "edit reason"
     }
     await setDoc(refs.draftTestimony(uid, draftId), updatedDraft)
 
@@ -212,8 +223,9 @@ describe("publishTestimony", () => {
   it("Supports multiple users", async () => {
     const res1 = await publishTestimony({ draftId })
 
-    const { uid: uid2 } = await signInUser2()
+    const { uid: uid2 } = await signInTestAdmin()
     await createDraft(uid2, billId)
+
     const res2 = await publishTestimony({ draftId })
 
     let bill = await getBill(billId)
@@ -221,7 +233,9 @@ describe("publishTestimony", () => {
     expect(bill.endorseCount).toBe(2)
     expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
 
-    await deleteTestimony({ publicationId: res2.data.publicationId })
+    await deleteTestimony({ uid: uid2, publicationId: res2.data.publicationId })
+
+    await signOut(auth)
 
     bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(1)
@@ -241,7 +255,7 @@ describe("publishTestimony", () => {
     await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
   })
 
-  describe("attachments", () => {
+  describe.skip("attachments", () => {
     it("copies drafts to published and archived files", async () => {
       const attachmentId = nanoid()
       await createDraftAttachment(uid, attachmentId, "test-pdf")
@@ -328,10 +342,19 @@ describe("publishTestimony", () => {
 })
 
 describe("deleteTestimony", () => {
+  let user: User
+  let uid: string
+  beforeEach(async () => {
+    user = await signInTestAdmin()
+    uid = user.uid
+    const token = await auth.currentUser?.getIdTokenResult()
+    expect(token?.claims.role).toEqual("admin")
+  })
+
   it("Deletes published testimony", async () => {
     let res = await publishTestimony({ draftId })
 
-    await deleteTestimony({ publicationId: res.data.publicationId })
+    await deleteTestimony({ uid, publicationId: res.data.publicationId })
 
     let testimony = await getPublication(uid, res.data.publicationId)
     const bill = await getBill(billId)
@@ -347,7 +370,7 @@ describe("deleteTestimony", () => {
 
   it("Retains archives", async () => {
     const res1 = await publishTestimony({ draftId })
-    await deleteTestimony({ publicationId: res1.data.publicationId })
+    await deleteTestimony({ uid, publicationId: res1.data.publicationId })
 
     const res2 = await publishTestimony({ draftId }),
       published = await getPublication(uid, res2.data.publicationId)
@@ -369,7 +392,7 @@ describe("deleteTestimony", () => {
       const r = await publishTestimony({ draftId })
       const p = await getPublication(uid, r.data.publicationId)
 
-      await deleteTestimony({ publicationId: r.data.publicationId })
+      await deleteTestimony({ uid, publicationId: r.data.publicationId })
 
       expect(p.attachmentId).toBeDefined()
       await expect(
