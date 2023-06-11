@@ -30,7 +30,7 @@ import {
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
   additionalSearchParameters: {
-    query_by: "billId",
+    query_by: "billId,content,authorDisplayName",
     exclude_fields: ""
   }
 }).searchClient
@@ -43,6 +43,10 @@ const items: SortByItem[] = [
   {
     label: "Sort by Old -> New",
     value: "publishedTestimony/sort/publishedAt:asc"
+  },
+  {
+    label: "Sort by Relevance",
+    value: "publishedTestimony/sort/_text_match:desc,publishedAt:desc"
   }
 ]
 
