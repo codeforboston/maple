@@ -7,19 +7,19 @@ import {
   useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
 import { currentGeneralCourt } from "functions/src/shared"
+import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../../bootstrap"
-import { BillHit } from "./BillHit"
-import { getServerConfig } from "../common"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
+import { getServerConfig } from "../common"
 import { useRouting } from "../useRouting"
+import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
-import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -30,19 +30,18 @@ const searchClient = new TypesenseInstantSearchAdapter({
 }).searchClient
 
 const items: SortByItem[] = [
-  /**
-   * uncomment the commented sections below once Prod is pointing at the correct data
-   */
-
-  // {
-  //   label: "Sort by Most Recent Testimony",
-  //   value: "bills/sort/latestTestimonyAt:desc"
-  // },
+  {
+    label: "Sort by Most Recent Testimony",
+    value: "bills/sort/latestTestimonyAt:desc"
+  },
   {
     label: "Sort by Relevance",
     value: "bills/sort/_text_match:desc,testimonyCount:desc"
   },
-  // { label: "Sort by Testimony Count", value: "bills/sort/testimonyCount:desc" },
+  {
+    label: "Sort by Testimony Count",
+    value: "bills/sort/testimonyCount:desc"
+  },
   {
     label: "Sort by Cosponsor Count",
     value: "bills/sort/cosponsorCount:desc"
