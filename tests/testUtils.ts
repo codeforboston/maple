@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin"
 import { deleteApp } from "firebase/app"
 import { terminate, clearIndexedDbPersistence } from "firebase/firestore"
-import { firestore, app } from "../components/firebase"
+import { firestore, app, auth } from "../components/firebase"
 
 admin.initializeApp({
   storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`
@@ -11,11 +11,10 @@ export const testDb = admin.firestore()
 export const testStorage = admin.storage()
 export const testAuth = admin.auth()
 
-
 export const testTimestamp = admin.firestore.Timestamp
 export { admin as testAdmin }
 
-export async function  terminateFirebase() {
+export async function terminateFirebase() {
   await deleteApp(app)
   await terminate(firestore)
   await clearIndexedDbPersistence(firestore)
@@ -28,5 +27,6 @@ export async function  terminateFirebase() {
   await new Promise(r => setTimeout(r, 3000))
 
   // Clean up the admin interface
+  await testDb.terminate()
   await admin.firestore().terminate()
 }

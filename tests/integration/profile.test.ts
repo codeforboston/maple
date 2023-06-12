@@ -123,7 +123,7 @@ describe("profile", () => {
     )
 
     await signInWithEmailAndPassword(auth, newUser.email, newUser.password)
-    
+
     await expect(
       setDoc(profileRef, { fullName: "test" }, { merge: true })
     ).resolves.toBeUndefined()

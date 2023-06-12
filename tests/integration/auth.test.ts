@@ -37,7 +37,6 @@ describe("setRole", () => {
     expect(profile.public).toBe(isPublic)
   }
 
-
   it.each<[string, (u: any) => any]>([
     ["uid", u => ({ uid: u.uid })],
     ["email", u => ({ email: u.email })]
@@ -57,7 +56,6 @@ describe("setRole", () => {
     await setRole({ ...extract(user), ...ctx, role })
     expectUser(user, role, true)
   })
-
 
   it.each<[Role, boolean]>([
     ["user", false],
