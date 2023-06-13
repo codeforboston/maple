@@ -11,7 +11,7 @@ import {
 } from "./StyledNewsfeedComponents"
 import { AlertCard } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
-import notificationQuery from "./NotificationQuery"
+import notificationQuery from "./notification-query"
 
 export default function Newsfeed() {
   const isMobile = useMediaQuery("(max-width: 768px)")
