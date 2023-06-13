@@ -175,11 +175,6 @@ export default function UserSignUpModal({
                   </Button>
                 )}
 
-                {/* 
-                Hiding social sign on buttons for now until we can get them working #TODO
-                See #1080
-
-                */}
                 <Divider className="px-4">{t("or")}</Divider>
 
                 <SocialSignOnButtons onComplete={onHide} />
