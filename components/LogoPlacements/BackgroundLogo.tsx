@@ -5,10 +5,10 @@ export default function BackgroundLogo() {
     <div
       style={{
         position: "absolute",
-        right: 0,
-        bottom: -100,
-        transformOrigin: "bottom right",
-        transform: "scale(1.5)",
+        right: 10,
+        bottom: -75,
+        transformOrigin: "center",
+        transform: "scale(1.3)",
         opacity: 0.1
       }}
     >
