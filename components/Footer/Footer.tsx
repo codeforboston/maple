@@ -88,7 +88,7 @@ function MapleContainer() {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="/maple.png"
+          src="/maple-footer-white.png"
           alt="MAPLE logo"
           width={100}
         />
