@@ -1,5 +1,5 @@
 import { app } from "components/firebase"
-import { Admin, DataProvider, Resource } from "react-admin"
+import { Admin, CustomRoutes, DataProvider, Resource } from "react-admin"
 import { FirebaseDataProvider } from "react-admin-firebase"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { EditReports, ListReports } from "./"
@@ -11,10 +11,12 @@ import {
   getMyOne,
   updateMyOne
 } from "./dataProviderDbCalls"
+import { Route } from "react-router-dom"
 
 import * as fb from "components/firebase"
 import * as firestore from "firebase/firestore"
 import * as dbCalls from "./dataProviderDbCalls"
+import AccountActions from "./batchActions"
 
 const queryClient = new QueryClient()
 
@@ -49,6 +51,9 @@ const App = () => {
           list={ListProfiles}
           options={{ label: "Upgrade Requests" }}
         />
+        <CustomRoutes>
+          <Route path="/AccountActions" element={<AccountActions />} />
+        </CustomRoutes>
       </Admin>
     </QueryClientProvider>
   )
