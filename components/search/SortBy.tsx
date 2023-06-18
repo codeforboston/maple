@@ -8,15 +8,15 @@ const items: SortByItem[] = [
    * uncomment the commented sections below once Prod is pointing at the correct data
    */
 
-  // {
-  //   label: "Sort by Most Recent Testimony",
-  //   value: "bills/sort/latestTestimonyAt:desc"
-  // },
+  {
+    label: "Sort by Most Recent Testimony",
+    value: "bills/sort/latestTestimonyAt:desc"
+  },
   {
     label: "Sort by Relevance",
     value: "bills/sort/_text_match:desc,testimonyCount:desc"
   },
-  // { label: "Sort by Testimony Count", value: "bills/sort/testimonyCount:desc" },
+  { label: "Sort by Testimony Count", value: "bills/sort/testimonyCount:desc" },
   {
     label: "Sort by Cosponsor Count",
     value: "bills/sort/cosponsorCount:desc"
