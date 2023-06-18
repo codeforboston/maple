@@ -12,7 +12,7 @@ export const cleanupNotifications = functions.pubsub
   .schedule('every 24 hours')
   .onRun(async (context) => {
     // Define the time threshold for old notifications, topic events, and email documents
-    const retentionPeriodDays = 30; // Adjust this value as needed
+    const retentionPeriodDays = 60; // Adjust this value as needed
     const threshold = admin.firestore.Timestamp.fromMillis(
       Date.now() - retentionPeriodDays * 24 * 60 * 60 * 1000,
     );
