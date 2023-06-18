@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Testimony } from "components/db/testimony"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { formatBillId } from "components/formatting"
+import { useBill } from "components/db/bills"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -17,7 +18,15 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
 }
 
 const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
-  const date = new Date(hit.publishedAt)
+  const date = new Date(
+    parseInt(hit.publishedAt.toString())
+  ).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  })
+  const { loading, error, result: bill } = useBill(hit.court, hit.billId)
+  const committee = bill?.currentCommittee
   return (
     <div
       style={{
@@ -27,7 +36,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         marginBottom: "0.75rem"
       }}
     >
-      <p>Written by {hit.authorDisplayName}</p>
+      <span>Written by {hit.authorDisplayName}</span>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ marginRight: "10px" }}>
@@ -42,23 +51,32 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           <span>{hit.position}</span>
         </div>
         <div style={{ width: "100%" }}>
-          <Link href={maple.bill({ court: hit.court, id: hit.billId })}>
-            <a className="w-100">
-              <h2>Bill #{formatBillId(hit.billId)}</h2>
-            </a>
-          </Link>
-          <p>{hit.billTitle}</p>
-          <p>{trimContent(hit.content, 200)}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+            <Link href={maple.bill({ court: hit.court, id: hit.billId })}>
+              <a>
+                <h2>Bill #{formatBillId(hit.billId)}</h2>
+              </a>
+            </Link>
+            {committee && (
+              <span
+                style={{
+                  background: "var(--bs-blue)",
+                  borderRadius: "50px",
+                  color: "white",
+                  padding: "5px 10px"
+                }}
+              >
+                {committee.name}
+              </span>
+            )}
+          </div>
+          <h6 style={{ color: "var(--bs-blue)", fontWeight: 600 }}>
+            {bill?.content.Title}
+          </h6>
+          <p>"{trimContent(hit.content, 500)}"</p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {hit.content.trim().length > 0 && <a className="w-20">Read More</a>}
-            <span style={{ marginLeft: "auto" }}>
-              Posted{" "}
-              {date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
-            </span>
+            <span style={{ marginLeft: "auto" }}>{`Posted ${date}`}</span>
           </div>
         </div>
       </div>
