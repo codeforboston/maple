@@ -8,6 +8,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as handlebars from 'handlebars';
+import * as helpers from "../email/helpers"
 import * as fs from 'fs';
 
 // Get a reference to the Firestore database
@@ -15,32 +16,11 @@ const db = admin.firestore();
 const path = require('path');
 
 // Define Handlebars helper functions
-handlebars.registerHelper('toLowerCase', function (str: string) {
-  if (str && typeof str === 'string') {
-    return str.toLowerCase();
-  } else {
-      return '';
-  }
-});
+handlebars.registerHelper('toLowerCase', helpers.toLowerCase);
 
-handlebars.registerHelper('noUpdatesFormat', function (str: string) {
-  let result = ""
-  switch (str) {
-    case "Monthly":
-      result = "this month"
-      break
-    case "Weekly":
-      result = "this week"
-      break
-    default:
-      result = "today"
-  }
-  return result
-});
+handlebars.registerHelper('noUpdatesFormat', helpers.noUpdatesFormat);
 
-handlebars.registerHelper('isDefined', function (value: any) {
-  return value !== undefined;
-});
+handlebars.registerHelper('isDefined', helpers.isDefined);
 
 // Function to register partials for the email template
 function registerPartials(directoryPath: string) {
@@ -69,7 +49,7 @@ export const deliverNotifications = functions.pubsub
     // Get the current timestamp
     const now = admin.firestore.Timestamp.now();
 
-    // Query the userNotificationFeed collection group for feeds where nextDigestAt < now
+    // if nextDigestAt does not equal null, then the user has a notification digest scheduled
     const feedsSnapshot = await db
       .collectionGroup('userNotificationFeed')
       .where('nextDigestAt', '<', now)
@@ -123,8 +103,31 @@ export const deliverNotifications = functions.pubsub
       // Update nextDigestAt timestamp for the current feed
       // DEBUG: set nextDigestAt as a Date object for testing, 
       // change this line to Timestamp? 
-      const nextDigestAt = new Date(now.toMillis() + notificationFrequency * 24 * 60 * 60 * 1000);
+      let nextDigestAt;
+
+      // Get the amount of milliseconds for the notificationFrequency
+      switch (notificationFrequency) {
+        case "Daily":
+          nextDigestAt = new Date(now.toMillis() + 24 * 60 * 60 * 1000);
+          break;
+        case "Weekly":
+          nextDigestAt = new Date(now.toMillis() + 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "Monthly":
+          let monthAhead = new Date(now.toDate());
+          monthAhead.setMonth(monthAhead.getMonth() + 1);
+          nextDigestAt = monthAhead;
+          break;
+        case "None":
+          nextDigestAt = null;
+          break;
+        default:
+          console.error(`Unknown notification frequency: ${notificationFrequency}`);
+          break;
+      }
+      
       await doc.ref.update({ nextDigestAt });
+      
     });
 
     // Wait for all email documents to be created
