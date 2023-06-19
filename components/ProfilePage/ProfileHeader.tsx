@@ -20,26 +20,28 @@ import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { Profile } from "../db"
 import { FollowButton } from "./FollowButton"
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { useAuth } from "../auth"
 
 export const ProfileHeader = ({
   isUser,
   isOrg,
   isMobile,
   uid,
-  profileid,
+  profileId,
   profile
 }: {
   isUser: boolean
   isOrg: boolean
   isMobile: boolean
   uid?: string
-  profileid: string
+  profileId: string
   profile: Profile
 }) => {
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
-  const topicName = `org-${profileid}`
+  const topicName = `org-${profileId}`
   const subscriptionRef = collection(
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`
@@ -49,7 +51,7 @@ export const ProfileHeader = ({
   const orgQuery = async () => {
     const q = query(
       subscriptionRef,
-      where("topicName", "==", `org-${profileid}`)
+      where("topicName", "==", `org-${profileId}`)
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -62,21 +64,58 @@ export const ProfileHeader = ({
     uid ? orgQuery() : null
   })
 
-  const handleFollowClick = async () => {
-    await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      profileid: profileid,
-      type: "org"
-    })
+  const { user } = useAuth()
 
-    setQueryResult(topicName)
+  const functions = getFunctions();
+  const followBillFunction = httpsCallable(functions, 'followBill');
+  const unfollowBillFunction = httpsCallable(functions, 'unfollowBill');
+
+  const handleFollowClick = async () => {
+    // ensure user is not null
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
+    try {
+      if (!uid) {
+        throw new Error("User not found");
+      }
+      const topicLookup = {
+        profileId: profileId,
+        type: "org"
+      };
+      const token = await user.getIdToken();
+      const response = await followBillFunction({ topicLookup, token });
+      if (response.data) {
+        setQueryResult(topicName);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleUnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, topicName))
+    // ensure user is not null
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-    setQueryResult("")
+    try {
+      if (!uid) {
+        throw new Error("User not found");
+      }
+      const topicLookup = {
+        profileId: profileId,
+        type: "org"
+      };
+      const token = await user.getIdToken();
+      const response = await unfollowBillFunction({ topicLookup, token });
+      if (response.data) {
+        setQueryResult("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -105,14 +144,14 @@ export const ProfileHeader = ({
                  is ready for production
                 */
 
-                // <FollowButton
-                //   onFollowClick={() => handleFollowClick()}
-                //   onUnfollowClick={() => handleUnfollowClick()}
-                //   isMobile={isMobile}
-                //   isFollowing={queryResult}
-                // />
+                <FollowButton
+                  onFollowClick={() => handleFollowClick()}
+                  onUnfollowClick={() => handleUnfollowClick()}
+                  isMobile={isMobile}
+                  isFollowing={queryResult}
+                />
 
-                <></>
+                
               )}
             </>
           )}

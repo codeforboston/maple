@@ -8,6 +8,7 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
@@ -134,7 +135,12 @@ const FollowButton = ({ bill }: BillProps) => {
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`
   )
+
   const [queryResult, setQueryResult] = useState("")
+  const functions = getFunctions();
+
+  const followBillFunction = httpsCallable(functions, 'followBill');
+  const unfollowBillFunction = httpsCallable(functions, 'unfollowBill');
 
   const billQuery = async () => {
     const q = query(
@@ -153,24 +159,57 @@ const FollowButton = ({ bill }: BillProps) => {
   })
 
   const handleFollowClick = async () => {
-    await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      billLookup: {
+    try {
+      // ensure user is not null
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      const billLookup = {
         billId: billId,
         court: courtId
-      },
-      type: "bill"
-    })
-
-    setQueryResult(topicName)
-  }
-
+      };
+  
+      // get token
+      const token = await user.getIdToken();
+  
+      // use followBillFunction to follow bill
+      const response = await followBillFunction({ billLookup, token });
+      // handle the response
+      if (response.data) {
+        setQueryResult(topicName);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   const handleUnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, topicName))
-
-    setQueryResult("")
-  }
+    try {
+      // ensure user is not null
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      const billLookup = {
+        billId: billId,
+        court: courtId
+      };
+  
+      // get token
+      const token = await user.getIdToken();
+  
+      // use unfollowBillFunction to unfollow bill
+      const response = await unfollowBillFunction({ billLookup, token });
+  
+      if (response.data) {
+        setQueryResult("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   return (
     <Button

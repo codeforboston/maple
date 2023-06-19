@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
@@ -120,6 +120,8 @@ export default function ProfileSettingsModal({
   const privacyText = renderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
 
+  const [notificationFrequency, setNotificationFrequency] = useState("Daily");
+
   return (
     <Modal
       show={show}
@@ -132,12 +134,7 @@ export default function ProfileSettingsModal({
       </Modal.Header>
       <StyledModalBody>
         <Form>
-          <div
-            /* remove "div w/ d-none" for testing and/or after Soft Launch 
-               when we're ready to show Email related element to users
-            */
-            className="d-none"
-          >
+          
             <StyledRow className="p-2">
               <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
               <hr className={`mt-0`} />
@@ -204,7 +201,7 @@ export default function ProfileSettingsModal({
                 </Dropdown>
               </Col>
             </StyledRow>
-          </div>
+          
 
           <StyledRow className="p-2">
             <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>

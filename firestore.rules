@@ -1,6 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Make sure the uid of the requesting user matches name of the user document
+    // The wildcard {userId} gives us access to that value in a function
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    } 
     match /events/{id} {
       // public, read-only 
       allow read: if true;
@@ -70,9 +75,8 @@ service cloud.firestore {
         // private, only accessible by the user
         allow read, write: if request.auth.uid == uid
       }
-      match /activeTopicSubscriptions/{topicName} {
-        // private, only accessible by the user
-        allow read, write: if request.auth.uid == uid 
+      match /users/{uid}/activeTopicSubscriptions/{topicName} {
+        allow read, write: if debug(request.auth.uid == uid);
       }
       match /archivedTestimony/{id} {
         // Publicly readable, for posterity.

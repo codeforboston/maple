@@ -18,6 +18,12 @@ import { TitledSectionCard } from "../shared"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
 import { useTranslation } from "next-i18next"
+import { getFunctions, httpsCallable } from 'firebase/functions';
+
+const functions = getFunctions();
+
+const unfollowBillFunction = httpsCallable(functions, 'unfollowBill');
+const unfollowOrgFunction = httpsCallable(functions, 'unfollowOrg');
 
 type Props = {
   className?: string
@@ -70,6 +76,13 @@ export function FollowingTab({ className }: Props) {
   let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
+  const fetchFollowedItems = async () => {
+    if (uid) {
+      billsFollowingQuery();
+      orgsFollowingQuery();
+    }
+  };
+  
   const billsFollowingQuery = async () => {
     const q = query(
       subscriptionRef,
@@ -100,7 +113,7 @@ export function FollowingTab({ className }: Props) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      orgsList.push(doc.data().profileid)
+      orgsList.push(doc.data().orgLookup)
     })
 
     if (orgsFollowing.length === 0 && orgsList.length != 0) {
@@ -109,26 +122,42 @@ export function FollowingTab({ className }: Props) {
   }
 
   useEffect(() => {
-    uid ? orgsFollowingQuery() : null
-  })
+    fetchFollowedItems();
+  }, [billsFollowing, orgsFollowing]);
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
+    // DEBUG
+    if (!unfollow || !unfollow.typeId) {
+      console.error('handleUnfollowClick was called but unfollow or unfollow.typeId is undefined');
+      return;
+    }
+    
     if (unfollow !== null) {
-      let topicName = ""
       if (unfollow.type == "bill") {
-        topicName = `bill-${unfollow.court.toString()}-${unfollow.typeId}`
+        let billLookup = { billId: unfollow.typeId, court: unfollow.court }; // creating billLookup as an object here
+        try {
+          const response = await unfollowBillFunction({ billLookup: billLookup }); // pass billLookup object here
+          console.log(response.data);  // This should print { status: 'success', message: 'Subscription removed' }
+        } catch (error: any) {
+          console.log(error.message);
+        }
       } else {
-        topicName = `org-${unfollow.typeId}`
+        let orgLookup = { profileId: unfollow.typeId, fullName: unfollow.orgName }; // creating orgLookup as an object here
+        try {
+          const response = await unfollowOrgFunction({ orgLookup: orgLookup }); // pass orgLookup object here
+          console.log(response.data);  // This should print { status: 'success', message: 'Subscription removed' }
+        } catch (error: any) {
+          console.log(error.message);
+        }
       }
-
-      await deleteDoc(doc(subscriptionRef, topicName))
-
-      setBillsFollowing([])
-      setOrgsFollowing([])
-      setUnfollow(null)
+  
+      setBillsFollowing([]);
+      setOrgsFollowing([]);
+      setUnfollow(null);
     }
   }
   const { t } = useTranslation("editProfile")
+  
 
   return (
     <>
@@ -139,6 +168,7 @@ export function FollowingTab({ className }: Props) {
             {billsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
+                index = {index}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"bill"}
@@ -154,6 +184,7 @@ export function FollowingTab({ className }: Props) {
             {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
+                index = {index}
                 element={element}
                 setUnfollow={setUnfollow}
                 type={"org"}
@@ -174,25 +205,25 @@ export function FollowingTab({ className }: Props) {
 }
 
 function FollowedItem({
-  key,
+  index, 
   element,
   setUnfollow,
   type
 }: {
-  key: number
+  index: number 
   element: any
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
-  const { result: profile, loading } = usePublicProfile(element)
+  const { result: profile, loading } = usePublicProfile(element.profileId)
 
   let fullName = "default"
   if (profile?.fullName) {
     fullName = profile.fullName
   }
-
+  
   return (
-    <Styled key={key}>
+    <Styled key={index}> 
       {type === "bill" ? (
         <>
           <StyledHeader
@@ -228,7 +259,7 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`organizations/${element}`}>
+                <Internal href={`organizations/${element?.profileId}`}>
                   {fullName}
                 </Internal>
               </Col>
@@ -276,6 +307,10 @@ function UnfollowButton({
   type: string
 }) {
   const handleClick = () => {
+    if (!element) {
+      console.error('handleClick was called but element is undefined');
+      return;
+    }
     if (type === "bill") {
       setUnfollow({
         court: element?.court,
@@ -286,9 +321,9 @@ function UnfollowButton({
     } else {
       setUnfollow({
         court: 0,
-        orgName: fullName,
+        orgName: element?.fullName,
         type: "org",
-        typeId: element
+        typeId: element?.profileId
       })
     }
   }
