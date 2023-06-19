@@ -35,6 +35,12 @@ export {
   cleanupNotifications,
   deliverNotifications
 } from "./notifications"
+export {
+  followBill,
+  unfollowBill,
+  followOrg,
+  unfollowOrg,
+} from "./subscriptions"
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.

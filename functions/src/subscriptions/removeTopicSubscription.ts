@@ -14,9 +14,14 @@ export const removeTopicSubscription = async ({
   const uid = user.uid;
   const topicName = subscriptionData.topicName;
 
-  // Remove the topic subscription to the user's activeTopicSubscriptions collection
-  await db    
-    .collection(`/users/${uid}/activeTopicSubscriptions`)
-    .doc(topicName)
-    .delete();
+  // Remove the topic subscription from the user's activeTopicSubscriptions collection
+  try {
+    await db
+      .collection(`/users/${uid}/activeTopicSubscriptions`)
+      .doc(topicName)
+      .delete();
+  } catch (error: any) {
+    console.error('Error removing topic subscription: ', error);
+  }
 };
+

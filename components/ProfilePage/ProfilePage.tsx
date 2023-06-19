@@ -61,7 +61,8 @@ export function ProfilePage(profileprops: {
                   isUser={isUser}
                   isOrg={isOrg || false}
                   isMobile={isMobile}
-                  profileid={profileprops.id}
+                  uid={user?.uid}
+                  profileId={profileprops.id}
                   profile={profile}
                 />
 
