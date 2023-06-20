@@ -1,53 +1,23 @@
-import { UserRecord } from "firebase-admin/lib/auth/user-record"
 import * as functions from "firebase-functions"
+import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
-import { Profile } from "../profile/types"
-import { Auth, Database } from "../types"
-import { Claim, Role } from "./types"
+import { setRole } from "./setRole"
 
-export const createAdmin = functions.https.onRequest(
-  async (request, response) => {
-    const { uid } = request.query
+export const createAdmin = functions.https.onCall(async (data, ctx) => {
+  const uid = data.uid
 
-    if (uid && typeof uid === "string") {
-      try {
-        setRoleAdmin({ uid, auth, db })
+  checkAuth(ctx, false)
+  checkAdmin(ctx)
 
-        const user = await auth.getUser(uid as string)
-
-        response.status(200).json({
-          data: user
-        })
-      } catch (e) {
-        response.status(500).json(e)
-      }
-
-      response.status(500).end()
-      return
-    }
+  if (!uid || typeof uid !== "string") {
+    throw new functions.https.HttpsError("invalid-argument", "Invalid uid")
   }
-)
 
-export const setRoleAdmin = async ({
-  uid,
-  auth,
-  db
-}: {
-  uid?: string
-  auth: Auth
-  db: Database
-}) => {
-  let user: UserRecord
-  if (uid) user = await auth.getUser(uid)
-  else throw Error("Missing uid or email")
-
-  const role: Role = "admin"
-  const claim: Claim = { role }
-  await auth.setCustomUserClaims(user.uid, claim)
-
-  const profile = db.doc(`/profiles/${user.uid}`)
-  const profileUpdate: Partial<Profile> = {
-    role
+  try {
+    await setRole({ role: "admin", uid, auth, db })
+  } catch (e) {
+    throw new functions.https.HttpsError("internal", "setRole failed", e)
   }
-  await profile.set(profileUpdate, { merge: true })
-}
+
+  return
+})

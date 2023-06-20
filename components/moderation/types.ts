@@ -45,3 +45,8 @@ export const createFakeTestimony = httpsCallable<Request, Response>(
   functions,
   "createFakeTestimony"
 )
+
+export const createAdmin = httpsCallable<{ uid: string }, void>(
+  functions,
+  "createAdmin"
+)
