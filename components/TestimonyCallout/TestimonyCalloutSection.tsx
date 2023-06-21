@@ -1,9 +1,10 @@
 import { Carousel, CarouselItem } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
-import { Col, Container, Row } from "../bootstrap"
+import { Button, Col, Container, Row } from "../bootstrap"
 import { useRecentTestimony } from "../db"
 import TestimonyCallout from "./TestimonyCallout"
 import { useTranslation } from "next-i18next"
+import { Internal } from "components/links"
 
 export default function TestimonyCalloutSection() {
   const recentTestimony = useRecentTestimony(4)
@@ -14,8 +15,17 @@ export default function TestimonyCalloutSection() {
   return (
     <Container fluid>
       <Row className="mt-5 justify-content-center">
-        <Col xs={10}>
+        <Col xs={10} md={6}>
           <h1>{t("testimonyCalloutSection.peopleSaying")}</h1>
+        </Col>
+        <Col xs={10} md={3}>
+          <div>
+            <Internal href="/testimony">
+              <Button className={`btn btn-lg py-1`}>
+                {t("testimonyCalloutSection.browseTestimony")}
+              </Button>
+            </Internal>
+          </div>
         </Col>
       </Row>
       {isMobile ? (

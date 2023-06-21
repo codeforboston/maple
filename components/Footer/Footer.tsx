@@ -133,6 +133,9 @@ const BrowseLinks = () => {
       <NavLink className={styles.footerLink} href="/bills">
         {t("links.browseBills")}
       </NavLink>
+      <NavLink className={styles.footerLink} href="/testimony">
+        {t("links.browseTestimony")}
+      </NavLink>
     </>
   )
 }
