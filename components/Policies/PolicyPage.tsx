@@ -1,8 +1,9 @@
 import { PolicyContent } from "./PolicyContent"
-import { Button, Stack, Container } from "react-bootstrap"
+import { Button, Stack, Container, Image, Row, Col } from "react-bootstrap"
 import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
 import Router from "next/router"
+import classNames from 'classnames'
 
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
@@ -17,7 +18,7 @@ export default function PolicyPage({
   }
 
   return (
-    <Container className={style.policyContent}>
+    <Container fluid className={style.policyContent}>
       <h1>Policies</h1>
       <Stack direction="horizontal">
         <Button
@@ -59,32 +60,34 @@ export default function PolicyPage({
         <p className={style.text2}>On this website, we ask you to act with:</p>
       </div>
 
-      <div className={style.boxContainer}>
-        <div className={style.blueBox}>
-          <img
-            src="handShake.jpg"
-            alt="hand shake"
-            className={style.symbol}
-          ></img>
-          <p className={style.values}>Humility</p>
-        </div>
-        <div className={style.blueBox}>
-          <img
-            src="compassion.png"
-            alt="cupped hand holding heart"
-            className={style.symbol}
-          ></img>
-          <p className={style.values}>Compassion</p>
-        </div>
-        <div className={style.blueBox}>
-          <img
-            src="lightBulb.png"
-            alt="lightbulb"
-            className={style.symbol}
-          ></img>
-          <p className={style.values}>Curiosity</p>
-        </div>
-      </div>
+      <Container fluid>
+        <Row className={classNames(style.boxContainer, "row-fluid", "gx-5", "gy-3")}>
+          <Col xs={12} className={style.blueBox}>
+            <Image
+              src="handShake.jpg"
+              alt="hand shake"
+              className={style.symbol}>
+            </Image>
+            <p className={style.values}>Humility</p>
+          </Col>
+          <Col xs={12} className={style.blueBox}>
+            <Image
+              src="compassion.png"
+              alt="cupped hand holding heart"
+              className={style.symbol}>
+            </Image>
+            <p className={style.values}>Compassion</p>
+          </Col>
+          <Col xs={12} className={style.blueBox}>
+            <Image
+              src="lightBulb.png"
+              alt="lightbulb"
+              className={style.symbol}>
+            </Image>
+            <p className={style.values}>Curiosity</p> 
+          </Col>
+        </Row>
+      </Container>
     </Container>
   )
 }
