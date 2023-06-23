@@ -3,7 +3,7 @@ import { Button, Stack, Container, Image, Row, Col } from "react-bootstrap"
 import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
 import Router from "next/router"
-import classNames from 'classnames'
+import classNames from "classnames"
 
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
@@ -61,30 +61,37 @@ export default function PolicyPage({
       </div>
 
       <Container fluid>
-        <Row className={classNames(style.boxContainer, "row-fluid", "gx-5", "gy-3")}>
+        <Row
+          className={classNames(
+            style.boxContainer,
+            "row-fluid",
+            "gx-5",
+            "gy-3"
+          )}
+        >
           <Col xs={12} className={style.blueBox}>
             <Image
               src="handShake.jpg"
               alt="hand shake"
-              className={style.symbol}>
-            </Image>
+              className={style.symbol}
+            ></Image>
             <p className={style.values}>Humility</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
             <Image
               src="compassion.png"
               alt="cupped hand holding heart"
-              className={style.symbol}>
-            </Image>
+              className={style.symbol}
+            ></Image>
             <p className={style.values}>Compassion</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
             <Image
               src="lightBulb.png"
               alt="lightbulb"
-              className={style.symbol}>
-            </Image>
-            <p className={style.values}>Curiosity</p> 
+              className={style.symbol}
+            ></Image>
+            <p className={style.values}>Curiosity</p>
           </Col>
         </Row>
       </Container>
