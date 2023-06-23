@@ -8,6 +8,7 @@ import { useBill } from "components/db/bills"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
+  console.log(url)
   return (
     <Link href={url}>
       <a style={{ all: "unset", cursor: "pointer" }} className="w-100">
@@ -36,7 +37,10 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         marginBottom: "0.75rem"
       }}
     >
-      <span>Written by {hit.authorDisplayName}</span>
+      <span>
+        Written by {hit.authorDisplayName}
+        -- {hit.authorRole}
+      </span>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ marginRight: "10px" }}>
@@ -52,11 +56,11 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         </div>
         <div style={{ width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-            <Link href={maple.bill({ court: hit.court, id: hit.billId })}>
-              <a>
-                <h2>Bill #{formatBillId(hit.billId)}</h2>
-              </a>
-            </Link>
+            {/* <Link href={maple.bill({ court: hit.court, id: hit.billId })}> */}
+            {/* <a> */}
+            <h2>Bill #{formatBillId(hit.billId)}</h2>
+            {/* </a> */}
+            {/* </Link> */}
             {committee && (
               <span
                 style={{
@@ -75,7 +79,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           </h6>
           <p>"{trimContent(hit.content, 500)}"</p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {hit.content.trim().length > 0 && <a className="w-20">Read More</a>}
+            {/* {hit.content.trim().length > 0 && <a className="w-20">Read More</a>} */}
             <span style={{ marginLeft: "auto" }}>{`Posted ${date}`}</span>
           </div>
         </div>
