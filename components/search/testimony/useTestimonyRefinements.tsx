@@ -28,7 +28,7 @@ export const useTestimonyRefinements = () => {
       attribute: "authorRole",
       ...baseProps,
       searchable: false,
-      hidden: true,       
+      hidden: true
     })
   ]
 
