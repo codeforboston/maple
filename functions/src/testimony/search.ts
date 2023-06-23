@@ -17,6 +17,7 @@ export const {
       { name: "position", type: "string", facet: true },
       { name: "content", type: "string", facet: false },
       { name: "authorUid", type: "string", facet: false },
+      { name: "authorRole", type: "string", facet: true },
       { name: "authorDisplayName", type: "string", facet: true },
       { name: "version", type: "int32", facet: false },
       { name: "publishedAt", type: "int64", facet: false }
