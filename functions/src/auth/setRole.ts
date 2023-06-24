@@ -26,6 +26,7 @@ export const setRole = async ({
   await auth.setCustomUserClaims(user.uid, claim)
 
   const profile = db.doc(`/profiles/${user.uid}`)
+  console.log((profile as Profile).role)
   const profileData = await profile.get().then(s => s.data())
   const currentProfile = Profile.Or(Undefined).check(profileData)
   const profileUpdate: Partial<Profile> = {
@@ -33,6 +34,7 @@ export const setRole = async ({
     public: isPublic(currentProfile, role)
   }
   await profile.set(profileUpdate, { merge: true })
+  console.log((profile as Profile).role)
 
   await updateTestimony(db, {
     uid: user.uid,
@@ -40,7 +42,6 @@ export const setRole = async ({
     role
   })
 }
-
 /**
  * Update all the user's published testimony with the new role value
  */

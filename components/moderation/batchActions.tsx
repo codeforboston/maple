@@ -1,20 +1,10 @@
 import { useAuth } from "components/auth"
-import { Button, Card, Col, Container, Table } from "components/bootstrap"
-import { Profile, getProfile } from "components/db"
-import { firestore } from "components/firebase"
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
-import React, { useEffect, useState } from "react"
-import { ZodError, z } from "zod"
-import { createAdmin, modifyAccount } from "./types"
+import { Button, Card, Col, Container } from "components/bootstrap"
 import { FirebaseError } from "firebase/app"
 import ErrorPage from "next/error"
+import React, { useEffect, useState } from "react"
+import { z } from "zod"
+import { createAdmin } from "./types"
 
 const email = z.string().email()
 type Email = z.infer<typeof email>
@@ -23,17 +13,14 @@ function validateIsEmail(input: string): input is Email {
   return z.string().email().safeParse(input).success
 }
 
-const upgradeToAdminByEmail = async (email: Email) => {
-  console.log("submitting " + email)
+function validateIsString(input: string): input is string {
+  return z.string().safeParse(input).success
+}
 
-  let uid: string
+const upgradeToAdminByUidOrEmail = async (input: string) => {
+  console.log("submitting " + input)
 
-  try {
-    uid = await getUidFromEmail(email)
-    await createAdmin({ uid })
-  } catch (e) {
-    throw new Error("user not found")
-  }
+  await createAdmin({ input })
 }
 
 export default function AccountActions() {
@@ -47,12 +34,16 @@ export default function AccountActions() {
     <Container fluid>
       <Col>
         <SingleChangeRole
-          executeChange={upgradeToAdminByEmail}
-          validateInput={validateIsEmail}
+          executeChange={upgradeToAdminByUidOrEmail}
+          validateInput={validateIsString}
           title={"Create Admin"}
-          instruction={"Enter user email"}
+          instruction={"Enter user uid"}
         />
       </Col>
+      {/* 
+      
+      disabled until I decide how to fetch the user/orgs
+      if we want to broaden modifyAccount to accept emails
       <Col>
         <ListChangeRoles
           executeChange={upgradeToOrgByEmails}
@@ -60,43 +51,52 @@ export default function AccountActions() {
           title="Upgrade to Org"
           instruction="Enter emails to upgrade to orgs"
         />
-      </Col>
+      </Col> */}
     </Container>
   )
 }
 
 type SingleChangeRoleProps = {
-  executeChange: <T extends string>(input: T) => Promise<void>
-  validateInput: (input: string) => boolean
   title: string
   instruction: string
+  validateInput: (input: string) => boolean
+  executeChange: <T extends string>(input: T) => Promise<void>
 }
 
 function SingleChangeRole({
-  executeChange,
-  validateInput,
   title,
-  instruction
+  instruction,
+  validateInput,
+  executeChange
 }: SingleChangeRoleProps) {
   const [input, setInput] = useState<string>()
-  const [error, setError] = useState<string>()
+  const [msg, setMsg] = useState<string>()
+  const [isError, setIsError] = useState<boolean>(false)
+
+  useEffect(() => {
+    setIsError(false)
+    setMsg("")
+  }, [])
 
   const onSubmit = (input: string) => {
     setInput(input)
-    console.log("submitting " + input)
+    setMsg("submitting " + input)
   }
 
   const clickHandler = async (e: React.MouseEvent) => {
-    if (!input) {
-      return
-    }
+    if (!input) return
+
     await executeChange(input)
-      .then(d => d)
+      .then(d => {
+        setIsError(false)
+        setMsg("success")
+      })
       .catch(e => {
+        setIsError(true)
         if (e instanceof FirebaseError) {
-          setError(e.message)
+          setMsg(e.code + " " + e.message)
         } else {
-          setError((e as object).toString())
+          setMsg((e as object).toString())
         }
       })
   }
@@ -109,12 +109,11 @@ function SingleChangeRole({
           <Card.Text className="m-2">{instruction}</Card.Text>
           <InputWithEnter validateInput={validateInput} submit={onSubmit} />
         </Card.Body>
+
         {input && <Card.Body>User: {input}</Card.Body>}
-        {error && (
-          <Card.Body className="border border-primary m-3 text-primary text-center">
-            error: {error}
-          </Card.Body>
-        )}
+
+        {msg && <MsgBox msg={msg} error={isError} />}
+
         <Card.Body className="my-3 d-flex justify-content-center">
           <Button
             onClick={clickHandler}
@@ -127,45 +126,6 @@ function SingleChangeRole({
       </Card>
     </Container>
   )
-}
-
-const getUidFromEmail = async (email: string): Promise<string> => {
-  const profilesRef = collection(firestore, "profiles")
-  const q = query(profilesRef, where("email", "==", email))
-  const querySnapShot = await getDocs(q)
-
-  if (querySnapShot.size === 0) {
-    throw Error("profile not found")
-  }
-  const uid = querySnapShot.docs[0].data().uid
-  return uid
-}
-
-const getUidsFromEmail = async (list: string[]): Promise<string[]> => {
-  const profilesRef = collection(firestore, "profiles")
-  const q = query(profilesRef, where("email", "in", list))
-  const querySnapShot = await getDocs(q)
-
-  if (querySnapShot.size === 0) {
-    throw Error("profile not found")
-  }
-
-  const uids = querySnapShot.docs.map(doc => {
-    return doc.exists() ? doc.data().uid : null
-  })
-
-  return uids.filter(d => d !== null)
-}
-
-const upgradeToOrgByEmails = async (list: string[]) => {
-  const uids = await getUidsFromEmail(list)
-  uids.forEach(uid => {
-    try {
-      modifyAccount({ uid, role: "organization" })
-    } catch (e) {
-      console.log(e)
-    }
-  })
 }
 
 type ListChangeRoleProps = {
@@ -225,6 +185,24 @@ export function ListChangeRoles({
   )
 }
 
+function MsgBox({ msg, error = true }: { msg: string; error: boolean }) {
+  return (
+    <Container>
+      <Card.Body
+        className={`my-3 d-flex justify-content-center ${
+          error
+            ? "border border-danger text-danger"
+            : "border border-secondary text-secondary"
+        }`}
+      >
+        {msg}
+      </Card.Body>
+    </Container>
+  )
+}
+
+const upgradeToOrgByEmails = async (list: string[]) => {}
+
 type InputWithEnterProps = {
   name?: string
   validateInput: (input: string) => boolean
@@ -281,53 +259,5 @@ function InputWithEnter({
       </div>
       <div className="flex text-danger">{error}</div>
     </Card.Body>
-  )
-}
-
-const getUserProfile = async (uid: string): Promise<Profile> => {
-  const profilesRef = collection(firestore, "profiles")
-  const profile = await getDoc(doc(profilesRef, uid))
-  if (!profile.exists) {
-    throw Error("profile not found")
-  }
-  return profile.data() as Profile
-}
-
-const getProfiles = async () => {
-  const profilesRef = collection(firestore, "profiles")
-  const snap = await getDocs(profilesRef)
-  return snap.docs.map(d => d.data() as Profile)
-}
-
-const ShowUsers = () => {
-  const [profiles, setProfiles] = useState<Profile[]>([])
-
-  useEffect(() => {
-    getProfiles().then(list => {
-      setProfiles(list)
-    })
-  }, [])
-
-  return (
-    <Card>
-      <Table>
-        <thead>
-          <tr>
-            <th>fullname</th>
-            <th>role</th>
-            <th>info</th>
-          </tr>
-        </thead>
-        <tbody>
-          {profiles.map((p, i) => (
-            <tr key={i}>
-              <td>{p.fullName}</td>
-              <td>{p.role}</td>
-              <td>{p.contactInfo?.publicEmail}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Card>
   )
 }

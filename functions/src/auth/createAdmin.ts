@@ -1,23 +1,42 @@
 import * as functions from "firebase-functions"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
+import { UserRecord } from "firebase-admin/auth"
 import { setRole } from "./setRole"
+import { z } from "zod"
 
 export const createAdmin = functions.https.onCall(async (data, ctx) => {
-  const uid = data.uid
-
   checkAuth(ctx, false)
   checkAdmin(ctx)
 
-  if (!uid || typeof uid !== "string") {
-    throw new functions.https.HttpsError("invalid-argument", "Invalid uid")
+  const { input } = data
+
+  let user: UserRecord
+
+  if (!input) {
+    throw new functions.https.HttpsError("invalid-argument", "Invalid input")
   }
 
-  try {
-    await setRole({ role: "admin", uid, auth, db })
-  } catch (e) {
-    throw new functions.https.HttpsError("internal", "setRole failed", e)
+  if (validateIsEmail(input)) {
+    try {
+      user = await auth.getUserByEmail(input)
+    } catch (e) {
+      throw new functions.https.HttpsError("invalid-argument", "Invalid email")
+    }
+  } else {
+    try {
+      user = await auth.getUser(input)
+    } catch (e) {
+      throw new functions.https.HttpsError("invalid-argument", "Invalid uid")
+    }
   }
 
-  return
+  return await setRole({ role: "admin", uid: user.uid, auth, db })
 })
+
+const email = z.string().email()
+type Email = z.infer<typeof email>
+
+function validateIsEmail(input: string): input is Email {
+  return z.string().email().safeParse(input).success
+}
