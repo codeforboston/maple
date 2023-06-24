@@ -64,6 +64,7 @@ export default createPage<{ params: IParams }>({
 
     return (
       <Tabs
+        className="quartered_learn_tabs"
         selectedTab={selectedTab?.index}
         onClick={(index: number) => {
           const [indexedTab] = tabs.filter(t => t.index === index)

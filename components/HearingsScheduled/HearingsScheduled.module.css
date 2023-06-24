@@ -151,7 +151,7 @@
 .noEvents {
   color: var(--bs-blue);
   width: 39.5em;
-  text-align: center;
+  /* text-align: center;*/
 }
 
 .loading {

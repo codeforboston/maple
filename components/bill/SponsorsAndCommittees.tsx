@@ -96,7 +96,7 @@ export const Sponsors: FC<BillProps> = ({ bill, className }) => {
           )}
 
           {bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
-            .slice(0, 2)
+            .slice(0, 1)
             .map(s => (
               <LabeledIcon
                 key={s.Id}

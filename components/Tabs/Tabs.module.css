@@ -1,5 +1,5 @@
 .CustomTab {
-  display: flex;
+  /* display: flex; */
   justify-content: space-between;
   margin: 3rem 7rem 2rem 7rem;
   font-family: Nunito;
@@ -7,10 +7,11 @@
 
 .Btn {
   border: none;
-  color: black;
+  color: rgb(48, 42, 55);
   background-color: transparent;
   font-size: 1.5rem;
   font-weight: 1000;
+  font-weight: bolder;
 }
 
 .activeBtn {

@@ -26,7 +26,7 @@ const Tabs: FC<TabsProps> = ({
   tabs = [],
   selectedTab = 0,
   onClick,
-  orientation = "horizontal"
+  orientation = "Vertical"
 }) => {
   const Panel = tabs && tabs.find(tab => tab.index === selectedTab)
 

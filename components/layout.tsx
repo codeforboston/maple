@@ -185,7 +185,7 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-          <div className={styles.navbar_box}>
+          <div className={styles.navbar_box} id="disappear">
             <Navbar.Brand className="mx-2 p-0">
               <Nav className="me-auto">
                 <Nav.Link href="/" className="p-0">

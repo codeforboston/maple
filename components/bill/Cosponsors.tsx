@@ -24,7 +24,7 @@ const CoSponsorRow = ({
       <tr>
         <td>{coSponsor.Name}</td>
         <td></td>
-        <td></td>
+        {/* <td></td> */}
       </tr>
     )
   } else {
