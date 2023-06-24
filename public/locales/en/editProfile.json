@@ -23,6 +23,11 @@
         "orgs": "Organizations You Follow",
         "unfollow": "Unfollow"
     },
+    "comfirmation":{
+        "unfollowMessage": "Are you sure you want to unfollow",
+        "yes": "Yes",
+        "no": "No"
+    },
     "legislator":{
         "representative": "Representative",
         "searchRepresentative": "Search your representative",

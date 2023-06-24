@@ -2,6 +2,7 @@ import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
+import { useTranslation } from "next-i18next"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   handleUnfollowClick: ({
@@ -39,6 +40,7 @@ export default function unfollowItem({
   uid,
   unfollowItem
 }: Props) {
+  const { t } = useTranslation("editProfile")
   const handleTopic = () => {
     if (unfollowItem?.type == "bill") {
       return ` Bill ${formatBillId(unfollowItem?.typeId)}`
@@ -46,7 +48,7 @@ export default function unfollowItem({
       return ` ${unfollowItem?.orgName}`
     }
   }
-
+  
   return (
     <Modal
       show={show}
@@ -55,11 +57,11 @@ export default function unfollowItem({
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="unfollow-modal">Unfollow</Modal.Title>
+        <Modal.Title id="unfollow-modal">{t("follow.unfollow")}</Modal.Title>
       </Modal.Header>
       <StyledModalBody className={`ms-auto me-auto`}>
         <Stack>
-          Are you sure you want to unfollow
+          {t("comfirmation.unfollowMessage")}
           {handleTopic()}?
         </Stack>
         <Stack className={`mt-4`} direction={`horizontal`}>
@@ -68,7 +70,7 @@ export default function unfollowItem({
                 btn btn-sm btn-outline-secondary ms-auto py-1`}
             onClick={onUnfollowClose}
           >
-            No
+            {t("comfirmation.no")}
           </StyledButton>
           <StyledButton
             className={`
@@ -77,7 +79,7 @@ export default function unfollowItem({
               handleUnfollowClick({ uid, unfollowItem })
             }}
           >
-            Yes
+            {t("comfirmation.yes")}
           </StyledButton>
         </Stack>
       </StyledModalBody>
