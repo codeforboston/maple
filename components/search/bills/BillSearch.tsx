@@ -7,18 +7,19 @@ import {
   useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
 import { currentGeneralCourt } from "functions/src/shared"
+import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row } from "../bootstrap"
+import { Col, Row } from "../../bootstrap"
+import { NoResults } from "../NoResults"
+import { ResultCount } from "../ResultCount"
+import { SearchContainer } from "../SearchContainer"
+import { SearchErrorBoundary } from "../SearchErrorBoundary"
+import { SortBy } from "../SortBy"
+import { getServerConfig } from "../common"
+import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
-import { NoResults } from "./NoResults"
-import { ResultCount } from "./ResultCount"
-import { SearchContainer } from "./SearchContainer"
-import { SearchErrorBoundary } from "./SearchErrorBoundary"
-import { SortBy, initialSortByValue } from "./SortBy"
-import { getServerConfig } from "./common"
-import { useRefinements } from "./useRefinements"
-import { useRouting } from "./useRouting"
+import { useBillRefinements } from "./useBillRefinements"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -27,6 +28,31 @@ const searchClient = new TypesenseInstantSearchAdapter({
     exclude_fields: "body"
   }
 }).searchClient
+
+const items: SortByItem[] = [
+  {
+    label: "Sort by Most Recent Testimony",
+    value: "bills/sort/latestTestimonyAt:desc"
+  },
+  {
+    label: "Sort by Relevance",
+    value: "bills/sort/_text_match:desc,testimonyCount:desc"
+  },
+  {
+    label: "Sort by Testimony Count",
+    value: "bills/sort/testimonyCount:desc"
+  },
+  {
+    label: "Sort by Cosponsor Count",
+    value: "bills/sort/cosponsorCount:desc"
+  },
+  {
+    label: "Sort by Next Hearing Date",
+    value: "bills/sort/nextHearingAt:desc"
+  }
+]
+
+export const initialSortByValue = items[0].value
 
 export const BillSearch = () => (
   <SearchErrorBoundary>
@@ -66,7 +92,7 @@ const useSearchStatus = () => {
 }
 
 const Layout = () => {
-  const refinements = useRefinements()
+  const refinements = useBillRefinements()
   const status = useSearchStatus()
   return (
     <SearchContainer>
@@ -78,7 +104,7 @@ const Layout = () => {
         <Col className="d-flex flex-column">
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
-            <SortBy />
+            <SortBy items={items} />
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements className="mt-2 mb-2" />

@@ -23,6 +23,7 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
 import { useTranslation } from "next-i18next"
+import { isPending } from "@reduxjs/toolkit"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -108,17 +109,12 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
+    },
+    {
+      title: "Following",
+      eventKey: "Following",
+      content: <FollowingTab className="mt-3 mb-4" />
     }
-    /*
-      remove comment when Notification Emails and related Follow functionality
-      is ready for production
-    */
-
-    // {
-    //   title: "Following",
-    //   eventKey: "Following",
-    //   content: <FollowingTab className="mt-3 mb-4" />
-    // }
   ]
 
   return (
