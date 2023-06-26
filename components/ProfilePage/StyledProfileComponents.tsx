@@ -92,12 +92,14 @@ export const StyledContainer = styled(Container)`
     width: 100%;
   }
 
-  .view-edit-profile {
+  .view-edit-profile,
+  .follow-button {
     width: 100%;
     text-decoration: none;
   }
 
-  .view-edit-profile > button {
+  .view-edit-profile > button,
+  .follow-button > button {
     width: 100%;
   }
 
@@ -122,6 +124,10 @@ export const StyledContainer = styled(Container)`
 
     .view-edit-profile > button {
       width: auto;
+    }
+
+    .follow-button > button {
+      width: unset;
     }
   }
 `
