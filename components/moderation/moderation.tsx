@@ -16,7 +16,7 @@ import { Route } from "react-router-dom"
 import * as fb from "components/firebase"
 import * as firestore from "firebase/firestore"
 import * as dbCalls from "./dataProviderDbCalls"
-import AccountActions from "./batchActions"
+import AccountActions from "./accountActions"
 
 const queryClient = new QueryClient()
 
