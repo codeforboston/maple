@@ -82,16 +82,16 @@ function FollowOrg({
   text: string
 }) {
   return (
-    <Col className={`d-flex w-100 justify-content-start`}>
+    <div>
       <div>
-        <div className="view-edit-profile">
+        <div className="follow-button">
           <Button onClick={clickFunction} className={`btn btn-lg py-1`}>
             {text}
             {checkmark}
           </Button>
         </div>
       </div>
-    </Col>
+    </div>
   )
 }
 
