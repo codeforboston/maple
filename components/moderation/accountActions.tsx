@@ -20,7 +20,14 @@ function validateIsString(input: string): input is string {
 const upgradeToAdminByUidOrEmail = async (input: string) => {
   console.log("submitting " + input)
 
-  await createAdmin({ input })
+  try {
+    await createAdmin({ input })
+  } catch (e) {
+    if(e instanceof FirebaseError) {
+      throw new Error(`${e.code} ${e.message}`)
+    }
+    throw new Error("internal error")
+  } 
 }
 
 export default function AccountActions() {
