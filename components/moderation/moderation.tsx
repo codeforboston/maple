@@ -24,7 +24,7 @@ const App = () => {
   const dataProvider = FirebaseDataProvider({}, { logging: false, app })
   const myDataProvider: DataProvider = {
     ...dataProvider,
-    getList: getMyListGroup,
+    // getList: getMyListGroup,
     getOne: getMyOne,
     getMany: getMyMany,
     create: createMyOne,

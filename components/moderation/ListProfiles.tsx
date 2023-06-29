@@ -31,7 +31,7 @@ const UserRoleToolBar = () => {
 
   const filterClick = (role?: Role) => {
     const newFilter = filterValues["role"] === role ? { role: "" } : { role }
-    setFilters(newFilter, [], true)
+    setFilters(newFilter, undefined, true)
     refresh()
   }
 
@@ -49,7 +49,7 @@ const UserRoleToolBar = () => {
       setFilters({ role: "pendingUpgrade" }, [])
 
     refetch()
-  }, [refetch, setFilters])
+  }, [filterValues, refetch, setFilters])
 
   return (
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
@@ -79,7 +79,7 @@ const UserRoleToolBar = () => {
         />{" "}
       </ButtonGroup>
 
-      {["development", "test"].includes(process.env.NODE_ENV) && (
+      {process.env.NODE_ENV === "test" && (
         <Button
           label="add fake org request"
           variant="outlined"
@@ -119,7 +119,10 @@ export const useTrackUpdatingRow = () => {
 
 export const ListProfiles = () => {
   const tracking = useTrackUpdatingRow()
-  return <InnerListProfiles tracking={tracking} />
+  return (
+    <List actions={<UserRoleToolBar />}> 
+    <InnerListProfiles tracking={tracking} />
+    </List>)
 }
 export function InnerListProfiles({
   tracking
@@ -143,7 +146,7 @@ export function InnerListProfiles({
   }
 
   return (
-    <List actions={<UserRoleToolBar />}>
+    // <List>
       <Datagrid
         rowStyle={record => ({
           backgroundColor:
@@ -190,6 +193,6 @@ export function InnerListProfiles({
           }}
         />
       </Datagrid>
-    </List>
+    // </List>
   )
 }
