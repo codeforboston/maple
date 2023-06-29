@@ -14,3 +14,7 @@ import { mapleClient } from "./maple-client"
 export async function upgradeOrganization(userId: string) {
   return mapleClient.patch(`/api/users/${userId}`, { role: "organization" })
 }
+
+export async function downgradeOrganization(userId: string) {
+  return mapleClient.patch(`/api/users/${userId}`, { role: "user" })
+}

@@ -29,7 +29,7 @@ export function ListReports() {
     <>
       <CreateMockReport />
       <List>
-        <Datagrid rowClick={"edit"}>
+        <Datagrid rowClick={"edit"} bulkActionButtons={false}>
           <TextField source="id" label="report id" />
           <TextField source="testimonyId" />
           <TextField

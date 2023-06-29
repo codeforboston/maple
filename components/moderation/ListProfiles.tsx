@@ -12,7 +12,7 @@ import {
   useRefresh
 } from "react-admin"
 
-import { upgradeOrganization } from "components/api/upgrade-org"
+import { downgradeOrganization, upgradeOrganization } from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
@@ -145,9 +145,17 @@ export function InnerListProfiles({
     refresh()
   }
 
+ 
+  async function handleReject(record: any) {
+    setIsJustUpdated(record.id)
+    await downgradeOrganization(record)
+    clearUpdating()
+    refresh()
+  }
+
   return (
-    // <List>
       <Datagrid
+        bulkActionButtons={false}
         rowStyle={record => ({
           backgroundColor:
             record.role === "pendingUpgrade"
@@ -182,17 +190,23 @@ export function InnerListProfiles({
         <WithRecord
           render={record => {
             return record.role === "pendingUpgrade" ? (
+              <>
               <Button
                 label="upgrade"
                 variant="outlined"
                 onClick={async () => await handleUpgrade(record)}
               />
+              <Button
+                label="reject"
+                variant="outlined"
+                onClick={async () => await handleReject(record)}
+              />
+              </>
             ) : (
               <div></div>
             )
           }}
         />
       </Datagrid>
-    // </List>
   )
 }
