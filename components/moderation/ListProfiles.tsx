@@ -45,9 +45,6 @@ const UserRoleToolBar = () => {
 
     await createFakeOrg({ uid, fullName, email })
 
-    if (filterValues["role"] === "organization")
-      setFilters({ role: "pendingUpgrade" }, [])
-
     refetch()
   }, [refetch, setFilters])
 
@@ -79,7 +76,7 @@ const UserRoleToolBar = () => {
         />{" "}
       </ButtonGroup>
 
-      {["development", "test"].includes(process.env.NODE_ENV) && (
+      {process.env.NODE_ENV === "test" && (
         <Button
           label="add fake org request"
           variant="outlined"

@@ -27,7 +27,7 @@ export function ListReports() {
   }, [])
   return (
     <>
-      <CreateMockReport />
+      {process.env.NODE_ENV === "test" && <CreateMockReport />}
       <List>
         <Datagrid rowClick={"edit"}>
           <TextField source="id" label="report id" />

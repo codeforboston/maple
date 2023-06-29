@@ -25,9 +25,16 @@ export const createAdmin = functions.https.onCall(async (data, ctx) => {
       user = await auth.getUser(input)
     }
 
+    console.log("claims", user.customClaims)
+    if (user.customClaims?.role === "admin") {
+      throw new functions.https.HttpsError("already-exists", "User is admin")
+    }
+
     console.log("setting role", user.uid)
-    return await setRole({ role: "admin", uid: user.uid, auth, db })
-      .then(d => d)
+    await setRole({ role: "admin", uid: user.uid, auth, db })
+      .then(d => {
+        return {status: "ok"}
+      })
       .catch(e => {
         console.log(e)
       })

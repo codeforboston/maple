@@ -86,8 +86,9 @@ function SingleChangeRole({
   }, [])
 
   const onSubmit = (input: string) => {
-    setInput(input)
     setMsg("submitting " + input)
+    setIsError(false)
+    setInput(input)
   }
 
   const clickHandler = async (e: React.MouseEvent) => {
