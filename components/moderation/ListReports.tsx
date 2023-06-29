@@ -27,7 +27,7 @@ export function ListReports() {
   }, [])
   return (
     <>
-      <CreateMockReport />
+      {process.env.NEXT_PUBLIC_USE_EMULATOR && <CreateMockReport />}
       <List>
         <Datagrid rowClick={"edit"} bulkActionButtons={false}>
           <TextField source="id" label="report id" />
