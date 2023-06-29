@@ -23,11 +23,11 @@ const upgradeToAdminByUidOrEmail = async (input: string) => {
   try {
     await createAdmin({ input })
   } catch (e) {
-    if(e instanceof FirebaseError) {
+    if (e instanceof FirebaseError) {
       throw new Error(`${e.code} ${e.message}`)
     }
     throw new Error("internal error")
-  } 
+  }
 }
 
 export default function AccountActions() {

@@ -33,7 +33,7 @@ export const createAdmin = functions.https.onCall(async (data, ctx) => {
     console.log("setting role", user.uid)
     await setRole({ role: "admin", uid: user.uid, auth, db })
       .then(d => {
-        return {status: "ok"}
+        return { status: "ok" }
       })
       .catch(e => {
         console.log(e)
