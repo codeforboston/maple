@@ -79,7 +79,7 @@ const UserRoleToolBar = () => {
         />{" "}
       </ButtonGroup>
 
-      {process.env.NODE_ENV === "test" && (
+      {process.env.NEXT_PUBLIC_USE_EMULATOR && (
         <Button
           label="add fake org request"
           variant="outlined"
@@ -145,11 +145,12 @@ export function InnerListProfiles({
     refresh()
   }
 
- 
   async function handleReject(record: any) {
     setIsJustUpdated(record.id)
-    await downgradeOrganization(record)
+    await downgradeOrganization(record.id)
     clearUpdating()
+    filterValues["role"] === "pendingUpgrade" &&
+    setFilters({}, [])
     refresh()
   }
 
@@ -190,7 +191,7 @@ export function InnerListProfiles({
         <WithRecord
           render={record => {
             return record.role === "pendingUpgrade" ? (
-              <>
+              <div className="d-flex gap-2">
               <Button
                 label="upgrade"
                 variant="outlined"
@@ -201,7 +202,7 @@ export function InnerListProfiles({
                 variant="outlined"
                 onClick={async () => await handleReject(record)}
               />
-              </>
+              </div>
             ) : (
               <div></div>
             )
