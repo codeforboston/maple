@@ -10,23 +10,48 @@ export const script: Script = async ({ db, auth }) => {
 
   for (const user of allUsers) {
     const subscriptionData = {
-      topicName: "bill-example-1",
+
+      topicName: "bill-exampleCourt-bill1",
       uid: user.uid,
       billLookup: {
-        billId: "example-1",
+        billId: "bill1",
         court: "exampleCourt",
       },
+      public: true,
       type: "bill",
     };
 
     await addTopicSubscription({ user, subscriptionData, db });
   }
 
+  // before adding the org subscription, create profile for org1
+  await db.collection("profiles").doc("nceMDdeA4zV9Qzo0rBOjoRrMjq53").set({
+    displayName: "Tammy's Tamales",
+    fullName: "Tammy's Tamales",
+    orgCategories: ["Agriculture", "Food"],
+    public: true,
+    representative: {
+      district: "7th Hampden",
+      id: "ALS1",
+      name: "Aaron Vega",
+    },
+    role: "organization",
+    senator: {
+      district: "Hampden",
+      id: "ALS2",
+      name: "James Welch",
+    }
+  });
+
   for (const user of allUsers) {
     const subscriptionData = {
-      topicName: "org-example-1",
+      topicName: "org-nceMDdeA4zV9Qzo0rBOjoRrMjq53",
       uid: user.uid,
-      orgId: "example-1",
+      orgLookup: {
+        profileId: "nceMDdeA4zV9Qzo0rBOjoRrMjq53",
+        fullName: "Tammy's Tamales",
+      },
+      public: true,
       type: "org",
     };
 

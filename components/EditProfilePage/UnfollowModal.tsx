@@ -39,11 +39,16 @@ export default function unfollowItem({
   uid,
   unfollowItem
 }: Props) {
+
   const handleTopic = () => {
-    if (unfollowItem?.type == "bill") {
-      return ` Bill ${formatBillId(unfollowItem?.typeId)}`
+
+    if (unfollow?.type == "bill") {
+      return ` Bill ${formatBillId(unfollow?.typeId)}`
+    } else if (unfollow?.type == "org") {
+      return ` ${unfollow?.orgName}`
     } else {
-      return ` ${unfollowItem?.orgName}`
+      return 'Undefined'
+
     }
   }
 

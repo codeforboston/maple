@@ -25,7 +25,8 @@ describe("useCreateUserWithEmailAndPassword", () => {
     expect(profile.data()).toMatchObject({
       fullName: info.fullName,
       role: "user",
-      public: false
+      public: false,
+      notificationFrequency: "daily",
     })
   })
 })

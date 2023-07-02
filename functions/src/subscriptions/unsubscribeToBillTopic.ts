@@ -12,15 +12,25 @@ export const unsubscribeToBillTopic = async ({
     billLookup: { billId: string; court: string };
     db: Database;
 }) => {
-    const uid = user.uid;
-    const topicName = `bill-${billLookup.court.toString()}-${billLookup.billId}`;
 
-    const subscriptionData: TopicSubscription = {
-        topicName,
-        uid,
-        type: "bill",
-        billLookup,
-  };
+    if (!billLookup || !billLookup.billId || !billLookup.court) {
+        throw new Error('billLookup, billId, or court is not defined');
+    }
+    try {
+        const uid = user.uid;
+        const topicName = `bill-${billLookup.court.toString()}-${billLookup.billId}`;
 
-    await removeTopicSubscription({ user, subscriptionData, db });
+        const subscriptionData: TopicSubscription = {
+            topicName,
+            uid,
+            type: "bill",
+            billLookup,
+        };
+
+        await removeTopicSubscription({ user, subscriptionData, db });
+    } catch (error) {
+        console.error('Error in unsubscribeToBillTopic:', error); 
+        throw error;
+    }
 };
+
