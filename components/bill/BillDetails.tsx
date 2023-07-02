@@ -11,7 +11,9 @@ import {
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Row } from "../bootstrap"
+import { useAuth } from "../auth"
+import { Button, Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
 import { Back } from "./Back"
@@ -24,11 +26,18 @@ import { LobbyingTable } from "./LobbyingTable"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { FollowButton } from "components/shared/FollowButton"
+import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
+`
+
+const StyledImage = styled(Image)`
+  width: 14.77px;
+  height: 12.66px;
+
+  margin-left: 8px;
 `
 
 export const BillDetails = ({ bill }: BillProps) => {
@@ -58,7 +67,9 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                <FollowButton bill={bill} />
+                <div>
+                  <FollowButton bill={bill} />
+                </div>
               </Col>
             </Row>
           </>
@@ -69,7 +80,9 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                <FollowButton bill={bill} />
+                <div>
+                  <FollowButton bill={bill} />
+                </div>
               </Styled>
             </Col>
           </Row>

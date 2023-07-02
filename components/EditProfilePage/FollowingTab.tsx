@@ -1,19 +1,20 @@
-import { useTranslation } from "next-i18next"
 import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState
-} from "react"
+  collection,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
 import { useBill, usePublicProfile } from "../db"
+import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
-import { deleteItem, FollowingQuery, Results } from "../shared/FollowingQueries"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 import UnfollowModal from "./UnfollowModal"
 import { useTranslation } from "next-i18next"
@@ -32,6 +33,13 @@ export const StyledHeader = styled(External)`
   text-decoration: none;
   font-weight: 1rem;
 `
+
+export type UnfollowModalConfig = {
+  court: number
+  orgName: string
+  type: string
+  typeId: string
+}
 
 export const Styled = styled.div`
   font-size: 2rem;
@@ -56,13 +64,16 @@ export const Styled = styled.div`
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
   const uid = user?.uid
-
-  const [unfollowItem, setUnfollowItem] = useState<UnfollowModalConfig | null>(
-    null
+  const subscriptionRef = collection(
+    firestore,
+    `/users/${uid}/activeTopicSubscriptions/`
   )
-  const close = () => setUnfollowItem(null)
+  const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
+  const close = () => setUnfollow(null)
 
+  let billList: string[] = []
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
+  let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
   const fetchFollowedItems = async () => {
@@ -145,7 +156,6 @@ export function FollowingTab({ className }: Props) {
       setUnfollow(null);
     }
   }
-
   const { t } = useTranslation("editProfile")
   
 
@@ -155,12 +165,12 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>{t("follow.bills")}</h2>
-            {billsFollowing.map((element: any) => (
+            {billsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
                 index = {index}
                 element={element}
-                setUnfollowItem={setUnfollowItem}
+                setUnfollow={setUnfollow}
                 type={"bill"}
               />
             ))}
@@ -171,12 +181,12 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {orgsFollowing.map((element: any) => (
+            {orgsFollowing.map((element: string, index: number) => (
               <FollowedItem
                 key={index}
                 index = {index}
                 element={element}
-                setUnfollowItem={setUnfollowItem}
+                setUnfollow={setUnfollow}
                 type={"org"}
               />
             ))}
@@ -186,10 +196,9 @@ export function FollowingTab({ className }: Props) {
       <UnfollowModal
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
-        onUnfollowClose={() => setUnfollowItem(null)}
-        show={unfollowItem ? true : false}
-        uid={uid}
-        unfollowItem={unfollowItem}
+        onUnfollowClose={() => setUnfollow(null)}
+        show={unfollow ? true : false}
+        unfollow={unfollow}
       />
     </>
   )
@@ -198,12 +207,12 @@ export function FollowingTab({ className }: Props) {
 function FollowedItem({
   index, 
   element,
-  setUnfollowItem,
+  setUnfollow,
   type
 }: {
   index: number 
   element: any
-  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
   const { result: profile, loading } = usePublicProfile(element.profileId)
@@ -231,7 +240,7 @@ function FollowedItem({
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollowItem={setUnfollowItem}
+                setUnfollow={setUnfollow}
                 type={type}
               />
             </Col>
@@ -257,7 +266,7 @@ function FollowedItem({
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollowItem={setUnfollowItem}
+                setUnfollow={setUnfollow}
                 type={type}
               />
             </Row>
@@ -272,7 +281,6 @@ function FollowedItem({
 function BillFollowingTitle({ court, id }: { court: number; id: string }) {
   const { loading, error, result: bill } = useBill(court, id)
   const { t } = useTranslation("editProfile")
-
   if (loading) {
     return (
       <Row>
@@ -290,12 +298,12 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 function UnfollowButton({
   fullName,
   element,
-  setUnfollowItem,
+  setUnfollow,
   type
 }: {
   fullName: string
   element: any
-  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
   const handleClick = () => {
@@ -304,14 +312,14 @@ function UnfollowButton({
       return;
     }
     if (type === "bill") {
-      setUnfollowItem({
+      setUnfollow({
         court: element?.court,
         orgName: "",
         type: "bill",
         typeId: element?.billId
       })
     } else {
-      setUnfollowItem({
+      setUnfollow({
         court: 0,
         orgName: element?.fullName,
         type: "org",
@@ -319,9 +327,7 @@ function UnfollowButton({
       })
     }
   }
-
   const { t } = useTranslation("editProfile")
-
   return (
     <Col
       onClick={() => {
