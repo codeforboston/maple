@@ -1,12 +1,18 @@
 import { Script } from "./types";
 import { listAllUsers } from "./list-all-users";
 import { addTopicSubscription } from "functions/src/subscriptions/addTopicSubscription";
+import * as admin from 'firebase-admin';
+import { Timestamp } from "../../functions/src/firebase"
 
 /** Seed users with activeTopicSubscriptions */
 export const script: Script = async ({ db, auth }) => {
   // For each user, add a topic subscription.
   const allUsers = await listAllUsers(auth);
   console.log(`Seeding ${allUsers.length} users with a topic subscription for bill-example-1 and org-example-1`);
+
+  const now = Timestamp.fromDate(new Date());
+  const monthAhead = new Date(now.toDate());
+    monthAhead.setMonth(monthAhead.getMonth() + 1);
 
   for (const user of allUsers) {
     const subscriptionData = {
@@ -18,6 +24,7 @@ export const script: Script = async ({ db, auth }) => {
       },
       public: true,
       type: "bill",
+      nextDigestAt: Timestamp.fromDate(monthAhead),
     };
 
     await addTopicSubscription({ user, subscriptionData, db });
@@ -52,6 +59,7 @@ export const script: Script = async ({ db, auth }) => {
       },
       public: true,
       type: "org",
+      nextDigestAt: Timestamp.fromDate(monthAhead),
     };
 
     await addTopicSubscription({ user, subscriptionData, db });

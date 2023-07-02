@@ -2,6 +2,7 @@ import { Database } from "../types";
 import { UserRecord } from "firebase-admin/auth";
 import { TopicSubscription } from "./types";
 import { removeTopicSubscription } from "./removeTopicSubscription";
+import { Timestamp } from "../firebase";
 
 export const unsubscribeToBillTopic = async ({
     user,
@@ -24,6 +25,8 @@ export const unsubscribeToBillTopic = async ({
             uid,
             type: "bill",
             billLookup,
+            nextDigestAt: Timestamp.fromDate(new Date()),
+
         };
 
         await removeTopicSubscription({ user, subscriptionData, db });

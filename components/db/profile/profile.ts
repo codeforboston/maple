@@ -1,6 +1,6 @@
-import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
+import { deleteField, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { useMemo, useReducer } from "react"
+import { useEffect, useMemo, useReducer, useState } from "react"
 import { useAsync } from "react-async-hook"
 import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
@@ -195,6 +195,26 @@ export function useProfile() {
     }),
     [callbacks, loading, profile, state]
   )
+}
+
+// useUser hook to fetch user data
+export function useUser () {
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(true)
+
+  const [userProfile, setUserProfile] = useState<Profile | undefined>()
+
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = onSnapshot(profileRef(user.uid), (doc) => {
+        if (doc.exists()) {
+          setUserProfile(doc.data() as Profile)
+        }
+        setLoading(false)
+      })
+      return () => unsubscribe()
+    }
+  })
 }
 
 function updateRepresentative(

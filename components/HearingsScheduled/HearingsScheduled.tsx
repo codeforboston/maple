@@ -14,7 +14,7 @@ export type EventData = {
   name: string
   id: number
   location: string
-  fullDate: Date
+  fullDate: Date // TODO: Could be a timestamp
   year: string
   month: string
   date: string

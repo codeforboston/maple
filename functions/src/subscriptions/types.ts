@@ -10,4 +10,5 @@ export interface TopicSubscription {
     profileId: string;
     fullName: string;
   }
+  nextDigestAt: any;
 }

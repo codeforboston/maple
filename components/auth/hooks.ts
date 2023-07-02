@@ -74,18 +74,23 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         await Promise.all([
           setProfile(credentials.user.uid, {
             fullName,
-            orgCategories: categories
+            orgCategories: categories,
+            notificationFrequency: "Monthly",
+            email: credentials.user.email,
           }),
           sendEmailVerification(credentials.user)
         ])
       } else {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            fullName
+            fullName,
+            notificationFrequency: "Monthly",
+            email: credentials.user.email,
           }),
           sendEmailVerification(credentials.user)
         ])
       }
+      
 
       return credentials
     }
@@ -123,9 +128,11 @@ export function useSignInWithPopUp() {
       await finishSignup({ requestedRole: "user" })
       await Promise.all([
         setProfile(credentials.user.uid, {
-          fullName: credentials.user.displayName ?? "New User"
+          fullName: credentials.user.displayName ?? "New User",
+          notificationFrequency: "Monthly",
+          email: credentials.user.email
         })
-      ])
+      ])      
     }
     console.log(credentials)
     return credentials
