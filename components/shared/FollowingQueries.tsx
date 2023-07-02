@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { Bill } from "../db"
 import { firestore } from "../firebase"
-import { UnfollowModalConfig } from "../EditProfilePage/UnfollowModal"
+import { UnfollowModalConfig } from "../EditProfilePage/FollowingTab"
 
 export type Results = { [key: string]: string[] }
 
