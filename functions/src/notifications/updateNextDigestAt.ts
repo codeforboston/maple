@@ -13,6 +13,12 @@ export const updateNextDigestAt = functions.firestore
 
         // Get the user's notificationFrequency
         const userDoc = await db.collection('users').doc(userId).get();
+
+        if (!userDoc.exists) {
+          console.error(`User document for user ${userId} does not exist`);
+          return;
+        }
+
         const user = userDoc.data();
 
         if (user) {

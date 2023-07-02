@@ -21,8 +21,8 @@ handlebars.registerHelper('isDefined', helpers.isDefined);
 function registerPartials(directoryPath: string) {
   const filenames = fs.readdirSync(directoryPath);
   
-  console.log(`DEBUG: Reading partials from: ${directoryPath}`);
-  console.log(`DEBUG: Found files: ${filenames.join(', ')}`);
+  // console.log(`DEBUG: Reading partials from: ${directoryPath}`);
+  // console.log(`DEBUG: Found files: ${filenames.join(', ')}`);
 
   filenames.forEach((filename) => {
       const partialPath = path.join(directoryPath, filename);
@@ -30,14 +30,14 @@ function registerPartials(directoryPath: string) {
 
       if (stats.isDirectory()) {
       // Recursive call for directories
-      console.log(`DEBUG: ${partialPath} is a directory. Recursing into directory.`);
+      // console.log(`DEBUG: ${partialPath} is a directory. Recursing into directory.`);
       registerPartials(partialPath);
       } else if (stats.isFile() && path.extname(filename) === '.handlebars') {
       // Register partials for .handlebars files
       const partialName = path.basename(filename, '.handlebars');
       const partialContent = fs.readFileSync(partialPath, 'utf8');
       handlebars.registerPartial(partialName, partialContent);
-      console.log(`DEBUG: Registered partial: ${partialName}`);
+      // console.log(`DEBUG: Registered partial: ${partialName}`);
       }
   });
 }
@@ -118,18 +118,17 @@ export const httpsDeliverNotifications = functions.https.onRequest(async (reques
       const htmlString = compiledTemplate({ digestData });
 
 
-      console.log(`DEBUG: Generated email: ${htmlString}`); // log the generated email
+      // console.log(`DEBUG: Generated email: ${htmlString}`); // log the generated email
 
       // Create an email document in /notifications_mails to queue up the send
       await db.collection('notifications_mails').add({
-        to: email,
+        to: [email],
         message: {
           subject: 'Your Notifications Digest',
+          text: 'This is the plaintext section of the email body.',  // You may want to change this to something more meaningful
           html: htmlString,
         },
-
         createdAt: Timestamp.now(),
-
       });
 
       console.log('DEBUG: Email document created in notifications_mails'); // log that the email document has been created

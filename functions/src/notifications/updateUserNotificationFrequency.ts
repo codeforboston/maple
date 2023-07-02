@@ -10,7 +10,7 @@ export const updateUserNotificationFrequency = functions.firestore
         const docBeforeChange = change.before.data();
         const docAfterChange = change.after.data();
 
-        console.log(`DEBUG: Function invoked for userId: ${userId}`); // Debug statement
+        // console.log(`DEBUG: Function invoked for userId: ${userId}`); // Debug statement
 
         const isAnUpdate =
             docBeforeChange &&
@@ -19,15 +19,15 @@ export const updateUserNotificationFrequency = functions.firestore
         const isACreation = docBeforeChange === undefined;
 
         if (!isAnUpdate && !isACreation) {
-            console.log(`DEBUG: Not an update or creation for userId: ${userId}, function will return without changes.`); // Debug statement
+            console.warn(`Not an update or creation for userId: ${userId}, function will return without changes.`);
             return null;
         }
 
         const notificationFrequency = docAfterChange.notificationFrequency;
         const email = docAfterChange.email;
 
-        console.log(`DEBUG: New notification frequency for userId: ${userId} is ${notificationFrequency}`); // Debug statement
-        console.log(`DEBUG: New email for userId: ${userId} is ${email}`); // Debug statement
+        // console.log(`DEBUG: New notification frequency for userId: ${userId} is ${notificationFrequency}`); // Debug statement
+        // console.log(`DEBUG: New email for userId: ${userId} is ${email}`); // Debug statement
 
         // Check if notification frequency is undefined
         if (!notificationFrequency) {
@@ -41,7 +41,7 @@ export const updateUserNotificationFrequency = functions.firestore
             email: email
         }, { merge: true });
 
-        console.log(`DEBUG: Updated notification frequency in users collection for userId: ${userId}`); // Debug statement
+        // console.log(`DEBUG: Updated notification frequency in users collection for userId: ${userId}`); // Debug statement
 
         // Update all documents in the 'activeTopicSubscriptions' sub-collection
         const now = Timestamp.now();
@@ -74,7 +74,7 @@ export const updateUserNotificationFrequency = functions.firestore
 
         await batch.commit();
 
-        console.log(`DEBUG: Batch update completed for userId: ${userId}`); // Debug statement
+        // console.log(`DEBUG: Batch update completed for userId: ${userId}`); // Debug statement
 
         return null; 
     });
