@@ -21,7 +21,9 @@
     "globals.d.ts",
     "index.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "components/layout.tsx",
+    "components/GlobalSearchBar.tsx"
   ],
   "exclude": ["node_modules", "analysis"]
 }

@@ -10,6 +10,7 @@ import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
+import { GlobalSearchBar } from "./GlobalSearchBar"
 
 export type LayoutProps = {
   title?: string
@@ -60,7 +61,7 @@ const TopNav: React.FC = () => {
       expand={false}
       expanded={isExpanded}
     >
-      <Container>
+      <Container fluid>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
             <Navbar expand={false}>
@@ -190,16 +191,11 @@ const TopNav: React.FC = () => {
                   )}
                 </Nav>
               </Navbar.Collapse>
+              <Image fluid src="/white-tree.svg" alt="logo"></Image>
             </Navbar>
           </div>
           <div className={styles.navbar_box}>
-            <Navbar.Brand className="mx-2 p-0">
-              <Nav className="me-auto">
-                <Nav.Link href="/" className="p-0">
-                  <Image fluid src="/nav-logo.svg" alt="logo"></Image>
-                </Nav.Link>
-              </Nav>
-            </Navbar.Brand>
+            <GlobalSearchBar></GlobalSearchBar>
           </div>
           <div className={styles.navbar_box}>
             <ProfileLink
