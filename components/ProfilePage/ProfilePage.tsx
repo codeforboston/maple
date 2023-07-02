@@ -42,7 +42,14 @@ export function ProfilePage(profileprops: {
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
+
   const { t } = useTranslation("profile")
+
+  const bannerContent = profile?.public ? (
+    <Banner> {t("content.publicProfile")} </Banner>
+  ) : (
+    <Banner> {t("content.privateProfile")} </Banner>
+  )
 
   return (
     <>
@@ -54,7 +61,7 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
-              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
+              {isUser && bannerContent}
               <StyledContainer>
                 <ProfileHeader
                   isUser={isUser}
