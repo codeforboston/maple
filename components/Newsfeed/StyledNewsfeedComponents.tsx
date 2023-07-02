@@ -14,7 +14,6 @@ export const HeaderTitle = styled(Col)`
   font-weight: 600;
   font-size: 61px;
   line-height: 125%;
-
   letter-spacing: -0.03em;
   color: #000000;
 `
@@ -25,19 +24,15 @@ export const StyledContainer = styled(Container)`
     padding: 0px;
     color: #12266f;
   }
-
   .checkbox input {
     height: 16px;
     width: 16px;
-
     background-color: transparent;
     border-color: #12266f;
   }
-
   .checkbox input:checked {
     background-color: #12266f;
   }
-
   @media (min-width: 768px) {
   }
 `

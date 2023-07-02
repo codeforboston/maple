@@ -10,6 +10,7 @@ export const script: Script = async ({ db, auth }) => {
 
   for (const user of allUsers) {
     const subscriptionData = {
+
       topicName: "bill-exampleCourt-bill1",
       uid: user.uid,
       billLookup: {

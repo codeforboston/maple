@@ -10,6 +10,7 @@
   },
   "links": {
     "browseBills": "Browse Bills",
+    "browseTestimony": "Browse Testimony",
     "accountSignIn": "Sign In",
     "accountSignOut": "Sign Out",
     "accountProfile": "Profile",

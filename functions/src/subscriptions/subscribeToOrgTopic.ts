@@ -5,6 +5,7 @@ import { addTopicSubscription } from "./addTopicSubscription";
 
 export const subscribeToOrgTopic = async ({
     user,
+
     orgLookup,
     db,
 }: {
@@ -19,8 +20,10 @@ export const subscribeToOrgTopic = async ({
         topicName,
         uid,
         type: "org",
+
         orgLookup,
     };
+
   
     await addTopicSubscription({ user, subscriptionData, db });
 };  

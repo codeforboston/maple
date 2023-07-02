@@ -1,15 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { firestore } from "../firebase"
 import { Col, Stack } from "../bootstrap"
-import { useState, useEffect } from "react"
 import {
   Header,
   ProfileDisplayName,
@@ -19,6 +8,7 @@ import {
 import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { Profile } from "../db"
+
 import { FollowButton } from "./FollowButton"
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useAuth } from "../auth"
@@ -27,6 +17,7 @@ export const ProfileHeader = ({
   isUser,
   isOrg,
   isMobile,
+
   uid,
   profileId,
   profile
@@ -34,13 +25,16 @@ export const ProfileHeader = ({
   isUser: boolean
   isOrg: boolean
   isMobile: boolean
+
   uid?: string
   profileId: string
   profile: Profile
+  profileid: string
 }) => {
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
+
   const topicName = `org-${profileId}`
   const subscriptionRef = collection(
     firestore,
@@ -139,10 +133,6 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                /*
-                 remove comment when Notification Emails and related Follow functionality
-                 is ready for production
-                */
 
                 <FollowButton
                   onFollowClick={() => handleFollowClick()}
@@ -151,7 +141,6 @@ export const ProfileHeader = ({
                   isFollowing={queryResult}
                 />
 
-                
               )}
             </>
           )}

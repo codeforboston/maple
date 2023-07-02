@@ -5,6 +5,7 @@ import { removeTopicSubscription } from "./removeTopicSubscription";
 
 export const unsubscribeToOrgTopic = async ({
     user,
+
     orgLookup,
     db,
 }: {
@@ -14,11 +15,11 @@ export const unsubscribeToOrgTopic = async ({
 }) => {
     const uid = user.uid;
     const topicName = `org-${orgLookup.profileId.toString()}`;
-  
     const subscriptionData: TopicSubscription = {
         topicName,
         uid,
         type: "org",
+
         orgLookup,
     };
   

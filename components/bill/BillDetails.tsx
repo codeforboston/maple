@@ -1,4 +1,5 @@
 import { flags } from "components/featureFlags"
+
 import {
   collection,
   deleteDoc,
@@ -11,9 +12,7 @@ import {
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { useAuth } from "../auth"
-import { Button, Col, Container, Image, Row } from "../bootstrap"
-import { firestore } from "../firebase"
+import { Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
 import { Back } from "./Back"
@@ -25,18 +24,11 @@ import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { useTranslation } from "next-i18next"
+import { FollowButton } from "components/shared/FollowButton"
 import { isCurrentCourt } from "functions/src/shared"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
-`
-
-const StyledImage = styled(Image)`
-  width: 14.77px;
-  height: 12.66px;
-
-  margin-left: 8px;
 `
 
 export const BillDetails = ({ bill }: BillProps) => {
@@ -66,14 +58,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch
-                   when we're ready to show Email related element to users
-                */
-                  className="d-none"
-                >
-                  <FollowButton bill={bill} />
-                </div>
+                <FollowButton bill={bill} />
               </Col>
             </Row>
           </>
@@ -84,14 +69,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch
-                   when we're ready to show Email related element to users
-                */
-                  className="d-none"
-                >
-                  <FollowButton bill={bill} />
-                </div>
+                <FollowButton bill={bill} />
               </Styled>
             </Col>
           </Row>

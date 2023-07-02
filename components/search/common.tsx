@@ -1,7 +1,7 @@
 import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 const devConfig = {
-  key: "mfylP3FhQBBAmUiDTWZ9PNbhzTtVID1W",
+  key: "Wk0K3oMIE1ERRmwX0uLgEk3gGEGKNuQe",
   url: "https://o89yhjf824.execute-api.us-east-1.amazonaws.com/search"
 }
 

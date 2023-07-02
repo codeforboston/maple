@@ -6,8 +6,10 @@ export interface TopicSubscription {
     billId: string;
     court: string;
   };
+
   orgLookup?: {
     profileId: string;
     fullName: string;
   }
+
 }

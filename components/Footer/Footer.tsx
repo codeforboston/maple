@@ -88,7 +88,7 @@ function MapleContainer() {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="/maple.png"
+          src="/maple-footer-white.png"
           alt="MAPLE logo"
           width={100}
         />
@@ -132,6 +132,9 @@ const BrowseLinks = () => {
       </NavLink> */}
       <NavLink className={styles.footerLink} href="/bills">
         {t("links.browseBills")}
+      </NavLink>
+      <NavLink className={styles.footerLink} href="/testimony">
+        {t("links.browseTestimony")}
       </NavLink>
     </>
   )

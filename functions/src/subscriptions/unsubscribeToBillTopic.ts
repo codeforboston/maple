@@ -12,6 +12,7 @@ export const unsubscribeToBillTopic = async ({
     billLookup: { billId: string; court: string };
     db: Database;
 }) => {
+
     if (!billLookup || !billLookup.billId || !billLookup.court) {
         throw new Error('billLookup, billId, or court is not defined');
     }
