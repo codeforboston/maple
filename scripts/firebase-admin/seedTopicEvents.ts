@@ -1,5 +1,6 @@
 import { Script } from "./types";
 import * as admin from 'firebase-admin';
+import { Timestamp } from "functions/src/firebase";
 
 /** Seed Firestore with topic events */
 export const script: Script = async ({ db }) => {
@@ -17,11 +18,11 @@ export const script: Script = async ({ db }) => {
       month: "05",
       date: "13",
       day: "Friday",
-      time: "10:00AM",
+      time: Timestamp.now(),
       relatedBills: [
         {
           court: "exampleCourt",
-          id: "example-1",
+          id: "bill1",
           name: "Example Bill 1",
         },
       ],
@@ -38,10 +39,10 @@ export const script: Script = async ({ db }) => {
       month: "06",
       date: "14",
       day: "Saturday",
-      time: "15:00PM",
+      time: Timestamp.now(),
       relatedOrgs: [
         {
-          id: "example-1",
+          id: "bill1",
           name: "Example Org 1",
         },
       ],
@@ -50,7 +51,7 @@ export const script: Script = async ({ db }) => {
 
   // Trigger the deliverNotifications function by creating a topic event
   async function createTopicEvent(topicEvent: any) {
-    await db.collection('/topicEvents').add(topicEvent);
+    await db.collection('/events').add(topicEvent);
   }
 
   // Run the script

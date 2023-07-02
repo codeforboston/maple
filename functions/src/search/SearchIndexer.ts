@@ -8,6 +8,7 @@ import { db, DocumentSnapshot, FieldValue, QuerySnapshot } from "../firebase"
 import { createClient } from "./client"
 import { CollectionConfig } from "./config"
 import { z } from "zod"
+import { Timestamp } from "../firebase"
 
 export const BackfillConfig = z.object({
   numBatches: z.number().positive().optional()
@@ -40,7 +41,7 @@ export class SearchIndexer {
       const upgradeDoc = db.doc(SearchIndexer.upgradePath(alias))
       await upgradeDoc.delete()
       await upgradeDoc.create({
-        createdAt: FieldValue.serverTimestamp(),
+        createdAt: Timestamp.now(),
         ...config
       })
     }

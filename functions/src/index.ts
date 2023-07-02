@@ -33,7 +33,12 @@ export {
 export {
   publishNotifications,
   cleanupNotifications,
-  deliverNotifications
+  deliverNotifications,
+  httpsPublishNotifications,
+  httpsDeliverNotifications,
+  httpsCleanupNotifications,
+  updateUserNotificationFrequency,
+  updateNextDigestAt,
 } from "./notifications"
 
 export {

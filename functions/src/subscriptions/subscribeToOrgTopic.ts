@@ -2,6 +2,7 @@ import { Database } from "../types";
 import { UserRecord } from "firebase-admin/auth";
 import { TopicSubscription } from "./types";
 import { addTopicSubscription } from "./addTopicSubscription";
+import { Timestamp } from "../firebase";
 
 export const subscribeToOrgTopic = async ({
     user,
@@ -22,6 +23,7 @@ export const subscribeToOrgTopic = async ({
         type: "org",
 
         orgLookup,
+        nextDigestAt: Timestamp.fromDate(new Date()),
     };
 
   

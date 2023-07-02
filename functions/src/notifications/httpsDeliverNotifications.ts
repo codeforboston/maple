@@ -1,9 +1,3 @@
-// Path: functions/src/shared/deliverNotifications.ts
-// Function that finds all notification feed documents that are ready to be digested and emails them to the user.
-// Creates an email document in /notifications_mails to queue up the send, which is done by email/emailDelivery.ts
-  
-// runs at least every 24 hours, but can be more or less frequent, depending on the value stored in the user's userNotificationFeed document, as well as a nextDigestTime value stored in the user's userNotificationFeed document.
-
 // Import necessary Firebase modules and libraries
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
@@ -26,6 +20,9 @@ handlebars.registerHelper('isDefined', helpers.isDefined);
 // Function to register partials for the email template
 function registerPartials(directoryPath: string) {
   const filenames = fs.readdirSync(directoryPath);
+  
+  console.log(`DEBUG: Reading partials from: ${directoryPath}`);
+  console.log(`DEBUG: Found files: ${filenames.join(', ')}`);
 
   filenames.forEach((filename) => {
       const partialPath = path.join(directoryPath, filename);
@@ -33,20 +30,23 @@ function registerPartials(directoryPath: string) {
 
       if (stats.isDirectory()) {
       // Recursive call for directories
+      console.log(`DEBUG: ${partialPath} is a directory. Recursing into directory.`);
       registerPartials(partialPath);
       } else if (stats.isFile() && path.extname(filename) === '.handlebars') {
       // Register partials for .handlebars files
       const partialName = path.basename(filename, '.handlebars');
       const partialContent = fs.readFileSync(partialPath, 'utf8');
       handlebars.registerPartial(partialName, partialContent);
+      console.log(`DEBUG: Registered partial: ${partialName}`);
       }
   });
 }
 
+
 // Define the deliverNotifications function
-export const deliverNotifications = functions.pubsub
-  .schedule('every 24 hours')
-  .onRun(async (context) => {
+export const httpsDeliverNotifications = functions.https.onRequest(async (request, response) => {
+    try {
+      console.log('httpDeliverNotifications triggered');
 
       // Get the current timestamp
       const now = Timestamp.fromDate(new Date());
@@ -107,9 +107,13 @@ export const deliverNotifications = functions.pubsub
       const partialsDir = '/app/functions/lib/email/partials/';
       registerPartials(partialsDir);
 
+      console.log("DEBUG: Working directory: ", process.cwd());
+      console.log("DEBUG: Digest template path: ", path.resolve('/app/functions/lib/email/digestEmail.handlebars'));
+
+
       // Render the email template using the digest data
       const emailTemplate = '/app/functions/lib/email/digestEmail.handlebars'; 
-      const templateSource = fs.readFileSync(path.join(__dirname, emailTemplate), 'utf8');
+      const templateSource = fs.readFileSync(emailTemplate, 'utf8');
       const compiledTemplate = handlebars.compile(templateSource);
       const htmlString = compiledTemplate({ digestData });
 
@@ -128,6 +132,9 @@ export const deliverNotifications = functions.pubsub
 
       });
 
+      console.log('DEBUG: Email document created in notifications_mails'); // log that the email document has been created
+
+
       // Mark the notifications as delivered
       const updatePromises = notificationsSnapshot.docs.map((notificationDoc) =>
         notificationDoc.ref.update({ delivered: true }),
@@ -136,27 +143,25 @@ export const deliverNotifications = functions.pubsub
 
       // Update nextDigestAt timestamp for the current feed
       let nextDigestAt;
-
-      // Get the amount of milliseconds for the notificationFrequency
       switch (notificationFrequency) {
-        case "Daily":
-          nextDigestAt = Timestamp.fromMillis(now.toMillis() + 24 * 60 * 60 * 1000);
-          break;
-        case "Weekly":
-          nextDigestAt = Timestamp.fromMillis(now.toMillis() + 7 * 24 * 60 * 60 * 1000);
-          break;
-        case "Monthly":
-          const monthAhead = new Date(now.toDate());
-          monthAhead.setMonth(monthAhead.getMonth() + 1);
-          nextDigestAt = Timestamp.fromDate(monthAhead);
-          break;
-        case "None":
-          nextDigestAt = null;
-          break;
-        default:
-          console.error(`Unknown notification frequency: ${notificationFrequency}`);
-          break;
-      }
+          case "Daily":
+            nextDigestAt = Timestamp.fromMillis(now.toMillis() + 24 * 60 * 60 * 1000);
+            break;
+          case "Weekly":
+            nextDigestAt = Timestamp.fromMillis(now.toMillis() + 7 * 24 * 60 * 60 * 1000);
+            break;
+          case "Monthly":
+            const monthAhead = new Date(now.toDate());
+            monthAhead.setMonth(monthAhead.getMonth() + 1);
+            nextDigestAt = Timestamp.fromDate(monthAhead);
+            break;
+          case "None":
+            nextDigestAt = null;
+            break;
+          default:
+            console.error(`Unknown notification frequency: ${notificationFrequency}`);
+            break;
+        }
 
       // console.log(`DEBUG: nextDigestAt: ${nextDigestAt}`); // log nextDigestAt
       
@@ -164,6 +169,14 @@ export const deliverNotifications = functions.pubsub
       
     });
 
-    // Wait for all email documents to be created
     await Promise.all(emailPromises);
-  });
+
+    console.log('DEBUG: deliverNotifications completed');
+    
+    response.status(200).send('Successfully delivered notifications');
+  } catch (error) {
+    console.error('Error in deliverNotifications:', error);
+    response.status(500).send('Internal server error');
+  }
+    
+});

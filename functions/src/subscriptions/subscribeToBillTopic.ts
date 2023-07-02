@@ -2,6 +2,7 @@ import { Database } from "../types";
 import { UserRecord } from "firebase-admin/auth";
 import { TopicSubscription } from "./types";
 import { addTopicSubscription } from "./addTopicSubscription";
+import { Timestamp } from "../firebase";
 
 export const subscribeToBillTopic = async ({
     user,
@@ -20,6 +21,7 @@ export const subscribeToBillTopic = async ({
         uid,
         type: "bill",
         billLookup,
+        nextDigestAt: Timestamp.fromDate(new Date()),
   };
 
     await addTopicSubscription({ user, subscriptionData, db });
