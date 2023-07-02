@@ -119,5 +119,16 @@ services:
       TYPESENSE_API_URL: "http://firebase:8108"
       TYPESENSE_API_KEY: "test-api-key"
 
+  copy-handlebars:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.firebase
+    command: yarn copy-handlebars
+    depends_on:
+      - firebase
+    volumes:
+      - ..:/app
+
+
 volumes:
   search: {}

@@ -1,0 +1,1 @@
+// STUB: Fill in notificationFrequency value for existing users

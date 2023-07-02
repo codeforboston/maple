@@ -12,7 +12,7 @@ export const httpsCleanupNotifications = functions.https.onRequest(async (reques
       console.log('httpCleanupNotifications triggered');
 
       // Define the time threshold for old notifications, topic events, and email documents
-      const retentionPeriodDays = 60; // Adjust this value as needed
+      const retentionPeriodDays = 65; // Adjust this value as needed
       const threshold = Timestamp.fromMillis(
         Date.now() - retentionPeriodDays * 24 * 60 * 60 * 1000,
       );

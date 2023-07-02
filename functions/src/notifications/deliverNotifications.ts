@@ -59,7 +59,7 @@ export const deliverNotifications = functions.pubsub
         .where('nextDigestAt', '>', now)
         .get();
     
-    console.log(`DEBUG: Number of subscriptions to process: ${subscriptionSnapshot.size}`); // log the size of feedsSnapshot
+    // console.log(`DEBUG: Number of subscriptions to process: ${subscriptionSnapshot.size}`); // log the size of feedsSnapshot
 
     // Iterate through each feed, load up all undelivered notification documents, and process them into a digest
     const emailPromises = subscriptionSnapshot.docs.map(async (doc) => {
@@ -117,15 +117,15 @@ export const deliverNotifications = functions.pubsub
 
       // Create an email document in /notifications_mails to queue up the send
       await db.collection('notifications_mails').add({
-        to: email,
+        to: [email],
         message: {
           subject: 'Your Notifications Digest',
+          text: 'This is the plaintext section of the email body.',  // You may want to change this to something more meaningful
           html: htmlString,
         },
-
         createdAt: Timestamp.now(),
-
       });
+
 
       // Mark the notifications as delivered
       const updatePromises = notificationsSnapshot.docs.map((notificationDoc) =>

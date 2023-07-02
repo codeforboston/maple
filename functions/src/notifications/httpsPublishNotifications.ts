@@ -11,13 +11,13 @@ import {Timestamp} from '../firebase'
 // Get a reference to the Firestore database
 const db = admin.firestore();
 
-console.log('DEBUG: publishNotifications.ts loaded');
+// console.log('DEBUG: publishNotifications.ts loaded');
 const createNotificationFields = (topicEvent: { [x: string]: any; name?: any; id?: any; time?: any; }, entity: { court: any; id: string; name: string; }, type: string) => {
   let topicName = '';
   let header = '';
   let court = null;
 
-  console.log('DEBUG: topicEvent:', topicEvent);
+  // console.log('DEBUG: topicEvent:', topicEvent);
   switch (type) {
     case 'bill':
       topicName = `bill-${entity.court}-${entity.id}`;
@@ -77,7 +77,7 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
         return;
       }
 
-      console.log('DEBUG: topicEvent:', topicEvent);
+      // console.log('DEBUG: topicEvent:', topicEvent);
 
       // Extract related Bill or Org data from the topic event
       const { relatedBills, relatedOrgs } = topicEvent;
@@ -160,7 +160,7 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
     // Wait for all notification documents to be created
     await Promise.all(notificationPromises);
 
-    console.log('DEBUG: publishNotifications completed');
+    // console.log('DEBUG: publishNotifications completed');
 
     response.status(200).send('Successfully published notifications');
   } catch (error) {
