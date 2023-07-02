@@ -3,6 +3,7 @@
 _Add a short summary of the changes, and a reference to the original issue using `#` and the issue number, like #1_
 
 # Checklist
+
 - [ ] On the frontend, I've made my strings translate-able.
 - [ ] If I've added shared components, I've added a storybook story.
 - [ ] I've made pages responsive and look good on mobile.

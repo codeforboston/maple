@@ -10,10 +10,7 @@ const config = {
   eslint: {
     dirs: ["pages", "components", "functions/src", "tests", "analysis"]
   },
-  i18n: i18Config.i18n, 
-  resolve: {
-    fallback: {fs: false}
-  }
+  i18n: i18Config.i18n
 }
 
 /** @type {import('next').NextConfig} */
