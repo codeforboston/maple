@@ -12,7 +12,10 @@ import {
   useRefresh
 } from "react-admin"
 
-import { downgradeOrganization, upgradeOrganization } from "components/api/upgrade-org"
+import {
+  downgradeOrganization,
+  upgradeOrganization
+} from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
@@ -120,9 +123,10 @@ export const useTrackUpdatingRow = () => {
 export const ListProfiles = () => {
   const tracking = useTrackUpdatingRow()
   return (
-    <List actions={<UserRoleToolBar />}> 
-    <InnerListProfiles tracking={tracking} />
-    </List>)
+    <List actions={<UserRoleToolBar />}>
+      <InnerListProfiles tracking={tracking} />
+    </List>
+  )
 }
 export function InnerListProfiles({
   tracking
@@ -149,49 +153,48 @@ export function InnerListProfiles({
     setIsJustUpdated(record.id)
     await downgradeOrganization(record.id)
     clearUpdating()
-    filterValues["role"] === "pendingUpgrade" &&
-    setFilters({}, [])
+    filterValues["role"] === "pendingUpgrade" && setFilters({}, [])
     refresh()
   }
 
   return (
-      <Datagrid
-        bulkActionButtons={false}
-        rowStyle={record => ({
-          backgroundColor:
-            record.role === "pendingUpgrade"
-              ? highlightPending
-              : record.id === getJustUpdated()
-              ? highlightRecent
-              : "",
-          animationName: record.id === getJustUpdated() ? "fadeOut" : "",
-          animationDelay: "2s",
-          animationDuration: "2s",
-          animationFillMode: "forwards"
-        })}
-      >
-        <TextField source="fullName" label="Organization" />
-        <TextField source="contact.email" label="email" />
-        <TextField source="contact.phoneNumber" label="phone" />
+    <Datagrid
+      bulkActionButtons={false}
+      rowStyle={record => ({
+        backgroundColor:
+          record.role === "pendingUpgrade"
+            ? highlightPending
+            : record.id === getJustUpdated()
+            ? highlightRecent
+            : "",
+        animationName: record.id === getJustUpdated() ? "fadeOut" : "",
+        animationDelay: "2s",
+        animationDuration: "2s",
+        animationFillMode: "forwards"
+      })}
+    >
+      <TextField source="fullName" label="Organization" />
+      <TextField source="contact.email" label="email" />
+      <TextField source="contact.phoneNumber" label="phone" />
 
-        <TextField source="contact.website" label="website" />
-        <WithRecord
-          render={(record: Profile & RaRecord) => {
-            return (
-              <>
-                <div>{record.about}</div>
-                <Internal href={`/profile?id=${record.id}`}>
-                  view profile
-                </Internal>
-              </>
-            )
-          }}
-        />
-        <TextField source="role" />
-        <WithRecord
-          render={record => {
-            return record.role === "pendingUpgrade" ? (
-              <div className="d-flex gap-2">
+      <TextField source="contact.website" label="website" />
+      <WithRecord
+        render={(record: Profile & RaRecord) => {
+          return (
+            <>
+              <div>{record.about}</div>
+              <Internal href={`/profile?id=${record.id}`}>
+                view profile
+              </Internal>
+            </>
+          )
+        }}
+      />
+      <TextField source="role" />
+      <WithRecord
+        render={record => {
+          return record.role === "pendingUpgrade" ? (
+            <div className="d-flex gap-2">
               <Button
                 label="upgrade"
                 variant="outlined"
@@ -202,12 +205,12 @@ export function InnerListProfiles({
                 variant="outlined"
                 onClick={async () => await handleReject(record)}
               />
-              </div>
-            ) : (
-              <div></div>
-            )
-          }}
-        />
-      </Datagrid>
+            </div>
+          ) : (
+            <div></div>
+          )
+        }}
+      />
+    </Datagrid>
   )
 }
