@@ -60,6 +60,7 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
+              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
               {isUser && bannerContent}
               <StyledContainer>
                 <ProfileHeader
