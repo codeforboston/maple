@@ -8,8 +8,9 @@
     "editProfile": "Edit\u00A0Profile"
   },
   "content": {
-    "publicProfile": "Your profile is currently public. Others can view your profile page.",
-    "privateProfile": "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden.",
+    "viewingProfile": "Currently viewing your profile",
+    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
     "statePurpose": "State your purpose",
     "noLegislatorInfo": "No legislator information given"
     },
