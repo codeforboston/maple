@@ -2,14 +2,14 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import AuthModal from "./auth/AuthModal"
-import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
-import { useProfile } from "./db"
 import PageFooter from "./Footer/Footer"
-import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
+import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
+import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -82,6 +82,13 @@ const TopNav: React.FC = () => {
                     handleClick={closeNav}
                   >
                     Browse Bills
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/testimony"
+                    handleClick={closeNav}
+                  >
+                    Browse Testimony
                   </NavLink>
 
                   <NavDropdown className={"navLink-primary"} title={"Learn"}>

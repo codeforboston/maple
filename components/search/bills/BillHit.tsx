@@ -10,8 +10,8 @@ import { format, fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
-import { Card, Col } from "../bootstrap"
-import { formatBillId } from "../formatting"
+import { Card, Col } from "../../bootstrap"
+import { formatBillId } from "../../formatting"
 
 type BillRecord = {
   number: string
@@ -102,8 +102,7 @@ const StyledCard = styled(Card)`
 
 const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   return (
-    // remove visually-hidden tag once Production search server is sorted out
-    <div className="testimonyCount, visually-hidden">
+    <div className="testimonyCount">
       <FontAwesomeIcon className="endorse" icon={faCheckCircle} />
       {hit.endorseCount}
       <FontAwesomeIcon className="neutral" icon={faMinusCircle} />
