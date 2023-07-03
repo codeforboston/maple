@@ -13,11 +13,9 @@
   justify-content: space-between;
   width: 100%;
   padding: 8px 60px;
-  flex: 1 0 0;
 }
 
 .navbar_box {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;

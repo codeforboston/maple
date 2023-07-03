@@ -56,7 +56,7 @@ export function GlobalSearchBar() {
         // routing={}
       >
         <SearchContainer
-          style={{ width: "40vw", borderRadius: 80, overflow: "hidden" }}
+          style={{ width: "35vw", borderRadius: 80, overflow: "hidden" }}
         >
           <SearchBox placeholder="Search for organizations, bill numbers, bill names, or users" />
         </SearchContainer>
