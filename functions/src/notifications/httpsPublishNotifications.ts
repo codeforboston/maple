@@ -11,13 +11,11 @@ import {Timestamp} from '../firebase'
 // Get a reference to the Firestore database
 const db = admin.firestore();
 
-// console.log('DEBUG: publishNotifications.ts loaded');
 const createNotificationFields = (topicEvent: { [x: string]: any; name?: any; id?: any; time?: any; }, entity: { court: any; id: string; name: string; }, type: string) => {
   let topicName = '';
   let header = '';
   let court = null;
 
-  // console.log('DEBUG: topicEvent:', topicEvent);
   switch (type) {
     case 'bill':
       topicName = `bill-${entity.court}-${entity.id}`;
@@ -77,43 +75,29 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
         return;
       }
 
-      // console.log('DEBUG: topicEvent:', topicEvent);
-
       // Extract related Bill or Org data from the topic event
       const { relatedBills, relatedOrgs } = topicEvent;
-
-      console.log('DEBUG: relatedBills:', relatedBills);
-      console.log('DEBUG: relatedOrgs:', relatedOrgs);
 
       const notificationPromises: any[] = [];
 
       if (relatedBills) {
         await Promise.all(relatedBills.map(async (bill: { court: any; id: string; name: string; }) => {
-          // console.log('DEBUG: Processing bill:', bill);
       
           const notificationFields = createNotificationFields(topicEvent, bill, 'bill');
-      
-          // console.log('DEBUG: notificationFields:', notificationFields);
-      
+            
           const subscriptionsSnapshot = await db
             .collectionGroup('activeTopicSubscriptions')
             .where('topicName', '==', notificationFields.topicName)
             .get();
-      
-          // console.log('DEBUG: subscriptionsSnapshot:', subscriptionsSnapshot);
-      
+            
           subscriptionsSnapshot.docs.forEach((doc) => {
             const subscription = doc.data();
             const { uid } = subscription;
-      
-            // console.log('DEBUG: Processing subscription:', subscription);
-      
+            
             // Add the uid to the notification document
-            console.log('DEBUG: uid:', uid)
             notificationFields.uid = uid;
       
             // Create a notification document in the user's notification feed
-            console.log ("populating notification document")
             notificationPromises.push(
               db.collection(`users/${uid}/userNotificationFeed`).add(notificationFields)
             );
@@ -124,8 +108,7 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
       // If there are related orgs, create a notification document for each org subscription
       if (relatedOrgs) {
         await Promise.all(relatedOrgs.map(async (org: { court: any; id: string; name: string; }) => {
-          console.log('DEBUG: Processing org:', org);
-      
+
           const notificationFields = createNotificationFields(topicEvent, org, 'org');
       
           console.log('notificationFields:', notificationFields);
@@ -134,15 +117,11 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
             .collectionGroup('activeTopicSubscriptions')
             .where('topicName', '==', notificationFields.topicName)
             .get();
-          
-          // console.log('DEBUG: subscriptionsSnapshot:', subscriptionsSnapshot);
-      
+                
           subscriptionsSnapshot.docs.forEach((doc) => {
             const subscription = doc.data();
             const { uid } = subscription;
-      
-            // console.log('DEBUG: Processing subscription:', subscription);
-      
+            
             // Add the uid to the notification document
             notificationFields.uid = uid;
       
@@ -154,13 +133,8 @@ export const httpsPublishNotifications = functions.https.onRequest(async (reques
         }));
       }
       
-
-    console.log('DEBUG: Waiting for all notification documents to be created');
-
     // Wait for all notification documents to be created
     await Promise.all(notificationPromises);
-
-    // console.log('DEBUG: publishNotifications completed');
 
     response.status(200).send('Successfully published notifications');
   } catch (error) {

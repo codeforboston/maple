@@ -20,9 +20,6 @@ handlebars.registerHelper('isDefined', helpers.isDefined);
 // Function to register partials for the email template
 function registerPartials(directoryPath: string) {
   const filenames = fs.readdirSync(directoryPath);
-  
-  // console.log(`DEBUG: Reading partials from: ${directoryPath}`);
-  // console.log(`DEBUG: Found files: ${filenames.join(', ')}`);
 
   filenames.forEach((filename) => {
       const partialPath = path.join(directoryPath, filename);
@@ -30,14 +27,12 @@ function registerPartials(directoryPath: string) {
 
       if (stats.isDirectory()) {
       // Recursive call for directories
-      // console.log(`DEBUG: ${partialPath} is a directory. Recursing into directory.`);
       registerPartials(partialPath);
       } else if (stats.isFile() && path.extname(filename) === '.handlebars') {
       // Register partials for .handlebars files
       const partialName = path.basename(filename, '.handlebars');
       const partialContent = fs.readFileSync(partialPath, 'utf8');
       handlebars.registerPartial(partialName, partialContent);
-      // console.log(`DEBUG: Registered partial: ${partialName}`);
       }
   });
 }
@@ -46,21 +41,17 @@ function registerPartials(directoryPath: string) {
 // Define the deliverNotifications function
 export const httpsDeliverNotifications = functions.https.onRequest(async (request, response) => {
     try {
-      console.log('httpDeliverNotifications triggered');
 
       // Get the current timestamp
       const now = Timestamp.fromDate(new Date());
-      // console.log (`DEBUG: now: ${now.toDate()}`)
 
       // check if the nextDigestAt is less than the current timestamp, so that we know it's time to send the digest
-            // if nextDigestAt does not equal null, then the user has a notification digest scheduled
+      // if nextDigestAt does not equal null, then the user has a notification digest scheduled
       const subscriptionSnapshot = await db
         .collectionGroup('activeTopicSubscriptions')
-        .where('nextDigestAt', '>', now)
+        .where('nextDigestAt', '<', now)
         .get();
     
-    console.log(`DEBUG: Number of subscriptions to process: ${subscriptionSnapshot.size}`); // log the size of feedsSnapshot
-
     // Iterate through each feed, load up all undelivered notification documents, and process them into a digest
     const emailPromises = subscriptionSnapshot.docs.map(async (doc) => {
       const subscriptions = doc.data();
@@ -110,15 +101,11 @@ export const httpsDeliverNotifications = functions.https.onRequest(async (reques
       console.log("DEBUG: Working directory: ", process.cwd());
       console.log("DEBUG: Digest template path: ", path.resolve('/app/functions/lib/email/digestEmail.handlebars'));
 
-
       // Render the email template using the digest data
       const emailTemplate = '/app/functions/lib/email/digestEmail.handlebars'; 
       const templateSource = fs.readFileSync(emailTemplate, 'utf8');
       const compiledTemplate = handlebars.compile(templateSource);
       const htmlString = compiledTemplate({ digestData });
-
-
-      // console.log(`DEBUG: Generated email: ${htmlString}`); // log the generated email
 
       // Create an email document in /notifications_mails to queue up the send
       await db.collection('notifications_mails').add({
@@ -161,8 +148,6 @@ export const httpsDeliverNotifications = functions.https.onRequest(async (reques
             console.error(`Unknown notification frequency: ${notificationFrequency}`);
             break;
         }
-
-      // console.log(`DEBUG: nextDigestAt: ${nextDigestAt}`); // log nextDigestAt
       
       await doc.ref.update({ nextDigestAt });
       
