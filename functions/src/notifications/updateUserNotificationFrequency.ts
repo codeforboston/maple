@@ -10,8 +10,6 @@ export const updateUserNotificationFrequency = functions.firestore
         const docBeforeChange = change.before.data();
         const docAfterChange = change.after.data();
 
-        // console.log(`DEBUG: Function invoked for userId: ${userId}`); // Debug statement
-
         const isAnUpdate =
             docBeforeChange &&
             docBeforeChange.notificationFrequency !== docAfterChange.notificationFrequency;
@@ -26,9 +24,6 @@ export const updateUserNotificationFrequency = functions.firestore
         const notificationFrequency = docAfterChange.notificationFrequency;
         const email = docAfterChange.email;
 
-        // console.log(`DEBUG: New notification frequency for userId: ${userId} is ${notificationFrequency}`); // Debug statement
-        // console.log(`DEBUG: New email for userId: ${userId} is ${email}`); // Debug statement
-
         // Check if notification frequency is undefined
         if (!notificationFrequency) {
             console.log(`Notification frequency for user ${userId} is undefined.`);
@@ -40,8 +35,6 @@ export const updateUserNotificationFrequency = functions.firestore
             notificationFrequency: notificationFrequency,
             email: email
         }, { merge: true });
-
-        // console.log(`DEBUG: Updated notification frequency in users collection for userId: ${userId}`); // Debug statement
 
         // Update all documents in the 'activeTopicSubscriptions' sub-collection
         const now = Timestamp.now();
@@ -73,8 +66,6 @@ export const updateUserNotificationFrequency = functions.firestore
         });
 
         await batch.commit();
-
-        // console.log(`DEBUG: Batch update completed for userId: ${userId}`); // Debug statement
 
         return null; 
     });

@@ -13,9 +13,6 @@ export const unfollowBill = functions.https.onCall(async (data, context) => {
   const billLookup = data.billLookup;
   const db: Firestore = getFirestore();
 
-  // DEBUG: print contents of billLookup
-  // console.log(`DEBUG: billLookup contents: ${JSON.stringify(billLookup)}`);
-
   try {
     await unsubscribeToBillTopic({ user, billLookup, db });
     return { status: 'success', message: 'Bill subscription removed' };

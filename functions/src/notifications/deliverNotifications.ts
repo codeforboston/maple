@@ -50,17 +50,14 @@ export const deliverNotifications = functions.pubsub
 
       // Get the current timestamp
       const now = Timestamp.fromDate(new Date());
-      // console.log (`DEBUG: now: ${now.toDate()}`)
 
       // check if the nextDigestAt is less than the current timestamp, so that we know it's time to send the digest
-            // if nextDigestAt does not equal null, then the user has a notification digest scheduled
+      // if nextDigestAt does not equal null, then the user has a notification digest scheduled
       const subscriptionSnapshot = await db
         .collectionGroup('activeTopicSubscriptions')
-        .where('nextDigestAt', '>', now)
+        .where('nextDigestAt', '<', now)
         .get();
     
-    // console.log(`DEBUG: Number of subscriptions to process: ${subscriptionSnapshot.size}`); // log the size of feedsSnapshot
-
     // Iterate through each feed, load up all undelivered notification documents, and process them into a digest
     const emailPromises = subscriptionSnapshot.docs.map(async (doc) => {
       const subscriptions = doc.data();
@@ -112,9 +109,6 @@ export const deliverNotifications = functions.pubsub
       const compiledTemplate = handlebars.compile(templateSource);
       const htmlString = compiledTemplate({ digestData });
 
-
-      console.log(`DEBUG: Generated email: ${htmlString}`); // log the generated email
-
       // Create an email document in /notifications_mails to queue up the send
       await db.collection('notifications_mails').add({
         to: [email],
@@ -156,8 +150,6 @@ export const deliverNotifications = functions.pubsub
           console.error(`Unknown notification frequency: ${notificationFrequency}`);
           break;
       }
-
-      // console.log(`DEBUG: nextDigestAt: ${nextDigestAt}`); // log nextDigestAt
       
       await doc.ref.update({ nextDigestAt });
       
