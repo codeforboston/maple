@@ -12518,7 +12518,7 @@
   "resolved" "https://registry.npmjs.org/instantsearch.css/-/instantsearch.css-7.4.5.tgz"
   "version" "7.4.5"
 
-"instantsearch.js@^4.42.0", "instantsearch.js@^4.43.0", "instantsearch.js@4.56.3":
+"instantsearch.js@^4.42.0", "instantsearch.js@^4.43.0":
   "integrity" "sha512-ImMIMaqLL+n0PU3aQWaiX6TFg9h13ys4AY/NcZ4Ew7OVw20dzHYQeyCDZVdDJ52BHrO53fNZ7+omnG5ZF6v6xg=="
   "resolved" "https://registry.npmjs.org/instantsearch.js/-/instantsearch.js-4.56.3.tgz"
   "version" "4.56.3"
@@ -17914,15 +17914,6 @@
     "is-dom" "^1.0.0"
     "prop-types" "^15.0.0"
 
-"react-instantsearch-hooks-web@^6.45.0":
-  "integrity" "sha512-/VOnDoQbyL4rY8tYtnnr8vPKKTyTupZQ+K26GWspid1izlDY7KLWZvtvcdePTrv3DU5bQhSxgD6/3WUmUtiYQQ=="
-  "resolved" "https://registry.npmjs.org/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.45.0.tgz"
-  "version" "6.45.0"
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    "instantsearch.js" "4.56.3"
-    "react-instantsearch-hooks" "6.45.0"
-
 "react-instantsearch-hooks@6.29.0":
   "integrity" "sha512-F4kLBkhELffrT7vaYW5gpja2R6b3v7rreDpod9nQmyyRW0ww9nIkzx01ST/6lRcNatHOgvm+mjR+/Zc7/QIbcQ=="
   "resolved" "https://registry.npmjs.org/react-instantsearch-hooks/-/react-instantsearch-hooks-6.29.0.tgz"
@@ -17931,16 +17922,6 @@
     "@babel/runtime" "^7.1.2"
     "algoliasearch-helper" "^3.9.0"
     "instantsearch.js" "^4.42.0"
-    "use-sync-external-store" "^1.0.0"
-
-"react-instantsearch-hooks@6.45.0":
-  "integrity" "sha512-SjE3lhWA+1saajDJ1YULQ1n+Fo0g3lWhnKMAXYrF0p5COKeCbJns6CmIH2t42H3hoTcmQz0Qm0WDfLaRAjssPQ=="
-  "resolved" "https://registry.npmjs.org/react-instantsearch-hooks/-/react-instantsearch-hooks-6.45.0.tgz"
-  "version" "6.45.0"
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    "algoliasearch-helper" "^3.13.2"
-    "instantsearch.js" "4.56.3"
     "use-sync-external-store" "^1.0.0"
 
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", "react-is@^18.0.0", "react-is@^18.2.0", "react-is@>= 16.8.0":

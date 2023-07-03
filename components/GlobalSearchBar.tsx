@@ -9,7 +9,6 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row, Container } from "./bootstrap"
 import { NoResults } from "./search/NoResults"
 import { ResultCount } from "./search/ResultCount"
 import { SearchContainer } from "./search/SearchContainer"
@@ -17,7 +16,6 @@ import { SearchErrorBoundary } from "./search/SearchErrorBoundary"
 import { SortBy } from "./search/SortBy"
 import { getServerConfig } from "./search/common"
 import { useRouting } from "./search/useRouting"
-import styles from "./globalSearch.module.css"
 
 //modify query_by and exclude_fields when connecting to backend
 export function GlobalSearchBar() {
@@ -57,7 +55,9 @@ export function GlobalSearchBar() {
         indexName={initialSortByValue}
         // routing={}
       >
-        <SearchContainer style={{ width: "40vw" }}>
+        <SearchContainer
+          style={{ width: "40vw", borderRadius: 80, overflow: "hidden" }}
+        >
           <SearchBox placeholder="Search for organizations, bill numbers, bill names, or users" />
         </SearchContainer>
       </InstantSearch>

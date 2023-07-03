@@ -108,7 +108,6 @@
     "react-hook-form": "^7.33.1",
     "react-i18next": "^12.1.5",
     "react-inlinesvg": "^3.0.1",
-    "react-instantsearch-hooks-web": "^6.45.0",
     "react-leaflet-geojson-patterns": "^1.1.0",
     "react-markdown": "^8.0.4",
     "react-overlays": "^5.1.1",
