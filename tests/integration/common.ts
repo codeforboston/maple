@@ -45,9 +45,7 @@ export async function createNewBill(props?: Partial<Bill>) {
 }
 
 export async function deleteBill(id: string) {
-  await testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
-    .delete()
+  await testDb.doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`).delete()
 }
 
 export async function createNewOrg() {
@@ -64,7 +62,6 @@ export async function createNewOrg() {
 export async function deleteOrg(id: string) {
   await testDb.doc(`/profiles/${id}`).delete()
 }
-
 
 export const createFakeBill = () => createNewBill().then(b => b)
 
@@ -126,4 +123,3 @@ export const getUserData = (user: { uid: string }) =>
     .doc(`/users/${user.uid}`)
     .get()
     .then(d => d.data())
-

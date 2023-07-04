@@ -5,7 +5,7 @@ import styles from "./HearingsScheduled.module.css"
 import { useUpcomingEvents } from "../db/events"
 import { formatDate, numberToFullMonth } from "./dateUtils"
 import { useCalendarEvents } from "./calendarEvents"
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin"
 import { Timestamp } from "functions/src/firebase"
 
 export type EventData = {
@@ -26,12 +26,12 @@ export type EventData = {
 
 // types for Bills and Orgs
 export type relatedBill = {
-  id: string;
-  court: number;
+  id: string
+  court: number
 }
 
 export type relatedOrg = {
-  id: string;
+  id: string
 }
 
 /*

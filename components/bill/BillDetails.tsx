@@ -8,7 +8,7 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
@@ -128,10 +128,10 @@ const FollowButton = ({ bill }: BillProps) => {
   )
 
   const [queryResult, setQueryResult] = useState("")
-  const functions = getFunctions();
+  const functions = getFunctions()
 
-  const followBillFunction = httpsCallable(functions, 'followBill');
-  const unfollowBillFunction = httpsCallable(functions, 'unfollowBill');
+  const followBillFunction = httpsCallable(functions, "followBill")
+  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
 
   const billQuery = async () => {
     const q = query(
@@ -153,54 +153,53 @@ const FollowButton = ({ bill }: BillProps) => {
     try {
       // ensure user is not null
       if (!user) {
-        throw new Error("User not found");
+        throw new Error("User not found")
       }
-  
+
       const billLookup = {
         billId: billId,
         court: courtId
-      };
-  
+      }
+
       // get token
-      const token = await user.getIdToken();
-  
+      const token = await user.getIdToken()
+
       // use followBillFunction to follow bill
-      const response = await followBillFunction({ billLookup, token });
+      const response = await followBillFunction({ billLookup, token })
       // handle the response
       if (response.data) {
-        setQueryResult(topicName);
+        setQueryResult(topicName)
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
-  
+  }
+
   const handleUnfollowClick = async () => {
     try {
       // ensure user is not null
       if (!user) {
-        throw new Error("User not found");
+        throw new Error("User not found")
       }
-  
+
       const billLookup = {
         billId: billId,
         court: courtId
-      };
-  
+      }
+
       // get token
-      const token = await user.getIdToken();
-  
+      const token = await user.getIdToken()
+
       // use unfollowBillFunction to unfollow bill
-      const response = await unfollowBillFunction({ billLookup, token });
-  
+      const response = await unfollowBillFunction({ billLookup, token })
+
       if (response.data) {
-        setQueryResult("");
+        setQueryResult("")
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
-  
+  }
 
   return (
     <Button

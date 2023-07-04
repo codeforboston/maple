@@ -3,12 +3,12 @@ export function isDefined(v: unknown) {
 }
 
 export function toLowerCase(aString: unknown) {
-  if (typeof aString === 'string') {
-    console.log(`Attempting to convert to lowercase: ${aString}`);
+  if (typeof aString === "string") {
+    console.log(`Attempting to convert to lowercase: ${aString}`)
     return aString.toLowerCase()
   }
-  console.error(`toLowerCase received a non-string value: ${aString}`);
-  return undefined;
+  console.error(`toLowerCase received a non-string value: ${aString}`)
+  return undefined
 }
 
 export function noUpdatesFormat(aString: string) {

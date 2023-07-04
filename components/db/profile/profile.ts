@@ -1,4 +1,10 @@
-import { deleteField, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore"
+import {
+  deleteField,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc
+} from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useMemo, useReducer, useState } from "react"
 import { useAsync } from "react-async-hook"
@@ -198,7 +204,7 @@ export function useProfile() {
 }
 
 // useUser hook to fetch user data
-export function useUser () {
+export function useUser() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
 
@@ -206,7 +212,7 @@ export function useUser () {
 
   useEffect(() => {
     if (user) {
-      const unsubscribe = onSnapshot(profileRef(user.uid), (doc) => {
+      const unsubscribe = onSnapshot(profileRef(user.uid), doc => {
         if (doc.exists()) {
           setUserProfile(doc.data() as Profile)
         }

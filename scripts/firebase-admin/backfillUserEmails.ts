@@ -3,7 +3,7 @@ import { Auth } from "functions/src/types"
 import { Script } from "./types"
 import { listAllUsers } from "./list-all-users"
 
-/** Backfill the email field on user documents in Firestore. 
+/** Backfill the email field on user documents in Firestore.
  * If the email does not exist, set it.
  */
 export const script: Script = async ({ db, auth }) => {
@@ -25,20 +25,24 @@ export const script: Script = async ({ db, auth }) => {
       }
 
       // Get the user's document
-      const userDoc = db.collection('users').doc(user.uid)
+      const userDoc = db.collection("users").doc(user.uid)
       const docData = (await userDoc.get()).data() || {}
 
       // If the email is not set in the user's document, set it.
       if (!docData.email) {
         console.log(`Updating email for user ${user.uid}`)
-        writer.set(userDoc, { ...docData, email: existingEmail }, { merge: true })
+        writer.set(
+          userDoc,
+          { ...docData, email: existingEmail },
+          { merge: true }
+        )
       }
     } catch (error) {
       // Log the error and continue with the next user
       console.error(`Error updating email for user ${user.uid}: `, error)
     }
   }
-  
+
   await writer.close()
   console.log(`Completed updating emails`)
 }

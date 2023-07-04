@@ -76,7 +76,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
             fullName,
             orgCategories: categories,
             notificationFrequency: "Monthly",
-            email: credentials.user.email,
+            email: credentials.user.email
           }),
           sendEmailVerification(credentials.user)
         ])
@@ -85,12 +85,11 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
           setProfile(credentials.user.uid, {
             fullName,
             notificationFrequency: "Monthly",
-            email: credentials.user.email,
+            email: credentials.user.email
           }),
           sendEmailVerification(credentials.user)
         ])
       }
-      
 
       return credentials
     }
@@ -132,7 +131,7 @@ export function useSignInWithPopUp() {
           notificationFrequency: "Monthly",
           email: credentials.user.email
         })
-      ])      
+      ])
     }
     console.log(credentials)
     return credentials

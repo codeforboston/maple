@@ -1,27 +1,26 @@
-import { Database} from "../types";
-import { UserRecord } from "firebase-admin/auth";
-import { TopicSubscription } from "./types";
+import { Database } from "../types"
+import { UserRecord } from "firebase-admin/auth"
+import { TopicSubscription } from "./types"
 
 export const removeTopicSubscription = async ({
   user,
   subscriptionData,
-  db,
+  db
 }: {
-  user: UserRecord;
-  subscriptionData: TopicSubscription;
-  db: Database;
+  user: UserRecord
+  subscriptionData: TopicSubscription
+  db: Database
 }) => {
-  const uid = user.uid;
-  const topicName = subscriptionData.topicName;
+  const uid = user.uid
+  const topicName = subscriptionData.topicName
 
   // Remove the topic subscription from the user's activeTopicSubscriptions collection
   try {
     await db
       .collection(`/users/${uid}/activeTopicSubscriptions`)
       .doc(topicName)
-      .delete();
+      .delete()
   } catch (error: any) {
-    console.error('Error removing topic subscription: ', error);
+    console.error("Error removing topic subscription: ", error)
   }
-};
-
+}

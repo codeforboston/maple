@@ -20,7 +20,7 @@ import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { Profile } from "../db"
 import { FollowButton } from "./FollowButton"
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions"
 import { useAuth } from "../auth"
 
 export const ProfileHeader = ({
@@ -66,55 +66,55 @@ export const ProfileHeader = ({
 
   const { user } = useAuth()
 
-  const functions = getFunctions();
-  const followBillFunction = httpsCallable(functions, 'followBill');
-  const unfollowBillFunction = httpsCallable(functions, 'unfollowBill');
+  const functions = getFunctions()
+  const followBillFunction = httpsCallable(functions, "followBill")
+  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
 
   const handleFollowClick = async () => {
     // ensure user is not null
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("User not found")
     }
-    
+
     try {
       if (!uid) {
-        throw new Error("User not found");
+        throw new Error("User not found")
       }
       const topicLookup = {
         profileId: profileId,
         type: "org"
-      };
-      const token = await user.getIdToken();
-      const response = await followBillFunction({ topicLookup, token });
+      }
+      const token = await user.getIdToken()
+      const response = await followBillFunction({ topicLookup, token })
       if (response.data) {
-        setQueryResult(topicName);
+        setQueryResult(topicName)
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
   const handleUnfollowClick = async () => {
     // ensure user is not null
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("User not found")
     }
 
     try {
       if (!uid) {
-        throw new Error("User not found");
+        throw new Error("User not found")
       }
       const topicLookup = {
         profileId: profileId,
         type: "org"
-      };
-      const token = await user.getIdToken();
-      const response = await unfollowBillFunction({ topicLookup, token });
+      }
+      const token = await user.getIdToken()
+      const response = await unfollowBillFunction({ topicLookup, token })
       if (response.data) {
-        setQueryResult("");
+        setQueryResult("")
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
@@ -150,8 +150,6 @@ export const ProfileHeader = ({
                   isMobile={isMobile}
                   isFollowing={queryResult}
                 />
-
-                
               )}
             </>
           )}

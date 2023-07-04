@@ -25,14 +25,13 @@ export default function unfollow({
   show,
   unfollow
 }: Props) {
-
   const handleTopic = () => {
     if (unfollow?.type == "bill") {
       return ` Bill ${formatBillId(unfollow?.typeId)}`
     } else if (unfollow?.type == "org") {
       return ` ${unfollow?.orgName}`
     } else {
-      return 'Undefined'
+      return "Undefined"
     }
   }
 
