@@ -89,6 +89,7 @@ export const deliverNotifications = functions.pubsub
       // Get the undelivered notification documents
       const notificationsSnapshot = await db
         .collection(`users/${uid}/userNotificationFeed`)
+        .where('delivered', '==', false)
         .get();
 
       // Process notifications into a digest type

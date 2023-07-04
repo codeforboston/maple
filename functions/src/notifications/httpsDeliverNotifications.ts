@@ -83,6 +83,7 @@ export const httpsDeliverNotifications = functions.https.onRequest(async (reques
       // Get the undelivered notification documents
       const notificationsSnapshot = await db
         .collection(`users/${uid}/userNotificationFeed`)
+        .where('delivered', '==', false)
         .get();
 
       // Process notifications into a digest type

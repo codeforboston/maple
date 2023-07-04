@@ -43,6 +43,7 @@ const createNotificationFields = (topicEvent: { [x: string]: any; name?: any; id
       timestamp: topicEvent.time, 
       type,
       court,
+      delivered: false,
     },
     createdAt: Timestamp.now(),
   };
