@@ -1,15 +1,15 @@
 export interface TopicSubscription {
-  topicName: string;
-  uid: string;
-  type: string;
+  topicName: string
+  uid: string
+  type: string
   billLookup?: {
-    billId: string;
-    court: string;
-  };
+    billId: string
+    court: string
+  }
 
   orgLookup?: {
-    profileId: string;
-    fullName: string;
+    profileId: string
+    fullName: string
   }
-  nextDigestAt: any;
+  nextDigestAt: any
 }

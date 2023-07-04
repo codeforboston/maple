@@ -27,7 +27,9 @@ import { MemberContent } from "./members/types"
 function addCertificates() {
   const rootCas = createRootCas()
   // rootCas.addFile(__dirname + "/ssl/DigiCert TLS RSA SHA256 2020 CA1.pem")
-  rootCas.addFile(__dirname + "/ssl/DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem")
+  rootCas.addFile(
+    __dirname + "/ssl/DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem"
+  )
   require("https").globalAgent.options.ca = rootCas
 }
 

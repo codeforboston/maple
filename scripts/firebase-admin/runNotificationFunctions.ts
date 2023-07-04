@@ -1,20 +1,20 @@
 import axios from "axios"
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin"
 import { FunctionName } from "functions/src"
 import { uniq } from "lodash"
 import { z } from "zod"
 import { Script } from "./types"
 import { performance } from "perf_hooks"
 
-admin.initializeApp();
-const db = admin.firestore();
+admin.initializeApp()
+const db = admin.firestore()
 
 const notificationFunctions: {
   [K in FunctionName]?: K
 } = {
   httpsPublishNotifications: "httpsPublishNotifications",
   httpsDeliverNotifications: "httpsDeliverNotifications",
-  httpsCleanupNotifications: "httpsCleanupNotifications",
+  httpsCleanupNotifications: "httpsCleanupNotifications"
 }
 
 const Args = z.object({
@@ -46,12 +46,12 @@ export const script: Script = async ({ env, args }) => {
   const intervalMs = interval * 1e3
 
   // Fetch all events
-  const events = await db.collection('events').get();
+  const events = await db.collection("events").get()
 
   // Loop through the documents in the events collection
   for (const event of events.docs) {
     // Extract the id of the event
-    const topicEventId = event.id;
+    const topicEventId = event.id
 
     // Loop through each function name
     for (const target of targets) {

@@ -130,7 +130,7 @@ services:
       - ..:/app
 
   backfill-user-emails:
-    build: 
+    build:
       context: ..
       dockerfile: infra/Dockerfile.firebase
     command: yarn backfill-user-emails
@@ -140,7 +140,7 @@ services:
       - ..:/app
 
   backfill-user-nf:
-    build: 
+    build:
       context: ..
       dockerfile: infra/Dockerfile.firebase
     command: yarn backfill-user-nf

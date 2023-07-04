@@ -9,7 +9,7 @@
     "logs": "firebase functions:log",
     "test": "jest",
     "enable-cors-dev": "gsutil cors set cors.json gs://digital-testimony-dev.appspot.com",
-    "enable-cors-prod": "gsutil cors set cors.json gs://digital-testimony-prod.appspot.com" 
+    "enable-cors-prod": "gsutil cors set cors.json gs://digital-testimony-prod.appspot.com"
   },
   "engines": {
     "node": "16"

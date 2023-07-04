@@ -38,14 +38,14 @@ export {
   httpsDeliverNotifications,
   httpsCleanupNotifications,
   updateUserNotificationFrequency,
-  updateNextDigestAt,
+  updateNextDigestAt
 } from "./notifications"
 
 export {
   followBill,
   unfollowBill,
   followOrg,
-  unfollowOrg,
+  unfollowOrg
 } from "./subscriptions"
 
 export * from "./triggerPubsubFunction"

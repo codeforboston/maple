@@ -1,39 +1,36 @@
-import { Database } from "../types";
-import { UserRecord } from "firebase-admin/auth";
-import { TopicSubscription } from "./types";
-import { removeTopicSubscription } from "./removeTopicSubscription";
-import { Timestamp } from "../firebase";
+import { Database } from "../types"
+import { UserRecord } from "firebase-admin/auth"
+import { TopicSubscription } from "./types"
+import { removeTopicSubscription } from "./removeTopicSubscription"
+import { Timestamp } from "../firebase"
 
 export const unsubscribeToBillTopic = async ({
-    user,
-    billLookup,
-    db,
+  user,
+  billLookup,
+  db
 }: {
-    user: UserRecord;
-    billLookup: { billId: string; court: string };
-    db: Database;
+  user: UserRecord
+  billLookup: { billId: string; court: string }
+  db: Database
 }) => {
+  if (!billLookup || !billLookup.billId || !billLookup.court) {
+    throw new Error("billLookup, billId, or court is not defined")
+  }
+  try {
+    const uid = user.uid
+    const topicName = `bill-${billLookup.court.toString()}-${billLookup.billId}`
 
-    if (!billLookup || !billLookup.billId || !billLookup.court) {
-        throw new Error('billLookup, billId, or court is not defined');
+    const subscriptionData: TopicSubscription = {
+      topicName,
+      uid,
+      type: "bill",
+      billLookup,
+      nextDigestAt: Timestamp.fromDate(new Date())
     }
-    try {
-        const uid = user.uid;
-        const topicName = `bill-${billLookup.court.toString()}-${billLookup.billId}`;
 
-        const subscriptionData: TopicSubscription = {
-            topicName,
-            uid,
-            type: "bill",
-            billLookup,
-            nextDigestAt: Timestamp.fromDate(new Date()),
-
-        };
-
-        await removeTopicSubscription({ user, subscriptionData, db });
-    } catch (error) {
-        console.error('Error in unsubscribeToBillTopic:', error); 
-        throw error;
-    }
-};
-
+    await removeTopicSubscription({ user, subscriptionData, db })
+  } catch (error) {
+    console.error("Error in unsubscribeToBillTopic:", error)
+    throw error
+  }
+}
