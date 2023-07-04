@@ -61,16 +61,16 @@ describe("profile", () => {
     expect(profile.role).not.toBeDefined()
   })
 
-  it("Is not publicly readable by default", async () => {
+  it("Is publicly readable by default", async () => {
+    // this req was updated in June 2023
     const newUser = fakeUser()
     await testAuth.createUser(newUser)
     const profileRef = testDb.doc(`profiles/${newUser.uid}`)
     await profileRef.set(newUser)
-
+    await profileRef.update("public", true)
     await signInUser1()
-    await expectPermissionDenied(
-      getDoc(doc(firestore, `profiles/${newUser.uid}`))
-    )
+    const newProfile = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
+    expect(newProfile.exists).toBeTruthy()
 
     await signOut(auth)
   })
