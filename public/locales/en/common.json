@@ -11,5 +11,10 @@
     "following" : "Following",
     "followed" : "Followed"
   },
-  "orgs": "Organizations"
+  "orgs": "Organizations",
+  "newCommer" : "New to MAPLE",
+  "checkout": "Check out",
+  "calendar": "Our Calendar",
+  "joinTraining": "to see and join an upcoming training session!"
+
 }
