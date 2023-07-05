@@ -1,6 +1,7 @@
 import { FC } from "react"
 import styled from "styled-components"
 import { Card } from "../Card"
+import { useTranslation } from "next-i18next"
 
 export interface Organization {
   name: string
@@ -31,11 +32,13 @@ const Item = styled.div`
   padding: 9px 22px;
 `
 
-export const FollowingCard: FC<Props> = ({ organizations }) => (
+export const FollowingCard: FC<Props> = ({ organizations }) => {
+  const { t } = useTranslation("common");
+  return(
   <Container>
     <Card
-      header="Organizations"
-      subheader="Followed"
+      header={t("orgs").toString()}
+      subheader={t("button.followed").toString()}
       initialRowCount={7}
       items={organizations.map(({ name, iconSrc, href }) => {
         return (
@@ -55,4 +58,5 @@ export const FollowingCard: FC<Props> = ({ organizations }) => (
       })}
     />
   </Container>
-)
+  )
+}
