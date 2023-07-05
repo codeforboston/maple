@@ -1,7 +1,6 @@
 import {
   RefinementListUiComponent,
   useInstantSearch,
-  useRefinementListUiProps
 } from "@alexjball/react-instantsearch-hooks-web"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
