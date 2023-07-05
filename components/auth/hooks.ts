@@ -48,7 +48,6 @@ function useFirebaseFunction<Params, Result>(
 export type CreateUserWithEmailAndPasswordData = {
   email: string
   fullName: string
-  nickname: string
   password: string
   confirmedPassword: string
   orgCategory?: OrgCategory
@@ -59,7 +58,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
     async ({
       email,
       fullName,
-      nickname,
       password,
       orgCategory
     }: CreateUserWithEmailAndPasswordData) => {
@@ -68,14 +66,13 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
-      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
+      await finishSignup({ requestedRole: isOrg ? "pendingUpgrade" : "user" })
 
       const categories = orgCategory ? [orgCategory] : ""
 
       if (isOrg) {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            displayName: fullName,
             fullName,
             orgCategories: categories
           }),
@@ -84,7 +81,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       } else {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            displayName: nickname,
             fullName
           }),
           sendEmailVerification(credentials.user)
@@ -121,8 +117,17 @@ export function useSignInWithPopUp() {
   return useFirebaseFunction(async (provider: AuthProvider) => {
     const credentials = await signInWithPopup(auth, provider)
 
-    await finishSignup({ requestedRole: "user" })
-
-    await setProfile(credentials.user.uid, {})
+    const { claims } = await credentials.user.getIdTokenResult()
+    if (!claims?.role) {
+      // The user has not yet finished signing up
+      await finishSignup({ requestedRole: "user" })
+      await Promise.all([
+        setProfile(credentials.user.uid, {
+          fullName: credentials.user.displayName ?? "New User"
+        })
+      ])
+    }
+    console.log(credentials)
+    return credentials
   })
 }

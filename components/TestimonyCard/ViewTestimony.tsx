@@ -10,6 +10,8 @@ import { Card as BootstrapCard } from "react-bootstrap"
 import styled from "styled-components"
 import { PaginationButtons } from "components/table"
 import { Tabs, Tab } from "./Tabs"
+import { useTranslation } from "next-i18next"
+import { useAuth } from "../auth"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -23,7 +25,6 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    isUser?: boolean
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
@@ -32,12 +33,13 @@ const ViewTestimony = (
   const {
     items,
     setFilter,
-    isUser = false,
     onProfilePage = false,
     className,
     pagination,
     isOrg
   } = props
+
+  const { user } = useAuth()
 
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
@@ -83,6 +85,8 @@ const ViewTestimony = (
     />
   ]
 
+  const { t } = useTranslation("testimony")
+
   return (
     <Container>
       <MapleCard
@@ -105,7 +109,10 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <Col className="d-flex align-items-center">
-                      Showing 1 - {testimony.length} out of {testimony.length}
+                      {t("viewTestimony.showing1")}
+                      {testimony.length}
+                      {t("viewTestimony.outOf")}
+                      {testimony.length}
                     </Col>
                     <Col xs="auto">
                       <SortTestimonyDropDown
@@ -130,7 +137,7 @@ const ViewTestimony = (
                     <TestimonyItem
                       key={t.authorUid + t.billId}
                       testimony={t}
-                      isUser={isUser}
+                      isUser={t.authorUid === user?.uid}
                       onProfilePage={onProfilePage}
                     />
                   ))}
@@ -141,7 +148,8 @@ const ViewTestimony = (
               </div>
             ) : (
               <NoResults>
-                There are no testimonies <br />
+                {t("viewTestimony.noTestimonies")}
+                <br />
               </NoResults>
             )}
           </BootstrapCard.Body>

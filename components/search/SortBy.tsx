@@ -52,7 +52,7 @@ const StyledSelect = styled(Select)`
   }
 `
 
-export const SortBy = () => {
+export const SortBy = ({ items }: { items: SortByItem[] }) => {
   const sortBy = useSortBy({ items }),
     selected = items.find(i => i.value === sortBy.currentRefinement)!
   return (

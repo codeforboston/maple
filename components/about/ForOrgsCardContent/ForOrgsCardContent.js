@@ -130,7 +130,7 @@ const ChallengeCardContent = () => {
       <p>{t("challenge.p2")} </p>
       <p>{t("challenge.p3")} </p>
       <h3 className={`text-right fw-bold mt-3 ${styles.calltoaction}`}>
-        <a href="mailto:mapletestimony@gmail.com">
+        <a href="mailto:info@mapletestimony.org">
           {t("challenge.callToAction")}
         </a>
       </h3>

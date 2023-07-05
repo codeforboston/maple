@@ -88,7 +88,7 @@ function MapleContainer() {
       <Row style={{ marginTop: 10 }}>
         <Image
           className="bg-transparent"
-          src="/maple.png"
+          src="/maple-footer-white.png"
           alt="MAPLE logo"
           width={100}
         />
@@ -107,6 +107,18 @@ const ResourcesLinks = () => {
       >
         {t("links.resourcesLegislators")}
       </ExternalNavLink>
+      <ExternalNavLink
+        className={styles.footerLink}
+        href="https://github.com/codeforboston/maple"
+      >
+        {t("links.resourcesGitHub")}
+      </ExternalNavLink>
+      <ExternalNavLink
+        className={styles.footerLink}
+        href="https://opencollective.com/mapletestimony"
+      >
+        {t("links.resourcesOpenCollective")}
+      </ExternalNavLink>
     </>
   )
 }
@@ -120,6 +132,9 @@ const BrowseLinks = () => {
       </NavLink> */}
       <NavLink className={styles.footerLink} href="/bills">
         {t("links.browseBills")}
+      </NavLink>
+      <NavLink className={styles.footerLink} href="/testimony">
+        {t("links.browseTestimony")}
       </NavLink>
     </>
   )

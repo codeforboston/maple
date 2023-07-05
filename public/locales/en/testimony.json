@@ -1,0 +1,75 @@
+{
+    "testimonyDetail": {
+        "what": "What",
+        "says": "says",
+        "thisPolicy": "this policy",
+        "edited": "Edited"
+    },
+    "revisionHistory": {
+        "version": "version",
+        "history": "Revision History"
+    },
+    "policyActions": {
+        "actions": "Actions"
+    },
+    "testimonyVersionBanner": {
+        "viewingVersion": "Viewing out of date version of testimony",
+        "backToVersion": "Back to Current Version"
+    },
+    "testimonyCallout": {
+        "bill": "Bill",
+        "position": "{{position1}}"
+    },
+    "testimonyCalloutSection":{
+            "peopleSaying": "What people are saying...",
+            "browseTestimony": "Browse All Testimony"
+    },
+    "reportModal": {
+        "reportTestimony": "Report Testimony",
+        "reason": "Reason",
+        "close": "Close",
+        "reporting": "Reporting",
+        "report": "Report",
+        "rescind": "You may only delete testimony from MAPLE if you made an error in the testimony submission process (e.g., testified on the wrong bill) or if the testimony contains personal information."
+    },
+    "reportToast": {
+        "success": "{{successful1}}"
+    },
+    "sortTestimonyDropDown": {
+        "recentFirst": "Most Recent First",
+        "oldestFirst": "Oldest First"
+    },
+    "testimonyItem": {
+        "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
+        "no": "No",
+        "editIcon": "Edit icon",
+        "deleteIcon": "Delete testimony icon",
+        "expand": "Expand",
+        "moreDetails": "More Details",
+        "edit": "Edit",
+        "rescind": "Rescind",
+        "toast": {
+            "successful": {
+                "header": "Success",
+                "body": "Your report was filed."
+            },
+            "failed": {
+                "header": "Failed",
+                "body": "Your report couldn't be filed. Please try again later."
+            }
+        }
+    },
+    "userFilterDropdown": {
+        "publishedTestimonies": "All Published Testimonies",
+        "usersOnly": "Users Only",
+        "organizationsOnly": "Organizations Only"
+    },
+    "userInfoHeader": {
+        "edited": "Edited"
+    },
+    "viewTestimony": {
+        "showing1": "Showing 1 - ",
+        "outOf": " out of ",
+        "noTestimonies": "There are no testimonies "
+    }
+}

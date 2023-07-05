@@ -60,7 +60,6 @@ export function ProfilePage(profileprops: {
                   isUser={isUser}
                   isOrg={isOrg || false}
                   isMobile={isMobile}
-                  uid={user?.uid}
                   profileid={profileprops.id}
                   profile={profile}
                 />
@@ -96,7 +95,6 @@ export function ProfilePage(profileprops: {
                   <Col xs={12}>
                     <ViewTestimony
                       {...testimony}
-                      isUser={isUser}
                       onProfilePage={true}
                       className="mb-4"
                       isOrg={isOrg}

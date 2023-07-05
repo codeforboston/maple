@@ -10,6 +10,7 @@
   },
   "links": {
     "browseBills": "Browse Bills",
+    "browseTestimony": "Browse Testimony",
     "accountSignIn": "Sign In",
     "accountSignOut": "Sign Out",
     "accountProfile": "Profile",
@@ -19,6 +20,8 @@
     "aboutMission": "Our Mission & Goals",
     "aboutTeam": "Our Team",
     "resourcesLegislators": "Find your Legislators",
+    "resourcesGitHub": "MAPLE on GitHub",
+    "resourcesOpenCollective": "MAPLE OpenCollective",
     "teamNEU": "Northeastern University NuLawLab",
     "teamCFB": "Code for Boston",
     "teamHarvard": "Harvard Berkman Klein Center"

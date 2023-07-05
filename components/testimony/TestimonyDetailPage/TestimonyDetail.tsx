@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { TestimonyContent } from "../TestimonyContent"
 import { flags } from "components/featureFlags"
+import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
   font-family: "Nunito";
@@ -14,14 +15,18 @@ const Container = styled.div`
 `
 
 const Testimony = styled(props => {
-  const { revision, authorNickname } = useCurrentTestimonyDetails()
+  const { revision, authorTitle } = useCurrentTestimonyDetails()
   const previous = flags().testimonyDiffing
     ? revision.previous?.content
     : undefined
 
+  const { t } = useTranslation("testimony")
+
   return (
     <div {...props}>
-      <div className="fs-4">What {authorNickname} says</div>
+      <div className="fs-4">
+        {t("testimonyDetail.what")} {authorTitle} {t("testimonyDetail.says")}
+      </div>
       <TestimonyContent testimony={revision.content} previous={previous} />
     </div>
   )
@@ -55,16 +60,19 @@ const Header = styled(props => {
     authorTitle
   )
 
+  const { t } = useTranslation("testimony")
+
   return (
     <div {...props}>
       <PositionIcon className="positionIcon" position={position} />
       <div className="author ms-2 me-auto">
         <div className="fs-4">
-          {authorInfo} {positionInfo[position].action} this policy
+          {authorInfo} {positionInfo[position].action}{" "}
+          {t("testimonyDetail.thisPolicy")}
         </div>
         <div>{revision.publishedAt.toDate().toLocaleDateString()}</div>
       </div>
-      {isEdited && <div className="edited">Edited</div>}
+      {isEdited && <div className="edited">{t("testimonyDetail.edited")}</div>}
     </div>
   )
 })`

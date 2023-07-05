@@ -26,7 +26,6 @@ export type SocialLinks = Partial<
 
 export type Profile = {
   role: Role
-  displayName?: string
   fullName?: string
   representative?: ProfileMember
   senator?: ProfileMember
