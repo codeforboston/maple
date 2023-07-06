@@ -6,7 +6,7 @@ export const FeatureFlags = z.object({
   /** Notifications and follows */
   notifications: z.boolean().default(false),
   /** Bill Tracker on Bill Details */
-  billTracker: z.boolean().default(false), 
+  billTracker: z.boolean().default(false),
   /** Follow button for organizations */
   followOrg: z.boolean().default(false),
   /** Lobbying Table */

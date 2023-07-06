@@ -18,7 +18,7 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
-import { SortBy } from "../SortBy";
+import { SortBy } from "../SortBy"
 import { getServerConfig } from "../common"
 
 const searchClient = new TypesenseInstantSearchAdapter({

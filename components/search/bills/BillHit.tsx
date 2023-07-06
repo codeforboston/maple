@@ -117,7 +117,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const today = new Date()
   const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
-  const isUpcomingHearing = hearingDate ? today < fromUnixTime(hearingDate) : false
+  const isUpcomingHearing = hearingDate
+    ? today < fromUnixTime(hearingDate)
+    : false
 
   return (
     <Link href={url}>
