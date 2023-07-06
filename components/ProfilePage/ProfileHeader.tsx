@@ -1,27 +1,15 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { firestore } from "../firebase"
+import { flags } from "components/featureFlags"
+import { FollowButton } from "components/shared/FollowButton"
 import { Col, Stack } from "../bootstrap"
-import { useState, useEffect } from "react"
-import {
-  Header,
-  ProfileDisplayName,
-  OrgIconLarge,
-  UserIcon
-} from "./StyledProfileComponents"
+import { Profile } from "../db"
 import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
-import { Profile } from "../db"
-import { FollowButton } from "./FollowButton"
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { useAuth } from "../auth"
+import {
+  Header,
+  OrgIconLarge,
+  ProfileDisplayName,
+  UserIcon
+} from "./StyledProfileComponents"
 
 export const ProfileHeader = ({
   isUser,
@@ -139,17 +127,9 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                /*
-                 remove comment when Notification Emails and related Follow functionality
-                 is ready for production
-                */
-
-                <FollowButton
-                  onFollowClick={() => handleFollowClick()}
-                  onUnfollowClick={() => handleUnfollowClick()}
-                  isMobile={isMobile}
-                  isFollowing={queryResult}
-                />
+                <>
+                  {flags().followOrg && <FollowButton profileid={profileid} />}
+                </>
               )}
             </>
           )}

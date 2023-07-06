@@ -1,15 +1,7 @@
 import { flags } from "components/featureFlags"
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { useEffect, useState } from "react"
+import { FollowButton } from "components/shared/FollowButton"
+import { isCurrentCourt } from "functions/src/shared"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
@@ -20,14 +12,12 @@ import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
-// import { LobbyingTable } from "./LobbyingTable"
+import { LobbyingTable } from "./LobbyingTable"
 import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { LobbyingTable } from "./LobbyingTable"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { useTranslation } from "next-i18next"
-import { isCurrentCourt } from "functions/src/shared"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -110,7 +100,9 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Col md={8}>
             <Sponsors bill={bill} className="mt-4 pb-1" />
             <BillTestimonies bill={bill} className="mt-4" />
-            <LobbyingTable bill={bill} className="mt-4 pb-1" />
+            {flags().lobbyingTable && (
+              <LobbyingTable bill={bill} className="mt-4 pb-1" />
+            )}
           </Col>
           <Col md={4}>
             <Committees bill={bill} className="mt-4 pb-1" />

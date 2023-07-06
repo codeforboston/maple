@@ -7,6 +7,7 @@ import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
 import { FollowButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
+import { flags } from "components/featureFlags"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -62,7 +63,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {isOrg && <FollowButton profileid={hit.authorUid} />}
+        {flags().followOrg && isOrg && <FollowButton profileid={hit.authorUid} />}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
