@@ -1,14 +1,15 @@
+import { flags } from "components/featureFlags"
+import { FollowButton } from "components/shared/FollowButton"
 import { Col, Stack } from "../bootstrap"
-import {
-  Header,
-  ProfileDisplayName,
-  OrgIconLarge,
-  UserIcon
-} from "./StyledProfileComponents"
+import { Profile } from "../db"
 import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
-import { Profile } from "../db"
-import { FollowButton } from "components/shared/FollowButton"
+import {
+  Header,
+  OrgIconLarge,
+  ProfileDisplayName,
+  UserIcon
+} from "./StyledProfileComponents"
 
 export const ProfileHeader = ({
   isUser,
@@ -48,7 +49,9 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                <FollowButton profileid={profileid} />
+                <>
+                  {flags().followOrg && <FollowButton profileid={profileid} />}
+                </>
               )}
             </>
           )}
