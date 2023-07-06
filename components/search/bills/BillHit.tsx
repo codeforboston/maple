@@ -115,6 +115,10 @@ const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
 
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
+  const today = new Date()
+  const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
+  const isUpcomingHearing = hearingDate ? today < fromUnixTime(hearingDate) : false
+
   return (
     <Link href={url}>
       <a style={{ all: "unset" }} className="w-100">
@@ -151,10 +155,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {hit.nextHearingAt ? (
+          {isUpcomingHearing ? (
             <Card.Footer className="card-footer">
-              Hearing Scheduled{" "}
-              {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
+              Hearing Scheduled {format(fromUnixTime(hearingDate!), "M/d/y p")}
             </Card.Footer>
           ) : null}
         </StyledCard>
