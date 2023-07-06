@@ -172,7 +172,7 @@ export const Callout = ({
 }
 
 export function trimContent(content: string, length: number) {
-  if (content.length > length) {
+  if (content.length >= length) {
     let cutLength = length
     while (content[cutLength - 1] !== " " && cutLength > 1) {
       cutLength--
