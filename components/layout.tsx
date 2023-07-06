@@ -63,48 +63,33 @@ const TopNav: React.FC = () => {
       <Container>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
-            <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
-          </div>
-
-          <Navbar.Brand className="mx-2 p-0">
-            <Nav.Link href="/" className="p-0">
-              <Image fluid src="/nav-logo.svg" alt="logo"></Image>
-            </Nav.Link>
-          </Navbar.Brand>
-
-          <div className={styles.navbar_box}>
-            <Nav>
-              {authenticated ? (
-                <ProfileLink role={claims?.role} fullName={profile?.fullName} />
-              ) : (
-                !sticky && <SignInWithButton />
-              )}
-            </Nav>
-          </div>
-        </div>
-        <Navbar.Collapse id="topnav">
-          <Nav className="me-auto">
-            <NavLink
-              className={"navLink-primary"}
-              href="/"
-              handleClick={closeNav}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              className={"navLink-primary"}
-              href="/bills"
-              handleClick={closeNav}
-            >
-              Browse Bills
-            </NavLink>
-            <NavLink
-              className={"navLink-primary"}
-              href="/testimony"
-              handleClick={closeNav}
-            >
-              Browse Testimony
-            </NavLink>
+            <Navbar expand={false} expanded={isExpanded}>
+              <Navbar.Brand>
+                <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
+              </Navbar.Brand>
+              <Navbar.Collapse id="topnav">
+                <Nav className="me-auto">
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/"
+                    handleClick={closeNav}
+                  >
+                    Home
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/bills"
+                    handleClick={closeNav}
+                  >
+                    Browse Bills
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/testimony"
+                    handleClick={closeNav}
+                  >
+                    Browse Testimony
+                  </NavLink>
 
                   <NavDropdown className={"navLink-primary"} title={"Learn"}>
                     <NavDropdown.Item>
