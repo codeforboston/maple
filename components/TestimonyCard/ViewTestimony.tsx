@@ -6,10 +6,7 @@ import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
 import styled from "styled-components"
 import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
-import {
-  Testimony,
-  UsePublishedTestimonyListing
-} from "../db"
+import { Testimony, UsePublishedTestimonyListing } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
@@ -179,7 +176,7 @@ function ShowPaginationSummary({
   const currentPageStart = (currentPage - 1) * itemsPerPage
   let currentPageEnd = currentPage * itemsPerPage
   if (currentPageEnd > testimony.length) {
-    currentPageEnd = (currentPageStart) + (testimony.length % itemsPerPage)
+    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
   }
   const totalItems = testimony.length
 
