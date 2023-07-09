@@ -6,9 +6,6 @@
   "user": "User",
   "noUser": "no user",
   "anonymousUser": "Anonymous User",
-  "button":{
-    "editProfile": "Edit\u00A0Profile"
-  },
   "content": {
     "viewingProfile": "Currently viewing your profile",
     "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
