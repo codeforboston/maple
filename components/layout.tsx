@@ -7,7 +7,7 @@ import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
-import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { Container, Nav, NavDropdown, Navbar, Row, Col } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
 import { GlobalSearchBar } from "./GlobalSearchBar"
@@ -191,19 +191,50 @@ const TopNav: React.FC = () => {
                   )}
                 </Nav>
               </Navbar.Collapse>
-              <Image fluid src="/white-tree.svg" alt="logo"></Image>
             </Navbar>
           </div>
-          <div className={styles.navbar_box}>
-            <GlobalSearchBar></GlobalSearchBar>
-          </div>
-          <div className={styles.navbar_box}>
-            <ProfileLink
-              role={claims?.role}
-              fullName={profile?.fullName}
-              sticky
-            />
-          </div>
+
+          {sticky ? (
+            <Row className={"row-fluid"}>
+              <Col className={styles.navbar_box}>
+                <Image src="/white-tree.svg" alt="logo"></Image>
+              </Col>
+              <Col className={styles.navbar_search}>
+                <GlobalSearchBar></GlobalSearchBar>
+              </Col>
+              {sticky ? (
+                ""
+              ) : (
+                <div className={styles.navbar_box}>
+                  <ProfileLink
+                    role={claims?.role}
+                    fullName={profile?.fullName}
+                    sticky
+                  />
+                </div>
+              )}
+            </Row>
+          ) : (
+            <Row className={styles.navbar_boxes_container2}>
+              <Col className={styles.navbar_box}>
+                <Image src="/white-tree.svg" alt="logo"></Image>
+              </Col>
+              <Col className={styles.navbar_search}>
+                <GlobalSearchBar></GlobalSearchBar>
+              </Col>
+              {sticky ? (
+                ""
+              ) : (
+                <div className={styles.navbar_box}>
+                  <ProfileLink
+                    role={claims?.role}
+                    fullName={profile?.fullName}
+                    sticky
+                  />
+                </div>
+              )}
+            </Row>
+          )}
         </div>
       </Container>
 
