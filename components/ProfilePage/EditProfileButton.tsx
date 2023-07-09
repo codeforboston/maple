@@ -2,7 +2,7 @@ import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { Profile } from "../db"
+import { Profile, ProfileHook, useProfile } from "../db"
 
 const StyledButton1 = styled(Button)`
   height: 34px;
@@ -42,6 +42,18 @@ export const EditProfileButton = ({
 
   const isProfilePublic = profile.public
 
+  const actions = useProfile()
+
+  const handleSave = async () => {
+    await updateProfile({ actions })
+  }
+
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateIsPublic } = actions
+
+    await updateIsPublic(!isProfilePublic)
+  }
+
   return (
     <Col
       className={
@@ -60,7 +72,7 @@ export const EditProfileButton = ({
           className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
             isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
           }`}
-          // onClick={() => setIsProfilePublic(isProfilePublic ? false : true)}
+          onClick={handleSave}
         >
           {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
         </StyledButton2>
