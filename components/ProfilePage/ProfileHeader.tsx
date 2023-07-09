@@ -47,7 +47,11 @@ export const ProfileHeader = ({
           {isOrg && (
             <>
               {isUser ? (
-                <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
+                <EditProfileButton
+                  isOrg={isOrg}
+                  isMobile={isMobile}
+                  profile={profile}
+                />
               ) : (
                 <>
                   {flags().followOrg && <FollowButton profileid={profileid} />}
@@ -62,7 +66,13 @@ export const ProfileHeader = ({
           <OrgContactInfo profile={profile} />
         ) : (
           <div className="justify-content-end d-flex">
-            {isUser && <EditProfileButton isOrg={isOrg} isMobile={isMobile} />}
+            {isUser && (
+              <EditProfileButton
+                isOrg={isOrg}
+                isMobile={isMobile}
+                profile={profile}
+              />
+            )}
           </div>
         )}
       </Col>
