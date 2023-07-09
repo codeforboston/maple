@@ -126,8 +126,7 @@ export function useSignInWithPopUp() {
       await Promise.all([
         setProfile(credentials.user.uid, {
           fullName: credentials.user.displayName ?? "New User",
-          notificationFrequency: "Monthly",
-          email: credentials.user.email
+          public: true
         })
       ])
     }
