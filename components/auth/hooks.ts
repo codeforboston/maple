@@ -125,7 +125,8 @@ export function useSignInWithPopUp() {
       await finishSignup({ requestedRole: "user" })
       await Promise.all([
         setProfile(credentials.user.uid, {
-          fullName: credentials.user.displayName ?? "New User"
+          fullName: credentials.user.displayName ?? "New User",
+          public: true
         })
       ])
     }
