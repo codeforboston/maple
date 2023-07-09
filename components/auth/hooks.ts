@@ -74,14 +74,16 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         await Promise.all([
           setProfile(credentials.user.uid, {
             fullName,
-            orgCategories: categories
+            orgCategories: categories,
+            public: true
           }),
           sendEmailVerification(credentials.user)
         ])
       } else {
         await Promise.all([
           setProfile(credentials.user.uid, {
-            fullName
+            fullName,
+            public: true
           }),
           sendEmailVerification(credentials.user)
         ])

@@ -15,11 +15,11 @@ import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
-import { SortBy } from "../SortBy"
-import { getServerConfig } from "../common"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
+import { SortBy } from "../SortBy";
+import { getServerConfig } from "../common"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
