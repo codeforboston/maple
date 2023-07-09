@@ -89,7 +89,7 @@ export function ProfilePage(profileprops: {
                     />
                   </Col>
                   {!isOrg && (
-                    <Col xs={12} md={5}>
+                    <Col xs={12} md={4}>
                       <ProfileLegislators
                         rep={profile?.representative}
                         senator={profile?.senator}
