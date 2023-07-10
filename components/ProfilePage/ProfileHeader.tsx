@@ -3,7 +3,7 @@ import { flags } from "components/featureFlags"
 import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
 import { Profile } from "../db"
-import { EditProfileButton } from "./ProfileButtons"
+import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
 import { OrgContactInfo } from "./OrgContactInfo"
 import {
   Header,
@@ -135,20 +135,29 @@ export const ProfileHeader = ({
               </Col>
             )}
 
-            <Col>
+            <Col className={isOrg ? `` : `d-flex`}>
               <Stack gap={0}>
-                <ProfileDisplayName className={`overflow-hidden`}>
+                <ProfileDisplayName
+                  className={`overflow-hidden ${
+                    isOrg ? "" : "d-flex align-items-center"
+                  }`}
+                >
                   {profile.fullName}
                 </ProfileDisplayName>
 
                 {isOrg && (
                   <>
                     {isUser ? (
-                      <EditProfileButton
-                        isOrg={isOrg}
-                        // isProfilePublic={isProfilePublic}
-                        // setIsProfilePublic={setIsProfilePublic}
-                      />
+                      <div className={`d-flex w-100 justify-content-start`}>
+                        <div className={`d-flex flex-row`}>
+                          <EditProfileButton isOrg={isOrg} />
+                          <MakePublicButton
+                            isOrg={isOrg}
+                            isProfilePublic={isProfilePublic}
+                            setIsProfilePublic={setIsProfilePublic}
+                          />
+                        </div>
+                      </div>
                     ) : (
                       <>
                         {flags().followOrg && (
@@ -164,14 +173,19 @@ export const ProfileHeader = ({
               {isOrg ? (
                 <OrgContactInfo profile={profile} />
               ) : (
-                <div>
-                  {isUser && (
-                    <EditProfileButton
-                      isOrg={isOrg}
-                      // isProfilePublic={isProfilePublic}
-                      // setIsProfilePublic={setIsProfilePublic}
-                    />
-                  )}
+                <div className={`d-flex w-100 justify-content-end`}>
+                  <div className={`d-flex flex-column`}>
+                    {isUser && (
+                      <>
+                        <EditProfileButton isOrg={isOrg} />
+                        <MakePublicButton
+                          isOrg={isOrg}
+                          isProfilePublic={isProfilePublic}
+                          setIsProfilePublic={setIsProfilePublic}
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </Col>
