@@ -64,7 +64,7 @@ const TopNav: React.FC = () => {
       <Container fluid>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
-            <Navbar expand={false}>
+            <Navbar expand={false} expanded={isExpanded}>
               <Navbar.Brand>
                 <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
               </Navbar.Brand>
