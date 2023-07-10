@@ -193,48 +193,21 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-
-          {sticky ? (
-            <Row className={"row-fluid"}>
-              <Col className={styles.navbar_box}>
-                <Image src="/white-tree.svg" alt="logo"></Image>
-              </Col>
-              <Col className={styles.navbar_search}>
-                <GlobalSearchBar></GlobalSearchBar>
-              </Col>
-              {sticky ? (
-                ""
-              ) : (
-                <div className={styles.navbar_box}>
-                  <ProfileLink
-                    role={claims?.role}
-                    fullName={profile?.fullName}
-                    sticky
-                  />
-                </div>
-              )}
-            </Row>
-          ) : (
-            <Row className={styles.navbar_boxes_container2}>
-              <Col className={styles.navbar_box}>
-                <Image src="/white-tree.svg" alt="logo"></Image>
-              </Col>
-              <Col className={styles.navbar_search}>
-                <GlobalSearchBar></GlobalSearchBar>
-              </Col>
-              {sticky ? (
-                ""
-              ) : (
-                <div className={styles.navbar_box}>
-                  <ProfileLink
-                    role={claims?.role}
-                    fullName={profile?.fullName}
-                    sticky
-                  />
-                </div>
-              )}
-            </Row>
-          )}
+          <Row className={styles.navbar_boxes_container2}>
+            <Col className={styles.navbar_box}>
+              <Image src="/white-tree.svg" alt="logo"></Image>
+            </Col>
+            <Col className={styles.navbar_search}>
+              <GlobalSearchBar></GlobalSearchBar>
+            </Col>
+            <div className={styles.navbar_box}>
+              <ProfileLink
+                role={claims?.role}
+                fullName={profile?.fullName}
+                sticky
+              />
+            </div>
+          </Row>
         </div>
       </Container>
 
