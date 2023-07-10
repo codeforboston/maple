@@ -8,6 +8,9 @@ import { Cosponsors } from "./Cosponsors"
 import { LabeledContainer } from "./LabeledContainer"
 import styles from "./SponsorsAndCommittees.module.css"
 import { BillProps } from "./types"
+import { DisplayUpcomingHearing } from "components/search/bills/BillHit"
+import { dateInFuture } from "components/db/events"
+import { Timestamp } from "firebase/firestore"
 
 const HearingDate = styled.div`
   font-weight: 500;
@@ -50,16 +53,14 @@ export const Committees: FC<BillProps> = ({ bill, className }) => {
 export const Hearing: FC<BillProps> = ({ bill, className }) => {
   return (
     <>
-      {!bill.nextHearingAt?.seconds ? null : (
+      {bill.nextHearingAt && dateInFuture(bill.nextHearingAt) ? (
         <LabeledContainer className={className}>
           <HearingDate>
             Hearing Scheduled for{" "}
-            {bill.nextHearingAt?.seconds
-              ? format(fromUnixTime(bill.nextHearingAt?.seconds), "MMM d, y p")
-              : null}
+            {format(fromUnixTime(bill.nextHearingAt?.seconds), "MMM d, y p")}
           </HearingDate>
         </LabeledContainer>
-      )}
+      ) : null}
     </>
   )
 }
