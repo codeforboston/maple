@@ -73,15 +73,19 @@ export const EditProfileButton = ({ isOrg }: { isOrg: boolean }) => {
 }
 
 export const MakePublicButton = ({
+  isMobile,
   isOrg,
   isProfilePublic,
   setIsProfilePublic
 }: {
+  isMobile: boolean
   isOrg: boolean
   isProfilePublic: boolean
   setIsProfilePublic: Dispatch<SetStateAction<boolean>>
 }) => {
   const { t } = useTranslation("editProfile")
+
+  const isWideOrg = isOrg && !isMobile
 
   const actions = useProfile()
 
@@ -99,22 +103,22 @@ export const MakePublicButton = ({
   return (
     <>
       {isProfilePublic ? (
-        <div className={isOrg ? `ms-1` : ``}>
+        <div className={isWideOrg ? `ms-1` : ``}>
           <StyledButton2
             className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
               isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isOrg ? "" : "w-100"}`}
+            } ${isWideOrg ? "" : "w-100"}`}
             onClick={handleSave}
           >
             {t("forms.makePrivate")}
           </StyledButton2>
         </div>
       ) : (
-        <div className={isOrg ? `ms-1` : ``}>
+        <div className={isWideOrg ? `ms-1` : ``}>
           <StyledButton3
             className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
               isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isOrg ? "" : "w-100"}`}
+            } ${isWideOrg ? "" : "w-100"}`}
             onClick={handleSave}
           >
             {t("forms.makePublic")}
