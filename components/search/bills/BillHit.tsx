@@ -12,6 +12,9 @@ import Link from "next/link"
 import styled from "styled-components"
 import { Card, Col } from "../../bootstrap"
 import { formatBillId } from "../../formatting"
+import { Timestamp } from "firebase/firestore"
+import { DateTime } from "luxon"
+import { dateInFuture } from "components/db/events"
 
 type BillRecord = {
   number: string
@@ -113,6 +116,20 @@ const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   )
 }
 
+export const DisplayUpcomingHearing = ({
+  nextHearingAt,
+  children
+}: {
+  nextHearingAt: number | Timestamp | undefined
+  children: React.ReactNode
+}) => {
+  if (nextHearingAt && dateInFuture(nextHearingAt)) {
+    return <>{children}</>
+  }
+
+  return null
+}
+
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const today = new Date()
@@ -157,7 +174,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {isUpcomingHearing ? (
+          {hit.nextHearingAt && dateInFuture(hit.nextHearingAt) ? (
             <Card.Footer className="card-footer">
               Hearing Scheduled {format(fromUnixTime(hearingDate!), "M/d/y p")}
             </Card.Footer>
