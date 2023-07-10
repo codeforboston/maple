@@ -1,6 +1,7 @@
+import { Dispatch, SetStateAction } from "react"
 import { flags } from "components/featureFlags"
 import { FollowButton } from "components/shared/FollowButton"
-import { Col, Stack } from "../bootstrap"
+import { Col, Row, Stack } from "../bootstrap"
 import { Profile } from "../db"
 import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
@@ -12,18 +13,17 @@ import {
 } from "./StyledProfileComponents"
 
 export const ProfileHeader = ({
-  isUser,
   isOrg,
-  isMobile,
-  uid,
-  profileId,
-  profile
+  isProfilePublic,
+  setIsProfilePublic,
+  isUser,
+  profile,
+  profileid
 }: {
-  isUser: boolean
   isOrg: boolean
-  isMobile: boolean
-  uid?: string
-  profileId: string
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isUser: boolean
   profile: Profile
 }) => {
   const orgImageSrc = profile.profileImage
@@ -108,52 +108,63 @@ export const ProfileHeader = ({
 
   return (
     <Header className={`gx-0 edit-profile-header`}>
-      {isOrg ? (
-        <Col xs={"auto"} className={"col-auto"}>
-          <OrgIconLarge className={`col d-none d-sm-flex`} src={orgImageSrc} />
+      <Row xs={"auto"}>
+        {isOrg ? (
+          <Col xs={"auto"} className={"col-auto"}>
+            <OrgIconLarge
+              className={`col d-none d-sm-flex`}
+              src={orgImageSrc}
+            />
+          </Col>
+        ) : (
+          <Col>
+            <UserIcon src="./profile-individual-icon.svg" />
+          </Col>
+        )}
+
+        <ProfileDisplayName
+          className={`d-flex align-items-center overflow-hidden`}
+        >
+          {profile.fullName}
+        </ProfileDisplayName>
+
+        <Col className="d-flex align-items-center ms-auto">
+          <Stack gap={0}>
+            {isOrg && (
+              <>
+                {isUser ? (
+                  <EditProfileButton
+                    isOrg={isOrg}
+                    isProfilePublic={isProfilePublic}
+                    setIsProfilePublic={setIsProfilePublic}
+                  />
+                ) : (
+                  <>
+                    {flags().followOrg && (
+                      <FollowButton profileid={profileid} />
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </Stack>
         </Col>
-      ) : (
-        <Col xs={"auto"}>
-          <UserIcon src="./profile-individual-icon.svg" />
-        </Col>
-      )}
-      <Col>
-        <Stack gap={2}>
-          <ProfileDisplayName className={`overflow-hidden`}>
-            {profile.fullName}
-          </ProfileDisplayName>
-          {isOrg && (
-            <>
-              {isUser ? (
+        <Col className="d-flex align-items-center ms-auto">
+          {isOrg ? (
+            <OrgContactInfo profile={profile} />
+          ) : (
+            <div>
+              {isUser && (
                 <EditProfileButton
                   isOrg={isOrg}
-                  isMobile={isMobile}
-                  profile={profile}
+                  isProfilePublic={isProfilePublic}
+                  setIsProfilePublic={setIsProfilePublic}
                 />
-              ) : (
-                <>
-                  {flags().followOrg && <FollowButton profileid={profileid} />}
-                </>
               )}
-            </>
+            </div>
           )}
-        </Stack>
-      </Col>
-      <Col>
-        {isOrg ? (
-          <OrgContactInfo profile={profile} />
-        ) : (
-          <div className="justify-content-end d-flex">
-            {isUser && (
-              <EditProfileButton
-                isOrg={isOrg}
-                isMobile={isMobile}
-                profile={profile}
-              />
-            )}
-          </div>
-        )}
-      </Col>
+        </Col>
+      </Row>
     </Header>
   )
 }
