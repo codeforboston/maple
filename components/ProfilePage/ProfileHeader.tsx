@@ -122,14 +122,12 @@ export const ProfileHeader = ({
           </Col>
         )}
 
-        <ProfileDisplayName
-          className={`d-flex align-items-center overflow-hidden`}
-        >
-          {profile.fullName}
-        </ProfileDisplayName>
-
-        <Col className="d-flex align-items-center ms-auto my-auto">
+        <Col className="">
           <Stack gap={0}>
+            <ProfileDisplayName className={`overflow-hidden`}>
+              {profile.fullName}
+            </ProfileDisplayName>
+
             {isOrg && (
               <>
                 {isUser ? (
