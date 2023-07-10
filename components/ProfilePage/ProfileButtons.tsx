@@ -54,21 +54,21 @@ export const EditProfileButton = ({ isOrg }: { isOrg: boolean }) => {
   const { t } = useTranslation("editProfile")
 
   return (
-    <div
-      className={
-        isOrg
-          ? `d-flex w-100 justify-content-start`
-          : `d-flex w-100 justify-content-end`
-      }
-    >
-      <div className={isOrg ? `d-flex flex-row` : `d-flex flex-column`}>
-        <Internal href="/editprofile" className="view-edit-profile">
-          <StyledButton1 className={`btn mb-1 py-1`}>
-            {t("forms.editProfile")}
-          </StyledButton1>
-        </Internal>
-      </div>
-    </div>
+    // <div
+    //   className={
+    //     isOrg
+    //       ? `d-flex w-100 justify-content-start`
+    //       : `d-flex w-100 justify-content-end`
+    //   }
+    // >
+    //   <div className={isOrg ? `d-flex flex-row` : `d-flex flex-column`}>
+    <Internal href="/editprofile" className="view-edit-profile">
+      <StyledButton1 className={`btn mb-1 py-1`}>
+        {t("forms.editProfile")}
+      </StyledButton1>
+    </Internal>
+    //   </div>
+    // </div>
   )
 }
 
