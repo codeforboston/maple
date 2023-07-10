@@ -3,7 +3,7 @@ import { flags } from "components/featureFlags"
 import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
 import { Profile } from "../db"
-import { EditProfileButton } from "./EditProfileButton"
+import { EditProfileButton } from "./ProfileButtons"
 import { OrgContactInfo } from "./OrgContactInfo"
 import {
   Header,
@@ -116,6 +116,9 @@ export const ProfileHeader = ({
       {isMobile ? (
         <ProfileHeaderMobile
           isOrg={isOrg}
+          isProfilePublic={isProfilePublic}
+          setIsProfilePublic={setIsProfilePublic}
+          isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
         />
@@ -143,8 +146,8 @@ export const ProfileHeader = ({
                     {isUser ? (
                       <EditProfileButton
                         isOrg={isOrg}
-                        isProfilePublic={isProfilePublic}
-                        setIsProfilePublic={setIsProfilePublic}
+                        // isProfilePublic={isProfilePublic}
+                        // setIsProfilePublic={setIsProfilePublic}
                       />
                     ) : (
                       <>
@@ -165,8 +168,8 @@ export const ProfileHeader = ({
                   {isUser && (
                     <EditProfileButton
                       isOrg={isOrg}
-                      isProfilePublic={isProfilePublic}
-                      setIsProfilePublic={setIsProfilePublic}
+                      // isProfilePublic={isProfilePublic}
+                      // setIsProfilePublic={setIsProfilePublic}
                     />
                   )}
                 </div>
@@ -181,10 +184,16 @@ export const ProfileHeader = ({
 
 function ProfileHeaderMobile({
   isOrg,
+  isProfilePublic,
+  setIsProfilePublic,
+  isUser,
   orgImageSrc,
   profile
 }: {
   isOrg: boolean
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isUser: boolean
   orgImageSrc: string
   profile: Profile
 }) {
@@ -203,7 +212,13 @@ function ProfileHeaderMobile({
           {profile.fullName}
         </ProfileDisplayNameSmall>
       </Col>
-      Mobile Hello World
+      {isUser && (
+        <EditProfileButton
+          isOrg={isOrg}
+          // isProfilePublic={isProfilePublic}
+          // setIsProfilePublic={setIsProfilePublic}
+        />
+      )}
     </Header>
   )
 }
