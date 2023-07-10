@@ -1,8 +1,9 @@
+import { Dispatch, SetStateAction } from "react"
 import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { Profile, ProfileHook, useProfile } from "../db"
+import { ProfileHook, useProfile } from "../db"
 
 const StyledButton1 = styled(Button)`
   height: 34px;
@@ -10,6 +11,26 @@ const StyledButton1 = styled(Button)`
 `
 
 const StyledButton2 = styled(Button)`
+  &:focus {
+    color: #1a3185;
+    background-color: white;
+    border-color: #1a3185;
+  }
+  &:hover {
+    color: white;
+    background-color: #1a3185;
+    border-color: white;
+  }
+  height: 34px;
+  width: 110px;
+
+  @media (max-width: 768px) {
+    position: relative;
+    top: -9px;
+  }
+`
+
+const StyledButton3 = styled(Button)`
   &:focus {
     color: white;
     background-color: #1a3185;
@@ -30,17 +51,15 @@ const StyledButton2 = styled(Button)`
 `
 
 export const EditProfileButton = ({
-  isMobile,
   isOrg,
-  profile
+  isProfilePublic,
+  setIsProfilePublic
 }: {
-  isMobile: boolean
   isOrg: boolean
-  profile: Profile
+  isProfilePublic: boolean
+  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
 }) => {
   const { t } = useTranslation("editProfile")
-
-  const isProfilePublic = profile.public
 
   const actions = useProfile()
 
@@ -52,6 +71,7 @@ export const EditProfileButton = ({
     const { updateIsPublic } = actions
 
     await updateIsPublic(!isProfilePublic)
+    setIsProfilePublic(!isProfilePublic)
   }
 
   return (
@@ -68,14 +88,25 @@ export const EditProfileButton = ({
             {t("forms.editProfile")}
           </StyledButton1>
         </Internal>
-        <StyledButton2
-          className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
-            isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-          }`}
-          onClick={handleSave}
-        >
-          {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
-        </StyledButton2>
+        {isProfilePublic ? (
+          <StyledButton2
+            className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
+              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
+            }`}
+            onClick={handleSave}
+          >
+            {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
+          </StyledButton2>
+        ) : (
+          <StyledButton3
+            className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
+              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
+            }`}
+            onClick={handleSave}
+          >
+            {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
+          </StyledButton3>
+        )}
       </div>
     </Col>
   )

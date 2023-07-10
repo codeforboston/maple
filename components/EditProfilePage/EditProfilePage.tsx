@@ -11,7 +11,6 @@ import {
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
-import { Internal } from "../links"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import { FollowingTab } from "./FollowingTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
@@ -23,7 +22,6 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
 import { useTranslation } from "next-i18next"
-import { isPending } from "@reduxjs/toolkit"
 
 export function EditProfile() {
   const { user } = useAuth()
