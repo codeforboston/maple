@@ -2,6 +2,7 @@ import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-ad
 
 const devConfig = {
   key: "Wk0K3oMIE1ERRmwX0uLgEk3gGEGKNuQe",
+  // key: "mfylP3FhQBBAmUiDTWZ9PNbhzTtVID1W",
   url: "https://o89yhjf824.execute-api.us-east-1.amazonaws.com/search"
 }
 

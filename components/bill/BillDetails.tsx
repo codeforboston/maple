@@ -1,5 +1,4 @@
 import { flags } from "components/featureFlags"
-import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
@@ -14,6 +13,7 @@ import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { FollowButton } from "components/shared/FollowButton"
+import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 
 const StyledContainer = styled(Container)`
