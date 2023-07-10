@@ -115,6 +115,7 @@ export const ProfileHeader = ({
     <>
       {isMobile ? (
         <ProfileHeaderMobile
+          isMobile={isMobile}
           isOrg={isOrg}
           isProfilePublic={isProfilePublic}
           setIsProfilePublic={setIsProfilePublic}
@@ -152,6 +153,7 @@ export const ProfileHeader = ({
                         <div className={`d-flex flex-row`}>
                           <EditProfileButton isOrg={isOrg} />
                           <MakePublicButton
+                            isMobile={isMobile}
                             isOrg={isOrg}
                             isProfilePublic={isProfilePublic}
                             setIsProfilePublic={setIsProfilePublic}
@@ -179,6 +181,7 @@ export const ProfileHeader = ({
                       <>
                         <EditProfileButton isOrg={isOrg} />
                         <MakePublicButton
+                          isMobile={isMobile}
                           isOrg={isOrg}
                           isProfilePublic={isProfilePublic}
                           setIsProfilePublic={setIsProfilePublic}
@@ -197,6 +200,7 @@ export const ProfileHeader = ({
 }
 
 function ProfileHeaderMobile({
+  isMobile,
   isOrg,
   isProfilePublic,
   setIsProfilePublic,
@@ -204,6 +208,7 @@ function ProfileHeaderMobile({
   orgImageSrc,
   profile
 }: {
+  isMobile: boolean
   isOrg: boolean
   isProfilePublic: boolean
   setIsProfilePublic: Dispatch<SetStateAction<boolean>>
@@ -211,8 +216,6 @@ function ProfileHeaderMobile({
   orgImageSrc: string
   profile: Profile
 }) {
-  const yo = 1
-
   return (
     <Header className={``}>
       <Col className={`d-flex align-items-center`}>
@@ -227,11 +230,15 @@ function ProfileHeaderMobile({
         </ProfileDisplayNameSmall>
       </Col>
       {isUser && (
-        <EditProfileButton
-          isOrg={isOrg}
-          // isProfilePublic={isProfilePublic}
-          // setIsProfilePublic={setIsProfilePublic}
-        />
+        <>
+          <EditProfileButton isOrg={isOrg} />
+          <MakePublicButton
+            isMobile={isMobile}
+            isOrg={isOrg}
+            isProfilePublic={isProfilePublic}
+            setIsProfilePublic={setIsProfilePublic}
+          />
+        </>
       )}
     </Header>
   )
