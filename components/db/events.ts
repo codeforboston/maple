@@ -101,7 +101,6 @@ export async function listUpcomingEvents(types?: Event["type"][]) {
   return result.docs.map(d => d.data() as Event)
 }
 
-
 /** returns true if input is a timestamp and false if not */
 export const isTimestamp = (t: any): t is Timestamp => {
   return t && t.seconds !== undefined && t.nanoseconds !== undefined
@@ -120,12 +119,10 @@ export function parseTimestamp(t: any): Timestamp {
 }
 
 /** returns true if date is current date or later, otherwise returns false. throws error if input can't be parsed as a Timestamp */
-export function dateInFuture(
-  a: Timestamp | number | object | undefined,
-) {
+export function dateInFuture(a: Timestamp | number | object | undefined) {
   if (a === undefined) return false
   const today = Timestamp.now().seconds
   const eventDate = parseTimestamp(a).seconds
 
   return eventDate >= today
-} 
+}
