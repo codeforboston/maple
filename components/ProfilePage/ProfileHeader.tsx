@@ -47,6 +47,7 @@ export const ProfileHeader = ({
           isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
+          profileid={profileid}
         />
       ) : (
         <Header className={`gx-0 edit-profile-header`}>
@@ -102,7 +103,7 @@ export const ProfileHeader = ({
               ) : (
                 <div className={`d-flex w-100 justify-content-end`}>
                   <div className={`d-flex flex-column`}>
-                    {isUser && (
+                    {isUser ? (
                       <>
                         <EditProfileButton isOrg={isOrg} />
                         <MakePublicButton
@@ -111,6 +112,12 @@ export const ProfileHeader = ({
                           isProfilePublic={isProfilePublic}
                           setIsProfilePublic={setIsProfilePublic}
                         />
+                      </>
+                    ) : (
+                      <>
+                        {flags().followOrg && (
+                          <FollowButton profileid={profileid} />
+                        )}
                       </>
                     )}
                   </div>
@@ -131,7 +138,8 @@ function ProfileHeaderMobile({
   setIsProfilePublic,
   isUser,
   orgImageSrc,
-  profile
+  profile,
+  profileid
 }: {
   isMobile: boolean
   isOrg: boolean
@@ -140,6 +148,7 @@ function ProfileHeaderMobile({
   isUser: boolean
   orgImageSrc: string
   profile: Profile
+  profileid: string
 }) {
   return (
     <Header className={``}>
@@ -154,7 +163,7 @@ function ProfileHeaderMobile({
           {profile.fullName}
         </ProfileDisplayNameSmall>
       </Col>
-      {isUser && (
+      {isUser ? (
         <>
           <EditProfileButton isOrg={isOrg} />
           <MakePublicButton
@@ -164,7 +173,10 @@ function ProfileHeaderMobile({
             setIsProfilePublic={setIsProfilePublic}
           />
         </>
+      ) : (
+        <>{flags().followOrg && <FollowButton profileid={profileid} />}</>
       )}
+      {isOrg ? <OrgContactInfo profile={profile} /> : <></>}
     </Header>
   )
 }
