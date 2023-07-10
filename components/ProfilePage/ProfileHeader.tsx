@@ -53,7 +53,7 @@ export const ProfileHeader = ({
           {profile.fullName}
         </ProfileDisplayName>
 
-        <Col className="d-flex align-items-center ms-auto">
+        <Col className="d-flex align-items-center ms-auto my-auto">
           <Stack gap={0}>
             {isOrg && (
               <>
