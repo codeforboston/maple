@@ -34,6 +34,18 @@ export const UserIcon = styled(Image).attrs(props => ({
   margin-right: 2rem;
 `
 
+export const UserIconSmall = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-individual-icon.svg",
+  className: props.className
+}))`
+  height: 5rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+  margin-right: 2rem;
+`
+
 export const ProfileDisplayName = styled(Col).attrs(props => ({
   className: `${props.className}`
 }))`
@@ -54,13 +66,40 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
     font-size: 2.75rem;
   }
 `
+
+export const ProfileDisplayNameSmall = styled(Col).attrs(props => ({
+  className: `${props.className}`
+}))`
+  margin: 0;
+  /* max-height: 108px; */
+  font-family: Nunito;
+  font-weight: 500;
+  font-size: 29px;
+  letter-spacing: -0.015em;
+  text-align: left;
+  color: #000;
+`
+
 export const OrgIconLarge = styled(Image).attrs(props => ({
   alt: "",
   src: props.src || "/profile-org-icon.svg",
   className: props.className
 }))`
   height: 8rem;
-  width: 8rem;
+  /* width: 8rem; */
+  margin-right: 2rem;
+  border-radius: 50%;
+  background-color: var(--bs-white);
+  flex: 0;
+`
+
+export const OrgIconSmall = styled(Image).attrs(props => ({
+  alt: "",
+  src: props.src || "/profile-org-icon.svg",
+  className: props.className
+}))`
+  height: 5rem;
+  /* width: 5rem; */
   margin-right: 2rem;
   border-radius: 50%;
   background-color: var(--bs-white);

@@ -70,6 +70,7 @@ export function ProfilePage(profileprops: {
               {isUser && bannerContent}
               <StyledContainer>
                 <ProfileHeader
+                  isMobile={isMobile}
                   isOrg={isOrg || false}
                   isProfilePublic={isProfilePublic}
                   setIsProfilePublic={setIsProfilePublic}
