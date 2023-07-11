@@ -16,3 +16,4 @@ jobs:
         with:
           projectToken: f8618e690599
           exitZeroOnChanges: true
+          exitOnceUploaded: true
