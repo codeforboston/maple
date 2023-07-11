@@ -27,7 +27,7 @@ const defaults: Record<Env, FeatureFlags> = {
     testimonyDiffing: false,
     notifications: true,
     billTracker: true,
-    followOrg: false,
+    followOrg: true,
     lobbyingTable: false
   },
   production: {
