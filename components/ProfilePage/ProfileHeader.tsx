@@ -1,3 +1,4 @@
+
 import {
   collection,
   deleteDoc,
@@ -10,12 +11,14 @@ import {
 import { firestore } from "../firebase"
 import { Col, Stack } from "../bootstrap"
 import { useState, useEffect } from "react"
+
 import {
   Header,
-  ProfileDisplayName,
   OrgIconLarge,
+  ProfileDisplayName,
   UserIcon
 } from "./StyledProfileComponents"
+
 import { EditProfileButton } from "./EditProfileButton"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { Profile } from "../db"
@@ -139,10 +142,6 @@ export const ProfileHeader = ({
               {isUser ? (
                 <EditProfileButton isOrg={isOrg} isMobile={isMobile} />
               ) : (
-                /*
-                 remove comment when Notification Emails and related Follow functionality
-                 is ready for production
-                */
 
                 <FollowButton
                   onFollowClick={() => handleFollowClick()}
@@ -150,6 +149,7 @@ export const ProfileHeader = ({
                   isMobile={isMobile}
                   isFollowing={queryResult}
                 />
+
               )}
             </>
           )}
