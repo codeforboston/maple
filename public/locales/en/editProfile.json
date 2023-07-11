@@ -39,7 +39,6 @@
         "nickname": "Nickname",
         "makePublic": "Make Public",
         "makePrivate": "Make Private",
-        "editProfile": "Edit\u00A0Profile",
         "errNameRequired": "Name is required",
         "aboutYou": "Write something about yourself",
         "aboutYouTip":"What should you write?",

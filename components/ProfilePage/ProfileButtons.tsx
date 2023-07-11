@@ -51,12 +51,12 @@ const StyledButton3 = styled(Button)`
 `
 
 export const EditProfileButton = () => {
-  const { t } = useTranslation("editProfile")
+  const { t } = useTranslation("profile")
 
   return (
     <Internal href="/editprofile" className="view-edit-profile">
       <StyledButton1 className={`btn mb-1 py-1`}>
-        {t("forms.editProfile")}
+        {t("button.editProfile")}
       </StyledButton1>
     </Internal>
   )
