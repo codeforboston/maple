@@ -163,7 +163,7 @@ export const ProfileHeader = ({
                       </div>
                     ) : (
                       <>
-                        {flags().followOrg && (
+                        {isOrg && !isUser && (
                           <FollowButton profileid={profileid} />
                         )}
                       </>
@@ -190,7 +190,7 @@ export const ProfileHeader = ({
                       </>
                     ) : (
                       <>
-                        {flags().followOrg && (
+                        {isOrg && !isUser && (
                           <FollowButton profileid={profileid} />
                         )}
                       </>
@@ -238,7 +238,7 @@ function ProfileHeaderMobile({
           {profile.fullName}
         </ProfileDisplayNameSmall>
       </Col>
-      {isUser ? (
+      {isUser && (
         <>
           <EditProfileButton isOrg={isOrg} />
           <MakePublicButton
@@ -248,10 +248,9 @@ function ProfileHeaderMobile({
             setIsProfilePublic={setIsProfilePublic}
           />
         </>
-      ) : (
-        <>{flags().followOrg && <FollowButton profileid={profileid} />}</>
       )}
-      {isOrg ? <OrgContactInfo profile={profile} /> : <></>}
+      {isOrg && !isUser && <FollowButton profileid={profileid} />}
+      {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
 }
