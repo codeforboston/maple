@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction } from "react"
-import { Button, Col, Stack } from "react-bootstrap"
-import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import { Dispatch, SetStateAction } from "react"
+import { Button } from "react-bootstrap"
 import { ProfileHook, useProfile } from "../db"
+import { Internal } from "components/links"
+import styled from "styled-components"
 
 const StyledButton1 = styled(Button)`
   height: 34px;
@@ -50,25 +50,15 @@ const StyledButton3 = styled(Button)`
   }
 `
 
-export const EditProfileButton = ({ isOrg }: { isOrg: boolean }) => {
+export const EditProfileButton = () => {
   const { t } = useTranslation("editProfile")
 
   return (
-    // <div
-    //   className={
-    //     isOrg
-    //       ? `d-flex w-100 justify-content-start`
-    //       : `d-flex w-100 justify-content-end`
-    //   }
-    // >
-    //   <div className={isOrg ? `d-flex flex-row` : `d-flex flex-column`}>
     <Internal href="/editprofile" className="view-edit-profile">
       <StyledButton1 className={`btn mb-1 py-1`}>
         {t("forms.editProfile")}
       </StyledButton1>
     </Internal>
-    //   </div>
-    // </div>
   )
 }
 

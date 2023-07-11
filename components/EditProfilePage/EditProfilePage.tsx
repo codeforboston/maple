@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
@@ -11,8 +12,8 @@ import {
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
-import { PersonalInfoTab } from "./PersonalInfoTab"
 import { FollowingTab } from "./FollowingTab"
+import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
   Header,
@@ -21,7 +22,6 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
-import { useTranslation } from "next-i18next"
 
 export function EditProfile() {
   const { user } = useAuth()
