@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
@@ -40,9 +40,11 @@ export function ProfilePage(profileprops: {
     profile?.role === "pendingUpgrade" ||
     false
 
-  const [isProfilePublic, setIsProfilePublic] = useState<boolean>(
-    profile?.public ? profile.public : false
-  )
+  const [isProfilePublic, setIsProfilePublic] = useState<boolean>(false)
+
+  useEffect(() => {
+    setIsProfilePublic(profile?.public ? profile.public : false)
+  }, [profile?.public])
 
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
@@ -55,6 +57,9 @@ export function ProfilePage(profileprops: {
   ) : (
     <Banner> {t("content.privateProfile")} </Banner>
   )
+
+  console.log("profile public: ", profile?.public)
+  console.log("isProfilePublic: ", isProfilePublic)
 
   return (
     <>
