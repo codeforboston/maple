@@ -149,7 +149,7 @@ export const ProfileHeader = ({
                     {isUser ? (
                       <div className={`d-flex w-100 justify-content-start`}>
                         <div className={`d-flex flex-row`}>
-                          <EditProfileButton isOrg={isOrg} />
+                          <EditProfileButton />
                         </div>
                       </div>
                     ) : (
@@ -165,21 +165,15 @@ export const ProfileHeader = ({
               ) : (
                 <div className={`d-flex w-100 justify-content-end`}>
                   <div className={`d-flex flex-column`}>
-                    {isUser ? (
+                    {isUser && (
                       <>
-                        <EditProfileButton isOrg={isOrg} />
+                        <EditProfileButton />
                         <MakePublicButton
                           isMobile={isMobile}
                           isOrg={isOrg}
                           isProfilePublic={isProfilePublic}
                           setIsProfilePublic={setIsProfilePublic}
                         />
-                      </>
-                    ) : (
-                      <>
-                        {isOrg && !isUser && (
-                          <FollowButton profileid={profileid} />
-                        )}
                       </>
                     )}
                   </div>
@@ -227,7 +221,7 @@ function ProfileHeaderMobile({
       </Col>
       {isUser && (
         <>
-          <EditProfileButton isOrg={isOrg} />
+          <EditProfileButton />
           {!isOrg && (
             <MakePublicButton
               isMobile={isMobile}

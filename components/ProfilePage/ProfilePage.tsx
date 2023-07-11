@@ -57,9 +57,6 @@ export function ProfilePage(profileprops: {
     <Banner> {t("content.privateProfile")} </Banner>
   )
 
-  console.log("profile public: ", profile?.public)
-  console.log("isProfilePublic: ", isProfilePublic)
-
   return (
     <>
       {loading ? (
