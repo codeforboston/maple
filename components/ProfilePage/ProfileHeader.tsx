@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react"
-import { flags } from "components/featureFlags"
 import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
 import { Profile } from "../db"
@@ -136,7 +135,6 @@ export const ProfileHeader = ({
                 <UserIcon src="./profile-individual-icon.svg" />
               </Col>
             )}
-
             <Col className={isOrg ? `` : `d-flex`}>
               <Stack gap={0}>
                 <ProfileDisplayName
@@ -146,27 +144,16 @@ export const ProfileHeader = ({
                 >
                   {profile.fullName}
                 </ProfileDisplayName>
-
                 {isOrg && (
                   <>
                     {isUser ? (
                       <div className={`d-flex w-100 justify-content-start`}>
                         <div className={`d-flex flex-row`}>
                           <EditProfileButton isOrg={isOrg} />
-                          <MakePublicButton
-                            isMobile={isMobile}
-                            isOrg={isOrg}
-                            isProfilePublic={isProfilePublic}
-                            setIsProfilePublic={setIsProfilePublic}
-                          />
                         </div>
                       </div>
                     ) : (
-                      <>
-                        {isOrg && !isUser && (
-                          <FollowButton profileid={profileid} />
-                        )}
-                      </>
+                      <FollowButton profileid={profileid} />
                     )}
                   </>
                 )}
@@ -241,12 +228,14 @@ function ProfileHeaderMobile({
       {isUser && (
         <>
           <EditProfileButton isOrg={isOrg} />
-          <MakePublicButton
-            isMobile={isMobile}
-            isOrg={isOrg}
-            isProfilePublic={isProfilePublic}
-            setIsProfilePublic={setIsProfilePublic}
-          />
+          {!isOrg && (
+            <MakePublicButton
+              isMobile={isMobile}
+              isOrg={isOrg}
+              isProfilePublic={isProfilePublic}
+              setIsProfilePublic={setIsProfilePublic}
+            />
+          )}
         </>
       )}
       {isOrg && !isUser && <FollowButton profileid={profileid} />}
