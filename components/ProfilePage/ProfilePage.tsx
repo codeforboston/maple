@@ -124,7 +124,7 @@ export function ProfilePage(profileprops: {
             <ErrorPage statusCode={404} withDarkMode={false} />
           )}
         </>
-      )}{" "}
+      )}
     </>
   )
 }
