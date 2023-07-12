@@ -21,10 +21,15 @@
     "checkEmail": "Check your email!",
     "sendAnotherLink": "Send Another Link"
   },
-  "legislator":{
-    "representative": "Representative",
-    "searchRepresentative": "Search your representative",
-    "senator": "Senator",
-    "searchSenator": "Search your senator"
+  "legislators": "Legislators",
+  "representative": "Representative",
+  "senator": "Senator",
+  "orgIcon": {
+    "large": "Large Organization Icon",
+    "small": "Small Organization Icon"
+  },
+  "userIcon": {
+    "large": "Large User Icon",
+    "small": "Small User Icon"
   }
 }

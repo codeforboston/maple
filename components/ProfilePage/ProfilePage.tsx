@@ -1,5 +1,5 @@
+import { useTranslation } from "next-i18next"
 import { useState, useEffect } from "react"
-import { ProfileAboutSection } from "./ProfileAboutSection"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -10,11 +10,12 @@ import {
 } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
+import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
-import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
+import ErrorPage from "next/error"
 
 export function ProfilePage(profileprops: {
   id: string

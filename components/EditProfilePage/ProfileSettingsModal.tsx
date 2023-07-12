@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react"
+import { useTranslation } from "next-i18next"
+import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
@@ -6,7 +7,6 @@ import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import { Role } from "../auth"
-import { useTranslation } from "next-i18next"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
