@@ -19,7 +19,7 @@ export const ProfileHeader = ({
   isMobile,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic,
+  onProfilePublicityChanged,
   isUser,
   profile,
   profileid
@@ -27,7 +27,7 @@ export const ProfileHeader = ({
   isMobile: boolean
   isOrg: boolean
   isProfilePublic: boolean | undefined
-  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
+  onProfilePublicityChanged: (isPublic: boolean) => void
   isUser: boolean
   profile: Profile
   profileid: string
@@ -49,7 +49,7 @@ export const ProfileHeader = ({
           isMobile={isMobile}
           isOrg={isOrg}
           isProfilePublic={isProfilePublic}
-          setIsProfilePublic={setIsProfilePublic}
+          onProfilePublicityChanged={onProfilePublicityChanged}
           isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
@@ -105,7 +105,7 @@ export const ProfileHeader = ({
                           isMobile={isMobile}
                           isOrg={isOrg}
                           isProfilePublic={isProfilePublic}
-                          setIsProfilePublic={setIsProfilePublic}
+                          onProfilePublicityChanged={onProfilePublicityChanged}
                         />
                       </>
                     )}
@@ -124,7 +124,7 @@ function ProfileHeaderMobile({
   isMobile,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic,
+  onProfilePublicityChanged,
   isUser,
   orgImageSrc,
   profile,
@@ -134,7 +134,7 @@ function ProfileHeaderMobile({
   isMobile: boolean
   isOrg: boolean
   isProfilePublic: boolean | undefined
-  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
+  onProfilePublicityChanged: (isPublic: boolean) => void
   isUser: boolean
   orgImageSrc: string
   profile: Profile
@@ -164,7 +164,7 @@ function ProfileHeaderMobile({
               isMobile={isMobile}
               isOrg={isOrg}
               isProfilePublic={isProfilePublic}
-              setIsProfilePublic={setIsProfilePublic}
+              onProfilePublicityChanged={onProfilePublicityChanged}
             />
           )}
         </>

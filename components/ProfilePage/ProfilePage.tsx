@@ -40,12 +40,18 @@ export function ProfilePage(profileprops: {
     profile?.role === "pendingUpgrade" ||
     false
 
-  const [isProfilePublic, setIsProfilePublic] = useState<boolean | undefined>(
-    false
-  )
+  const [isProfilePublic, onProfilePublicityChanged] = useState<
+    boolean | undefined
+  >(false)
+  /* profile?.public will not cause the <Banner> component to properly rerender 
+     to show current "publicity" when the "Make Public/Private" button is used.  
+     The leads to the <Banner> displaying incorrect/unsynced information.
+
+     see variable: bannerContent
+   */
 
   useEffect(() => {
-    setIsProfilePublic(profile?.public)
+    onProfilePublicityChanged(profile?.public)
   }, [profile?.public])
 
   const testimony = usePublishedTestimonyListing({
@@ -59,8 +65,6 @@ export function ProfilePage(profileprops: {
   ) : (
     <Banner> {t("content.privateProfile")} </Banner>
   )
-
-  console.log("isProfilePublic", isProfilePublic)
 
   return (
     <>
@@ -79,7 +83,7 @@ export function ProfilePage(profileprops: {
                   isMobile={isMobile}
                   isOrg={isOrg || false}
                   isProfilePublic={isProfilePublic}
-                  setIsProfilePublic={setIsProfilePublic}
+                  onProfilePublicityChanged={onProfilePublicityChanged}
                   isUser={isUser}
                   profileid={profileprops.id}
                   profile={profile}

@@ -66,12 +66,12 @@ export const MakePublicButton = ({
   isMobile,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic
+  onProfilePublicityChanged
 }: {
   isMobile: boolean
   isOrg: boolean
   isProfilePublic: boolean | undefined
-  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
+  onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("editProfile")
 
@@ -87,7 +87,7 @@ export const MakePublicButton = ({
     const { updateIsPublic } = actions
 
     await updateIsPublic(!isProfilePublic)
-    setIsProfilePublic(!isProfilePublic)
+    onProfilePublicityChanged(!isProfilePublic)
   }
 
   return (
