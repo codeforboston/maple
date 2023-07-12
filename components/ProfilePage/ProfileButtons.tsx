@@ -1,5 +1,4 @@
 import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
 import { Button } from "react-bootstrap"
 import { ProfileHook, useProfile } from "../db"
 import { Internal } from "components/links"

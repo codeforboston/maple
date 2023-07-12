@@ -1,5 +1,4 @@
 import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
 import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
 import { Profile } from "../db"
