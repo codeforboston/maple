@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Dispatch, SetStateAction } from "react"
 import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
@@ -10,7 +11,7 @@ import {
   OrgIconSmall,
   ProfileDisplayName,
   ProfileDisplayNameSmall,
-  UserIcon,
+  UserIconLarge,
   UserIconSmall
 } from "./StyledProfileComponents"
 
@@ -31,9 +32,15 @@ export const ProfileHeader = ({
   profile: Profile
   profileid: string
 }) => {
+  const { t } = useTranslation("profile")
+
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
+
+  const userImageSrc = profile.profileImage
+    ? profile.profileImage
+    : "/profile-individual-icon.svg"
 
   return (
     <>
@@ -47,17 +54,18 @@ export const ProfileHeader = ({
           orgImageSrc={orgImageSrc}
           profile={profile}
           profileid={profileid}
+          userImageSrc={userImageSrc}
         />
       ) : (
         <Header className={`gx-0 edit-profile-header`}>
           <Row xs={"auto"}>
             {isOrg ? (
               <Col xs={"auto"} className={"col-auto"}>
-                <OrgIconLarge src={orgImageSrc} />
+                <OrgIconLarge alt={t("orgIcon.large")} src={orgImageSrc} />
               </Col>
             ) : (
               <Col>
-                <UserIcon src="./profile-individual-icon.svg" />
+                <UserIconLarge alt={t("userIcon.large")} src={userImageSrc} />
               </Col>
             )}
             <Col className={isOrg ? `` : `d-flex`}>
@@ -120,7 +128,8 @@ function ProfileHeaderMobile({
   isUser,
   orgImageSrc,
   profile,
-  profileid
+  profileid,
+  userImageSrc
 }: {
   isMobile: boolean
   isOrg: boolean
@@ -130,14 +139,17 @@ function ProfileHeaderMobile({
   orgImageSrc: string
   profile: Profile
   profileid: string
+  userImageSrc: string
 }) {
+  const { t } = useTranslation("profile")
+
   return (
     <Header className={``}>
       <Col className={`d-flex align-items-center`}>
         {isOrg ? (
-          <OrgIconSmall className={``} src={orgImageSrc} />
+          <OrgIconSmall alt={t("orgIcon.small")} src={orgImageSrc} />
         ) : (
-          <UserIconSmall src="./profile-individual-icon.svg" />
+          <UserIconSmall alt={t("userIcon.small")} src={userImageSrc} />
         )}
 
         <ProfileDisplayNameSmall className={`ms-auto overflow-hidden`}>
