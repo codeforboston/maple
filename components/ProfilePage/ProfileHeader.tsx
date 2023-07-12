@@ -26,8 +26,8 @@ export const ProfileHeader = ({
 }: {
   isMobile: boolean
   isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isProfilePublic: boolean | undefined
+  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
   isUser: boolean
   profile: Profile
   profileid: string
@@ -133,8 +133,8 @@ function ProfileHeaderMobile({
 }: {
   isMobile: boolean
   isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isProfilePublic: boolean | undefined
+  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
   isUser: boolean
   orgImageSrc: string
   profile: Profile

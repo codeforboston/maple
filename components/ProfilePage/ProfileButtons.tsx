@@ -70,8 +70,8 @@ export const MakePublicButton = ({
 }: {
   isMobile: boolean
   isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isProfilePublic: boolean | undefined
+  setIsProfilePublic: Dispatch<SetStateAction<boolean | undefined>>
 }) => {
   const { t } = useTranslation("editProfile")
 
