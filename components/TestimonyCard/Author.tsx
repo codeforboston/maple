@@ -19,7 +19,7 @@ export const Author = ({ uid, name }: { uid: string; name: string }) => {
           <StyledName href={`/profile?id=${uid}`}>{authorName}</StyledName>
         </h6>
       ) : (
-        <h6>{name}</h6>
+        <h6>{authorName || name}</h6>
       )}
     </div>
   )
