@@ -34,14 +34,14 @@ const defaults: Record<Env, FeatureFlags> = {
     testimonyDiffing: false,
     notifications: false,
     billTracker: false,
-    followOrg: false,
+    followOrg: true,
     lobbyingTable: false
   },
   test: {
     testimonyDiffing: false,
     notifications: false,
     billTracker: false,
-    followOrg: false,
+    followOrg: true,
     lobbyingTable: false
   }
 }
