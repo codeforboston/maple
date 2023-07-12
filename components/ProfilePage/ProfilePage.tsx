@@ -40,10 +40,12 @@ export function ProfilePage(profileprops: {
     profile?.role === "pendingUpgrade" ||
     false
 
-  const [isProfilePublic, setIsProfilePublic] = useState<boolean>(false)
+  const [isProfilePublic, setIsProfilePublic] = useState<boolean | undefined>(
+    false
+  )
 
   useEffect(() => {
-    setIsProfilePublic(profile?.public ? profile.public : false)
+    setIsProfilePublic(profile?.public)
   }, [profile?.public])
 
   const testimony = usePublishedTestimonyListing({
@@ -57,6 +59,8 @@ export function ProfilePage(profileprops: {
   ) : (
     <Banner> {t("content.privateProfile")} </Banner>
   )
+
+  console.log("isProfilePublic", isProfilePublic)
 
   return (
     <>
