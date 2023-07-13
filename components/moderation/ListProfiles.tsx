@@ -13,8 +13,8 @@ import {
 } from "react-admin"
 
 import {
-  downgradeOrganization,
-  upgradeOrganization
+  rejectOrganizationRequest,
+  acceptOrganizationRequest
 } from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
@@ -137,12 +137,15 @@ export function InnerListProfiles({
   const { filterValues, setFilters } = useListController()
   const refresh = useRefresh()
 
-  const highlightPending = "lightyellow"
-  const highlightRecent = "lightblue"
+  const getBGHighlight = (record: RaRecord) => {
+    if (record.role === "pendingUpgrade") return "lightyellow"
+    if (record.id === getJustUpdated()) return "lightblue"
+    return ""
+  }
 
-  async function handleUpgrade(record: any) {
+  async function handleAccept(record: any) {
     setIsJustUpdated(record.id)
-    await upgradeOrganization(record.id)
+    await acceptOrganizationRequest(record.id)
     clearUpdating()
     filterValues["role"] === "pendingUpgrade" &&
       setFilters({ role: "organization" }, [])
@@ -151,7 +154,7 @@ export function InnerListProfiles({
 
   async function handleReject(record: any) {
     setIsJustUpdated(record.id)
-    await downgradeOrganization(record.id)
+    await rejectOrganizationRequest(record.id)
     clearUpdating()
     filterValues["role"] === "pendingUpgrade" && setFilters({}, [])
     refresh()
@@ -161,12 +164,7 @@ export function InnerListProfiles({
     <Datagrid
       bulkActionButtons={false}
       rowStyle={record => ({
-        backgroundColor:
-          record.role === "pendingUpgrade"
-            ? highlightPending
-            : record.id === getJustUpdated()
-            ? highlightRecent
-            : "",
+        backgroundColor: getBGHighlight(record),
         animationName: record.id === getJustUpdated() ? "fadeOut" : "",
         animationDelay: "2s",
         animationDuration: "2s",
@@ -198,7 +196,7 @@ export function InnerListProfiles({
               <Button
                 label="upgrade"
                 variant="outlined"
-                onClick={async () => await handleUpgrade(record)}
+                onClick={async () => await handleAccept(record)}
               />
               <Button
                 label="reject"
