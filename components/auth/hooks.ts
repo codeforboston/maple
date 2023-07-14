@@ -133,7 +133,8 @@ export function useSignInWithPopUp() {
         setProfile(credentials.user.uid, {
           fullName: credentials.user.displayName ?? "New User",
           notificationFrequency: "Monthly",
-          email: credentials.user.email
+          email: credentials.user.email,
+          public: true
         })
       ])
     }
