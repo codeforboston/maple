@@ -1,9 +1,14 @@
-import { useTranslation } from "next-i18next"
-import { FollowButton } from "components/shared/FollowButton"
-import { Col, Row, Stack } from "../bootstrap"
-import { Profile } from "../db"
-import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
-import { OrgContactInfo } from "./OrgContactInfo"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { firestore } from "../firebase"
+import { Col, Stack, Row } from "../bootstrap"
 import {
   Header,
   OrgIconLarge,
@@ -14,22 +19,23 @@ import {
   UserIconSmall
 } from "./StyledProfileComponents"
 
-import { EditProfileButton } from "./ProfileButtons"
+import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton"
+import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { useAuth } from "../auth"
 import { useTranslation } from "next-i18next"
 
 export const ProfileHeader = ({
   isMobile,
+  uid,
+  profileId,
+  profile,
+  isUser,
   isOrg,
   isProfilePublic,
-  onProfilePublicityChanged,
-  isUser,
-  profile,
-  profileid
+  onProfilePublicityChanged
 }: {
   isMobile: boolean
   isOrg: boolean
@@ -37,88 +43,17 @@ export const ProfileHeader = ({
   onProfilePublicityChanged: (isPublic: boolean) => void
   isUser: boolean
   profile: Profile
+  isUser: boolean
+  isOrg: boolean
+  isProfilePublic: boolean | undefined
+  onProfilePublicityChanged: (isPublic: boolean) => void
+
 }) => {
   const { t } = useTranslation("profile")
 
   const orgImageSrc = profile.profileImage
     ? profile.profileImage
     : "/profile-org-icon.svg"
-  const topicName = `org-${profileId}`
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
-  const [queryResult, setQueryResult] = useState("")
-
-  const orgQuery = async () => {
-    const q = query(
-      subscriptionRef,
-      where("topicName", "==", `org-${profileId}`)
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      setQueryResult(doc.data().topicName)
-    })
-  }
-
-  useEffect(() => {
-    uid ? orgQuery() : null
-  })
-
-  const { user } = useAuth()
-
-  const functions = getFunctions()
-  const followBillFunction = httpsCallable(functions, "followBill")
-  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
-
-  const handleFollowClick = async () => {
-    // ensure user is not null
-    if (!user) {
-      throw new Error("User not found")
-    }
-
-    try {
-      if (!uid) {
-        throw new Error("User not found")
-      }
-      const topicLookup = {
-        profileId: profileId,
-        type: "org"
-      }
-      const token = await user.getIdToken()
-      const response = await followBillFunction({ topicLookup, token })
-      if (response.data) {
-        setQueryResult(topicName)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleUnfollowClick = async () => {
-    // ensure user is not null
-    if (!user) {
-      throw new Error("User not found")
-    }
-
-    try {
-      if (!uid) {
-        throw new Error("User not found")
-      }
-      const topicLookup = {
-        profileId: profileId,
-        type: "org"
-      }
-      const token = await user.getIdToken()
-      const response = await unfollowBillFunction({ topicLookup, token })
-      if (response.data) {
-        setQueryResult("")
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const userImageSrc = profile.profileImage
     ? profile.profileImage
@@ -135,7 +70,7 @@ export const ProfileHeader = ({
           isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
-          profileid={profileid}
+          profileId={profileId}
           userImageSrc={userImageSrc}
         />
       ) : (
@@ -168,7 +103,9 @@ export const ProfileHeader = ({
                         </div>
                       </div>
                     ) : (
-                      <FollowButton profileid={profileid} />
+                      <FollowButton
+                        isMobile={isMobile}
+                      />
                     )}
                   </>
                 )}
@@ -178,6 +115,21 @@ export const ProfileHeader = ({
               {isOrg ? (
                 <OrgContactInfo profile={profile} />
               ) : (
+                <div className={`d-flex w-100 justify-content-end`}>
+                  <div className={`d-flex flex-column`}>
+                    {isUser && (
+                      <>
+                        <EditProfileButton />
+                        <MakePublicButton
+                          isMobile={isMobile}
+                          isOrg={isOrg}
+                          isProfilePublic={isProfilePublic}
+                          onProfilePublicityChanged={onProfilePublicityChanged}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
                 <div className={`d-flex w-100 justify-content-end`}>
                   <div className={`d-flex flex-column`}>
                     {isUser && (
@@ -210,8 +162,9 @@ function ProfileHeaderMobile({
   isUser,
   orgImageSrc,
   profile,
-  profileid,
-  userImageSrc
+  profileId,
+  userImageSrc,
+  uid
 }: {
   isMobile: boolean
   isOrg: boolean
@@ -220,10 +173,12 @@ function ProfileHeaderMobile({
   isUser: boolean
   orgImageSrc: string
   profile: Profile
-  profileid: string
+  profileId: string
   userImageSrc: string
+  uid?: string
 }) {
   const { t } = useTranslation("profile")
+  
 
   return (
     <Header className={``}>
@@ -251,7 +206,11 @@ function ProfileHeaderMobile({
           )}
         </>
       )}
-      {isOrg && !isUser && <FollowButton profileid={profileid} />}
+      {isOrg && !isUser && 
+        <FollowButton
+          isMobile={isMobile}
+        />
+      }
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
