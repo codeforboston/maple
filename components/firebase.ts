@@ -1,6 +1,6 @@
 import * as analytics from "firebase/analytics"
 import { FirebaseOptions, getApps, initializeApp } from "firebase/app"
-import { connectAuthEmulator, getAuth } from "firebase/auth"
+import { connectAuthEmulator, getAuth, initializeAuth } from "firebase/auth"
 import {
   connectFirestoreEmulator,
   getFirestore,
@@ -26,7 +26,7 @@ const projectId =
   process.env.NEXT_PUBLIC_PROJECT_ID_FOR_TEST ?? "digital-testimony-dev"
 const devConfig = {
   apiKey: "AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo",
-  authDomain: `digital-testimony-dev.firebaseapp.com`, //`${projectId}.firebaseapp.com`,
+  authDomain: `${projectId}.firebaseapp.com`,
   projectId,
   storageBucket: `${projectId}.appspot.com`,
   messagingSenderId: "313437920642",
@@ -93,7 +93,10 @@ if (!initialized && process.env.NODE_ENV !== "production") {
 
 /** Connect emulators according to `firebase.json` */
 function connectEmulators() {
-  const host = typeof window === "undefined" ? "firebase" : "127.0.0.1"
+  const host =
+    process.env.NEXT_PUBLIC_EMULATOR_HOST ?? typeof window === "undefined"
+      ? "firebase"
+      : "127.0.0.1"
   connectFirestoreEmulator(firestore, host, 8080)
   connectFunctionsEmulator(functions, host, 5001)
   connectStorageEmulator(storage, host, 9199)

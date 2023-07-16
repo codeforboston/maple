@@ -172,10 +172,10 @@ export function InnerListProfiles({
       })}
     >
       <TextField source="fullName" label="Organization" />
-      <TextField source="contact.email" label="email" />
-      <TextField source="contact.phoneNumber" label="phone" />
+      <TextField source="contactInfo.publicEmail" label="email" />
+      <TextField source="contactInfo.publicPhone" label="phone" />
 
-      <TextField source="contact.website" label="website" />
+      <TextField source="contactInfo.website" label="website" />
       <WithRecord
         render={(record: Profile & RaRecord) => {
           return (

@@ -7,6 +7,7 @@ import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
 import { FollowButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
+import { flags } from "components/featureFlags"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
