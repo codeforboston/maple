@@ -58,8 +58,9 @@ git pull upstream main
 
 1. Make sure that you have `node` and `yarn` installed. You can download Node directly [here](https://nodejs.org/en/download/) or use a tool like [nvm](https://github.com/nvm-sh/nvm). To install yarn, run `npm i -g yarn` after installing node.
 2. Install dependencies with `yarn install`.
-3. If you are developing backend features, install Docker and [Docker Compose V2](https://docs.docker.com/compose/install/).
-4. Run a command and start developing:
+3. If you are developing backend features involving firebase or typesense, install Docker and [Docker Compose V2](https://docs.docker.com/compose/install/).
+4. If you are developing backend features involving only Next.js API routes, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK.
+5. Run a command and start developing:
 
 - `yarn dev`: Start the Next.js development server. Use this if you're working on frontend features. View the app in your browser at [localhost:3000](http://localhost:3000). Make some changes to `components/` and `pages/`. The site will automatically update. Your local site will share the same backend as the live development site.
 - `yarn dev:storybook`: Start the Storybook development server. Use this if you're working on UI components. View your storybook at [localhost:6006](http://localhost:6006). It will update as you make changes to the stories in `stories/`.
