@@ -26,7 +26,5 @@ if (initialized) {
   app = admin.initializeApp(init)
 }
 
-console.log("init-firebase-admin.ts: initialized", initialized)
-
 export const db = app.firestore()
 export const auth = app.auth()
