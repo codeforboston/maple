@@ -9,10 +9,10 @@ import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 
 export const FollowButton = ({
   bill,
-  profileid
+  profileId
 }: {
   bill?: Bill
-  profileid?: string
+  profileId?: string
 }) => {
   const { t } = useTranslation("common")
 
@@ -24,7 +24,7 @@ export const FollowButton = ({
   let topicName = ``
   bill
     ? (topicName = `bill-${courtId}-${billId}`)
-    : (topicName = `org-${profileid}`)
+    : (topicName = `org-${profileId}`)
 
   const [queryResult, setQueryResult] = useState("")
 
@@ -35,7 +35,7 @@ export const FollowButton = ({
   }, [uid, topicName, setQueryResult])
 
   const FollowClick = async () => {
-    setFollow(uid, topicName, bill, billId, courtId, profileid)
+    setFollow(uid, topicName, bill, billId, courtId, profileId)
     setQueryResult(topicName)
   }
 

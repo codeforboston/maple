@@ -74,7 +74,10 @@ export function ProfilePage(profileprops: {
                   isMobile={isMobile}
                   uid={user?.uid}
                   profileId={profileprops.id}
-
+                  isUser={isUser}
+                  isOrg={isOrg}
+                  isProfilePublic={isProfilePublic}
+                  onProfilePublicityChanged={onProfilePublicityChanged}
                   profile={profile}
                 />
 
