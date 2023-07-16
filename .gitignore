@@ -71,3 +71,5 @@ storybook-static
 build-storybook.log
 
 /token
+
+cert.txt

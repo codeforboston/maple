@@ -91,5 +91,5 @@ export const publishTestimony = httpsCallable<
 
 export const resolveReport = httpsCallable<report.Request, report.Response>(
   functions,
-  "resolveReport"
+  "adminResolveReport"
 )
