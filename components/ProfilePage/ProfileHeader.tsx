@@ -14,6 +14,14 @@ import {
   UserIconSmall
 } from "./StyledProfileComponents"
 
+import { EditProfileButton } from "./ProfileButtons"
+import { OrgContactInfo } from "./OrgContactInfo"
+import { Profile } from "../db"
+import { FollowButton } from "./FollowButton"
+import { getFunctions, httpsCallable } from "firebase/functions"
+import { useAuth } from "../auth"
+import { useTranslation } from "next-i18next"
+
 export const ProfileHeader = ({
   isMobile,
   isOrg,
