@@ -161,38 +161,42 @@ export function InnerListProfiles({
   }
 
   return (
-    <Datagrid
-      bulkActionButtons={false}
-      rowStyle={record => ({
-        backgroundColor: getBGHighlight(record),
-        animationName: record.id === getJustUpdated() ? "fadeOut" : "",
-        animationDelay: "2s",
-        animationDuration: "2s",
-        animationFillMode: "forwards"
-      })}
-    >
-      <TextField source="fullName" label="Organization" />
-      <TextField source="contact.email" label="email" />
-      <TextField source="contact.phoneNumber" label="phone" />
+    <List actions={<UserRoleToolBar />}>
+      <Datagrid
+        rowStyle={record => ({
+          backgroundColor:
+            record.role === "pendingUpgrade"
+              ? highlightPending
+              : record.id === getJustUpdated()
+              ? highlightRecent
+              : "",
+          animationName: record.id === getJustUpdated() ? "fadeOut" : "",
+          animationDelay: "2s",
+          animationDuration: "2s",
+          animationFillMode: "forwards"
+        })}
+      >
+        <TextField source="fullName" label="Organization" />
+        <TextField source="contactInfo.publicEmail" label="email" />
+        <TextField source="contactInfo.publicPhone" label="phone" />
 
-      <TextField source="contact.website" label="website" />
-      <WithRecord
-        render={(record: Profile & RaRecord) => {
-          return (
-            <>
-              <div>{record.about}</div>
-              <Internal href={`/profile?id=${record.id}`}>
-                view profile
-              </Internal>
-            </>
-          )
-        }}
-      />
-      <TextField source="role" />
-      <WithRecord
-        render={record => {
-          return record.role === "pendingUpgrade" ? (
-            <div className="d-flex gap-2">
+        <TextField source="contactInfo.website" label="website" />
+        <WithRecord
+          render={(record: Profile & RaRecord) => {
+            return (
+              <>
+                <div>{record.about}</div>
+                <Internal href={`/profile?id=${record.id}`}>
+                  view profile
+                </Internal>
+              </>
+            )
+          }}
+        />
+        <TextField source="role" />
+        <WithRecord
+          render={record => {
+            return record.role === "pendingUpgrade" ? (
               <Button
                 label="upgrade"
                 variant="outlined"
