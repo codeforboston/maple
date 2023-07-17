@@ -45,8 +45,6 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
   const toggleNav = () => setIsExpanded(expanded => !expanded)
   const closeNav = () => setIsExpanded(false)
 
-  sticky = useMediaQuery("(max-width: 768px)")
-
   return (
     <Navbar
       expand={false}
