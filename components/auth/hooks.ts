@@ -122,7 +122,7 @@ export function useSignInWithPopUp() {
     try {
       credentials = await signInWithPopup(auth, provider)
     } catch (e) {
-      console.log('error signing in with google', e)
+      console.log("error signing in with google", e)
       return
     }
 
