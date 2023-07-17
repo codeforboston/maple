@@ -206,7 +206,7 @@ const TopNav: React.FC = () => {
             <ProfileLink
               role={claims?.role}
               fullName={profile?.fullName}
-              sticky
+              sticky={sticky}
             />
           </div>
         </div>
