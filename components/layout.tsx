@@ -10,6 +10,7 @@ import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
+import useElementSize from "usehooks-ts"
 
 export type LayoutProps = {
   title?: string
@@ -192,19 +193,21 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-          <div className={styles.navbar_box}>
-            <Navbar.Brand className="mx-2 p-0">
-              <Nav className="me-auto">
-                <Nav.Link href="/" className="p-0">
-                  {sticky ? (
-                    <Image src="/white-tree.svg" alt="logo"></Image>
-                  ) : (
-                    <Image src="/nav-logo.svg" alt="logo"></Image>
-                  )}
-                </Nav.Link>
-              </Nav>
-            </Navbar.Brand>
-          </div>
+          <Nav className={sticky ? "" : "me-auto w-100 h-100 align-items-center"}>
+            <div className={sticky ? styles.center_menu : ""}>
+              <Nav.Link href="/" className="p-0 w-100">
+                {sticky ? (
+                  <Image
+                    src="/white-tree.svg"
+                    alt="logo"
+                    className="w-100"
+                  ></Image>
+                ) : (
+                  <Image src="/nav-logo.svg" alt="logo"></Image>
+                )}
+              </Nav.Link>
+            </div>
+          </Nav>
           <div className={styles.navbar_box}>
             <ProfileLink
               role={claims?.role}
