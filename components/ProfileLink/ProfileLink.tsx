@@ -9,7 +9,6 @@ import {
 } from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
-import { useMediaQuery } from "usehooks-ts"
 
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
