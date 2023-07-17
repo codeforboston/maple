@@ -7,7 +7,7 @@ import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
-import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { Container, Nav, NavDropdown, Navbar, Row, Col } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
 
@@ -60,7 +60,7 @@ const TopNav: React.FC = () => {
       expand={false}
       expanded={isExpanded}
     >
-      <Container>
+      <Container fluid>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
             <Navbar expand={false} expanded={isExpanded}>
@@ -196,7 +196,11 @@ const TopNav: React.FC = () => {
             <Navbar.Brand className="mx-2 p-0">
               <Nav className="me-auto">
                 <Nav.Link href="/" className="p-0">
-                  <Image fluid src="/nav-logo.svg" alt="logo"></Image>
+                  {sticky ? (
+                    <Image src="/white-tree.svg" alt="logo"></Image>
+                  ) : (
+                    <Image src="/nav-logo.svg" alt="logo"></Image>
+                  )}
                 </Nav.Link>
               </Nav>
             </Navbar.Brand>
