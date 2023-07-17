@@ -9,6 +9,7 @@ import {
 } from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
+import { useMediaQuery } from "usehooks-ts"
 
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
@@ -44,6 +45,8 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
   const toggleNav = () => setIsExpanded(expanded => !expanded)
   const closeNav = () => setIsExpanded(false)
 
+  sticky = useMediaQuery("(max-width: 768px)")
+
   return (
     <Navbar
       expand={false}
@@ -62,7 +65,7 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               ></Image>
-              {greeting(role, fullName)}
+              {sticky ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">
@@ -94,9 +97,9 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
           </Navbar.Collapse>
         </>
       ) : sticky ? (
-        <SignInWithButton />
+        <SignInWithButton label="" />
       ) : (
-        <></>
+        <SignInWithButton />
       )}
     </Navbar>
   )
