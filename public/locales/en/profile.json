@@ -9,6 +9,8 @@
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",
+    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
     "statePurpose": "State your purpose",
     "noLegislatorInfo": "No legislator information given"
     },
@@ -19,5 +21,13 @@
   },
   "legislators": "Legislators",
   "representative": "Representative",
-  "senator": "Senator"
+  "senator": "Senator",
+  "orgIcon": {
+    "large": "Large Organization Icon",
+    "small": "Small Organization Icon"
+  },
+  "userIcon": {
+    "large": "Large User Icon",
+    "small": "Small User Icon"
+  }
 }

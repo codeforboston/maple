@@ -1,9 +1,10 @@
 import { useTranslation } from "next-i18next"
 import { useState, useEffect } from "react"
-import { Col, Button } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { Bill } from "../db"
 import { setFollow, setUnfollow, TopicQuery } from "./FollowingQueries"
+import { flags } from "components/featureFlags"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 
 export const FollowButton = ({
@@ -54,19 +55,23 @@ export const FollowButton = ({
 
   return (
     <>
-      {bill ? (
-        <FollowBill
-          checkmark={checkmark}
-          clickFunction={clickFunction}
-          text={text}
-          uid={uid}
-        />
-      ) : (
-        <FollowOrg
-          checkmark={checkmark}
-          clickFunction={clickFunction}
-          text={text}
-        />
+      {flags().followOrg && (
+        <>
+          {bill ? (
+            <FollowBill
+              checkmark={checkmark}
+              clickFunction={clickFunction}
+              text={text}
+              uid={uid}
+            />
+          ) : (
+            <FollowOrg
+              checkmark={checkmark}
+              clickFunction={clickFunction}
+              text={text}
+            />
+          )}
+        </>
       )}
     </>
   )
@@ -82,16 +87,16 @@ function FollowOrg({
   text: string
 }) {
   return (
-    <Col className={`d-flex w-100 justify-content-start`}>
+    <div>
       <div>
-        <div className="view-edit-profile">
+        <div className="follow-button">
           <Button onClick={clickFunction} className={`btn btn-lg py-1`}>
             {text}
             {checkmark}
           </Button>
         </div>
       </div>
-    </Col>
+    </div>
   )
 }
 

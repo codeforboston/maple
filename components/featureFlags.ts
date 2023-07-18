@@ -6,7 +6,11 @@ export const FeatureFlags = z.object({
   /** Notifications and follows */
   notifications: z.boolean().default(false),
   /** Bill Tracker on Bill Details */
-  billTracker: z.boolean().default(false)
+  billTracker: z.boolean().default(false),
+  /** Follow button for organizations */
+  followOrg: z.boolean().default(false),
+  /** Lobbying Table */
+  lobbyingTable: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -22,17 +26,23 @@ const defaults: Record<Env, FeatureFlags> = {
   development: {
     testimonyDiffing: false,
     notifications: true,
-    billTracker: true
+    billTracker: true,
+    followOrg: true,
+    lobbyingTable: false
   },
   production: {
     testimonyDiffing: false,
     notifications: false,
-    billTracker: false
+    billTracker: false,
+    followOrg: false,
+    lobbyingTable: false
   },
   test: {
     testimonyDiffing: false,
     notifications: false,
-    billTracker: false
+    billTracker: false,
+    followOrg: false,
+    lobbyingTable: false
   }
 }
 

@@ -5,6 +5,9 @@ import { Testimony } from "components/db/testimony"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
+import { FollowButton } from "components/shared/FollowButton"
+import { Image } from "react-bootstrap"
+import { flags } from "components/featureFlags"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -28,6 +31,12 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   })
   const { loading, error, result: bill } = useBill(hit.court, hit.billId)
   const committee = bill?.currentCommittee
+  const isOrg = hit.authorRole === "organization"
+  const writtenBy = isOrg ? (
+    <Link href={`/profile?id=${hit.authorUid}`}>{hit.authorDisplayName}</Link>
+  ) : (
+    hit.authorDisplayName
+  )
   return (
     <div
       style={{
@@ -37,10 +46,25 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         marginBottom: "0.75rem"
       }}
     >
-      <span>
-        Written by {hit.authorDisplayName}
-        -- {hit.authorRole}
-      </span>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "10px"
+        }}
+      >
+        <Image
+          src={isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"}
+          alt="profile icon"
+          height="30px"
+          width="30px"
+        />
+        <span style={{ flexGrow: 1 }}>
+          <b>Written by {writtenBy}</b>
+        </span>
+        {isOrg && <FollowButton profileid={hit.authorUid} />}
+      </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ marginRight: "10px" }}>
