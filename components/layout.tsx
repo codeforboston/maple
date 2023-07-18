@@ -193,9 +193,9 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-          <Nav className={sticky ? "" : "me-auto w-100 h-100 align-items-center"}>
+          <div className={sticky ? "me-2 w-100 h-100 flex" : styles.navbar_box}>
             <div className={sticky ? styles.center_menu : ""}>
-              <Nav.Link href="/" className="p-0 w-100">
+              <Nav.Link href="/" className="py-0 px-2 w-100">
                 {sticky ? (
                   <Image
                     src="/white-tree.svg"
@@ -207,7 +207,7 @@ const TopNav: React.FC = () => {
                 )}
               </Nav.Link>
             </div>
-          </Nav>
+          </div>
           <div className={styles.navbar_box}>
             <ProfileLink
               role={claims?.role}
