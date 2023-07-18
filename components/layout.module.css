@@ -41,10 +41,9 @@
 }
 
 .center_menu {
-  position: sticky; 
+  position: absolute;
   top: 0;
   left: 50%;
   z-index: 1;
-  display: flex; 
-  justify-content: center;
+  transform: translateX(-50%);
 }
