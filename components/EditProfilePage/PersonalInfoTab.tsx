@@ -160,7 +160,7 @@ export function PersonalInfoTab({
 
           <div className="mb-3">
             {/* {isOrg && <ImageInput />} */}
-            <h4 className="mb-3 mt-5">Social Media</h4>
+            <h4 className="mb-3 mt-5">{t("headings.socialMedia")}</h4>
             <div className="row">
               <Input
                 label={t("socialLinks.twitter")}
@@ -197,7 +197,7 @@ export function PersonalInfoTab({
             </div>
             {isOrg && (
               <>
-                <h4 className="mb-3 mt-5">Contact Information</h4>
+                <h4 className="mb-3 mt-5">{t("headings.contactInfo")}</h4>
                 <Row>
                   <Input
                     label={t("contact.email")}

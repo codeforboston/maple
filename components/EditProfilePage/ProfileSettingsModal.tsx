@@ -74,16 +74,17 @@ const StyledRow = styled(Row)`
 `
 
 function renderPrivacyText(role: Role, isPublic: boolean) {
+  const { t } = useTranslation("editProfile")
   switch (role) {
     case "organization":
-      return "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private."
+      return t("privacyText.organization")
     case "pendingUpgrade":
-      return "Your profile is private until your request to be an Organization account is approved."
+      return t("privacyText.pendingUpgrade")
     case "user":
       if (isPublic) {
-        return "Your profile is currently public. Others can view your profile page"
+        return t("privacyText.publicUser")
       }
-      return "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
+      return t("privacyText.privateUser")
   }
 }
 
@@ -179,7 +180,7 @@ export default function ProfileSettingsModal({
               direction={`horizontal`}
             >
               <Col className={`col-8`}>
-                How often would you like to receive emails?
+                {t("email.frequencyQuery")}
               </Col>
               <Col className={`d-flex justify-content-end`}>
                 <Dropdown className={`d-inline-block ms-auto`}>
@@ -192,13 +193,13 @@ export default function ProfileSettingsModal({
                   </StyledDropdownToggle>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={() => setNotifications("Daily")}>
-                      Daily
+                      {t("email.daily")}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setNotifications("Weekly")}>
-                      Weekly
+                      {t("email.weekly")}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setNotifications("Monthly")}>
-                      Monthly
+                      {t("email.monthly")}
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
