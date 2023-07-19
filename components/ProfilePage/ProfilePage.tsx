@@ -1,20 +1,17 @@
-import { ProfileAboutSection } from "./ProfileAboutSection"
+import { useTranslation } from "next-i18next"
+import { useState, useEffect } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import {
-  ProfileMember,
-  usePublicProfile,
-  usePublishedTestimonyListing
-} from "../db"
+import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
+import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
-import ErrorPage from "next/error"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import { useTranslation } from "next-i18next"
+import ErrorPage from "next/error"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -25,27 +22,36 @@ export function ProfilePage(profileprops: {
     profileprops.id,
     profileprops.verifyisorg
   )
-
-  const rep: ProfileMember = {
-    district: "district",
-    id: "id",
-    name: "representative person"
-  }
-
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isUser = user?.uid === profileprops.id
   const isOrg: boolean =
     profile?.role === "organization" ||
     profile?.role === "pendingUpgrade" ||
     false
-
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
-
   const { t } = useTranslation("profile")
 
-  const bannerContent = profile?.public ? (
+  const [isProfilePublic, onProfilePublicityChanged] = useState<
+    boolean | undefined
+  >(false)
+
+  /* profile?.public will not cause the <Banner> component to properly rerender 
+     to show current "publicity" when the "Make Public/Private" button is used.  
+     The leads to the <Banner> displaying incorrect/unsynced information. 
+     
+     A state variable is used to enforce a rerender on profile update when publicity
+     button is used.
+
+     see variable: bannerContent, onProfilePublicityChanged
+   */
+
+  useEffect(() => {
+    onProfilePublicityChanged(profile?.public)
+  }, [profile?.public])
+
+  const bannerContent = isProfilePublic ? (
     <Banner> {t("content.publicProfile")} </Banner>
   ) : (
     <Banner> {t("content.privateProfile")} </Banner>
@@ -65,9 +71,11 @@ export function ProfilePage(profileprops: {
               {isUser && bannerContent}
               <StyledContainer>
                 <ProfileHeader
-                  isUser={isUser}
-                  isOrg={isOrg || false}
                   isMobile={isMobile}
+                  isOrg={isOrg || false}
+                  isProfilePublic={isProfilePublic}
+                  onProfilePublicityChanged={onProfilePublicityChanged}
+                  isUser={isUser}
                   profileid={profileprops.id}
                   profile={profile}
                 />
@@ -89,7 +97,7 @@ export function ProfilePage(profileprops: {
                     />
                   </Col>
                   {!isOrg && (
-                    <Col xs={12} md={4}>
+                    <Col xs={12} md={5}>
                       <ProfileLegislators
                         rep={profile?.representative}
                         senator={profile?.senator}
@@ -115,7 +123,7 @@ export function ProfilePage(profileprops: {
             <ErrorPage statusCode={404} withDarkMode={false} />
           )}
         </>
-      )}{" "}
+      )}
     </>
   )
 }
