@@ -200,7 +200,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser && (
+          {isUser && !isMobile && (
             <>
               {onProfilePage && (
                 <Col>
