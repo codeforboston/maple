@@ -24,7 +24,7 @@ export default function SignInWithButton({
         className="w-100"
         onClick={() => setCurrentModal("start")}
       >
-        {t("logInSignUp", { logInSignUp: label }) ?? label}
+        {t("logInSignUp")}
       </Button>
     </span>
   )

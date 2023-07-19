@@ -7,7 +7,7 @@ import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
-import { Container, Nav, NavDropdown, Navbar, Row, Col } from "./bootstrap"
+import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
 
