@@ -94,7 +94,7 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
           </Navbar.Collapse>
         </>
       ) : sticky ? (
-        <SignInWithButton label="" />
+        <></>
       ) : (
         <SignInWithButton />
       )}
