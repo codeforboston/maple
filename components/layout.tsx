@@ -10,7 +10,6 @@ import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import styles from "./layout.module.css"
-import useElementSize from "usehooks-ts"
 
 export type LayoutProps = {
   title?: string
