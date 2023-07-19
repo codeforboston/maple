@@ -63,9 +63,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {flags().followOrg && isOrg && (
-          <FollowButton profileid={hit.authorUid} />
-        )}
+        {isOrg && <FollowButton profileid={hit.authorUid} />}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
