@@ -12,7 +12,10 @@ import {
   useRefresh
 } from "react-admin"
 
-import { upgradeOrganization } from "components/api/upgrade-org"
+import {
+  rejectOrganizationRequest,
+  acceptOrganizationRequest
+} from "components/api/upgrade-org"
 import { Profile } from "components/db"
 import { Internal } from "components/links"
 
@@ -31,7 +34,7 @@ const UserRoleToolBar = () => {
 
   const filterClick = (role?: Role) => {
     const newFilter = filterValues["role"] === role ? { role: "" } : { role }
-    setFilters(newFilter, [], true)
+    setFilters(newFilter, undefined, true)
     refresh()
   }
 
@@ -49,7 +52,7 @@ const UserRoleToolBar = () => {
       setFilters({ role: "pendingUpgrade" }, [])
 
     refetch()
-  }, [refetch, setFilters])
+  }, [filterValues, refetch, setFilters])
 
   return (
     <Toolbar sx={{ width: "100%", justifyContent: "space-between" }}>
@@ -79,7 +82,7 @@ const UserRoleToolBar = () => {
         />{" "}
       </ButtonGroup>
 
-      {["development", "test"].includes(process.env.NODE_ENV) && (
+      {process.env.NEXT_PUBLIC_USE_EMULATOR && (
         <Button
           label="add fake org request"
           variant="outlined"
@@ -119,7 +122,11 @@ export const useTrackUpdatingRow = () => {
 
 export const ListProfiles = () => {
   const tracking = useTrackUpdatingRow()
-  return <InnerListProfiles tracking={tracking} />
+  return (
+    <List actions={<UserRoleToolBar />}>
+      <InnerListProfiles tracking={tracking} />
+    </List>
+  )
 }
 export function InnerListProfiles({
   tracking
@@ -130,66 +137,78 @@ export function InnerListProfiles({
   const { filterValues, setFilters } = useListController()
   const refresh = useRefresh()
 
-  const highlightPending = "lightyellow"
-  const highlightRecent = "lightblue"
+  const getBGHighlight = (record: RaRecord) => {
+    if (record.role === "pendingUpgrade") return "lightyellow"
+    if (record.id === getJustUpdated()) return "lightblue"
+    return ""
+  }
 
-  async function handleUpgrade(record: any) {
+  async function handleAccept(record: any) {
     setIsJustUpdated(record.id)
-    await upgradeOrganization(record.id)
+    await acceptOrganizationRequest(record.id)
     clearUpdating()
     filterValues["role"] === "pendingUpgrade" &&
       setFilters({ role: "organization" }, [])
     refresh()
   }
 
-  return (
-    <List actions={<UserRoleToolBar />}>
-      <Datagrid
-        rowStyle={record => ({
-          backgroundColor:
-            record.role === "pendingUpgrade"
-              ? highlightPending
-              : record.id === getJustUpdated()
-              ? highlightRecent
-              : "",
-          animationName: record.id === getJustUpdated() ? "fadeOut" : "",
-          animationDelay: "2s",
-          animationDuration: "2s",
-          animationFillMode: "forwards"
-        })}
-      >
-        <TextField source="fullName" label="Organization" />
-        <TextField source="contact.email" label="email" />
-        <TextField source="contact.phoneNumber" label="phone" />
+  async function handleReject(record: any) {
+    setIsJustUpdated(record.id)
+    await rejectOrganizationRequest(record.id)
+    clearUpdating()
+    filterValues["role"] === "pendingUpgrade" && setFilters({}, [])
+    refresh()
+  }
 
-        <TextField source="contact.website" label="website" />
-        <WithRecord
-          render={(record: Profile & RaRecord) => {
-            return (
-              <>
-                <div>{record.about}</div>
-                <Internal href={`/profile?id=${record.id}`}>
-                  view profile
-                </Internal>
-              </>
-            )
-          }}
-        />
-        <TextField source="role" />
-        <WithRecord
-          render={record => {
-            return record.role === "pendingUpgrade" ? (
+  return (
+    <Datagrid
+      bulkActionButtons={false}
+      rowStyle={record => ({
+        backgroundColor: getBGHighlight(record),
+        animationName: record.id === getJustUpdated() ? "fadeOut" : "",
+        animationDelay: "2s",
+        animationDuration: "2s",
+        animationFillMode: "forwards"
+      })}
+    >
+      <TextField source="fullName" label="Organization" />
+      <TextField source="contactInfo.publicEmail" label="email" />
+      <TextField source="contactInfo.publicPhone" label="phone" />
+
+      <TextField source="contactInfo.website" label="website" />
+      <WithRecord
+        render={(record: Profile & RaRecord) => {
+          return (
+            <>
+              <div>{record.about}</div>
+              <Internal href={`/profile?id=${record.id}`}>
+                view profile
+              </Internal>
+            </>
+          )
+        }}
+      />
+      <TextField source="role" />
+      <WithRecord
+        render={record => {
+          return record.role === "pendingUpgrade" ? (
+            <div className="d-flex gap-2">
               <Button
                 label="upgrade"
                 variant="outlined"
-                onClick={async () => await handleUpgrade(record)}
+                onClick={async () => await handleAccept(record)}
               />
-            ) : (
-              <div></div>
-            )
-          }}
-        />
-      </Datagrid>
-    </List>
+              <Button
+                label="reject"
+                variant="outlined"
+                onClick={async () => await handleReject(record)}
+              />
+            </div>
+          ) : (
+            <div></div>
+          )
+        }}
+      />
+    </Datagrid>
   )
 }

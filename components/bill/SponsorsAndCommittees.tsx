@@ -11,6 +11,7 @@ import { BillProps } from "./types"
 import { DisplayUpcomingHearing } from "components/search/bills/BillHit"
 import { dateInFuture } from "components/db/events"
 import { Timestamp } from "firebase/firestore"
+import { useMediaQuery } from "usehooks-ts"
 
 const HearingDate = styled.div`
   font-weight: 500;
@@ -69,6 +70,9 @@ export const Sponsors: FC<BillProps> = ({ bill, className }) => {
   const primary = bill.content?.PrimarySponsor
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const more = cosponsors.length > 2
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  const countShowSponsors = isMobile ? 1 : 2
 
   return (
     <LabeledContainer className={className}>
@@ -97,7 +101,7 @@ export const Sponsors: FC<BillProps> = ({ bill, className }) => {
           )}
 
           {bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
-            .slice(0, 2)
+            .slice(0, countShowSponsors)
             .map(s => (
               <LabeledIcon
                 key={s.Id}
