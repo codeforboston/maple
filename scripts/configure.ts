@@ -1,12 +1,13 @@
 export function runAgainstEmulators() {
+  const host = process.env.SERVER_EMULATOR_HOST ?? "127.0.0.1"
   Object.assign(process.env, {
     NEXT_PUBLIC_PROJECT_ID_FOR_TEST: "demo-dtp",
     GCLOUD_PROJECT: "demo-dtp",
     NEXT_PUBLIC_USE_EMULATOR: "true",
-    FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080",
-    FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099",
-    FIREBASE_STORAGE_EMULATOR_HOST: "127.0.0.1:9199",
-    TYPESENSE_API_URL: "http://127.0.0.1:8108",
+    FIRESTORE_EMULATOR_HOST: `${host}:8080`,
+    FIREBASE_AUTH_EMULATOR_HOST: `${host}:9099`,
+    FIREBASE_STORAGE_EMULATOR_HOST: `${host}:9199`,
+    TYPESENSE_API_URL: `http://${host}:8108`,
     TYPESENSE_API_KEY: "test-api-key"
   })
 }
