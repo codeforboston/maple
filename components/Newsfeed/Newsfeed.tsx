@@ -12,6 +12,7 @@ import {
 import { AlertCard } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
+import { Timestamp } from "firebase/firestore"
 
 export default function Newsfeed() {
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -20,22 +21,23 @@ export default function Newsfeed() {
   const uid = user?.uid
   const { result: profile, loading } = usePublicProfile(uid)
 
+
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
 
   const [allResults, setAllResults] = useState<Notifications>([])
-  const filteredResults = allResults.filter(result => {
-    if (isShowingOrgs && isShowingBills) {
-      return true
-    }
-    if (isShowingOrgs) {
-      return result.type === "org"
-    }
-    if (isShowingBills) {
-      return result.type === "bill"
-    }
-    return false
-  })
+  const [filteredResults, setFilteredResults] = useState<Notifications>([])
+
+  // Update the filter function
+  useEffect(() => {
+    const results = allResults.filter(result => {
+      if (isShowingOrgs && result.type === "org") return true
+      if (isShowingBills && result.type === "bill") return true
+      return false
+    })
+
+    setFilteredResults(results)
+  }, [isShowingOrgs, isShowingBills, allResults])
 
   const onOrgFilterChange = (isShowing: boolean) => {
     setIsShowingOrgs(isShowing)
@@ -46,12 +48,19 @@ export default function Newsfeed() {
   }
 
   useEffect(() => {
-    uid
-      ? notificationQuery(uid).then(notifications =>
+    const fetchNotifications = async () => {
+      try {
+        if (uid) {
+          const notifications = await notificationQuery(uid)
           setAllResults(notifications)
-        )
-      : null
-  }, [uid, setAllResults])
+          setFilteredResults(notifications)
+        }
+      } catch (error) {
+        console.error("Error fetching notifications: " + error)
+      }
+    }
+    fetchNotifications()
+  }, [uid])
 
   function Filters() {
     return (
@@ -115,7 +124,7 @@ export default function Newsfeed() {
                     <AlertCard
                       header={`No Results`}
                       subheader={``}
-                      timestamp={``}
+                      timestamp={Timestamp.now()}
                       headerImgSrc={``}
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}
