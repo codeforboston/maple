@@ -22,6 +22,7 @@ export type MemberReference = {
   /**  1 = Legislative Member, 2 = Committee, 3 = Public Request, 4 = Special
    * Request */
   Type: number
+  ResponseDate: string
 }
 
 export type BillContent = {
