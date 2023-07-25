@@ -11,6 +11,10 @@ import { mapleClient } from "./maple-client"
  * @returns if 200, a {"data": <user>}
  *  if 404, 401, 403 a {"error": "message"}
  */
-export async function upgradeOrganization(userId: string) {
+export async function acceptOrganizationRequest(userId: string) {
   return mapleClient.patch(`/api/users/${userId}`, { role: "organization" })
+}
+
+export async function rejectOrganizationRequest(userId: string) {
+  return mapleClient.patch(`/api/users/${userId}`, { role: "user" })
 }
