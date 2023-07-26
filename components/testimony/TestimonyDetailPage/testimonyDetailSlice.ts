@@ -69,7 +69,6 @@ const selectTestimonyDetails = createAppSelector(({ testimonyDetail }) => {
   return {
     revisions,
     revision,
-    authorNickname: author?.displayName ?? revision.authorDisplayName,
     authorTitle: author?.fullName ?? revision.authorDisplayName,
     authorLink: author && `/profile?id=${author.uid}`,
     isEdited: revision.version > 1,

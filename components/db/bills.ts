@@ -12,8 +12,8 @@ import type {
   CurrentCommittee
 } from "../../functions/src/bills/types"
 import { firestore } from "../firebase"
-import { currentGeneralCourt, loadDoc, midnight, nullableQuery } from "./common"
-
+import { loadDoc, midnight, nullableQuery } from "./common"
+import { currentGeneralCourt } from "functions/src/shared"
 export type { BillHistory } from "../../functions/src/bills/types"
 
 export type MemberReference = {
@@ -29,7 +29,7 @@ export type BillContent = {
   BillNumber: string
   DocketNumber: string
   GeneralCourtNumber: number
-  PrimarySponsor: MemberReference
+  PrimarySponsor?: MemberReference
   Cosponsors: MemberReference[]
   LegislationTypeName: string
   Pinslip: string

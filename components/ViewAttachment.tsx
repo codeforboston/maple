@@ -1,5 +1,10 @@
 import { Testimony, usePublishedTestimonyAttachment } from "./db"
 import { External } from "./links"
+import styled from "styled-components"
+
+const StyledExternal = styled(External)`
+  text-decoration: none;
+`
 
 export function ViewAttachment({ testimony }: { testimony?: Testimony }) {
   {
@@ -11,6 +16,6 @@ export function ViewAttachment({ testimony }: { testimony?: Testimony }) {
 const Open = ({ id }: { id: string }) => {
   const url = usePublishedTestimonyAttachment(id)
   return url ? (
-    <External href={url}>View Attached Testimony PDF</External>
+    <StyledExternal href={url}>View Attached Testimony PDF</StyledExternal>
   ) : null
 }

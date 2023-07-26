@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
 import { useEffect } from "react"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default function Page() {
   const router = useRouter()
@@ -10,3 +11,10 @@ export default function Page() {
 
   return null
 }
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer",
+  "testimony"
+])

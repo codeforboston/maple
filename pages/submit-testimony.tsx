@@ -5,6 +5,7 @@ import {
   useSyncRouterAndStore
 } from "../components/publish/hooks"
 import { SubmitTestimonyForm } from "../components/publish/SubmitTestimonyForm"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   title: "Submit Testimony",
@@ -19,3 +20,10 @@ export default createPage({
     )
   })
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer",
+  "testimony"
+])

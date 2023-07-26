@@ -1,5 +1,6 @@
 import { createPage } from "../../components/page"
 import OurPartners from "../../components/OurPartners/OurPartners"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   title: "Our Team",
@@ -11,3 +12,9 @@ export default createPage({
     )
   }
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer"
+])

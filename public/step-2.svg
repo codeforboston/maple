@@ -1,0 +1,33 @@
+<svg width="191" height="150" viewBox="0 0 191 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M44.538 22.4C51.45 22.4 57.4233 23.5093 62.458 25.728C67.578 27.8613 71.5033 30.9333 74.234 34.944C77.05 38.9547 78.458 43.6053 78.458 48.896C78.458 53.8453 77.2207 58.3253 74.746 62.336C72.2713 66.3467 69.1567 69.888 65.402 72.96C61.6473 76.032 56.4847 79.7867 49.914 84.224C46.2447 86.6133 43.258 88.6613 40.954 90.368H79.482V112H6.522V105.856C6.522 101.333 7.546 97.3227 9.594 93.824C11.7273 90.24 14.7993 86.656 18.81 83.072C22.906 79.488 28.794 74.624 36.474 68.48C42.618 63.616 46.9273 59.904 49.402 57.344C51.8767 54.784 53.114 52.2667 53.114 49.792C53.114 47.1467 52.1753 44.928 50.298 43.136C48.506 41.344 45.7753 40.448 42.106 40.448C38.266 40.448 35.2367 41.5573 33.018 43.776C30.7993 45.9947 29.69 48.896 29.69 52.48V55.04H6.906C6.82067 54.3573 6.778 53.4187 6.778 52.224C6.778 43.008 9.978 35.7547 16.378 30.464C22.8633 25.088 32.25 22.4 44.538 22.4Z" fill="#3D9922"/>
+<rect x="71" y="75" width="113" height="65.9995" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="91" y="57" width="73" height="9" rx="4.5" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="66" y="66" width="124" height="9" rx="4.5" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="122" y="22" width="10" height="12" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="90" y="93" width="9" height="29.75" stroke="#1A3185" stroke-width="2"/>
+<rect x="112" y="93" width="9" height="29.75" stroke="#1A3185" stroke-width="2"/>
+<rect x="134" y="93" width="9" height="29.75" stroke="#1A3185" stroke-width="2"/>
+<rect x="156" y="93" width="9" height="29.75" stroke="#1A3185" stroke-width="2"/>
+<rect x="83" y="81" width="88" height="7" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="83" y="128.75" width="88" height="7" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="87" y="123.5" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="87" y="88" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="109" y="123.5" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="109" y="88" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="131" y="123.5" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="131" y="88" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="153" y="123.5" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="153" y="88" width="15" height="5" rx="1" stroke="#1A3185" stroke-width="2"/>
+<rect x="78" y="134.5" width="99" height="6.49951" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="134" y="6" width="13" height="13" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<rect x="127" y="1" width="13" height="13" rx="1" fill="white" stroke="#1A3185" stroke-width="2"/>
+<path d="M81 97V125H71V97C71 94.2386 73.2386 92 76 92C78.7614 92 81 94.2386 81 97Z" fill="white" stroke="#1A3185" stroke-width="2"/>
+<path d="M184 97V125H174V97C174 94.2386 176.239 92 179 92C181.761 92 184 94.2386 184 97Z" fill="white" stroke="#1A3185" stroke-width="2"/>
+<mask id="path-25-inside-1_3565_34942" fill="white">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M160 58C160 40.3269 145.673 26 128 26C110.327 26 96 40.3269 96 58H160Z"/>
+</mask>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M160 58C160 40.3269 145.673 26 128 26C110.327 26 96 40.3269 96 58H160Z" fill="white"/>
+<path d="M160 58V60H162V58H160ZM96 58H94V60H96V58ZM128 28C144.569 28 158 41.4315 158 58H162C162 39.2223 146.778 24 128 24V28ZM98 58C98 41.4315 111.431 28 128 28V24C109.222 24 94 39.2223 94 58H98ZM96 60H160V56H96V60Z" fill="#1A3185" mask="url(#path-25-inside-1_3565_34942)"/>
+<path d="M127.518 51.4837L172.323 78.6449C173.188 79.1694 172.816 80.5 171.804 80.5H82.1956C81.1838 80.5 80.812 79.1694 81.6772 78.6449L126.482 51.4837C126.8 51.2905 127.2 51.2905 127.518 51.4837Z" fill="white" stroke="#1A3185" stroke-width="2"/>
+<line x1="127" y1="2" x2="127" y2="23" stroke="#1A3185" stroke-width="2"/>
+</svg>

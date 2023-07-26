@@ -5,6 +5,7 @@ import { Alert, Col, Form, Image, Modal, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
 import { SendPasswordResetEmailData, useSendPasswordResetEmail } from "./hooks"
+import { useTranslation } from "next-i18next"
 
 export default function ForgotPasswordModal({
   show,
@@ -32,6 +33,8 @@ export default function ForgotPasswordModal({
     sendPasswordResetEmail.execute(passwordResetData)
   })
 
+  const { t } = useTranslation("auth")
+
   return (
     <Modal
       show={show}
@@ -41,21 +44,24 @@ export default function ForgotPasswordModal({
     >
       <Modal.Header closeButton>
         <Modal.Title id="forgot-password-modal">
-          Forgot your password?
+          {t("forgotPassword")}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
           <Stack direction="vertical" className="align-items-center mb-2">
-            <Image src="/mail.png" alt="Mail entering mailbox" fluid />
+            <Image
+              src="/mailbox.svg"
+              alt={t("mailboxImgAlt") ?? "Mail entering mailbox"}
+              fluid
+            />
 
             {sendPasswordResetEmail.status === "success" ? (
               <div role="alert" className="h5 text-center">
-                Check your inbox! If you don't see anything, be sure to check
-                your spam folder.
+                {t("checkInbox")}
               </div>
             ) : (
-              <p className="h5">We'll email you with a link to reset it.</p>
+              <p className="h5">{t("emailedLink")}</p>
             )}
           </Stack>
 
@@ -68,9 +74,11 @@ export default function ForgotPasswordModal({
           {sendPasswordResetEmail.status !== "success" ? (
             <Form noValidate onSubmit={onSubmit}>
               <Input
-                label="Email"
+                label={t("email")}
                 type="email"
-                {...register("email", { required: "An email is required." })}
+                {...register("email", {
+                  required: t("emailIsRequired") ?? "An email is required."
+                })}
                 error={errors.email?.message}
                 className="mb-3"
               />
@@ -80,7 +88,7 @@ export default function ForgotPasswordModal({
                 className="w-100"
                 loading={sendPasswordResetEmail.loading}
               >
-                Send Recovery Email
+                {t("sendRecovery")}
               </LoadingButton>
             </Form>
           ) : null}

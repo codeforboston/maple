@@ -1,4 +1,4 @@
-import { currentGeneralCourt } from "components/db/common"
+import { currentGeneralCourt } from "functions/src/shared"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
@@ -14,22 +14,29 @@ export const signInUser1 = () => signInUser("test@example.com")
 export const signInUser2 = () => signInUser("test2@example.com")
 export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
+export const signInTestAdmin = () => signInUser("testadmin@example.com")
 
-export async function createFakeBill() {
-  const billId = nanoid()
+export async function createNewBill(props?: Partial<Bill>) {
+  const billId = props?.id ?? nanoid()
   const content: BillContent = {
     Pinslip: null,
     Title: "fake",
     PrimarySponsor: null,
     Cosponsors: []
   }
-  const bill = {
+  const bill: Bill = {
     content,
     court: currentGeneralCourt,
     cosponsorCount: 0,
     fetchedAt: testTimestamp.now(),
     id: billId,
-    testimonyCount: 0
+    testimonyCount: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0,
+    history: [],
+    similar: [],
+    ...props
   }
   await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
@@ -37,13 +44,15 @@ export async function createFakeBill() {
   return billId
 }
 
+export const createFakeBill = () => createNewBill().then(b => b)
+
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
   const e = await work
     .then(() => fail("expected promise to reject"))
     .catch(e => e)
-  expect(e.code).toBe("permission-denied")
+  expect(e.code).toMatch("permission-denied")
   console.warn = warn
 }
 

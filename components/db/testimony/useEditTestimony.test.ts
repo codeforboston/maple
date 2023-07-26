@@ -9,7 +9,7 @@ import {
   signInUser3
 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
-import { currentGeneralCourt } from "../common"
+import { currentGeneralCourt } from "functions/src/shared"
 
 let uid: string
 let user: User
@@ -40,6 +40,8 @@ beforeEach(() => {
   testimony = {
     authorUid: uid,
     authorDisplayName: user.displayName!,
+    authorRole: "user",
+    billTitle: "fake bill",
     billId,
     content: draft.content,
     court: court,

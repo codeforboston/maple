@@ -4,7 +4,7 @@ import style from "./PolicyPage.module.css"
 
 export const PolicyContent = (props: { policy: string | undefined }) => {
   const [content, setContent] = useState("")
-  const mdpath = `${props.policy}.md`
+  const mdpath = `/${props.policy}.md`
 
   useEffect(() => {
     fetch(mdpath)

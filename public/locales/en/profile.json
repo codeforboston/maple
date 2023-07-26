@@ -1,0 +1,33 @@
+{
+  "aboutMe": "About {{firstName}}",
+  "aboutUs": "About Us",
+  "user": "User",
+  "noUser": "no user",
+  "anonymousUser": "Anonymous User",
+  "button":{
+    "editProfile": "Edit\u00A0Profile"
+  },
+  "content": {
+    "viewingProfile": "Currently viewing your profile",
+    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
+    "statePurpose": "State your purpose",
+    "noLegislatorInfo": "No legislator information given"
+    },
+  "verifyAccountSection":{
+    "verifyAccount": "We sent a link to your email to verify your account, but you haven't\nclicked it yet. If you don't see it, be sure to check your spam\nfolder.",
+    "checkEmail": "Check your email!",
+    "sendAnotherLink": "Send Another Link"
+  },
+  "legislators": "Legislators",
+  "representative": "Representative",
+  "senator": "Senator",
+  "orgIcon": {
+    "large": "Large Organization Icon",
+    "small": "Small Organization Icon"
+  },
+  "userIcon": {
+    "large": "Large User Icon",
+    "small": "Small User Icon"
+  }
+}

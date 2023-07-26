@@ -3,19 +3,31 @@ import styled from "styled-components"
 import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
+import { useTranslation } from "next-i18next"
+import { CSSProperties } from "react"
+
+export const voteHandPositionStyles: {
+  [position in Testimony["position"]]: CSSProperties
+} = {
+  endorse: {
+    transformOrigin: "center",
+    transform: "scale(1, -1)"
+  },
+  neutral: {
+    transformOrigin: "center",
+    transform: "scale(1, -1) rotate(-70deg)"
+  },
+  oppose: {}
+}
 
 export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
-  const positionStyles = {
-    endorse: "flip",
-    neutral: "flipRotate",
-    oppose: ""
-  }
+  const { t } = useTranslation("testimony")
 
   return (
     <Image
       fluid
-      className={`${positionStyles[position]}`}
-      alt={`${position}`}
+      style={voteHandPositionStyles[position]}
+      alt={t("testimonyCallout.position", { position1: position }) ?? position}
       src="/VoteHand.png"
     />
   )
@@ -119,29 +131,21 @@ const CalloutBalloon = styled.div`
   .oppose {
     background-color: var(--bs-red);
   }
-
-  .flipRotate {
-    transform-origin: center;
-    transform: scale(1, -1) rotate(-70deg);
-  }
-
-  .flip {
-    transform-origin: center;
-    transform: scale(1, -1);
-  }
 `
 
-const Callout = ({
+export const Callout = ({
   position,
   content,
   billId,
   authorDisplayName
 }: {
   content: string
-  position: "endorse" | "oppose" | "neutral"
+  position: Testimony["position"]
   billId: string
   authorDisplayName: string
 }) => {
+  const { t } = useTranslation("testimony")
+
   return (
     <CalloutBalloon>
       <div className="background">
@@ -155,7 +159,10 @@ const Callout = ({
         <div className="content-container">
           <div className="main-content">"{trimContent(content, 90)}"</div>
           <div className="footer">
-            <div className="bill">Bill{formatBillId(billId)}</div>
+            <div className="bill">
+              {t("testimonyCallout.bill")}
+              {formatBillId(billId)}
+            </div>
             <div className="author">{authorDisplayName}</div>
           </div>
         </div>
@@ -164,8 +171,8 @@ const Callout = ({
   )
 }
 
-function trimContent(content: string, length: number) {
-  if (content.length > length) {
+export function trimContent(content: string, length: number) {
+  if (content.length >= length) {
     let cutLength = length
     while (content[cutLength - 1] !== " " && cutLength > 1) {
       cutLength--

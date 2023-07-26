@@ -11,12 +11,14 @@ import {
   useSignInWithEmailAndPassword
 } from "./hooks"
 import SocialSignOnButtons from "./SocialSignOnButtons"
+import { useTranslation } from "next-i18next"
 
 export default function SignInModal({
   show,
   onHide,
   onForgotPasswordClick
-}: Pick<ModalProps, "show" | "onHide"> & {
+}: {
+  show?: boolean
   onForgotPasswordClick: () => void
   onHide: () => void
 }) {
@@ -24,7 +26,7 @@ export default function SignInModal({
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful }
+    formState: { errors }
   } = useForm<SignInWithEmailAndPasswordData>()
 
   const signIn = useSignInWithEmailAndPassword()
@@ -39,14 +41,15 @@ export default function SignInModal({
   }, [show, reset])
 
   const onSubmit = handleSubmit(credentials => {
-    const promise = signIn.execute(credentials)
-    promise.then(onHide).catch(err => {})
+    signIn.execute(credentials).then(onHide)
   })
+
+  const { t } = useTranslation("auth")
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="sign-in-modal" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="sign-in-modal">Sign In</Modal.Title>
+        <Modal.Title id="sign-in-modal">{t("signIn")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={10} className="mx-auto">
@@ -61,16 +64,18 @@ export default function SignInModal({
           >
             <Stack gap={2}>
               <Input
-                label="Email"
+                label={t("email")}
                 type="email"
-                {...register("email", { required: "An email is required." })}
+                {...register("email", {
+                  required: t("emailIsRequired") ?? "An email is required."
+                })}
                 error={errors.email?.message}
               />
 
               <PasswordInput
-                label="Password"
+                label={t("password")}
                 {...register("password", {
-                  required: "A password is required."
+                  required: t("passwordRequired") ?? "A password is required."
                 })}
                 error={errors.password?.message}
               />
@@ -81,7 +86,7 @@ export default function SignInModal({
               className="mt-2 mb-4 py-0 px-0"
               onClick={onForgotPasswordClick}
             >
-              Forgot password?
+              {t("forgotPassword2")}
             </Button>
 
             <Stack gap={4}>
@@ -90,12 +95,12 @@ export default function SignInModal({
                 className="w-100"
                 loading={signIn.loading}
               >
-                Sign In
+                {t("signIn")}
               </LoadingButton>
 
-              <Divider className="px-4">or</Divider>
+              <Divider className="px-4">{t("or")}</Divider>
 
-              <SocialSignOnButtons />
+              <SocialSignOnButtons onComplete={onHide} />
             </Stack>
           </Form>
         </Col>

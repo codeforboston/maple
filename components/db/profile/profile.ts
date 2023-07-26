@@ -2,10 +2,11 @@ import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useMemo, useReducer } from "react"
 import { useAsync } from "react-async-hook"
-import { useAuth } from "../../auth"
+import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
-import { Profile, ProfileMember, SocialLinks } from "./types"
+import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
+import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -14,12 +15,15 @@ type ProfileState = {
   updatingRep: boolean
   updatingSenator: boolean
   updatingIsPublic: boolean
+  updatingNotification: boolean
   updatingIsOrganization: boolean
   updatingAbout: boolean
-  updatingDisplayName: boolean
+  updatingOrgCategory: boolean
   updatingFullName: boolean
+  updatingContactInfo: Record<keyof ContactInfo, boolean>
   updatingProfileImage: boolean
   updatingSocial: Record<keyof SocialLinks, boolean>
+  updatingBillsFollowing: boolean
   profile: Profile | undefined
 }
 
@@ -39,15 +43,24 @@ export function useProfile() {
         updatingRep: false,
         updatingSenator: false,
         updatingIsPublic: false,
+        updatingNotification: false,
         updatingIsOrganization: false,
         updatingAbout: false,
-        updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
+        updatingOrgCategory: false,
+        updatingContactInfo: {
+          publicEmail: false,
+          publicPhone: false,
+          website: false
+        },
         updatingSocial: {
           linkedIn: false,
-          twitter: false
+          twitter: false,
+          instagram: false,
+          fb: false
         },
+        updatingBillsFollowing: false,
         profile
       }
     )
@@ -75,6 +88,13 @@ export function useProfile() {
           dispatch({ updatingIsPublic: false })
         }
       },
+      updateNotification: async (notificationFrequency: Frequency) => {
+        if (uid) {
+          dispatch({ updatingNotification: true })
+          await updateNotification(uid, notificationFrequency)
+          dispatch({ updatingNotification: false })
+        }
+      },
       updateIsOrganization: async (isOrganization: boolean) => {
         if (uid) {
           dispatch({ updatingIsOrganization: true })
@@ -87,13 +107,6 @@ export function useProfile() {
           dispatch({ updatingAbout: true })
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
-        }
-      },
-      updateDisplayName: async (displayName: string) => {
-        if (uid) {
-          dispatch({ updatingDisplayName: true })
-          await updateDisplayName(uid, displayName)
-          dispatch({ updatingDisplayName: false })
         }
       },
       updateFullName: async (fullName: string) => {
@@ -134,9 +147,43 @@ export function useProfile() {
             }
           })
         }
+      },
+      updateContactInfo: async (
+        contactType: keyof ContactInfo,
+        contact: string | number
+      ) => {
+        if (uid) {
+          dispatch({
+            updatingContactInfo: {
+              ...state.updatingContactInfo,
+              [contactType]: true
+            }
+          })
+          await updateContactInfo(uid, contactType, contact)
+          dispatch({
+            updatingSocial: {
+              ...state.updatingSocial,
+              [contactType]: false
+            }
+          })
+        }
+      },
+      updateOrgCategory: async (category: OrgCategory) => {
+        if (uid) {
+          dispatch({ updatingOrgCategory: true })
+          await updateOrgCategory(uid, category)
+          dispatch({ updatingOrgCategory: false })
+        }
+      },
+      updateBillsFollowing: async (billsFollowing: string[]) => {
+        if (uid) {
+          dispatch({ updatingBillsFollowing: true })
+          await updateBillsFollowing(uid, billsFollowing)
+          dispatch({ updatingBillsFollowing: false })
+        }
       }
     }),
-    [uid, state.updatingSocial]
+    [uid, state.updatingSocial, state.updatingContactInfo]
   )
 
   return useMemo(
@@ -173,6 +220,14 @@ function updateIsPublic(uid: string, isPublic: boolean) {
   return setDoc(profileRef(uid), { public: isPublic }, { merge: true })
 }
 
+function updateNotification(uid: string, notificationFrequency: Frequency) {
+  return setDoc(
+    profileRef(uid),
+    { notificationFrequency: notificationFrequency },
+    { merge: true }
+  )
+}
+
 function updateIsOrganization(uid: string, isOrganization: boolean) {
   return setDoc(
     profileRef(uid),
@@ -181,10 +236,33 @@ function updateIsOrganization(uid: string, isOrganization: boolean) {
   )
 }
 
+function updateOrgCategory(uid: string, category: OrgCategory) {
+  return setDoc(profileRef(uid), { orgCategories: [category] }, { merge: true })
+}
+
 function updateSocial(uid: string, network: keyof SocialLinks, link: string) {
+  link = cleanSocialLinks(network, link)
+
   return setDoc(
     profileRef(uid),
     { social: { [network]: link ?? deleteField() } },
+    { merge: true }
+  )
+}
+
+function updateContactInfo(
+  uid: string,
+  contactType: keyof ContactInfo,
+  contact: string | number
+) {
+  if (contactType === "website") {
+    contact = contact.toString()
+    contact = cleanOrgURL(contact)
+  }
+
+  return setDoc(
+    profileRef(uid),
+    { contactInfo: { [contactType]: contact ?? deleteField() } },
     { merge: true }
   )
 }
@@ -197,18 +275,18 @@ function updateAbout(uid: string, about: string) {
   )
 }
 
-function updateDisplayName(uid: string, displayName: string) {
-  return setDoc(
-    profileRef(uid),
-    { displayName: displayName ?? deleteField() },
-    { merge: true }
-  )
-}
-
 function updateFullName(uid: string, fullName: string) {
   return setDoc(
     profileRef(uid),
     { fullName: fullName ?? deleteField() },
+    { merge: true }
+  )
+}
+
+function updateBillsFollowing(uid: string, billsFollowing: string[]) {
+  return setDoc(
+    profileRef(uid),
+    { billsFollowing: billsFollowing ?? deleteField() },
     { merge: true }
   )
 }
@@ -228,15 +306,24 @@ export async function updateProfileImage(uid: string, image: File) {
   })
 }
 
-export function usePublicProfile(uid?: string) {
+export function usePublicProfile(uid?: string, verifyisorg?: boolean) {
+  if (verifyisorg && uid) {
+    console.log(verifyisorg)
+  }
   return useAsync(
-    () => (uid ? getProfile(uid) : Promise.resolve(undefined)),
-    [uid]
+    () => (uid ? getProfile(uid, verifyisorg) : Promise.resolve(undefined)),
+    [uid, verifyisorg]
   )
 }
 
-export async function getProfile(uid: string) {
+export async function getProfile(uid: string, verifyisorg?: boolean) {
   const snap = await getDoc(profileRef(uid))
+  if (verifyisorg) {
+    return snap.exists() && snap.data().role == "organization"
+      ? (snap.data() as Profile)
+      : undefined
+  }
+
   return snap.exists() ? (snap.data() as Profile) : undefined
 }
 

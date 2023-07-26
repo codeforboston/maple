@@ -6,11 +6,13 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  User
+  User,
+  UserCredential
 } from "firebase/auth"
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
+import { finishSignup, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -47,34 +49,46 @@ function useFirebaseFunction<Params, Result>(
 export type CreateUserWithEmailAndPasswordData = {
   email: string
   fullName: string
-  nickname: string
   password: string
   confirmedPassword: string
+  orgCategory?: OrgCategory
 }
 
-export function useCreateUserWithEmailAndPassword() {
+export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
   return useFirebaseFunction(
     async ({
       email,
       fullName,
-      nickname,
-      password
+      password,
+      orgCategory
     }: CreateUserWithEmailAndPasswordData) => {
       const credentials = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       )
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
-      await Promise.all([
-        setProfile(credentials.user.uid, {
-          displayName: nickname,
-          fullName,
-          role: "user",
-          public: false
-        }),
-        sendEmailVerification(credentials.user)
-      ])
+      const categories = orgCategory ? [orgCategory] : ""
+
+      if (isOrg) {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            fullName,
+            orgCategories: categories,
+            public: false
+          }),
+          sendEmailVerification(credentials.user)
+        ])
+      } else {
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            fullName,
+            public: true
+          }),
+          sendEmailVerification(credentials.user)
+        ])
+      }
 
       return credentials
     }
@@ -103,7 +117,25 @@ export function useSendPasswordResetEmail() {
 }
 
 export function useSignInWithPopUp() {
-  return useFirebaseFunction((provider: AuthProvider) =>
-    signInWithPopup(auth, provider)
-  )
+  return useFirebaseFunction(async (provider: AuthProvider) => {
+    let credentials: UserCredential
+    try {
+      credentials = await signInWithPopup(auth, provider)
+    } catch (e) {
+      console.log("error signing in with google", e)
+      return
+    }
+
+    const { claims } = await credentials.user.getIdTokenResult()
+    if (!claims?.role) {
+      // The user has not yet finished signing up
+      await finishSignup({ requestedRole: "user" })
+      await Promise.all([
+        setProfile(credentials.user.uid, {
+          fullName: credentials.user.displayName ?? "New User",
+          public: true
+        })
+      ])
+    }
+  })
 }

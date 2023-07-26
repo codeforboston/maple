@@ -8,35 +8,40 @@ import {
   versionSelected
 } from "./testimonyDetailSlice"
 import { FC } from "react"
+import { useTranslation } from "next-i18next"
 
-const HistoryItem: FC<{ revision: Revision }> = ({ revision: t }) => {
+const HistoryItem: FC<{ revision: Revision }> = ({ revision: tr }) => {
   const dispatch = useAppDispatch()
   const { version: currentVersion } = useCurrentTestimonyDetails()
 
   let changes: string
-  if (t.changes.new) changes = "Initial Testimony"
+  if (tr.changes.new) changes = "Initial Testimony"
   else
     changes = `${[
-      t.changes.position && "Stance",
-      t.changes.content && "Text",
-      t.changes.attachment && "Attachment"
+      tr.changes.position && "Stance",
+      tr.changes.content && "Text",
+      tr.changes.attachment && "Attachment"
     ]
       .filter(Boolean)
       .join(", ")} Changed`
 
-  const date = t.publishedAt.toDate().toLocaleDateString()
+  const date = tr.publishedAt.toDate().toLocaleDateString()
+
+  const { t } = useTranslation("testimony")
 
   return (
     <ListGroup.Item
       action
       variant="secondary"
-      active={t.version === currentVersion}
-      onClick={() => dispatch(versionSelected(t.version))}
+      active={tr.version === currentVersion}
+      onClick={() => dispatch(versionSelected(tr.version))}
     >
       <div className="d-inline-flex justify-content-between w-100">
         <span>{date}</span> <span className="fw-bold ms-2">{changes}</span>
       </div>
-      <div>version: {t.version}</div>
+      <div>
+        {t("revisionHistory.version")} {tr.version}
+      </div>
     </ListGroup.Item>
   )
 }
@@ -44,10 +49,12 @@ const HistoryItem: FC<{ revision: Revision }> = ({ revision: t }) => {
 export const RevisionHistory = styled(props => {
   const { revisions } = useCurrentTestimonyDetails()
 
+  const { t } = useTranslation("testimony")
+
   return (
     <Card
       className={props.className}
-      header={`Revision History (${revisions.length})`}
+      header={t("revisionHistory.history") + `(${revisions.length})`}
       items={revisions.map(t => (
         <HistoryItem key={t.version} revision={t} />
       ))}

@@ -38,9 +38,11 @@ export const SearchContainer = styled.div`
   .ais-RefinementList-list {
     background-color: white;
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 4px;
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
+    max-height: 250px;
+    overflow-y: auto;
   }
 
   .ais-RefinementList-count {
@@ -118,7 +120,9 @@ export const SearchContainer = styled.div`
     box-shadow: none;
   }
 
-  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(.ais-Pagination-item--disabled)
+  .ais-Pagination-item:not(.ais-Pagination-item--selected):not(
+      .ais-Pagination-item--disabled
+    )
     .ais-Pagination-link:hover,
   .ais-Pagination-item--selected .ais-Pagination-link {
     background-color: var(--bs-blue-100);
@@ -131,5 +135,15 @@ export const SearchContainer = styled.div`
     background: var(--bs-blue-100);
     border-color: var(--bs-blue-100);
     color: var(--bs-blue);
+  }
+
+  .ais-RefinementList-labelText {
+    white-space: normal;
+    display: inline-block;
+    width: 75%;
+  }
+
+  .ais-RefinementList-label {
+    border-bottom: dashed 1px;
   }
 `

@@ -1,9 +1,7 @@
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
-import { Testimony } from "../functions/src/testimony/types"
+import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 
@@ -31,7 +29,14 @@ export function External({
 }: LinkProps & { plain?: boolean; as?: React.FC | "a" }) {
   return (
     <C href={href} target="_blank" rel="noreferrer" className={className}>
-      {children} {!plain && <FontAwesomeIcon icon={faExternalLinkAlt} />}
+      {children}{" "}
+      {
+        !plain
+        /*
+         Icon removed from current Figma
+         */
+        // && <FontAwesomeIcon icon={faExternalLinkAlt} />
+      }
     </C>
   )
 }
@@ -60,11 +65,20 @@ export const maple = {
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
-    `/testimony/${publishedId}`
+    `/testimony/${publishedId}`,
+  userTestimony: ({
+    authorUid,
+    billId,
+    court
+  }: {
+    authorUid: string
+    billId: string
+    court: number
+  }) => `/testimony/${authorUid}/${court}/${billId}`
 }
 
-export function billSiteURL(billNumber: string) {
-  return siteUrl(`bill?id=${billNumber}`)
+export function billSiteURL(billNumber: string, court: number) {
+  return maple.bill({ court: court, id: billNumber })
 }
 
 /** Not all bills have pdf's, only those without document text */

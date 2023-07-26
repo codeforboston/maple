@@ -1,54 +1,105 @@
 import { useEffect, useState } from "react"
-import { Container, Navbar } from "react-bootstrap"
+import { Container, Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { Role, useAuth } from "../auth"
+import {
+  Role,
+  SignInWithButton,
+  signOutAndRedirectToHome,
+  useAuth
+} from "../auth"
 import { NavLink } from "../Navlink"
 import styles from "./ProfileLink.module.css"
 
-const greeting = (role: Role, displayName?: string) => {
+const greeting = (role: Role, fullName?: string) => {
   switch (role) {
     case "user":
     case "legislator":
     case "organization":
-      return displayName ? `Hello, ${displayName}` : "Hello there"
+      return fullName ? `Hello, ${fullName}` : "Hello there"
     case "admin":
-      return `Hello, Admin ${displayName}`
+      return `Hello, Admin ${fullName}`
   }
 }
 
-const ProfileLink = ({
-  displayName,
-  role = "user"
-}: {
-  displayName?: string
-  role?: Role
-}) => {
-  const { user } = useAuth()
-  const [search, setSearch] = useState("")
+const ProfileMenuItem = (
+  label: string,
+  href: string,
+  handleClick: () => void
+) => (
+  <NavLink className={"navLink-primary"} href={href} handleClick={handleClick}>
+    {label}
+  </NavLink>
+)
 
-  useEffect(() => {
-    if (user?.uid) {
-      setSearch(`?id=${user.uid}`)
-    }
-  }, [user?.uid])
+type ProfileLinkProps = {
+  fullName?: string
+  role?: Role
+  sticky: boolean
+}
+
+const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
+  const { authenticated, user } = useAuth()
+
+  const [isExpanded, setIsExpanded] = useState(false)
+  const toggleNav = () => setIsExpanded(expanded => !expanded)
+  const closeNav = () => setIsExpanded(false)
 
   return (
-    <Container className={`py-0`}>
-      <NavLink href={"/profile" + search} className="py-0">
-        <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
-          <Image
-            className={styles.profileLinkImage}
-            src="/profile-icon.svg"
-            alt="profile icon"
-          />
-          <Navbar expand="lg" className="p-0">
-            <Navbar.Collapse id="topnav">
-              <Navbar.Brand>{greeting(role, displayName)}</Navbar.Brand>
-            </Navbar.Collapse>
-          </Navbar>
-        </div>
-      </NavLink>
-    </Container>
+    <Navbar
+      expand={false}
+      expanded={isExpanded}
+      variant="dark"
+      bg="secondary"
+      collapseOnSelect={true}
+      className="d-flex justify-content-end"
+    >
+      {authenticated ? (
+        <>
+          <Navbar.Brand onClick={toggleNav}>
+            <Nav.Link className="p-0 text-white">
+              <Image
+                className={styles.profileLinkImage}
+                src="/profile-icon.svg"
+                alt="profile icon"
+              ></Image>
+              {sticky ? "" : greeting(role, fullName)}
+            </Nav.Link>
+          </Navbar.Brand>
+          <Navbar.Collapse id="profile-nav">
+            <Nav className="me-4 d-flex align-items-end">
+              <NavLink
+                className={"navLink-primary"}
+                href="/profile"
+                handleClick={closeNav}
+              >
+                View Profile
+              </NavLink>
+              <NavLink
+                className={"navLink-primary"}
+                href="/editprofile"
+                handleClick={closeNav}
+              >
+                Edit Profile
+              </NavLink>
+              <NavLink
+                className={"navLink-primary"}
+                handleClick={() => {
+                  closeNav()
+                  void signOutAndRedirectToHome()
+                }}
+              >
+                Sign Out
+              </NavLink>
+            </Nav>
+          </Navbar.Collapse>
+        </>
+      ) : sticky ? (
+        <></>
+      ) : (
+        <SignInWithButton />
+      )}
+    </Navbar>
   )
 }
+
 export default ProfileLink

@@ -2,15 +2,17 @@ import type { ModalProps } from "react-bootstrap"
 import { Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
 import styles from "./VerifyEmailModal.module.css"
 import { Internal } from "components/links"
+import { useTranslation } from "next-i18next"
 
 export default function VerifyEmailModal({
   show,
   onHide
 }: Pick<ModalProps, "show" | "onHide">) {
+  const { t } = useTranslation("auth")
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton className={styles.modalHeader}>
-        <Modal.Title id="tos-modal">Sign Up</Modal.Title>
+        <Modal.Title id="tos-modal">{t("signUp")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={11} className="mx-auto">
@@ -18,17 +20,13 @@ export default function VerifyEmailModal({
             <Image
               fluid
               className={styles.image}
-              src="mailverify.svg"
-              alt="Mail illustration"
+              src="/mailbox.svg"
+              alt={t("mailboxImgAlt") ?? "Mail entering mailbox"}
             />
-            <h2 className={styles.title}>Verify your email address</h2>
-            <h6 className={styles.body}>
-              Please verify your email for your account by clicking the
-              verification link we sent to your email. You will be required to
-              verify your email before submitting testimony.
-            </h6>
+            <h2 className={styles.title}>{t("verifyEmail")}</h2>
+            <h6 className={styles.body}>{t("verifyLinkSent")}</h6>
             <Internal href="/editprofile" className="view-edit-profile">
-              <Button onClick={onHide}>Set Up Your Profile</Button>
+              <Button onClick={onHide}>{t("setUpProfile")}</Button>
             </Internal>
           </Stack>
         </Col>

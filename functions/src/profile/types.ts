@@ -1,4 +1,13 @@
-import { Boolean, Dictionary, Optional, Record, Static, String } from "runtypes"
+import {
+  Boolean,
+  Dictionary,
+  Optional,
+  Array,
+  Record,
+  Static,
+  String,
+  Null
+} from "runtypes"
 import { Role } from "../auth/types"
 
 export const ProfileMember = Record({
@@ -9,13 +18,14 @@ export const ProfileMember = Record({
 export type ProfileMember = Static<typeof ProfileMember>
 
 export const Profile = Record({
-  displayName: Optional(String),
+  fullName: Optional(String),
   role: Optional(Role),
   representative: Optional(ProfileMember),
   senator: Optional(ProfileMember),
   public: Optional(Boolean),
   about: Optional(String),
   social: Optional(Dictionary(String)),
-  organization: Optional(Boolean)
+  organization: Optional(Boolean),
+  orgCategories: Optional(Array(String.Or(Null)))
 })
 export type Profile = Static<typeof Profile>

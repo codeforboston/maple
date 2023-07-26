@@ -1,6 +1,7 @@
 import { requireAuth } from "../components/auth"
 import { createPage } from "../components/page"
-import { EditProfile } from "../components/ProfilePage/EditProfilePage"
+import { EditProfile } from "../components/EditProfilePage/EditProfilePage"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   title: "Profile",
@@ -8,3 +9,11 @@ export default createPage({
     return <EditProfile />
   })
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "editProfile",
+  "footer",
+  "testimony"
+])

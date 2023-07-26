@@ -14,6 +14,7 @@ import {
   SpecialEvent,
   SpecialEventContent
 } from "./types"
+import { currentGeneralCourt } from "../shared"
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
@@ -105,7 +106,7 @@ class SpecialEventsScraper extends EventScraper<
 }
 
 class SessionScraper extends EventScraper<SessionContent, Session> {
-  private court = api.currentGeneralCourt
+  private court = currentGeneralCourt
 
   constructor() {
     super("every 60 minutes", 120)

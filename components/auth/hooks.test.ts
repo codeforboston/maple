@@ -8,13 +8,14 @@ afterAll(terminateFirebase)
 
 describe("useCreateUserWithEmailAndPassword", () => {
   it("creates user and profile", async () => {
-    const { result } = renderHook(() => useCreateUserWithEmailAndPassword())
+    const { result } = renderHook(() =>
+      useCreateUserWithEmailAndPassword(false)
+    )
     const info = {
       email: `${nanoid()}@example.com`,
       password: "password",
       confirmedPassword: "password",
-      fullName: "Test Test",
-      nickname: "test"
+      fullName: "Test Test"
     }
     let creds!: UserCredential
     await act(async () => {
@@ -22,7 +23,6 @@ describe("useCreateUserWithEmailAndPassword", () => {
     })
     const profile = await testDb.doc(`/profiles/${creds.user.uid}`).get()
     expect(profile.data()).toMatchObject({
-      displayName: info.nickname,
       fullName: info.fullName,
       role: "user",
       public: false

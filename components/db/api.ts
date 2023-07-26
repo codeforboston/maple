@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { firestore } from "components/firebase"
 import { isNotNull } from "components/utils"
+import { useMemo } from "react"
 import { FirebaseError } from "firebase/app"
 import {
   collection,
@@ -11,7 +12,8 @@ import {
   limit,
   orderBy,
   query,
-  where
+  where,
+  Query
 } from "firebase/firestore"
 import { first } from "lodash"
 import { Bill } from "./bills"
@@ -50,9 +52,9 @@ export const dbService = (() => {
 })()
 
 export class DbService {
-  private getDocs: typeof getFbDocs = q =>
-    getFbDocs(q).catch(e => handleFailure("getDocs", e, q))
-
+  private getDocs = <T>(q: Query<T>) => {
+    return getFbDocs(q).catch(e => handleFailure("getDocs", e, q))
+  }
   private getDocData = async <T>(path: string, ...pathSegments: string[]) => {
     const snap = await getFbDoc(doc(firestore, path, ...pathSegments)).catch(
       e => handleFailure("getDocData", e, path, pathSegments.join("/"))

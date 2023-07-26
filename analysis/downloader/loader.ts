@@ -2,11 +2,9 @@ import { parse, stringify } from "csv/sync"
 import { readFileSync, writeFileSync } from "fs"
 import { BillHistory } from "../../functions/src/bills/types"
 import { db } from "../../functions/src/firebase"
-import {
-  currentGeneralCourt,
-  parseApiDateTime
-} from "../../functions/src/malegislature"
+import { parseApiDateTime } from "../../functions/src/malegislature"
 import { ClassifiedAction, History } from "./types"
+import { currentGeneralCourt } from "../../components/db/common"
 
 const historyColumns = ["id", "action", "branch", "date"]
 

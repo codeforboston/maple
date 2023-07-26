@@ -7,9 +7,11 @@ import { Claim } from "./types"
 export type AuthFlowStep =
   | "start"
   | "signIn"
-  | "signUp"
+  | "userSignUp"
+  | "orgSignUp"
   | "forgotPassword"
   | "verifyEmail"
+  | "chooseProfileType"
   | null
 
 export interface State {
@@ -50,4 +52,4 @@ export const {
   }
 })
 
-export const useAuth = () => useAppSelector(({ auth }) => auth)
+export const useAuth = () => useAppSelector(state => state.auth)

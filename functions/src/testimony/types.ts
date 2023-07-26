@@ -4,10 +4,11 @@ import {
   Number,
   Optional,
   Record as R,
-  Static,
   String as RtString,
+  Static,
   Union
 } from "runtypes"
+import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
@@ -20,7 +21,9 @@ const BaseTestimony = R({
   content: RtString.withConstraint(
     s => s.length > 0 && s.length < maxTestimonyLength
   ),
-  attachmentId: Maybe(RtString)
+  attachmentId: Maybe(RtString),
+  /** Only present if testimony was edited (has a version greater than 1) */
+  editReason: Maybe(RtString)
 })
 
 export type Testimony = Static<typeof Testimony>
@@ -29,6 +32,8 @@ export const Testimony = withDefaults(
     id: Id,
     authorUid: Id,
     authorDisplayName: RtString,
+    authorRole: Role,
+    billTitle: RtString,
     version: Number,
     publishedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),
@@ -38,10 +43,12 @@ export const Testimony = withDefaults(
     draftAttachmentId: Maybe(RtString)
   }),
   {
+    authorRole: "user",
     // ID is backfilled
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
-    authorDisplayName: "Anonymous"
+    authorDisplayName: "Anonymous",
+    billTitle: ""
   }
 )
 
@@ -63,6 +70,7 @@ export const TestimonySearchRecord = R({
   position: Union(L("endorse"), L("oppose"), L("neutral")),
   content: RtString,
   authorUid: RtString,
+  authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
   publishedAt: Number

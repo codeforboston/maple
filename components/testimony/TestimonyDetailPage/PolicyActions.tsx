@@ -5,12 +5,21 @@ import { formUrl } from "components/publish"
 import { isNotNull } from "components/utils"
 import { FC, ReactElement } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
+import { useTranslation } from "next-i18next"
+
+interface PolicyActionsProps {
+  className?: string
+  isUser?: boolean
+}
 
 const PolicyActionItem: FC<ListItemProps> = props => (
   <ListItem action active={false} variant="secondary" {...props} />
 )
 
-export const PolicyActions: FC<{ className?: string }> = ({ className }) => {
+export const PolicyActions: FC<PolicyActionsProps> = ({
+  className,
+  isUser
+}) => {
   const { bill } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
 
@@ -27,10 +36,18 @@ export const PolicyActions: FC<{ className?: string }> = ({ className }) => {
   items.push(
     <PolicyActionItem
       key="add-testimony"
-      billName={`Add Testimony for ${billLabel}`}
+      billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
       href={formUrl(bill.id, bill.court)}
     />
   )
 
-  return <Card className={className} header="Actions" items={items} />
+  const { t } = useTranslation("testimony")
+
+  return (
+    <Card
+      className={className}
+      header={t("policyActions.actions") ?? "Actions"}
+      items={items}
+    />
+  )
 }

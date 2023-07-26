@@ -2,15 +2,14 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import AuthModal from "./auth/AuthModal"
-import { Container, Nav, Navbar } from "./bootstrap"
-import { useProfile } from "./db"
-import { auth } from "./firebase"
 import PageFooter from "./Footer/Footer"
-import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
+import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
+import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -51,108 +50,176 @@ const TopNav: React.FC = () => {
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      // when a user clicks the sign out button, the navbar is left open.
-      // this fixes that
-      if (user === null) {
-        closeNav()
-      }
-    })
-
-    return unsubscribe
-  }, [])
-
   useEffect(() => setSticky(isMobile), [isMobile])
 
   return (
-    <>
-      <Navbar
-        bg="secondary"
-        variant="dark"
-        sticky={sticky ? "top" : undefined}
-        expand={false}
-        expanded={isExpanded}
-      >
-        <Container>
-          <div className={styles.navbar_boxes_container}>
-            <div className={styles.navbar_box}>
-              <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
-            </div>
+    <Navbar
+      bg="secondary"
+      variant="dark"
+      sticky={sticky ? "top" : undefined}
+      expand={false}
+      expanded={isExpanded}
+    >
+      <Container fluid>
+        <div className={styles.navbar_boxes_container}>
+          <div className={styles.navbar_box}>
+            <Navbar expand={false} expanded={isExpanded}>
+              <Navbar.Brand>
+                <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
+              </Navbar.Brand>
+              <Navbar.Collapse id="topnav">
+                <Nav className="me-auto">
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/"
+                    handleClick={closeNav}
+                  >
+                    Home
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/bills"
+                    handleClick={closeNav}
+                  >
+                    Browse Bills
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/testimony"
+                    handleClick={closeNav}
+                  >
+                    Browse Testimony
+                  </NavLink>
 
-            <Navbar.Brand className="mx-2 p-0">
-              <Nav.Link href="/" className="p-0">
-                <Image fluid src="/nav-logo.svg" alt="logo"></Image>
-              </Nav.Link>
-            </Navbar.Brand>
+                  <NavDropdown className={"navLink-primary"} title={"Learn"}>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/learn/basics-of-testimony"
+                        handleClick={closeNav}
+                      >
+                        Learn About Testimony
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/learn/communicating-with-legislators"
+                        handleClick={closeNav}
+                      >
+                        Communicating with Legislators
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/learn/additional-resources"
+                        handleClick={closeNav}
+                      >
+                        Additional Resources
+                      </NavLink>
+                    </NavDropdown.Item>
+                  </NavDropdown>
 
-            <div className={styles.navbar_box}>
-              <Nav>
-                {authenticated ? (
-                  <ProfileLink
-                    role={claims?.role}
-                    displayName={profile?.displayName}
-                  />
+                  <NavDropdown className={"navLink-primary"} title={"About"}>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/about/mission-and-goals"
+                        handleClick={closeNav}
+                      >
+                        Our Mission &amp; Goals
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink href="/about/our-team" handleClick={closeNav}>
+                        Our Team
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/about/support-maple"
+                        handleClick={closeNav}
+                      >
+                        How to Support MAPLE
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink href="/policies" handleClick={closeNav}>
+                        Privacy Policy & Code of Conduct
+                      </NavLink>
+                    </NavDropdown.Item>
+                  </NavDropdown>
+
+                  <NavDropdown
+                    className={"navLink-primary"}
+                    title={"Why Use MAPLE"}
+                  >
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/why-use-maple/for-individuals"
+                        handleClick={closeNav}
+                      >
+                        For Individuals
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/why-use-maple/for-orgs"
+                        handleClick={closeNav}
+                      >
+                        For Organizations
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/why-use-maple/for-legislators"
+                        handleClick={closeNav}
+                      >
+                        For Legislators
+                      </NavLink>
+                    </NavDropdown.Item>
+                  </NavDropdown>
+
+                  {authenticated && (
+                    <NavLink
+                      className={"navLink-primary"}
+                      handleClick={() => {
+                        closeNav()
+                        void signOutAndRedirectToHome()
+                      }}
+                    >
+                      Sign Out
+                    </NavLink>
+                  )}
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
+          </div>
+          <div className={sticky ? "me-2 w-100 h-100 flex" : styles.navbar_box}>
+            <div className={sticky ? styles.center_menu : ""}>
+              <Nav.Link href="/" className="py-0 px-2 w-100">
+                {sticky ? (
+                  <Image
+                    src="/white-tree.svg"
+                    alt="logo"
+                    className="w-100"
+                  ></Image>
                 ) : (
-                  !sticky && <SignInWithButton />
+                  <Image src="/nav-logo.svg" alt="logo"></Image>
                 )}
-              </Nav>
+              </Nav.Link>
             </div>
           </div>
-          <Navbar.Collapse id="topnav">
-            <Nav className="me-auto">
-              <NavLink href="/" handleClick={closeNav}>
-                Home
-              </NavLink>
-              <NavLink href="/bills" handleClick={closeNav}>
-                Bills
-              </NavLink>
-              {/* <NavLink href="/testimonies" handleClick={closeNav}>
-                Testimony
-              </NavLink> */}
+          <div className={styles.navbar_box}>
+            <ProfileLink
+              role={claims?.role}
+              fullName={profile?.fullName}
+              sticky={sticky}
+            />
+          </div>
+        </div>
+      </Container>
 
-              <Navbar.Text className="navbar-section-header">Learn</Navbar.Text>
-              <Container
-                style={{ alignContent: "flex-end" }}
-                onClick={closeNav}
-              >
-                <NavLink href="/learn/basics-of-testimony">
-                  Learn About Testimony
-                </NavLink>
-                <NavLink href="/learn/communicating-with-legislators">
-                  Communicating with Legislators
-                </NavLink>
-                <NavLink href="/learn/additional-resources">
-                  Additional Resources
-                </NavLink>
-              </Container>
-
-              <Navbar.Text className="navbar-section-header">About</Navbar.Text>
-              <Container
-                style={{ alignContent: "flex-end" }}
-                onClick={closeNav}
-              >
-                <NavLink href="/about/mission-and-goals">
-                  Our Mission &amp; Goals
-                </NavLink>
-                <NavLink href="/about/our-team">Our Team</NavLink>
-                <NavLink href="/about/for-testifiers">For Testifiers</NavLink>
-                <NavLink href="/about/for-orgs">For Organizations</NavLink>
-                <NavLink href="/about/for-legislators">For Legislators</NavLink>
-              </Container>
-
-              {authenticated && (
-                <NavLink handleClick={signOutAndRedirectToHome}>
-                  Sign Out
-                </NavLink>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-          {sticky && !authenticated ? (
-            <SignInWithButton className={styles.mobile_nav_auth} />
-          ) : null}
-        </Container>
-      </Navbar>
-    </>
+      {sticky && !authenticated ? (
+        <SignInWithButton className={styles.mobile_nav_auth} />
+      ) : null}
+    </Navbar>
   )
 }

@@ -1,6 +1,7 @@
 import { Container } from "components/bootstrap"
 import { createPage } from "components/page"
 import { BillSearch } from "components/search"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   title: "Browse Bills",
@@ -13,3 +14,10 @@ export default createPage({
     )
   }
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer",
+  "testimony"
+])

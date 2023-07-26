@@ -38,7 +38,7 @@ services:
       test: curl -f localhost:5001/demo-dtp/us-central1/healthCheck || exit 1
       interval: 30s
       timeout: 5s
-      retries: 3
+      retries: 30
       start_period: 30s
     volumes:
       - ..:/app
@@ -58,6 +58,7 @@ services:
       - 4400:4400
       - 4500:4500
       - 9299:9299
+      - 9150:9150
 
   search-backfill:
     build:
@@ -78,6 +79,7 @@ services:
     build:
       dockerfile: Dockerfile.node
     command: sh -c 'yarn --immutable && yarn --cwd functions build'
+    # command: "true"
     working_dir: /app
     volumes:
       - ..:/app
@@ -109,7 +111,14 @@ services:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
       NEXT_PUBLIC_USE_EMULATOR: "true"
+      SERVER_EMULATOR_HOST: firebase
       NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
+      GCLOUD_PROJECT: "demo-dtp"
+      FIRESTORE_EMULATOR_HOST: "firebase:8080"
+      FIREBASE_AUTH_EMULATOR_HOST: "firebase:9099"
+      FIREBASE_STORAGE_EMULATOR_HOST: "firebase:9199"
+      TYPESENSE_API_URL: "http://firebase:8108"
+      TYPESENSE_API_KEY: "test-api-key"
 
 volumes:
   search: {}

@@ -4,8 +4,13 @@ import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
+import { useTranslation } from "next-i18next"
+import { capitalize } from "lodash"
+import { auth } from "../firebase"
+import { useEffect } from "react"
 
 const HeroHeader = ({ authenticated }) => {
+  const { t } = useTranslation("common")
   return (
     <Container fluid className={`${styles.container}`}>
       <ScrollTrackerContainer>
@@ -16,7 +21,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.skyline}`}
-              src="/skyline.png"
+              src="/skyline.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -26,7 +31,7 @@ const HeroHeader = ({ authenticated }) => {
           >
             <Image
               className={`${styles.clouds} opacity-50`}
-              src="/clouds.png"
+              src="/clouds.svg"
               alt=""
             ></Image>
           </ScrollTrackingItem>
@@ -39,7 +44,7 @@ const HeroHeader = ({ authenticated }) => {
               >
                 <Image
                   className={`${styles.statehouse}`}
-                  src="/statehouse.png"
+                  src="/statehouse.svg"
                   alt="statehouse"
                 ></Image>
               </Col>
@@ -49,11 +54,21 @@ const HeroHeader = ({ authenticated }) => {
                 md={{ order: "last", span: 6 }}
               >
                 <div className={`m-5`}>
-                  <div className={styles.title}>Let your voice be heard!</div>
-                  <p className={styles.subtitle}>
-                    MAPLE makes it easy for anyone to view and submit testimony
-                    to the Massachusetts Legislature about the bills that will
-                    shape our future.
+                  <div className={styles.title}>
+                    {t("common:let_your_voice_be_heard")}
+                  </div>
+                  <p className={styles.subtitle}>{t("short_description")}</p>
+                  <p>
+                    New to MAPLE? Check out{" "}
+                    <a
+                      href="https://calendar.google.com/calendar/embed?src=998f62323926f0b0076e7f578d3ca72b1bc94c4efa2f24be57b11f52b1b88595%40group.calendar.google.com&ctz=America%2FNew_York"
+                      style={{ color: "white" }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      our calendar
+                    </a>{" "}
+                    to see and join an upcoming training session!
                   </p>
                   <div className="text-end m-5">
                     {!authenticated && (
@@ -63,7 +78,9 @@ const HeroHeader = ({ authenticated }) => {
                     )}
                     <Wrap href="/bills">
                       <div className={styles.btncontainer}>
-                        <Button variant="outline-secondary">Browse</Button>
+                        <Button variant="outline-secondary">
+                          {capitalize(t("browse_bills"))}
+                        </Button>
                       </div>
                     </Wrap>
                   </div>

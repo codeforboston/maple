@@ -5,6 +5,7 @@ import HeroHeader from "../components/HeroHeader/HeroHeader"
 import Leaf from "../components/Leaf/Leaf"
 import { createPage } from "../components/page"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
+import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   Page: () => {
@@ -31,3 +32,11 @@ export default createPage({
     )
   }
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "homepage",
+  "footer",
+  "testimony"
+])

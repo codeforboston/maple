@@ -5,7 +5,11 @@ export const StepHeader = styled<{ step?: number }>(
   ({ step, children, ...rest }) => {
     return (
       <div {...rest}>
-        {!!step && <StepChip step={step} scale={2} className="me-4" />}
+        {!!step && (
+          <StepChip scale={2} className="me-4">
+            {step}
+          </StepChip>
+        )}
         {children}
       </div>
     )

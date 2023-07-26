@@ -11,7 +11,7 @@ import {
   Static,
   String
 } from "runtypes"
-
+import { ZodTypeAny, z } from "zod"
 /** Parse the request and return the result or fail. */
 export function checkRequest<A>(type: Runtype<A>, data: any) {
   const validationResult = type.validate(data)
@@ -24,6 +24,18 @@ export function checkRequest<A>(type: Runtype<A>, data: any) {
   return validationResult.value
 }
 
+/** Parse the request and return the result or fail. */
+export function checkRequestZod<T extends ZodTypeAny>(
+  type: T,
+  data: any
+): z.infer<T> {
+  const validationResult = type.safeParse(data)
+  if (!validationResult.success) {
+    throw fail("invalid-argument", validationResult.error.message)
+  }
+  return validationResult.data
+}
+
 /** Return the authenticated user's id or fail if they are not authenticated. */
 export function checkAuth(
   context: https.CallableContext,
@@ -32,10 +44,7 @@ export function checkAuth(
   const uid = context.auth?.uid
 
   if (!uid) {
-    throw fail(
-      "unauthenticated",
-      "Caller must be signed in to publish testimony"
-    )
+    throw fail("unauthenticated", "Caller must be signed in")
   }
 
   if (checkEmailVerification && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -47,6 +56,16 @@ export function checkAuth(
   }
 
   return uid
+}
+
+/**
+ * Checks that the caller is an admin.
+ */
+export function checkAdmin(context: https.CallableContext) {
+  const callerRole = context.auth?.token.role
+  if (callerRole !== "admin") {
+    throw fail("permission-denied", "You must be an admin")
+  }
 }
 
 /** Constructs a new HTTPS error */

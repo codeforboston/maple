@@ -26,7 +26,10 @@ import { MemberContent } from "./members/types"
  */
 function addCertificates() {
   const rootCas = createRootCas()
-  rootCas.addFile(__dirname + "/ssl/DigiCert TLS RSA SHA256 2020 CA1.pem")
+  // rootCas.addFile(__dirname + "/ssl/DigiCert TLS RSA SHA256 2020 CA1.pem")
+  rootCas.addFile(
+    __dirname + "/ssl/DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem"
+  )
   require("https").globalAgent.options.ca = rootCas
 }
 
@@ -60,11 +63,6 @@ export type MemberListing = {
   GeneralCourtNumber: number
   MemberCode: string
 }
-
-/** The general court is the name for a session of the legislature, which lasts
- * two years. */
-export const currentGeneralCourt = 193
-export const supportedGeneralCourts = [192, 193]
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"

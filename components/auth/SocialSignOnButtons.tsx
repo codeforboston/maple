@@ -2,23 +2,27 @@ import { AuthProvider, GoogleAuthProvider } from "firebase/auth"
 import { Image, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import { useSignInWithPopUp } from "./hooks"
+import { useTranslation } from "next-i18next"
 
 type AuthButton = (props: {
   onClick: () => void
   loading: boolean
 }) => JSX.Element
 
-const GoogleButton: AuthButton = ({ onClick, loading }) => (
-  <LoadingButton
-    variant="light"
-    onClick={onClick}
-    loading={loading}
-    spinnerProps={{ className: "me-4" }}
-  >
-    <Image src="/google-icon.png" alt="Google" className="me-4" />
-    Continue with Google
-  </LoadingButton>
-)
+const GoogleButton: AuthButton = ({ onClick, loading }) => {
+  const { t } = useTranslation("auth")
+  return (
+    <LoadingButton
+      variant="light"
+      onClick={onClick}
+      loading={loading}
+      spinnerProps={{ className: "me-4" }}
+    >
+      <Image src="/google-icon.svg" alt="Google" className="me-4" />
+      {t("continueGoogle")}
+    </LoadingButton>
+  )
+}
 
 type ButtonWithProvider = {
   provider: AuthProvider
@@ -29,7 +33,7 @@ const buttons: ButtonWithProvider[] = [
   { provider: new GoogleAuthProvider(), SignOnButton: GoogleButton }
 ]
 
-export default function SocialSignOnButtons() {
+export default function SocialSignOnButtons(props: { onComplete: () => void }) {
   const signInWithPopUp = useSignInWithPopUp()
 
   const isLoading = (providerId: string) => {
@@ -46,7 +50,9 @@ export default function SocialSignOnButtons() {
         <SignOnButton
           key={provider.providerId}
           loading={isLoading(provider.providerId)}
-          onClick={() => signInWithPopUp.execute(provider)}
+          onClick={() =>
+            signInWithPopUp.execute(provider).then(props.onComplete)
+          }
         />
       ))}
     </Stack>

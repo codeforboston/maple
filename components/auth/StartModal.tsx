@@ -1,6 +1,7 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Image, Modal, Stack } from "../bootstrap"
 import styles from "./StartModal.module.css"
+import { useTranslation } from "next-i18next"
 
 export default function StartModal({
   show,
@@ -11,31 +12,27 @@ export default function StartModal({
   onSignInClick: () => void
   onSignUpClick: () => void
 }) {
+  const { t } = useTranslation("auth")
+
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="start-modal" centered>
       <Modal.Header closeButton className={styles.modalHeader}>
         <Modal.Title id="start-modal" className="visually-hidden">
-          Sign Up or Sign In
+          {t("signUpOrIn")}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Col md={7} className="mx-auto">
           <Stack gap={3} direction="vertical" className="mb-4 text-center">
-            <Image
-              fluid
-              src="/fancy-govt-with-bg.png"
-              alt="Government Building"
-            />
+            <Image fluid src="/gov-with-mics.svg" alt="Government Building" />
 
-            <p className="h5">
-              Add your voice to the conversation by becoming a member!
-            </p>
+            <p className="h5">{t("addVoice")}</p>
           </Stack>
 
           <Stack gap={3}>
-            <Button onClick={onSignUpClick}>Sign Up</Button>
+            <Button onClick={onSignUpClick}>{t("signUp")}</Button>
             <Button variant="outline-primary" onClick={onSignInClick}>
-              Sign In
+              {t("signIn")}
             </Button>
           </Stack>
         </Col>

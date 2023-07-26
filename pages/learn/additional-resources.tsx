@@ -3,6 +3,7 @@ import { createPage } from "../../components/page"
 import AdditionalResourcesCard from "../../components/AdditionalResources/AdditionalResourcesCard"
 import AdditionalResourcesCardContent from "../../components/AdditionalResources/AdditionalResourcesCardContent"
 import styles from "../../components/AdditionalResources/AdditionalResourcesCard.module.css"
+import { createGetStaticTranslationProps } from "components/translations"
 
 const content = [
   {
@@ -10,7 +11,11 @@ const content = [
       P1: (
         <>
           The MA Legislature has an{" "}
-          <a href="https://malegislature.gov/Search/FindMyLegislator">
+          <a
+            href="https://malegislature.gov/Search/FindMyLegislator"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             online tool
           </a>{" "}
           you can use to identify your legislators based on your home address.
@@ -23,7 +28,11 @@ const content = [
       P1: (
         <>
           The MA Legislature publishes a{" "}
-          <a href="https://www.mass.gov/doc/the-legislative-process-0/download">
+          <a
+            href="https://www.mass.gov/doc/the-legislative-process-0/download"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             document on the legislative process.
           </a>
         </>
@@ -35,7 +44,11 @@ const content = [
       P1: (
         <>
           Mass Legal Services published a 2007 guide to The{" "}
-          <a href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0">
+          <a
+            href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Legislative Process in Massachusetts.
           </a>
         </>
@@ -66,3 +79,10 @@ export default createPage({
     )
   }
 })
+
+export const getStaticProps = createGetStaticTranslationProps([
+  "auth",
+  "common",
+  "footer",
+  "testimony"
+])

@@ -10,11 +10,13 @@ import {
   useCurrentTestimonyDetails,
   versionSelected
 } from "./testimonyDetailSlice"
+import { useTranslation } from "next-i18next"
 
 export const VersionBanner = styled<ContainerProps>(
   ({ className, ...props }) => {
     const dispatch = useAppDispatch()
     const { isCurrentVersion, currentVersion } = useCurrentTestimonyDetails()
+    const { t } = useTranslation("testimony")
     if (isCurrentVersion) return null
     return (
       <div className={className}>
@@ -22,12 +24,12 @@ export const VersionBanner = styled<ContainerProps>(
           className="d-flex justify-content-between align-items-center"
           {...props}
         >
-          Viewing out of date version of testimony{" "}
+          {t("testimonyVersionBanner.viewingVersion")}{" "}
           <Button
             variant="outline-secondary"
             onClick={() => dispatch(versionSelected(currentVersion))}
           >
-            Back to Current Version
+            {t("testimonyVersionBanner.backToVersion")}
           </Button>
         </Container>
       </div>
