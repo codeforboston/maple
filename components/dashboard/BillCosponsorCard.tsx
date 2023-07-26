@@ -5,7 +5,7 @@ import { Bill } from "components/db/bills"
 import 'chartjs-adapter-moment';
 
 export const BillCosponsorCard = ({bill}: {bill: Bill}) => {
-    const precision: string = 'day'
+    const precision: string = 'exact'
     const cosponsors = bill.content.Cosponsors
     const labels = cosponsors.map(cs => new Date(Date.parse(cs.ResponseDate))).sort((a, b) => a.getTime() - b.getTime())
     let finalLabels
