@@ -9,8 +9,8 @@
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",
-    "publicProfile": "You can change this by clicking the \"Make Private\" button below.",
-    "privateProfile": "You can change this by clicking the \"Make Public\" button below.",
+    "publicProfile": "Your profile is currently public. You can change this by clicking the \"Make Private\" button below.",
+    "privateProfile": "Your profile is currently private. You can change this by clicking the \"Make Public\" button below.",
     "statePurpose": "State your purpose",
     "noLegislatorInfo": "No legislator information given"
     },
