@@ -6,7 +6,8 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  User
+  User,
+  UserCredential
 } from "firebase/auth"
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
@@ -66,7 +67,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
-      await finishSignup({ requestedRole: isOrg ? "pendingUpgrade" : "user" })
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
       const categories = orgCategory ? [orgCategory] : ""
 
@@ -78,7 +79,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
             notificationFrequency: "Monthly",
             email: credentials.user.email,
             public: true
-
           }),
           sendEmailVerification(credentials.user)
         ])
@@ -123,7 +123,13 @@ export function useSendPasswordResetEmail() {
 
 export function useSignInWithPopUp() {
   return useFirebaseFunction(async (provider: AuthProvider) => {
-    const credentials = await signInWithPopup(auth, provider)
+    let credentials: UserCredential
+    try {
+      credentials = await signInWithPopup(auth, provider)
+    } catch (e) {
+      console.log("error signing in with google", e)
+      return
+    }
 
     const { claims } = await credentials.user.getIdTokenResult()
     if (!claims?.role) {
@@ -138,7 +144,5 @@ export function useSignInWithPopUp() {
         })
       ])
     }
-    console.log(credentials)
-    return credentials
   })
 }

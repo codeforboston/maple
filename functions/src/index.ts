@@ -28,7 +28,7 @@ export {
   publishTestimony,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReport
+  resolveReport as adminResolveReport
 } from "./testimony"
 export {
   publishNotifications,

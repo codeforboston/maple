@@ -1,4 +1,4 @@
-import { UserRecord } from "firebase-admin/lib/auth/user-record"
+import type { UserRecord } from "firebase-admin/lib/auth/user-record"
 import { Undefined } from "runtypes"
 import { Profile } from "../profile/types"
 import { Auth, Database } from "../types"

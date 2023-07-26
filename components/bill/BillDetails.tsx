@@ -56,11 +56,11 @@ export const BillDetails = ({ bill }: BillProps) => {
         </Row>
         {bill.history.length > 0 ? (
           <>
-            <Row>
-              <Col>
+            <Row className="align-items-end justify-content-start">
+              <Col md={2}>
                 <BillNumber bill={bill} />
               </Col>
-              <Col xs={6} className="d-flex justify-content-end">
+              <Col xs={10} md={6} className="mb-3 ms-auto">
                 <Status bill={bill} />
               </Col>
             </Row>

@@ -200,7 +200,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser && (
+          {isUser && !isMobile && (
             <>
               {onProfilePage && (
                 <Col>
@@ -217,7 +217,7 @@ export const TestimonyItem = ({
 
               {canDelete && (
                 <>
-                  <Col>
+                  {/* <Col>
                     <FooterButton
                       style={{ color: "#c71e32" }}
                       onClick={() => setShowConfirm(s => !s)}
@@ -225,7 +225,7 @@ export const TestimonyItem = ({
                     >
                       {t("testimonyItem.rescind")}
                     </FooterButton>
-                  </Col>
+                  </Col> */}
 
                   {showConfirm && (
                     <ArchiveTestimonyConfirmation
@@ -238,11 +238,11 @@ export const TestimonyItem = ({
               )}
             </>
           )}
-          <Col xs="auto">
+          {/* <Col xs="auto">
             <FooterButton variant="link" onClick={() => setIsReporting(true)}>
               {isUser ? "Request to rescind" : "Report"}
             </FooterButton>
-          </Col>
+          </Col> */}
         </Row>
       </Stack>
 
