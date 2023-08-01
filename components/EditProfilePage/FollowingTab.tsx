@@ -139,11 +139,11 @@ export function FollowingTab({ className }: Props) {
     }
     // rest of what was inside the original if statement
       if (unfollow.type == "bill") {
-        let billLookup = { billId: unfollow.typeId, court: unfollow.court } // creating billLookup as an object here
+        const billLookup = { billId: unfollow.typeId, court: unfollow.court }
         try {
           const response = await unfollowBillFunction({
-            billLookup: billLookup
-          }) // pass billLookup object here
+            billLookup
+          })
           console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
         } catch (error: any) {
           console.log(error.message)
