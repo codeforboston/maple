@@ -127,7 +127,7 @@ export function FollowingTab({ className }: Props) {
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
     // DEBUG
-    if (!unfollow || !unfollow.typeId) {
+    if (!unfollow?.typeId) {
       console.error(
         "handleUnfollowClick was called but unfollow or unfollow.typeId is undefined"
       )
