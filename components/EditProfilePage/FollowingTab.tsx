@@ -149,12 +149,12 @@ export function FollowingTab({ className }: Props) {
           console.log(error.message)
         }
       } else {
-        let orgLookup = {
+        const orgLookup = {
           profileId: unfollow.typeId,
           fullName: unfollow.orgName
-        } // creating orgLookup as an object here
+        }
         try {
-          const response = await unfollowOrgFunction({ orgLookup: orgLookup }) // pass orgLookup object here
+          const response = await unfollowOrgFunction({ orgLookup: orgLookup })
           console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
         } catch (error: any) {
           console.log(error.message)
