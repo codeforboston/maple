@@ -134,7 +134,10 @@ export function FollowingTab({ className }: Props) {
       return
     }
 
-    if (unfollow !== null) {
+    if (unfollow === null) {
+      return
+    }
+    // rest of what was inside the original if statement
       if (unfollow.type == "bill") {
         let billLookup = { billId: unfollow.typeId, court: unfollow.court } // creating billLookup as an object here
         try {
