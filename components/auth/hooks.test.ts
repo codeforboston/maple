@@ -26,7 +26,7 @@ describe("useCreateUserWithEmailAndPassword", () => {
       fullName: info.fullName,
       role: "user",
       public: false,
-      notificationFrequency: "monthly",
+      notificationFrequency: "Monthly",
       email: info.email
     })
   })
