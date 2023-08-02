@@ -79,14 +79,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch 
-                   when we're ready to show Email related element to users
-                */
-                  className="d-none"
-                >
                   <FollowButton bill={bill} />
-                </div>
               </Styled>
             </Col>
           </Row>
