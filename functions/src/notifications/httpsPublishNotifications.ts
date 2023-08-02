@@ -14,7 +14,7 @@ const db = admin.firestore()
 const createNotificationFields = (
   topicEvent: { [x: string]: any; name?: any; id?: any; time?: any },
   entity: { court: any; id: string; name: string },
-  type: string
+  type: "bill" | "org"
 ) => {
   let topicName = ""
   let header = ""
