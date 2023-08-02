@@ -66,9 +66,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                <div>
                   <FollowButton bill={bill} />
-                </div>
               </Col>
             </Row>
           </>
