@@ -11,7 +11,7 @@ export default createMeta({
 })
 
 const bill: Bill = {
-  id: "1234",
+  id: "H1234",
   court: 193,
   content: {
     Pinslip: "test pinslip",
