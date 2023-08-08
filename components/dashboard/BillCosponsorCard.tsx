@@ -81,7 +81,14 @@ export const BillCosponsorCard = ({ bill }: { bill: Bill }) => {
   )
 }
 
-const getOrCreateTooltip = (chart: { canvas: { parentNode: { querySelector: (arg0: string) => any; appendChild: (arg0: any) => void } } }) => {
+const getOrCreateTooltip = (chart: {
+  canvas: {
+    parentNode: {
+      querySelector: (arg0: string) => any
+      appendChild: (arg0: any) => void
+    }
+  }
+}) => {
   let tooltipEl = chart.canvas.parentNode.querySelector("div")
 
   if (!tooltipEl) {
