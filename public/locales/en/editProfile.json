@@ -4,6 +4,10 @@
     "privacySetting": "Privacy Settings",
     "save": "Save",
     "cancel": "Cancel",
+    "enable": "Enable",
+    "enabled": "Enabled",
+    "disable": "Disable",
+    "disabled": "Disabled",
     "viewMyProfile": "View My Profile",
     "viewOrgProfile": "View My Organization",
     "saveChanges":"Save Personal Information",
@@ -22,6 +26,12 @@
         "bills": "Bills You Follow",
         "orgs": "Organizations You Follow",
         "unfollow": "Unfollow"
+    },
+    "notification":{
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "none": "None"
     },
     "legislator":{
         "representative": "Representative",
