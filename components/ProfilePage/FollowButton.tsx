@@ -100,7 +100,7 @@ export const FollowButton = ({
     }
   }
 
-  const clickFunction = () => {
+  const handleClick = () => {
     queryResult === topicName ? handleUnfollowClick() : handleFollowClick()
   }
 
@@ -113,7 +113,7 @@ export const FollowButton = ({
     <Col className={`d-flex w-100 justify-content-start`}>
       <div>
         <div className="view-edit-profile">
-          <Button onClick={clickFunction} className={`btn btn-lg py-1`}>
+          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
             {text}
             {checkmark}
           </Button>
