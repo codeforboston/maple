@@ -4,7 +4,6 @@ import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 import { runAgainstEmulators, runAgainstProject } from "../configure"
 import { Context, Script, ScriptContext } from "./types"
-import { listAllUsers } from "./list-all-users"
 
 const Args = Record({
   env: Union(L("local"), L("dev"), L("prod")),

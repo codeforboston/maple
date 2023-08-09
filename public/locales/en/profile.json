@@ -5,8 +5,7 @@
   "noUser": "no user",
   "anonymousUser": "Anonymous User",
   "button":{
-    "editProfile": "Edit\u00A0Profile",
-    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options"
+    "editProfile": "Edit\u00A0Profile"
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",
@@ -31,5 +30,4 @@
     "large": "Large User Icon",
     "small": "Small User Icon"
   }
-  
 }

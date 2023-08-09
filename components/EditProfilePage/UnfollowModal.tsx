@@ -2,12 +2,25 @@ import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
-import { UnfollowModalConfig } from "./FollowingTab"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  handleUnfollowClick: (unfollow: UnfollowModalConfig | null) => Promise<void>
+  handleUnfollowClick: ({
+    uid,
+    unfollowItem
+  }: {
+    uid: string | undefined
+    unfollowItem: UnfollowModalConfig | null
+  }) => Promise<void>
   onUnfollowClose: () => void
-  unfollow: UnfollowModalConfig | null
+  uid: string | undefined
+  unfollowItem: UnfollowModalConfig | null
+}
+
+export type UnfollowModalConfig = {
+  court: number
+  orgName: string
+  type: string
+  typeId: string
 }
 
 const StyledButton = styled(Button)`
@@ -18,20 +31,19 @@ const StyledModalBody = styled(Modal.Body)`
   padding: 0.8rem;
 `
 
-export default function unfollow({
+export default function unfollowItem({
   handleUnfollowClick,
   onHide,
   onUnfollowClose,
   show,
-  unfollow
+  uid,
+  unfollowItem
 }: Props) {
   const handleTopic = () => {
-    if (unfollow?.type == "bill") {
-      return ` Bill ${formatBillId(unfollow?.typeId)}`
-    } else if (unfollow?.type == "org") {
-      return ` ${unfollow?.orgName}`
+    if (unfollowItem?.type == "bill") {
+      return ` Bill ${formatBillId(unfollowItem?.typeId)}`
     } else {
-      throw new Error(`Unexpected type: ${unfollow?.type}`);
+      return ` ${unfollowItem?.orgName}`
     }
   }
 
@@ -62,7 +74,7 @@ export default function unfollow({
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(unfollow)
+              handleUnfollowClick({ uid, unfollowItem })
             }}
           >
             Yes

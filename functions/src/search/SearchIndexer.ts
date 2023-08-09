@@ -4,11 +4,10 @@ import hash from "object-hash"
 import Collection from "typesense/lib/Typesense/Collection"
 import { ImportResponse } from "typesense/lib/Typesense/Documents"
 import { ImportError, ObjectNotFound } from "typesense/lib/Typesense/Errors"
-import { db, DocumentSnapshot, QuerySnapshot } from "../firebase"
+import { db, DocumentSnapshot, FieldValue, QuerySnapshot } from "../firebase"
 import { createClient } from "./client"
 import { CollectionConfig } from "./config"
 import { z } from "zod"
-import { Timestamp } from "../firebase"
 
 export const BackfillConfig = z.object({
   numBatches: z.number().positive().optional()
@@ -41,7 +40,7 @@ export class SearchIndexer {
       const upgradeDoc = db.doc(SearchIndexer.upgradePath(alias))
       await upgradeDoc.delete()
       await upgradeDoc.create({
-        createdAt: Timestamp.now(),
+        createdAt: FieldValue.serverTimestamp(),
         ...config
       })
     }

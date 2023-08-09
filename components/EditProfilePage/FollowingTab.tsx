@@ -1,29 +1,21 @@
+import { useTranslation } from "next-i18next"
 import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
-import { Dispatch, SetStateAction, useEffect, useState, useMemo, useCallback } from "react";
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState
+} from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
 import { useBill, usePublicProfile } from "../db"
-import { firestore } from "../firebase"
 import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
+import { deleteItem, FollowingQuery, Results } from "../shared/FollowingQueries"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
-import UnfollowModal from "./UnfollowModal"
-import { useTranslation } from "next-i18next"
-import { getFunctions, httpsCallable } from "firebase/functions"
-
-const functions = getFunctions()
-
-const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
-const unfollowOrgFunction = httpsCallable(functions, "unfollowOrg")
+import UnfollowModal, { UnfollowModalConfig } from "./UnfollowModal"
 
 type Props = {
   className?: string
@@ -33,13 +25,6 @@ export const StyledHeader = styled(External)`
   text-decoration: none;
   font-weight: 1rem;
 `
-
-export type UnfollowModalConfig = {
-  court: number
-  orgName: string
-  type: string
-  typeId: string
-}
 
 export const Styled = styled.div`
   font-size: 2rem;
@@ -63,112 +48,49 @@ export const Styled = styled.div`
 
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
-  const uid = user?.uid;
-  const subscriptionRef = useMemo(() => // returns new object only if uid changes
-    uid ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`) : null,
-    [uid]
-  );
+  const uid = user?.uid
 
-  const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
-  const close = () => setUnfollow(null)
-
+  const [unfollowItem, setUnfollowItem] = useState<UnfollowModalConfig | null>(
+    null
+  )
+  const close = () => setUnfollowItem(null)
 
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
-  const billsFollowingQuery = useCallback(async () => {
-    if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const billList: string[] = []
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "bill")
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      billList.push(doc.data().billLookup)
-    })
-
-    if (billsFollowing.length === 0 && billList.length != 0) {
-      setBillsFollowing(billList)
-    }
-  }, [subscriptionRef, uid, billsFollowing]);
-
-  useEffect(() => {
-    uid ? billsFollowingQuery() : null
-  })
-
-  const orgsFollowingQuery = useCallback(async () => {
-    if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const orgsList: string[] = []
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "org")
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      orgsList.push(doc.data().orgLookup)
-    })
-
-    if (orgsFollowing.length === 0 && orgsList.length != 0) {
-      setOrgsFollowing(orgsList)
-    }
-  }, [subscriptionRef, uid, orgsFollowing]);
-
-  const fetchFollowedItems = useCallback(async () => {
-    if (uid) {
-      billsFollowingQuery();
-      orgsFollowingQuery();
-    }
-  }, [uid, billsFollowingQuery, orgsFollowingQuery]);
-
-  useEffect(() => {
-    fetchFollowedItems();
-  }, [billsFollowing, orgsFollowing, fetchFollowedItems]);  
-
-  const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
-    if (!unfollow || !unfollow.typeId) { // handle the case where unfollow is null or unfollow.typeId is undefined
-      console.error(
-        "handleUnfollowClick was called but unfollow or unfollow.typeId is undefined"
-      )
-      return
-    }
-
-    if (unfollow === null) {
-      return
-    }
-    // rest of what was inside the original if statement
-      if (unfollow.type == "bill") {
-        const billLookup = { billId: unfollow.typeId, court: unfollow.court }
-        try {
-          const response = await unfollowBillFunction({
-            billLookup
-          })
-          console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-        } catch (error: any) {
-          console.log(error.message)
-        }
-      } else {
-        const orgLookup = {
-          profileId: unfollow.typeId,
-          fullName: unfollow.orgName
-        }
-        try {
-          const response = await unfollowOrgFunction({ orgLookup: orgLookup })
-          console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-        } catch (error: any) {
-          console.log(error.message)
-        }
+  const handleQueryResults = useCallback(
+    (results: Results) => {
+      if (billsFollowing.length === 0 && results.bills.length != 0) {
+        setBillsFollowing(results.bills)
       }
 
-      setBillsFollowing([])
-      setOrgsFollowing([])
-      setUnfollow(null)
-    }
+      if (orgsFollowing.length === 0 && results.orgs.length != 0) {
+        setOrgsFollowing(results.orgs)
+      }
+    },
+    [billsFollowing.length, orgsFollowing.length]
+  )
+
+  useEffect(() => {
+    uid
+      ? FollowingQuery(uid).then(results => handleQueryResults(results))
+      : null
+  }, [uid, setBillsFollowing, setOrgsFollowing, handleQueryResults])
+
+  const handleUnfollowClick = async ({
+    uid,
+    unfollowItem
+  }: {
+    uid: string | undefined
+    unfollowItem: UnfollowModalConfig | null
+  }) => {
+    deleteItem({ uid, unfollowItem })
+
+    setBillsFollowing([])
+    setOrgsFollowing([])
+    setUnfollowItem(null)
   }
+
   const { t } = useTranslation("editProfile")
 
   return (
@@ -177,12 +99,11 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>{t("follow.bills")}</h2>
-            {billsFollowing.map((element: string, index: number) => (
+            {billsFollowing.map((element: any) => (
               <FollowedItem
-                key={index}
-                index={index}
+                key={element.billId}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={"bill"}
               />
             ))}
@@ -193,12 +114,11 @@ export function FollowingTab({ className }: Props) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {orgsFollowing.map((element: string, index: number) => (
+            {orgsFollowing.map((element: any) => (
               <FollowedItem
-                key={index}
-                index={index}
+                key={element.profileid}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={"org"}
               />
             ))}
@@ -208,9 +128,10 @@ export function FollowingTab({ className }: Props) {
       <UnfollowModal
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
-        onUnfollowClose={() => setUnfollow(null)}
-        show={unfollow ? true : false}
-        unfollow={unfollow}
+        onUnfollowClose={() => setUnfollowItem(null)}
+        show={unfollowItem ? true : false}
+        uid={uid}
+        unfollowItem={unfollowItem}
       />
     </>
   )
@@ -218,15 +139,14 @@ export function FollowingTab({ className }: Props) {
 
 function FollowedItem({
   element,
-  setUnfollow,
+  setUnfollowItem,
   type
 }: {
-  index: number
   element: any
-  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
-  const { result: profile, loading } = usePublicProfile(element.profileId)
+  const { result: profile, loading } = usePublicProfile(element.profileid)
 
   let fullName = "default"
   if (profile?.fullName) {
@@ -251,7 +171,7 @@ function FollowedItem({
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={type}
               />
             </Col>
@@ -270,14 +190,14 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`organizations/${element?.profileId}`}>
+                <Internal href={`organizations/${element}`}>
                   {fullName}
                 </Internal>
               </Col>
               <UnfollowButton
                 fullName={fullName}
                 element={element}
-                setUnfollow={setUnfollow}
+                setUnfollowItem={setUnfollowItem}
                 type={type}
               />
             </Row>
@@ -292,6 +212,7 @@ function FollowedItem({
 function BillFollowingTitle({ court, id }: { court: number; id: string }) {
   const { loading, error, result: bill } = useBill(court, id)
   const { t } = useTranslation("editProfile")
+
   if (loading) {
     return (
       <Row>
@@ -309,36 +230,34 @@ function BillFollowingTitle({ court, id }: { court: number; id: string }) {
 function UnfollowButton({
   fullName,
   element,
-  setUnfollow,
+  setUnfollowItem,
   type
 }: {
   fullName: string
   element: any
-  setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
+  setUnfollowItem: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
   const handleClick = () => {
-    if (!element) {
-      console.error("handleClick was called but element is undefined")
-      return
-    }
     if (type === "bill") {
-      setUnfollow({
+      setUnfollowItem({
         court: element?.court,
         orgName: "",
         type: "bill",
         typeId: element?.billId
       })
     } else {
-      setUnfollow({
+      setUnfollowItem({
         court: 0,
-        orgName: element?.fullName,
+        orgName: fullName,
         type: "org",
-        typeId: element?.profileId
+        typeId: element
       })
     }
   }
+
   const { t } = useTranslation("editProfile")
+
   return (
     <Col
       onClick={() => {
