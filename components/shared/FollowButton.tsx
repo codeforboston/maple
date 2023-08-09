@@ -9,10 +9,10 @@ import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 
 export const FollowButton = ({
   bill,
-  profileId
+  profileid
 }: {
   bill?: Bill
-  profileId?: string
+  profileid?: string
 }) => {
   const { t } = useTranslation("common")
 
@@ -24,7 +24,7 @@ export const FollowButton = ({
   let topicName = ``
   bill
     ? (topicName = `bill-${courtId}-${billId}`)
-    : (topicName = `org-${profileId}`)
+    : (topicName = `org-${profileid}`)
 
   const [queryResult, setQueryResult] = useState("")
 
@@ -35,7 +35,7 @@ export const FollowButton = ({
   }, [uid, topicName, setQueryResult])
 
   const FollowClick = async () => {
-    setFollow(uid, topicName, bill, billId, courtId, profileId)
+    setFollow(uid, topicName, bill, billId, courtId, profileid)
     setQueryResult(topicName)
   }
 
@@ -49,7 +49,7 @@ export const FollowButton = ({
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="checkmark" />
   ) : null
-  const handleClick = () => {
+  const clickFunction = () => {
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
@@ -60,14 +60,14 @@ export const FollowButton = ({
           {bill ? (
             <FollowBill
               checkmark={checkmark}
-              handleClick={handleClick}
+              clickFunction={clickFunction}
               text={text}
               uid={uid}
             />
           ) : (
             <FollowOrg
               checkmark={checkmark}
-              handleClick={handleClick}
+              clickFunction={clickFunction}
               text={text}
             />
           )}
@@ -79,18 +79,18 @@ export const FollowButton = ({
 
 function FollowOrg({
   checkmark,
-  handleClick,
+  clickFunction,
   text
 }: {
   checkmark: JSX.Element | null
-  handleClick: any
+  clickFunction: any
   text: string
 }) {
   return (
     <div>
       <div>
         <div className="follow-button">
-          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
+          <Button onClick={clickFunction} className={`btn btn-lg py-1`}>
             {text}
             {checkmark}
           </Button>
@@ -102,12 +102,12 @@ function FollowOrg({
 
 function FollowBill({
   checkmark,
-  handleClick,
+  clickFunction,
   text,
   uid
 }: {
   checkmark: JSX.Element | null
-  handleClick: any
+  clickFunction: any
   text: string
   uid?: string
 }) {
@@ -116,7 +116,7 @@ function FollowBill({
       className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
         uid ? "" : "visually-hidden"
       }`}
-      onClick={handleClick}
+      onClick={clickFunction}
     >
       {text}
       {checkmark}

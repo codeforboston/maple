@@ -1,4 +1,4 @@
-import { Timestamp } from "functions/src/firebase"
+import { Timestamp } from "@google-cloud/firestore"
 import { Role } from "components/auth"
 import { functions } from "components/firebase"
 import { httpsCallable } from "firebase/functions"

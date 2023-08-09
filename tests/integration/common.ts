@@ -44,25 +44,6 @@ export async function createNewBill(props?: Partial<Bill>) {
   return billId
 }
 
-export async function deleteBill(id: string) {
-  await testDb.doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`).delete()
-}
-
-export async function createNewOrg() {
-  const id = nanoid()
-  await testDb.doc(`/profiles/${id}`).create({
-    id,
-    name: "fake",
-    shortName: "fake",
-    slug: "fake"
-  })
-  return id
-}
-
-export async function deleteOrg(id: string) {
-  await testDb.doc(`/profiles/${id}`).delete()
-}
-
 export const createFakeBill = () => createNewBill().then(b => b)
 
 export async function expectPermissionDenied(work: Promise<any>) {
@@ -85,26 +66,6 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
   console.warn = warn
 }
 
-export async function expectEmailAlreadyInUse(work: Promise<any>) {
-  const warn = console.warn
-  console.warn = jest.fn()
-  const e = await work
-    .then(() => fail("expected promise to reject"))
-    .catch(e => e)
-  expect(e.code).toBe("auth/email-already-in-use")
-  console.warn = warn
-}
-
-export async function expectInvalidArgument(work: Promise<any>) {
-  const warn = console.warn
-  console.warn = jest.fn()
-  const e = await work
-    .then(() => fail("expected promise to reject"))
-    .catch(e => e)
-  expect(e.code).toBe("invalid-argument")
-  console.warn = warn
-}
-
 export async function getBill(id: string): Promise<Bill> {
   const doc = await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
@@ -115,11 +76,5 @@ export async function getBill(id: string): Promise<Bill> {
 export const getProfile = (user: { uid: string }) =>
   testDb
     .doc(`/profiles/${user.uid}`)
-    .get()
-    .then(d => d.data())
-
-export const getUserData = (user: { uid: string }) =>
-  testDb
-    .doc(`/users/${user.uid}`)
     .get()
     .then(d => d.data())
