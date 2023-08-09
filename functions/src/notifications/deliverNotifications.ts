@@ -121,7 +121,7 @@ export const deliverNotifications = functions.pubsub
         to: [email],
         message: {
           subject: "Your Notifications Digest",
-          text: "This is the plaintext section of the email body.", // You may want to change this to something more meaningful
+          text: "", // blank because we're sending HTML
           html: htmlString
         },
         createdAt: Timestamp.now()

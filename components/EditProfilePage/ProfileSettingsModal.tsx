@@ -148,11 +148,11 @@ export default function ProfileSettingsModal({
                   <Image
                     className={`pe-1`}
                     src="/mail-2.svg"
-                    alt="open envelope with letter, toggles update frequency options"
+                    alt="t(button.notficationFrequencyDropdown)"
                     width="22"
                     height="19"
                   />
-                  {"Enable"}
+                  {t("enable")}
                 </StyledOutlineButton>
               ) : (
                 <StyledButton
@@ -162,11 +162,11 @@ export default function ProfileSettingsModal({
                   <Image
                     className={`pe-1`}
                     src="/mail-icon-sized-for-buttons.svg"
-                    alt="open envelope with letter, toggles update frequency options"
+                    alt="t(button.notficationFrequencyDropdown)"
                     width="22"
                     height="19"
                   />
-                  {"Enabled"}
+                  {t("enabled")}
                 </StyledButton>
               )}
             </Col>
@@ -176,7 +176,7 @@ export default function ProfileSettingsModal({
             direction={`horizontal`}
           >
             <Col className={`col-8`}>
-              How often would you like to receive emails?
+              {t("forms.NotificationText")}
             </Col>
             <Col className={`d-flex justify-content-end`}>
               <Dropdown className={`d-inline-block ms-auto`}>
@@ -189,13 +189,13 @@ export default function ProfileSettingsModal({
                 </StyledDropdownToggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => setNotifications("Daily")}>
-                    Daily
+                    {t("notifications.daily")}
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setNotifications("Weekly")}>
-                    Weekly
+                    {t("notifications.weekly")}
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setNotifications("Monthly")}>
-                    Monthly
+                    {t("notifications.monthly")}
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
