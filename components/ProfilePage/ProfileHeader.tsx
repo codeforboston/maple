@@ -1,9 +1,14 @@
-import { useTranslation } from "next-i18next"
-import { FollowButton } from "components/shared/FollowButton"
-import { Col, Row, Stack } from "../bootstrap"
-import { Profile } from "../db"
-import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
-import { OrgContactInfo } from "./OrgContactInfo"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { firestore } from "../firebase"
+import { Col, Stack, Row } from "../bootstrap"
 import {
   Header,
   OrgIconLarge,
@@ -14,22 +19,33 @@ import {
   UserIconSmall
 } from "./StyledProfileComponents"
 
+import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
+import { OrgContactInfo } from "./OrgContactInfo"
+import { Profile } from "../db"
+import { FollowButton } from "./FollowButton" // TODO: move to /shared
+import { getFunctions, httpsCallable } from "firebase/functions"
+import { useAuth } from "../auth"
+import { useTranslation } from "next-i18next"
+
 export const ProfileHeader = ({
   isMobile,
+  uid,
+  profileId,
+  profile,
+  isUser,
   isOrg,
   isProfilePublic,
-  onProfilePublicityChanged,
-  isUser,
-  profile,
-  profileid
+  onProfilePublicityChanged
 }: {
   isMobile: boolean
+  uid?: string
+  profileId: string
+  profile: Profile
+  isUser: boolean
   isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
-  isUser: boolean
-  profile: Profile
-  profileid: string
+
 }) => {
   const { t } = useTranslation("profile")
 
@@ -52,7 +68,7 @@ export const ProfileHeader = ({
           isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
-          profileid={profileid}
+          profileId={profileId}
           userImageSrc={userImageSrc}
         />
       ) : (
@@ -85,7 +101,9 @@ export const ProfileHeader = ({
                         </div>
                       </div>
                     ) : (
-                      <FollowButton profileid={profileid} />
+                      <FollowButton
+                        isMobile={isMobile}
+                      />
                     )}
                   </>
                 )}
@@ -127,8 +145,9 @@ function ProfileHeaderMobile({
   isUser,
   orgImageSrc,
   profile,
-  profileid,
-  userImageSrc
+  profileId,
+  userImageSrc,
+  uid
 }: {
   isMobile: boolean
   isOrg: boolean
@@ -137,10 +156,12 @@ function ProfileHeaderMobile({
   isUser: boolean
   orgImageSrc: string
   profile: Profile
-  profileid: string
+  profileId: string
   userImageSrc: string
+  uid?: string
 }) {
   const { t } = useTranslation("profile")
+  
 
   return (
     <Header className={``}>
@@ -168,7 +189,11 @@ function ProfileHeaderMobile({
           )}
         </>
       )}
-      {isOrg && !isUser && <FollowButton profileid={profileid} />}
+      {isOrg && !isUser && 
+        <FollowButton
+          isMobile={isMobile}
+        />
+      }
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
