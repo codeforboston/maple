@@ -72,7 +72,6 @@ export function FollowingTab({ className }: Props) {
   const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
   const close = () => setUnfollow(null)
 
-
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
@@ -167,7 +166,7 @@ export function FollowingTab({ className }: Props) {
       setBillsFollowing([])
       setOrgsFollowing([])
       setUnfollow(null)
-    }
+    
   }
   const { t } = useTranslation("editProfile")
 
