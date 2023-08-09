@@ -3,6 +3,9 @@ import { z } from "zod"
 import { auth, db } from "../../../components/server-api/init-firebase-admin"
 import { ensureAdminAuthenticated } from "../../../components/server-api/middleware-fns"
 
+// Import the setRole function directly to avoid pulling in other cloud function dependencies.
+import { setRole } from "functions/src/auth/setRole"
+
 /**
  * Routes for changes to user
  * /users/[uid]
@@ -65,15 +68,13 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
     const user = await auth.getUser(uid)
 
-    // Set the claim for the JWT
-    await auth.setCustomUserClaims(user.uid, { role })
-    // Set on the profiles collection for the admin dashboard
-    await db.doc(`profiles/${uid}`).set(
-      {
-        role
-      },
-      { merge: true }
-    )
+    await setRole({
+      uid: user.uid,
+      role,
+      auth,
+      db
+    })
+
     return res.status(200).json({
       data: user
     })

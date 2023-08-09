@@ -60,7 +60,7 @@ const TopNav: React.FC = () => {
       expand={false}
       expanded={isExpanded}
     >
-      <Container>
+      <Container fluid>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
             <Navbar expand={false} expanded={isExpanded}>
@@ -192,20 +192,26 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-          <div className={styles.navbar_box}>
-            <Navbar.Brand className="mx-2 p-0">
-              <Nav className="me-auto">
-                <Nav.Link href="/" className="p-0">
-                  <Image fluid src="/nav-logo.svg" alt="logo"></Image>
-                </Nav.Link>
-              </Nav>
-            </Navbar.Brand>
+          <div className={sticky ? "me-2 w-100 h-100 flex" : styles.navbar_box}>
+            <div className={sticky ? styles.center_menu : ""}>
+              <Nav.Link href="/" className="py-0 px-2 w-100">
+                {sticky ? (
+                  <Image
+                    src="/white-tree.svg"
+                    alt="logo"
+                    className="w-100"
+                  ></Image>
+                ) : (
+                  <Image src="/nav-logo.svg" alt="logo"></Image>
+                )}
+              </Nav.Link>
+            </div>
           </div>
           <div className={styles.navbar_box}>
             <ProfileLink
               role={claims?.role}
               fullName={profile?.fullName}
-              sticky
+              sticky={sticky}
             />
           </div>
         </div>
