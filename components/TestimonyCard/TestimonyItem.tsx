@@ -244,11 +244,13 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col> */}
           {/* rescind hidden. report showing to users other than author */}
-          {!isUser && <Col xs="auto">
-            <FooterButton variant="link" onClick={() => setIsReporting(true)}>
-              Report
-            </FooterButton>
-          </Col>}
+          {!isUser && (
+            <Col xs="auto">
+              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+                Report
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 
