@@ -31,7 +31,7 @@ export default function unfollow({
     } else if (unfollow?.type == "org") {
       return ` ${unfollow?.orgName}`
     } else {
-      return "Undefined"
+      throw new Error(`Unexpected type: ${unfollow?.type}`);
     }
   }
 

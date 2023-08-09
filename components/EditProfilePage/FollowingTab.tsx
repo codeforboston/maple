@@ -6,7 +6,7 @@ import {
   where,
   getDocs
 } from "firebase/firestore"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState, useMemo, useCallback } from "react";
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
@@ -63,27 +63,22 @@ export const Styled = styled.div`
 
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
-  const uid = user?.uid
-  const subscriptionRef = collection(
-    firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
-  )
+  const uid = user?.uid;
+  const subscriptionRef = useMemo(() => // returns new object only if uid changes
+    uid ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`) : null,
+    [uid]
+  );
+
   const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
   const close = () => setUnfollow(null)
 
-  let billList: string[] = []
+
   const [billsFollowing, setBillsFollowing] = useState<string[]>([])
-  let orgsList: string[] = []
   const [orgsFollowing, setOrgsFollowing] = useState<string[]>([])
 
-  const fetchFollowedItems = async () => {
-    if (uid) {
-      billsFollowingQuery()
-      orgsFollowingQuery()
-    }
-  }
-
-  const billsFollowingQuery = async () => {
+  const billsFollowingQuery = useCallback(async () => {
+    if (!subscriptionRef) return // handle the case where subscriptionRef is null
+    const billList: string[] = []
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
@@ -98,13 +93,15 @@ export function FollowingTab({ className }: Props) {
     if (billsFollowing.length === 0 && billList.length != 0) {
       setBillsFollowing(billList)
     }
-  }
+  }, [subscriptionRef, uid, billsFollowing]);
 
   useEffect(() => {
     uid ? billsFollowingQuery() : null
   })
 
-  const orgsFollowingQuery = async () => {
+  const orgsFollowingQuery = useCallback(async () => {
+    if (!subscriptionRef) return // handle the case where subscriptionRef is null
+    const orgsList: string[] = []
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
@@ -119,15 +116,21 @@ export function FollowingTab({ className }: Props) {
     if (orgsFollowing.length === 0 && orgsList.length != 0) {
       setOrgsFollowing(orgsList)
     }
-  }
+  }, [subscriptionRef, uid, orgsFollowing]);
+
+  const fetchFollowedItems = useCallback(async () => {
+    if (uid) {
+      billsFollowingQuery();
+      orgsFollowingQuery();
+    }
+  }, [uid, billsFollowingQuery, orgsFollowingQuery]);
 
   useEffect(() => {
-    fetchFollowedItems()
-  }, [billsFollowing, orgsFollowing])
+    fetchFollowedItems();
+  }, [billsFollowing, orgsFollowing, fetchFollowedItems]);  
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
-    // DEBUG
-    if (!unfollow?.typeId) {
+    if (!unfollow || !unfollow.typeId) { // handle the case where unfollow is null or unfollow.typeId is undefined
       console.error(
         "handleUnfollowClick was called but unfollow or unfollow.typeId is undefined"
       )
@@ -214,7 +217,6 @@ export function FollowingTab({ className }: Props) {
 }
 
 function FollowedItem({
-  index,
   element,
   setUnfollow,
   type
@@ -232,7 +234,7 @@ function FollowedItem({
   }
 
   return (
-    <Styled key={index}>
+    <Styled>
       {type === "bill" ? (
         <>
           <StyledHeader

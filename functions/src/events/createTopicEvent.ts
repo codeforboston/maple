@@ -1,8 +1,8 @@
 import { Database } from "../types"
-
+import { EventData } from "../types"
 export const createTopicEvent = async (
   db: Database,
-  eventData: any // Replace 'any' with the appropriate type for your eventData
+  eventData: EventData
 ) => {
   const eventsRef = db.collection("events")
   await eventsRef.add(eventData)

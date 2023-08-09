@@ -20,17 +20,17 @@ export type EventData = {
   date: string
   day: string
   time: string
-  relatedBills?: Array<relatedBill>
-  relatedOrgs?: Array<relatedOrg>
+  relatedBills?: RelatedBill[]
+  relatedOrgs?: RelatedOrg[]
 }
 
 // types for Bills and Orgs
-export type relatedBill = {
+export type RelatedBill = {
   id: string
   court: number
 }
 
-export type relatedOrg = {
+export type RelatedOrg = {
   id: string
 }
 
