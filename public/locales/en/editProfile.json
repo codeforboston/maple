@@ -27,7 +27,7 @@
         "orgs": "Organizations You Follow",
         "unfollow": "Unfollow"
     },
-    "notification":{
+    "notifications":{
         "daily": "Daily",
         "weekly": "Weekly",
         "monthly": "Monthly",
@@ -54,7 +54,8 @@
         "aboutYouTip":"What should you write?",
         "selectOrgCategory": "Select an organization cateogry",
         "notification": "Notifications",
-        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?"
+        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?",
+        "notificationFrequencyText": "How often would you like to receive these updates?"
     },
     "socialLinks": {
         "twitter": "Twitter Username",
