@@ -175,7 +175,7 @@ export default function ProfileSettingsModal({
             direction={`horizontal`}
           >
             <Col className={`col-8`}>
-              {t("forms.NotificationText")}
+              {t("forms.notificationFrequencyText")}
             </Col>
             <Col className={`d-flex justify-content-end`}>
               <Dropdown className={`d-inline-block ms-auto`}>
