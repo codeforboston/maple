@@ -79,7 +79,7 @@ const HeroHeader = ({ authenticated }) => {
                     <Wrap href="/bills">
                       <div className={styles.btncontainer}>
                         <Button variant="outline-secondary">
-                          {capitalize(t("browse"))}
+                          {capitalize(t("browse_bills"))}
                         </Button>
                       </div>
                     </Wrap>

@@ -2,14 +2,14 @@ import Head from "next/head"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import AuthModal from "./auth/AuthModal"
-import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
-import { useProfile } from "./db"
 import PageFooter from "./Footer/Footer"
-import styles from "./layout.module.css"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink/ProfileLink"
+import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import AuthModal from "./auth/AuthModal"
+import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
+import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -60,10 +60,10 @@ const TopNav: React.FC = () => {
       expand={false}
       expanded={isExpanded}
     >
-      <Container>
+      <Container fluid>
         <div className={styles.navbar_boxes_container}>
           <div className={styles.navbar_box}>
-            <Navbar expand={false}>
+            <Navbar expand={false} expanded={isExpanded}>
               <Navbar.Brand>
                 <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
               </Navbar.Brand>
@@ -82,6 +82,13 @@ const TopNav: React.FC = () => {
                     handleClick={closeNav}
                   >
                     Browse Bills
+                  </NavLink>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/testimony"
+                    handleClick={closeNav}
+                  >
+                    Browse Testimony
                   </NavLink>
 
                   <NavDropdown className={"navLink-primary"} title={"Learn"}>
@@ -185,20 +192,26 @@ const TopNav: React.FC = () => {
               </Navbar.Collapse>
             </Navbar>
           </div>
-          <div className={styles.navbar_box}>
-            <Navbar.Brand className="mx-2 p-0">
-              <Nav className="me-auto">
-                <Nav.Link href="/" className="p-0">
-                  <Image fluid src="/nav-logo.svg" alt="logo"></Image>
-                </Nav.Link>
-              </Nav>
-            </Navbar.Brand>
+          <div className={sticky ? "me-2 w-100 h-100 flex" : styles.navbar_box}>
+            <div className={sticky ? styles.center_menu : ""}>
+              <Nav.Link href="/" className="py-0 px-2 w-100">
+                {sticky ? (
+                  <Image
+                    src="/white-tree.svg"
+                    alt="logo"
+                    className="w-100"
+                  ></Image>
+                ) : (
+                  <Image src="/nav-logo.svg" alt="logo"></Image>
+                )}
+              </Nav.Link>
+            </div>
           </div>
           <div className={styles.navbar_box}>
             <ProfileLink
               role={claims?.role}
               fullName={profile?.fullName}
-              sticky
+              sticky={sticky}
             />
           </div>
         </div>

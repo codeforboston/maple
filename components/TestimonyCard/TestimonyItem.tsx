@@ -18,6 +18,7 @@ import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
 import { useTranslation } from "next-i18next"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 
 const FooterButton = styled(Button)`
   margin: 0;
@@ -106,7 +107,7 @@ export const TestimonyItem = ({
   const [showAllTestimony, setShowAllTestimony] = useState(false)
   const snippet = showAllTestimony
     ? testimonyContent
-    : testimonyContent.slice(0, snippetChars)
+    : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
   const [showConfirm, setShowConfirm] = useState(false)
@@ -199,7 +200,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser && (
+          {isUser && !isMobile && (
             <>
               {onProfilePage && (
                 <Col>
@@ -216,7 +217,7 @@ export const TestimonyItem = ({
 
               {canDelete && (
                 <>
-                  <Col>
+                  {/* <Col>
                     <FooterButton
                       style={{ color: "#c71e32" }}
                       onClick={() => setShowConfirm(s => !s)}
@@ -224,7 +225,7 @@ export const TestimonyItem = ({
                     >
                       {t("testimonyItem.rescind")}
                     </FooterButton>
-                  </Col>
+                  </Col> */}
 
                   {showConfirm && (
                     <ArchiveTestimonyConfirmation
@@ -237,11 +238,19 @@ export const TestimonyItem = ({
               )}
             </>
           )}
-          <Col xs="auto">
+          {/* <Col xs="auto">
             <FooterButton variant="link" onClick={() => setIsReporting(true)}>
               {isUser ? "Request to rescind" : "Report"}
             </FooterButton>
-          </Col>
+          </Col> */}
+          {/* rescind hidden. report showing to users other than author */}
+          {!isUser && (
+            <Col xs="auto">
+              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+                Report
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 

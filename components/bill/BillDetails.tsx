@@ -8,6 +8,7 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
+import { getFunctions, httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
@@ -19,7 +20,7 @@ import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
-// import { LobbyingTable } from "./LobbyingTable"
+import { LobbyingTable } from "./LobbyingTable"
 import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
@@ -55,24 +56,17 @@ export const BillDetails = ({ bill }: BillProps) => {
         </Row>
         {bill.history.length > 0 ? (
           <>
-            <Row>
-              <Col>
+            <Row className="align-items-end justify-content-start">
+              <Col md={2}>
                 <BillNumber bill={bill} />
               </Col>
-              <Col xs={6} className="d-flex justify-content-end">
+              <Col xs={10} md={6} className="mb-3 ms-auto">
                 <Status bill={bill} />
               </Col>
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch
-                   when we're ready to show Email related element to users
-                */
-                  className="d-none"
-                >
                   <FollowButton bill={bill} />
-                </div>
               </Col>
             </Row>
           </>
@@ -83,14 +77,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                <div
-                  /* remove "div w/ d-none" for testing and/or after Soft Launch
-                   when we're ready to show Email related element to users
-                */
-                  className="d-none"
-                >
                   <FollowButton bill={bill} />
-                </div>
               </Styled>
             </Col>
           </Row>
@@ -104,7 +91,9 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Col md={8}>
             <Sponsors bill={bill} className="mt-4 pb-1" />
             <BillTestimonies bill={bill} className="mt-4" />
-            {/*<LobbyingTable bill={bill} className="mt-4 pb-1" /> This feature not yet ready*/}
+            {flags().lobbyingTable && (
+              <LobbyingTable bill={bill} className="mt-4 pb-1" />
+            )}
           </Col>
           <Col md={4}>
             <Committees bill={bill} className="mt-4 pb-1" />
@@ -134,7 +123,12 @@ const FollowButton = ({ bill }: BillProps) => {
     firestore,
     `/users/${uid}/activeTopicSubscriptions/`
   )
+
   const [queryResult, setQueryResult] = useState("")
+  const functions = getFunctions()
+
+  const followBillFunction = httpsCallable(functions, "followBill")
+  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
 
   const billQuery = async () => {
     const q = query(
@@ -153,23 +147,55 @@ const FollowButton = ({ bill }: BillProps) => {
   })
 
   const handleFollowClick = async () => {
-    await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      billLookup: {
+    try {
+      // ensure user is not null
+      if (!user) {
+        throw new Error("User not found")
+      }
+
+      const billLookup = {
         billId: billId,
         court: courtId
-      },
-      type: "bill"
-    })
+      }
 
-    setQueryResult(topicName)
+      // get token
+      const token = await user.getIdToken()
+
+      // use followBillFunction to follow bill
+      const response = await followBillFunction({ billLookup, token })
+      // handle the response
+      if (response.data) {
+        setQueryResult(topicName)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleUnfollowClick = async () => {
-    await deleteDoc(doc(subscriptionRef, topicName))
+    try {
+      // ensure user is not null
+      if (!user) {
+        throw new Error("User not found")
+      }
 
-    setQueryResult("")
+      const billLookup = {
+        billId: billId,
+        court: courtId
+      }
+
+      // get token
+      const token = await user.getIdToken()
+
+      // use unfollowBillFunction to unfollow bill
+      const response = await unfollowBillFunction({ billLookup, token })
+
+      if (response.data) {
+        setQueryResult("")
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (

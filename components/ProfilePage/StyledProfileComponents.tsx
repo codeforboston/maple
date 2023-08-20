@@ -22,17 +22,37 @@ export const ContactInfoRow = styled(Row)`
   font-weight: 500;
 `
 
-export const UserIcon = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-individual-icon.svg",
-  className: props.className
-}))`
-  height: 7rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
-  margin-right: 2rem;
-`
+export const UserIconLarge = ({ alt, src }: { alt: string; src: string }) => {
+  const BaseUserIconLarge = styled(Image).attrs(props => ({
+    alt: alt,
+    src: src || "/profile-individual-icon.svg",
+    className: props.className
+  }))`
+    height: 7rem;
+    border-radius: 50%;
+    background-color: var(--bs-white);
+    flex: 0;
+    margin-right: 2rem;
+  `
+
+  return <BaseUserIconLarge />
+}
+
+export const UserIconSmall = ({ alt, src }: { alt: string; src: string }) => {
+  const BaseUserIconSmall = styled(Image).attrs(props => ({
+    alt: alt,
+    src: src || "/profile-individual-icon.svg",
+    className: props.className
+  }))`
+    height: 5rem;
+    border-radius: 50%;
+    background-color: var(--bs-white);
+    flex: 0;
+    margin-right: 2rem;
+  `
+
+  return <BaseUserIconSmall />
+}
 
 export const ProfileDisplayName = styled(Col).attrs(props => ({
   className: `${props.className}`
@@ -54,18 +74,50 @@ export const ProfileDisplayName = styled(Col).attrs(props => ({
     font-size: 2.75rem;
   }
 `
-export const OrgIconLarge = styled(Image).attrs(props => ({
-  alt: "",
-  src: props.src || "/profile-org-icon.svg",
-  className: props.className
+
+export const ProfileDisplayNameSmall = styled(Col).attrs(props => ({
+  className: `${props.className}`
 }))`
-  height: 8rem;
-  width: 8rem;
-  margin-right: 2rem;
-  border-radius: 50%;
-  background-color: var(--bs-white);
-  flex: 0;
+  margin: 0;
+  font-family: Nunito;
+  font-weight: 500;
+  font-size: 29px;
+  letter-spacing: -0.015em;
+  text-align: left;
+  color: #000;
 `
+
+export const OrgIconLarge = ({ alt, src }: { alt: string; src: string }) => {
+  const BaseOrgIconLarge = styled(Image).attrs(props => ({
+    alt: alt,
+    src: src || "/profile-org-icon.svg",
+    className: props.className
+  }))`
+    height: 8rem;
+    margin-right: 2rem;
+    border-radius: 50%;
+    background-color: var(--bs-white);
+    flex: 0;
+  `
+
+  return <BaseOrgIconLarge />
+}
+
+export const OrgIconSmall = ({ alt, src }: { alt: string; src: string }) => {
+  const BaseOrgIconSmall = styled(Image).attrs(props => ({
+    alt: alt,
+    src: src || "/profile-org-icon.svg",
+    className: props.className
+  }))`
+    height: 5rem;
+    margin-right: 2rem;
+    border-radius: 50%;
+    background-color: var(--bs-white);
+    flex: 0;
+  `
+
+  return <BaseOrgIconSmall />
+}
 
 export const StyledContainer = styled(Container)`
   .about-me-checkbox input {
@@ -92,12 +144,14 @@ export const StyledContainer = styled(Container)`
     width: 100%;
   }
 
-  .view-edit-profile {
+  .view-edit-profile,
+  .follow-button {
     width: 100%;
     text-decoration: none;
   }
 
-  .view-edit-profile > button {
+  .view-edit-profile > button,
+  .follow-button > button {
     width: 100%;
   }
 
@@ -122,6 +176,10 @@ export const StyledContainer = styled(Container)`
 
     .view-edit-profile > button {
       width: auto;
+    }
+
+    .follow-button > button {
+      width: unset;
     }
   }
 `
