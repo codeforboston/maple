@@ -72,11 +72,12 @@ export function ProfilePage(profileprops: {
               <StyledContainer>
                 <ProfileHeader
                   isMobile={isMobile}
-                  isOrg={isOrg || false}
+                  uid={user?.uid}
+                  profileId={profileprops.id}
+                  isUser={isUser}
+                  isOrg={isOrg}
                   isProfilePublic={isProfilePublic}
                   onProfilePublicityChanged={onProfilePublicityChanged}
-                  isUser={isUser}
-                  profileid={profileprops.id}
                   profile={profile}
                 />
 
