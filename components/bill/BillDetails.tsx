@@ -205,7 +205,7 @@ const FollowButton = ({ bill }: BillProps) => {
       }`}
       onClick={queryResult ? handleUnfollowClick : handleFollowClick}
     >
-      {queryResult ? t("Following") : t("Follow")}
+      {queryResult ? t("button.following") : t("button.follow")}
       {queryResult ? (
         <StyledImage src="/check-white.svg" alt={"checkmark"} />
       ) : null}

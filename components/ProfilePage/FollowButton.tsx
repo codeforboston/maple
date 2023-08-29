@@ -25,8 +25,8 @@ export const FollowButton = ({
   const { t } = useTranslation("profile")
   const { user } = useAuth()
   const functions = getFunctions()
-  const followBillFunction = httpsCallable(functions, "followBill")
-  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
+  const followBillFunction = httpsCallable(functions, "followOrg")
+  const unfollowBillFunction = httpsCallable(functions, "unfollowOrg")
 
   const topicName = `org-${profileId}`
   const subscriptionRef = collection(
@@ -62,12 +62,12 @@ export const FollowButton = ({
       if (!uid) {
         throw new Error("User not found")
       }
-      const topicLookup = {
+      const orgLookup = {
         profileId: profileId,
         type: "org"
       }
       const token = await user.getIdToken()
-      const response = await followBillFunction({ topicLookup, token })
+      const response = await followBillFunction({ orgLookup, token })
       if (response.data) {
         setQueryResult(topicName)
       }
@@ -86,12 +86,12 @@ export const FollowButton = ({
       if (!uid) {
         throw new Error("User not found")
       }
-      const topicLookup = {
+      const orgLookup = {
         profileId: profileId,
         type: "org"
       }
       const token = await user.getIdToken()
-      const response = await unfollowBillFunction({ topicLookup, token })
+      const response = await unfollowBillFunction({ orgLookup, token })
       if (response.data) {
         setQueryResult("")
       }

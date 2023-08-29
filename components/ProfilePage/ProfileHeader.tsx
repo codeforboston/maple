@@ -102,6 +102,8 @@ export const ProfileHeader = ({
                       </div>
                     ) : (
                       <FollowButton
+                        profileId={profileId}
+                        uid={uid}
                         isMobile={isMobile}
                       />
                     )}
