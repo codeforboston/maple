@@ -6,7 +6,7 @@ import { Notifications } from "./NotificationProps"
 
 export default async function notificationQuery(uid: string | undefined) {
   if (!uid) {
-    return [];
+    return []
   }
 
   const subscriptionRef = collection(
@@ -14,17 +14,17 @@ export default async function notificationQuery(uid: string | undefined) {
     `/users/${uid}/userNotificationFeed/`
   )
 
-  let notificationMap = new Map();
+  let notificationMap = new Map()
 
   const querySnapshot = await getDocs(subscriptionRef)
 
   if (!querySnapshot.empty) {
     querySnapshot.forEach(doc => {
-      const notification = doc.data().notification;
-      notificationMap.set(notification.id, notification); // using notification id as key
+      const notification = doc.data().notification
+      notificationMap.set(notification.id, notification) // using notification id as key
     })
   }
-  
+
   // Convert Map values back to an array
-  return Array.from(notificationMap.values());
+  return Array.from(notificationMap.values())
 }

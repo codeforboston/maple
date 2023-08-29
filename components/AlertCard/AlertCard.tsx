@@ -14,8 +14,8 @@ export const AlertCard = (props: {
   bodyImgAltTxt: string
   bodyText: string
 }) => {
-  const date = props.timestamp.toDate();
-  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
+  const date = props.timestamp.toDate()
+  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
   const header = (
     <CardTitle
       header={props.header}
@@ -23,8 +23,7 @@ export const AlertCard = (props: {
       timestamp={formattedTimestamp}
       imgSrc={props.headerImgSrc}
     />
-  );
-  
+  )
 
   const body = (
     <AlertCardBody

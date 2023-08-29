@@ -21,7 +21,6 @@ export default function Newsfeed() {
   const uid = user?.uid
   const { result: profile, loading } = usePublicProfile(uid)
 
-
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
 

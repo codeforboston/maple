@@ -1,6 +1,5 @@
 import { Timestamp } from "firebase/firestore"
 
-
 export type NotificationProps = {
   bodyText: string
   court: string
