@@ -1,10 +1,5 @@
 import { firestore } from "../firebase"
-import {
-  collection,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, query, where } from "firebase/firestore"
 import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
 import { StyledImage } from "./StyledProfileComponents"
@@ -45,12 +40,11 @@ export const FollowButton = ({
       // doc.data() is never undefined for query doc snapshots
       setQueryResult(doc.data().topicName)
     })
-  }, [subscriptionRef, profileId, setQueryResult])  // dependencies of orgQuery
-  
+  }, [subscriptionRef, profileId, setQueryResult]) // dependencies of orgQuery
+
   useEffect(() => {
     uid ? orgQuery() : null
-  }, [uid, orgQuery])  // dependencies of useEffect
-  
+  }, [uid, orgQuery]) // dependencies of useEffect
 
   const handleFollowClick = async () => {
     // ensure user is not null
@@ -104,10 +98,12 @@ export const FollowButton = ({
     queryResult === topicName ? handleUnfollowClick() : handleFollowClick()
   }
 
-  const text = queryResult === topicName ? t("button.following") : t("button.follow")
-  const checkmark = queryResult === topicName ? (
-    <StyledImage src="/check-white.svg" alt="checkmark" />
-  ) : null
+  const text =
+    queryResult === topicName ? t("button.following") : t("button.follow")
+  const checkmark =
+    queryResult === topicName ? (
+      <StyledImage src="/check-white.svg" alt="checkmark" />
+    ) : null
 
   return (
     <Col className={`d-flex w-100 justify-content-start`}>

@@ -120,7 +120,9 @@ export default function ProfileSettingsModal({
   const privacyText = renderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
 
-  const [notificationFrequency, setNotificationFrequency] = useState<"Daily" | "Weekly" | "Monthly" | "None" >("Daily")
+  const [notificationFrequency, setNotificationFrequency] = useState<
+    "Daily" | "Weekly" | "Monthly" | "None"
+  >("Daily")
 
   return (
     <Modal

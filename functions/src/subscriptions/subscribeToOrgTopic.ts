@@ -15,15 +15,15 @@ export const subscribeToOrgTopic = async ({
 }) => {
   try {
     // Debug: Log the input parameters
-    console.log("Debug: User", user);
-    console.log("Debug: OrgLookup", orgLookup);
+    console.log("Debug: User", user)
+    console.log("Debug: OrgLookup", orgLookup)
 
-    const uid = user.uid;
-    const topicName = `org-${orgLookup.profileId.toString()}`;
+    const uid = user.uid
+    const topicName = `org-${orgLookup.profileId.toString()}`
 
     // Debug: Log the generated uid and topicName
-    console.log("Debug: UID", uid);
-    console.log("Debug: Topic Name", topicName);
+    console.log("Debug: UID", uid)
+    console.log("Debug: Topic Name", topicName)
 
     const subscriptionData: TopicSubscription = {
       topicName,
@@ -31,17 +31,17 @@ export const subscribeToOrgTopic = async ({
       type: "org",
       orgLookup,
       nextDigestAt: Timestamp.fromDate(new Date())
-    };
+    }
 
     // Debug: Log the subscription data
-    console.log("Debug: Subscription Data", subscriptionData);
+    console.log("Debug: Subscription Data", subscriptionData)
 
-    await addTopicSubscription({ user, subscriptionData, db });
+    await addTopicSubscription({ user, subscriptionData, db })
 
     // Debug: Log success
-    console.log("Debug: Subscription added successfully");
+    console.log("Debug: Subscription added successfully")
   } catch (error) {
     // Debug: Log any errors
-    console.error("Debug: Error in subscribeToOrgTopic", error);
+    console.error("Debug: Error in subscribeToOrgTopic", error)
   }
-};
+}
