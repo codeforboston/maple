@@ -66,7 +66,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                  <FollowButton bill={bill} />
+                <FollowButton bill={bill} />
               </Col>
             </Row>
           </>
@@ -77,7 +77,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                  <FollowButton bill={bill} />
+                <FollowButton bill={bill} />
               </Styled>
             </Col>
           </Row>
@@ -205,7 +205,7 @@ const FollowButton = ({ bill }: BillProps) => {
       }`}
       onClick={queryResult ? handleUnfollowClick : handleFollowClick}
     >
-      {queryResult ? t("Following") : t("Follow")}
+      {queryResult ? t("button.following") : t("button.follow")}
       {queryResult ? (
         <StyledImage src="/check-white.svg" alt={"checkmark"} />
       ) : null}

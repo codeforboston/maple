@@ -89,7 +89,6 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
             notificationFrequency: "Monthly",
             email: credentials.user.email,
             public: true
-       
           }),
           sendEmailVerification(credentials.user)
         ])

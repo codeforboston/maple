@@ -45,7 +45,6 @@ export const ProfileHeader = ({
   isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
-
 }) => {
   const { t } = useTranslation("profile")
 
@@ -102,6 +101,8 @@ export const ProfileHeader = ({
                       </div>
                     ) : (
                       <FollowButton
+                        profileId={profileId}
+                        uid={uid}
                         isMobile={isMobile}
                       />
                     )}
@@ -161,7 +162,6 @@ function ProfileHeaderMobile({
   uid?: string
 }) {
   const { t } = useTranslation("profile")
-  
 
   return (
     <Header className={``}>
@@ -189,11 +189,7 @@ function ProfileHeaderMobile({
           )}
         </>
       )}
-      {isOrg && !isUser && 
-        <FollowButton
-          isMobile={isMobile}
-        />
-      }
+      {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
