@@ -1,0 +1,68 @@
+.faqContent {
+  margin-top: 1rem;
+  font-family: "Nunito";
+}
+
+/* ---------- Faq Content ------------*/
+.faqContent ul {
+  background: #fff;
+  list-style-type: none;
+  padding: 0 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+}
+
+.faqContent:last-child {
+  margin-bottom: 50px;
+}
+
+.faqContent hr {
+  background: transparent;
+}
+
+.faqContent ul hr {
+  background: #000;
+  height: 2px;
+}
+
+.faqContent ul + li {
+  list-style-type: circle;
+}
+
+.faqContent ul li ul li {
+  list-style-type: initial;
+}
+
+.faqContent h1 {
+  margin: 0px 0px 24px 0px;
+}
+
+.faqContent h2 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+  padding-top: 45px;
+}
+
+.faqContent h3 {
+  color: #1a3185;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.inner {
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .faqContent button {
+    min-height: 90px;
+  }
+}
+
+@media (max-width: 400px) {
+  .faqContent button {
+    min-height: 125px;
+  }
+}
