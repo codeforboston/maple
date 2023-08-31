@@ -13,7 +13,7 @@ import { flags } from "components/featureFlags"
 import { FollowOrgButton } from "components/shared/FollowButton"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton"; // TODO: move to /shared
+import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
 import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
 
@@ -92,9 +92,7 @@ export const ProfileHeader = ({
                     ) : (
                       <>
                         {flags().followOrg && (
-                          <FollowOrgButton
-                            profileId={profileId}
-                          />
+                          <FollowOrgButton profileId={profileId} />
                         )}
                       </>
                     )}

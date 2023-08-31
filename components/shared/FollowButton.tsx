@@ -31,12 +31,12 @@ export const BaseFollowButton = ({
   }, [uid, topicName, setQueryResult])
 
   const FollowClick = async () => {
-    await followAction() 
+    await followAction()
     setQueryResult(topicName)
   }
 
   const UnfollowClick = async () => {
-    await unfollowAction() 
+    await unfollowAction()
     setQueryResult("")
   }
 
