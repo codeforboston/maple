@@ -22,7 +22,7 @@ export const script: Script = async ({ db }) => {
       relatedBills: [
         {
           court: "exampleCourt",
-          id: "bill1",
+          id: "nceMDdeA4zV9Qzo0rBOjoRrMjq52",
           name: "Example Bill 1"
         }
       ]
@@ -42,7 +42,7 @@ export const script: Script = async ({ db }) => {
       time: Timestamp.now(),
       relatedOrgs: [
         {
-          id: "bill1",
+          id: "nceMDdeA4zV9Qzo0rBOjoRrMjq53",
           name: "Example Org 1"
         }
       ]
