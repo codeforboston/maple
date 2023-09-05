@@ -201,7 +201,7 @@ export const TestimonyItem = ({
               <ViewAttachment testimony={testimony} />
             </FooterButton>
           </Col>
-
+          {/* removes mobile view until edit testimony is ready at a later stage */}
           {isUser && !isMobile && (
             <>
               {onProfilePage && (
@@ -219,6 +219,7 @@ export const TestimonyItem = ({
 
               {canDelete && (
                 <>
+                  {/* removed until delete is ready at a later stage */}
                   {/* <Col>
                     <FooterButton
                       style={{ color: "#c71e32" }}

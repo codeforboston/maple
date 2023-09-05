@@ -28,6 +28,7 @@ export const TestimonyDetailPage: FC = () => {
           </Col>
 
           <Col md={4}>
+            {/* removes mobile view until ready at a later stage */}
             {!isMobile && <PolicyActions className="mb-4" isUser={isUser} />}
             <RevisionHistory />
           </Col>
