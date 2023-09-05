@@ -1,5 +1,6 @@
 import { hasDraftChanged } from "components/db"
 import { useState } from "react"
+import { useMediaQuery } from "usehooks-ts"
 import styled from "styled-components"
 import { Button, Stack } from "../../bootstrap"
 import { External, twitterShareLink, Wrap } from "../../links"
@@ -25,17 +26,24 @@ const MainPanel = styled(({ ...rest }) => {
   const unpublishedDraft = hasDraftChanged(draft, publication)
   const [showConfirm, setShowConfirm] = useState(false)
   const bill = usePublishState().bill!
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
     <div {...rest}>
       <div className="d-flex">
         <span className="title">Your Testimony</span>
-        <EditTestimonyButton
-          className="me-1"
-          billId={bill.id}
-          court={bill.court}
-        />
-        <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} />
+        {/* removes mobile view until ready at a later stage */}
+        {!isMobile && (
+          <>
+            {" "}
+            <EditTestimonyButton
+              className="me-1"
+              billId={bill.id}
+              court={bill.court}
+            />
+            <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} />
+          </>
+        )}
       </div>
       <ArchiveTestimonyConfirmation
         className="mt-2"
