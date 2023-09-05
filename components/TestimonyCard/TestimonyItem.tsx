@@ -123,8 +123,9 @@ export const TestimonyItem = ({
       <div className={`border-0 h5 d-flex`}>
         {isMobile && isUser && (
           <>
+            {/* removes mobile view until is ready at a later stage */}
             <Internal
-              className={styles.link}
+              className={`${styles.link}, visually-hidden`}
               href={formUrl(testimony.billId, testimony.court)}
             >
               <Image
