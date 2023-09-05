@@ -11,6 +11,7 @@ import {
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
@@ -28,6 +29,7 @@ import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
+import { Notice } from "../shared/Notice"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -42,6 +44,7 @@ const StyledImage = styled(Image)`
 
 export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
+  const isMobile = useMediaQuery("(max-width: 768px)")
   return (
     <>
       {!isCurrentCourt(bill.court) && (
@@ -91,6 +94,12 @@ export const BillDetails = ({ bill }: BillProps) => {
         <Row>
           <Col md={8}>
             <Sponsors bill={bill} className="mt-4 pb-1" />
+            {isMobile && (
+              <Notice
+                text="Currently, providing testimony is only available in the Desktop version of MAPLE"
+                className="mt-4"
+              />
+            )}
             <BillTestimonies bill={bill} className="mt-4" />
             {flags().lobbyingTable && (
               <LobbyingTable bill={bill} className="mt-4 pb-1" />
