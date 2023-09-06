@@ -43,6 +43,7 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleNav = () => setIsExpanded(expanded => !expanded)
   const closeNav = () => setIsExpanded(false)
+  const userLink = "/profile?id=" + user?.uid
 
   return (
     <Navbar
@@ -69,8 +70,9 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
             <Nav className="me-4 d-flex align-items-end">
               <NavLink
                 className={"navLink-primary"}
-                href="/profile"
-                handleClick={closeNav}
+                handleClick={() => {
+                  location.assign(userLink)
+                }}
               >
                 View Profile
               </NavLink>
