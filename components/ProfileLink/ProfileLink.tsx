@@ -63,7 +63,7 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               ></Image>
-              {greeting(role, fullName)}
+              {sticky ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">
@@ -96,9 +96,9 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
           </Navbar.Collapse>
         </>
       ) : sticky ? (
-        <SignInWithButton />
-      ) : (
         <></>
+      ) : (
+        <SignInWithButton />
       )}
     </Navbar>
   )

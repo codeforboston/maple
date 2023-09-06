@@ -1,5 +1,4 @@
 import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
 import { Button } from "react-bootstrap"
 import { ProfileHook, useProfile } from "../db"
 import { Internal } from "components/links"
@@ -66,12 +65,12 @@ export const MakePublicButton = ({
   isMobile,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic
+  onProfilePublicityChanged
 }: {
   isMobile: boolean
   isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isProfilePublic: boolean | undefined
+  onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("editProfile")
 
@@ -87,7 +86,7 @@ export const MakePublicButton = ({
     const { updateIsPublic } = actions
 
     await updateIsPublic(!isProfilePublic)
-    setIsProfilePublic(!isProfilePublic)
+    onProfilePublicityChanged(!isProfilePublic)
   }
 
   return (

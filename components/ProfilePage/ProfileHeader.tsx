@@ -1,10 +1,4 @@
-import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
-import { FollowButton } from "components/shared/FollowButton"
 import { Col, Row, Stack } from "../bootstrap"
-import { Profile } from "../db"
-import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
-import { OrgContactInfo } from "./OrgContactInfo"
 import {
   Header,
   OrgIconLarge,
@@ -15,22 +9,32 @@ import {
   UserIconSmall
 } from "./StyledProfileComponents"
 
+import { flags } from "components/featureFlags"
+import { FollowOrgButton } from "components/shared/FollowButton"
+import { useTranslation } from "next-i18next"
+import { Profile } from "../db"
+import { FollowButton } from "./FollowButton" // TODO: move to /shared
+import { OrgContactInfo } from "./OrgContactInfo"
+import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
+
 export const ProfileHeader = ({
   isMobile,
+  uid,
+  profileId,
+  profile,
+  isUser,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic,
-  isUser,
-  profile,
-  profileid
+  onProfilePublicityChanged
 }: {
   isMobile: boolean
-  isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
-  isUser: boolean
+  uid?: string
+  profileId: string
   profile: Profile
-  profileid: string
+  isUser: boolean
+  isOrg: boolean
+  isProfilePublic: boolean | undefined
+  onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("profile")
 
@@ -49,11 +53,11 @@ export const ProfileHeader = ({
           isMobile={isMobile}
           isOrg={isOrg}
           isProfilePublic={isProfilePublic}
-          setIsProfilePublic={setIsProfilePublic}
+          onProfilePublicityChanged={onProfilePublicityChanged}
           isUser={isUser}
           orgImageSrc={orgImageSrc}
           profile={profile}
-          profileid={profileid}
+          profileId={profileId}
           userImageSrc={userImageSrc}
         />
       ) : (
@@ -86,7 +90,11 @@ export const ProfileHeader = ({
                         </div>
                       </div>
                     ) : (
-                      <FollowButton profileid={profileid} />
+                      <>
+                        {flags().followOrg && (
+                          <FollowOrgButton profileId={profileId} />
+                        )}
+                      </>
                     )}
                   </>
                 )}
@@ -105,7 +113,7 @@ export const ProfileHeader = ({
                           isMobile={isMobile}
                           isOrg={isOrg}
                           isProfilePublic={isProfilePublic}
-                          setIsProfilePublic={setIsProfilePublic}
+                          onProfilePublicityChanged={onProfilePublicityChanged}
                         />
                       </>
                     )}
@@ -124,22 +132,24 @@ function ProfileHeaderMobile({
   isMobile,
   isOrg,
   isProfilePublic,
-  setIsProfilePublic,
+  onProfilePublicityChanged,
   isUser,
   orgImageSrc,
   profile,
-  profileid,
-  userImageSrc
+  profileId,
+  userImageSrc,
+  uid
 }: {
   isMobile: boolean
   isOrg: boolean
-  isProfilePublic: boolean
-  setIsProfilePublic: Dispatch<SetStateAction<boolean>>
+  isProfilePublic: boolean | undefined
+  onProfilePublicityChanged: (isPublic: boolean) => void
   isUser: boolean
   orgImageSrc: string
   profile: Profile
-  profileid: string
+  profileId: string
   userImageSrc: string
+  uid?: string
 }) {
   const { t } = useTranslation("profile")
 
@@ -164,12 +174,12 @@ function ProfileHeaderMobile({
               isMobile={isMobile}
               isOrg={isOrg}
               isProfilePublic={isProfilePublic}
-              setIsProfilePublic={setIsProfilePublic}
+              onProfilePublicityChanged={onProfilePublicityChanged}
             />
           )}
         </>
       )}
-      {isOrg && !isUser && <FollowButton profileid={profileid} />}
+      {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
