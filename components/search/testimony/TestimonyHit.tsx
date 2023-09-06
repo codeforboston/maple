@@ -5,7 +5,7 @@ import { Testimony } from "components/db/testimony"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
-import { FollowButton } from "components/shared/FollowButton"
+import { FollowOrgButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
 import { flags } from "components/featureFlags"
 
@@ -63,7 +63,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {isOrg && <FollowButton profileId={hit.authorUid} />}
+        {flags().followOrg && isOrg && (
+          <FollowOrgButton profileId={hit.authorUid} />
+        )}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>

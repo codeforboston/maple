@@ -6,13 +6,14 @@
   "anonymousUser": "Anonymous User",
   "button":{
     "editProfile": "Edit\u00A0Profile",
-    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options"
+    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
+    "follow" : "Follow",
+    "following" : "Following"
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",
     "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
     "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
-    "statePurpose": "State your purpose",
     "noLegislatorInfo": "No legislator information given"
     },
   "verifyAccountSection":{

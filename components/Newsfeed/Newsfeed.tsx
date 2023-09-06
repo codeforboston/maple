@@ -25,18 +25,18 @@ export default function Newsfeed() {
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
 
   const [allResults, setAllResults] = useState<Notifications>([])
-  const [filteredResults, setFilteredResults] = useState<Notifications>([])
-
-  // Update the filter function
-  useEffect(() => {
-    const results = allResults.filter(result => {
-      if (isShowingOrgs && result.type === "org") return true
-      if (isShowingBills && result.type === "bill") return true
-      return false
-    })
-
-    setFilteredResults(results)
-  }, [isShowingOrgs, isShowingBills, allResults])
+  const filteredResults = allResults.filter(result => {
+    if (isShowingOrgs && isShowingBills) {
+      return true
+    }
+    if (isShowingOrgs) {
+      return result.type === "org"
+    }
+    if (isShowingBills) {
+      return result.type === "bill"
+    }
+    return false
+  })
 
   const onOrgFilterChange = (isShowing: boolean) => {
     setIsShowingOrgs(isShowing)
@@ -47,19 +47,12 @@ export default function Newsfeed() {
   }
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        if (uid) {
-          const notifications = await notificationQuery(uid)
+    uid
+      ? notificationQuery(uid).then(notifications =>
           setAllResults(notifications)
-          setFilteredResults(notifications)
-        }
-      } catch (error) {
-        console.error("Error fetching notifications: " + error)
-      }
-    }
-    fetchNotifications()
-  }, [uid])
+        )
+      : null
+  }, [uid, setAllResults])
 
   function Filters() {
     return (
@@ -123,7 +116,7 @@ export default function Newsfeed() {
                     <AlertCard
                       header={`No Results`}
                       subheader={``}
-                      timestamp={Timestamp.now()}
+                      timestamp={``}
                       headerImgSrc={``}
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}

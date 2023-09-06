@@ -273,7 +273,7 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`/profile?id=${element?.profileId}`}>
+                <Internal href={`organizations/${element?.profileId}`}>
                   {fullName}
                 </Internal>
               </Col>
