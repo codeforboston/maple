@@ -59,5 +59,5 @@ export const script: Script = async ({ db }) => {
   for (const topicEvent of topicEvents) {
     await createTopicEvent(topicEvent)
   }
-  console.log(`Added ${topicEvents.length} topic events to Firestore.`)
+  console.log(`...Added ${topicEvents.length} topic events to Firestore.`)
 }

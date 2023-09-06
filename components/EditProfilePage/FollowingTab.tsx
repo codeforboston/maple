@@ -1,11 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 import {
   Dispatch,
   SetStateAction,
