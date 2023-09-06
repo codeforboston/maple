@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
-=======
 import { Dispatch, SetStateAction, useState } from "react"
->>>>>>> 62d1b5bafe9515c4e97164bc905c56e70f79c7a8
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
