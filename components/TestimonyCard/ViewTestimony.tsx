@@ -140,7 +140,7 @@ const ViewTestimony = (
                     />
                   ))}
 
-                {testimony.length > 10 && (
+                {(pagination.hasPreviousPage || pagination.hasNextPage) && (
                   <PaginationButtons pagination={pagination} />
                 )}
               </div>
