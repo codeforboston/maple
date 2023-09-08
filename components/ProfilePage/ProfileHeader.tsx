@@ -90,11 +90,11 @@ export const ProfileHeader = ({
                         </div>
                       </div>
                     ) : (
-                      <>
-                        {flags().followOrg && (
-                          <FollowOrgButton profileId={profileId} />
-                        )}
-                      </>
+                      <FollowButton
+                        profileId={profileId}
+                        uid={uid}
+                        isMobile={isMobile}
+                      />
                     )}
                   </>
                 )}
@@ -179,6 +179,7 @@ function ProfileHeaderMobile({
           )}
         </>
       )}
+      {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
       {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>

@@ -1,20 +1,36 @@
-import { FaqContent } from "./FaqContent"
-import { Button, Stack, Container, Image, Row, Col } from "react-bootstrap"
-import { ButtonHTMLAttributes, useEffect, useState, useRef } from "react"
-import style from "./Faq.module.css"
-import Router from "next/router"
+import { Container, Stack } from "../bootstrap"
+import { FaqQandA } from "./FaqQandA"
+import { FaqCard } from "./FaqCard"
+import styles from "./faq.module.css"
+import data from "./faqData.json"
 
-const faqs = ["faq"] as const
-export type Faq = (typeof faqs)[number]
+export const Faq = () => {
+  const faqData: FaqData = data
+  const faqKeys: string[] = Object.keys(faqData)
 
-export default function PolicyPage({ faq = "faq" }: { faq?: Faq }) {
-  const handleOnClick = (f: Faq) => {
-    Router.push(`/${f}`)
+  interface FaqData {
+    [key: string]: string | FaqDataCard | any
+  }
+
+  interface FaqDataCard {
+    heading: string
+    qAndA: { question: string; answer: string }[]
   }
 
   return (
-    <Container fluid className={style.policyContent}>
-      <FaqContent faq={faq} />
-    </Container>
+    <>
+      <Container fluid className={styles.faqLayout}>
+        <h1>FAQ</h1>
+        <Stack direction="vertical" gap={4}>
+          {faqKeys.map((key, index) => (
+            <FaqCard
+              key={index}
+              heading={faqData[key].heading}
+              qAndAs={faqData[key].qAndA}
+            ></FaqCard>
+          ))}
+        </Stack>
+      </Container>
+    </>
   )
 }
