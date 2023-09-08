@@ -2,10 +2,10 @@ import { Container, Stack } from "../bootstrap"
 import { FaqQandA } from "./FaqQandA"
 import { FaqCard } from "./FaqCard"
 import styles from "./faq.module.css"
-import data from "./faqData.json"
+import content from "./faqContent.json"
 
 export const Faq = () => {
-  const faqData: FaqData = data
+  const faqData: FaqData = content
   const faqKeys: string[] = Object.keys(faqData)
 
   interface FaqData {
