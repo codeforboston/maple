@@ -247,11 +247,10 @@ function FollowedItem({
     <Styled>
       {type === "bill" ? (
         <>
-          <Internal href={`bills/${element?.court}/${element?.billId}`}>
-            {formatBillId(element?.billId)}
-          </Internal>
-
-          <Row>
+          <Row className={`align-items-center`}>
+            <Internal href={`bills/${element?.court}/${element?.billId}`}>
+              {formatBillId(element?.billId)}
+            </Internal>
             <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
