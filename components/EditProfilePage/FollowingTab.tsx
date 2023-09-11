@@ -1,11 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 import {
   Dispatch,
   SetStateAction,
@@ -277,7 +270,7 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`profile?id=${element?.profileId}`}>
+                <Internal href={`/profile?id=${element?.profileId}`}>
                   {fullName}
                 </Internal>
               </Col>
