@@ -247,11 +247,9 @@ function FollowedItem({
     <Styled>
       {type === "bill" ? (
         <>
-          <StyledHeader
-            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-          >
+          <Internal href={`bills/${element?.court}/${element?.billId}`}>
             {formatBillId(element?.billId)}
-          </StyledHeader>
+          </Internal>
 
           <Row>
             <Col xs={9}>
