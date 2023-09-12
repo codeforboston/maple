@@ -61,7 +61,11 @@ export const BillDetails = ({ bill }: BillProps) => {
               <Col md={2}>
                 <BillNumber bill={bill} />
               </Col>
-              <Col xs={10} md={6} className="mb-3 ms-auto d-flex justify-content-end">
+              <Col
+                xs={10}
+                md={6}
+                className="mb-3 ms-auto d-flex justify-content-end"
+              >
                 <Status bill={bill} />
               </Col>
             </Row>
