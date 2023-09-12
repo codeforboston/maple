@@ -208,9 +208,12 @@ describe.only("publishTestimony", () => {
 
     // sign in as created user to run the test
     await signInUser(newPendingOrg.email)
-    const { draftId: deletableDraftId } = await createDraft(newPendingOrg.uid, billId)
+    const { draftId: deletableDraftId } = await createDraft(
+      newPendingOrg.uid,
+      billId
+    )
     expect(await publishTestimony({ draftId: deletableDraftId })).toBeDefined()
-  }) 
+  })
 
   it("Publishes testimony on scraped bills", async () => {
     const { draftId } = await createDraft(uid, "H1", 192)

@@ -3,7 +3,14 @@ import { https, logger } from "firebase-functions"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, checkRoleVerified, DocUpdate, fail, Id } from "../common"
+import {
+  checkAuth,
+  checkRequest,
+  checkRoleVerified,
+  DocUpdate,
+  fail,
+  Id
+} from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
@@ -24,7 +31,7 @@ export const publishTestimony = https.onCall(async (data, context) => {
   const { draftId } = checkRequest(PublishTestimonyRequest, data)
 
   checkRoleVerified(context)
-  
+
   let output: TransactionOutput
   try {
     output = await db.runTransaction(t =>
