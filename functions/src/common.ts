@@ -67,6 +67,19 @@ export function checkAdmin(context: https.CallableContext) {
     throw fail("permission-denied", "You must be an admin")
   }
 }
+/**
+ * Checks caller's role. Must not be a role that is pending verification/upgrade
+ */
+export function checkRoleVerified(context: https.CallableContext) {
+  const callerRole = context.auth?.token.role
+  console.log(callerRole)
+  if (!["organization", "user", "admin"].includes(callerRole)) {
+    throw fail(
+      "permission-denied",
+      `You must have a verified account type to perform this action.`
+    )
+  }
+}
 
 /** Constructs a new HTTPS error */
 export function fail(code: https.FunctionsErrorCode, message: string) {

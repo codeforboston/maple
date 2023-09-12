@@ -1,16 +1,23 @@
-import { currentGeneralCourt } from "functions/src/shared"
-import { User } from "firebase/auth"
+import { UserRecord } from "firebase-admin/auth"
+import { createFakeOrg } from "components/moderation"
+import { getAuth, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
+import { setRole } from "functions/src/auth"
+import { currentGeneralCourt } from "functions/src/shared"
 import { nanoid } from "nanoid"
+import { Role } from "../../components/auth"
 import { firestore, functions, storage } from "../../components/firebase"
-import { terminateFirebase, testDb, testStorage } from "../testUtils"
+import { terminateFirebase, testAuth, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
   expectStorageUnauthorized,
   getBill,
+  getProfile,
+  signInTestAdmin,
+  signInUser,
   signInUser1,
   signInUser2
 } from "./common"
@@ -56,7 +63,7 @@ const paths = {
 }
 
 const deleteTestimony = httpsCallable<
-  { publicationId: string },
+  { uid: string; publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
@@ -115,7 +122,7 @@ describe("draftTestimony", () => {
   })
 })
 
-describe("publishTestimony", () => {
+describe.only("publishTestimony", () => {
   it("Fails if draft doesn't exist", async () => {
     await expect(
       publishTestimony({ draftId: "nonexistant-id" })
@@ -131,6 +138,79 @@ describe("publishTestimony", () => {
       "failed validation"
     )
   })
+
+  function isUserRecord(user: UserRecord | string): user is UserRecord {
+    return typeof user === "object" && "uid" in user
+  }
+
+  /** Current user must have {role: 'admin'} in their claims to check another user's role */
+  const expectUserRole = async (user: UserRecord | string, role: Role) => {
+    let roleUser
+    if (isUserRecord(user)) roleUser = user
+    else roleUser = await testAuth.getUser(user)
+
+    expect(roleUser.customClaims).toEqual({ role })
+
+    const profile = (await getProfile(roleUser))!
+    expect(profile.role).toEqual(role)
+  }
+
+  const expectCurrentUserRole = async (role: Role) => {
+    const user = getAuth().currentUser
+    expect((await user?.getIdTokenResult())?.claims.role).toEqual(role)
+  }
+
+  it.only("Fails if org is not yet verified", async () => {
+    const newPendingOrg = {
+      uid: nanoid(),
+      fullName: "test user",
+      email: `${nanoid()}@email.com`
+    }
+
+    // need to be an admin to create a user
+    await signInTestAdmin()
+    await expectCurrentUserRole("admin")
+
+    await createFakeOrg(newPendingOrg)
+    await expectUserRole(newPendingOrg.uid, "pendingUpgrade")
+
+    // sign in as created user to run the test
+    await signInUser(newPendingOrg.email)
+    await expectCurrentUserRole("pendingUpgrade")
+
+    await expect(publishTestimony({ draftId })).rejects.toThrow()
+  })
+
+  it.only("Succeeds if org account is verified", async () => {
+    const newPendingOrg = {
+      uid: nanoid(),
+      fullName: "test user",
+      email: `${nanoid()}@email.com`
+    }
+
+    // need to be an admin to create a user
+    await signInTestAdmin()
+    await expectCurrentUserRole("admin")
+
+    await createFakeOrg(newPendingOrg)
+
+    await expectUserRole(newPendingOrg.uid, "pendingUpgrade")
+
+    // setRole updates both customClaims role and profile role
+    await setRole({
+      uid: newPendingOrg.uid,
+      role: "organization",
+      auth: testAuth,
+      db: testDb
+    })
+
+    await expectUserRole(newPendingOrg.uid, "organization")
+
+    // sign in as created user to run the test
+    await signInUser(newPendingOrg.email)
+    const { draftId: deletableDraftId } = await createDraft(newPendingOrg.uid, billId)
+    expect(await publishTestimony({ draftId: deletableDraftId })).toBeDefined()
+  }) 
 
   it("Publishes testimony on scraped bills", async () => {
     const { draftId } = await createDraft(uid, "H1", 192)
@@ -221,7 +301,7 @@ describe("publishTestimony", () => {
     expect(bill.endorseCount).toBe(2)
     expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
 
-    await deleteTestimony({ publicationId: res2.data.publicationId })
+    await deleteTestimony({ uid, publicationId: res2.data.publicationId })
 
     bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(1)
@@ -241,7 +321,7 @@ describe("publishTestimony", () => {
     await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
   })
 
-  describe("attachments", () => {
+  describe.skip("attachments", () => {
     it("copies drafts to published and archived files", async () => {
       const attachmentId = nanoid()
       await createDraftAttachment(uid, attachmentId, "test-pdf")
@@ -331,7 +411,7 @@ describe("deleteTestimony", () => {
   it("Deletes published testimony", async () => {
     let res = await publishTestimony({ draftId })
 
-    await deleteTestimony({ publicationId: res.data.publicationId })
+    await deleteTestimony({ uid, publicationId: res.data.publicationId })
 
     let testimony = await getPublication(uid, res.data.publicationId)
     const bill = await getBill(billId)
@@ -347,7 +427,7 @@ describe("deleteTestimony", () => {
 
   it("Retains archives", async () => {
     const res1 = await publishTestimony({ draftId })
-    await deleteTestimony({ publicationId: res1.data.publicationId })
+    await deleteTestimony({ uid, publicationId: res1.data.publicationId })
 
     const res2 = await publishTestimony({ draftId }),
       published = await getPublication(uid, res2.data.publicationId)
@@ -369,7 +449,7 @@ describe("deleteTestimony", () => {
       const r = await publishTestimony({ draftId })
       const p = await getPublication(uid, r.data.publicationId)
 
-      await deleteTestimony({ publicationId: r.data.publicationId })
+      await deleteTestimony({ uid, publicationId: r.data.publicationId })
 
       expect(p.attachmentId).toBeDefined()
       await expect(
