@@ -1,9 +1,19 @@
 import { flags } from "components/featureFlags"
-import { FollowButton } from "components/shared/FollowButton"
-import { isCurrentCourt } from "functions/src/shared"
-import { useTranslation } from "next-i18next"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore"
+import { getFunctions, httpsCallable } from "firebase/functions"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Row } from "../bootstrap"
+import { useAuth } from "../auth"
+import { Button, Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
 import { Back } from "./Back"
@@ -15,9 +25,19 @@ import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
+import { useTranslation } from "next-i18next"
+import { isCurrentCourt } from "functions/src/shared"
+import { FollowBillButton } from "components/shared/FollowButton"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
+`
+
+const StyledImage = styled(Image)`
+  width: 14.77px;
+  height: 12.66px;
+
+  margin-left: 8px;
 `
 
 export const BillDetails = ({ bill }: BillProps) => {
@@ -41,13 +61,17 @@ export const BillDetails = ({ bill }: BillProps) => {
               <Col md={2}>
                 <BillNumber bill={bill} />
               </Col>
-              <Col xs={10} md={6} className="mb-3 ms-auto">
+              <Col
+                xs={10}
+                md={6}
+                className="mb-3 ms-auto d-flex justify-content-end"
+              >
                 <Status bill={bill} />
               </Col>
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                <FollowButton bill={bill} />
+                {flags().notifications && <FollowBillButton bill={bill} />}
               </Col>
             </Row>
           </>
@@ -58,7 +82,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                <FollowButton bill={bill} />
+                {flags().notifications && <FollowBillButton bill={bill} />}
               </Styled>
             </Col>
           </Row>

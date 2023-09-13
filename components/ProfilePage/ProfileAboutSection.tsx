@@ -44,7 +44,7 @@ export const ProfileAboutSection = ({
         )
       }
     >
-      <div>{profile?.about ?? t("content.statePurpose")}</div>
+      <div>{profile?.about ?? ""}</div>
     </TitledSectionCard>
   )
 }

@@ -19,6 +19,7 @@ import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
 import { useTranslation } from "next-i18next"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { flags } from "components/featureFlags"
 
 const FooterButton = styled(Button)`
   margin: 0;
@@ -238,11 +239,13 @@ export const TestimonyItem = ({
               )}
             </>
           )}
-          {/* <Col xs="auto">
-            <FooterButton variant="link" onClick={() => setIsReporting(true)}>
-              {isUser ? "Request to rescind" : "Report"}
-            </FooterButton>
-          </Col> */}
+          {flags().reportTestimony && !isUser && (
+            <Col xs="auto">
+              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+                Report
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 

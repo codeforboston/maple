@@ -5,9 +5,5 @@
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "browse_bills": "browse bills",
   "logInSignUp": "Log in / Sign up",
-  "back_to_bills": "back to list of bills",
-  "button":{
-    "follow" : "Follow",
-    "following" : "Following"
-  }
+  "back_to_bills": "back to list of bills"
 }
