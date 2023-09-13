@@ -102,7 +102,9 @@ export const TestimonyItem = ({
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
-  const testimonyContent = testimony.content ?? 'This draft has no content. Click Edit to add your testimony.'
+  const testimonyContent =
+    testimony.content ??
+    "This draft has no content. Click Edit to add your testimony."
 
   const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
