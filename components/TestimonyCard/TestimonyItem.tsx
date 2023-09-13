@@ -102,7 +102,7 @@ export const TestimonyItem = ({
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
-  const testimonyContent = testimony.content
+  const testimonyContent = testimony.content ?? 'This draft has no content. Click Edit to add your testimony.'
 
   const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
@@ -183,24 +183,25 @@ export const TestimonyItem = ({
               </FooterButton>
             </Col>
           )}
-
-          <Col>
-            <FooterButton variant="link">
-              <Internal
-                className={styles.link}
-                href={maple.testimony({ publishedId: testimony.id })}
-              >
-                {t("testimonyItem.moreDetails")}
-              </Internal>
-            </FooterButton>
-          </Col>
-
-          <Col className="justify-content-end d-flex">
-            <FooterButton variant="link">
-              <ViewAttachment testimony={testimony} />
-            </FooterButton>
-          </Col>
-
+          {testimony.id && (
+            <Col>
+              <FooterButton variant="link">
+                <Internal
+                  className={styles.link}
+                  href={maple.testimony({ publishedId: testimony.id })}
+                >
+                  {t("testimonyItem.moreDetails")}
+                </Internal>
+              </FooterButton>
+            </Col>
+          )}
+          {testimony.attachmentId && (
+            <Col className="d-flex">
+              <FooterButton variant="link">
+                <ViewAttachment testimony={testimony} />
+              </FooterButton>
+            </Col>
+          )}
           {isUser && !isMobile && (
             <>
               {onProfilePage && (
@@ -239,6 +240,7 @@ export const TestimonyItem = ({
               )}
             </>
           )}
+          {/* report */}
           {flags().reportTestimony && !isUser && (
             <Col xs="auto">
               <FooterButton variant="link" onClick={() => setIsReporting(true)}>
