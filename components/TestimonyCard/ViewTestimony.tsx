@@ -1,15 +1,15 @@
-import { Row, Col, Form } from "react-bootstrap"
-import React, { useState } from "react"
-import { UsePublishedTestimonyListing } from "../db"
-import { TitledSectionCard } from "../shared"
-import { TestimonyItem } from "./TestimonyItem"
 import { NoResults } from "components/search/NoResults"
-import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
-import { Card as MapleCard } from "../Card"
-import { Card as BootstrapCard } from "react-bootstrap"
-import styled from "styled-components"
 import { PaginationButtons } from "components/table"
-import { Tabs, Tab } from "./Tabs"
+import { TFunction, useTranslation } from "next-i18next"
+import { useState } from "react"
+import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
+import styled from "styled-components"
+import { Card as MapleCard } from "../Card"
+import { useAuth } from "../auth"
+import { Testimony, UsePublishedTestimonyListing } from "../db"
+import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
+import { Tab, Tabs } from "./Tabs"
+import { TestimonyItem } from "./TestimonyItem"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -23,7 +23,6 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    isUser?: boolean
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
@@ -32,12 +31,13 @@ const ViewTestimony = (
   const {
     items,
     setFilter,
-    isUser = false,
     onProfilePage = false,
     className,
     pagination,
     isOrg
   } = props
+
+  const { user } = useAuth()
 
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
@@ -83,6 +83,8 @@ const ViewTestimony = (
     />
   ]
 
+  const { t } = useTranslation("testimony")
+
   return (
     <Container>
       <MapleCard
@@ -104,9 +106,12 @@ const ViewTestimony = (
               <div>
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
-                    <Col className="d-flex align-items-center">
-                      Showing 1 - {testimony.length} out of {testimony.length}
-                    </Col>
+                    <ShowPaginationSummary
+                      testimony={testimony}
+                      pagination={pagination}
+                      t={t}
+                    />
+
                     <Col xs="auto">
                       <SortTestimonyDropDown
                         orderBy={orderBy}
@@ -130,18 +135,19 @@ const ViewTestimony = (
                     <TestimonyItem
                       key={t.authorUid + t.billId}
                       testimony={t}
-                      isUser={isUser}
+                      isUser={t.authorUid === user?.uid}
                       onProfilePage={onProfilePage}
                     />
                   ))}
 
-                {testimony.length > 10 && (
+                {(pagination.hasPreviousPage || pagination.hasNextPage) && (
                   <PaginationButtons pagination={pagination} />
                 )}
               </div>
             ) : (
               <NoResults>
-                There are no testimonies <br />
+                {t("viewTestimony.noTestimonies")}
+                <br />
               </NoResults>
             )}
           </BootstrapCard.Body>
@@ -152,3 +158,33 @@ const ViewTestimony = (
 }
 
 export default ViewTestimony
+
+function ShowPaginationSummary({
+  testimony,
+  pagination,
+  t
+}: {
+  testimony: Testimony[]
+  pagination: { currentPage: number; itemsPerPage: number }
+  t: TFunction
+}) {
+  if (testimony.length < 1) {
+    return null
+  }
+  const { currentPage, itemsPerPage } = pagination
+
+  const currentPageStart = (currentPage - 1) * itemsPerPage
+  let currentPageEnd = currentPage * itemsPerPage
+  if (currentPageEnd > testimony.length) {
+    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
+  }
+  const totalItems = testimony.length
+
+  return (
+    <Col className="d-flex align-items-center">
+      {t("viewTestimony.showing")} {currentPageStart + 1}&ndash;{currentPageEnd}{" "}
+      {t("viewTestimony.outOf")}
+      {totalItems}
+    </Col>
+  )
+}

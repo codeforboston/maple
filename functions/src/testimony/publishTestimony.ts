@@ -5,7 +5,7 @@ import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
-import { supportedGeneralCourts } from "../../../components/db/common"
+import { supportedGeneralCourts } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
@@ -271,6 +271,6 @@ class PublishTestimonyTransaction {
   }
 
   private getDisplayName() {
-    return this.profile?.displayName ?? "Anonymous"
+    return this.profile?.fullName ?? "Anonymous"
   }
 }

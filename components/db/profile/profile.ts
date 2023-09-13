@@ -1,6 +1,12 @@
-import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
+import {
+  deleteField,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc
+} from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { useMemo, useReducer } from "react"
+import { useEffect, useMemo, useReducer, useState } from "react"
 import { useAsync } from "react-async-hook"
 import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
@@ -19,7 +25,6 @@ type ProfileState = {
   updatingIsOrganization: boolean
   updatingAbout: boolean
   updatingOrgCategory: boolean
-  updatingDisplayName: boolean
   updatingFullName: boolean
   updatingContactInfo: Record<keyof ContactInfo, boolean>
   updatingProfileImage: boolean
@@ -47,7 +52,6 @@ export function useProfile() {
         updatingNotification: false,
         updatingIsOrganization: false,
         updatingAbout: false,
-        updatingDisplayName: false,
         updatingFullName: false,
         updatingProfileImage: false,
         updatingOrgCategory: false,
@@ -109,13 +113,6 @@ export function useProfile() {
           dispatch({ updatingAbout: true })
           await updateAbout(uid, about)
           dispatch({ updatingAbout: false })
-        }
-      },
-      updateDisplayName: async (displayName: string) => {
-        if (uid) {
-          dispatch({ updatingDisplayName: true })
-          await updateDisplayName(uid, displayName)
-          dispatch({ updatingDisplayName: false })
         }
       },
       updateFullName: async (fullName: string) => {
@@ -206,6 +203,26 @@ export function useProfile() {
   )
 }
 
+// useUser hook to fetch user data
+export function useUser() {
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(true)
+
+  const [userProfile, setUserProfile] = useState<Profile | undefined>()
+
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = onSnapshot(profileRef(user.uid), doc => {
+        if (doc.exists()) {
+          setUserProfile(doc.data() as Profile)
+        }
+        setLoading(false)
+      })
+      return () => unsubscribe()
+    }
+  })
+}
+
 function updateRepresentative(
   uid: string,
   representative: ProfileMember | null
@@ -280,14 +297,6 @@ function updateAbout(uid: string, about: string) {
   return setDoc(
     profileRef(uid),
     { about: about ?? deleteField() },
-    { merge: true }
-  )
-}
-
-function updateDisplayName(uid: string, displayName: string) {
-  return setDoc(
-    profileRef(uid),
-    { displayName: displayName ?? deleteField() },
     { merge: true }
   )
 }

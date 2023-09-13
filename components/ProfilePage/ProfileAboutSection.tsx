@@ -24,7 +24,7 @@ export const ProfileAboutSection = ({
   const title = isOrg
     ? t("aboutUs")
     : t("aboutMe", {
-        firstName: profile?.displayName?.split(" ")?.[0] ?? "User"
+        firstName: profile?.fullName?.split(" ")?.[0] ?? "User"
       })
 
   return (
@@ -44,7 +44,7 @@ export const ProfileAboutSection = ({
         )
       }
     >
-      <div>{profile?.about ?? t("content.statePurpose")}</div>
+      <div>{profile?.about ?? ""}</div>
     </TitledSectionCard>
   )
 }

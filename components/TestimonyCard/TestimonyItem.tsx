@@ -11,12 +11,15 @@ import { Testimony } from "../db"
 import { Internal, maple } from "../links"
 import { UserInfoHeader } from "./UserInfoHeader"
 import { BillInfoHeader } from "./BillInfoHeader"
-import { ReportModal } from "./ReportModal"
+import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
 import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
+import { useTranslation } from "next-i18next"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { flags } from "components/featureFlags"
 
 const FooterButton = styled(Button)`
   margin: 0;
@@ -46,9 +49,11 @@ const ArchiveTestimonyConfirmation = ({
   onHide: () => void
   archiveTestimony: UseAsyncReturn<void, []> | undefined
 }) => {
+  const { t } = useTranslation("testimony")
+
   return (
     <>
-      <StyledCol>Are you sure you want to delete your testimony?</StyledCol>
+      <StyledCol>{t("testimonyItem.deleteTestimonyConfirmation")}</StyledCol>
       <StyledCol>
         <Button
           className="choice me-4"
@@ -63,7 +68,7 @@ const ArchiveTestimonyConfirmation = ({
           )}
         </Button>
         <Button className="choice" variant="primary" onClick={onHide}>
-          No
+          {t("testimonyItem.no")}
         </Button>
       </StyledCol>
     </>
@@ -103,11 +108,13 @@ export const TestimonyItem = ({
   const [showAllTestimony, setShowAllTestimony] = useState(false)
   const snippet = showAllTestimony
     ? testimonyContent
-    : testimonyContent.slice(0, snippetChars)
+    : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
   const [showConfirm, setShowConfirm] = useState(false)
   const { deleteTestimony } = usePublishService() ?? {}
+
+  const { t } = useTranslation("testimony")
 
   return (
     <div
@@ -123,7 +130,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt="Edit icon"
+                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
                 height={50}
                 width={50}
               />
@@ -138,7 +145,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 align-self-center"
                 src="/delete-testimony.svg"
-                alt="Delete testimony icon"
+                alt={t("testimonyItem.deleteIcon") ?? "Delete testimony icon"}
                 height={50}
                 width={50}
               />
@@ -172,7 +179,7 @@ export const TestimonyItem = ({
                 variant="link"
                 onClick={() => setShowAllTestimony(true)}
               >
-                Expand
+                {t("testimonyItem.expand")}
               </FooterButton>
             </Col>
           )}
@@ -183,7 +190,7 @@ export const TestimonyItem = ({
                 className={styles.link}
                 href={maple.testimony({ publishedId: testimony.id })}
               >
-                More Details
+                {t("testimonyItem.moreDetails")}
               </Internal>
             </FooterButton>
           </Col>
@@ -194,7 +201,7 @@ export const TestimonyItem = ({
             </FooterButton>
           </Col>
 
-          {isUser ? (
+          {isUser && !isMobile && (
             <>
               {onProfilePage && (
                 <Col>
@@ -203,7 +210,7 @@ export const TestimonyItem = ({
                       className={styles.link2}
                       href={formUrl(testimony.billId, testimony.court)}
                     >
-                      Edit
+                      {t("testimonyItem.edit")}
                     </Internal>
                   </FooterButton>
                 </Col>
@@ -211,15 +218,15 @@ export const TestimonyItem = ({
 
               {canDelete && (
                 <>
-                  <Col>
+                  {/* <Col>
                     <FooterButton
                       style={{ color: "#c71e32" }}
                       onClick={() => setShowConfirm(s => !s)}
                       variant="link"
                     >
-                      Rescind
+                      {t("testimonyItem.rescind")}
                     </FooterButton>
-                  </Col>
+                  </Col> */}
 
                   {showConfirm && (
                     <ArchiveTestimonyConfirmation
@@ -231,38 +238,41 @@ export const TestimonyItem = ({
                 </>
               )}
             </>
-          ) : (
-            <>
-              {/* hiding for soft launch
-              <Col xs="auto">
-                <FooterButton
-                  variant="link"
-                  onClick={() => setIsReporting(true)}
-                >
-                  Report
-                </FooterButton>
-              </Col> */}
-            </>
+          )}
+          {flags().reportTestimony && !isUser && (
+            <Col xs="auto">
+              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+                Report
+              </FooterButton>
+            </Col>
           )}
         </Row>
       </Stack>
 
-      {isReporting && (
-        <ReportModal
-          onClose={() => setIsReporting(false)}
-          onReport={report => {
-            reportMutation.mutate({ report, testimony })
-          }}
-          isLoading={reportMutation.isLoading}
-          reasons={[
-            "Personal Information",
-            "Offensive",
-            "Violent",
-            "Spam",
-            "Phishing"
-          ]}
-        />
-      )}
+      {isReporting &&
+        (isUser ? (
+          <RequestDeleteOwnTestimonyModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => reportMutation.mutate({ report, testimony })}
+            isLoading={reportMutation.isLoading}
+          />
+        ) : (
+          <ReportModal
+            onClose={() => setIsReporting(false)}
+            onReport={report => {
+              reportMutation.mutate({ report, testimony })
+            }}
+            isLoading={reportMutation.isLoading}
+            additionalInformationLabel="Additional information:"
+            reasons={[
+              "Personal Information",
+              "Offensive",
+              "Violent",
+              "Spam",
+              "Phishing"
+            ]}
+          />
+        ))}
       <div
         style={{
           position: "fixed",

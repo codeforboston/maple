@@ -3,6 +3,9 @@ import { z } from "zod"
 import { auth, db } from "../../../components/server-api/init-firebase-admin"
 import { ensureAdminAuthenticated } from "../../../components/server-api/middleware-fns"
 
+// Import the setRole function directly to avoid pulling in other cloud function dependencies.
+import { setRole } from "functions/src/auth/setRole"
+
 /**
  * Routes for changes to user
  * /users/[uid]
@@ -39,12 +42,12 @@ const BodySchema = z.object({
 
 async function patch(req: NextApiRequest, res: NextApiResponse) {
   const { query, body } = req
-
   // only admins can access this
   const token = await ensureAdminAuthenticated(req, res)
   if (!token) {
     return
   }
+
   const queryValidation = QuerySchema.safeParse(query)
   const bodyValidation = BodySchema.safeParse(body)
 
@@ -65,19 +68,18 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
     const user = await auth.getUser(uid)
 
-    // Set the claim for the JWT
-    await auth.setCustomUserClaims(user.uid, { role })
-    // Set on the user's collection for the admin dashboard
-    await db.doc(`users/${uid}`).set(
-      {
-        role
-      },
-      { merge: true }
-    )
+    await setRole({
+      uid: user.uid,
+      role,
+      auth,
+      db
+    })
+
     return res.status(200).json({
       data: user
     })
-  } catch {
+  } catch (exception) {
+    console.error(exception)
     return res.status(404).json({
       error: "User doesn't exist."
     })

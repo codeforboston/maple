@@ -11,8 +11,14 @@ declare global {
 
 const envs: Record<string, { url: string; key?: string; alias?: string }> = {
   local: { url: "http://localhost:8108", key: "test-api-key" },
-  dev: { url: "https://maple.aballslab.com/search", alias: "default" },
-  prod: { url: "https://api.mapletestimony.org/search", alias: "prod" }
+  dev: {
+    url: "https://o89yhjf824.execute-api.us-east-1.amazonaws.com/search",
+    alias: "default"
+  },
+  prod: {
+    url: "https://yyd73lsw3h.execute-api.us-east-1.amazonaws.com/search",
+    alias: "prod"
+  }
 }
 
 type Args = { url?: string; key?: string; env?: string }
