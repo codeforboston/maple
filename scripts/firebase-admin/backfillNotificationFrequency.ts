@@ -20,10 +20,10 @@ export const script: Script = async ({ db, auth }) => {
       if (userData && !userData.notificationFrequency) {
         // Update the user document in Firestore
         await userDoc.update({
-          notificationFrequency: "Monthly"
+          notificationFrequency: "None"
         })
         console.log(
-          `Updated user ${user.uid} notification frequency to Monthly.`
+          `Updated user ${user.uid} notification frequency to None.`
         )
       }
     } else {
