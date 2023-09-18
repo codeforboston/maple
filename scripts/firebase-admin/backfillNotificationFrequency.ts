@@ -22,9 +22,7 @@ export const script: Script = async ({ db, auth }) => {
         await userDoc.update({
           notificationFrequency: "None"
         })
-        console.log(
-          `Updated user ${user.uid} notification frequency to None.`
-        )
+        console.log(`Updated user ${user.uid} notification frequency to None.`)
       }
     } else {
       console.log(`No document for user ${user.uid}`)
