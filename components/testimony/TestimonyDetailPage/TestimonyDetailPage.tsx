@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useState } from "react"
 import { Col, Container, Row } from "react-bootstrap"
 import { BillTitle } from "./BillTitle"
 import { PolicyActions } from "./PolicyActions"
@@ -12,6 +12,9 @@ import { useAuth } from "components/auth"
 import { useMediaQuery } from "usehooks-ts"
 
 export const TestimonyDetailPage: FC = () => {
+  const [isReporting, setIsReporting] = useState(false)
+  const reportMutation = useReportTestimony()
+  const didReport = reportMutation.isError || reportMutation.isSuccess
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { authorUid } = useCurrentTestimonyDetails()
   const { user } = useAuth()
