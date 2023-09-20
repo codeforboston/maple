@@ -110,6 +110,7 @@ const RecipientControls = styled(({ className }) => {
         variant="outline-secondary"
         text={email.to}
         className="copy"
+        format="text/plain"
       >
         <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
       </CopyButton>
