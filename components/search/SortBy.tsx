@@ -39,6 +39,15 @@ const StyledSelect = styled(Select)`
     cursor: pointer;
   }
 
+  .s__option--is-selected {
+    background-color: transparent;
+    color: black;
+  }
+
+  .s__option--is-selected:hover {
+    background-color: #deebff;
+  }
+
   .s__single-value,
   .s__indicator {
     color: white;
