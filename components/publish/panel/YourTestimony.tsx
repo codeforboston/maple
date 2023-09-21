@@ -35,14 +35,16 @@ const MainPanel = styled(({ ...rest }) => {
           billId={bill.id}
           court={bill.court}
         />
-        <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} />
+        {/*Delete testimony removed until ready */}
+        {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
       </div>
-      <ArchiveTestimonyConfirmation
+      {/*Delete testimony confirmation-dropdown removed until ready */}
+      {/* <ArchiveTestimonyConfirmation
         className="mt-2"
         show={showConfirm}
         onHide={() => setShowConfirm(false)}
         archiveTestimony={deleteTestimony}
-      />
+      /> */}
       <div className="divider mt-3 mb-3" />
       <TestimonyPreview type="draft" className="mb-2" />
       {unpublishedDraft && <div className="draft-badge">Draft</div>}
