@@ -30,6 +30,24 @@ export {
   upgradeTestimonySearchIndex,
   resolveReport as adminResolveReport
 } from "./testimony"
+export {
+  publishNotifications,
+  cleanupNotifications,
+  deliverNotifications,
+  httpsPublishNotifications,
+  httpsDeliverNotifications,
+  httpsCleanupNotifications,
+  updateUserNotificationFrequency,
+  updateNextDigestAt
+} from "./notifications"
+
+export {
+  followBill,
+  unfollowBill,
+  followOrg,
+  unfollowOrg
+} from "./subscriptions"
+
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.

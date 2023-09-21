@@ -87,7 +87,7 @@ DigestEmail.args = {
     org: {
       1: {
         orgTitle: "Boston’s Teacher Union",
-        orgId: "Tfh1tp2faYbSWsYYsvUS4F23mtD2",
+        orgLookup: "Tfh1tp2faYbSWsYYsvUS4F23mtD2",
         counter: "3",
         item: {
           1: {
@@ -106,7 +106,7 @@ DigestEmail.args = {
       },
       2: {
         orgTitle: "Moms for Liberty",
-        orgId: "c31R5rjWG9eTUopP7yeA5tZQtJX2",
+        orgLookup: "c31R5rjWG9eTUopP7yeA5tZQtJX2",
         counter: "6",
         item: {
           1: {
@@ -137,7 +137,7 @@ DigestEmail.args = {
       },
       3: {
         orgTitle: "La Le Lu Le Lo",
-        orgId: "8P5Ar8NyAcNEVJMTexezXvRbept2",
+        orgLookup: "8P5Ar8NyAcNEVJMTexezXvRbept2",
         counter: "8",
         item: {
           1: {

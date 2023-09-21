@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { Bill } from "../db"
 import { firestore } from "../firebase"
-import { UnfollowModalConfig } from "../EditProfilePage/UnfollowModal"
+import { UnfollowModalConfig } from "../EditProfilePage/FollowingTab"
 
 export type Results = { [key: string]: string[] }
 
@@ -51,8 +51,8 @@ export async function FollowingQuery(uid: string | undefined) {
     where("uid", "==", `${uid}`),
     where("type", "==", `bill`)
   )
-  const querySnapshot1 = await getDocs(q1)
-  querySnapshot1.forEach(doc => {
+  const querySnapshotBills = await getDocs(q1)
+  querySnapshotBills.forEach(doc => {
     // doc.data() is never undefined for query doc snapshots
     doc.data().billLookup ? results.bills.push(doc.data().billLookup) : null
   })
@@ -62,8 +62,8 @@ export async function FollowingQuery(uid: string | undefined) {
     where("uid", "==", `${uid}`),
     where("type", "==", `org`)
   )
-  const querySnapshot2 = await getDocs(q2)
-  querySnapshot2.forEach(doc => {
+  const querySnapshotOrgs = await getDocs(q2)
+  querySnapshotOrgs.forEach(doc => {
     // doc.data() is never undefined for query doc snapshots
     doc.data().orgLookup ? results.orgs.push(doc.data().orgLookup) : null
   })
@@ -77,7 +77,7 @@ export async function setFollow(
   bill: Bill | undefined,
   billId: string | undefined,
   courtId: number | undefined,
-  profileid: string | undefined
+  profileId: string | undefined
 ) {
   const subscriptionRef = setSubscriptionRef(uid)
 
@@ -95,7 +95,7 @@ export async function setFollow(
         topicName: topicName,
         uid: uid,
         orgLookup: {
-          profileid: profileid
+          profileId: profileId
         },
         type: "org"
       })
