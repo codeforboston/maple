@@ -10,6 +10,8 @@ import { useTranslation } from "next-i18next"
 interface PolicyActionsProps {
   className?: string
   isUser?: boolean
+  isReporting: boolean
+  setReporting: (boolean: boolean) => void
 }
 
 const PolicyActionItem: FC<ListItemProps> = props => (
@@ -18,7 +20,9 @@ const PolicyActionItem: FC<ListItemProps> = props => (
 
 export const PolicyActions: FC<PolicyActionsProps> = ({
   className,
-  isUser
+  isUser,
+  isReporting,
+  setReporting
 }) => {
   const { bill } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
