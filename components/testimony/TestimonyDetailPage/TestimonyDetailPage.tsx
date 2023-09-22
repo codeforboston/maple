@@ -46,6 +46,28 @@ export const TestimonyDetailPage: FC = () => {
             )}
             <RevisionHistory />
           </Col>
+          {/* Report Modal */}
+          {isReporting && (
+            <ReportModal
+              onClose={() => setIsReporting(false)}
+              onReport={report => {
+                reportMutation.mutate({
+                  report,
+                  testimony: useCurrentTestimonyDetails().revision
+                })
+              }}
+              isLoading={reportMutation.isLoading}
+              additionalInformationLabel="Additional information:"
+              reasons={[
+                "Personal Information",
+                "Offensive",
+                "Violent",
+                "Spam",
+                "Phishing"
+              ]}
+            />
+          )}
+          {/*  */}
         </Row>
       </Container>
     </>
