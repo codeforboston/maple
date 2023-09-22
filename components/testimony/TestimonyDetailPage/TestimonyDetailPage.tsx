@@ -19,6 +19,9 @@ export const TestimonyDetailPage: FC = () => {
   const { authorUid } = useCurrentTestimonyDetails()
   const { user } = useAuth()
   const isUser = user?.uid === authorUid
+  const handleReporting = (boolean: boolean) => {
+    setIsReporting(boolean)
+  }
   return (
     <>
       <VersionBanner fluid="xl" />
@@ -33,7 +36,14 @@ export const TestimonyDetailPage: FC = () => {
           </Col>
 
           <Col md={4}>
-            {!isMobile && <PolicyActions className="mb-4" isUser={isUser} />}
+            {!isMobile && (
+              <PolicyActions
+                className="mb-4"
+                isUser={isUser}
+                isReporting={isReporting}
+                setReporting={handleReporting}
+              />
+            )}
             <RevisionHistory />
           </Col>
         </Row>
