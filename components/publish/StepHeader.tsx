@@ -6,7 +6,7 @@ export const StepHeader = styled<{ step?: number }>(
     return (
       <div {...rest}>
         {!!step && (
-          <StepChip scale={2} className="me-4">
+          <StepChip scale={2} className="me-4" style={{backgroundColor: "#1A3185", color: "white"}}>
             {step}
           </StepChip>
         )}
