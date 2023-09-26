@@ -1,5 +1,5 @@
 import { createMeta } from "stories/utils"
-import DropdownButton from "../../../components/DropdownButton/DropdownButton"
+import { DropdownButton } from "../../../components/shared/DropdownButton/DropdownButton"
 import { ComponentStory } from "@storybook/react"
 
 // TODO: move into components directory
@@ -16,12 +16,25 @@ export default createMeta({
 
 const Template: ComponentStory<typeof DropdownButton> = ({
   title,
-  children
+  children,
+  styling
 }) => {
-  return <DropdownButton title={title}>{children}</DropdownButton>
+  return (
+    <DropdownButton title={title} styling={styling}>
+      {children}
+    </DropdownButton>
+  )
 }
 
 export const Primary = Template.bind({})
 Primary.args = {
-  children: ["Action 5", "Action 6", "Action 7"]
+  title: "",
+  children: ["Action 5", "Action 6", "Action 7"],
+  styling: {
+    width: { desktop: "", mobile: "" },
+    height: "",
+    color: "",
+    backgroundColor: "",
+    fontSize: ""
+  }
 }

@@ -9,7 +9,7 @@ type faqCardProps = {
 
 export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
   return (
-    <Card className={styles.faqCard}>
+    <Card className={styles.faqCard} id={heading}>
       <h2>{heading ?? ""}</h2>
       <hr></hr>
       {qAndAs.map(

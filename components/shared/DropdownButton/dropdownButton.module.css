@@ -1,0 +1,36 @@
+.dropdownToggle {
+  border-radius: 8px;
+  font-family: "Nunito";
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 1.5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdownToggle::after {
+  display: none;
+}
+
+.menu {
+  margin-top: 0.3rem;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.item {
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+  text-wrap: wrap;
+}
+
+.menu > .item:hover {
+  color: white;
+}
+
+.divider {
+  margin: 0rem;
+  margin-right: -0.05rem;
+  margin-left: -0.05rem;
+}

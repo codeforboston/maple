@@ -3,8 +3,12 @@
   font-family: "Nunito";
 }
 
-.faqLayout h1 {
+.faqHeader {
   margin: 1.5rem 0rem 1.5rem 2rem;
+  display: flex;
+}
+
+.faqHeader > h1 {
   font-size: 3rem;
 }
 
@@ -41,14 +45,14 @@
   margin-bottom: -0.5rem;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .faqCard {
     margin: 0rem;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
 
-  .faqLayout h1 {
-    margin: 1rem 0rem 1rem 0rem;
+  .faqHeader {
+    margin: 1.5rem 0rem 1.5rem 0rem;
   }
 }
