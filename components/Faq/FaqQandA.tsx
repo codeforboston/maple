@@ -8,17 +8,17 @@ type faqQandAProps = {
 }
 
 export const FaqQandA = ({ question, answer }: faqQandAProps) => {
-  const [open, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false)
 
   return (
     <>
       <a
         onClick={() => setOpen(!open)}
         aria-controls="collapse-text"
-        aria-expanded={open}
+        aria-expanded={isOpen}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          {open ? (
+          {isOpen ? (
             <Image
               src="/minus.svg"
               className={styles.icon}
@@ -34,7 +34,7 @@ export const FaqQandA = ({ question, answer }: faqQandAProps) => {
           {question}
         </div>
       </a>
-      <Collapse in={open}>
+      <Collapse in={isOpen}>
         <p id="collapse-text" className={styles.answer}>
           {answer}
         </p>

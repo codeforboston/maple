@@ -2,8 +2,6 @@ import { Dropdown, Image } from "../../bootstrap"
 import classNames from "classnames"
 import styled from "styled-components"
 import styles from "./dropdownButton.module.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons"
 
 export type DropdownButtonProps = {
   title: string
