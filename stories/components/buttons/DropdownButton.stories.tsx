@@ -5,7 +5,7 @@ import { ComponentStory } from "@storybook/react"
 export default createMeta({
   title: "Components/Buttons/DropdownButton",
   figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A12483",
+    "https://www.figma.com/file/pGGIX2tmCWJNGU1sAYQ91v/FAQ?type=design&node-id=4001-29831&mode=design&t=j7usRSbamiOgLWlC-0",
   component: DropdownButton
 })
 
@@ -23,13 +23,13 @@ const Template: ComponentStory<typeof DropdownButton> = ({
 
 export const Primary = Template.bind({})
 Primary.args = {
-  title: "",
-  children: ["Action 5", "Action 6", "Action 7"],
+  title: "Title",
+  children: ["Item 1", "Item 2", "Item 3"],
   styling: {
-    width: { desktop: "", mobile: "" },
-    height: "",
-    color: "",
-    backgroundColor: "",
-    fontSize: ""
+    width: { desktop: "418px", mobile: "418px" },
+    height: "40px",
+    color: "#FFFFFF",
+    backgroundColor: "#1a3185",
+    fontSize: "16px"
   }
 }

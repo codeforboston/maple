@@ -2,6 +2,7 @@ import { Dropdown, Image } from "../../bootstrap"
 import classNames from "classnames"
 import styled from "styled-components"
 import styles from "./dropdownButton.module.css"
+import { CarotIcon } from "./CarotIcon"
 
 export type DropdownButtonProps = {
   title: string
@@ -31,6 +32,9 @@ const StyledDropdown = styled(Dropdown)`
 
   .menu {
     width: ${props => (props.width?.desktop ? props.width?.desktop : "418px")};
+  }
+  .carotIcon {
+    fill: ${props => (props.color ? props.color : "#FFFFFF")};
   }
 
   @media only screen and (max-width: 768px) {
@@ -62,12 +66,8 @@ export function DropdownButton({
         id="dropdown-basic"
       >
         {title}
-        <Image
-          src="/carot-down-white.svg"
-          alt="white carot pointing downwards"
-        ></Image>
+        <CarotIcon></CarotIcon>
       </Dropdown.Toggle>
-
       <Dropdown.Menu className={classNames(styles.menu, "border", "menu")}>
         {children.map((item, i) => (
           <>

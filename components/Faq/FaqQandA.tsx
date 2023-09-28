@@ -13,7 +13,7 @@ export const FaqQandA = ({ question, answer }: faqQandAProps) => {
   return (
     <>
       <a
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(!isOpen)}
         aria-controls="collapse-text"
         aria-expanded={isOpen}
       >
