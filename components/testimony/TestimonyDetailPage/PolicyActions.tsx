@@ -39,7 +39,7 @@ export const PolicyActions: FC<PolicyActionsProps> = ({
   items.push(
     <PolicyActionItem
       key="report-testimony"
-      billName={`report ${billLabel}`}
+      billName={`Report Testimony`}
       onClick={() => setReporting(!isReporting)}
     />
   )
