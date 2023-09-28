@@ -18,7 +18,7 @@ export const TestimonyDetailPage: FC = () => {
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const { authorUid } = useCurrentTestimonyDetails()
+  const { authorUid, revision } = useCurrentTestimonyDetails()
   const { user } = useAuth()
   const isUser = user?.uid === authorUid
   const handleReporting = (boolean: boolean) => {
@@ -55,7 +55,7 @@ export const TestimonyDetailPage: FC = () => {
               onReport={report => {
                 reportMutation.mutate({
                   report,
-                  testimony: useCurrentTestimonyDetails().revision
+                  testimony: revision
                 })
               }}
               isLoading={reportMutation.isLoading}
@@ -71,6 +71,9 @@ export const TestimonyDetailPage: FC = () => {
           )}
           {/*  */}
         </Row>
+        <ToastContainer position={"bottom-end"}>
+          {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
+        </ToastContainer>
       </Container>
     </>
   )
