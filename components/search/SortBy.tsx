@@ -33,9 +33,19 @@ const StyledSelect = styled(Select)`
   .s__control {
     background-color: var(--bs-blue);
     border: none;
+    box-shadow: none;
     min-height: 1rem;
     line-height: 1rem;
     cursor: pointer;
+  }
+
+  .s__option--is-selected {
+    background-color: transparent;
+    color: black;
+  }
+
+  .s__option--is-selected:hover {
+    background-color: #deebff;
   }
 
   .s__single-value,
