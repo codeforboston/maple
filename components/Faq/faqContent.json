@@ -15,6 +15,8 @@
         "answer": "People generally congregate online in for-profit spaces (e.g., Twitter or Facebook) which are designed to maximize clicks and generate profit. That is well and good for entertainment, but they are poor mechanisms for political energy. MAPLE is designed to maintain civility, promote meaningful engagement, and to channel the knowledge and aspirations of the electorate to our elected representatives."
       },
       {
+        "disabled": true,
+        "comment": "There currently is no following functionality",
         "question": "Why can’t I see any “follower counts”?",
         "answer": "We choose not to display follower counts as part of our approach to maintaining a substantive and constructive digital forum. We feel that showing the amount of followers a user has tends to incentivize performative behavior instead of sincerity."
       },
