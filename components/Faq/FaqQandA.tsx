@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Image, Collapse } from "../bootstrap"
-import styles from "./faq.module.css"
+import styles from "./Faq.module.css"
 
 type faqQandAProps = {
   question: string
