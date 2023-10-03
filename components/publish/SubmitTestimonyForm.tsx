@@ -13,6 +13,7 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
+import { KeepNote } from "./KeepNote"
 
 const Background = styled.div`
   background: linear-gradient(to right, white 50%, var(--bs-body-bg) 50%);
@@ -33,10 +34,13 @@ export const SubmitTestimonyForm = () => {
             <Form step={form.step} bill={form.bill} synced={form.synced} />
           </Col>
           <Col xs={3}>
-            {["publish", "share"].includes(form.step) ? (
-              <PublishInfo />
-            ) : (
-              <QuickInfo bill={form.bill} profile={form.profile} />
+            {form.step == "position" ? (
+              ["publish", "share"].includes(form.step) ? (
+                <PublishInfo />
+              ) : (
+                <QuickInfo bill={form.bill} profile={form.profile} />
+              )) : (
+              <KeepNote currentStep={form.step} /> 
             )}
           </Col>
         </Row>
