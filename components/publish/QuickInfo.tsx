@@ -14,7 +14,9 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   return (
     <InfoContainer>
       <Label>You're writing testimony about</Label>
-      <Chip className="brown">{Title} (bill {bill})</Chip>
+      <Chip className="brown">
+        {Title} (bill {bill})
+      </Chip>
       {city && (
         <>
           <Label>in</Label>
