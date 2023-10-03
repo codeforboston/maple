@@ -81,7 +81,7 @@ const Form = ({
         href={links.maple.bill(bill)}
         className={clsx(!synced && "pe-none")}
       >
-        Back to Bill
+        Back to Bill (Bill {bill})
       </links.Internal>
       <Overview className="mt-3" />
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
@@ -97,7 +97,7 @@ const Overview = ({ className }: { className: string }) => (
       <Divider className="me-5" />
       <div className="mt-2">
         Let your voice be heard! MAPLE gives users the ability to send their
-        unfiltered feedback on bills to legislators, comittees, and other
+        unfiltered feedback on bills to legislators, committees, and other
         relevant parties. <b>Writing testimony is as easy as 1-2-3!</b>
       </div>
     </div>
