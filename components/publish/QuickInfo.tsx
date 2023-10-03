@@ -13,8 +13,10 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
     hasLegislators = Boolean(representative || senator)
   return (
     <InfoContainer>
-      <Label>You're writing a testimony about</Label>
-      <Chip className="brown">{Title}</Chip>
+      <Label>You're writing testimony about</Label>
+      <Chip className="brown">
+        {Title}&nbsp;(Bill {bill.id})
+      </Chip>
       {city && (
         <>
           <Label>in</Label>
