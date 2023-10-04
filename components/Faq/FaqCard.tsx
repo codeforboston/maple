@@ -9,7 +9,12 @@ type faqCardProps = {
 
 export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
   return (
-    <Card className={styles.faqCard} id={heading}>
+    <Card className={styles.faqCard}>
+      {heading == "General" ? (
+        <span className={styles.mobileOffset} id={heading}></span>
+      ) : (
+        <span id={heading}></span>
+      )}
       <h2>{heading ?? ""}</h2>
       <hr></hr>
       {qAndAs.map(
