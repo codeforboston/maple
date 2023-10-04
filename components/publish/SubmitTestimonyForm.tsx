@@ -35,11 +35,8 @@ export const SubmitTestimonyForm = () => {
           </Col>
           <Col xs={3}>
             {form.step == "position" ? (
-              ["publish", "share"].includes(form.step) ? (
-                <PublishInfo />
-              ) : (
                 <QuickInfo bill={form.bill} profile={form.profile} />
-              )) : (
+              ) : (
               <KeepNote currentStep={form.step} /> 
             )}
           </Col>
