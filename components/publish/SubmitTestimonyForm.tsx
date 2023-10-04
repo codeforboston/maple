@@ -79,13 +79,14 @@ const Form = ({
     publish: <PublishTestimony />,
     share: <ShareTestimony />
   }
+
   return (
     <FormContainer>
       <links.Internal
         href={links.maple.bill(bill)}
         className={clsx(!synced && "pe-none")}
       >
-        Back to Bill
+        Back to Bill (Bill {bill.id})
       </links.Internal>
       <Overview className="mt-3" />
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
