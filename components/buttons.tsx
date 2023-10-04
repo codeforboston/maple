@@ -122,8 +122,13 @@ export const CopyButton = ({
   text,
   tooltipDurationMs = 1000,
   children,
+  format = "text/html",
   ...props
-}: ButtonProps & { text: string; tooltipDurationMs?: number }) => {
+}: ButtonProps & {
+  text: string
+  tooltipDurationMs?: number
+  format?: string
+}) => {
   const [show, setShow] = useState(false)
   const target = useRef(null)
   const closeTimeout = useRef<any>()
@@ -131,7 +136,7 @@ export const CopyButton = ({
     <>
       <CopyToClipboard
         text={text}
-        options={{ format: "text/html" }}
+        options={{ format: format }}
         onCopy={(_, success) => {
           if (success) {
             clearTimeout(closeTimeout.current)

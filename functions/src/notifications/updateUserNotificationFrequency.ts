@@ -28,7 +28,6 @@ export const updateUserNotificationFrequency = functions.firestore
       }
 
       const notificationFrequency = docAfterChange.notificationFrequency
-      const email = docAfterChange.email
 
       // Check if notification frequency is undefined
       if (!notificationFrequency) {
@@ -39,13 +38,12 @@ export const updateUserNotificationFrequency = functions.firestore
       // Update user document in the 'users' collection
       await admin.firestore().collection("users").doc(userId).set(
         {
-          notificationFrequency: notificationFrequency,
-          email: email
+          notificationFrequency: notificationFrequency
         },
         { merge: true }
       )
 
-      // Update all documents in the 'activeTopicSubscriptions' sub-collection
+      // Update all documents in the 'activeTopicSubscriptions' sub-collection with the new nextDigestAt value
       const now = Timestamp.now()
       let nextDigestAt: admin.firestore.Timestamp | null
       switch (notificationFrequency) {

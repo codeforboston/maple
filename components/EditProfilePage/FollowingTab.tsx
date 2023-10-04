@@ -1,11 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 import {
   Dispatch,
   SetStateAction,
@@ -247,13 +240,10 @@ function FollowedItem({
     <Styled>
       {type === "bill" ? (
         <>
-          <StyledHeader
-            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-          >
-            {formatBillId(element?.billId)}
-          </StyledHeader>
-
-          <Row>
+          <Row className={`align-items-center`}>
+            <Internal href={`bills/${element?.court}/${element?.billId}`}>
+              {formatBillId(element?.billId)}
+            </Internal>
             <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
@@ -280,7 +270,7 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`organizations/${element?.profileId}`}>
+                <Internal href={`/profile?id=${element?.profileId}`}>
                   {fullName}
                 </Internal>
               </Col>

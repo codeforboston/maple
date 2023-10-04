@@ -1,68 +1,54 @@
-.faqContent {
-  margin-top: 1rem;
+.faqLayout {
+  margin-bottom: 3rem;
   font-family: "Nunito";
 }
 
-/* ---------- Faq Content ------------*/
-.faqContent ul {
-  background: #fff;
-  list-style-type: none;
-  padding: 0 20px;
-  padding-bottom: 20px;
+.faqLayout h1 {
+  margin: 1.5rem 0rem 1.5rem 2rem;
+  font-size: 3rem;
+}
+
+.faqCard {
   border-radius: 10px;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  padding: 2rem 2.5rem;
 }
 
-.faqContent:last-child {
-  margin-bottom: 50px;
-}
-
-.faqContent hr {
-  background: transparent;
-}
-
-.faqContent ul hr {
-  background: #000;
-  height: 2px;
-}
-
-.faqContent ul + li {
-  list-style-type: circle;
-}
-
-.faqContent ul li ul li {
-  list-style-type: initial;
-}
-
-.faqContent h1 {
-  margin: 0px 0px 24px 0px;
-}
-
-.faqContent h2 {
-  color: #1a3185;
-  font-size: 1rem;
-  font-weight: bold;
-  padding-top: 45px;
-}
-
-.faqContent h3 {
+.faqCard h2 {
   color: #1a3185;
   font-size: 1rem;
   font-weight: bold;
 }
 
-.inner {
-  overflow: hidden;
-  transition: max-height 0.2s ease;
+.faqCard hr {
+  color: black;
+  opacity: 1;
 }
 
-@media (max-width: 768px) {
-  .faqContent button {
-    min-height: 90px;
+.faqQA {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.icon {
+  margin-right: 0.5rem;
+}
+
+.answer {
+  padding-left: 2.5rem;
+  margin-top: 1rem;
+  margin-bottom: -0.5rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .faqCard {
+    margin: 0rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
-}
 
-@media (max-width: 400px) {
-  .faqContent button {
-    min-height: 125px;
+  .faqLayout h1 {
+    margin: 1rem 0rem 1rem 0rem;
   }
 }
