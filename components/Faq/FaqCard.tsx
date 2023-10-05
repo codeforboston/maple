@@ -1,6 +1,6 @@
 import { Card } from "../bootstrap"
 import { FaqQandA } from "./FaqQandA"
-import styles from "./faq.module.css"
+import styles from "./Faq.module.css"
 
 type faqCardProps = {
   heading: string
