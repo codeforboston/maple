@@ -16,19 +16,21 @@ The notification feature is responsible for sending notifications to users based
 
 The following cloud functions are involved in the notification process:
 
-1. **publishNotifications**: 
-    - Creates a notification document from an event.
-    - Populates the user's `userNotificationFeed` collection with a notification document.
-    - Populates the newsfeed.
+1. **publishNotifications**:
+
+   - Creates a notification document from an event.
+   - Populates the user's `userNotificationFeed` collection with a notification document.
+   - Populates the newsfeed.
 
 2. **deliverNotifications**:
-    - Sends notifications to users who have a `notificationFrequency` of 'daily' and whose `nextDigestAt` is less than or equal to the current time.
-    - Populates the `notification_mails` collection with a notification document.
 
-3. **cleanUpNotifications**: 
-    - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.
-    - Removes notifications from the events collection that are older than 60 days.
-    - Removes notifications from the notifications_mails collection that are older than 60 days.
+   - Sends notifications to users who have a `notificationFrequency` of 'daily' and whose `nextDigestAt` is less than or equal to the current time.
+   - Populates the `notification_mails` collection with a notification document.
+
+3. **cleanUpNotifications**:
+   - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.
+   - Removes notifications from the events collection that are older than 60 days.
+   - Removes notifications from the notifications_mails collection that are older than 60 days.
 
 ### Database Collections
 

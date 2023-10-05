@@ -17,7 +17,8 @@ export const script: Script = async ({ db, auth }) => {
       const userData = doc.data()
 
       // If userData is not undefined and notificationFrequency is not set already
-      if (userData && !userData.notificationFrequency) { // Remove second condition to run on all users, not just those without a notificationFrequency field set
+      if (userData && !userData.notificationFrequency) {
+        // Remove second condition to run on all users, not just those without a notificationFrequency field set
         // Update the user document in Firestore
         await userDoc.update({
           notificationFrequency: "None"
