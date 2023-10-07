@@ -54,6 +54,7 @@ const TestStory = ({
       <Col xs={4}>
         <Col
           as={"h1"}
+          title={title}
           className={`btn-${titleColor} rounded-3 text-center py-3`}
         >
           {title}
@@ -88,9 +89,9 @@ const meta: Meta = {
   }
 }
 
-export const Template: ComponentStory<typeof TestStory> = (
-  props: TestProps
-) => <TestStory {...props} />
+const Template: ComponentStory<typeof TestStory> = args => (
+  <TestStory {...args} />
+)
 
 export const TestStoryBase = Template.bind({})
 
