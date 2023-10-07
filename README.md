@@ -26,7 +26,6 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 - [Development site](https://maple-dev.vercel.app/), for testing and development. Feel free to play with the site!
 - [Production site](https://mapletestimony.org), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
 - [Version 1](https://goodgovproject.com/) site, for posterity
-
 ## Getting Started
 
 1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
@@ -83,6 +82,9 @@ If you use VSCode, consider using our [project workspace file](https://github.co
 ## Additional Documentation
 
 See [the Wiki](https://github.com/codeforboston/maple/wiki)
+
+## Vercel previews
+This section will be about vercel previews
 
 ## Contributors
 
