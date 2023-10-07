@@ -54,6 +54,9 @@ git pull upstream main
 
 4. Now you're ready to work on a feature! See the [Contributing](./Contributing.md) page for more info, and refer to [the wiki](https://github.com/codeforboston/maple/wiki) for more documentation.
 
+### vercel
+Make a vercel account or don't
+
 ## Developing Locally
 
 1. Make sure that you have `node` and `yarn` installed. You can download Node directly [here](https://nodejs.org/en/download/) or use a tool like [nvm](https://github.com/nvm-sh/nvm). To install yarn, run `npm i -g yarn` after installing node.
