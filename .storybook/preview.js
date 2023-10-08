@@ -8,8 +8,12 @@ import "instantsearch.css/themes/satellite.css"
 import React, { Suspense } from "react"
 import { initReactI18next, I18nextProvider } from "react-i18next"
 import HttpApi from "i18next-http-backend"
-import i18next from "i18next"
+// import i18n from "i18next"
+import i18n from "./i18n"
 import { useGlobals } from "@storybook/addons"
+import { wrapper } from "components/store"
+import { Provider as Redux } from "react-redux"
+import { Providers } from "../components/providers"
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -21,41 +25,12 @@ export const parameters = {
   }
 }
 
-export const globalTypes = {
-  locale: {
-    name: "Locale",
-    description: "Internationalization locale",
-    defaultValue: "en",
-    toolbar: {
-      icon: "globe",
-      items: [{ value: "en", title: "English" }]
-    }
-  }
-}
-
 export const decorators = [
-  (Story, Context) => {
-    const [{ locale }] = useGlobals()
-
-    i18next
-      .use(HttpApi)
-      .use(initReactI18next)
-      .init({
-        whitelist: ["en"],
-        lng: locale,
-        fallbackLng: "en",
-        ns: ["common", "footer"],
-        defaultNS: "footer",
-        backend: {
-          loadPath: "/public/locales/en/footer.json"
-          // loadPath: "/public/locales/{{lng}}/{{ns}}.json"
-        },
-        debug: true
-      })
-
+  (Story, context) => {
+    
     return (
       <Suspense fallback="Loading...">
-        <I18nextProvider i18n={i18next}>
+        <I18nextProvider i18n={i18n}>
           <Story />
         </I18nextProvider>
       </Suspense>
