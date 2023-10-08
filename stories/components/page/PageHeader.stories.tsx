@@ -3,8 +3,6 @@ import HeroHeader from "components/HeroHeader/HeroHeader"
 import { ComponentStory } from "@storybook/react"
 import { appWithTranslation } from "next-i18next"
 
-
-
 // TODO: move into components directory
 // const PageHeader = () => <div>TODO</div>
 
@@ -19,8 +17,6 @@ const Template: ComponentStory<typeof HeroHeader> = args => (
   <HeroHeader {...args} />
 )
 
-
 export const Primary = Template.bind({})
-
 
 Primary.args = { authenticated: true }

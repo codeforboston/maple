@@ -5,12 +5,7 @@ import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
 import PageFooter from "../../../components/Footer/Footer"
 
-import React, { Suspense } from "react"
-import { initReactI18next, I18nextProvider } from "react-i18next"
-import HttpApi from "i18next-http-backend"
 // import i18n from "i18next"
-import i18n from "../../../.storybook/i18n"
-import { useGlobals } from "@storybook/addons"
 
 export default createMeta({
   title: "Components/Page/PageFooter",
