@@ -62,7 +62,12 @@ $tooltip-arrow-color: $blue;
   --bs-blue-100: #{$blue-100};
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
-  --bs-dark-blue: #0b0a3e;
+  --bs-red: $red;
+  --bs-orange: $orange;
+  --bs-blue: $blue;
+  --bs-dark-blue: $dark-blue;
+  --bs-green: $green;
+  --bs-gray-700: $gray-700
 }
 
 .fs-body {
