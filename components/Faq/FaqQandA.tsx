@@ -12,7 +12,7 @@ export const FaqQandA = ({ question, answer }: faqQandAProps) => {
 
   return (
     <>
-      <a
+      <div
         onClick={() => setOpen(!isOpen)}
         aria-controls="collapse-text"
         aria-expanded={isOpen}
@@ -33,7 +33,7 @@ export const FaqQandA = ({ question, answer }: faqQandAProps) => {
           )}
           {question}
         </div>
-      </a>
+      </div>
       <Collapse in={isOpen}>
         <p id="collapse-text" className={styles.answer}>
           {answer}

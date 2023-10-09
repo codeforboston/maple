@@ -2,7 +2,7 @@ import { Container, Stack, Col } from "../bootstrap"
 import { FaqQandA } from "./FaqQandA"
 import { FaqCard } from "./FaqCard"
 import styles from "./Faq.module.css"
-import content from "./faqContent.json"
+import { faqContentCards } from "./faqContent"
 import { DropdownButton } from "../shared/DropdownButton/DropdownButton"
 import { useMediaQuery } from "usehooks-ts"
 import { stylingProps } from "../shared/DropdownButton/DropdownButton"
@@ -11,17 +11,21 @@ export const Faq = () => {
   const mdMobile = useMediaQuery("(max-width: 768px)")
   const xsMobile = useMediaQuery("(max-width: 418px)")
 
-  const faqData: FaqData = content
-  const faqKeys: string[] = Object.keys(faqData)
-  const faqHeadings: string[] = faqKeys.map((key, index) => {
-    return faqData[key].heading
+  const faqCardHeadings: Array<Headings> = faqContentCards.map(key => {
+    return { id: key.id, itemName: key.heading }
   })
 
-  interface FaqData {
-    [key: string]: string | FaqDataCard | any
+  interface Headings {
+    id: number
+    itemName: string
   }
 
-  interface FaqDataCard {
+  interface FaqContentCards {
+    [key: string]: string | FaqContentCard | any
+  }
+
+  interface FaqContentCard {
+    id: number
     heading: string
     qAndA: { question: string; answer: string }[]
   }
@@ -42,18 +46,23 @@ export const Faq = () => {
       >
         <h1>{header1}</h1>
         <Col xs={xsMobile ? 12 : !12}>
-          <DropdownButton title={dropdownTitle} styling={styling}>
-            {faqHeadings}
+          <DropdownButton
+            key={dropdownTitle}
+            title={dropdownTitle}
+            styling={styling}
+          >
+            {faqCardHeadings}
           </DropdownButton>
         </Col>
       </Stack>
 
       <Stack direction="vertical" gap={4}>
-        {faqKeys.map((key, index) => (
+        {faqContentCards.map(card => (
           <FaqCard
-            key={index}
-            heading={faqData[key].heading}
-            qAndAs={faqData[key].qAndA}
+            key={card.id}
+            faqId={card.id}
+            heading={card.heading}
+            qAndAs={card.qAndA}
           ></FaqCard>
         ))}
       </Stack>

@@ -3,46 +3,46 @@ import classNames from "classnames"
 import styled from "styled-components"
 import styles from "./dropdownButton.module.css"
 import { CarotIcon } from "./CarotIcon"
+import { Fragment } from "react"
 
 export type DropdownButtonProps = {
   title: string
-  children: Array<string>
+  children: { id: number; itemName: string }[]
   styling?: stylingProps
 }
 
 export type stylingProps = {
   width?: { desktop: string; mobile: string }
   height?: string
-  color?: string
-  backgroundColor?: string
   fontSize?: string
 }
 
 const StyledDropdown = styled(Dropdown)`
   .toggle {
-    width: ${props => (props.width?.desktop ? props.width?.desktop : "418px")};
-    height: ${props => (props.height ? props.height : "40px")};
-    color: ${props => (props.color ? props.color : "#FFFFFF")};
-    background-color: ${props =>
-      props.backgroundColor ? props.backgroundColor : "#1a3185"};
-    fontsize: ${props => (props.fontSize ? props.fontSize : "16px")};
-    border-color: ${props =>
-      props.backgroundColor ? props.backgroundColor : "#1a3185"};
+    width: ${props =>
+      props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
+    height: ${props => (props.changeheight ? props.changeheight : "40px")};
+    fontsize: ${props =>
+      props.changefontsize ? props.changefontsize : "16px"};
   }
 
   .menu {
-    width: ${props => (props.width?.desktop ? props.width?.desktop : "418px")};
+    width: ${props =>
+      props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
   }
+
   .carotIcon {
-    fill: ${props => (props.color ? props.color : "#FFFFFF")};
+    fill: #ffffff;
   }
 
   @media only screen and (max-width: 768px) {
     .toggle {
-      width: ${props => (props.width?.mobile ? props.width?.mobile : "418px")};
+      width: ${props =>
+        props.changewidth?.mobile ? props.changewidth?.mobile : "418px"};
     }
     .menu {
-      width: ${props => (props.width?.mobile ? props.width?.mobile : "418px")};
+      width: ${props =>
+        props.changewidth?.mobile ? props.changewidth?.mobile : "418px"};
     }
   }
 `
@@ -54,32 +54,36 @@ export function DropdownButton({
 }: DropdownButtonProps): JSX.Element {
   return (
     <StyledDropdown
-      width={styling?.width}
-      height={styling?.height}
-      color={styling?.color}
-      backgroundColor={styling?.backgroundColor}
-      fontSize={styling?.fontSize}
+      changewidth={styling?.width}
+      changeheight={styling?.height}
+      changefontsize={styling?.fontSize}
     >
       <Dropdown.Toggle
         className={classNames(styles.dropdownToggle, "shadow-none", "toggle")}
-        variant="outline-secondary"
-        id="dropdown-basic"
+        variant="secondary"
       >
         {title}
         <CarotIcon></CarotIcon>
       </Dropdown.Toggle>
       <Dropdown.Menu className={classNames(styles.menu, "border", "menu")}>
-        {children.map((item, i) => (
-          <>
+        {children.map((key, i) => (
+          <Fragment key={i * 200}>
             {i === 0 ? (
               <></>
             ) : (
-              <Dropdown.Divider className={styles.divider}></Dropdown.Divider>
+              <Dropdown.Divider
+                key={key.id * 100}
+                className={styles.divider}
+              ></Dropdown.Divider>
             )}
-            <Dropdown.Item key={i} className={styles.item} href={`#${item}`}>
-              {item}
+            <Dropdown.Item
+              key={key.id}
+              className={classNames(styles.item, "item")}
+              href={`#${key.itemName}`}
+            >
+              {key.itemName}
             </Dropdown.Item>
-          </>
+          </Fragment>
         ))}
       </Dropdown.Menu>
     </StyledDropdown>

@@ -1,6 +1,7 @@
 import { createMeta } from "stories/utils"
 import { DropdownButton } from "../../../components/shared/DropdownButton/DropdownButton"
 import { ComponentStory } from "@storybook/react"
+import { DropdownButtonProps } from "../../../components/shared/DropdownButton/DropdownButton"
 
 export default createMeta({
   title: "Components/Buttons/DropdownButton",
@@ -21,15 +22,13 @@ const Template: ComponentStory<typeof DropdownButton> = ({
   )
 }
 
-export const Primary = Template.bind({})
-Primary.args = {
-  title: "Title",
-  children: ["Item 1", "Item 2", "Item 3"],
-  styling: {
-    width: { desktop: "418px", mobile: "418px" },
-    height: "40px",
-    color: "#FFFFFF",
-    backgroundColor: "#1a3185",
-    fontSize: "16px"
-  }
-}
+// export const Primary = Template.bind({})
+// Primary.args = {
+//   title: "Title",
+//   children:[{id: 1, itemName: "item1"}, {id: 2, itemName: "item2"}, {id: 3, itemName: "item3"}],
+//   styling: {
+//     width: { desktop: "418px", mobile: "418px" },
+//     height: "40px",
+//     fontSize: "16px"
+//   }
+// }

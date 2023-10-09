@@ -14,19 +14,20 @@
 }
 
 .menu {
-  margin-top: 0.3rem;
+  padding-top: 0.3rem;
   background-color: white;
   border-radius: 8px;
 }
 
 .item {
-  margin-top: 0.5rem;
-  margin-bottom: 0.3rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.3rem;
   text-wrap: wrap;
 }
 
-.menu > .item:hover {
+.item:hover {
   color: white;
+  background-color: #1a3185;
 }
 
 .divider {
