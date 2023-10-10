@@ -1,9 +1,9 @@
 // Order is important!
-import "instantsearch.css/themes/satellite.css"
-import "../components/fontawesome"
 import "../styles/bootstrap.scss"
 import "../styles/globals.css"
+import "../components/fontawesome"
 import "../styles/instantsearch.css"
+import "instantsearch.css/themes/satellite.css"
 
 import React, { Suspense } from "react"
 import { I18nextProvider } from "react-i18next"
