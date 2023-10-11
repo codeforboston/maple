@@ -35,9 +35,9 @@ export const SubmitTestimonyForm = () => {
           </Col>
           <Col xs={3}>
             {form.step == "position" ? (
-                <QuickInfo bill={form.bill} profile={form.profile} />
-              ) : (
-              <KeepNote currentStep={form.step} /> 
+              <QuickInfo bill={form.bill} profile={form.profile} />
+            ) : (
+              <KeepNote currentStep={form.step} />
             )}
           </Col>
         </Row>
@@ -97,10 +97,11 @@ const Overview = ({ className }: { className: string }) => (
     <div>
       <h1>Write, Publish, and Send Your Testimony!</h1>
       <Divider className="me-5" />
-      <div className="mt-2" style={{fontWeight: "bolder"}}>
-        Your voice matters. And it's important that you share it. MAPLE helps you 
-        1) write testimony, 2) publish it to our community, and 3) send it to the right 
-        legislators so it can be formally considered. It's easy as 1-2-3!
+      <div className="mt-2" style={{ fontWeight: "bolder" }}>
+        Your voice matters. And it's important that you share it. MAPLE helps
+        you 1) write testimony, 2) publish it to our community, and 3) send it
+        to the right legislators so it can be formally considered. It's easy as
+        1-2-3!
       </div>
     </div>
     <div>
