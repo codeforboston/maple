@@ -270,7 +270,12 @@ class PublishTestimonyTransaction {
     }
   }
 
-  private getDisplayName() {
-    return this.profile?.fullName ?? "Anonymous"
+  private getDisplayName(): string {
+    // Check if user has profile and then if they're private
+    if (this.profile) {
+      return this.profile.public ? this.profile.fullName : "<private user>"
+    } else {
+      return "Anonymous"
+    }
   }
 }
