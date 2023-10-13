@@ -1,5 +1,4 @@
 import { createMeta } from "stories/utils"
-import Pencil from "public/edit-testimony.svg"
 import Image from "react-bootstrap/Image"
 
 // TODO: move into components directory
@@ -10,7 +9,7 @@ import {
 import { ComponentStory } from "@storybook/react"
 import { Stack } from "react-bootstrap"
 
-const Icon = () => <Image src="edit-testimony.svg" alt="" />
+const Icon = () => <Image src="star.svg" alt="" className="m-auto" />
 
 export default createMeta({
   title: "Components/Buttons/PrimaryButtonWithIcon",
@@ -22,7 +21,6 @@ export default createMeta({
   },
   args: {
     iconPosition: "left",
-    disabled: false,
     label: "Label",
     onClick: () => {}
   }
@@ -37,21 +35,26 @@ export const Primary: ComponentStory<typeof PrimaryButtonWithIcon> =
 
 Primary.args = {
   variant: "primary",
-  Icon: <Icon />
+  Icon: <Icon />,
+  disabled: false
 }
 
 export const Secondary: ComponentStory<typeof PrimaryButtonWithIcon> =
   Template.bind({})
 
 Secondary.args = {
-  variant: "outline-secondary"
+  variant: "outline-secondary",
+  disabled: false,
+  Icon: <Icon />
 }
 
 export const Tertiary: ComponentStory<typeof PrimaryButtonWithIcon> =
   Template.bind({})
 
 Tertiary.args = {
-  variant: "none"
+  variant: "none",
+  disabled: false,
+  Icon: <Icon />
 }
 
 export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
@@ -71,12 +74,16 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
         label="Primary-Disabled"
         disabled
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
       <PrimaryButtonWithIcon
         variant="outline-primary"
         onClick={() => {}}
         label="Outline"
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
 
       <PrimaryButtonWithIcon
@@ -85,12 +92,16 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
         label="Outline-Primary-Disabled"
         disabled
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
       <PrimaryButtonWithIcon
         variant="secondary"
         onClick={() => {}}
         label="Secondary"
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
       <PrimaryButtonWithIcon
         variant="outline-secondary"
@@ -98,12 +109,16 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
         label="Outline-Secondary-Disabled"
         disabled
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
       <PrimaryButtonWithIcon
         variant="none"
         onClick={() => {}}
         label="Tertiary"
         className="col-1"
+        Icon={<Icon />}
+        iconPosition={args.iconPosition}
       />
     </Stack>
   )

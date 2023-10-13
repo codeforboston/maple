@@ -1,13 +1,17 @@
 import { createMeta } from "stories/utils"
-import { Cosponsors } from "components/bill/Cosponsors"
+import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { ComponentStory } from "@storybook/react"
 import { BillProps } from "components/bill/types"
 import { Timestamp } from "firebase/firestore"
-import { Bill } from "components/db"
-import type { CurrentCommittee } from "functions/src/bills/types"
+import { Bill, BillContent, BillHistory } from "components/db"
+import React, { ReactNode } from "react"
+import { LoadingButton } from "components/buttons"
 
 // TODO: move into components directory
 
+const Cosponsors = (props: BillProps & { children: ReactNode }) => (
+  <PreCosponsors {...props} />
+)
 export default createMeta({
   title: "Bill Detail/Cosponsors",
   figmaUrl:
@@ -21,7 +25,9 @@ const Template: ComponentStory<typeof Cosponsors> = args => (
 
 export const Primary = Template.bind({})
 
-const newBillHistory = [
+Primary.decorators = [(Story, children) => <Story {...children} />]
+
+const newBillHistory: BillHistory = [
   {
     Date: new Date().toISOString(),
     Branch: "House",
@@ -44,7 +50,7 @@ const newBillHistory = [
   }
 ]
 
-const newBillContent = {
+const newBillContent: BillContent = {
   Title: "An Act relative to the safety of autistic and alzheimer individuals",
   BillNumber: "H. 1728",
   DocketNumber: "HD. 2027",
@@ -76,7 +82,7 @@ const newBillContent = {
   DocumentText: "this is the document text"
 }
 
-const bill = {
+const bill: Bill = {
   id: "123",
   court: 192,
   content: newBillContent,
@@ -90,14 +96,16 @@ const bill = {
   currentCommittee: {
     name: "Committee on Public Safety and Homeland Security",
     id: "J30",
-    branch: "Joint",
-    chamber: "House",
-    phone: "617-722-2230",
-    email: "committee@committee.org"
-  } as CurrentCommittee,
+    houseChair: {
+      id: "1",
+      name: "Paul McMurtry",
+      email: "a@b.com"
+    }
+  },
   city: "Boston"
 }
 
 Primary.args = {
-  bill: bill as Bill
+  bill: bill,
+  children: "View Cosponsors"
 }
