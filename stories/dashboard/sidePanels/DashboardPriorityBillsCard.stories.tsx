@@ -17,7 +17,9 @@ const Template = (args: PriorityBillsCardProps) => (
   <PriorityBillsCard {...args} />
 )
 
-export const Primary: ComponentStory<typeof PriorityBillsCard> = Template.bind({})
+export const Primary: ComponentStory<typeof PriorityBillsCard> = Template.bind(
+  {}
+)
 
 Primary.args = {
   bills: [

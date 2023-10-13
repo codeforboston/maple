@@ -30,7 +30,9 @@ export const PrimaryButtonWithIcon: React.FC<PrimaryButtonWithIconProps> = style
             iconPosition === "right" ? "flex-row-reverse" : "flex-row"
           } d-flex align-items-center gap-2`}
         >
-          <div className="flex-grow-0 d-flex align-content-center">{Icon && Icon}</div>
+          <div className="flex-grow-0 d-flex align-content-center">
+            {Icon && Icon}
+          </div>
           <div className="flex-grow-0">{label}</div>
         </div>
       </Button>
