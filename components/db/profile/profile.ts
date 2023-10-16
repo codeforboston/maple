@@ -13,6 +13,7 @@ import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
+import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -88,8 +89,19 @@ export function useProfile() {
         }
       },
       updateIsPublic: async (isPublic: boolean) => {
-        if (uid) {
+        if (uid && isPublic !== profile?.public) {
           dispatch({ updatingIsPublic: true })
+          // Update the displayName for user's testimonies
+          if (profile) {
+            await updateUserDisplayNameTestimonies(
+              uid,
+              isPublic
+                ? profile.fullName
+                  ? profile.fullName
+                  : "Anonymous"
+                : "<private user>"
+            )
+          }
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
         }
@@ -116,8 +128,13 @@ export function useProfile() {
         }
       },
       updateFullName: async (fullName: string) => {
-        if (uid) {
+        if (uid && fullName !== profile?.fullName) {
           dispatch({ updatingFullName: true })
+          // Update the displayName for user's testimonies
+          await updateUserDisplayNameTestimonies(
+            uid,
+            profile?.public ? fullName : "<private user>"
+          )
           await updateFullName(uid, fullName)
           dispatch({ updatingFullName: false })
         }
