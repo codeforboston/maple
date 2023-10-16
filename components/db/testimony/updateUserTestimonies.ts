@@ -29,10 +29,7 @@ export const updateUserDisplayNameTestimonies = async (
 export const getAllTestimony = async (uid: string) => {
   // Get all the published testimony under user
   const pTestimony = getDocs(
-    query(
-      collectionGroup(firestore, "publishedTestimony"),
-      where("authorUid", "==", uid)
-    )
+    collection(firestore, `users/${uid}/publishedTestimony`)
   )
   // Get all the draft testimony under user
   const dTestimony = getDocs(
