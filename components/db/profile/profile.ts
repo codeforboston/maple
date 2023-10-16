@@ -206,7 +206,7 @@ export function useProfile() {
         }
       }
     }),
-    [uid, state.updatingSocial, state.updatingContactInfo]
+    [uid, state.updatingSocial, state.updatingContactInfo, profile]
   )
 
   return useMemo(

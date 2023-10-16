@@ -14,11 +14,11 @@ export const Author = ({ uid, name }: { uid: string; name: string }) => {
   return (
     <div>
       <h6>
-        {linkToProfile ?
+        {linkToProfile ? (
           <StyledName href={`/profile?id=${uid}`}>{name}</StyledName>
-          :
+        ) : (
           name
-        }
+        )}
       </h6>
     </div>
   )
