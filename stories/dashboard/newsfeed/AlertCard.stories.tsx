@@ -2,6 +2,7 @@ import { ComponentStory } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { AlertCard } from "components/AlertCard/AlertCard"
+import { Timestamp } from "firebase/firestore"
 
 export default createMeta({
   title: "Dashboard/Newsfeed/AlertCard",
@@ -18,7 +19,7 @@ export const OrgWithBodyImage = Template.bind({})
 OrgWithBodyImage.args = {
   header: "Cool Organization",
   subheader: "Our Priority Bills",
-  timestamp: "4:30 PM",
+  timestamp: Timestamp.fromDate(new Date()),
   headerImgSrc:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
   bodyImgSrc:
@@ -32,7 +33,7 @@ OrgWithNoBodyImage.args = {
   header: "Moms for Liberty",
   headerImgSrc:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  timestamp: "10:02 PM",
+  timestamp: Timestamp.fromDate(new Date()),
   bodyText: "Moms for Liberty released a testimony on S.1958"
 }
 
@@ -40,7 +41,7 @@ export const BillWithBodyImage = Template.bind({})
 BillWithBodyImage.args = {
   header: "Bill H.1321",
   subheader: "An Act to do something cool",
-  timestamp: "6:00 AM",
+  timestamp: Timestamp.fromDate(new Date()),
   bodyImgSrc:
     "https://regulatorystudies.columbian.gwu.edu/sites/g/files/zaxdzs4751/files/image/United_States_Capitol_-_west_front_small.jpg",
   bodyText: "Bill moved on in deliberations with some group"
@@ -51,7 +52,7 @@ BillWithSubheader.args = {
   header: "Bill H.3340",
   subheader:
     "An Act creating a green bank to promote clean energy in Massachusetts",
-  timestamp: "3:20 pm",
+  timestamp: Timestamp.fromDate(new Date()),
   bodyText:
     "The reporting date was extended to Thursday June 30, 2022, pending concurrence"
 }
@@ -59,6 +60,6 @@ BillWithSubheader.args = {
 export const BillWithNoSubheader = Template.bind({})
 BillWithNoSubheader.args = {
   header: "Bille H.2241",
-  timestamp: "Yesterday 10:05 PM",
+  timestamp: Timestamp.fromDate(new Date()),
   bodyText: "Senate concurred"
 }
