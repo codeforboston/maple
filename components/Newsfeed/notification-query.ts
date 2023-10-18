@@ -1,9 +1,7 @@
 import { collection, query, where, getDocs } from "firebase/firestore"
 import { firestore } from "../firebase"
-import { Notifications } from "./NotificationProps"
 
 // This function queries the database for all notifications associated with a user and returns them as an array of notification objects.
-
 export default async function notificationQuery(uid: string | undefined) {
   if (!uid) {
     return []

@@ -12,7 +12,7 @@ import {
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
-import { FollowingTab } from "./FollowingTab"
+// import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
@@ -107,12 +107,12 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
-    },
+    } /* ,
     {
       title: "Following",
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
-    }
+    } */
   ]
 
   return (

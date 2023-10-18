@@ -4,15 +4,15 @@ import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
+import { AlertCard } from "components/AlertCard/AlertCard"
+import { NotificationProps, Notifications } from "./NotificationProps"
+import notificationQuery from "./notification-query"
+import { Timestamp } from "firebase/firestore"
 import {
   Header,
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
-import { AlertCard } from "components/AlertCard/AlertCard"
-import { NotificationProps, Notifications } from "./NotificationProps"
-import notificationQuery from "./notification-query"
-import { Timestamp } from "firebase/firestore"
 
 export default function Newsfeed() {
   const isMobile = useMediaQuery("(max-width: 768px)")

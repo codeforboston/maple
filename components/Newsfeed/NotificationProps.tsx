@@ -7,9 +7,9 @@ export type NotificationProps = {
   header: string
   id: number
   subheader: string
-  timestamp: Timestamp
   type: string
   topicName: string
+  timestamp: Timestamp
   createdAt: Timestamp
 }
 
