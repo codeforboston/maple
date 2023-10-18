@@ -40,7 +40,8 @@ export const Testimony = withDefaults(
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),
     representativeDistrict: Optional(RtString),
-    draftAttachmentId: Maybe(RtString)
+    draftAttachmentId: Maybe(RtString),
+    fullName: RtString
   }),
   {
     authorRole: "user",

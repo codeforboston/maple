@@ -90,7 +90,8 @@ class PublishTestimonyTransaction {
       position: this.draft.position,
       ...publishInfo,
       attachmentId: this.attachments.id,
-      draftAttachmentId: this.attachments.draftId
+      draftAttachmentId: this.attachments.draftId,
+      fullName: this.profile?.fullName ?? "Anonymous"
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
