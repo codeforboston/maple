@@ -1,7 +1,5 @@
 import { ComponentStory } from "@storybook/react"
-import {
-  BillTrackerView
-} from "components/bill/BillTracker"
+import { BillTrackerView } from "components/bill/BillTracker"
 import { Timestamp } from "firebase/firestore"
 import { Stage } from "functions/src/analysis/types"
 import { createMeta } from "stories/utils"
