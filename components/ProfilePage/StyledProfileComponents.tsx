@@ -30,22 +30,22 @@ const BaseProfileIcon = styled(Image)`
 `
 
 const BaseUserIcon = ({
-  alt,
+  alt = "User Icon",
   src = "/profile-individual-icon.svg",
   className
 }: {
-  alt: string
-  src: string
+  alt?: string
+  src?: string
   className?: string
 }) => <BaseProfileIcon alt={alt} src={src} className={className} />
 
 const BaseOrgIcon = ({
-  alt,
+  alt = "Organization Icon",
   src = "/profile-org-icon.svg",
   className
 }: {
-  alt: string
-  src: string
+  alt?: string
+  src?: string
   className?: string
 }) => <BaseProfileIcon alt={alt} src={src} className={className} />
 
@@ -60,7 +60,7 @@ export const OrgIconLarge = styled(BaseOrgIcon)`
   height: 8rem;
 `
 export const OrgIconSmall = styled(BaseOrgIcon)`
-  height: 8rem;
+  height: 5rem;
 `
 
 export const ProfileDisplayName = styled(Col).attrs(props => ({

@@ -1,12 +1,9 @@
-import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
 import { ProfilePage } from "components/ProfilePage"
+import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { Providers } from "components/providers"
-import { signInUser1 } from "tests/integration/common"
-import { User } from "firebase/auth"
-import { useState } from "react"
+import { createMeta } from "stories/utils"
 
 export default createMeta({
   title: "Profile/Pages/ProfilePage",
@@ -33,7 +30,7 @@ const Template: ComponentStory<typeof ProfilePage> = args => (
 export const Primary = Template.bind({})
 
 Primary.args = {
-  id: "123",
+  id: "yem5wVGQnpc7tXWgt16ofbiU9F23",
   verifyisorg: false
 }
 

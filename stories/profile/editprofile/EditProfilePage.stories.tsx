@@ -33,7 +33,7 @@ export const Primary = Template.bind({})
 
 Primary.args = {
   profile: {
-    topicName: "Your Topic Name", // Add the topicName property here
+    topicName: "Your Topic Name", 
     role: "user",
     fullName: "John Doe",
     email: "johndoe@example.com",

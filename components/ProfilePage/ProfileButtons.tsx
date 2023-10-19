@@ -67,13 +67,19 @@ export const EditProfileButton = () => {
 }
 
 export const MakePublicButton = ({
+  isMobile,
+  isOrg,
   isProfilePublic,
   onProfilePublicityChanged
 }: {
+  isMobile: boolean
+  isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("editProfile")
+
+  const isWideOrg = isOrg && !isMobile
 
   const actions = useProfile()
 
@@ -91,13 +97,17 @@ export const MakePublicButton = ({
   return (
     <>
       {isProfilePublic ? (
-        <StyledButton2 onClick={handleSave} variant={"outline-secondary"}>
-          {t("forms.makePrivate")}
-        </StyledButton2>
+        <div className={isWideOrg ? `ms-1` : ``}>
+          <StyledButton2 onClick={handleSave} variant={"outline-secondary"}>
+            {t("forms.makePrivate")}
+          </StyledButton2>
+        </div>
       ) : (
-        <StyledButton3 onClick={handleSave} variant={"secondary"}>
-          {t("forms.makePublic")}
-        </StyledButton3>
+        <div className={isWideOrg ? `ms-1` : ``}>
+          <StyledButton3 onClick={handleSave} variant={"secondary"}>
+            {t("forms.makePublic")}
+          </StyledButton3>
+        </div>
       )}
     </>
   )

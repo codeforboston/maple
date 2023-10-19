@@ -1,13 +1,9 @@
-import { ComponentStory, Meta } from "@storybook/react"
-import BillTrackerConnectedView, {
-  BillStageStrip,
+import { ComponentStory } from "@storybook/react"
+import {
   BillTrackerView
 } from "components/bill/BillTracker"
-import { Status } from "components/bill/Status"
-import { BillProps } from "components/bill/types"
 import { Timestamp } from "firebase/firestore"
 import { Stage } from "functions/src/analysis/types"
-import React from "react"
 import { createMeta } from "stories/utils"
 
 export default createMeta({

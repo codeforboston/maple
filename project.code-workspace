@@ -8,8 +8,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "files.associations": {
       "firestore.indexes.json": "jsonc"
-    },
-    "svg.preview.background": "transparent"
+    }
   },
   "extensions": {
     "recommendations": [
