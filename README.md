@@ -74,7 +74,7 @@ Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-dev
 
 ## Contributing Backend Features to Dev/Prod:
 
-- If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK. The same would apply to production. 
+- If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK. The same would apply to production.
 
 ## Code Formatting and Linting
 
