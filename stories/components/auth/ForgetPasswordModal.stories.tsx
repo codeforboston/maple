@@ -22,6 +22,7 @@ Primary.args = {
   onHide: () => {},
   show: true
 }
+Primary.storyName = "ForgotPasswordModal"
 
 Primary.decorators = [
   (Story, ...rest) => {

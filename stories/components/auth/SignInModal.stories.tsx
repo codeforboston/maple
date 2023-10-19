@@ -6,7 +6,7 @@ import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
 export default createMeta({
-  title: "Auth/SignInModal",
+  title: "Auth/Sign In Modal",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: SignInModal
@@ -21,9 +21,9 @@ export const Primary = Template.bind({})
 Primary.args = {
   onHide: () => {},
   show: true,
-  onForgotPasswordClick: () => {},
+  onForgotPasswordClick: () => {}
 }
-
+Primary.storyName = "Sign In Modal"
 Primary.decorators = [
   (Story, ...rest) => {
     const { store, props } = wrapper.useWrappedStore(...rest)

@@ -13,3 +13,5 @@ const Template: ComponentStory<typeof CommunicatingWithLegislators> = () => (
 )
 
 export const Primary = Template.bind({})
+
+Primary.storyName = "CommunicatingWithLegislators"

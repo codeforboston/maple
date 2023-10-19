@@ -13,10 +13,11 @@ export default createMeta({
   component: BillDetails
 })
 
-const Template: ComponentStory<typeof BillDetails> = (args) => <BillDetails {...args} />
+const Template: ComponentStory<typeof BillDetails> = args => (
+  <BillDetails {...args} />
+)
 
 export const Primary = Template.bind({})
-
 
 Primary.args = {
   bill: bill

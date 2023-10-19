@@ -31,7 +31,7 @@ export default createMeta({
     }
   ],
   parameters: {
-    backgrounds: { name: "medium", value: "#f4f4f4"}
+    backgrounds: { name: "medium", value: "#f4f4f4" }
   }
 })
 

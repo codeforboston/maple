@@ -1,16 +1,13 @@
-import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
-import { ProfilePage } from "components/ProfilePage"
+import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { Providers } from "components/providers"
-import { signInUser1 } from "tests/integration/common"
-import { User } from "firebase/auth"
-import { useState } from "react"
+import { createMeta } from "stories/utils"
+import { ValuePlaque } from "../../components/Policies/ValuePlaque"
 
 export default createMeta({
-  title: "Profile/Pages/ProfilePage",
-  component: ProfilePage,
+  title: "Education/ValuePlaque",
+  component: ValuePlaque,
   decorators: [
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)
@@ -26,15 +23,16 @@ export default createMeta({
   ]
 })
 
-const Template: ComponentStory<typeof ProfilePage> = args => (
-  <ProfilePage {...args} />
+const Template: ComponentStory<typeof ValuePlaque> = args => (
+  <ValuePlaque {...args} />
 )
 
 export const Primary = Template.bind({})
 
 Primary.args = {
-  id: "123",
-  verifyisorg: false
+  src: "handShake.jpg",
+  alt: "hand shake",
+  title: "Humility"
 }
 
-Primary.storyName = "ProfilePage"
+Primary.storyName = "ValuePlaque"

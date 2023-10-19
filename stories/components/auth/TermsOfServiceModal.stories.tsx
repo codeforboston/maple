@@ -6,7 +6,7 @@ import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
 export default createMeta({
-  title: "Auth/TermsOfServiceModal",
+  title: "Auth/Terms Of Service Modal",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: TermsOfServiceModal
@@ -23,6 +23,7 @@ Primary.args = {
   show: true,
   onAgree: () => {}
 }
+Primary.storyName = "Terms Of Service Modal"
 
 Primary.decorators = [
   (Story, ...rest) => {

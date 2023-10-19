@@ -110,8 +110,8 @@ export const ProfileHeader = ({
                       <>
                         <EditProfileButton />
                         <MakePublicButton
-                          isMobile={isMobile}
-                          isOrg={isOrg}
+                          // isMobile={isMobile}
+                          // isOrg={isOrg}
                           isProfilePublic={isProfilePublic}
                           onProfilePublicityChanged={onProfilePublicityChanged}
                         />
@@ -171,8 +171,8 @@ function ProfileHeaderMobile({
           <EditProfileButton />
           {!isOrg && (
             <MakePublicButton
-              isMobile={isMobile}
-              isOrg={isOrg}
+              // isMobile={isMobile}
+              // isOrg={isOrg}
               isProfilePublic={isProfilePublic}
               onProfilePublicityChanged={onProfilePublicityChanged}
             />

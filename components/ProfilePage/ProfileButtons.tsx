@@ -1,15 +1,20 @@
 import { useTranslation } from "next-i18next"
-import { Button } from "react-bootstrap"
+import { Button, ButtonProps } from "react-bootstrap"
 import { ProfileHook, useProfile } from "../db"
 import { Internal } from "components/links"
 import styled from "styled-components"
+import { title } from "process"
 
-const StyledButton1 = styled(Button)`
+export const StyledButton1 = styled(Button)`
   height: 34px;
   width: 116px;
 `
 
-const StyledButton2 = styled(Button)`
+export const BaseButton = styled(Button).attrs(props => ({
+  className: `btn-sm d-flex justify-content-center ms-auto py-1 ${props.className}`
+}))``
+
+export const StyledButton2 = styled(BaseButton)`
   &:focus {
     color: #1a3185;
     background-color: white;
@@ -29,7 +34,7 @@ const StyledButton2 = styled(Button)`
   }
 `
 
-const StyledButton3 = styled(Button)`
+export const StyledButton3 = styled(BaseButton)`
   &:focus {
     color: white;
     background-color: #1a3185;
@@ -62,19 +67,13 @@ export const EditProfileButton = () => {
 }
 
 export const MakePublicButton = ({
-  isMobile,
-  isOrg,
   isProfilePublic,
   onProfilePublicityChanged
 }: {
-  isMobile: boolean
-  isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("editProfile")
-
-  const isWideOrg = isOrg && !isMobile
 
   const actions = useProfile()
 
@@ -92,27 +91,13 @@ export const MakePublicButton = ({
   return (
     <>
       {isProfilePublic ? (
-        <div className={isWideOrg ? `ms-1` : ``}>
-          <StyledButton2
-            className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
-              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isWideOrg ? "" : "w-100"}`}
-            onClick={handleSave}
-          >
-            {t("forms.makePrivate")}
-          </StyledButton2>
-        </div>
+        <StyledButton2 onClick={handleSave} variant={"outline-secondary"}>
+          {t("forms.makePrivate")}
+        </StyledButton2>
       ) : (
-        <div className={isWideOrg ? `ms-1` : ``}>
-          <StyledButton3
-            className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
-              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isWideOrg ? "" : "w-100"}`}
-            onClick={handleSave}
-          >
-            {t("forms.makePublic")}
-          </StyledButton3>
-        </div>
+        <StyledButton3 onClick={handleSave} variant={"secondary"}>
+          {t("forms.makePublic")}
+        </StyledButton3>
       )}
     </>
   )
