@@ -73,6 +73,12 @@ export const PublishTestimony = styled(({ ...rest }) => {
         left={<nav.Previous />}
         right={<PublishAndSend publish={publish} />}
       />
+      <p>
+        After clicking “publish” please click “Send Email” to open your email
+        client (e.g., Outlook) and send the email populated with your testimony!
+        Or, click the “copy” buttons to manually copy the testimony and
+        recipients of your email.
+      </p>
     </div>
   )
 })``
