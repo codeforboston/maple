@@ -20,7 +20,7 @@ export const FaqCard = ({ faqId, heading, qAndAs }: faqCardProps) => {
       <hr></hr>
       {qAndAs.map(
         (qAndA, index) =>
-          typeof key.disabled === "undefined" && (
+          typeof qAndA.disabled === "undefined" && (
             <div className={styles.faqQA} key={index}>
               <FaqQandA
                 key={faqId}
