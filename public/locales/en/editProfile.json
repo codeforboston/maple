@@ -46,10 +46,12 @@
     "forms": {
         "generalInfo": "General Information",
         "fullName": "Full Name",
+        "orgName" : "Organization Name",
         "nickname": "Nickname",
         "makePublic": "Make Public",
         "makePrivate": "Make Private",
         "errNameRequired": "Name is required",
+        "errOrgNameRequired" : "Organization Name is required",
         "aboutYou": "Write something about yourself",
         "aboutYouTip":"What should you write?",
         "selectOrgCategory": "Select an organization cateogry",

@@ -4,6 +4,7 @@ import {
   InstantSearch,
   Pagination,
   SearchBox,
+  useConfigure,
   useInstantSearch
 } from "@alexjball/react-instantsearch-hooks-web"
 import { currentGeneralCourt } from "functions/src/shared"
@@ -18,8 +19,10 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
-import { SortBy } from "../SortBy"
+import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
+import { useBillSort } from "./useBillSort"
+import { FC } from "react"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -29,47 +32,26 @@ const searchClient = new TypesenseInstantSearchAdapter({
   }
 }).searchClient
 
-const items: SortByItem[] = [
-  {
-    label: "Sort by Most Recent Testimony",
-    value: "bills/sort/latestTestimonyAt:desc"
-  },
-  {
-    label: "Sort by Relevance",
-    value: "bills/sort/_text_match:desc,testimonyCount:desc"
-  },
-  {
-    label: "Sort by Testimony Count",
-    value: "bills/sort/testimonyCount:desc"
-  },
-  {
-    label: "Sort by Cosponsor Count",
-    value: "bills/sort/cosponsorCount:desc"
-  },
-  {
-    label: "Sort by Next Hearing Date",
-    value: "bills/sort/nextHearingAt:desc"
-  }
-]
-
-export const initialSortByValue = items[0].value
-
-export const BillSearch = () => (
-  <SearchErrorBoundary>
-    <InstantSearch
-      indexName={initialSortByValue}
-      initialUiState={{
-        [initialSortByValue]: {
-          refinementList: { court: [String(currentGeneralCourt)] }
-        }
-      }}
-      searchClient={searchClient}
-      routing={useRouting()}
-    >
-      <Layout />
-    </InstantSearch>
-  </SearchErrorBoundary>
-)
+export const BillSearch = () => {
+  const items = useBillSort()
+  const initialSortByValue = items[0].value
+  return (
+    <SearchErrorBoundary>
+      <InstantSearch
+        indexName={initialSortByValue}
+        initialUiState={{
+          [initialSortByValue]: {
+            refinementList: { court: [String(currentGeneralCourt)] }
+          }
+        }}
+        searchClient={searchClient}
+        routing={useRouting()}
+      >
+        <Layout items={items} />
+      </InstantSearch>
+    </SearchErrorBoundary>
+  )
+}
 
 const RefinementRow = styled.div`
   display: inline-flex;
@@ -91,7 +73,7 @@ const useSearchStatus = () => {
   }
 }
 
-const Layout = () => {
+const Layout: FC<{ items: SortByWithConfigurationItem[] }> = ({ items }) => {
   const refinements = useBillRefinements()
   const status = useSearchStatus()
   return (
@@ -107,7 +89,10 @@ const Layout = () => {
             <SortBy items={items} />
             {refinements.show}
           </RefinementRow>
-          <CurrentRefinements className="mt-2 mb-2" />
+          <CurrentRefinements
+            className="mt-2 mb-2"
+            excludedAttributes={["nextHearingAt"]}
+          />
           {status === "empty" ? (
             <NoResults>
               Your search has yielded zero results!
