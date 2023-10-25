@@ -30,7 +30,7 @@ const CommunicatingWithLegislators = () => {
         <Col>
           <h1 className={styles.pageHeading}>Communicating with Legislators</h1>
           <p className={styles.subHeading}>
-            There are multiple ways for you to voice your opinion to your
+            There are multiple ways to share your perspective and knowledge with your
             legislators.
           </p>
 
