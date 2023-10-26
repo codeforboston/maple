@@ -39,7 +39,7 @@ const TabGroup = () => {
   return (
     <Row className="p-3 g-0">
       <Col md={4} className="text-center">
-        <Nav variant="underline" className="our-team-tab flex-column">
+        <Nav className="our-team-tab flex-column">
           <Nav.Item>
             <Nav.Link eventKey="steering_committee">
               Steering Committee
@@ -48,14 +48,14 @@ const TabGroup = () => {
         </Nav>
       </Col>
       <Col md={4} className="text-center">
-        <Nav variant="underline" className="our-team-tab flex-column">
+        <Nav className="our-team-tab flex-column">
           <Nav.Item>
             <Nav.Link eventKey="advisory_board">Advisory Board</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
-        <Nav variant="underline" className="our-team-tab flex-column">
+        <Nav className="our-team-tab flex-column">
           <Nav.Item>
             <Nav.Link eventKey="partners">Partners</Nav.Link>
           </Nav.Item>
