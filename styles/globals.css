@@ -93,7 +93,7 @@
   }
 }
 
-/* Custom tabs style in "Our Team" Page */
+/* Custom style in "Our Team" Page */
 .our-team-tab .nav-item .nav-link {
   color: black;
   font-weight: 600;
@@ -106,4 +106,76 @@
 .our-team-tab .nav-item .nav-link.active {
   color: #C71E32;
   border-color: #C71E32;
+}
+
+.our-team-dropdown-button {
+    width: 100%;
+    padding: 7px, 8px, 7px, 8px;
+    border-radius: 8px;
+    background: #12266F;
+    color: white;
+    border-color: #12266F;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.015em;
+    text-align: right;
+}
+/* .our-team-dropdown-button::after {
+  display: none !important; 
+} */
+.our-team-dropdown-button.btn-primary:focus {
+  width: 100%;
+  padding: 7px, 8px, 7px, 8px;
+  border-radius: 8px;
+  background: #12266F;
+  color: white;
+  border-color: #12266F;
+  box-shadow: none;
+}
+
+.our-team-dropdown-button.btn-primary:checked {
+  width: 100%;
+  padding: 7px, 8px, 7px, 8px;
+  border-radius: 8px;
+  background: #12266F;
+  color: white;
+  border-color: #12266F;
+}
+.our-team-dropdown-button.btn-primary:active {
+  width: 100%;
+  padding: 7px, 8px, 7px, 8px;
+  border-radius: 8px;
+  background: #12266F;
+  color: white;
+  border-color: #12266F;
+}
+.our-team-dropdown-button.btn-primary:hover {
+  width: 100%;
+  padding: 7px, 8px, 7px, 8px;
+  border-radius: 8px;
+  background: #12266F;
+  color: white;
+  border-color: #12266F;
+}
+
+.our-team-dropdown .dropdown-menu{
+  width: 100%;
+    border-radius: 8px;
+    background: #12266F;
+    color: white;
+}
+
+.our-team-dropdown .dropdown-item {
+    width: 100%;
+    border-radius: 8px;
+    background: #12266F;
+    color: white;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.015em;
+    padding: 7px, 8px, 7px, 8px;
 }
