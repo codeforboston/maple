@@ -13,7 +13,9 @@ export const MemberItem = ({
   return (
     <StyledContainer className="py-3 px-4">
       <NameContainer>{name}</NameContainer>
-      {email ? <EmailContainer>{email}</EmailContainer> : null}
+      {email ? (
+        <EmailContainer href={"mailto:" + email}>{email}</EmailContainer>
+      ) : null}
       <DescrContainer className="my-3">{descr}</DescrContainer>
     </StyledContainer>
   )
@@ -24,7 +26,7 @@ const StyledContainer = styled(Container)`
   background: white;
   border-radius: 0 0 10px 10px;
 `
-const EmailContainer = styled.div`
+const EmailContainer = styled.a`
   color: #1a3185;
   font-size: 20px;
   font-weight: 600;
