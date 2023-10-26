@@ -3,7 +3,7 @@ import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
 import {
   CodeForBostonCardContent,
-  NuLawLabCardContent, 
+  NuLawLabCardContent,
   OpenCollectiveContent
 } from "../OurPartnersCardContent/OurPartnersCardContent"
 import { PageTitle, PageDescr } from "./CommonComponents"
@@ -13,12 +13,31 @@ export const OurPartners = () => {
     <Container>
       <Row>
         <Col>
-            <PageTitle>Our Partners</PageTitle>
+          <PageTitle>Our Partners</PageTitle>
         </Col>
       </Row>
       <Row>
         <Col className="py-3">
-            <PageDescr>The project is developed in partnership between the NuLawLab and scholars at <StyleLink href="https://www.bc.edu/bc-web/schools/law.html" target="_blank" rel="noopener noreferrer">Boston College Law School</StyleLink> and <StyleLink  href="https://cyber.harvard.edu/" target="_blank" rel="noopener noreferrer">Harvard University's Berkman Klein Center for Internet & Society</StyleLink>.</PageDescr>
+          <PageDescr>
+            The project is developed in partnership between the NuLawLab and
+            scholars at{" "}
+            <StyleLink
+              href="https://www.bc.edu/bc-web/schools/law.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Boston College Law School
+            </StyleLink>{" "}
+            and{" "}
+            <StyleLink
+              href="https://cyber.harvard.edu/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Harvard University's Berkman Klein Center for Internet & Society
+            </StyleLink>
+            .
+          </PageDescr>
         </Col>
       </Row>
       <Row>
@@ -45,10 +64,10 @@ export const OurPartners = () => {
         </Col>
       </Row>
     </Container>
-  );
+  )
 }
 
 const StyleLink = styled.a`
-    text-decoration: none;
-    color: var(--bs-blue);
+  text-decoration: none;
+  color: var(--bs-blue);
 `

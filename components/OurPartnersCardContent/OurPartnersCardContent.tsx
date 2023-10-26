@@ -31,9 +31,9 @@ const NuLawLabCardContent = () => {
             >
               Northeastern University School of Law
             </a>
-            . 
-            </p>
-            <p className={styles.content}>
+            .
+          </p>
+          <p className={styles.content}>
             The Lab is a leader in the{" "}
             <a
               href="https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/"
@@ -106,14 +106,15 @@ const OpenCollectiveContent = () => {
         </Col>
         <Col className="align-self-center" md={9}>
           <p className={styles.content}>
-          MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open Collective Foundation (OCF). You can see a full list of our donors and expenditures on our Open Collective webpage. You can also join the list and make a donation through the sit.
+            MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open
+            Collective Foundation (OCF). You can see a full list of our donors
+            and expenditures on our Open Collective webpage. You can also join
+            the list and make a donation through the sit.
           </p>
         </Col>
       </Row>
     </>
   )
 }
-
-
 
 export { NuLawLabCardContent, CodeForBostonCardContent, OpenCollectiveContent }
