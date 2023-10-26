@@ -1,4 +1,3 @@
-import styled from "styled-components"
 import { Col, Row, Container } from "../bootstrap"
 import { MemberItem, Divider, PageTitle, PageDescr, SectionContainer, SectionTitle } from "./CommonComponents"
 

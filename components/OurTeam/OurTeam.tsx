@@ -2,12 +2,8 @@ import styled from "styled-components"
 import { useState } from 'react';
 import { Col, Row, Container } from "../bootstrap"
 import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
 import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Navbar from 'react-bootstrap/Navbar';
 import { SteeringCommittee } from "./SteeringCommittee"
 import { AdvisoryBoard } from "./AdvisoryBoard"
 import { OurPartners } from "./Partners"
@@ -89,4 +85,3 @@ const TabDropdown = () => {
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
-

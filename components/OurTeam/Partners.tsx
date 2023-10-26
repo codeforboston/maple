@@ -6,8 +6,7 @@ import {
   NuLawLabCardContent, 
   OpenCollectiveContent
 } from "../OurPartnersCardContent/OurPartnersCardContent"
-// import styles from "./OurPartners.module.css"
-import { MemberItem, Divider, PageTitle, PageDescr, SectionContainer, SectionTitle } from "./CommonComponents"
+import { PageTitle, PageDescr } from "./CommonComponents"
 
 export const OurPartners = () => {
   return (

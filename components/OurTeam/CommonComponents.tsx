@@ -3,7 +3,7 @@ import { Container } from "../bootstrap"
 
 export const MemberItem = ({name, email, descr} : {name: string, email?: string, descr: string}) => {
     return (
-        <StyledContainer className="p-3">
+        <StyledContainer className="py-3 px-4">
             <NameContainer>{name}</NameContainer>
             {email ? <EmailContainer>{email}</EmailContainer> : null}
             <DescrContainer className="my-3">{descr}</DescrContainer>
