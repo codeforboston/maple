@@ -30,7 +30,7 @@ export const UserInfoHeader = ({
         />
       </Col>
       <Col>
-        <Author uid={testimony.authorUid} name={testimony.authorDisplayName} />
+        <Author uid={testimony.authorUid} name={testimony.fullName} />
 
         <Row className="justify-content-between mb-1">
           <Col className={styles.publishdate} xs="auto">
