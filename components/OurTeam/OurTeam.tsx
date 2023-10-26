@@ -5,7 +5,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Nav from 'react-bootstrap/Nav';
 import { SteeringCommittee } from "./SteeringCommittee"
 import { AdvisoryBoard } from "./AdvisoryBoard"
-import OurPartners from "../OurPartners/OurPartners"
+import { OurPartners } from "./Partners"
 
 export const OurTeam = () => {
     return (
