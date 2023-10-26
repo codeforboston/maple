@@ -18,10 +18,8 @@ export const AdvisoryBoard = () => {
       <Row>
         <Col className="py-3">
           <PageDescr>
-            The Steering Committee directs the overall operations of MAPLE,
-            which includes the management of volunteers, establishing project
-            direction, and making decisions about development and
-            communications.
+            The Advisory Board provides strategic advice and domain expertise to
+            the MAPLE project. We are grateful to have the support of:
           </PageDescr>
         </Col>
       </Row>
