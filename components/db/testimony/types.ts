@@ -49,7 +49,8 @@ export const Testimony = BaseTestimony.extend({
   senatorId: Optional(String),
   senatorDistrict: Optional(String),
   representativeDistrict: Optional(String),
-  draftAttachmentId: Maybe(String)
+  draftAttachmentId: Maybe(String),
+  fullName: String
 })
 
 export type WorkingDraft = Partial<DraftTestimony>

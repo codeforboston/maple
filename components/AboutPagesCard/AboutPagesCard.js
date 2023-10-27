@@ -3,8 +3,8 @@ import styles from "./AboutPagesCard.module.css"
 
 const AboutPagesCard = ({ title, children }) => {
   return (
-    <Card className={styles.card}>
-      <Card.Header as="h3" className={`fw-bold ${styles.header}`}>
+    <Card className={"m-5 " + styles.card}>
+      <Card.Header as="h3" className={`${styles.header}`}>
         {title}
       </Card.Header>
       <Card.Body>{children}</Card.Body>
