@@ -111,11 +111,12 @@ export default function ProfileSettingsModal({
     await updateNotification(notifications)
   }
 
+  // Commented out code below is for future use
   // button classNames weren't otherwise properly updating on iOS
-  let buttonSecondary = "btn-secondary"
+  /*   let buttonSecondary = "btn-secondary"
   if (notifications === "None") {
     buttonSecondary = "btn-outline-secondary"
-  }
+  } */
 
   const privacyText = renderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
@@ -136,7 +137,8 @@ export default function ProfileSettingsModal({
       </Modal.Header>
       <StyledModalBody>
         <Form>
-          <StyledRow className="p-2">
+          {/* Commented out code below is for future use */}
+          {/*    <StyledRow className="p-2">
             <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
             <hr className={`mt-0`} />
             <Col className={`col-8`}>{t("forms.notificationText")}</Col>
@@ -201,7 +203,7 @@ export default function ProfileSettingsModal({
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-          </StyledRow>
+          </StyledRow> */}
 
           <StyledRow className="p-2">
             <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>

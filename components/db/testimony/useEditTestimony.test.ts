@@ -44,6 +44,7 @@ beforeEach(() => {
     billTitle: "fake bill",
     billId,
     content: draft.content,
+    fullName: "Anonymous",
     court: court,
     position: draft.position,
     version: 1
