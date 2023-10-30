@@ -255,7 +255,7 @@ describe("publishTestimony", () => {
     await getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
   })
 
-  describe.skip("attachments", () => {
+  describe("attachments", () => {
     it("copies drafts to published and archived files", async () => {
       const attachmentId = nanoid()
       await createDraftAttachment(uid, attachmentId, "test-pdf")
@@ -285,7 +285,10 @@ describe("publishTestimony", () => {
       attachmentId = nanoid()
       const expectedContent = "test-pdf-2"
       await createDraftAttachment(uid, attachmentId, "test-pdf-2")
-      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        attachmentId,
+        editReason: "changed attachment"
+      })
       const r = await publishTestimony({ draftId })
 
       const { attachments } = await getPublicationAndAttachments(
@@ -310,6 +313,9 @@ describe("publishTestimony", () => {
       const publication = await getPublication(uid, r.data.publicationId)
 
       // Publish 2
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        editReason: "changed"
+      })
       r = await publishTestimony({ draftId })
       const { attachments, publication: publication2 } =
         await getPublicationAndAttachments(uid, r.data.publicationId)
@@ -329,7 +335,10 @@ describe("publishTestimony", () => {
       const publication = await getPublication(uid, r.data.publicationId)
 
       // Publish 2
-      await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId: null })
+      await updateDoc(refs.draftTestimony(uid, draftId), {
+        attachmentId: null,
+        editReason: "removed attachment"
+      })
       r = await publishTestimony({ draftId })
       const { attachments, publication: publication2 } =
         await getPublicationAndAttachments(uid, r.data.publicationId)
@@ -342,23 +351,34 @@ describe("publishTestimony", () => {
 })
 
 describe("deleteTestimony", () => {
-  let user: User
-  let uid: string
-  beforeEach(async () => {
-    user = await signInTestAdmin()
-    uid = user.uid
+  async function getSignedInAdmin() {
+    const adminUser = await signInTestAdmin()
     const token = await auth.currentUser?.getIdTokenResult()
     expect(token?.claims.role).toEqual("admin")
-  })
+
+    return adminUser
+  }
 
   it("Deletes published testimony", async () => {
+    const normalUid = uid
+
+    // Publish as user 1
     let res = await publishTestimony({ draftId })
 
-    await deleteTestimony({ uid, publicationId: res.data.publicationId })
+    // Delete as admin
+    await getSignedInAdmin()
+    const deleted = await deleteTestimony({
+      uid: normalUid,
+      publicationId: res.data.publicationId
+    })
 
-    let testimony = await getPublication(uid, res.data.publicationId)
+    expect(deleted.data.deleted).toBeTruthy()
+
+    let testimony = await getPublication(normalUid, res.data.publicationId)
     const bill = await getBill(billId)
-    const draft = await testDb.doc(paths.draftTestimony(uid, draftId)).get()
+    const draft = await testDb
+      .doc(paths.draftTestimony(normalUid, draftId))
+      .get()
 
     expect(testimony).toBeUndefined()
     expect(bill.latestTestimonyAt).toBeUndefined()
@@ -369,9 +389,21 @@ describe("deleteTestimony", () => {
   })
 
   it("Retains archives", async () => {
+    // Publish as user 1
     const res1 = await publishTestimony({ draftId })
+
+    await getSignedInAdmin()
+    // Delete as admin
     await deleteTestimony({ uid, publicationId: res1.data.publicationId })
 
+    // Publish again as user 1
+    await signInUser1()
+    const updatedDraft: DraftTestimony = {
+      ...draft,
+      content: "updated content",
+      editReason: "edit reason"
+    }
+    await setDoc(refs.draftTestimony(uid, draftId), updatedDraft)
     const res2 = await publishTestimony({ draftId }),
       published = await getPublication(uid, res2.data.publicationId)
     expect(published.version).toBe(2)
@@ -392,6 +424,8 @@ describe("deleteTestimony", () => {
       const r = await publishTestimony({ draftId })
       const p = await getPublication(uid, r.data.publicationId)
 
+      // Delete as admin
+      await getSignedInAdmin()
       await deleteTestimony({ uid, publicationId: r.data.publicationId })
 
       expect(p.attachmentId).toBeDefined()
