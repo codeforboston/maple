@@ -1,12 +1,12 @@
+import { collection, query, where, getDocs } from "firebase/firestore"
 import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore"
-import { Dispatch, SetStateAction, useEffect, useState, useMemo, useCallback } from "react";
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback
+} from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner, Stack } from "../bootstrap"
@@ -63,11 +63,15 @@ export const Styled = styled.div`
 
 export function FollowingTab({ className }: Props) {
   const { user } = useAuth()
-  const uid = user?.uid;
-  const subscriptionRef = useMemo(() => // returns new object only if uid changes
-    uid ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`) : null,
+  const uid = user?.uid
+  const subscriptionRef = useMemo(
+    () =>
+      // returns new object only if uid changes
+      uid
+        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
+        : null,
     [uid]
-  );
+  )
 
   const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
   const close = () => setUnfollow(null)
@@ -92,7 +96,7 @@ export function FollowingTab({ className }: Props) {
     if (billsFollowing.length === 0 && billList.length != 0) {
       setBillsFollowing(billList)
     }
-  }, [subscriptionRef, uid, billsFollowing]);
+  }, [subscriptionRef, uid, billsFollowing])
 
   useEffect(() => {
     uid ? billsFollowingQuery() : null
@@ -115,21 +119,22 @@ export function FollowingTab({ className }: Props) {
     if (orgsFollowing.length === 0 && orgsList.length != 0) {
       setOrgsFollowing(orgsList)
     }
-  }, [subscriptionRef, uid, orgsFollowing]);
+  }, [subscriptionRef, uid, orgsFollowing])
 
   const fetchFollowedItems = useCallback(async () => {
     if (uid) {
-      billsFollowingQuery();
-      orgsFollowingQuery();
+      billsFollowingQuery()
+      orgsFollowingQuery()
     }
-  }, [uid, billsFollowingQuery, orgsFollowingQuery]);
+  }, [uid, billsFollowingQuery, orgsFollowingQuery])
 
   useEffect(() => {
-    fetchFollowedItems();
-  }, [billsFollowing, orgsFollowing, fetchFollowedItems]);  
+    fetchFollowedItems()
+  }, [billsFollowing, orgsFollowing, fetchFollowedItems])
 
   const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
-    if (!unfollow || !unfollow.typeId) { // handle the case where unfollow is null or unfollow.typeId is undefined
+    if (!unfollow || !unfollow.typeId) {
+      // handle the case where unfollow is null or unfollow.typeId is undefined
       console.error(
         "handleUnfollowClick was called but unfollow or unfollow.typeId is undefined"
       )
@@ -140,33 +145,32 @@ export function FollowingTab({ className }: Props) {
       return
     }
     // rest of what was inside the original if statement
-      if (unfollow.type == "bill") {
-        const billLookup = { billId: unfollow.typeId, court: unfollow.court }
-        try {
-          const response = await unfollowBillFunction({
-            billLookup
-          })
-          console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-        } catch (error: any) {
-          console.log(error.message)
-        }
-      } else {
-        const orgLookup = {
-          profileId: unfollow.typeId,
-          fullName: unfollow.orgName
-        }
-        try {
-          const response = await unfollowOrgFunction({ orgLookup: orgLookup })
-          console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-        } catch (error: any) {
-          console.log(error.message)
-        }
+    if (unfollow.type == "bill") {
+      const billLookup = { billId: unfollow.typeId, court: unfollow.court }
+      try {
+        const response = await unfollowBillFunction({
+          billLookup
+        })
+        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
+      } catch (error: any) {
+        console.log(error.message)
       }
+    } else {
+      const orgLookup = {
+        profileId: unfollow.typeId,
+        fullName: unfollow.orgName
+      }
+      try {
+        const response = await unfollowOrgFunction({ orgLookup: orgLookup })
+        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
+      } catch (error: any) {
+        console.log(error.message)
+      }
+    }
 
-      setBillsFollowing([])
-      setOrgsFollowing([])
-      setUnfollow(null)
-    
+    setBillsFollowing([])
+    setOrgsFollowing([])
+    setUnfollow(null)
   }
   const { t } = useTranslation("editProfile")
 
@@ -236,13 +240,10 @@ function FollowedItem({
     <Styled>
       {type === "bill" ? (
         <>
-          <StyledHeader
-            href={`https://malegislature.gov/Bills/${element?.court}/${element?.billId}`}
-          >
-            {formatBillId(element?.billId)}
-          </StyledHeader>
-
-          <Row>
+          <Row className={`align-items-center`}>
+            <Internal href={`bills/${element?.court}/${element?.billId}`}>
+              {formatBillId(element?.billId)}
+            </Internal>
             <Col xs={9}>
               <BillFollowingTitle court={element?.court} id={element?.billId} />
             </Col>
@@ -269,7 +270,7 @@ function FollowedItem({
                   className="mr-4 mt-0 mb-0 ms-0"
                   src={profile?.profileImage}
                 />
-                <Internal href={`organizations/${element?.profileId}`}>
+                <Internal href={`/profile?id=${element?.profileId}`}>
                   {fullName}
                 </Internal>
               </Col>

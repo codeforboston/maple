@@ -13,7 +13,6 @@ import { Testimony } from "functions/src/testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
-import { fail } from "../../functions/src/common"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
 
 export async function signInUser(email: string) {
@@ -80,7 +79,7 @@ export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
   const e = await work
-    .then(() => fail("permission-denied", "expected promise to reject"))
+    .then(() => fail("expected promise to reject"))
     .catch(e => e)
   expect(e.code).toMatch("permission-denied")
   console.warn = warn
@@ -90,7 +89,7 @@ export async function expectStorageUnauthorized(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
   const e = await work
-    .then(() => fail("unknown", "expected promise to reject"))
+    .then(() => fail("expected promise to reject"))
     .catch(e => e)
   expect(e.code).toBe("storage/unauthorized")
   console.warn = warn
@@ -135,6 +134,7 @@ export const getUserData = (user: { uid: string }) =>
     .get()
     .then(d => d.data())
 
+/** Set a new profile */
 export const setNewProfile = (user: {
   uid: string
   fullName: string
@@ -151,6 +151,7 @@ export const createNewTestimony = async (uid: string, billId: string) => {
   const testimony: Testimony = {
     id: tid,
     authorUid: uid,
+    fullName: "none",
     authorDisplayName: "none",
     authorRole: "user",
     billTitle: "An act",

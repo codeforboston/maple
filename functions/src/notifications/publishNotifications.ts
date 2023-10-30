@@ -1,4 +1,5 @@
-// Sets up a document trigger for /events and queries the activeTopicSubscriptions collection group in Firestore for all subscriptions for the given topic event, then creates a notification document in the user's notification feed.
+// Sets up a document trigger for /events and queries the activeTopicSubscriptions collection group in Firestore
+// for all subscriptions for the given topic event, then creates a notification document in the user's notification feed.
 // This function runs every time a new topic event is created in the /events collection.
 // Creates a notification document in the user's notification feed for each active subscription.
 
@@ -21,7 +22,7 @@ const createNotificationFields = (
 
   switch (type) {
     case "bill":
-      topicName = `bill-${entity.court}-${entity.id}`
+      topicName = `bill-${entity.court}-${entity.id}` // looks for fields in event document
       header = entity.id
       court = entity.court
       break
@@ -36,6 +37,7 @@ const createNotificationFields = (
   }
 
   return {
+    // set up notification document fields
     topicName,
     uid: "", // user id will be populated in the publishNotifications function
     notification: {

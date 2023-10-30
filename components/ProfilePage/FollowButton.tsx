@@ -1,10 +1,5 @@
 import { firestore } from "../firebase"
-import {
-  collection,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, query, where } from "firebase/firestore"
 import { Col, Button } from "react-bootstrap"
 import { Internal } from "components/links"
 import { StyledImage } from "./StyledProfileComponents"
@@ -25,8 +20,8 @@ export const FollowButton = ({
   const { t } = useTranslation("profile")
   const { user } = useAuth()
   const functions = getFunctions()
-  const followBillFunction = httpsCallable(functions, "followBill")
-  const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
+  const followBillFunction = httpsCallable(functions, "followOrg")
+  const unfollowBillFunction = httpsCallable(functions, "unfollowOrg")
 
   const topicName = `org-${profileId}`
   const subscriptionRef = collection(
@@ -45,12 +40,11 @@ export const FollowButton = ({
       // doc.data() is never undefined for query doc snapshots
       setQueryResult(doc.data().topicName)
     })
-  }, [subscriptionRef, profileId, setQueryResult])  // dependencies of orgQuery
-  
+  }, [subscriptionRef, profileId, setQueryResult]) // dependencies of orgQuery
+
   useEffect(() => {
     uid ? orgQuery() : null
-  }, [uid, orgQuery])  // dependencies of useEffect
-  
+  }, [uid, orgQuery]) // dependencies of useEffect
 
   const handleFollowClick = async () => {
     // ensure user is not null
@@ -62,12 +56,12 @@ export const FollowButton = ({
       if (!uid) {
         throw new Error("User not found")
       }
-      const topicLookup = {
+      const orgLookup = {
         profileId: profileId,
         type: "org"
       }
       const token = await user.getIdToken()
-      const response = await followBillFunction({ topicLookup, token })
+      const response = await followBillFunction({ orgLookup, token })
       if (response.data) {
         setQueryResult(topicName)
       }
@@ -86,12 +80,12 @@ export const FollowButton = ({
       if (!uid) {
         throw new Error("User not found")
       }
-      const topicLookup = {
+      const orgLookup = {
         profileId: profileId,
         type: "org"
       }
       const token = await user.getIdToken()
-      const response = await unfollowBillFunction({ topicLookup, token })
+      const response = await unfollowBillFunction({ orgLookup, token })
       if (response.data) {
         setQueryResult("")
       }
@@ -104,10 +98,12 @@ export const FollowButton = ({
     queryResult === topicName ? handleUnfollowClick() : handleFollowClick()
   }
 
-  const text = queryResult === topicName ? t("button.following") : t("button.follow")
-  const checkmark = queryResult === topicName ? (
-    <StyledImage src="/check-white.svg" alt="checkmark" />
-  ) : null
+  const text =
+    queryResult === topicName ? t("button.following") : t("button.follow")
+  const checkmark =
+    queryResult === topicName ? (
+      <StyledImage src="/check-white.svg" alt="checkmark" />
+    ) : null
 
   return (
     <Col className={`d-flex w-100 justify-content-start`}>

@@ -1,14 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { firestore } from "../firebase"
-import { Col, Stack, Row } from "../bootstrap"
+import { Col, Row, Stack } from "../bootstrap"
 import {
   Header,
   OrgIconLarge,
@@ -19,13 +9,13 @@ import {
   UserIconSmall
 } from "./StyledProfileComponents"
 
-import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
-import { OrgContactInfo } from "./OrgContactInfo"
+import { flags } from "components/featureFlags"
+import { FollowOrgButton } from "components/shared/FollowButton"
+import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
 import { FollowButton } from "./FollowButton" // TODO: move to /shared
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { useAuth } from "../auth"
-import { useTranslation } from "next-i18next"
+import { OrgContactInfo } from "./OrgContactInfo"
+import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
 
 export const ProfileHeader = ({
   isMobile,
@@ -45,7 +35,6 @@ export const ProfileHeader = ({
   isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
-
 }) => {
   const { t } = useTranslation("profile")
 
@@ -101,9 +90,11 @@ export const ProfileHeader = ({
                         </div>
                       </div>
                     ) : (
-                      <FollowButton
-                        isMobile={isMobile}
-                      />
+                      <>
+                        {flags().followOrg && (
+                          <FollowOrgButton profileId={profileId} />
+                        )}
+                      </>
                     )}
                   </>
                 )}
@@ -161,7 +152,6 @@ function ProfileHeaderMobile({
   uid?: string
 }) {
   const { t } = useTranslation("profile")
-  
 
   return (
     <Header className={``}>
@@ -189,11 +179,7 @@ function ProfileHeaderMobile({
           )}
         </>
       )}
-      {isOrg && !isUser && 
-        <FollowButton
-          isMobile={isMobile}
-        />
-      }
+      {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
       {isOrg && <OrgContactInfo profile={profile} />}
     </Header>
   )
