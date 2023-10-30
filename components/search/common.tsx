@@ -1,8 +1,9 @@
 import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 const devConfig = {
-  key: "E6ZSivCQqMGARFs3zu4siJqDjYc7ucdy",
-  url: "https://maple.aballslab.com/search"
+  key: "Wk0K3oMIE1ERRmwX0uLgEk3gGEGKNuQe",
+  // key: "mfylP3FhQBBAmUiDTWZ9PNbhzTtVID1W",
+  url: "https://o89yhjf824.execute-api.us-east-1.amazonaws.com/search"
 }
 
 export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"] {

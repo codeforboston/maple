@@ -111,6 +111,7 @@ services:
       NEXT_PUBLIC_TYPESENSE_SEARCH_API_KEY: test-api-key
       NEXT_PUBLIC_TYPESENSE_API_URL: http://localhost:8108
       NEXT_PUBLIC_USE_EMULATOR: "true"
+      SERVER_EMULATOR_HOST: firebase
       NEXT_PUBLIC_PROJECT_ID_FOR_TEST: demo-dtp
       GCLOUD_PROJECT: "demo-dtp"
       FIRESTORE_EMULATOR_HOST: "firebase:8080"
@@ -118,6 +119,36 @@ services:
       FIREBASE_STORAGE_EMULATOR_HOST: "firebase:9199"
       TYPESENSE_API_URL: "http://firebase:8108"
       TYPESENSE_API_KEY: "test-api-key"
+
+  copy-handlebars:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.firebase
+    command: yarn copy-handlebars
+    depends_on:
+      - firebase
+    volumes:
+      - ..:/app
+
+  backfill-user-emails:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.firebase
+    command: yarn backfill-user-emails
+    depends_on:
+      - firebase
+    volumes:
+      - ..:/app
+
+  backfill-user-nf:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.firebase
+    command: yarn backfill-user-nf
+    depends_on:
+      - firebase
+    volumes:
+      - ..:/app
 
 volumes:
   search: {}

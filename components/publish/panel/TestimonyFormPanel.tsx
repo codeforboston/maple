@@ -11,6 +11,7 @@ import {
 } from "./ctas"
 import { ThankYouModal } from "./ThankYouModal"
 import { YourTestimony } from "./YourTestimony"
+import { useMediaQuery } from "usehooks-ts"
 
 export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
   const dispatch = useAppDispatch()
@@ -25,8 +26,10 @@ export const TestimonyFormPanel = ({ bill }: { bill: Bill }) => {
     </div>
   )
 }
-
+//create testimony ln 43. make a ternary same with
 const Panel = () => {
+  //tempory check for isMobile to hide create/CompleteTestimony on mobile view
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const status = usePanelStatus()
   console.log({ status })
   // // TODO: remove
@@ -40,9 +43,9 @@ const Panel = () => {
     case "unverified":
       return <UnverifiedEmail />
     case "noTestimony":
-      return <CreateTestimony />
+      return isMobile ? <></> : <CreateTestimony />
     case "createInProgress":
-      return <CompleteTestimony />
+      return isMobile ? <></> : <CompleteTestimony />
     default:
       return <YourTestimony />
   }

@@ -49,7 +49,8 @@ export const Testimony = BaseTestimony.extend({
   senatorId: Optional(String),
   senatorDistrict: Optional(String),
   representativeDistrict: Optional(String),
-  draftAttachmentId: Maybe(String)
+  draftAttachmentId: Maybe(String),
+  fullName: String
 })
 
 export type WorkingDraft = Partial<DraftTestimony>
@@ -91,5 +92,5 @@ export const publishTestimony = httpsCallable<
 
 export const resolveReport = httpsCallable<report.Request, report.Response>(
   functions,
-  "resolveReport"
+  "adminResolveReport"
 )

@@ -18,6 +18,8 @@ import { ViewAttachment } from "components/ViewAttachment"
 import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
 import { useTranslation } from "next-i18next"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { flags } from "components/featureFlags"
 
 const FooterButton = styled(Button)`
   margin: 0;
@@ -100,13 +102,15 @@ export const TestimonyItem = ({
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
-  const testimonyContent = testimony.content
+  const testimonyContent =
+    testimony.content ??
+    "This draft has no content. Click Edit to add your testimony."
 
   const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
   const snippet = showAllTestimony
     ? testimonyContent
-    : testimonyContent.slice(0, snippetChars)
+    : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
   const [showConfirm, setShowConfirm] = useState(false)
@@ -181,25 +185,26 @@ export const TestimonyItem = ({
               </FooterButton>
             </Col>
           )}
-
-          <Col>
-            <FooterButton variant="link">
-              <Internal
-                className={styles.link}
-                href={maple.testimony({ publishedId: testimony.id })}
-              >
-                {t("testimonyItem.moreDetails")}
-              </Internal>
-            </FooterButton>
-          </Col>
-
-          <Col className="justify-content-end d-flex">
-            <FooterButton variant="link">
-              <ViewAttachment testimony={testimony} />
-            </FooterButton>
-          </Col>
-
-          {isUser && (
+          {testimony.id && (
+            <Col>
+              <FooterButton variant="link">
+                <Internal
+                  className={styles.link}
+                  href={maple.testimony({ publishedId: testimony.id })}
+                >
+                  {t("testimonyItem.moreDetails")}
+                </Internal>
+              </FooterButton>
+            </Col>
+          )}
+          {testimony.attachmentId && (
+            <Col className="d-flex">
+              <FooterButton variant="link">
+                <ViewAttachment testimony={testimony} />
+              </FooterButton>
+            </Col>
+          )}
+          {isUser && !isMobile && (
             <>
               {onProfilePage && (
                 <Col>
@@ -216,7 +221,7 @@ export const TestimonyItem = ({
 
               {canDelete && (
                 <>
-                  <Col>
+                  {/* <Col>
                     <FooterButton
                       style={{ color: "#c71e32" }}
                       onClick={() => setShowConfirm(s => !s)}
@@ -224,7 +229,7 @@ export const TestimonyItem = ({
                     >
                       {t("testimonyItem.rescind")}
                     </FooterButton>
-                  </Col>
+                  </Col> */}
 
                   {showConfirm && (
                     <ArchiveTestimonyConfirmation
@@ -237,11 +242,14 @@ export const TestimonyItem = ({
               )}
             </>
           )}
-          <Col xs="auto">
-            <FooterButton variant="link" onClick={() => setIsReporting(true)}>
-              {isUser ? "Request to rescind" : "Report"}
-            </FooterButton>
-          </Col>
+          {/* report */}
+          {flags().reportTestimony && !isUser && (
+            <Col xs="auto">
+              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+                Report
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 

@@ -6,12 +6,14 @@
   "anonymousUser": "Anonymous User",
   "button":{
     "editProfile": "Edit\u00A0Profile",
-    "following": "Following",
-    "follow": "Follow"
+    "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
+    "follow" : "Follow",
+    "following" : "Following"
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",
-    "statePurpose": "State your purpose",
+    "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
+    "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
     "noLegislatorInfo": "No legislator information given"
     },
   "verifyAccountSection":{
@@ -21,5 +23,13 @@
   },
   "legislators": "Legislators",
   "representative": "Representative",
-  "senator": "Senator"
+  "senator": "Senator",
+  "orgIcon": {
+    "large": "Large Organization Icon",
+    "small": "Small Organization Icon"
+  },
+  "userIcon": {
+    "large": "Large User Icon",
+    "small": "Small User Icon"
+  }
 }

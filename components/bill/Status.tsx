@@ -8,10 +8,10 @@ import { BillProps } from "./types"
 
 const StyledButton = styled(Button)`
   border-radius: 3rem 0 0 3rem;
-  font-size: 2rem;
-  line-height: 2.5rem;
-  height: fit-content;
-  max-width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  max-width: fit-content;
+  flex: 1;
 `
 
 export const CourtContext = createContext(1)
@@ -29,7 +29,7 @@ export const Status = ({ bill }: BillProps) => {
       <CourtContext.Provider value={bill.court}>
         <StyledButton
           variant="secondary"
-          className="text-truncate"
+          className="text-truncate ps-4"
           onClick={handleShowBillHistory}
         >
           {history.Action}

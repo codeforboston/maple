@@ -4,13 +4,13 @@ import {
   Number,
   Optional,
   Record as R,
-  Static,
   String as RtString,
+  Static,
   Union
 } from "runtypes"
+import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
-import { Role } from "../auth/types"
 
 const maxTestimonyLength = 10_000
 
@@ -40,14 +40,16 @@ export const Testimony = withDefaults(
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),
     representativeDistrict: Optional(RtString),
-    draftAttachmentId: Maybe(RtString)
+    draftAttachmentId: Maybe(RtString),
+    fullName: RtString
   }),
   {
     authorRole: "user",
     // ID is backfilled
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
-    authorDisplayName: "Anonymous"
+    authorDisplayName: "Anonymous",
+    billTitle: ""
   }
 )
 

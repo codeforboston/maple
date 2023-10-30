@@ -19,6 +19,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .navbar_box:first-child > * {
@@ -37,4 +38,12 @@
 
 .content {
   flex: 1;
+}
+
+.center_menu {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
 }

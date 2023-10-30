@@ -10,13 +10,17 @@ export const StepChip = styled<{
   return <div {...rest} />
 })`
   background-color: var(
-    ${({ active = false }) => (active ? "--bs-green" : "--bs-blue")}
+    ${({ active = false }) => (active ? "--bs-green" : "--bs-white")}
   );
   font-size: ${({ scale = 1 }) => scale * 1.25}rem;
   width: ${({ scale = 1 }) => scale * chipHeight}rem;
   height: ${({ scale = 1 }) => scale * chipHeight}rem;
   font-style: bold;
-  color: white;
+  color: var(${({ active = false }) => (active ? "--bs-white" : "--bs-blue")});
+  border-style: solid;
+  border-width: 1px;
+  border-color: ${({ active = false }) =>
+    active ? "transparent" : "var(--bs-blue)"};
   border-radius: 50%;
   display: flex;
   align-items: center;

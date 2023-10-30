@@ -151,6 +151,7 @@ export const createNewTestimony = async (uid: string, billId: string) => {
   const testimony: Testimony = {
     id: tid,
     authorUid: uid,
+    fullName: "none",
     authorDisplayName: "none",
     authorRole: "user",
     billTitle: "An act",

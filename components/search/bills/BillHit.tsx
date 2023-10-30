@@ -10,8 +10,11 @@ import { format, fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
-import { Card, Col } from "../bootstrap"
-import { formatBillId } from "../formatting"
+import { Card, Col } from "../../bootstrap"
+import { formatBillId } from "../../formatting"
+import { Timestamp } from "firebase/firestore"
+import { DateTime } from "luxon"
+import { dateInFuture } from "components/db/events"
 
 type BillRecord = {
   number: string
@@ -102,8 +105,7 @@ const StyledCard = styled(Card)`
 
 const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   return (
-    // remove visually-hidden tag once Production search server is sorted out
-    <div className="testimonyCount, visually-hidden">
+    <div className="testimonyCount">
       <FontAwesomeIcon className="endorse" icon={faCheckCircle} />
       {hit.endorseCount}
       <FontAwesomeIcon className="neutral" icon={faMinusCircle} />
@@ -114,8 +116,28 @@ const TestimonyCount = ({ hit }: { hit: Hit<BillRecord> }) => {
   )
 }
 
+export const DisplayUpcomingHearing = ({
+  nextHearingAt,
+  children
+}: {
+  nextHearingAt: number | Timestamp | undefined
+  children: React.ReactNode
+}) => {
+  if (nextHearingAt && dateInFuture(nextHearingAt)) {
+    return <>{children}</>
+  }
+
+  return null
+}
+
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
+  const today = new Date()
+  const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
+  const isUpcomingHearing = hearingDate
+    ? today < fromUnixTime(hearingDate)
+    : false
+
   return (
     <Link href={url}>
       <a style={{ all: "unset" }} className="w-100">
@@ -152,10 +174,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               </Col>
             </div>
           </Card.Body>
-          {hit.nextHearingAt ? (
+          {hit.nextHearingAt && dateInFuture(hit.nextHearingAt) ? (
             <Card.Footer className="card-footer">
-              Hearing Scheduled{" "}
-              {format(fromUnixTime(hit.nextHearingAt / 1000), "M/d/y p")}
+              Hearing Scheduled {format(fromUnixTime(hearingDate!), "M/d/y p")}
             </Card.Footer>
           ) : null}
         </StyledCard>

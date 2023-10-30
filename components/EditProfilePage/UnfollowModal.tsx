@@ -28,8 +28,11 @@ export default function unfollow({
   const handleTopic = () => {
     if (unfollow?.type == "bill") {
       return ` Bill ${formatBillId(unfollow?.typeId)}`
-    } else {
+    } else if (unfollow?.type == "org") {
       return ` ${unfollow?.orgName}`
+    } else {
+      // throw new Error(`Unexpected type: ${unfollow?.type}`);
+      return "" // DEBUG: not returning a string here causes the modal to crash
     }
   }
 

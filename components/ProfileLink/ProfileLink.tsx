@@ -43,6 +43,7 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleNav = () => setIsExpanded(expanded => !expanded)
   const closeNav = () => setIsExpanded(false)
+  const userLink = "/profile?id=" + user?.uid
 
   return (
     <Navbar
@@ -62,15 +63,16 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               ></Image>
-              {greeting(role, fullName)}
+              {sticky ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">
             <Nav className="me-4 d-flex align-items-end">
               <NavLink
                 className={"navLink-primary"}
-                href="/profile"
-                handleClick={closeNav}
+                handleClick={() => {
+                  location.assign(userLink)
+                }}
               >
                 View Profile
               </NavLink>
@@ -94,9 +96,9 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
           </Navbar.Collapse>
         </>
       ) : sticky ? (
-        <SignInWithButton />
-      ) : (
         <></>
+      ) : (
+        <SignInWithButton />
       )}
     </Navbar>
   )
