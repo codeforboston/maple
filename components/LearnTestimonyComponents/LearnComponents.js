@@ -43,7 +43,7 @@ const BasicsContent = [
     title:
       "The key role of testimony is to let your legislators know how you feel about an issue",
     paragraph:
-      "If you don't share your perspective, it may not be taken into account when policymakers make decisions about the laws that govern all our lives.",
+      "If you don't share your perspective, it will not be taken into account when policymakers make decisions about the laws that govern all our lives.",
     src: "why.svg",
     alt: "why"
   }
