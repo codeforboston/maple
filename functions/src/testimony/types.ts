@@ -49,6 +49,7 @@ export const Testimony = withDefaults(
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
     authorDisplayName: "Anonymous",
+    fullName: "Anonymous",
     billTitle: ""
   }
 )
@@ -74,6 +75,7 @@ export const TestimonySearchRecord = R({
   authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
-  publishedAt: Number
+  publishedAt: Number,
+  fullName: RtString
 })
 export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>
