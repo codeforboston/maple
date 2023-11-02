@@ -1,19 +1,18 @@
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
-import { useState, useEffect } from "react"
+import ErrorPage from "next/error"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
+import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
-import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { ProfileAboutSection } from "./ProfileAboutSection"
+import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
-import { ProfileHeader } from "./ProfileHeader"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import ErrorPage from "next/error"
-import { isPending } from "@reduxjs/toolkit"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -53,12 +52,6 @@ export function ProfilePage(profileprops: {
   useEffect(() => {
     onProfilePublicityChanged(profile?.public)
   }, [profile?.public])
-
-  const bannerContent = isProfilePublic ? (
-    <Banner> {t("content.publicProfile")} </Banner>
-  ) : (
-    <Banner> {t("content.privateProfile")} </Banner>
-  )
 
   return (
     <>
