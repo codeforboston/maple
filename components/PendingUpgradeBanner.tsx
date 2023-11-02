@@ -1,9 +1,13 @@
 import { MessageBanner } from "./shared/MessageBanner"
+import { useTranslation } from "next-i18next"
 
-export const PendingUpgradeBanner = () => (
-  <MessageBanner
-    icon={"/Clock.svg"}
-    heading={"Organization Request In Progress"}
-    content="Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
-  />
-)
+export const PendingUpgradeBanner = () => {
+  const { t } = useTranslation("common")
+  return (
+    <MessageBanner
+      icon={"/Clock.svg"}
+      heading={t("pending_upgrade_warning.header")}
+      content={t("pending_upgrade_warning.content")}
+    />
+  )
+}
