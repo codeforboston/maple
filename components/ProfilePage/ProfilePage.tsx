@@ -12,6 +12,8 @@ import { StyledContainer } from "./StyledProfileComponents"
 import { ProfileHeader } from "./ProfileHeader"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 import ErrorPage from "next/error"
+import { isPending } from "@reduxjs/toolkit"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -24,6 +26,7 @@ export function ProfilePage(profileprops: {
   )
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isUser = user?.uid === profileprops.id
+  const isPendingUpgrade = profile?.role === "pendingUpgrade"
   const isOrg: boolean =
     profile?.role === "organization" ||
     profile?.role === "pendingUpgrade" ||
@@ -67,8 +70,21 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
-              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
-              {isUser && bannerContent}
+              {isUser ? (
+                isPendingUpgrade ? (
+                  <PendingUpgradeBanner />
+                ) : (
+                  <>
+                    <Banner> {t("content.viewingProfile")} </Banner>
+                    <Banner>
+                      {isProfilePublic
+                        ? t("content.publicProfile")
+                        : t("content.privateProfile")}
+                    </Banner>
+                  </>
+                )
+              ) : null}
+
               <StyledContainer>
                 <ProfileHeader
                   isMobile={isMobile}
