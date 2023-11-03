@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Banner } from "./StyledSharedComponents"
 
 export type Props = {
-  children?: ReactNode
+children?: ReactNode
   className?: string
   heading?: string | ReactNode
   content?: string | ReactNode
@@ -32,7 +32,7 @@ const MessageBannerContent = styled("div")`
 export function MessageBanner(props: Props) {
   const { icon, heading, content, ...rest } = props
   return (
-    <Banner {...rest} className="align-items-center py-4 px-5">
+    <Banner {...rest} className="align-items-center py-4 px-3 m-0">
       <Col xs={"auto"} className="flex mh-50 p-2">
         {icon && <Image style={{ height: "2.8rem" }} src={icon} alt="" />}
       </Col>

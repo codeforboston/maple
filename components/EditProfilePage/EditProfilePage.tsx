@@ -79,7 +79,7 @@ export function EditProfileForm({
   const isOrg =
     profile.role === "organization" || profile.role === "pendingUpgrade"
 
-  const isPendingUpgrade = profile.role === "pendingUpgrade"
+  const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
 
   const { t } = useTranslation("editProfile")
 

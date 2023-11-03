@@ -18,14 +18,14 @@ export function ProfilePage(profileprops: {
   id: string
   verifyisorg?: boolean
 }) {
-  const { user } = useAuth()
+  const { user, claims } = useAuth()
   const { result: profile, loading } = usePublicProfile(
     profileprops.id,
     profileprops.verifyisorg
   )
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isUser = user?.uid === profileprops.id
-  const isPendingUpgrade = profile?.role === "pendingUpgrade"
+  const isPendingUpgrade = claims?.role === "pendingUpgrade"
   const isOrg: boolean =
     profile?.role === "organization" ||
     profile?.role === "pendingUpgrade" ||
