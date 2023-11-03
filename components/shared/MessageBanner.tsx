@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Banner } from "./StyledSharedComponents"
 
 export type Props = {
-children?: ReactNode
+  children?: ReactNode
   className?: string
   heading?: string | ReactNode
   content?: string | ReactNode
