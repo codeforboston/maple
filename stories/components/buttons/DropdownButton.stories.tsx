@@ -13,22 +13,24 @@ export default createMeta({
 const Template: ComponentStory<typeof DropdownButton> = ({
   title,
   children,
+  variant,
   styling
 }) => {
   return (
-    <DropdownButton title={title} styling={styling}>
+    <DropdownButton title={title} styling={styling} variant={variant}>
       {children}
     </DropdownButton>
   )
 }
 
-// export const Primary = Template.bind({})
-// Primary.args = {
-//   title: "Title",
-//   children:[{id: 1, itemName: "item1"}, {id: 2, itemName: "item2"}, {id: 3, itemName: "item3"}],
-//   styling: {
-//     width: { desktop: "418px", mobile: "418px" },
-//     height: "40px",
-//     fontSize: "16px"
-//   }
-// }
+export const Primary = Template.bind({})
+Primary.args = {
+  title: "Title",
+  children: ["Item1", "Item2", "Item3"],
+  variant: "secondary",
+  styling: {
+    width: { desktop: "418px", mobile: "418px" },
+    height: "40px",
+    fontSize: "16px"
+  }
+}

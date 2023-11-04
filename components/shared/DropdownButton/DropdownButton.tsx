@@ -7,7 +7,8 @@ import { Fragment } from "react"
 
 export type DropdownButtonProps = {
   title: string
-  children: { id: number; itemName: string }[]
+  children: Array<string>
+  variant: string
   styling?: stylingProps
 }
 
@@ -50,6 +51,7 @@ const StyledDropdown = styled(Dropdown)`
 export function DropdownButton({
   title,
   children,
+  variant,
   styling
 }: DropdownButtonProps): JSX.Element {
   return (
@@ -57,10 +59,11 @@ export function DropdownButton({
       changewidth={styling?.width}
       changeheight={styling?.height}
       changefontsize={styling?.fontSize}
+      variant={variant}
     >
       <Dropdown.Toggle
         className={classNames(styles.dropdownToggle, "shadow-none", "toggle")}
-        variant="secondary"
+        variant={variant}
       >
         {title}
         <CarotIcon></CarotIcon>
@@ -72,16 +75,16 @@ export function DropdownButton({
               <></>
             ) : (
               <Dropdown.Divider
-                key={key.id * 100}
+                key={i * 100}
                 className={styles.divider}
               ></Dropdown.Divider>
             )}
             <Dropdown.Item
-              key={key.id}
+              key={key}
               className={classNames(styles.item, "item")}
-              href={`#${key.itemName}`}
+              href={`#${key}`}
             >
-              {key.itemName}
+              {key}
             </Dropdown.Item>
           </Fragment>
         ))}

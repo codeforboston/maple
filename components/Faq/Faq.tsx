@@ -11,8 +11,8 @@ export const Faq = () => {
   const mdMobile = useMediaQuery("(max-width: 768px)")
   const xsMobile = useMediaQuery("(max-width: 418px)")
 
-  const faqCardHeadings: Array<Headings> = faqContentCards.map(key => {
-    return { id: key.id, itemName: key.heading }
+  const faqCardHeadings: Array<string> = faqContentCards.map(key => {
+    return key.heading
   })
 
   interface Headings {
@@ -50,6 +50,7 @@ export const Faq = () => {
             key={dropdownTitle}
             title={dropdownTitle}
             styling={styling}
+            variant="secondary"
           >
             {faqCardHeadings}
           </DropdownButton>
