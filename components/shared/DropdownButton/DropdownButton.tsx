@@ -23,13 +23,16 @@ const StyledDropdown = styled(Dropdown)`
     width: ${props =>
       props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
     height: ${props => (props.changeheight ? props.changeheight : "40px")};
-    fontsize: ${props =>
-      props.changefontsize ? props.changefontsize : "16px"};
+    font-size: ${props =>
+      props.changefontsize ? props.changefontsize : "1rem"};
   }
 
   .menu {
     width: ${props =>
       props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
+
+    font-size: ${props =>
+      props.changefontsize ? props.changefontsize : "1rem"};
   }
 
   .carotIcon {

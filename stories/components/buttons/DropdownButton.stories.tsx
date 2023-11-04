@@ -31,6 +31,6 @@ Primary.args = {
   styling: {
     width: { desktop: "418px", mobile: "418px" },
     height: "40px",
-    fontSize: "16px"
+    fontSize: "1rem"
   }
 }
