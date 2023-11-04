@@ -6,14 +6,14 @@ const NuLawLabCardContent = () => {
   return (
     <>
       <Row className="mb-5">
-        <Col className="text-center align-self-center" md={6}>
+        <Col className="text-center align-self-center" md={3}>
           <Image
             fluid
-            src="/nu_school_of_law.png"
+            src="/northeastern_school_of_law_logo.svg"
             alt="Northeatern School of Law icon"
           />
         </Col>
-        <Col className="align-self-center" md={6}>
+        <Col className="align-self-center" md={9}>
           <p className={styles.content}>
             The{" "}
             <a
@@ -31,7 +31,10 @@ const NuLawLabCardContent = () => {
             >
               Northeastern University School of Law
             </a>
-            . The Lab is a leader in the{" "}
+            .
+          </p>
+          <p className={styles.content}>
+            The Lab is a leader in the{" "}
             <a
               href="https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/"
               target="_blank"
@@ -51,14 +54,14 @@ const CodeForBostonCardContent = () => {
   return (
     <>
       <Row className="mb-3">
-        <Col className="text-center align-self-center" md={6}>
+        <Col className="text-center align-self-center" md={3}>
           <Image
             fluid
             src="/codeforbostonicon.png"
             alt="Code for Boston icon"
           />
         </Col>
-        <Col className="align-self-center" md={6}>
+        <Col className="align-self-center" md={9}>
           <p className={styles.content}>
             Code for Boston addresses local social and civic challenges through
             creative uses of technology. Despite the name, they are not solely
@@ -90,4 +93,28 @@ const CodeForBostonCardContent = () => {
   )
 }
 
-export { NuLawLabCardContent, CodeForBostonCardContent }
+const OpenCollectiveContent = () => {
+  return (
+    <>
+      <Row className="mb-3">
+        <Col className="text-center align-self-center" md={3}>
+          <Image
+            fluid
+            src="/open_collective_logo.png"
+            alt="open_collective_logo"
+          />
+        </Col>
+        <Col className="align-self-center" md={9}>
+          <p className={styles.content}>
+            MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open
+            Collective Foundation (OCF). You can see a full list of our donors
+            and expenditures on our Open Collective webpage. You can also join
+            the list and make a donation through the sit.
+          </p>
+        </Col>
+      </Row>
+    </>
+  )
+}
+
+export { NuLawLabCardContent, CodeForBostonCardContent, OpenCollectiveContent }

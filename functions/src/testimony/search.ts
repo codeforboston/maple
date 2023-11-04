@@ -41,7 +41,8 @@ export const {
       authorUid: testimony.authorUid,
       authorRole: testimony.authorRole,
       version: testimony.version,
-      publishedAt: testimony.publishedAt.toMillis()
+      publishedAt: testimony.publishedAt.toMillis(),
+      fullName: testimony.fullName
     }
     return TestimonySearchRecord.check(record)
   }
