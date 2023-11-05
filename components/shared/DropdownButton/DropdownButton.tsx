@@ -20,19 +20,15 @@ export type stylingProps = {
 
 const StyledDropdown = styled(Dropdown)`
   .toggle {
-    width: ${props =>
-      props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
-    height: ${props => (props.changeheight ? props.changeheight : "40px")};
-    font-size: ${props =>
-      props.changefontsize ? props.changefontsize : "1rem"};
+    width: ${props => props.changewidth?.desktop ?? "418px"};
+    height: ${props => props.changeheight ?? "40px"};
+    font-size: ${props => props.changefontsize ?? "1rem"};
   }
 
   .menu {
-    width: ${props =>
-      props.changewidth?.desktop ? props.changewidth?.desktop : "418px"};
+    width: ${props => props.changewidth?.desktop ?? "418px"};
 
-    font-size: ${props =>
-      props.changefontsize ? props.changefontsize : "1rem"};
+    font-size: ${props =>props.changefontsize ?? "1rem"};
   }
 
   .carotIcon {
@@ -41,12 +37,10 @@ const StyledDropdown = styled(Dropdown)`
 
   @media only screen and (max-width: 768px) {
     .toggle {
-      width: ${props =>
-        props.changewidth?.mobile ? props.changewidth?.mobile : "418px"};
+      width: ${props => props.changewidth?.mobile ?? "418px"};
     }
     .menu {
-      width: ${props =>
-        props.changewidth?.mobile ? props.changewidth?.mobile : "418px"};
+      width: ${props => props.changewidth?.mobile ?? "418px"};
     }
   }
 `
