@@ -1,9 +1,5 @@
 .dropdownToggle {
   border-radius: 8px;
-  font-family: "Nunito";
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 1.5%;
   display: flex;
   justify-content: space-between;
   align-items: center;

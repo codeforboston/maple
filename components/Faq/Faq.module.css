@@ -5,10 +5,9 @@
 
 .faqHeader {
   margin: 1.5rem 0rem 1.5rem 2rem;
-  display: flex;
 }
 
-.faqHeader > h1 {
+.faqHeader h1 {
   font-size: 3rem;
 }
 

@@ -3,13 +3,12 @@ import classNames from "classnames"
 import styled from "styled-components"
 import styles from "./dropdownButton.module.css"
 import { CarotIcon } from "./CarotIcon"
-import { Fragment } from "react"
 
 export type DropdownButtonProps = {
   title: string
   children: Array<string>
   variant: string
-  styling?: stylingProps
+  className?: string
 }
 
 export type stylingProps = {
@@ -19,29 +18,18 @@ export type stylingProps = {
 }
 
 const StyledDropdown = styled(Dropdown)`
-  .toggle {
-    width: ${props => props.changewidth?.desktop ?? "418px"};
-    height: ${props => props.changeheight ?? "40px"};
-    font-size: ${props => props.changefontsize ?? "1rem"};
+  .dropdown-toggle {
+    height: 40px;
   }
 
-  .menu {
-    width: ${props => props.changewidth?.desktop ?? "418px"};
-
-    font-size: ${props =>props.changefontsize ?? "1rem"};
+  .dropdown,
+  .dropdown-toggle,
+  .dropdown-menu {
+    width: 100%;
   }
 
   .carotIcon {
     fill: #ffffff;
-  }
-
-  @media only screen and (max-width: 768px) {
-    .toggle {
-      width: ${props => props.changewidth?.mobile ?? "418px"};
-    }
-    .menu {
-      width: ${props => props.changewidth?.mobile ?? "418px"};
-    }
   }
 `
 
@@ -49,15 +37,10 @@ export function DropdownButton({
   title,
   children,
   variant,
-  styling
+  className
 }: DropdownButtonProps): JSX.Element {
   return (
-    <StyledDropdown
-      changewidth={styling?.width}
-      changeheight={styling?.height}
-      changefontsize={styling?.fontSize}
-      variant={variant}
-    >
+    <StyledDropdown variant={variant} className={className}>
       <Dropdown.Toggle
         className={classNames(styles.dropdownToggle, "shadow-none", "toggle")}
         variant={variant}
@@ -66,25 +49,21 @@ export function DropdownButton({
         <CarotIcon></CarotIcon>
       </Dropdown.Toggle>
       <Dropdown.Menu className={classNames(styles.menu, "border", "menu")}>
-        {children.map((key, i) => (
-          <Fragment key={i * 200}>
-            {i === 0 ? (
-              <></>
-            ) : (
-              <Dropdown.Divider
-                key={i * 100}
-                className={styles.divider}
-              ></Dropdown.Divider>
-            )}
-            <Dropdown.Item
-              key={key}
-              className={classNames(styles.item, "item")}
-              href={`#${key}`}
-            >
-              {key}
-            </Dropdown.Item>
-          </Fragment>
-        ))}
+        {children.map((key, i) => [
+          i > 0 && (
+            <Dropdown.Divider
+              key={`${key}-divider}`}
+              className={styles.divider}
+            />
+          ),
+          <Dropdown.Item
+            key={key}
+            className={classNames(styles.item, "item")}
+            href={`#${key}`}
+          >
+            {key}
+          </Dropdown.Item>
+        ])}
       </Dropdown.Menu>
     </StyledDropdown>
   )

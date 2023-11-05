@@ -9,13 +9,22 @@ type faqQandAProps = {
 
 export const FaqQandA = ({ question, answer }: faqQandAProps) => {
   const [isOpen, setOpen] = useState(false)
+  const questionId = encodeURIComponent(question)
+  const onClick = () => {
+    if (!isOpen) {
+      // Add the question to the URL but do not scroll to it.
+      history.pushState(null, "", `#${questionId}`)
+    }
+    setOpen(!isOpen)
+  }
 
   return (
     <>
       <div
-        onClick={() => setOpen(!isOpen)}
+        onClick={onClick}
         aria-controls="collapse-text"
         aria-expanded={isOpen}
+        id={questionId}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           {isOpen ? (
