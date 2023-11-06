@@ -8,19 +8,18 @@ const StyledName = styled(Internal)`
 `
 
 export const Author = ({ uid, name }: { uid: string; name: string }) => {
+  // Check if profile is public, or user is owner of testimony
   const profile = usePublicProfile(uid)
-
-  const authorName = profile.loading ? "" : profile.result?.fullName
   const linkToProfile = !!profile.result
   return (
     <div>
-      {linkToProfile ? (
-        <h6>
-          <StyledName href={`/profile?id=${uid}`}>{authorName}</StyledName>
-        </h6>
-      ) : (
-        <h6>{authorName || name}</h6>
-      )}
+      <h6>
+        {linkToProfile ? (
+          <StyledName href={`/profile?id=${uid}`}>{name}</StyledName>
+        ) : (
+          name
+        )}
+      </h6>
     </div>
   )
 }
