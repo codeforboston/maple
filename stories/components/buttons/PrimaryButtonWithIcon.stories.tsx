@@ -1,15 +1,23 @@
-import { createMeta } from "stories/utils"
+import { Title } from "@storybook/addon-docs"
 import Image from "react-bootstrap/Image"
-
+import { createMeta } from "stories/utils"
 // TODO: move into components directory
+import { ComponentStory } from "@storybook/react"
+import { Stack } from "react-bootstrap"
 import {
   PrimaryButtonWithIcon,
   PrimaryButtonWithIconProps
 } from "./PrimaryButtonWithIcon"
-import { ComponentStory } from "@storybook/react"
-import { Stack } from "react-bootstrap"
 
 const Icon = () => <Image src="star.svg" alt="" className="m-auto" />
+
+const pageArgs: PrimaryButtonWithIconProps = {
+  iconPosition: "left",
+  label: "Label",
+  onClick: () => {},
+  Icon: <Icon />,
+  disabled: false
+}
 
 export default createMeta({
   title: "Components/Buttons/PrimaryButtonWithIcon",
@@ -17,44 +25,47 @@ export default createMeta({
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A14373",
   component: PrimaryButtonWithIcon,
   parameters: {
-    background: "light"
+    background: "light",
+    docs: {
+      page: () => (
+        <Stack gap={2} className="col-4">
+          <Title>Primary Button With Icon</Title>
+          <Primary {...pageArgs} {...Primary.args} />
+          <Secondary {...pageArgs} {...Secondary.args} />
+          <Tertiary {...pageArgs} {...Tertiary.args} />
+        </Stack>
+      )
+    }
   },
   args: {
     iconPosition: "left",
     label: "Label",
-    onClick: () => {}
+    onClick: () => {},
+    Icon: <Icon />,
+    disabled: false
   }
 })
 
-const Template = (args: PrimaryButtonWithIconProps) => (
+const Template: ComponentStory<typeof PrimaryButtonWithIcon> = args => (
   <PrimaryButtonWithIcon {...args} />
 )
 
-export const Primary: ComponentStory<typeof PrimaryButtonWithIcon> =
-  Template.bind({})
+export const Primary = Template.bind({})
 
 Primary.args = {
-  variant: "primary",
-  Icon: <Icon />,
-  disabled: false
+  variant: "primary"
 }
 
-export const Secondary: ComponentStory<typeof PrimaryButtonWithIcon> =
-  Template.bind({})
+export const Secondary = Template.bind({})
 
 Secondary.args = {
-  variant: "outline-secondary",
-  disabled: false,
-  Icon: <Icon />
+  variant: "outline-secondary"
 }
 
-export const Tertiary: ComponentStory<typeof PrimaryButtonWithIcon> =
-  Template.bind({})
+export const Tertiary = Template.bind({})
 
 Tertiary.args = {
-  variant: "none",
-  disabled: false,
-  Icon: <Icon />
+  variant: "none"
 }
 
 export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
