@@ -30,16 +30,26 @@ export const script: Script = async ({ db }) => {
       const displayName = data.public ? fullName : "<private user>"
 
       for (const doc of publishedTestimony) {
-        writer.update(doc.ref, {
-          authorDisplayName: displayName,
-          fullName: fullName
-        })
+        writer.set(
+          doc.ref,
+          {
+            ...data,
+            authorDisplayName: displayName,
+            fullName: fullName
+          },
+          { merge: true }
+        )
       }
       for (const doc of draftTestimony) {
-        writer.update(doc.ref, {
-          authorDisplayName: displayName,
-          fullName: fullName
-        })
+        writer.set(
+          doc.ref,
+          {
+            ...data,
+            authorDisplayName: displayName,
+            fullName: fullName
+          },
+          { merge: true }
+        )
       }
     } catch (error) {
       // Log the error and continue with the next user
