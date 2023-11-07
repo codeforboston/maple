@@ -131,7 +131,6 @@ const Form = ({
       </links.Internal>
       <Overview className="mt-3" />
       {isMobile && (step == "write" || step == "publish" || step == "share")? <KeepNoteMobile />: null}
-    
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
       {content[step]}
     </FormContainer>

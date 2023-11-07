@@ -60,7 +60,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
   return (
     <div {...rest}>
-      <StepHeader>Confirm and Send</StepHeader>
+      <StepHeader step={3}>Confirm and Send</StepHeader>
       <SelectRecipients className="mt-4" />
       <YourTestimony type="draft" className="mt-4" />
 

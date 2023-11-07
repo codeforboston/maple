@@ -11,7 +11,7 @@ export const StepHeader = styled<{ step?: number }>(
         <Col md={2} className={`d-flex ${isMobile ? "justify-content-center" : ""}`}>
           <div className="m-auto" >
             {!!step && (
-              <StepChip scale={2} className="me-4">
+              <StepChip scale={2} active={true} className="me-4">
                 {step}
               </StepChip>
             )}
