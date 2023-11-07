@@ -4,6 +4,23 @@ import { FaqCard } from "./FaqCard"
 import styles from "./Faq.module.css"
 import { faqContentCards } from "./faqContent"
 import { DropdownButton } from "../shared/DropdownButton/DropdownButton"
+import styled from "styled-components"
+
+const StyledDropdown = styled(DropdownButton)`
+  .dropdown {
+    background-color: red;
+  }
+
+  .dropdown-toggle {
+    height: 80px;
+    background-color: green;
+  }
+
+  .dropdown-item {
+    background-color: blue;
+    font-size: 2rem;
+  }
+`
 
 export const Faq = () => {
   const faqCardHeadings: Array<string> = faqContentCards.map(key => {
@@ -20,13 +37,13 @@ export const Faq = () => {
           <h1>{header1}</h1>
         </Col>
         <Col xs={12} sm={6} className="align-self-center">
-          <DropdownButton
+          <StyledDropdown
             key={dropdownTitle}
             title={dropdownTitle}
             variant="secondary"
           >
             {faqCardHeadings}
-          </DropdownButton>
+          </StyledDropdown>
         </Col>
       </Row>
 
