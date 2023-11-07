@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import styled from "styled-components"
-import { Col, Container, Image, Row, Spinner, Button, Collapse } from "../bootstrap"
+import { Col, Container, Image, Row, Spinner, Button, Collapse, Modal } from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
@@ -15,7 +15,7 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-import { KeepNote } from "./KeepNote"
+import { KeepNote, YourTestimony, PublishingToMAPLE, KeepNoteMobile } from "./KeepNote"
 
 const Background = styled.div`
   background: var(--bs-white);
@@ -119,6 +119,7 @@ const Form = ({
     publish: <PublishTestimony />,
     share: <ShareTestimony />
   }
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
     <FormContainer>
@@ -129,6 +130,8 @@ const Form = ({
         Back to Bill (Bill {bill.id})
       </links.Internal>
       <Overview className="mt-3" />
+      {isMobile && (step == "write" || step == "publish" || step == "share")? <KeepNoteMobile />: null}
+    
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
       {content[step]}
     </FormContainer>
@@ -157,3 +160,4 @@ const Overview = ({ className }: { className: string }) => (
     </Row>
   </div>
 )
+
