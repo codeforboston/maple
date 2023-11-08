@@ -33,7 +33,6 @@ export const script: Script = async ({ db }) => {
         writer.set(
           doc.ref,
           {
-            ...data,
             authorDisplayName: displayName,
             fullName: fullName
           },
@@ -44,7 +43,6 @@ export const script: Script = async ({ db }) => {
         writer.set(
           doc.ref,
           {
-            ...data,
             authorDisplayName: displayName,
             fullName: fullName
           },
