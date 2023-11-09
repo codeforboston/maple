@@ -41,18 +41,6 @@ describe("profile", () => {
     return profile
   }
 
-  async function testDBConnection() {
-    const newUser = fakeUser()
-    await setNewProfile(newUser)
-    let profile = await getProfile(newUser)
-    return profile
-  }
-
-  it("tests db conn", async () => {
-    const profile = await testDBConnection()
-    expect(profile).toBeDefined()
-  })
-
   it("Sets the fullName for new users", async () => {
     const expected = fakeUser()
     expect(await getProfile(expected)).toBeUndefined()
@@ -61,19 +49,6 @@ describe("profile", () => {
     expect(profile.role).not.toBeDefined()
   })
 
-  it("Is publicly readable by default", async () => {
-    // this req was updated in June 2023
-    const newUser = fakeUser()
-    await testAuth.createUser(newUser)
-    const profileRef = testDb.doc(`profiles/${newUser.uid}`)
-    await profileRef.set(newUser)
-    await profileRef.update("public", true)
-    await signInUser1()
-    const newProfile = await getDoc(doc(firestore, `profiles/${newUser.uid}`))
-    expect(newProfile.exists).toBeTruthy()
-
-    await signOut(auth)
-  })
 
   it("Is publicly readable when public", async () => {
     const user1 = await signInUser1()
@@ -103,7 +78,7 @@ describe("profile", () => {
     )
   })
 
-  it("Is readable when not public by own user", async () => {
+  it("Is always readable to owner", async () => {
     const user1 = await signInUser1()
     const profileRef = doc(firestore, `profiles/${user1.uid}`)
     await setPublic(profileRef, false)

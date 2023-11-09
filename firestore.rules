@@ -48,7 +48,7 @@ service cloud.firestore {
       allow read: if resource.data.public || request.auth.uid == uid
       allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
       
-      allow update: if validUser() && validPublicChange()
+      allow update: if validUser() && validRoleChange() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
