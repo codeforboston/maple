@@ -1,30 +1,26 @@
+import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { Bill } from "../db"
-import { setFollow, setUnfollow, TopicQuery } from "./FollowingQueries"
-import { flags } from "components/featureFlags"
-import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
+import { TopicQuery, setFollow, setUnfollow } from "./FollowingQueries"
 
-export const FollowButton = ({
-  bill,
-  profileid
+export const BaseFollowButton = ({
+  topicName,
+  followAction,
+  unfollowAction,
+  hide
 }: {
-  bill?: Bill
-  profileid?: string
+  topicName: string
+  followAction: () => Promise<void>
+  unfollowAction: () => Promise<void>
+  hide?: boolean
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("profile")
 
   const { user } = useAuth()
   const uid = user?.uid
-
-  const billId = bill?.id
-  const courtId = bill?.court
-  let topicName = ``
-  bill
-    ? (topicName = `bill-${courtId}-${billId}`)
-    : (topicName = `org-${profileid}`)
 
   const [queryResult, setQueryResult] = useState("")
 
@@ -35,12 +31,12 @@ export const FollowButton = ({
   }, [uid, topicName, setQueryResult])
 
   const FollowClick = async () => {
-    setFollow(uid, topicName, bill, billId, courtId, profileid)
+    await followAction()
     setQueryResult(topicName)
   }
 
   const UnfollowClick = async () => {
-    setUnfollow(uid, topicName)
+    await unfollowAction()
     setQueryResult("")
   }
 
@@ -49,77 +45,75 @@ export const FollowButton = ({
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="checkmark" />
   ) : null
-  const clickFunction = () => {
+  const handleClick = () => {
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
   return (
     <>
-      {flags().followOrg && (
-        <>
-          {bill ? (
-            <FollowBill
-              checkmark={checkmark}
-              clickFunction={clickFunction}
-              text={text}
-              uid={uid}
-            />
-          ) : (
-            <FollowOrg
-              checkmark={checkmark}
-              clickFunction={clickFunction}
-              text={text}
-            />
-          )}
-        </>
+      {!hide && (
+        <ButtonWithCheckmark
+          checkmark={checkmark}
+          handleClick={handleClick}
+          text={text}
+        />
       )}
     </>
   )
 }
 
-function FollowOrg({
+export const ButtonWithCheckmark = ({
   checkmark,
-  clickFunction,
-  text
+  handleClick,
+  text,
+  className
 }: {
   checkmark: JSX.Element | null
-  clickFunction: any
+  handleClick: any
   text: string
-}) {
+  className?: string
+}) => {
   return (
-    <div>
-      <div>
-        <div className="follow-button">
-          <Button onClick={clickFunction} className={`btn btn-lg py-1`}>
-            {text}
-            {checkmark}
-          </Button>
-        </div>
-      </div>
+    <div className="follow-button">
+      <Button onClick={handleClick} className={`btn btn-lg py-1 ${className}`}>
+        {text}
+        {checkmark}
+      </Button>
     </div>
   )
 }
 
-function FollowBill({
-  checkmark,
-  clickFunction,
-  text,
-  uid
-}: {
-  checkmark: JSX.Element | null
-  clickFunction: any
-  text: string
-  uid?: string
-}) {
+export function FollowOrgButton({ profileId }: { profileId: string }) {
+  const { user } = useAuth()
+  const uid = user?.uid
+  const topicName = `org-${profileId}`
+  const followAction = () =>
+    setFollow(uid, topicName, undefined, undefined, undefined, profileId)
+  const unfollowAction = () => setUnfollow(uid, topicName)
+
   return (
-    <Button
-      className={`btn btn-primary btn-sm ms-auto py-1 w-auto ${
-        uid ? "" : "visually-hidden"
-      }`}
-      onClick={clickFunction}
-    >
-      {text}
-      {checkmark}
-    </Button>
+    <BaseFollowButton
+      topicName={topicName}
+      followAction={followAction}
+      unfollowAction={unfollowAction}
+    />
+  )
+}
+
+export function FollowBillButton({ bill }: { bill: Bill }) {
+  const { user } = useAuth()
+  const uid = user?.uid
+  const { id: billId, court: courtId } = bill
+  const topicName = `bill-${courtId}-${billId}`
+  const followAction = () =>
+    setFollow(uid, topicName, bill, billId, courtId, undefined)
+  const unfollowAction = () => setUnfollow(uid, topicName)
+
+  return (
+    <BaseFollowButton
+      topicName={topicName}
+      followAction={followAction}
+      unfollowAction={unfollowAction}
+    />
   )
 }

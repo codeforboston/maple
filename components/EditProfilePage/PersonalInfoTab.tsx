@@ -112,9 +112,11 @@ export function PersonalInfoTab({
           <h4 className="mb-3">{t("forms.generalInfo")}</h4>
           <Row>
             <Input
-              label={t("forms.fullName")}
+              label={t(isOrg ? "forms.orgName" : "forms.fullName")}
               {...register("fullName", {
-                required: t("forms.errNameRequired").toString()
+                required: t(
+                  isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
+                ).toString()
               })}
               className="w-100"
               defaultValue={fullName}

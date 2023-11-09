@@ -27,7 +27,7 @@ export const PolicyActions: FC<PolicyActionsProps> = ({
   if (flags().notifications)
     items.push(
       <PolicyActionItem
-        onClick={() => window.alert("TODO")}
+        onClick={() => window.alert("TODO")} // TODO: add follow action here
         key="follow"
         billName={`Follow ${billLabel}`}
       />
