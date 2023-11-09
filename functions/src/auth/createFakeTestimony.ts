@@ -41,6 +41,7 @@ export const createFakeTestimony = functions.https.onCall(
       publishedAt: Timestamp.now(),
       court: 192,
       position: "oppose",
+      fullName: fullName,
       content: fullName + " " + fullName + " " + fullName + " " + fullName
     }
 

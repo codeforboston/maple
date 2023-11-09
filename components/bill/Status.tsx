@@ -10,7 +10,8 @@ const StyledButton = styled(Button)`
   border-radius: 3rem 0 0 3rem;
   font-size: 1.5rem;
   line-height: 1.5rem;
-  max-width: 100%;
+  max-width: fit-content;
+  flex: 1;
 `
 
 export const CourtContext = createContext(1)

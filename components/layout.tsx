@@ -120,6 +120,11 @@ const TopNav: React.FC = () => {
 
                   <NavDropdown className={"navLink-primary"} title={"About"}>
                     <NavDropdown.Item>
+                      <NavLink href="/about/faq-page" handleClick={closeNav}>
+                        FAQ
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
                       <NavLink
                         href="/about/mission-and-goals"
                         handleClick={closeNav}

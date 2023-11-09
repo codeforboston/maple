@@ -43,7 +43,8 @@ export const createMockTestimony = (
     billId: billId ?? "H1002",
     court: 192,
     position: "oppose",
-    content: loremIpsum({ count: 5, units: "words" })
+    content: loremIpsum({ count: 5, units: "words" }),
+    fullName: "Anonymous"
   }
   return testimony
 }

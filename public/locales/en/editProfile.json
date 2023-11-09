@@ -4,6 +4,10 @@
     "privacySetting": "Privacy Settings",
     "save": "Save",
     "cancel": "Cancel",
+    "enable": "Enable",
+    "enabled": "Enabled",
+    "disable": "Disable",
+    "disabled": "Disabled",
     "viewMyProfile": "View My Profile",
     "viewOrgProfile": "View My Organization",
     "saveChanges":"Save Personal Information",
@@ -51,15 +55,18 @@
     "forms": {
         "generalInfo": "General Information",
         "fullName": "Full Name",
+        "orgName" : "Organization Name",
         "nickname": "Nickname",
         "makePublic": "Make Public",
         "makePrivate": "Make Private",
         "errNameRequired": "Name is required",
+        "errOrgNameRequired" : "Organization Name is required",
         "aboutYou": "Write something about yourself",
         "aboutYouTip":"What should you write?",
         "selectOrgCategory": "Select an organization cateogry",
         "notification": "Notifications",
-        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?"
+        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?",
+        "notificationFrequencyText": "How often would you like to receive these updates?"
     },
     "socialLinks": {
         "twitter": "Twitter Username",

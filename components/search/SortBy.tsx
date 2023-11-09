@@ -1,41 +1,29 @@
-import { useSortBy } from "@alexjball/react-instantsearch-hooks-web"
+import {
+  useSortBy,
+  useConfigure,
+  UseConfigureProps
+} from "@alexjball/react-instantsearch-hooks-web"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import Select from "react-select"
 import styled from "styled-components"
-
-const items: SortByItem[] = [
-  /**
-   * uncomment the commented sections below once Prod is pointing at the correct data
-   */
-
-  {
-    label: "Sort by Most Recent Testimony",
-    value: "bills/sort/latestTestimonyAt:desc"
-  },
-  {
-    label: "Sort by Relevance",
-    value: "bills/sort/_text_match:desc,testimonyCount:desc"
-  },
-  { label: "Sort by Testimony Count", value: "bills/sort/testimonyCount:desc" },
-  {
-    label: "Sort by Cosponsor Count",
-    value: "bills/sort/cosponsorCount:desc"
-  },
-  {
-    label: "Sort by Next Hearing Date",
-    value: "bills/sort/nextHearingAt:desc"
-  }
-]
-
-export const initialSortByValue = items[0].value
 
 const StyledSelect = styled(Select)`
   .s__control {
     background-color: var(--bs-blue);
     border: none;
+    box-shadow: none;
     min-height: 1rem;
     line-height: 1rem;
     cursor: pointer;
+  }
+
+  .s__option--is-selected {
+    background-color: transparent;
+    color: black;
+  }
+
+  .s__option--is-selected:hover {
+    background-color: #deebff;
   }
 
   .s__single-value,
@@ -52,9 +40,14 @@ const StyledSelect = styled(Select)`
   }
 `
 
-export const SortBy = ({ items }: { items: SortByItem[] }) => {
+export type SortByWithConfigurationItem = SortByItem & {
+  configure?: UseConfigureProps
+}
+
+export const SortBy = ({ items }: { items: SortByWithConfigurationItem[] }) => {
   const sortBy = useSortBy({ items }),
     selected = items.find(i => i.value === sortBy.currentRefinement)!
+  useConfigure(selected.configure ?? {})
   return (
     <StyledSelect
       classNamePrefix="s"

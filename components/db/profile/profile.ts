@@ -1,12 +1,19 @@
-import { deleteField, doc, getDoc, setDoc } from "firebase/firestore"
+import {
+  deleteField,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc
+} from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { useMemo, useReducer } from "react"
+import { useEffect, useMemo, useReducer, useState } from "react"
 import { useAsync } from "react-async-hook"
 import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
+import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 
@@ -82,8 +89,16 @@ export function useProfile() {
         }
       },
       updateIsPublic: async (isPublic: boolean) => {
-        if (uid) {
+        if (uid && isPublic !== profile?.public) {
           dispatch({ updatingIsPublic: true })
+          // Update the displayName for user's testimonies
+          if (profile) {
+            await updateUserDisplayNameTestimonies(
+              uid,
+              isPublic ? profile.fullName ?? "Anonymous" : "<private user>",
+              profile.fullName ?? "Anonymous"
+            )
+          }
           await updateIsPublic(uid, isPublic)
           dispatch({ updatingIsPublic: false })
         }
@@ -110,8 +125,14 @@ export function useProfile() {
         }
       },
       updateFullName: async (fullName: string) => {
-        if (uid) {
+        if (uid && fullName !== profile?.fullName) {
           dispatch({ updatingFullName: true })
+          // Update the displayName for user's testimonies
+          await updateUserDisplayNameTestimonies(
+            uid,
+            profile?.public ? fullName : "<private user>",
+            fullName
+          )
           await updateFullName(uid, fullName)
           dispatch({ updatingFullName: false })
         }
@@ -183,7 +204,7 @@ export function useProfile() {
         }
       }
     }),
-    [uid, state.updatingSocial, state.updatingContactInfo]
+    [uid, state.updatingSocial, state.updatingContactInfo, profile]
   )
 
   return useMemo(
@@ -195,6 +216,26 @@ export function useProfile() {
     }),
     [callbacks, loading, profile, state]
   )
+}
+
+// useUser hook to fetch user data
+export function useUser() {
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(true)
+
+  const [userProfile, setUserProfile] = useState<Profile | undefined>()
+
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = onSnapshot(profileRef(user.uid), doc => {
+        if (doc.exists()) {
+          setUserProfile(doc.data() as Profile)
+        }
+        setLoading(false)
+      })
+      return () => unsubscribe()
+    }
+  })
 }
 
 function updateRepresentative(
