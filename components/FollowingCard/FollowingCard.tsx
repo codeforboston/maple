@@ -33,30 +33,30 @@ const Item = styled.div`
 `
 
 export const FollowingCard: FC<Props> = ({ organizations }) => {
-  const { t } = useTranslation("common");
-  return(
-  <Container>
-    <Card
-      header={t("orgs").toString()}
-      subheader={t("button.followed").toString()}
-      initialRowCount={7}
-      items={organizations.map(({ name, iconSrc, href }) => {
-        return (
-          <Item key={name}>
-            <img
-              src={iconSrc}
-              alt={"icon for " + name}
-              width="45px"
-              height="45px"
-              className="rounded-circle"
-            />
-            <Link href={href} target="_blank" rel="noopener">
-              {name}
-            </Link>
-          </Item>
-        )
-      })}
-    />
-  </Container>
+  const { t } = useTranslation("common")
+  return (
+    <Container>
+      <Card
+        header={t("orgs").toString()}
+        subheader={t("button.followed").toString()}
+        initialRowCount={7}
+        items={organizations.map(({ name, iconSrc, href }) => {
+          return (
+            <Item key={name}>
+              <img
+                src={iconSrc}
+                alt={"icon for " + name}
+                width="45px"
+                height="45px"
+                className="rounded-circle"
+              />
+              <Link href={href} target="_blank" rel="noopener">
+                {name}
+              </Link>
+            </Item>
+          )
+        })}
+      />
+    </Container>
   )
 }
