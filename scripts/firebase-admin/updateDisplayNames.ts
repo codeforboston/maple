@@ -4,7 +4,7 @@ export const script: Script = async ({ db }) => {
   const writer = db.bulkWriter()
   const users = await db
     .collection("profiles")
-    .where("role", "in", ["user", "admin"])
+    .where("role", "in", ["user", "admin", "organization"])
     .get()
   console.log(`updating ${users.size} documents`)
   for (const user of users.docs) {

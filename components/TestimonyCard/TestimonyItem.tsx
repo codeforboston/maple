@@ -287,7 +287,7 @@ export const TestimonyItem = ({
           pointerEvents: "none"
         }}
       >
-        <ToastContainer position={"bottom-end"}>
+        <ToastContainer position={"top-center"} style={{ zIndex: 1 }}>
           {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
         </ToastContainer>
       </div>
