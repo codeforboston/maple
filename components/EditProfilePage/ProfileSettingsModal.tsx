@@ -73,7 +73,7 @@ const StyledRow = styled(Row)`
   font-size: 12px;
 `
 
-function renderPrivacyText(role: Role, isPublic: boolean) {
+function RenderPrivacyText(role: Role, isPublic: boolean) {
   const { t } = useTranslation("editProfile")
   switch (role) {
     case "organization":
@@ -118,7 +118,7 @@ export default function ProfileSettingsModal({
     buttonSecondary = "btn-outline-secondary"
   }
 
-  const privacyText = renderPrivacyText(role, isProfilePublic)
+  const privacyText = RenderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
 
   return (
@@ -179,9 +179,7 @@ export default function ProfileSettingsModal({
               className={`p-2 ${notifications === "None" ? "invisible" : ""}`}
               direction={`horizontal`}
             >
-              <Col className={`col-8`}>
-                {t("email.frequencyQuery")}
-              </Col>
+              <Col className={`col-8`}>{t("email.frequencyQuery")}</Col>
               <Col className={`d-flex justify-content-end`}>
                 <Dropdown className={`d-inline-block ms-auto`}>
                   <StyledDropdownToggle

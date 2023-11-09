@@ -32,7 +32,7 @@ const StyledModalBody = styled(Modal.Body)`
   padding: 0.8rem;
 `
 
-export default function unfollowItem({
+export default function UnfollowItem({
   handleUnfollowClick,
   onHide,
   onUnfollowClose,
@@ -48,7 +48,7 @@ export default function unfollowItem({
       return ` ${unfollowItem?.orgName}`
     }
   }
-  
+
   return (
     <Modal
       show={show}
@@ -61,7 +61,7 @@ export default function unfollowItem({
       </Modal.Header>
       <StyledModalBody className={`ms-auto me-auto`}>
         <Stack>
-          {t("comfirmation.unfollowMessage")}
+          {t("confirmation.unfollowMessage")}
           {handleTopic()}?
         </Stack>
         <Stack className={`mt-4`} direction={`horizontal`}>
@@ -70,7 +70,7 @@ export default function unfollowItem({
                 btn btn-sm btn-outline-secondary ms-auto py-1`}
             onClick={onUnfollowClose}
           >
-            {t("comfirmation.no")}
+            {t("confirmation.no")}
           </StyledButton>
           <StyledButton
             className={`
@@ -79,7 +79,7 @@ export default function unfollowItem({
               handleUnfollowClick({ uid, unfollowItem })
             }}
           >
-            {t("comfirmation.yes")}
+            {t("confirmation.yes")}
           </StyledButton>
         </Stack>
       </StyledModalBody>

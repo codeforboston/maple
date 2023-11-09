@@ -27,7 +27,7 @@
         "orgs": "Organizations You Follow",
         "unfollow": "Unfollow"
     },
-    "comfirmation":{
+    "confirmation":{
         "unfollowMessage": "Are you sure you want to unfollow",
         "yes": "Yes",
         "no": "No"

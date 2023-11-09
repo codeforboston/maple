@@ -40,15 +40,15 @@ export function UnsubscribeConfirm() {
           <StyledBody>
             <div>
               {isUser ? (
-                t("unsubscribeComfirmation", {ns:"unsubscribe"})
+                t("unsubscribeConfirmation", { ns: "unsubscribe" })
               ) : (
                 <br />
               )}
             </div>
             <div className={`${isUser ? "" : "mx-auto"}`}>
               {isUser
-                ? t("settingsChangeTip", {ns:"unsubscribe"})
-                : t("logInPrompt", {ns:"auth"})}
+                ? t("settingsChangeTip", { ns: "unsubscribe" })
+                : t("logInPrompt", { ns: "auth" })}
             </div>
             <Col className="mx-auto pt-4">
               <Button
@@ -56,13 +56,13 @@ export function UnsubscribeConfirm() {
                 disabled={isUser ? false : true}
                 onClick={handleClick}
               >
-                {t("continue", {ns:"auth"})}
+                {t("continue", { ns: "auth" })}
               </Button>
               <Button
                 className={`btn btn-sm btn-outline-secondary py-1`}
                 href="/"
               >
-                {t("cancel", {ns:"auth"})}
+                {t("cancel", { ns: "auth" })}
               </Button>
             </Col>
           </StyledBody>
