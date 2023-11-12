@@ -11,9 +11,11 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import { Testimony } from "functions/src/testimony/types"
 import { nanoid } from "nanoid"
-import { auth } from "../../components/firebase"
+import { auth, firestore } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
+import { fail } from "assert"
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -78,9 +80,8 @@ export const createFakeBill = () => createNewBill().then(b => b)
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
   console.warn = jest.fn()
-  const e = await work
-    .then(() => fail("expected promise to reject"))
-    .catch(e => e)
+  const e = await work.then(() => fail("permission-denied")).catch(e => e)
+
   expect(e.code).toMatch("permission-denied")
   console.warn = warn
 }
@@ -134,7 +135,6 @@ export const getUserData = (user: { uid: string }) =>
     .get()
     .then(d => d.data())
 
-/** Set a new profile */
 export const setNewProfile = (user: {
   uid: string
   fullName: string
@@ -142,11 +142,17 @@ export const setNewProfile = (user: {
   password: string
 }) => testDb.doc(`/profiles/${user.uid}`).set(user)
 
+/** Adds testimony to user's published collection.
+ * Returns functions to get, remove, and check where the testimony is.
+ */
+
 export const createNewTestimony = async (uid: string, billId: string) => {
+
   const tid = nanoid(6)
 
-  await signInTestAdmin()
+  const currentUserEmail = auth.currentUser?.email
 
+  await signInTestAdmin()
   const testRef = testDb.doc(`/users/${uid}/publishedTestimony/${tid}`)
   const testimony: Testimony = {
     id: tid,
@@ -197,7 +203,7 @@ export const createNewTestimony = async (uid: string, billId: string) => {
 
     const pubTest = await pubRef.where("id", "==", tid).get()
     const archTest = await archRef.where("id", "==", tid).get()
-
+    console.log(pubRef.id, archRef.id, pubTest, archTest)
     const result =
       !pubTest.empty && archTest.empty
         ? "pubTest"

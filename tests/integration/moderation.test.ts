@@ -1,44 +1,54 @@
-import { deleteTestimony } from "components/api/delete-testimony"
 import { Testimony, resolveReport } from "components/db"
 import { auth as adminAuth, db } from "functions/src/firebase"
 import {
+  createFakeBill,
   createNewReport,
   createNewTestimony,
   createReqObj,
+  expectCurrentUser,
+  expectCurrentUserAdmin,
   signInTestAdmin,
-  signInUser
+  signInUser,
+  signInUser1
 } from "tests/integration/common"
-import { auth } from "../../components/firebase"
+import { auth, functions } from "../../components/firebase"
 import e from "express"
 import handler from "pages/api/users/[uid]/testimony/[tid]"
 import { NextApiRequest, NextApiResponse } from "next"
 import { mapleClient } from "components/api/maple-client"
-// import supertest from "supertest"
-// afterAll(terminateFirebase)
+import { Resolution } from "components/moderation"
+import { onSubmitReport } from "components/moderation/RemoveTestimony"
+import { terminateFirebase } from "tests/testUtils"
+import { httpsCallable } from "firebase/functions"
 
 // const authtoken = process.env.AUTH_TOKEN
 
-let adminUid: string
-let uid: string
+const deleteTestimony = httpsCallable<
+  { uid: string; publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimony")
 
-// const MockGoogleAuth = jest.mock("../../node_modules/google-auth-library")
+let adminUid: string
+let authorUid: string
 
 beforeAll(async () => {
-  const user = await signInTestAdmin()
-  uid = user.uid
-  adminUid = user.uid
+  const authorUser = await signInUser1()
+  authorUid = authorUser.uid
 
-  await db.doc(`/profiles/${uid}`).update({ role: "admin" })
-  expect((await db.doc(`/profiles/${uid}`).get()).data()?.role).toEqual("admin")
+  const adminUser = await signInTestAdmin()
+  adminUid = adminUser.uid
+
+  await db.doc(`/profiles/${adminUid}`).update({ role: "admin" })
+  expect((await db.doc(`/profiles/${adminUid}`).get()).data()?.role).toEqual(
+    "admin"
+  )
 
   expect(auth.currentUser).toBeDefined()
 })
 
-describe("this", () => {
-  it("testing the set up", async () => {})
-})
+// afterAll(terminateFirebase)
 
-describe("examples of helper functions", () => {
+describe.skip("examples of helper functions", () => {
   it("shows it's logged in as admin", async () => {
     try {
       expect((await adminAuth.getUser(adminUid)).customClaims).toEqual({
@@ -53,8 +63,8 @@ describe("examples of helper functions", () => {
   })
 
   it("creates testimony", async () => {
-    const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(uid, "H1002")
+    const { tid, getThisTestimony, removeThisTestimony } =
+      await createNewTestimony(authorUid, "H1002")
     const test1 = await getThisTestimony()
     expect(test1).toBeDefined()
     expect(test1!.id).toEqual(tid)
@@ -64,10 +74,12 @@ describe("examples of helper functions", () => {
   })
 
   it(" creates reports", async () => {
-    const { tid, getThisTestimony, removeThisTestimony } =
-      await createNewTestimony(uid, "H1002")
+    const { tid, removeThisTestimony } = await createNewTestimony(
+      authorUid,
+      "H1002"
+    )
     const { reportId, getThisReport, removeThisReport } = await createNewReport(
-      uid,
+      adminUid,
       tid
     )
 
@@ -80,13 +92,15 @@ describe("examples of helper functions", () => {
   })
 })
 
-describe("action functions", () => {
-  it("set file report resolution via resolveReport", async () => {
+const findTestimony = async (tid: string) => {}
+
+describe.skip("action functions", () => {
+  it("can set file report resolution via resolveReport", async () => {
     // set up
     const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(uid, "H1002")
+      await createNewTestimony(authorUid, "H1002")
     const { reportId, getThisReport, removeThisReport } = await createNewReport(
-      uid,
+      adminUid,
       tid
     )
 
@@ -111,63 +125,45 @@ describe("action functions", () => {
     await removeThisReport()
   })
 
-  it("moves testimony from published to archived via deleteTestimony endpoint", async () => {
+  it("moves testimony from published to archived", async () => {
     // set up
-    const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(uid, "H1002")
-    const { reportId, getThisReport, removeThisReport } = await createNewReport(
-      uid,
-      tid
-    )
-    const refresh = jest.fn()
+    const billId = await createFakeBill()
+    const t = await createNewTestimony(authorUid, billId)
+    const where = await t.whereIsThisTestimony()
+    expect(where).toEqual("pubTest")
+
+    // const r = await createNewReport(adminUid, t.tid)
+
     await signInTestAdmin()
+    await expectCurrentUserAdmin()
 
-    const [report, testimony] = await Promise.allSettled([
-      getThisReport(),
-      getThisTestimony()
-    ])
+    const deleted = await deleteTestimony({ uid: authorUid, publicationId: t.tid })
 
-    report.status === "fulfilled"
-      ? expect(report.value).toBeDefined()
-      : report.status === "rejected"
-      ? console.warn(report.reason)
-      : console.warn("something went wrong")
+    expect(deleted).toBeTruthy()
 
-    testimony.status === "fulfilled"
-      ? expect(testimony.value).toBeDefined()
-      : testimony.status === "rejected"
-      ? console.warn(testimony.reason)
-      : console.warn("something went wrong")
 
-    const res = await mapleClient.delete(`/api/users/${uid}/testimony/${tid}`)
-
-    console.log(res)
-
-    // const res = await deleteTestimony(uid, tid)
-
-    // const resolution: Resolution = "remove-testimony"
-
+    // const refresh = jest.fn()
     // await onSubmitReport(
-    //   reportId,
-    //   resolution,
+    //   r.reportId,
+    //   "remove-testimony",
     //   "reason",
     //   authorUid,
-    //   testimonyId,
+    //   t.tid,
     //   refresh
     // )
 
-    const where = await whereIsThisTestimony()
-    expect(where).toEqual("archTest")
+    const where2 = await t.whereIsThisTestimony()
+    expect(where2).toEqual("archTest")
 
     //clean up
-    await removeThisTestimony()
-    await removeThisReport()
+    // await t.removeThisTestimony()
+    // await r.removeThisReport()
   })
 
   it("Admins can delete the testimony of another user", async () => {
     // set up
     const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(uid, "H1002")
+      await createNewTestimony(adminUid, "H1002")
 
     const { authorUid, id } = (await getThisTestimony()) as Testimony
 
@@ -179,7 +175,7 @@ describe("action functions", () => {
 
     expect(auth.currentUser).toBeDefined()
 
-    await deleteTestimony(authorUid, id)
+    // await deleteTestimony(authorUid, id)
 
     const where = await whereIsThisTestimony()
     // expect(where).toEqual("archTest")

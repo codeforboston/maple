@@ -9,12 +9,11 @@ import {
   expectPermissionDenied,
   getProfile,
   setNewProfile,
+  signInTestAdmin,
   signInUser,
   signInUser1,
   signInUser2
 } from "./common"
-
-import { fail } from "../../functions/src/common"
 
 const fakeUser = () => ({
   uid: nanoid(),
@@ -87,7 +86,7 @@ describe("profile", () => {
     expect(result.exists()).toBeTruthy()
   })
 
-  it("Can only be modified by the logged in user", async () => {
+  it("Can only be modified by the logged in user", async () => {  
     const newUser = fakeUser()
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     await expectProfile(newUser)
@@ -108,9 +107,11 @@ describe("profile", () => {
     const newUser = fakeUser()
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     await expectProfile(newUser)
-    await signInUser(newUser.email)
 
-    await expectPermissionDenied(updateDoc(profileRef, { role: "admin" }))
+    await signInUser(newUser.email)
+    // user cannot change their own role
+    await expectPermissionDenied(updateDoc(profileRef, { role: "any" }))
+    // user cannot delete their own profile
     await expectPermissionDenied(deleteDoc(profileRef))
   })
 

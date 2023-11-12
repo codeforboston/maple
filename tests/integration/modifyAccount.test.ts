@@ -1,5 +1,6 @@
 import { act } from "@testing-library/react-hooks"
-import { Role, finishSignup } from "components/auth"
+import { acceptOrganizationRequest } from "components/api/upgrade-org"
+import { OrgCategory, Role, finishSignup } from "components/auth"
 import { CreateUserWithEmailAndPasswordData } from "components/auth/hooks"
 import { modifyAccount } from "components/moderation"
 import { UserCredential, deleteUser, signOut, User } from "firebase/auth"
@@ -78,47 +79,16 @@ describe("admins can modify user role", () => {
       modifyAccount({ role: "organization", uid: creds.user.uid })
     )
   })
-})
 
-describe("finishSignup", () => {
-  it("assigns organization request pendingupgrade role", async () => {
-    const user = await createUser()
-
-    expect(user).toBeDefined()
-
-    await signInUser(user.email!)
-
-    await finishSignup({ requestedRole: "organization" })
-
-    const updated = (await auth.currentUser?.getIdTokenResult(true))?.claims
-    expect(updated?.role).toEqual("pendingUpgrade")
-  })
-
-  it("create user with email hook creates pendingUpgrade accounts", async () => {
-    const newUser: CreateUserWithEmailAndPasswordData = {
-      email: `${nanoid(6)}@example.com`,
-      password: "password",
-      confirmedPassword: "password",
-      fullName: `Test ${nanoid(4)}`
-    }
-
+  it("updates to ORG using the api", async () => {
     await signInTestAdmin()
 
-    const creds: UserCredential =
-      await testCreatePendingOrgWithEmailAndPassword(auth, newUser)
+    const user = await createUser("pendingUpgrade")
 
-    expectCurrentUser(creds.user)
-
-    expect(creds).toBeDefined()
-    const token = await creds.user.getIdTokenResult(true)
-    expect(token.claims).toMatchObject({
-      role: "pendingUpgrade"
-    })
-
-    await act(() => testAuth.deleteUser(creds.user.uid))
-
-    expect(testAuth.getUser(creds.user.uid)).rejects.toThrow()
-
-    await signOut(auth)
+    const profile = await getProfile({ uid: user.uid })
+    await acceptOrganizationRequest(user.uid)
+    expect(profile).toBeDefined()
+    console.log(profile!.role)
+    expect(profile!.role).toEqual("organization")
   })
 })

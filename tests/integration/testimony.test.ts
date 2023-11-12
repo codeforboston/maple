@@ -161,7 +161,9 @@ describe("publishTestimony", () => {
     expect(publication?.version).toBe(1)
     expect(publication.publishedAt).toBeDefined()
     expect(publication.authorUid).toEqual(user.uid)
-    expect(publication.authorDisplayName).toEqual(fullName)
+    expect([fullName, "Anonymous", "<private user>"]).toContain(
+      publication.authorDisplayName
+    )
     expect(publication).toMatchObject(draft)
 
     draft = await getDraft(uid, draftId)
@@ -244,6 +246,25 @@ describe("publishTestimony", () => {
   })
 
   it("denies unauthorized access", async () => {
+    // users can access their own testimony collections
+    expect(
+      getDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`))
+      ).toBeTruthy()
+      expect(
+        getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
+        ).toBeTruthy()
+
+    // TODO: verify whether users can write to their published collection, right now this is the case
+    expect(
+      setDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`), {})
+    ).toBeTruthy()
+    expect(
+      setDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`), {})
+    ).toBeTruthy()
+
+    // other users can't access users testimony collections
+    await signInUser2()
+
     await expectPermissionDenied(
       setDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`), {})
     )

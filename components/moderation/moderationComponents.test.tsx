@@ -1,6 +1,6 @@
 import React from "react"
 import { RemoveTestimonyForm } from "components/moderation/RemoveTestimony"
-import { createFakeTestimonyReport } from "../../components/moderation/setUp/MockRecords"
+import { createFakeTestimonyReport } from "./setUp/MockRecords"
 import { cleanup, render, act } from "@testing-library/react"
 import { screen } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
