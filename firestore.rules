@@ -37,7 +37,7 @@ service cloud.firestore {
       }
 
       // Always visible to the user and public if `public` is true.
-      allow read: if request.resource.data.public || request.auth.uid == uid
+      allow read: if resource.data.public || request.auth.uid == uid
       // Only normal "user" roles & admins can toggle visibility.
       allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
       

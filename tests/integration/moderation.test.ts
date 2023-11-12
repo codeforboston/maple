@@ -92,8 +92,6 @@ describe.skip("examples of helper functions", () => {
   })
 })
 
-const findTestimony = async (tid: string) => {}
-
 describe.skip("action functions", () => {
   it("can set file report resolution via resolveReport", async () => {
     // set up

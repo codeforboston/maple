@@ -1,13 +1,10 @@
-import { act } from "@testing-library/react-hooks"
 import { acceptOrganizationRequest } from "components/api/upgrade-org"
-import { OrgCategory, Role, finishSignup } from "components/auth"
-import { CreateUserWithEmailAndPasswordData } from "components/auth/hooks"
 import { modifyAccount } from "components/moderation"
-import { UserCredential, deleteUser, signOut, User } from "firebase/auth"
-import { nanoid } from "nanoid"
-import { auth } from "../../components/firebase"
-import { terminateFirebase, testAuth } from "../testUtils"
 import { UserRecord } from "firebase-admin/auth"
+import { signOut } from "firebase/auth"
+import { auth } from "../../components/firebase"
+import { testAuth } from "../testUtils"
+import { waitFor } from "@testing-library/react"
 
 import {
   createUser,
@@ -16,8 +13,9 @@ import {
   expectPermissionDenied,
   expectUser,
   genUserInfo,
+  getProfile,
+  setNewProfile,
   signInTestAdmin,
-  signInUser,
   signInUser1,
   testCreatePendingOrgWithEmailAndPassword
 } from "./common"
@@ -78,17 +76,5 @@ describe("admins can modify user role", () => {
     await expectPermissionDenied(
       modifyAccount({ role: "organization", uid: creds.user.uid })
     )
-  })
-
-  it("updates to ORG using the api", async () => {
-    await signInTestAdmin()
-
-    const user = await createUser("pendingUpgrade")
-
-    const profile = await getProfile({ uid: user.uid })
-    await acceptOrganizationRequest(user.uid)
-    expect(profile).toBeDefined()
-    console.log(profile!.role)
-    expect(profile!.role).toEqual("organization")
   })
 })

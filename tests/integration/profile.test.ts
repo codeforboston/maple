@@ -14,10 +14,11 @@ import {
   signInUser1,
   signInUser2
 } from "./common"
+import { setProfile } from "components/db"
 
 const fakeUser = () => ({
   uid: nanoid(),
-  fullName: "Conan O'Brien",
+  fullName: "Sparks Nevada",
   email: `${nanoid()}@example.com`,
   password: "password"
 })
@@ -50,20 +51,24 @@ describe("profile", () => {
 
 
   it("Is publicly readable when public", async () => {
-    const user1 = await signInUser1()
-    const profileRef = doc(firestore, `profiles/${user1.uid}`)
-    await setPublic(profileRef, true)
-    expect(
-      (await getDoc(doc(firestore, `profiles/${user1.uid}`))).data()
-    ).toBeTruthy()
+    await signInTestAdmin()
 
-    await signOut(auth)
+    const user = fakeUser()
+    await expectProfile(user)
+    expect((await getProfile({ uid: user.uid }))?.public).toBeUndefined()
+
+    await setDoc(doc(firestore, `/profiles/${user.uid}`), { public: true }, { merge: true })
+
+    const profile = await getProfile({ uid: user.uid })
+    expect(profile?.public).toBeDefined()
+    expect(profile?.public).toBeTruthy()
+
     await signInUser2()
+    // expect permission to be granted
     expect(
-      (await getDoc(doc(firestore, `profiles/${user1.uid}`))).data()
+      (await getDoc(doc(firestore, `profiles/${user.uid}`))).data()
     ).toBeTruthy()
 
-    await signOut(auth)
   })
 
   it("Is not publicly readable when not public", async () => {
@@ -86,7 +91,7 @@ describe("profile", () => {
     expect(result.exists()).toBeTruthy()
   })
 
-  it("Can only be modified by the logged in user", async () => {  
+  it("Can only be modified by the logged in user", async () => {
     const newUser = fakeUser()
     const profileRef = doc(firestore, `profiles/${newUser.uid}`)
     await expectProfile(newUser)
