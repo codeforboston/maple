@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin"
 import { deleteApp } from "firebase/app"
-import { terminate, clearIndexedDbPersistence } from "firebase/firestore"
-import { firestore, app, auth } from "../components/firebase"
+import { clearIndexedDbPersistence, terminate } from "firebase/firestore"
+import { app, firestore } from "../components/firebase"
 
 admin.initializeApp({
   storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`

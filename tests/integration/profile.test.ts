@@ -1,10 +1,9 @@
 import { waitFor } from "@testing-library/react"
-import { signInWithEmailAndPassword, signOut } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { nanoid } from "nanoid"
 import { auth, firestore } from "../../components/firebase"
-import { setRole } from "../../functions/src/auth"
-import { terminateFirebase, testAuth, testDb } from "../testUtils"
+import { terminateFirebase, testAuth } from "../testUtils"
 import {
   expectPermissionDenied,
   getProfile,
@@ -14,7 +13,6 @@ import {
   signInUser1,
   signInUser2
 } from "./common"
-import { setProfile } from "components/db"
 
 const fakeUser = () => ({
   uid: nanoid(),

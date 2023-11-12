@@ -1,3 +1,4 @@
+import { fail } from "assert"
 import { Role, finishSignup } from "components/auth"
 import { Report } from "components/moderation/types"
 import { UserRecord } from "firebase-admin/auth"
@@ -11,11 +12,9 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import { Testimony } from "functions/src/testimony/types"
 import { nanoid } from "nanoid"
-import { auth, firestore } from "../../components/firebase"
+import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
-import { fail } from "assert"
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -354,6 +353,7 @@ export const expectUser = async (
 
   expect(updated.customClaims?.role).toEqual(role)
 }
+
 export const createReqObj = async (method: string, url: string) => {
   const authenticationToken = await auth.currentUser?.getIdToken(true)
 
