@@ -263,7 +263,7 @@ describe.skip("billTracker", () => {
     })
   })
 
-  describe("on bill document change", () => {
+  describe.skip("on bill document change", () => {
     let court: number, billId: string, billPath: string
     beforeAll(async () => {
       court = 192

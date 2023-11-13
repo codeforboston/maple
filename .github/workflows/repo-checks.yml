@@ -57,3 +57,8 @@ jobs:
         run: >
           yarn test:integration-ci
             tests/integration/testimony.test.ts
+            tests/integration/auth.test.ts
+            tests/integration/moderation.test.ts
+            tests/integration/profile.test.ts
+            tests/integration/search.test.ts
+            tests/integration/backfillTestimonyCounts.test.ts
