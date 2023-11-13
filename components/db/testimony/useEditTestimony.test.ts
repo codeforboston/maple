@@ -156,7 +156,7 @@ describe("useEditTestimony", () => {
     return result
   }
 
-  // new name/fullname/authorname pattern has been implemented 
+  // new name/fullname/authorname pattern has been implemented
   it.skip("Publishes testimony", async () => {
     const result = await renderAndPublish()
 
@@ -199,7 +199,7 @@ describe("useEditTestimony", () => {
     )
   })
 
-  // users can no longer delete their own testimony. only admins can delete testomony. 
+  // users can no longer delete their own testimony. only admins can delete testomony.
   it.skip("Deletes testimony", async () => {
     const result = await renderAndPublish()
 

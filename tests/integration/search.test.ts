@@ -118,7 +118,7 @@ describe.skip("Sync", () => {
       .get()
     newBill = { ...existing.data()!, id: billId }
   })
-  
+
   it("Creates documents on create", async () => {
     await testDb.doc(newBillPath).create(newBill)
     await assertDocumentExists()
