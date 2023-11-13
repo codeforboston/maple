@@ -146,7 +146,6 @@ export const setNewProfile = (user: {
  */
 
 export const createNewTestimony = async (uid: string, billId: string) => {
-
   const tid = nanoid(6)
 
   const currentUserEmail = auth.currentUser?.email
@@ -180,7 +179,9 @@ export const createNewTestimony = async (uid: string, billId: string) => {
   }
 
   const getThisTestimony = async (): Promise<Testimony> => {
-    let testimony: Testimony = await testRef.get().then(d => d.data() as Testimony)
+    let testimony: Testimony = await testRef
+      .get()
+      .then(d => d.data() as Testimony)
     expect(testimony).toBeDefined()
     return testimony
   }
@@ -198,8 +199,8 @@ export const createNewTestimony = async (uid: string, billId: string) => {
       !pubTest.empty && archTest.empty
         ? "pubTest"
         : !archTest.empty && pubTest.empty
-          ? "archTest"
-          : "error"
+        ? "archTest"
+        : "error"
 
     return result
   }
@@ -354,4 +355,3 @@ export const createReqObj = async (method: string, url: string) => {
     headers: { authorization: `Bearer ${authenticationToken}` }
   }
 }
-

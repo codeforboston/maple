@@ -47,7 +47,6 @@ describe("profile", () => {
     expect(profile.role).not.toBeDefined()
   })
 
-
   it("Is publicly readable when public", async () => {
     await signInTestAdmin()
 
@@ -55,7 +54,11 @@ describe("profile", () => {
     await expectProfile(user)
     expect((await getProfile({ uid: user.uid }))?.public).toBeUndefined()
 
-    await setDoc(doc(firestore, `/profiles/${user.uid}`), { public: true }, { merge: true })
+    await setDoc(
+      doc(firestore, `/profiles/${user.uid}`),
+      { public: true },
+      { merge: true }
+    )
 
     const profile = await getProfile({ uid: user.uid })
     expect(profile?.public).toBeDefined()
@@ -66,7 +69,6 @@ describe("profile", () => {
     expect(
       (await getDoc(doc(firestore, `profiles/${user.uid}`))).data()
     ).toBeTruthy()
-
   })
 
   it("Is not publicly readable when not public", async () => {

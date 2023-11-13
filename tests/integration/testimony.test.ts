@@ -249,10 +249,10 @@ describe("publishTestimony", () => {
     // users can access their own testimony collections
     expect(
       getDoc(doc(firestore, `/users/${uid}/publishedTestimony/test-id`))
-      ).toBeTruthy()
-      expect(
-        getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
-        ).toBeTruthy()
+    ).toBeTruthy()
+    expect(
+      getDoc(doc(firestore, `/users/${uid}/archivedTestimony/test-id`))
+    ).toBeTruthy()
 
     // TODO: verify whether users can write to their published collection, right now this is the case
     expect(

@@ -16,13 +16,7 @@ import {
 } from "tests/integration/common"
 import { terminateFirebase, testAuth, testDb } from "tests/testUtils"
 import { auth, firestore, functions } from "../../components/firebase"
-import {
-  expectPermissionDenied,
-  genUserInfo
-} from "./common"
-
-
-
+import { expectPermissionDenied, genUserInfo } from "./common"
 
 afterAll(terminateFirebase)
 
@@ -74,8 +68,10 @@ describe("moderate testimony", () => {
     // set up
 
     const billId = await createFakeBill()
-    const { tid, removeThisTestimony } =
-      await createNewTestimony(authorUid, billId)
+    const { tid, removeThisTestimony } = await createNewTestimony(
+      authorUid,
+      billId
+    )
     const { reportId, getThisReport, removeThisReport } = await createNewReport(
       adminUid,
       tid
@@ -103,14 +99,16 @@ describe("moderate testimony", () => {
   })
   /**TODO: test of report resolve for allow-testimony */
 
-
   it("lets Admins delete the testimony of users", async () => {
     const billId = await createFakeBill()
 
     await signInUser1()
 
     const draftId = "test-draft-id"
-    const draftRef = doc(firestore, `/users/${authorUid}/draftTestimony/${draftId}`)
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
+    )
     const draft: DraftTestimony = {
       billId,
       content: "test testimony",
@@ -125,7 +123,6 @@ describe("moderate testimony", () => {
 
     const pubId = r.data.publicationId
 
-
     await signInTestAdmin()
     await expectCurrentUserAdmin()
 
@@ -139,16 +136,17 @@ describe("moderate testimony", () => {
     pubTest = await pubRef.where("id", "==", pubId).get()
 
     expect(pubTest.size).toEqual(0)
-
   })
 
   it("keeps archived version of the testimony", async () => {
-
     await signInUser1()
 
     const billId = await createFakeBill()
     const draftId = "test-draft-id"
-    const draftRef = doc(firestore, `/users/${authorUid}/draftTestimony/${draftId}`)
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
+    )
     const draft: DraftTestimony = {
       billId,
       content: "test testimony",
@@ -164,21 +162,15 @@ describe("moderate testimony", () => {
     const r = await publishTestimony({ draftId })
     const pubId = r.data.publicationId
 
-
     await signInTestAdmin()
 
     await deleteTestimony({ uid: authorUid, publicationId: pubId })
 
-    const archTest = (await archRef.get())
-
+    const archTest = await archRef.get()
 
     expect(archTest.size).toEqual(archSize + 1)
-
-
   })
 })
-
-
 
 const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   functions,
@@ -186,7 +178,6 @@ const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
 )
 
 describe("admins can modify user accounts", () => {
-
   it("allows admins to modify user roles ", async () => {
     const userInfo = genUserInfo()
     const user = await testAuth.createUser(userInfo)
@@ -195,8 +186,9 @@ describe("admins can modify user accounts", () => {
     await signInTestAdmin()
     await modifyAccount({ uid: user.uid, role: "admin" })
 
-    expect(((await testAuth.getUser(user.uid)).customClaims?.role)).toEqual("admin")
-
+    expect((await testAuth.getUser(user.uid)).customClaims?.role).toEqual(
+      "admin"
+    )
   })
 
   it("doesn't allow non-admins to modify user roles", async () => {
@@ -206,7 +198,8 @@ describe("admins can modify user accounts", () => {
 
     // tries to run modifyAccount as a regular "user" role
     await signInUser(userInfo.email)
-    await expectPermissionDenied(modifyAccount({ uid: user.uid, role: "legislator" }))
-
+    await expectPermissionDenied(
+      modifyAccount({ uid: user.uid, role: "legislator" })
+    )
   })
 })
