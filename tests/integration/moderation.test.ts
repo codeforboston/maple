@@ -1,27 +1,50 @@
-import { Testimony, resolveReport } from "components/db"
-import { auth as adminAuth, db } from "functions/src/firebase"
+import { Role } from "components/auth"
+import { publishTestimony, resolveReport } from "components/db"
+import { signOut } from "firebase/auth"
+import { Timestamp, doc, setDoc } from "firebase/firestore"
+import { httpsCallable } from "firebase/functions"
+import { db } from "functions/src/firebase"
+import { currentGeneralCourt } from "functions/src/shared"
 import {
   createFakeBill,
   createNewReport,
   createNewTestimony,
-  createReqObj,
-  expectCurrentUser,
   expectCurrentUserAdmin,
   signInTestAdmin,
   signInUser,
   signInUser1
 } from "tests/integration/common"
-import { auth, functions } from "../../components/firebase"
-import e from "express"
-import handler from "pages/api/users/[uid]/testimony/[tid]"
-import { NextApiRequest, NextApiResponse } from "next"
-import { mapleClient } from "components/api/maple-client"
-import { Resolution } from "components/moderation"
-import { onSubmitReport } from "components/moderation/RemoveTestimony"
-import { terminateFirebase } from "tests/testUtils"
-import { httpsCallable } from "firebase/functions"
+import { terminateFirebase, testAuth, testDb } from "tests/testUtils"
+import { auth, firestore, functions } from "../../components/firebase"
+import {
+  expectPermissionDenied,
+  genUserInfo
+} from "./common"
 
-// const authtoken = process.env.AUTH_TOKEN
+
+
+
+afterAll(terminateFirebase)
+
+type BaseTestimony = {
+  billId: string
+  court: number
+  position: "endorse" | "oppose" | "neutral"
+  content: string
+  attachmentId: string | null | undefined
+  editReason?: string
+}
+
+type DraftTestimony = BaseTestimony & {
+  publishedVersion?: number
+}
+
+type Testimony = BaseTestimony & {
+  authorUid: string
+  authorDisplayName: string
+  version: number
+  publishedAt: Timestamp
+}
 
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
@@ -46,57 +69,13 @@ beforeAll(async () => {
   expect(auth.currentUser).toBeDefined()
 })
 
-// afterAll(terminateFirebase)
-
-describe.skip("examples of helper functions", () => {
-  it("shows it's logged in as admin", async () => {
-    try {
-      expect((await adminAuth.getUser(adminUid)).customClaims).toEqual({
-        role: "admin"
-      })
-    } catch (e) {
-      console.warn(e)
-    }
-
-    expect(await adminAuth.getUser(adminUid)).toBeDefined()
-    expect((await adminAuth.getUser(adminUid)!).uid).toEqual(adminUid)
-  })
-
-  it("creates testimony", async () => {
-    const { tid, getThisTestimony, removeThisTestimony } =
-      await createNewTestimony(authorUid, "H1002")
-    const test1 = await getThisTestimony()
-    expect(test1).toBeDefined()
-    expect(test1!.id).toEqual(tid)
-
-    // clean up
-    await removeThisTestimony()
-  })
-
-  it(" creates reports", async () => {
-    const { tid, removeThisTestimony } = await createNewTestimony(
-      authorUid,
-      "H1002"
-    )
-    const { reportId, getThisReport, removeThisReport } = await createNewReport(
-      adminUid,
-      tid
-    )
-
-    const rep1 = await getThisReport()
-    expect(rep1).toBeDefined()
-    expect(rep1!.id).toEqual(reportId)
-    // clean up
-    await removeThisTestimony()
-    await removeThisReport()
-  })
-})
-
-describe.skip("action functions", () => {
-  it("can set file report resolution via resolveReport", async () => {
+describe("moderate testimony", () => {
+  it("resolves report for remove-testimony", async () => {
     // set up
-    const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(authorUid, "H1002")
+
+    const billId = await createFakeBill()
+    const { tid, removeThisTestimony } =
+      await createNewTestimony(authorUid, billId)
     const { reportId, getThisReport, removeThisReport } = await createNewReport(
       adminUid,
       tid
@@ -107,7 +86,7 @@ describe.skip("action functions", () => {
     expect(report?.reason).toBeDefined()
     expect(report?.reportId).toBeDefined()
 
-    const resolution = "remove-testimony" /// need to test both allow and remove
+    const resolution = "remove-testimony"
     const reason = "important reason"
 
     const result = await resolveReport({
@@ -122,60 +101,112 @@ describe.skip("action functions", () => {
     await removeThisTestimony()
     await removeThisReport()
   })
+  /**TODO: test of report resolve for allow-testimony */
 
-  it("moves testimony from published to archived", async () => {
-    // set up
+
+  it("lets Admins delete the testimony of users", async () => {
     const billId = await createFakeBill()
-    const t = await createNewTestimony(authorUid, billId)
-    const where = await t.whereIsThisTestimony()
-    expect(where).toEqual("pubTest")
 
-    // const r = await createNewReport(adminUid, t.tid)
+    await signInUser1()
+
+    const draftId = "test-draft-id"
+    const draftRef = doc(firestore, `/users/${authorUid}/draftTestimony/${draftId}`)
+    const draft: DraftTestimony = {
+      billId,
+      content: "test testimony",
+      court: currentGeneralCourt,
+      position: "endorse",
+      attachmentId: null
+    }
+
+    await setDoc(draftRef, draft)
+
+    const r = await publishTestimony({ draftId })
+
+    const pubId = r.data.publicationId
+
 
     await signInTestAdmin()
     await expectCurrentUserAdmin()
 
-    const deleted = await deleteTestimony({ uid: authorUid, publicationId: t.tid })
+    const pubRef = testDb.collection(`/users/${authorUid}/publishedTestimony`)
+    let pubTest = await pubRef.where("id", "==", pubId).get()
 
-    expect(deleted).toBeTruthy()
+    expect(pubTest.size).toEqual(1)
 
+    await deleteTestimony({ uid: authorUid, publicationId: pubId })
 
-    // const refresh = jest.fn()
-    // await onSubmitReport(
-    //   r.reportId,
-    //   "remove-testimony",
-    //   "reason",
-    //   authorUid,
-    //   t.tid,
-    //   refresh
-    // )
+    pubTest = await pubRef.where("id", "==", pubId).get()
 
-    const where2 = await t.whereIsThisTestimony()
-    expect(where2).toEqual("archTest")
+    expect(pubTest.size).toEqual(0)
 
-    //clean up
-    // await t.removeThisTestimony()
-    // await r.removeThisReport()
   })
 
-  it("Admins can delete the testimony of another user", async () => {
-    // set up
-    const { tid, getThisTestimony, whereIsThisTestimony, removeThisTestimony } =
-      await createNewTestimony(adminUid, "H1002")
+  it("keeps archived version of the testimony", async () => {
 
-    const { authorUid, id } = (await getThisTestimony()) as Testimony
+    await signInUser1()
 
-    expect(authorUid).toBeDefined()
-    expect(id).toBeDefined()
+    const billId = await createFakeBill()
+    const draftId = "test-draft-id"
+    const draftRef = doc(firestore, `/users/${authorUid}/draftTestimony/${draftId}`)
+    const draft: DraftTestimony = {
+      billId,
+      content: "test testimony",
+      court: currentGeneralCourt,
+      position: "endorse",
+      attachmentId: null
+    }
 
-    const admin = await adminAuth.getUser(adminUid)
-    await signInUser(admin.email!)
+    const archRef = testDb.collection(`/users/${authorUid}/archivedTestimony`)
+    const archSize = (await archRef.get()).size
 
-    expect(auth.currentUser).toBeDefined()
+    await setDoc(draftRef, draft)
+    const r = await publishTestimony({ draftId })
+    const pubId = r.data.publicationId
 
-    // await deleteTestimony(authorUid, id)
 
-    const where = await whereIsThisTestimony()
-    // expect(where).toEqual("archTest")
+    await signInTestAdmin()
+
+    await deleteTestimony({ uid: authorUid, publicationId: pubId })
+
+    const archTest = (await archRef.get())
+
+
+    expect(archTest.size).toEqual(archSize + 1)
+
+
+  })
+})
+
+
+
+const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
+  functions,
+  "modifyAccount"
+)
+
+describe("admins can modify user accounts", () => {
+
+  it("allows admins to modify user roles ", async () => {
+    const userInfo = genUserInfo()
+    const user = await testAuth.createUser(userInfo)
+    testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
+
+    await signInTestAdmin()
+    await modifyAccount({ uid: user.uid, role: "admin" })
+
+    expect(((await testAuth.getUser(user.uid)).customClaims?.role)).toEqual("admin")
+
+  })
+
+  it("doesn't allow non-admins to modify user roles", async () => {
+    const userInfo = genUserInfo()
+    const user = await testAuth.createUser(userInfo)
+    testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
+
+    // tries to run modifyAccount as a regular "user" role
+    await signInUser(userInfo.email)
+    await expectPermissionDenied(modifyAccount({ uid: user.uid, role: "legislator" }))
+
   })
 })

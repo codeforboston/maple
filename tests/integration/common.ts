@@ -179,19 +179,10 @@ export const createNewTestimony = async (uid: string, billId: string) => {
     }
   }
 
-  const getThisTestimony = async () => {
-    let testimony: Testimony
-    try {
-      testimony = await testRef.get().then(d => d.data() as Testimony)
-      return testimony
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        console.log(e.code)
-        console.log(e.message)
-      } else {
-        console.log("non firebase error", e)
-      }
-    }
+  const getThisTestimony = async (): Promise<Testimony> => {
+    let testimony: Testimony = await testRef.get().then(d => d.data() as Testimony)
+    expect(testimony).toBeDefined()
+    return testimony
   }
 
   type WhereType = "pubTest" | "archTest" | "error"
@@ -207,8 +198,8 @@ export const createNewTestimony = async (uid: string, billId: string) => {
       !pubTest.empty && archTest.empty
         ? "pubTest"
         : !archTest.empty && pubTest.empty
-        ? "archTest"
-        : "error"
+          ? "archTest"
+          : "error"
 
     return result
   }
@@ -363,3 +354,4 @@ export const createReqObj = async (method: string, url: string) => {
     headers: { authorization: `Bearer ${authenticationToken}` }
   }
 }
+
