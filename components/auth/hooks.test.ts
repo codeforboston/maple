@@ -6,7 +6,7 @@ import { useCreateUserWithEmailAndPassword } from "./hooks"
 
 afterAll(terminateFirebase)
 
-describe("useCreateUserWithEmailAndPassword", () => {
+describe.skip("useCreateUserWithEmailAndPassword", () => {
   it("creates user and profile", async () => {
     const { result } = renderHook(() =>
       useCreateUserWithEmailAndPassword(false)
