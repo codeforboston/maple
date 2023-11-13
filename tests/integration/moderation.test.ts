@@ -68,22 +68,47 @@ describe("moderate testimony", () => {
     // set up
 
     const billId = await createFakeBill()
-    const { tid, removeThisTestimony } = await createNewTestimony(
-      authorUid,
-      billId
+
+    await signInUser1()
+    const draftId = "test-draft-id"
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
     )
+    const draft: DraftTestimony = {
+      billId,
+      content: "test testimony",
+      court: currentGeneralCourt,
+      position: "endorse",
+      attachmentId: null
+    }
+
+    await setDoc(draftRef, draft)
+
+    const r = await publishTestimony({ draftId })
+
+    const pubId = r.data.publicationId
+
+    await signInTestAdmin()
+    await expectCurrentUserAdmin()
+
     const { reportId, getThisReport, removeThisReport } = await createNewReport(
       adminUid,
-      tid
+      pubId
     )
 
-    const report = await getThisReport()
+    let report = await getThisReport()
     expect(report).toBeDefined()
     expect(report?.reason).toBeDefined()
     expect(report?.reportId).toBeDefined()
 
     const resolution = "remove-testimony"
     const reason = "important reason"
+
+    const pubRef = testDb.doc(`/users/${authorUid}/publishedTestimony/${pubId}`)
+
+
+    expect((await pubRef.get()).exists).toBeTruthy()
 
     const result = await resolveReport({
       reportId,
@@ -93,9 +118,13 @@ describe("moderate testimony", () => {
 
     expect(result.data.status).toEqual("success")
 
-    //clean up
-    await removeThisTestimony()
+    report = await getThisReport()
+    expect(report.resolution?.resolution).toEqual("remove-testimony")
+
+
     await removeThisReport()
+
+
   })
   /**TODO: test of report resolve for allow-testimony */
 
