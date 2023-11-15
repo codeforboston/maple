@@ -9,6 +9,7 @@ import { YourLegislators } from "./YourLegislators"
 import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
+import styles from "./PersonalInfoTab.module.css"
 
 type UpdateProfileData = {
   fullName: string
@@ -162,8 +163,8 @@ export function PersonalInfoTab({
 
           <div className="mb-3">
             {/* {isOrg && <ImageInput />} */}
-            <h4 className="mb-3 mt-5">Social Media</h4>
-            <div className="row">
+            <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
+            <div className={`row ${styles.socialInputs}`}>
               <Input
                 label={t("socialLinks.twitter")}
                 defaultValue={social?.twitter}
@@ -199,7 +200,7 @@ export function PersonalInfoTab({
             </div>
             {isOrg && (
               <>
-                <h4 className="mb-3 mt-5">Contact Information</h4>
+                <h4 className="mb-3 mt-5">{t("contact.contactInfo")}</h4>
                 <Row>
                   <Input
                     label={t("contact.email")}
