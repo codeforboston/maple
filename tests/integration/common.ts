@@ -15,6 +15,8 @@ import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
+import { Timestamp } from "functions/src/firebase"
+import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -36,22 +38,30 @@ export async function createNewBill(props?: Partial<Bill>) {
     Cosponsors: []
   }
   const bill: Bill = {
-    content,
-    court: currentGeneralCourt,
-    cosponsorCount: 0,
-    fetchedAt: testTimestamp.now(),
     id: billId,
+    court: currentGeneralCourt,
+    content,
+    cosponsorCount: 0,
     testimonyCount: 0,
     endorseCount: 0,
     neutralCount: 0,
     opposeCount: 0,
+    latestTestimonyAt: Timestamp.fromMillis(0),
+    nextHearingAt: Timestamp.fromMillis(0),
+    fetchedAt: Timestamp.fromMillis(0),
     history: [],
     similar: [],
     ...props
   }
-  await testDb
+
+  expect(Bill.validate(bill).success).toBeTruthy()
+
+
+  testDb
     .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
-    .create(bill)
+    .create({ ...bill,  latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
+      nextHearingAt: FirestoreTimestamp.fromMillis(0), fetchedAt: FirestoreTimestamp.fromMillis(0) }).then(b => console.log('success')).catch(err => console.log(err))
+
   return billId
 }
 
@@ -199,8 +209,8 @@ export const createNewTestimony = async (uid: string, billId: string) => {
       !pubTest.empty && archTest.empty
         ? "pubTest"
         : !archTest.empty && pubTest.empty
-        ? "archTest"
-        : "error"
+          ? "archTest"
+          : "error"
 
     return result
   }
@@ -241,24 +251,7 @@ export const createNewReport = async (uid: string, tid: string) => {
   const reportRef = testDb.doc(`/reports/${fullReport.reportId}`)
   await reportRef.set(fullReport)
 
-  const getThisReport = async () => {
-    return await reportRef.get().then(d => d.data() as Report)
-  }
-
-  const removeThisReport = async () => {
-    try {
-      await testDb.doc(reportRef.path).delete()
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        console.log(e.code)
-        console.log(e.message)
-      } else {
-        console.log("non firebase error", e)
-      }
-    }
-  }
-
-  return { reportId, getThisReport, removeThisReport }
+  return { reportId, reportRef }
 }
 
 export const genUserInfo = () => {

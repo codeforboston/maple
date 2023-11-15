@@ -1,160 +1,132 @@
+import { waitFor } from "@testing-library/react"
 import { Role } from "components/auth"
-import { publishTestimony, resolveReport } from "components/db"
-import { signOut } from "firebase/auth"
-import { Timestamp, doc, setDoc } from "firebase/firestore"
+import { resolveReport } from "components/db"
+import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { db } from "functions/src/firebase"
+import { syncBillToSearchIndex, syncTestimonyToSearchIndex } from "functions/src"
 import { currentGeneralCourt } from "functions/src/shared"
+import { nanoid } from "nanoid"
 import {
-  createFakeBill,
+  createNewBill,
   createNewReport,
-  createNewTestimony,
-  expectCurrentUserAdmin,
+  createUser,
   signInTestAdmin,
   signInUser,
   signInUser1
 } from "tests/integration/common"
 import { terminateFirebase, testAuth, testDb } from "tests/testUtils"
-import { auth, firestore, functions } from "../../components/firebase"
+import { firestore, functions } from "../../components/firebase"
 import { expectPermissionDenied, genUserInfo } from "./common"
+import { FirebaseError } from "@firebase/util"
+import { Testimony } from "functions/src/testimony/types"
+import { Timestamp } from "functions/src/firebase"
+import { Report } from "components/moderation/types"
+import { fakeUser } from "components/moderation/setUp/MockRecords"
 
-afterAll(terminateFirebase)
 
-type BaseTestimony = {
-  billId: string
-  court: number
-  position: "endorse" | "oppose" | "neutral"
-  content: string
-  attachmentId: string | null | undefined
-  editReason?: string
-}
 
-type DraftTestimony = BaseTestimony & {
-  publishedVersion?: number
-}
-
-type Testimony = BaseTestimony & {
-  authorUid: string
-  authorDisplayName: string
-  version: number
-  publishedAt: Timestamp
-}
 
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
+const publishTestimony = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimony")
+
+
+
 let adminUid: string
-let authorUid: string
+let billId: string
 
 beforeAll(async () => {
-  const authorUser = await signInUser1()
-  authorUid = authorUser.uid
-
-  const adminUser = await signInTestAdmin()
-  adminUid = adminUser.uid
-
-  await db.doc(`/profiles/${adminUid}`).update({ role: "admin" })
-  expect((await db.doc(`/profiles/${adminUid}`).get()).data()?.role).toEqual(
-    "admin"
-  )
-
-  expect(auth.currentUser).toBeDefined()
+  billId = await createNewBill()
+  adminUid = (await signInTestAdmin()).uid
 })
+
+let authorUid: string
+let email: string
+
+beforeEach(async () => {
+  const author = await createUser("user")
+  await signInUser(author.email!)
+  authorUid = author.uid
+  email = author.email!
+})
+
+
+afterAll(terminateFirebase)
 
 describe("moderate testimony", () => {
   it("resolves report for remove-testimony", async () => {
-    // set up
 
-    const billId = await createFakeBill()
-
-    await signInUser1()
-    const draftId = "test-draft-id"
+    await signInUser(email)
+    const { draft, draftId } = createValidatedDraft(authorUid, billId)
     const draftRef = doc(
       firestore,
       `/users/${authorUid}/draftTestimony/${draftId}`
     )
-    const draft: DraftTestimony = {
-      billId,
-      content: "test testimony",
-      court: currentGeneralCourt,
-      position: "endorse",
-      attachmentId: null
-    }
+
 
     await setDoc(draftRef, draft)
 
-    const r = await publishTestimony({ draftId })
-
-    const pubId = r.data.publicationId
+    const pubId = (await publishTestimony({ draftId })).data.publicationId
 
     await signInTestAdmin()
-    await expectCurrentUserAdmin()
 
-    const { reportId, getThisReport, removeThisReport } = await createNewReport(
+    const { reportId, reportRef } = await createNewReport(
       adminUid,
       pubId
     )
 
-    let report = await getThisReport()
+    let report = (await reportRef.get()).data() as Report
     expect(report).toBeDefined()
     expect(report?.reason).toBeDefined()
     expect(report?.reportId).toBeDefined()
 
-    const resolution = "remove-testimony"
-    const reason = "important reason"
-
     const pubRef = testDb.doc(`/users/${authorUid}/publishedTestimony/${pubId}`)
-
 
     expect((await pubRef.get()).exists).toBeTruthy()
 
     const result = await resolveReport({
       reportId,
-      resolution,
-      reason
+      resolution: "remove-testimony",
+      reason: "important reason"
     })
 
     expect(result.data.status).toEqual("success")
 
-    report = await getThisReport()
+    report = (await reportRef.get()).data() as Report
     expect(report.resolution?.resolution).toEqual("remove-testimony")
 
 
-    await removeThisReport()
-
+    await reportRef.delete()
+    const testDraftRef = testDb.doc(`/users/${authorUid}/draftTestimony/${draftId}`)
+    await testDraftRef.delete()
+    await pubRef.delete()
 
   })
   /**TODO: test of report resolve for allow-testimony */
 
+
   it("lets Admins delete the testimony of users", async () => {
-    const billId = await createFakeBill()
 
-    await signInUser1()
+    await signInUser(email)
 
-    const draftId = "test-draft-id"
+
+    const { draftId, draft } = createValidatedDraft(authorUid, billId)
     const draftRef = doc(
       firestore,
       `/users/${authorUid}/draftTestimony/${draftId}`
     )
-    const draft: DraftTestimony = {
-      billId,
-      content: "test testimony",
-      court: currentGeneralCourt,
-      position: "endorse",
-      attachmentId: null
-    }
 
     await setDoc(draftRef, draft)
 
-    const r = await publishTestimony({ draftId })
-
-    const pubId = r.data.publicationId
+    const pubId = (await publishTestimony({ draftId })).data.publicationId
 
     await signInTestAdmin()
-    await expectCurrentUserAdmin()
-
     const pubRef = testDb.collection(`/users/${authorUid}/publishedTestimony`)
     let pubTest = await pubRef.where("id", "==", pubId).get()
 
@@ -164,27 +136,27 @@ describe("moderate testimony", () => {
 
     pubTest = await pubRef.where("id", "==", pubId).get()
 
-    expect(pubTest.size).toEqual(0)
+    expect(pubTest.size).toEqual(0);
+
   })
 
-  it("keeps archived version of the testimony", async () => {
-    await signInUser1()
 
-    const billId = await createFakeBill()
-    const draftId = "test-draft-id"
+
+
+  it("keeps archived version of the testimony", async () => {
+    await signInUser(email)
+
+    const { draft, draftId } = createValidatedDraft(authorUid, billId)
+
     const draftRef = doc(
       firestore,
       `/users/${authorUid}/draftTestimony/${draftId}`
     )
-    const draft: DraftTestimony = {
-      billId,
-      content: "test testimony",
-      court: currentGeneralCourt,
-      position: "endorse",
-      attachmentId: null
-    }
 
-    const archRef = testDb.collection(`/users/${authorUid}/archivedTestimony`)
+    const archRef = testDb
+      .collection(`/users/${authorUid}/archivedTestimony`)
+      .where("billId", "==", billId)
+
     const archSize = (await archRef.get()).size
 
     await setDoc(draftRef, draft)
@@ -195,9 +167,8 @@ describe("moderate testimony", () => {
 
     await deleteTestimony({ uid: authorUid, publicationId: pubId })
 
-    const archTest = await archRef.get()
-
-    expect(archTest.size).toEqual(archSize + 1)
+    expect((await archRef.get()).size).toEqual(archSize + 1)
+    await waitFor(async () => await testDb.doc(`/users/${authorUid}/publishedTestimony/${pubId}`).delete())
   })
 })
 
@@ -232,3 +203,34 @@ describe("admins can modify user accounts", () => {
     )
   })
 })
+
+function createValidatedDraft(authorUid: string,
+  billId: string) {
+  const draftId = nanoid()
+
+  const draft: Testimony = {
+    attachmentId: null,
+    authorDisplayName: "Anonymous",
+    authorUid,
+    billId,
+    content: "test testimony",
+    court: currentGeneralCourt,
+    editReason: "edit reason",
+    position: "endorse",
+    publishedAt: Timestamp.fromMillis(0),
+    version: 0,
+    id: "unknown",
+    authorRole: "user",
+    billTitle: "",
+    fullName: "Anonymous"
+  }
+
+  const validation = Testimony.validateWithDefaults(draft)
+
+  expect(validation.success).toBeTruthy()
+
+  const { publishedAt, ...rest } = draft
+
+  return { draftId, draft: rest }
+
+}
