@@ -56,11 +56,16 @@ export async function createNewBill(props?: Partial<Bill>) {
 
   expect(Bill.validate(bill).success).toBeTruthy()
 
-
   testDb
     .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
-    .create({ ...bill,  latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
-      nextHearingAt: FirestoreTimestamp.fromMillis(0), fetchedAt: FirestoreTimestamp.fromMillis(0) }).then(b => console.log('success')).catch(err => console.log(err))
+    .create({
+      ...bill,
+      latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
+      nextHearingAt: FirestoreTimestamp.fromMillis(0),
+      fetchedAt: FirestoreTimestamp.fromMillis(0)
+    })
+    .then(b => console.log("success"))
+    .catch(err => console.log(err))
 
   return billId
 }
@@ -209,8 +214,8 @@ export const createNewTestimony = async (uid: string, billId: string) => {
       !pubTest.empty && archTest.empty
         ? "pubTest"
         : !archTest.empty && pubTest.empty
-          ? "archTest"
-          : "error"
+        ? "archTest"
+        : "error"
 
     return result
   }

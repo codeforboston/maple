@@ -3,7 +3,10 @@ import { Role } from "components/auth"
 import { resolveReport } from "components/db"
 import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { syncBillToSearchIndex, syncTestimonyToSearchIndex } from "functions/src"
+import {
+  syncBillToSearchIndex,
+  syncTestimonyToSearchIndex
+} from "functions/src"
 import { currentGeneralCourt } from "functions/src/shared"
 import { nanoid } from "nanoid"
 import {
@@ -23,9 +26,6 @@ import { Timestamp } from "functions/src/firebase"
 import { Report } from "components/moderation/types"
 import { fakeUser } from "components/moderation/setUp/MockRecords"
 
-
-
-
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
   { deleted: boolean }
@@ -35,8 +35,6 @@ const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
-
-
 
 let adminUid: string
 let billId: string
@@ -56,12 +54,10 @@ beforeEach(async () => {
   email = author.email!
 })
 
-
 afterAll(terminateFirebase)
 
 describe("moderate testimony", () => {
   it("resolves report for remove-testimony", async () => {
-
     await signInUser(email)
     const { draft, draftId } = createValidatedDraft(authorUid, billId)
     const draftRef = doc(
@@ -69,17 +65,13 @@ describe("moderate testimony", () => {
       `/users/${authorUid}/draftTestimony/${draftId}`
     )
 
-
     await setDoc(draftRef, draft)
 
     const pubId = (await publishTestimony({ draftId })).data.publicationId
 
     await signInTestAdmin()
 
-    const { reportId, reportRef } = await createNewReport(
-      adminUid,
-      pubId
-    )
+    const { reportId, reportRef } = await createNewReport(adminUid, pubId)
 
     let report = (await reportRef.get()).data() as Report
     expect(report).toBeDefined()
@@ -101,20 +93,17 @@ describe("moderate testimony", () => {
     report = (await reportRef.get()).data() as Report
     expect(report.resolution?.resolution).toEqual("remove-testimony")
 
-
     await reportRef.delete()
-    const testDraftRef = testDb.doc(`/users/${authorUid}/draftTestimony/${draftId}`)
+    const testDraftRef = testDb.doc(
+      `/users/${authorUid}/draftTestimony/${draftId}`
+    )
     await testDraftRef.delete()
     await pubRef.delete()
-
   })
   /**TODO: test of report resolve for allow-testimony */
 
-
   it("lets Admins delete the testimony of users", async () => {
-
     await signInUser(email)
-
 
     const { draftId, draft } = createValidatedDraft(authorUid, billId)
     const draftRef = doc(
@@ -136,12 +125,8 @@ describe("moderate testimony", () => {
 
     pubTest = await pubRef.where("id", "==", pubId).get()
 
-    expect(pubTest.size).toEqual(0);
-
+    expect(pubTest.size).toEqual(0)
   })
-
-
-
 
   it("keeps archived version of the testimony", async () => {
     await signInUser(email)
@@ -168,7 +153,12 @@ describe("moderate testimony", () => {
     await deleteTestimony({ uid: authorUid, publicationId: pubId })
 
     expect((await archRef.get()).size).toEqual(archSize + 1)
-    await waitFor(async () => await testDb.doc(`/users/${authorUid}/publishedTestimony/${pubId}`).delete())
+    await waitFor(
+      async () =>
+        await testDb
+          .doc(`/users/${authorUid}/publishedTestimony/${pubId}`)
+          .delete()
+    )
   })
 })
 
@@ -204,8 +194,7 @@ describe("admins can modify user accounts", () => {
   })
 })
 
-function createValidatedDraft(authorUid: string,
-  billId: string) {
+function createValidatedDraft(authorUid: string, billId: string) {
   const draftId = nanoid()
 
   const draft: Testimony = {
@@ -232,5 +221,4 @@ function createValidatedDraft(authorUid: string,
   const { publishedAt, ...rest } = draft
 
   return { draftId, draft: rest }
-
 }
