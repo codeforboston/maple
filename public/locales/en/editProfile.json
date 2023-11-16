@@ -60,12 +60,14 @@
         "notificationFrequencyText": "How often would you like to receive these updates?"
     },
     "socialLinks": {
+        "socialMedia": "Social Media",
         "twitter": "Twitter Username",
-        "linkedIn": "LinkedIn Username",
+        "linkedIn": "LinkedIn Url",
         "instagram": "Instagram Username",
         "facebook": "Facebook Link"
     },
     "contact":{
+        "contactInfo": "Contact Information",
         "website": "Website",
         "email": "Contact Email",
         "phone": "Contact Phone Number",

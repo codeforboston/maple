@@ -1,29 +1,31 @@
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
-import { useState, useEffect } from "react"
+import ErrorPage from "next/error"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
+import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
-import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { ProfileAboutSection } from "./ProfileAboutSection"
+import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
-import { ProfileHeader } from "./ProfileHeader"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import ErrorPage from "next/error"
 
 export function ProfilePage(profileprops: {
   id: string
   verifyisorg?: boolean
 }) {
-  const { user } = useAuth()
+  const { user, claims } = useAuth()
   const { result: profile, loading } = usePublicProfile(
     profileprops.id,
     profileprops.verifyisorg
   )
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isUser = user?.uid === profileprops.id
+  const isPendingUpgrade = claims?.role === "pendingUpgrade"
   const isOrg: boolean =
     profile?.role === "organization" ||
     profile?.role === "pendingUpgrade" ||
@@ -51,12 +53,6 @@ export function ProfilePage(profileprops: {
     onProfilePublicityChanged(profile?.public)
   }, [profile?.public])
 
-  const bannerContent = isProfilePublic ? (
-    <Banner> {t("content.publicProfile")} </Banner>
-  ) : (
-    <Banner> {t("content.privateProfile")} </Banner>
-  )
-
   return (
     <>
       {loading ? (
@@ -67,8 +63,21 @@ export function ProfilePage(profileprops: {
         <>
           {profile ? (
             <>
-              {isUser && <Banner> {t("content.viewingProfile")} </Banner>}
-              {isUser && bannerContent}
+              {isUser ? (
+                isPendingUpgrade ? (
+                  <PendingUpgradeBanner />
+                ) : (
+                  <>
+                    <Banner> {t("content.viewingProfile")} </Banner>
+                    <Banner>
+                      {isProfilePublic
+                        ? t("content.publicProfile")
+                        : t("content.privateProfile")}
+                    </Banner>
+                  </>
+                )
+              ) : null}
+
               <StyledContainer>
                 <ProfileHeader
                   isMobile={isMobile}
