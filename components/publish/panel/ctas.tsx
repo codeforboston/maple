@@ -91,3 +91,16 @@ export const UnverifiedEmail = () => {
     />
   )
 }
+
+export const PendingUpgrade = () => {
+  return (
+    <Cta
+      title="Pending Upgrade"
+      cta={
+        <Button variant="primary" disabled>
+          Your Organization Registration is Pending
+        </Button>
+      }
+    />
+  )
+}
