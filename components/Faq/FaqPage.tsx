@@ -3,11 +3,12 @@ import { FaqQandA } from "./FaqQandA"
 import { FaqCard } from "./FaqCard"
 import styles from "./Faq.module.css"
 import { faqContentCards } from "./faqContent"
-import { DropdownButton } from "../shared/DropdownButton/DropdownButton"
+import { DropdownFilter } from "../shared/Dropdown/DropdownFilter"
 import { useMediaQuery } from "usehooks-ts"
-import { stylingProps } from "../shared/DropdownButton/DropdownButton"
+import { stylingProps } from "../shared/Dropdown/DropdownFilter"
+import { useState } from "react"
 
-export const Faq = () => {
+export const FaqPage = () => {
   const mdMobile = useMediaQuery("(max-width: 768px)")
   const xsMobile = useMediaQuery("(max-width: 418px)")
 
@@ -36,6 +37,7 @@ export const Faq = () => {
   const styling: stylingProps = {
     width: { desktop: "418px", mobile: xsMobile ? "100%" : "418px" }
   }
+  const [selected, setSelected] = useState(dropdownTitle)
 
   return (
     <Container fluid className={styles.faqLayout}>
@@ -46,26 +48,33 @@ export const Faq = () => {
       >
         <h1>{header1}</h1>
         <Col xs={xsMobile ? 12 : !12}>
-          <DropdownButton
+          <DropdownFilter
             key={dropdownTitle}
             title={dropdownTitle}
             styling={styling}
             variant="secondary"
+            setFilter={(eventKey: string) => {
+              setSelected(eventKey)
+            }}
           >
             {faqCardHeadings}
-          </DropdownButton>
+          </DropdownFilter>
         </Col>
       </Stack>
 
       <Stack direction="vertical" gap={4}>
-        {faqContentCards.map(card => (
-          <FaqCard
-            key={card.id}
-            faqId={card.id}
-            heading={card.heading}
-            qAndAs={card.qAndA}
-          ></FaqCard>
-        ))}
+        {faqContentCards
+          .filter(
+            card => selected === dropdownTitle || selected === card.heading
+          )
+          .map(filtered => (
+            <FaqCard
+              key={filtered.id}
+              faqId={filtered.id}
+              heading={filtered.heading}
+              qAndAs={filtered.qAndA}
+            ></FaqCard>
+          ))}
       </Stack>
     </Container>
   )

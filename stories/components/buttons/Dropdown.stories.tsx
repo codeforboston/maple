@@ -1,25 +1,24 @@
 import { createMeta } from "stories/utils"
-import { DropdownButton } from "../../../components/shared/DropdownButton/DropdownButton"
+import { DropdownGeneric } from "../../../components/shared/Dropdown/DropdownGeneric"
 import { ComponentStory } from "@storybook/react"
-import { DropdownButtonProps } from "../../../components/shared/DropdownButton/DropdownButton"
 
 export default createMeta({
-  title: "Components/Buttons/DropdownButton",
+  title: "Components/Buttons/Dropdown",
   figmaUrl:
     "https://www.figma.com/file/pGGIX2tmCWJNGU1sAYQ91v/FAQ?type=design&node-id=4001-29831&mode=design&t=j7usRSbamiOgLWlC-0",
-  component: DropdownButton
+  component: DropdownGeneric
 })
 
-const Template: ComponentStory<typeof DropdownButton> = ({
+const Template: ComponentStory<typeof DropdownGeneric> = ({
   title,
   children,
   variant,
   styling
 }) => {
   return (
-    <DropdownButton title={title} styling={styling} variant={variant}>
+    <DropdownGeneric title={title} styling={styling} variant={variant}>
       {children}
-    </DropdownButton>
+    </DropdownGeneric>
   )
 }
 
