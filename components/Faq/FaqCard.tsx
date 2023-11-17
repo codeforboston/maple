@@ -2,24 +2,30 @@ import { Card } from "../bootstrap"
 import { FaqQandA } from "./FaqQandA"
 import styles from "./Faq.module.css"
 
-type faqCardProps = {
+interface faqCardProps {
+  faqId: number
   heading: string
   qAndAs: { disabled?: boolean; question: string; answer: string }[]
 }
 
-export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
+export const FaqCard = ({ faqId, heading, qAndAs }: faqCardProps) => {
   return (
     <Card className={styles.faqCard}>
+      {heading == "General" ? (
+        <span className={styles.mobileOffset} id={heading} />
+      ) : (
+        <span id={heading} />
+      )}
       <h2>{heading ?? ""}</h2>
       <hr></hr>
       {qAndAs.map(
-        (key, index) =>
-          typeof key.disabled === "undefined" && (
+        (qAndA, index) =>
+          typeof qAndA.disabled === "undefined" && (
             <div className={styles.faqQA} key={index}>
               <FaqQandA
-                key={index}
-                question={key.question}
-                answer={key.answer}
+                key={faqId}
+                question={qAndA.question}
+                answer={qAndA.answer}
               ></FaqQandA>
             </div>
           )

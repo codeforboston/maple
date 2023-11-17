@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Image, Collapse } from "../bootstrap"
 import styles from "./Faq.module.css"
 
@@ -8,19 +8,17 @@ type faqQandAProps = {
 }
 
 export const FaqQandA = ({ question, answer }: faqQandAProps) => {
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {}, [open])
+  const [isOpen, setOpen] = useState(false)
 
   return (
     <>
-      <a
-        onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open}
+      <div
+        onClick={() => setOpen(!isOpen)}
+        aria-controls="collapse-text"
+        aria-expanded={isOpen}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          {open ? (
+          {isOpen ? (
             <Image
               src="/minus.svg"
               className={styles.icon}
@@ -35,9 +33,9 @@ export const FaqQandA = ({ question, answer }: faqQandAProps) => {
           )}
           {question}
         </div>
-      </a>
-      <Collapse in={open}>
-        <p id="example-collapse-text" className={styles.answer}>
+      </div>
+      <Collapse in={isOpen}>
+        <p id="collapse-text" className={styles.answer}>
           {answer}
         </p>
       </Collapse>
