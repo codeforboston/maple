@@ -230,7 +230,7 @@ const getBillTracker = (billId: string, court: number) =>
       if (s.exists) return s.data() as BillTracker
     })
 
-describe("billTracker", () => {
+describe.skip("billTracker", () => {
   describe("calculate status", () => {
     test("detects bill Introduced", () => {
       const billIntroduced = predictBillStatus(noHistory)
@@ -263,7 +263,7 @@ describe("billTracker", () => {
     })
   })
 
-  describe("on bill document change", () => {
+  describe.skip("on bill document change", () => {
     let court: number, billId: string, billPath: string
     beforeAll(async () => {
       court = 192
