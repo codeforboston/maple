@@ -14,9 +14,28 @@ const config: Config.InitialOptions = {
     "<rootDir>/tests/seed",
     "<rootDir>/functions"
   ],
+  // transformIgnorePatterns: [],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"],
-  modulePaths: ["<rootDir>"]
+  modulePaths: ["<rootDir>"],
+  reporters: ["jest-silent-reporter", "summary"]
+  // reporters: [["default", { summaryThreshold: 1 }]]
 }
 
+const modulesToTransform = ["@firebase", "firebase", "nanoid"]
+
 // See https://nextjs.org/docs/advanced-features/compiler#jest
-export default nextJest()(config)
+const cfg = async () => {
+  const res = await nextJest()(config)()
+
+  res.transformIgnorePatterns = res.transformIgnorePatterns.filter(
+    (p: any) => !p.includes("node_modules")
+  )
+  res.transformIgnorePatterns.push(
+    `/node_modules/(?!(${modulesToTransform.join("|")})/)`
+  )
+
+  console.log(res)
+  return res
+}
+
+export default cfg

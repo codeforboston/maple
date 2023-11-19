@@ -1,8 +1,8 @@
 import { UserRecord } from "firebase-admin/auth"
 import { nanoid } from "nanoid"
-import { Role } from "../../components/auth"
+import { Role } from "../../functions/src/auth/types"
 import { setRole } from "../../functions/src/auth"
-import { terminateFirebase, testAuth, testDb } from "../testUtils"
+import { testAuth, testDb } from "../testUtils"
 import { getProfile } from "./common"
 
 const fakeUser = () => ({
