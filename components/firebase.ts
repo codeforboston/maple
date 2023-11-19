@@ -46,7 +46,10 @@ export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
   return async () => {
     if (value === undefined) {
-      if (await analytics.isSupported()) {
+      if (
+        process.env.NODE_ENV === "production" &&
+        (await analytics.isSupported())
+      ) {
         value = analytics.getAnalytics(app)
       } else {
         value = null
