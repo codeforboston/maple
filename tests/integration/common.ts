@@ -64,7 +64,6 @@ export async function createNewBill(props?: Partial<Bill>) {
       nextHearingAt: FirestoreTimestamp.fromMillis(0),
       fetchedAt: FirestoreTimestamp.fromMillis(0)
     })
-    .then(b => console.log("success"))
     .catch(err => console.log(err))
 
   return billId
