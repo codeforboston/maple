@@ -171,6 +171,7 @@
     "inquirer": "^6.5.1",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
+    "jest-summary-reporter": "^0.0.2",
     "js-yaml": "^4.1.0",
     "lorem-ipsum": "^2.0.4",
     "mustache": "^4.2.0",
