@@ -15,7 +15,7 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-import { KeepNote, YourTestimony, PublishingToMAPLE, KeepNoteMobile } from "./KeepNote"
+import { KeepNote, KeepNoteMobile } from "./KeepNote"
 
 const Background = styled.div`
   background: var(--bs-white);
@@ -33,12 +33,12 @@ export const SubmitTestimonyForm = () => {
   return form.ready ? (
     <Background className="p-0">
       <StyledContainer fluid="lg">
-        <Row>
+        <Row className="px-4 fixed-top" style={{marginTop: 80}}>
           <Col xs={12}>
             {isMobile ? <PolicyDetails bill={form.bill} profile={form.profile} /> : null}
           </Col>
         </Row>
-        <Row className="g-0">
+        <Row className="g-0" style={isMobile ? {paddingTop: 56} : {paddingTop: 0}}>
           <Col md={9} xs={12}>
             <Form step={form.step} bill={form.bill} synced={form.synced} />
           </Col>
