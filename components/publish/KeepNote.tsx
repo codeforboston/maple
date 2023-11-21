@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { useState } from "react";
-import { Image, Button, Modal, Col, Row} from "../bootstrap"
+import { useState } from "react"
+import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 
 export const KeepNote = (props: { currentStep: Step }) => {
@@ -18,50 +18,53 @@ export const KeepNote = (props: { currentStep: Step }) => {
 }
 
 export const KeepNoteMobile = () => {
-  const [showYourTestimony, setShowYourTestimony] = useState(false);
-  const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false);
+  const [showYourTestimony, setShowYourTestimony] = useState(false)
+  const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false)
 
-  const handleCloseYourTestimony = () => setShowYourTestimony(false);
-  const handleShowYourTestimony = () => setShowYourTestimony(true);
+  const handleCloseYourTestimony = () => setShowYourTestimony(false)
+  const handleShowYourTestimony = () => setShowYourTestimony(true)
 
-  const handleClosePublishingToMAPLE = () => setShowPublishingToMAPLE(false);
-  const handleShowPublishingToMAPLE = () => setShowPublishingToMAPLE(true);
+  const handleClosePublishingToMAPLE = () => setShowPublishingToMAPLE(false)
+  const handleShowPublishingToMAPLE = () => setShowPublishingToMAPLE(true)
 
   return (
     <Col className="py-1">
       <Row xs={12}>
         <p style={{ fontWeight: "bolder" }}>About MAPLE Testimony</p>
       </Row>
-      
+
       <Row xs={12} className="my-3">
         <Button variant="outline-secondary" onClick={handleShowYourTestimony}>
           How MAPLE Testimonies Work
         </Button>
       </Row>
-      
+
       <Row xs={12} className="my-3">
-        <Button variant="outline-secondary" onClick={handleShowPublishingToMAPLE}>
+        <Button
+          variant="outline-secondary"
+          onClick={handleShowPublishingToMAPLE}
+        >
           Publishing to MAPLE
         </Button>
       </Row>
-      
 
       <Modal show={showYourTestimony} onHide={handleCloseYourTestimony}>
         <Modal.Header closeButton>
           <Modal.Title>How MAPLE Testimonies Work</Modal.Title>
         </Modal.Header>
-        <Modal.Body><YourTestimony /></Modal.Body>
-       
+        <Modal.Body>
+          <YourTestimony />
+        </Modal.Body>
       </Modal>
 
       <Modal show={showPublishingToMAPLE} onHide={handleClosePublishingToMAPLE}>
         <Modal.Header closeButton>
           <Modal.Title>Publishing to MAPLE</Modal.Title>
         </Modal.Header>
-        <Modal.Body><PublishingToMAPLE /></Modal.Body>
-       
+        <Modal.Body>
+          <PublishingToMAPLE />
+        </Modal.Body>
       </Modal>
-
     </Col>
   )
 }

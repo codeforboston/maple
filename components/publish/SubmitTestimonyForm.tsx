@@ -1,11 +1,20 @@
 import clsx from "clsx"
 import styled from "styled-components"
-import { Col, Container, Image, Row, Spinner, Button, Collapse, Modal } from "../bootstrap"
+import {
+  Col,
+  Container,
+  Image,
+  Row,
+  Spinner,
+  Button,
+  Collapse,
+  Modal
+} from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormInfo } from "./hooks"
-import { useState } from "react";
+import { useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { ProgressBar } from "./ProgressBar"
 import { PublishInfo } from "./PublishInfo"
@@ -35,27 +44,30 @@ export const SubmitTestimonyForm = () => {
 
   return form.ready ? (
     <Background className="p-0">
-    {/* <StyledContainer className="pl-4"> */}
+      {/* <StyledContainer className="pl-4"> */}
 
-        <Row className="px-4 fixed-top" style={{marginTop: 80}}>
-          <Col xs={12}>
-            {isMobile ? <PolicyDetails bill={form.bill} profile={form.profile} /> : null}
-          </Col>
-        </Row>
-        <Row className="g-0 h-100" style={isMobile ? {paddingTop: 56} : {paddingTop: 0}}>
-          <Col md={9} xs={12} className="px-4">
-            <Form step={form.step} bill={form.bill} synced={form.synced} />
-          </Col>
-          <Col md={3} xs={12}>
-            { isMobile ? null :
-                form.step == "position" ? (
-                  <QuickInfo bill={form.bill} profile={form.profile} />
-                ) : (
-                  <KeepNote currentStep={form.step} />
-                )
-            }
-          </Col>
-        </Row>
+      <Row className="px-4 fixed-top" style={{ marginTop: 80 }}>
+        <Col xs={12}>
+          {isMobile ? (
+            <PolicyDetails bill={form.bill} profile={form.profile} />
+          ) : null}
+        </Col>
+      </Row>
+      <Row
+        className="g-0 h-100"
+        style={isMobile ? { paddingTop: 56 } : { paddingTop: 0 }}
+      >
+        <Col md={9} xs={12} className="px-4">
+          <Form step={form.step} bill={form.bill} synced={form.synced} />
+        </Col>
+        <Col md={3} xs={12}>
+          {isMobile ? null : form.step == "position" ? (
+            <QuickInfo bill={form.bill} profile={form.profile} />
+          ) : (
+            <KeepNote currentStep={form.step} />
+          )}
+        </Col>
+      </Row>
       {/* </StyledContainer> */}
     </Background>
   ) : (
@@ -80,11 +92,11 @@ const PolicyDetailsStyle = styled.div`
   background-color: var(--bs-body-bg);
   font-weight: bolder;
   text-align: center;
-  box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
 `
 
 const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
-  const [isCollapsed, setCollapsed] = useState(false);
+  const [isCollapsed, setCollapsed] = useState(false)
 
   return (
     <PolicyDetailsStyle className="mb-3 p-3">
@@ -93,19 +105,18 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
           <QuickInfo bill={bill} profile={profile} />
           <Divider />
         </div>
-      </Collapse> 
+      </Collapse>
 
       <div onClick={() => setCollapsed(!isCollapsed)}>
-        {isCollapsed ?
-          <div>View Less Details &#9650;</div> :
+        {isCollapsed ? (
+          <div>View Less Details &#9650;</div>
+        ) : (
           <div>View Policy Details &#9660;</div>
-        }
+        )}
       </div>
-        
     </PolicyDetailsStyle>
-  );
-};
-
+  )
+}
 
 const Form = ({
   step,
@@ -134,7 +145,9 @@ const Form = ({
         Back to Bill (Bill {bill.id})
       </links.Internal>
       <Overview className="mt-3" />
-      {isMobile && (step == "write" || step == "publish" || step == "share")? <KeepNoteMobile />: null}
+      {isMobile && (step == "write" || step == "publish" || step == "share") ? (
+        <KeepNoteMobile />
+      ) : null}
       <ProgressBar className="mt-4 mb-4" currentStep={step} />
       {content[step]}
     </FormContainer>
@@ -150,17 +163,15 @@ const Overview = ({ className }: { className: string }) => (
         <div className="mt-2" style={{ fontWeight: "bolder" }}>
           Your voice matters. And it's important that you share it. MAPLE helps
           you 1) write testimony, 2) publish it to our community, and 3) send it
-          to the right legislators so it can be formally considered. It's easy as
-          1-2-3!
+          to the right legislators so it can be formally considered. It's easy
+          as 1-2-3!
         </div>
       </Col>
       <Col md={2} xs={12}>
         <div className="mx-auto text-center">
-          <Image alt="" src="/writing.svg" /> 
+          <Image alt="" src="/writing.svg" />
         </div>
-        
       </Col>
     </Row>
   </div>
 )
-

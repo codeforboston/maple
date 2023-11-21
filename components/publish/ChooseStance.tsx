@@ -24,9 +24,15 @@ export const ChooseStance = styled(({ ...rest }) => {
     <div {...rest}>
       <StepHeader step={1}>Choose Your Stance</StepHeader>
       <Row className="d-flex gap-3 justify-content-center mt-4">
-        <Col md={3} xs={12} className="d-flex justify-content-center"><PositionButton {...props("endorse")} isMobile={isMobile}/></Col>
-        <Col md={3} xs={12} className="d-flex justify-content-center"><PositionButton {...props("neutral")} isMobile={isMobile}/></Col>
-        <Col md={3} xs={12} className="d-flex justify-content-center"><PositionButton {...props("oppose")} isMobile={isMobile}/></Col>
+        <Col md={3} xs={12} className="d-flex justify-content-center">
+          <PositionButton {...props("endorse")} isMobile={isMobile} />
+        </Col>
+        <Col md={3} xs={12} className="d-flex justify-content-center">
+          <PositionButton {...props("neutral")} isMobile={isMobile} />
+        </Col>
+        <Col md={3} xs={12} className="d-flex justify-content-center">
+          <PositionButton {...props("oppose")} isMobile={isMobile} />
+        </Col>
       </Row>
 
       <FormNavigation status right={<Next disabled={!hasPosition} />} />
@@ -35,7 +41,10 @@ export const ChooseStance = styled(({ ...rest }) => {
 })``
 
 const PositionButton = styled<
-  { position: Position, isMobile: boolean } & Pick<ToggleButtonProps, "onClick" | "checked">
+  { position: Position; isMobile: boolean } & Pick<
+    ToggleButtonProps,
+    "onClick" | "checked"
+  >
 >(({ position, isMobile, ...rest }) => {
   const icons: Record<Position, React.ReactNode> = {
     neutral: (
@@ -66,6 +75,6 @@ const PositionButton = styled<
   border-radius: 0.5rem;
   display: block;
   aspect-ratio: 1;
-  width: ${props => props.isMobile ? "100%" : "8rem"};
+  width: ${props => (props.isMobile ? "100%" : "8rem")};
   height: 8rem;
 `
