@@ -19,11 +19,14 @@ import { KeepNote, KeepNoteMobile } from "./KeepNote"
 
 const Background = styled.div`
   background: var(--bs-white);
+  height: 100%;
 `
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
   background: var(--bs-white);
+  width: 100%;
+  margin: 0;
 `
 
 export const SubmitTestimonyForm = () => {
@@ -32,14 +35,15 @@ export const SubmitTestimonyForm = () => {
 
   return form.ready ? (
     <Background className="p-0">
-      <StyledContainer fluid="lg">
+    {/* <StyledContainer className="pl-4"> */}
+
         <Row className="px-4 fixed-top" style={{marginTop: 80}}>
           <Col xs={12}>
             {isMobile ? <PolicyDetails bill={form.bill} profile={form.profile} /> : null}
           </Col>
         </Row>
-        <Row className="g-0" style={isMobile ? {paddingTop: 56} : {paddingTop: 0}}>
-          <Col md={9} xs={12}>
+        <Row className="g-0 h-100" style={isMobile ? {paddingTop: 56} : {paddingTop: 0}}>
+          <Col md={9} xs={12} className="px-4">
             <Form step={form.step} bill={form.bill} synced={form.synced} />
           </Col>
           <Col md={3} xs={12}>
@@ -52,7 +56,7 @@ export const SubmitTestimonyForm = () => {
             }
           </Col>
         </Row>
-      </StyledContainer>
+      {/* </StyledContainer> */}
     </Background>
   ) : (
     <Spinner animation="border" />

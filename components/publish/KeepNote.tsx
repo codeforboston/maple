@@ -5,7 +5,7 @@ import { Step } from "./redux"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   return (
-    <NoteContainer>
+    <NoteContainer className="p-0">
       <HeaderContainer>Keep Note</HeaderContainer>
       {props.currentStep == "selectLegislators" ||
       props.currentStep == "write" ? (
@@ -148,9 +148,10 @@ const NoteContainer = styled.div`
     margin-top: 20px;
     font-weight: 500;
     font-family: Nunito;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: 0.015em;
-  text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.015em;
+    text-align: left;
+    padding-right: 1rem;
   `
