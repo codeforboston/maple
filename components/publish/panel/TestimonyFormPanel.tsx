@@ -43,9 +43,9 @@ const Panel = () => {
     case "unverified":
       return <UnverifiedEmail />
     case "noTestimony":
-      return isMobile ? <></> : <CreateTestimony />
+      return <CreateTestimony />
     case "createInProgress":
-      return isMobile ? <></> : <CompleteTestimony />
+      return <CompleteTestimony />
     default:
       return <YourTestimony />
   }
