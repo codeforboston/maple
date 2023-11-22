@@ -23,6 +23,6 @@ mapleClient.interceptors.response.use(
     }
   },
   async error => {
-    console.log(error)
+    console.log(error.message)
   }
 )

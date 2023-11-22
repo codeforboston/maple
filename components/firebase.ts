@@ -46,7 +46,10 @@ export const getAnalytics = (() => {
   let value: undefined | null | analytics.Analytics
   return async () => {
     if (value === undefined) {
-      if (await analytics.isSupported()) {
+      if (
+        process.env.NODE_ENV === "production" &&
+        (await analytics.isSupported())
+      ) {
         value = analytics.getAnalytics(app)
       } else {
         value = null
@@ -74,7 +77,6 @@ export const storage = getStorage()
 export const functions = getFunctions()
 
 if (!initialized && process.env.NODE_ENV !== "production") {
-  console.log("env.NODE_ENV in firebase.ts", process.env.NODE_ENV)
   const useEmulator = process.env.NEXT_PUBLIC_USE_EMULATOR
   switch (useEmulator) {
     case "1":
@@ -102,20 +104,9 @@ function connectEmulators() {
   connectStorageEmulator(storage, host, 9199)
   connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true })
 
-  app.firestore().useEmulator(host, 8080)
-  app.functions().useEmulator(host, 5001)
-  app.storage().useEmulator(host, 9199)
-  // ;(app.auth().useEmulator as any)(`http://${host}:9099`, {
-  //   disableWarnings: true
-  // })
-  app.auth().useEmulator(`http://${host}:9099`)
   if (process.env.NODE_ENV === "development")
     console.log("Connected to emulators")
 }
-
-// auth.onAuthStateChanged(u => {
-//   console.log('onAuthStateChanged', u)
-// })
 
 if (typeof window !== "undefined") {
   Object.assign(window as any, { auth, app, getApps })
