@@ -13,7 +13,12 @@ export default createMeta({
   component: BillTestimonyListCard
 })
 
-var first = { Id: "test", Name: "tes", Type: 0 }
+var first = {
+  Id: "test",
+  Name: "tes",
+  Type: 0,
+  ResponseDate: "2023-01-17T15:14:22.9133333"
+}
 
 const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
   return <BillTestimonyListCard {...props} />
