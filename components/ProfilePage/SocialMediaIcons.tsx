@@ -24,7 +24,7 @@ export const SocialMediaIcons = ({
 
       {linkedIn && (
         <Col>
-          <External plain href={`https://www.linkedin.com/in/${linkedIn}`}>
+          <External plain href={`${linkedIn}`}>
             <Image alt="linkedIn" src="/linkedin.svg" />
           </External>
         </Col>

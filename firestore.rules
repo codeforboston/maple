@@ -21,33 +21,33 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
-    function isAdmin() {
-      return  request.auth.token.get("role", "user") == "admin"
-    }
     match /profiles/{uid} {
-      function validUser() {
+      function validUser() { // is the user the same as the profile?
         return request.auth.uid == uid
       }
 
-      function validRoleChange() {
+      function doesNotChangeRole() { 
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
       }
-
+      // either the change doesn't include the public field, 
+      // or the user is a base user (i.e. not an org)
       function validPublicChange() {
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['public'])
           || request.auth.token.get("role", "user") == "user"
       }
 
       // Always visible to the user and public if `public` is true.
-      // Always visible to admins.
-      // Only writable by the user & admin
-      // Do not allow users to delete their profile, set the role field.
-      // Only admins can delete a user profile, set the user role field. 
-      // Only normal "user" roles & admins can toggle visibility.
-      allow read, write: if request.auth.token.get("role", "user") == "admin"
       allow read: if resource.data.public || request.auth.uid == uid
+      // Only normal "user" roles & admins can toggle visibility.
       allow create: if validUser() && request.resource.data.role == 'user' && request.resource.data.public == false
-      allow update: if validUser() && validRoleChange() && validPublicChange()
+      
+
+      // Always readable and writable to admins
+      allow read, write: if request.auth.token.get("role", "user") == "admin"
+
+      // Allow users to make updates except to delete their profile or set the role field.
+      // Only admins can delete a user profile or set the user role field. 
+      allow update: if validUser() && doesNotChangeRole() && validPublicChange()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
