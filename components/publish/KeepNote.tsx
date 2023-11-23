@@ -1,22 +1,75 @@
 import styled from "styled-components"
-import { Image } from "../bootstrap"
+import { useState } from "react"
+import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   return (
-    <NoteContainer>
+    <NoteContainer className="p-0">
       <HeaderContainer>Keep Note</HeaderContainer>
       {props.currentStep == "selectLegislators" ||
       props.currentStep == "write" ? (
-        <NoteContentForWrite />
+        <YourTestimony />
       ) : (
-        <NoteContentForSend />
+        <PublishingToMAPLE />
       )}
     </NoteContainer>
   )
 }
 
-export const NoteContentForWrite = () => {
+export const KeepNoteMobile = () => {
+  const [showYourTestimony, setShowYourTestimony] = useState(false)
+  const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false)
+
+  const handleCloseYourTestimony = () => setShowYourTestimony(false)
+  const handleShowYourTestimony = () => setShowYourTestimony(true)
+
+  const handleClosePublishingToMAPLE = () => setShowPublishingToMAPLE(false)
+  const handleShowPublishingToMAPLE = () => setShowPublishingToMAPLE(true)
+
+  return (
+    <Col className="py-1">
+      <Row xs={12}>
+        <p style={{ fontWeight: "bolder" }}>About MAPLE Testimony</p>
+      </Row>
+
+      <Row xs={12} className="my-3">
+        <Button variant="outline-secondary" onClick={handleShowYourTestimony}>
+          How MAPLE Testimonies Work
+        </Button>
+      </Row>
+
+      <Row xs={12} className="my-3">
+        <Button
+          variant="outline-secondary"
+          onClick={handleShowPublishingToMAPLE}
+        >
+          Publishing to MAPLE
+        </Button>
+      </Row>
+
+      <Modal show={showYourTestimony} onHide={handleCloseYourTestimony}>
+        <Modal.Header closeButton>
+          <Modal.Title>How MAPLE Testimonies Work</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <YourTestimony />
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showPublishingToMAPLE} onHide={handleClosePublishingToMAPLE}>
+        <Modal.Header closeButton>
+          <Modal.Title>Publishing to MAPLE</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PublishingToMAPLE />
+        </Modal.Body>
+      </Modal>
+    </Col>
+  )
+}
+
+export const YourTestimony = () => {
   return (
     <NoteContent>
       <div className="text-center">
@@ -51,7 +104,7 @@ export const NoteContentForWrite = () => {
   )
 }
 
-export const NoteContentForSend = () => {
+export const PublishingToMAPLE = () => {
   return (
     <NoteContent>
       <div className="text-center">
@@ -97,4 +150,11 @@ const NoteContainer = styled.div`
   NoteItem = styled.li`
     margin-top: 20px;
     font-weight: 500;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.015em;
+    text-align: left;
+    padding-right: 1rem;
   `
