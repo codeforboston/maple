@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { useAuth } from "../auth"
 import { Button, Col, Container, Stack } from "../bootstrap"
 import { ProfileHook, useProfile } from "../db"
+import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   @media (min-width: 768px) {
@@ -18,6 +19,7 @@ export function UnsubscribeConfirm() {
   const { user } = useAuth()
   const isUser = user?.uid !== undefined
   const actions = useProfile()
+  const { t } = useTranslation(["unsubscribe", "auth"])
 
   const handleClick = async () => {
     await updateProfile({ actions })
@@ -38,15 +40,15 @@ export function UnsubscribeConfirm() {
           <StyledBody>
             <div>
               {isUser ? (
-                "Confirm that you would like to unsubscribe from Notification Emails"
+                t("unsubscribeConfirmation", { ns: "unsubscribe" })
               ) : (
                 <br />
               )}
             </div>
             <div className={`${isUser ? "" : "mx-auto"}`}>
               {isUser
-                ? "You can change these settings later from Edit Profile page with the Settings button"
-                : "Please log in"}
+                ? t("settingsChangeTip", { ns: "unsubscribe" })
+                : t("logInPrompt", { ns: "auth" })}
             </div>
             <Col className="mx-auto pt-4">
               <Button
@@ -54,13 +56,13 @@ export function UnsubscribeConfirm() {
                 disabled={isUser ? false : true}
                 onClick={handleClick}
               >
-                Continue
+                {t("continue", { ns: "auth" })}
               </Button>
               <Button
                 className={`btn btn-sm btn-outline-secondary py-1`}
                 href="/"
               >
-                Cancel
+                {t("cancel", { ns: "auth" })}
               </Button>
             </Col>
           </StyledBody>
