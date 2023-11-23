@@ -75,6 +75,7 @@ const StyledRow = styled(Row)`
 
 function RenderPrivacyText(role: Role, isPublic: boolean) {
   const { t } = useTranslation("editProfile")
+
   switch (role) {
     case "organization":
       return t("privacyText.organization")

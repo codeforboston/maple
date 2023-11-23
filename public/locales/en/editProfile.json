@@ -17,10 +17,6 @@
         "testimonies": "Testimonies",
         "following": "Following"
     },
-    "headings":{
-        "socialMedia": "Social Media",
-        "contactInfo": "Contact Information"
-    },
     "content":{
         "reqPending": "Your request to be an organization account is pending approval",
         "uplaodOrgImg": "Input an image for your organization's profile",
@@ -95,7 +91,7 @@
     "privacyText":{
         "organization": "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private.",
         "pendingUpgrade": "Your profile is private until your request to be an Organization account is approved.",
-        "publicUser": "Your profile is private until your request to be an Organization account is approved.",
+        "publicUser": "Your profile is currently public. Others can view your profile page.",
         "privateUser": "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
     }
 }
