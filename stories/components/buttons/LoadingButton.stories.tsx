@@ -1,13 +1,34 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { ComponentStory } from "@storybook/react"
-import { Image } from "components/bootstrap"
+import {
+  Title,
+  Subtitle,
+  Description,
+  ArgsTable,
+  Stories
+} from "@storybook/addon-docs"
+import { Image, Stack } from "components/bootstrap"
 import { useState } from "react"
 import { createMeta } from "stories/utils"
 import { LoadingButton } from "../../../components/buttons"
 
 export default createMeta({
   title: "Components/Buttons/LoadingButton",
-  component: LoadingButton
+  component: LoadingButton,
+  parameters: {
+    docs: {
+      page: () => (
+        <Stack gap={2} className="col-4">
+          <Title>Loading Buttons</Title>
+          <Primary {...Primary.args} />
+          <Disabled {...Disabled.args} />
+          <Loading {...Loading.args} />
+          <Light {...Light.args} />
+          <WithImage {...WithImage.args} />
+        </Stack>
+      )
+    }
+  }
 })
 
 const Template: ComponentStory<typeof LoadingButton> = ({

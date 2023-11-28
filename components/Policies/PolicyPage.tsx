@@ -4,6 +4,7 @@ import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
 import Router from "next/router"
 import classNames from "classnames"
+import { ValuePlaque } from "./ValuePlaque"
 
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
@@ -69,7 +70,25 @@ export default function PolicyPage({
             "gy-3"
           )}
         >
-          <Col xs={12} className={style.blueBox}>
+          <ValuePlaque
+            src="handShake.jpg"
+            alt="hand shake"
+            title="Humility"
+            xs={12}
+          />
+          <ValuePlaque
+            src="compassion.png"
+            alt="cupped hand holding heart"
+            title="Compassion"
+            xs={12}
+          />
+          <ValuePlaque
+            src="lightBulb.png"
+            alt="lightbulb"
+            title="Curiosity"
+            xs={12}
+          />
+          {/* <Col xs={12} className={style.blueBox}>
             <Image
               src="handShake.jpg"
               alt="hand shake"
@@ -92,7 +111,7 @@ export default function PolicyPage({
               className={style.symbol}
             ></Image>
             <p className={style.values}>Curiosity</p>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </Container>

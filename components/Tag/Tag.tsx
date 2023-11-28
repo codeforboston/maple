@@ -1,7 +1,7 @@
 import { FC } from "react"
 import styled from "styled-components"
 
-type Chamber = "senate" | "house" | "joint"
+export type Chamber = "senate" | "house" | "joint"
 
 interface Props {
   chamber: Chamber

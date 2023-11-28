@@ -2,6 +2,9 @@ import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
 import { BillTestimonies } from "../../components/bill/BillTestimonies"
 import { Timestamp } from "firebase/firestore"
+import { Provider as Redux } from "react-redux"
+import { Providers } from "components/providers"
+import { wrapper } from "components/store"
 
 // TODO: move into components directory
 const BillTestimonyListCard = BillTestimonies
@@ -20,6 +23,21 @@ const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
 }
 
 export const Primary = Template.bind({})
+
+Primary.decorators = [
+  (Story, ...rest) => {
+    const { store, props } = wrapper.useWrappedStore(...rest)
+
+    return (
+      <Redux store={store}>
+        <Providers>
+          <Story />
+        </Providers>
+      </Redux>
+    )
+  }
+]
+
 Primary.args = {
   bill: {
     id: "H805",

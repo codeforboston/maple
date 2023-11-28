@@ -1,33 +1,7 @@
-import { createMeta } from "stories/utils"
-import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
-import { ComponentStory } from "@storybook/react"
-import { BillProps } from "components/bill/types"
 import { Timestamp } from "firebase/firestore"
 import { Bill, BillContent, BillHistory } from "components/db"
-import React, { ReactNode } from "react"
-import { LoadingButton } from "components/buttons"
 
-// TODO: move into components directory
-
-const Cosponsors = (props: BillProps & { children: ReactNode }) => (
-  <PreCosponsors {...props} />
-)
-export default createMeta({
-  title: "Bill Detail/Cosponsors",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=172%3A8380",
-  component: Cosponsors
-})
-
-const Template: ComponentStory<typeof Cosponsors> = args => (
-  <Cosponsors {...args} />
-)
-
-export const Primary = Template.bind({})
-
-Primary.decorators = [(Story, children) => <Story {...children} />]
-
-const newBillHistory: BillHistory = [
+export const newBillHistory: BillHistory = [
   {
     Date: new Date().toISOString(),
     Branch: "House",
@@ -49,8 +23,7 @@ const newBillHistory: BillHistory = [
     Action: "this is the action"
   }
 ]
-
-const newBillContent: BillContent = {
+export const newBillContent: BillContent = {
   Title: "An Act relative to the safety of autistic and alzheimer individuals",
   BillNumber: "H. 1728",
   DocketNumber: "HD. 2027",
@@ -82,7 +55,7 @@ const newBillContent: BillContent = {
   DocumentText: "this is the document text"
 }
 
-const bill: Bill = {
+export const bill: Bill = {
   id: "123",
   court: 192,
   content: newBillContent,
@@ -103,9 +76,4 @@ const bill: Bill = {
     }
   },
   city: "Boston"
-}
-
-Primary.args = {
-  bill: bill,
-  children: "View Cosponsors"
 }

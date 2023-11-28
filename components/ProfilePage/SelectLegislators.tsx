@@ -20,7 +20,7 @@ export const SelectLegislators: React.FC = () => {
   )
 }
 
-const LegislatorForm: React.FC<{
+export const LegislatorForm: React.FC<{
   index: MemberSearchIndex
   profile: ProfileHook
 }> = ({ index, profile }) => {
