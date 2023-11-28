@@ -1,11 +1,10 @@
-import { ComponentStory, Meta, Story } from "@storybook/react"
-import { createMeta } from "stories/utils"
+import { ComponentStory } from "@storybook/react"
 import { TooltipButton } from "components/buttons"
-import { Container, OverlayTrigger, Stack, Tooltip } from "react-bootstrap"
-import styled from "styled-components"
+import { Container, Stack } from "react-bootstrap"
+import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Components/Buttons/Tooltip Button",
+  title: "Molecules/Buttons/Tooltip Button",
   component: TooltipButton,
   parameters: {
     docs: {

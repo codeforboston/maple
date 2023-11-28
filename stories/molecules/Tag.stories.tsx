@@ -1,11 +1,11 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { Tag, Chamber } from "components/Tag/Tag"
+import { Tag } from "components/Tag/Tag"
 import { Stack } from "react-bootstrap"
 import { Title } from "@storybook/addon-docs"
 
 export default createMeta({
-  title: "Components/Tag",
+  title: "Organisms/Tag",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A13514",
   component: Tag,

@@ -1,11 +1,10 @@
-import { createMeta } from "stories/utils"
-import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { ComponentStory } from "@storybook/react"
+import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { BillProps } from "components/bill/types"
-import { Timestamp } from "firebase/firestore"
 import { Bill, BillContent, BillHistory } from "components/db"
-import React, { ReactNode } from "react"
-import { LoadingButton } from "components/buttons"
+import { Timestamp } from "firebase/firestore"
+import { ReactNode } from "react"
+import { createMeta } from "stories/utils"
 
 // TODO: move into components directory
 
@@ -13,7 +12,7 @@ const Cosponsors = (props: BillProps & { children: ReactNode }) => (
   <PreCosponsors {...props} />
 )
 export default createMeta({
-  title: "Bill Detail/Cosponsors",
+  title: "Organisms/Bill Detail/Cosponsors",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=172%3A8380",
   component: Cosponsors

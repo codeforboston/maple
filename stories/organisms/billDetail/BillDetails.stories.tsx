@@ -1,13 +1,13 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { BillDetails } from "../bill/BillDetails"
+import { BillDetails } from "components/bill/BillDetails"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { bill } from "./MockBillData"
 
 export default createMeta({
-  title: "Bill Detail/BillDetails",
+  title: "Organisms/Bill Detail/BillDetails",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: BillDetails

@@ -7,7 +7,7 @@ import { appWithTranslation } from "next-i18next"
 // const PageHeader = () => <div>TODO</div>
 
 export default createMeta({
-  title: "Components/Page/PageHeader",
+  title: "Organisms/Page Elements/PageHeader",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A6642",
   component: HeroHeader

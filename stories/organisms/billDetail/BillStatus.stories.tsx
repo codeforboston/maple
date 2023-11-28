@@ -5,7 +5,7 @@ import { Stage } from "functions/src/analysis/types"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Bill Detail/BillStatus",
+  title: "Organisms/Bill Detail/BillStatus",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=249%3A18636",
   component: BillTrackerView

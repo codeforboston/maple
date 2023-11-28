@@ -4,7 +4,7 @@ import { Stories } from "@storybook/addon-docs"
 import Input from "components/forms/Input"
 
 export default createMeta({
-  title: "Components/Forms/Input",
+  title: "Molecules/Forms/Input",
   component: Input,
   parameters: {
     docs: {

@@ -3,7 +3,7 @@ import { MessageBanner } from "components/shared/MessageBanner"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Components/Page/MessageBanner",
+  title: "Molecules/MessageBanner",
   figmaUrl:
     "https://www.figma.com/file/DsC9Nzanyb5bXsQfZ3veO9/2023-Base-File?type=design&node-id=3873-31947&mode=dev",
   component: MessageBanner

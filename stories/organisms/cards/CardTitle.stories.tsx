@@ -3,7 +3,7 @@ import { createMeta } from "stories/utils"
 import { CardTitle } from "components/Card"
 
 export default createMeta({
-  title: "Components/Cards/CardTitle",
+  title: "Organisms/Cards/CardTitle",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=110%3A2655",
   component: CardTitle

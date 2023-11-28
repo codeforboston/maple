@@ -2,7 +2,7 @@ import { createMeta } from "../utils"
 import { SocialIconLink } from "components/SocialIconLink/SocialIconLink"
 
 export default createMeta({
-  title: "Components/SocialIconLink",
+  title: "Atoms/SocialIconLink",
   figmaUrl:
     "https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE?node-id=1866%3A22187&t=3xgP9SclEre3LNeo-4",
   component: SocialIconLink

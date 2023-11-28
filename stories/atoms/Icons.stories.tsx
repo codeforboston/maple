@@ -12,7 +12,7 @@ const IconStories = ({ children }: { children: React.ReactNode }) => {
 }
 
 export default createMeta({
-  title: "Components/Icons",
+  title: "Molecules/Icons",
   component: IconStories
 })
 

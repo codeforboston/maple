@@ -2,7 +2,7 @@ import { ProfileCard } from "components/ProfileCard"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Dashboard/Side Panels/ProfileCard",
+  title: "Unused/ProfileCard",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=296%3A15838",
   component: ProfileCard

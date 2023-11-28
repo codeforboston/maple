@@ -3,7 +3,7 @@ import { createMeta } from "stories/utils"
 import { CardListItems, ListItem } from "components/Card"
 
 export default createMeta({
-  title: "Components/Cards/CardListItem",
+  title: "Organisms/Cards/CardListItem",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=119%3A2727",
   component: CardListItems
@@ -33,8 +33,20 @@ OnlyBillName.args = {
 export const MultipleItems = Template.bind({})
 MultipleItems.args = {
   items: [
-    <ListItem key={1} billName="H.3330" billDescription="Important bill, must vote!" />,
-    <ListItem key={2} billName="H.3330" billDescription="Important bill, must vote!" />,
-    <ListItem key={3} billName="H.3330" billDescription="Important bill, must vote!" />
+    <ListItem
+      key={1}
+      billName="H.3330"
+      billDescription="Important bill, must vote!"
+    />,
+    <ListItem
+      key={2}
+      billName="H.3330"
+      billDescription="Important bill, must vote!"
+    />,
+    <ListItem
+      key={3}
+      billName="H.3330"
+      billDescription="Important bill, must vote!"
+    />
   ]
 }

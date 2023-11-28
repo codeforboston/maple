@@ -6,7 +6,7 @@ import { createMeta } from "stories/utils"
 import { ValuePlaque } from "components/Policies/ValuePlaque"
 
 export default createMeta({
-  title: "Education/ValuePlaque",
+  title: "Atoms/Plaque",
   component: ValuePlaque,
   decorators: [
     (Story, ...rest) => {
