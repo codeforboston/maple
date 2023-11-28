@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { TableButton } from "../../../../components/buttons"
+import { TableButton } from "components/buttons"
 
 export default {
-  title: "Components/Buttons/TableButton",
+  title: "Molecules/Buttons/TableButton",
   component: TableButton
 }
 

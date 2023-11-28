@@ -3,7 +3,7 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
-import PageFooter from "../../components/Footer/Footer"
+import PageFooter from "components/Footer/Footer"
 
 // import i18n from "i18next"
 

@@ -3,7 +3,7 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
-import PolicyPage from "../../components/Policies/PolicyPage"
+import PolicyPage from "components/Policies/PolicyPage"
 
 export default createMeta({
   title: "Pages/Education/PolicyPage",

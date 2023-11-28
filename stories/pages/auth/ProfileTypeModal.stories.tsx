@@ -1,30 +1,30 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import OrgSignUpModal from "../../../../components/auth/OrgSignUpModal"
+import ProfileTypeModal from "components/auth/ProfileTypeModal"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
 export default createMeta({
-  title: "Auth/Org Sign Up Modal",
+  title: "Auth/Profile Type Modal",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
-  component: OrgSignUpModal
+  component: ProfileTypeModal
 })
 
-const Template: ComponentStory<typeof OrgSignUpModal> = args => (
-  <OrgSignUpModal {...args} />
+const Template: ComponentStory<typeof ProfileTypeModal> = args => (
+  <ProfileTypeModal {...args} />
 )
 
 export const Primary = Template.bind({})
 
 Primary.args = {
-  onSuccessfulSubmit: () => {},
+  onIndividualUserClick: () => {},
+  onOrgUserClick: () => {},
   onHide: () => {},
   show: true
 }
-Primary.storyName = "Org Sign Up Modal"
-
+Primary.storyName = "Profile Type Modal"
 Primary.decorators = [
   (Story, ...rest) => {
     const { store, props } = wrapper.useWrappedStore(...rest)

@@ -1,7 +1,7 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { ContactInfo } from "../../../components/ContactInfo/ContactInfo"
-import { SocialIconLink } from "../../../components/SocialIconLink/SocialIconLink"
+import { ContactInfo } from "components/ContactInfo/ContactInfo"
+import { SocialIconLink } from "components/SocialIconLink/SocialIconLink"
 
 export default createMeta({
   title: "Profile/ContactInfo",

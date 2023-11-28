@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { FollowingCard } from "../../components/FollowingCard/FollowingCard"
+import { FollowingCard } from "components/FollowingCard/FollowingCard"
 
 export default createMeta({
   title: "Dashboard/Side Panels/FollowingCard",

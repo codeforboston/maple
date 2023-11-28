@@ -1,7 +1,6 @@
 import { ComponentStory } from "@storybook/react"
+import { Card } from "components/Card"
 import { createMeta } from "stories/utils"
-import { string } from "yargs"
-import { Card } from "../../../../components/Card"
 
 export default createMeta({
   title: "Components/Cards/Card",

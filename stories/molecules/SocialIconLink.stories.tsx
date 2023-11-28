@@ -1,5 +1,5 @@
-import { createMeta } from "../../utils"
-import { SocialIconLink } from "../../../components/SocialIconLink/SocialIconLink"
+import { createMeta } from "../utils"
+import { SocialIconLink } from "components/SocialIconLink/SocialIconLink"
 
 export default createMeta({
   title: "Components/SocialIconLink",

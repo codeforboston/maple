@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { CurrentCommitteeCard } from "../CurrentCommitteeCard/CurrentCommitteeCard"
+import { CurrentCommitteeCard } from "components/CurrentCommitteeCard/CurrentCommitteeCard"
 
 export default createMeta({
   title: "Bill Detail/CurrentCommitteeCard",

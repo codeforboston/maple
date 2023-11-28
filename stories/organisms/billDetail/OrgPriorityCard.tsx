@@ -1,10 +1,9 @@
-import { Card, SeeMore } from "components/Card"
+import { Card } from "components/Card"
 import { Position } from "components/db"
-import { Key } from "react"
-import { OrgAvatar } from "stories/components/molecules/OrgAvatar"
-import styled from "styled-components"
-import { FC } from "react"
 import { chunk } from "lodash"
+import { FC, Key } from "react"
+import { OrgAvatar } from "stories/molecules/OrgAvatar"
+import styled from "styled-components"
 
 export interface OrgItem {
   id: Key | null | undefined

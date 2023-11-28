@@ -3,7 +3,7 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
-import GoalsAndMission from "../../components/GoalsAndMission/GoalsAndMission"
+import GoalsAndMission from "components/GoalsAndMission/GoalsAndMission"
 
 export default createMeta({
   title: "Education/GoalsAndMission",

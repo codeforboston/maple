@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { Tag, Chamber } from "../../../components/Tag/Tag"
+import { Tag, Chamber } from "components/Tag/Tag"
 import { Stack } from "react-bootstrap"
 import { Title } from "@storybook/addon-docs"
 

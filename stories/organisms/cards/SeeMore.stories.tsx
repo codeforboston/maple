@@ -1,5 +1,5 @@
 import { createMeta } from "stories/utils"
-import { SeeMore } from "../../../../components/Card"
+import { SeeMore } from "components/Card"
 
 export default createMeta({
   title: "Components/Cards/SeeMore",

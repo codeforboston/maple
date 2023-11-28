@@ -1,7 +1,7 @@
 import { ComponentStory } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
-import { PriorityBillsCard } from "../../../components/PriortyBillsCard/PriorityBillsCard"
+import { PriorityBillsCard } from "components/PriortyBillsCard/PriorityBillsCard"
 
 export default createMeta({
   title: "Profile/PriorityBillsCard",

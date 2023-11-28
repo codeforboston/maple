@@ -3,7 +3,7 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
-import { ValuePlaque } from "../../components/Policies/ValuePlaque"
+import { ValuePlaque } from "components/Policies/ValuePlaque"
 
 export default createMeta({
   title: "Education/ValuePlaque",
