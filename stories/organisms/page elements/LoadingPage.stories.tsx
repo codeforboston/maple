@@ -12,3 +12,4 @@ export default createMeta({
 const Template: ComponentStory<typeof Loading> = () => <Loading />
 
 export const Primary = Template.bind({})
+Primary.storyName = "LoadingPage"

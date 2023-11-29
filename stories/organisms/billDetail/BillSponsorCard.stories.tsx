@@ -23,7 +23,7 @@ const Template: ComponentStory<typeof Cosponsors> = args => (
 )
 
 export const Primary = Template.bind({})
-
+Primary.storyName = "Cosponsors"
 Primary.decorators = [(Story, children) => <Story {...children} />]
 
 const newBillHistory: BillHistory = [

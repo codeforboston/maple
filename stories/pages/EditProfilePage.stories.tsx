@@ -8,7 +8,7 @@ import { Profile } from "functions/src/profile/types"
 import { ContactInfo, ProfileHook } from "components/db"
 
 export default createMeta({
-  title: "Organisms/Profile/EditProfileForm",
+  title: "Pages/EditProfile",
   component: EditProfileForm,
   decorators: [
     (Story, ...rest) => {
@@ -24,6 +24,7 @@ export default createMeta({
     }
   ]
 })
+/* The 'editprofileform' component is the visual top for the edit profile page. The EditProfile component that wraps it provides the user data from hooks, but we can pass it as an object here. As we build out providers and mocking in storybook we can revisit this. */
 
 const Template: ComponentStory<typeof EditProfileForm> = args => (
   <EditProfileForm {...args} />
@@ -59,4 +60,5 @@ Primary.args = {
   actions: {} as ProfileHook,
   uid: "123"
 }
-Primary.storyName = "EditProfileForm"
+
+Primary.storyName = "EditProfile"

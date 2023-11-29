@@ -20,7 +20,22 @@ export const parameters = {
   },
   options: {
     storySort: {
-      order: ["Atoms", "Molecules", "Organisms", "Pages", "*", "unused"],
+      order: [
+        "Atoms",
+        "Molecules",
+        "Organisms",
+        [
+          "Page Elements",
+          "Profile",
+          "Edit Profile",
+          "Bill Detail",
+          "Education",
+          "Newsfeed"
+        ],
+        "Pages",
+        "*",
+        "unused"
+      ],
       method: "alphabetical"
     }
   },

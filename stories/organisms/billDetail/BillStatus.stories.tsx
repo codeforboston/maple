@@ -18,6 +18,9 @@ const Template: ComponentStory<typeof BillTrackerView> = props => (
 export const Primary = Template.bind({})
 export const Secondary = Template.bind({})
 
+Primary.storyName = "Bill Introduced"
+Secondary.storyName = "In Second Committee"
+
 Primary.args = {
   tracker: {
     id: "123",

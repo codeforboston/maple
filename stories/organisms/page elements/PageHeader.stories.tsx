@@ -20,3 +20,4 @@ const Template: ComponentStory<typeof HeroHeader> = args => (
 export const Primary = Template.bind({})
 
 Primary.args = { authenticated: true }
+Primary.storyName = "PageHeader"

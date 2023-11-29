@@ -12,6 +12,9 @@ import { Provider as Redux } from "react-redux"
 import { Providers } from "components/providers"
 import { Button, Col, Row, Stack } from "react-bootstrap"
 
+// @TODO: [next] clean up display of these buttons
+// @TODO: [later] refactor this component to use the shared project buttons [refactor phase]
+
 export default createMeta({
   title: "Organisms/Profile/ProfileButtons",
   component: MakePublicButton,

@@ -19,7 +19,7 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
 }
 
 export default createMeta({
-  title: "Organisms/Profile/StyledTabNav",
+  title: "Organisms/Edit Profile/StyledTabNav",
   component: EditProfileComponents,
   parameters: {
     docs: {
@@ -37,3 +37,4 @@ export const Primary = Template.bind({})
 Primary.args = {
   children: "TabContent"
 }
+Primary.storyName = "StyledTabNav"

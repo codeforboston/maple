@@ -39,3 +39,4 @@ Primary.args = {
   user: null,
   signOut: () => {}
 }
+Primary.storyName = "PageFooter"

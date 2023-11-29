@@ -4,10 +4,10 @@ import { BillDetails } from "components/bill/BillDetails"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { bill } from "./MockBillData"
+import { bill } from "../organisms/billDetail/MockBillData"
 
 export default createMeta({
-  title: "Organisms/Bill Detail/BillDetails",
+  title: "Pages/BillDetails",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: BillDetails

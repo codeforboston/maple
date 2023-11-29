@@ -24,6 +24,7 @@ const Template: ComponentStory<typeof BillTestimonyListCard> = props => {
 
 export const Primary = Template.bind({})
 
+Primary.storyName = "BillTestimonyListCard"
 Primary.decorators = [
   (Story, ...rest) => {
     const { store, props } = wrapper.useWrappedStore(...rest)

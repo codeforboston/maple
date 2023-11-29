@@ -10,7 +10,7 @@ import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Organisms/Profile/ProfileSettingsModal",
+  title: "Organisms/Edit Profile/ProfileSettingsModal",
   component: ProfileSettingsModal,
   decorators: [
     (Story, ...rest) => {

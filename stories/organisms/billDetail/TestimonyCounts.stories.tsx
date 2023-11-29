@@ -24,3 +24,5 @@ Primary.args = {
     opposeCount: 2
   }
 } as Partial<BillProps>
+
+Primary.storyName = "TestimonyCounts"

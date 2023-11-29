@@ -15,3 +15,4 @@ const Template: ComponentStory<typeof CurrentCommitteeCard> = args => (
 
 export const Primary = Template.bind({})
 Primary.args = { chamber: "House", committee: "Committee of Ways and Means" }
+Primary.storyName = "CurrentCommitteeCard"

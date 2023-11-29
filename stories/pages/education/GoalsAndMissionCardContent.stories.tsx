@@ -6,7 +6,7 @@ import { createMeta } from "stories/utils"
 import GoalsAndMission from "components/GoalsAndMission/GoalsAndMission"
 
 export default createMeta({
-  title: "Organisms/Education/GoalsAndMission",
+  title: "Pages/Education/GoalsAndMission",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: GoalsAndMission,
