@@ -2,7 +2,7 @@ import { Card } from "components/Card"
 import { Position } from "components/db"
 import { chunk } from "lodash"
 import { FC, Key } from "react"
-import { OrgAvatar } from "stories/molecules/OrgAvatar"
+import { OrgAvatar } from "stories/unused/OrgAvatar"
 import styled from "styled-components"
 
 export interface OrgItem {
