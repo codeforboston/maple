@@ -1,6 +1,5 @@
 import { ComponentStory } from "@storybook/react"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
-import { Testimony } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Timestamp } from "firebase/firestore"
@@ -17,7 +16,7 @@ const TestimonyItemFC: React.FC<TestimonyItemProps> = (
 ) => <TestimonyItem {...props} />
 
 export default createMeta({
-  title: "Profile/UserTestimonyListCard",
+  title: "Organisms/Profile/UserTestimonyListCard",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=311%3A10561",
   component: TestimonyItemFC,
@@ -69,7 +68,8 @@ Primary.args = {
     billTitle: "Bill Title",
     version: 1.0,
     publishedAt: Timestamp.fromDate(new Date("2022-01-01T00:00:00.000Z")),
-    draftAttachmentId: "attachment123"
+    draftAttachmentId: "attachment123",
+    fullName: ""
   },
   isUser: true,
   canEdit: true,

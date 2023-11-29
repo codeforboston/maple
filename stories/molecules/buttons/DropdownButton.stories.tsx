@@ -2,9 +2,6 @@ import { createMeta } from "stories/utils"
 import DropdownButton from "components/DropdownButton/DropdownButton"
 import { ComponentStory } from "@storybook/react"
 
-// TODO: move into components directory
-//const DropdownButton = () => <div>TODO</div>
-
 export default createMeta({
   title: "Molecules/Buttons/DropdownButton",
   figmaUrl:

@@ -7,7 +7,7 @@ import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Profile/ProfileLegislators",
+  title: "Organisms/Profile/ProfileLegislators",
   component: ProfileLegislators,
   decorators: [
     (Story, ...rest) => (

@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, ButtonProps, Col, Row, Stack } from "react-bootstrap"
+import { Button, ButtonProps } from "react-bootstrap"
 import styled from "styled-components"
 
 export type PrimaryButtonWithIconProps = {

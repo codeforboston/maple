@@ -1,16 +1,10 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { Title } from "@storybook/addon-docs"
 import { ComponentStory } from "@storybook/react"
-import {
-  Title,
-  Subtitle,
-  Description,
-  ArgsTable,
-  Stories
-} from "@storybook/addon-docs"
 import { Image, Stack } from "components/bootstrap"
+import { LoadingButton } from "components/buttons"
 import { useState } from "react"
 import { createMeta } from "stories/utils"
-import { LoadingButton } from "components/buttons"
 
 export default createMeta({
   title: "Molecules/Buttons/LoadingButton",

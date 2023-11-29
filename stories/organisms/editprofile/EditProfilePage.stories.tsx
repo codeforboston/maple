@@ -8,7 +8,7 @@ import { Profile } from "functions/src/profile/types"
 import { ContactInfo, ProfileHook } from "components/db"
 
 export default createMeta({
-  title: "Profile/EditProfileForm",
+  title: "Organisms/Profile/EditProfileForm",
   component: EditProfileForm,
   decorators: [
     (Story, ...rest) => {

@@ -8,7 +8,7 @@ import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Profile/Pages/VerifyAccountSection",
+  title: "Organisms/Profile/VerifyAccountSection",
   component: VerifyAccountSection,
   decorators: [
     (Story, ...rest) => (

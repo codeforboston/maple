@@ -7,7 +7,7 @@ import { Provider as Redux } from "react-redux"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Profile/Pages/ProfileLink",
+  title: "Organisms/Profile/ProfileLink",
   component: ProfileLinkView,
   decorators: [
     (Story, ...rest) => {

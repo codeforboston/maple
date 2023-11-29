@@ -6,7 +6,7 @@ import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
 export default createMeta({
-  title: "Auth/ForgotPasswordModal",
+  title: "Pages/Auth/ForgotPasswordModal",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: ForgotPasswordModal

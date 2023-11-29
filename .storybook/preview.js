@@ -18,6 +18,12 @@ export const parameters = {
       date: /Date$/
     }
   },
+  options: {
+    storySort: {
+      order: ["Atoms", "Molecules", "Organisms", "Pages", "*", "unused"],
+      method: "alphabetical"
+    }
+  },
   backgrounds: {
     default: "medium",
     values: [

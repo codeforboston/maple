@@ -1,7 +1,7 @@
-import { ComponentStory } from "@storybook/react"
-import { createMeta } from "stories/utils"
 import { Stories } from "@storybook/addon-docs"
+import { ComponentStory } from "@storybook/react"
 import Input from "components/forms/Input"
+import { createMeta } from "stories/utils"
 
 export default createMeta({
   title: "Molecules/Forms/Input",
@@ -16,10 +16,10 @@ export default createMeta({
 const Template: ComponentStory<typeof Input> = args => <Input {...args} />
 
 export const Primary = Template.bind({})
-
 Primary.args = {
   label: "Input"
 }
+Primary.storyName = "Input"
 
 export const WithError = Template.bind({})
 WithError.args = {

@@ -19,7 +19,7 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
 }
 
 export default createMeta({
-  title: "Profile/Pages/StyledTabNav",
+  title: "Organisms/Profile/StyledTabNav",
   component: EditProfileComponents,
   parameters: {
     docs: {

@@ -13,7 +13,7 @@ import { Providers } from "components/providers"
 import { Button, Col, Row, Stack } from "react-bootstrap"
 
 export default createMeta({
-  title: "Profile/Pages/ProfileButtons",
+  title: "Organisms/Profile/ProfileButtons",
   component: MakePublicButton,
   decorators: [
     (Story, ...rest) => {

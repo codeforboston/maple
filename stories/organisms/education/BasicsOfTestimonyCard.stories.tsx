@@ -4,7 +4,7 @@ import React from "react"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
-  title: "Education/BasicsOfTestimonyCard",
+  title: "Organisms/Education/BasicsOfTestimonyCard",
   component: BasicsOfTestimonyCard,
   parameters: {
     backgrounds: { name: "medium", value: "#f4f4f4" }

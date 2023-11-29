@@ -3,7 +3,7 @@ import { createMeta } from "stories/utils"
 import { CurrentCommitteeCard } from "components/CurrentCommitteeCard/CurrentCommitteeCard"
 
 export default createMeta({
-  title: "Bill Detail/CurrentCommitteeCard",
+  title: "Organisms/Bill Detail/CurrentCommitteeCard",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=159%3A4939",
   component: CurrentCommitteeCard

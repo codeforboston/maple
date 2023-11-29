@@ -1,9 +1,8 @@
 import { Title } from "@storybook/addon-docs"
-import Image from "react-bootstrap/Image"
-import { createMeta } from "stories/utils"
-// TODO: move into components directory
 import { ComponentStory } from "@storybook/react"
 import { Stack } from "react-bootstrap"
+import Image from "react-bootstrap/Image"
+import { createMeta } from "stories/utils"
 import {
   PrimaryButtonWithIcon,
   PrimaryButtonWithIconProps

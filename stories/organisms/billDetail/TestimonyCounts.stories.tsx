@@ -4,7 +4,7 @@ import { TestimonyCounts } from "components/bill/TestimonyCounts"
 import { BillProps } from "components/bill/types"
 
 export default createMeta({
-  title: "Bill Detail/TestimonyCounts",
+  title: "Organisms/Bill Detail/TestimonyCounts",
   figmaUrl:
     "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=49%3A3010",
   component: TestimonyCounts
