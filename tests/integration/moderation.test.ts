@@ -1,184 +1,224 @@
-import { DocumentData, DocumentReference } from "@google-cloud/firestore"
-import { signInTestAdmin } from "tests/integration/common"
-import { auth, functions } from "../../components/firebase"
-import {
-  createFakeTestimonyReport,
-  fakeUser
-} from "../../components/moderation/setUp/MockRecords"
-import { Report, Resolution } from "../../components/moderation/types"
-import { testAuth, testDb } from "../testUtils"
-// import { resolveReport } from "components/db"
-import { onSubmitReport } from "components/moderation/RemoveTestimony"
+import { waitFor } from "@testing-library/react"
+import { Role } from "components/auth"
+import { resolveReport } from "components/db"
+import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { Testimony } from "components/db"
+import {
+  syncBillToSearchIndex,
+  syncTestimonyToSearchIndex
+} from "functions/src"
+import { currentGeneralCourt } from "functions/src/shared"
+import { nanoid } from "nanoid"
+import {
+  createNewBill,
+  createNewReport,
+  createUser,
+  signInTestAdmin,
+  signInUser,
+  signInUser1
+} from "tests/integration/common"
+import { terminateFirebase, testAuth, testDb } from "tests/testUtils"
+import { firestore, functions } from "../../components/firebase"
+import { expectPermissionDenied, genUserInfo } from "./common"
+import { FirebaseError } from "@firebase/util"
+import { Testimony } from "functions/src/testimony/types"
+import { Timestamp } from "functions/src/firebase"
+import { Report } from "components/moderation/types"
+import { fakeUser } from "components/moderation/setUp/MockRecords"
 
-const deleteTestimonyHttps = httpsCallable<
+const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
-jest.setTimeout(30000)
-// afterAll(terminateFirebase)
+const publishTestimony = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimony")
 
-const authtoken = process.env.AUTH_TOKEN
-
-let testimonyRef: DocumentReference<DocumentData>
-let reportRef: DocumentReference<DocumentData>
 let adminUid: string
-let userId: string
+let billId: string
 
 beforeAll(async () => {
-  const adminUser = await testAuth.createUser(fakeUser())
-  const role = "admin"
-  await expect(
-    testAuth.setCustomUserClaims(adminUser.uid, { role: role })
-  ).resolves.toBeUndefined()
-
-  const updatedUser = await testAuth.getUser(adminUser.uid)
-  adminUid = updatedUser.uid
-
-  const { user, testimony, report } = createFakeTestimonyReport()
-
-  userId = user.uid
-
-  expect(userId).toEqual(testimony.authorUid)
-
-  const userRef = testDb.doc(`/users/${userId}`)
-  userRef.set({ id: userId })
-
-  testimonyRef = testDb.doc(
-    `/users/${userId}/publishedTestimony/${testimony.id}`
-  )
-
-  reportRef = testDb.doc(`reports/${report.id}`)
-
-  await testDb.doc(testimonyRef.path).set(testimony)
-  await testDb.doc(reportRef.path).set(report)
+  billId = await createNewBill()
+  adminUid = (await signInTestAdmin()).uid
 })
 
-describe("reporting testimony flow", () => {
-  it("testimony and report exist", async () => {
-    const testimonyResult = await testimonyRef.get()
-    expect(testimonyResult.exists).toBeTruthy()
+let authorUid: string
+let email: string
 
-    const reportResult = await testimonyRef.get()
-    expect(reportResult.exists).toBeTruthy()
-  })
+beforeEach(async () => {
+  const author = await createUser("user")
+  await signInUser(author.email!)
+  authorUid = author.uid
+  email = author.email!
+})
 
-  it("can get testimony from userId", async () => {
-    const testUserPublishedTestimonyRef = testDb.collection(
-      `/users/${userId}/publishedTestimony`
+afterAll(terminateFirebase)
+
+describe("moderate testimony", () => {
+  it("resolves report for remove-testimony", async () => {
+    await signInUser(email)
+    const { draft, draftId } = createValidatedDraft(authorUid, billId)
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
     )
-    expect((await testUserPublishedTestimonyRef.get()).empty).toBeFalsy()
-    expect((await testUserPublishedTestimonyRef.get()).docs).toBeDefined()
-    ;(await testUserPublishedTestimonyRef.get()).docs.forEach(t => {
-      const td = t.data() as Testimony
-      expect(td.content).toBeDefined()
-    })
-  })
 
-  it("can get report", async () => {
-    const result = await reportRef.get()
-    expect(result.exists).toBeTruthy()
-    expect((result.data() as Report).reason).toBeDefined()
-  })
-})
+    await setDoc(draftRef, draft)
 
-describe("action functions", () => {
-  it("set file report resolution via resolveReport", async () => {
-    // await expect(signInTestAdmin()).resolves.toBeDefined()
+    const pubId = (await publishTestimony({ draftId })).data.publicationId
 
-    const result = await reportRef.get()
-    expect(result.exists).toBeTruthy()
+    await signInTestAdmin()
 
-    expect((result.data() as Report).reason).toBeDefined()
-    expect((result.data() as Report).reportId).toBeDefined()
+    const { reportId, reportRef } = await createNewReport(adminUid, pubId)
 
-    const reportId = result.data()?.id
-    const resolution = "remove-testimony" /// need to test both allow and remove
-    const reason = "important reason"
+    let report = (await reportRef.get()).data() as Report
+    expect(report).toBeDefined()
+    expect(report?.reason).toBeDefined()
+    expect(report?.reportId).toBeDefined()
 
-    // expect(
-    //   (await resolveReport({
-    //     reportId,
-    //     resolution,
-    //     reason
-    //   })).data.status
-    // ).toEqual("success" )
-  })
+    const pubRef = testDb.doc(`/users/${authorUid}/publishedTestimony/${pubId}`)
 
-  it.skip("move testimony from published to archived via deleteTestimony https", async () => {
-    // set up
-    // const { user, testimony, report } = createFakeTestimonyReport()
-    // const localReportRef = testDb.doc(`reports/${report.id}`)
-    // const localTestimonyRef = testDb.doc(
-    //   `users/${user.uid}/publishedTestimony/${testimony.id}`
-    // )
-    // await localTestimonyRef.set(testimony)
-    // await localReportRef.set(report)
-    const refresh = jest.fn()
-    await expect(signInTestAdmin()).resolves.toBeDefined()
+    expect((await pubRef.get()).exists).toBeTruthy()
 
-    const admin = testAuth.getUser(adminUid)
-    expect(admin).toBeDefined()
-
-    expect((await testimonyRef.get()).exists).toBeTruthy()
-    expect((await reportRef.get()).exists).toBeTruthy()
-
-    const reportGet = await reportRef.get()
-
-    expect(reportGet.exists).toBeTruthy()
-
-    const report = reportGet.data() as Report
-
-    const { reportId, authorUid, testimonyId } = report
-
-    const resolution: Resolution = "remove-testimony"
-
-    expect(authorUid).toBeDefined()
-    expect(testimonyId).toBeDefined()
-
-    console.log(report)
-
-    await onSubmitReport(
+    const result = await resolveReport({
       reportId,
-      resolution,
-      "reason",
-      authorUid,
-      testimonyId,
-      refresh
+      resolution: "remove-testimony",
+      reason: "important reason"
+    })
+
+    expect(result.data.status).toEqual("success")
+
+    report = (await reportRef.get()).data() as Report
+    expect(report.resolution?.resolution).toEqual("remove-testimony")
+
+    await reportRef.delete()
+    const testDraftRef = testDb.doc(
+      `/users/${authorUid}/draftTestimony/${draftId}`
     )
-      .then(d => console.log(d))
-      .catch(c => console.log(c))
+    await testDraftRef.delete()
+    await pubRef.delete()
+  })
+  /**TODO: test of report resolve for allow-testimony */
 
-    const archiveRef = testDb.doc(
-      `users/${authorUid}/archivedTestimony/${testimonyId}`
+  it("lets Admins delete the testimony of users", async () => {
+    await signInUser(email)
+
+    const { draftId, draft } = createValidatedDraft(authorUid, billId)
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
     )
 
-    expect((await testimonyRef.get()).exists).toBeFalsy()
-    expect((await archiveRef.get()).exists).toBeTruthy()
+    await setDoc(draftRef, draft)
 
-    //clean up
+    const pubId = (await publishTestimony({ draftId })).data.publicationId
+
+    await signInTestAdmin()
+    const pubRef = testDb.collection(`/users/${authorUid}/publishedTestimony`)
+    let pubTest = await pubRef.where("id", "==", pubId).get()
+
+    expect(pubTest.size).toEqual(1)
+
+    await deleteTestimony({ uid: authorUid, publicationId: pubId })
+
+    pubTest = await pubRef.where("id", "==", pubId).get()
+
+    expect(pubTest.size).toEqual(0)
   })
 
-  it.skip("Admins can delete the testimony of another user", async () => {
-    const testimony = await testimonyRef.get()
-    expect(testimony.exists).toBeTruthy()
-    const data = testimony.data() as Testimony
-    const { authorUid, id } = data
-    expect(authorUid).toBeDefined()
-    expect(id).toBeDefined()
-    expect(await testAuth.getUser(adminUid)).toBeDefined()
-    expect(auth.currentUser).toBeDefined()
+  it("keeps archived version of the testimony", async () => {
+    await signInUser(email)
 
-    await expect(signInTestAdmin()).resolves.toBeDefined()
+    const { draft, draftId } = createValidatedDraft(authorUid, billId)
 
-    // const result = await deleteTestimony({
-    //   uid: testimony.data()!.authorUid,
-    //   publicationId: id
-    // })
+    const draftRef = doc(
+      firestore,
+      `/users/${authorUid}/draftTestimony/${draftId}`
+    )
 
-    // expect(result.data.deleted).toBeTruthy()
-    // await expect(testimonyRef.get().then(d => d.exists)).resolves.toBeFalsy()
+    const archRef = testDb
+      .collection(`/users/${authorUid}/archivedTestimony`)
+      .where("billId", "==", billId)
+
+    const archSize = (await archRef.get()).size
+
+    await setDoc(draftRef, draft)
+    const r = await publishTestimony({ draftId })
+    const pubId = r.data.publicationId
+
+    await signInTestAdmin()
+
+    await deleteTestimony({ uid: authorUid, publicationId: pubId })
+
+    expect((await archRef.get()).size).toEqual(archSize + 1)
+    await waitFor(
+      async () =>
+        await testDb
+          .doc(`/users/${authorUid}/publishedTestimony/${pubId}`)
+          .delete()
+    )
   })
 })
+
+const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
+  functions,
+  "modifyAccount"
+)
+
+describe("admins can modify user accounts", () => {
+  it("allows admins to modify user roles ", async () => {
+    const userInfo = genUserInfo()
+    const user = await testAuth.createUser(userInfo)
+    testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
+
+    await signInTestAdmin()
+    await modifyAccount({ uid: user.uid, role: "admin" })
+
+    expect((await testAuth.getUser(user.uid)).customClaims?.role).toEqual(
+      "admin"
+    )
+  })
+
+  it("doesn't allow non-admins to modify user roles", async () => {
+    const userInfo = genUserInfo()
+    const user = await testAuth.createUser(userInfo)
+    testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
+
+    // tries to run modifyAccount as a regular "user" role
+    await signInUser(userInfo.email)
+    await expectPermissionDenied(
+      modifyAccount({ uid: user.uid, role: "legislator" })
+    )
+  })
+})
+
+function createValidatedDraft(authorUid: string, billId: string) {
+  const draftId = nanoid()
+
+  const draft: Testimony = {
+    attachmentId: null,
+    authorDisplayName: "Anonymous",
+    authorUid,
+    billId,
+    content: "test testimony",
+    court: currentGeneralCourt,
+    editReason: "edit reason",
+    position: "endorse",
+    publishedAt: Timestamp.fromMillis(0),
+    version: 0,
+    id: "unknown",
+    authorRole: "user",
+    billTitle: "",
+    fullName: "Anonymous"
+  }
+
+  const validation = Testimony.validateWithDefaults(draft)
+
+  expect(validation.success).toBeTruthy()
+
+  const { publishedAt, ...rest } = draft
+
+  return { draftId, draft: rest }
+}

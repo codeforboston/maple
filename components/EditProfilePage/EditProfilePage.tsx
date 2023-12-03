@@ -12,7 +12,7 @@ import {
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
-import { FollowingTab } from "./FollowingTab"
+// import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
@@ -22,6 +22,7 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -78,7 +79,7 @@ export function EditProfileForm({
   const isOrg =
     profile.role === "organization" || profile.role === "pendingUpgrade"
 
-  const isPendingUpgrade = profile.role === "pendingUpgrade"
+  const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
 
   const { t } = useTranslation("editProfile")
 
@@ -107,17 +108,17 @@ export function EditProfileForm({
           className="mt-3 mb-4"
         />
       )
-    },
+    } /* ,
     {
       title: "Following",
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
-    }
+    } */
   ]
 
   return (
     <>
-      {isPendingUpgrade && <Banner>{t("content.reqPending")}</Banner>}
+      {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
         <Header>

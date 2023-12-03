@@ -2,12 +2,23 @@ import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
-import { UnfollowModalConfig } from "./FollowingTab"
+import { useTranslation } from "next-i18next"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  handleUnfollowClick: (unfollow: UnfollowModalConfig | null) => Promise<void>
+  handleUnfollowClick: (
+    unfollowItem: UnfollowModalConfig | null
+  ) => Promise<void>
+  onHide: () => void
   onUnfollowClose: () => void
-  unfollow: UnfollowModalConfig | null
+  show: boolean
+  unfollowItem: UnfollowModalConfig | null
+}
+
+export type UnfollowModalConfig = {
+  court: number
+  orgName: string
+  type: string
+  typeId: string
 }
 
 const StyledButton = styled(Button)`
@@ -18,21 +29,20 @@ const StyledModalBody = styled(Modal.Body)`
   padding: 0.8rem;
 `
 
-export default function unfollow({
+export default function UnfollowItem({
   handleUnfollowClick,
   onHide,
   onUnfollowClose,
   show,
-  unfollow
+  unfollowItem
 }: Props) {
+  const { t } = useTranslation("editProfile")
+
   const handleTopic = () => {
-    if (unfollow?.type == "bill") {
-      return ` Bill ${formatBillId(unfollow?.typeId)}`
-    } else if (unfollow?.type == "org") {
-      return ` ${unfollow?.orgName}`
+    if (unfollowItem?.type == "bill") {
+      return ` Bill ${formatBillId(unfollowItem?.typeId)}`
     } else {
-      // throw new Error(`Unexpected type: ${unfollow?.type}`);
-      return "" // DEBUG: not returning a string here causes the modal to crash
+      return ` ${unfollowItem?.orgName}`
     }
   }
 
@@ -44,11 +54,11 @@ export default function unfollow({
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="unfollow-modal">Unfollow</Modal.Title>
+        <Modal.Title id="unfollow-modal">{t("follow.unfollow")}</Modal.Title>
       </Modal.Header>
       <StyledModalBody className={`ms-auto me-auto`}>
         <Stack>
-          Are you sure you want to unfollow
+          {t("confirmation.unfollowMessage")}
           {handleTopic()}?
         </Stack>
         <Stack className={`mt-4`} direction={`horizontal`}>
@@ -57,16 +67,16 @@ export default function unfollow({
                 btn btn-sm btn-outline-secondary ms-auto py-1`}
             onClick={onUnfollowClose}
           >
-            No
+            {t("confirmation.no")}
           </StyledButton>
           <StyledButton
             className={`
                 btn btn-sm ms-3 me-auto py-1`}
             onClick={async () => {
-              handleUnfollowClick(unfollow)
+              handleUnfollowClick(unfollowItem)
             }}
           >
-            Yes
+            {t("confirmation.yes")}
           </StyledButton>
         </Stack>
       </StyledModalBody>

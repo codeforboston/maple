@@ -5,5 +5,18 @@
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "browse_bills": "browse bills",
   "logInSignUp": "Log in / Sign up",
-  "back_to_bills": "back to list of bills"
-}
+  "back_to_bills": "back to list of bills",
+  "button":{
+    "follow" : "Follow",
+    "following" : "Following",
+    "followed" : "Followed"
+  },
+  "orgs": "Organizations",
+  "newCommer" : "New to MAPLE",
+  "checkout": "Check out",
+  "calendar": "Our Calendar",
+  "joinTraining": "to see and join an upcoming training session!",
+  "pending_upgrade_warning": {
+    "header": "Organization Request In Progress",
+    "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
+  }}

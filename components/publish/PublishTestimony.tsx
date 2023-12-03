@@ -60,7 +60,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
   return (
     <div {...rest}>
-      <StepHeader>Confirm and Send</StepHeader>
+      <StepHeader step={3}>Confirm and Send</StepHeader>
       <SelectRecipients className="mt-4" />
       <YourTestimony type="draft" className="mt-4" />
 
@@ -73,6 +73,12 @@ export const PublishTestimony = styled(({ ...rest }) => {
         left={<nav.Previous />}
         right={<PublishAndSend publish={publish} />}
       />
+      <p>
+        After clicking “publish” please click “Send Email” to open your email
+        client (e.g., Outlook) and send the email populated with your testimony!
+        Or, click the “copy” buttons to manually copy the testimony and
+        recipients of your email.
+      </p>
     </div>
   )
 })``
