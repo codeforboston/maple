@@ -10,7 +10,8 @@ export const StepChip = styled<{
   return <div {...rest} />
 })`
   background-color: var(
-    ${({ active = false }) => (active ? "--bs-green" : "--bs-white")}
+    ${({ active = false, scale = 1 }) =>
+      active ? (scale > 1 ? "--bs-blue" : "--bs-green") : "--bs-white"}
   );
   font-size: ${({ scale = 1 }) => scale * 1.25}rem;
   width: ${({ scale = 1 }) => scale * chipHeight}rem;

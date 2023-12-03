@@ -6,6 +6,7 @@ import { resolveBill, usePanelStatus } from "../hooks"
 import {
   CompleteTestimony,
   CreateTestimony,
+  PendingUpgrade,
   SignedOut,
   UnverifiedEmail
 } from "./ctas"
@@ -43,9 +44,11 @@ const Panel = () => {
     case "unverified":
       return <UnverifiedEmail />
     case "noTestimony":
-      return isMobile ? <></> : <CreateTestimony />
+      return <CreateTestimony />
     case "createInProgress":
-      return isMobile ? <></> : <CompleteTestimony />
+      return <CompleteTestimony />
+    case "pendingUpgrade":
+      return <PendingUpgrade />
     default:
       return <YourTestimony />
   }

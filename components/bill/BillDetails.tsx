@@ -28,6 +28,7 @@ import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -42,13 +43,18 @@ const StyledImage = styled(Image)`
 
 export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
+
+  const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+
   return (
     <>
+      {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
         <Banner>
           this bill is from session {bill.court} - not the current session
         </Banner>
       )}
+
       <StyledContainer className="mt-3 mb-3">
         <Row>
           <Col>

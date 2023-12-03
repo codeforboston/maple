@@ -27,11 +27,16 @@
         "orgs": "Organizations You Follow",
         "unfollow": "Unfollow"
     },
-    "notifications":{
+    "confirmation":{
+        "unfollowMessage": "Are you sure you want to unfollow",
+        "yes": "Yes",
+        "no": "No"
+    },
+    "email":{
+        "frequencyQuery": "How often would you like to receive emails?",
         "daily": "Daily",
         "weekly": "Weekly",
-        "monthly": "Monthly",
-        "none": "None"
+        "monthly": "Monthly"
     },
     "legislator":{
         "representative": "Representative",
@@ -60,12 +65,14 @@
         "notificationFrequencyText": "How often would you like to receive these updates?"
     },
     "socialLinks": {
+        "socialMedia": "Social Media",
         "twitter": "Twitter Username",
-        "linkedIn": "LinkedIn Username",
+        "linkedIn": "LinkedIn Url",
         "instagram": "Instagram Username",
         "facebook": "Facebook Link"
     },
     "contact":{
+        "contactInfo": "Contact Information",
         "website": "Website",
         "email": "Contact Email",
         "phone": "Contact Phone Number",
@@ -80,5 +87,11 @@
         "edit": "Editing Testimony",
         "editTip1": "Editing testimony is allowed but users will be able to see edit history.",
         "editTip2": "Provide an edit reason to inform your fellow users on why you changed a particular stance/message."
+    },
+    "privacyText":{
+        "organization": "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private.",
+        "pendingUpgrade": "Your profile is private until your request to be an Organization account is approved.",
+        "publicUser": "Your profile is currently public. Others can view your profile page.",
+        "privateUser": "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
     }
 }
