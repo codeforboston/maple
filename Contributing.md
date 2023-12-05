@@ -20,11 +20,11 @@ Then use `git push` to upload your commits to your fork.
 
 3. When you finish your feature, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/main`.
 
-Be sure to fill out the PR tepmlate and [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
+Be sure to fill out the PR template and [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
 
-Add a reviewer to your PR. Github will automatically add a code owner as a reviewer. If someone else has context to review your work, add them as well.
+Add a reviewer to your PR. Github will automatically add a [code owner from this file](./.github/CODEOWNERS) as a reviewer. If someone else has context to review your work, add them as well.
 
-4. Watch for and respond to review comments and checks. 
+4. Watch for and respond to review comments and checks.
 
 5. Merge your PR when:
 
