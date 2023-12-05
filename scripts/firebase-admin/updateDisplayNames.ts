@@ -21,15 +21,11 @@ export const script: Script = async ({ db }) => {
       const displayName = data.public ? fullName : "<private user>"
 
       for (const doc of publishedTestimony) {
-        writer.set(
-          doc.ref,
-          {
-            authorDisplayName: displayName,
-            fullName: fullName,
-            updatedAt: Timestamp.now()
-          },
-          { merge: true }
-        )
+        writer.update(doc.ref, {
+          authorDisplayName: displayName,
+          fullName: fullName,
+          updatedAt: Timestamp.now()
+        })
       }
     } catch (error) {
       // Log the error and continue with the next user
