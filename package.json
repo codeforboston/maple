@@ -42,7 +42,7 @@
     "build-storybook": "build-storybook",
     "chromatic": "chromatic --project-token=f8618e690599",
     "copy-handlebars": "echo 'Copying handlebars files to /lib/email/...' && ncp functions/src/email/ functions/lib/email/ && echo '...done!'",
-    "backfill-user-emails": "ts-node -P tsconfig.script.json scripts/firebase-admin//backfilluserEmails.ts --swc",
+    "backfill-user-emails": "ts-node -P tsconfig.script.json scripts/firebase-admin//backfillUserEmails.ts --swc",
     "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc"
   },
   "engines": {
@@ -171,6 +171,7 @@
     "inquirer": "^6.5.1",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
+    "jest-summary-reporter": "^0.0.2",
     "js-yaml": "^4.1.0",
     "lorem-ipsum": "^2.0.4",
     "mustache": "^4.2.0",

@@ -20,13 +20,22 @@ Then use `git push` to upload your commits to your fork.
 
 3. When you finish your feature, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to merge your branch into `codeforboston/main`.
 
-Be sure to [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
+Be sure to fill out the PR template and [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) either by adding "closes #123" to the description or manually adding it under the Development section on the sidebar. This will automatically close the issue when the PR is merged and help keep issues organized.
 
-Add a reviewer to your PR. If you're not sure who has the context to review, add `alexjball`.
+Add a reviewer to your PR. Github will automatically add a [code owner from this file](./.github/CODEOWNERS) as a reviewer. If someone else has context to review your work, add them as well.
 
-4. Watch for and respond to review comments. Once all the checks pass and someone approves your PR, you can merge it!
+4. Watch for and respond to review comments and checks.
 
-## Resolving Conflicts
+5. Merge your PR when:
+
+- [ ] All comments have been addresed and resolved
+- [ ] All required checks pass
+- [ ] Your PR has approval from a code owner ("Owner approval"). Code owners are listed in the [CODEOWNERS file](./.github/CODEOWNERS)
+- [ ] Your PR has approval from someone with context to review the code itself ("LGTM approval")
+
+An owner approval is often a rubber stamp, where another developer provides the actual "LGTM" code review and the owner is making sure that the change fits in with the codebase as a whole. Owners are responsible for long-term maintenance of the code base. See [this explanation](https://abseil.io/resources/swe-book/html/ch09.html#:~:text=Approval%20from%20one%20of%20the%20code%20owners) for the process within Google.
+
+## Resolving Merge Conflicts
 
 If other PR's are merged while yours is in review, your changes may start to conflict with `main`. This will be displayed on the PR. You'll need to resolve merge conflicts before you can merge your PR:
 

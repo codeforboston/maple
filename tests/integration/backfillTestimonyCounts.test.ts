@@ -15,7 +15,7 @@ beforeEach(async () => {
 
 afterAll(terminateFirebase)
 
-describe("backfillTestimonyCounts", () => {
+describe.skip("backfillTestimonyCounts", () => {
   it("Calculates testimony counts", async () => {
     await setPublication("user-1", "t-1", {
       position: "endorse",

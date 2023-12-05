@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react"
+import { useTranslation } from "next-i18next"
+import { Dispatch, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
@@ -6,7 +7,6 @@ import { Frequency } from "../auth"
 import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import { Role } from "../auth"
-import { useTranslation } from "next-i18next"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -73,17 +73,19 @@ const StyledRow = styled(Row)`
   font-size: 12px;
 `
 
-function renderPrivacyText(role: Role, isPublic: boolean) {
+function RenderPrivacyText(role: Role, isPublic: boolean) {
+  const { t } = useTranslation("editProfile")
+
   switch (role) {
     case "organization":
-      return "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private."
+      return t("privacyText.organization")
     case "pendingUpgrade":
-      return "Your profile is private until your request to be an Organization account is approved."
+      return t("privacyText.pendingUpgrade")
     case "user":
       if (isPublic) {
-        return "Your profile is currently public. Others can view your profile page"
+        return t("privacyText.publicUser")
       }
-      return "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
+      return t("privacyText.privateUser")
   }
 }
 
@@ -111,19 +113,14 @@ export default function ProfileSettingsModal({
     await updateNotification(notifications)
   }
 
-  // Commented out code below is for future use
   // button classNames weren't otherwise properly updating on iOS
-  /*   let buttonSecondary = "btn-secondary"
+  let buttonSecondary = "btn-secondary"
   if (notifications === "None") {
     buttonSecondary = "btn-outline-secondary"
-  } */
+  }
 
-  const privacyText = renderPrivacyText(role, isProfilePublic)
+  const privacyText = RenderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
-
-  const [notificationFrequency, setNotificationFrequency] = useState<
-    "Daily" | "Weekly" | "Monthly" | "None"
-  >("Daily")
 
   return (
     <Modal
@@ -137,73 +134,77 @@ export default function ProfileSettingsModal({
       </Modal.Header>
       <StyledModalBody>
         <Form>
-          {/* Commented out code below is for future use */}
-          {/*    <StyledRow className="p-2">
-            <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
-            <hr className={`mt-0`} />
-            <Col className={`col-8`}>{t("forms.notificationText")}</Col>
-            <Col>
-              {notifications === "None" ? (
-                <StyledOutlineButton
-                  className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-outline-secondary`}
-                  onClick={() => setNotifications("Monthly")}
-                >
-                  <Image
-                    className={`pe-1`}
-                    src="/mail-2.svg"
-                    alt="t(button.notficationFrequencyDropdown)"
-                    width="22"
-                    height="19"
-                  />
-                  {t("enable")}
-                </StyledOutlineButton>
-              ) : (
-                <StyledButton
-                  className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-secondary`}
-                  onClick={() => setNotifications("None")}
-                >
-                  <Image
-                    className={`pe-1`}
-                    src="/mail-icon-sized-for-buttons.svg"
-                    alt="t(button.notficationFrequencyDropdown)"
-                    width="22"
-                    height="19"
-                  />
-                  {t("enabled")}
-                </StyledButton>
-              )}
-            </Col>
-          </StyledRow>
-          <StyledRow
-            className={`p-2 ${notifications === "None" ? "invisible" : ""}`}
-            direction={`horizontal`}
+          <div
+            /* remove "div w/ d-none" for testing and/or after Soft Launch 
+               when we're ready to show Email related element to users
+            */
+            className="d-none"
           >
-            <Col className={`col-8`}>
-              {t("forms.notificationFrequencyText")}
-            </Col>
-            <Col className={`d-flex justify-content-end`}>
-              <Dropdown className={`d-inline-block ms-auto`}>
-                <StyledDropdownToggle
-                  className={`btn-sm py-1`}
-                  variant="outline-secondary"
-                  id="dropdown-basic"
-                >
-                  {notifications}
-                </StyledDropdownToggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setNotifications("Daily")}>
-                    {t("notifications.daily")}
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setNotifications("Weekly")}>
-                    {t("notifications.weekly")}
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setNotifications("Monthly")}>
-                    {t("notifications.monthly")}
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-          </StyledRow> */}
+            <StyledRow className="p-2">
+              <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
+              <hr className={`mt-0`} />
+              <Col className={`col-8`}>{t("forms.notificationText")}</Col>
+              <Col>
+                {notifications === "None" ? (
+                  <StyledOutlineButton
+                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-outline-secondary`}
+                    onClick={() => setNotifications("Monthly")}
+                  >
+                    <Image
+                      className={`pe-1`}
+                      src="/mail-2.svg"
+                      alt="open envelope with letter, toggles update frequency options"
+                      width="22"
+                      height="19"
+                    />
+                    {"Enable"}
+                  </StyledOutlineButton>
+                ) : (
+                  <StyledButton
+                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-secondary`}
+                    onClick={() => setNotifications("None")}
+                  >
+                    <Image
+                      className={`pe-1`}
+                      src="/mail-icon-sized-for-buttons.svg"
+                      alt="open envelope with letter, toggles update frequency options"
+                      width="22"
+                      height="19"
+                    />
+                    {"Enabled"}
+                  </StyledButton>
+                )}
+              </Col>
+            </StyledRow>
+            <StyledRow
+              className={`p-2 ${notifications === "None" ? "invisible" : ""}`}
+              direction={`horizontal`}
+            >
+              <Col className={`col-8`}>{t("email.frequencyQuery")}</Col>
+              <Col className={`d-flex justify-content-end`}>
+                <Dropdown className={`d-inline-block ms-auto`}>
+                  <StyledDropdownToggle
+                    className={`btn-sm py-1`}
+                    variant="outline-secondary"
+                    id="dropdown-basic"
+                  >
+                    {notifications}
+                  </StyledDropdownToggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                      {t("email.daily")}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setNotifications("Weekly")}>
+                      {t("email.weekly")}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setNotifications("Monthly")}>
+                      {t("email.monthly")}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+            </StyledRow>
+          </div>
 
           <StyledRow className="p-2">
             <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>

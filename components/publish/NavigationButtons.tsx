@@ -54,5 +54,5 @@ const createNavButton = (actionCreator: any, label: string) => {
   return StyledNavButton
 }
 
-export const Next = createNavButton(nextStep, "Next")
-export const Previous = createNavButton(previousStep, "Previous")
+export const Next = createNavButton(nextStep, "Next >>")
+export const Previous = createNavButton(previousStep, "<< Previous")
