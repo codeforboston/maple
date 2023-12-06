@@ -1,33 +1,32 @@
-import { NoResults } from "components/search/NoResults"
-import { PaginationButtons } from "components/table"
-import { TFunction, useTranslation } from "next-i18next"
-import { useState } from "react"
-import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
-import styled from "styled-components"
-import { Card as MapleCard } from "../Card"
-import { useAuth } from "../auth"
-import { Testimony, UsePublishedTestimonyListing } from "../db"
-import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
-import { Tab, Tabs } from "./Tabs"
-import { TestimonyItem } from "./TestimonyItem"
+import { useState, useEffect } from 'react';
+import { NoResults } from "components/search/NoResults";
+import { PaginationButtons } from "components/table";
+import { useTranslation } from "next-i18next";
+import { Card as BootstrapCard, Col, Row } from "react-bootstrap";
+import styled from "styled-components";
+import { Card as MapleCard } from "../Card";
+import { useAuth } from "../auth";
+import { Testimony, UsePublishedTestimonyListing } from "../db";
+import { SortTestimonyDropDown } from "./SortTestimonyDropDown";
+import { Tab, Tabs } from "./Tabs";
+import { TestimonyItem } from "./TestimonyItem";
 
 const Container = styled.div`
   font-family: Nunito;
-`
+`;
+
 const Head = styled(BootstrapCard.Header)`
   background-color: var(--bs-blue);
   color: white;
   font-size: 22px;
-`
+`;
 
-const ViewTestimony = (
-  props: UsePublishedTestimonyListing & {
-    search?: boolean
-    onProfilePage?: boolean
-    className?: string
-    isOrg?: boolean
-  }
-) => {
+const ViewTestimony = (props: UsePublishedTestimonyListing & {
+  search?: boolean,
+  onProfilePage?: boolean,
+  className?: string,
+  isOrg?: boolean
+}) => {
   const {
     items,
     setFilter,
@@ -35,29 +34,38 @@ const ViewTestimony = (
     className,
     pagination,
     isOrg
-  } = props
+  } = props;
 
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const [totalTestimonies, setTotalTestimonies] = useState<number>(0);
 
-  const testimony = items.result ?? []
-  const [orderBy, setOrderBy] = useState<string>()
-  const [activeTab, setActiveTab] = useState(1)
+  // Updated useEffect
+  useEffect(() => {
+    if (user?.uid) {
+      fetch(`/api/users/${user.uid}/testimony/countTestimonies`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.count !== undefined) {
+            setTotalTestimonies(data.count);
+          }
+        })
+        .catch(error => {
+          console.error("Failed to count user testimonies", error);
+        });
+    }
+  }, [user?.uid]);
+
+  const testimony = items.result ?? [];
+  const [orderBy, setOrderBy] = useState<string>();
+  const [activeTab, setActiveTab] = useState(1);
 
   const handleTabClick = (e: Event, value: number) => {
-    setActiveTab(value)
-  }
+    setActiveTab(value);
+  };
 
   const handleFilter = (filter: string | undefined) => {
-    if (filter === "organization") {
-      setFilter({ authorRole: "organization" })
-    }
-    if (filter === "user") {
-      setFilter({ authorRole: "user" })
-    }
-    if (filter === "") {
-      setFilter({ authorRole: "" })
-    }
-  }
+    setFilter({ authorRole: filter });
+  };
 
   const tabs = [
     <Tab
@@ -81,15 +89,15 @@ const ViewTestimony = (
       value={3}
       action={() => handleFilter("organization")}
     />
-  ]
+  ];
 
-  const { t } = useTranslation("testimony")
+  const { t } = useTranslation("testimony");
 
   return (
     <Container>
       <MapleCard
         className={className}
-        headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
+        headerElement={<Head>{isOrg ? t("Our Testimonies") : t("Testimonies")}</Head>}
         body={
           <BootstrapCard.Body>
             {!onProfilePage && (
@@ -107,7 +115,7 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <ShowPaginationSummary
-                      testimony={testimony}
+                      totalItems={totalTestimonies}
                       pagination={pagination}
                       t={t}
                     />
@@ -154,37 +162,34 @@ const ViewTestimony = (
         }
       />
     </Container>
-  )
-}
+  );
+};
 
-export default ViewTestimony
+export default ViewTestimony;
 
 function ShowPaginationSummary({
-  testimony,
+  totalItems,
   pagination,
   t
 }: {
-  testimony: Testimony[]
-  pagination: { currentPage: number; itemsPerPage: number }
-  t: TFunction
+  totalItems: number;
+  pagination: { currentPage: number; itemsPerPage: number };
+  t: TFunction;
 }) {
-  if (testimony.length < 1) {
-    return null
+  if (totalItems < 1) {
+    return <div>{t("viewTestimony.noTestimonies")}</div>;
   }
-  const { currentPage, itemsPerPage } = pagination
-
-  const currentPageStart = (currentPage - 1) * itemsPerPage
-  let currentPageEnd = currentPage * itemsPerPage
-  if (currentPageEnd > testimony.length) {
-    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
+  
+  const { currentPage, itemsPerPage } = pagination;
+  const currentPageStart = (currentPage - 1) * itemsPerPage;
+  let currentPageEnd = currentPageStart + itemsPerPage;
+  if (currentPageEnd > totalItems) {
+    currentPageEnd = totalItems;
   }
-  const totalItems = testimony.length
 
   return (
-    <Col className="d-flex align-items-center">
-      {t("viewTestimony.showing")} {currentPageStart + 1}&ndash;{currentPageEnd}{" "}
-      {t("viewTestimony.outOf")}
-      {totalItems}
-    </Col>
-  )
+    <div>
+      {t("viewTestimony.showing")} {currentPageStart + 1}–{currentPageEnd} {t("viewTestimony.outOf")} {totalItems}
+    </div>
+  );
 }
