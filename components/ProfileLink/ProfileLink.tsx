@@ -15,6 +15,7 @@ const greeting = (role: Role, fullName?: string) => {
     case "user":
     case "legislator":
     case "organization":
+    case "pendingUpgrade":
       return fullName ? `Hello, ${fullName}` : "Hello there"
     case "admin":
       return `Hello, Admin ${fullName}`
