@@ -77,8 +77,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
             fullName,
             orgCategories: categories,
             notificationFrequency: "Monthly",
-            email: credentials.user.email,
-            public: true
+            email: credentials.user.email
           }),
           sendEmailVerification(credentials.user)
         ])
