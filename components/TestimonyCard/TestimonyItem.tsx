@@ -243,7 +243,7 @@ export const TestimonyItem = ({
             </>
           )}
           {/* report */}
-          {flags().reportTestimony && !isUser && (
+          {flags().reportTestimony && (
             <Col xs="auto">
               <FooterButton variant="link" onClick={() => setIsReporting(true)}>
                 Report

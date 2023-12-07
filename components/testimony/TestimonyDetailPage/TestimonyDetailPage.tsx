@@ -3,7 +3,10 @@ import { Col, Container, Row } from "react-bootstrap"
 import { BillTitle } from "./BillTitle"
 import { PolicyActions } from "./PolicyActions"
 import { useReportTestimony } from "components/api/report"
-import { ReportModal } from "components/TestimonyCard/ReportModal"
+import {
+  RequestDeleteOwnTestimonyModal,
+  ReportModal
+} from "components/TestimonyCard/ReportModal"
 import ReportToast from "components/TestimonyCard/ReportToast"
 import { ToastContainer } from "react-bootstrap"
 import { RevisionHistory } from "./RevisionHistory"
@@ -49,26 +52,38 @@ export const TestimonyDetailPage: FC = () => {
             <RevisionHistory />
           </Col>
           {/* Report Modal */}
-          {isReporting && (
-            <ReportModal
-              onClose={() => setIsReporting(false)}
-              onReport={report => {
-                reportMutation.mutate({
-                  report,
-                  testimony: revision
-                })
-              }}
-              isLoading={reportMutation.isLoading}
-              additionalInformationLabel="Additional information:"
-              reasons={[
-                "Personal Information",
-                "Offensive",
-                "Violent",
-                "Spam",
-                "Phishing"
-              ]}
-            />
-          )}
+          {isReporting &&
+            (isUser ? (
+              <RequestDeleteOwnTestimonyModal
+                onClose={() => setIsReporting(false)}
+                onReport={report => {
+                  reportMutation.mutate({
+                    report,
+                    testimony: revision
+                  })
+                }}
+                isLoading={reportMutation.isLoading}
+              />
+            ) : (
+              <ReportModal
+                onClose={() => setIsReporting(false)}
+                onReport={report => {
+                  reportMutation.mutate({
+                    report,
+                    testimony: revision
+                  })
+                }}
+                isLoading={reportMutation.isLoading}
+                additionalInformationLabel="Additional information:"
+                reasons={[
+                  "Personal Information",
+                  "Offensive",
+                  "Violent",
+                  "Spam",
+                  "Phishing"
+                ]}
+              />
+            ))}
           {/*  */}
         </Row>
         <ToastContainer position={"bottom-end"}>
