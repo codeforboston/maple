@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NoResults } from "components/search/NoResults";
 import { PaginationButtons } from "components/table";
-import { useTranslation } from "next-i18next";
+import { TFunction, useTranslation } from "next-i18next";
 import { Card as BootstrapCard, Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { Card as MapleCard } from "../Card";
