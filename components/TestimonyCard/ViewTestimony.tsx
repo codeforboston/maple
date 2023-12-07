@@ -64,9 +64,9 @@ const ViewTestimony = (props: UsePublishedTestimonyListing & {
   };
 
   const handleFilter = (filter: string | undefined) => {
-    setFilter({ authorRole: filter });
+    setFilter({ authorRole: filter ?? '' }); 
   };
-
+  
   const tabs = [
     <Tab
       key="at"
