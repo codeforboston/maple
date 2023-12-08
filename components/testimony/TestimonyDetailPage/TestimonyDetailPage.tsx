@@ -1,5 +1,6 @@
+import { useTranslation } from "next-i18next"
 import { FC, useState } from "react"
-import { Col, Container, Row } from "react-bootstrap"
+import { Col, Container, Row, ToastContainer } from "react-bootstrap"
 import { BillTitle } from "./BillTitle"
 import { PolicyActions } from "./PolicyActions"
 import { useReportTestimony } from "components/api/report"
@@ -8,7 +9,6 @@ import {
   ReportModal
 } from "components/TestimonyCard/ReportModal"
 import ReportToast from "components/TestimonyCard/ReportToast"
-import { ToastContainer } from "react-bootstrap"
 import { RevisionHistory } from "./RevisionHistory"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { TestimonyDetail } from "./TestimonyDetail"
@@ -27,6 +27,8 @@ export const TestimonyDetailPage: FC = () => {
   const handleReporting = (boolean: boolean) => {
     setIsReporting(boolean)
   }
+  const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
+
   return (
     <>
       <VersionBanner fluid="xl" />
@@ -76,11 +78,11 @@ export const TestimonyDetailPage: FC = () => {
                 isLoading={reportMutation.isLoading}
                 additionalInformationLabel="Additional information:"
                 reasons={[
-                  "Personal Information",
-                  "Offensive",
-                  "Violent",
-                  "Spam",
-                  "Phishing"
+                  t("personalInformation"),
+                  t("offensive"),
+                  t("violent"),
+                  t("spam"),
+                  t("phishing")
                 ]}
               />
             ))}

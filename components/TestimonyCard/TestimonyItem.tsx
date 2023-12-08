@@ -269,11 +269,11 @@ export const TestimonyItem = ({
             isLoading={reportMutation.isLoading}
             additionalInformationLabel="Additional information:"
             reasons={[
-              "Personal Information",
-              "Offensive",
-              "Violent",
-              "Spam",
-              "Phishing"
+              t("reportModal.personalInformation"),
+              t("reportModal.offensive"),
+              t("reportModal.violent"),
+              t("reportModal.spam"),
+              t("reportModal.phishing")
             ]}
           />
         ))}

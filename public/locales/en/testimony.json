@@ -32,7 +32,11 @@
     "report": "Report",
     "rescind": "You may only delete testimony from MAPLE if you made an error in the testimony submission process (e.g., testified on the wrong bill) or if the testimony contains personal information.",
     "personalInformation": "Personal Information", 
-    "wrongBill": "Wrong Bill"
+    "wrongBill": "Wrong Bill",
+    "offensive": "Offensive",
+    "violent": "Violent",
+    "spam": "Spam",
+    "phishing": "Phishing"
   },
   "reportToast": {
     "success": "{{successful1}}"
