@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react"
 import { NoResults } from "components/search/NoResults"
 import { PaginationButtons } from "components/table"
 import { TFunction, useTranslation } from "next-i18next"
+import { useState } from "react"
 import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
 import styled from "styled-components"
 import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
-import { UsePublishedTestimonyListing } from "../db"
+import { Testimony, UsePublishedTestimonyListing } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
@@ -14,7 +14,6 @@ import { TestimonyItem } from "./TestimonyItem"
 const Container = styled.div`
   font-family: Nunito;
 `
-
 const Head = styled(BootstrapCard.Header)`
   background-color: var(--bs-blue);
   color: white;
@@ -39,23 +38,6 @@ const ViewTestimony = (
   } = props
 
   const { user } = useAuth()
-  const [totalTestimonies, setTotalTestimonies] = useState<number>(0)
-
-  // Updated useEffect
-  useEffect(() => {
-    if (user?.uid) {
-      fetch(`/api/users/${user.uid}/testimony/countTestimonies`)
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.count !== undefined) {
-            setTotalTestimonies(data.count)
-          }
-        })
-        .catch(error => {
-          console.error("Failed to count user testimonies", error)
-        })
-    }
-  }, [user?.uid])
 
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
@@ -66,7 +48,15 @@ const ViewTestimony = (
   }
 
   const handleFilter = (filter: string | undefined) => {
-    setFilter({ authorRole: filter ?? "" })
+    if (filter === "organization") {
+      setFilter({ authorRole: "organization" })
+    }
+    if (filter === "user") {
+      setFilter({ authorRole: "user" })
+    }
+    if (filter === "") {
+      setFilter({ authorRole: "" })
+    }
   }
 
   const tabs = [
@@ -99,9 +89,7 @@ const ViewTestimony = (
     <Container>
       <MapleCard
         className={className}
-        headerElement={
-          <Head>{isOrg ? t("Our Testimonies") : t("Testimonies")}</Head>
-        }
+        headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
         body={
           <BootstrapCard.Body>
             {!onProfilePage && (
@@ -119,7 +107,7 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <ShowPaginationSummary
-                      totalItems={totalTestimonies}
+                      testimony={testimony}
                       pagination={pagination}
                       t={t}
                     />
@@ -172,29 +160,31 @@ const ViewTestimony = (
 export default ViewTestimony
 
 function ShowPaginationSummary({
-  totalItems,
+  testimony,
   pagination,
   t
 }: {
-  totalItems: number
+  testimony: Testimony[]
   pagination: { currentPage: number; itemsPerPage: number }
   t: TFunction
 }) {
-  if (totalItems < 1) {
-    return <div>{t("viewTestimony.noTestimonies")}</div>
+  if (testimony.length < 1) {
+    return null
   }
-
   const { currentPage, itemsPerPage } = pagination
+
   const currentPageStart = (currentPage - 1) * itemsPerPage
-  let currentPageEnd = currentPageStart + itemsPerPage
-  if (currentPageEnd > totalItems) {
-    currentPageEnd = totalItems
+  let currentPageEnd = currentPage * itemsPerPage
+  if (currentPageEnd > testimony.length) {
+    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
   }
+  const totalItems = testimony.length
 
   return (
-    <div>
-      {t("viewTestimony.showing")} {currentPageStart + 1}–{currentPageEnd}{" "}
-      {t("viewTestimony.outOf")} {totalItems}
-    </div>
+    <Col className="d-flex align-items-center">
+      {t("viewTestimony.showing")} {currentPageStart + 1}&ndash;{currentPageEnd}{" "}
+      {t("viewTestimony.outOf")}
+      {totalItems}
+    </Col>
   )
 }
