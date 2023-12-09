@@ -1,6 +1,6 @@
-import { waitFor } from "@testing-library/react"
-import { act, renderHook } from "@testing-library/react-hooks"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { User } from "firebase/auth"
+import { currentGeneralCourt } from "functions/src/shared"
 import { nanoid } from "nanoid"
 import { DraftTestimony, Testimony, useEditTestimony } from "."
 import {
@@ -9,7 +9,6 @@ import {
   signInUser3
 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
-import { currentGeneralCourt } from "functions/src/shared"
 
 let uid: string
 let user: User

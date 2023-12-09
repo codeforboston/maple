@@ -46,7 +46,7 @@
     "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc"
   },
   "engines": {
-    "node": "18"
+    "node": ">=16"
   },
   "browserslist": {
     "production": [
@@ -75,6 +75,7 @@
     "@react-aria/ssr": "^3.2.0",
     "@react-aria/utils": "^3.13.1",
     "@reduxjs/toolkit": "^1.8.3",
+    "@testing-library/dom": "^9.3.3",
     "@types/papaparse": "^5.3.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
@@ -140,10 +141,9 @@
     "@storybook/manager-webpack5": "^6.5.12",
     "@storybook/react": "^6.5.12",
     "@storybook/testing-library": "^0.0.13",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.3",
-    "@testing-library/react-hooks": "^7.0.2",
-    "@testing-library/user-event": "^12.1.10",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
     "@tsconfig/node16": "^1.0.2",
     "@types/diff": "^5.0.2",
     "@types/dompurify": "^2.3.3",
