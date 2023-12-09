@@ -6,10 +6,11 @@ import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
 import styled from "styled-components"
 import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
-import { Testimony, UsePublishedTestimonyListing } from "../db"
+import { Testimony, UsePublishedTestimonyListing, useTestimonyListing } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
+import { getAllTestimony } from "components/db/testimony/updateUserTestimonies"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -23,6 +24,7 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
+    totalTestimonies: number | undefined
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
@@ -31,6 +33,7 @@ const ViewTestimony = (
   const {
     items,
     setFilter,
+    totalTestimonies,
     onProfilePage = false,
     className,
     pagination,
@@ -38,7 +41,6 @@ const ViewTestimony = (
   } = props
 
   const { user } = useAuth()
-
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
   const [activeTab, setActiveTab] = useState(1)
@@ -58,6 +60,7 @@ const ViewTestimony = (
       setFilter({ authorRole: "" })
     }
   }
+
 
   const tabs = [
     <Tab
@@ -107,6 +110,7 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <ShowPaginationSummary
+                      totalTestimonies={totalTestimonies}
                       testimony={testimony}
                       pagination={pagination}
                       t={t}
@@ -128,8 +132,8 @@ const ViewTestimony = (
                         ? 1
                         : -1
                       : a.publishedAt < b.publishedAt
-                      ? 1
-                      : -1
+                        ? 1
+                        : -1
                   )
                   .map(t => (
                     <TestimonyItem
@@ -160,25 +164,31 @@ const ViewTestimony = (
 export default ViewTestimony
 
 function ShowPaginationSummary({
+  totalTestimonies,
   testimony,
   pagination,
   t
 }: {
+  totalTestimonies?: number 
   testimony: Testimony[]
   pagination: { currentPage: number; itemsPerPage: number }
   t: TFunction
 }) {
+  if (totalTestimonies === undefined) {
+    return null
+  }
+
   if (testimony.length < 1) {
     return null
   }
   const { currentPage, itemsPerPage } = pagination
 
   const currentPageStart = (currentPage - 1) * itemsPerPage
-  let currentPageEnd = currentPage * itemsPerPage
-  if (currentPageEnd > testimony.length) {
-    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
-  }
-  const totalItems = testimony.length
+  let currentPageEnd =  Math.min(currentPage * itemsPerPage, totalTestimonies)
+  // if (currentPageEnd > totalTestimonies) {
+  //   currentPageEnd = totalTestimonies
+  // }
+  const totalItems = totalTestimonies
 
   return (
     <Col className="d-flex align-items-center">

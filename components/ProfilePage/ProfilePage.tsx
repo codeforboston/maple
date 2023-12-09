@@ -1,18 +1,22 @@
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { usePublicProfile, usePublishedTestimonyListing } from "../db"
+import { usePublicProfile, usePublishedTestimonyListing, useTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
 import { VerifyAccountSection } from "./VerifyAccountSection"
+import { getAllTestimony } from "components/db/testimony/updateUserTestimonies"
+import { load } from "js-yaml"
+import { collection, getDocs } from "firebase/firestore"
+import { firestore } from "components/firebase"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -33,6 +37,26 @@ export function ProfilePage(profileprops: {
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
+
+
+  const [totalUserPubTestimony, setTotalUserPubTestimony] = useState<number | undefined>()
+
+  useEffect(() => {
+
+    const countPublishedTestimony = async () => {
+      const pubTestRef = collection(firestore, `/users/${profileprops.id}/publishedTestimony`)
+      const publishedTestimony = await getDocs(pubTestRef)
+      setTotalUserPubTestimony(publishedTestimony.size)
+    }
+
+    countPublishedTestimony()
+
+
+    return () => { countPublishedTestimony() }
+
+  }, [profileprops.id])
+
+
   const { t } = useTranslation("profile")
 
   const [isProfilePublic, onProfilePublicityChanged] = useState<
@@ -45,7 +69,7 @@ export function ProfilePage(profileprops: {
      
      A state variable is used to enforce a rerender on profile update when publicity
      button is used.
-
+  
      see variable: bannerContent, onProfilePublicityChanged
    */
 
@@ -121,6 +145,7 @@ export function ProfilePage(profileprops: {
                   <Col xs={12}>
                     <ViewTestimony
                       {...testimony}
+                      totalTestimonies={totalUserPubTestimony}
                       onProfilePage={true}
                       className="mb-4"
                       isOrg={isOrg}
