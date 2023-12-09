@@ -83,7 +83,7 @@ const BenefitsCardContent = () => {
           <p>
             {t("benefits.legislativeResearch.bodytext1")}{" "}
             <Link href="/bills">
-              <a>{t("benefits.legislativeResearch.linkText")}</a>
+              {t("benefits.legislativeResearch.linkText")}
             </Link>{" "}
             {t("benefits.legislativeResearch.bodytext2")}
           </p>

@@ -10,7 +10,7 @@ type LinkProps = PropsWithChildren<{ href: string; className?: string }>
 export const Internal = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, className, ...rest }: LinkProps, ref) => {
     return (
-      <Link href={href}>
+      <Link href={href} legacyBehavior>
         <a ref={ref} className={className} {...rest}>
           {children}
         </a>
@@ -42,7 +42,7 @@ export function External({
 }
 
 export const Wrap: React.FC<{ href: string }> = ({ href, children }) => (
-  <Link href={href} passHref>
+  <Link href={href} passHref legacyBehavior>
     {children}
   </Link>
 )
