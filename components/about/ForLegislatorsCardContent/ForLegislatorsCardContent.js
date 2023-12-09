@@ -1,5 +1,6 @@
 import { Row, Col } from "../../bootstrap"
 import styles from "./ForLegislatorsCardContent.module.css"
+import { useTranslation } from "next-i18next"
 
 const WhyMAPLECardContent = () => {
   const { t } = useTranslation("forlegislators")
