@@ -32,7 +32,7 @@ describe("usePublishedTestimonyListing", () => {
     async ({ user, bill, filter }) => {
       let uid: string | undefined = undefined
       if (user) {
-        ; ({ uid } = await testAuth.getUserByEmail(user))
+        ;({ uid } = await testAuth.getUserByEmail(user))
       }
       const { result } = renderHook(() =>
         usePublishedTestimonyListing({ billId: bill, uid })

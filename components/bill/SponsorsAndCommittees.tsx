@@ -25,7 +25,10 @@ const HearingDate = styled.div`
   max-width: 202px;
 `
 
-export const Committees: FC<React.PropsWithChildren<BillProps>> = ({ bill, className }) => {
+export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
+  bill,
+  className
+}) => {
   const current = bill.currentCommittee
   if (!current) return null
   return (
@@ -51,7 +54,10 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({ bill, class
   )
 }
 
-export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({ bill, className }) => {
+export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
+  bill,
+  className
+}) => {
   return (
     <>
       {bill.nextHearingAt && dateInFuture(bill.nextHearingAt) ? (
@@ -66,7 +72,10 @@ export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({ bill, classNam
   )
 }
 
-export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({ bill, className }) => {
+export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
+  bill,
+  className
+}) => {
   const primary = bill.content?.PrimarySponsor
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const more = cosponsors.length > 2

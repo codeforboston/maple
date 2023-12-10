@@ -15,7 +15,10 @@ export type LayoutProps = {
   title?: string
 }
 
-export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({ children, title }) => {
+export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
+  children,
+  title
+}) => {
   const { authenticated, user } = useAuth()
 
   return (

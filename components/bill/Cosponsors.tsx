@@ -62,7 +62,10 @@ const StyledButton = styled(Button)`
   margin: 0;
 `
 
-export const Cosponsors: FC<React.PropsWithChildren<BillProps>> = ({ bill, children }) => {
+export const Cosponsors: FC<React.PropsWithChildren<BillProps>> = ({
+  bill,
+  children
+}) => {
   const billNumber = bill.id
   const court = bill.court
   const coSponsors = bill.content.Cosponsors

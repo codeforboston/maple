@@ -32,7 +32,9 @@ const Item = styled.div`
   padding: 9px 22px;
 `
 
-export const FollowingCard: FC<React.PropsWithChildren<Props>> = ({ organizations }) => {
+export const FollowingCard: FC<React.PropsWithChildren<Props>> = ({
+  organizations
+}) => {
   const { t } = useTranslation("common")
   return (
     <Container>

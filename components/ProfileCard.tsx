@@ -7,7 +7,11 @@ interface Props {
   joinDate: Date
 }
 
-export const ProfileCard: FC<React.PropsWithChildren<Props>> = ({ name, profileImageSrc, joinDate }) => {
+export const ProfileCard: FC<React.PropsWithChildren<Props>> = ({
+  name,
+  profileImageSrc,
+  joinDate
+}) => {
   return (
     <Container>
       <Wrapper>

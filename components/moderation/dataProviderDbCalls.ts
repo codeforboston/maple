@@ -119,7 +119,6 @@ export async function getMyMany<RecordType extends RaRecord>(
   return result
 }
 
-
 export async function updateMyOne(
   resource: string,
   params: UpdateParams
