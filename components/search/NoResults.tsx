@@ -15,7 +15,7 @@ const Container = styled.div`
   }
 `
 
-export const NoResults: React.FC = ({ children }) => {
+export const NoResults: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <Container>
       <Image src="/no-results.svg" alt="No results" />

@@ -42,9 +42,7 @@ export const positionInfo = {
   oppose: { action: "opposes", src: "/thumbs-oppose.svg", alt: "Oppose" }
 }
 
-const PositionIcon: FC<
-  ImgHTMLAttributes<HTMLImageElement> & { position: Position }
-> = ({ position, ...props }) => {
+const PositionIcon: FC<React.PropsWithChildren<ImgHTMLAttributes<HTMLImageElement> & { position: Position }>> = ({ position, ...props }) => {
   const { action, ...positionProps } = positionInfo[position]
   return <img aria-label={action} {...props} {...positionProps} />
 }
@@ -100,7 +98,7 @@ const Separator = styled.div`
   height: 1px;
 `
 
-export const TestimonyDetail: FC = () => {
+export const TestimonyDetail: FC<React.PropsWithChildren<unknown>> = () => {
   const { revision } = useCurrentTestimonyDetails()
 
   return (

@@ -10,7 +10,7 @@ import {
 import { FC } from "react"
 import { useTranslation } from "next-i18next"
 
-const HistoryItem: FC<{ revision: Revision }> = ({ revision: tr }) => {
+const HistoryItem: FC<React.PropsWithChildren<{ revision: Revision }>> = ({ revision: tr }) => {
   const dispatch = useAppDispatch()
   const { version: currentVersion } = useCurrentTestimonyDetails()
 

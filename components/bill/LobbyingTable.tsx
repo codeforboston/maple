@@ -11,7 +11,7 @@ import { BillHistory } from "../db"
 import { CourtContext } from "./Status"
 import { Button, Modal, Table } from "react-bootstrap"
 
-export const LobbyingTable: FC<BillProps> = ({ bill, className }) => {
+export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({ bill, className }) => {
   const current = bill.currentCommittee
   if (!current) return null
   return (

@@ -5,7 +5,7 @@ type Setter<T> = (s: T) => void
 
 /** Creates a service context and access hooks. */
 export function createService<Service>(providerHook?: () => Service): {
-  Provider: React.FC
+  Provider: React.FC<React.PropsWithChildren<unknown>>
   useService: () => Maybe<Service>
   useServiceChecked: () => Service
   useBinding: (impl: Service) => void
@@ -58,12 +58,12 @@ export function createService<Service>(providerHook?: () => Service): {
   }
 }
 
-type BaseProvider = React.FC
+type BaseProvider = React.FC<React.PropsWithChildren<unknown>>
 
 /** Render a list of service providers */
-export const ServiceProvider: React.FC<{
+export const ServiceProvider: React.FC<React.PropsWithChildren<{
   providers: BaseProvider[]
-}> = ({ providers, children }) => (
+}>> = ({ providers, children }) => (
   <>
     {providers.reduceRight(
       (children, Provider) => (

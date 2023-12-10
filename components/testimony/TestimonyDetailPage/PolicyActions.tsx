@@ -14,11 +14,11 @@ interface PolicyActionsProps {
   setReporting: (boolean: boolean) => void
 }
 
-const PolicyActionItem: FC<ListItemProps> = props => (
+const PolicyActionItem: FC<React.PropsWithChildren<ListItemProps>> = props => (
   <ListItem action active={false} variant="secondary" {...props} />
 )
 
-export const PolicyActions: FC<PolicyActionsProps> = ({
+export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   className,
   isUser,
   isReporting,

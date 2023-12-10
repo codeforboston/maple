@@ -3,12 +3,12 @@ import { Nav } from "./bootstrap"
 import * as links from "./links"
 import { Wrap } from "./links"
 
-export const NavLink: React.FC<{
+export const NavLink: React.FC<React.PropsWithChildren<{
   href?: string
   handleClick?: any
   className?: string
   other?: any
-}> = ({ href, handleClick, className, children, other }) => {
+}>> = ({ href, handleClick, className, children, other }) => {
   const router = useRouter()
   return (
     <Wrap href={href ?? router.asPath}>
@@ -24,10 +24,10 @@ export const NavLink: React.FC<{
   )
 }
 
-export const ExternalNavLink: React.FC<{
+export const ExternalNavLink: React.FC<React.PropsWithChildren<{
   href: string
   className?: string
-}> = ({ href, children, className }) => {
+}>> = ({ href, children, className }) => {
   return (
     <links.External className={`${className} nav-link`} href={href}>
       {children}

@@ -17,7 +17,7 @@ interface Props {
   alt: string
 }
 
-export const SocialIconLink: FC<Props> = ({ href, svgSrc, alt }) => (
+export const SocialIconLink: FC<React.PropsWithChildren<Props>> = ({ href, svgSrc, alt }) => (
   <Container>
     <a href={href} target="_blank" rel="noreferrer">
       <img src={svgSrc} alt={alt} />
