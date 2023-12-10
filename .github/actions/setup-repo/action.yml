@@ -4,7 +4,7 @@ inputs:
   node-version:
     description: "Version used by actions/setup-node"
     required: true
-    default: "16"
+    default: "18"
   yarn-version:
     description: "Version of Yarn used to install dependencies"
     required: true
