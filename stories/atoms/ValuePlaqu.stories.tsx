@@ -1,11 +1,10 @@
-import { ComponentStory } from "@storybook/react"
+import { Meta, StoryObj } from "@storybook/react"
+import { ValuePlaque } from "components/Policies/ValuePlaque"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { createMeta } from "stories/utils"
-import { ValuePlaque } from "components/Policies/ValuePlaque"
 
-export default createMeta({
+const meta: Meta = {
   title: "Atoms/Plaque",
   component: ValuePlaque,
   decorators: [
@@ -21,18 +20,18 @@ export default createMeta({
       )
     }
   ]
-})
+}
 
-const Template: ComponentStory<typeof ValuePlaque> = args => (
-  <ValuePlaque {...args} />
-)
+type Story = StoryObj<typeof ValuePlaque>
 
-export const Primary = Template.bind({})
-
-Primary.args = {
-  src: "handShake.jpg",
-  alt: "hand shake",
-  title: "Humility"
+export const Primary: Story = {
+  args: {
+    src: "handShake.jpg",
+    alt: "hand shake",
+    title: "Humility"
+  }
 }
 
 Primary.storyName = "ValuePlaque"
+
+export default meta

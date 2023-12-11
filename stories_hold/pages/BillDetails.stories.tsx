@@ -4,7 +4,7 @@ import { BillDetails } from "components/bill/BillDetails"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { bill } from "../organisms/billDetail/MockBillData"
+import { bill } from "../../stories/organisms/billDetail/MockBillData"
 
 export default createMeta({
   title: "Pages/BillDetails",

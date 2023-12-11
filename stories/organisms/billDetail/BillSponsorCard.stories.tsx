@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { ComponentStory, Meta, StoryObj } from "@storybook/react"
 import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { BillProps } from "components/bill/types"
 import { Bill, BillContent, BillHistory } from "components/db"
@@ -11,21 +11,19 @@ import { createMeta } from "stories/utils"
 const Cosponsors = (props: BillProps & { children: ReactNode }) => (
   <PreCosponsors {...props} />
 )
-export default createMeta({
+
+const meta: Meta = {
   title: "Organisms/Bill Detail/Cosponsors",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=172%3A8380",
   component: Cosponsors
-})
+}
+export default meta
 
-const Template: ComponentStory<typeof Cosponsors> = args => (
-  <Cosponsors {...args} />
-)
+type Story = StoryObj<typeof Cosponsors>
 
-export const Primary = Template.bind({})
-Primary.storyName = "Cosponsors"
-Primary.decorators = [(Story, children) => <Story {...children} />]
-
+export const Primary: Story = {
+  storyName: "Cosponsors",
+  decorators: [(Story, children) => <Story {...children} />]
+}
 const newBillHistory: BillHistory = [
   {
     Date: new Date().toISOString(),

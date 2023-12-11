@@ -27,5 +27,9 @@ module.exports = {
     return config
   },
 
-  staticDirs: ["../public", "../stories/assets"]
+  staticDirs: ["../public", "../stories/assets"],
+
+  docs: {
+    autodocs: false
+  }
 }

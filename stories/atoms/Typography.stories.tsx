@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 const meta: Meta = {
   title: "Components/Typography",
@@ -8,7 +8,7 @@ const meta: Meta = {
   }
 }
 
-export const Typopgraphy: Story = () => {
+export const Typopgraphy: StoryFn = () => {
   return (
     <div className="d-inline-flex flex-column gap-4 justify-content-start align-items-start">
       <h1>h1. Maple is my favorite tree. </h1>

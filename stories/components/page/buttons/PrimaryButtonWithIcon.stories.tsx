@@ -1,8 +1,7 @@
 import { Title } from "@storybook/addon-docs"
-import { ComponentStory } from "@storybook/react"
+import { Meta, StoryObj } from "@storybook/react"
 import { Stack } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
-import { createMeta } from "stories/utils"
 import {
   PrimaryButtonWithIcon,
   PrimaryButtonWithIconProps
@@ -13,15 +12,15 @@ const Icon = () => <Image src="star.svg" alt="" className="m-auto" />
 const pageArgs: PrimaryButtonWithIconProps = {
   iconPosition: "left",
   label: "Label",
-  onClick: () => {},
+  onClick: () => { },
   Icon: <Icon />,
   disabled: false
 }
 
-export default createMeta({
+
+const meta: Meta = {
+
   title: "Molecules/Buttons/PrimaryButtonWithIcon",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=245%3A14373",
   component: PrimaryButtonWithIcon,
   parameters: {
     background: "light",
@@ -29,9 +28,9 @@ export default createMeta({
       page: () => (
         <Stack gap={2} className="col-4">
           <Title>Primary Button With Icon</Title>
-          <Primary {...pageArgs} {...Primary.args} />
+          {/* <Primary {...pageArgs} {...Primary.args} />
           <Secondary {...pageArgs} {...Secondary.args} />
-          <Tertiary {...pageArgs} {...Tertiary.args} />
+          <Tertiary {...pageArgs} {...Tertiary.args} /> */}
         </Stack>
       )
     }
@@ -39,32 +38,32 @@ export default createMeta({
   args: {
     iconPosition: "left",
     label: "Label",
-    onClick: () => {},
+    onClick: () => { },
     Icon: <Icon />,
     disabled: false
   }
-})
+}
+export default meta
 
-const Template: ComponentStory<typeof PrimaryButtonWithIcon> = args => (
-  <PrimaryButtonWithIcon {...args} />
-)
+type Story = StoryObj<typeof PrimaryButtonWithIcon>
 
-export const Primary = Template.bind({})
 
-Primary.args = {
-  variant: "primary"
+export const Primary: Story = {
+  args: {
+    variant: "primary"
+  }
 }
 
-export const Secondary = Template.bind({})
-
-Secondary.args = {
-  variant: "outline-secondary"
+export const Secondary: Story = {
+  args: {
+    variant: "outline-secondary"
+  }
 }
 
-export const Tertiary = Template.bind({})
-
-Tertiary.args = {
-  variant: "none"
+export const Tertiary: Story = {
+  args: {
+    variant: "none"
+  }
 }
 
 export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
@@ -72,7 +71,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
     <Stack className="gap-3">
       <PrimaryButtonWithIcon
         variant="primary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Default"
         className="col-1"
         Icon={<Icon />}
@@ -80,7 +79,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
       />
       <PrimaryButtonWithIcon
         variant="primary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Primary-Disabled"
         disabled
         className="col-1"
@@ -89,7 +88,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
       />
       <PrimaryButtonWithIcon
         variant="outline-primary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Outline"
         className="col-1"
         Icon={<Icon />}
@@ -98,7 +97,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
 
       <PrimaryButtonWithIcon
         variant="outline-primary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Outline-Primary-Disabled"
         disabled
         className="col-1"
@@ -107,7 +106,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
       />
       <PrimaryButtonWithIcon
         variant="secondary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Secondary"
         className="col-1"
         Icon={<Icon />}
@@ -115,7 +114,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
       />
       <PrimaryButtonWithIcon
         variant="outline-secondary"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Outline-Secondary-Disabled"
         disabled
         className="col-1"
@@ -124,7 +123,7 @@ export const ButtonStack = (args: PrimaryButtonWithIconProps) => {
       />
       <PrimaryButtonWithIcon
         variant="none"
-        onClick={() => {}}
+        onClick={() => { }}
         label="Tertiary"
         className="col-1"
         Icon={<Icon />}

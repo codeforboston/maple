@@ -1,3 +1,4 @@
+import { Meta } from "@storybook/react"
 import {
   OrgIconLarge,
   OrgIconSmall,
@@ -5,16 +6,15 @@ import {
   UserIconSmall
 } from "components/ProfilePage/StyledProfileComponents"
 import React from "react"
-import { createMeta } from "stories/utils"
 
 const IconStories = ({ children }: { children: React.ReactNode }) => {
   return <div>{children}</div>
 }
 
-export default createMeta({
+const meta: Meta = {
   title: "Molecules/Icons",
   component: IconStories
-})
+}
 
 export const Primary = () => {
   return (
@@ -27,3 +27,5 @@ export const Primary = () => {
   )
 }
 Primary.storyName = "Icons"
+
+export default meta
