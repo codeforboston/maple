@@ -4,7 +4,7 @@ import { OnlyBillName } from './CardListItem.stories'
 
 
 const meta: Meta = {
-  title: "Organisms/Cards/CardListItem",
+  title: "Organisms/Cards/CardListItems",
   component: CardListItems
 }
 

@@ -34,7 +34,7 @@ export const Primary: Story = {
     alt: "hand shake",
     title: "Humility"
   },
-  name: "ValuePlaque"
+  name: "Plaque"
 }
 
 

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react"
 import { CardTitle } from "../../../components/Card"
 
 const meta: Meta = ({
-  title: "Components/Cards/CardTitle",
+  title: "Organisms/Cards/CardTitle",
   component: CardTitle
 })
 

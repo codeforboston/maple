@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react"
-import { ListItem, ListItemProps } from "components/Card"
+import { ListItem } from "components/Card"
 
 const meta: Meta = {
 

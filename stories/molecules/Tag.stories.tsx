@@ -1,8 +1,8 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
-import { Tag } from "../../components/Tag/Tag"
+import { Meta, StoryObj } from "@storybook/react"
+import { Tag } from "components/Tag/Tag"
 
 const meta:Meta = {
-  title: "Components/Tag",
+  title: "Molecules/Tag",
   component: Tag
 }
 

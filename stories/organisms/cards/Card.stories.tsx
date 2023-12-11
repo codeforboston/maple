@@ -1,11 +1,11 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
+import { Meta, StoryObj } from "@storybook/react"
 import { Card } from "components/Card"
 
 const meta: Meta = {
 
   title: "Organisms/Cards/Card",
   component: Card
-}  
+}
 
 export default meta
 
@@ -29,177 +29,55 @@ const CustomBody = () => {
   )
 }
 
-const Template: ComponentStory<typeof Card> = ({
-  header,
-  subheader,
-  bodyText,
-  timestamp,
-  imgSrc,
-  cardItems,
-  inHeaderElement,
-  body,
-  ...rest
-}) => {
-  return (
-    <Card
-      header={header}
-      subheader={subheader}
-      bodyText={bodyText}
-      timestamp={timestamp}
-      imgSrc={imgSrc}
-      cardItems={cardItems}
-      inHeaderElement={inHeaderElement}
-      body={body}
-      {...rest}
-    />
-  )
+
+
+
+export const HeaderAndSubheaderAndTimestamp: Story = {
+  args: {
+    header: "Header",
+    subheader: "Subheader",
+    timestamp: "3:29PM"
+  }
 }
 
 
 
-export const Primary = Template.bind({})
-Primary.args = {
-  header: "Header"
+export const HeaderAndSubheaderAndTimestampAndImgAndBody: Story = {
+  args: {
+    header: "Header",
+    subheader: "Subheader",
+    timestamp: "3:29PM",
+    imgSrc:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
+    bodyText: "This is body text and it's nonsense placeholder and filler"
+  }
+}
+export const HeaderAndSubheaderAndTimestampAndImgAndCustomBody: Story = {
+  args: {
+    header: "Header",
+    subheader: "Subheader",
+    timestamp: "3:29PM",
+    body: <CustomBody />
+  }
 }
 
-export const HeaderAndSubheader = Template.bind({})
-HeaderAndSubheader.args = {
-  header: "Header",
-  subheader: "Subheader"
-}
+export const HeaderAndSubheaderAndBodyAndTwoListItems: Story = {
+  args: {
 
-export const HeaderAndSubheaderAndTimestamp = Template.bind({})
-HeaderAndSubheaderAndTimestamp.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM"
-}
-export const HeaderAndSubheaderAndTimestampAndInHeaderElement = Template.bind(
-  {}
-)
-HeaderAndSubheaderAndTimestampAndInHeaderElement.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  inHeaderElement: <>button here</>
-}
-
-export const HeaderAndSubheaderAndTimestampAndImg = Template.bind({})
-HeaderAndSubheaderAndTimestampAndImg.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  imgSrc:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png"
-}
-
-export const HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement =
-  Template.bind({})
-HeaderAndSubheaderAndTimestampAndImgAndInHeaderElement.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  imgSrc:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  inHeaderElement: <img src="/thumbs-endorse.svg" alt="" />
-}
-
-export const HeaderAndSubheaderAndTimestampAndImgAndBody = Template.bind({})
-HeaderAndSubheaderAndTimestampAndImgAndBody.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  imgSrc:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png",
-  bodyText: "This is body text and it's nonsense placeholder and filler"
-}
-
-export const HeaderAndSubheaderAndTimestampAndImgAndCustomBody = Template.bind(
-  {}
-)
-HeaderAndSubheaderAndTimestampAndImgAndCustomBody.args = {
-  header: "Header",
-  subheader: "Subheader",
-  timestamp: "3:29PM",
-  body: <CustomBody />
-}
-
-export const HeaderAndSubheaderAndBodyAndTwoListItems = Template.bind({})
-HeaderAndSubheaderAndBodyAndTwoListItems.args = {
-  header: "Header",
-  subheader: "Subheader",
-  bodyText: "This is body text and it's nonsense placeholder and filler",
-  cardItems: [
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    }
-  ]
-}
-
-export const HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore =
-  Template.bind({})
-HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args = {
-  header: "Header",
-  subheader: "Subheader",
-  bodyText: "This is body text and it's nonsense placeholder and filler",
-  cardItems: [
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3340",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    },
-    {
-      billName: "H.3342",
-      billDescription:
-        "An Act creating a green bank to promote clean energy in Massachusetts"
-    }
-  ]
-}
-
-export const HeaderWithItemsAndItemElements = Template.bind({})
-HeaderWithItemsAndItemElements.args = {
-  ...HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args,
-  cardItems:
-    HeaderAndSubheaderAndBodyAndSixListItemsWithSeeMore.args.cardItems?.map(
-      item => {
-        return { ...item, element: <img src="/edit-testimony.svg" /> }
+    header: "Header",
+    subheader: "Subheader",
+    bodyText: "This is body text and it's nonsense placeholder and filler",
+    cardItems: [
+      {
+        billName: "H.3340",
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts"
+      },
+      {
+        billName: "H.3342",
+        billDescription:
+          "An Act creating a green bank to promote clean energy in Massachusetts"
       }
-    )
-}
-
-export const HeaderWithItemsAndItemElementsAndBillNameElement = Template.bind(
-  {}
-)
-HeaderWithItemsAndItemElementsAndBillNameElement.args = {
-  ...HeaderWithItemsAndItemElements.args,
-  cardItems: HeaderWithItemsAndItemElements.args.cardItems?.map(item => {
-    return { ...item, billNameElement: <img src="/thumbs-endorse.svg" /> }
-  })
+    ]
+  }
 }

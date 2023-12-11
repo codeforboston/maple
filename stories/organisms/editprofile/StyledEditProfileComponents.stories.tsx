@@ -1,8 +1,7 @@
-import { ComponentStory } from "@storybook/react"
-import { createMeta } from "stories/utils"
 import { Stories } from "@storybook/addon-docs"
+import { Meta, StoryObj } from "@storybook/react"
 import * as SC from "components/EditProfilePage/StyledEditProfileComponents"
-import { ReactNode, FC } from "react"
+import { FC, ReactNode } from "react"
 
 const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -17,8 +16,7 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
     </>
   )
 }
-
-export default createMeta({
+const meta: Meta = {
   title: "Organisms/Edit Profile/StyledTabNav",
   component: EditProfileComponents,
   parameters: {
@@ -26,15 +24,15 @@ export default createMeta({
       page: () => <Stories includePrimary />
     }
   }
-})
-
-const Template: ComponentStory<typeof EditProfileComponents> = args => (
-  <EditProfileComponents {...args} />
-)
-
-export const Primary = Template.bind({})
-
-Primary.args = {
-  children: "TabContent"
 }
-Primary.storyName = "StyledTabNav"
+
+export default meta
+
+type Story = StoryObj<typeof EditProfileComponents>
+
+export const Primary: Story = {
+  args: {
+    children: "TabContent"
+  },
+  name: "StyledTabNav"
+}

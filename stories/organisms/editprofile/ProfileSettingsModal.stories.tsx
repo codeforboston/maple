@@ -1,15 +1,12 @@
-import { ComponentStory } from "@storybook/react"
+import { Meta, StoryObj } from "@storybook/react"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
-import { GearButton } from "components/buttons"
 import { ProfileHook } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
-import { useState } from "react"
-import { Col } from "react-bootstrap"
 import { Provider as Redux } from "react-redux"
-import { createMeta } from "stories/utils"
 
-export default createMeta({
+
+const meta: Meta = {
   title: "Organisms/Edit Profile/ProfileSettingsModal",
   component: ProfileSettingsModal,
   decorators: [
@@ -25,19 +22,21 @@ export default createMeta({
       )
     }
   ]
-})
-
-const Template: ComponentStory<typeof ProfileSettingsModal> = args => (
-  <ProfileSettingsModal {...args} />
-)
-
-export const Primary = Template.bind({})
-Primary.args = {
-  actions: {} as ProfileHook,
-  isProfilePublic: true,
-  role: "user",
-  notifications: "Daily",
-  show: true
 }
 
-Primary.storyName = "ProfileSettingsModal"
+export default meta
+
+type Story = StoryObj<typeof ProfileSettingsModal>
+
+
+export const Primary: Story = {
+  args: {
+    actions: {} as ProfileHook,
+    isProfilePublic: true,
+    role: "user",
+    notifications: "Daily",
+    show: true
+  },
+  name: "ProfileSettingsModal"
+}
+
