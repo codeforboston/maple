@@ -1,14 +1,16 @@
-import { ComponentStory } from "@storybook/react"
-import { createMeta } from "stories/utils"
-import { string } from "yargs"
-import { Card } from "../../../components/Card"
+import { ComponentStory, Meta, StoryObj } from "@storybook/react"
+import { Card } from "components/Card"
 
-export default createMeta({
-  title: "Components/Cards/Card",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=229%3A8338",
+const meta: Meta = {
+
+  title: "Organisms/Cards/Card",
   component: Card
-})
+}  
+
+export default meta
+
+type Story = StoryObj<typeof Card>
+
 
 const CustomBody = () => {
   var misfits = ["Danzig", "Only", "Doyle", "Googy"]
@@ -52,6 +54,8 @@ const Template: ComponentStory<typeof Card> = ({
     />
   )
 }
+
+
 
 export const Primary = Template.bind({})
 Primary.args = {
