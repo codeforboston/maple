@@ -1,8 +1,12 @@
 import { Meta, StoryObj } from "@storybook/react"
-import { ValuePlaque } from "components/Policies/ValuePlaque"
+// import { ValuePlaque } from "components/Policies/ValuePlaque"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
+
+const ValuePlaque = () => {
+  return <div>TODO</div>
+}
 
 const meta: Meta = {
   title: "Atoms/Plaque",
@@ -29,9 +33,9 @@ export const Primary: Story = {
     src: "handShake.jpg",
     alt: "hand shake",
     title: "Humility"
-  }
+  },
+  name: "ValuePlaque"
 }
 
-Primary.storyName = "ValuePlaque"
 
 export default meta

@@ -3,7 +3,7 @@ import { Card as MapleCard } from "../Card/Card"
 import { AlertCardBody } from "./AlertCardBody"
 import { Timestamp } from "firebase/firestore"
 import styles from "./AlertCard.module.css"
-import OrgPriorityCardStories from "stories/billDetail/OrgPriorityCard.stories"
+import OrgPriorityCardStories from "stories_hold/organisms/billDetail/OrgPriorityCard.stories"
 
 export const AlertCard = (props: {
   header: string

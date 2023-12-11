@@ -16,16 +16,22 @@ const meta: Meta = {
   component: IconStories
 }
 
-export const Primary = () => {
-  return (
-    <IconStories>
-      <UserIconLarge />
-      <UserIconSmall />
-      <OrgIconLarge />
-      <OrgIconSmall />
+export const Primary = {
+
+  args: {
+    children: (
+      <IconStories>
+    {/* <UserIconLarge />
+    <UserIconSmall />
+    <OrgIconLarge />
+    <OrgIconSmall /> */}
+    <div>TODO</div>
     </IconStories>
-  )
+      )
+    
+  }, name: "Icons"
 }
-Primary.storyName = "Icons"
+
+
 
 export default meta
