@@ -159,7 +159,7 @@
     "all-contributors-cli": "^6.20.5",
     "axios": "^0.27.2",
     "babel-loader": "^8.2.5",
-    "chromatic": "^6.10.2",
+    "chromatic": "^10.1.0",
     "clsx": "^1.2.1",
     "concurrently": "^7.0.0",
     "eslint": "^8.7.0",
