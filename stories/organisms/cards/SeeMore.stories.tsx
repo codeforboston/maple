@@ -1,11 +1,10 @@
-import { createMeta } from "stories/utils"
+import { Meta } from "@storybook/react"
 import { SeeMore } from "../../../components/Card"
 
-export default createMeta({
-  title: "Components/Cards/SeeMore",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=119%3A2856",
+const meta: Meta = {  
+title: "Components/Cards/SeeMore",
   component: SeeMore
-})
+}
+export default meta
 
 export const Primary = () => <SeeMore />

@@ -1,5 +1,4 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
-import { createMeta } from "stories/utils"
+import { Meta, StoryObj } from "@storybook/react"
 import { TestimonyCounts } from "components/bill/TestimonyCounts"
 import { BillProps } from "components/bill/types"
 
@@ -22,5 +21,5 @@ export const Primary = {
       opposeCount: 2
     }
   } as Partial<BillProps>,
-  storyName: "TestimonyCounts"
+  name: "TestimonyCounts"
 }

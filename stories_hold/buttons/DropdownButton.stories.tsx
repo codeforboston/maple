@@ -1,5 +1,5 @@
 import { createMeta } from "stories/utils"
-import DropdownButton from "../../../components/DropdownButton/DropdownButton"
+import DropdownButton from "../../components/DropdownButton/DropdownButton"
 import { ComponentStory } from "@storybook/react"
 
 // TODO: move into components directory

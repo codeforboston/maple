@@ -11,5 +11,5 @@ export default meta
 type Story = StoryObj<typeof CurrentCommitteeCard>
 export const Primary: Story = {
   args: { chamber: "House", committee: "Committee of Ways and Means" },
-  storyName: "CurrentCommitteeCard"
+  name: "CurrentCommitteeCard"
 }

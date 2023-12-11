@@ -1,6 +1,5 @@
-import Input from "components/forms/Input"
 import type { Meta, StoryObj } from "@storybook/react"
-import { createMeta } from "stories/utils"
+import Input from "components/forms/Input"
 
 
 const meta: Meta = {

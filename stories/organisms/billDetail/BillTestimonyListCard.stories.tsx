@@ -1,10 +1,9 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
-import { createMeta } from "stories/utils"
+import { Meta, StoryObj } from "@storybook/react"
 import { BillTestimonies } from "components/bill/BillTestimonies"
-import { Timestamp } from "firebase/firestore"
-import { Provider as Redux } from "react-redux"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
+import { Timestamp } from "firebase/firestore"
+import { Provider as Redux } from "react-redux"
 
 // TODO: move into components directory
 const BillTestimonyListCard = BillTestimonies
@@ -53,7 +52,7 @@ export const Primary: Story = {
       ]
     }
   },
-  storyName: "BillTestimonyListCard",
+  name: "BillTestimonyListCard",
   decorators: [
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)

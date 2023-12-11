@@ -1,10 +1,9 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
+import { Meta, StoryObj } from "@storybook/react"
 import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { BillProps } from "components/bill/types"
 import { Bill, BillContent, BillHistory } from "components/db"
 import { Timestamp } from "firebase/firestore"
 import { ReactNode } from "react"
-import { createMeta } from "stories/utils"
 
 // TODO: move into components directory
 
@@ -21,7 +20,7 @@ export default meta
 type Story = StoryObj<typeof Cosponsors>
 
 export const Primary: Story = {
-  storyName: "Cosponsors",
+  name: "Cosponsors",
   decorators: [(Story, children) => <Story {...children} />]
 }
 const newBillHistory: BillHistory = [

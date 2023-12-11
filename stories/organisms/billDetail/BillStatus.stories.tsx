@@ -1,8 +1,7 @@
-import { ComponentStory, Meta, StoryObj } from "@storybook/react"
-import { BillTrackerView } from "components/bill/BillTracker"
+import { Meta, StoryObj } from "@storybook/react"
+import {BillTrackerView}  from "components/bill/BillTracker"
 import { Timestamp } from "firebase/firestore"
 import { Stage } from "functions/src/analysis/types"
-import { createMeta } from "stories/utils"
 
 const meta: Meta = {
   title: "Organisms/Bill Detail/BillStatus",
@@ -14,7 +13,7 @@ export default meta
 type Story = StoryObj<typeof BillTrackerView>
 
 export const Primary: Story = {
-  storyName: "Cosponsors",
+  name: "Cosponsors",
   decorators: [(Story, children) => <Story {...children} />],
   args: {
     tracker: {
@@ -51,5 +50,5 @@ export const Secondary: Story = {
       }
     }
   },
-  storyName: "In Second Committee"
+  name: "In Second Committee"
 }

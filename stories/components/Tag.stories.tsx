@@ -1,21 +1,17 @@
-import { ComponentStory } from "@storybook/react"
-import { createMeta } from "stories/utils"
+import { ComponentStory, Meta, StoryObj } from "@storybook/react"
 import { Tag } from "../../components/Tag/Tag"
 
-export default createMeta({
+const meta:Meta = {
   title: "Components/Tag",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=231%3A13514",
   component: Tag
-})
+}
 
-const Template: ComponentStory<typeof Tag> = args => <Tag {...args} />
+export default meta
 
-export const Senate = Template.bind({})
-Senate.args = { chamber: "senate" }
+type Story = StoryObj<typeof Tag>
 
-export const House = Template.bind({})
-House.args = { chamber: "house" }
+export const Senate: Story = {args : { chamber: "senate" }}
 
-export const Joint = Template.bind({})
-Joint.args = { chamber: "joint" }
+export const House: Story = { args : { chamber: "house" } }
+
+export const Joint: Story = { args : { chamber: "joint" } }

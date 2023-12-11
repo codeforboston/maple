@@ -3,7 +3,7 @@ import { ComponentStory } from "@storybook/react"
 import { Image } from "components/bootstrap"
 import { useState } from "react"
 import { createMeta } from "stories/utils"
-import { LoadingButton } from "../../../components/buttons"
+import { LoadingButton } from "../../components/buttons"
 
 export default createMeta({
   title: "Components/Buttons/LoadingButton",
