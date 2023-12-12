@@ -11,7 +11,6 @@ export default meta
 
 type Story = StoryObj<typeof TestimonyCounts>
 
-
 export const Primary = {
   args: {
     bill: {

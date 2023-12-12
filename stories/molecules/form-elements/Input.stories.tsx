@@ -1,17 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import Input from "components/forms/Input"
 
-
 const meta: Meta = {
   component: Input,
-  title: "Molecules/Input",
+  title: "Molecules/Input"
 }
 
 type Story = StoryObj<typeof Input>
-
-
-
-
 
 export const Primary: Story = {
   args: {
@@ -27,6 +22,5 @@ export const InputWithError: Story = {
   },
   name: "Input with error"
 }
-
 
 export default meta

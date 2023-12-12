@@ -37,5 +37,4 @@ export const Primary: Story = {
   name: "Plaque"
 }
 
-
 export default meta

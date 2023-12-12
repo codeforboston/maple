@@ -2,7 +2,6 @@ import { Meta, StoryObj } from "@storybook/react"
 import { Card } from "components/Card"
 
 const meta: Meta = {
-
   title: "Organisms/Cards/Card",
   component: Card
 }
@@ -10,7 +9,6 @@ const meta: Meta = {
 export default meta
 
 type Story = StoryObj<typeof Card>
-
 
 const CustomBody = () => {
   var misfits = ["Danzig", "Only", "Doyle", "Googy"]
@@ -29,9 +27,6 @@ const CustomBody = () => {
   )
 }
 
-
-
-
 export const HeaderAndSubheaderAndTimestamp: Story = {
   args: {
     header: "Header",
@@ -39,8 +34,6 @@ export const HeaderAndSubheaderAndTimestamp: Story = {
     timestamp: "3:29PM"
   }
 }
-
-
 
 export const HeaderAndSubheaderAndTimestampAndImgAndBody: Story = {
   args: {
@@ -63,7 +56,6 @@ export const HeaderAndSubheaderAndTimestampAndImgAndCustomBody: Story = {
 
 export const HeaderAndSubheaderAndBodyAndTwoListItems: Story = {
   args: {
-
     header: "Header",
     subheader: "Subheader",
     bodyText: "This is body text and it's nonsense placeholder and filler",

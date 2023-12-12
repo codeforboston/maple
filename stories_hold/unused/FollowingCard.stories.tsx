@@ -1,11 +1,9 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { FollowingCard } from "../../../components/FollowingCard/FollowingCard"
+import { FollowingCard } from "components/FollowingCard/FollowingCard"
 
 export default createMeta({
   title: "Dashboard/Side Panels/FollowingCard",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=167%3A6922",
   component: FollowingCard
 })
 

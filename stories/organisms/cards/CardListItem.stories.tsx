@@ -2,7 +2,6 @@ import { Meta, StoryObj } from "@storybook/react"
 import { ListItem } from "components/Card"
 
 const meta: Meta = {
-
   title: "Organisms/Cards/CardListItem",
   component: ListItem
 }
@@ -10,7 +9,6 @@ const meta: Meta = {
 export default meta
 
 type Story = StoryObj<typeof ListItem>
-
 
 export const Primary: Story = {
   args: {

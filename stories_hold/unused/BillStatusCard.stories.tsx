@@ -4,8 +4,6 @@ import { createMeta } from "stories/utils"
 
 export default createMeta({
   title: "Dashboard/Mission Center/BillStatusCard",
-  figmaUrl:
-    "https://www.figma.com/file/Uyh2NXGTCX60mkse2NVBH7/MAPLE?node-id=2184%3A23094&t=yQ7oQ6AqkJc2pZNR-4",
   component: BillStatusCard
 })
 

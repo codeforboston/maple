@@ -9,13 +9,14 @@ const meta: Meta = {
 type Story = StoryObj<typeof SocialIconLink>
 
 export const Primary: Story = {
-  render: () => <SocialIconLink
-    href="https://www.instagram.com"
-    svgSrc="/images/instagram.svg"
-    alt="instagram"
-  />,
-  name: 'SocialIconLink'
+  render: () => (
+    <SocialIconLink
+      href="https://www.instagram.com"
+      svgSrc="/images/instagram.svg"
+      alt="instagram"
+    />
+  ),
+  name: "SocialIconLink"
 }
-
 
 export default meta

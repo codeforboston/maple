@@ -15,8 +15,6 @@ export default meta
 type Story = StoryObj<typeof BasicsOfTestimonyCard>
 
 export const Primary: Story = {
-
-
   args: {
     title: "Anyone can submit testimony to the MA legislature",
     paragraph:

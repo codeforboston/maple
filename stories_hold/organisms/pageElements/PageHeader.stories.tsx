@@ -13,5 +13,6 @@ import { appWithTranslation } from "next-i18next"
 type Story = StoryObj<typeof HeroHeader>
 
 export const Primary: Story = {
-  args: { authenticated: true }, name: "PageHeader"
+  args: { authenticated: true },
+  name: "PageHeader"
 }

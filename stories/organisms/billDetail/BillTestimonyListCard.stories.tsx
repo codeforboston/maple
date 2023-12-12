@@ -14,7 +14,6 @@ const meta: Meta = {
 
 export default meta
 
-
 var first = { Id: "test", Name: "tes", Type: 0 }
 
 type Story = StoryObj<typeof BillTestimonyListCard>

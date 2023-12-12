@@ -5,7 +5,6 @@ import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 
-
 const meta: Meta = {
   title: "Organisms/Edit Profile/ProfileSettingsModal",
   component: ProfileSettingsModal,
@@ -28,7 +27,6 @@ export default meta
 
 type Story = StoryObj<typeof ProfileSettingsModal>
 
-
 export const Primary: Story = {
   args: {
     actions: {} as ProfileHook,
@@ -39,4 +37,3 @@ export const Primary: Story = {
   },
   name: "ProfileSettingsModal"
 }
-

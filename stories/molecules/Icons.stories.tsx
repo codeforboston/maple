@@ -17,21 +17,18 @@ const meta: Meta = {
 }
 
 export const Primary = {
-
   args: {
     children: (
       <IconStories>
-    {/* <UserIconLarge />
+        {/* <UserIconLarge />
     <UserIconSmall />
     <OrgIconLarge />
     <OrgIconSmall /> */}
-    <div>TODO</div>
-    </IconStories>
-      )
-    
-  }, name: "Icons"
+        <div>TODO</div>
+      </IconStories>
+    )
+  },
+  name: "Icons"
 }
-
-
 
 export default meta

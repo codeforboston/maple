@@ -17,8 +17,6 @@ const TestimonyItemFC: React.FC<TestimonyItemProps> = (
 
 export default createMeta({
   title: "Organisms/Profile/UserTestimonyListCard",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=311%3A10561",
   component: TestimonyItemFC,
   decorators: [
     (Story, ...rest) => {

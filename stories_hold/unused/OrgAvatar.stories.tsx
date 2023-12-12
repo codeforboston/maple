@@ -1,11 +1,9 @@
 import { createMeta } from "stories/utils"
-import { OrgAvatar } from "stories/components/OrgAvatar"
+import { OrgAvatar } from "./OrgAvatar"
 import { ComponentStory } from "@storybook/react"
 
 export default createMeta({
   title: "Components/Avatar",
-  figmaUrl:
-    "https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=242%3A16634",
   component: OrgAvatar
 })
 

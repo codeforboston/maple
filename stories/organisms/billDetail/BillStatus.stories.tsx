@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react"
-import {BillTrackerView}  from "components/bill/BillTracker"
+import { BillTrackerView } from "components/bill/BillTracker"
 import { Timestamp } from "firebase/firestore"
 import { Stage } from "functions/src/analysis/types"
 
@@ -30,7 +30,7 @@ export const Primary: Story = {
         createdAt: Timestamp.now()
       }
     }
-  },
+  }
 }
 
 export const Secondary: Story = {
