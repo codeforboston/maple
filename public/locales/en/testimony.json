@@ -30,13 +30,16 @@
     "close": "Close",
     "reporting": "Reporting",
     "report": "Report",
-    "rescind": "You may only delete testimony from MAPLE if you made an error in the testimony submission process (e.g., testified on the wrong bill) or if the testimony contains personal information.",
+    "rescind": "You may request that your testimony be deleted by completing this form. Since MAPLE is an archive, deletion requests will only be granted if the testimony was submitted on the wrong bill, if it contained sensitive personal information, or if the user is below 18 years old.",
     "personalInformation": "Personal Information", 
-    "wrongBill": "Wrong Bill",
+    "wrongBill": "Submitted to wrong bill",
     "offensive": "Offensive",
     "violent": "Violent",
     "spam": "Spam",
-    "phishing": "Phishing"
+    "phishing": "Phishing",
+    "sensitiveInformation": "Contains sensitive information",
+    "userBelow18YearsOld": "User below 18 years old",
+    "other": "Other"
   },
   "reportToast": {
     "success": "{{successful1}}"
