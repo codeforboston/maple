@@ -125,7 +125,12 @@ export function RequestDeleteOwnTestimonyModal({
       onClose={onClose}
       onReport={onReport}
       isLoading={isLoading}
-      reasons={["Personal Information", "Wrong Bill"]}
+      reasons={[
+        t("wrongBill"),
+        t("sensitiveInformation"),
+        t("userBelow18YearsOld"),
+        t("other")
+      ]}
       additionalInformationLabel={t("reason")}
       requireAdditionalInformation
     >
