@@ -48,8 +48,16 @@ const ViewTestimony = (
   }
 
   const handleFilter = (filter: string | undefined) => {
-    setFilter({ authorRole: filter });
-  };
+    if (filter === "organization") {
+      setFilter({ authorRole: "organization" })
+    }
+    if (filter === "user") {
+      setFilter({ authorRole: "user" })
+    }
+    if (filter === "") {
+      setFilter({ authorRole: "" })
+    }
+  }
 
   const tabs = [
     <Tab
