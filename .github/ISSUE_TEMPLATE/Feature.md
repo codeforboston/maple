@@ -4,7 +4,6 @@ about: Suggest an idea for a new feature
 title: ""
 labels: new-feature
 assignees: ""
-
 ---
 
 **Feature Title**
@@ -20,5 +19,6 @@ Explain why this feature would be useful and what problem it would solve.
 Add any other context or screenshots about the feature request here.
 
 **Checklist**
+
 - [ ] I have checked if this feature is not already requested
 - [ ] I have explained the feature in detail

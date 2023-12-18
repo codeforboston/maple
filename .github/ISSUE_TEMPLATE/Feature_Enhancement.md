@@ -4,7 +4,6 @@ about: Suggest an enhancement for an existing feature
 title: ""
 labels: enhancement
 assignees: ""
-
 ---
 
 **Suggestion Title**
@@ -20,5 +19,6 @@ Explain why this enhancement would be useful and what problem it would solve.
 Add any other context or screenshots about the feature enhancement here.
 
 **Checklist**
+
 - [ ] I have checked if this enhancement is not already suggested
 - [ ] I have explained the enhancement in detail
