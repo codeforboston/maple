@@ -27,7 +27,7 @@ export const SelectLegislatorsCta = ({ className }: { className?: string }) => {
         and select your State Representative and Senator below.
       </p>
       <SelectLegislators />
-      <nav.FormNavigation right={<nav.Next />} />
+      <nav.FormNavigation left={<nav.Previous />} right={<nav.Next />} />
     </div>
   )
 }

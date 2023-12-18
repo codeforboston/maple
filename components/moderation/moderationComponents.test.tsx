@@ -1,10 +1,44 @@
 import React from "react"
 import { RemoveTestimonyForm } from "components/moderation/RemoveTestimony"
-import { createFakeTestimonyReport } from "../../components/moderation/setUp/MockRecords"
+import { createFakeTestimonyReport } from "./setUp/MockRecords"
 import { cleanup, render, act } from "@testing-library/react"
 import { screen } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { AdminContext } from "react-admin"
+import { ReportModal } from "components/TestimonyCard/ReportModal"
+import { RequestDeleteOwnTestimonyModal } from "components/TestimonyCard/ReportModal"
+
+describe("report testimony modal", () => {
+  const setIsReporting = jest.fn()
+  const mutateReport = jest.fn()
+  it("renders report modal", () => {
+    render(
+      <ReportModal
+        reasons={[
+          "Personal Information",
+          "Offensive",
+          "Violent",
+          "Spam",
+          "Phishing"
+        ]}
+        onClose={setIsReporting}
+        onReport={mutateReport}
+        isLoading={false}
+        additionalInformationLabel={""}
+      />
+    )
+  })
+
+  it("renders request delete own testimony modal", () => {
+    render(
+      <RequestDeleteOwnTestimonyModal
+        onClose={setIsReporting}
+        onReport={mutateReport}
+        isLoading={false}
+      />
+    )
+  })
+})
 
 describe("remove testimony", () => {
   const { user, testimony, report } = createFakeTestimonyReport()
@@ -15,6 +49,9 @@ describe("remove testimony", () => {
         <RemoveTestimonyForm report={report} />
       </AdminContext>
     )
+    expect(screen.getByText(/remove/i)).toBeInstanceOf(HTMLLabelElement)
+
+    cleanup()
   })
 
   it("displays remove and allow options", async () => {
@@ -26,7 +63,6 @@ describe("remove testimony", () => {
 
     expect(screen.getByLabelText(/remove/i)).toBeInstanceOf(HTMLInputElement)
     expect(screen.getByLabelText(/allow/i)).toBeInstanceOf(HTMLInputElement)
-
     cleanup()
   })
 
@@ -53,5 +89,7 @@ describe("remove testimony", () => {
 
     const textBox = screen.getByLabelText(/Reason/i)
     userEvent.type(textBox, "this is a textBox")
+
+    cleanup()
   })
 })

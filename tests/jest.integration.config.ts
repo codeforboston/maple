@@ -15,7 +15,8 @@ const config: Config.InitialOptions = {
     "<rootDir>/functions"
   ],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"],
-  modulePaths: ["<rootDir>"]
+  modulePaths: ["<rootDir>"],
+  reporters: ["default", ["jest-summary-reporter", { failuresOnly: false }]]
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest

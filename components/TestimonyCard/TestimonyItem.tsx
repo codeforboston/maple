@@ -243,7 +243,7 @@ export const TestimonyItem = ({
             </>
           )}
           {/* report */}
-          {flags().reportTestimony && !isUser && (
+          {flags().reportTestimony && (
             <Col xs="auto">
               <FooterButton variant="link" onClick={() => setIsReporting(true)}>
                 Report
@@ -269,11 +269,11 @@ export const TestimonyItem = ({
             isLoading={reportMutation.isLoading}
             additionalInformationLabel="Additional information:"
             reasons={[
-              "Personal Information",
-              "Offensive",
-              "Violent",
-              "Spam",
-              "Phishing"
+              t("reportModal.personalInformation"),
+              t("reportModal.offensive"),
+              t("reportModal.violent"),
+              t("reportModal.spam"),
+              t("reportModal.phishing")
             ]}
           />
         ))}
@@ -287,7 +287,7 @@ export const TestimonyItem = ({
           pointerEvents: "none"
         }}
       >
-        <ToastContainer position={"bottom-end"}>
+        <ToastContainer position={"top-center"} style={{ zIndex: 1 }}>
           {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
         </ToastContainer>
       </div>

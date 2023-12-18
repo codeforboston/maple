@@ -32,8 +32,6 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: check_code_quality
-    # TODO: re-enable
-    if: false
 
     services:
       typesense:
@@ -56,4 +54,9 @@ jobs:
           path: /home/runner/.cache/firebase/emulators
           key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
       - name: Run Integration Tests
-        run: yarn test:integration-ci
+        run: >
+          yarn test:integration-ci
+          tests/integration/testimony.test.ts
+          tests/integration/auth.test.ts
+          tests/integration/moderation.test.ts
+          tests/integration/profile.test.ts

@@ -1,7 +1,14 @@
-import { FC } from "react"
-import { Col, Container, Row } from "react-bootstrap"
+import { useTranslation } from "next-i18next"
+import { FC, useState } from "react"
+import { Col, Container, Row, ToastContainer } from "react-bootstrap"
 import { BillTitle } from "./BillTitle"
 import { PolicyActions } from "./PolicyActions"
+import { useReportTestimony } from "components/api/report"
+import {
+  RequestDeleteOwnTestimonyModal,
+  ReportModal
+} from "components/TestimonyCard/ReportModal"
+import ReportToast from "components/TestimonyCard/ReportToast"
 import { RevisionHistory } from "./RevisionHistory"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { TestimonyDetail } from "./TestimonyDetail"
@@ -10,10 +17,18 @@ import { useAuth } from "components/auth"
 import { useMediaQuery } from "usehooks-ts"
 
 export const TestimonyDetailPage: FC = () => {
+  const [isReporting, setIsReporting] = useState(false)
+  const reportMutation = useReportTestimony()
+  const didReport = reportMutation.isError || reportMutation.isSuccess
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const { authorUid } = useCurrentTestimonyDetails()
+  const { authorUid, revision } = useCurrentTestimonyDetails()
   const { user } = useAuth()
   const isUser = user?.uid === authorUid
+  const handleReporting = (boolean: boolean) => {
+    setIsReporting(boolean)
+  }
+  const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
+
   return (
     <>
       <VersionBanner fluid="xl" />
@@ -28,10 +43,54 @@ export const TestimonyDetailPage: FC = () => {
           </Col>
 
           <Col md={4}>
-            {!isMobile && <PolicyActions className="mb-4" isUser={isUser} />}
+            {!isMobile && (
+              <PolicyActions
+                className="mb-4"
+                isUser={isUser}
+                isReporting={isReporting}
+                setReporting={handleReporting}
+              />
+            )}
             <RevisionHistory />
           </Col>
+          {/* Report Modal */}
+          {isReporting &&
+            (isUser ? (
+              <RequestDeleteOwnTestimonyModal
+                onClose={() => setIsReporting(false)}
+                onReport={report => {
+                  reportMutation.mutate({
+                    report,
+                    testimony: revision
+                  })
+                }}
+                isLoading={reportMutation.isLoading}
+              />
+            ) : (
+              <ReportModal
+                onClose={() => setIsReporting(false)}
+                onReport={report => {
+                  reportMutation.mutate({
+                    report,
+                    testimony: revision
+                  })
+                }}
+                isLoading={reportMutation.isLoading}
+                additionalInformationLabel="Additional information:"
+                reasons={[
+                  t("personalInformation"),
+                  t("offensive"),
+                  t("violent"),
+                  t("spam"),
+                  t("phishing")
+                ]}
+              />
+            ))}
+          {/*  */}
         </Row>
+        <ToastContainer position={"bottom-end"}>
+          {didReport && <ReportToast isSuccessful={reportMutation.isSuccess} />}
+        </ToastContainer>
       </Container>
     </>
   )

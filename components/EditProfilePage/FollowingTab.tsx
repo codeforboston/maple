@@ -16,7 +16,7 @@ import { formatBillId } from "../formatting"
 import { External, Internal } from "../links"
 import { TitledSectionCard } from "../shared"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
-import UnfollowModal from "./UnfollowModal"
+import UnfollowItem from "./UnfollowModal"
 import { useTranslation } from "next-i18next"
 import { getFunctions, httpsCallable } from "firebase/functions"
 
@@ -172,6 +172,7 @@ export function FollowingTab({ className }: Props) {
     setOrgsFollowing([])
     setUnfollow(null)
   }
+
   const { t } = useTranslation("editProfile")
 
   return (
@@ -208,12 +209,12 @@ export function FollowingTab({ className }: Props) {
           </Stack>
         </div>
       </TitledSectionCard>
-      <UnfollowModal
+      <UnfollowItem
         handleUnfollowClick={handleUnfollowClick}
         onHide={close}
         onUnfollowClose={() => setUnfollow(null)}
         show={unfollow ? true : false}
-        unfollow={unfollow}
+        unfollowItem={unfollow}
       />
     </>
   )
