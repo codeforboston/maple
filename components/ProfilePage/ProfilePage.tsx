@@ -8,10 +8,7 @@ import { useMediaQuery } from "usehooks-ts"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import {
-  usePublicProfile,
-  usePublishedTestimonyListing
-} from "../db"
+import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
