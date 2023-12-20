@@ -115,6 +115,10 @@ export function PersonalInfoTab({
             <Input
               label={t(isOrg ? "forms.orgName" : "forms.fullName")}
               {...register("fullName", {
+                value: fullName?.trim(),
+                validate: value =>
+                  value.trim().length >= 2 ||
+                  t("forms.errEmptyAndMinLength").toString(),
                 required: t(
                   isOrg ? "forms.errOrgNameRequired" : "forms.errNameRequired"
                 ).toString()
