@@ -1,3 +1,4 @@
+import { Timestamp } from "functions/src/firebase"
 import { Script } from "./types"
 
 export const script: Script = async ({ db }) => {
@@ -11,20 +12,10 @@ export const script: Script = async ({ db }) => {
     try {
       const data = user.data()
       console.log(data)
-      const pTestimonies = db
+      const publishedTestimony = await db
         .collection(`users/${user.id}/publishedTestimony`)
         .get()
         .then(result => result.docs)
-
-      const dTestimonies = db
-        .collection(`users/${user.id}/publishedTestimony`)
-        .get()
-        .then(result => result.docs)
-
-      const [publishedTestimony, draftTestimony] = await Promise.all([
-        pTestimonies,
-        dTestimonies
-      ])
 
       const fullName = data.fullName ?? "Anonymous"
       const displayName = data.public ? fullName : "<private user>"
@@ -32,18 +23,16 @@ export const script: Script = async ({ db }) => {
       for (const doc of publishedTestimony) {
         writer.update(doc.ref, {
           authorDisplayName: displayName,
-          fullName: fullName
-        })
-      }
-      for (const doc of draftTestimony) {
-        writer.update(doc.ref, {
-          authorDisplayName: displayName,
-          fullName: fullName
+          fullName: fullName,
+          updatedAt: Timestamp.now()
         })
       }
     } catch (error) {
       // Log the error and continue with the next user
-      console.error(`Error updating email for user ${user.data().id}: `, error)
+      console.error(
+        `Error updating testimony for user ${user.data().id}: `,
+        error
+      )
     }
   }
 
