@@ -1,22 +1,23 @@
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { firestore } from "components/firebase"
+import { collection, getDocs } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { usePublicProfile, usePublishedTestimonyListing, useTestimonyListing } from "../db"
+import {
+  usePublicProfile,
+  usePublishedTestimonyListing
+} from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { StyledContainer } from "./StyledProfileComponents"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-import { getAllTestimony } from "components/db/testimony/updateUserTestimonies"
-import { load } from "js-yaml"
-import { collection, getDocs } from "firebase/firestore"
-import { firestore } from "components/firebase"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -38,24 +39,22 @@ export function ProfilePage(profileprops: {
     uid: profileprops.id
   })
 
-
-  const [totalUserPubTestimony, setTotalUserPubTestimony] = useState<number | undefined>()
+  const [totalUserPubTestimony, setTotalUserPubTestimony] = useState<
+    number | undefined
+  >()
 
   useEffect(() => {
-
     const countPublishedTestimony = async () => {
-      const pubTestRef = collection(firestore, `/users/${profileprops.id}/publishedTestimony`)
+      const pubTestRef = collection(
+        firestore,
+        `/users/${profileprops.id}/publishedTestimony`
+      )
       const publishedTestimony = await getDocs(pubTestRef)
       setTotalUserPubTestimony(publishedTestimony.size)
     }
 
     countPublishedTestimony()
-
-
-    return () => { countPublishedTestimony() }
-
   }, [profileprops.id])
-
 
   const { t } = useTranslation("profile")
 
@@ -144,8 +143,8 @@ export function ProfilePage(profileprops: {
                 <Row className="pt-4">
                   <Col xs={12}>
                     <ViewTestimony
-                      {...testimony}
-                      totalTestimonies={totalUserPubTestimony}
+                      {...testimony} // return from the usePublishedTestimonyListing hook, includes full testimony object
+                      totalTestimonies={totalUserPubTestimony} // total number of testimonies published by user
                       onProfilePage={true}
                       className="mb-4"
                       isOrg={isOrg}
