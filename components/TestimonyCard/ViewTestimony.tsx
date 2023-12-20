@@ -28,7 +28,7 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    totalTestimonies: number | undefined
+    totalTestimonies?: number | undefined
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
