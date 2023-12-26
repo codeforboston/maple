@@ -4,12 +4,12 @@ import { ProfileHook, useProfile } from "../db"
 import { Internal } from "components/links"
 import styled from "styled-components"
 
-const StyledButton1 = styled(Button)`
+export const StyledButton1 = styled(Button)`
   height: 34px;
   width: 116px;
 `
 
-const StyledButton2 = styled(Button)`
+export const StyledButton2 = styled(Button)`
   &:focus {
     color: #1a3185;
     background-color: white;
@@ -29,7 +29,7 @@ const StyledButton2 = styled(Button)`
   }
 `
 
-const StyledButton3 = styled(Button)`
+export const StyledButton3 = styled(Button)`
   &:focus {
     color: white;
     background-color: #1a3185;

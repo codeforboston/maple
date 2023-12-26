@@ -1,19 +1,19 @@
-import { ComponentMeta } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react"
 import { ComponentType } from "react"
 
-type Meta = ComponentMeta<any> & {
+type MetaProps = Meta<any> & {
   title: string
   component: ComponentType<any>
-  figmaUrl?: string
 }
 
-export const createMeta = ({ figmaUrl, ...meta }: Meta) => {
-  if (figmaUrl) {
-    meta.parameters ||= {}
-    meta.parameters.design = {
-      type: "figma",
-      url: figmaUrl
-    }
+export const createMeta = ({ component, title, ...props }: MetaProps) => {
+  const meta: Meta<typeof component> = { component: component, title: title }
+
+  type Story = StoryObj<typeof component>
+  const createStory = () => {
+    const NewStory: Story = {}
+    return NewStory
   }
-  return meta
+
+  return { meta, createStory }
 }

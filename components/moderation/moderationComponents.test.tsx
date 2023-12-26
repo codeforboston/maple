@@ -78,17 +78,17 @@ describe("remove testimony", () => {
       screen.getByLabelText(/remove/i).parentElement?.parentElement
     ).toBeInstanceOf(HTMLDivElement)
 
-    userEvent.click(screen.getByLabelText(/remove/i))
+    await userEvent.click(screen.getByLabelText(/remove/i))
     expect(screen.getByLabelText(/remove/i)).toHaveProperty("checked", true)
     expect(screen.getByLabelText(/allow/i)).toHaveProperty("checked", false)
 
-    userEvent.click(screen.getByLabelText(/allow/i))
+    await userEvent.click(screen.getByLabelText(/allow/i))
     expect(screen.getByLabelText(/remove/i)).toHaveProperty("checked", false)
 
     expect(screen.getByLabelText(/Reason/i)).toBeInstanceOf(HTMLTextAreaElement)
 
     const textBox = screen.getByLabelText(/Reason/i)
-    userEvent.type(textBox, "this is a textBox")
+    await userEvent.type(textBox, "this is a textBox")
 
     cleanup()
   })
