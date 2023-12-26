@@ -32,11 +32,12 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const { loading, error, result: bill } = useBill(hit.court, hit.billId)
   const committee = bill?.currentCommittee
   const isOrg = hit.authorRole === "organization"
-  const writtenBy = isOrg ? (
-    <Link href={`/profile?id=${hit.authorUid}`}>{hit.authorDisplayName}</Link>
-  ) : (
-    hit.authorDisplayName
-  )
+  const writtenBy =
+    isOrg || hit.authorDisplayName !== "<private user>" ? (
+      <Link href={`/profile?id=${hit.authorUid}`}>{hit.authorDisplayName}</Link>
+    ) : (
+      hit.authorDisplayName
+    )
   return (
     <div
       style={{

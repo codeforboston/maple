@@ -125,6 +125,9 @@ export default function OrgSignUpModal({
                   label={t("orgName")}
                   type="text"
                   {...register("fullName", {
+                    validate: value =>
+                      value.trim().length >= 2 ||
+                      t("errEmptyAndMinLength").toString(),
                     required: t("nameIsRequired") ?? "A full name is required."
                   })}
                   error={errors.fullName?.message}

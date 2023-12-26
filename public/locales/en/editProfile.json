@@ -57,6 +57,7 @@
         "makePrivate": "Make Private",
         "errNameRequired": "Name is required",
         "errOrgNameRequired" : "Organization Name is required",
+        "errEmptyAndMinLength": "Should have at least two characters",
         "aboutYou": "Write something about yourself",
         "aboutYouTip":"What should you write?",
         "selectOrgCategory": "Select an organization cateogry",
