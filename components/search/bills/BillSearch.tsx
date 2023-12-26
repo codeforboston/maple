@@ -73,7 +73,9 @@ const useSearchStatus = () => {
   }
 }
 
-const Layout: FC<{ items: SortByWithConfigurationItem[] }> = ({ items }) => {
+const Layout: FC<
+  React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
+> = ({ items }) => {
   const refinements = useBillRefinements()
   const status = useSearchStatus()
   return (
