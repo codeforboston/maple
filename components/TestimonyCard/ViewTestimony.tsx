@@ -92,7 +92,7 @@ const ViewTestimony = (
   return (
     <Container>
       <MapleCard
-        className={className}
+        className={`${className} bg-white`}
         headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
         body={
           <BootstrapCard.Body>
