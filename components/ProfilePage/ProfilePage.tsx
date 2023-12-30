@@ -1,4 +1,6 @@
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { firestore } from "components/firebase"
+import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
 import { useEffect, useState } from "react"
@@ -33,6 +35,24 @@ export function ProfilePage(profileprops: {
   const testimony = usePublishedTestimonyListing({
     uid: profileprops.id
   })
+
+  const [totalUserPubTestimony, setTotalUserPubTestimony] = useState<
+    number | undefined
+  >()
+
+  useEffect(() => {
+    const countPublishedTestimony = async () => {
+      const pubTestRef = query(
+        collectionGroup(firestore, "publishedTestimony"),
+        where("authorUid", "==", profileprops.id)
+      )
+      const publishedTestimony = await getDocs(pubTestRef)
+      setTotalUserPubTestimony(publishedTestimony.size)
+    }
+
+    countPublishedTestimony()
+  }, [profileprops.id])
+
   const { t } = useTranslation("profile")
 
   const [isProfilePublic, onProfilePublicityChanged] = useState<
@@ -45,7 +65,7 @@ export function ProfilePage(profileprops: {
      
      A state variable is used to enforce a rerender on profile update when publicity
      button is used.
-
+  
      see variable: bannerContent, onProfilePublicityChanged
    */
 
@@ -120,7 +140,8 @@ export function ProfilePage(profileprops: {
                 <Row className="pt-4">
                   <Col xs={12}>
                     <ViewTestimony
-                      {...testimony}
+                      {...testimony} // return from the usePublishedTestimonyListing hook, includes full testimony object
+                      totalTestimonies={totalUserPubTestimony} // total number of testimonies published by user
                       onProfilePage={true}
                       className="mb-4"
                       isOrg={isOrg}
