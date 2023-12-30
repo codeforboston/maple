@@ -6,10 +6,7 @@ import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
 import styled from "styled-components"
 import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
-import {
-  Testimony,
-  UsePublishedTestimonyListing
-} from "../db"
+import { Testimony, UsePublishedTestimonyListing } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
@@ -133,8 +130,8 @@ const ViewTestimony = (
                         ? 1
                         : -1
                       : a.publishedAt < b.publishedAt
-                        ? 1
-                        : -1
+                      ? 1
+                      : -1
                   )
                   .map(t => (
                     <TestimonyItem

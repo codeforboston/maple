@@ -42,11 +42,10 @@ export function ProfilePage(profileprops: {
 
   useEffect(() => {
     const countPublishedTestimony = async () => {
-      const pubTestRef =
-        query(
-          collectionGroup(firestore, "publishedTestimony"),
-          where("authorUid", "==", profileprops.id)
-        )
+      const pubTestRef = query(
+        collectionGroup(firestore, "publishedTestimony"),
+        where("authorUid", "==", profileprops.id)
+      )
       const publishedTestimony = await getDocs(pubTestRef)
       setTotalUserPubTestimony(publishedTestimony.size)
     }
