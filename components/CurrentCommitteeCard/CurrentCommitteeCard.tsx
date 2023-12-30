@@ -25,10 +25,12 @@ const Head = styled(BootstrapCard.Header)`
   font-size: 22px;
 `
 
-export const CurrentCommitteeCard: FC<{
-  chamber: "House" | "Senate"
-  committee: string
-}> = ({ committee, chamber }) => (
+export const CurrentCommitteeCard: FC<
+  React.PropsWithChildren<{
+    chamber: "House" | "Senate"
+    committee: string
+  }>
+> = ({ committee, chamber }) => (
   <Container>
     <MapleCard
       headerElement={<Head>Committee</Head>}
