@@ -1,6 +1,6 @@
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { firestore } from "components/firebase"
-import { collection, getDocs } from "firebase/firestore"
+import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
 import { useEffect, useState } from "react"
@@ -42,10 +42,11 @@ export function ProfilePage(profileprops: {
 
   useEffect(() => {
     const countPublishedTestimony = async () => {
-      const pubTestRef = collection(
-        firestore,
-        `/users/${profileprops.id}/publishedTestimony`
-      )
+      const pubTestRef =
+        query(
+          collectionGroup(firestore, "publishedTestimony"),
+          where("authorUid", "==", profileprops.id)
+        )
       const publishedTestimony = await getDocs(pubTestRef)
       setTotalUserPubTestimony(publishedTestimony.size)
     }

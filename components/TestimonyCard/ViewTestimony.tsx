@@ -8,13 +8,11 @@ import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
 import {
   Testimony,
-  UsePublishedTestimonyListing,
-  useTestimonyListing
+  UsePublishedTestimonyListing
 } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
-import { getAllTestimony } from "components/db/testimony/updateUserTestimonies"
 
 const Container = styled.div`
   font-family: Nunito;
@@ -135,8 +133,8 @@ const ViewTestimony = (
                         ? 1
                         : -1
                       : a.publishedAt < b.publishedAt
-                      ? 1
-                      : -1
+                        ? 1
+                        : -1
                   )
                   .map(t => (
                     <TestimonyItem
