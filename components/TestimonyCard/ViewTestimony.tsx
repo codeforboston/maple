@@ -130,8 +130,8 @@ const ViewTestimony = (
                         ? 1
                         : -1
                       : a.publishedAt < b.publishedAt
-                      ? 1
-                      : -1
+                        ? 1
+                        : -1
                   )
                   .map(t => (
                     <TestimonyItem
@@ -143,7 +143,7 @@ const ViewTestimony = (
                   ))}
 
                 {(pagination.hasPreviousPage || pagination.hasNextPage) && (
-                  <PaginationButtons pagination={pagination} />
+                  <PaginationButtons pagination={pagination} totalTestimonies={totalTestimonies} />
                 )}
               </div>
             ) : (
