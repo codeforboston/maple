@@ -26,8 +26,6 @@ If an event has certain fields that correspond to fields in the uesr's subscript
 
 ![example-org-sub](/functions/src/subscriptions/images/example-org-sub.png)
 
-
-
 ## Testing
 
 To test these functions in a container environment, use the following command:
