@@ -12,7 +12,7 @@ export const useTestimonyEmail = () => {
 
   const to = share.recipients
       .map(r => `${r.Name} <${r.EmailAddress}>`)
-      .join(","),
+      .join(";"),
     billId = formatBillId(bill?.id!),
     intro = `As your constituent, I am writing to let you know that I ${
       positionActions[position!]
@@ -39,12 +39,11 @@ export const useTestimonyEmail = () => {
     .filter(Boolean)
     .join("\n\n")
 
-  const plainBody = formatTestimonyPlaintext(markdownBody),
-    htmlBody = formatTestimony(markdownBody).__html
+  const htmlBody = formatTestimony(markdownBody).__html
 
   const mailToUrl = `mailto:${to}?subject=${encodeURIComponent(
     subject
-  )}&body=${encodeURIComponent(plainBody)}`
+  )}&body=${encodeURIComponent(markdownBody)}`
 
   if (profile) {
     return { ready: true, mailToUrl, body: htmlBody, to } as const
