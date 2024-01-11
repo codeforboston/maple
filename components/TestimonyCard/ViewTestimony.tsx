@@ -143,7 +143,10 @@ const ViewTestimony = (
                   ))}
 
                 {(pagination.hasPreviousPage || pagination.hasNextPage) && (
-                  <PaginationButtons pagination={pagination} />
+                  <PaginationButtons
+                    pagination={pagination}
+                    totalItems={totalTestimonies}
+                  />
                 )}
               </div>
             ) : (

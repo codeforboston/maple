@@ -38,7 +38,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
       </Row>
       <div className={`d-flex justify-content-around`}>
         <LabeledIcon
-          idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
+          idImage={"/profile_icon_govt-secondary.svg"}
           // mainText="Committee"
           mainText=""
           subText={
