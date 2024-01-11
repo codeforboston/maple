@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
-import styles from "./Card.module.css"
 import { CardListItems, ListItem } from "./CardListItem"
 import { CardTitle } from "./CardTitle"
 import { SeeMore } from "./SeeMore"
@@ -60,7 +59,17 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
-      <CardBootstrap.Text className={styles.body}>
+      <CardBootstrap.Text
+        style={{
+          fontFamily: "Nunito",
+          fontStyle: "normal",
+          fontWeight: "normal",
+          /* the requested font-weight of 500 doesn't work here as values must be normal | bolder
+           | lighter as set by the font-family */
+          fontSize: "18px",
+          lineHeight: "25px"
+        }}
+      >
         {bodyText}
       </CardBootstrap.Text>
     </CardBootstrap.Body>
@@ -92,7 +101,14 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={clsx(className, styles.container)}>
+    <CardBootstrap
+      className={clsx(className)}
+      style={{
+        backgroundColor: "none",
+        borderRadius: "12px 12px 12px 12px",
+        overflow: "hidden"
+      }}
+    >
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}
