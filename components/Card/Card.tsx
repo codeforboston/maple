@@ -101,14 +101,7 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap
-      className={clsx(className)}
-      style={{
-        backgroundColor: "none",
-        borderRadius: "12px 12px 12px 12px",
-        overflow: "hidden"
-      }}
-    >
+    <CardBootstrap className={`overflow-hidden rounded-3`}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}

@@ -13,7 +13,9 @@ interface CardTitleProps {
 export const CardTitle = (props: CardTitleProps) => {
   const { header, subheader, timestamp, imgSrc, inHeaderElement } = props
   return (
-    <CardBootstrap.Body className={`${styles.text} ${styles.body}`}>
+    <CardBootstrap.Body
+      className={`align-items-center bg-secondary d-flex text-white`}
+    >
       {imgSrc && <CardBootstrap.Img className={styles.img} src={imgSrc} />}
       <CardBootstrap.Body>
         {header && (
