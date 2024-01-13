@@ -16,20 +16,27 @@ export const CardTitle = (props: CardTitleProps) => {
     <CardBootstrap.Body
       className={`align-items-center bg-secondary d-flex text-white`}
     >
-      {imgSrc && <CardBootstrap.Img className={styles.img} src={imgSrc} />}
+      {imgSrc && (
+        <CardBootstrap.Img
+          src={imgSrc}
+          width="75" // Bootstrap internal file `_card.scss` overrides this
+          height="75"
+          style={{ width: "75px" }} // required because _card.scss overrides width="75"
+        />
+      )}
       <CardBootstrap.Body>
         {header && (
-          <CardBootstrap.Title className={styles.title}>
+          <CardBootstrap.Title className={`fs-4 lh-sm mb-1`}>
             {header}
           </CardBootstrap.Title>
         )}
         {subheader && (
-          <CardBootstrap.Text className={styles.subheader}>
+          <CardBootstrap.Text className={`fs-5 lh-sm mb-1`}>
             {subheader}
           </CardBootstrap.Text>
         )}
         {timestamp && (
-          <CardBootstrap.Text className={styles.timestamp}>
+          <CardBootstrap.Text className={`fs-6 lh-sm`}>
             {timestamp}
           </CardBootstrap.Text>
         )}
