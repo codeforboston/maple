@@ -59,20 +59,7 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
-      <CardBootstrap.Text
-        className="fs-5 fw-lighter lh-sm"
-        // style={{
-        //   fontFamily: "Nunito",
-        //   fontStyle: "normal",
-        //   fontWeight: "normal",
-        //   /*
-        //     the requested font-weight of 500 doesn't work here as values must be normal | bolder
-        //     | lighter as set by the font-family
-        //   */
-        //   fontSize: "18px",
-        //   lineHeight: "25px"
-        // }}
-      >
+      <CardBootstrap.Text className="fs-5 fw-lighter lh-sm">
         {bodyText}
       </CardBootstrap.Text>
     </CardBootstrap.Body>

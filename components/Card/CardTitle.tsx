@@ -1,6 +1,5 @@
 import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
-import styles from "./CardTitle.module.css"
 
 interface CardTitleProps {
   header?: string
