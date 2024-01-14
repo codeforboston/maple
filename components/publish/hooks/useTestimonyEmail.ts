@@ -39,11 +39,12 @@ export const useTestimonyEmail = () => {
     .filter(Boolean)
     .join("\n\n")
 
-  const htmlBody = formatTestimony(markdownBody).__html
+  const plainBody = formatTestimonyPlaintext(markdownBody),
+    htmlBody = formatTestimony(markdownBody).__html
 
   const mailToUrl = `mailto:${to}?subject=${encodeURIComponent(
     subject
-  )}&body=${encodeURIComponent(markdownBody)}`
+  )}&body=${encodeURIComponent(plainBody)}`
 
   if (profile) {
     return { ready: true, mailToUrl, body: htmlBody, to } as const
