@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import { CardListItems, ListItem } from "./CardListItem"
@@ -91,7 +90,7 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={clsx(className) + `overflow-hidden rounded-3`}>
+    <CardBootstrap className={`overflow-hidden rounded-3`}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}

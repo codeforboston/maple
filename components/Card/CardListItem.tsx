@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { ReactElement } from "react"
 import { ListGroupItemProps } from "react-bootstrap"
 import ListGroup from "react-bootstrap/ListGroup"
@@ -19,16 +18,11 @@ export const ListItem = (props: ListItemProps) => {
     billNameElement,
     ...rest
   } = props
+
   return (
     <ListGroup.Item
-      className={
-        clsx(className) +
-        `align-items-center bg-secondary border-bottom border-white d-flex text-white`
-      }
+      className={`align-items-center bg-secondary border-bottom border-white d-flex lh-lg py-2 text-white`}
       {...rest}
-      style={{
-        height: "80px"
-      }}
     >
       <div className="ms-2 me-auto">
         <div className={`fs-4 fw-lighter lh-sm`}>
