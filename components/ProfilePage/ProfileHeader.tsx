@@ -56,8 +56,9 @@ export const ProfileHeader = ({
             <Col className={isOrg ? `` : `d-flex`}>
               <Stack gap={0}>
                 <ProfileDisplayName
-                  className={`overflow-hidden ${isOrg ? "" : "d-flex align-items-center"
-                    }`}
+                  className={`overflow-hidden ${
+                    isOrg ? "" : "d-flex align-items-center"
+                  }`}
                 >
                   {profile.fullName}
                 </ProfileDisplayName>
