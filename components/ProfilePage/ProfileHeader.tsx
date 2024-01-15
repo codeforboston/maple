@@ -4,7 +4,7 @@ import {
   ProfileDisplayName,
   ProfileDisplayNameSmall
 } from "./StyledProfileComponents"
-import { StyledProfileIcon } from "./StyledUserIcons"
+import { ProfileIcon } from "./StyledUserIcons"
 
 import { flags } from "components/featureFlags"
 import { FollowOrgButton } from "components/shared/FollowButton"
@@ -51,14 +51,13 @@ export const ProfileHeader = ({
         <Header className={`gx-0 edit-profile-header`}>
           <Row xs={"auto"}>
             <Col xs={"auto"} className={"col-auto"}>
-              <StyledProfileIcon large />
+              <ProfileIcon isOrg={isOrg} large />
             </Col>
             <Col className={isOrg ? `` : `d-flex`}>
               <Stack gap={0}>
                 <ProfileDisplayName
-                  className={`overflow-hidden ${
-                    isOrg ? "" : "d-flex align-items-center"
-                  }`}
+                  className={`overflow-hidden ${isOrg ? "" : "d-flex align-items-center"
+                    }`}
                 >
                   {profile.fullName}
                 </ProfileDisplayName>
@@ -133,7 +132,7 @@ function ProfileHeaderMobile({
   return (
     <Header className={``}>
       <Col className={`d-flex align-items-center justify-content-start`}>
-        <StyledProfileIcon
+        <ProfileIcon
           profileImage={profile.profileImage}
           isOrg={isOrg}
           className={`me-2`}

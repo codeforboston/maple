@@ -8,7 +8,7 @@ type ProfileIconProps = {
   large?: boolean
 }
 
-export const ProfileIcon = ({
+export const BaseProfileIcon = ({
   profileImage,
   isOrg,
   className
@@ -25,7 +25,7 @@ export const ProfileIcon = ({
   )
 }
 
-export const StyledProfileIcon = styled(ProfileIcon).attrs<{ large: boolean }>(
+export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(
   props => ({})
 )`
   height: ${({ large }) => (large ? "7rem" : "5rem")};

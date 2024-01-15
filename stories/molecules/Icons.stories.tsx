@@ -1,5 +1,5 @@
 import { Meta } from "@storybook/react"
-import { StyledProfileIcon } from "components/ProfilePage/StyledUserIcons"
+import { ProfileIcon } from "components/ProfilePage/StyledUserIcons"
 import React from "react"
 
 const IconStories = ({
@@ -21,12 +21,12 @@ export const Primary = {
   args: {
     children: (
       <IconStories className={`d-flex flex-row gap-5`}>
-        <StyledProfileIcon large />
-        <StyledProfileIcon />
-        <StyledProfileIcon isOrg large />
-        <StyledProfileIcon isOrg />
-        <StyledProfileIcon profileImage="/codeforbostonicon.png" />
-        <StyledProfileIcon large profileImage="/codeforbostonicon.png" />
+        <ProfileIcon large />
+        <ProfileIcon />
+        <ProfileIcon isOrg large />
+        <ProfileIcon isOrg />
+        <ProfileIcon profileImage="/codeforbostonicon.png" />
+        <ProfileIcon large profileImage="/codeforbostonicon.png" />
       </IconStories>
     )
   },
