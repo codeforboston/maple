@@ -59,7 +59,6 @@ const RefinementRow = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
-  background-color: #ffffff;
 `
 
 const useSearchStatus = () => {
