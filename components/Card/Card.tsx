@@ -90,7 +90,7 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={`overflow-hidden rounded-3`}>
+    <CardBootstrap className={`bg-white overflow-hidden rounded-3`}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}
