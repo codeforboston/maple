@@ -62,6 +62,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       sticky={sticky ? "top" : undefined}
       expand={false}
       expanded={isExpanded}
+      data-bs-theme="dark"
     >
       <Container fluid>
         <div className={styles.navbar_boxes_container}>
