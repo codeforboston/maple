@@ -1,7 +1,5 @@
-import clsx from "clsx"
 import { ReactElement, useState } from "react"
 import CardBootstrap from "react-bootstrap/Card"
-import styles from "./Card.module.css"
 import { CardListItems, ListItem } from "./CardListItem"
 import { CardTitle } from "./CardTitle"
 import { SeeMore } from "./SeeMore"
@@ -60,7 +58,7 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
-      <CardBootstrap.Text className={styles.body}>
+      <CardBootstrap.Text className="fs-5 fw-lighter lh-sm">
         {bodyText}
       </CardBootstrap.Text>
     </CardBootstrap.Body>
@@ -92,7 +90,7 @@ export const Card = (CardProps: CardProps) => {
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (
-    <CardBootstrap className={clsx(className, styles.container)}>
+    <CardBootstrap className={`bg-white overflow-hidden rounded-3`}>
       {headerContent}
       {<CardListItems items={shown} />}
       {bodyContent}

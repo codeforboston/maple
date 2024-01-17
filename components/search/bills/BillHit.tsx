@@ -142,7 +142,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
     <Link href={url} legacyBehavior>
       <a style={{ all: "unset" }} className="w-100">
         <StyledCard>
-          <Card.Body>
+          <Card.Body className="bg-white">
             <div className="d-flex">
               <Col className="left">
                 <div className="d-flex justify-content-between">
