@@ -1,5 +1,5 @@
 import { Card } from "../bootstrap"
-import { FaqQandA } from "./FaqQandA"
+import { FaqQandAButton } from "./FaqQandA"
 import styles from "./Faq.module.css"
 
 type faqCardProps = {
@@ -16,11 +16,11 @@ export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
         (key, index) =>
           typeof key.disabled === "undefined" && (
             <div className={styles.faqQA} key={index}>
-              <FaqQandA
+              <FaqQandAButton
                 key={index}
                 question={key.question}
                 answer={key.answer}
-              ></FaqQandA>
+              ></FaqQandAButton>
             </div>
           )
       )}

@@ -1,5 +1,4 @@
 import { Container, Stack } from "../bootstrap"
-import { FaqQandA } from "./FaqQandA"
 import { FaqCard } from "./FaqCard"
 import styles from "./Faq.module.css"
 import content from "./faqContent.json"

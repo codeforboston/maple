@@ -7,7 +7,7 @@ type faqQandAProps = {
   answer: string
 }
 
-export const FaqQandA = ({ question, answer }: faqQandAProps) => {
+export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {}, [open])
