@@ -64,7 +64,7 @@ export default createPage({
         <h1 className={`fs-1 fw-bold text-center text-black`}>
           Additional Resources
         </h1>
-        <p className={`fs-4 m-3`}>
+        <p className={`fs-4 mx-5 my-3`}>
           We hope these pages will help you submit effective testimony. You may
           want to consult these other resources to build a more detailed
           understanding of the legislative process and how you can contribute.
