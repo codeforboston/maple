@@ -1,5 +1,5 @@
 import { Card } from "../bootstrap"
-import { FaqQandAButton } from "./FaqQandA"
+import { FaqQandAButton } from "./FaqQandAButton"
 import styles from "./Faq.module.css"
 
 type faqCardProps = {

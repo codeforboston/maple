@@ -32,6 +32,7 @@
   margin-bottom: 1rem;
 }
 
+/*
 .icon {
   margin-right: 0.5rem;
 }
@@ -41,6 +42,7 @@
   margin-top: 1rem;
   margin-bottom: -0.5rem;
 }
+*/
 
 @media only screen and (max-width: 600px) {
   .faqCard {

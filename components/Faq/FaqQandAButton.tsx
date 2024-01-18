@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Image, Collapse } from "../bootstrap"
-import styles from "./Faq.module.css"
 
 type faqQandAProps = {
   question: string
@@ -21,23 +20,15 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           {open ? (
-            <Image
-              src="/minus.svg"
-              className={styles.icon}
-              alt="minus icon"
-            ></Image>
+            <Image src="/minus.svg" className={`me-2`} alt="minus icon"></Image>
           ) : (
-            <Image
-              src="/add.svg"
-              className={styles.icon}
-              alt="plus icon"
-            ></Image>
+            <Image src="/add.svg" className={`me-2`} alt="plus icon"></Image>
           )}
           {question}
         </div>
       </a>
       <Collapse in={open}>
-        <p id="example-collapse-text" className={styles.answer}>
+        <p id="example-collapse-text" className={`mt-3 mb-0`}>
           {answer}
         </p>
       </Collapse>
