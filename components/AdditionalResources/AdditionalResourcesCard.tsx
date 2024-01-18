@@ -7,7 +7,13 @@ const AdditionalResourcesCard: FC<PropsWithChildren<CardProps>> = ({
   children,
   ...rest
 }) => {
-  return <Card className={`m-4 py-0 text-bg-light rounded-4`}>{children}</Card>
+  return (
+    <Card
+      className={`m-4 py-2 px-4 text-bg-light rounded-4 d-flex align-items-center align-items-sm-start`}
+    >
+      {children}
+    </Card>
+  )
 }
 
 export default AdditionalResourcesCard

@@ -5,7 +5,7 @@ const AdditionalResourcesCardContent: FC<PropsWithChildren<{}>> = ({
 }) => {
   return (
     <div
-      className={`text-center align-self-center justify-content-xs-center justify-content-sm-left p-4 `}
+      className={`d-flex flex-0 justify-content-xs-center p-4 `}
     >
       <p className={`fs-4`}>{children}</p>
     </div>
