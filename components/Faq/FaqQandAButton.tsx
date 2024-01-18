@@ -18,11 +18,11 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
         aria-controls="example-collapse-text"
         aria-expanded={open}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div className={`align-items-center d-flex`}>
           {open ? (
-            <Image src="/minus.svg" className={`me-2`} alt="minus icon"></Image>
+            <Image src="/minus.svg" className={`me-2`} alt="minus icon" />
           ) : (
-            <Image src="/add.svg" className={`me-2`} alt="plus icon"></Image>
+            <Image src="/add.svg" className={`me-2`} alt="plus icon" />
           )}
           {question}
         </div>

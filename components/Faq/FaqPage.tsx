@@ -3,7 +3,7 @@ import { FaqCard } from "./FaqCard"
 import styles from "./Faq.module.css"
 import content from "./faqContent.json"
 
-export const Faq = () => {
+export const FaqPage = () => {
   const faqData: FaqData = content
   const faqKeys: string[] = Object.keys(faqData)
 
