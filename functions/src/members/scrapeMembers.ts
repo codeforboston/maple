@@ -10,10 +10,10 @@ export const {
 } = createScraper({
   resourceName: "members",
   batchesPerRun: 10,
-  resourcesPerBatch: 100,
+  resourcesPerBatch: 10,
   startBatchSchedule: "every 24 hours",
-  fetchBatchTimeout: 240,
-  startBatchTimeout: 60,
+  fetchBatchTimeout: 7200,
+  startBatchTimeout: 240,
   fetchResource: async (court: number, id: string) => ({
     content: await api.getMember({ id, court })
   }),
