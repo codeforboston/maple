@@ -1,14 +1,11 @@
 import { authStepChanged } from "components/auth/redux"
 import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
+import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { Button, Col, Nav, Navbar, Row } from "../bootstrap"
 import { ExternalNavLink, NavLink } from "../Navlink"
-import CustomDropdown from "./CustomFooterDropdown"
-import styles from "./Footer.module.css"
-import { FooterContainer } from "./FooterContainer"
-import { useTranslation } from "next-i18next"
+import { Button, Col, Container, Row } from "../bootstrap"
 
 export type PageFooterProps = {
   children?: any
@@ -17,19 +14,42 @@ export type PageFooterProps = {
   signOut: () => void
 }
 
-const TextHeader = styled.p`
+const TextHeader = styled.h6`
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
   font-family: Nunito;
-  padding: 0.5rem 1rem 0 1rem;
+  padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
 
-function MapleContainer() {
+const StyledInternalLink = styled(NavLink)`
+  color: rgba(255, 255, 255, 0.55);
+  font-family: Nunito;
+  letter-spacing: -0.63px;
+  padding-top: 4;
+
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+`
+const StyledExternalLink = styled(ExternalNavLink)`
+  color: rgba(255, 255, 255, 0.55);
+  font-family: Nunito;
+  letter-spacing: -0.63px;
+  padding-top: 4;
+
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+`
+
+function MapleContainer({ className }: { className?: string }) {
   const { t } = useTranslation("footer")
   return (
-    <div style={{ maxWidth: "220px" }}>
+    <div style={{ maxWidth: "220px" }} className={className}>
       <Row style={{ textAlign: "center" }}>
         <p style={{ fontSize: "1em", color: "#fff" }}>{t("headers.follow")}</p>
       </Row>
@@ -101,24 +121,16 @@ const ResourcesLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <ExternalNavLink
-        className={styles.footerLink}
-        href="https://malegislature.gov/Search/FindMyLegislator"
-      >
+      <TextHeader>{t("headers.resources")}</TextHeader>
+      <StyledExternalLink href="https://malegislature.gov/Search/FindMyLegislator">
         {t("links.resourcesLegislators")}
-      </ExternalNavLink>
-      <ExternalNavLink
-        className={styles.footerLink}
-        href="https://github.com/codeforboston/maple"
-      >
+      </StyledExternalLink>
+      <StyledExternalLink href="https://github.com/codeforboston/maple">
         {t("links.resourcesGitHub")}
-      </ExternalNavLink>
-      <ExternalNavLink
-        className={styles.footerLink}
-        href="https://opencollective.com/mapletestimony"
-      >
+      </StyledExternalLink>
+      <StyledExternalLink href="https://opencollective.com/mapletestimony">
         {t("links.resourcesOpenCollective")}
-      </ExternalNavLink>
+      </StyledExternalLink>
     </>
   )
 }
@@ -127,15 +139,13 @@ const BrowseLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      {/* <NavLink className={styles.footerLink} href="#testimony">
-        Testimonies
-      </NavLink> */}
-      <NavLink className={styles.footerLink} href="/bills">
+      <TextHeader>{t("headers.browse")}</TextHeader>
+      <StyledInternalLink href="/bills">
         {t("links.browseBills")}
-      </NavLink>
-      <NavLink className={styles.footerLink} href="/testimony">
+      </StyledInternalLink>
+      <StyledInternalLink href="/testimony">
         {t("links.browseTestimony")}
-      </NavLink>
+      </StyledInternalLink>
     </>
   )
 }
@@ -144,18 +154,13 @@ const OurTeamLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <ExternalNavLink
-        href="https://www.nulawlab.org"
-        className={styles.footerLink}
-      >
+      <TextHeader>{t("headers.team")}</TextHeader>
+      <StyledExternalLink href="https://www.nulawlab.org">
         {t("links.teamNEU")}
-      </ExternalNavLink>
-      <ExternalNavLink
-        href="https://www.codeforboston.org/"
-        className={styles.footerLink}
-      >
+      </StyledExternalLink>
+      <StyledExternalLink href="https://www.codeforboston.org/">
         {t("links.teamCFB")}
-      </ExternalNavLink>
+      </StyledExternalLink>
     </>
   )
 }
@@ -163,28 +168,28 @@ const OurTeamLinks = () => {
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation("footer")
-  return authenticated ? (
+  return (
     <>
-      <NavLink
-        href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
-        other={{ className: `${styles.footerLink}` }}
-      >
-        {t("links.accountProfile")}
-      </NavLink>
-      <NavLink
-        handleClick={() => signOut()}
-        other={{ className: `${styles.footerLink}` }}
-      >
-        {t("links.accountSignOut")}
-      </NavLink>
+      <TextHeader>{t("headers.account")}</TextHeader>
+      {authenticated ? (
+        <>
+          <StyledInternalLink
+            href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
+          >
+            {t("links.accountProfile")}
+          </StyledInternalLink>
+          <StyledInternalLink handleClick={() => signOut()}>
+            {t("links.accountSignOut")}
+          </StyledInternalLink>
+        </>
+      ) : (
+        <StyledInternalLink
+          handleClick={() => dispatch(authStepChanged("start"))}
+        >
+          {t("links.accountSignIn")}
+        </StyledInternalLink>
+      )}
     </>
-  ) : (
-    <NavLink
-      handleClick={() => dispatch(authStepChanged("start"))}
-      other={{ className: `${styles.footerLink}` }}
-    >
-      {t("links.accountSignIn")}
-    </NavLink>
   )
 }
 
@@ -192,24 +197,16 @@ const LearnLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <NavLink
-        href="/learn/writing-effective-testimony"
-        other={{ className: `${styles.footerLink}` }}
-      >
+      <TextHeader>{t("headers.learn")}</TextHeader>
+      <StyledInternalLink href="/learn/writing-effective-testimony">
         {t("links.learnWriting")}
-      </NavLink>
-      <NavLink
-        href="/learn/communicating-with-legislators"
-        other={{ className: `${styles.footerLink}` }}
-      >
+      </StyledInternalLink>
+      <StyledInternalLink href="/learn/communicating-with-legislators">
         {t("links.learnLegislators")}
-      </NavLink>
-      <NavLink
-        href="/learn/additional-resources"
-        other={{ className: `${styles.footerLink}` }}
-      >
+      </StyledInternalLink>
+      <StyledInternalLink href="/learn/additional-resources">
         {t("links.learnResources")}
-      </NavLink>
+      </StyledInternalLink>
     </>
   )
 }
@@ -218,18 +215,13 @@ const AboutLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <NavLink
-        href="/about/mission-and-goals"
-        other={{ className: `${styles.footerLink}` }}
-      >
+      <TextHeader>{t("headers.about")}</TextHeader>
+      <StyledInternalLink href="/about/mission-and-goals">
         {t("links.aboutMission")}
-      </NavLink>
-      <NavLink
-        href="/about/our-team"
-        other={{ className: `${styles.footerLink}` }}
-      >
+      </StyledInternalLink>
+      <StyledInternalLink href="/about/our-team">
         {t("links.aboutTeam")}
-      </NavLink>
+      </StyledInternalLink>
     </>
   )
 }
@@ -237,122 +229,49 @@ const AboutLinks = () => {
 const PageFooter = (props: PageFooterProps) => {
   const { t } = useTranslation("footer")
   return (
-    <FooterContainer
+    <Container
       fluid
-      style={{ backgroundColor: "#000", justifyContent: "center" }}
+      className="bg-black d-flex flex-wrap flex-column-reverse flex-md-row align-items-center align-items-md-stretch p-2 p-md-5"
     >
-      <Row style={{ padding: "2.5em 1.5em 0 1.5em" }}>
-        <Navbar variant="dark" expand="lg" className="d-md-none">
-          <Nav>
-            <CustomDropdown title={t("headers.browse")}>
-              <BrowseLinks />
-            </CustomDropdown>
-            <CustomDropdown title={t("headers.account")}>
-              <AccountLinks {...props} />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("headers.learn")}>
-              <LearnLinks />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("headers.about")}>
-              <AboutLinks />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("headers.resources")}>
-              <ResourcesLinks />
-            </CustomDropdown>
-
-            <CustomDropdown title={t("headers.team")}>
-              <OurTeamLinks />
-            </CustomDropdown>
-          </Nav>
-        </Navbar>
-
-        <Col
-          className="d-none d-md-flex"
-          md={8}
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            marginRight: "5em"
-          }}
-        >
-          <Col style={{ alignContent: "flex-start" }}>
-            <TextHeader>{t("headers.browse")}</TextHeader>
-            <BrowseLinks />
-            <TextHeader>{t("headers.account")}</TextHeader>
-            <AccountLinks {...props} />
-          </Col>
-          <Col>
-            <TextHeader>{t("headers.learn")}</TextHeader>
-            <LearnLinks />
-
-            <TextHeader>{t("headers.about")}</TextHeader>
-            <AboutLinks />
-          </Col>
-
-          <Col md={"auto"}>
-            <TextHeader>{t("headers.resources")}</TextHeader>
-            <ResourcesLinks />
-            <TextHeader>{t("headers.team")}</TextHeader>
-            <OurTeamLinks />
-          </Col>
+      <div className={`d-none d-md-flex order-1 flex-grow-1`}>
+        <Col>
+          <BrowseLinks />
+          <AccountLinks {...props} />
         </Col>
-
-        <Col
-          className="d-none d-md-flex"
-          style={{
-            justifyContent: "flex-end",
-            marginRight: "1em"
-          }}
-        >
-          {<MapleContainer />}
+        <Col>
+          <LearnLinks />
+          <AboutLinks />
         </Col>
-        <Row
-          style={{
-            color: "rgba(255, 255, 255, 0.55)",
-            margin: "0 0 0 0.05em"
-          }}
-        >
-          <Col
-            className="col-auto"
-            style={{ marginTop: "0.5em", padding: "0 2.5em 0 0" }}
+        <Col>
+          <ResourcesLinks />
+          <OurTeamLinks />
+        </Col>
+      </div>
+      <MapleContainer
+        className={`col-auto order-md-2 justify-self-end `}
+      />
+      <div
+        className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
+      >
+        <Col className="text-white col-md-auto">{t("legal.disclaimer")}</Col>
+        <Col className="text-center">
+          <StyledInternalLink href="/policies">
+            {t("legal.TOS")}
+          </StyledInternalLink>
+        </Col>
+        <Col className="">
+          <StyledInternalLink
+            href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
+            other={{
+              target: "_blank",
+              rel: "noopener noreferrer"
+            }}
           >
-            <p>{t("legal.disclaimer")}</p>
-          </Col>
-          <Col className="col">
-            <NavLink
-              href="/policies"
-              other={{ className: `${styles.footerLink}` }}
-            >
-              {t("legal.TOS")}
-            </NavLink>
-          </Col>
-          <Col className="col">
-            <NavLink
-              href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
-              other={{
-                className: `${styles.footerLink}`,
-                target: "_blank",
-                rel: "noopener noreferrer"
-              }}
-            >
-              {t("Click here to subscribe to our newsletter")}
-            </NavLink>
-          </Col>
-        </Row>
-        <Col
-          className="d-xs-flex d-md-none"
-          style={{
-            display: "flex",
-            justifyContent: "center"
-          }}
-        >
-          {<MapleContainer />}
+            {t("Click here to subscribe to our newsletter")}
+          </StyledInternalLink>
         </Col>
-      </Row>
-    </FooterContainer>
+      </div>
+    </Container>
   )
 }
 
