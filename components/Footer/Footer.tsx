@@ -247,9 +247,7 @@ const PageFooter = (props: PageFooterProps) => {
           <OurTeamLinks />
         </Col>
       </div>
-      <MapleContainer
-        className={`col-auto order-md-2 justify-self-end `}
-      />
+      <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
       <div
         className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
       >
