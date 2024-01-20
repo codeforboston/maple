@@ -52,7 +52,6 @@ $btn-close-focus-opacity: 1;
 $tooltip-bg: $blue;
 $tooltip-arrow-color: $blue;
 
-
 // Font size adjustments
 $h1-font-size: 4rem;
 
@@ -64,8 +63,6 @@ $display-font-sizes: (
   5: 2rem,
   6: 1.5rem
 ) !default;
-
-
 
 @import "bootstrap/scss/bootstrap";
 

@@ -1,6 +1,8 @@
 import { FC, PropsWithChildren } from "react"
 
-const AdditionalResourcesCardContent: FC<PropsWithChildren<{}>> = ({ children }) => {
+const AdditionalResourcesCardContent: FC<PropsWithChildren<{}>> = ({
+  children
+}) => {
   return (
     <div
       className={`text-center align-self-center justify-content-xs-center justify-content-sm-left p-4 `}
