@@ -46,17 +46,14 @@ export const SubmitTestimonyForm = () => {
     <Background className="p-0">
       {/* <StyledContainer className="pl-4"> */}
 
-      <Row className="px-4 fixed-top" style={{ marginTop: 80 }}>
+      <Row className="px-4">
         <Col xs={12}>
           {isMobile ? (
             <PolicyDetails bill={form.bill} profile={form.profile} />
           ) : null}
         </Col>
       </Row>
-      <Row
-        className="g-0 h-100"
-        style={isMobile ? { paddingTop: 56 } : { paddingTop: 0 }}
-      >
+      <Row className="g-0 h-100">
         <Col md={9} xs={12} className="px-4">
           <Form step={form.step} bill={form.bill} synced={form.synced} />
         </Col>
@@ -111,7 +108,7 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
         {isCollapsed ? (
           <div>View Less Details &#9650;</div>
         ) : (
-          <div>View Policy Details &#9660;</div>
+          <div>View Bill Details &#9660;</div>
         )}
       </div>
     </PolicyDetailsStyle>

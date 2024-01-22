@@ -97,7 +97,7 @@ export const YourTestimony = () => {
         </NoteItem>
         <NoteItem>
           When you send this email, you are submitting formal public testimony!
-          As fellow constituents, we thank you for your sharing your voice.
+          As fellow constituents, we thank you for sharing your voice.
         </NoteItem>
       </ul>
     </NoteContent>
@@ -117,8 +117,7 @@ export const PublishingToMAPLE = () => {
           will remain available.
         </NoteItem>
         <NoteItem>
-          Since MAPLE is an archive you cannot remove your testimony from the
-          site.
+          Since MAPLE is an archive, you cannot remove your testimony from the site. You may request a deletion in certain circumstances (see our <a href="/about/faq-page">FAQ page</a>) 
         </NoteItem>
         <NoteItem>Don't forget to send the email to your legislator.</NoteItem>
       </ul>
