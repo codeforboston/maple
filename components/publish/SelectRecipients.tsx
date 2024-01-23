@@ -8,6 +8,7 @@ import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
 import { Button } from "../bootstrap"
 import { CopyButton } from "../buttons"
+import { Row, Col } from "../bootstrap"
 import { useMemberSearch } from "../db"
 import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
@@ -25,14 +26,29 @@ import {
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
+  const email = useTestimonyEmail()
 
   return (
     <div {...props}>
-      <div className="d-flex justify-content-between">
-        <div className="fs-4">Email Recipients</div>
-        <RecipientControls />
-      </div>
-      <SelectLegislatorEmails className="mt-2" />
+      <Row className="d-flex">
+        <Col className="fs-4" md={9} xs={12}>Email Recipients</Col>
+        <Col md={3} xs={12}><RecipientControls /></Col>
+      </Row>
+      <SelectLegislatorEmails className="my-2" />
+      <Row className="d-flex">
+        <Col md={3}>
+        {email.to ? <CopyButton
+        key="copy"
+        variant="outline-secondary"
+        text={email.to}
+        className="copy py-1 px-2"
+        format="text/plain"
+      >
+        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+      </CopyButton> : null}
+        </Col>
+      </Row>
+      
     </div>
   )
 })`
@@ -103,18 +119,18 @@ const RecipientControls = styled(({ className }) => {
       </Button>
     )
 
-  if (email.to)
-    buttons.push(
-      <CopyButton
-        key="copy"
-        variant="outline-secondary"
-        text={email.to}
-        className="copy"
-        format="text/plain"
-      >
-        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-      </CopyButton>
-    )
+  // if (email.to)
+  //   buttons.push(
+  //     <CopyButton
+  //       key="copy"
+  //       variant="outline-secondary"
+  //       text={email.to}
+  //       className="copy"
+  //       format="text/plain"
+  //     >
+  //       <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+  //     </CopyButton>
+  //   )
 
   return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
 })`

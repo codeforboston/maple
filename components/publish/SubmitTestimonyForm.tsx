@@ -31,21 +31,12 @@ const Background = styled.div`
   height: 100%;
 `
 
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-  background: var(--bs-white);
-  width: 100%;
-  margin: 0;
-`
-
 export const SubmitTestimonyForm = () => {
   const form = useFormInfo()
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return form.ready ? (
     <Background className="p-0">
-      {/* <StyledContainer className="pl-4"> */}
-
       <Row className="px-4">
         <Col xs={12}>
           {isMobile ? (
@@ -65,7 +56,6 @@ export const SubmitTestimonyForm = () => {
           )}
         </Col>
       </Row>
-      {/* </StyledContainer> */}
     </Background>
   ) : (
     <Spinner animation="border" />
