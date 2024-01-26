@@ -52,10 +52,39 @@ $btn-close-focus-opacity: 1;
 $tooltip-bg: $blue;
 $tooltip-arrow-color: $blue;
 
+
+// Font size adjustments
+// $font-size-base: 16px; // default is 1rem. initially using exact px values but may go back to rem etc
+
+
+$h1-font-size: 40px;
+$h2-font-size: 32px;
+$h3-font-size: 28px;
+$h4-font-size: 24px;
+$h5-font-size: 20px;
+$h6-font-size: 16px;
+
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size) !default;
+
+$display-font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size) !default;
+
 @import "bootstrap/scss/bootstrap";
 
 // Import fonts using the default bootstrap weights
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700&display=swap"
+);
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap");
 
 :root {
@@ -63,8 +92,4 @@ $tooltip-arrow-color: $blue;
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
-}
-
-.fs-body {
-  font-size: 1rem;
 }
