@@ -48,7 +48,7 @@ const StepBox: React.FC<
   }>
 > = ({ step, current, complete, children }) => {
   return (
-    <div>
+    <div style={{flex: 1, textAlign: "center"}}>
       <StepChip className="m-auto mb-2" active={current || complete}>
         {complete ? <FontAwesomeIcon icon={faCheck} /> : step}
       </StepChip>
