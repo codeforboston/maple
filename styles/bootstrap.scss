@@ -19,11 +19,6 @@ $dark: $dark-blue;
 
 $link-color: $secondary;
 
-// Archivo, rest copied from node_modules/bootstrap/scss/_variables.scss
-$font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
-  "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
-  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $headings-font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
   "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
@@ -52,20 +47,33 @@ $btn-close-focus-opacity: 1;
 $tooltip-bg: $blue;
 $tooltip-arrow-color: $blue;
 
-
 // Font size adjustments
-$h1-font-size: 4rem;
+// $font-size-base: 16px; // default is 1rem. initially using exact px values but may go back to rem etc
 
-$display-font-sizes: (
-  1: 6rem,
-  2: 4.5rem,
-  3: 4rem,
-  4: 3.5rem,
-  5: 2rem,
-  6: 1.5rem
+$h1-font-size: 40px;
+$h2-font-size: 32px;
+$h3-font-size: 28px;
+$h4-font-size: 24px;
+$h5-font-size: 20px;
+$h6-font-size: 16px;
+
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
 ) !default;
 
-
+$display-font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+) !default;
 
 @import "bootstrap/scss/bootstrap";
 
@@ -79,6 +87,3 @@ $display-font-sizes: (
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
 }
-// .fs-body {
-//   font-size: 1rem;
-// }
