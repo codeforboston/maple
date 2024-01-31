@@ -58,7 +58,7 @@ export const Card = (CardProps: CardProps) => {
     body
   ) : bodyText ? (
     <CardBootstrap.Body>
-      <CardBootstrap.Text className="fs-5 fw-lighter lh-sm">
+      <CardBootstrap.Text className="fs-base fw-lighter lh-sm">
         {bodyText}
       </CardBootstrap.Text>
     </CardBootstrap.Body>
