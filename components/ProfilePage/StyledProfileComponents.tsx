@@ -7,7 +7,7 @@ export const StyledImage = styled(Image)`
   margin-left: 8px;
 `
 
-export const Header = styled('div').attrs(props => ({
+export const Header = styled("div").attrs(props => ({
   className: `fs-1 d-flex flex-column flex-md-row align-items-center my-5 px-0 h-auto gx-0 ${props.className}`
 }))`
   /* font-size: 39px; */

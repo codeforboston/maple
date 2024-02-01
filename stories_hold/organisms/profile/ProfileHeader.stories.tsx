@@ -1,6 +1,5 @@
 import { ComponentStory } from "@storybook/react"
 import { ProfileHeader } from "components/ProfilePage/ProfileHeader"
-import { StyledContainer } from "components/ProfilePage/StyledProfileComponents"
 import { Profile } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
@@ -11,11 +10,7 @@ export default createMeta({
   title: "Organisms/Profile/ProfileHeader",
   component: ProfileHeader,
   decorators: [
-    (Story, ...rest) => (
-      <StyledContainer>
-        <Story {...rest} />
-      </StyledContainer>
-    ),
+    (Story, ...rest) => <Story {...rest} />,
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)
 

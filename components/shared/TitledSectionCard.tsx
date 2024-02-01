@@ -29,7 +29,9 @@ const TitledSectionCard = ({
       {title && <Header title={title} />}
       <Card.Body className={`px-4 py-3 rounded-top-4`}>{children}</Card.Body>
       {footer && (
-        <Card.Body className={`rounded-bottom-3 align-items-center d-flex pe-3 justify-content-end`}>
+        <Card.Body
+          className={`rounded-bottom-3 align-items-center d-flex pe-3 justify-content-end`}
+        >
           {footer}
         </Card.Body>
       )}

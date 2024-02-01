@@ -1,9 +1,10 @@
+import { Role } from "components/auth"
 import { Image } from "components/bootstrap"
 import styled from "styled-components"
 
 type ProfileIconProps = {
   profileImage?: string
-  role: string
+  role?: Role
   className?: string
   large?: boolean
 }
