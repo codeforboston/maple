@@ -23,8 +23,8 @@ export const Primary = {
       <IconStories className={`d-flex flex-row gap-5`}>
         <ProfileIcon large />
         <ProfileIcon />
-        <ProfileIcon isOrg large />
-        <ProfileIcon isOrg />
+        <ProfileIcon role={"organization"} large />
+        <ProfileIcon role={"organization"} />
         <ProfileIcon profileImage="/codeforbostonicon.png" />
         <ProfileIcon large profileImage="/codeforbostonicon.png" />
       </IconStories>

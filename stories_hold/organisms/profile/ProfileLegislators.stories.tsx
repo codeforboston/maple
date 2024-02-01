@@ -1,6 +1,5 @@
 import { ComponentStory } from "@storybook/react"
 import { ProfileLegislators } from "components/ProfilePage/ProfileLegislators"
-import { StyledContainer } from "components/ProfilePage/StyledProfileComponents"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
@@ -11,9 +10,7 @@ export default createMeta({
   component: ProfileLegislators,
   decorators: [
     (Story, ...rest) => (
-      <StyledContainer>
         <Story {...rest} />
-      </StyledContainer>
     ),
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)
