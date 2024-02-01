@@ -1,9 +1,9 @@
 import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
 import {
-  StyledButton1,
+  StyledButton,
   StyledButton2,
-  StyledButton3,
+  MAkeProfilePrivate,
   EditProfileButton,
   MakePublicButton
 } from "components/ProfilePage/ProfileButtons"
@@ -54,9 +54,9 @@ Primary.storyName = "ProfileButtons"
 export const Buttons = () => (
   <Stack className="gap-2">
     <EditProfileButton />
-    <StyledButton1>StyledButton1</StyledButton1>
+    <StyledButton>StyledButton1</StyledButton>
     <StyledButton2>StyledButton2</StyledButton2>
-    <StyledButton3>StyledButton3</StyledButton3>
+    <MAkeProfilePrivate>StyledButton3</MAkeProfilePrivate>
     <Button variant="primary">Primary Button</Button>
     <Button variant="secondary">Secondary Button</Button>
   </Stack>

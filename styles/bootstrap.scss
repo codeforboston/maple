@@ -87,3 +87,25 @@ $display-font-sizes: (
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
 }
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+.tracking-narrow {
+  letter-spacing: -0.015em;
+}
+.tracking-normal {
+  letter-spacing: 0em;
+}
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+.tracking-widest {
+  letter-spacing: 0.1em;
+}
