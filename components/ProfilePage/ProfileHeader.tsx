@@ -1,22 +1,15 @@
-import { Col, Row, Stack } from "../bootstrap"
-import {
-  Header,
-  ProfileDisplayName,
-  ProfileDisplayNameSmall
-} from "./StyledProfileComponents"
+import { Col, Row } from "../bootstrap"
+import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 
-import { flags } from "components/featureFlags"
-import { FollowOrgButton } from "components/shared/FollowButton"
+import { ProfileHook, useProfile } from "components/db"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
 import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
-import { EditProfileButton, MakePublicButton } from "./ProfileButtons"
+import { EditProfileButton, ToggleProfilePrivate } from "./ProfileButtons"
 
 export const ProfileHeader = ({
-  isMobile,
-  uid,
   profileId,
   profile,
   isUser,
@@ -24,8 +17,6 @@ export const ProfileHeader = ({
   isProfilePublic,
   onProfilePublicityChanged
 }: {
-  isMobile: boolean
-  uid?: string
   profileId: string
   profile: Profile
   isUser: boolean
@@ -34,130 +25,70 @@ export const ProfileHeader = ({
   onProfilePublicityChanged: (isPublic: boolean) => void
 }) => {
   const { t } = useTranslation("profile")
+  const { role } = profile // When we have more types of profile than org and user, we will need to use the actual role from the profile, and move away from isOrg boolean.
 
   return (
-    <>
-      {isMobile ? (
-        <ProfileHeaderMobile
-          isMobile={isMobile}
-          isOrg={isOrg}
-          isProfilePublic={isProfilePublic}
-          onProfilePublicityChanged={onProfilePublicityChanged}
-          isUser={isUser}
-          profile={profile}
-          profileId={profileId}
-        />
-      ) : (
-        <Header className={`gx-0 edit-profile-header`}>
-          <Row xs={"auto"}>
-            <Col xs={"auto"} className={"col-auto"}>
-              <ProfileIcon isOrg={isOrg} large />
-            </Col>
-            <Col className={isOrg ? `` : `d-flex`}>
-              <Stack gap={0}>
-                <ProfileDisplayName
-                  className={`overflow-hidden ${
-                    isOrg ? "" : "d-flex align-items-center"
-                  }`}
-                >
-                  {profile.fullName}
-                </ProfileDisplayName>
-                {isOrg && (
-                  <>
-                    {isUser ? (
-                      <div className={`d-flex w-100 justify-content-start`}>
-                        <div className={`d-flex flex-row`}>
-                          <EditProfileButton />
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        {flags().followOrg && (
-                          <FollowOrgButton profileId={profileId} />
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-              </Stack>
-            </Col>
-            <Col className="d-flex align-items-center ms-auto">
-              {isOrg ? (
-                <OrgContactInfo profile={profile} />
-              ) : (
-                <div className={`d-flex w-100 justify-content-end`}>
-                  <div className={`d-flex flex-column`}>
-                    {isUser && (
-                      <>
-                        <EditProfileButton />
-                        <MakePublicButton
-                          isMobile={isMobile}
-                          isOrg={isOrg}
-                          isProfilePublic={isProfilePublic}
-                          onProfilePublicityChanged={onProfilePublicityChanged}
-                        />
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-            </Col>
-          </Row>
-        </Header>
-      )}
-    </>
+    <Header>
+      <div
+        className={`d-flex flex-row justify-content-start align-items-center gap-3 mx-5`}
+      >
+        <ProfileIcon role={role} large />
+        <div>
+          <ProfileDisplayName className={`col-3 col-md-auto`}>
+            {profile.fullName}
+          </ProfileDisplayName>
+          {role === "organization" ? (
+            <ProfileButtonsOrg isUser={isUser} />
+          ) : null}
+        </div>
+      </div>
+      <div className="col-12 col-md-auto d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
+        {isOrg ? <OrgContactInfo profile={profile} /> : null}
+        {isUser ? (
+          <ProfileButtonsUser
+            isProfilePublic={isProfilePublic}
+            onProfilePublicityChanged={onProfilePublicityChanged}
+          />
+        ) : null}
+      </div>
+    </Header>
   )
 }
 
-function ProfileHeaderMobile({
-  isMobile,
-  isOrg,
+function ProfileButtonsUser({
   isProfilePublic,
-  onProfilePublicityChanged,
-  isUser,
-  profile,
-  profileId,
-  uid
+  onProfilePublicityChanged
 }: {
-  isMobile: boolean
-  isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
-  isUser: boolean
-  profile: Profile
-  profileId: string
-  uid?: string
 }) {
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation("editProfile")
 
+  const actions = useProfile()
+
+  const handleSave = async () => {
+    await updateProfile({ actions })
+  }
+  /** Only regular users are allowed to have a public profile. */
+  async function updateProfile({ actions }: { actions: ProfileHook }) {
+    const { updateIsPublic } = actions
+
+    await updateIsPublic(!isProfilePublic)
+    onProfilePublicityChanged(!isProfilePublic)
+  }
   return (
-    <Header className={``}>
-      <Col className={`d-flex align-items-center justify-content-start`}>
-        <ProfileIcon
-          profileImage={profile.profileImage}
-          isOrg={isOrg}
-          className={`me-2`}
-        />
-
-        <ProfileDisplayNameSmall className={`ms-auto overflow-hidden`}>
-          {profile.fullName}
-        </ProfileDisplayNameSmall>
-      </Col>
-      {isUser && (
-        <>
-          <EditProfileButton />
-          {!isOrg && (
-            <MakePublicButton
-              isMobile={isMobile}
-              isOrg={isOrg}
-              isProfilePublic={isProfilePublic}
-              onProfilePublicityChanged={onProfilePublicityChanged}
-            />
-          )}
-        </>
-      )}
-      {isOrg && !isUser && <FollowButton isMobile={isMobile} />}
-      {isOrg && <OrgContactInfo profile={profile} />}
-    </Header>
+    <div className={`d-grid gap-1 col-12 m-3`}>
+      <EditProfileButton />
+      <ToggleProfilePrivate
+        onClick={handleSave}
+        isProfilePublic={isProfilePublic}
+      >
+        {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
+      </ToggleProfilePrivate>
+    </div>
   )
+}
+
+function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
+  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
 }

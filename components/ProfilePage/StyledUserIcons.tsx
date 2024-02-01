@@ -3,26 +3,27 @@ import styled from "styled-components"
 
 type ProfileIconProps = {
   profileImage?: string
-  isOrg?: boolean
+  role: string
   className?: string
   large?: boolean
 }
 
 export const BaseProfileIcon = ({
   profileImage,
-  isOrg,
+  role,
   className
 }: ProfileIconProps) => {
-  const defaultIconSrc: string = "/profile-individual-icon.svg"
-  const defaultOrgIconSrc: string = "/profile-org-icon.svg"
-
-  return (
-    <Image
-      src={profileImage || (isOrg ? defaultOrgIconSrc : defaultIconSrc)}
-      className={`${className}`}
-      alt="profile icon"
-    />
-  )
+  let iconSrc
+  switch (role) {
+    case "organization": {
+      iconSrc = "/profile-individual-icon.svg"
+      break
+    }
+    default:
+      iconSrc = "/profile-org-icon.svg"
+      break
+  }
+  return <Image src={iconSrc} className={`${className}`} alt="profile icon" />
 }
 
 export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(
