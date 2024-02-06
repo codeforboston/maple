@@ -1,7 +1,27 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
-import styles from "./CommunicatingWithLegislators.module.css"
-import { SignInWithButton } from "../auth"
+import styled from "styled-components"
+
+const StyledImage = styled(Image)`
+  width: 12.5rem;
+  /* bootstrap: medium > 768px */
+  @media (max-width: 48em) {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* bootstrap: small > 576px */
+  @media (max-width: 36em) {
+    width: 10rem;
+  }
+
+  /* bootstrap: xs < 576px
+   this break at 464px */
+  @media (max-width: 26em) {
+    width: 8rem;
+  }
+`
 
 const WritingContent = () => (
   <Row className="align-items-center">
@@ -12,9 +32,9 @@ const WritingContent = () => (
         platform, focuses on this mechanism.
       </p>
     </Col>
-    <Col md={4} className={styles.imageParent}>
-      <Image
-        className={`float-md-end ${styles.image}`}
+    <Col md={4}>
+      <StyledImage
+        className={`float-md-end`}
         fluid
         src="/computer-text-blob.svg"
         alt="computer display with lines representing text"
@@ -26,8 +46,7 @@ const WritingContent = () => (
 const OralContent = () => (
   <Row className="align-items-center">
     <Col xs={{ span: 12, order: 2 }} md={{ span: 4, order: 0 }}>
-      <Image
-        className={styles.image}
+      <StyledImage
         fluid
         src="/mic-with-testify.svg"
         alt="microphone next to a sheet of paper"
@@ -54,9 +73,9 @@ const WriteOrCallContent = () => (
         meeting in person.
       </p>
     </Col>
-    <Col md={4} className={styles.imageParent}>
-      <Image
-        className={`float-md-end ${styles.image}`}
+    <Col md={4}>
+      <StyledImage
+        className={`float-md-end`}
         fluid
         src="/open-envelope.svg"
         alt="envelope with letter sticking out"
