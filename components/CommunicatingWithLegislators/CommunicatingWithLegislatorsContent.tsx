@@ -25,14 +25,14 @@ const StyledImage = styled(Image)`
 
 const WritingContent = () => (
   <Row className="align-items-center">
-    <Col xs={12} md={8}>
+    <Col xs={12} md={8} lg={{ span: 7, offset: 1 }}>
       <p>
         You can submit your thoughts on a bill to the Committee hearing it
         before the date of their public hearing. This website, the MAPLE
         platform, focuses on this mechanism.
       </p>
     </Col>
-    <Col md={4}>
+    <Col md={4} lg={3}>
       <StyledImage
         className={`float-md-end`}
         fluid
@@ -45,14 +45,22 @@ const WritingContent = () => (
 
 const OralContent = () => (
   <Row className="align-items-center">
-    <Col xs={{ span: 12, order: 2 }} md={{ span: 4, order: 0 }}>
+    <Col
+      xs={{ span: 12, order: 2 }}
+      md={{ span: 4, order: 0 }}
+      lg={{ span: 3, order: 0, offset: 1 }}
+    >
       <StyledImage
         fluid
         src="/mic-with-testify.svg"
         alt="microphone next to a sheet of paper"
       />
     </Col>
-    <Col xs={{ span: 12, order: 1 }} md={{ span: 8, order: 1 }}>
+    <Col
+      xs={{ span: 12, order: 1 }}
+      md={{ span: 8, order: 1 }}
+      lg={{ span: 7, order: 1 }}
+    >
       <p>
         You can attend a public hearing for a bill of interest to you and sign
         up for a slot to speak before the Committee.
@@ -63,7 +71,7 @@ const OralContent = () => (
 
 const WriteOrCallContent = () => (
   <Row className="align-items-center">
-    <Col xs={12} md={8}>
+    <Col xs={12} md={8} lg={{ span: 7, offset: 1 }}>
       <p>
         You can contact your legislators any time by looking up their contact
         information on the MA Legislature website. Your voice will probably
@@ -73,7 +81,7 @@ const WriteOrCallContent = () => (
         meeting in person.
       </p>
     </Col>
-    <Col md={4}>
+    <Col md={4} lg={3}>
       <StyledImage
         className={`float-md-end`}
         fluid
