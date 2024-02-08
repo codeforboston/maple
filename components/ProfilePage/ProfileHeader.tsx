@@ -1,13 +1,10 @@
 import { Col, Row, Stack } from "../bootstrap"
 import {
   Header,
-  OrgIconLarge,
-  OrgIconSmall,
   ProfileDisplayName,
-  ProfileDisplayNameSmall,
-  UserIconLarge,
-  UserIconSmall
+  ProfileDisplayNameSmall
 } from "./StyledProfileComponents"
+import { ProfileIcon } from "./StyledUserIcons"
 
 import { flags } from "components/featureFlags"
 import { FollowOrgButton } from "components/shared/FollowButton"
@@ -38,14 +35,6 @@ export const ProfileHeader = ({
 }) => {
   const { t } = useTranslation("profile")
 
-  const orgImageSrc = profile.profileImage
-    ? profile.profileImage
-    : "/profile-org-icon.svg"
-
-  const userImageSrc = profile.profileImage
-    ? profile.profileImage
-    : "/profile-individual-icon.svg"
-
   return (
     <>
       {isMobile ? (
@@ -55,23 +44,15 @@ export const ProfileHeader = ({
           isProfilePublic={isProfilePublic}
           onProfilePublicityChanged={onProfilePublicityChanged}
           isUser={isUser}
-          orgImageSrc={orgImageSrc}
           profile={profile}
           profileId={profileId}
-          userImageSrc={userImageSrc}
         />
       ) : (
         <Header className={`gx-0 edit-profile-header`}>
           <Row xs={"auto"}>
-            {isOrg ? (
-              <Col xs={"auto"} className={"col-auto"}>
-                <OrgIconLarge alt={t("orgIcon.large")} src={orgImageSrc} />
-              </Col>
-            ) : (
-              <Col>
-                <UserIconLarge alt={t("userIcon.large")} src={userImageSrc} />
-              </Col>
-            )}
+            <Col xs={"auto"} className={"col-auto"}>
+              <ProfileIcon isOrg={isOrg} large />
+            </Col>
             <Col className={isOrg ? `` : `d-flex`}>
               <Stack gap={0}>
                 <ProfileDisplayName
@@ -134,10 +115,8 @@ function ProfileHeaderMobile({
   isProfilePublic,
   onProfilePublicityChanged,
   isUser,
-  orgImageSrc,
   profile,
   profileId,
-  userImageSrc,
   uid
 }: {
   isMobile: boolean
@@ -145,22 +124,20 @@ function ProfileHeaderMobile({
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
   isUser: boolean
-  orgImageSrc: string
   profile: Profile
   profileId: string
-  userImageSrc: string
   uid?: string
 }) {
   const { t } = useTranslation("profile")
 
   return (
     <Header className={``}>
-      <Col className={`d-flex align-items-center`}>
-        {isOrg ? (
-          <OrgIconSmall alt={t("orgIcon.small")} src={orgImageSrc} />
-        ) : (
-          <UserIconSmall alt={t("userIcon.small")} src={userImageSrc} />
-        )}
+      <Col className={`d-flex align-items-center justify-content-start`}>
+        <ProfileIcon
+          profileImage={profile.profileImage}
+          isOrg={isOrg}
+          className={`me-2`}
+        />
 
         <ProfileDisplayNameSmall className={`ms-auto overflow-hidden`}>
           {profile.fullName}
