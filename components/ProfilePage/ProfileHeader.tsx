@@ -55,7 +55,7 @@ export const ProfileHeader = ({
   )
 }
 
-function ProfileButtonsUser({
+export function ProfileButtonsUser({
   isProfilePublic,
   onProfilePublicityChanged
 }: {

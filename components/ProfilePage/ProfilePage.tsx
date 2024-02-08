@@ -12,7 +12,6 @@ import { Banner } from "../shared/StyledSharedComponents"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
-// import { StyledContainer } from "./StyledProfileComponents"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 
 export function ProfilePage(profileprops: {
