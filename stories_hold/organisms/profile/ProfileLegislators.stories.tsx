@@ -9,9 +9,7 @@ export default createMeta({
   title: "Organisms/Profile/ProfileLegislators",
   component: ProfileLegislators,
   decorators: [
-    (Story, ...rest) => (
-        <Story {...rest} />
-    ),
+    (Story, ...rest) => <Story {...rest} />,
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)
 

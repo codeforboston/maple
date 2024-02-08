@@ -23,7 +23,9 @@ export const ProfileDisplayName = styled.div.attrs<{ large: boolean }>(
       props.large ? "h1" : "h2"
     } text-left text-black tracking-narrow ${props.className}`
   })
-)` max-height: 108px; `
+)`
+  max-height: 108px;
+`
 
 export const ProfileDisplayNameSmall = styled(Col).attrs(props => ({
   className: `m-0 h2 text-left text-black tracking-narrow${props.className}`

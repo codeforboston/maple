@@ -2,7 +2,7 @@ import { createMeta } from "stories/utils"
 import { ComponentStory } from "@storybook/react"
 import {
   StyledButton,
-  EditProfileButton,
+  EditProfileButton
 } from "components/ProfilePage/ProfileButtons"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
@@ -34,7 +34,7 @@ import { Button, Col, Row, Stack } from "react-bootstrap"
 //   ]
 // })
 
-export const Primary = () => (<div>TODO</div>)
+export const Primary = () => <div>TODO</div>
 
 // export const Primary = Template.bind({})
 
