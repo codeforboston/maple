@@ -47,6 +47,9 @@ $btn-close-focus-opacity: 1;
 $tooltip-bg: $blue;
 $tooltip-arrow-color: $blue;
 
+// Negative Margin override
+$enable-negative-margins: true;
+
 // Font size adjustments
 // $font-size-base: 16px; // default is 1rem. initially using exact px values but may go back to rem etc
 
