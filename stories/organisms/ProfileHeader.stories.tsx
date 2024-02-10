@@ -43,8 +43,8 @@ export const Primary: Story = {
     } as Profile,
     isMobile: false,
     onProfilePublicityChanged: (isPublic: boolean) => console.log(isPublic)
-  } as ProfileHeaderProps, 
-  name: 'ProfileHeader'
+  } as ProfileHeaderProps,
+  name: "ProfileHeader"
 }
 
 export default meta
