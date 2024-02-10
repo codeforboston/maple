@@ -17,7 +17,9 @@ export const StyledButton = styled(Button).attrs(props => ({
 `
 
 export const ToggleProfilePrivate = styled(StyledButton).attrs(props => ({
-  className: `${props.isProfilePublic ? "btn-secondary" : "btn-outline-secondary"} col-12`
+  className: `${
+    props.isProfilePublic ? "btn-secondary" : "btn-outline-secondary"
+  } col-12`
 }))`
   ${props =>
     props.isProfilePublic
@@ -48,7 +50,10 @@ export const EditProfileButton = () => {
   const { t } = useTranslation("profile")
 
   return (
-    <Internal href="/editprofile" className="text-decoration-none text-white col-12">
+    <Internal
+      href="/editprofile"
+      className="text-decoration-none text-white col-12"
+    >
       <StyledButton>{t("button.editProfile")}</StyledButton>
     </Internal>
   )
