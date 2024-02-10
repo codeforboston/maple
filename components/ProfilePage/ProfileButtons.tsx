@@ -1,7 +1,6 @@
-import { useTranslation } from "next-i18next"
-import { Button, ButtonProps } from "react-bootstrap"
-import { ProfileHook, useProfile } from "../db"
 import { Internal } from "components/links"
+import { useTranslation } from "next-i18next"
+import { Button } from "react-bootstrap"
 import styled from "styled-components"
 
 export const StyledButton = styled(Button).attrs(props => ({
@@ -18,7 +17,7 @@ export const StyledButton = styled(Button).attrs(props => ({
 `
 
 export const ToggleProfilePrivate = styled(StyledButton).attrs(props => ({
-  className: props.isProfilePublic ? `btn-secondary` : `btn-outline-secondary`
+  className: `${props.isProfilePublic ? "btn-secondary" : "btn-outline-secondary"} col-12`
 }))`
   ${props =>
     props.isProfilePublic
@@ -49,7 +48,7 @@ export const EditProfileButton = () => {
   const { t } = useTranslation("profile")
 
   return (
-    <Internal href="/editprofile" className="text-decoration-none text-white">
+    <Internal href="/editprofile" className="text-decoration-none text-white col-12">
       <StyledButton>{t("button.editProfile")}</StyledButton>
     </Internal>
   )

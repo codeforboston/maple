@@ -82,21 +82,20 @@ export function ProfilePage(profileprops: {
 
   return (
     <>
-      <Container fluid>
-        {isPendingUpgrade && <PendingUpgradeBanner />}
-        {["user", "admin"].includes(role) ? (
-          <>
-            <Banner>
-              {" "}
-              {t("content.viewingProfile")}
-              <br />
-              {isProfilePublic
-                ? t("content.publicProfile")
-                : t("content.privateProfile")}
-            </Banner>
-          </>
-        ) : null}
-
+      {isPendingUpgrade && <PendingUpgradeBanner />}
+      {["user", "admin"].includes(role) ? (
+        <>
+          <Banner>
+            {" "}
+            {t("content.viewingProfile")}
+            <br />
+            {isProfilePublic
+              ? t("content.publicProfile")
+              : t("content.privateProfile")}
+          </Banner>
+        </>
+      ) : null}
+      <Container>
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isUser}

@@ -37,12 +37,10 @@ export const ProfileHeader = ({
           <ProfileDisplayName className={`col-3 col-md-auto`}>
             {profile.fullName}
           </ProfileDisplayName>
-          {role === "organization" ? (
-            <ProfileButtonsOrg isUser={isUser} />
-          ) : null}
+          {isOrg ? <ProfileButtonsOrg isUser={isUser} /> : null}
         </div>
       </div>
-      <div className="col-12 col-md-auto d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
+      <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
         {isOrg ? <OrgContactInfo profile={profile} /> : null}
         {isUser ? (
           <ProfileButtonsUser
@@ -69,7 +67,7 @@ export function ProfileButtonsUser({
   const handleSave = async () => {
     await updateProfile({ actions })
   }
-  /** Only regular users are allowed to have a public profile. */
+  /** Only regular users are allowed to have a private profile. */
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
 
