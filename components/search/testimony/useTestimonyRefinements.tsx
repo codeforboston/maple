@@ -5,6 +5,11 @@ export const useTestimonyRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
   const propsList = [
     useRefinementListUiProps({
+      attribute: "authorDisplayName",
+      ...baseProps,
+      searchablePlaceholder: "Author Name"
+    }),
+    useRefinementListUiProps({
       attribute: "court",
       ...baseProps,
       searchablePlaceholder: "Court"
@@ -20,12 +25,13 @@ export const useTestimonyRefinements = () => {
       searchablePlaceholder: "Bill"
     }),
     useRefinementListUiProps({
-      attribute: "authorDisplayName",
+      attribute: "authorRole",
       ...baseProps,
-      searchablePlaceholder: "Author Name"
+      searchable: false,
+      hidden: true
     }),
     useRefinementListUiProps({
-      attribute: "authorRole",
+      attribute: "private",
       ...baseProps,
       searchable: false,
       hidden: true

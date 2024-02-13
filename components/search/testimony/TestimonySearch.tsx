@@ -110,7 +110,11 @@ const Layout = () => {
           : ["user", "organization"]
       return {
         ...prevState,
-        refinementList: { ...prevState.refinementList, authorRole: role }
+        refinementList: {
+          ...prevState.refinementList,
+          authorRole: role,
+          private: ["false"]
+        }
       }
     })
   }

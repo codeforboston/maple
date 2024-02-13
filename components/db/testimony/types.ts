@@ -3,6 +3,7 @@ import { Timestamp } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import {
   Array,
+  Boolean,
   InstanceOf,
   Literal as L,
   Number,
@@ -44,6 +45,7 @@ export const Testimony = BaseTestimony.extend({
   authorRole: Role,
   billTitle: String,
   version: Number,
+  private: Boolean,
   publishedAt: InstanceOf(Timestamp),
   representativeId: Optional(String),
   senatorId: Optional(String),
