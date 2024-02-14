@@ -11,7 +11,7 @@ export default function CustomDropdown({
   children
 }: CustomDropdownProps) {
   return (
-    <div style={{ borderBottom: "solid 1px rgba(255,255,255,0.75)" }}>
+    <div className={`border-bottom border-white border-opacity-75`}>
       <NavDropdown title={title} drop="end">
         <li className="nav-item dropdown">{children}</li>
       </NavDropdown>
