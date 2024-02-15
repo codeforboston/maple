@@ -2,6 +2,7 @@ import { TabContent } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
+import { FC, PropsWithChildren } from "react"
 
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
@@ -37,12 +38,12 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   }
 `
 
-export const StyledSaveButton = styled(Button)`
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-  width: 100%;
-  border-radius: 4px;
-`
+// export const StyledSaveButton = styled(Button)`
+//   margin-top: 2rem;
+//   margin-bottom: 3rem;
+//   width: 100%;
+//   border-radius: 4px;
+// `
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className
 }))`
@@ -67,6 +68,11 @@ export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
     background-color: white;
   }
 `
+
+export const EditProfileTabContent: FC<PropsWithChildren> = ({ children }) => {
+  return <TabContent className={`mt-4 `}>{children}</TabContent>
+}
+
 export const StyledTabContent = styled(TabContent)`
   margin-top: 3.5rem;
   z-index: -1;

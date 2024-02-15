@@ -2,8 +2,8 @@ import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
-import { useAuth } from "../auth"
-import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
+import { Role, useAuth } from "../auth"
+import { Button, Col, Container, Nav, Row, Spinner, Stack } from "../bootstrap"
 import { GearButton } from "../buttons"
 import {
   Profile,
@@ -16,6 +16,7 @@ import {
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
+  EditProfileTabContent,
   Header,
   StyledTabContent,
   StyledTabNav
@@ -23,6 +24,7 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { Banner } from "components/shared/StyledSharedComponents"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { ToggleProfilePrivate } from "components/ProfilePage/ProfileButtons"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -121,29 +123,12 @@ export function EditProfileForm({
       {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
-        <Header>
-          <Col>{t("header")}</Col>
-          <Col className={`d-flex justify-content-end`}>
-            <GearButton
-              variant="outline-secondary"
-              size="lg"
-              className={`me-4 py-1`}
-              disabled={!!formUpdated}
-              onClick={() => onSettingsModalOpen()}
-            >
-              {t("Settings")}
-            </GearButton>
-            <Button
-              className={`btn-lg py-1 ml-2 text-decoration-none`}
-              disabled={!!formUpdated}
-              href={`/profile?id=${uid}`}
-            >
-              {profile.role !== "organization"
-                ? t("viewMyProfile")
-                : t("viewOrgProfile")}
-            </Button>
-          </Col>
-        </Header>
+        <EditProfileHeader
+          formUpdated={formUpdated}
+          onSettingsModalOpen={onSettingsModalOpen}
+          uid={uid}
+          role={profile.role}
+        />
         <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
           <StyledTabNav>
             {tabs.map((t, i) => (
@@ -158,13 +143,13 @@ export function EditProfileForm({
               </Nav.Item>
             ))}
           </StyledTabNav>
-          <StyledTabContent>
+          <EditProfileTabContent>
             {tabs.map(t => (
               <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
                 {t.content}
               </TabPane>
             ))}
-          </StyledTabContent>
+          </EditProfileTabContent>
         </TabContainer>
         <ProfileSettingsModal
           actions={actions}
@@ -179,5 +164,48 @@ export function EditProfileForm({
         />
       </Container>
     </>
+  )
+}
+
+export const EditProfileHeader = ({
+  formUpdated,
+  onSettingsModalOpen,
+  uid,
+  role
+}: {
+  formUpdated: boolean
+  onSettingsModalOpen: () => void
+  uid: string
+  role: Role
+}) => {
+
+  const { t } = useTranslation("editProfile")
+
+  return (
+    <Row className={`my-5`}>
+      <Col className={`align-self-end`}>
+        <h1 className={`display-3`}>{t("header")}</h1>
+      </Col>
+      <Col xs={12} md={2}>
+        <Stack gap={2} className={`d-flex justify-content-end`}>
+          <GearButton
+            variant="outline-secondary"
+            disabled={!!formUpdated}
+            onClick={() => onSettingsModalOpen()}
+          >
+            {t("settings")}
+          </GearButton>
+          <Button
+            className={`btn py-1 fs-5 ml-2 text-decoration-none text-nowrap`}
+            disabled={!!formUpdated}
+            href={`/profile?id=${uid}`}
+          >
+            {role !== "organization"
+              ? t("viewMyProfile")
+              : t("viewOrgProfile")}
+          </Button>
+        </Stack>
+      </Col>
+    </Row>
   )
 }

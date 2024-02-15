@@ -78,10 +78,11 @@ export function ProfileButtonsUser({
     <div className={`d-grid gap-1 col-12 m-3`}>
       <EditProfileButton />
       <ToggleProfilePrivate
+        toggleState={isProfilePublic ?? false}
+        stateTrueLabel={t("forms.makePrivate")}
+        stateFalseLabel={t("forms.makePublic")}
         onClick={handleSave}
-        isProfilePublic={isProfilePublic}
       >
-        {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
       </ToggleProfilePrivate>
     </div>
   )

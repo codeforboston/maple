@@ -11,7 +11,7 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
       <SC.StyledTabNav>TabNav</SC.StyledTabNav>
       <SC.StyledTabContent>{children}</SC.StyledTabContent>
       <SC.StyledHr />
-      <SC.StyledSaveButton>Save Button</SC.StyledSaveButton>
+      {/* <SC.StyledSaveButton>Save Button</SC.StyledSaveButton> */}
       <SC.VerifiedBadge />
     </>
   )

@@ -4,6 +4,7 @@ import CopyToClipboard from "react-copy-to-clipboard"
 import styled from "styled-components"
 import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
+import { LabeledIcon } from "./shared"
 
 export const TableButton = ({
   onclick,
@@ -84,6 +85,39 @@ export const ImageButton = styled<
   padding: 1px;
 `
 
+type SaveButtonTypes = ButtonProps & {
+  label?: string
+}
+
+export const FillButton = ({
+  variant = "primary",
+  ...props
+}: SaveButtonTypes) => {
+  return (
+    <Button variant={variant} type="submit" {...props}>
+      {props.label}
+    </Button>
+  )
+}
+
+type CancelButtonProps = ButtonProps & {
+  label?: string
+  Icon?: React.ReactElement
+}
+
+export const OutlineButton = ({
+  variant = "outline-secondary",
+  Icon,
+  ...props
+}: CancelButtonProps) => {
+  return (
+    <Button variant={variant} type="submit" {...props}>
+      {Icon && Icon}
+      {props.label}
+    </Button>
+  )
+}
+
 export const TooltipButton = styled<{
   tooltip: string
   text: string
@@ -101,22 +135,22 @@ export const TooltipButton = styled<{
     </OverlayTrigger>
   )
 })`
-  font-size: 14px;
+      font-size: 14px;
 
-  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
-  &:hover {
-    filter: brightness(70%);
+      transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
+      &:hover {
+        filter: brightness(70%);
   }
-  &:active {
-    filter: brightness(50%);
+      &:active {
+        filter: brightness(50%);
   }
-  &:focus {
-    outline: 3px solid var(--bs-blue-300);
+      &:focus {
+        outline: 3px solid var(--bs-blue-300);
   }
-  border-radius: 3px;
+      border-radius: 3px;
 
-  padding: 1px;
-`
+      padding: 1px;
+      `
 
 export const CopyButton = ({
   text,
@@ -159,20 +193,28 @@ export const CopyButton = ({
   )
 }
 
-export const GearButton = ({ children, ...props }: ButtonProps) => {
-  return (
-    <Button {...props}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="currentColor"
-        className={`bi bi-gear-fill px-1 pb-1`}
-        viewBox="0 0 16 16"
+export const GearButton = styled(
+  ({ children, className, ...props }: ButtonProps) => {
+    return (
+      <Button
+        className={`py-1 fs-5 text-capitalize d-flex align-items-end justify-content-center ${className}`}
+        {...props}
       >
-        <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-      </svg>
-      {children}
-    </Button>
-  )
-}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="currentColor"
+          className={`bi bi-gear-fill px-1 pb-1`}
+          viewBox="0 0 16 16"
+        >
+          <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+        </svg>
+        {children}
+      </Button>
+    )
+  }
+)`
+        --bs-btn-bg: white; // override bootstrap button background transparency to match Figma
+        // TODO: make a generic outline secondary button that takes an icon as a child adn put on that level
+        `
