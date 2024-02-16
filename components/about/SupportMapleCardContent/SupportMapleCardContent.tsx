@@ -1,4 +1,3 @@
-// Import necessary Bootstrap components from your centralized bootstrap.ts file
 import { Button } from "../../bootstrap";
 import { useTranslation } from "next-i18next";
 
