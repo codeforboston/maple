@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { userEvent, within } from "@storybook/testing-library"
 import { EditProfileButton } from "components/ProfilePage/ProfileButtons"
-import { GearButton } from "components/buttons"
+import { GearButton, HighContrastButton, ToggleButton } from "components/buttons"
 import { Button, Col } from "react-bootstrap"
 import styled from "styled-components"
 
@@ -67,5 +67,31 @@ export const EditButton: Story = {
   },
   name: "Edit Profile Button"
 }
+
+export const ContrastButtons: Story = {
+  render: (args) => {
+    return (
+      <div className={`d-flex gap-3`}>
+        <HighContrastButton state={true} baseFill="outline" label="True base outline" />
+        <HighContrastButton state={false} label="False basefill " />
+        <ToggleButton
+          size={'sm'}
+          className={`btn-sm`}
+          toggleState={true}
+          stateTrueLabel={"Toggle state true"}
+          stateFalseLabel={"Toggle state false"}
+          onClick={() => console.log("toggle")} />
+        <ToggleButton
+          size={'sm'}
+          className={`btn-sm`}
+          toggleState={false}
+          stateTrueLabel={"Toggle state true"}
+          stateFalseLabel={"Toggle state false"}
+          onClick={() => console.log("toggle")} />
+      </div>
+    )
+  }
+}
+
 
 export default meta

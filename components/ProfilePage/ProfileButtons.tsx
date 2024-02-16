@@ -2,8 +2,8 @@ import { Role } from "components/auth/types"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 import { Button } from "../bootstrap"
-import { ButtonProps } from "react-bootstrap"
 import styled from "styled-components"
+import { ToggleButton } from "components/buttons"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -19,48 +19,7 @@ export const StyledButton = styled(Button).attrs(props => ({
   }
 `
 
-type ToggleButtonProps = ButtonProps & {
-  stateTrueLabel: string
-  stateFalseLabel: string
-  toggleState: boolean
-  onClick: () => void
-}
-
-export const ToggleButton = ({ stateTrueLabel, stateFalseLabel, toggleState, className, ...rest }: ToggleButtonProps) => {
-  const theme = toggleState ? "btn-secondary" : "btn-outline-secondary btn-light"
-  return (
-    <Button className={`${theme} col-12 py-1 rounded-1 ${className} `}  {...rest}>{toggleState ? stateTrueLabel : stateFalseLabel}</Button>
-  )
-
-}
-
-export const ToggleProfilePulicity = styled(ToggleButton).attrs(props => ({
-  // className: `${props.toggleState ? "btn-secondary" : "btn-outline-secondary"} col-12 py-1 rounded-1 ${props.className} `
-}))`
-  /* ${props =>
-    props.toggleState
-      ? `&:focus {
-    color: var(--bs-secondary);
-    background-color: white;
-    border-color: var(--bs-secondary);
-  }
-  &:hover {
-    color: white;
-    background-color: var(--bs-secondary);
-    border-color: white;
-  }`
-      : `background-color: white;   
-    &:focus{
-      color: white;
-      background-color:var(--bs-secondary);
-      border-color: white;
-    }
-    &:hover{
-      color: var(--bs-secondary);
-      background-color: white;
-      border-color: var(--bs-secondary);
-    }`} */
-`
+export const ToggleProfilePulicity = styled(ToggleButton)
 
 export const EditProfileButton = ({ className }: { className?: string }) => {
   const { t } = useTranslation("profile")

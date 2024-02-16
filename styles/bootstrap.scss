@@ -81,6 +81,27 @@ $font-sizes: (
   --bs-dark-blue: #0b0a3e;
 }
 
+@mixin button-contrast($color-a, $color-b) {
+  --#{$prefix}btn-bg: #{$color-a};
+  --#{$prefix}btn-hover-bg: #{$color-b};
+  --#{$prefix}btn-color: #{$color-b};
+  --#{$prefix}btn-hover-color: #{$color-a};
+}
+
+@each $color, $value in $theme-colors {
+  .btn-hover-#{$color} {
+    @include button-contrast($white, $value);
+  }
+  .btn-hover-outline-#{$color} {
+    @include button-contrast($value, $white);
+  }
+}
+
+.btn-bg-white {
+  --bs-btn-bg: white;
+  background-color: var(--bs-btn-bg);
+}
+
 .tracking-tighter {
   letter-spacing: -0.05em;
 }

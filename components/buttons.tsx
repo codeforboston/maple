@@ -94,17 +94,18 @@ export const FillButton = ({
   variant = "primary",
   Icon,
   className,
-  ...props
+  label,
+  ...rest
 }: FillButtonProps) => {
   return (
     <Button
       variant={variant}
       type="submit"
       className={`${className}`}
-      {...props}
+      {...rest}
     >
       {Icon && Icon}
-      {props.label}
+      {label}
     </Button>
   )
 }
@@ -118,18 +119,84 @@ export const OutlineButton = ({
   variant = "outline-secondary",
   Icon,
   className,
-  ...props
+  label,
+  ...rest
 }: OutlineButtonProps) => {
   return (
     <Button
       variant={variant}
       type="submit"
-      className={`btn btn-light d-flex justify-content-evenly ${className}`}
-      {...props}
+      className={`d-flex justify-content-evenly ${className}`}
+      {...rest}
     >
       {Icon && Icon}
-      {props.label}
+      {label}
     </Button>
+  )
+}
+
+type HighContrastButton = ButtonProps & {
+  state?: boolean
+  baseFill?: "solid" | "outline"
+  label?: string
+  Icon?: React.ReactElement
+}
+
+export const HighContrastButton = ({
+  state,
+  baseFill = "solid",
+  variant,
+  className,
+  Icon,
+  label,
+  ...rest
+}: HighContrastButton) => {
+  if (baseFill === "outline") {
+    return (
+      <Button
+        variant={"outline-secondary"}
+        className={`btn-hover-secondary ${className}`}
+        {...rest}
+      >
+        {Icon && Icon}
+        {label}
+      </Button>
+    )
+  }
+
+  return (
+    <Button
+      variant={"secondary"}
+      className={`btn-hover-outline-secondary ${className}`}
+      {...rest}
+    >
+      {Icon && Icon}
+      {label}
+    </Button>
+  )
+}
+
+type ToggleButtonProps = OutlineButtonProps & {
+  stateTrueLabel: string
+  stateFalseLabel: string
+  toggleState: boolean
+  onClick: () => void
+}
+
+export const ToggleButton = ({
+  stateTrueLabel,
+  stateFalseLabel,
+  toggleState,
+  variant,
+  ...rest
+}: ToggleButtonProps) => {
+  return (
+    <HighContrastButton
+      state={toggleState}
+      baseFill={toggleState ? "outline" : "solid"}
+      label={toggleState ? stateTrueLabel : stateFalseLabel}
+      {...rest}
+    />
   )
 }
 

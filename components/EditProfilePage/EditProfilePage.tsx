@@ -18,7 +18,9 @@ import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
   EditProfileTabContent,
   StyledTabNav,
-  TabNavWrapper
+  TabNav,
+  TabNavWrapper,
+  TabType
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { EditProfileHeader } from "./EditProfileHeader"
@@ -89,7 +91,8 @@ export function EditProfileForm({
 
   const { t } = useTranslation("editProfile")
 
-  const tabs = [
+
+  const tabs: TabType[] = [
     {
       title: t("tabs.personalInfo"),
       eventKey: "AboutYou",
@@ -134,14 +137,8 @@ export function EditProfileForm({
           role={profile.role}
         />
         <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-          <TabNavWrapper tabs={tabs}  />
-          <EditProfileTabContent>
-            {tabs.map(t => (
-              <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
-                {t.content}
-              </TabPane>
-            ))}
-          </EditProfileTabContent>
+          {tabs.map((tab, index) => <TabNav key={index} i={index} tab={tab} />)}
+          <EditProfileTabContent tabs={tabs} />
         </TabContainer>
       </Container>
       <ProfileSettingsModal

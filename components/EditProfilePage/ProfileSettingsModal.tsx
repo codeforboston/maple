@@ -8,9 +8,9 @@ import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
 import { ProfileHook } from "../db"
 import { Role } from "../auth"
 import {
-  ToggleButton,
   ToggleProfilePulicity
 } from "components/ProfilePage/ProfileButtons"
+import { ToggleButton } from "components/buttons"
 import { OutlineButton, FillButton } from "components/buttons"
 import { flags } from "components/featureFlags"
 
@@ -158,24 +158,15 @@ export default function ProfileSettingsModal({
                 <small>{t("forms.notificationText")}</small>
               </Col>
               <Col className={`col-fill`}>
-                {notifications === "None" ? (
-                  <FillButton
-                    size={'sm'}
-                    variant={'secondary'}
-                    label={t("enable")}
-                    className={"py-1 col-12"}
-                    onClick={() => setNotifications("Monthly")}
-                    Icon={<EmailIcon />}
-                  />
-                ) : (
-                  <OutlineButton
-                    size={'sm'}
-                    label={t("enabled")}
-                    className={"py-2 col-12"}
-                    onClick={() => setNotifications("None")}
-                    Icon={<EmailIcon />}
-                  />
-                )}
+                <ToggleButton
+                  size={'sm'}
+                  toggleState={notifications === "None"}
+                  stateTrueLabel={t("enable")}
+                  stateFalseLabel={t("enabled")}
+                  className={`col-12 py-1 rounded-1`}
+                  onClick={() => setNotifications("Monthly")}
+                  Icon={<EmailIcon />}
+                />
               </Col>
             </Row>
           </HideableSection>
@@ -220,9 +211,9 @@ export default function ProfileSettingsModal({
             </Col>
             <Col xs={4}>
               {role === "user" && (
-                <ToggleProfilePulicity
+                <ToggleButton
                   size={'sm'}
-                  className={`btn-sm`}
+                  className={`btn-sm col-12 py-1 rounded-1`}
                   toggleState={isProfilePublic}
                   stateTrueLabel={t("forms.makePrivate")}
                   stateFalseLabel={t("forms.makePublic")}
@@ -232,9 +223,7 @@ export default function ProfileSettingsModal({
             </Col>
           </Row>
 
-          <Row
-            className={`p-2`}
-          >
+          <Row className={`p-2`} >
             <Col className={`d-flex gap-3`}>
               <FillButton
                 size="sm"
@@ -244,7 +233,7 @@ export default function ProfileSettingsModal({
               />
               <OutlineButton
                 size="sm"
-                className={`col-3 mx-2 py-1`}
+                className={`col-3 mx-2 py-1 btn-bg-white`}
                 onClick={handleSave}
                 label={t("cancel")}
               />

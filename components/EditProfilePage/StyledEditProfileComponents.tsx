@@ -1,4 +1,4 @@
-import { NavProps, TabContent } from "react-bootstrap"
+import { NavProps, TabContainer, TabContent, TabPane } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
@@ -37,26 +37,41 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
     margin-left: 0;
   }
 `
-
-type TabNavWrapperProps = NavProps & { tabs: { title: string, eventKey: string, content: ReactNode }[], }
-
-export const TabNavWrapper = ({ tabs, className, ...props }: TabNavWrapperProps) => {
-  return <Nav className={`d-flex mb-3 text-center h3 color-dark ${className}`} {...props}  >
-    {tabs.map((t, i) => (
-      <Nav.Item className={`flex-grow-1 w-auto`} key={t.eventKey}>
-        <Nav.Link
-          eventKey={t.eventKey}
-          className={`rounded-top m-0 p-0`}
-        >
-          <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
-          <hr className={`my-0`} />
-        </Nav.Link>
-      </Nav.Item>
-    ))}
-  </Nav>
+type TabNavWrapperProps = NavProps & {
+  tabs: { title: string; eventKey: string; content: ReactNode }[]
 }
 
+export const TabNavWrapper = ({
+  tabs,
+  className,
+  ...props
+}: TabNavWrapperProps) => {
+  return (
+    <Nav
+      className={`d-flex mb-3 text-center h3 color-dark ${className}`}
+      {...props}
+    >
+      {tabs.map((t, i) => (
+        <Nav.Item className={`flex-grow-1 w-auto`} key={t.eventKey}>
+          <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
+            <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+            <hr className={`my-0`} />
+          </Nav.Link>
+        </Nav.Item>
+      ))}
+    </Nav>
+  )
+}
 
+export const TabNav = ({ tab, i: i }: { tab: TabType, i: number }) => {
+
+  return <Nav.Item className={`flex-grow-1 w-auto`} key={tab.eventKey}>
+    <Nav.Link eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
+      <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
+      <hr className={`my-0`} />
+    </Nav.Link>
+  </Nav.Item>
+}
 
 // export const StyledSaveButton = styled(Button)`
 //   margin-top: 2rem;
@@ -88,9 +103,21 @@ export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
     background-color: white;
   }
 `
-
-export const EditProfileTabContent: FC<PropsWithChildren> = ({ children }) => {
-  return <TabContent className={`mt-4 `}>{children}</TabContent>
+export type TabType = { title: string; eventKey: string; content: JSX.Element }
+export const EditProfileTabContent: FC<
+  PropsWithChildren & {
+    tabs: TabType[]
+  }
+> = ({ tabs }) => {
+  return (
+    <TabContent className={`mt-4 `}>
+      {tabs.map(t => (
+        <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+          {t.content}
+        </TabPane>
+      ))}
+    </TabContent>
+  )
 }
 
 export const StyledTabContent = styled(TabContent)`

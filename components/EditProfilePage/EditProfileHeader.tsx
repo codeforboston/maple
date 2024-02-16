@@ -1,7 +1,7 @@
 import { useTranslation } from "next-i18next"
 import { Role } from "../auth"
 import { Button, Col, Row, Stack } from "../bootstrap"
-import { GearButton } from "../buttons"
+import { FillButton, GearButton } from "../buttons"
 
 export const EditProfileHeader = ({
   formUpdated,
@@ -29,13 +29,14 @@ export const EditProfileHeader = ({
         >
           {t("settings")}
         </GearButton>
-        <Button
+        <FillButton
           className={`btn py-1 fs-5 ml-2 text-decoration-none text-nowrap`}
           disabled={!!formUpdated}
           href={`/profile?id=${uid}`}
-        >
-          {role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")}
-        </Button>
+          label={
+            role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")
+          }
+        ></FillButton>
       </Col>
     </Row>
   )
