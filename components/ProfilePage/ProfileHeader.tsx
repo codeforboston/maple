@@ -1,13 +1,12 @@
-import { Col, Row } from "../bootstrap"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 
 import { ProfileHook, useProfile } from "components/db"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton" // TODO: move to /shared
+import { FollowButton } from "./FollowButton"; // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
-import { EditProfileButton, ToggleProfilePrivate } from "./ProfileButtons"
+import { EditProfileButton, ToggleProfilePulicity } from "./ProfileButtons"
 
 export const ProfileHeader = ({
   profileId,
@@ -77,13 +76,13 @@ export function ProfileButtonsUser({
   return (
     <div className={`d-grid gap-1 col-12 m-3`}>
       <EditProfileButton />
-      <ToggleProfilePrivate
+      <ToggleProfilePulicity
         toggleState={isProfilePublic ?? false}
         stateTrueLabel={t("forms.makePrivate")}
         stateFalseLabel={t("forms.makePublic")}
         onClick={handleSave}
       >
-      </ToggleProfilePrivate>
+      </ToggleProfilePulicity>
     </div>
   )
 }

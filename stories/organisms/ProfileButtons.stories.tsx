@@ -1,6 +1,6 @@
 import { StoryObj, Meta } from "@storybook/react"
 import {
-  ToggleProfilePrivate,
+  ToggleProfilePulicity,
   EditProfileButton
 } from "components/ProfilePage/ProfileButtons"
 import { ProfileButtonsUser } from "components/ProfilePage/ProfileHeader"

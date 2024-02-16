@@ -85,22 +85,31 @@ export const ImageButton = styled<
   padding: 1px;
 `
 
-type SaveButtonTypes = ButtonProps & {
+type FillButtonProps = ButtonProps & {
   label?: string
+  Icon?: React.ReactElement
 }
 
 export const FillButton = ({
   variant = "primary",
+  Icon,
+  className,
   ...props
-}: SaveButtonTypes) => {
+}: FillButtonProps) => {
   return (
-    <Button variant={variant} type="submit" {...props}>
+    <Button
+      variant={variant}
+      type="submit"
+      className={`${className}`}
+      {...props}
+    >
+      {Icon && Icon}
       {props.label}
     </Button>
   )
 }
 
-type CancelButtonProps = ButtonProps & {
+type OutlineButtonProps = ButtonProps & {
   label?: string
   Icon?: React.ReactElement
 }
@@ -108,10 +117,16 @@ type CancelButtonProps = ButtonProps & {
 export const OutlineButton = ({
   variant = "outline-secondary",
   Icon,
+  className,
   ...props
-}: CancelButtonProps) => {
+}: OutlineButtonProps) => {
   return (
-    <Button variant={variant} type="submit" {...props}>
+    <Button
+      variant={variant}
+      type="submit"
+      className={`btn btn-light d-flex justify-content-evenly ${className}`}
+      {...props}
+    >
       {Icon && Icon}
       {props.label}
     </Button>
@@ -135,22 +150,22 @@ export const TooltipButton = styled<{
     </OverlayTrigger>
   )
 })`
-      font-size: 14px;
+  font-size: 14px;
 
-      transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
-      &:hover {
-        filter: brightness(70%);
+  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
+  &:hover {
+    filter: brightness(70%);
   }
-      &:active {
-        filter: brightness(50%);
+  &:active {
+    filter: brightness(50%);
   }
-      &:focus {
-        outline: 3px solid var(--bs-blue-300);
+  &:focus {
+    outline: 3px solid var(--bs-blue-300);
   }
-      border-radius: 3px;
+  border-radius: 3px;
 
-      padding: 1px;
-      `
+  padding: 1px;
+`
 
 export const CopyButton = ({
   text,
@@ -215,6 +230,6 @@ export const GearButton = styled(
     )
   }
 )`
-        --bs-btn-bg: white; // override bootstrap button background transparency to match Figma
-        // TODO: make a generic outline secondary button that takes an icon as a child adn put on that level
-        `
+  --bs-btn-bg: white; // override bootstrap button background transparency to match Figma
+  // TODO: make a generic outline secondary button that takes an icon as a child adn put on that level
+`

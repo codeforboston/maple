@@ -1,7 +1,8 @@
 import { Role } from "components/auth/types"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
-import { Button } from "react-bootstrap"
+import { Button } from "../bootstrap"
+import { ButtonProps } from "react-bootstrap"
 import styled from "styled-components"
 
 export const StyledButton = styled(Button).attrs(props => ({
@@ -18,24 +19,25 @@ export const StyledButton = styled(Button).attrs(props => ({
   }
 `
 
-type ToggleButtonProps = {
+type ToggleButtonProps = ButtonProps & {
   stateTrueLabel: string
   stateFalseLabel: string
   toggleState: boolean
   onClick: () => void
 }
 
-export const ToggleButton = ({ stateTrueLabel, stateFalseLabel, toggleState, ...props }: ToggleButtonProps) => {
-
-  return (<Button {...props}>{toggleState ? stateTrueLabel : stateFalseLabel}</Button>)
+export const ToggleButton = ({ stateTrueLabel, stateFalseLabel, toggleState, className, ...rest }: ToggleButtonProps) => {
+  const theme = toggleState ? "btn-secondary" : "btn-outline-secondary btn-light"
+  return (
+    <Button className={`${theme} col-12 py-1 rounded-1 ${className} `}  {...rest}>{toggleState ? stateTrueLabel : stateFalseLabel}</Button>
+  )
 
 }
 
-export const ToggleProfilePrivate = styled(ToggleButton).attrs(props => ({
-  className: `${props.toggleState? "btn-secondary" : "btn-outline-secondary"
-    } col-12 py-1 rounded-1`
+export const ToggleProfilePulicity = styled(ToggleButton).attrs(props => ({
+  // className: `${props.toggleState ? "btn-secondary" : "btn-outline-secondary"} col-12 py-1 rounded-1 ${props.className} `
 }))`
-  ${props =>
+  /* ${props =>
     props.toggleState
       ? `&:focus {
     color: var(--bs-secondary);
@@ -57,7 +59,7 @@ export const ToggleProfilePrivate = styled(ToggleButton).attrs(props => ({
       color: var(--bs-secondary);
       background-color: white;
       border-color: var(--bs-secondary);
-    }`}
+    }`} */
 `
 
 export const EditProfileButton = ({ className }: { className?: string }) => {

@@ -1,8 +1,8 @@
-import { TabContent } from "react-bootstrap"
+import { NavProps, TabContent } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
-import { FC, PropsWithChildren } from "react"
+import { FC, PropsWithChildren, ReactNode } from "react"
 
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
@@ -37,6 +37,26 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
     margin-left: 0;
   }
 `
+
+type TabNavWrapperProps = NavProps & { tabs: { title: string, eventKey: string, content: ReactNode }[], }
+
+export const TabNavWrapper = ({ tabs, className, ...props }: TabNavWrapperProps) => {
+  return <Nav className={`d-flex mb-3 text-center h3 color-dark ${className}`} {...props}  >
+    {tabs.map((t, i) => (
+      <Nav.Item className={`flex-grow-1 w-auto`} key={t.eventKey}>
+        <Nav.Link
+          eventKey={t.eventKey}
+          className={`rounded-top m-0 p-0`}
+        >
+          <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
+          <hr className={`my-0`} />
+        </Nav.Link>
+      </Nav.Item>
+    ))}
+  </Nav>
+}
+
+
 
 // export const StyledSaveButton = styled(Button)`
 //   margin-top: 2rem;
