@@ -25,17 +25,13 @@ export const EditProfileHeader = ({
       <Col className={`align-self-end`}>
         <h1 className={`display-3`}>{t("header")}</h1>
       </Col>
-      <Col xs={12} md={2} className={`d-grid gap-2 justify-content-end`}>
+      <Col xs={12} md={2} className={`d-grid gap-2`}>
         <OutlineButton
           label={t("settings")}
-          className={`pt-1 pb-0 text-decoration-none text-nowrap text-capitalize`}
           Icon={GearIcon}
-          disabled={!formUpdated}
           onClick={() => onSettingsModalOpen()}
         />
         <FillButton
-          className={`py-1 text-decoration-none text-nowrap`}
-          disabled={!formUpdated}
           href={`/profile?id=${uid}`}
           label={
             role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")

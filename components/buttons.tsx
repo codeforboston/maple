@@ -101,7 +101,7 @@ export const FillButton = ({
     <Button
       variant={variant}
       type="submit"
-      className={`${className}`}
+      className={`py-2 col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
       {...rest}
     >
       {Icon && Icon}
@@ -126,7 +126,7 @@ export const OutlineButton = ({
     <Button
       variant={variant}
       type="submit"
-      className={`d-flex justify-content-center align-items-baseline btn-hover-secondary ${className}`}
+      className={`py-2 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-baseline btn-hover-secondary ${className}`}
       {...rest}
     >
       {Icon && Icon}

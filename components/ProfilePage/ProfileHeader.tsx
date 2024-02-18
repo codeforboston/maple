@@ -75,7 +75,7 @@ export function ProfileButtonsUser({
     onProfilePublicityChanged(!isProfilePublic)
   }
   return (
-    <div className={`d-grid gap-1 col-12 m-3`}>
+    <div className={`d-grid gap-2 col-12 m-3`}>
       <EditProfileButton />
       <ToggleButton
         toggleState={isProfilePublic || false}

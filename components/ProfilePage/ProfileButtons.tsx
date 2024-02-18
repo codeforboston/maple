@@ -25,9 +25,9 @@ export const EditProfileButton = ({ className }: { className?: string }) => {
   return (
     <Internal
       href="/editprofile"
-      className={`text-decoration-none text-white d-flex col-12 ${className}`}
+      className={`text-decoration-none text-white d-flex justify-content-center align-items-center col-12 ${className}`}
     >
-      <FillButton className={`col-12 py-1`} label={t("button.editProfile")} />
+      <FillButton label={t("button.editProfile")} />
     </Internal>
   )
 }
