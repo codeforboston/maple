@@ -1,18 +1,13 @@
+import { FillButton, OutlineButton, ToggleButton } from "components/buttons"
+import { flags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 import { Dispatch, ReactNode, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
 import styled from "styled-components"
-import { Frequency } from "../auth"
-import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
+import { Frequency, Role } from "../auth"
+import { Button, Col, Form, Image, Modal, Row } from "../bootstrap"
 import { ProfileHook } from "../db"
-import { Role } from "../auth"
-import {
-  ToggleProfilePulicity
-} from "components/ProfilePage/ProfileButtons"
-import { ToggleButton } from "components/buttons"
-import { OutlineButton, FillButton } from "components/buttons"
-import { flags } from "components/featureFlags"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -92,6 +87,10 @@ function RenderPrivacyText(role: Role, isPublic: boolean) {
         return t("privacyText.publicUser")
       }
       return t("privacyText.privateUser")
+    case "admin":
+      return t("privacyText.admin")
+    default:
+      return t("privacyText.default")
   }
 }
 
@@ -210,16 +209,15 @@ export default function ProfileSettingsModal({
               <small>{privacyText}</small>
             </Col>
             <Col xs={4}>
-              {role === "user" && (
-                <ToggleButton
-                  size={'sm'}
-                  className={`btn-sm col-12 py-1 rounded-1`}
-                  toggleState={isProfilePublic}
-                  stateTrueLabel={t("forms.makePrivate")}
-                  stateFalseLabel={t("forms.makePublic")}
-                  onClick={() => setIsProfilePublic(current => !current)}
-                />
-              )}
+              <ToggleButton
+                disabled={role !== "user"}
+                size={'sm'}
+                className={`btn-sm col-12 py-1 rounded-1`}
+                toggleState={isProfilePublic}
+                stateTrueLabel={t("forms.makePublic")}
+                stateFalseLabel={t("forms.makePrivate")}
+                onClick={() => setIsProfilePublic(current => !current)}
+              />
             </Col>
           </Row>
 
