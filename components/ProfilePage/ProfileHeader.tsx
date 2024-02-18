@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
 import { FollowButton } from "./FollowButton"; // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
-import { EditProfileButton, ToggleProfilePulicity } from "./ProfileButtons"
+import { EditProfileButton } from "./ProfileButtons"
 import { ToggleButton } from "components/buttons"
 
 export const ProfileHeader = ({

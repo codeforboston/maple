@@ -7,6 +7,9 @@ import { Container, Nav, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
+  Testimony,
+  UseDraftTestimonyListing,
+  UsePublishedTestimonyListing,
   useDraftTestimonyListing,
   useProfile,
   usePublishedTestimonyListing
@@ -16,11 +19,10 @@ import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
-  EditProfileTabContent,
+  StyledTabContent,
   StyledTabNav,
-  TabNav,
-  TabNavWrapper,
-  TabType
+  TabNavItem,
+  TabNavWrapper
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { EditProfileHeader } from "./EditProfileHeader"
@@ -79,9 +81,9 @@ export function EditProfileForm({
 
   const close = () => setSettingsModal(null)
 
-  const publishedTestimonies = usePublishedTestimonyListing({ uid: uid })
+  const publishedTestimonies: UsePublishedTestimonyListing = usePublishedTestimonyListing({ uid: uid })
 
-  const draftTestimonies = useDraftTestimonyListing({ uid: uid })
+  const draftTestimonies: UseDraftTestimonyListing = useDraftTestimonyListing({ uid: uid })
 
   let isOrg = profile.role === "organization"
 
@@ -92,7 +94,7 @@ export function EditProfileForm({
   const { t } = useTranslation("editProfile")
 
 
-  const tabs: TabType[] = [
+  const tabs = [
     {
       title: t("tabs.personalInfo"),
       eventKey: "AboutYou",
@@ -112,9 +114,8 @@ export function EditProfileForm({
       eventKey: "Testimonies",
       content: (
         <TestimoniesTab
-          publishedTestimonies={publishedTestimonies.items.result}
-          draftTestimonies={draftTestimonies.result}
-          className="mt-3 mb-4"
+          publishedTestimonies={publishedTestimonies.items.result ?? []}
+          draftTestimonies={draftTestimonies.result ?? []}
         />
       )
     },
@@ -137,8 +138,19 @@ export function EditProfileForm({
           role={profile.role}
         />
         <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-          {tabs.map((tab, index) => <TabNav key={index} i={index} tab={tab} />)}
-          <EditProfileTabContent tabs={tabs} />
+          <TabNavWrapper>
+            {tabs.map((t, i) => (<>
+              <TabNavItem tab={t} i={i} />
+            </>
+            ))}
+          </TabNavWrapper>
+          <StyledTabContent>
+            {tabs.map(t => (
+              <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+                {t.content}
+              </TabPane>
+            ))}
+          </StyledTabContent>
         </TabContainer>
       </Container>
       <ProfileSettingsModal

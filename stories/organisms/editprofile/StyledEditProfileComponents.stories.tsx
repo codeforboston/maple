@@ -8,11 +8,18 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
     <>
       <SC.Header>Header</SC.Header>
       <SC.OrgIconSmall />
+      <div>styled tab nav</div>
       <SC.StyledTabNav>TabNav</SC.StyledTabNav>
+      <div>end tabnav</div>
+      <div>styled tab content</div>
       <SC.StyledTabContent>{children}</SC.StyledTabContent>
+      <div>end tab content</div>
       <SC.StyledHr />
       {/* <SC.StyledSaveButton>Save Button</SC.StyledSaveButton> */}
-      <SC.VerifiedBadge />
+      <div className={`col-2`}>
+
+        <SC.VerifiedBadge><div className={"verifiedText"}>verified badge</div></SC.VerifiedBadge>
+      </div>
     </>
   )
 }

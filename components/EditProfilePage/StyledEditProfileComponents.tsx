@@ -3,6 +3,7 @@ import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { Col, Button, Nav, NavDropdown, Row } from "../bootstrap"
 import { FC, PropsWithChildren, ReactNode } from "react"
+import { ProfileIcon } from "components/ProfilePage/StyledUserIcons"
 
 export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
@@ -37,40 +38,37 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
     margin-left: 0;
   }
 `
-type TabNavWrapperProps = NavProps & {
-  tabs: { title: string; eventKey: string; content: ReactNode }[]
-}
+
 
 export const TabNavWrapper = ({
-  tabs,
+  children,
   className,
   ...props
-}: TabNavWrapperProps) => {
+}: NavProps) => {
   return (
-    <Nav
-      className={`d-flex mb-3 text-center h3 color-dark ${className}`}
-      {...props}
-    >
-      {tabs.map((t, i) => (
-        <Nav.Item className={`flex-grow-1 w-auto`} key={t.eventKey}>
-          <Nav.Link eventKey={t.eventKey} className={`rounded-top m-0 p-0`}>
-            <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
-            <hr className={`my-0`} />
-          </Nav.Link>
-        </Nav.Item>
-      ))}
+    <Nav className={`d-flex mb-3 text-center h3 color-dark ${className}`} {...props} >
+      {children}
     </Nav>
   )
 }
 
-export const TabNav = ({ tab, i: i }: { tab: TabType, i: number }) => {
+export const TabNavLink = styled(Nav.Link).attrs(props => ({
+  className: `rounded-top m-0 p-0 ${props.className}`
+}))`
+  .active {
+    color: #c71e32;
+  }
+`
 
-  return <Nav.Item className={`flex-grow-1 w-auto`} key={tab.eventKey}>
-    <Nav.Link eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
-      <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
-      <hr className={`my-0`} />
-    </Nav.Link>
-  </Nav.Item>
+export const TabNavItem = ({ tab, i: i, className }: { tab: TabType; i: number, className?: string }) => {
+  return (
+    <Nav.Item className={`flex-grow-1 w-auto ${className}`} key={tab.eventKey}>
+      <Nav.Link eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
+        <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
+        <hr className={`my-0`} />
+      </Nav.Link>
+    </Nav.Item>
+  )
 }
 
 // export const StyledSaveButton = styled(Button)`
@@ -146,8 +144,7 @@ export const Header = styled(Row)`
   margin-bottom: 3.5rem;
   align-items: center;
 `
-
-export const OrgIconSmall = styled(Image).attrs(props => ({
+export const OrgIconSmallStyled = styled(Image).attrs(props => ({
   alt: "",
   src: props.src || "/profile-org-icon.svg",
   className: props.className
@@ -158,6 +155,14 @@ export const OrgIconSmall = styled(Image).attrs(props => ({
   border-radius: 50%;
   background-color: var(--bs-white);
   flex: 0;
+`
+export const OrgIconSmall = styled(ProfileIcon).attrs(props => ({
+  className: props.className,
+  role: "organization"
+}))`
+  height: 3rem;
+  width: 3rem;
+  margin: 1rem;
 `
 
 export const VerifiedBadge = styled.div.attrs(props => ({

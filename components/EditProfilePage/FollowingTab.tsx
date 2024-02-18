@@ -269,7 +269,7 @@ function FollowedItem({
               <Col className={"align-items-center d-flex"}>
                 <OrgIconSmall
                   className="mr-4 mt-0 mb-0 ms-0"
-                  src={profile?.profileImage}
+                  profileImage={profile?.profileImage}
                 />
                 <Internal href={`/profile?id=${element?.profileId}`}>
                   {fullName}

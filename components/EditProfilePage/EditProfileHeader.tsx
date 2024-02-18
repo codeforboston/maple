@@ -1,7 +1,11 @@
 import { useTranslation } from "next-i18next"
 import { Role } from "../auth"
 import { Button, Col, Row, Stack } from "../bootstrap"
-import { FillButton, GearButton } from "../buttons"
+import {
+  FillButton,
+  GearIcon,
+  OutlineButton
+} from "../buttons"
 
 export const EditProfileHeader = ({
   formUpdated,
@@ -22,16 +26,16 @@ export const EditProfileHeader = ({
         <h1 className={`display-3`}>{t("header")}</h1>
       </Col>
       <Col xs={12} md={2} className={`d-grid gap-2 justify-content-end`}>
-        <GearButton
-          variant="outline-secondary"
-          disabled={!!formUpdated}
+        <OutlineButton
+          label={t("settings")}
+          className={`pt-1 pb-0 text-decoration-none text-nowrap text-capitalize`}
+          Icon={GearIcon}
+          disabled={!formUpdated}
           onClick={() => onSettingsModalOpen()}
-        >
-          {t("settings")}
-        </GearButton>
+        />
         <FillButton
-          className={`btn py-1 fs-5 ml-2 text-decoration-none text-nowrap`}
-          disabled={!!formUpdated}
+          className={`py-1 text-decoration-none text-nowrap`}
+          disabled={!formUpdated}
           href={`/profile?id=${uid}`}
           label={
             role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")

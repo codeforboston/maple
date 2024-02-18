@@ -8,9 +8,11 @@ const StyledCard = styled(Card)`
   background: var(--bs-blue);
   border: none;
   color: white;
-  font-family: Nunito;
+  /* font-family: Nunito; */
   padding: 1.5rem 2rem;
 `
+
+
 
 export const TestimonyFAQ = ({ className }: { className: string }) => {
   const { t } = useTranslation("editProfile")
@@ -30,10 +32,6 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
         <h4>{t("testimonies.edit")}</h4>
         <p>{t("testimonies.editTip1")}</p>
         <p> {t("testimonies.editTip2")}</p>
-        {/* hiding for soft launch
-        <hr></hr>
-        <h4>Rescinding testimony </h4>
-        <p>Testimonies can't be deleted but are hidden from the platform</p> */}
       </Card.Body>
     </StyledCard>
   )
