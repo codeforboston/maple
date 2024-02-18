@@ -7,6 +7,7 @@ import { Profile } from "../db"
 import { FollowButton } from "./FollowButton"; // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
 import { EditProfileButton, ToggleProfilePulicity } from "./ProfileButtons"
+import { ToggleButton } from "components/buttons"
 
 export const ProfileHeader = ({
   profileId,
@@ -76,13 +77,14 @@ export function ProfileButtonsUser({
   return (
     <div className={`d-grid gap-1 col-12 m-3`}>
       <EditProfileButton />
-      <ToggleProfilePulicity
-        toggleState={isProfilePublic ?? false}
+      <ToggleButton
+        toggleState={isProfilePublic || false}
         stateTrueLabel={t("forms.makePrivate")}
         stateFalseLabel={t("forms.makePublic")}
         onClick={handleSave}
+        className={`py-1`}
       >
-      </ToggleProfilePulicity>
+      </ToggleButton>
     </div>
   )
 }

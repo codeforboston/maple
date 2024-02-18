@@ -3,7 +3,7 @@ import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 import { Button } from "../bootstrap"
 import styled from "styled-components"
-import { ToggleButton } from "components/buttons"
+import { FillButton, ToggleButton } from "components/buttons"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -19,17 +19,15 @@ export const StyledButton = styled(Button).attrs(props => ({
   }
 `
 
-export const ToggleProfilePulicity = styled(ToggleButton)
-
 export const EditProfileButton = ({ className }: { className?: string }) => {
   const { t } = useTranslation("profile")
 
   return (
     <Internal
       href="/editprofile"
-      className={`text-decoration-none text-white ${className}`}
+      className={`text-decoration-none text-white d-flex col-12 ${className}`}
     >
-      <StyledButton>{t("button.editProfile")}</StyledButton>
+      <FillButton className={`col-12 py-1`} label={t("button.editProfile")} />
     </Internal>
   )
 }
@@ -43,7 +41,7 @@ export const ProfileEditToggle = ({ formUpdated, uid, role }: Props) => {
   const { t } = useTranslation(["profile", "editProfile"])
   return (
     <Button
-      className={`btn - lg py - 1 ml - 2 text - decoration - none`}
+      className={`btn-lg py-1 ml-2 text-decoration-none`}
       disabled={!!formUpdated}
       href={`/ profile ? id = ${uid} `}
     >
