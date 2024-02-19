@@ -117,7 +117,9 @@ export const PublishingToMAPLE = () => {
           will remain available.
         </NoteItem>
         <NoteItem>
-          Since MAPLE is an archive, you cannot remove your testimony from the site. You may request a deletion in certain circumstances (see our <a href="/about/faq-page">FAQ page</a>) 
+          Since MAPLE is an archive, you cannot remove your testimony from the
+          site. You may request a deletion in certain circumstances (see our{" "}
+          <a href="/about/faq-page">FAQ page</a>)
         </NoteItem>
         <NoteItem>Don't forget to send the email to your legislator.</NoteItem>
       </ul>

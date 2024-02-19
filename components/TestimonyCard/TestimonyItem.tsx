@@ -238,30 +238,26 @@ export const TestimonyItem = ({
               </FooterButton>
             </Col>
           )}
-          
+
           {isUser && (
             <Col>
               <FooterButton variant="link">
                 <Internal
-              className={styles.link}
-              href={formUrl(testimony.billId, testimony.court)}
-            >Edit
-              <Image
-                className="px-2 ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                height={40}
-                width={40}
-              />
-            </Internal>
+                  className={styles.link}
+                  href={formUrl(testimony.billId, testimony.court)}
+                >
+                  Edit
+                  <Image
+                    className="px-2 ms-auto align-self-center"
+                    src="/edit-testimony.svg"
+                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    height={40}
+                    width={40}
+                  />
+                </Internal>
               </FooterButton>
-
-            
             </Col>
-            
-
           )}
-
         </Row>
       </Stack>
 

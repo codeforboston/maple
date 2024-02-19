@@ -31,24 +31,29 @@ export const SelectRecipients = styled(props => {
   return (
     <div {...props}>
       <Row className="d-flex">
-        <Col className="fs-4" md={9} xs={12}>Email Recipients</Col>
-        <Col md={3} xs={12}><RecipientControls /></Col>
+        <Col className="fs-4" md={9} xs={12}>
+          Email Recipients
+        </Col>
+        <Col md={3} xs={12}>
+          <RecipientControls />
+        </Col>
       </Row>
       <SelectLegislatorEmails className="my-2" />
       <Row className="d-flex">
         <Col md={3}>
-        {email.to ? <CopyButton
-        key="copy"
-        variant="outline-secondary"
-        text={email.to}
-        className="copy py-1 px-2"
-        format="text/plain"
-      >
-        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-      </CopyButton> : null}
+          {email.to ? (
+            <CopyButton
+              key="copy"
+              variant="outline-secondary"
+              text={email.to}
+              className="copy py-1 px-2"
+              format="text/plain"
+            >
+              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+            </CopyButton>
+          ) : null}
         </Col>
       </Row>
-      
     </div>
   )
 })`
@@ -118,19 +123,6 @@ const RecipientControls = styled(({ className }) => {
         Add My Legislators
       </Button>
     )
-
-  // if (email.to)
-  //   buttons.push(
-  //     <CopyButton
-  //       key="copy"
-  //       variant="outline-secondary"
-  //       text={email.to}
-  //       className="copy"
-  //       format="text/plain"
-  //     >
-  //       <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-  //     </CopyButton>
-  //   )
 
   return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
 })`
