@@ -125,18 +125,6 @@ export const TestimonyItem = ({
       <div className={`border-0 h5 d-flex`}>
         {isMobile && isUser && (
           <>
-            <Internal
-              className={styles.link}
-              href={formUrl(testimony.billId, testimony.court)}
-            >
-              <Image
-                className="px-2 ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                height={50}
-                width={50}
-              />
-            </Internal>
             {/**
              * visually-hidden until delete is ready at a later stage
              */}
@@ -250,6 +238,30 @@ export const TestimonyItem = ({
               </FooterButton>
             </Col>
           )}
+          
+          {isUser && (
+            <Col>
+              <FooterButton variant="link">
+                <Internal
+              className={styles.link}
+              href={formUrl(testimony.billId, testimony.court)}
+            >Edit
+              <Image
+                className="px-2 ms-auto align-self-center"
+                src="/edit-testimony.svg"
+                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                height={40}
+                width={40}
+              />
+            </Internal>
+              </FooterButton>
+
+            
+            </Col>
+            
+
+          )}
+
         </Row>
       </Stack>
 
