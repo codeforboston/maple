@@ -1,7 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { userEvent, within } from "@storybook/testing-library"
 import { EditProfileButton } from "components/ProfilePage/ProfileButtons"
-import { GearButton, HighContrastButton, ToggleButton } from "components/buttons"
+import {
+  GearButton,
+  HighContrastButton,
+  ToggleButton
+} from "components/buttons"
 import { Button, Col } from "react-bootstrap"
 import styled from "styled-components"
 
@@ -13,7 +17,6 @@ const meta: Meta = {
 }
 
 type Story = StoryObj<typeof BaseButton>
-
 
 export const Primary: Story = {
   args: {
@@ -43,7 +46,9 @@ export const EditButton: Story = {
   decorators: [
     Story => (
       <div className={`w-25 p-5 border border-warning rounded-4`}>
-        <Col className={`d-flex flex-column justify-content-center align-items-center gap-2`}>
+        <Col
+          className={`d-flex flex-column justify-content-center align-items-center gap-2`}
+        >
           <Story />
         </Col>
       </div>
@@ -69,29 +74,34 @@ export const EditButton: Story = {
 }
 
 export const ContrastButtons: Story = {
-  render: (args) => {
+  render: args => {
     return (
       <div className={`d-flex gap-3`}>
-        <HighContrastButton state={true} baseFill="outline" label="True base outline" />
+        <HighContrastButton
+          state={true}
+          baseFill="outline"
+          label="True base outline"
+        />
         <HighContrastButton state={false} label="False basefill " />
         <ToggleButton
-          size={'sm'}
+          size={"sm"}
           className={`btn-sm`}
           toggleState={true}
           stateTrueLabel={"Toggle state true"}
           stateFalseLabel={"Toggle state false"}
-          onClick={() => console.log("toggle")} />
+          onClick={() => console.log("toggle")}
+        />
         <ToggleButton
-          size={'sm'}
+          size={"sm"}
           className={`btn-sm`}
           toggleState={false}
           stateTrueLabel={"Toggle state true"}
           stateFalseLabel={"Toggle state false"}
-          onClick={() => console.log("toggle")} />
+          onClick={() => console.log("toggle")}
+        />
       </div>
     )
   }
 }
-
 
 export default meta

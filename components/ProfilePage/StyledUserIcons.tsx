@@ -7,7 +7,7 @@ type ProfileIconProps = {
   role?: Role
   className?: string
   large?: boolean
-  size?: 'small' | 'large'
+  size?: "small" | "large"
 }
 
 export const BaseProfileIcon = ({
@@ -29,8 +29,7 @@ export const BaseProfileIcon = ({
 }
 
 export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(
-  props => ({
-  })
+  props => ({})
 )`
   height: ${({ large }) => (large ? "7rem" : "5rem")};
   width: ${({ large }) => (large ? "7rem" : "5rem")};

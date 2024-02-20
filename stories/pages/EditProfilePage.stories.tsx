@@ -26,10 +26,8 @@ const meta: Meta = {
 
 export default meta
 
-
 /* The 'editprofileform' component is the visual top for the edit profile page. The EditProfile component that wraps it provides the user data from hooks, but we can pass it as an object here. As we build out providers and mocking in storybook we can revisit this. */
 type Story = StoryObj<typeof EditProfileForm>
-
 
 export const Primary: Story = {
   args: {
@@ -58,7 +56,7 @@ export const Primary: Story = {
       orgCategories: ["Education", "Other"]
     },
     actions: {} as ProfileHook,
-    uid: "123",
+    uid: "123"
   },
   name: "EditProfile"
 }

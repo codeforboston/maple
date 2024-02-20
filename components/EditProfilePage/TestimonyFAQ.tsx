@@ -12,8 +12,6 @@ const StyledCard = styled(Card)`
   padding: 1.5rem 2rem;
 `
 
-
-
 export const TestimonyFAQ = ({ className }: { className: string }) => {
   const { t } = useTranslation("editProfile")
   return (

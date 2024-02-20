@@ -17,8 +17,9 @@ const EditProfileComponents: FC<{ children: ReactNode }> = ({ children }) => {
       <SC.StyledHr />
       {/* <SC.StyledSaveButton>Save Button</SC.StyledSaveButton> */}
       <div className={`col-2`}>
-
-        <SC.VerifiedBadge><div className={"verifiedText"}>verified badge</div></SC.VerifiedBadge>
+        <SC.VerifiedBadge>
+          <div className={"verifiedText"}>verified badge</div>
+        </SC.VerifiedBadge>
       </div>
     </>
   )

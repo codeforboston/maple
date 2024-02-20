@@ -149,7 +149,8 @@ export function PersonalInfoTab({
               register={register}
               category={category}
               setCategory={setCategory}
-            />)}
+            />
+          )}
 
           <div className="mb-3">
             <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
@@ -242,39 +243,40 @@ export function PersonalInfoTab({
 
       <Row>
         <Col>
-          <Button className={`mt-2 mb-3 w-100 rounded-1`} type="submit">{t("saveChanges")}</Button>
+          <Button className={`mt-2 mb-3 w-100 rounded-1`} type="submit">
+            {t("saveChanges")}
+          </Button>
         </Col>
       </Row>
     </Form>
   )
 }
 
-
 function SelectOrgCategory({ t, register, category, setCategory }: any) {
-
-  return <Form.Group className="mt-3" controlId="orgCategory">
-    <Form.FloatingLabel label={t("forms.selectOrgCategory")}>
-      <Form.Select
-        as="select"
-        value={category}
-        {...register("orgCategory", {
-          onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setCategory(e.target.value)
-        })}
-      >
-        {OrgCategories.map(c => (
-          <>
-            <option value={c}>{c}</option>
-          </>
-        ))}
-      </Form.Select>
-    </Form.FloatingLabel>
-  </Form.Group>
+  return (
+    <Form.Group className="mt-3" controlId="orgCategory">
+      <Form.FloatingLabel label={t("forms.selectOrgCategory")}>
+        <Form.Select
+          as="select"
+          value={category}
+          {...register("orgCategory", {
+            onChange: (e: React.ChangeEvent<HTMLSelectElement>) =>
+              setCategory(e.target.value)
+          })}
+        >
+          {OrgCategories.map(c => (
+            <>
+              <option value={c}>{c}</option>
+            </>
+          ))}
+        </Form.Select>
+      </Form.FloatingLabel>
+    </Form.Group>
+  )
 }
-
-
 
 const SocialInput = styled(Input)`
-label {
-  display: inline-block !important;
-}
+  label {
+    display: inline-block !important;
+  }
 `

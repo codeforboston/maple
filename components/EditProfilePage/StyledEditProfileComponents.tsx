@@ -39,14 +39,12 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   }
 `
 
-
-export const TabNavWrapper = ({
-  children,
-  className,
-  ...props
-}: NavProps) => {
+export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
   return (
-    <Nav className={`d-flex mb-3 text-center h3 color-dark ${className}`} {...props} >
+    <Nav
+      className={`d-flex mb-3 text-center h3 color-dark ${className}`}
+      {...props}
+    >
       {children}
     </Nav>
   )
@@ -60,7 +58,15 @@ export const TabNavLink = styled(Nav.Link).attrs(props => ({
   }
 `
 
-export const TabNavItem = ({ tab, i: i, className }: { tab: TabType; i: number, className?: string }) => {
+export const TabNavItem = ({
+  tab,
+  i: i,
+  className
+}: {
+  tab: TabType
+  i: number
+  className?: string
+}) => {
   return (
     <Nav.Item className={`flex-grow-1 w-auto ${className}`} key={tab.eventKey}>
       <Nav.Link eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>

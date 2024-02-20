@@ -81,9 +81,12 @@ export function EditProfileForm({
 
   const close = () => setSettingsModal(null)
 
-  const publishedTestimonies: UsePublishedTestimonyListing = usePublishedTestimonyListing({ uid: uid })
+  const publishedTestimonies: UsePublishedTestimonyListing =
+    usePublishedTestimonyListing({ uid: uid })
 
-  const draftTestimonies: UseDraftTestimonyListing = useDraftTestimonyListing({ uid: uid })
+  const draftTestimonies: UseDraftTestimonyListing = useDraftTestimonyListing({
+    uid: uid
+  })
 
   let isOrg = profile.role === "organization"
 
@@ -92,7 +95,6 @@ export function EditProfileForm({
   isOrg = isOrg || isPendingUpgrade
 
   const { t } = useTranslation("editProfile")
-
 
   const tabs = [
     {
@@ -139,9 +141,10 @@ export function EditProfileForm({
         />
         <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
           <TabNavWrapper>
-            {tabs.map((t, i) => (<>
-              <TabNavItem tab={t} i={i} />
-            </>
+            {tabs.map((t, i) => (
+              <>
+                <TabNavItem tab={t} i={i} />
+              </>
             ))}
           </TabNavWrapper>
           <StyledTabContent>

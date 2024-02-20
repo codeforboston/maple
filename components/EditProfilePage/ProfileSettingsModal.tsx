@@ -158,7 +158,7 @@ export default function ProfileSettingsModal({
               </Col>
               <Col className={`col-fill`}>
                 <ToggleButton
-                  size={'sm'}
+                  size={"sm"}
                   toggleState={notifications === "None"}
                   stateTrueLabel={t("enable")}
                   stateFalseLabel={t("enabled")}
@@ -169,16 +169,15 @@ export default function ProfileSettingsModal({
               </Col>
             </Row>
           </HideableSection>
-          <HideableSection hideIf={!flags().notifications || notifications === "None"}>
-            <Row
-              className={`p-2 d-flex justify-content-start`}
-            >
+          <HideableSection
+            hideIf={!flags().notifications || notifications === "None"}
+          >
+            <Row className={`p-2 d-flex justify-content-start`}>
               <Col className={`col-8`}>
                 <small>{t("email.frequencyQuery")}</small>
               </Col>
               <Col className={`col-auto ms-auto d-flex flex-grow-1`}>
-                <Dropdown
-                  align="end" className={`flex-grow-1 d-flex`}>
+                <Dropdown align="end" className={`flex-grow-1 d-flex`}>
                   <Dropdown.Toggle
                     className={`btn-sm btn-light py-1 flex-grow-1 d-flex justify-content-evenly align-items-center`}
                     variant="outline-secondary"
@@ -202,16 +201,14 @@ export default function ProfileSettingsModal({
             </Row>
           </HideableSection>
           <ModalSubheader title={t("privacySetting")} />
-          <Row
-            className={`p-2 d-flex justify-content-start`}
-          >
+          <Row className={`p-2 d-flex justify-content-start`}>
             <Col>
               <small>{privacyText}</small>
             </Col>
             <Col xs={4}>
               <ToggleButton
                 disabled={role !== "user"}
-                size={'sm'}
+                size={"sm"}
                 className={`btn-sm col-12 py-1 rounded-1`}
                 toggleState={isProfilePublic}
                 stateTrueLabel={t("forms.makePublic")}
@@ -221,7 +218,7 @@ export default function ProfileSettingsModal({
             </Col>
           </Row>
 
-          <Row className={`p-2`} >
+          <Row className={`p-2`}>
             <Col className={`d-flex gap-3`}>
               <FillButton
                 size="sm"

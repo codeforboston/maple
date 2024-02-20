@@ -4,7 +4,7 @@ import { ProfileIcon } from "./StyledUserIcons"
 import { ProfileHook, useProfile } from "components/db"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton"; // TODO: move to /shared
+import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
 import { EditProfileButton } from "./ProfileButtons"
 import { ToggleButton } from "components/buttons"
@@ -83,8 +83,7 @@ export function ProfileButtonsUser({
         stateFalseLabel={t("forms.makePublic")}
         onClick={handleSave}
         className={`py-1`}
-      >
-      </ToggleButton>
+      ></ToggleButton>
     </div>
   )
 }

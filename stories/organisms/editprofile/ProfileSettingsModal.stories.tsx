@@ -6,7 +6,6 @@ import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
 import { Image } from "components/bootstrap"
 
-
 const meta: Meta = {
   title: "Organisms/Edit Profile/ProfileSettingsModal",
   component: ProfileSettingsModal,
@@ -43,15 +42,14 @@ export const Primary: Story = {
 const EmailIcon = () => {
   return (
     <>
-    
-    <Image
-      className={`pe-1`}
-      src="/mail.svg"
-      alt="open envelope with letter, toggles update frequency options"
-      width="22"
-      // height="19"
+      <Image
+        className={`pe-1`}
+        src="/mail.svg"
+        alt="open envelope with letter, toggles update frequency options"
+        width="22"
+        // height="19"
       />
-      </>
+    </>
   )
 }
 
