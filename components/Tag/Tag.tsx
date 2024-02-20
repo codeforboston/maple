@@ -29,6 +29,6 @@ const Wrapper = styled.span<{ chamber: Chamber }>`
     chamber === "joint" ? "border: 1px solid var(--bs-gray-dark)" : null};
 `
 
-export const Tag: FC<React.PropsWithChildren<Props>> = ({ chamber }) => (
+export const Tag: FC<Props> = ({ chamber }) => (
   <Wrapper chamber={chamber}>{chamber}</Wrapper>
 )

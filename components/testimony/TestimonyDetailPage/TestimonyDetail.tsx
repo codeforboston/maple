@@ -43,9 +43,7 @@ export const positionInfo = {
 }
 
 const PositionIcon: FC<
-  React.PropsWithChildren<
-    ImgHTMLAttributes<HTMLImageElement> & { position: Position }
-  >
+  ImgHTMLAttributes<HTMLImageElement> & { position: Position }
 > = ({ position, ...props }) => {
   const { action, ...positionProps } = positionInfo[position]
   return <img aria-label={action} {...props} {...positionProps} />
@@ -102,7 +100,7 @@ const Separator = styled.div`
   height: 1px;
 `
 
-export const TestimonyDetail: FC<React.PropsWithChildren<unknown>> = () => {
+export const TestimonyDetail: FC = () => {
   const { revision } = useCurrentTestimonyDetails()
 
   return (

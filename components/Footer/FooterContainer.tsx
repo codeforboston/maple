@@ -15,7 +15,7 @@ export const FooterContainer = styled(Container)`
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
-    color: (var(--bs-white));
+    color: rgba(255, 255, 255, 1);
   }
 
   .navbar-dark .navbar-nav .nav-link {
@@ -32,6 +32,7 @@ export const FooterContainer = styled(Container)`
   .dropdown-toggle[aria-expanded="true"]::after {
     width: 25px;
     padding: 0;
+    border: none;
     color: transparent;
     border: none;
     background: url("/angle-right-solid.svg") no-repeat;

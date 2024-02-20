@@ -11,5 +11,3 @@ dist.yml
 analysis/data
 dist
 *.handlebars
-coverage
-storybook-static

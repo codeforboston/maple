@@ -16,7 +16,7 @@ import { VersionBanner } from "./TestimonyVersionBanner"
 import { useAuth } from "components/auth"
 import { useMediaQuery } from "usehooks-ts"
 
-export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
+export const TestimonyDetailPage: FC = () => {
   const [isReporting, setIsReporting] = useState(false)
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess

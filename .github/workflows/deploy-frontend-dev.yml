@@ -1,0 +1,28 @@
+name: Deploy the frontend to the Development environment.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    # Disable while transitioning to Vercel
+    if: false
+    # Don't deploy forks, even if actions are enabled
+    # if: github.repository_owner == 'codeforboston'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Build Environment
+        uses: ./.github/actions/setup-repo
+      - name: Build Frontend
+        run: yarn run export
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          PROJECT_ID: digital-testimony-dev

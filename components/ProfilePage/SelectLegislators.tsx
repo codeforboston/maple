@@ -8,9 +8,7 @@ import {
 import { Loading, Search } from "../legislatorSearch"
 import { useTranslation } from "next-i18next"
 
-export const SelectLegislators: React.FC<
-  React.PropsWithChildren<unknown>
-> = () => {
+export const SelectLegislators: React.FC = () => {
   const { index, loading: searchLoading } = useMemberSearch(),
     profile = useProfile(),
     loading = profile.loading || searchLoading
@@ -22,12 +20,10 @@ export const SelectLegislators: React.FC<
   )
 }
 
-export const LegislatorForm: React.FC<
-  React.PropsWithChildren<{
-    index: MemberSearchIndex
-    profile: ProfileHook
-  }>
-> = ({ index, profile }) => {
+const LegislatorForm: React.FC<{
+  index: MemberSearchIndex
+  profile: ProfileHook
+}> = ({ index, profile }) => {
   const { t } = useTranslation("editProfile")
 
   return (

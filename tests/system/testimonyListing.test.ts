@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from "@testing-library/react"
+import { renderHook, act } from "@testing-library/react-hooks"
 import {
   TestimonyFilterOptions,
   usePublishedTestimonyListing
@@ -34,7 +34,7 @@ describe("usePublishedTestimonyListing", () => {
       if (user) {
         ;({ uid } = await testAuth.getUserByEmail(user))
       }
-      const { result } = renderHook(() =>
+      const { result, waitFor } = renderHook(() =>
         usePublishedTestimonyListing({ billId: bill, uid })
       )
       act(() => void result.current.setFilter(filter))

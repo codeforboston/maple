@@ -1,8 +1,9 @@
-import { createGetStaticTranslationProps } from "components/translations"
-import AdditionalResourcesCard from "../../components/AdditionalResources/AdditionalResourcesCard"
-import AdditionalResourcesCardContent from "../../components/AdditionalResources/AdditionalResourcesCardContent"
 import { Container } from "../../components/bootstrap"
 import { createPage } from "../../components/page"
+import AdditionalResourcesCard from "../../components/AdditionalResources/AdditionalResourcesCard"
+import AdditionalResourcesCardContent from "../../components/AdditionalResources/AdditionalResourcesCardContent"
+import styles from "../../components/AdditionalResources/AdditionalResourcesCard.module.css"
+import { createGetStaticTranslationProps } from "components/translations"
 
 const content = [
   {
@@ -61,10 +62,8 @@ export default createPage({
   Page: () => {
     return (
       <Container fluid="md" className="mt-3">
-        <h1 className={`fs-1 fw-bold text-center text-black`}>
-          Additional Resources
-        </h1>
-        <p className={`fs-4 mx-5 my-3`}>
+        <h1 className={styles.title}>Additional Resources</h1>
+        <p className={styles.subheader}>
           We hope these pages will help you submit effective testimony. You may
           want to consult these other resources to build a more detailed
           understanding of the legislative process and how you can contribute.
@@ -72,7 +71,7 @@ export default createPage({
         {content.map((value, index) => (
           <AdditionalResourcesCard key={index}>
             <AdditionalResourcesCardContent key={index}>
-              {value.paragraph.P1}
+              {value.paragraph}
             </AdditionalResourcesCardContent>
           </AdditionalResourcesCard>
         ))}

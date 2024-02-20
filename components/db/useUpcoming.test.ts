@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react-hooks"
 import { terminateFirebase, testDb, testTimestamp } from "../../tests/testUtils"
 import { useUpcomingBills } from "./useUpcomingBills"
 
@@ -25,7 +25,7 @@ describe("useUpcomingBills", () => {
         nextHearingAt: testTimestamp.now()
       })
 
-    const { result } = renderHook(() => useUpcomingBills())
+    const { waitFor, result } = renderHook(() => useUpcomingBills())
 
     await waitFor(() => expect(result.current).not.toHaveLength(0))
   })
@@ -37,7 +37,7 @@ describe("useUpcomingEvents", () => {
     const cutoff = DateTime.utc(2022, 3, 8)
     mockedMidnight.mockReturnValue(cutoff.toJSDate())
 
-    const { result } = renderHook(() => useUpcomingEvents())
+    const { waitFor, result } = renderHook(() => useUpcomingEvents())
 
     await waitFor(() => expect(result.current).not.toHaveLength(0))
   })

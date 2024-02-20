@@ -23,7 +23,6 @@ const Head = styled(BootstrapCard.Header)`
 const ViewTestimony = (
   props: UsePublishedTestimonyListing & {
     search?: boolean
-    totalTestimonies?: number | undefined
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
@@ -32,7 +31,6 @@ const ViewTestimony = (
   const {
     items,
     setFilter,
-    totalTestimonies,
     onProfilePage = false,
     className,
     pagination,
@@ -40,6 +38,7 @@ const ViewTestimony = (
   } = props
 
   const { user } = useAuth()
+
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
   const [activeTab, setActiveTab] = useState(1)
@@ -89,7 +88,7 @@ const ViewTestimony = (
   return (
     <Container>
       <MapleCard
-        className={`${className} bg-white`}
+        className={className}
         headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
         body={
           <BootstrapCard.Body>
@@ -108,7 +107,6 @@ const ViewTestimony = (
                 {onProfilePage && (
                   <Row className="justify-content-between mb-4">
                     <ShowPaginationSummary
-                      totalTestimonies={totalTestimonies}
                       testimony={testimony}
                       pagination={pagination}
                       t={t}
@@ -143,10 +141,7 @@ const ViewTestimony = (
                   ))}
 
                 {(pagination.hasPreviousPage || pagination.hasNextPage) && (
-                  <PaginationButtons
-                    pagination={pagination}
-                    totalItems={totalTestimonies}
-                  />
+                  <PaginationButtons pagination={pagination} />
                 )}
               </div>
             ) : (
@@ -165,31 +160,25 @@ const ViewTestimony = (
 export default ViewTestimony
 
 function ShowPaginationSummary({
-  totalTestimonies,
   testimony,
   pagination,
   t
 }: {
-  totalTestimonies?: number
   testimony: Testimony[]
   pagination: { currentPage: number; itemsPerPage: number }
   t: TFunction
 }) {
-  if (totalTestimonies === undefined) {
-    return null
-  }
-
   if (testimony.length < 1) {
     return null
   }
   const { currentPage, itemsPerPage } = pagination
 
   const currentPageStart = (currentPage - 1) * itemsPerPage
-  let currentPageEnd = Math.min(currentPage * itemsPerPage, totalTestimonies)
-  // if (currentPageEnd > totalTestimonies) {
-  //   currentPageEnd = totalTestimonies
-  // }
-  const totalItems = totalTestimonies
+  let currentPageEnd = currentPage * itemsPerPage
+  if (currentPageEnd > testimony.length) {
+    currentPageEnd = currentPageStart + (testimony.length % itemsPerPage)
+  }
+  const totalItems = testimony.length
 
   return (
     <Col className="d-flex align-items-center">

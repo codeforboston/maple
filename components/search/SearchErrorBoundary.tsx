@@ -1,9 +1,7 @@
-import React, { ReactNode } from "react"
+import React from "react"
 import { Alert } from "react-bootstrap"
 
-export class SearchErrorBoundary extends React.Component<{
-  children?: ReactNode
-}> {
+export class SearchErrorBoundary extends React.Component {
   state: { error: string | null } = { error: null }
 
   promiseRejectionHandler = (event: PromiseRejectionEvent) => {

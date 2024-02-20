@@ -21,8 +21,6 @@ export const Styled = styled.div`
   }
 `
 
-export const BillNumber: FC<React.PropsWithChildren<BillProps>> = ({
-  bill
-}) => {
+export const BillNumber: FC<BillProps> = ({ bill }) => {
   return <Styled>{externalBillLink(bill)}</Styled>
 }

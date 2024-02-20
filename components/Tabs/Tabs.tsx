@@ -5,7 +5,7 @@ type TabsProps = {
   tabs: {
     label: string
     index: number
-    Component: FC<React.PropsWithChildren<{ index: number }>>
+    Component: FC<{ index: number }>
   }[]
   selectedTab: number
   onClick: (index: number) => void
@@ -21,7 +21,7 @@ type TabsProps = {
  * @param onClick Function to set the active tab
  * @param orientation Tab orientation Vertical | Horizontal
  */
-const Tabs: FC<React.PropsWithChildren<TabsProps>> = ({
+const Tabs: FC<TabsProps> = ({
   className = "tabs-component",
   tabs = [],
   selectedTab = 0,

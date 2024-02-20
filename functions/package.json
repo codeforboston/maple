@@ -11,6 +11,9 @@
     "enable-cors-dev": "gsutil cors set cors.json gs://digital-testimony-dev.appspot.com",
     "enable-cors-prod": "gsutil cors set cors.json gs://digital-testimony-prod.appspot.com"
   },
+  "engines": {
+    "node": "16"
+  },
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/firestore": "^5.0.2",

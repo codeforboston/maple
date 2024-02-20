@@ -14,7 +14,7 @@ export default function BillTrackerConnectedView({
   ) : null
 }
 
-export const BillTrackerView = ({
+const BillTrackerView = ({
   tracker,
   className
 }: {

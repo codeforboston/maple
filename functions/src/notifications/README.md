@@ -12,19 +12,6 @@ The notification feature is responsible for sending notifications to users based
 
 ## Architecture
 
-### Events
-
-A user could be subscribed to a given topic, and receive a notification of a bill or profile (such as an organization) that fall under that topic have an event.
-
-Example event regarding a bill:
-![example-bill-event](/functions/src/notifications/images/example-bill-event.png)
-
-Example event regarding an organization:
-![example-org-event](/functions/src/notifications/images/example-bill-event.png)
-
-Example event created from the web scraper (notice the difference in fields):
-![example-scraped_hearing-event](/functions/src/notifications/images/example-scraped_hearing-event.png)
-
 ### Cloud Functions
 
 The following cloud functions are involved in the notification process:
@@ -35,16 +22,12 @@ The following cloud functions are involved in the notification process:
    - Populates the user's `userNotificationFeed` collection with a notification document.
    - Populates the newsfeed.
 
-   For example, here is a notification document in a given user's feed:
-
-![example-org-notification](/functions/src/notifications/images/example-org-notification.png)
-
-1. **deliverNotifications**:
+2. **deliverNotifications**:
 
    - Sends notifications to users who have a `notificationFrequency` of 'daily' and whose `nextDigestAt` is less than or equal to the current time.
    - Populates the `notification_mails` collection with a notification document.
 
-2. **cleanUpNotifications**:
+3. **cleanUpNotifications**:
    - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.
    - Removes notifications from the events collection that are older than 60 days.
    - Removes notifications from the notifications_mails collection that are older than 60 days.
@@ -63,9 +46,9 @@ Queries the `subscriptions` collection for users that have a `notificationFreque
 
 To test these functions in a container environment, use the following command:
 
-```bash
+\`\`\`bash
 yarn firebase-admin -e local run-script <name-of-script>
-```
+\`\`\`
 
 ## Future Considerations
 

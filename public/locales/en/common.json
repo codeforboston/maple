@@ -12,9 +12,10 @@
     "followed" : "Followed"
   },
   "orgs": "Organizations",
-  "newcomer" : "New to MAPLE? For extra support, check",
+  "newCommer" : "New to MAPLE",
+  "checkout": "Check out",
   "calendar": "Our Calendar",
-  "joinTraining": "and join an upcoming training session!",
+  "joinTraining": "to see and join an upcoming training session!",
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."

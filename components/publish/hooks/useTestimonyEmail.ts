@@ -12,7 +12,7 @@ export const useTestimonyEmail = () => {
 
   const to = share.recipients
       .map(r => `${r.Name} <${r.EmailAddress}>`)
-      .join(";"),
+      .join(","),
     billId = formatBillId(bill?.id!),
     intro = `As your constituent, I am writing to let you know that I ${
       positionActions[position!]
