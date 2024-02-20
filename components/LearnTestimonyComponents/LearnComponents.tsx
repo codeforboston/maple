@@ -5,7 +5,7 @@ import LearnTestimoniesCardContent from "./LearnTestimonies/LearnTestimoniesCard
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
 import LegislativeCard from "./LegislativeProcess/LegislativeCard"
 import LegislativeCardContent from "./LegislativeProcess/LegislativeCardContent"
-import styled from "styled-components"
+import { TestimonyHeader, TestimonySubheader } from "./StyledTestimonyComponents"
 
 const BasicsContent = [
   {
@@ -186,32 +186,6 @@ const LegislativeContent = [
     alt: "Document with clock"
   }
 ]
-
-// TODO: Maybe move these to CommonComponents
-const TestimonyHeader = styled.h1`
-  font-family: "Nunito";
-  font-size: 3rem;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: -1.88px;
-  text-align: left;
-  color: #000;
-`
-
-const TestimonySubheader = styled.p`
-  flex-grow: 0;
-  font-family: "Nunito";
-  font-size: 1.5rem;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: -0.63px;
-  text-align: left;
-  color: #000;
-`
 
 const Basics = () => {
   return (
