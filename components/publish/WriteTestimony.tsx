@@ -1,21 +1,17 @@
-import clsx from "clsx"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
-import { useAuth } from "../auth"
-import { Tab, Tabs } from "../bootstrap"
 import { Attachment } from "../CommentModal/Attachment"
+import { useAuth } from "../auth"
 import { useDraftTestimonyAttachment } from "../db"
 import { Maybe } from "../db/common"
-import Input, { InputProps } from "../forms/Input"
+import { TextArea } from "../forms/Input"
 import { useAppDispatch } from "../hooks"
-import { Loading } from "../legislatorSearch"
-import { useFormRedirection, usePublishState } from "./hooks"
+import * as links from "../links"
 import * as nav from "./NavigationButtons"
-import { setAttachmentId, setContent } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
-import * as links from "../links"
-import { TextArea } from "../forms/Input"
+import { useFormRedirection, usePublishState } from "./hooks"
+import { setAttachmentId, setContent } from "./redux"
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 
@@ -54,7 +50,9 @@ export const WriteTestimony = styled(props => {
 
       <div className="mt-4">
         <TextArea
-          {...write}
+          setContent={write.setContent}
+          content={write.content}
+          error={write.error}
           label="Testimony"
           placeholder="Add your testimony here"
           help="Testimony is limited to 10,000 characters."

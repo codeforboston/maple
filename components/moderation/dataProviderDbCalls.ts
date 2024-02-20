@@ -94,7 +94,7 @@ export const getMyOne = async (
   return { data: raData }
 }
 
-const listParamsDefault = {
+const listParamsDefault: GetListParams = {
   filter: {},
   sort: { field: "date", order: "DESC" },
   pagination: { page: 1, perPage: 50 }
@@ -117,22 +117,6 @@ export async function getMyMany<RecordType extends RaRecord>(
   const result = { data, total, pageInfo }
 
   return result
-}
-
-export async function updateMyMany<RecordType extends RaRecord = any>(
-  resource: string,
-  params: UpdateManyParams
-): Promise<UpdateManyResult> {
-  console.log("updating my many")
-  const { ids, data, meta } = params
-  const batch = writeBatch(firestore)
-  ids.forEach(id => {
-    const ref = doc(firestore, id as string)
-    batch.update(ref, data)
-  })
-  await batch.commit()
-
-  return { data: data }
 }
 
 export async function updateMyOne(

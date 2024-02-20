@@ -12,7 +12,9 @@ const providers = [Firebase, Auth, Profile, Search, LogRocket]
 
 const queryClient = new QueryClient()
 
-export const Providers: React.FC = ({ children }) => (
+export const Providers: React.FC<React.PropsWithChildren<unknown>> = ({
+  children
+}) => (
   <AriaSSRProvider>
     <BootstrapSSRProvider>
       <QueryClientProvider client={queryClient}>

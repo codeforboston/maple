@@ -1,5 +1,9 @@
 import { dump } from "js-yaml"
-import { formatTestimony, formatTestimonyDiff } from "./formatting"
+import {
+  formatTestimony,
+  formatTestimonyDiff,
+  formatTestimonyPlaintext
+} from "./formatting"
 const curr = `
 Testimony Version 2
 
@@ -39,6 +43,8 @@ describe("formatTestimony", () => {
     md: string
     html?: string
     check?: (html: string) => void
+    plainText?: string
+    checkPlain?: (plain: string) => void
   }>([
     {
       testCase: "empty",
@@ -126,6 +132,52 @@ lheading 2
       check = actual => expect(actual).toEqual(expectedHtml)
     }) => {
       const actual = formatTestimony(md).__html
+      check(actual)
+    }
+  )
+})
+
+describe("formatTestimonyPlaintext", () => {
+  test.each<{
+    testCase: string
+    md: string
+    plainText?: string
+    check?: (plainText: string) => void
+  }>([
+    {
+      testCase: "empty",
+      md: "",
+      plainText: ``
+    },
+    {
+      md: `some text
+with newlines
+
+and paragraph breaks`,
+      plainText: `some text
+with newlines
+
+and paragraph breaks`,
+      testCase: "newlines and paragraphs"
+    },
+    {
+      md: `some **text** with _styling_ and ~~formatting~~`,
+      plainText: `some text with styling and formatting`,
+      testCase: "styling"
+    },
+    {
+      md: `some text with a [link](https://example.com) and unformatted link https://google.com.`,
+      plainText: `some text with a link (https://example.com/) and unformatted link https://google.com/.`,
+      testCase: "links"
+    }
+  ])(
+    "$testCase",
+    ({
+      plainText: expectedPlain,
+      md,
+      check = actual => expect(actual).toEqual(expectedPlain)
+    }) => {
+      const actual = formatTestimonyPlaintext(md)
       check(actual)
     }
   )
