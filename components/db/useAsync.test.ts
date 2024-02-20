@@ -1,4 +1,5 @@
-import { waitFor, act, renderHook } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react-hooks"
 import { useAsync, useAsyncCallback } from "react-async-hook"
 
 const callback1 = async () => 1
@@ -29,9 +30,12 @@ test("useAsync updates when dependencies change", async () => {
 })
 
 test("useAsyncCallback waits for execute to update when the callback changes", async () => {
-  const { result, rerender } = renderHook((cb: any) => useAsyncCallback(cb), {
-    initialProps: callback1
-  })
+  const { result, waitFor, rerender } = renderHook(
+    (cb: any) => useAsyncCallback(cb),
+    {
+      initialProps: callback1
+    }
+  )
 
   act(() => void result.current.execute())
   await waitFor(() => expect(result.current.result).toBe(1))

@@ -1,6 +1,8 @@
+import clsx from "clsx"
 import { ReactElement } from "react"
 import { ListGroupItemProps } from "react-bootstrap"
 import ListGroup from "react-bootstrap/ListGroup"
+import styles from "./CardListItem.module.css"
 
 export type ListItemProps = {
   billName: string
@@ -18,18 +20,16 @@ export const ListItem = (props: ListItemProps) => {
     billNameElement,
     ...rest
   } = props
-
   return (
-    <ListGroup.Item
-      className={`align-items-center bg-secondary border-bottom border-white d-flex lh-lg py-2 text-white`}
-      {...rest}
-    >
+    <ListGroup.Item className={clsx(styles.item, className)} {...rest}>
       <div className="ms-2 me-auto">
-        <div className={`fs-4 fw-lighter lh-sm`}>
+        <div className={`${styles.text} ${styles.billName}`}>
           {billName} {billNameElement && billNameElement}
         </div>
         {billDescription && (
-          <span className={`fs-6 fw-lighter lh-sm`}>{billDescription}</span>
+          <span className={`${styles.text} ${styles.billDescription}`}>
+            {billDescription}
+          </span>
         )}
       </div>
       {element && element}

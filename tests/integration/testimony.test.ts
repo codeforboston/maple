@@ -16,6 +16,7 @@ import {
   signInUser1,
   signInUser2
 } from "./common"
+import { renderHook } from "@testing-library/react-hooks"
 
 type BaseTestimony = {
   billId: string

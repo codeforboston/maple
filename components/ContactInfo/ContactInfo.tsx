@@ -27,7 +27,7 @@ interface Props {
   icons?: ReactNode
 }
 
-export const ContactInfo: FC<React.PropsWithChildren<Props>> = ({
+export const ContactInfo: FC<Props> = ({
   phoneNumber,
   email,
   website,

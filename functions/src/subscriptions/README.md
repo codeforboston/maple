@@ -8,28 +8,24 @@ The metadata for the different types of documents (bills and orgs) is important,
 
 If an event has certain fields that correspond to fields in the uesr's subscriptions, then the user will receive a notification by in the notificationFeed by way of the notifications cloud functions
 
-## Following Bills
-
-- billLookup
-  - billId
-  - court
-- relatedOrgs
-
-![example-bill-sub](/functions/src/subscriptions/images/example-bill-sub.png)
-
 ## Following Orgs
 
 - orgLookup
-  - fullName
-  - profileId
+- - fullName
+- - profileId
 - relatedBills
 
-![example-org-sub](/functions/src/subscriptions/images/example-org-sub.png)
+## Following Bills
+
+- billLookup
+- - billId
+- - court
+- relatedOrgs
 
 ## Testing
 
 To test these functions in a container environment, use the following command:
 
-```bash
+\`\`\`bash
 yarn firebase-admin -e local run-script <name-of-script>
-```
+\`\`\`

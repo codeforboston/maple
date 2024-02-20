@@ -2,6 +2,14 @@ import styled from "styled-components"
 import { Row } from "../bootstrap"
 
 export const Banner = styled(Row).attrs(props => ({
-  className: `h3 text-center text-white justify-content-center p-3 bg-info ${props.className}`,
+  className: props.className,
   children: props.children
-}))``
+}))`
+  font-family: Nunito;
+  font-size: 25px;
+  text-align: center;
+  justify-content: center;
+  padding: 0.75rem;
+  color: white;
+  background-color: #ff8600;
+`

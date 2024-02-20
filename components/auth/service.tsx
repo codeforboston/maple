@@ -72,9 +72,7 @@ const useGetTokenWithRefresh = () => {
 /**
  * Renders the given component if authenticated, otherwise redirects.
  */
-export function requireAuth(
-  Component: React.FC<React.PropsWithChildren<{ user: User }>>
-) {
+export function requireAuth(Component: React.FC<{ user: User }>) {
   return function ProtectedRoute() {
     const { user } = useAuth()
     const router = useRouter()

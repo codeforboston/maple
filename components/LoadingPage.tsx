@@ -15,16 +15,14 @@ export const LoadingPage = <Data,>({
   Page
 }: {
   result: PageDataResult<Data>
-  Page: FC<React.PropsWithChildren<Data>>
+  Page: FC<Data>
 }) => {
   if (result.data) return <Page {...result.data} />
   if (result.error) return <Error error={result.error} />
   return <Loading />
 }
 
-const Error: FC<React.PropsWithChildren<{ error: DataError }>> = ({
-  error
-}) => {
+const Error: FC<{ error: DataError }> = ({ error }) => {
   useEffect(() => console.error("Error loading page", error), [error])
   let message = "There was a problem loading the page."
   if (error.message) message = `${message} ${error.message}`

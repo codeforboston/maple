@@ -1,4 +1,4 @@
-import NextImage, { ImageProps, ImageLoaderProps } from "next/legacy/image"
+import NextImage, { ImageProps, ImageLoaderProps } from "next/image"
 
 const customLoader = ({ src }: ImageLoaderProps) => {
   return src

@@ -40,13 +40,11 @@ export const ProgressBar = styled<{ currentStep: Step }>(
   font-size: 0.75rem;
 `
 
-const StepBox: React.FC<
-  React.PropsWithChildren<{
-    step: number
-    current?: boolean
-    complete?: boolean
-  }>
-> = ({ step, current, complete, children }) => {
+const StepBox: React.FC<{
+  step: number
+  current?: boolean
+  complete?: boolean
+}> = ({ step, current, complete, children }) => {
   return (
     <div>
       <StepChip className="m-auto mb-2" active={current || complete}>

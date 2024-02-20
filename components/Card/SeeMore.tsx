@@ -1,6 +1,7 @@
+import clsx from "clsx"
 import React, { useState } from "react"
-import Button from "react-bootstrap/Button"
 import CardBootstrap from "react-bootstrap/Card"
+import styles from "./SeeMore.module.css"
 
 interface SeeMoreProps {
   onClick?: (event: string) => void
@@ -15,18 +16,26 @@ export const SeeMore = (props: SeeMoreProps) => {
     SEE_LESS: "See Less"
   }
   return (
-    <Button
+    <CardBootstrap.Body
       onClick={() => {
         onClick(seeMore)
         setSeeMore(seeMore === "SEE_MORE" ? "SEE_LESS" : "SEE_MORE")
       }}
-      variant="outline-dark"
+      className={clsx(styles.container, props.className)}
     >
       <CardBootstrap.Text
-        className={`fs-6 lh-sm text-center text-decoration-underline`}
+        style={{
+          textDecoration: "underline",
+          fontFamily: "Nunito",
+          fontStyle: "normal",
+          fontWeight: 600,
+          fontSize: "12px",
+          lineHeight: "125%"
+        }}
+        className="text-center"
       >
         {LABEL_ENUM[seeMore]}
       </CardBootstrap.Text>
-    </Button>
+    </CardBootstrap.Body>
   )
 }

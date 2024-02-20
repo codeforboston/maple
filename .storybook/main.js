@@ -6,18 +6,17 @@ module.exports = {
     "../stories/**/*.stories.mdx",
     "../stories/**/*.stories.@(js|jsx|ts|tsx)"
   ],
-
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@storybook/addon-interactions"
+    "@storybook/addon-interactions",
+    "storybook-addon-next",
+    "storybook-addon-designs"
   ],
-
-  framework: {
-    name: "@storybook/nextjs",
-    options: {}
+  framework: "@storybook/react",
+  core: {
+    builder: "@storybook/builder-webpack5"
   },
-
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
       test: /\.handlebars$/,
@@ -26,10 +25,5 @@ module.exports = {
     config.resolve.fallback = { fs: false, path: false }
     return config
   },
-
-  staticDirs: ["../public", "../stories/assets"],
-
-  docs: {
-    autodocs: false
-  }
+  staticDirs: ["../public", "../stories/assets"]
 }

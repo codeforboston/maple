@@ -1,6 +1,8 @@
 import { Row, Col } from "../../bootstrap"
+import Image from "react-bootstrap/Image"
 import styles from "./ForIndividualsCardContent.module.css"
 import { SignInWithButton } from "../../auth"
+import Link from "next/link"
 import { useTranslation } from "next-i18next"
 
 const WhyMAPLECardContent = () => {

@@ -25,10 +25,7 @@ const HearingDate = styled.div`
   max-width: 202px;
 `
 
-export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
-  bill,
-  className
-}) => {
+export const Committees: FC<BillProps> = ({ bill, className }) => {
   const current = bill.currentCommittee
   if (!current) return null
   return (
@@ -38,7 +35,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
       </Row>
       <div className={`d-flex justify-content-around`}>
         <LabeledIcon
-          idImage={"/profile_icon_govt-secondary.svg"}
+          idImage={`https://www.thefreedomtrail.org/sites/default/files/styles/image_width__720/public/content/slider-gallery/bulfinch_front.png?itok=kY2wLdnk`} // may want a better image or on our server
           // mainText="Committee"
           mainText=""
           subText={
@@ -54,10 +51,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
   )
 }
 
-export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
-  bill,
-  className
-}) => {
+export const Hearing: FC<BillProps> = ({ bill, className }) => {
   return (
     <>
       {bill.nextHearingAt && dateInFuture(bill.nextHearingAt) ? (
@@ -72,10 +66,7 @@ export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
   )
 }
 
-export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
-  bill,
-  className
-}) => {
+export const Sponsors: FC<BillProps> = ({ bill, className }) => {
   const primary = bill.content?.PrimarySponsor
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const more = cosponsors.length > 2

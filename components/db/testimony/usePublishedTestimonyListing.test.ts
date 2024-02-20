@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react-hooks"
 import { usePublishedTestimonyListing } from "."
 import { terminateFirebase, testAuth } from "../../../tests/testUtils"
 
@@ -7,7 +7,7 @@ afterAll(terminateFirebase)
 /** These tests use data seeded in `tests/seed/seedTestimony` */
 describe("usePublishedTestimonyListing", () => {
   it("lists published testimony for a particular bill", async () => {
-    const { result } = renderHook(() =>
+    const { result, waitFor } = renderHook(() =>
       usePublishedTestimonyListing({ billId: "H1" })
     )
 
@@ -24,7 +24,9 @@ describe("usePublishedTestimonyListing", () => {
   it("lists published testimony for a particular user", async () => {
     const { uid } = await testAuth.getUserByEmail("test3@example.com")
 
-    const { result } = renderHook(() => usePublishedTestimonyListing({ uid }))
+    const { result, waitFor } = renderHook(() =>
+      usePublishedTestimonyListing({ uid })
+    )
 
     await waitFor(() => expect(result.current.items.loading).toBeFalsy())
 
@@ -39,7 +41,7 @@ describe("usePublishedTestimonyListing", () => {
   it("lists published testimony for a particular user and bill", async () => {
     const { uid } = await testAuth.getUserByEmail("test3@example.com")
 
-    const { result } = renderHook(() =>
+    const { result, waitFor } = renderHook(() =>
       usePublishedTestimonyListing({ billId: "H1", uid })
     )
 

@@ -15,10 +15,7 @@ export type LayoutProps = {
   title?: string
 }
 
-export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
-  children,
-  title
-}) => {
+export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   const { authenticated, user } = useAuth()
 
   return (
@@ -43,7 +40,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
   )
 }
 
-const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+const TopNav: React.FC = () => {
   const { authenticated, claims } = useAuth()
   const { profile } = useProfile()
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -62,7 +59,6 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       sticky={sticky ? "top" : undefined}
       expand={false}
       expanded={isExpanded}
-      data-bs-theme="dark"
     >
       <Container fluid>
         <div className={styles.navbar_boxes_container}>
