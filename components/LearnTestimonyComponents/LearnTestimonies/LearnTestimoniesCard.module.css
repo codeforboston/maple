@@ -2,23 +2,6 @@
   border-radius: 0 5rem 5rem 0;
 }
 
-.LearnTabs {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 0 2rem;
-  border-bottom: none;
-  background-color: none;
-}
-
-.LearnTabs button {
-  border: none !important;
-}
-
-.LearnTabs button.active {
-  color: var(--bs-blue) !important;
-}
-
 .header {
   background-color: var(--bs-blue);
   width: max-content;

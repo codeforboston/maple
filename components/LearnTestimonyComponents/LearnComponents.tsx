@@ -1,11 +1,11 @@
 import { Container, Row, Col } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
-import styles from "./LearnTestimonies/LearnTestimoniesCard.module.css"
 import LearnTestimoniesCard from "./LearnTestimonies/LearnTestimoniesCard"
 import LearnTestimoniesCardContent from "./LearnTestimonies/LearnTestimoniesCardContent"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
 import LegislativeCard from "./LegislativeProcess/LegislativeCard"
 import LegislativeCardContent from "./LegislativeProcess/LegislativeCardContent"
+import styled from "styled-components"
 
 const BasicsContent = [
   {
@@ -187,11 +187,37 @@ const LegislativeContent = [
   }
 ]
 
+// TODO: Maybe move these to CommonComponents
+const TestimonyHeader = styled.h1`
+  font-family: "Nunito";
+  font-size: 3rem;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -1.88px;
+  text-align: left;
+  color: #000;
+`
+
+const TestimonySubheader = styled.p`
+  flex-grow: 0;
+  font-family: "Nunito";
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.63px;
+  text-align: left;
+  color: #000;
+`
+
 const Basics = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className={styles.title}>The Basics of Testimony</h1>
-      <p className={styles.subheader}>
+      <TestimonyHeader>The Basics of Testimony</TestimonyHeader>
+      <TestimonySubheader>
         All laws passed by state legislatures should consider feedback from
         residents and community stakeholders. In Massachusetts, one way to have
         your voice heard is by submitting written testimony regarding specific
@@ -200,7 +226,7 @@ const Basics = () => {
         note that this is not an official government website and is not the only
         way to submit your testimony. Here are the essential things to know
         before submitting testimony:
-      </p>
+      </TestimonySubheader>
       {BasicsContent.map((value, index) => (
         <BasicsOfTestimonyCard
           title={value.title}
@@ -218,15 +244,15 @@ const Basics = () => {
 const Role = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className={styles.title}>The Role of Testimony</h1>
-      <p className={styles.subheader}>
+      <TestimonyHeader>The Role of Testimony</TestimonyHeader>
+      <TestimonySubheader>
         By speaking up, you can make the laws of Massachusetts work better for
         all of us! <br /> <br /> Everyone is able to convey their opinions to
         the legislature, but the process to submit testimony can be confusing
         and intimidating. We hope that this website, the MAPLE platform, will
         make that process easier, more straightforward, and more accessible to
         all stakeholders.
-      </p>
+      </TestimonySubheader>
       {RoleContent.map((value, index) => (
         <RoleOfTestimonyCard
           title={value.title}
@@ -244,15 +270,15 @@ const Role = () => {
 const Write = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className={styles.title}>Writing Effective Testimony</h1>
-      <p className={styles.subheader}>
+      <TestimonyHeader>Writing Effective Testimony</TestimonyHeader>
+      <TestimonySubheader>
         The basics of writing effective testimony are to clearly outline what
         bill you are testifying about, whether you support or oppose it, why you
         are concerned about the issue, what policy you would like to see
         enacted, and what legislative district you live in. Here are some tips
         you can use to make sure the testimony you submit is as impactful as
         possible:
-      </p>
+      </TestimonySubheader>
       {WriteContent.map((value, index) => (
         <LearnTestimoniesCard title={value.title} key={value.title}>
           <LearnTestimoniesCardContent
@@ -271,12 +297,12 @@ const Write = () => {
 const Legislative = () => {
   return (
     <Container>
-      <Row className={styles.container}>
+      <Row>
         <Col>
-          <h1 className={styles.pageHeading}>
+          <h1>
             Understanding the Massachusetts Legislative Process
           </h1>
-          <p className={styles.subHeading}>
+          <p>
             Some of the key steps in the legislative process for how most bills
             become laws in MA.
           </p>
