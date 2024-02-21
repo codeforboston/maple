@@ -13,7 +13,6 @@ import { StatusField } from "./common"
 import { CreateMockReport } from "./setUp/CreateMockReport"
 
 export function ListReports() {
-
   const firestore = getFirestore()
   const refresh = useRefresh()
   useEffect(() => {
