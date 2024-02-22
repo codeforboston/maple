@@ -21,59 +21,6 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   onSettingsModalClose: () => void
 }
 
-const StyledButton = styled(Button)`
-  &:focus {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  &:hover {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  width: 110px;
-`
-
-const StyledOutlineButton = styled(Button)`
-  &:focus {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  &:hover {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  width: 110px;
-`
-
-const StyledOutlineButton2 = styled(Button)`
-  &:focus {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  &:hover {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-`
-
-const StyledDropdownToggle = styled(Dropdown.Toggle)`
-  width: 110px;
-`
-
-const StyledModalBody = styled(Modal.Body)`
-  padding: 0.8rem;
-`
-
-// const StyledRow = styled(Row)`
-//   font-size: 12px;
-// `
-
 function RenderPrivacyText(role: Role, isPublic: boolean) {
   const { t } = useTranslation("editProfile")
 
@@ -128,12 +75,6 @@ export default function ProfileSettingsModal({
     await updateNotification(notifications)
   }
 
-  // button classNames weren't otherwise properly updating on iOS
-  let buttonSecondary = "btn-secondary"
-  if (notifications === "None") {
-    buttonSecondary = "btn-outline-secondary"
-  }
-
   const privacyText = RenderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
 
@@ -152,8 +93,8 @@ export default function ProfileSettingsModal({
           <HideableSection hideIf={!flags().notifications}>
             {/* awaiting the notifications feature to come online */}
             <ModalSubheader title={t("forms.notification")} />
-            <Row className={`p-2 d-flex justify-content-end`}>
-              <Col className={`col-8`}>
+            <Row className={`p-2 d-flex justify-content-md-end`}>
+              <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
                 <small>{t("forms.notificationText")}</small>
               </Col>
               <Col className={`col-fill`}>
@@ -173,13 +114,13 @@ export default function ProfileSettingsModal({
             hideIf={!flags().notifications || notifications === "None"}
           >
             <Row className={`p-2 d-flex justify-content-start`}>
-              <Col className={`col-8`}>
+              <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
                 <small>{t("email.frequencyQuery")}</small>
               </Col>
               <Col className={`col-auto ms-auto d-flex flex-grow-1`}>
                 <Dropdown align="end" className={`flex-grow-1 d-flex`}>
                   <Dropdown.Toggle
-                    className={`btn-sm btn-light py-1 flex-grow-1 d-flex justify-content-evenly align-items-center`}
+                    className={`btn-sm btn-light py-1 flex-grow-1 d-flex gap-2 justify-content-center align-items-center`}
                     variant="outline-secondary"
                     id="dropdown-basic"
                   >
@@ -202,10 +143,10 @@ export default function ProfileSettingsModal({
           </HideableSection>
           <ModalSubheader title={t("privacySetting")} />
           <Row className={`p-2 d-flex justify-content-start`}>
-            <Col>
+            <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
               <small>{privacyText}</small>
             </Col>
-            <Col xs={4}>
+            <Col className={`col-12 col-md-4`}>
               <ToggleButton
                 disabled={role !== "user"}
                 size={"sm"}
@@ -217,18 +158,19 @@ export default function ProfileSettingsModal({
               />
             </Col>
           </Row>
-
-          <Row className={`p-2`}>
-            <Col className={`d-flex gap-3`}>
+          <Row className={`p-2 d-flex align-items-start`}>
+            <Col md={{ offset: 3 }}>
               <FillButton
                 size="sm"
-                className={`col-3 ms-auto py-1`}
+                className={`py-1`}
                 onClick={handleSave}
                 label={t("save")}
               />
+            </Col>
+            <Col>
               <OutlineButton
                 size="sm"
-                className={`col-3 mx-2 py-1 btn-bg-white`}
+                className={`py-1 btn-bg-white`}
                 onClick={handleSave}
                 label={t("cancel")}
               />
@@ -261,31 +203,3 @@ export const HideableSection = ({
   if (hideIf) return null
   else return children
 }
-
-// <StyledOutlineButton
-//   className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-outline-secondary`}
-//   onClick={() => setNotifications("Monthly")}
-// >
-//   <Image
-//     className={`pe-1`}
-//     src="/mail-2.svg"
-//     alt="open envelope with letter, toggles update frequency options"
-//     width="22"
-//     height="19"
-//   />
-//   {"Enable"}
-// </StyledOutlineButton>
-
-// <StyledButton
-//   className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-secondary`}
-//   onClick={() => setNotifications("None")}
-// >
-//   <Image
-//     className={`pe-1`}
-//     src="/mail-icon-sized-for-buttons.svg"
-//     alt="open envelope with letter, toggles update frequency options"
-//     width="22"
-//     height="19"
-//   />
-//   {"Enabled"}
-// </StyledButton>

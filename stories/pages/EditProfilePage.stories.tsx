@@ -1,10 +1,9 @@
 import { Meta, StoryObj } from "@storybook/react"
+import { EditProfileForm } from "components/EditProfilePage/EditProfilePage"
+import { ProfileHook } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-import { EditProfileForm } from "components/EditProfilePage/EditProfilePage"
-import { Profile } from "functions/src/profile/types"
-import { ContactInfo, ProfileHook } from "components/db"
 
 const meta: Meta = {
   title: "Pages/EditProfile",

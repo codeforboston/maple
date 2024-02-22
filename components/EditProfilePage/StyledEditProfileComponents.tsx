@@ -68,7 +68,7 @@ export const TabNavItem = ({
   className?: string
 }) => {
   return (
-    <Nav.Item className={`flex-grow-1 w-auto ${className}`} key={tab.eventKey}>
+    <Nav.Item className={`flex-grow-1 col-12 col-md-auto ${className}`} key={tab.eventKey}>
       <TabNavLink eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
         <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
         <hr className={`my-0`} />

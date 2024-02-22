@@ -126,14 +126,16 @@ export function PersonalInfoTab({
               error={errors.fullName?.message}
             />
           </Row>
-          <Input
-            as="textarea"
-            {...register("aboutYou")}
-            style={{ height: "10rem" }}
-            className="mt-3"
-            label={t("forms.aboutYou")}
-            defaultValue={about}
-          />
+          <Row>
+            <Input
+              as="textarea"
+              {...register("aboutYou")}
+              style={{ height: "10rem" }}
+              className="mt-3"
+              label={t("forms.aboutYou")}
+              defaultValue={about}
+            />
+          </Row>
           <Row xs="auto" className="mt-2">
             <Col>
               <TooltipButton

@@ -1,6 +1,6 @@
 import { useTranslation } from "next-i18next"
 import { Role } from "../auth"
-import { Button, Col, Row, Stack } from "../bootstrap"
+import { Col, Row } from "../bootstrap"
 import { FillButton, GearIcon, OutlineButton } from "../buttons"
 
 export const EditProfileHeader = ({
