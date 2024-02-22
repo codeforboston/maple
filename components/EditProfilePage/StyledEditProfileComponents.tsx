@@ -53,7 +53,7 @@ export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
 export const TabNavLink = styled(Nav.Link).attrs(props => ({
   className: `rounded-top m-0 p-0 ${props.className}`
 }))`
-  .active {
+  &.active {
     color: #c71e32;
   }
 `
@@ -69,20 +69,14 @@ export const TabNavItem = ({
 }) => {
   return (
     <Nav.Item className={`flex-grow-1 w-auto ${className}`} key={tab.eventKey}>
-      <Nav.Link eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
+      <TabNavLink eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
         <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
         <hr className={`my-0`} />
-      </Nav.Link>
+      </TabNavLink>
     </Nav.Item>
   )
 }
 
-// export const StyledSaveButton = styled(Button)`
-//   margin-top: 2rem;
-//   margin-bottom: 3rem;
-//   width: 100%;
-//   border-radius: 4px;
-// `
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className
 }))`

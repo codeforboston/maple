@@ -139,7 +139,7 @@ export function EditProfileForm({
           uid={uid}
           role={profile.role}
         />
-        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
+        <TabContainer defaultActiveKey="AboutYou" activeKey={key} onSelect={(k: any) => setKey(k)}>
           <TabNavWrapper>
             {tabs.map((t, i) => (
               <>
