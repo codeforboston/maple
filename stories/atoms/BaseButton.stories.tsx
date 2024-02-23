@@ -1,107 +1,75 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { userEvent, within } from "@storybook/testing-library"
-import { EditProfileButton } from "components/ProfilePage/ProfileButtons"
 import {
-  GearButton,
   HighContrastButton,
   ToggleButton
 } from "components/buttons"
-import { Button, Col } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import styled from "styled-components"
 
 const BaseButton = styled(Button)``
 
 const meta: Meta = {
-  title: "Atoms/BaseButton",
+  title: "Atoms/Buttons/Base Button",
   component: BaseButton
 }
 
-type Story = StoryObj<typeof BaseButton>
+export type Story = StoryObj<typeof BaseButton>
 
 export const Primary: Story = {
   args: {
     children: "Button",
     variant: "secondary"
   },
-  name: "Button"
+  name: "Base Button"
 }
 
-export const HoveredButton: Story = {
-  ...Primary,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await userEvent.hover(canvas.getByRole("button"))
-  }
-}
-
-export const ClickedButton: Story = {
-  ...Primary,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole("button"))
-  }
-}
-
-export const EditButton: Story = {
-  decorators: [
-    Story => (
-      <div className={`w-25 p-5 border border-warning rounded-4`}>
-        <Col
-          className={`d-flex flex-column justify-content-center align-items-center gap-2`}
-        >
-          <Story />
-        </Col>
-      </div>
-    )
-  ],
-  render: () => {
-    return (
-      <>
-        <GearButton
-          variant="outline-secondary"
-          size="lg"
-          className={`py-1`}
-          disabled={false}
-          onClick={() => console.log("gear")}
-        >
-          Settings
-        </GearButton>
-        <EditProfileButton />
-      </>
-    )
-  },
-  name: "Edit Profile Button"
-}
-
-export const ContrastButtons: Story = {
+export const HighContrastButtonBase: Story = {
   render: args => {
     return (
-      <div className={`d-flex gap-3`}>
+      <div className={`col-3 m-5`}>
+        <p>Hover and click to see hover and active states</p>
+        <p>Use controls panel to view variants & outline variants</p>
         <HighContrastButton
-          state={true}
-          baseFill="outline"
-          label="True base outline"
+          variant={args.variant}
+          label={`${args.variant}`}
         />
-        <HighContrastButton state={false} label="False basefill " />
+      </div>
+    )
+  },
+  argTypes: {
+    variant: { control: { type: "radio" }, options: ["primary", "secondary", "success", "danger", "warning", "info", "dark", "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-dark"] },
+  },
+  args: {
+    variant: "secondary",
+  }
+}
+
+export const HighContrastToggleButton: Story = {
+  render: args => {
+    return (
+      <div className={`col-3 m-5`}>
+        <p>Hover and click to see hover and active states</p>
+        <p>Use controls panel to view variants & toggle states</p>
         <ToggleButton
-          size={"sm"}
-          className={`btn-sm`}
-          toggleState={true}
-          stateTrueLabel={"Toggle state true"}
-          stateFalseLabel={"Toggle state false"}
-          onClick={() => console.log("toggle")}
-        />
-        <ToggleButton
-          size={"sm"}
-          className={`btn-sm`}
-          toggleState={false}
+          variant={args.variant}
+          toggleState={args.toggleState}
           stateTrueLabel={"Toggle state true"}
           stateFalseLabel={"Toggle state false"}
           onClick={() => console.log("toggle")}
         />
       </div>
     )
+  },
+  argTypes: {
+    variant: { control: { type: "radio" }, options: ["primary", "secondary", "success", "danger", "warning", "info", "dark", "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-dark"] },
+  },
+  args: {
+    toggleState: true,
+    variant: "secondary",
+
   }
 }
+
 
 export default meta

@@ -1,13 +1,10 @@
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 
-import { ProfileHook, useProfile } from "components/db"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
-import { EditProfileButton } from "./ProfileButtons"
-import { ToggleButton } from "components/buttons"
+import { ProfileButtonsOrg, ProfileButtonsUser } from "./ProfileButtons"
 
 export const ProfileHeader = ({
   profileId,
@@ -41,53 +38,15 @@ export const ProfileHeader = ({
         </div>
       </div>
       <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
-        {isOrg ? <OrgContactInfo profile={profile} /> : null}
-        {isUser ? (
+        {isOrg ? <OrgContactInfo profile={profile} /> : isUser ? (
           <ProfileButtonsUser
             isProfilePublic={isProfilePublic}
             onProfilePublicityChanged={onProfilePublicityChanged}
-          />
-        ) : null}
+          />) : null
+        }
       </div>
     </Header>
   )
 }
 
-export function ProfileButtonsUser({
-  isProfilePublic,
-  onProfilePublicityChanged
-}: {
-  isProfilePublic: boolean | undefined
-  onProfilePublicityChanged: (isPublic: boolean) => void
-}) {
-  const { t } = useTranslation("editProfile")
 
-  const actions = useProfile()
-
-  const handleSave = async () => {
-    await updateProfile({ actions })
-  }
-  /** Only regular users are allowed to have a private profile. */
-  async function updateProfile({ actions }: { actions: ProfileHook }) {
-    const { updateIsPublic } = actions
-
-    await updateIsPublic(!isProfilePublic)
-    onProfilePublicityChanged(!isProfilePublic)
-  }
-  return (
-    <div className={`d-grid gap-2 col-12 m-3`}>
-      <EditProfileButton />
-      <ToggleButton
-        toggleState={isProfilePublic || false}
-        stateTrueLabel={t("forms.makePrivate")}
-        stateFalseLabel={t("forms.makePublic")}
-        onClick={handleSave}
-        className={`py-1`}
-      ></ToggleButton>
-    </div>
-  )
-}
-
-function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
-  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
-}

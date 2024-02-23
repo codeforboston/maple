@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { ReactNode, useRef, useState } from "react"
 import { ButtonProps, ImageProps, SpinnerProps, Tooltip } from "react-bootstrap"
 import CopyToClipboard from "react-copy-to-clipboard"
 import styled from "styled-components"
@@ -98,7 +98,7 @@ export const TextButton = ({
 
 type FillButtonProps = ButtonProps & {
   label?: string
-  Icon?: React.ReactElement
+  Icon?: ReactNode
 }
 
 export const FillButton = ({
@@ -112,10 +112,10 @@ export const FillButton = ({
     <Button
       variant={variant}
       type="submit"
-      className={`py-2 col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
+      className={`py-1 col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
       {...rest}
     >
-      {Icon && Icon}
+      <div className={`d-flex align-items-center`}>{Icon && Icon}</div>
       {label}
     </Button>
   )
@@ -123,7 +123,7 @@ export const FillButton = ({
 
 type OutlineButtonProps = ButtonProps & {
   label?: string
-  Icon?: React.ReactElement
+  Icon?: ReactNode
 }
 
 export const OutlineButton = ({
@@ -137,10 +137,10 @@ export const OutlineButton = ({
     <Button
       variant={variant}
       type="submit"
-      className={`py-2 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-baseline btn-hover-secondary ${className}`}
+      className={`py-1 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-center btn-hover-secondary ${className}`}
       {...rest}
     >
-      {Icon && Icon}
+      <div className={`d-flex align-items-center`}>{Icon && Icon}</div>
       {label}
     </Button>
   )
@@ -148,37 +148,31 @@ export const OutlineButton = ({
 
 type HighContrastButton = ButtonProps & {
   state?: boolean
-  baseFill?: "solid" | "outline"
   label?: string
-  Icon?: React.ReactElement
+  Icon?: ReactNode
 }
 
 export const HighContrastButton = ({
   state,
-  baseFill = "solid",
-  variant,
+  variant = "secondary",
   className,
   Icon,
   label,
   ...rest
 }: HighContrastButton) => {
-  if (baseFill === "outline") {
-    return (
-      <Button
-        variant={"outline-secondary"}
-        className={`btn-hover-secondary ${className}`}
-        {...rest}
-      >
-        {Icon && Icon}
-        {label}
-      </Button>
-    )
+  let hoverClass: string, activeClass: string
+  if (variant?.startsWith("outline")) {
+    hoverClass = `btn-hover-${variant.split("-")[1]}`
+    activeClass = `btn-active-outline-${variant}`
+  } else {
+    hoverClass = `btn-hover-outline-${variant}`
+    activeClass = `btn-active-${variant.split("-")[1]}`
   }
-
+  console.log(variant, hoverClass)
   return (
     <Button
-      variant={"secondary"}
-      className={`btn-hover-outline-secondary ${className}`}
+      variant={variant}
+      className={`${hoverClass} col-12 ${className}`}
       {...rest}
     >
       {Icon && Icon}
@@ -198,13 +192,20 @@ export const ToggleButton = ({
   stateTrueLabel,
   stateFalseLabel,
   toggleState,
-  variant,
+  variant = "secondary",
   ...rest
 }: ToggleButtonProps) => {
+
+  let toggleClass
+  if (variant?.startsWith("outline")) {
+    toggleClass = toggleState ? variant : `${variant.split("-")[1]}`;
+  } else {
+    toggleClass = toggleState ? variant : `outline-${variant}`;
+  }
+
   return (
     <HighContrastButton
-      state={toggleState}
-      baseFill={toggleState ? "outline" : "solid"}
+      variant={toggleClass}
       label={toggleState ? stateTrueLabel : stateFalseLabel}
       {...rest}
     />

@@ -23,16 +23,18 @@ export const EditProfileHeader = ({
       </Col>
       <Col xs={12} md={2} className={`d-grid gap-2`}>
         <OutlineButton
+          className={`py-1`}
           label={t("settings")}
           Icon={GearIcon}
           onClick={() => onSettingsModalOpen()}
         />
         <FillButton
+          disabled={!!formUpdated}
           href={`/profile?id=${uid}`}
           label={
-            role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")
+            role === "organization" || role === "pendingUpgrade" ? t("viewOrgProfile") : t("viewMyProfile") 
           }
-        ></FillButton>
+        />
       </Col>
     </Row>
   )

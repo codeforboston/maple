@@ -1,12 +1,13 @@
 import { Meta, StoryObj } from "@storybook/react"
-import { ProfileButtonsUser } from "components/ProfilePage/ProfileHeader"
+import { EditProfileHeader } from "components/EditProfilePage/EditProfileHeader"
+import { ProfileButtonsUser } from "components/ProfilePage/ProfileButtons"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Col, Row } from "react-bootstrap"
 import { Provider as Redux } from "react-redux"
 
 const meta: Meta = {
-  title: "Organisms/Profile/ProfileButtons",
+  title: "Atoms/Buttons/Profile Buttons",
   component: ProfileButtonsUser,
   decorators: [
     (Story, ...rest) => {
@@ -31,6 +32,7 @@ export default meta
 
 type Story = StoryObj<typeof ProfileButtonsUser>
 
+
 export const Primary: Story = {
   args: {
     isProfilePublic: true,
@@ -38,5 +40,8 @@ export const Primary: Story = {
       console.log("clicked")
     }
   },
-  name: "ProfileButtons"
+  argTypes: {
+    isProfilePublic: { control: { type: "boolean" } }
+  },
+  name: "Profile Buttons"
 }

@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { TestimoniesTab } from "components/EditProfilePage/TestimoniesTab"
-import { ProfileHook } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
@@ -25,6 +24,11 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof TestimoniesTab>
 
-export const Primary: Story = {}
+export const Primary: Story = {
+  args: {
+    publishedTestimonies: [],
+    draftTestimonies: [],
+  }
+}
 
 export default meta

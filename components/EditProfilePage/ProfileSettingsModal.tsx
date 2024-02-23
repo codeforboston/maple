@@ -4,9 +4,8 @@ import { useTranslation } from "next-i18next"
 import { Dispatch, ReactNode, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import styled from "styled-components"
 import { Frequency, Role } from "../auth"
-import { Button, Col, Form, Image, Modal, Row } from "../bootstrap"
+import { Col, Form, Image, Modal, Row } from "../bootstrap"
 import { ProfileHook } from "../db"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
