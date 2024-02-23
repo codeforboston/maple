@@ -85,9 +85,15 @@ export const ImageButton = styled<
   padding: 1px;
 `
 
-export const TextButton = ({label, className}: {label: string, className?: string} & ButtonProps) => {
-  return <Button variant="link" className={`${className}`}>{label}</Button>
-
+export const TextButton = ({
+  label,
+  className
+}: { label: string; className?: string } & ButtonProps) => {
+  return (
+    <Button variant="link" className={`${className}`}>
+      {label}
+    </Button>
+  )
 }
 
 type FillButtonProps = ButtonProps & {

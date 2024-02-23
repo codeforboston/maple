@@ -37,7 +37,7 @@ export const TestimoniesTab = ({
   return (
     <div className={`mb-4 ${className}`}>
       <Row className="mt-0">
-        <Col xs={12} md={8} >
+        <Col xs={12} md={8}>
           <TitledSectionCard className="mt-3 mb-4">
             <Row>
               <Col>

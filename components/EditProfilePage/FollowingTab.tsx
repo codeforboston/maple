@@ -1,12 +1,7 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
 import { Stack } from "../bootstrap"
 import { firestore } from "../firebase"
@@ -184,5 +179,3 @@ export function FollowingTab({ className }: { className?: string }) {
     </>
   )
 }
-
-

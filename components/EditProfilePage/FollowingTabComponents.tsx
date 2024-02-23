@@ -1,16 +1,21 @@
-import { useTranslation } from "next-i18next";
-import { Alert, Row, Spinner } from "../bootstrap";
-import { useBill, usePublicProfile } from "components/db";
-import { Dispatch, SetStateAction } from "react";
-import { Col } from "../bootstrap";
-import { TextButton } from "../buttons";
-import { UnfollowModalConfig } from "./FollowingTab";
-import { formatBillId } from "components/formatting";
-import { Internal } from "components/links";
-import { OrgIconSmall } from "./StyledEditProfileComponents";
+import { useTranslation } from "next-i18next"
+import { Alert, Row, Spinner } from "../bootstrap"
+import { useBill, usePublicProfile } from "components/db"
+import { Dispatch, SetStateAction } from "react"
+import { Col } from "../bootstrap"
+import { TextButton } from "../buttons"
+import { UnfollowModalConfig } from "./FollowingTab"
+import { formatBillId } from "components/formatting"
+import { Internal } from "components/links"
+import { OrgIconSmall } from "./StyledEditProfileComponents"
 
-
-export function BillFollowingTitle({ court, id }: { court: number; id: string }) {
+export function BillFollowingTitle({
+  court,
+  id
+}: {
+  court: number
+  id: string
+}) {
   const { loading, error, result: bill } = useBill(court, id)
   const { t } = useTranslation("editProfile")
   if (loading) {
@@ -47,7 +52,10 @@ export const isOrgElement = (element: Element): element is OrgElement => {
 }
 
 export function UnfollowButton({
-  fullName, element, setUnfollow, type
+  fullName,
+  element,
+  setUnfollow,
+  type
 }: {
   fullName: string
   element: Element
@@ -82,28 +90,29 @@ export function UnfollowButton({
         handleClick()
       }}
     >
-      <TextButton label={t("follow.unfollow")} className={`d-flex ms-auto p-0 text-decoration-none`} />
+      <TextButton
+        label={t("follow.unfollow")}
+        className={`d-flex ms-auto p-0 text-decoration-none`}
+      />
     </Col>
   )
 }
 export function FollowedItem({
-  element, setUnfollow, type
+  element,
+  setUnfollow,
+  type
 }: {
   index: number
   element: Element
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
-
-
   const elementId = isOrgElement(element) ? element.profileId : element.billId
 
   const { result: profile, loading } = usePublicProfile(elementId)
 
   if (loading) {
-    return (
-      <Spinner animation="border" className="mx-auto" />
-    )
+    return <Spinner animation="border" className="mx-auto" />
   }
   if (!element) {
     console.log("element is undefined")
@@ -127,7 +136,8 @@ export function FollowedItem({
             <Col className={"align-items-center d-flex"}>
               <OrgIconSmall
                 className="mr-4 mt-0 mb-0 ms-0"
-                profileImage={profile?.profileImage} />
+                profileImage={profile?.profileImage}
+              />
               <Internal href={`/profile?id=${element.profileId}`}>
                 {profile?.fullName}
               </Internal>
@@ -138,11 +148,10 @@ export function FollowedItem({
           fullName={profile?.fullName ?? "default"}
           element={element}
           setUnfollow={setUnfollow}
-          type={type} />
+          type={type}
+        />
       </Row>
       <hr className={`mt-3`} />
     </div>
   )
 }
-
-
