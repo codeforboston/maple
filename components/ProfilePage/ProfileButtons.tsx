@@ -36,12 +36,10 @@ export const ProfileEditToggle = ({ formUpdated, uid, role }: Props) => {
       className={`py-1 ml-2 text-decoration-none`}
       disabled={!!formUpdated}
       href={`/ profile ? id = ${uid} `}
-      label= {role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")}
+      label={role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")}
     />
   )
 }
-
-
 
 export const EditProfileButton = ({ className }: { className?: string }) => {
   const { t } = useTranslation("profile")
@@ -56,9 +54,9 @@ export const EditProfileButton = ({ className }: { className?: string }) => {
   )
 }
 
-
 export function ProfileButtonsUser({
-  isProfilePublic, onProfilePublicityChanged
+  isProfilePublic,
+  onProfilePublicityChanged
 }: {
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
@@ -91,6 +89,5 @@ export function ProfileButtonsUser({
   )
 }
 export function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
-  return <>{isUser ? <EditProfileButton /> : <FollowButton /> }</>
+  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
 }
-

@@ -38,15 +38,15 @@ export const ProfileHeader = ({
         </div>
       </div>
       <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
-        {isOrg ? <OrgContactInfo profile={profile} /> : isUser ? (
+        {isOrg ? (
+          <OrgContactInfo profile={profile} />
+        ) : isUser ? (
           <ProfileButtonsUser
             isProfilePublic={isProfilePublic}
             onProfilePublicityChanged={onProfilePublicityChanged}
-          />) : null
-        }
+          />
+        ) : null}
       </div>
     </Header>
   )
 }
-
-

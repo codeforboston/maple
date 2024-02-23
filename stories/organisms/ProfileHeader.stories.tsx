@@ -41,7 +41,7 @@ export const Primary: Story = {
       displayName: "Display Name",
       photoURL: "https://via.placeholder.com/150",
       contactInfo: {
-        publicEmail: "email@example.com", 
+        publicEmail: "email@example.com",
         publicPhone: 6179990808,
         website: "example.com"
       }
@@ -50,10 +50,12 @@ export const Primary: Story = {
     onProfilePublicityChanged: (isPublic: boolean) => console.log(isPublic)
   } as ProfileHeaderProps,
   argTypes: {
-    isUser: { control: {type: "boolean" }, name: "isUser: Is the current viewer the owner of the profile?" },
+    isUser: {
+      control: { type: "boolean" },
+      name: "isUser: Is the current viewer the owner of the profile?"
+    },
     isOrg: { control: { type: "boolean" }, name: "isOrg: Is the owner an org" },
-    isProfilePublic: { control: { type: "boolean" } },
-
+    isProfilePublic: { control: { type: "boolean" } }
   },
   name: "ProfileHeader"
 }

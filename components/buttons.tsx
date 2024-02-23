@@ -195,12 +195,11 @@ export const ToggleButton = ({
   variant = "secondary",
   ...rest
 }: ToggleButtonProps) => {
-
   let toggleClass
   if (variant?.startsWith("outline")) {
-    toggleClass = toggleState ? variant : `${variant.split("-")[1]}`;
+    toggleClass = toggleState ? variant : `${variant.split("-")[1]}`
   } else {
-    toggleClass = toggleState ? variant : `outline-${variant}`;
+    toggleClass = toggleState ? variant : `outline-${variant}`
   }
 
   return (

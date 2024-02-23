@@ -1,9 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { userEvent, within } from "@storybook/testing-library"
-import {
-  HighContrastButton,
-  ToggleButton
-} from "components/buttons"
+import { HighContrastButton, ToggleButton } from "components/buttons"
 import { Button } from "react-bootstrap"
 import styled from "styled-components"
 
@@ -30,18 +27,33 @@ export const HighContrastButtonBase: Story = {
       <div className={`col-3 m-5`}>
         <p>Hover and click to see hover and active states</p>
         <p>Use controls panel to view variants & outline variants</p>
-        <HighContrastButton
-          variant={args.variant}
-          label={`${args.variant}`}
-        />
+        <HighContrastButton variant={args.variant} label={`${args.variant}`} />
       </div>
     )
   },
   argTypes: {
-    variant: { control: { type: "radio" }, options: ["primary", "secondary", "success", "danger", "warning", "info", "dark", "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-dark"] },
+    variant: {
+      control: { type: "radio" },
+      options: [
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "dark",
+        "outline-primary",
+        "outline-secondary",
+        "outline-success",
+        "outline-danger",
+        "outline-warning",
+        "outline-info",
+        "outline-dark"
+      ]
+    }
   },
   args: {
-    variant: "secondary",
+    variant: "secondary"
   }
 }
 
@@ -62,14 +74,30 @@ export const HighContrastToggleButton: Story = {
     )
   },
   argTypes: {
-    variant: { control: { type: "radio" }, options: ["primary", "secondary", "success", "danger", "warning", "info", "dark", "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-dark"] },
+    variant: {
+      control: { type: "radio" },
+      options: [
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "dark",
+        "outline-primary",
+        "outline-secondary",
+        "outline-success",
+        "outline-danger",
+        "outline-warning",
+        "outline-info",
+        "outline-dark"
+      ]
+    }
   },
   args: {
     toggleState: true,
-    variant: "secondary",
-
+    variant: "secondary"
   }
 }
-
 
 export default meta

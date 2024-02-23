@@ -32,7 +32,9 @@ export const EditProfileHeader = ({
           disabled={!!formUpdated}
           href={`/profile?id=${uid}`}
           label={
-            role === "organization" || role === "pendingUpgrade" ? t("viewOrgProfile") : t("viewMyProfile") 
+            role === "organization" || role === "pendingUpgrade"
+              ? t("viewOrgProfile")
+              : t("viewMyProfile")
           }
         />
       </Col>

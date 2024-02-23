@@ -27,7 +27,7 @@ type Story = StoryObj<typeof TestimoniesTab>
 export const Primary: Story = {
   args: {
     publishedTestimonies: [],
-    draftTestimonies: [],
+    draftTestimonies: []
   }
 }
 

@@ -108,9 +108,12 @@ export const FollowButton = ({
     <Col className={`d-flex w-100 justify-content-start`}>
       <div>
         <div className="view-edit-profile">
-          <FillButton onClick={handleClick} className={`py-1`} 
-          Icon={checkmark}
-          label={text}/>
+          <FillButton
+            onClick={handleClick}
+            className={`py-1`}
+            Icon={checkmark}
+            label={text}
+          />
 
           {/* <Button onClick={handleClick} className={`py-1`}>
             {text}
