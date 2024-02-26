@@ -18,4 +18,31 @@
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
-  }}
+  },
+  "loading": {
+    "inProgress": "Loading...",
+    "error": {
+      "message": "There was a problem loading the page."
+    },
+    "reload": "Reload to try again"
+  },
+  "navigation": {
+    "additionalResources": "Additional Resources",
+    "browseBills": "Browse Bills",
+    "browseTestimony": "Browse Testimony",
+    "communicatingWithLegislators": "Communicating with Legislators",
+    "faq": "FAQ",
+    "forIndividuals": "For Individuals",
+    "forLegislators": "For Legislators",
+    "forOrganizations": "For Organizations",
+    "home": "Home",
+    "learnAboutTestimony": "Learn About Testimony",
+    "missionAndGoals": "Our Mission & Goals",
+    "ourTeam": "Our Team",
+    "privacyAndConduct": "Privacy Policy & Code of Conduct",
+    "supportMaple": "How to Support MAPLE",
+    "titleAbout": "About",
+    "titleLearn": "Learn",
+    "titleWhy": "Why Use MAPLE"
+  },
+}

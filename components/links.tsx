@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { CurrentCommittee } from "../functions/src/bills/types"
