@@ -101,20 +101,16 @@ const StyledImage = styled(Image)`
         width: 10rem;
     }
 `
-// TODO: Figure out why this isn't inheriting the body styles
 const StyledTextWrapper = styled.div`
     flex-grow: 0;
     font-family: "Nunito";
-    font-size: 1.5rem;
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
-    line-height: normal;
     letter-spacing: -0.63px;
     text-align: left;
     color: #000;
     @media (max-width: 62em) {
-        font-size: 1.125rem;
         padding-top: 1.5rem;
     }
     @media (max-width: 36em) {
