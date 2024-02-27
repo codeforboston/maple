@@ -1,6 +1,9 @@
 import DropdownContext from "@restart/ui/DropdownContext"
 import { useDropdownToggle } from "@restart/ui/DropdownToggle"
-import { CustomDropdownButton, CustomDropdownButtonProps } from "components/buttons"
+import {
+  CustomDropdownButton,
+  CustomDropdownButtonProps
+} from "components/buttons"
 import * as React from "react"
 import { useContext } from "react"
 import { ButtonProps } from "react-bootstrap"
@@ -10,7 +13,10 @@ export interface DropdownToggleProps extends Omit<ButtonProps, "as"> {
   split?: boolean
   childBsPrefix?: string
 }
-const CustomDropdownToggle = React.forwardRef<HTMLElement | null, CustomDropdownButtonProps & DropdownToggleProps> (
+const CustomDropdownToggle = React.forwardRef<
+  HTMLElement | null,
+  CustomDropdownButtonProps & DropdownToggleProps
+>(
   (
     {
       bsPrefix,
@@ -21,14 +27,12 @@ const CustomDropdownToggle = React.forwardRef<HTMLElement | null, CustomDropdown
     },
     ref
   ) => {
- 
-
     const dropdownContext = useContext(DropdownContext)
 
     const [toggleProps] = useDropdownToggle()
 
     // maually coercing the ref type to get it to pass as (ref: htmlelement | null) => void works but feels sketchy
-    toggleProps.ref = (ref) => {}
+    toggleProps.ref = ref => {}
 
     return (
       <CustomDropdownButton
