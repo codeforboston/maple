@@ -70,14 +70,6 @@
   .card {
     margin: 8rem 3rem;
   }
-  .subheader {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  .title {
-    padding-left: 1rem;
-    font-size: 2.5rem;
-  }
 }
 
 /* bootstrap: small > 576px */
@@ -89,14 +81,6 @@
     height: 2.5rem;
     line-height: 2.5rem;
     transform: translate(-1.5rem, -40%);
-  }
-  .title {
-    padding-left: 1.7rem;
-    font-size: 2.25rem;
-  }
-  .subheader {
-    font-size: 1.25rem;
-    padding-left: 2rem;
   }
   .image {
     width: 12rem;
@@ -110,9 +94,6 @@
 /* bootstrap: xs < 576px
    this break at 464px */
 @media (max-width: 29em) {
-  .title {
-    font-size: 2rem;
-  }
   .image {
     width: 10rem;
   }

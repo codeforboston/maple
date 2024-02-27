@@ -10,7 +10,7 @@ const LegislativeCard = ({ title, children }) => {
       >
         {title}
       </Card.Header>
-      <Card.Body className={styles.body}>{children}</Card.Body>
+      <Card.Body>{children}</Card.Body>
     </Card>
   )
 }
