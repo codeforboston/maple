@@ -1,11 +1,3 @@
-.imageRight {
-  transform: translate(-2rem);
-}
-
-.imageLeft {
-  transform: translate(2rem);
-}
-
 .textLeft {
   display: flex;
   flex-direction: column;
