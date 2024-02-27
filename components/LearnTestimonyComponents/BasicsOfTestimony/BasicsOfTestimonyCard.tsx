@@ -1,6 +1,10 @@
 import styled from "styled-components"
 import { Col, Image } from "../../bootstrap"
-import { TestimonyCard, TestimonyCardContent, TestimonyCardTitle } from "../StyledTestimonyComponents"
+import {
+  TestimonyCard,
+  TestimonyCardContent,
+  TestimonyCardTitle
+} from "../StyledTestimonyComponents"
 
 export type BasicsOfTestimonyCardProps = {
   title: string
@@ -20,13 +24,22 @@ const TestimonyWordBubble = styled(Col)`
     transform: translate(0, 2rem);
   }
 `
-const WordBubbleImage = ({alignLeft, className, src, alt} : {alignLeft: boolean, className?: string, src: string, alt: string}) => {
-  return (
-    <Image className={className} fluid src={src} alt={alt} />
-  )
+const WordBubbleImage = ({
+  alignLeft,
+  className,
+  src,
+  alt
+}: {
+  alignLeft: boolean
+  className?: string
+  src: string
+  alt: string
+}) => {
+  return <Image className={className} fluid src={src} alt={alt} />
 }
 const StyledWordBubbleImage = styled(WordBubbleImage)`
-  transform: ${props => props.alignLeft ? 'translate(2rem)' : 'translate(-2rem)'}
+  transform: ${props =>
+    props.alignLeft ? "translate(2rem)" : "translate(-2rem)"};
 `
 
 const TestimonyTextCol = styled(Col)`
@@ -45,22 +58,19 @@ const BasicTestimonyCard = styled(TestimonyCard)`
   }
 `
 
-const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }: BasicsOfTestimonyCardProps) => {
+const BasicsOfTestimonyCard = ({
+  title,
+  index,
+  alt,
+  paragraph,
+  src
+}: BasicsOfTestimonyCardProps) => {
   return (
     <BasicTestimonyCard>
-      <TestimonyWordBubble
-        md={6}
-        lg={{ order: index % 2 == 0 ? 0 : 5 }}
-      >
-        <StyledWordBubbleImage
-          alignLeft={index % 2 == 0}
-          alt={alt}
-          src={src}
-        />
+      <TestimonyWordBubble md={6} lg={{ order: index % 2 == 0 ? 0 : 5 }}>
+        <StyledWordBubbleImage alignLeft={index % 2 == 0} alt={alt} src={src} />
       </TestimonyWordBubble>
-      <TestimonyTextCol
-        lg={{ order: 3 }}
-      >
+      <TestimonyTextCol lg={{ order: 3 }}>
         <TestimonyCardTitle className={`mb-3`}>{title}</TestimonyCardTitle>
         <TestimonyCardContent>{paragraph}</TestimonyCardContent>
       </TestimonyTextCol>

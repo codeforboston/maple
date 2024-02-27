@@ -1,5 +1,9 @@
 import { Col, Image, Row } from "../../bootstrap"
-import { TestimonyCard, TestimonyCardContent, TestimonyCardTitle } from "../StyledTestimonyComponents"
+import {
+  TestimonyCard,
+  TestimonyCardContent,
+  TestimonyCardTitle
+} from "../StyledTestimonyComponents"
 import styled from "styled-components"
 
 export type RoleOfTestimonyCardProps = {
@@ -35,7 +39,13 @@ const ContentCol = styled(Col)`
   }
 `
 
-const RoleOfTestimonyCard = ({ title, index, alt, paragraph, src }: RoleOfTestimonyCardProps) => {
+const RoleOfTestimonyCard = ({
+  title,
+  index,
+  alt,
+  paragraph,
+  src
+}: RoleOfTestimonyCardProps) => {
   return (
     <TestimonyCard className={`bg-white rounded`}>
       <Row className="my-auto">
@@ -46,7 +56,7 @@ const RoleOfTestimonyCard = ({ title, index, alt, paragraph, src }: RoleOfTestim
           <StyledImage fluid src={src} alt={alt} />
         </StyledImageCol>
         <ContentCol
-          className={index % 2 == 0 ? '' : 'textLeft'}
+          className={index % 2 == 0 ? "" : "textLeft"}
           sm={{ span: 12, order: 1 }}
           md={{ span: 6, order: 3 }}
         >

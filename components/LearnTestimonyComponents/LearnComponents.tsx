@@ -1,7 +1,10 @@
 import { Container, Row, Col } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
-import { TestimonyHeader, TestimonySubheader } from "./StyledTestimonyComponents"
+import {
+  TestimonyHeader,
+  TestimonySubheader
+} from "./StyledTestimonyComponents"
 import { TestimonyCardList } from "./TestimonyCardComponents"
 
 const BasicsContent = [
@@ -255,11 +258,17 @@ const Write = () => {
 const Legislative = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <TestimonyHeader>Understanding the Massachusetts Legislative Process</TestimonyHeader>
+      <TestimonyHeader>
+        Understanding the Massachusetts Legislative Process
+      </TestimonyHeader>
       <TestimonySubheader>
-          Some of the key steps in the legislative process for how most bills become laws in MA.
+        Some of the key steps in the legislative process for how most bills
+        become laws in MA.
       </TestimonySubheader>
-      <TestimonyCardList contents={LegislativeContent} shouldAlternateImages={false} />
+      <TestimonyCardList
+        contents={LegislativeContent}
+        shouldAlternateImages={false}
+      />
     </Container>
   )
 }
