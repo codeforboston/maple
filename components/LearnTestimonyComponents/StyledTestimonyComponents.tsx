@@ -33,10 +33,6 @@ export const TestimonyCard = styled.div`
   flex-wrap: wrap;
   display: flex;
   margin: 3rem 0;
-  @media (max-width: 48em) {
-    margin: 0;
-    padding: 0;
-  }
 `
 
 export const TestimonyCardTitle = styled.div`
@@ -49,6 +45,9 @@ export const TestimonyCardTitle = styled.div`
   letter-spacing: -0.63px;
   text-align: left;
   color: #000;
+  @media (max-width: 48em) {
+    padding-top: 1rem;
+  }
   @media (max-width: 36em) {
     font-size: 1.25rem;
   }

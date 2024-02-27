@@ -38,9 +38,16 @@ const TestimonyTextCol = styled(Col)`
   border-radius: 12px;
 `
 
+const BasicTestimonyCard = styled(TestimonyCard)`
+  @media (max-width: 48em) {
+    margin: 0;
+    padding: 0;
+  }
+`
+
 const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }: BasicsOfTestimonyCardProps) => {
   return (
-    <TestimonyCard>
+    <BasicTestimonyCard>
       <TestimonyWordBubble
         md={6}
         lg={{ order: index % 2 == 0 ? 0 : 5 }}
@@ -57,7 +64,7 @@ const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }: BasicsOfTe
         <TestimonyCardTitle className={`mb-3`}>{title}</TestimonyCardTitle>
         <TestimonyCardContent>{paragraph}</TestimonyCardContent>
       </TestimonyTextCol>
-    </TestimonyCard>
+    </BasicTestimonyCard>
   )
 }
 
