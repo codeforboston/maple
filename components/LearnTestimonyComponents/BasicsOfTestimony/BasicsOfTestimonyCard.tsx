@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import { Col, Image } from "../../bootstrap"
-import styles from "./BasicsOfTestimonyCard.module.css"
 import { TestimonyCard, TestimonyCardContent, TestimonyCardTitle } from "../StyledTestimonyComponents"
 
 export type BasicsOfTestimonyCardProps = {
@@ -30,6 +29,15 @@ const StyledWordBubbleImage = styled(WordBubbleImage)`
   transform: ${props => props.alignLeft ? 'translate(2rem)' : 'translate(-2rem)'}
 `
 
+const TestimonyTextCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+  background: #ffffff;
+  border-radius: 12px;
+`
+
 const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }: BasicsOfTestimonyCardProps) => {
   return (
     <TestimonyCard>
@@ -43,13 +51,12 @@ const BasicsOfTestimonyCard = ({ title, index, alt, paragraph, src }: BasicsOfTe
           src={src}
         />
       </TestimonyWordBubble>
-      <Col
-        className={index % 2 == 0 ? styles.textRight : styles.textLeft}
+      <TestimonyTextCol
         lg={{ order: 3 }}
       >
         <TestimonyCardTitle className={`mb-3`}>{title}</TestimonyCardTitle>
         <TestimonyCardContent>{paragraph}</TestimonyCardContent>
-      </Col>
+      </TestimonyTextCol>
     </TestimonyCard>
   )
 }
