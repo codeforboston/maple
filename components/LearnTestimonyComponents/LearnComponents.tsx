@@ -1,11 +1,8 @@
 import { Container, Row, Col } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
-import LearnTestimoniesCard from "./LearnTestimonies/LearnTestimoniesCard"
-import LearnTestimoniesCardContent from "./LearnTestimonies/LearnTestimoniesCardContent"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
-import LegislativeCard from "./LegislativeProcess/LegislativeCard"
-import LegislativeCardContent from "./LegislativeProcess/LegislativeCardContent"
 import { TestimonyHeader, TestimonySubheader } from "./StyledTestimonyComponents"
+import { TestimonyCardList } from "./TestimonyCardComponents"
 
 const BasicsContent = [
   {
@@ -76,44 +73,42 @@ const RoleContent = [
 const WriteContent = [
   {
     title: "Be Timely",
-    paragraph: {
-      P1: `Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill.`,
-      P2: `
-            Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.`
-    },
+    paragraphs: [
+      `Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill.`,
+      `Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.`
+    ],
     src: "leg-with-clock.svg",
     alt: "Document with clock"
   },
   {
     title: "Be Original",
-    paragraph: {
-      P1: `Legislators receive a lot of form letters and repeated sentiments from organized groups of constituents. These communications are important and their volume can be meaningful to legislators. But, almost always, an individual and personalized letter will have a greater impact.`
-    },
+    paragraphs: [
+      `Legislators receive a lot of form letters and repeated sentiments from organized groups of constituents. These communications are important and their volume can be meaningful to legislators. But, almost always, an individual and personalized letter will have a greater impact.`
+    ],
     src: "leg-with-lightbulb.svg",
     alt: "Document with clock"
   },
   {
     title: "Be Informative",
-    paragraph: {
-      P1: `Whether you are a longtime advocate or a first time testifier, whether you have a doctoral degree in the subject or lived experience regarding a policy, and no matter your age, race, creed, or background, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another. For example, your being a parent gives you special insight into education policy, your living in a community affected by pollution gives you special insight into environmental policy, etc.`
-    },
+    paragraphs: [
+      `Whether you are a longtime advocate or a first time testifier, whether you have a doctoral degree in the subject or lived experience regarding a policy, and no matter your age, race, creed, or background, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another. For example, your being a parent gives you special insight into education policy, your living in a community affected by pollution gives you special insight into environmental policy, etc.`
+    ],
     src: "writing.svg",
-    alt: "Document with clock",
-    imgFlag: 1
+    alt: "Document with clock"
   },
   {
     title: "Be Direct",
-    paragraph: {
-      P1: `State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't have to know specific legal precedents or legislative language; just explain what you would like to happen and why.`
-    },
+    paragraphs: [
+      `State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't have to know specific legal precedents or legislative language; just explain what you would like to happen and why.`
+    ],
     src: "opinions.svg",
     alt: "Document with clock"
   },
   {
     title: "Be Respectful",
-    paragraph: {
-      P1: `No matter how strongly and sincerely held your position is, there may be people of good intent who feel oppositely and expect and deserve to have their opinions considered by their legislators also. Respectful testimony will carry more weight with legislators, especially those who you may need to persuade to your side of an issue.`
-    },
+    paragraphs: [
+      `No matter how strongly and sincerely held your position is, there may be people of good intent who feel oppositely and expect and deserve to have their opinions considered by their legislators also. Respectful testimony will carry more weight with legislators, especially those who you may need to persuade to your side of an issue.`
+    ],
     src: "respect-with-blob.svg",
     alt: "Document with clock"
   }
@@ -122,66 +117,65 @@ const WriteContent = [
 const LegislativeContent = [
   {
     title: "Filing",
-    paragraph: {
-      P1: `A Representative, Senator, or the Governor must file a bill. Constituents can write to their legislators (typically their own  district's House or Senate member) to propose a bill to be filed. This can be done at any time, but is typically done before the start of the legislative session (i.e. before the third Friday in January of odd-numbered years). Bills filed later, during the legislative session, require special approval.`
-    },
+    paragraphs: [
+      `A Representative, Senator, or the Governor must file a bill. Constituents can write to their legislators (typically their own  district's House or Senate member) to propose a bill to be filed. This can be done at any time, but is typically done before the start of the legislative session (i.e. before the third Friday in January of odd-numbered years). Bills filed later, during the legislative session, require special approval.`
+    ],
     src: "speaker-podium.svg",
     alt: "Document with clock"
   },
   {
     title: "Testimony",
-    paragraph: {
-      P1: `All stakeholders have the chance to share their thoughts with the legislature by submitting written testimony. Typically, testimony is submitted to the legislative Committee responsible for the bill in advance of their public hearing. You can also deliver oral testimony by attending a hearing or you can reach out to your legislators and speak to them directly.`
-    },
+    paragraphs: [
+      `All stakeholders have the chance to share their thoughts with the legislature by submitting written testimony. Typically, testimony is submitted to the legislative Committee responsible for the bill in advance of their public hearing. You can also deliver oral testimony by attending a hearing or you can reach out to your legislators and speak to them directly.`
+    ],
     src: "mic-with-testify.svg",
     alt: "Document with clock"
   },
   {
     title: "Public hearing",
-    paragraph: {
-      P1: `All bills are formally heard by committees during public hearings which are open to the public and recorded and posted as videos on the legislature's website. While the amount of time available to speak during a public hearing is limited, more detailed comments can be submitted to the committee in written testimony.`
-    },
+    paragraphs: [
+      `All bills are formally heard by committees during public hearings which are open to the public and recorded and posted as videos on the legislature's website. While the amount of time available to speak during a public hearing is limited, more detailed comments can be submitted to the committee in written testimony.`
+    ],
     src: "doc-with-arrows-to-people.svg",
-    alt: "Document with clock",
-    imgFlag: 1
+    alt: "Document with clock"
   },
   {
     title: "Committee reports",
-    paragraph: {
-      P1: `Committee reports. Committees must file reports on each bill under their consideration after discussing them in Executive Session following the public hearing. This typically occurs before February of the second year of the legislative session (even-numbered years). The goal for proponents of a bill is that the Committee will recommend they "ought to pass" and thereby promote them out of the Committee. Most bills, however are "sent to study," meaning that they will not be passed out of committee in that session. A successful bill may be redrafted or amended by the committee based on testimony received and other deliberations. Many of those bills will be refiled in the next session and can be considered again.`
-    },
+    paragraphs: [
+      `Committee reports. Committees must file reports on each bill under their consideration after discussing them in Executive Session following the public hearing. This typically occurs before February of the second year of the legislative session (even-numbered years). The goal for proponents of a bill is that the Committee will recommend they "ought to pass" and thereby promote them out of the Committee. Most bills, however are "sent to study," meaning that they will not be passed out of committee in that session. A successful bill may be redrafted or amended by the committee based on testimony received and other deliberations. Many of those bills will be refiled in the next session and can be considered again.`
+    ],
     src: "leg-with-lightbulb.svg",
     alt: "Document with clock"
   },
   {
     title: "Three readings",
-    paragraph: {
-      P1: `Each bill passed out of Committee will be "read" three times by each branch, the House and Senate. This typically entails floor debate of the full chamber and a vote of the Committee on Ways and Means or Steering and Policy.`
-    },
+    paragraphs: [
+      `Each bill passed out of Committee will be "read" three times by each branch, the House and Senate. This typically entails floor debate of the full chamber and a vote of the Committee on Ways and Means or Steering and Policy.`
+    ],
     src: "speaker-with-leg.svg",
     alt: "Document with clock"
   },
   {
     title: "Engrossment and Enactment",
-    paragraph: {
-      P1: `After the three readings, the bill will be voted on by each of the full chambers (House and Senate), resulting in (if successful) "engrossment" and then "enactment.`
-    },
+    paragraphs: [
+      `After the three readings, the bill will be voted on by each of the full chambers (House and Senate), resulting in (if successful) "engrossment" and then "enactment.`
+    ],
     src: "opinions.svg",
     alt: "Document with clock"
   },
   {
     title: "Conference Committee",
-    paragraph: {
-      P1: `If necessary, differences between the House and Senate versions of a bill will be reconciled by a temporary Conference Committee appointed by the House Speaker and Senate President.`
-    },
+    paragraphs: [
+      `If necessary, differences between the House and Senate versions of a bill will be reconciled by a temporary Conference Committee appointed by the House Speaker and Senate President.`
+    ],
     src: "respect-with-blob.svg",
     alt: "Document with clock"
   },
   {
     title: "Executive branch",
-    paragraph: {
-      P1: `Lastly, the Governor is responsible for signing the enacted and reconciled bill into law. The governor can also veto the bill, return it to the Legislature for changes, or take a number of other less-common actions.`
-    },
+    paragraphs: [
+      `Lastly, the Governor is responsible for signing the enacted and reconciled bill into law. The governor can also veto the bill, return it to the Legislature for changes, or take a number of other less-common actions.`
+    ],
     src: "speaker-with-pen.svg",
     alt: "Document with clock"
   }
@@ -253,47 +247,19 @@ const Write = () => {
         you can use to make sure the testimony you submit is as impactful as
         possible:
       </TestimonySubheader>
-      {WriteContent.map((value, index) => (
-        <LearnTestimoniesCard title={value.title} key={value.title}>
-          <LearnTestimoniesCardContent
-            src={`/${value.src}`}
-            alt={value.alt}
-            index={index}
-          >
-            {value.paragraph}
-          </LearnTestimoniesCardContent>
-        </LearnTestimoniesCard>
-      ))}
+      <TestimonyCardList contents={WriteContent} shouldAlternateImages={true} />
     </Container>
   )
 }
 
 const Legislative = () => {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h1>
-            Understanding the Massachusetts Legislative Process
-          </h1>
-          <p>
-            Some of the key steps in the legislative process for how most bills
-            become laws in MA.
-          </p>
-
-          {LegislativeContent.map((value, index) => (
-            <LegislativeCard title={value.title} key={value.title}>
-              <LegislativeCardContent
-                src={`/${value.src}`}
-                alt={value.alt}
-                index={index}
-              >
-                {value.paragraph}
-              </LegislativeCardContent>
-            </LegislativeCard>
-          ))}
-        </Col>
-      </Row>
+    <Container fluid="md" className="mt-3">
+      <TestimonyHeader>Understanding the Massachusetts Legislative Process</TestimonyHeader>
+      <TestimonySubheader>
+          Some of the key steps in the legislative process for how most bills become laws in MA.
+      </TestimonySubheader>
+      <TestimonyCardList contents={LegislativeContent} shouldAlternateImages={false} />
     </Container>
   )
 }
