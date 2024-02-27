@@ -221,11 +221,11 @@ export const ToggleButton = ({
   )
 }
 
-type CustomDropdownButtonProps = ButtonProps & {
+export type CustomDropdownButtonProps = ButtonProps & {
   label: string
   variant?: string
   variantColor?: string
-  show: boolean | undefined
+  show?: boolean | undefined
 }
 
 export const CustomDropdownButton = React.forwardRef<

@@ -1,76 +1,41 @@
-import useMergedRefs from "@restart/hooks/useMergedRefs"
 import DropdownContext from "@restart/ui/DropdownContext"
 import { useDropdownToggle } from "@restart/ui/DropdownToggle"
-import classNames from "classnames"
-import { CustomDropdownButton } from "components/buttons"
+import { CustomDropdownButton, CustomDropdownButtonProps } from "components/buttons"
 import * as React from "react"
 import { useContext } from "react"
-import Button, {
-  ButtonProps,
-  CommonButtonProps
-} from "react-bootstrap/esm/Button"
-import { BsPrefixRefForwardingComponent } from "react-bootstrap/esm/helpers"
-import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider"
-import useWrappedRefWithWarning from "react-bootstrap/esm/useWrappedRefWithWarning"
+import { ButtonProps } from "react-bootstrap"
 
 export interface DropdownToggleProps extends Omit<ButtonProps, "as"> {
   as?: React.ElementType
   split?: boolean
   childBsPrefix?: string
 }
-
-type DropdownToggleComponent = BsPrefixRefForwardingComponent<
-  "button",
-  DropdownToggleProps
->
-
-export type PropsFromToggle = Partial<
-  Pick<React.ComponentPropsWithRef<DropdownToggleComponent>, CommonButtonProps>
->
-
-const CustomDropdownToggle = React.forwardRef(
+const CustomDropdownToggle = React.forwardRef<HTMLElement | null, CustomDropdownButtonProps & DropdownToggleProps> (
   (
     {
       bsPrefix,
-      split,
       className,
-      childBsPrefix,
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-      as: Component = Button,
+      as: Button,
       ...props
-    }: DropdownToggleProps & { label: string },
+    },
     ref
   ) => {
-    // Set to undefined to prevent the default ::after chevron.
-    // To reset: useBootstrapPrefix(bsPrefix, 'dropdown-toggle');
-    const prefix = undefined
+ 
 
     const dropdownContext = useContext(DropdownContext)
 
-    if (childBsPrefix !== undefined) {
-      ;(props as any).bsPrefix = childBsPrefix
-    }
-
     const [toggleProps] = useDropdownToggle()
 
-    toggleProps.ref = useMergedRefs(
-      toggleProps.ref,
-      useWrappedRefWithWarning(ref, "CustomDropdownToggle")
-    )
+    // maually coercing the ref type to get it to pass as (ref: htmlelement | null) => void works but feels sketchy
+    toggleProps.ref = (ref) => {}
 
-    // This intentionally forwards size and variant (if set) to the
-    // underlying component, to allow it to render size and style variants.
     return (
       <CustomDropdownButton
-        className={classNames(
-          className,
-          prefix,
-          split && `${prefix}-split`,
-          dropdownContext?.show && "show"
-        )}
+        // Intentionally not using the class "dropdown-toggle" to prevent the ::after chevron.
+        className={`${className} ${dropdownContext?.show && "show"}`}
         {...toggleProps}
         {...props}
-        // label={props.label}
         show={dropdownContext?.show}
       />
     )
