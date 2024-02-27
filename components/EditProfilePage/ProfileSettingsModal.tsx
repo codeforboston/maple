@@ -1,3 +1,4 @@
+import CustomDropdownToggle from "components/BootstrapCustomDropdownToggle"
 import { FillButton, OutlineButton, ToggleButton } from "components/buttons"
 import { flags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
@@ -118,13 +119,11 @@ export default function ProfileSettingsModal({
               </Col>
               <Col className={`col-auto ms-auto d-flex flex-grow-1`}>
                 <Dropdown align="end" className={`flex-grow-1 d-flex`}>
-                  <Dropdown.Toggle
+                  <CustomDropdownToggle
+                    label={t(`email.${notifications.toLocaleLowerCase()}`)}
                     className={`btn-sm btn-light py-1 flex-grow-1 d-flex gap-2 justify-content-center align-items-center`}
                     variant="outline-secondary"
-                    id="dropdown-basic"
-                  >
-                    {t(`email.${notifications.toLocaleLowerCase()}`)}
-                  </Dropdown.Toggle>
+                  />
                   <Dropdown.Menu className={`col-12 bg-white `}>
                     <Dropdown.Item onClick={() => setNotifications("Daily")}>
                       {t("email.daily")}

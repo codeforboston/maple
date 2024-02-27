@@ -1,8 +1,14 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { userEvent, within } from "@storybook/testing-library"
-import { HighContrastButton, ToggleButton } from "components/buttons"
-import { Button } from "react-bootstrap"
+import {
+  HighContrastButton,
+  CustomDropdownButton,
+  ToggleButton
+} from "components/buttons"
+import { Button, Dropdown, SplitButton } from "react-bootstrap"
+import { useDropdownToggle } from "react-overlays"
 import styled from "styled-components"
+import CustomDropdownToggle from "../../components/BootstrapCustomDropdownToggle"
 
 const BaseButton = styled(Button)``
 
@@ -97,6 +103,42 @@ export const HighContrastToggleButton: Story = {
   args: {
     toggleState: true,
     variant: "secondary"
+  }
+}
+
+export const CustonDropdownToggleButton: Story = {
+  render: args => {
+    return (
+      <div className={`col-12 hstack gap-5 px-lg-5 `}>
+        <Dropdown className={`col-4`}>
+          <CustomDropdownToggle
+            label={"Dropdown Label"}
+            variant={"secondary"}
+          />
+          <Dropdown.Menu className={`col-12 bg-white `}>
+            {args.menuItems.map((item: string, index: number) => {
+              return <Dropdown.Item key={index}>{item}</Dropdown.Item>
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+        <Dropdown className={`col-4`}>
+          <CustomDropdownToggle
+            label={"Select Button Base "}
+            variant={"outline-secondary"}
+          />
+          <Dropdown.Menu className={`col-12 bg-white `}>
+            {args.menuItems.map((item: string, index: number) => {
+              return <Dropdown.Item key={index}>{item}</Dropdown.Item>
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    )
+  },
+  args: {
+    label: "Dropdown",
+    variantColor: "secondary",
+    menuItems: ["example item", "example item", "example item"]
   }
 }
 

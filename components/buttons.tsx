@@ -1,10 +1,11 @@
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { ReactNode, useRef, useState } from "react"
 import { ButtonProps, ImageProps, SpinnerProps, Tooltip } from "react-bootstrap"
 import CopyToClipboard from "react-copy-to-clipboard"
 import styled from "styled-components"
 import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
-import { LabeledIcon } from "./shared"
 
 export const TableButton = ({
   onclick,
@@ -124,6 +125,7 @@ export const FillButton = ({
 type OutlineButtonProps = ButtonProps & {
   label?: string
   Icon?: ReactNode
+  ref?: React.ForwardedRef<HTMLButtonElement>
 }
 
 export const OutlineButton = ({
@@ -133,11 +135,13 @@ export const OutlineButton = ({
   label,
   ...rest
 }: OutlineButtonProps) => {
+  const hoverClass = `btn-hover-${variant.split("-")[1]}`
+  const activeClass = `btn-active-outline-${variant}`
+
   return (
     <Button
       variant={variant}
-      type="submit"
-      className={`py-1 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-center btn-hover-secondary ${className}`}
+      className={`py-1 col-12 text-capitalize text-nowrap d-flex justify-content-center align-items-center ${hoverClass} ${activeClass} ${className}`}
       {...rest}
     >
       <div className={`d-flex align-items-center`}>{Icon && Icon}</div>
@@ -150,6 +154,8 @@ type HighContrastButton = ButtonProps & {
   state?: boolean
   label?: string
   Icon?: ReactNode
+  reverse?: boolean
+  ref?: React.ForwardedRef<HTMLButtonElement>
 }
 
 export const HighContrastButton = ({
@@ -158,6 +164,7 @@ export const HighContrastButton = ({
   className,
   Icon,
   label,
+  reverse,
   ...rest
 }: HighContrastButton) => {
   let hoverClass: string, activeClass: string
@@ -168,11 +175,14 @@ export const HighContrastButton = ({
     hoverClass = `btn-hover-outline-${variant}`
     activeClass = `btn-active-${variant.split("-")[1]}`
   }
-  console.log(variant, hoverClass)
   return (
     <Button
       variant={variant}
-      className={`${hoverClass} col-12 ${className}`}
+      className={` d-flex ${
+        reverse
+          ? "flex-row-reverse justify-content-start"
+          : "justify-content-center"
+      } col-12 ${hoverClass} ${activeClass} ${className} `}
       {...rest}
     >
       {Icon && Icon}
@@ -210,6 +220,46 @@ export const ToggleButton = ({
     />
   )
 }
+
+type CustomDropdownButtonProps = ButtonProps & {
+  label: string
+  variant?: string
+  variantColor?: string
+  show: boolean | undefined
+}
+
+export const CustomDropdownButton = React.forwardRef<
+  HTMLDivElement,
+  CustomDropdownButtonProps
+>(({ label, className, variant, variantColor, show, ...rest }, ref) => {
+  const Icon = show ? (
+    <FontAwesomeIcon icon={faChevronUp} className={variant} />
+  ) : (
+    <FontAwesomeIcon icon={faChevronDown} className={variant} />
+  )
+
+  return (
+    <div ref={ref} className={`col-12`}>
+      {" "}
+      {/* The ref needs to be on a dom element, 
+    but it does not need to be passed all the way down to the actual button, 
+    just something that catches the click event
+    */}
+      <HighContrastButton
+        className={`d-flex align-items-center justify-content-left gap-2 p-2 col-12 ${className} `}
+        variant={variant ?? "secondary"}
+        label={label}
+        Icon={
+          <div className={`ms-auto border-start border-2 ps-2 `}>{Icon}</div>
+        }
+        reverse
+        {...rest}
+      />
+    </div>
+  )
+})
+
+CustomDropdownButton.displayName = "CustomDropdownButton"
 
 export const TooltipButton = styled<{
   tooltip: string
@@ -324,5 +374,4 @@ export const GearButton = styled(
   }
 )`
   --bs-btn-bg: white; // override bootstrap button background transparency to match Figma
-  // TODO: make a generic outline secondary button that takes an icon as a child adn put on that level
 `
