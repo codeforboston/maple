@@ -141,20 +141,23 @@ export default function ProfileSettingsModal({
           </HideableSection>
           <ModalSubheader title={t("privacySetting")} />
           <Row className={`p-2 d-flex justify-content-start`}>
-            <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
+            <Col
+              className={`col-12 ${role === "user" && "col-md-8"} mb-3 mb-md-0`}
+            >
               <small>{privacyText}</small>
             </Col>
-            <Col className={`col-12 col-md-4`}>
-              <ToggleButton
-                disabled={role !== "user"}
-                size={"sm"}
-                className={`btn-sm col-12 py-1 rounded-1`}
-                toggleState={isProfilePublic}
-                stateTrueLabel={t("forms.makePublic")}
-                stateFalseLabel={t("forms.makePrivate")}
-                onClick={() => setIsProfilePublic(current => !current)}
-              />
-            </Col>
+            {role === "user" && (
+              <Col className={`col-12 col-md-4`}>
+                <ToggleButton
+                  size={"sm"}
+                  className={`py-1 rounded-1`}
+                  toggleState={isProfilePublic}
+                  stateTrueLabel={t("forms.makePrivate")}
+                  stateFalseLabel={t("forms.makePublic")}
+                  onClick={() => setIsProfilePublic(current => !current)}
+                />
+              </Col>
+            )}
           </Row>
           <Row className={`p-2 d-flex align-items-start`}>
             <Col md={{ offset: 3 }}>
