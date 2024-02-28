@@ -1,14 +1,15 @@
 import { Meta } from "@storybook/react"
-import {
-  OrgIconLarge,
-  OrgIconSmall,
-  UserIconLarge,
-  UserIconSmall
-} from "components/ProfilePage/StyledProfileComponents"
+import { ProfileIcon } from "components/ProfilePage/StyledUserIcons"
 import React from "react"
 
-const IconStories = ({ children }: { children: React.ReactNode }) => {
-  return <div>{children}</div>
+const IconStories = ({
+  children,
+  className
+}: {
+  children: React.ReactNode
+  className?: string
+}) => {
+  return <div className={className}>{children}</div>
 }
 
 const meta: Meta = {
@@ -19,12 +20,13 @@ const meta: Meta = {
 export const Primary = {
   args: {
     children: (
-      <IconStories>
-        {/* <UserIconLarge />
-    <UserIconSmall />
-    <OrgIconLarge />
-    <OrgIconSmall /> */}
-        <div>TODO</div>
+      <IconStories className={`d-flex flex-row gap-5`}>
+        <ProfileIcon large />
+        <ProfileIcon />
+        <ProfileIcon role={"organization"} large />
+        <ProfileIcon role={"organization"} />
+        <ProfileIcon profileImage="/codeforbostonicon.png" />
+        <ProfileIcon large profileImage="/codeforbostonicon.png" />
       </IconStories>
     )
   },

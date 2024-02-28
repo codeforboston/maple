@@ -17,6 +17,44 @@ export const parameters = {
       color: /(background|color)$/i,
       date: /Date$/
     }
+  },
+  options: {
+    storySort: {
+      order: [
+        "Atoms",
+        "Molecules",
+        "Organisms",
+        [
+          "Page Elements",
+          "Profile",
+          "Edit Profile",
+          "Bill Detail",
+          "Education",
+          "Newsfeed"
+        ],
+        "Pages",
+        "*",
+        "unused"
+      ],
+      method: "alphabetical"
+    }
+  },
+  backgrounds: {
+    default: "medium",
+    values: [
+      {
+        name: "light",
+        value: "#ffffff"
+      },
+      {
+        name: "dark",
+        value: "#000000"
+      },
+      {
+        name: "medium",
+        value: "#f4f4f4"
+      }
+    ]
   }
 }
 

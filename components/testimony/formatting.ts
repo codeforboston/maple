@@ -1,7 +1,7 @@
 import { Change, diffChars } from "diff"
 import createDOMPurify from "dompurify"
 import { cloneDeep } from "lodash"
-import { marked, Tokenizer } from "marked"
+import { Tokenizer, marked } from "marked"
 
 export const splitParagraphs = (s: string) => s.split(/\s*[\r\n]+\s*/)
 
@@ -17,15 +17,40 @@ export const formatTestimonyDiff = (
 }
 
 let plainTextFormatter: ReturnType<typeof createDOMPurify> | undefined
+
+/**
+ * Convert markdown to plain text, preserving line breaks and dropping everything else.
+ *
+ * - Double line breaks in md are converted to <p> tags, and then to \n\n in plaintext.
+ * - Single line breaks in md are converted to <br> tags, and then to \n in plaintext.
+ * - Links are inlined
+ */
 export const formatTestimonyPlaintext = (markdown: string) => {
   if (!plainTextFormatter) {
     plainTextFormatter = createDOMPurify()
     plainTextFormatter.setConfig({
-      ALLOWED_TAGS: ["#text"],
+      ALLOWED_TAGS: [],
       KEEP_CONTENT: true
     })
+    plainTextFormatter.addHook("beforeSanitizeElements", function (node) {
+      if (node.tagName === "A") {
+        const href = (node as HTMLLinkElement).href
+        const text = node.textContent ?? ""
+        if (href.includes(text)) {
+          node.textContent = href
+        } else {
+          node.textContent = `${node.textContent} (${
+            (node as HTMLLinkElement).href
+          })`
+        }
+      }
+    })
   }
-  return plainTextFormatter.sanitize(formatTestimony(markdown).__html)
+  const htmlContent = formatTestimony(markdown).__html
+  const textContent = plainTextFormatter
+    .sanitize(htmlContent.replaceAll("<br>", "\n").replaceAll("</p>", "</p>\n"))
+    .trim()
+  return textContent
 }
 
 /** Converts markdown to renderable HTML. */

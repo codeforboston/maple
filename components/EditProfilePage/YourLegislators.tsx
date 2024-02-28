@@ -1,6 +1,5 @@
 import { Col, Row } from "../bootstrap"
 import { External } from "../links"
-import { StyledBody } from "../shared/TitledSectionCard"
 import { SelectLegislators } from "../ProfilePage/SelectLegislators"
 import { useTranslation } from "next-i18next"
 
