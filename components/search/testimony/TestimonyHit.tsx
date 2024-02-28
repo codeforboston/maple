@@ -13,7 +13,7 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
   console.log(url)
   return (
-    <Link href={url}>
+    <Link href={url} legacyBehavior>
       <a style={{ all: "unset", cursor: "pointer" }} className="w-100">
         <TestimonyResult hit={hit} />
       </a>
