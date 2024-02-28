@@ -8,6 +8,7 @@ import { Profile } from "../db"
 import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
 import { EditProfileButton, ToggleProfilePrivate } from "./ProfileButtons"
+import { flags } from "components/featureFlags"
 
 export const ProfileHeader = ({
   profileId,
@@ -88,5 +89,5 @@ export function ProfileButtonsUser({
 }
 
 function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
-  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
+  return <>{isUser ? <EditProfileButton /> : flags().followOrg ? <FollowButton /> : null}</>
 }
