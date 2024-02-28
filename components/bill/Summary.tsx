@@ -81,7 +81,7 @@ export const Summary = ({
             <Modal.Header closeButton onClick={handleHideBillDetails}>
               <Modal.Title>{bill?.id}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="bg-white">
               <FormattedBillDetails>
                 {bill?.content?.DocumentText}
               </FormattedBillDetails>

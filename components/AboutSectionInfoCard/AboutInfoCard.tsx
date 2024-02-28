@@ -10,7 +10,7 @@ export type AboutInfoCardProps = {
 export default function AboutInfoCard({ title, bodytext }: AboutInfoCardProps) {
   return (
     <Col className="my-3">
-      <Card className="h-100">
+      <Card className="h-100 bg-white">
         <Card.Header
           as="h3"
           className={`text-center align-self-center text-white rounded-0 ${styles.cardHeader}`}

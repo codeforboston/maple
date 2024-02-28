@@ -1,12 +1,12 @@
 import { debounce, isEmpty, isEqual, pickBy } from "lodash"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { UseEditTestimony, WorkingDraft } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import {
-  restoreFromDraft,
   Service,
-  setSyncState,
   SyncState,
+  restoreFromDraft,
+  setSyncState,
   syncTestimony
 } from "../redux"
 import { usePublishState } from "./usePublishState"
@@ -22,6 +22,7 @@ export function useFormSync(edit: Service) {
     dispatch = useAppDispatch(),
     form = useFormDraft(),
     persisted = usePersistedDraft(draft),
+    lastSubmittedForm = useRef<DraftContent>(),
     hasError = Boolean(saveDraft.error || loadingError)
 
   const saveDraftDebounced = useMemo(
@@ -42,7 +43,16 @@ export function useFormSync(edit: Service) {
   // - Should not continue re-attempting if error
   // - Should re-attempt when new changes are made to the form
   useEffect(() => {
-    if (!saved && !loading && !empty && !hasError) saveDraftDebounced(form)
+    if (
+      !saved &&
+      !loading &&
+      !empty &&
+      !hasError &&
+      !isEqual(form, lastSubmittedForm.current)
+    ) {
+      lastSubmittedForm.current = form
+      saveDraftDebounced(form)
+    }
   }, [empty, form, hasError, loading, saveDraftDebounced, saved])
 
   let state: SyncState
