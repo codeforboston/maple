@@ -89,5 +89,13 @@ export function ProfileButtonsUser({
 }
 
 function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
-  return <>{isUser ? <EditProfileButton /> : flags().followOrg ? <FollowButton /> : null}</>
+  return (
+    <>
+      {isUser ? (
+        <EditProfileButton />
+      ) : flags().followOrg ? (
+        <FollowButton />
+      ) : null}
+    </>
+  )
 }
