@@ -99,10 +99,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     {t("navigation.browseTestimony")}
                   </NavLink>
 
-                  <NavDropdown
-                    className={"navLink-primary"}
-                    title={t("navigation.titleLearn")}
-                  >
+                  <NavDropdown className={"navLink-primary"} title={t("learn")}>
                     <NavDropdown.Item>
                       <NavLink
                         href="/learn/basics-of-testimony"
@@ -129,10 +126,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     </NavDropdown.Item>
                   </NavDropdown>
 
-                  <NavDropdown
-                    className={"navLink-primary"}
-                    title={t("navigation.titleAbout")}
-                  >
+                  <NavDropdown className={"navLink-primary"} title={t("about")}>
                     <NavDropdown.Item>
                       <NavLink href="/about/faq-page" handleClick={closeNav}>
                         {t("navigation.faq")}
@@ -148,7 +142,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <NavLink href="/about/our-team" handleClick={closeNav}>
-                        {t("navigation.ourTeam")}
+                        {t("team")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -168,7 +162,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
                   <NavDropdown
                     className={"navLink-primary"}
-                    title={t("navigation.titleWhy")}
+                    title={t("whyUseMaple")}
                   >
                     <NavDropdown.Item>
                       <NavLink
