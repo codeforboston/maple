@@ -1,4 +1,4 @@
-.faqLayout {
+/* .faqLayout {
   margin-bottom: 3rem;
   font-family: "Nunito";
 }
@@ -6,7 +6,7 @@
 .faqLayout h1 {
   margin: 1.5rem 0rem 1.5rem 2rem;
   font-size: 3rem;
-}
+} */
 
 .faqCard {
   border-radius: 10px;
@@ -51,7 +51,7 @@
     padding-right: 1.5rem;
   }
 
-  .faqLayout h1 {
+  /* .faqLayout h1 {
     margin: 1rem 0rem 1rem 0rem;
-  }
+  } */
 }
