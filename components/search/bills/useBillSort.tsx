@@ -22,7 +22,7 @@ export const useBillSort = () => {
       },
       {
         label: "Sort by Cosponsor Count",
-        value: "bills/sort/cosponsorCount:asc"
+        value: "bills/sort/cosponsorCount:desc"
       },
       {
         label: "Sort by Next Hearing Date",
