@@ -23,7 +23,7 @@ export function ProfilePage(profileprops: {
     profileprops.id,
     profileprops.verifyisorg
   )
-  const isUser = user?.uid === profileprops.id
+  const isCurrentUser = user?.uid === profileprops.id
   const role: Role = profile?.role || "user"
   const isPendingUpgrade = claims?.role === "pendingUpgrade"
   const isOrg: boolean =
@@ -82,8 +82,8 @@ export function ProfilePage(profileprops: {
 
   return (
     <>
-      {isPendingUpgrade && <PendingUpgradeBanner />}
-      {["user", "admin"].includes(role) ? (
+      {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}
+      {["user", "admin"].includes(role) && isCurrentUser ? (
         <>
           <Banner>
             {" "}
@@ -98,14 +98,14 @@ export function ProfilePage(profileprops: {
       <Container>
         <ProfileHeader
           profileId={profileprops.id}
-          isUser={isUser}
+          isUser={isCurrentUser}
           isOrg={isOrg}
           isProfilePublic={isProfilePublic}
           onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />
 
-        {isUser && !user.emailVerified ? (
+        {isCurrentUser && !user.emailVerified ? (
           <Row>
             <Col>
               <VerifyAccountSection className="mb-4" user={user} />
