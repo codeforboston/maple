@@ -6,7 +6,8 @@
   },
   "functions": {
     "predeploy": ["yarn build:functions"],
-    "source": "functions"
+    "source": "functions",
+    "runtime": "nodejs16"
   },
   "firestore": {
     "rules": "firestore.rules",

@@ -15,24 +15,36 @@ export const PaginationButtons = ({
     nextPage,
     hasNextPage,
     previousPage,
-    hasPreviousPage
-  }
+    hasPreviousPage,
+    itemsPerPage
+  },
+  totalItems
 }: {
   pagination: Pagination
+  totalItems: number | undefined
 }) => {
+  if (totalItems === undefined) {
+    return null
+  }
+  let currentPageEnd = Math.min(currentPage * itemsPerPage, totalItems)
+
   return (
     <div className="d-flex justify-content-center my-3">
       <PreviousStyle
         variant="secondary"
         onClick={previousPage}
-        disabled={!hasPreviousPage}
+        disabled={!hasPreviousPage || currentPage == 1}
       >
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </PreviousStyle>
       <SpanStyle variant="secondary" className="align-self-center">
         Page {currentPage}
       </SpanStyle>
-      <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
+      <NextStyle
+        variant="secondary"
+        onClick={nextPage}
+        disabled={!hasNextPage || currentPageEnd >= totalItems}
+      >
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </NextStyle>
     </div>

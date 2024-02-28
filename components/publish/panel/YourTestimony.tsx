@@ -109,7 +109,7 @@ const Cta = styled(Button).attrs({ variant: "light" })`
 const TwitterButton = (props: ClsProps) => {
   const { publication } = usePublishState()
   return publication ? (
-    <External as={Cta} href={twitterShareLink(publication)} {...props}>
+    <External as={Cta as any} href={twitterShareLink(publication)} {...props}>
       Tweet Your Published Testimony
     </External>
   ) : null

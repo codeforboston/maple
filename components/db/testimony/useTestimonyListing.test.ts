@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react-hooks"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { useTestimonyListing } from "."
 import { signInUser2, signInUser3 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
@@ -13,7 +13,7 @@ describe("useTestimonyListing", () => {
   it("list all testimony for a particular user", async () => {
     const { uid } = await signInUser3()
 
-    const { result, waitFor } = renderHook(() => useTestimonyListing(uid))
+    const { result } = renderHook(() => useTestimonyListing(uid))
 
     await waitFor(
       () => {
@@ -43,7 +43,7 @@ describe("useTestimonyListing", () => {
 
   it("updates as testimony is added", async () => {
     const { uid } = await signInUser2()
-    const { result, waitFor } = renderHook(() => useTestimonyListing(uid))
+    const { result } = renderHook(() => useTestimonyListing(uid))
     await waitFor(() => expect(result.current.loading).toBeFalsy(), {
       timeout: 5000
     })

@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react-hooks"
+import { act, renderHook } from "@testing-library/react"
 import { UserCredential } from "firebase/auth"
 import { nanoid } from "nanoid"
 import { terminateFirebase, testDb } from "../../tests/testUtils"

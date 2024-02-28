@@ -35,10 +35,6 @@
   padding: 1rem;
 }
 
-.btn-outline-secondary {
-  background-color: white;
-}
-
 .offcanvas {
   background-color: var(--bs-body-bg) !important;
 }

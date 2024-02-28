@@ -59,7 +59,7 @@ const HeroHeader = ({ authenticated }) => {
                   </div>
                   <p className={styles.subtitle}>{t("short_description")}</p>
                   <p>
-                    {t("newCommer")}? {t("checkout")}{" "}
+                    {t("newcomer")}{" "}
                     <a
                       href="https://calendar.google.com/calendar/embed?src=998f62323926f0b0076e7f578d3ca72b1bc94c4efa2f24be57b11f52b1b88595%40group.calendar.google.com&ctz=America%2FNew_York"
                       style={{ color: "white" }}
