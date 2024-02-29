@@ -30,6 +30,7 @@ export const useBillRefinements = () => {
     useRefinementListUiProps({
       attribute: "city",
       searchablePlaceholder: "City",
+      className: "city-search",
       ...baseProps
     }),
     useRefinementListUiProps({
