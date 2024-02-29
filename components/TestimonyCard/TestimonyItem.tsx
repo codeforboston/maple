@@ -15,7 +15,6 @@ import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
 import { useState } from "react"
 import { TestimonyContent } from "components/testimony"
 import { ViewAttachment } from "components/ViewAttachment"
-import styles from "./ViewTestimony.module.css"
 import { UseAsyncReturn } from "react-async-hook"
 import { useTranslation } from "next-i18next"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
@@ -26,54 +25,6 @@ const FooterButton = styled(Button)`
   padding: 0;
   text-decoration: none;
 `
-const StyledCol = styled(Col)`
-  font-size: 0.75rem;
-
-  .choice {
-    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
-    border-radius: 0.75rem;
-    color: white;
-    margin: 0;
-    font-size: 0.75rem;
-
-    align-items: center;
-  }
-`
-
-const ArchiveTestimonyConfirmation = ({
-  show,
-  onHide,
-  archiveTestimony
-}: {
-  show: boolean
-  onHide: () => void
-  archiveTestimony: UseAsyncReturn<void, []> | undefined
-}) => {
-  const { t } = useTranslation("testimony")
-
-  return (
-    <>
-      <StyledCol>{t("testimonyItem.deleteTestimonyConfirmation")}</StyledCol>
-      <StyledCol>
-        <Button
-          className="choice me-4"
-          variant="secondary"
-          onClick={archiveTestimony?.execute}
-          disabled={archiveTestimony === undefined || archiveTestimony.loading}
-        >
-          {archiveTestimony?.loading ? (
-            <Spinner size="sm" animation="border" />
-          ) : (
-            "Yes"
-          )}
-        </Button>
-        <Button className="choice" variant="primary" onClick={onHide}>
-          {t("testimonyItem.no")}
-        </Button>
-      </StyledCol>
-    </>
-  )
-}
 
 export const TestimonyItem = ({
   testimony,
@@ -113,41 +64,21 @@ export const TestimonyItem = ({
     : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
-  const [showConfirm, setShowConfirm] = useState(false)
-  const { deleteTestimony } = usePublishService() ?? {}
-
   const { t } = useTranslation("testimony")
 
   return (
-    <div
-      className={onProfilePage ? styles.bottomborder : styles.nobottomborder}
-    >
+    <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
       <div className={`border-0 h5 d-flex`}>
         {isMobile && isUser && (
           <>
             <Internal
-              className={styles.link}
+              className={`text-decoration-none`}
               href={formUrl(testimony.billId, testimony.court)}
             >
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
                 alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                height={50}
-                width={50}
-              />
-            </Internal>
-            {/**
-             * visually-hidden until delete is ready at a later stage
-             */}
-            <Internal
-              className={`styles.link, visually-hidden`}
-              href={billLink}
-            >
-              <Image
-                className="px-2 align-self-center"
-                src="/delete-testimony.svg"
-                alt={t("testimonyItem.deleteIcon") ?? "Delete testimony icon"}
                 height={50}
                 width={50}
               />
@@ -189,7 +120,7 @@ export const TestimonyItem = ({
             <Col>
               <FooterButton variant="link">
                 <Internal
-                  className={styles.link}
+                  className={`text-decoration-none`}
                   href={maple.testimony({ publishedId: testimony.id })}
                 >
                   {t("testimonyItem.moreDetails")}
@@ -210,35 +141,13 @@ export const TestimonyItem = ({
                 <Col>
                   <FooterButton variant="link">
                     <Internal
-                      className={styles.link2}
+                      className={`text-decoration-none text-secondary`}
                       href={formUrl(testimony.billId, testimony.court)}
                     >
                       {t("testimonyItem.edit")}
                     </Internal>
                   </FooterButton>
                 </Col>
-              )}
-
-              {canDelete && (
-                <>
-                  {/* <Col>
-                    <FooterButton
-                      style={{ color: "#c71e32" }}
-                      onClick={() => setShowConfirm(s => !s)}
-                      variant="link"
-                    >
-                      {t("testimonyItem.rescind")}
-                    </FooterButton>
-                  </Col> */}
-
-                  {showConfirm && (
-                    <ArchiveTestimonyConfirmation
-                      show={showConfirm}
-                      onHide={() => setShowConfirm(false)}
-                      archiveTestimony={deleteTestimony}
-                    />
-                  )}
-                </>
               )}
             </>
           )}
