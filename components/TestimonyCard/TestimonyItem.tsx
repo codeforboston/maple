@@ -1,30 +1,41 @@
-import { formUrl } from "components/publish/hooks"
-import Image from "react-bootstrap/Image"
-import { ToastContainer } from "react-bootstrap"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { ViewAttachment } from "components/ViewAttachment"
 import { useReportTestimony } from "components/api/report"
-import ReportToast from "./ReportToast"
+import { flags } from "components/featureFlags"
+import { formUrl } from "components/publish/hooks"
+import { TestimonyContent } from "components/testimony"
+import { useTranslation } from "next-i18next"
+import { ReactNode, useState } from "react"
+import { ButtonProps } from "react-admin"
+import { ToastContainer } from "react-bootstrap"
+import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { usePublishService } from "components/publish/hooks"
-import { Col, Row, Stack, Button, Spinner } from "../bootstrap"
-import styled from "styled-components"
+import { Button, Col, Row, Stack } from "../bootstrap"
 import { Testimony } from "../db"
 import { Internal, maple } from "../links"
-import { UserInfoHeader } from "./UserInfoHeader"
 import { BillInfoHeader } from "./BillInfoHeader"
 import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
-import { useState } from "react"
-import { TestimonyContent } from "components/testimony"
-import { ViewAttachment } from "components/ViewAttachment"
-import { UseAsyncReturn } from "react-async-hook"
-import { useTranslation } from "next-i18next"
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
-import { flags } from "components/featureFlags"
+import ReportToast from "./ReportToast"
+import { UserInfoHeader } from "./UserInfoHeader"
 
-const FooterButton = styled(Button)`
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-`
+type FooterButtonProps = Omit<ButtonProps, "children"> & {
+  className?: string
+  children?: ReactNode
+}
+const FooterButton = ({
+  variant = "text",
+  className,
+  children
+}: FooterButtonProps) => {
+  return (
+    <Button
+      className={`text-decoration-none m-0 p-0 ${className}`}
+      variant={variant}
+    >
+      {children}
+    </Button>
+  )
+}
 
 export const TestimonyItem = ({
   testimony,
@@ -109,7 +120,7 @@ export const TestimonyItem = ({
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
-                variant="link"
+                variant="text"
                 onClick={() => setShowAllTestimony(true)}
               >
                 {t("testimonyItem.expand")}
@@ -118,7 +129,7 @@ export const TestimonyItem = ({
           )}
           {testimony.id && (
             <Col>
-              <FooterButton variant="link">
+              <FooterButton variant="text">
                 <Internal
                   className={`text-decoration-none`}
                   href={maple.testimony({ publishedId: testimony.id })}
@@ -130,7 +141,7 @@ export const TestimonyItem = ({
           )}
           {testimony.attachmentId && (
             <Col className="d-flex">
-              <FooterButton variant="link">
+              <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
               </FooterButton>
             </Col>
@@ -139,7 +150,7 @@ export const TestimonyItem = ({
             <>
               {onProfilePage && (
                 <Col>
-                  <FooterButton variant="link">
+                  <FooterButton variant="text">
                     <Internal
                       className={`text-decoration-none text-secondary`}
                       href={formUrl(testimony.billId, testimony.court)}
@@ -154,7 +165,7 @@ export const TestimonyItem = ({
           {/* report */}
           {flags().reportTestimony && (
             <Col xs="auto">
-              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
+              <FooterButton variant="text" onClick={() => setIsReporting(true)}>
                 Report
               </FooterButton>
             </Col>
