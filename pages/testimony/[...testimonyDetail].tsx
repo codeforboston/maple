@@ -59,13 +59,19 @@ const parseQuery = (query: ParsedUrlQuery) => {
 
   switch (params.length) {
     case 1:
-      return { publishedId: params[0] }
+      return { params, publishedId: params[0] }
     case 2:
-      return { publishedId: params[0], version: params[1] }
+      return { params, publishedId: params[0], version: params[1] }
     case 3:
-      return { authorUid: params[0], court: params[1], billId: params[2] }
+      return {
+        params,
+        authorUid: params[0],
+        court: params[1],
+        billId: params[2]
+      }
     case 4:
       return {
+        params,
         authorUid: params[0],
         court: params[1],
         billId: params[2],
@@ -127,12 +133,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     if (!docs) return notFound
     else if (!q.version) {
-      const baseUrl = ctx.resolvedUrl.split("?")[0]
+      const destination = [...q.params, docs.testimony.version].join("/")
       return {
-        redirect: {
-          destination: `${baseUrl}/${docs.testimony.version}`,
-          permanent: false
-        }
+        redirect: { destination, permanent: false }
       }
     } else if (q.version > docs.testimony.version) return notFound
 
