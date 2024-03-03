@@ -127,10 +127,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     if (!docs) return notFound
     else if (!q.version) {
-      console.log("redirecting", ctx.resolvedUrl, docs.testimony.version)
+      const baseUrl = ctx.resolvedUrl.split("?")[0]
       return {
         redirect: {
-          destination: `${ctx.resolvedUrl}/${docs.testimony.version}`,
+          destination: `${baseUrl}/${docs.testimony.version}`,
           permanent: false
         }
       }
