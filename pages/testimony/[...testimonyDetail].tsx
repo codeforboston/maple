@@ -133,7 +133,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     if (!docs) return notFound
     else if (!q.version) {
-      const destination = [...q.params, docs.testimony.version].join("/")
+      const destination = [
+        "/testimony",
+        ...q.params,
+        docs.testimony.version
+      ].join("/")
       return {
         redirect: { destination, permanent: false }
       }
