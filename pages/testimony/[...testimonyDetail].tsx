@@ -6,13 +6,13 @@ import {
   TestimonyDetailPage,
   useCurrentTestimonyDetails
 } from "components/testimony/TestimonyDetailPage"
+import { first } from "lodash"
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import Router from "next/router"
 import { ParsedUrlQuery } from "querystring"
 import { useEffect } from "react"
 import { z } from "zod"
 import { createPage } from "../../components/page"
-import { first } from "lodash"
-import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 export default createPage({
   title: "Testimony",
@@ -120,21 +120,21 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     const q = parseQuery(ctx.query)
 
-    console.log("q", q)
     if (!q) return notFound
     const docs = await fetchDocs(q)
 
     console.log("docs", docs)
 
     if (!docs) return notFound
-    else if (!q.version)
+    else if (!q.version) {
+      console.log("redirecting", ctx.resolvedUrl, docs.testimony.version)
       return {
         redirect: {
           destination: `${ctx.resolvedUrl}/${docs.testimony.version}`,
           permanent: false
         }
       }
-    else if (q.version > docs.testimony.version) return notFound
+    } else if (q.version > docs.testimony.version) return notFound
 
     store.dispatch(
       pageDataLoaded({
