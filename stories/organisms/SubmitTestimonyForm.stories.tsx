@@ -1,5 +1,5 @@
 
-import { Timestamp } from "@google-cloud/firestore"
+import { Timestamp } from "firebase/firestore"
 import { Meta, StoryObj } from "@storybook/react"
 import { Providers } from "components/providers"
 import { ChooseStance } from "components/publish/ChooseStance"
@@ -38,7 +38,7 @@ export default meta
 
 
 export const ShareButtonsStory: Story = {
- render: () =>  <div className={`w-100 d-flex`}>
+  render: () => <div className={`w-100 d-flex`}>
     <ShareButtons />
   </div>
 }
@@ -74,10 +74,10 @@ export const FormStory = {
       nextHearingAt: undefined,
       latestTestimonyAt: undefined,
       latestTestimonyId: undefined,
-      fetchedAt: new Date(),
+      fetchedAt: Timestamp.fromDate(new Date()),
       history: [],
       currentCommittee: undefined,
       city: undefined
-    }} synced={false}/>
-    </div
+    }} synced={false} />
+  </div>
 }
