@@ -8,6 +8,7 @@ import { TestimonyPreview } from "../TestimonyPreview"
 import { EditTestimonyButton } from "./EditTestimonyButton"
 import { ArchiveTestimonyButton } from "./ArchiveTestimonyButton"
 import { ArchiveTestimonyConfirmation } from "./ArchiveTestimonyConfirmation"
+import { useTranslation } from "next-i18next"
 
 export const YourTestimony = () => {
   const synced = usePublishState().sync === "synced"
@@ -107,10 +108,15 @@ const Cta = styled(Button).attrs({ variant: "light" })`
 `
 
 const TwitterButton = (props: ClsProps) => {
+  const { t } = useTranslation("testimony")
   const { publication } = usePublishState()
   return publication ? (
-    <External as={Cta as any} href={twitterShareLink(publication)} {...props}>
-      Tweet Your Published Testimony
+    <External
+      as={Cta as any}
+      href={twitterShareLink(publication, t)}
+      {...props}
+    >
+      {t("link.twitter")}
     </External>
   ) : null
 }

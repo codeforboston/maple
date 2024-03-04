@@ -38,6 +38,7 @@
     "supportMaple": "How to Support MAPLE"
   },
   "newcomer" : "New to MAPLE? For extra support, check",
+  "notInCommittee": "Bill not currently in committee",
   "orgs": "Organizations",
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
