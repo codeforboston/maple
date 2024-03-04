@@ -184,7 +184,7 @@ export const HearingsScheduled = () => {
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
                         return (
-                          <Col xxl={6} key={e.id}>
+                          <Col xxl={6} key={`${e.id}-${e.type}`}>
                             <EventCard
                               index={e.index}
                               type={e.type}
