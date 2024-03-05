@@ -11,7 +11,7 @@ export type BasicsOfTestimonyCardProps = {
 
 const TestimonyWordBubble = styled(Col)`
   width: 20rem;
-  
+
   @media (max-width: 48em) {
     width: 50%;
     margin: 0 25%;
@@ -33,10 +33,10 @@ const BasicsOfTestimonyCard = ({
 }: BasicsOfTestimonyCardProps) => {
   return (
     <Row className="w-100 h-auto m-0 p-0 d-flex flex-row flex-wrap py-md-3 px-md-5 my-md-5 mx-md-0">
-      <TestimonyWordBubble 
+      <TestimonyWordBubble
         $alignLeft={index % 2 == 0}
         className="d-flex align-items-center"
-        md={6} 
+        md={6}
         lg={{ order: index % 2 == 0 ? 0 : 5 }}
       >
         <Image fluid alt={alt} src={src} />

@@ -183,7 +183,9 @@ const LegislativeContent = [
 const Basics = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">The Basics of Testimony</h1>
+      <h1 className="fw-bold tracking-tighter lh-base">
+        The Basics of Testimony
+      </h1>
       <p className="fs-4 tracking-tight lh-base">
         All laws passed by state legislatures should consider feedback from
         residents and community stakeholders. In Massachusetts, one way to have
@@ -211,7 +213,9 @@ const Basics = () => {
 const Role = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">The Role of Testimony</h1>
+      <h1 className="fw-bold tracking-tighter lh-base">
+        The Role of Testimony
+      </h1>
       <p className="fs-4 tracking-tight lh-base">
         By speaking up, you can make the laws of Massachusetts work better for
         all of us! <br /> <br /> Everyone is able to convey their opinions to
@@ -237,7 +241,9 @@ const Role = () => {
 const Write = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">Writing Effective Testimony</h1>
+      <h1 className="fw-bold tracking-tighter lh-base">
+        Writing Effective Testimony
+      </h1>
       <p className="fs-4 tracking-tight lh-base">
         The basics of writing effective testimony are to clearly outline what
         bill you are testifying about, whether you support or oppose it, why you

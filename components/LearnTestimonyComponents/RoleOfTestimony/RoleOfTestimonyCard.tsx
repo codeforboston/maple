@@ -17,7 +17,7 @@ const RoleOfTestimonyCard = ({
   src
 }: RoleOfTestimonyCardProps) => {
   return (
-    <Row 
+    <Row
       className="w-100 h-auto d-flex flex-row flex-wrap justify-content-center py-3 px-5 my-5 mx-0 bg-white rounded-3 tracking-tighter"
       style={{ lineHeight: "normal" }}
     >
@@ -29,7 +29,10 @@ const RoleOfTestimonyCard = ({
         <Image fluid src={src} alt={alt} style={{ height: "10rem" }} />
       </Col>
       <Col
-        className={clsx("d-flex flex-column justify-content-center pt-3 pt-md-0", index % 2 === 0 && "ps-3 ps-md-5")}
+        className={clsx(
+          "d-flex flex-column justify-content-center pt-3 pt-md-0",
+          index % 2 === 0 && "ps-3 ps-md-5"
+        )}
         sm={{ span: 12, order: 1 }}
         md={{ span: 6, order: 3 }}
       >

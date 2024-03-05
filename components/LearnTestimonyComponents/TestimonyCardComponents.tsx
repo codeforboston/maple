@@ -56,8 +56,8 @@ const TestimonyCard = ({
 }: TestimonyCardProps) => {
   return (
     <StyledCard className="py-0 rounded-3 bg-white">
-      <StyledHeader 
-        as="h1" 
+      <StyledHeader
+        as="h1"
         className="d-flex align-items-center py-3 ps-4 pe-5 bg-secondary text-center text-white fw-bolder overflow-hidden"
       >
         {content.title}
@@ -102,7 +102,9 @@ const TestimonyCardContent = ({
             lg={{ span: 8, order: 2 }}
           >
             {content.paragraphs.map((paragraph, index) => (
-              <p className="text-start" key={index}>{paragraph}</p>
+              <p className="text-start" key={index}>
+                {paragraph}
+              </p>
             ))}
           </Col>
         </Row>
