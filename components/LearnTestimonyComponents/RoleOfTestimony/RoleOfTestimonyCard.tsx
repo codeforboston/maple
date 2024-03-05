@@ -22,7 +22,7 @@ const RoleOfTestimonyCard = ({
       style={{ lineHeight: "normal" }}
     >
       <Col
-        className="w-auto m-auto my-md-0 mx-md-5"
+        className="d-flex align-items-center w-auto m-auto my-md-0 mx-md-5"
         sm={{ span: 12, order: 0 }}
         md={{ order: index % 2 == 0 ? 0 : 5 }}
       >

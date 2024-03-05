@@ -1,10 +1,6 @@
-import { Container, Row, Col } from "../bootstrap"
+import { Container } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
-import {
-  TestimonyHeader,
-  TestimonySubheader
-} from "./StyledTestimonyComponents"
 import { TestimonyCardList } from "./TestimonyCardComponents"
 
 const BasicsContent = [
@@ -187,8 +183,8 @@ const LegislativeContent = [
 const Basics = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <TestimonyHeader>The Basics of Testimony</TestimonyHeader>
-      <TestimonySubheader>
+      <h1 className="fw-bold tracking-tighter lh-base">The Basics of Testimony</h1>
+      <p className="fs-4 tracking-tight lh-base">
         All laws passed by state legislatures should consider feedback from
         residents and community stakeholders. In Massachusetts, one way to have
         your voice heard is by submitting written testimony regarding specific
@@ -197,7 +193,7 @@ const Basics = () => {
         note that this is not an official government website and is not the only
         way to submit your testimony. Here are the essential things to know
         before submitting testimony:
-      </TestimonySubheader>
+      </p>
       {BasicsContent.map((value, index) => (
         <BasicsOfTestimonyCard
           title={value.title}
@@ -215,15 +211,15 @@ const Basics = () => {
 const Role = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <TestimonyHeader>The Role of Testimony</TestimonyHeader>
-      <TestimonySubheader>
+      <h1 className="fw-bold tracking-tighter lh-base">The Role of Testimony</h1>
+      <p className="fs-4 tracking-tight lh-base">
         By speaking up, you can make the laws of Massachusetts work better for
         all of us! <br /> <br /> Everyone is able to convey their opinions to
         the legislature, but the process to submit testimony can be confusing
         and intimidating. We hope that this website, the MAPLE platform, will
         make that process easier, more straightforward, and more accessible to
         all stakeholders.
-      </TestimonySubheader>
+      </p>
       {RoleContent.map((value, index) => (
         <RoleOfTestimonyCard
           title={value.title}
@@ -241,15 +237,15 @@ const Role = () => {
 const Write = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <TestimonyHeader>Writing Effective Testimony</TestimonyHeader>
-      <TestimonySubheader>
+      <h1 className="fw-bold tracking-tighter lh-base">Writing Effective Testimony</h1>
+      <p className="fs-4 tracking-tight lh-base">
         The basics of writing effective testimony are to clearly outline what
         bill you are testifying about, whether you support or oppose it, why you
         are concerned about the issue, what policy you would like to see
         enacted, and what legislative district you live in. Here are some tips
         you can use to make sure the testimony you submit is as impactful as
         possible:
-      </TestimonySubheader>
+      </p>
       <TestimonyCardList contents={WriteContent} shouldAlternateImages={true} />
     </Container>
   )
@@ -258,13 +254,13 @@ const Write = () => {
 const Legislative = () => {
   return (
     <Container fluid="md" className="mt-3">
-      <TestimonyHeader>
+      <h1 className="fw-bold tracking-tighter lh-base">
         Understanding the Massachusetts Legislative Process
-      </TestimonyHeader>
-      <TestimonySubheader>
+      </h1>
+      <p className="fs-4 tracking-tight lh-base">
         Some of the key steps in the legislative process for how most bills
         become laws in MA.
-      </TestimonySubheader>
+      </p>
       <TestimonyCardList
         contents={LegislativeContent}
         shouldAlternateImages={false}
