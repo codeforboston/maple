@@ -29,7 +29,7 @@ const RoleOfTestimonyCard = ({
         <Image fluid src={src} alt={alt} style={{ height: "10rem" }} />
       </Col>
       <Col
-        className={clsx("d-flex flex-column justify-content-center pt-3 pt-md-0", index % 2 === 0 && "pl-3 pl-md-5")}
+        className={clsx("d-flex flex-column justify-content-center pt-3 pt-md-0", index % 2 === 0 && "ps-3 ps-md-5")}
         sm={{ span: 12, order: 1 }}
         md={{ span: 6, order: 3 }}
       >
