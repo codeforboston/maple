@@ -1,10 +1,5 @@
 import { Col, Image, Row } from "../../bootstrap"
-import {
-  TestimonyCard,
-  TestimonyCardContent,
-  TestimonyCardTitle
-} from "../StyledTestimonyComponents"
-import styled from "styled-components"
+import clsx from "clsx"
 
 export type RoleOfTestimonyCardProps = {
   title: string
@@ -14,31 +9,6 @@ export type RoleOfTestimonyCardProps = {
   src: string
 }
 
-const StyledImageCol = styled(Col)`
-  width: auto;
-  margin: 0 3rem;
-  @media (max-width: 48em) {
-    margin: auto;
-  }
-`
-
-const StyledImage = styled(Image)`
-  height: 10rem;
-`
-
-const ContentCol = styled(Col)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  &.textLeft {
-    padding-left: 3rem;
-    @media (max-width: 48em) {
-      padding-left: 1rem;
-    }
-  }
-`
-
 const RoleOfTestimonyCard = ({
   title,
   index,
@@ -47,24 +17,26 @@ const RoleOfTestimonyCard = ({
   src
 }: RoleOfTestimonyCardProps) => {
   return (
-    <TestimonyCard className={`bg-white rounded`}>
-      <Row className="my-auto">
-        <StyledImageCol
-          sm={{ span: 12, order: 0 }}
-          md={{ order: index % 2 == 0 ? 0 : 5 }}
-        >
-          <StyledImage fluid src={src} alt={alt} />
-        </StyledImageCol>
-        <ContentCol
-          className={index % 2 == 0 ? "" : "textLeft"}
-          sm={{ span: 12, order: 1 }}
-          md={{ span: 6, order: 3 }}
-        >
-          <TestimonyCardTitle>{title}</TestimonyCardTitle>
-          <TestimonyCardContent>{paragraph}</TestimonyCardContent>
-        </ContentCol>
-      </Row>
-    </TestimonyCard>
+    <Row 
+      className="w-100 h-auto d-flex flex-row flex-wrap justify-content-center py-3 px-5 my-5 mx-0 bg-white rounded-3 tracking-tighter"
+      style={{ lineHeight: "normal" }}
+    >
+      <Col
+        className="w-auto m-auto my-md-0 mx-md-5"
+        sm={{ span: 12, order: 0 }}
+        md={{ order: index % 2 == 0 ? 0 : 5 }}
+      >
+        <Image fluid src={src} alt={alt} style={{ height: "10rem" }} />
+      </Col>
+      <Col
+        className={clsx("d-flex flex-column justify-content-center pt-3 pt-md-0", index % 2 === 0 && "pl-3 pl-md-5")}
+        sm={{ span: 12, order: 1 }}
+        md={{ span: 6, order: 3 }}
+      >
+        <h4 className="pt-0 pt-md-3 mb-3 fw-bold">{title}</h4>
+        <p className="fs-4">{paragraph}</p>
+      </Col>
+    </Row>
   )
 }
 
