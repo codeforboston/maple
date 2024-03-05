@@ -1,10 +1,5 @@
 import styled from "styled-components"
-import { Col, Image } from "../../bootstrap"
-import {
-  TestimonyCard,
-  TestimonyCardContent,
-  TestimonyCardTitle
-} from "../StyledTestimonyComponents"
+import { Col, Image, Row } from "../../bootstrap"
 
 export type BasicsOfTestimonyCardProps = {
   title: string
@@ -16,45 +11,16 @@ export type BasicsOfTestimonyCardProps = {
 
 const TestimonyWordBubble = styled(Col)`
   width: 20rem;
-  display: flex;
-  align-items: center;
+  
   @media (max-width: 48em) {
     width: 50%;
     margin: 0 25%;
     transform: translate(0, 2rem);
   }
-`
-const WordBubbleImage = ({
-  alignLeft,
-  className,
-  src,
-  alt
-}: {
-  alignLeft: boolean
-  className?: string
-  src: string
-  alt: string
-}) => {
-  return <Image className={className} fluid src={src} alt={alt} />
-}
-const StyledWordBubbleImage = styled(WordBubbleImage)`
-  transform: ${props =>
-    props.alignLeft ? "translate(2rem)" : "translate(-2rem)"};
-`
 
-const TestimonyTextCol = styled(Col)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 3rem;
-  background: #ffffff;
-  border-radius: 12px;
-`
-
-const BasicTestimonyCard = styled(TestimonyCard)`
-  @media (max-width: 48em) {
-    margin: 0;
-    padding: 0;
+  img {
+    transform: ${props =>
+      props.$alignLeft ? "translate(2rem)" : "translate(-2rem)"};
   }
 `
 
@@ -66,15 +32,23 @@ const BasicsOfTestimonyCard = ({
   src
 }: BasicsOfTestimonyCardProps) => {
   return (
-    <BasicTestimonyCard>
-      <TestimonyWordBubble md={6} lg={{ order: index % 2 == 0 ? 0 : 5 }}>
-        <StyledWordBubbleImage alignLeft={index % 2 == 0} alt={alt} src={src} />
+    <Row className="w-100 h-auto m-0 p-0 d-flex flex-row flex-wrap py-md-3 px-md-5 my-md-5 mx-md-0">
+      <TestimonyWordBubble 
+        $alignLeft={index % 2 == 0}
+        className="d-flex align-items-center"
+        md={6} 
+        lg={{ order: index % 2 == 0 ? 0 : 5 }}
+      >
+        <Image fluid alt={alt} src={src} />
       </TestimonyWordBubble>
-      <TestimonyTextCol lg={{ order: 3 }}>
-        <TestimonyCardTitle className={`mb-3`}>{title}</TestimonyCardTitle>
-        <TestimonyCardContent>{paragraph}</TestimonyCardContent>
-      </TestimonyTextCol>
-    </BasicTestimonyCard>
+      <Col
+        className="d-flex flex-column justify-content-center bg-white rounded-3 p-5 tracking-tighter lh-base"
+        lg={{ order: 3 }}
+      >
+        <h4 className="pt-0 pt-md-3 mb-3 fw-bold">{title}</h4>
+        <p className="fs-4">{paragraph}</p>
+      </Col>
+    </Row>
   )
 }
 
