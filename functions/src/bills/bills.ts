@@ -16,7 +16,7 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
     resourcesPerBatch: 50,
     startBatchSchedule: "every 3 hours",
     fetchBatchTimeout: 240,
-    startBatchTimeout: 60,
+    startBatchTimeout: 240,
     fetchResource: async (court: number, id: string, current) => {
       const content = await api.getDocument({ id, court })
       const history = await api
