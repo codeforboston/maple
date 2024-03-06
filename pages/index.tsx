@@ -15,17 +15,17 @@ export default createPage({
       <div className="overflow-hidden whitebackground">
         <HeroHeader authenticated={authenticated} />
 
-        <Leaf position="firstLeaf" />
+        <Leaf position="first" />
 
         <TestimonyCalloutSection />
 
-        <Leaf position="secondLeaf" />
+        <Leaf position="second" />
 
-        <Leaf position="thirdLeaf" />
+        <Leaf position="third" />
 
         <AboutSection />
 
-        <Leaf position="fourthLeaf" />
+        <Leaf position="fourth" />
 
         <HearingsScheduled />
       </div>
