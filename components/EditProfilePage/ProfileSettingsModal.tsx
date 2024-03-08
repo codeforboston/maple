@@ -66,6 +66,9 @@ export default function ProfileSettingsModal({
     await updateProfile({ actions })
     onSettingsModalClose()
   }
+  const handleCancel = async () => {
+    onSettingsModalClose()
+  }
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
@@ -172,7 +175,7 @@ export default function ProfileSettingsModal({
               <OutlineButton
                 size="sm"
                 className={`py-1 btn-bg-white`}
-                onClick={handleSave}
+                onClick={handleCancel}
                 label={t("cancel")}
               />
             </Col>
