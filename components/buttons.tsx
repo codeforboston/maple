@@ -112,7 +112,7 @@ export const FillButton = ({
   return (
     <Button
       variant={variant}
-      type="submit"
+      type="button"
       className={`py-1 col-12 d-flex justify-content-center align-items-center text-decoration-none text-nowrap ${className}`}
       {...rest}
     >
