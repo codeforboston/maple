@@ -46,6 +46,7 @@ beforeEach(() => {
     fullName: "Anonymous",
     court: court,
     position: draft.position,
+    private: false,
     version: 1
   }
   updatedDraft = { ...draft, content: "update", position: "oppose" }

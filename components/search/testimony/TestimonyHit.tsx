@@ -34,9 +34,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const isOrg = hit.authorRole === "organization"
   const writtenBy =
     isOrg || !hit.private ? (
-      <Link href={`/profile?id=${hit.authorUid}`}>{hit.authorDisplayName}</Link>
+      <Link href={`/profile?id=${hit.authorUid}`}>{hit.fullName}</Link>
     ) : (
-      hit.authorDisplayName
+      hit.fullName
     )
   return (
     <div

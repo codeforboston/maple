@@ -42,7 +42,9 @@ export const createFakeTestimony = functions.https.onCall(
       court: 192,
       position: "oppose",
       fullName: fullName,
-      content: fullName + " " + fullName + " " + fullName + " " + fullName
+      content: fullName + " " + fullName + " " + fullName + " " + fullName,
+      private: false,
+      updatedAt: Timestamp.now()
     }
 
     const testRef = db.doc(`users/${uid}/publishedTestimony/${id}`)

@@ -1,12 +1,4 @@
-import {
-  collection,
-  collectionGroup,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-  writeBatch
-} from "firebase/firestore"
+import { collection, getDocs, writeBatch } from "firebase/firestore"
 import { firestore } from "../../firebase"
 
 // Updates the displayName for all testimonies under specified user

@@ -211,7 +211,9 @@ function createValidatedDraft(authorUid: string, billId: string) {
     id: "unknown",
     authorRole: "user",
     billTitle: "",
-    fullName: "Anonymous"
+    fullName: "Anonymous",
+    private: false,
+    updatedAt: Timestamp.fromMillis(0)
   }
 
   const validation = Testimony.validateWithDefaults(draft)

@@ -106,14 +106,13 @@ const Layout = () => {
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
-          ? ["organization"]
-          : ["user", "organization"]
+            ? ["organization"]
+            : ["user", "organization"]
       return {
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
           authorRole: role,
-          private: ["false"]
         }
       }
     })
@@ -152,7 +151,7 @@ const Layout = () => {
             </RefinementRow>
             <CurrentRefinements
               className="mt-2 mb-2"
-              excludedAttributes={["authorRole"]}
+              excludedAttributes={["authorRole", "private"]}
             />
             {status === "empty" ? (
               <NoResults>

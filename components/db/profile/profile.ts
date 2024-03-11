@@ -95,7 +95,7 @@ export function useProfile() {
           if (profile) {
             await updateUserDisplayNameTestimonies(
               uid,
-              isPublic ? profile.fullName ?? "Anonymous" : "<private user>",
+              isPublic ? profile.fullName ?? "Anonymous" : "private",
               profile.fullName ?? "Anonymous"
             )
           }
@@ -128,11 +128,7 @@ export function useProfile() {
         if (uid && fullName !== profile?.fullName) {
           dispatch({ updatingFullName: true })
           // Update the displayName for user's testimonies
-          await updateUserDisplayNameTestimonies(
-            uid,
-            profile?.public ? fullName : "<private user>",
-            fullName
-          )
+          await updateUserDisplayNameTestimonies(uid, fullName, fullName)
           await updateFullName(uid, fullName)
           dispatch({ updatingFullName: false })
         }
