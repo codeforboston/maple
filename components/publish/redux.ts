@@ -269,7 +269,7 @@ export const {
     },
     removeCommittee(state) {
       const { share } = state
-      const idsToRemove = share.committeeChairs.map(item => item.MemberCode);
+      const idsToRemove = share.committeeChairs.map(item => item.MemberCode)
       updateRecipients(
         state,
         share.recipients.filter(m => !idsToRemove.includes(m.MemberCode))
@@ -287,7 +287,7 @@ export const {
     },
     removeMyLegislators(state) {
       const { share } = state
-      const idsToRemove = share.userLegislators.map(item => item.MemberCode);
+      const idsToRemove = share.userLegislators.map(item => item.MemberCode)
       updateRecipients(
         state,
         share.recipients.filter(m => !idsToRemove.includes(m.MemberCode))

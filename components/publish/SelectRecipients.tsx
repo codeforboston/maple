@@ -105,59 +105,68 @@ const RecipientControls = styled(({ className }) => {
   const buttons = []
 
   if (share.committeeChairs.length > 0) {
-    const committeeChairsCodes = share.committeeChairs.map(item => item.MemberCode);
-    if (share.recipients.filter(m => committeeChairsCodes.includes(m.MemberCode)).length < share.committeeChairs.length) {
+    const committeeChairsCodes = share.committeeChairs.map(
+      item => item.MemberCode
+    )
+    if (
+      share.recipients.filter(m => committeeChairsCodes.includes(m.MemberCode))
+        .length < share.committeeChairs.length
+    ) {
       buttons.push(
         <Col md={6} xs={12}>
-        <Button
-          key="committee"
-          variant="link"
-          onClick={() => dispatch(addCommittee())}
-        >
-          Add Relevant Committee Chairs
-        </Button></Col>
+          <Button
+            key="committee"
+            variant="link"
+            onClick={() => dispatch(addCommittee())}
+          >
+            Add Relevant Committee Chairs
+          </Button>
+        </Col>
       )
-    }
-    else {
+    } else {
       buttons.push(
         <Col md={6} xs={12}>
-        <Button
-          key="committee"
-          variant="link"
-          onClick={() => dispatch(removeCommittee())}
-        >
-          Remove Relevant Committee Chairs
-        </Button>
+          <Button
+            key="committee"
+            variant="link"
+            onClick={() => dispatch(removeCommittee())}
+          >
+            Remove Relevant Committee Chairs
+          </Button>
         </Col>
       )
     }
   }
 
   if (share.userLegislators.length > 0) {
-    const userLegislatorsCodes = share.userLegislators.map(item => item.MemberCode);
-    if (share.recipients.filter(m => userLegislatorsCodes.includes(m.MemberCode)).length < share.userLegislators.length) {
+    const userLegislatorsCodes = share.userLegislators.map(
+      item => item.MemberCode
+    )
+    if (
+      share.recipients.filter(m => userLegislatorsCodes.includes(m.MemberCode))
+        .length < share.userLegislators.length
+    ) {
       buttons.push(
         <Col md={6} xs={12}>
-        <Button
-          key="legislators"
-          variant="link"
-          onClick={() => dispatch(addMyLegislators())}
-        >
-          Add My Legislators
-        </Button>
+          <Button
+            key="legislators"
+            variant="link"
+            onClick={() => dispatch(addMyLegislators())}
+          >
+            Add My Legislators
+          </Button>
         </Col>
       )
-    }
-    else {
+    } else {
       buttons.push(
         <Col md={6} xs={12}>
-        <Button
-          key="legislators"
-          variant="link"
-          onClick={() => dispatch(removeMyLegislators())}
-        >
-          Remove My Legislators
-        </Button>
+          <Button
+            key="legislators"
+            variant="link"
+            onClick={() => dispatch(removeMyLegislators())}
+          >
+            Remove My Legislators
+          </Button>
         </Col>
       )
     }
