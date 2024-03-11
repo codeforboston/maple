@@ -17,7 +17,9 @@ import { calloutLabels } from "./content"
 import { usePublishState, useTestimonyEmail } from "./hooks"
 import {
   addCommittee,
+  removeCommittee,
   addMyLegislators,
+  removeMyLegislators,
   clearLegislatorSearch,
   Legislator,
   resolvedLegislatorSearch,
@@ -31,10 +33,10 @@ export const SelectRecipients = styled(props => {
   return (
     <div {...props}>
       <Row className="d-flex">
-        <Col className="fs-4" md={9} xs={12}>
+        <Col className="fs-4" md={4} xs={12}>
           Email Recipients
         </Col>
-        <Col md={3} xs={12}>
+        <Col md={8} xs={12}>
           <RecipientControls />
         </Col>
       </Row>
@@ -102,29 +104,66 @@ const RecipientControls = styled(({ className }) => {
   const email = useTestimonyEmail()
   const buttons = []
 
-  if (share.committeeChairs.length > 0)
-    buttons.push(
-      <Button
-        key="committee"
-        variant="link"
-        onClick={() => dispatch(addCommittee())}
-      >
-        Add Relevant Committee
-      </Button>
-    )
+  if (share.committeeChairs.length > 0) {
+    const committeeChairsCodes = share.committeeChairs.map(item => item.MemberCode);
+    if (share.recipients.filter(m => committeeChairsCodes.includes(m.MemberCode)).length < share.committeeChairs.length) {
+      buttons.push(
+        <Col md={6} xs={12}>
+        <Button
+          key="committee"
+          variant="link"
+          onClick={() => dispatch(addCommittee())}
+        >
+          Add Relevant Committee Chairs
+        </Button></Col>
+      )
+    }
+    else {
+      buttons.push(
+        <Col md={6} xs={12}>
+        <Button
+          key="committee"
+          variant="link"
+          onClick={() => dispatch(removeCommittee())}
+        >
+          Remove Relevant Committee Chairs
+        </Button>
+        </Col>
+      )
+    }
+  }
 
-  if (share.userLegislators.length > 0)
-    buttons.push(
-      <Button
-        key="legislators"
-        variant="link"
-        onClick={() => dispatch(addMyLegislators())}
-      >
-        Add My Legislators
-      </Button>
-    )
+  if (share.userLegislators.length > 0) {
+    const userLegislatorsCodes = share.userLegislators.map(item => item.MemberCode);
+    if (share.recipients.filter(m => userLegislatorsCodes.includes(m.MemberCode)).length < share.userLegislators.length) {
+      buttons.push(
+        <Col md={6} xs={12}>
+        <Button
+          key="legislators"
+          variant="link"
+          onClick={() => dispatch(addMyLegislators())}
+        >
+          Add My Legislators
+        </Button>
+        </Col>
+      )
+    }
+    else {
+      buttons.push(
+        <Col md={6} xs={12}>
+        <Button
+          key="legislators"
+          variant="link"
+          onClick={() => dispatch(removeMyLegislators())}
+        >
+          Remove My Legislators
+        </Button>
+        </Col>
+      )
+    }
+  }
 
-  return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
+  return <Row>{buttons}</Row>
 })`
   flex-wrap: wrap;
 
