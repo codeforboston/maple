@@ -151,7 +151,7 @@ const Layout = () => {
             </RefinementRow>
             <CurrentRefinements
               className="mt-2 mb-2"
-              excludedAttributes={["authorRole", "private"]}
+              excludedAttributes={["authorRole"]}
             />
             {status === "empty" ? (
               <NoResults>
