@@ -9,11 +9,9 @@ import { useAuth } from "../auth"
 import { useState, useEffect, useCallback } from "react"
 
 export const FollowButton = ({
-  isMobile,
   profileId,
   uid
 }: {
-  isMobile: boolean
   profileId?: string
   uid?: string
 }) => {
