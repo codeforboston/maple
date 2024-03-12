@@ -67,7 +67,8 @@ Primary.args = {
     version: 1.0,
     publishedAt: Timestamp.fromDate(new Date("2022-01-01T00:00:00.000Z")),
     draftAttachmentId: "attachment123",
-    fullName: ""
+    fullName: "",
+    private: false,
   },
   isUser: true,
   canEdit: true,

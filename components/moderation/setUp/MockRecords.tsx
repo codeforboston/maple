@@ -44,7 +44,8 @@ export const createMockTestimony = (
     court: 192,
     position: "oppose",
     content: loremIpsum({ count: 5, units: "words" }),
-    fullName: "Anonymous"
+    fullName: "Anonymous",
+    private: false
   }
   return testimony
 }
