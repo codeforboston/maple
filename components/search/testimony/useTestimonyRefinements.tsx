@@ -8,9 +8,7 @@ export const useTestimonyRefinements = () => {
   const propsList = [
     useRefinementListUiProps({
       transformItems: useCallback(
-        (i: RefinementListItem[]) =>
-          i
-            .filter(i => i.label !== "private"),
+        (i: RefinementListItem[]) => i.filter(i => i.label !== "private"),
         []
       ),
       attribute: "authorDisplayName",

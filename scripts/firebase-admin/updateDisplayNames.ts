@@ -25,7 +25,7 @@ export const script: Script = async ({ db }) => {
           authorDisplayName: displayName,
           fullName: fullName,
           updatedAt: Timestamp.now(),
-          private: !data.public ?? false
+          private: data.private ?? false
         })
       }
     } catch (error) {
