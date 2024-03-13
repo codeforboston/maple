@@ -6,11 +6,11 @@ import { LabeledIcon } from "../shared"
 import { FC } from "../types"
 import { Cosponsors } from "./Cosponsors"
 import { LabeledContainer } from "./LabeledContainer"
-import styles from "./SponsorsAndCommittees.module.css"
 import { BillProps } from "./types"
 import { dateInFuture } from "components/db/events"
 import { useMediaQuery } from "usehooks-ts"
 import { Card as MapleCard } from "../Card"
+import clsx from "clsx"
 
 const HearingDate = styled.div`
   font-weight: 500;
@@ -86,16 +86,13 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
   const countShowSponsors = isMobile ? 1 : 2
 
   return (
-    <LabeledContainer className={className}>
-      <Row className={`bg-secondary text-light ${styles.subHeader}`}>
-        Sponsors
-      </Row>
-      <div className={className}>
+    <Container className={`${className} p-0`}>
+      <MapleCard
+        className={className}
+        headerElement={<Card.Header className="h4 bg-secondary text-light">Sponsors</Card.Header>}
+        body={ <div className={`${className} p-2`}>
         <div
-          className={`
-            mt-2 pb-3 d-flex justify-content-right 
-            ${more ? styles.borderBottom : ""}
-          `}
+          className={clsx("mt-2 pb-3 d-flex justify-content-right", more && "border-bottom border-1 border-dark")}
         >
           {primary && (
             <LabeledIcon
@@ -135,7 +132,8 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
             </Cosponsors>
           )}
         </div>
-      </div>
-    </LabeledContainer>
+      </div>}
+      />
+    </Container>
   )
 }
