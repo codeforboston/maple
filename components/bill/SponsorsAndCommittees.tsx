@@ -34,22 +34,26 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
     <Container className={`${className} p-0`}>
       <MapleCard
         className={className}
-        headerElement={<Card.Header className="h4 bg-secondary text-light">Committee</Card.Header>}
+        headerElement={
+          <Card.Header className="h4 bg-secondary text-light">
+            Committee
+          </Card.Header>
+        }
         body={
           <div className={`d-flex justify-content-around p-2`}>
-          <LabeledIcon
-            idImage={"/profile_icon_govt-secondary.svg"}
-            // mainText="Committee"
-            mainText=""
-            subText={
-              <External
-                href={`https://malegislature.gov/Committees/Detail/${current.id}`}
-              >
-                {current.name}
-              </External>
-            }
-          />
-        </div>
+            <LabeledIcon
+              idImage={"/profile_icon_govt-secondary.svg"}
+              // mainText="Committee"
+              mainText=""
+              subText={
+                <External
+                  href={`https://malegislature.gov/Committees/Detail/${current.id}`}
+                >
+                  {current.name}
+                </External>
+              }
+            />
+          </div>
         }
       />
     </Container>
@@ -89,50 +93,59 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
     <Container className={`${className} p-0`}>
       <MapleCard
         className={className}
-        headerElement={<Card.Header className="h4 bg-secondary text-light">Sponsors</Card.Header>}
-        body={ <div className={`${className} p-2`}>
-        <div
-          className={clsx("mt-2 pb-3 d-flex justify-content-right", more && "border-bottom border-1 border-dark")}
-        >
-          {primary && (
-            <LabeledIcon
-              idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
-              mainText="Lead Sponsor"
-              subText={
-                <External
-                  href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
-                >
-                  {primary.Name}
-                </External>
-              }
-            />
-          )}
+        headerElement={
+          <Card.Header className="h4 bg-secondary text-light">
+            Sponsors
+          </Card.Header>
+        }
+        body={
+          <div className={`${className} p-2`}>
+            <div
+              className={clsx(
+                "mt-2 pb-3 d-flex justify-content-right",
+                more && "border-bottom border-1 border-dark"
+              )}
+            >
+              {primary && (
+                <LabeledIcon
+                  idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
+                  mainText="Lead Sponsor"
+                  subText={
+                    <External
+                      href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
+                    >
+                      {primary.Name}
+                    </External>
+                  }
+                />
+              )}
 
-          {bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
-            .slice(0, countShowSponsors)
-            .map(s => (
-              <LabeledIcon
-                key={s.Id}
-                idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
-                mainText="Sponsor"
-                subText={
-                  <External
-                    href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
-                  >
-                    {s.Name}
-                  </External>
-                }
-              />
-            ))}
-        </div>
-        <div className="d-flex justify-content-center">
-          {more && (
-            <Cosponsors bill={bill}>
-              See {bill.cosponsorCount} Sponsors
-            </Cosponsors>
-          )}
-        </div>
-      </div>}
+              {bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
+                .slice(0, countShowSponsors)
+                .map(s => (
+                  <LabeledIcon
+                    key={s.Id}
+                    idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
+                    mainText="Sponsor"
+                    subText={
+                      <External
+                        href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
+                      >
+                        {s.Name}
+                      </External>
+                    }
+                  />
+                ))}
+            </div>
+            <div className="d-flex justify-content-center">
+              {more && (
+                <Cosponsors bill={bill}>
+                  See {bill.cosponsorCount} Sponsors
+                </Cosponsors>
+              )}
+            </div>
+          </div>
+        }
       />
     </Container>
   )
