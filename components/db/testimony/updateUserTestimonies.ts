@@ -5,20 +5,23 @@ import { firestore } from "../../firebase"
 export const updateUserDisplayNameTestimonies = async (
   uid: string,
   displayName: string,
-  fullName: string
+  fullName: string,
+  isPublic?: boolean
 ) => {
   const batch = writeBatch(firestore)
   return getAllTestimony(uid).then(({ publishedTestimony, draftTestimony }) => {
     publishedTestimony.forEach(doc =>
       batch.update(doc.ref, {
         authorDisplayName: displayName,
-        fullName: fullName
+        fullName: fullName,
+        public: isPublic
       })
     )
     draftTestimony.forEach(doc =>
       batch.update(doc.ref, {
         authorDisplayName: displayName,
-        fullName: fullName
+        fullName: fullName,
+        public: isPublic
       })
     )
     batch.commit().then(result => result)

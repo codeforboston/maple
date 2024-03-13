@@ -212,7 +212,7 @@ function createValidatedDraft(authorUid: string, billId: string) {
     authorRole: "user",
     billTitle: "",
     fullName: "Anonymous",
-    private: false,
+    public: true,
     updatedAt: Timestamp.fromMillis(0)
   }
 
@@ -220,7 +220,7 @@ function createValidatedDraft(authorUid: string, billId: string) {
 
   expect(validation.success).toBeTruthy()
 
-  const { publishedAt, ...rest } = draft
+  const { publishedAt, updatedAt, ...rest } = draft
 
   return { draftId, draft: rest }
 }

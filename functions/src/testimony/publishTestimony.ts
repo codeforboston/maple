@@ -93,7 +93,7 @@ class PublishTestimonyTransaction {
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
-      private: !this.profile?.public ?? false
+      public: this.profile?.public ?? true
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id

@@ -96,7 +96,8 @@ export function useProfile() {
             await updateUserDisplayNameTestimonies(
               uid,
               isPublic ? profile.fullName ?? "Anonymous" : "private",
-              profile.fullName ?? "Anonymous"
+              profile.fullName ?? "Anonymous",
+              isPublic
             )
           }
           await updateIsPublic(uid, isPublic)

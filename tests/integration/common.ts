@@ -180,7 +180,7 @@ export const createNewTestimony = async (uid: string, billId: string) => {
     court: 192,
     position: "oppose",
     content: "testimony content",
-    private: false
+    public: true
   }
 
   try {
