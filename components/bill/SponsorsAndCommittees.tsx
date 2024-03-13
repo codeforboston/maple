@@ -1,6 +1,6 @@
 import { format, fromUnixTime } from "date-fns"
 import styled from "styled-components"
-import { Row } from "../bootstrap"
+import { Card, Container, Row } from "../bootstrap"
 import { External } from "../links"
 import { LabeledIcon } from "../shared"
 import { FC } from "../types"
@@ -8,10 +8,9 @@ import { Cosponsors } from "./Cosponsors"
 import { LabeledContainer } from "./LabeledContainer"
 import styles from "./SponsorsAndCommittees.module.css"
 import { BillProps } from "./types"
-import { DisplayUpcomingHearing } from "components/search/bills/BillHit"
 import { dateInFuture } from "components/db/events"
-import { Timestamp } from "firebase/firestore"
 import { useMediaQuery } from "usehooks-ts"
+import { Card as MapleCard } from "../Card"
 
 const HearingDate = styled.div`
   font-weight: 500;
@@ -32,25 +31,28 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
   const current = bill.currentCommittee
   if (!current) return null
   return (
-    <LabeledContainer className={className}>
-      <Row className={`bg-secondary text-light ${styles.subHeader}`}>
-        Committee
-      </Row>
-      <div className={`d-flex justify-content-around`}>
-        <LabeledIcon
-          idImage={"/profile_icon_govt-secondary.svg"}
-          // mainText="Committee"
-          mainText=""
-          subText={
-            <External
-              href={`https://malegislature.gov/Committees/Detail/${current.id}`}
-            >
-              {current.name}
-            </External>
-          }
-        />
-      </div>
-    </LabeledContainer>
+    <Container className={`${className} p-0`}>
+      <MapleCard
+        className={className}
+        headerElement={<Card.Header className="h4 bg-secondary text-light">Committee</Card.Header>}
+        body={
+          <div className={`d-flex justify-content-around p-2`}>
+          <LabeledIcon
+            idImage={"/profile_icon_govt-secondary.svg"}
+            // mainText="Committee"
+            mainText=""
+            subText={
+              <External
+                href={`https://malegislature.gov/Committees/Detail/${current.id}`}
+              >
+                {current.name}
+              </External>
+            }
+          />
+        </div>
+        }
+      />
+    </Container>
   )
 }
 
