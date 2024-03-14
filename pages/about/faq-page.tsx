@@ -1,11 +1,11 @@
 import { createPage } from "../../components/page"
-import { Faq } from "../../components/Faq/Faq"
+import { FaqPage } from "../../components/Faq/FaqPage"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
   title: "About",
   Page: () => {
-    return <Faq />
+    return <FaqPage />
   }
 })
 
