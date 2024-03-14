@@ -114,11 +114,6 @@ export const FollowButton = ({
             Icon={checkmark}
             label={text}
           />
-
-          {/* <Button onClick={handleClick} className={`py-1`}>
-            {text}
-            {checkmark}
-          </Button> */}
         </div>
       </div>
     </Col>

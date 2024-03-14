@@ -8,7 +8,6 @@ const StyledCard = styled(Card)`
   background: var(--bs-blue);
   border: none;
   color: white;
-  /* font-family: Nunito; */
   padding: 1.5rem 2rem;
 `
 
