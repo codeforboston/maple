@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import Router from "next/router"
 import { FC, useEffect } from "react"
 import { Alert, Spinner } from "react-bootstrap"
@@ -25,16 +26,18 @@ export const LoadingPage = <Data,>({
 const Error: FC<React.PropsWithChildren<{ error: DataError }>> = ({
   error
 }) => {
+  const { t } = useTranslation("common")
   useEffect(() => console.error("Error loading page", error), [error])
-  let message = "There was a problem loading the page."
+  let message = t("loading.error.message")
   if (error.message) message = `${message} ${error.message}`
   return (
     <Container>
       <Alert variant="danger">
         <div>{message}</div>
         <div>
-          <Alert.Link onClick={() => Router.reload()}>Reload</Alert.Link> to try
-          again.
+          <Alert.Link onClick={() => Router.reload()}>
+            {t("loading.reload")}
+          </Alert.Link>
         </div>
       </Alert>
     </Container>

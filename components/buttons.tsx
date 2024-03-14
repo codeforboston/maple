@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react"
 import { ButtonProps, ImageProps, SpinnerProps, Tooltip } from "react-bootstrap"
 import CopyToClipboard from "react-copy-to-clipboard"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
@@ -28,26 +29,29 @@ export const LoadingButton = ({
 }: ButtonProps & {
   loading?: boolean
   spinnerProps?: Partial<Omit<SpinnerProps, "as" | "role" | "aria-hidden">>
-}) => (
-  <Button {...restProps} disabled={loading || disabled}>
-    {loading ? (
-      <>
-        <Spinner
-          as="span"
-          animation="border"
-          size="sm"
-          role="status"
-          aria-hidden
-          className="me-2"
-          {...spinnerProps}
-        />
-        <span className="visually-hidden">Loading...</span>
-      </>
-    ) : null}
+}) => {
+  const { t } = useTranslation("common")
+  return (
+    <Button {...restProps} disabled={loading || disabled}>
+      {loading ? (
+        <>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden
+            className="me-2"
+            {...spinnerProps}
+          />
+          <span className="visually-hidden">{t("loading.inProgress")}</span>
+        </>
+      ) : null}
 
-    {children}
-  </Button>
-)
+      {children}
+    </Button>
+  )
+}
 
 export const ImageButton = styled<
   Pick<ImageProps, "alt" | "src"> & { tooltip?: string; href?: string }

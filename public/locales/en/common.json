@@ -1,21 +1,50 @@
 {
-  "maple_fullName": "Massachusetts Platform for Legislative Engagement",
-  "maple_abbr": "MAPLE",
-  "let_your_voice_be_heard": "Let your voice be heard!",
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
-  "browse_bills": "browse bills",
-  "logInSignUp": "Log in / Sign up",
+  "about": "About",
   "back_to_bills": "back to list of bills",
+  "browse_bills": "browse bills",
   "button":{
     "follow" : "Follow",
     "following" : "Following",
     "followed" : "Followed"
   },
-  "orgs": "Organizations",
-  "newcomer" : "New to MAPLE? For extra support, check",
   "calendar": "Our Calendar",
   "joinTraining": "and join an upcoming training session!",
+  "learn": "Learn",
+  "let_your_voice_be_heard": "Let your voice be heard!",
+  "loading": {
+    "inProgress": "Loading...",
+    "error": {
+      "message": "There was a problem loading the page."
+    },
+    "reload": "Reload to try again"
+  },
+  "logInSignUp": "Log in / Sign up",
+  "maple_abbr": "MAPLE",
+  "maple_fullName": "Massachusetts Platform for Legislative Engagement",
+  "navigation": {
+    "accountProfile": "Profile",
+    "additionalResources": "Additional Resources",
+    "browseBills": "Browse Bills",
+    "browseTestimony": "Browse Testimony",
+    "communicatingWithLegislators": "Communicating with Legislators",
+    "faq": "FAQ",
+    "forIndividuals": "For Individuals",
+    "forLegislators": "For Legislators",
+    "forOrganizations": "For Organizations",
+    "home": "Home",
+    "learnAboutTestimony": "Learn About Testimony",
+    "missionAndGoals": "Our Mission & Goals",
+    "privacyAndConduct": "Privacy Policy & Code of Conduct",
+    "supportMaple": "How to Support MAPLE"
+  },
+  "newcomer" : "New to MAPLE? For extra support, check",
+  "notInCommittee": "Bill not currently in committee",
+  "orgs": "Organizations",
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
-  }}
+  },
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
+  "team": "Our Team",
+  "whyUseMaple": "Why Use MAPLE"
+}

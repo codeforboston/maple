@@ -4,6 +4,7 @@ import { CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
+import { TFunction } from "next-i18next"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
 
@@ -102,10 +103,11 @@ export function committeeURL(CommitteeCode: string) {
 }
 
 export function committeeLink(
-  currentCommitteeContent: CurrentCommittee | undefined
+  currentCommitteeContent: CurrentCommittee | undefined,
+  t: TFunction
 ) {
   if (currentCommitteeContent === undefined) {
-    return <p>Bill not currently in committee</p>
+    return <p>{t("notInCommittee")}</p>
   }
 
   const { id, name } = currentCommitteeContent
@@ -120,12 +122,10 @@ export function memberLink(member: MemberContent) {
   return <External href={memberURL(member)}>{member.Name}</External>
 }
 
-export const twitterShareLink = (publication: Testimony) => {
+export const twitterShareLink = (publication: Testimony, t: TFunction) => {
   const link = siteUrl(maple.testimony({ publishedId: publication.id })),
     billNumber = formatBillId(publication.billId),
-    tweet = encodeURIComponent(
-      `I provided testimony on Bill ${billNumber}. See ${link} for details.`
-    ),
+    tweet = encodeURIComponent(t("link.tweetContent", { billNumber, link })),
     tweetUrl = `https://twitter.com/intent/tweet?text=${tweet}`
 
   return tweetUrl
