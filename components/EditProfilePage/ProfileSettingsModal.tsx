@@ -78,6 +78,14 @@ export default function ProfileSettingsModal({
     await updateNotification(notifications)
   }
 
+  const handleToggleNotifications = async () => {
+    if (notifications === "None") {
+      setNotifications("Monthly")
+    } else {
+      setNotifications("None")
+    }
+  }
+
   const privacyText = RenderPrivacyText(role, isProfilePublic)
   const { t } = useTranslation("editProfile")
 
@@ -107,7 +115,7 @@ export default function ProfileSettingsModal({
                   stateTrueLabel={t("enable")}
                   stateFalseLabel={t("enabled")}
                   className={`col-12 py-1 rounded-1`}
-                  onClick={() => setNotifications("Monthly")}
+                  onClick={handleToggleNotifications}
                   Icon={<EmailIcon />}
                 />
               </Col>
