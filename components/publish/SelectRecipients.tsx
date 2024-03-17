@@ -8,6 +8,7 @@ import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
 import { Button } from "../bootstrap"
 import { CopyButton } from "../buttons"
+import { Row, Col } from "../bootstrap"
 import { useMemberSearch } from "../db"
 import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
@@ -16,7 +17,9 @@ import { calloutLabels } from "./content"
 import { usePublishState, useTestimonyEmail } from "./hooks"
 import {
   addCommittee,
+  removeCommittee,
   addMyLegislators,
+  removeMyLegislators,
   clearLegislatorSearch,
   Legislator,
   resolvedLegislatorSearch,
@@ -25,14 +28,34 @@ import {
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
+  const email = useTestimonyEmail()
 
   return (
     <div {...props}>
-      <div className="d-flex justify-content-between">
-        <div className="fs-4">Email Recipients</div>
-        <RecipientControls />
-      </div>
-      <SelectLegislatorEmails className="mt-2" />
+      <Row className="d-flex">
+        <Col className="fs-4" md={4} xs={12}>
+          Email Recipients
+        </Col>
+        <Col md={8} xs={12}>
+          <RecipientControls />
+        </Col>
+      </Row>
+      <SelectLegislatorEmails className="my-2" />
+      <Row className="d-flex">
+        <Col md={3}>
+          {email.to ? (
+            <CopyButton
+              key="copy"
+              variant="outline-secondary"
+              text={email.to}
+              className="copy py-1 px-2"
+              format="text/plain"
+            >
+              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+            </CopyButton>
+          ) : null}
+        </Col>
+      </Row>
     </div>
   )
 })`
@@ -81,42 +104,75 @@ const RecipientControls = styled(({ className }) => {
   const email = useTestimonyEmail()
   const buttons = []
 
-  if (share.committeeChairs.length > 0)
-    buttons.push(
-      <Button
-        key="committee"
-        variant="link"
-        onClick={() => dispatch(addCommittee())}
-      >
-        Add Relevant Committee
-      </Button>
+  if (share.committeeChairs.length > 0) {
+    const committeeChairsCodes = share.committeeChairs.map(
+      item => item.MemberCode
     )
+    if (
+      share.recipients.filter(m => committeeChairsCodes.includes(m.MemberCode))
+        .length < share.committeeChairs.length
+    ) {
+      buttons.push(
+        <Col md={6} xs={12}>
+          <Button
+            key="committee"
+            variant="link"
+            onClick={() => dispatch(addCommittee())}
+          >
+            Add Relevant Committee Chairs
+          </Button>
+        </Col>
+      )
+    } else {
+      buttons.push(
+        <Col md={6} xs={12}>
+          <Button
+            key="committee"
+            variant="link"
+            onClick={() => dispatch(removeCommittee())}
+          >
+            Remove Relevant Committee Chairs
+          </Button>
+        </Col>
+      )
+    }
+  }
 
-  if (share.userLegislators.length > 0)
-    buttons.push(
-      <Button
-        key="legislators"
-        variant="link"
-        onClick={() => dispatch(addMyLegislators())}
-      >
-        Add My Legislators
-      </Button>
+  if (share.userLegislators.length > 0) {
+    const userLegislatorsCodes = share.userLegislators.map(
+      item => item.MemberCode
     )
+    if (
+      share.recipients.filter(m => userLegislatorsCodes.includes(m.MemberCode))
+        .length < share.userLegislators.length
+    ) {
+      buttons.push(
+        <Col md={6} xs={12}>
+          <Button
+            key="legislators"
+            variant="link"
+            onClick={() => dispatch(addMyLegislators())}
+          >
+            Add My Legislators
+          </Button>
+        </Col>
+      )
+    } else {
+      buttons.push(
+        <Col md={6} xs={12}>
+          <Button
+            key="legislators"
+            variant="link"
+            onClick={() => dispatch(removeMyLegislators())}
+          >
+            Remove My Legislators
+          </Button>
+        </Col>
+      )
+    }
+  }
 
-  if (email.to)
-    buttons.push(
-      <CopyButton
-        key="copy"
-        variant="outline-secondary"
-        text={email.to}
-        className="copy"
-        format="text/plain"
-      >
-        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-      </CopyButton>
-    )
-
-  return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
+  return <Row>{buttons}</Row>
 })`
   flex-wrap: wrap;
 

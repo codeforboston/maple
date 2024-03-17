@@ -129,7 +129,9 @@ export const {
     resolvedLegislatorSearch,
     clearLegislatorSearch,
     addCommittee,
+    removeCommittee,
     addMyLegislators,
+    removeMyLegislators,
     setEditReason,
     setRecipients,
     setShowThankYou,
@@ -265,6 +267,14 @@ export const {
         )
       )
     },
+    removeCommittee(state) {
+      const { share } = state
+      const idsToRemove = share.committeeChairs.map(item => item.MemberCode)
+      updateRecipients(
+        state,
+        share.recipients.filter(m => !idsToRemove.includes(m.MemberCode))
+      )
+    },
     addMyLegislators(state) {
       const { share } = state
       updateRecipients(
@@ -273,6 +283,14 @@ export const {
           [...share.recipients, ...share.userLegislators],
           m => m.MemberCode
         )
+      )
+    },
+    removeMyLegislators(state) {
+      const { share } = state
+      const idsToRemove = share.userLegislators.map(item => item.MemberCode)
+      updateRecipients(
+        state,
+        share.recipients.filter(m => !idsToRemove.includes(m.MemberCode))
       )
     },
     setShowThankYou(state, action: PayloadAction<boolean>) {
