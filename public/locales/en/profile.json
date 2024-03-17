@@ -4,6 +4,7 @@
   "user": "User",
   "noUser": "no user",
   "anonymousUser": "Anonymous User",
+  "joinDate": "Joined in {{date}}",
   "button":{
     "editProfile": "Edit\u00A0Profile",
     "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
