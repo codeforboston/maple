@@ -1,8 +1,8 @@
 import { CardTitle, ListItem } from "components/Card"
 import { Card as MapleCard } from "../Card/Card"
-import Styles from "./PriorityBillsCard.module.css"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
+import clsx from "clsx"
 
 type bill = {
   id: string
@@ -19,13 +19,14 @@ export const PriorityBillsCard = (props: {
   editBtn: boolean
 }) => {
   const items = props.bills?.map((bill, index) => {
-    let style = Styles.billSlot
-    if (bill.billNumber === props.selectedBillId) {
-      style = Styles.billSelected
-    }
+    const isSelectedBill = bill.billNumber === props.selectedBillId
+
     return bill.stance ? (
       <ListItem
-        className={style}
+        className={clsx(
+          "bg-secondary text-white" && !isSelectedBill,
+          "bg-white text-dark" && isSelectedBill
+        )}
         onClick={() => props.onClick(bill.billNumber)}
         key={bill.billNumber}
         billName={bill.billNumber}
@@ -34,7 +35,10 @@ export const PriorityBillsCard = (props: {
       />
     ) : (
       <ListItem
-        className={style}
+        className={clsx(
+          "bg-secondary text-white" && !isSelectedBill,
+          "bg-white text-dark" && isSelectedBill
+        )}
         onClick={() => props.onClick(bill.billNumber)}
         key={bill.billNumber}
         billName={bill.billNumber}
@@ -69,36 +73,26 @@ const Position = (stance: string) => {
       stanceSVG = "/thumbs-neutral.svg"
   }
   return (
-    <SvgStyle>
+    <div className="d-inline">
       <Image className="svg" alt="" src={stanceSVG} />
-    </SvgStyle>
+    </div>
   )
 }
 
 const EditButton = () => {
   return (
-    <EditBtnStyle onClick={() => console.log("edit")}>
-      <p className="editTitle">edit</p>
-      <SvgStyle>
+    <div
+      className="d-flex flex-column align-items-center"
+      onClick={() => console.log("edit")}
+    >
+      <EditBtnStyle className="m-0 editTitle">edit</EditBtnStyle>
+      <div className="d-inline">
         <Image className="svg" alt="" src="/edit-testimony.svg" />
-      </SvgStyle>
-    </EditBtnStyle>
+      </div>
+    </div>
   )
 }
 
-const SvgStyle = styled.div`
-  display: inline;
-  align-self: ;
-`
-
-const EditBtnStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  .editTitle {
-    color: #8999d6;
-  }
-  p {
-    margin: 0;
-  }
+const EditBtnStyle = styled.p`
+  color: #8999d6;
 `
