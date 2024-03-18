@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { FC } from "react"
 import styled from "styled-components"
 
@@ -12,6 +13,8 @@ export const ProfileCard: FC<React.PropsWithChildren<Props>> = ({
   profileImageSrc,
   joinDate
 }) => {
+  const { t } = useTranslation("profile")
+
   return (
     <Container>
       <Wrapper>
@@ -19,7 +22,7 @@ export const ProfileCard: FC<React.PropsWithChildren<Props>> = ({
           <img src={profileImageSrc} alt="profile image" />
         </ImageContainer>
         <ProfileName>{name}</ProfileName>
-        <JoinYear>Joined in {joinDate.getFullYear()}</JoinYear>
+        <JoinYear>{t("joinDate", { date: joinDate.getFullYear() })}</JoinYear>
       </Wrapper>
     </Container>
   )

@@ -1,12 +1,13 @@
+import CustomDropdownToggle from "components/BootstrapCustomDropdownToggle"
+import { FillButton, OutlineButton, ToggleButton } from "components/buttons"
+import { flags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, ReactNode, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import styled from "styled-components"
-import { Frequency } from "../auth"
-import { Button, Col, Form, Image, Modal, Row, Stack } from "../bootstrap"
+import { Frequency, Role } from "../auth"
+import { Col, Form, Image, Modal, Row } from "../bootstrap"
 import { ProfileHook } from "../db"
-import { Role } from "../auth"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   actions: ProfileHook
@@ -19,59 +20,6 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   >
   onSettingsModalClose: () => void
 }
-
-const StyledButton = styled(Button)`
-  &:focus {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  &:hover {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  width: 110px;
-`
-
-const StyledOutlineButton = styled(Button)`
-  &:focus {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  &:hover {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  width: 110px;
-`
-
-const StyledOutlineButton2 = styled(Button)`
-  &:focus {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  &:hover {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-`
-
-const StyledDropdownToggle = styled(Dropdown.Toggle)`
-  width: 110px;
-`
-
-const StyledModalBody = styled(Modal.Body)`
-  padding: 0.8rem;
-`
-
-const StyledRow = styled(Row)`
-  font-size: 12px;
-`
 
 function RenderPrivacyText(role: Role, isPublic: boolean) {
   const { t } = useTranslation("editProfile")
@@ -86,8 +34,22 @@ function RenderPrivacyText(role: Role, isPublic: boolean) {
         return t("privacyText.publicUser")
       }
       return t("privacyText.privateUser")
+    case "admin":
+      return t("privacyText.admin")
+    default:
+      return t("privacyText.default")
   }
 }
+
+const EmailIcon = () => (
+  <Image
+    className={`me-1`}
+    src="/mail.svg"
+    alt="open envelope with letter, toggles update frequency options"
+    width="22"
+    height="19"
+  />
+)
 
 export default function ProfileSettingsModal({
   actions,
@@ -104,6 +66,9 @@ export default function ProfileSettingsModal({
     await updateProfile({ actions })
     onSettingsModalClose()
   }
+  const handleCancel = async () => {
+    onSettingsModalClose()
+  }
 
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
@@ -113,10 +78,12 @@ export default function ProfileSettingsModal({
     await updateNotification(notifications)
   }
 
-  // button classNames weren't otherwise properly updating on iOS
-  let buttonSecondary = "btn-secondary"
-  if (notifications === "None") {
-    buttonSecondary = "btn-outline-secondary"
+  const handleToggleNotifications = async () => {
+    if (notifications === "None") {
+      setNotifications("Monthly")
+    } else {
+      setNotifications("None")
+    }
   }
 
   const privacyText = RenderPrivacyText(role, isProfilePublic)
@@ -132,65 +99,43 @@ export default function ProfileSettingsModal({
       <Modal.Header closeButton>
         <Modal.Title id="notifications-modal">{t("setting")}</Modal.Title>
       </Modal.Header>
-      <StyledModalBody>
+      <Modal.Body className={`p-3`}>
         <Form>
-          <div
-            /* remove "div w/ d-none" for testing and/or after Soft Launch 
-               when we're ready to show Email related element to users
-            */
-            className="d-none"
-          >
-            <StyledRow className="p-2">
-              <h5 className="p-0"> &nbsp; {t("forms.notification")}</h5>
-              <hr className={`mt-0`} />
-              <Col className={`col-8`}>{t("forms.notificationText")}</Col>
-              <Col>
-                {notifications === "None" ? (
-                  <StyledOutlineButton
-                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-outline-secondary`}
-                    onClick={() => setNotifications("Monthly")}
-                  >
-                    <Image
-                      className={`pe-1`}
-                      src="/mail-2.svg"
-                      alt="open envelope with letter, toggles update frequency options"
-                      width="22"
-                      height="19"
-                    />
-                    {"Enable"}
-                  </StyledOutlineButton>
-                ) : (
-                  <StyledButton
-                    className={`btn btn-sm d-flex justify-content-end ms-auto py-1 btn-secondary`}
-                    onClick={() => setNotifications("None")}
-                  >
-                    <Image
-                      className={`pe-1`}
-                      src="/mail-icon-sized-for-buttons.svg"
-                      alt="open envelope with letter, toggles update frequency options"
-                      width="22"
-                      height="19"
-                    />
-                    {"Enabled"}
-                  </StyledButton>
-                )}
+          <HideableSection hideIf={!flags().notifications}>
+            {/* awaiting the notifications feature to come online */}
+            <ModalSubheader title={t("forms.notification")} />
+            <Row className={`p-2 d-flex justify-content-md-end`}>
+              <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
+                <small>{t("forms.notificationText")}</small>
               </Col>
-            </StyledRow>
-            <StyledRow
-              className={`p-2 ${notifications === "None" ? "invisible" : ""}`}
-              direction={`horizontal`}
-            >
-              <Col className={`col-8`}>{t("email.frequencyQuery")}</Col>
-              <Col className={`d-flex justify-content-end`}>
-                <Dropdown className={`d-inline-block ms-auto`}>
-                  <StyledDropdownToggle
-                    className={`btn-sm py-1`}
+              <Col className={`col-fill`}>
+                <ToggleButton
+                  size={"sm"}
+                  toggleState={notifications === "None"}
+                  stateTrueLabel={t("enable")}
+                  stateFalseLabel={t("enabled")}
+                  className={`col-12 py-1 rounded-1`}
+                  onClick={handleToggleNotifications}
+                  Icon={<EmailIcon />}
+                />
+              </Col>
+            </Row>
+          </HideableSection>
+          <HideableSection
+            hideIf={!flags().notifications || notifications === "None"}
+          >
+            <Row className={`p-2 d-flex justify-content-start`}>
+              <Col className={`col-12 col-md-8 mb-3 mb-md-0`}>
+                <small>{t("email.frequencyQuery")}</small>
+              </Col>
+              <Col className={`col-auto ms-auto d-flex flex-grow-1`}>
+                <Dropdown align="end" className={`flex-grow-1 d-flex`}>
+                  <CustomDropdownToggle
+                    label={t(`email.${notifications.toLocaleLowerCase()}`)}
+                    className={`btn-sm btn-light py-1 flex-grow-1 d-flex gap-2 justify-content-center align-items-center`}
                     variant="outline-secondary"
-                    id="dropdown-basic"
-                  >
-                    {notifications}
-                  </StyledDropdownToggle>
-                  <Dropdown.Menu>
+                  />
+                  <Dropdown.Menu className={`col-12 bg-white `}>
                     <Dropdown.Item onClick={() => setNotifications("Daily")}>
                       {t("email.daily")}
                     </Dropdown.Item>
@@ -203,48 +148,70 @@ export default function ProfileSettingsModal({
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
-            </StyledRow>
-          </div>
-
-          <StyledRow className="p-2">
-            <h5 className="p-0">&nbsp; {t("privacySetting")}</h5>
-            <hr />
-
-            <Col>{privacyText}</Col>
+            </Row>
+          </HideableSection>
+          <ModalSubheader title={t("privacySetting")} />
+          <Row className={`p-2 d-flex justify-content-start`}>
+            <Col
+              className={`col-12 ${role === "user" && "col-md-8"} mb-3 mb-md-0`}
+            >
+              <small>{privacyText}</small>
+            </Col>
             {role === "user" && (
-              <Col xs={4}>
-                <StyledButton
-                  className={`w-100 btn-sm d-flex justify-content-center ms-auto py-1 ${
-                    isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-                  }`}
-                  onClick={() =>
-                    setIsProfilePublic(isProfilePublic ? false : true)
-                  }
-                >
-                  {isProfilePublic
-                    ? t("forms.makePrivate")
-                    : t("forms.makePublic")}
-                </StyledButton>
+              <Col className={`col-12 col-md-4`}>
+                <ToggleButton
+                  size={"sm"}
+                  className={`py-1 rounded-1`}
+                  toggleState={isProfilePublic}
+                  stateTrueLabel={t("forms.makePrivate")}
+                  stateFalseLabel={t("forms.makePublic")}
+                  onClick={() => setIsProfilePublic(current => !current)}
+                />
               </Col>
             )}
-          </StyledRow>
-
-          <Stack
-            className={`d-flex justify-content-end pt-4`}
-            direction={`horizontal`}
-          >
-            <Button className={`btn btn-sm mx-3 py-1`} onClick={handleSave}>
-              {t("save")}
-            </Button>
-            <StyledOutlineButton2
-              className={`btn btn-sm btn-outline-secondary py-1`}
-              onClick={onSettingsModalClose}
-            >
-              {t("cancel")}
-            </StyledOutlineButton2>
-          </Stack>
+          </Row>
+          <Row className={`p-2 d-flex align-items-start`}>
+            <Col md={{ offset: 3 }}>
+              <FillButton
+                size="sm"
+                className={`py-1`}
+                onClick={handleSave}
+                label={t("save")}
+              />
+            </Col>
+            <Col>
+              <OutlineButton
+                size="sm"
+                className={`py-1 btn-bg-white`}
+                onClick={handleCancel}
+                label={t("cancel")}
+              />
+            </Col>
+          </Row>
         </Form>
-      </StyledModalBody>
+      </Modal.Body>
     </Modal>
   )
+}
+
+export const ModalSubheader = ({ title }: { title: string }) => {
+  return (
+    <Row className="pt-2 pb-0 px-2">
+      <Col>
+        <h5 className="p-0">{title}</h5>
+      </Col>
+      <hr />
+    </Row>
+  )
+}
+
+export const HideableSection = ({
+  hideIf,
+  children
+}: {
+  hideIf?: boolean
+  children: ReactNode
+}) => {
+  if (hideIf) return null
+  else return children
 }

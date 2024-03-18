@@ -1,41 +1,50 @@
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Nav, Row, Spinner } from "../bootstrap"
-import { GearButton } from "../buttons"
+import { Container, Row, Spinner } from "../bootstrap"
 import {
   Profile,
   ProfileHook,
+  UseDraftTestimonyListing,
+  UsePublishedTestimonyListing,
   useDraftTestimonyListing,
   useProfile,
   usePublishedTestimonyListing
 } from "../db"
-// import { FollowingTab } from "./FollowingTab"
+import { EditProfileHeader } from "./EditProfileHeader"
+import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
-  Header,
   StyledTabContent,
-  StyledTabNav
+  TabNavItem,
+  TabNavWrapper
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
-import { Banner } from "components/shared/StyledSharedComponents"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 export function EditProfile() {
   const { user } = useAuth()
   const uid = user?.uid
   const result = useProfile()
 
-  return result?.profile && uid ? (
-    <EditProfileForm profile={result.profile} actions={result} uid={uid} />
-  ) : (
-    <Row>
-      <Spinner animation="border" className="mx-auto" />
-    </Row>
-  )
+  if (result.loading) {
+    return (
+      <Row>
+        <Spinner animation="border" className="mx-auto" />
+      </Row>
+    )
+  }
+
+  if (result?.profile && uid) {
+    return (
+      <EditProfileForm profile={result.profile} actions={result} uid={uid} />
+    )
+  }
+
+  // Todo add error handling/404 page?
 }
 
 export function EditProfileForm({
@@ -70,16 +79,18 @@ export function EditProfileForm({
 
   const close = () => setSettingsModal(null)
 
-  const publishedTestimonies = usePublishedTestimonyListing({
+  const publishedTestimonies: UsePublishedTestimonyListing =
+    usePublishedTestimonyListing({ uid: uid })
+
+  const draftTestimonies: UseDraftTestimonyListing = useDraftTestimonyListing({
     uid: uid
   })
 
-  const draftTestimonies = useDraftTestimonyListing({ uid: uid })
-
-  const isOrg =
-    profile.role === "organization" || profile.role === "pendingUpgrade"
+  let isOrg = profile.role === "organization"
 
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+
+  isOrg = isOrg || isPendingUpgrade
 
   const { t } = useTranslation("editProfile")
 
@@ -103,17 +114,16 @@ export function EditProfileForm({
       eventKey: "Testimonies",
       content: (
         <TestimoniesTab
-          publishedTestimonies={publishedTestimonies.items.result}
-          draftTestimonies={draftTestimonies.result}
-          className="mt-3 mb-4"
+          publishedTestimonies={publishedTestimonies.items.result ?? []}
+          draftTestimonies={draftTestimonies.result ?? []}
         />
       )
-    } /* ,
+    },
     {
       title: "Following",
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
-    } */
+    }
   ]
 
   return (
@@ -121,43 +131,24 @@ export function EditProfileForm({
       {isPendingUpgrade && <PendingUpgradeBanner />}
 
       <Container>
-        <Header>
-          <Col>{t("header")}</Col>
-          <Col className={`d-flex justify-content-end`}>
-            <GearButton
-              variant="outline-secondary"
-              size="lg"
-              className={`me-4 py-1`}
-              disabled={!!formUpdated}
-              onClick={() => onSettingsModalOpen()}
-            >
-              {t("Settings")}
-            </GearButton>
-            <Button
-              className={`btn-lg py-1 ml-2 text-decoration-none`}
-              disabled={!!formUpdated}
-              href={`/profile?id=${uid}`}
-            >
-              {profile.role !== "organization"
-                ? t("viewMyProfile")
-                : t("viewOrgProfile")}
-            </Button>
-          </Col>
-        </Header>
-        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-          <StyledTabNav>
+        <EditProfileHeader
+          formUpdated={formUpdated}
+          onSettingsModalOpen={onSettingsModalOpen}
+          uid={uid}
+          role={profile.role}
+        />
+        <TabContainer
+          defaultActiveKey="AboutYou"
+          activeKey={key}
+          onSelect={(k: any) => setKey(k)}
+        >
+          <TabNavWrapper>
             {tabs.map((t, i) => (
-              <Nav.Item key={t.eventKey}>
-                <Nav.Link
-                  eventKey={t.eventKey}
-                  className={`rounded-top m-0 p-0`}
-                >
-                  <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t.title}</p>
-                  <hr className={`my-0`} />
-                </Nav.Link>
-              </Nav.Item>
+              <>
+                <TabNavItem tab={t} i={i} />
+              </>
             ))}
-          </StyledTabNav>
+          </TabNavWrapper>
           <StyledTabContent>
             {tabs.map(t => (
               <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
@@ -166,18 +157,18 @@ export function EditProfileForm({
             ))}
           </StyledTabContent>
         </TabContainer>
-        <ProfileSettingsModal
-          actions={actions}
-          role={profile.role}
-          isProfilePublic={isProfilePublic}
-          setIsProfilePublic={setIsProfilePublic}
-          notifications={notifications}
-          setNotifications={setNotifications}
-          onHide={close}
-          onSettingsModalClose={() => setSettingsModal(null)}
-          show={settingsModal === "show"}
-        />
       </Container>
+      <ProfileSettingsModal
+        actions={actions}
+        role={profile.role}
+        isProfilePublic={isProfilePublic}
+        setIsProfilePublic={setIsProfilePublic}
+        notifications={notifications}
+        setNotifications={setNotifications}
+        onHide={close}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
+      />
     </>
   )
 }
