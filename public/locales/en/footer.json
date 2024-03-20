@@ -3,22 +3,11 @@
     "follow": "Follow MAPLE",
     "browse": "Browse",
     "account": "Account",
-    "learn": "Learn",
-    "about": "About",
-    "resources": "Resources",
-    "team": "Our Team"
+    "resources": "Resources"
   },
   "links": {
-    "browseBills": "Browse Bills",
-    "browseTestimony": "Browse Testimony",
-    "accountSignIn": "Sign In",
-    "accountSignOut": "Sign Out",
-    "accountProfile": "Profile",
     "learnWriting": "Writing Effective Testimony",
     "learnLegislators": "Contacting Legislators",
-    "learnResources": "Additional Resources",
-    "aboutMission": "Our Mission & Goals",
-    "aboutTeam": "Our Team",
     "resourcesLegislators": "Find your Legislators",
     "resourcesGitHub": "MAPLE on GitHub",
     "resourcesOpenCollective": "MAPLE OpenCollective",

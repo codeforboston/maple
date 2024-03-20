@@ -20,6 +20,10 @@ $dark: $dark-blue;
 $link-color: $secondary;
 
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
+$font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
 $headings-font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
   "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -79,6 +83,35 @@ $font-sizes: (
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+}
+
+@mixin button-contrast($color-a, $color-b) {
+  --#{$prefix}btn-bg: #{$color-a};
+  --#{$prefix}btn-hover-bg: #{$color-b};
+  --#{$prefix}btn-active-bg: #{$color-a};
+  --#{$prefix}btn-color: #{$color-b};
+  --#{$prefix}btn-hover-color: #{$color-a};
+  --#{$prefix}btn-active-color: #{$color-b};
+}
+
+@each $color, $value in $theme-colors {
+  .btn-hover-#{$color} {
+    @include button-contrast($white, $value);
+  }
+  .btn-hover-outline-#{$color} {
+    @include button-contrast($value, $white);
+  }
+  .btn-active-#{$color} {
+    @include button-contrast($value, $white);
+  }
+  .btn-active-outline-#{$color} {
+    @include button-contrast($white, $value);
+  }
+}
+
+.btn-bg-white {
+  --bs-btn-bg: white;
+  background-color: var(--bs-btn-bg);
 }
 
 .tracking-tighter {

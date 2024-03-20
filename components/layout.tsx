@@ -1,4 +1,5 @@
 import Head from "next/head"
+import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
@@ -20,13 +21,15 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
   title
 }) => {
   const { authenticated, user } = useAuth()
+  const { t } = useTranslation("common")
+  const formattedTitle = title
+    ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
+    : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
   return (
     <>
       <Head>
-        <title>{`${
-          title ? title + " | " : ""
-        }MAPLE: The Massachusetts Platform for Legislative Engagement`}</title>
+        <title>{formattedTitle}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.pageContainer}>
@@ -49,6 +52,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [sticky, setSticky] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const { t } = useTranslation(["common", "auth"])
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
@@ -78,30 +82,30 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     href="/"
                     handleClick={closeNav}
                   >
-                    Home
+                    {t("navigation.home")}
                   </NavLink>
                   <NavLink
                     className={"navLink-primary"}
                     href="/bills"
                     handleClick={closeNav}
                   >
-                    Browse Bills
+                    {t("navigation.browseBills")}
                   </NavLink>
                   <NavLink
                     className={"navLink-primary"}
                     href="/testimony"
                     handleClick={closeNav}
                   >
-                    Browse Testimony
+                    {t("navigation.browseTestimony")}
                   </NavLink>
 
-                  <NavDropdown className={"navLink-primary"} title={"Learn"}>
+                  <NavDropdown className={"navLink-primary"} title={t("learn")}>
                     <NavDropdown.Item>
                       <NavLink
                         href="/learn/basics-of-testimony"
                         handleClick={closeNav}
                       >
-                        Learn About Testimony
+                        {t("navigation.learnAboutTestimony")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -109,7 +113,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/learn/communicating-with-legislators"
                         handleClick={closeNav}
                       >
-                        Communicating with Legislators
+                        {t("navigation.communicatingWithLegislators")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -117,15 +121,15 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/learn/additional-resources"
                         handleClick={closeNav}
                       >
-                        Additional Resources
+                        {t("navigation.additionalResources")}
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
 
-                  <NavDropdown className={"navLink-primary"} title={"About"}>
+                  <NavDropdown className={"navLink-primary"} title={t("about")}>
                     <NavDropdown.Item>
                       <NavLink href="/about/faq-page" handleClick={closeNav}>
-                        FAQ
+                        {t("navigation.faq")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -133,12 +137,12 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/about/mission-and-goals"
                         handleClick={closeNav}
                       >
-                        Our Mission &amp; Goals
+                        {t("navigation.missionAndGoals")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <NavLink href="/about/our-team" handleClick={closeNav}>
-                        Our Team
+                        {t("team")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -146,26 +150,26 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/about/support-maple"
                         handleClick={closeNav}
                       >
-                        How to Support MAPLE
+                        {t("navigation.supportMaple")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <NavLink href="/policies" handleClick={closeNav}>
-                        Privacy Policy & Code of Conduct
+                        {t("navigation.privacyAndConduct")}
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
 
                   <NavDropdown
                     className={"navLink-primary"}
-                    title={"Why Use MAPLE"}
+                    title={t("whyUseMaple")}
                   >
                     <NavDropdown.Item>
                       <NavLink
                         href="/why-use-maple/for-individuals"
                         handleClick={closeNav}
                       >
-                        For Individuals
+                        {t("navigation.forIndividuals")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -173,7 +177,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/why-use-maple/for-orgs"
                         handleClick={closeNav}
                       >
-                        For Organizations
+                        {t("navigation.forOrganizations")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
@@ -181,7 +185,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         href="/why-use-maple/for-legislators"
                         handleClick={closeNav}
                       >
-                        For Legislators
+                        {t("navigation.forLegislators")}
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
@@ -194,7 +198,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         void signOutAndRedirectToHome()
                       }}
                     >
-                      Sign Out
+                      {t("signOut", { ns: "auth" })}
                     </NavLink>
                   )}
                 </Nav>

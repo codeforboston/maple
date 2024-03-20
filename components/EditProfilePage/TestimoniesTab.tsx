@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Col, Row } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
@@ -12,18 +12,33 @@ export const TestimoniesTab = ({
   draftTestimonies,
   className
 }: {
-  publishedTestimonies: Testimony[] | undefined
-  draftTestimonies: Testimony[] | undefined
-  className: string
+  publishedTestimonies: Testimony[]
+  draftTestimonies: Testimony[]
+  className?: string
 }) => {
   const [orderBy, setOrderBy] = useState<string>()
   const { t } = useTranslation("editProfile")
 
+  const publishedTestimoniesOrdered = useMemo(() => {
+    if (!publishedTestimonies) {
+      return []
+    }
+    return publishedTestimonies.sort((a, b) =>
+      orderBy === "Oldest First"
+        ? a.publishedAt > b.publishedAt
+          ? 1
+          : -1
+        : a.publishedAt < b.publishedAt
+        ? 1
+        : -1
+    )
+  }, [orderBy, publishedTestimonies])
+
   return (
-    <div className="mb-4">
+    <div className={`mb-4 ${className}`}>
       <Row className="mt-0">
-        <Col xs={8}>
-          <TitledSectionCard className={className}>
+        <Col xs={12} md={8}>
+          <TitledSectionCard className="mt-3 mb-4">
             <Row>
               <Col>
                 <h2>{t("testimonies.published")}</h2>
@@ -35,46 +50,33 @@ export const TestimoniesTab = ({
                 />
               </Col>
             </Row>
-
-            {publishedTestimonies &&
-              publishedTestimonies
-                .sort((a, b) =>
-                  orderBy === "Oldest First"
-                    ? a.publishedAt > b.publishedAt
-                      ? 1
-                      : -1
-                    : a.publishedAt < b.publishedAt
-                    ? 1
-                    : -1
-                )
-                .map(t => (
-                  <TestimonyItem
-                    key={t.authorUid + t.billId}
-                    testimony={t}
-                    isUser={true}
-                    onProfilePage={true}
-                    canEdit={true}
-                    canDelete={false}
-                  />
-                ))}
+            {publishedTestimoniesOrdered.map(t => (
+              <TestimonyItem
+                key={t.authorUid + t.billId + t.publishedAt}
+                testimony={t}
+                isUser={true}
+                onProfilePage={true}
+                canEdit={true}
+                canDelete={false}
+              />
+            ))}
           </TitledSectionCard>
-          <TitledSectionCard className={className}>
+          <TitledSectionCard className="mt-3 mb-4">
             <h2>{t("testimonies.draft")}</h2>
-            {draftTestimonies &&
-              draftTestimonies.map(t => (
-                <TestimonyItem
-                  key={t.authorUid + t.billId}
-                  testimony={t}
-                  isUser={true}
-                  onProfilePage={true}
-                  canEdit={true}
-                  canDelete={false}
-                />
-              ))}
+            {draftTestimonies.map(t => (
+              <TestimonyItem
+                key={t.authorUid + t.billId + t.publishedAt}
+                testimony={t}
+                isUser={true}
+                onProfilePage={true}
+                canEdit={true}
+                canDelete={false}
+              />
+            ))}
           </TitledSectionCard>
         </Col>
         <Col>
-          <TestimonyFAQ className={className}></TestimonyFAQ>
+          <TestimonyFAQ className={`mt-3 mb-4`} />
         </Col>
       </Row>
     </div>
