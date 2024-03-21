@@ -73,33 +73,6 @@
   background-repeat: no-repeat;
 }
 
-.card {
-  background: white;
-  font-family: Nunito;
-  font-weight: 400;
-  border: 2px var(--bs-blue) solid;
-  width: 20rem; /* width: 269px; */
-  margin-bottom: 2em;
-  border-radius: 0.5rem;
-  display: block;
-  height: fit-content;
-}
-
-@media (max-width: 87.5em) {
-  .card {
-    margin-left: 8.2em;
-  }
-}
-
-@media (max-width: 47.93em) {
-}
-
-@media (max-width: 31em) {
-  .card {
-    margin-left: 0em;
-  }
-}
-
 .cardHeader {
   color: white;
   background: var(--bs-blue);

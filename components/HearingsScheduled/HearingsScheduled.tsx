@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Container, Carousel, Spinner } from "react-bootstrap"
+import styled from "styled-components"
 import { Col, Image, Row } from "../bootstrap"
 import styles from "./HearingsScheduled.module.css"
 import { useUpcomingEvents } from "../db/events"
@@ -42,6 +43,7 @@ Event types handled: sessions, hearings.
   It is missing name and location which are used on the event cards:
   A decision needs to be made as what info would go on cards and determine what the base URL is.
 */
+
 export const EventCard = ({
   index,
   type,
@@ -66,8 +68,27 @@ export const EventCard = ({
     return entry
   }
 
+  const EventCardContainer = styled.div`
+    border: 2px var(--bs-blue) solid;
+    width: 20rem; /* width: 269px; */
+    margin-bottom: 2em;
+    border-radius: 0.5rem;
+    display: block;
+    height: fit-content;
+    @media (max-width: 87.5em) {
+      .card {
+        margin-left: 8.2em;
+      }
+    }
+    @media (max-width: 31em) {
+      .card {
+        margin-left: 0em;
+      }
+    }
+  `
+
   return (
-    <div className={styles.card}>
+    <EventCardContainer>
       <div className={styles.cardHeader}>
         <div>
           <p className={styles.month}>{month}</p>
@@ -103,7 +124,7 @@ export const EventCard = ({
           <p className={styles.location}>{truncateEntry(location)}</p>
         </div>
       </div>
-    </div>
+    </EventCardContainer>
   )
 }
 
