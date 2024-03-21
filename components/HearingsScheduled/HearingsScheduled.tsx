@@ -87,15 +87,33 @@ export const EventCard = ({
     }
   `
 
+  const EventCardHeader = styled.div`
+    color: white;
+    background: var(--bs-blue);
+    padding-top: 0.25em;
+    padding-left: 1em;
+    height: 3.21em; /* 51.94px */
+    border-radius: 0.3125em 0.3125em 0 0;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    align-items: center;
+  `
+
+  const EventDate = styled.h5`
+    font-size: 1.5rem;
+    line-height: 0;
+    padding-bottom: 1em;
+  `
+
   return (
     <EventCardContainer>
-      <div className={styles.cardHeader}>
+      <EventCardHeader>
         <div>
-          <p className={styles.month}>{month}</p>
-          <p className={styles.date}>{date}</p>
+          <h6 className={`lh-1 pb-2`}>{month}</h6>
+          <EventDate>{date}</EventDate>
         </div>
         <div className={styles.day}>{day}</div>
-      </div>
+      </EventCardHeader>
 
       <div className={styles.cardBody}>
         <div>

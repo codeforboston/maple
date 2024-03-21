@@ -73,28 +73,6 @@
   background-repeat: no-repeat;
 }
 
-.cardHeader {
-  color: white;
-  background: var(--bs-blue);
-  padding-top: 0.25em;
-  padding-left: 1em;
-  height: 3.21em; /* 51.94px */
-  border-radius: 0.3125em 0.3125em 0 0;
-  display: grid;
-  grid-template-columns: 35% 65%;
-  align-items: center;
-}
-
-.month {
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.date {
-  font-size: 1.5rem;
-  line-height: 0;
-}
-
 .day {
   font-size: 1.5rem;
 }
