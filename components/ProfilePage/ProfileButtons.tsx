@@ -8,7 +8,7 @@ import { Story } from "stories/atoms/BaseButton.stories"
 import { Internal } from "components/links"
 import { useProfile, ProfileHook } from "components/db"
 import { FollowButton } from "./FollowButton"
-import { flags } from "components/featureFlags"
+import { useFlags } from "components/featureFlags"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -91,13 +91,8 @@ export function ProfileButtonsUser({
 }
 
 export function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
+  const { followOrg } = useFlags()
   return (
-    <>
-      {isUser ? (
-        <EditProfileButton />
-      ) : flags().followOrg ? (
-        <FollowButton />
-      ) : null}
-    </>
+    <>{isUser ? <EditProfileButton /> : followOrg ? <FollowButton /> : null}</>
   )
 }

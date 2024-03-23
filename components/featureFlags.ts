@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import { z } from "zod"
 
 export const FeatureFlags = z.object({
@@ -63,3 +64,15 @@ const values = FeatureFlags.parse(defaults[envName])
 
 // Add a function call of indirection to allow reloading values in the future
 export const flags = () => values
+
+export function useFlags() {
+  const router = useRouter()
+  const { query } = router
+
+  return FeatureFlags.keyof().options.reduce((acc, flagName) => {
+    if (flagName in query) {
+      acc[flagName] = query[flagName] === "enabled"
+    }
+    return acc
+  }, FeatureFlags.parse(defaults[envName]))
+}
