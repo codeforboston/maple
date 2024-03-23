@@ -89,6 +89,7 @@ export function ProfileButtonsUser({
     </div>
   )
 }
+
 export function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
   const { followOrg } = useFlags()
   return (
