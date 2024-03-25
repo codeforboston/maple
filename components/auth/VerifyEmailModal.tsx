@@ -10,7 +10,7 @@ export default function VerifyEmailModal({
   const { t } = useTranslation("auth")
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton className={styles.modalHeader}>
+      <Modal.Header closeButton>
         <Modal.Title id="tos-modal">{t("signUp")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
