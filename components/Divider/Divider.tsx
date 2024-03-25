@@ -4,8 +4,7 @@ import type { RowProps } from "react-bootstrap"
 import { Col, Row } from "../bootstrap"
 import styled from "styled-components"
 
-
-const Line = styled('hr')`
+const Line = styled("hr")`
   height: 2px !important;
   opacity: 1;
 `
