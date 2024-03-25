@@ -26,13 +26,10 @@ type Story = StoryObj<typeof VerifyEmailModal>
 
 export const Primary: Story = {
   args: {
-    onHide: () => { },
-    show: true,
+    onHide: () => {},
+    show: true
   },
   name: "Verify Email Modal"
 }
-
-
-
 
 export default meta

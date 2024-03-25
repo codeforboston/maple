@@ -15,7 +15,7 @@ export default function TermsOfServiceModal({
       <Modal.Header closeButton>
         <Modal.Title id="tos-modal">{t("privacyAndTerms")}</Modal.Title>
       </Modal.Header>
-      <Modal.Body >
+      <Modal.Body>
         <Col md={12} className="mx-auto">
           <Stack gap={3} className="mb-4">
             <Row className="align-items-center">
@@ -27,7 +27,7 @@ export default function TermsOfServiceModal({
                   {t("readMore")}
                 </External>
               </Col>
-              <hr className={`border border-5 border-black` } />
+              <hr className={`border border-5 border-black`} />
               <Col md={10}>
                 <ul>
                   <li>{t("establishedPolicy")}</li>
@@ -47,7 +47,7 @@ export default function TermsOfServiceModal({
                 </External>
               </Col>
 
-              <hr className={`border border-5 border-black` } />
+              <hr className={`border border-5 border-black`} />
               <Col md={10}>
                 <ul>
                   <li>{t("userUnderstands")}</li>

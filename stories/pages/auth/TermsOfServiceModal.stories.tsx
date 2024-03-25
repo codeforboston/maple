@@ -26,14 +26,11 @@ type Story = StoryObj<typeof TermsOfServiceModal>
 
 export const Primary: Story = {
   args: {
-    onHide: () => { },
+    onHide: () => {},
     show: true,
-    onAgree: () => { }
+    onAgree: () => {}
   },
   name: "Terms Of Service Modal"
 }
-
-
-
 
 export default meta

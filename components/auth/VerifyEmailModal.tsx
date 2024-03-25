@@ -1,6 +1,5 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Image, Col, Modal, Row, Stack } from "../bootstrap"
-import styles from "./VerifyEmailModal.module.css"
 import { Internal } from "components/links"
 import { useTranslation } from "next-i18next"
 

@@ -26,15 +26,12 @@ type Story = StoryObj<typeof StartModal>
 
 export const Primary: Story = {
   args: {
-    onHide: () => { },
+    onHide: () => {},
     show: true,
-    onSignInClick: () => { },
-    onSignUpClick: () => { }
+    onSignInClick: () => {},
+    onSignUpClick: () => {}
   },
   name: "Start Modal"
 }
-
-
-
 
 export default meta
