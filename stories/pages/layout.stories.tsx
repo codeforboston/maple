@@ -1,10 +1,8 @@
-
 import { Meta, StoryObj } from "@storybook/react"
 import { Layout } from "components/layout"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
-
 
 const meta: Meta = {
   title: "Pages/Layout",
@@ -23,7 +21,6 @@ const meta: Meta = {
     }
   ]
 }
-
 
 type Story = StoryObj<typeof Layout>
 
