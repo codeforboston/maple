@@ -99,8 +99,7 @@ export const EventCard = ({
     align-items: center;
   `
 
-  const EventDate = styled.h5`
-    font-size: 1.5rem;
+  const EventDate = styled.h4`
     line-height: 0;
     padding-bottom: 1em;
   `
@@ -109,37 +108,41 @@ export const EventCard = ({
     <EventCardContainer>
       <EventCardHeader>
         <div>
-          <h6 className={`lh-1 pb-2`}>{month}</h6>
+          <div className={`h6 lh-1 pb-2`}>{month}</div>
           <EventDate>{date}</EventDate>
         </div>
-        <div className={styles.day}>{day}</div>
+        <div className={`h4 mb-0 `}>{day}</div>
       </EventCardHeader>
 
-      <div className={styles.cardBody}>
-        <div>
-          <p className={styles.time}>{time}</p>
-        </div>
-        <div>
-          <p className={styles.name}>
-            {type === "hearing" ? (
-              <a
-                href={`${hearingBaseURL}${id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {truncateEntry(name)}
-              </a>
-            ) : (
-              <a
-                href={`${sessionBaseURL}${id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {truncateEntry(name)}
-              </a>
-            )}
-          </p>
-          <p className={styles.location}>{truncateEntry(location)}</p>
+      <div className={`container pt-3 px-4`}>
+        <div className="row">
+          <div className="col-sm-4">
+            <p>{time}</p>
+          </div>
+          <div className="col-sm-8">
+            <p className={`lh-sm mb-2 ms-2 text-secondary`}>
+              {type === "hearing" ? (
+                <a
+                  href={`${hearingBaseURL}${id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {truncateEntry(name)}
+                </a>
+              ) : (
+                <a
+                  href={`${sessionBaseURL}${id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {truncateEntry(name)}
+                </a>
+              )}
+            </p>
+            <p className={`lh-sm mb-3 ms-2 text-secondary`}>
+              {truncateEntry(location)}
+            </p>
+          </div>
         </div>
       </div>
     </EventCardContainer>
@@ -163,6 +166,15 @@ export const HearingsScheduled = () => {
     return e.index === monthIndex
   })
 
+  const EventSection = styled.section`
+    min-width: fit-content;
+    max-width: 43rem;
+    margin-bottom: 2em;
+  `
+
+  const SpinnerContainer = styled.div`
+    display: grid;
+  `
   return (
     <Container fluid>
       <Row className="mt-5">
@@ -212,13 +224,13 @@ export const HearingsScheduled = () => {
           </section>
 
           {loading ? (
-            <div className={styles.loading}>
+            <SpinnerContainer>
               <Spinner animation="border" className="mx-auto" />
-            </div>
+            </SpinnerContainer>
           ) : (
             <>
               {thisMonthsEvents.length ? (
-                <section className={styles.eventSection}>
+                <EventSection>
                   <Container className="">
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
@@ -242,9 +254,9 @@ export const HearingsScheduled = () => {
                       })}
                     </Row>
                   </Container>
-                </section>
+                </EventSection>
               ) : (
-                <section className={styles.noEvents}>
+                <section className={`text-center text-secondary`}>
                   <h2>No Scheduled Events</h2>
                 </section>
               )}
