@@ -44,6 +44,37 @@ Event types handled: sessions, hearings.
   A decision needs to be made as what info would go on cards and determine what the base URL is.
 */
 
+const EventCardContainer = styled.div`
+  border: 2px var(--bs-blue) solid;
+  width: 20rem; /* width: 269px; */
+  margin-bottom: 2em;
+  border-radius: 0.5rem;
+  display: block;
+  height: fit-content;
+  @media (max-width: 87.5em) {
+    .card {
+      margin-left: 8.2em;
+    }
+  }
+  @media (max-width: 31em) {
+    .card {
+      margin-left: 0em;
+    }
+  }
+`
+
+const EventCardHeader = styled.div`
+  color: white;
+  background: var(--bs-blue);
+  padding-top: 0.25em;
+  padding-left: 1em;
+  height: 3.21em; /* 51.94px */
+  border-radius: 0.3125em 0.3125em 0 0;
+  display: grid;
+  grid-template-columns: 35% 65%;
+  align-items: center;
+`
+
 export const EventCard = ({
   index,
   type,
@@ -68,48 +99,12 @@ export const EventCard = ({
     return entry
   }
 
-  const EventCardContainer = styled.div`
-    border: 2px var(--bs-blue) solid;
-    width: 20rem; /* width: 269px; */
-    margin-bottom: 2em;
-    border-radius: 0.5rem;
-    display: block;
-    height: fit-content;
-    @media (max-width: 87.5em) {
-      .card {
-        margin-left: 8.2em;
-      }
-    }
-    @media (max-width: 31em) {
-      .card {
-        margin-left: 0em;
-      }
-    }
-  `
-
-  const EventCardHeader = styled.div`
-    color: white;
-    background: var(--bs-blue);
-    padding-top: 0.25em;
-    padding-left: 1em;
-    height: 3.21em; /* 51.94px */
-    border-radius: 0.3125em 0.3125em 0 0;
-    display: grid;
-    grid-template-columns: 35% 65%;
-    align-items: center;
-  `
-
-  const EventDate = styled.h4`
-    line-height: 0;
-    padding-bottom: 1em;
-  `
-
   return (
     <EventCardContainer>
       <EventCardHeader>
-        <div>
-          <div className={`h6 lh-1 pb-2`}>{month}</div>
-          <EventDate>{date}</EventDate>
+        <div className={`d-grid align-items-start`}>
+          <div className={`h6 m-0 p-0`}>{month}</div>
+          <div className={`h4 m-0 p-0`}>{date}</div>
         </div>
         <div className={`h4 mb-0 `}>{day}</div>
       </EventCardHeader>
@@ -149,6 +144,12 @@ export const EventCard = ({
   )
 }
 
+const EventSection = styled.section`
+  min-width: fit-content;
+  max-width: 43rem;
+  margin-bottom: 2em;
+`
+
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
 
@@ -166,15 +167,6 @@ export const HearingsScheduled = () => {
     return e.index === monthIndex
   })
 
-  const EventSection = styled.section`
-    min-width: fit-content;
-    max-width: 43rem;
-    margin-bottom: 2em;
-  `
-
-  const SpinnerContainer = styled.div`
-    display: grid;
-  `
   return (
     <Container fluid>
       <Row className="mt-5">
@@ -224,14 +216,14 @@ export const HearingsScheduled = () => {
           </section>
 
           {loading ? (
-            <SpinnerContainer>
+            <div className={`d-grid`}>
               <Spinner animation="border" className="mx-auto" />
-            </SpinnerContainer>
+            </div>
           ) : (
             <>
               {thisMonthsEvents.length ? (
                 <EventSection>
-                  <Container className="">
+                  <Container>
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
                         return (
