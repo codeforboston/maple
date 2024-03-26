@@ -10,6 +10,7 @@ const StyledHeader = styled(Card.Header)`
 
   @media (min-width: 48em) {
     width: max-content;
+    margin-bottom: -1rem;
     transform: translate(-3rem, -40%);
 
     &:first-child {
