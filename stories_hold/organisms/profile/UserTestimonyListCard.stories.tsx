@@ -66,8 +66,10 @@ Primary.args = {
     billTitle: "Bill Title",
     version: 1.0,
     publishedAt: Timestamp.fromDate(new Date("2022-01-01T00:00:00.000Z")),
+    updatedAt: Timestamp.fromDate(new Date("2022-01-01T00:00:00.000Z")),
     draftAttachmentId: "attachment123",
-    fullName: ""
+    fullName: "",
+    public: true
   },
   isUser: true,
   canEdit: true,
