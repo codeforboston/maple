@@ -156,7 +156,7 @@ const OurMissionCardContent = () => {
         </Col>
       </Row>
 
-      <Row className="align-items-end mt-5 mt-lg-0">
+      <Row className="align-items-end mt-5">
         <Col lg={4} className="text-lg-center text-start pb-0">
           <StepsImage
             fluid
