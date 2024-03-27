@@ -1,13 +1,8 @@
 import React, { useState } from "react"
 import { Container, Carousel, Spinner } from "react-bootstrap"
 import styled from "styled-components"
-import { Col, Image, Row } from "../bootstrap"
-import styles from "./HearingsScheduled.module.css"
-import { useUpcomingEvents } from "../db/events"
-import { formatDate, numberToFullMonth } from "./dateUtils"
+import { Col, Row } from "../bootstrap"
 import { useCalendarEvents } from "./calendarEvents"
-import * as admin from "firebase-admin"
-import { Timestamp } from "functions/src/firebase"
 
 export type EventData = {
   index: number
@@ -150,6 +145,33 @@ const EventSection = styled.section`
   margin-bottom: 2em;
 `
 
+const HearingImage = styled.img`
+  margin-bottom: 10.3em;
+  width: 20rem;
+
+  @media (max-width: 48em) {
+    margin-bottom: 4.5em;
+  }
+
+  @media (max-width: 23.44em) {
+    width: 12.94rem;
+  }
+`
+
+const CarouselControlNextIcon = styled.span`
+  width: 2.3125rem;
+  height: 2.3125rem;
+  background-image: url("/carousel-right.png");
+  background-repeat: no-repeat;
+`
+
+const CarouselControlPrevIcon = styled.span`
+  width: 2.3125rem;
+  height: 2.3125rem;
+  background-image: url("/carousel-left.png");
+  background-repeat: no-repeat;
+`
+
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
 
@@ -171,19 +193,21 @@ export const HearingsScheduled = () => {
     <Container fluid>
       <Row className="mt-5">
         <Col>
-          <h1 className={`${styles.heading}`}>Hearings Scheduled</h1>
+          <div className={`h1 mb-5 text-center text-secondary`}>
+            Hearings Scheduled
+          </div>
         </Col>
       </Row>
       <Row>
         <Col xs={{ order: 1 }} md={{ span: 5, order: 0 }}>
-          <Image
-            className={`ml-5 ${styles.podium}`}
+          <HearingImage
+            className={`d-block mx-auto`}
             src="/speaker-podium.svg"
             alt="speaker at podium"
           />
         </Col>
         <Col md={7}>
-          <section className={`${styles.carousel}`}>
+          <section className={`mb-5`}>
             <Carousel
               variant="dark"
               interval={null}
@@ -192,23 +216,13 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              prevIcon={
-                <span
-                  aria-hidden="true"
-                  className={styles.carouselControlPrevIcon}
-                />
-              }
-              nextIcon={
-                <span
-                  aria-hidden="true"
-                  className={styles.carouselControlNextIcon}
-                />
-              }
+              prevIcon={<CarouselControlNextIcon aria-hidden="true" />}
+              nextIcon={<CarouselControlPrevIcon aria-hidden="true" />}
             >
               {monthsList?.map(month => {
                 return (
                   <Carousel.Item key={month}>
-                    <h1 className="text-center">{month}</h1>
+                    <div className="h1 text-center">{month}</div>
                   </Carousel.Item>
                 )
               })}
