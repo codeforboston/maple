@@ -73,6 +73,16 @@ $font-sizes: (
   6: $h6-font-size
 ) !default;
 
+$utilities: (
+  "font-size": (
+    rfs: true,
+    responsive: true,
+    property: font-size,
+    class: fs,
+    values: $font-sizes
+  )
+) !default;
+
 @import "bootstrap/scss/bootstrap";
 
 // Import fonts using the default bootstrap weights
