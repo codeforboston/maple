@@ -1,5 +1,5 @@
 import React, { FC } from "react"
-import styles from "./Tabs.module.css"
+import clsx from "clsx"
 
 type TabsProps = {
   tabs: {
@@ -14,7 +14,7 @@ type TabsProps = {
 }
 
 /**
- * Avalible Props
+ * Available Props
  * @param className string
  * @param tab Array of object
  * @param selectedTab number
@@ -33,15 +33,17 @@ const Tabs: FC<React.PropsWithChildren<TabsProps>> = ({
   return (
     <div>
       <div
-        className={styles.CustomTab}
+        className="d-flex justify-content-between mt-3 mb-2 mx-3 mx-md-5"
         role="tablist"
         aria-orientation={orientation}
       >
         {tabs.map(tab => (
           <button
-            className={
-              selectedTab === tab.index ? styles.activeBtn : styles.Btn
-            }
+            className={clsx(
+              "border-0 bg-transparent fs-4 fw-bold",
+              selectedTab === tab.index &&
+                "text-secondary text-decoration-underline"
+            )}
             onClick={() => onClick(tab.index)}
             key={tab.index}
             type="button"
