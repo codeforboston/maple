@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Container, Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components";
 import {
   Role,
   SignInWithButton,
@@ -8,7 +9,7 @@ import {
   useAuth
 } from "../auth"
 import { NavLink } from "../Navlink"
-import styles from "./ProfileLink.module.css"
+// import styles from "./ProfileLink.module.css"
 
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
@@ -22,6 +23,11 @@ const greeting = (role: Role, fullName?: string) => {
   }
 }
 
+const ProfileLinkImageWrapper = styled(Image)`
+  @media only screen and (min-width: 992px) {
+    margin: 0 10px;
+  }
+`;
 const ProfileMenuItem = (
   label: string,
   href: string,
@@ -59,11 +65,15 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
         <>
           <Navbar.Brand onClick={toggleNav}>
             <Nav.Link className="p-0 text-white">
-              <Image
+              {/* <Image
                 className={styles.profileLinkImage}
                 src="/profile-icon.svg"
                 alt="profile icon"
-              ></Image>
+              ></Image> */}
+              <ProfileLinkImageWrapper
+                src="/profile-icon.svg"
+                alt="profile icon"
+              />
               {sticky ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
