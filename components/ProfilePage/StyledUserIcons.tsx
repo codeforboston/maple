@@ -7,6 +7,7 @@ type ProfileIconProps = {
   role?: Role
   className?: string
   large?: boolean
+  size?: "small" | "large"
 }
 
 export const BaseProfileIcon = ({

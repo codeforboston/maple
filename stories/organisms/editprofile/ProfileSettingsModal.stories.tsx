@@ -4,6 +4,7 @@ import { ProfileHook } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"
+import { Image } from "components/bootstrap"
 
 const meta: Meta = {
   title: "Organisms/Edit Profile/ProfileSettingsModal",
@@ -37,3 +38,19 @@ export const Primary: Story = {
   },
   name: "ProfileSettingsModal"
 }
+
+const EmailIcon = () => {
+  return (
+    <>
+      <Image
+        className={`pe-1`}
+        src="/mail.svg"
+        alt="open envelope with letter, toggles update frequency options"
+        width="22"
+        // height="19"
+      />
+    </>
+  )
+}
+
+export { EmailIcon }

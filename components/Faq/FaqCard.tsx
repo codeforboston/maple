@@ -1,6 +1,5 @@
-import { Card } from "../bootstrap"
-import { FaqQandA } from "./FaqQandA"
-import styles from "./Faq.module.css"
+import styled from "styled-components"
+import { FaqQandAButton } from "./FaqQandAButton"
 
 type faqCardProps = {
   heading: string
@@ -8,22 +7,32 @@ type faqCardProps = {
 }
 
 export const FaqCard = ({ heading, qAndAs }: faqCardProps) => {
+  const FaqCardContainer = styled.div`
+    margin: 0 2rem;
+    padding: 2rem 2.5rem;
+
+    @media only screen and (max-width: 600px) {
+      margin: 0rem;
+      padding: 2rem 1.5rem;
+    }
+  `
+
   return (
-    <Card className={styles.faqCard}>
-      <h2>{heading ?? ""}</h2>
-      <hr></hr>
+    <FaqCardContainer className="bg-white rounded">
+      <h6 className="fw-bold mb-4 text-secondary">{heading ?? ""}</h6>
+      <hr className="mb-4 opacity-100" />
       {qAndAs.map(
         (key, index) =>
           typeof key.disabled === "undefined" && (
-            <div className={styles.faqQA} key={index}>
-              <FaqQandA
+            <div className={`my-3`} key={index}>
+              <FaqQandAButton
                 key={index}
                 question={key.question}
                 answer={key.answer}
-              ></FaqQandA>
+              ></FaqQandAButton>
             </div>
           )
       )}
-    </Card>
+    </FaqCardContainer>
   )
 }

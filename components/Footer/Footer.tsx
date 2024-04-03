@@ -134,14 +134,14 @@ const ResourcesLinks = () => {
 }
 
 const BrowseLinks = () => {
-  const { t } = useTranslation("footer")
+  const { t } = useTranslation("common")
   return (
     <>
       <StyledInternalLink href="/bills">
-        {t("links.browseBills")}
+        {t("navigation.browseBills")}
       </StyledInternalLink>
       <StyledInternalLink href="/testimony">
-        {t("links.browseTestimony")}
+        {t("navigation.browseTestimony")}
       </StyledInternalLink>
     </>
   )
@@ -163,7 +163,7 @@ const OurTeamLinks = () => {
 
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
   const dispatch = useAppDispatch()
-  const { t } = useTranslation("footer")
+  const { t } = useTranslation(["common", "auth"])
   return (
     <>
       {authenticated ? (
@@ -171,17 +171,17 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
           <StyledInternalLink
             href={`${user?.uid ? "/profile?id=" + user?.uid : "/profile"}`}
           >
-            {t("links.accountProfile")}
+            {t("navigation.accountProfile")}
           </StyledInternalLink>
           <StyledInternalLink handleClick={() => signOut()}>
-            {t("links.accountSignOut")}
+            {t("signOut", { ns: "auth" })}
           </StyledInternalLink>
         </>
       ) : (
         <StyledInternalLink
           handleClick={() => dispatch(authStepChanged("start"))}
         >
-          {t("links.accountSignIn")}
+          {t("signIn", { ns: "auth" })}
         </StyledInternalLink>
       )}
     </>
@@ -189,7 +189,7 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
 }
 
 const LearnLinks = () => {
-  const { t } = useTranslation("footer")
+  const { t } = useTranslation(["footer", "common"])
   return (
     <>
       <StyledInternalLink href="/learn/writing-effective-testimony">
@@ -199,28 +199,28 @@ const LearnLinks = () => {
         {t("links.learnLegislators")}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/additional-resources">
-        {t("links.learnResources")}
+        {t("navigation.additionalResources", { ns: "common" })}
       </StyledInternalLink>
     </>
   )
 }
 
 const AboutLinks = () => {
-  const { t } = useTranslation("footer")
+  const { t } = useTranslation("common")
   return (
     <>
       <StyledInternalLink href="/about/mission-and-goals">
-        {t("links.aboutMission")}
+        {t("navigation.missionAndGoals")}
       </StyledInternalLink>
       <StyledInternalLink href="/about/our-team">
-        {t("links.aboutTeam")}
+        {t("team")}
       </StyledInternalLink>
     </>
   )
 }
 
 const PageFooter = (props: PageFooterProps) => {
-  const { t } = useTranslation("footer")
+  const { t } = useTranslation(["footer", "common"])
   return (
     <FooterContainer
       fluid
@@ -239,11 +239,11 @@ const PageFooter = (props: PageFooterProps) => {
             <AccountLinks {...props} />
           </CustomDropdown>
 
-          <CustomDropdown title={t("headers.learn")}>
+          <CustomDropdown title={t("learn", { ns: "common" })}>
             <LearnLinks />
           </CustomDropdown>
 
-          <CustomDropdown title={t("headers.about")}>
+          <CustomDropdown title={t("about", { ns: "common" })}>
             <AboutLinks />
           </CustomDropdown>
 
@@ -251,7 +251,7 @@ const PageFooter = (props: PageFooterProps) => {
             <ResourcesLinks />
           </CustomDropdown>
 
-          <CustomDropdown title={t("headers.team")}>
+          <CustomDropdown title={t("team", { ns: "common" })}>
             <OurTeamLinks />
           </CustomDropdown>
         </Nav>
@@ -265,15 +265,15 @@ const PageFooter = (props: PageFooterProps) => {
           <AccountLinks {...props} />
         </Col>
         <Col>
-          <TextHeader>{t("headers.learn")}</TextHeader>
+          <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
           <LearnLinks />
-          <TextHeader>{t("headers.about")}</TextHeader>
+          <TextHeader>{t("about", { ns: "common" })}</TextHeader>
           <AboutLinks />
         </Col>
         <Col>
           <TextHeader>{t("headers.resources")}</TextHeader>
           <ResourcesLinks />
-          <TextHeader>{t("headers.team")}</TextHeader>
+          <TextHeader>{t("team", { ns: "common" })}</TextHeader>
           <OurTeamLinks />
         </Col>
       </div>

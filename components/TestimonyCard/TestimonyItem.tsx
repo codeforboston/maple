@@ -1,7 +1,6 @@
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { ViewAttachment } from "components/ViewAttachment"
 import { useReportTestimony } from "components/api/report"
-import { flags } from "components/featureFlags"
 import { formUrl } from "components/publish/hooks"
 import { TestimonyContent } from "components/testimony"
 import { useTranslation } from "next-i18next"
@@ -163,13 +162,11 @@ export const TestimonyItem = ({
             </>
           )}
           {/* report */}
-          {flags().reportTestimony && (
-            <Col xs="auto">
-              <FooterButton variant="text" onClick={() => setIsReporting(true)}>
-                Report
-              </FooterButton>
-            </Col>
-          )}
+          <Col xs="auto">
+            <FooterButton variant="text" onClick={() => setIsReporting(true)}>
+              Report
+            </FooterButton>
+          </Col>
         </Row>
       </Stack>
 
