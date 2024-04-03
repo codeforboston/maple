@@ -2,11 +2,15 @@ import { Config } from "@jest/types"
 import BrowserEnvironment from "jest-environment-jsdom"
 import timers from "timers"
 
+interface ConfigTypes {
+  globalConfig: Config.GlobalConfig;
+  projectConfig: Config.ProjectConfig;
+}
 class IntegrationEnvironment extends BrowserEnvironment {
-  constructor(config: Config.ProjectConfig) {
+  constructor(config: ConfigTypes, context) {
     super(
-      Object.assign({}, config, {
-        globals: Object.assign({}, config.globals, {
+      Object.assign({}, { projectConfig: config.projectConfig }, {
+        globalConfig: Object.assign({}, config.globalConfig, {
           // https://github.com/firebase/firebase-js-sdk/issues/3096#issuecomment-637584185
           Uint32Array: Uint32Array,
           Uint8Array: Uint8Array,
@@ -27,7 +31,7 @@ class IntegrationEnvironment extends BrowserEnvironment {
            * */
           Blob: undefined
         })
-      })
+      }), context
     )
   }
 
