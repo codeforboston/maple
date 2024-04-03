@@ -1,10 +1,14 @@
-import { ReactNode, useEffect, useRef } from "react"
-import styles from "./scrolltrack.module.css"
+import React, { ReactNode, useEffect, useRef } from "react"
+import styled from "styled-components"
 
 export type ScrollTrackerContainerProps = {
   className?: string
   children: ReactNode
 }
+
+const ScrollWrapper = styled.div`
+  --scroll-position: 0;
+`
 
 export default function ScrollTrackerContainer({
   className,
@@ -26,12 +30,12 @@ export default function ScrollTrackerContainer({
   }, [])
 
   return (
-    <div
+    <ScrollWrapper
       {...props}
-      className={`${styles.scrollContainer} ${className}`}
+      className={`position-relative top-0 end-0 bottom-0 start-0 bg-secondary ${className}`}
       ref={containerRef}
     >
       {children}
-    </div>
+    </ScrollWrapper>
   )
 }
