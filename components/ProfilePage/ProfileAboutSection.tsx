@@ -10,7 +10,6 @@ export const ProfileAboutSection = ({
 }: {
   profile: Profile
   className?: string
-  isMobile?: boolean
   isOrg: boolean
 }) => {
   const {

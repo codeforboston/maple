@@ -1,119 +1,93 @@
+import { Role } from "components/auth/types"
 import { useTranslation } from "next-i18next"
-import { Button } from "react-bootstrap"
-import { ProfileHook, useProfile } from "../db"
-import { Internal } from "components/links"
+import { Button } from "../bootstrap"
 import styled from "styled-components"
+import { FillButton, GearButton, ToggleButton } from "components/buttons"
+import { Col } from "react-bootstrap"
+import { Story } from "stories/atoms/BaseButton.stories"
+import { Internal } from "components/links"
+import { useProfile, ProfileHook } from "components/db"
+import { FollowButton } from "./FollowButton"
 
-export const StyledButton1 = styled(Button)`
+export const StyledButton = styled(Button).attrs(props => ({
+  className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
+  size: "lg"
+}))`
   height: 34px;
-  width: 116px;
-`
-
-export const StyledButton2 = styled(Button)`
-  &:focus {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  &:hover {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  height: 34px;
-  width: 116px;
+  /* width: 116px; */
 
   @media (max-width: 768px) {
     position: relative;
-    top: -9px;
+    width: 100%;
+    /* top: -9px; */
   }
 `
 
-export const StyledButton3 = styled(Button)`
-  &:focus {
-    color: white;
-    background-color: #1a3185;
-    border-color: white;
-  }
-  &:hover {
-    color: #1a3185;
-    background-color: white;
-    border-color: #1a3185;
-  }
-  height: 34px;
-  width: 116px;
+type Props = {
+  formUpdated: boolean
+  uid: string
+  role: Role
+}
 
-  @media (max-width: 768px) {
-    position: relative;
-    top: -9px;
-  }
-`
+export const ProfileEditToggle = ({ formUpdated, uid, role }: Props) => {
+  const { t } = useTranslation(["editProfile"])
+  return (
+    <FillButton
+      className={`py-1 ml-2 text-decoration-none`}
+      disabled={!!formUpdated}
+      href={`/ profile ? id = ${uid} `}
+      label={role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")}
+    />
+  )
+}
 
-export const EditProfileButton = () => {
+export const EditProfileButton = ({ className }: { className?: string }) => {
   const { t } = useTranslation("profile")
 
   return (
-    <Internal href="/editprofile" className="view-edit-profile">
-      <StyledButton1 className={`btn mb-1 py-1`}>
-        {t("button.editProfile")}
-      </StyledButton1>
+    <Internal
+      href="/editprofile"
+      className={`text-decoration-none text-white d-flex justify-content-center align-items-center col-12 ${className}`}
+    >
+      <FillButton label={t("button.editProfile")} />
     </Internal>
   )
 }
 
-export const MakePublicButton = ({
-  isMobile,
-  isOrg,
+export function ProfileButtonsUser({
   isProfilePublic,
   onProfilePublicityChanged
 }: {
-  isMobile: boolean
-  isOrg: boolean
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
-}) => {
+}) {
   const { t } = useTranslation("editProfile")
-
-  const isWideOrg = isOrg && !isMobile
 
   const actions = useProfile()
 
   const handleSave = async () => {
     await updateProfile({ actions })
   }
-
+  /** Only regular users are allowed to have a private profile. */
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
 
     await updateIsPublic(!isProfilePublic)
     onProfilePublicityChanged(!isProfilePublic)
   }
-
   return (
-    <>
-      {isProfilePublic ? (
-        <div className={isWideOrg ? `ms-1` : ``}>
-          <StyledButton2
-            className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
-              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isWideOrg ? "" : "w-100"}`}
-            onClick={handleSave}
-          >
-            {t("forms.makePrivate")}
-          </StyledButton2>
-        </div>
-      ) : (
-        <div className={isWideOrg ? `ms-1` : ``}>
-          <StyledButton3
-            className={`btn-sm d-flex justify-content-center ms-auto py-1 ${
-              isProfilePublic ? "btn-outline-secondary" : "btn-secondary"
-            } ${isWideOrg ? "" : "w-100"}`}
-            onClick={handleSave}
-          >
-            {t("forms.makePublic")}
-          </StyledButton3>
-        </div>
-      )}
-    </>
+    <div className={`d-grid gap-2 col-12 m-3`}>
+      <EditProfileButton className={`py-1`} />
+      <ToggleButton
+        toggleState={isProfilePublic || false}
+        stateTrueLabel={t("forms.makePrivate")}
+        stateFalseLabel={t("forms.makePublic")}
+        onClick={handleSave}
+        className={`py-1`}
+      />
+    </div>
   )
+}
+export function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
+  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
 }

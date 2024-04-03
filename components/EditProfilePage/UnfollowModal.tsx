@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Button, Modal, Stack } from "../bootstrap"
 import { formatBillId } from "../formatting"
 import { useTranslation } from "next-i18next"
+import { FillButton, OutlineButton } from "components/buttons"
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   handleUnfollowClick: (
@@ -20,14 +21,6 @@ export type UnfollowModalConfig = {
   type: string
   typeId: string
 }
-
-const StyledButton = styled(Button)`
-  width: 110px;
-`
-
-const StyledModalBody = styled(Modal.Body)`
-  padding: 0.8rem;
-`
 
 export default function UnfollowItem({
   handleUnfollowClick,
@@ -56,30 +49,26 @@ export default function UnfollowItem({
       <Modal.Header closeButton>
         <Modal.Title id="unfollow-modal">{t("follow.unfollow")}</Modal.Title>
       </Modal.Header>
-      <StyledModalBody className={`ms-auto me-auto`}>
-        <Stack>
+      <Modal.Body className={`ms-auto me-auto p-3 `}>
+        <div className={`d-flex flex-wrap text-center px-5`}>
           {t("confirmation.unfollowMessage")}
           {handleTopic()}?
-        </Stack>
-        <Stack className={`mt-4`} direction={`horizontal`}>
-          <StyledButton
-            className={`
-                btn btn-sm btn-outline-secondary ms-auto py-1`}
+        </div>
+        <div className={`d-flex gap-3 px-2 col-6 mt-4 mr-4`}>
+          <OutlineButton
+            className={`col-3 ms-auto`}
             onClick={onUnfollowClose}
-          >
-            {t("confirmation.no")}
-          </StyledButton>
-          <StyledButton
-            className={`
-                btn btn-sm ms-3 me-auto py-1`}
+            label={t("confirmation.no")}
+          />
+          <FillButton
+            className={`col-3 me-auto`}
             onClick={async () => {
               handleUnfollowClick(unfollowItem)
             }}
-          >
-            {t("confirmation.yes")}
-          </StyledButton>
-        </Stack>
-      </StyledModalBody>
+            label={t("confirmation.yes")}
+          />
+        </div>
+      </Modal.Body>
     </Modal>
   )
 }

@@ -1,98 +1,100 @@
 {
-    "header": "Edit Profile",
-    "setting": "Settings",
-    "privacySetting": "Privacy Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "enable": "Enable",
-    "enabled": "Enabled",
-    "disable": "Disable",
-    "disabled": "Disabled",
-    "viewMyProfile": "View My Profile",
-    "viewOrgProfile": "View My Organization",
-    "saveChanges":"Save Personal Information",
-    "tooltipText": "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way.",
-    "tabs":{
-        "personalInfo":"Personal Information",
-        "testimonies": "Testimonies",
-        "following": "Following"
-    },
-    "content":{
-        "reqPending": "Your request to be an organization account is pending approval",
-        "uplaodOrgImg": "Input an image for your organization's profile",
-        "error": "An error occured. Please refresh the page."
-    },
-    "follow":{
-        "bills": "Bills You Follow",
-        "orgs": "Organizations You Follow",
-        "unfollow": "Unfollow"
-    },
-    "confirmation":{
-        "unfollowMessage": "Are you sure you want to unfollow",
-        "yes": "Yes",
-        "no": "No"
-    },
-    "email":{
-        "frequencyQuery": "How often would you like to receive emails?",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly"
-    },
-    "legislator":{
-        "representative": "Representative",
-        "searchRepresentative": "Search your representative",
-        "senator": "Senator",
-        "searchSenator": "Search your senator",
-        "yourLegislators": "Your Legislators",
-        "politeWords": "Please use the ",
-        "findTool": "find your legislator tool",
-        "findToolTip": " and select your State Representative and Senator."
-    },
-    "forms": {
-        "generalInfo": "General Information",
-        "fullName": "Full Name",
-        "orgName" : "Organization Name",
-        "nickname": "Nickname",
-        "makePublic": "Make Public",
-        "makePrivate": "Make Private",
-        "errNameRequired": "Name is required",
-        "errOrgNameRequired" : "Organization Name is required",
-        "errEmptyAndMinLength": "Should have at least two characters",
-        "aboutYou": "Write something about yourself",
-        "aboutYouTip":"What should you write?",
-        "selectOrgCategory": "Select an organization cateogry",
-        "notification": "Notifications",
-        "notificationText": "Would you like to receive updates about bills/organizations you follow through email?",
-        "notificationFrequencyText": "How often would you like to receive these updates?"
-    },
-    "socialLinks": {
-        "socialMedia": "Social Media",
-        "twitter": "Twitter Username",
-        "linkedIn": "LinkedIn Url",
-        "instagram": "Instagram Username",
-        "facebook": "Facebook Link"
-    },
-    "contact":{
-        "contactInfo": "Contact Information",
-        "website": "Website",
-        "email": "Contact Email",
-        "phone": "Contact Phone Number",
-        "phoneLenWarning1": "Your phone number should be at least 10 numbers long",
-        "phoneLenWarning2": "Your phone number can not be more than 10 numbers long",
-        "phoneNumWarning": "Please enter a phone number that only consists of numbers"
-    },
-    "testimonies":{
-        "published": "Published Testimonies",
-        "draft": "Draft Testimonies",
-        "faq": "Testimony FAQ",
-        "edit": "Editing Testimony",
-        "editTip1": "Editing testimony is allowed but users will be able to see edit history.",
-        "editTip2": "Provide an edit reason to inform your fellow users on why you changed a particular stance/message."
-    },
-    "privacyText":{
-        "organization": "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private.",
-        "pendingUpgrade": "Your profile is private until your request to be an Organization account is approved.",
-        "publicUser": "Your profile is currently public. Others can view your profile page.",
-        "privateUser": "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden."
-    }
+  "header": "Edit Profile",
+  "setting": "Settings",
+  "privacySetting": "Privacy Settings",
+  "save": "Save",
+  "cancel": "Cancel",
+  "enable": "Enable",
+  "enabled": "Enabled",
+  "disable": "Disable",
+  "disabled": "Disabled",
+  "viewMyProfile": "View My Profile",
+  "viewOrgProfile": "View My Organization",
+  "saveChanges": "Save Personal Information",
+  "tooltipText": "At MAPLE, people are key. We want to foster a community as each person provides public testimony to empower policy change. By providing more information about yourself, it helps legislators and others see what your goals are and connect in an impactful way.",
+  "tabs": {
+    "personalInfo": "Personal Information",
+    "testimonies": "Testimonies",
+    "following": "Following"
+  },
+  "content": {
+    "reqPending": "Your request to be an organization account is pending approval",
+    "uplaodOrgImg": "Input an image for your organization's profile",
+    "error": "An error occured. Please refresh the page."
+  },
+  "follow": {
+    "bills": "Bills You Follow",
+    "orgs": "Organizations You Follow",
+    "unfollow": "Unfollow"
+  },
+  "confirmation": {
+    "unfollowMessage": "Are you sure you want to unfollow",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "email": {
+    "frequencyQuery": "How often would you like to receive emails?",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  },
+  "legislator": {
+    "representative": "Representative",
+    "searchRepresentative": "Search your representative",
+    "senator": "Senator",
+    "searchSenator": "Search your senator",
+    "yourLegislators": "Your Legislators",
+    "politeWords": "Please use the ",
+    "findTool": "find your legislator tool",
+    "findToolTip": " and select your State Representative and Senator."
+  },
+  "forms": {
+    "generalInfo": "General Information",
+    "fullName": "Full Name",
+    "orgName": "Organization Name",
+    "nickname": "Nickname",
+    "makePublic": "Make Public",
+    "makePrivate": "Make Private",
+    "errNameRequired": "Name is required",
+    "errOrgNameRequired": "Organization Name is required",
+    "errEmptyAndMinLength": "Should have at least two characters",
+    "aboutYou": "Write something about yourself",
+    "aboutYouTip": "What should you write?",
+    "selectOrgCategory": "Select an organization cateogry",
+    "notification": "Notifications",
+    "notificationText": "Would you like to receive updates about bills/organizations you follow through email?",
+    "notificationFrequencyText": "How often would you like to receive these updates?"
+  },
+  "socialLinks": {
+    "socialMedia": "Social Media",
+    "twitter": "Twitter Username",
+    "linkedIn": "LinkedIn Url",
+    "instagram": "Instagram Username",
+    "facebook": "Facebook Link"
+  },
+  "contact": {
+    "contactInfo": "Contact Information",
+    "website": "Website",
+    "email": "Contact Email",
+    "phone": "Contact Phone Number",
+    "phoneLenWarning1": "Your phone number should be at least 10 numbers long",
+    "phoneLenWarning2": "Your phone number can not be more than 10 numbers long",
+    "phoneNumWarning": "Please enter a phone number that only consists of numbers"
+  },
+  "testimonies": {
+    "published": "Published Testimonies",
+    "draft": "Draft Testimonies",
+    "faq": "Testimony FAQ",
+    "edit": "Editing Testimony",
+    "editTip1": "Editing testimony is allowed but users will be able to see edit history.",
+    "editTip2": "Provide an edit reason to inform your fellow users on why you changed a particular stance/message."
+  },
+  "privacyText": {
+    "organization": "Your profile is set to public. Others can view your profile page. Organization accounts cannot set their profile to private.",
+    "pendingUpgrade": "Your profile is private until your request to be an Organization account is approved.",
+    "publicUser": "Your profile is currently public. Others can view your profile page.",
+    "privateUser": "Your profile is currently private. Your name is still associated with published testimonies but your profile page is hidden.",
+    "admin": "Your profile is currently public. Others can view your profile page. Admin accounts cannot set their profile to private.",
+    "default": "The publicity of your profile is unknown. Please contact the admin for more information."
+  }
 }
