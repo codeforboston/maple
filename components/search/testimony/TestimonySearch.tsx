@@ -112,8 +112,7 @@ const Layout = () => {
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          authorRole: role,
-          private: ["false"]
+          authorRole: role
         }
       }
     })

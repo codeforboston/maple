@@ -19,8 +19,9 @@ export const {
       { name: "authorUid", type: "string", facet: false },
       { name: "authorRole", type: "string", facet: true },
       { name: "authorDisplayName", type: "string", facet: true },
+      { name: "fullName", type: "string", facet: false },
       { name: "version", type: "int32", facet: false },
-      { name: "private", type: "bool", facet: false },
+      { name: "public", type: "bool", facet: false },
       { name: "publishedAt", type: "int64", facet: false },
       { name: "updatedAt", type: "int64", facet: false }
     ],
@@ -46,7 +47,7 @@ export const {
       publishedAt: testimony.publishedAt.toMillis(),
       updatedAt: testimony.updatedAt.toMillis(),
       fullName: testimony.fullName,
-      private: testimony.private
+      public: testimony.public
     }
     return TestimonySearchRecord.check(record)
   }

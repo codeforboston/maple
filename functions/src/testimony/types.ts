@@ -36,7 +36,7 @@ export const Testimony = withDefaults(
     authorRole: Role,
     billTitle: RtString,
     version: Number,
-    private: Boolean,
+    public: Boolean,
     publishedAt: InstanceOf(Timestamp),
     updatedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),
@@ -52,7 +52,7 @@ export const Testimony = withDefaults(
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
     updatedAt: Timestamp.fromMillis(0),
-    private: false,
+    public: true,
     authorDisplayName: "Anonymous",
     fullName: "Anonymous",
     billTitle: ""
@@ -80,7 +80,7 @@ export const TestimonySearchRecord = R({
   authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
-  private: Boolean,
+  public: Boolean,
   publishedAt: Number,
   updatedAt: Number,
   fullName: RtString
