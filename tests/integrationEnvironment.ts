@@ -7,10 +7,11 @@ interface ConfigTypes {
   projectConfig: Config.ProjectConfig;
 }
 class IntegrationEnvironment extends BrowserEnvironment {
-  constructor(config: ConfigTypes, context) {
-    super(
-      Object.assign({}, { projectConfig: config.projectConfig }, {
-        globalConfig: Object.assign({}, config.globalConfig, {
+  constructor({ globalConfig, projectConfig }: ConfigTypes, context) {
+    super({ globalConfig,
+      projectConfig: {
+        ...projectConfig,
+        globals: Object.assign({}, projectConfig.globals, {
           // https://github.com/firebase/firebase-js-sdk/issues/3096#issuecomment-637584185
           Uint32Array: Uint32Array,
           Uint8Array: Uint8Array,
@@ -31,7 +32,7 @@ class IntegrationEnvironment extends BrowserEnvironment {
            * */
           Blob: undefined
         })
-      }), context
+      }}, context
     )
   }
 
