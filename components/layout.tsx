@@ -1,6 +1,6 @@
-import Head from "next/head"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import Head from "next/head"
+import React, { FC, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import PageFooter from "./Footer/Footer"
@@ -10,7 +10,6 @@ import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
-import styles from "./layout.module.css"
 
 export type LayoutProps = {
   title?: string
@@ -32,17 +31,48 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
         <title>{formattedTitle}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.pageContainer}>
+      <PageContainer>
         <TopNav />
         <AuthModal />
-        <div className={styles.content}>{children}</div>
+        <div className={`col`}>{children}</div>
         <PageFooter
           authenticated={authenticated}
           user={user as any}
           signOut={signOutAndRedirectToHome}
         />
-      </div>
+      </PageContainer>
     </>
+  )
+}
+
+export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
+  children
+}) => {
+  return <div className={`vh-100 d-flex flex-column`}>{children}</div>
+}
+
+const NavBarBoxContainer: FC<
+  React.PropsWithChildren<{ className?: string }>
+> = ({ children, className }) => {
+  return (
+    <div
+      className={`d-flex flex-row, align-items-start justify-content-between w-100`}
+    >
+      {children}
+    </div>
+  )
+}
+
+const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className
+}) => {
+  return (
+    <div
+      className={`col d-flex justify-content-start align-items-center ${className}`}
+    >
+      {children}
+    </div>
   )
 }
 
@@ -69,8 +99,8 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       data-bs-theme="dark"
     >
       <Container fluid>
-        <div className={styles.navbar_boxes_container}>
-          <div className={styles.navbar_box}>
+        <NavBarBoxContainer>
+          <NavBarBox>
             <Navbar expand={false} expanded={isExpanded}>
               <Navbar.Brand>
                 <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
@@ -204,9 +234,21 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 </Nav>
               </Navbar.Collapse>
             </Navbar>
-          </div>
-          <div className={sticky ? "me-2 w-100 h-100 flex" : styles.navbar_box}>
-            <div className={sticky ? styles.center_menu : ""}>
+          </NavBarBox>
+          <div
+            className={
+              sticky
+                ? "me-2 w-100 h-100 flex"
+                : `col d-flex justify-content-start align-items-center`
+            }
+          >
+            <div
+              className={
+                sticky
+                  ? `position-absolute top-0 start-50 z-1 translate-middle-x`
+                  : ""
+              }
+            >
               <Nav.Link href="/" className="py-0 px-2 w-100">
                 {sticky ? (
                   <Image
@@ -220,18 +262,18 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </Nav.Link>
             </div>
           </div>
-          <div className={styles.navbar_box}>
+          <NavBarBox className={`justify-content-end`}>
             <ProfileLink
               role={claims?.role}
               fullName={profile?.fullName}
               sticky={sticky}
             />
-          </div>
-        </div>
+          </NavBarBox>
+        </NavBarBoxContainer>
       </Container>
 
       {sticky && !authenticated ? (
-        <SignInWithButton className={styles.mobile_nav_auth} />
+        <SignInWithButton className={`w-100`} />
       ) : null}
     </Navbar>
   )
