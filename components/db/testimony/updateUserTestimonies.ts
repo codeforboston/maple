@@ -1,27 +1,32 @@
-import { collection, getDocs, writeBatch } from "firebase/firestore"
+import {
+  collection,
+  collectionGroup,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+  writeBatch
+} from "firebase/firestore"
 import { firestore } from "../../firebase"
 
 // Updates the displayName for all testimonies under specified user
 export const updateUserDisplayNameTestimonies = async (
   uid: string,
   displayName: string,
-  fullName: string,
-  isPublic?: boolean
+  fullName: string
 ) => {
   const batch = writeBatch(firestore)
   return getAllTestimony(uid).then(({ publishedTestimony, draftTestimony }) => {
     publishedTestimony.forEach(doc =>
       batch.update(doc.ref, {
         authorDisplayName: displayName,
-        fullName: fullName,
-        public: isPublic
+        fullName: fullName
       })
     )
     draftTestimony.forEach(doc =>
       batch.update(doc.ref, {
         authorDisplayName: displayName,
-        fullName: fullName,
-        public: isPublic
+        fullName: fullName
       })
     )
     batch.commit().then(result => result)

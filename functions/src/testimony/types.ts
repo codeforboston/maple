@@ -1,5 +1,4 @@
 import {
-  Boolean,
   InstanceOf,
   Literal as L,
   Number,
@@ -36,9 +35,7 @@ export const Testimony = withDefaults(
     authorRole: Role,
     billTitle: RtString,
     version: Number,
-    public: Boolean,
     publishedAt: InstanceOf(Timestamp),
-    updatedAt: InstanceOf(Timestamp),
     representativeId: Optional(RtString),
     senatorId: Optional(RtString),
     senatorDistrict: Optional(RtString),
@@ -51,8 +48,6 @@ export const Testimony = withDefaults(
     // ID is backfilled
     id: "unknown",
     publishedAt: Timestamp.fromMillis(0),
-    updatedAt: Timestamp.fromMillis(0),
-    public: true,
     authorDisplayName: "Anonymous",
     fullName: "Anonymous",
     billTitle: ""
@@ -80,9 +75,7 @@ export const TestimonySearchRecord = R({
   authorRole: RtString,
   authorDisplayName: RtString,
   version: Number,
-  public: Boolean,
   publishedAt: Number,
-  updatedAt: Number,
   fullName: RtString
 })
 export type TestimonySearchRecord = Static<typeof TestimonySearchRecord>

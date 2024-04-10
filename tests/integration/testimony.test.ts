@@ -160,7 +160,7 @@ describe("publishTestimony", () => {
     expect(publication?.version).toBe(1)
     expect(publication.publishedAt).toBeDefined()
     expect(publication.authorUid).toEqual(user.uid)
-    expect([fullName, "Anonymous", "private"]).toContain(
+    expect([fullName, "Anonymous", "<private user>"]).toContain(
       publication.authorDisplayName
     )
     expect(publication).toMatchObject(draft)
