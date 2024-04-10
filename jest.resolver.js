@@ -1,4 +1,4 @@
-// jest.resolver.js
+// Upgrading to Jest 28+ introduced an error ESM imports: https://github.com/microsoft/accessibility-insights-web/pull/5421#issuecomment-1109168149
 module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(path, {
@@ -10,20 +10,14 @@ module.exports = (path, options) => {
         "@firebase/analytics",
         "@firebase/app",
         "@firebase/auth",
-        "@firebase/component",
-        "@firebase/functions",
-        "@firebase/installations",
-        "@firebase/logger",
         "@firebase/storage",
         "@firebase/functions",
         "@firebase/auth-compat",
         "@firebase/app-compat",
         "@firebase/compat",
-        "@firebase/auth-compat",
         "@firebase/firestore",
         "@firebase/firestore-compat",
         "@firebase/functions-compat",
-        "@firebase/messaging",
         "@firebase/util",
         "firebase",
         "firebase/admin",
@@ -36,7 +30,6 @@ module.exports = (path, options) => {
       ])
 
       if (pkgNamesToTarget.has(pkg.name)) {
-        // console.log(">>>", pkg.name)
         delete pkg["exports"]
         delete pkg["module"]
       }

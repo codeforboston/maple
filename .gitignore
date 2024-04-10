@@ -80,3 +80,7 @@ build-storybook.log
 /token
 
 cert.txt
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

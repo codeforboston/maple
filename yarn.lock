@@ -3948,7 +3948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.42.1":
+"@playwright/test@npm:^1.43.0":
   version: 1.43.0
   resolution: "@playwright/test@npm:1.43.0"
   dependencies:
@@ -10405,7 +10405,7 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": ^6.5.1
     "@fortawesome/free-solid-svg-icons": ^6.5.1
     "@fortawesome/react-fontawesome": ^0.2.0
-    "@playwright/test": ^1.42.1
+    "@playwright/test": ^1.43.0
     "@popperjs/core": ^2.11.8
     "@react-aria/ssr": ^3.2.0
     "@react-aria/utils": ^3.13.1

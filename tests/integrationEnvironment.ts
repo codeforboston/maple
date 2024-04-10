@@ -7,8 +7,8 @@ interface ConfigTypes {
   projectConfig: Config.ProjectConfig;
 }
 class IntegrationEnvironment extends BrowserEnvironment {
-  constructor({ globalConfig, projectConfig }: ConfigTypes, context) {
-    super({ globalConfig,
+  constructor({ globalConfig, projectConfig }: ConfigTypes, context: any) {
+    super({ ...globalConfig,
       projectConfig: {
         ...projectConfig,
         globals: Object.assign({}, projectConfig.globals, {

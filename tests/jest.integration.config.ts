@@ -4,14 +4,13 @@ import { runAgainstEmulators } from "../scripts/configure"
 
 runAgainstEmulators()
 
-const esModules = ['@firebase', 'firebase', '@firebase/analytics'].join('|');
-
 const config: Config.InitialOptions = {
   clearMocks: true,
   testEnvironment: "./tests/integrationEnvironment.ts",
   rootDir: "..",
   testPathIgnorePatterns: [
     "/node_modules/",
+    "<rootDir>/tests/e2e",
     "<rootDir>/tests/system",
     "<rootDir>/tests/seed",
     "<rootDir>/functions"
