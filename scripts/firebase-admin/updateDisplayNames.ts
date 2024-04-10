@@ -18,14 +18,13 @@ export const script: Script = async ({ db }) => {
         .then(result => result.docs)
 
       const fullName = data.fullName ?? "Anonymous"
-      const displayName = data.public ? fullName : "private"
+      const displayName = data.public ? fullName : "<private user>"
 
       for (const doc of publishedTestimony) {
         writer.update(doc.ref, {
           authorDisplayName: displayName,
           fullName: fullName,
-          updatedAt: Timestamp.now(),
-          public: data.public ?? false
+          updatedAt: Timestamp.now()
         })
       }
     } catch (error) {

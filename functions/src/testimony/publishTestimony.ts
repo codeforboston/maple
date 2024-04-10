@@ -48,7 +48,6 @@ type PublishInfo = {
   version: number
   editReason?: string
   publishedAt: Timestamp
-  updatedAt: Timestamp
 }
 
 class PublishTestimonyTransaction {
@@ -92,8 +91,7 @@ class PublishTestimonyTransaction {
       ...publishInfo,
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
-      fullName: this.profile?.fullName ?? "Anonymous",
-      public: this.profile?.public ?? true
+      fullName: this.profile?.fullName ?? "Anonymous"
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -220,11 +218,7 @@ class PublishTestimonyTransaction {
     const version = await this.getNextPublicationVersion(),
       reason = this.draft.editReason
 
-    const info: PublishInfo = {
-      version,
-      publishedAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
-    }
+    const info: PublishInfo = { version, publishedAt: Timestamp.now() }
 
     if (version > 1) {
       if (!reason) throw fail("invalid-argument", "Edit reason is required.")
@@ -280,7 +274,7 @@ class PublishTestimonyTransaction {
   private getDisplayName(): string {
     // Check if user has profile and then if they're private
     if (this.profile) {
-      return this.profile.public ? this.profile.fullName : "private"
+      return this.profile.public ? this.profile.fullName : "<private user>"
     } else {
       return "Anonymous"
     }

@@ -40,13 +40,11 @@ export const createMockTestimony = (
     billTitle: "An act" + loremIpsum({ count: 2, units: "words" }),
     version: 2,
     publishedAt: Timestamp.fromDate(new Date()),
-    updatedAt: Timestamp.fromDate(new Date()),
     billId: billId ?? "H1002",
     court: 192,
     position: "oppose",
     content: loremIpsum({ count: 5, units: "words" }),
-    fullName: "Anonymous",
-    public: true
+    fullName: "Anonymous"
   }
   return testimony
 }
