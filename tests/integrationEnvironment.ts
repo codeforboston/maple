@@ -10,7 +10,7 @@ class IntegrationEnvironment extends BrowserEnvironment {
   constructor({ globalConfig, projectConfig }: ConfigTypes, context: any) {
     super(
       {
-        ...globalConfig,
+        globalConfig,
         projectConfig: {
           ...projectConfig,
           globals: Object.assign({}, projectConfig.globals, {
