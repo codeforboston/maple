@@ -18,7 +18,7 @@ const config: Config.InitialOptions = {
   setupFilesAfterEnv: ["<rootDir>/tests/setup.integration.ts"],
   modulePaths: ["<rootDir>"],
   reporters: ["default", ["jest-summary-reporter", { failuresOnly: false }]],
-  resolver: '<rootDir>/jest.resolver.js',
+  resolver: "<rootDir>/jest.resolver.js"
 }
 
 // See https://nextjs.org/docs/advanced-features/compiler#jest
