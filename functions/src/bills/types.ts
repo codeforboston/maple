@@ -83,7 +83,7 @@ export const Bill = withDefaults(
     opposeCount: 0,
     latestTestimonyAt: MISSING_TIMESTAMP,
     nextHearingAt: MISSING_TIMESTAMP,
-    fetchedAt: Timestamp.fromMillis(0),
+    fetchedAt: MISSING_TIMESTAMP,
     history: [],
     similar: []
   }
