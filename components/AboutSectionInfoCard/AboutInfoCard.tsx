@@ -1,5 +1,5 @@
-import { Button, Card, Col, Container } from "react-bootstrap"
-import styles from "./AboutInfoCard.module.css"
+import { Card, Col } from "react-bootstrap"
+import styled from "styled-components"
 
 export type AboutInfoCardProps = {
   title: string
@@ -7,19 +7,27 @@ export type AboutInfoCardProps = {
   options?: {}
 }
 
+const StyledCardHeader = styled(Card.Header)`
+  transform: translateY(-40%);
+`
+
+const StyledCardBody = styled(Card.Body)`
+  height: fit-content;
+`
+
 export default function AboutInfoCard({ title, bodytext }: AboutInfoCardProps) {
   return (
     <Col className="my-3">
       <Card className="h-100 bg-white">
-        <Card.Header
-          as="h3"
-          className={`text-center align-self-center text-white rounded-0 ${styles.cardHeader}`}
+        <StyledCardHeader
+          forwardedAs="h3"
+          className="text-center align-self-center bg-info text-white rounded-0 border-0 mb-n3 overflow-visible"
         >
           {title}
-        </Card.Header>
-        <Card.Body className={`${styles.cardBody}`}>
-          <p className={`${styles.cardBodyParagraph}`}>{bodytext}</p>
-        </Card.Body>
+        </StyledCardHeader>
+        <StyledCardBody>
+          <p className={`h-100 mb-2 overflow-visible`}>{bodytext}</p>
+        </StyledCardBody>
       </Card>
     </Col>
   )

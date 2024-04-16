@@ -211,16 +211,14 @@ function createValidatedDraft(authorUid: string, billId: string) {
     id: "unknown",
     authorRole: "user",
     billTitle: "",
-    fullName: "Anonymous",
-    public: true,
-    updatedAt: Timestamp.fromMillis(0)
+    fullName: "Anonymous"
   }
 
   const validation = Testimony.validateWithDefaults(draft)
 
   expect(validation.success).toBeTruthy()
 
-  const { publishedAt, updatedAt, ...rest } = draft
+  const { publishedAt, ...rest } = draft
 
   return { draftId, draft: rest }
 }

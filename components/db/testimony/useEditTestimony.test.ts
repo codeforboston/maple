@@ -26,7 +26,7 @@ beforeEach(async () => {
 })
 
 let draft: DraftTestimony,
-  testimony: Omit<Testimony, "publishedAt" | "id" | "updatedAt">,
+  testimony: Omit<Testimony, "publishedAt" | "id">,
   updatedDraft: typeof draft,
   updatedTestimony: typeof testimony
 beforeEach(() => {
@@ -46,7 +46,6 @@ beforeEach(() => {
     fullName: "Anonymous",
     court: court,
     position: draft.position,
-    public: true,
     version: 1
   }
   updatedDraft = { ...draft, content: "update", position: "oppose" }

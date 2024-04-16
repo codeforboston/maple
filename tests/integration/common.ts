@@ -176,11 +176,9 @@ export const createNewTestimony = async (uid: string, billId: string) => {
     version: 2,
     billId,
     publishedAt: testTimestamp.now(),
-    updatedAt: testTimestamp.now(),
     court: 192,
     position: "oppose",
-    content: "testimony content",
-    public: true
+    content: "testimony content"
   }
 
   try {
