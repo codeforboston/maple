@@ -1,14 +1,17 @@
+import AdditionalResources from "components/AdditionalResources/AdditionalResources"
 import { Container } from "../../components/bootstrap"
 import { createPage } from "../../components/page"
-import CommunicatingWithLegislators from "../../components/CommunicatingWithLegislators/CommunicatingWithLegislators"
+import Legislative from "components/Legislative/Legislative"
 import { createGetStaticTranslationProps } from "components/translations"
 
+// TODO: Change
 export default createPage({
   title: "How To Have Impact Through Legislative Testimony",
   Page: () => {
     return (
       <Container>
-        <CommunicatingWithLegislators />
+        <Legislative />
+        <AdditionalResources/>
       </Container>
     )
   }
