@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Container, Navbar, Nav } from "react-bootstrap"
+import { useState } from "react"
+import { Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import {
   Role,
@@ -8,13 +8,7 @@ import {
   useAuth
 } from "../auth"
 import { NavLink } from "../Navlink"
-// import styles from "./ProfileLink.module.css"
-import styled from "styled-components";
-const ProfileLinkImageWrapper = styled(Image)`
-  @media only screen and (min-width: 992px) {
-    margin: 0 10px;
-  }
-`;
+
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
     case "user":
@@ -26,16 +20,6 @@ const greeting = (role: Role, fullName?: string) => {
       return `Hello, Admin ${fullName}`
   }
 }
-
-const ProfileMenuItem = (
-  label: string,
-  href: string,
-  handleClick: () => void
-) => (
-  <NavLink className={"navLink-primary"} href={href} handleClick={handleClick}>
-    {label}
-  </NavLink>
-)
 
 type ProfileLinkProps = {
   fullName?: string
@@ -64,12 +48,8 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
         <>
           <Navbar.Brand onClick={toggleNav}>
             <Nav.Link className="p-0 text-white">
-              {/* <Image
-                className={styles.profileLinkImage}
-                src="/profile-icon.svg"
-                alt="profile icon"
-              ></Image> */}
-              <ProfileLinkImageWrapper
+              <Image
+                className="mx-2"
                 src="/profile-icon.svg"
                 alt="profile icon"
               />
