@@ -1,7 +1,5 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Modal, Row, Stack } from "../bootstrap"
-import styles from "./TermsOfService.module.css"
-import SVG from "react-inlinesvg"
 import { External } from "components/links"
 import { NavLink } from "../Navlink"
 import { useTranslation } from "next-i18next"
@@ -17,7 +15,7 @@ export default function TermsOfServiceModal({
       <Modal.Header closeButton>
         <Modal.Title id="tos-modal">{t("privacyAndTerms")}</Modal.Title>
       </Modal.Header>
-      <Modal.Body className={styles.text}>
+      <Modal.Body>
         <Col md={12} className="mx-auto">
           <Stack gap={3} className="mb-4">
             <Row className="align-items-center">
@@ -25,11 +23,11 @@ export default function TermsOfServiceModal({
                 <h4>{t("privacyPolicy")}</h4>
               </Col>
               <Col md={3}>
-                <External className={styles.link} href="/policies">
+                <External className={`text-decoration-none`} href="/policies">
                   {t("readMore")}
                 </External>
               </Col>
-              <hr className={styles.hr} />
+              <hr className={`border border-5 border-black`} />
               <Col md={10}>
                 <ul>
                   <li>{t("establishedPolicy")}</li>
@@ -44,12 +42,12 @@ export default function TermsOfServiceModal({
                 <h4>{t("TOS")}</h4>
               </Col>
               <Col md={3}>
-                <External className={styles.link} href="/policies">
+                <External className={`text-decoration-none`} href="/policies">
                   {t("readMore")}
                 </External>
               </Col>
 
-              <hr className={styles.hr} />
+              <hr className={`border border-5 border-black`} />
               <Col md={10}>
                 <ul>
                   <li>{t("userUnderstands")}</li>
@@ -62,17 +60,17 @@ export default function TermsOfServiceModal({
             </Row>
 
             <Col>
-              <p className={styles.warning}>{t("agreeRequired")}</p>
+              <p className={`fw-bold`}>{t("agreeRequired")}</p>
               <Row>
                 <Col md={6}>
-                  <Button onClick={onAgree} className={styles.button} size="sm">
+                  <Button onClick={onAgree} className={`w-100`} size="sm">
                     {t("agreeSignUp")}
                   </Button>
                 </Col>
                 <Col md={6}>
                   <Button
                     onClick={onHide}
-                    className={styles.button}
+                    className={`w-100`}
                     size="sm"
                     variant="outline-primary"
                   >
@@ -84,7 +82,7 @@ export default function TermsOfServiceModal({
                 <NavLink
                   href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
                   other={{
-                    className: `${styles.subscribe}`,
+                    className: `text-center fs-5 mt-4 text-secondary`,
                     target: "_blank",
                     rel: "noopener noreferrer"
                   }}

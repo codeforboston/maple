@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { Card } from "../bootstrap"
+import { FC, PropsWithChildren } from "react"
 
 const StyledHeader = styled(Card.Header)`
   transform: translate(0);
@@ -19,7 +20,10 @@ const StyledHeader = styled(Card.Header)`
   }
 `
 
-const AboutPagesCard = ({ title, children }) => {
+const AboutPagesCard: FC<PropsWithChildren<{ title: string }>> = ({
+  title,
+  children
+}) => {
   return (
     <Card className="m-5 rounded-3 bg-white">
       <StyledHeader
