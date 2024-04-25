@@ -11,7 +11,7 @@ export default createPage({
     return (
       <Container>
         <Legislative />
-        <AdditionalResources/>
+        <AdditionalResources />
       </Container>
     )
   }
