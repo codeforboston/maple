@@ -33,9 +33,11 @@
     "forOrganizations": "For Organizations",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
+    "legislativeProcess": "About the MA Legislative Process",
     "missionAndGoals": "Our Mission & Goals",
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
-    "supportMaple": "How to Support MAPLE"
+    "supportMaple": "How to Support MAPLE",
+    "toWriteEffectiveTestimony": "To Write Effective Testimony"
   },
   "newcomer" : "New to MAPLE? For extra support, check",
   "notInCommittee": "Bill not currently in committee",
