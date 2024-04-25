@@ -132,26 +132,18 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   <NavDropdown className={"navLink-primary"} title={t("learn")}>
                     <NavDropdown.Item>
                       <NavLink
-                        href="/learn/basics-of-testimony"
+                        href="/learn/to-write-effective-testimony"
                         handleClick={closeNav}
                       >
-                        {t("navigation.learnAboutTestimony")}
+                        {t("navigation.toWriteEffectiveTestimony")}
                       </NavLink>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <NavLink
-                        href="/learn/communicating-with-legislators"
+                        href="/learn/legislative-process"
                         handleClick={closeNav}
                       >
-                        {t("navigation.communicatingWithLegislators")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/learn/additional-resources"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.additionalResources")}
+                        {t("navigation.legislativeProcess")}
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
