@@ -249,12 +249,20 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 {/* {sticky ? ( */}
                 {isMobile ? (
                   <Image
-                    src="/white-tree.svg"
+                    // src="/white-tree.svg"
+                    src="/Logo2024.png"
                     alt="logo"
                     className="w-100"
-                  ></Image>
+                    width="60"
+                    height="60"
+                  />
                 ) : (
-                  <Image src="/nav-logo.svg" alt="logo"></Image>
+                  <Image
+                    src="/Logo2024.png"
+                    alt="logo"
+                    width="80"
+                    height="80"
+                  />
                 )}
               </Nav.Link>
             </div>
