@@ -24,10 +24,16 @@ const greeting = (role: Role, fullName?: string) => {
 type ProfileLinkProps = {
   fullName?: string
   role?: Role
-  sticky: boolean
+  // sticky: boolean
+  isMobile: boolean
 }
 
-const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
+// const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
+const ProfileLink = ({
+  fullName,
+  role = "user",
+  isMobile
+}: ProfileLinkProps) => {
   const { authenticated, user } = useAuth()
 
   const [isExpanded, setIsExpanded] = useState(false)
@@ -53,7 +59,8 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               />
-              {sticky ? "" : greeting(role, fullName)}
+              {/* {sticky ? "" : greeting(role, fullName)} */}
+              {isMobile ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">
@@ -85,7 +92,8 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
             </Nav>
           </Navbar.Collapse>
         </>
-      ) : sticky ? (
+      ) : // ) : sticky ? (
+      isMobile ? (
         <></>
       ) : (
         <SignInWithButton />
