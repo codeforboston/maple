@@ -6,8 +6,8 @@ import {
   SignInWithButton,
   signOutAndRedirectToHome,
   useAuth
-} from "../auth"
-import { NavLink } from "../Navlink"
+} from "./auth"
+import { NavLink } from "./Navlink"
 
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
