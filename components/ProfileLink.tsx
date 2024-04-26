@@ -24,11 +24,9 @@ const greeting = (role: Role, fullName?: string) => {
 type ProfileLinkProps = {
   fullName?: string
   role?: Role
-  // sticky: boolean
   isMobile: boolean
 }
 
-// const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
 const ProfileLink = ({
   fullName,
   role = "user",
@@ -59,7 +57,6 @@ const ProfileLink = ({
                 src="/profile-icon.svg"
                 alt="profile icon"
               />
-              {/* {sticky ? "" : greeting(role, fullName)} */}
               {isMobile ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>
@@ -92,8 +89,7 @@ const ProfileLink = ({
             </Nav>
           </Navbar.Collapse>
         </>
-      ) : // ) : sticky ? (
-      isMobile ? (
+      ) : isMobile ? (
         <></>
       ) : (
         <SignInWithButton />
