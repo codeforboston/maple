@@ -34,11 +34,11 @@
     "lint:fix": "next lint --fix",
     "serve": "firebase emulators:start --only hosting",
     "start": "next start",
+    "test:e2e": "playwright test --ui",
+    "test:e2e:headless": "playwright test",
     "test:integration": "jest -c tests/jest.integration.config.ts -w 1",
     "test:integration-ci": "node scripts/test-integration-ci.js",
     "test:system": "jest -c tests/jest.system.config.ts",
-    "test:e2e": "playwright test --ui",
-    "test:e2e:headless": "playwright test",
     "seed": "jest -c tests/jest.seed.config.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -74,6 +74,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@playwright/test": "^1.43.1",
     "@popperjs/core": "^2.11.8",
     "@react-aria/ssr": "^3.2.0",
     "@react-aria/utils": "^3.13.1",
@@ -132,7 +133,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
-    "@playwright/test": "^1.43.1",
     "@storybook/addon-actions": "^7.6.4",
     "@storybook/addon-essentials": "^7.6.4",
     "@storybook/addon-interactions": "^7.6.4",
@@ -190,5 +190,6 @@
   },
   "resolutions": {
     "jackspeak": "2.1.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
