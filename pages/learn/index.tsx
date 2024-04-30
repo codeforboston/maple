@@ -5,7 +5,7 @@ export default function Page() {
   const router = useRouter()
 
   useEffect(() => {
-    router.push("/learn/basics-of-testimony")
+    router.push("/learn/to-write-effective-testimony")
   })
 
   return null
