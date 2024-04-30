@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Container, Navbar, Nav } from "react-bootstrap"
+import { useState } from "react"
+import { Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import {
   Role,
@@ -8,7 +8,6 @@ import {
   useAuth
 } from "../auth"
 import { NavLink } from "../Navlink"
-import styles from "./ProfileLink.module.css"
 
 const greeting = (role: Role, fullName?: string) => {
   switch (role) {
@@ -21,16 +20,6 @@ const greeting = (role: Role, fullName?: string) => {
       return `Hello, Admin ${fullName}`
   }
 }
-
-const ProfileMenuItem = (
-  label: string,
-  href: string,
-  handleClick: () => void
-) => (
-  <NavLink className={"navLink-primary"} href={href} handleClick={handleClick}>
-    {label}
-  </NavLink>
-)
 
 type ProfileLinkProps = {
   fullName?: string
@@ -60,10 +49,10 @@ const ProfileLink = ({ fullName, role = "user", sticky }: ProfileLinkProps) => {
           <Navbar.Brand onClick={toggleNav}>
             <Nav.Link className="p-0 text-white">
               <Image
-                className={styles.profileLinkImage}
+                className="mx-2"
                 src="/profile-icon.svg"
                 alt="profile icon"
-              ></Image>
+              />
               {sticky ? "" : greeting(role, fullName)}
             </Nav.Link>
           </Navbar.Brand>

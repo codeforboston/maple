@@ -1,5 +1,5 @@
 import { createMeta } from "stories/utils"
-import { PriorityBillsCard } from "components/PriortyBillsCard/PriorityBillsCard"
+import { PriorityBillsCard } from "components/PriorityBillsCard/PriorityBillsCard"
 import { ComponentStory } from "@storybook/react"
 // TODO: move into components directory
 const DashboardPriorityBillsCard = () => <div>TODO</div>

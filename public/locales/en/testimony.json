@@ -1,4 +1,8 @@
 {
+  "link": {
+    "tweetContent": "I provided testimony on Bill {{billNumber}}. See {{link}} for details.",
+    "twitter": "Tweet Your Published Testimony"
+  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",
@@ -76,6 +80,7 @@
   "userInfoHeader": {
     "edited": "Edited"
   },
+  "viewAttached": "View Attached Testimony PDF",
   "viewTestimony": {
     "showing": "Showing",
     "showing1": "Showing 1 - ",

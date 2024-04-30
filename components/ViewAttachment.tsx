@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Testimony, usePublishedTestimonyAttachment } from "./db"
 import { External } from "./links"
 import styled from "styled-components"
@@ -14,8 +15,10 @@ export function ViewAttachment({ testimony }: { testimony?: Testimony }) {
 }
 
 const Open = ({ id }: { id: string }) => {
+  const { t } = useTranslation("testimony")
+
   const url = usePublishedTestimonyAttachment(id)
   return url ? (
-    <StyledExternal href={url}>View Attached Testimony PDF</StyledExternal>
+    <StyledExternal href={url}>{t("viewAttached")}</StyledExternal>
   ) : null
 }

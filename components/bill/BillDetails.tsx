@@ -1,4 +1,4 @@
-import { flags } from "components/featureFlags"
+import { useFlags } from "components/featureFlags"
 import {
   collection,
   deleteDoc,
@@ -45,6 +45,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
 
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+  const flags = useFlags()
 
   return (
     <>
@@ -77,7 +78,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                {flags().notifications && <FollowBillButton bill={bill} />}
+                {flags.notifications && <FollowBillButton bill={bill} />}
               </Col>
             </Row>
           </>
@@ -88,7 +89,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                {flags().notifications && <FollowBillButton bill={bill} />}
+                {flags.notifications && <FollowBillButton bill={bill} />}
               </Styled>
             </Col>
           </Row>
@@ -102,7 +103,7 @@ export const BillDetails = ({ bill }: BillProps) => {
           <Col md={8}>
             <Sponsors bill={bill} className="mt-4 pb-1" />
             <BillTestimonies bill={bill} className="mt-4" />
-            {flags().lobbyingTable && (
+            {flags.lobbyingTable && (
               <LobbyingTable bill={bill} className="mt-4 pb-1" />
             )}
           </Col>
@@ -113,7 +114,7 @@ export const BillDetails = ({ bill }: BillProps) => {
               className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
             />
             <TestimonyFormPanel bill={bill} />
-            {flags().billTracker && (
+            {flags.billTracker && (
               <BillTrackerConnectedView bill={bill} className="mt-4" />
             )}
           </Col>

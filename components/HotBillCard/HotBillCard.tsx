@@ -1,7 +1,6 @@
 import { CardTitle, ListItem } from "components/Card"
 import { Card as MapleCard } from "../Card/Card"
 import { Positions } from "./Positions"
-import Styles from "./PriorityBillsCard.module.css"
 
 type bill = {
   id: string
