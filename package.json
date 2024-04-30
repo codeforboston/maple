@@ -46,7 +46,7 @@
     "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc"
   },
   "engines": {
-    "node": "21"
+    "node": ">=18.20.2"
   },
   "browserslist": {
     "production": [
