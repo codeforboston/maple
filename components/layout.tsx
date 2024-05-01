@@ -59,7 +59,7 @@ export const NavBarBoxContainer: FC<
 > = ({ children, className }) => {
   return (
     <div
-      className={`d-flex flex-row, align-items-start justify-content-between w-100`}
+      className={`d-flex flex-row align-items-start justify-content-between w-100`}
     >
       {children}
     </div>

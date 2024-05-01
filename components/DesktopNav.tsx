@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next"
 import Head from "next/head"
 import React, { FC, useEffect, useState } from "react"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
@@ -23,6 +24,34 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   const userLink = "/profile?id=" + user?.uid
 
+  const LogoBox = styled.div`
+    width: 100px;
+  `
+
+  const BrowseBox = styled.div`
+    width: 126px;
+  `
+
+  const TestimonyBox = styled.div`
+    width: 170px;
+  `
+
+  const AboutBox = styled.div`
+    width: 90px;
+  `
+
+  const LearnBox = styled.div`
+    width: 90px;
+  `
+
+  const ProfileBox = styled.div`
+    width: 96px;
+  `
+
+  const LoginBox = styled.div`
+    width: 150px;
+  `
+
   return (
     <>
       {/* <Navbar
@@ -33,194 +62,207 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         expanded={isExpanded}
         data-bs-theme="dark"
       ></Navbar> */}
-      <Container fluid className={`bg-secondary sticky-top py-2`}>
-        <NavBarBoxContainer>
-          <div className={`col justify-content-start align-items-center`}>
-            <Nav.Link href="/" className="py-0 px-2 w-100">
-              <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
-            </Nav.Link>
-          </div>
+      <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
+        <LogoBox className={`align-items-center justify-content-start me-3`}>
+          <Nav.Link href="/" className="py-0 px-2">
+            <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
+          </Nav.Link>
+        </LogoBox>
 
-          <div className={`align-self-center col d-flex `}>
-            <button className={`bg-light col mx-2 my-2`}>
-              <div className={`text-dark`}>Placeholder Search Widget</div>
-            </button>
-          </div>
+        <div className={`align-self-center flex-grow-1`}>
+          <button className={`bg-light col my-2 w-100`}>
+            <div className={`text-dark`}>Placeholder Search Widget</div>
+          </button>
+        </div>
 
-          <NavBarBox className="align-self-center">
-            <Nav className="mx-auto">
-              <NavLink
-                className={"navLink-primary text-white-50"}
-                href="/bills"
-                handleClick={closeNav}
-              >
-                {t("navigation.browseBills")}
-              </NavLink>
-            </Nav>
-          </NavBarBox>
+        <BrowseBox className="align-self-center ms-3">
+          <Nav>
+            <NavLink
+              className={"navLink-primary text-white-50"}
+              href="/bills"
+              handleClick={closeNav}
+            >
+              {t("navigation.browseBills")}
+            </NavLink>
+          </Nav>
+        </BrowseBox>
 
-          <NavBarBox className="align-self-center">
-            <Nav className="mx-auto">
-              <NavLink
-                className={"navLink-primary text-white-50"}
-                href="/testimony"
-                handleClick={closeNav}
-              >
-                {t("navigation.browseTestimony")}
-              </NavLink>
-            </Nav>
-          </NavBarBox>
+        <TestimonyBox className="align-self-center">
+          <Nav>
+            <NavLink
+              className={"navLink-primary text-white-50"}
+              href="/testimony"
+              handleClick={closeNav}
+            >
+              {t("navigation.browseTestimony")}
+            </NavLink>
+          </Nav>
+        </TestimonyBox>
 
-          <NavBarBox className="align-self-center">
-            <div className="mx-auto">
-              <Dropdown>
-                <Dropdown.Toggle className="btn-secondary text-white-50">
-                  {t("about")}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <NavDropdown.Item>
-                    <NavLink href="/about/faq-page" handleClick={closeNav}>
-                      {t("navigation.faq")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/about/mission-and-goals"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.missionAndGoals")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink href="/about/our-team" handleClick={closeNav}>
-                      {t("team")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink href="/about/support-maple" handleClick={closeNav}>
-                      {t("navigation.supportMaple")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink href="/policies" handleClick={closeNav}>
-                      {t("navigation.privacyAndConduct")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </NavBarBox>
+        <AboutBox className="align-self-center">
+          <Dropdown>
+            <Dropdown.Toggle className="btn-secondary text-white-50">
+              {t("about")}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/about/faq-page"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.faq")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/about/mission-and-goals"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.missionAndGoals")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/about/our-team"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("team")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/about/support-maple"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.supportMaple")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/policies"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.privacyAndConduct")}
+                </NavLink>
+              </NavDropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </AboutBox>
 
-          <NavBarBox className="align-self-center">
-            <div className="mx-auto">
-              <Dropdown>
-                <Dropdown.Toggle className="btn-secondary text-white-50">
-                  {t("learn")}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/learn/to-write-effective-testimony"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.toWriteEffectiveTestimony")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/learn/legislative-process"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.legislativeProcess")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/why-use-maple/for-individuals"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.forIndividuals")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/why-use-maple/for-orgs"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.forOrganizations")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      href="/why-use-maple/for-legislators"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.forLegislators")}
-                    </NavLink>
-                  </NavDropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </NavBarBox>
+        <LearnBox className="align-self-center justify-content-end">
+          <Dropdown>
+            <Dropdown.Toggle className="btn-secondary text-white-50">
+              {t("learn")}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/learn/to-write-effective-testimony"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.toWriteEffectiveTestimony")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/learn/legislative-process"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.legislativeProcess")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/why-use-maple/for-individuals"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.forIndividuals")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  href="/why-use-maple/for-orgs"
+                  handleClick={closeNav}
+                  className={"navLink-primary"}
+                >
+                  {t("navigation.forOrganizations")}
+                </NavLink>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavLink
+                  className={"navLink-primary"}
+                  href="/why-use-maple/for-legislators"
+                  handleClick={closeNav}
+                >
+                  {t("navigation.forLegislators")}
+                </NavLink>
+              </NavDropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </LearnBox>
 
-          {authenticated ? (
-            <NavBarBox className="align-self-center">
-              <div className="mx-auto">
-                <Dropdown>
-                  <Dropdown.Toggle className="btn-secondary">
-                    <Image
-                      className="mx-2"
-                      src="/profile-icon.svg"
-                      alt="profile icon"
-                    />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <NavDropdown.Item>
-                      <NavLink
-                        className={"navLink-primary"}
-                        handleClick={() => {
-                          location.assign(userLink)
-                        }}
-                      >
-                        View Profile
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        className={"navLink-primary"}
-                        href="/editprofile"
-                        handleClick={closeNav}
-                      >
-                        Edit Profile
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        className={"navLink-primary"}
-                        handleClick={() => {
-                          closeNav()
-                          void signOutAndRedirectToHome()
-                        }}
-                      >
-                        Sign Out
-                      </NavLink>
-                    </NavDropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </NavBarBox>
-          ) : (
-            <NavBarBox className="align-self-center">
-              <div className="mx-auto">
-                <SignInWithButton />
-              </div>
-            </NavBarBox>
-          )}
+        {authenticated ? (
+          <ProfileBox className={`align-items-center justify-content-end`}>
+            <Dropdown>
+              <Dropdown.Toggle className="btn-secondary">
+                <Image
+                  className="mx-2"
+                  src="/profile-icon.svg"
+                  alt="profile icon"
+                />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <NavDropdown.Item>
+                  <NavLink
+                    className={"navLink-primary"}
+                    handleClick={() => {
+                      location.assign(userLink)
+                    }}
+                  >
+                    View Profile
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    className={"navLink-primary"}
+                    href="/editprofile"
+                    handleClick={closeNav}
+                  >
+                    Edit Profile
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    className={"navLink-primary"}
+                    handleClick={() => {
+                      closeNav()
+                      void signOutAndRedirectToHome()
+                    }}
+                  >
+                    Sign Out
+                  </NavLink>
+                </NavDropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </ProfileBox>
+        ) : (
+          <LoginBox className={`align-self-center justify-content-end`}>
+            <SignInWithButton />
+          </LoginBox>
+        )}
 
-          {/* <NavBarBox className={`align-self-center justify-content-end`}>
+        {/* <NavBarBox className={`align-self-center justify-content-end`}>
             <ProfileLink role={claims?.role} fullName={profile?.fullName} />
           </NavBarBox> */}
-        </NavBarBoxContainer>
+        {/* </NavBarBoxContainer> */}
       </Container>
       {/* </Navbar> */}
     </>
