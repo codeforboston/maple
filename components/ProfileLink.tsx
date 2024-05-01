@@ -54,7 +54,7 @@ const ProfileLink = ({ fullName, role = "user" }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               />
-              {isMobile ? "" : greeting(role, fullName)}
+              {/* {isMobile ? "" : greeting(role, fullName)} */}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">

@@ -40,6 +40,10 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </Nav.Link>
           </div>
 
+          <button className={`bg-light col`}>
+            <div className={` text-dark`}>Placeholder Search Widget</div>
+          </button>
+
           <NavBarBox>
             <Navbar expand={false} expanded={isExpanded}>
               <Navbar.Brand>
