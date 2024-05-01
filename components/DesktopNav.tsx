@@ -32,6 +32,14 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     >
       <Container fluid>
         <NavBarBoxContainer>
+          <div
+            className={`col d-flex justify-content-start align-items-center`}
+          >
+            <Nav.Link href="/" className="py-0 px-2 w-100">
+              <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
+            </Nav.Link>
+          </div>
+
           <NavBarBox>
             <Navbar expand={false} expanded={isExpanded}>
               <Navbar.Brand>
@@ -159,15 +167,6 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </Navbar.Collapse>
             </Navbar>
           </NavBarBox>
-          <div
-            className={`col d-flex justify-content-start align-items-center`}
-          >
-            <div>
-              <Nav.Link href="/" className="py-0 px-2 w-100">
-                <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
-              </Nav.Link>
-            </div>
-          </div>
           <NavBarBox className={`justify-content-end`}>
             <ProfileLink role={claims?.role} fullName={profile?.fullName} />
           </NavBarBox>

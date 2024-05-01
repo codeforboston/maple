@@ -25,14 +25,9 @@ const greeting = (role: Role, fullName?: string) => {
 type ProfileLinkProps = {
   fullName?: string
   role?: Role
-  // isMobile: boolean
 }
 
-const ProfileLink = ({
-  fullName,
-  role = "user"
-}: // isMobile
-ProfileLinkProps) => {
+const ProfileLink = ({ fullName, role = "user" }: ProfileLinkProps) => {
   const { authenticated, user } = useAuth()
   const isMobile = useMediaQuery("(max-width: 768px)")
 
