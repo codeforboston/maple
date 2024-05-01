@@ -33,7 +33,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         expanded={isExpanded}
         data-bs-theme="dark"
       ></Navbar> */}
-      <Container fluid className={`bg-secondary py-2`}>
+      <Container fluid className={`bg-secondary sticky-top py-2`}>
         <NavBarBoxContainer>
           <div className={`col justify-content-start align-items-center`}>
             <Nav.Link href="/" className="py-0 px-2 w-100">
