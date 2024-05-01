@@ -1,21 +1,14 @@
 import { useTranslation } from "next-i18next"
-import React, { useState } from "react"
+import React from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import { Container, Dropdown, Nav, NavDropdown, Navbar } from "./bootstrap"
-import { useProfile } from "./db"
+import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 import { NavLink } from "./Navlink"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated, user } = useAuth()
-  // const { profile } = useProfile()
-  const [isExpanded, setIsExpanded] = useState(false)
   const { t } = useTranslation(["common", "auth"])
-
-  // const toggleNav = () => setIsExpanded(!isExpanded)
-  // const closeNav = () => setIsExpanded(false)
-
   const userLink = "/profile?id=" + user?.uid
 
   const LogoBox = styled.div`
