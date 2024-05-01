@@ -166,3 +166,6 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     </>
   )
 }
+
+// refactor ProfileLink for dropdown to properly use z:index
+// rework spacing amoung elements in dropbox (primarily right to left spacing)
