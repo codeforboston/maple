@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Navbar, Nav } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
+import { useMediaQuery } from "usehooks-ts"
 import {
   Role,
   SignInWithButton,
@@ -24,15 +25,16 @@ const greeting = (role: Role, fullName?: string) => {
 type ProfileLinkProps = {
   fullName?: string
   role?: Role
-  isMobile: boolean
+  // isMobile: boolean
 }
 
 const ProfileLink = ({
   fullName,
-  role = "user",
-  isMobile
-}: ProfileLinkProps) => {
+  role = "user"
+}: // isMobile
+ProfileLinkProps) => {
   const { authenticated, user } = useAuth()
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleNav = () => setIsExpanded(expanded => !expanded)
