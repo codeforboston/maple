@@ -1,17 +1,12 @@
 import { useTranslation } from "next-i18next"
 import Head from "next/head"
-import React, { FC, useEffect, useState } from "react"
-import Image from "react-bootstrap/Image"
+import React, { FC } from "react"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import { signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
-import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
-import { useProfile } from "./db"
 import { DesktopNav } from "./DesktopNav"
 import PageFooter from "./Footer/Footer"
 import { MobileNav } from "./MobileNav"
-import { NavLink } from "./Navlink"
-import ProfileLink from "./ProfileLink"
 
 export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   children

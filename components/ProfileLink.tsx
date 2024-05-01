@@ -10,24 +10,12 @@ import {
 } from "./auth"
 import { NavLink } from "./Navlink"
 
-const greeting = (role: Role, fullName?: string) => {
-  switch (role) {
-    case "user":
-    case "legislator":
-    case "organization":
-    case "pendingUpgrade":
-      return fullName ? `Hello, ${fullName}` : "Hello there"
-    case "admin":
-      return `Hello, Admin ${fullName}`
-  }
-}
-
 type ProfileLinkProps = {
   fullName?: string
   role?: Role
 }
 
-const ProfileLink = ({ fullName, role = "user" }: ProfileLinkProps) => {
+const ProfileLink = ({}: ProfileLinkProps) => {
   const { authenticated, user } = useAuth()
   const isMobile = useMediaQuery("(max-width: 768px)")
 
@@ -54,7 +42,6 @@ const ProfileLink = ({ fullName, role = "user" }: ProfileLinkProps) => {
                 src="/profile-icon.svg"
                 alt="profile icon"
               />
-              {/* {isMobile ? "" : greeting(role, fullName)} */}
             </Nav.Link>
           </Navbar.Brand>
           <Navbar.Collapse id="profile-nav">
