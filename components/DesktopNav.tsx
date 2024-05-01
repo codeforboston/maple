@@ -9,7 +9,6 @@ import AuthModal from "./auth/AuthModal"
 import { Container, Dropdown, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import PageFooter from "./Footer/Footer"
-import { NavBarBox, NavBarBoxContainer } from "./layout"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink"
 
@@ -69,7 +68,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Nav.Link>
         </LogoBox>
 
-        <div className={`align-self-center flex-grow-1`}>
+        <div className={`align-self-center flex-grow-1 invisible`}>
           <button className={`bg-light col my-2 w-100`}>
             <div className={`text-dark`}>Placeholder Search Widget</div>
           </button>
@@ -80,7 +79,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavLink
               className={"navLink-primary text-white-50"}
               href="/bills"
-              handleClick={closeNav}
+              // handleClick={closeNav}
             >
               {t("navigation.browseBills")}
             </NavLink>
@@ -92,7 +91,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavLink
               className={"navLink-primary text-white-50"}
               href="/testimony"
-              handleClick={closeNav}
+              // handleClick={closeNav}
             >
               {t("navigation.browseTestimony")}
             </NavLink>
@@ -108,7 +107,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/about/faq-page"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.faq")}
@@ -117,7 +116,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/about/mission-and-goals"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.missionAndGoals")}
@@ -126,7 +125,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/about/our-team"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("team")}
@@ -135,7 +134,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/about/support-maple"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.supportMaple")}
@@ -144,7 +143,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/policies"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.privacyAndConduct")}
@@ -163,7 +162,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/learn/to-write-effective-testimony"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.toWriteEffectiveTestimony")}
@@ -172,7 +171,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/learn/legislative-process"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.legislativeProcess")}
@@ -181,7 +180,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/why-use-maple/for-individuals"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.forIndividuals")}
@@ -190,7 +189,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavLink
                   href="/why-use-maple/for-orgs"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                   className={"navLink-primary"}
                 >
                   {t("navigation.forOrganizations")}
@@ -200,7 +199,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <NavLink
                   className={"navLink-primary"}
                   href="/why-use-maple/for-legislators"
-                  handleClick={closeNav}
+                  // handleClick={closeNav}
                 >
                   {t("navigation.forLegislators")}
                 </NavLink>
@@ -234,7 +233,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   <NavLink
                     className={"navLink-primary"}
                     href="/editprofile"
-                    handleClick={closeNav}
+                    // handleClick={closeNav}
                   >
                     Edit Profile
                   </NavLink>
@@ -243,7 +242,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   <NavLink
                     className={"navLink-primary"}
                     handleClick={() => {
-                      closeNav()
+                      // closeNav()
                       void signOutAndRedirectToHome()
                     }}
                   >
@@ -258,16 +257,11 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <SignInWithButton />
           </LoginBox>
         )}
-
-        {/* <NavBarBox className={`align-self-center justify-content-end`}>
-            <ProfileLink role={claims?.role} fullName={profile?.fullName} />
-          </NavBarBox> */}
-        {/* </NavBarBoxContainer> */}
       </Container>
       {/* </Navbar> */}
     </>
   )
 }
 
-// rework spacing amoung elements in dropbox (primarily right to left spacing)
-// replace profile icon with white border/blue person?
+// replace profile icon with white border/blue person per Figma?
+// adjust profile icon height?

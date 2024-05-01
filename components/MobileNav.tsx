@@ -8,9 +8,33 @@ import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
 import { useProfile } from "./db"
 import PageFooter from "./Footer/Footer"
-import { NavBarBox, NavBarBoxContainer } from "./layout"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink"
+
+const NavBarBoxContainer: FC<
+  React.PropsWithChildren<{ className?: string }>
+> = ({ children, className }) => {
+  return (
+    <div
+      className={`d-flex flex-row align-items-start justify-content-between w-100`}
+    >
+      {children}
+    </div>
+  )
+}
+
+const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className
+}) => {
+  return (
+    <div
+      className={`col d-flex justify-content-start align-items-center ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
 
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated, claims } = useAuth()

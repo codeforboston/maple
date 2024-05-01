@@ -13,6 +13,12 @@ import { MobileNav } from "./MobileNav"
 import { NavLink } from "./Navlink"
 import ProfileLink from "./ProfileLink"
 
+export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
+  children
+}) => {
+  return <div className={`vh-100 d-flex flex-column`}>{children}</div>
+}
+
 export type LayoutProps = {
   title?: string
 }
@@ -45,36 +51,5 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
         />
       </PageContainer>
     </>
-  )
-}
-
-export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
-  children
-}) => {
-  return <div className={`vh-100 d-flex flex-column`}>{children}</div>
-}
-
-export const NavBarBoxContainer: FC<
-  React.PropsWithChildren<{ className?: string }>
-> = ({ children, className }) => {
-  return (
-    <div
-      className={`d-flex flex-row align-items-start justify-content-between w-100`}
-    >
-      {children}
-    </div>
-  )
-}
-
-export const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className
-}) => {
-  return (
-    <div
-      className={`col d-flex justify-content-start align-items-center ${className}`}
-    >
-      {children}
-    </div>
   )
 }
