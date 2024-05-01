@@ -22,15 +22,16 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const closeNav = () => setIsExpanded(false)
 
   return (
-    <Navbar
-      bg="secondary"
-      variant="dark"
-      sticky="top"
-      expand={false}
-      expanded={isExpanded}
-      data-bs-theme="dark"
-    >
-      <Container fluid>
+    <>
+      {/* <Navbar
+        bg="secondary"
+        variant="dark"
+        sticky="top"
+        expand={false}
+        expanded={isExpanded}
+        data-bs-theme="dark"
+      ></Navbar> */}
+      <Container fluid className={`bg-secondary py-2`}>
         <NavBarBoxContainer>
           <div className={`col justify-content-start align-items-center`}>
             <Nav.Link href="/" className="py-0 px-2 w-100">
@@ -47,7 +48,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavBarBox className="align-self-center">
             <Nav className="mx-auto">
               <NavLink
-                className={"navLink-primary"}
+                className={"navLink-primary text-white-50"}
                 href="/bills"
                 handleClick={closeNav}
               >
@@ -59,7 +60,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavBarBox className="align-self-center">
             <Nav className="mx-auto">
               <NavLink
-                className={"navLink-primary"}
+                className={"navLink-primary text-white-50"}
                 href="/testimony"
                 handleClick={closeNav}
               >
@@ -69,8 +70,11 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </NavBarBox>
 
           <NavBarBox className="align-self-center">
-            <Nav className="mx-auto">
-              <NavDropdown className={"navLink-primary"} title={t("about")}>
+            <div className="mx-auto">
+              <NavDropdown
+                className={"navLink-primary text-white-50"}
+                title={t("about")}
+              >
                 <NavDropdown.Item>
                   <NavLink href="/about/faq-page" handleClick={closeNav}>
                     {t("navigation.faq")}
@@ -100,12 +104,15 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </NavLink>
                 </NavDropdown.Item>
               </NavDropdown>
-            </Nav>
+            </div>
           </NavBarBox>
 
           <NavBarBox className="align-self-center">
-            <Nav className="mx-auto">
-              <NavDropdown className={"navLink-primary"} title={t("learn")}>
+            <div className="mx-auto">
+              <NavDropdown
+                className={"navLink-primary text-white-50"}
+                title={t("learn")}
+              >
                 <NavDropdown.Item>
                   <NavLink
                     href="/learn/to-write-effective-testimony"
@@ -147,7 +154,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </NavLink>
                 </NavDropdown.Item>
               </NavDropdown>
-            </Nav>
+            </div>
           </NavBarBox>
 
           <NavBarBox className={`align-self-center justify-content-end`}>
@@ -155,6 +162,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </NavBarBox>
         </NavBarBoxContainer>
       </Container>
-    </Navbar>
+      {/* </Navbar> */}
+    </>
   )
 }
