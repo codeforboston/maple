@@ -5,7 +5,7 @@ import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import PageFooter from "./Footer/Footer"
 import { NavLink } from "./Navlink"
-import ProfileLink from "./ProfileLink/ProfileLink"
+import ProfileLink from "./ProfileLink"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
@@ -80,20 +80,18 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated, claims } = useAuth()
   const { profile } = useProfile()
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const [sticky, setSticky] = useState(false)
+  const [sticky, setSticky] = useState("top")
   const [isExpanded, setIsExpanded] = useState(false)
   const { t } = useTranslation(["common", "auth"])
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
 
-  useEffect(() => setSticky(isMobile), [isMobile])
-
   return (
     <Navbar
       bg="secondary"
       variant="dark"
-      sticky={sticky ? "top" : undefined}
+      sticky="top"
       expand={false}
       expanded={isExpanded}
       data-bs-theme="dark"
@@ -229,27 +227,34 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </NavBarBox>
           <div
             className={
-              sticky
+              isMobile
                 ? "me-2 w-100 h-100 flex"
                 : `col d-flex justify-content-start align-items-center`
             }
           >
             <div
               className={
-                sticky
+                isMobile
                   ? `position-absolute top-0 start-50 z-1 translate-middle-x`
                   : ""
               }
             >
               <Nav.Link href="/" className="py-0 px-2 w-100">
-                {sticky ? (
+                {isMobile ? (
                   <Image
-                    src="/white-tree.svg"
+                    src="/Logo2024.png"
                     alt="logo"
                     className="w-100"
-                  ></Image>
+                    width="60"
+                    height="60"
+                  />
                 ) : (
-                  <Image src="/nav-logo.svg" alt="logo"></Image>
+                  <Image
+                    src="/Logo2024.png"
+                    alt="logo"
+                    width="80"
+                    height="80"
+                  />
                 )}
               </Nav.Link>
             </div>
@@ -258,13 +263,13 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <ProfileLink
               role={claims?.role}
               fullName={profile?.fullName}
-              sticky={sticky}
+              isMobile={isMobile}
             />
           </NavBarBox>
         </NavBarBoxContainer>
       </Container>
 
-      {sticky && !authenticated ? (
+      {isMobile && !authenticated ? (
         <SignInWithButton className={`w-100`} />
       ) : null}
     </Navbar>
