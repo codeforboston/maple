@@ -163,51 +163,59 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </div>
           </NavBarBox>
 
-          <NavBarBox className="align-self-center">
-            <div className="mx-auto">
-              <Dropdown>
-                <Dropdown.Toggle className="btn-secondary">
-                  <Image
-                    className="mx-2"
-                    src="/profile-icon.svg"
-                    alt="profile icon"
-                  />
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <NavDropdown.Item>
-                    <NavLink
-                      className={"navLink-primary"}
-                      handleClick={() => {
-                        location.assign(userLink)
-                      }}
-                    >
-                      View Profile
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      className={"navLink-primary"}
-                      href="/editprofile"
-                      handleClick={closeNav}
-                    >
-                      Edit Profile
-                    </NavLink>
-                  </NavDropdown.Item>
-                  <NavDropdown.Item>
-                    <NavLink
-                      className={"navLink-primary"}
-                      handleClick={() => {
-                        closeNav()
-                        void signOutAndRedirectToHome()
-                      }}
-                    >
-                      Sign Out
-                    </NavLink>
-                  </NavDropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </NavBarBox>
+          {authenticated ? (
+            <NavBarBox className="align-self-center">
+              <div className="mx-auto">
+                <Dropdown>
+                  <Dropdown.Toggle className="btn-secondary">
+                    <Image
+                      className="mx-2"
+                      src="/profile-icon.svg"
+                      alt="profile icon"
+                    />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <NavDropdown.Item>
+                      <NavLink
+                        className={"navLink-primary"}
+                        handleClick={() => {
+                          location.assign(userLink)
+                        }}
+                      >
+                        View Profile
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        className={"navLink-primary"}
+                        href="/editprofile"
+                        handleClick={closeNav}
+                      >
+                        Edit Profile
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        className={"navLink-primary"}
+                        handleClick={() => {
+                          closeNav()
+                          void signOutAndRedirectToHome()
+                        }}
+                      >
+                        Sign Out
+                      </NavLink>
+                    </NavDropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </NavBarBox>
+          ) : (
+            <NavBarBox className="align-self-center">
+              <div className="mx-auto">
+                <SignInWithButton />
+              </div>
+            </NavBarBox>
+          )}
 
           {/* <NavBarBox className={`align-self-center justify-content-end`}>
             <ProfileLink role={claims?.role} fullName={profile?.fullName} />
