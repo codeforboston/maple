@@ -3,9 +3,7 @@ import React, { FC, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
-import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
-import ProfileLink from "./ProfileLink"
 
 const NavBarBoxContainer: FC<
   React.PropsWithChildren<{ className?: string }>
@@ -33,13 +31,14 @@ const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
 }
 
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const { authenticated, claims } = useAuth()
-  const { profile } = useProfile()
+  const { authenticated, user } = useAuth()
   const [isExpanded, setIsExpanded] = useState(false)
   const { t } = useTranslation(["common", "auth"])
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
+
+  const userLink = "/profile?id=" + user?.uid
 
   return (
     <Navbar
@@ -195,7 +194,58 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </div>
           </div>
           <NavBarBox className={`justify-content-end`}>
-            <ProfileLink role={claims?.role} fullName={profile?.fullName} />
+            <Navbar
+              expand={false}
+              expanded={isExpanded}
+              variant="dark"
+              bg="secondary"
+              collapseOnSelect={true}
+              className="d-flex justify-content-end"
+            >
+              {authenticated ? (
+                <>
+                  <Navbar.Brand onClick={toggleNav}>
+                    <Nav.Link className="p-0 text-white">
+                      <Image
+                        className="mx-2"
+                        src="/profile-icon.svg"
+                        alt="profile icon"
+                      />
+                    </Nav.Link>
+                  </Navbar.Brand>
+                  <Navbar.Collapse id="profile-nav">
+                    <Nav className="me-4 d-flex align-items-end">
+                      <NavLink
+                        className={"navLink-primary"}
+                        handleClick={() => {
+                          location.assign(userLink)
+                        }}
+                      >
+                        View Profile
+                      </NavLink>
+                      <NavLink
+                        className={"navLink-primary"}
+                        href="/editprofile"
+                        handleClick={closeNav}
+                      >
+                        Edit Profile
+                      </NavLink>
+                      <NavLink
+                        className={"navLink-primary"}
+                        handleClick={() => {
+                          closeNav()
+                          void signOutAndRedirectToHome()
+                        }}
+                      >
+                        Sign Out
+                      </NavLink>
+                    </Nav>
+                  </Navbar.Collapse>
+                </>
+              ) : (
+                <></>
+              )}
+            </Navbar>
           </NavBarBox>
         </NavBarBoxContainer>
       </Container>

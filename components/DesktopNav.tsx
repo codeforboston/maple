@@ -220,3 +220,4 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
 // replace profile icon with white border/blue person per Figma?
 // adjust profile icon height?
+// adjust mobile logo to be vertically centered
