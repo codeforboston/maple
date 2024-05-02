@@ -3,6 +3,7 @@ import React, { FC, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 const NavBarBoxContainer: FC<
@@ -39,6 +40,9 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const closeNav = () => setIsExpanded(false)
 
   const userLink = "/profile?id=" + user?.uid
+
+  const result = useProfile()
+  let isOrg = result?.profile?.role === "organization"
 
   return (
     <Navbar
@@ -204,11 +208,21 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <>
                   <Navbar.Brand onClick={toggleNav}>
                     <Nav.Link className="p-0 text-white">
-                      <Image
-                        className="mx-2"
-                        src="/profile-icon.svg"
-                        alt="profile icon"
-                      />
+                      {isOrg ? (
+                        <Image
+                          src="/profile-org-white.svg"
+                          alt="profile icon"
+                          width="35"
+                          height="35"
+                        />
+                      ) : (
+                        <Image
+                          src="/profile-individual-white.svg"
+                          alt="profile icon"
+                          width="35"
+                          height="35"
+                        />
+                      )}
                     </Nav.Link>
                   </Navbar.Brand>
                   <Navbar.Collapse id="profile-nav">

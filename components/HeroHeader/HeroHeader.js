@@ -1,4 +1,3 @@
-// import { AltSignInWithButton } from "../auth"
 import { AltSignInWithButton } from "components/auth/SignInWithButton"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"

@@ -4,12 +4,16 @@ import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
+import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated, user } = useAuth()
   const { t } = useTranslation(["common", "auth"])
   const userLink = "/profile?id=" + user?.uid
+
+  const result = useProfile()
+  let isOrg = result?.profile?.role === "organization"
 
   const LogoBox = styled.div`
     width: 100px;
@@ -167,7 +171,21 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <ProfileBox className={`align-self-center justify-content-end`}>
           <Dropdown>
             <Dropdown.Toggle className="btn-secondary">
-              <Image src="/profile-icon.svg" alt="profile icon" />
+              {isOrg ? (
+                <Image
+                  src="/profile-org-white.svg"
+                  alt="profile icon"
+                  width="35"
+                  height="35"
+                />
+              ) : (
+                <Image
+                  src="/profile-individual-white.svg"
+                  alt="profile icon"
+                  width="35"
+                  height="35"
+                />
+              )}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavDropdown.Item>
@@ -206,5 +224,3 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     </Container>
   )
 }
-
-// replace profile icon with white border/blue person per Figma?
