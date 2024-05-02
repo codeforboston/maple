@@ -178,21 +178,19 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </Navbar.Collapse>
             </Navbar>
           </NavBarBox>
-          <div className={"me-2 w-100 h-100 flex"}>
-            <div
-              className={`position-absolute top-0 start-50 z-1 translate-middle-x`}
-            >
-              <Nav.Link href="/" className="py-0 px-2 w-100">
-                <Image
-                  src="/Logo2024.png"
-                  alt="logo"
-                  className="w-100"
-                  width="60"
-                  height="60"
-                />
-              </Nav.Link>
-            </div>
+
+          <div>
+            <Nav.Link href="/">
+              <Image
+                src="/Logo2024.png"
+                alt="logo"
+                className="w-100"
+                width="60"
+                height="60"
+              />
+            </Nav.Link>
           </div>
+
           <NavBarBox className={`justify-content-end`}>
             <Navbar
               expand={false}
