@@ -1,6 +1,6 @@
 import { useTranslation } from "next-i18next"
 import Head from "next/head"
-import React, { FC } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
@@ -29,22 +29,35 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   return (
     <>
-      <Head>
-        <title>{formattedTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <PageContainer>
-        {isMobile ? <MobileNav /> : <DesktopNav />}
-        <AuthModal />
-        <div className={`col`}>{children}</div>
-        <PageFooter
-          authenticated={authenticated}
-          user={user as any}
-          signOut={signOutAndRedirectToHome}
-        />
-      </PageContainer>
+      {isClient ? (
+        <>
+          <Head>
+            <title>{formattedTitle}</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <PageContainer>
+            {isMobile ? <MobileNav /> : <DesktopNav />}
+            <AuthModal />
+            <div className={`col`}>{children}</div>
+            <PageFooter
+              authenticated={authenticated}
+              user={user as any}
+              signOut={signOutAndRedirectToHome}
+            />
+          </PageContainer>
+        </>
+      ) : (
+        <>
+          <p>'This is never prerendered'</p>
+        </>
+      )}
     </>
   )
 }

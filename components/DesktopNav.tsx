@@ -164,14 +164,10 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       </LearnBox>
 
       {authenticated ? (
-        <ProfileBox className={`align-items-center justify-content-end`}>
+        <ProfileBox className={`align-self-center justify-content-end`}>
           <Dropdown>
             <Dropdown.Toggle className="btn-secondary">
-              <Image
-                className="mx-2"
-                src="/profile-icon.svg"
-                alt="profile icon"
-              />
+              <Image src="/profile-icon.svg" alt="profile icon" />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavDropdown.Item>
@@ -212,4 +208,3 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 }
 
 // replace profile icon with white border/blue person per Figma?
-// adjust profile icon height?
