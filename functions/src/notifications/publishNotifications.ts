@@ -11,52 +11,6 @@ import { Timestamp } from "../firebase"
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-
-// const createNotificationFields = (
-//   topicEvent: { [x: string]: any; name?: any; id?: any; time?: any },
-//   entity: { court: any; id: string; name: string },
-//   type: string
-// ) => {
-//   let topicName = ""
-//   let header = ""
-//   let court = null
-
-//   switch (type) {
-//     case "bill":
-//       topicName = `bill-${entity.court}-${entity.id}` // looks for fields in event document
-//       header = entity.id
-//       court = entity.court
-//       break
-//     case "org":
-//       topicName = `org-${entity.id}`
-//       header = entity.name
-//       break
-//     default:
-//       // handle exception for entities that don't fit schema
-//       console.log(`Invalid entity type: ${type}`)
-//       throw new Error(`Invalid entity type: ${type}`)
-//   }
-
-//   return {
-//     // set up notification document fields
-//     topicName,
-//     uid: "", // user id will be populated in the publishNotifications function
-//     notification: {
-//       bodyText: topicEvent.name, // may change depending on event type
-//       header,
-//       id: topicEvent.id,
-//       subheader: topicEvent.name, // may change depending on event type
-//       timestamp: topicEvent.time, // could also be fullDate
-//       type,
-//       court,
-//       delivered: false
-//     },
-//     createdAt: Timestamp.now()
-//   }
-// }
-
-
-
 const createNotificationFields = (
   entity: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }, // history is an array, it needs to be concatenated
   type: string
@@ -97,9 +51,6 @@ const createNotificationFields = (
   }
 }
 
-
-
-
 // Define the publishNotifications function
 export const publishNotifications = functions.firestore
   .document("/notificationEvents/{topicEventId}")
@@ -115,14 +66,19 @@ export const publishNotifications = functions.firestore
     // Extract related Bill or Org data from the topic event
 
     const notificationPromises: any[] = []
-    if(topic.type =="bill")
+    console.log(`topic type: ${topic.type}`)
+
+    if (topic.type == "bill")
     {
-      async (topic: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }) => {
+      console.log('bill')
+
+      const handleBillNotifications = async (topic: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }) => {
         const notificationFields = createNotificationFields(
-         
           topic,
           "bill"
         )
+
+        console.log(JSON.stringify(notificationFields))
 
         const subscriptionsSnapshot = await db
           .collectionGroup("activeTopicSubscriptions")
@@ -136,6 +92,8 @@ export const publishNotifications = functions.firestore
           // Add the uid to the notification document
           notificationFields.uid = uid
 
+          console.log(`Pushing notifications to users/${uid}/userNotificationFeed`)
+
           // Create a notification document in the user's notification feed
           notificationPromises.push(
             db
@@ -144,46 +102,15 @@ export const publishNotifications = functions.firestore
           )
         })
       }
+      
+      await handleBillNotifications({
+        court: topic.court,
+        id: topic.id,
+        name: topic.name,
+        history: JSON.stringify(topic.history),
+        lastUpdatedTime: topic.historyUpdateTime
+      })
     }
-
-
-
-
-    // If there are related bills, create a notification document for each bill subscription
-  
-
-    // If there are related orgs, create a notification document for each org subscription
-    // if (relatedOrgs) {
-    //   relatedOrgs.forEach(
-    //     async (org: { court: any; id: string; name: string }) => {
-    //       const notificationFields = createNotificationFields(
-    //         topicEvent,
-    //         org,
-    //         "org"
-    //       )
-
-    //       const subscriptionsSnapshot = await db
-    //         .collectionGroup("activeTopicSubscriptions")
-    //         .where("topicName", "==", notificationFields.topicName)
-    //         .get()
-
-    //       subscriptionsSnapshot.docs.forEach(doc => {
-    //         const subscription = doc.data()
-    //         const { uid } = subscription
-
-    //         // Add the uid to the notification document
-    //         notificationFields.uid = uid
-
-    //         // Create a notification document in the user's notification feed
-    //         notificationPromises.push(
-    //           db
-    //             .collection(`users/${uid}/userNotificationFeed`)
-    //             .add(notificationFields)
-    //         )
-    //       })
-    //     }
-    //   )
-    // }
 
     // Wait for all notification documents to be created
     await Promise.all(notificationPromises)

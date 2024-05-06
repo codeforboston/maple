@@ -13,7 +13,6 @@ export const script: Script = async ({ db, args }) => {
   const a = Args.check(args)
   const bills = a.bills.split(" ")
   const court = a.court
-  const BATCH_SIZE = 500; // Firestore's limit, adjust based on your needs
   let batch = db.batch();
   let opsCounter = 0;
 
@@ -39,17 +38,12 @@ export const script: Script = async ({ db, args }) => {
       history: [],
       similar: [],
     }
-
+    console.log(`/generalCourts/${court}/bills/${id}`)
     const billRef = db.collection(`/generalCourts/${court}/bills`).doc(`${id}`);
     batch.set(billRef, newBill);
     opsCounter++;
-
-    // If we've reached our batch size limit or the end of our bills array, commit the batch.
-    if (opsCounter === BATCH_SIZE || id === bills[bills.length - 1]) {
-      await batch.commit();
-      console.log(`Batch of ${opsCounter} bills added.`);
-      batch = db.batch(); // Reset batch
-      opsCounter = 0; // Reset operations counter
-    }
   }
+
+  await batch.commit();
+  console.log(`Batch of ${opsCounter} bills added.`);
 }

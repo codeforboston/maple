@@ -14,6 +14,8 @@ const db = admin.firestore()
 
 type Notification = {
   type: string,
+  court: string,
+  id: string,
   name: string,
   history: BillHistory,
   historyUpdateTime: Timestamp
@@ -40,7 +42,9 @@ export const populateNotificationEvents = functions.firestore
       console.log("New document created")
 
       const newNotificationEvent : Notification = {
-        type: `bill-${court}-${newData?.id}`,
+        type: "bill",
+        court: court,
+        id: newData?.id,
         name: newData?.id,
         history: newData?.history,
         historyUpdateTime: Timestamp.now(),
