@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 test.describe("Maple Homepage", () => {
   test("should display logo and text", async ({ page }) => {
     const logo = page.getByAltText("logo").first()
-    expect(logo).toBeVisible()
-    expect(page.getByText("Let your voice be heard!")).toBeVisible()
+    await expect(logo).toBeVisible()
+    await expect(page.getByText("Let your voice be heard!")).toBeVisible()
   })
 })
