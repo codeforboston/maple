@@ -68,13 +68,24 @@ git pull upstream main
 - `yarn dev:up:detach`: Run the application, and keep it running once you stop this command.
 - `yarn dev:down`: Stop the application.
 - `yarn dev:update`: Update the application images. Run this whenever dependencies in `package.json` change.
-- `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
 
 Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) and [React DevTools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extensions if you're developing frontend
 
 ## Contributing Backend Features to Dev/Prod:
 
 - If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK. The same would apply to production.
+
+## Testing
+
+MAPLE uses Jest for unit and integration testing, and Playwright for e2e testing.
+
+To start running tests, use one of the following commands:
+
+- `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
+- `yarn test:e2e`: Run e2e tests in `tests/e2e` with the Playwright UI
+- `yarn test:e2e:headless`: Run e2e tests in `tests/e2e` headless (no UI)
+
+For an introduction on how to write e2e tests with Playwright, go to the [Playwright docs](https://playwright.dev/docs/writing-tests). An example of an e2e test can be found in `tests/e2e/homepage.spec.ts`.
 
 ## Code Formatting and Linting
 
