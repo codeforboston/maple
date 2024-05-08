@@ -58,9 +58,6 @@ export const httpsPublishNotifications = functions.https.onRequest(
   async (request, response) => {
     try {
       console.log("httpPublishNotifications triggered")
-      
-      
-
 
       const topicEventId = request.body.topicEventId
 
