@@ -85,7 +85,7 @@ To start running tests, use one of the following commands:
 - `yarn test:e2e`: Run e2e tests in `tests/e2e` with the Playwright UI
 - `yarn test:e2e:headless`: Run e2e tests in `tests/e2e` headless (no UI)
 
-For an introduction on how to write e2e tests with Playwright, go to the [Playwright docs](https://playwright.dev/docs/writing-tests). An example of an e2e test can be found in `tests/e2e/homepage.spec.ts`.
+For more information on our end-to-end testing, go to our [e2e test README](tests/e2e/README.md). For an introduction on how to write e2e tests with Playwright, go to the [Playwright docs](https://playwright.dev/docs/writing-tests). An example of an e2e test can be found in [tests/e2e/homepage.spec.ts](tests/e2e/homepage.spec.ts).
 
 ## Code Formatting and Linting
 
