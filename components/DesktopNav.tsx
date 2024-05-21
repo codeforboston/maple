@@ -83,11 +83,6 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavDropdown.Item>
-              <NavLink href="/about/faq-page" className={"navLink-primary"}>
-                {t("navigation.faq")}
-              </NavLink>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
               <NavLink
                 href="/about/mission-and-goals"
                 className={"navLink-primary"}
@@ -97,7 +92,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </NavDropdown.Item>
             <NavDropdown.Item>
               <NavLink href="/about/our-team" className={"navLink-primary"}>
-                {t("team")}
+                {t("navigation.team")}
               </NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
@@ -108,9 +103,17 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 {t("navigation.supportMaple")}
               </NavLink>
             </NavDropdown.Item>
-            <NavDropdown.Item>
+
+            {/* delete this after the link is relocated to the Footer */}
+
+            {/* <NavDropdown.Item>
               <NavLink href="/policies" className={"navLink-primary"}>
                 {t("navigation.privacyAndConduct")}
+              </NavLink>
+            </NavDropdown.Item> */}
+            <NavDropdown.Item>
+              <NavLink href="/about/faq-page" className={"navLink-primary"}>
+                {t("navigation.faq")}
               </NavLink>
             </NavDropdown.Item>
           </Dropdown.Menu>
@@ -139,6 +142,9 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 {t("navigation.legislativeProcess")}
               </NavLink>
             </NavDropdown.Item>
+
+            {/* These 3 `Why Use...` links will be comboed into one link when their corresponding page is refactored */}
+
             <NavDropdown.Item>
               <NavLink
                 href="/why-use-maple/for-individuals"
