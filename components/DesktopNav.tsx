@@ -1,7 +1,6 @@
 import { useTranslation } from "next-i18next"
 import React from "react"
 import Image from "react-bootstrap/Image"
-import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
@@ -15,41 +14,13 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
-  const LogoBox = styled.div`
-    width: 100px;
-  `
-
-  const BrowseBox = styled.div`
-    width: 126px;
-  `
-
-  const TestimonyBox = styled.div`
-    width: 170px;
-  `
-
-  const AboutBox = styled.div`
-    width: 90px;
-  `
-
-  const LearnBox = styled.div`
-    width: 90px;
-  `
-
-  const ProfileBox = styled.div`
-    width: 96px;
-  `
-
-  const LoginBox = styled.div`
-    width: 150px;
-  `
-
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
-      <LogoBox className={`align-items-center justify-content-start me-3`}>
+      <div className={`align-items-center justify-content-start me-3`}>
         <Nav.Link href="/" className={`py-0 px-2`}>
           <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
         </Nav.Link>
-      </LogoBox>
+      </div>
 
       <div className={`align-self-center flex-grow-1 invisible`}>
         <button className={`bg-light col my-2 w-100`}>
@@ -57,23 +28,23 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </button>
       </div>
 
-      <BrowseBox className={`align-self-center ms-3`}>
+      <div className={`align-self-center ms-3`}>
         <Nav>
           <NavLink className={`text-white-50`} href="/bills">
             {t("navigation.browseBills")}
           </NavLink>
         </Nav>
-      </BrowseBox>
+      </div>
 
-      <TestimonyBox className="align-self-center">
+      <div className="align-self-center">
         <Nav>
           <NavLink className={"text-white-50"} href="/testimony">
             {t("navigation.browseTestimony")}
           </NavLink>
         </Nav>
-      </TestimonyBox>
+      </div>
 
-      <AboutBox className={`align-self-center`}>
+      <div className={`align-self-center`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("about")}
@@ -105,9 +76,9 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </NavDropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      </AboutBox>
+      </div>
 
-      <LearnBox className={`align-self-center justify-content-end`}>
+      <div className={`align-self-center justify-content-end`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("learn")}
@@ -143,10 +114,10 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </NavDropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      </LearnBox>
+      </div>
 
       {authenticated ? (
-        <ProfileBox className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center justify-content-end`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
               {isOrg ? (
@@ -189,11 +160,11 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </NavDropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-        </ProfileBox>
+        </div>
       ) : (
-        <LoginBox className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center justify-content-end`}>
           <SignInWithButton />
-        </LoginBox>
+        </div>
       )}
     </Container>
   )
