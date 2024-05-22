@@ -59,7 +59,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <BrowseBox className="align-self-center ms-3">
         <Nav>
-          <NavLink className={"navLink-primary text-white-50"} href="/bills">
+          <NavLink className={"text-white-50"} href="/bills">
             {t("navigation.browseBills")}
           </NavLink>
         </Nav>
@@ -67,10 +67,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <TestimonyBox className="align-self-center">
         <Nav>
-          <NavLink
-            className={"navLink-primary text-white-50"}
-            href="/testimony"
-          >
+          <NavLink className={"text-white-50"} href="/testimony">
             {t("navigation.browseTestimony")}
           </NavLink>
         </Nav>
@@ -83,23 +80,15 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavDropdown.Item>
-              <NavLink
-                href="/about/mission-and-goals"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/about/mission-and-goals">
                 {t("navigation.missionAndGoals")}
               </NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
-              <NavLink href="/about/our-team" className={"navLink-primary"}>
-                {t("navigation.team")}
-              </NavLink>
+              <NavLink href="/about/our-team">{t("navigation.team")}</NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
-              <NavLink
-                href="/about/support-maple"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/about/support-maple">
                 {t("navigation.supportMaple")}
               </NavLink>
             </NavDropdown.Item>
@@ -107,14 +96,12 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             {/* delete this after the link is relocated to the Footer */}
 
             {/* <NavDropdown.Item>
-              <NavLink href="/policies" className={"navLink-primary"}>
+              <NavLink href="/policies">
                 {t("navigation.privacyAndConduct")}
               </NavLink>
             </NavDropdown.Item> */}
             <NavDropdown.Item>
-              <NavLink href="/about/faq-page" className={"navLink-primary"}>
-                {t("navigation.faq")}
-              </NavLink>
+              <NavLink href="/about/faq-page">{t("navigation.faq")}</NavLink>
             </NavDropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -127,18 +114,12 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavDropdown.Item>
-              <NavLink
-                href="/learn/to-write-effective-testimony"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/learn/to-write-effective-testimony">
                 {t("navigation.toWriteEffectiveTestimony")}
               </NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
-              <NavLink
-                href="/learn/legislative-process"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/learn/legislative-process">
                 {t("navigation.legislativeProcess")}
               </NavLink>
             </NavDropdown.Item>
@@ -146,26 +127,17 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             {/* These 3 `Why Use...` links will be comboed into one link when their corresponding page is refactored */}
 
             <NavDropdown.Item>
-              <NavLink
-                href="/why-use-maple/for-individuals"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/why-use-maple/for-individuals">
                 {t("navigation.forIndividuals")}
               </NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
-              <NavLink
-                href="/why-use-maple/for-orgs"
-                className={"navLink-primary"}
-              >
+              <NavLink href="/why-use-maple/for-orgs">
                 {t("navigation.forOrganizations")}
               </NavLink>
             </NavDropdown.Item>
             <NavDropdown.Item>
-              <NavLink
-                className={"navLink-primary"}
-                href="/why-use-maple/for-legislators"
-              >
+              <NavLink href="/why-use-maple/for-legislators">
                 {t("navigation.forLegislators")}
               </NavLink>
             </NavDropdown.Item>
@@ -196,7 +168,6 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <Dropdown.Menu>
               <NavDropdown.Item>
                 <NavLink
-                  className={"navLink-primary"}
                   handleClick={() => {
                     location.assign(userLink)
                   }}
@@ -205,13 +176,10 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 </NavLink>
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavLink className={"navLink-primary"} href="/editprofile">
-                  Edit Profile
-                </NavLink>
+                <NavLink href="/editprofile">Edit Profile</NavLink>
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <NavLink
-                  className={"navLink-primary"}
                   handleClick={() => {
                     void signOutAndRedirectToHome()
                   }}
