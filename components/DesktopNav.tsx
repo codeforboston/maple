@@ -46,7 +46,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
       <LogoBox className={`align-items-center justify-content-start me-3`}>
-        <Nav.Link href="/" className="py-0 px-2">
+        <Nav.Link href="/" className={`py-0 px-2`}>
           <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
         </Nav.Link>
       </LogoBox>
@@ -57,9 +57,9 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </button>
       </div>
 
-      <BrowseBox className="align-self-center ms-3">
+      <BrowseBox className={`align-self-center ms-3`}>
         <Nav>
-          <NavLink className={"text-white-50"} href="/bills">
+          <NavLink className={`text-white-50`} href="/bills">
             {t("navigation.browseBills")}
           </NavLink>
         </Nav>
@@ -73,9 +73,9 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Nav>
       </TestimonyBox>
 
-      <AboutBox className="align-self-center">
+      <AboutBox className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className="btn-secondary text-white-50">
+          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -107,9 +107,9 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </AboutBox>
 
-      <LearnBox className="align-self-center justify-content-end">
+      <LearnBox className={`align-self-center justify-content-end`}>
         <Dropdown>
-          <Dropdown.Toggle className="btn-secondary text-white-50">
+          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -148,7 +148,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <ProfileBox className={`align-self-center justify-content-end`}>
           <Dropdown>
-            <Dropdown.Toggle className="btn-secondary">
+            <Dropdown.Toggle className={`btn-secondary`}>
               {isOrg ? (
                 <Image
                   src="/profile-org-white.svg"
