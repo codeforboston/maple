@@ -29,6 +29,8 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
+  // isClient used to prevent hydration issues: quite possibly better solutions exist
+
   const [isClient, setIsClient] = useState(false)
   useEffect(() => {
     setIsClient(true)
@@ -55,7 +57,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
         </>
       ) : (
         <>
-          <p>'This is never prerendered'</p>
+          {/* <p>'This is never prerendered -> part of the isClient hydration fix'</p> */}
         </>
       )}
     </>
