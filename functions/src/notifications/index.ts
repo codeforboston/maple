@@ -1,5 +1,6 @@
 // Import the functions
 import { publishNotifications } from "./publishNotifications"
+import { populateNotificationEvents } from "./populateNotificationEvents"
 import { cleanupNotifications } from "./cleanupNotifications"
 import { deliverNotifications } from "./deliverNotifications"
 import { httpsPublishNotifications } from "./httpsPublishNotifications"
@@ -11,6 +12,7 @@ import { updateNextDigestAt } from "./updateNextDigestAt"
 // Export the functions
 export {
   publishNotifications,
+  populateNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
   httpsPublishNotifications,
