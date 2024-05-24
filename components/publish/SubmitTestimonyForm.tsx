@@ -105,7 +105,7 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
   )
 }
 
-const Form = ({
+export const Form = ({
   step,
   bill,
   synced

@@ -11,7 +11,18 @@ const pathToSearchState = (path: string) =>
 
 const searchStateToUrl = (searchState: UiState) => {
   const base = window.location.pathname
-  const query = qs.stringify(searchState)
+
+  const flagQueries = Object.fromEntries(
+    Object.entries(qs.parse(window.location.search.slice(1))).filter(
+      ([key]) => !Object.keys(searchState).includes(key)
+    )
+  )
+
+  const query = qs.stringify({
+    ...searchState,
+    ...flagQueries
+  })
+
   return query ? `${base}?${query}` : base
 }
 

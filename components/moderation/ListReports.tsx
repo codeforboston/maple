@@ -1,5 +1,4 @@
-import { firestore } from "components/firebase"
-import { collection, onSnapshot } from "firebase/firestore"
+import { collection, getFirestore, onSnapshot } from "firebase/firestore"
 import { useEffect } from "react"
 import {
   Datagrid,
@@ -14,6 +13,7 @@ import { StatusField } from "./common"
 import { CreateMockReport } from "./setUp/CreateMockReport"
 
 export function ListReports() {
+  const firestore = getFirestore()
   const refresh = useRefresh()
   useEffect(() => {
     const reportsRef = collection(firestore, "reports")

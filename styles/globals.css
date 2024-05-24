@@ -15,22 +15,6 @@
   font-weight: bold;
 }
 
-.dropdown-menu {
-  background-color: #1a3185;
-  border: none;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.dropdown-item {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.dropdown-item:hover {
-  background-color: #1a3185;
-}
-
 .btn {
   padding: 1rem;
 }

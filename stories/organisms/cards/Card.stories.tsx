@@ -17,6 +17,7 @@ const CustomBody = () => {
       <img
         src="https://media.istockphoto.com/id/1333237768/photo/spooky-halloween-sky.jpg?b=1&s=170667a&w=0&k=20&c=g2iKCwBRqWDqRmPBpxDmdNSO8MMn9_xFJafafOid4DI="
         width="100%"
+        alt="Spooky Halloween Sky"
       ></img>
       <p>
         {misfits.map(misfit => {

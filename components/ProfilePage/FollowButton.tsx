@@ -7,6 +7,7 @@ import { useTranslation } from "next-i18next"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { useAuth } from "../auth"
 import { useState, useEffect, useCallback } from "react"
+import { FillButton } from "components/buttons"
 
 export const FollowButton = ({
   profileId,
@@ -107,10 +108,12 @@ export const FollowButton = ({
     <Col className={`d-flex w-100 justify-content-start`}>
       <div>
         <div className="view-edit-profile">
-          <Button onClick={handleClick} className={`btn btn-lg py-1`}>
-            {text}
-            {checkmark}
-          </Button>
+          <FillButton
+            onClick={handleClick}
+            className={`py-1`}
+            Icon={checkmark}
+            label={text}
+          />
         </div>
       </div>
     </Col>

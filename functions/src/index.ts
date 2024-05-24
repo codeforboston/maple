@@ -32,6 +32,7 @@ export {
 } from "./testimony"
 export {
   publishNotifications,
+  populateNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
   httpsPublishNotifications,
