@@ -1,30 +1,21 @@
 import clsx from "clsx"
+import { useState } from "react"
 import styled from "styled-components"
-import {
-  Col,
-  Container,
-  Image,
-  Row,
-  Spinner,
-  Button,
-  Collapse,
-  Modal
-} from "../bootstrap"
+import { useMediaQuery } from "usehooks-ts"
+
+import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormInfo } from "./hooks"
-import { useState } from "react"
-import { useMediaQuery } from "usehooks-ts"
+import { KeepNote, KeepNoteMobile } from "./KeepNote"
 import { ProgressBar } from "./ProgressBar"
-import { PublishInfo } from "./PublishInfo"
 import { PublishTestimony } from "./PublishTestimony"
 import { QuickInfo } from "./QuickInfo"
 import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-import { KeepNote, KeepNoteMobile } from "./KeepNote"
 
 const Background = styled.div`
   background: var(--bs-white);
@@ -56,7 +47,6 @@ export const SubmitTestimonyForm = () => {
           )}
         </Col>
       </Row>
-      {/* </StyledContainer> */}
     </Background>
   ) : (
     <Spinner animation="border" />
