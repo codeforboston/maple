@@ -1,14 +1,15 @@
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
-import { ViewAttachment } from "components/ViewAttachment"
-import { useReportTestimony } from "components/api/report"
-import { formUrl } from "components/publish/hooks"
-import { TestimonyContent } from "components/testimony"
 import { useTranslation } from "next-i18next"
 import { ReactNode, useState } from "react"
 import { ButtonProps } from "react-admin"
 import { ToastContainer } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
+
+import { useReportTestimony } from "components/api/report"
+import { formUrl } from "components/publish/hooks"
+import { TestimonyContent } from "components/testimony"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { ViewAttachment } from "components/ViewAttachment"
 import { Button, Col, Row, Stack } from "../bootstrap"
 import { Testimony } from "../db"
 import { Internal, maple } from "../links"
@@ -161,12 +162,30 @@ export const TestimonyItem = ({
               )}
             </>
           )}
-          {/* report */}
           <Col xs="auto">
             <FooterButton variant="text" onClick={() => setIsReporting(true)}>
               Report
             </FooterButton>
           </Col>
+          {isUser && (
+            <Col>
+              <FooterButton variant="text">
+                <Internal
+                  className={`text-decoration-none text-secondary`}
+                  href={formUrl(testimony.billId, testimony.court)}
+                >
+                  Edit
+                  <Image
+                    className="px-2 ms-auto align-self-center"
+                    src="/edit-testimony.svg"
+                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    height={40}
+                    width={40}
+                  />
+                </Internal>
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 
