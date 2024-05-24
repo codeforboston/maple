@@ -22,6 +22,7 @@ type FooterButtonProps = Omit<ButtonProps, "children"> & {
   className?: string
   children?: ReactNode
 }
+
 const FooterButton = ({
   variant = "text",
   className,
@@ -73,6 +74,24 @@ export const TestimonyItem = ({
 
   const { t } = useTranslation("testimony")
 
+  const IconSpacer = () => {
+    /* this image does not appear to display anything,      *
+     * however it acts as a spacing element                 *
+     *                                                      *
+     * removing this image will throw off the alignment vs  *
+     * the nearby elements that contain visible icons      */
+
+    return (
+      <Image
+        className="ms-auto align-self-center"
+        src="/edit-testimony.svg"
+        alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+        height={40}
+        width={0}
+      />
+    )
+  }
+
   return (
     <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
       <div className={`border-0 h5 d-flex`}>
@@ -120,18 +139,7 @@ export const TestimonyItem = ({
                 onClick={() => setShowAllTestimony(true)}
               >
                 {t("testimonyItem.expand")}
-                {/* this image does not appear to display anything,      *
-                 *  however it acts as a spacing element                 *
-                 *                                                       *
-                 *  removing this image will throw off the alignment vs  *
-                 *  the nearby elements that contain visible icons      */}
-                <Image
-                  className="ms-auto align-self-center"
-                  src="/edit-testimony.svg"
-                  alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                  height={40}
-                  width={0}
-                />
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
@@ -143,18 +151,7 @@ export const TestimonyItem = ({
                   href={maple.testimony({ publishedId: testimony.id })}
                 >
                   {t("testimonyItem.moreDetails")}
-                  {/* this image does not appear to display anything,      *
-                   *  however it acts as a spacing element                 *
-                   *                                                       *
-                   *  removing this image will throw off the alignment vs  *
-                   *  the nearby elements that contain visible icons      */}
-                  <Image
-                    className="ms-auto align-self-center"
-                    src="/edit-testimony.svg"
-                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                    height={40}
-                    width={0}
-                  />
+                  <IconSpacer />
                 </Internal>
               </FooterButton>
             </Col>
@@ -164,39 +161,16 @@ export const TestimonyItem = ({
               <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
 
-                {/* Current bug Issue #1564 makes this hard to test *
-                 * Please revisit once #1564 is resolved           */}
-
-                {/* this image does not appear to display anything,      *
-                 *  however it acts as a spacing element                 *
-                 *                                                       *
-                 *  removing this image will throw off the alignment vs  *
-                 *  the nearby elements that contain visible icons      */}
-                <Image
-                  className="ms-auto align-self-center"
-                  src="/edit-testimony.svg"
-                  alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                  height={40}
-                  width={0}
-                />
+                {/* Current bug Issue #1564 makes this instance of IconSpacer hard to test *
+                 * Please revisit once #1564 is resolved                                  */}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
           <Col xs="auto">
             <FooterButton variant="text" onClick={() => setIsReporting(true)}>
               Report
-              {/* this image does not appear to display anything,      *
-               *  however it acts as a spacing element                 *
-               *                                                       *
-               *  removing this image will throw off the alignment vs  *
-               *  the nearby elements that contain visible icons      */}
-              <Image
-                className="ms-auto align-self-center"
-                src="/edit-testimony.svg"
-                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
-                height={40}
-                width={0}
-              />
+              <IconSpacer />
             </FooterButton>
           </Col>
           {isUser && !isMobile && (
