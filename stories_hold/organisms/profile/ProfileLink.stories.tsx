@@ -1,5 +1,5 @@
 import { ComponentStory } from "@storybook/react"
-import ProfileLinkView from "components/ProfileLink/ProfileLink"
+import ProfileLinkView from "components/ProfileLink"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Col, Row } from "react-bootstrap"
