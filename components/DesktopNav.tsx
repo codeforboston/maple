@@ -1,22 +1,25 @@
 import { useTranslation } from "next-i18next"
 import React from "react"
-import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 import {
+  Avatar,
   NavbarLinkBills,
+  NavbarLinkEditProfile,
   NavbarLinkEffective,
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkLogo,
   NavbarLinkProcess,
+  NavbarLinkSignOut,
   NavbarLinkSupport,
   NavbarLinkTeam,
-  NavbarLinkTestimony
-} from "./Navbarlinks"
+  NavbarLinkTestimony,
+  NavbarLinkViewProfile
+} from "./NavbarComponents"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated, user } = useAuth()
@@ -110,43 +113,21 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <div className={`align-self-center justify-content-end`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
-              {isOrg ? (
-                <Image
-                  src="/profile-org-white.svg"
-                  alt="profile icon"
-                  width="35"
-                  height="35"
-                />
-              ) : (
-                <Image
-                  src="/profile-individual-white.svg"
-                  alt="profile icon"
-                  width="35"
-                  height="35"
-                />
-              )}
+              <Avatar isOrg={isOrg} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavDropdown.Item>
-                <NavLink
-                  handleClick={() => {
-                    location.assign(userLink)
-                  }}
-                >
-                  View Profile
-                </NavLink>
+                <NavbarLinkViewProfile userLink={userLink} />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavLink href="/editprofile">Edit Profile</NavLink>
+                <NavbarLinkEditProfile />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavLink
+                <NavbarLinkSignOut
                   handleClick={() => {
                     void signOutAndRedirectToHome()
                   }}
-                >
-                  Sign Out
-                </NavLink>
+                />
               </NavDropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

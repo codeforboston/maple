@@ -4,6 +4,28 @@ import { useMediaQuery } from "usehooks-ts"
 import { NavDropdown } from "./bootstrap"
 import { NavLink } from "./Navlink"
 
+export const Avatar = ({ isOrg }: { isOrg: boolean }) => {
+  return (
+    <>
+      {isOrg ? (
+        <Image
+          src="/profile-org-white.svg"
+          alt="profile icon"
+          width="35"
+          height="35"
+        />
+      ) : (
+        <Image
+          src="/profile-individual-white.svg"
+          alt="profile icon"
+          width="35"
+          height="35"
+        />
+      )}
+    </>
+  )
+}
+
 export const NavbarLinkBills: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
@@ -24,6 +46,26 @@ export const NavbarLinkBills: React.FC<
   )
 }
 
+export const NavbarLinkEditProfile: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavLink
+      className={isMobile ? "navLink-primary" : ""}
+      href="/editprofile"
+      onClick={isMobile ? handleClick : ""}
+      {...other}
+    >
+      Edit Profile
+    </NavLink>
+  )
+}
+
 export const NavbarLinkEffective: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
@@ -35,7 +77,7 @@ export const NavbarLinkEffective: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/learn/to-write-effective-testimony"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -57,7 +99,7 @@ export const NavbarLinkFAQ: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/about/faq-page"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -79,7 +121,7 @@ export const NavbarLinkGoals: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/about/mission-and-goals"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -127,7 +169,7 @@ export const NavbarLinkProcess: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/learn/legislative-process"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -135,6 +177,25 @@ export const NavbarLinkProcess: React.FC<
         {t("navigation.legislativeProcess")}
       </NavLink>
     </NavDropdown.Item>
+  )
+}
+
+export const NavbarLinkSignOut: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavLink
+      className={isMobile ? "navLink-primary" : ""}
+      handleClick={handleClick}
+      {...other}
+    >
+      Sign Out
+    </NavLink>
   )
 }
 
@@ -149,7 +210,7 @@ export const NavbarLinkSupport: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/about/support-maple"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -171,7 +232,7 @@ export const NavbarLinkTeam: React.FC<
   return (
     <NavDropdown.Item>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : ""}
         href="/about/our-team"
         onClick={isMobile ? handleClick : ""}
         {...other}
@@ -198,6 +259,27 @@ export const NavbarLinkTestimony: React.FC<
       {...other}
     >
       {t("navigation.browseTestimony")}
+    </NavLink>
+  )
+}
+
+export const NavbarLinkViewProfile: React.FC<
+  React.PropsWithChildren<{
+    other?: any
+    userLink: string
+  }>
+> = ({ other, userLink }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavLink
+      className={isMobile ? "navLink-primary" : ""}
+      handleClick={() => {
+        location.assign(userLink)
+      }}
+      {...other}
+    >
+      View Profile
     </NavLink>
   )
 }

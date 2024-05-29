@@ -1,20 +1,23 @@
 import { useTranslation } from "next-i18next"
 import React, { FC, useState } from "react"
-import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import {
+  Avatar,
   NavbarLinkBills,
+  NavbarLinkEditProfile,
   NavbarLinkEffective,
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkLogo,
   NavbarLinkProcess,
+  NavbarLinkSignOut,
   NavbarLinkSupport,
   NavbarLinkTeam,
-  NavbarLinkTestimony
-} from "./Navbarlinks"
+  NavbarLinkTestimony,
+  NavbarLinkViewProfile
+} from "./NavbarComponents"
 import { NavLink } from "./Navlink"
 
 const NavBarBoxContainer: FC<
@@ -123,49 +126,19 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <>
                   <Navbar.Brand onClick={toggleNav}>
                     <Nav.Link className="p-0 text-white">
-                      {isOrg ? (
-                        <Image
-                          src="/profile-org-white.svg"
-                          alt="profile icon"
-                          width="35"
-                          height="35"
-                        />
-                      ) : (
-                        <Image
-                          src="/profile-individual-white.svg"
-                          alt="profile icon"
-                          width="35"
-                          height="35"
-                        />
-                      )}
+                      <Avatar isOrg={isOrg} />
                     </Nav.Link>
                   </Navbar.Brand>
                   <Navbar.Collapse id="profile-nav">
                     <Nav className="me-4 d-flex align-items-end">
-                      <NavLink
-                        className={"navLink-primary"}
-                        handleClick={() => {
-                          location.assign(userLink)
-                        }}
-                      >
-                        View Profile
-                      </NavLink>
-                      <NavLink
-                        className={"navLink-primary"}
-                        href="/editprofile"
-                        handleClick={closeNav}
-                      >
-                        Edit Profile
-                      </NavLink>
-                      <NavLink
-                        className={"navLink-primary"}
+                      <NavbarLinkViewProfile userLink={userLink} />
+                      <NavbarLinkEditProfile />
+                      <NavbarLinkSignOut
                         handleClick={() => {
                           closeNav()
                           void signOutAndRedirectToHome()
                         }}
-                      >
-                        Sign Out
-                      </NavLink>
+                      />
                     </Nav>
                   </Navbar.Collapse>
                 </>
