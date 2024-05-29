@@ -74,13 +74,6 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
                   <Nav className="me-auto">
                     <NavLink
                       className={"navLink-primary"}
-                      href="/"
-                      handleClick={closeNav}
-                    >
-                      {t("navigation.home")}
-                    </NavLink>
-                    <NavLink
-                      className={"navLink-primary"}
                       href="/bills"
                       handleClick={closeNav}
                     >
@@ -93,6 +86,46 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
                     >
                       {t("navigation.browseTestimony")}
                     </NavLink>
+
+                    <NavDropdown
+                      className={"navLink-primary"}
+                      title={t("about")}
+                    >
+                      <NavDropdown.Item>
+                        <NavLink
+                          href="/about/mission-and-goals"
+                          handleClick={closeNav}
+                        >
+                          {t("navigation.missionAndGoals")}
+                        </NavLink>
+                      </NavDropdown.Item>
+                      <NavDropdown.Item>
+                        <NavLink href="/about/our-team" handleClick={closeNav}>
+                          {t("navigation.team")}
+                        </NavLink>
+                      </NavDropdown.Item>
+                      <NavDropdown.Item>
+                        <NavLink
+                          href="/about/support-maple"
+                          handleClick={closeNav}
+                        >
+                          {t("navigation.supportMaple")}
+                        </NavLink>
+                      </NavDropdown.Item>
+                      <NavDropdown.Item>
+                        <NavLink href="/about/faq-page" handleClick={closeNav}>
+                          {t("navigation.faq")}
+                        </NavLink>
+                      </NavDropdown.Item>
+
+                      {/* to be removed when implemented on the footer*/}
+
+                      {/* <NavDropdown.Item>
+                        <NavLink href="/policies" handleClick={closeNav}>
+                          {t("navigation.privacyAndConduct")}
+                        </NavLink>
+                      </NavDropdown.Item> */}
+                    </NavDropdown>
 
                     <NavDropdown
                       className={"navLink-primary"}
@@ -114,86 +147,15 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
                           {t("navigation.legislativeProcess")}
                         </NavLink>
                       </NavDropdown.Item>
-                    </NavDropdown>
-
-                    <NavDropdown
-                      className={"navLink-primary"}
-                      title={t("about")}
-                    >
-                      <NavDropdown.Item>
-                        <NavLink href="/about/faq-page" handleClick={closeNav}>
-                          {t("navigation.faq")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink
-                          href="/about/mission-and-goals"
-                          handleClick={closeNav}
-                        >
-                          {t("navigation.missionAndGoals")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink href="/about/our-team" handleClick={closeNav}>
-                          {t("team")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink
-                          href="/about/support-maple"
-                          handleClick={closeNav}
-                        >
-                          {t("navigation.supportMaple")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink href="/policies" handleClick={closeNav}>
-                          {t("navigation.privacyAndConduct")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                    </NavDropdown>
-
-                    <NavDropdown
-                      className={"navLink-primary"}
-                      title={t("whyUseMaple")}
-                    >
                       <NavDropdown.Item>
                         <NavLink
                           href="/why-use-maple/for-individuals"
                           handleClick={closeNav}
                         >
-                          {t("navigation.forIndividuals")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink
-                          href="/why-use-maple/for-orgs"
-                          handleClick={closeNav}
-                        >
-                          {t("navigation.forOrganizations")}
-                        </NavLink>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item>
-                        <NavLink
-                          href="/why-use-maple/for-legislators"
-                          handleClick={closeNav}
-                        >
-                          {t("navigation.forLegislators")}
+                          {t("whyUseMaple")}
                         </NavLink>
                       </NavDropdown.Item>
                     </NavDropdown>
-
-                    {authenticated && (
-                      <NavLink
-                        className={"navLink-primary"}
-                        handleClick={() => {
-                          closeNav()
-                          void signOutAndRedirectToHome()
-                        }}
-                      >
-                        {t("signOut", { ns: "auth" })}
-                      </NavLink>
-                    )}
                   </Nav>
                 </Navbar.Collapse>
               </Navbar>
