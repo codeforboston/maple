@@ -2,7 +2,7 @@ import { useTranslation } from "next-i18next"
 import React, { FC, useState } from "react"
 import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import { Container, Nav, NavDropdown, Navbar } from "./bootstrap"
+import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
