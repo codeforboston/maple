@@ -8,6 +8,7 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 import styled from "styled-components"
+import { NavbarBrand } from "react-bootstrap"
 
 const LogoBox = styled.div`
   width: max-content;
@@ -30,9 +31,7 @@ const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
   className
 }) => {
   return (
-    <div
-      className={`col d-flex justify-content-end align-items-center ${className}`}
-    >
+    <div className={`col d-flex align-items-center ${className}`}>
       {children}
     </div>
   )
@@ -65,7 +64,7 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
       <Container fluid className="d-flex">
         <NavBarBoxContainer>
           {isMobile ? (
-            <div>
+            <NavBarBox>
               <Navbar expand={false} expanded={isExpanded}>
                 <Navbar.Brand>
                   <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
@@ -159,9 +158,9 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </Nav>
                 </Navbar.Collapse>
               </Navbar>
-            </div>
+            </NavBarBox>
           ) : (
-            <div className={`align-items-center justify-content-start me-3`}>
+            <div className={`align-items-center justify-content-start`}>
               <Nav.Link href="/" className={`py-0 px-2`}>
                 <Image src="/Logo2024.png" alt="logo" width="80" height="80" />
               </Nav.Link>
@@ -169,8 +168,8 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
           )}
 
           {isMobile ? (
-            <div className="justify-content-center">
-              <Nav.Link href="/">
+            <NavBarBox className="justify-content-between">
+              <NavLink href="/">
                 <Image
                   src="/Logo2024.png"
                   alt="logo"
@@ -178,10 +177,10 @@ export const UnifiedNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
                   width="60"
                   height="60"
                 />
-              </Nav.Link>
-            </div>
+              </NavLink>
+            </NavBarBox>
           ) : (
-            <NavBarBox>
+            <NavBarBox className="justify-content-end">
               <Navbar expand={false} expanded={isExpanded}>
                 <Col className={`align-self-center`}>
                   <Nav>

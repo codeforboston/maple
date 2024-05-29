@@ -4,6 +4,17 @@ import Image from "react-bootstrap/Image"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
+import {
+  NavbarLinkBills,
+  NavbarLinkEffective,
+  NavbarLinkFAQ,
+  NavbarLinkGoals,
+  NavbarLinkLogo,
+  NavbarLinkProcess,
+  NavbarLinkSupport,
+  NavbarLinkTeam,
+  NavbarLinkTestimony
+} from "./Navbarlinks"
 import { NavLink } from "./Navlink"
 
 const NavBarBoxContainer: FC<
@@ -62,48 +73,14 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               </Navbar.Brand>
               <Navbar.Collapse id="topnav">
                 <Nav className="me-auto">
-                  <NavLink
-                    className={"navLink-primary"}
-                    href="/bills"
-                    handleClick={closeNav}
-                  >
-                    {t("navigation.browseBills")}
-                  </NavLink>
-                  <NavLink
-                    className={"navLink-primary"}
-                    href="/testimony"
-                    handleClick={closeNav}
-                  >
-                    {t("navigation.browseTestimony")}
-                  </NavLink>
+                  <NavbarLinkBills handleClick={closeNav} />
+                  <NavbarLinkTestimony handleClick={closeNav} />
 
                   <NavDropdown className={"navLink-primary"} title={t("about")}>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/about/mission-and-goals"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.missionAndGoals")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink href="/about/our-team" handleClick={closeNav}>
-                        {t("navigation.team")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/about/support-maple"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.supportMaple")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink href="/about/faq-page" handleClick={closeNav}>
-                        {t("navigation.faq")}
-                      </NavLink>
-                    </NavDropdown.Item>
+                    <NavbarLinkGoals handleClick={closeNav} />
+                    <NavbarLinkTeam handleClick={closeNav} />
+                    <NavbarLinkSupport handleClick={closeNav} />
+                    <NavbarLinkFAQ handleClick={closeNav} />
 
                     {/* to be removed when implemented on the footer*/}
 
@@ -115,22 +92,8 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </NavDropdown>
 
                   <NavDropdown className={"navLink-primary"} title={t("learn")}>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/learn/to-write-effective-testimony"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.toWriteEffectiveTestimony")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/learn/legislative-process"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.legislativeProcess")}
-                      </NavLink>
-                    </NavDropdown.Item>
+                    <NavbarLinkEffective handleClick={closeNav} />
+                    <NavbarLinkProcess handleClick={closeNav} />
                     <NavDropdown.Item>
                       <NavLink
                         href="/why-use-maple/for-individuals"
@@ -145,17 +108,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </Navbar>
           </NavBarBox>
 
-          <div>
-            <Nav.Link href="/">
-              <Image
-                src="/Logo2024.png"
-                alt="logo"
-                className="w-100"
-                width="60"
-                height="60"
-              />
-            </Nav.Link>
-          </div>
+          <NavbarLinkLogo />
 
           <NavBarBox className={`justify-content-end`}>
             <Navbar
