@@ -126,7 +126,6 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   >
                     {t("navigation.browseTestimony")}
                   </NavLink>
-
                   <NavDropdown className={"navLink-primary"} title={t("learn")}>
                     <NavDropdown.Item>
                       <NavLink
@@ -145,7 +144,6 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
-
                   <NavDropdown className={"navLink-primary"} title={t("about")}>
                     <NavDropdown.Item>
                       <NavLink href="/about/faq-page" handleClick={closeNav}>
@@ -179,7 +177,6 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
-
                   <NavDropdown
                     className={"navLink-primary"}
                     title={t("whyUseMaple")}
@@ -192,24 +189,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         {t("navigation.forIndividuals")}
                       </NavLink>
                     </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/why-use-maple/for-orgs"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.forOrganizations")}
-                      </NavLink>
-                    </NavDropdown.Item>
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/why-use-maple/for-legislators"
-                        handleClick={closeNav}
-                      >
-                        {t("navigation.forLegislators")}
-                      </NavLink>
-                    </NavDropdown.Item>
                   </NavDropdown>
-
                   {authenticated && (
                     <NavLink
                       className={"navLink-primary"}
