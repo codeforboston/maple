@@ -1,14 +1,12 @@
 import { useTranslation } from "next-i18next"
 import React, { FC, useState } from "react"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
-
-import styled from "styled-components"
-import { NavbarBrand } from "react-bootstrap"
 
 const LogoBox = styled.div`
   width: max-content;
