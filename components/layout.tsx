@@ -47,6 +47,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
           </Head>
           <PageContainer>
             {isMobile ? <MobileNav /> : <DesktopNav />}
+            <div>Alternate Navbar</div>
             <UnifiedNavbar />
             <AuthModal />
             <div className={`col`}>{children}</div>
