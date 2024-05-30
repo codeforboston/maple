@@ -189,6 +189,22 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                         {t("navigation.forIndividuals")}
                       </NavLink>
                     </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/why-use-maple/for-organizations"
+                        handleClick={closeNav}
+                      >
+                        {t("navigation.forOrganizations")}
+                      </NavLink>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <NavLink
+                        href="/why-use-maple/for-legislators"
+                        handleClick={closeNav}
+                      >
+                        {t("navigation.forLegislators")}
+                      </NavLink>
+                    </NavDropdown.Item>
                   </NavDropdown>
                   {authenticated && (
                     <NavLink
