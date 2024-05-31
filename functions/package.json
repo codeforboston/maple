@@ -18,7 +18,7 @@
     "axios": "^0.25.0",
     "date-fns": "^2.30.0",
     "firebase-admin": "^10",
-    "firebase-functions": "^3.22.0",
+    "firebase-functions": "^4.9.0",
     "fuse.js": "6.5.3",
     "handlebars": "^4.7.8",
     "lodash": "^4.17.21",
