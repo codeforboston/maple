@@ -32,7 +32,7 @@ const tabs: TabsType[] = [
   },
   {
     label: "For Organizations",
-    slug: "for-organizations",
+    slug: "for-orgs",
     index: 2,
     Component: ForOrgs
   },

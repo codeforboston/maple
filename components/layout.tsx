@@ -191,7 +191,7 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <NavLink
-                        href="/why-use-maple/for-organizations"
+                        href="/why-use-maple/for-orgs"
                         handleClick={closeNav}
                       >
                         {t("navigation.forOrganizations")}
