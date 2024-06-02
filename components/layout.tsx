@@ -201,7 +201,6 @@ const TopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                       </NavLink>
                     </NavDropdown.Item>
                   </NavDropdown>
-
                   {authenticated && (
                     <NavLink
                       className={"navLink-primary"}
