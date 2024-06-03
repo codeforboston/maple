@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test"
+import { Console } from "console"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -61,23 +62,8 @@ test.describe("Browse Bills Page", () => {
   })
 })
 
-test.describe("Browse Bills Page", () => {
-  const sortOptions = [
-    "Sort by Most Recent Testimony",
-    "Sort by Relevance",
-    "Sort by Testimony Count",
-    "Sort by Cosponsor Count",
-    "Sort by Next Hearing Date"
-  ]
-})
-test.describe("Browse Bills Page", () => {
+test.describe("Sort Bills test", () => {
   const sortingTests = [
-    {
-      option: "Sort by Most Recent Testimony",
-      attribute: "data-testimony-date",
-      order: "desc",
-      type: "number"
-    },
     {
       option: "Sort by Relevance",
       attribute: "data-relevance-score",
@@ -86,26 +72,38 @@ test.describe("Browse Bills Page", () => {
     }, // Assuming relevance score is a number attribute
     {
       option: "Sort by Testimony Count",
-      attribute: "data-testimony-count",
+      attribute: "div.testimonyCount",
       order: "desc",
-      type: "number"
+      type: "sum"
     },
     {
       option: "Sort by Cosponsor Count",
-      attribute: "data-cosponsor-count",
+      attribute: "span.blurb",
       order: "desc",
-      type: "number"
+      type: "cosponsor"
     },
     {
       option: "Sort by Next Hearing Date",
-      attribute: "data-hearing-date",
+      attribute: "div.card-footer",
       order: "asc",
       type: "date"
+    },
+    {
+      option: "Sort by Most Recent Testimony",
+      attribute: "span.blurb.me-2",
+      order: "desc",
+      type: "courtNumber"
     }
   ]
 
   for (const { option, attribute, order, type } of sortingTests) {
     test(`should sort bills by ${option}`, async ({ page }) => {
+      // Get the first bill content
+      const initialFirstBillTextContent = await page
+        .locator("li.ais-Hits-item a")
+        .first()
+        .textContent()
+
       // Interact with the sorting dropdown
       const sortDropdown = page.locator(".s__control")
       await sortDropdown.click()
@@ -113,6 +111,88 @@ test.describe("Browse Bills Page", () => {
       // Select the sorting option
       const sortByOption = page.locator(`div.s__option:has-text("${option}")`)
       await sortByOption.click()
+
+      // Wait for the sorting to finish
+      if (option !== "Sort by Most Recent Testimony") {
+        await page.waitForFunction(initialText => {
+          const firstBill = document.querySelector("li.ais-Hits-item a")
+          return firstBill && firstBill.textContent !== initialText
+        }, initialFirstBillTextContent)
+      }
+
+      // let nextPage = 2
+      // let hasNextPage
+      // do {
+      //   hasNextPage = await page.$(
+      //     "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
+      //   )
+      //   if (hasNextPage) {
+      //     await hasNextPage.click()
+      //   }
+      // } while (nextPage-- > 0)
+
+      // Verify the sorting result
+      const sortedBills = page.locator("li.ais-Hits-item")
+      const billValues = await sortedBills.evaluateAll(
+        (
+          items: Element[],
+          { attribute, type }: { attribute: string; type: string }
+        ) => {
+          return items.map(item => {
+            if (type === "cosponsor") {
+              const cosponsorRecord = item.querySelectorAll(attribute)
+              let cosponsorCount = 0
+              cosponsorRecord.forEach(span => {
+                const match = span.textContent?.match(/and (\d+) others/)
+                if (match) {
+                  cosponsorCount = parseInt(match[1], 10)
+                }
+              })
+              console.log(cosponsorCount)
+              return cosponsorCount
+            } else if (type === "date") {
+              const nextHearingDay = item.querySelector(attribute)
+              const dateText = nextHearingDay?.textContent?.match(
+                /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
+              )
+              const value = dateText ? dateText[0] : ""
+              const dateValue = new Date(value || "")
+              console.log(dateValue.getTime())
+              return dateValue.getTime()
+            } else if (type === "sum") {
+              const testimonyAmount = item.querySelector(attribute)
+              const svgs = testimonyAmount?.querySelectorAll("svg")
+              const values = Array.from(svgs || []).map(svg => {
+                const textNode = svg.nextSibling
+                const textContent = textNode ? textNode.textContent || "0" : "0"
+                const number = parseInt(textContent, 10)
+                return number
+              })
+              const sum = values.reduce((acc, val) => acc + val, 0)
+              console.log("Text from next sibling node:", sum)
+
+              return sum
+            } else if (type === "courtNumber") {
+              const courtNumber = item.querySelector(attribute)
+              const value = courtNumber ? courtNumber.textContent : ""
+              const numberMatch = value ? value.match(/\d+$/) : "0"
+              console.log(numberMatch)
+              return numberMatch ? parseInt(numberMatch[0], 10) : 0
+            }
+            return 0
+          })
+        },
+        { attribute, type }
+      )
+
+      // Check if values are sorted correctly
+      for (let i = 0; i < billValues.length - 1; i++) {
+        if (order === "asc") {
+          expect(billValues[i]).toBeLessThanOrEqual(billValues[i + 1])
+        } else {
+          expect(billValues[i]).toBeGreaterThanOrEqual(billValues[i + 1])
+        }
+      }
     })
   }
 })
