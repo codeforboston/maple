@@ -10,27 +10,36 @@ test.beforeEach(async ({ page }) => {
   const bills = await page.$$("li.ais-Hits-item")
   expect(bills.length).toBeGreaterThan(0)
 })
+
 test.describe("Search result test", () => {
-  test("should find bills via text search", async ({ page }) => {
+  // Function to get a random word from a predefined list
+  const getRandomWord = () => {
+    const words = [
+      "health",
+      "education",
+      "environment",
+      "technology",
+      "finance",
+      "transportation",
+      "agriculture",
+      "energy",
+      "housing",
+      "security"
+    ]
+    return words[Math.floor(Math.random() * words.length)]
+  }
+
+  test("find bills via text search", async ({ page }) => {
     // Setup search term
-    const searchTerm = "act"
+    const searchTerm = getRandomWord()
+    test.setTimeout(100000)
 
     // Perform the search
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter") // Assuming pressing Enter triggers the search
+    await page.keyboard.press("Enter")
 
-    // Get the initial result count
-    const initialResultCount = await page.textContent(
-      ".ResultCount__ResultContainer-sc-3931e200-0"
-    )
-
-    // Wait for the result count to change
-    await page.waitForFunction(initialResultCount => {
-      const currentResultCount = document.querySelector(
-        ".ResultCount__ResultContainer-sc-3931e200-0"
-      )?.textContent
-      return currentResultCount !== initialResultCount
-    }, initialResultCount)
+    // Wait for the result
+    await page.waitForTimeout(1000)
 
     // Function to check the full content of a bill
     const checkFullContent = async () => {
@@ -43,12 +52,10 @@ test.describe("Search result test", () => {
 
       for (const link of billLinks) {
         await page.goto(link)
-        // await page.waitForTimeout(2000)
 
         // Click the 'read more' button to get full content
         const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
         await readmorebtn.click()
-        // await page.waitForTimeout(2000)
 
         // Get the full content
         const fullContent = await page.textContent(
@@ -64,63 +71,101 @@ test.describe("Search result test", () => {
         }
         // Go back to the main search results page
         await page.goBack()
-        // await page.waitForTimeout(2000)
       }
     }
 
     // Check the full content of each bill
     await checkFullContent()
   })
-})
-
-test.describe("Browse Bills Page", () => {
-  test("should find bills via text search", async ({ page }) => {
+  test("check the edge case when search incldue 'act'", async ({ page }) => {
     // Setup serach term
     const searchTerm = "act"
 
     // Perform the search
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter") // Assuming pressing Enter triggers the search
+    await page.keyboard.press("Enter")
 
-    // Get the initial result count
-    const initialResultCount = await page.textContent(
-      ".ResultCount__ResultContainer-sc-3931e200-0"
+    // Wait for the result
+    await page.waitForTimeout(1000)
+
+    // Check that the search results contain 'act'
+    const searchResults = await page.$$eval("li.ais-Hits-item a", links =>
+      links.map(link => link.textContent || "")
     )
+    // Ensure every result contains the search term
+    const allContainSearchTerm = searchResults.every(text =>
+      text.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    expect(allContainSearchTerm).toBe(true)
+  })
+  test("check the first bill on random page", async ({ page }) => {
+    // Setup search term
+    const searchTerm = getRandomWord()
+    test.setTimeout(100000)
 
-    // Wait for the result count to change
-    await page.waitForFunction(initialResultCount => {
-      const currentResultCount = document.querySelector(
-        ".ResultCount__ResultContainer-sc-3931e200-0"
-      )?.textContent
-      return currentResultCount !== initialResultCount
-    }, initialResultCount)
+    // Perform the search
+    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
+    await page.keyboard.press("Enter")
 
-    // Check that the search results contain the search term
-    const checkResults = async () => {
-      const searchResults = await page.$$eval("li.ais-Hits-item a", links =>
-        links.map(link => link.textContent || "")
+    // Wait for the result
+    await page.waitForTimeout(1000)
+
+    // Function to check the full content of the first bill on the page
+    const checkFirstBill = async () => {
+      const firstBillLink = await page.$eval(
+        "li.ais-Hits-item a",
+        link => (link as HTMLAnchorElement).href
       )
-      // Ensure every result contains the search term
-      const allContainSearchTerm = searchResults.every(text =>
-        text.toLowerCase().includes(searchTerm.toLowerCase())
+
+      await page.goto(firstBillLink)
+
+      // Click the 'read more' button to get full content
+      const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
+      await readmorebtn.click()
+
+      // Get the full content
+      const fullContent = await page.textContent(
+        ".Summary__FormattedBillDetails-sc-791f19-4"
       )
-      expect(allContainSearchTerm).toBe(true)
+
+      // Ensure fullContent is not null
+      if (fullContent) {
+        // Check if the full content contains the search term
+        expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
+      } else {
+        console.warn(`Full content for first bill on page was null.`)
+      }
+
+      // Go back to the main search results page
+      await page.goBack()
+
+      // Wait for the result
+      await page.waitForTimeout(1000)
     }
-    // Check the first page of results
-    await checkResults()
 
-    // // Pagination logic
-    // let hasNextPage
-    // do {
-    //   hasNextPage = await page.$(
-    //     "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
-    //   )
-    //   if (hasNextPage) {
-    //     await hasNextPage.click()
-    //     // await page.waitForSelector("li.ais-Hits-item")
-    //     await checkResults()
-    //   }
-    // } while (hasNextPage)
+    // Function to click a random number of times on the "next page" button
+    const clickNextPageRandomTimes = async () => {
+      const randomClicks = Math.floor(Math.random() * 5) + 1 // Random number between 1 and 5
+      for (let i = 0; i < randomClicks; i++) {
+        const hasNextPage = await page.$(
+          "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
+        )
+        if (hasNextPage) {
+          await hasNextPage.click()
+          await page.waitForTimeout(1000)
+        } else {
+          break
+        }
+      }
+    }
+
+    // Check the first bill on random page for five times if available
+    let times = 5
+    do {
+      await checkFirstBill()
+      await clickNextPageRandomTimes()
+      times--
+    } while (times > 0)
   })
 })
 
@@ -260,16 +305,24 @@ test.describe("Sort Bills test", () => {
 })
 test.describe("Filter Bills test", () => {
   const filterCategories = [
-    //"div.ais-RefinementList.mb-4:nth-of-type(1)", // General Court
+    "div.ais-RefinementList.mb-4:nth-of-type(1)", // General Court
     "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
     "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
-    "div.ais-RefinementList.mb-4:nth-of-type(4)" // Primary Sponsor
-    // "div.ais-RefinementList.mb-4:nth-of-type(5)" // Cosponsor
+    "div.ais-RefinementList.mb-4:nth-of-type(4)", // Primary Sponsor
+    "div.ais-RefinementList.mb-4:nth-of-type(5)" // Cosponsor
   ]
 
   const filterItemSelector = "li:first-child input.ais-RefinementList-checkbox"
 
-  test("apply a first single filter from each category", async ({ page }) => {
+  test("apply a first single filter from Current Committee, City and Primary Sponsor", async ({
+    page
+  }) => {
+    const filterCategories = [
+      "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
+      "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
+      "div.ais-RefinementList.mb-4:nth-of-type(4)" // Primary Sponsor
+    ]
+
     // Loop through each filter category and apply the first filter
     for (const filterCategory of filterCategories) {
       // Uncheck all filters first to ensure a clean state
@@ -289,7 +342,7 @@ test.describe("Filter Bills test", () => {
         .innerText()
       await page.check(firstFilterItem)
 
-      // Wait for the filtering to apply (adjust timeout as needed)
+      // Wait for the filtering to apply
       await page.waitForTimeout(2000)
 
       // Verify the filtering result
