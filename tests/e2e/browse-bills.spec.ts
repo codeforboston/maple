@@ -10,6 +10,68 @@ test.beforeEach(async ({ page }) => {
   const bills = await page.$$("li.ais-Hits-item")
   expect(bills.length).toBeGreaterThan(0)
 })
+test.describe("Search result test", () => {
+  test("should find bills via text search", async ({ page }) => {
+    // Setup search term
+    const searchTerm = "act"
+
+    // Perform the search
+    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
+    await page.keyboard.press("Enter") // Assuming pressing Enter triggers the search
+
+    // Get the initial result count
+    const initialResultCount = await page.textContent(
+      ".ResultCount__ResultContainer-sc-3931e200-0"
+    )
+
+    // Wait for the result count to change
+    await page.waitForFunction(initialResultCount => {
+      const currentResultCount = document.querySelector(
+        ".ResultCount__ResultContainer-sc-3931e200-0"
+      )?.textContent
+      return currentResultCount !== initialResultCount
+    }, initialResultCount)
+
+    // Function to check the full content of a bill
+    const checkFullContent = async () => {
+      // Get all bill links
+      const billLinks = await page.$$eval("li.ais-Hits-item a", links =>
+        links
+          .map(link => (link as HTMLAnchorElement).href)
+          .filter(href => href !== undefined)
+      )
+
+      for (const link of billLinks) {
+        await page.goto(link)
+        // await page.waitForTimeout(2000)
+
+        // Click the 'read more' button to get full content
+        const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
+        await readmorebtn.click()
+        // await page.waitForTimeout(2000)
+
+        // Get the full content
+        const fullContent = await page.textContent(
+          ".Summary__FormattedBillDetails-sc-791f19-4"
+        )
+
+        // Ensure fullContent is not null
+        if (fullContent) {
+          // Check if the full content contains the search term
+          expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
+        } else {
+          console.warn(`Full content for link ${link} was null.`)
+        }
+        // Go back to the main search results page
+        await page.goBack()
+        // await page.waitForTimeout(2000)
+      }
+    }
+
+    // Check the full content of each bill
+    await checkFullContent()
+  })
+})
 
 test.describe("Browse Bills Page", () => {
   test("should find bills via text search", async ({ page }) => {
@@ -196,4 +258,58 @@ test.describe("Sort Bills test", () => {
     })
   }
 })
-test.describe("Filter Bills test", () => {})
+test.describe("Filter Bills test", () => {
+  const filterCategories = [
+    //"div.ais-RefinementList.mb-4:nth-of-type(1)", // General Court
+    "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
+    "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
+    "div.ais-RefinementList.mb-4:nth-of-type(4)" // Primary Sponsor
+    // "div.ais-RefinementList.mb-4:nth-of-type(5)" // Cosponsor
+  ]
+
+  const filterItemSelector = "li:first-child input.ais-RefinementList-checkbox"
+
+  test("apply a first single filter from each category", async ({ page }) => {
+    // Loop through each filter category and apply the first filter
+    for (const filterCategory of filterCategories) {
+      // Uncheck all filters first to ensure a clean state
+      const checkedFilters = await page.$$(
+        filterCategory + " " + filterItemSelector + ":checked"
+      )
+      for (const filter of checkedFilters) {
+        await filter.uncheck()
+      }
+
+      // Check the first filter item in the current category
+      const firstFilterItem = `${filterCategory} ${filterItemSelector}`
+      const filterLabel = await page
+        .locator(
+          `${filterCategory} li:first-child .ais-RefinementList-labelText`
+        )
+        .innerText()
+      await page.check(firstFilterItem)
+
+      // Wait for the filtering to apply (adjust timeout as needed)
+      await page.waitForTimeout(2000)
+
+      // Verify the filtering result
+      const filteredResults = await page.$$eval(
+        ".ais-Hits-item",
+        (items, filterText) => {
+          return items.every(item => {
+            const labels = item.querySelectorAll(".blurb")
+            return Array.from(labels).some(label => {
+              const labalText = label.textContent ? label.textContent : ""
+              console.log(labalText, filterText)
+              return labalText.includes(filterText)
+            })
+          })
+        },
+        filterLabel
+      )
+
+      expect(filteredResults).toBeTruthy() // Check that filtering worked correctly
+      await page.uncheck(firstFilterItem)
+    }
+  })
+})
