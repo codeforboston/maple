@@ -1,8 +1,8 @@
 import styled from "styled-components"
 import { useState } from "react"
-import { Link } from "react-admin"
 import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
+import { Internal } from "components/links"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   return (
@@ -120,7 +120,7 @@ export const PublishingToMAPLE = () => {
         <NoteItem>
           Since MAPLE is an archive, you cannot remove your testimony from the
           site. You may request a deletion in certain circumstances (see our{" "}
-          <Link to="/about/faq-page">FAQ page</Link>)
+          <Internal href="/about/faq-page">FAQ page</Internal>)
         </NoteItem>
         <NoteItem>Don't forget to send the email to your legislator.</NoteItem>
       </ul>
