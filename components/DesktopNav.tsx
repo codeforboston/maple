@@ -3,7 +3,6 @@ import React from "react"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
-import { NavLink } from "./Navlink"
 
 import {
   Avatar,
@@ -23,9 +22,8 @@ import {
 } from "./NavbarComponents"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const { authenticated, user } = useAuth()
+  const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
-  const userLink = "/profile?id=" + user?.uid
 
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
@@ -87,7 +85,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavDropdown.Item>
-                <NavbarLinkViewProfile userLink={userLink} />
+                <NavbarLinkViewProfile />
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <NavbarLinkEditProfile />

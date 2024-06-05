@@ -19,7 +19,6 @@ import {
   NavbarLinkViewProfile,
   NavbarLinkWhyUse
 } from "./NavbarComponents"
-import { NavLink } from "./Navlink"
 
 const NavBarBoxContainer: FC<
   React.PropsWithChildren<{ className?: string }>
@@ -47,14 +46,12 @@ const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
 }
 
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
-  const { authenticated, user } = useAuth()
+  const { authenticated } = useAuth()
   const [isExpanded, setIsExpanded] = useState(false)
   const { t } = useTranslation(["common", "auth"])
 
   const toggleNav = () => setIsExpanded(!isExpanded)
   const closeNav = () => setIsExpanded(false)
-
-  const userLink = "/profile?id=" + user?.uid
 
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
@@ -119,7 +116,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </Navbar.Brand>
                   <Navbar.Collapse id="profile-nav">
                     <Nav className="me-4 d-flex align-items-end">
-                      <NavbarLinkViewProfile userLink={userLink} />
+                      <NavbarLinkViewProfile />
                       <NavbarLinkEditProfile
                         handleClick={() => {
                           closeNav()

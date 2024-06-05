@@ -1,6 +1,7 @@
 import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
+import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
 import { NavLink } from "./Navlink"
 
@@ -54,7 +55,7 @@ export const NavbarLinkEditProfile: React.FC<
   }>
 > = ({ handleClick, other }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const { t } = useTranslation(["common", "auth"])
+  const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
@@ -62,7 +63,7 @@ export const NavbarLinkEditProfile: React.FC<
         href="/editprofile"
         {...other}
       >
-        Edit Profile
+        {t("navigation.editProfile")}
       </NavLink>
     </Nav.Item>
   )
@@ -192,7 +193,7 @@ export const NavbarLinkSignOut: React.FC<
       handleClick={handleClick}
       {...other}
     >
-      Sign Out
+      {t("navigation.signOut")}
     </NavLink>
   )
 }
@@ -263,9 +264,10 @@ export const NavbarLinkTestimony: React.FC<
 export const NavbarLinkViewProfile: React.FC<
   React.PropsWithChildren<{
     other?: any
-    userLink: string
   }>
-> = ({ other, userLink }) => {
+> = ({ other }) => {
+  const { user } = useAuth()
+  const userLink = "/profile?id=" + user?.uid
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth"])
   return (
@@ -276,7 +278,7 @@ export const NavbarLinkViewProfile: React.FC<
       }}
       {...other}
     >
-      View Profile
+      {t("navigation.viewProfile")}
     </NavLink>
   )
 }

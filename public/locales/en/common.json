@@ -27,6 +27,7 @@
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
     "communicatingWithLegislators": "Communicating with Legislators",
+    "editProfile": "Edit Profile",
     "faq": "FAQ",
     "forIndividuals": "Why Individuals Use Maple",
     "forLegislators": "Why Legislators Use Maple",
@@ -38,8 +39,10 @@
     "missionAndGoals": "Mission & Goals",
     "team": "Team",
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
+    "signOut": "Sign Out",
     "supportMaple": "Support MAPLE",
     "toWriteEffectiveTestimony": "To Write Effective Testimony",
+    "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE"
   },
   "newcomer" : "New to MAPLE? For extra support, check",
