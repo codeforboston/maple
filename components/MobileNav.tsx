@@ -16,7 +16,8 @@ import {
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkViewProfile
+  NavbarLinkViewProfile,
+  NavbarLinkWhyUse
 } from "./NavbarComponents"
 import { NavLink } from "./Navlink"
 
@@ -58,6 +59,8 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
+  console.log("is Expanded? ", isExpanded)
+
   return (
     <Navbar
       bg="secondary"
@@ -84,27 +87,12 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                     <NavbarLinkTeam handleClick={closeNav} />
                     <NavbarLinkSupport handleClick={closeNav} />
                     <NavbarLinkFAQ handleClick={closeNav} />
-
-                    {/* to be removed when implemented on the footer*/}
-
-                    {/* <NavDropdown.Item>
-                        <NavLink href="/policies" handleClick={closeNav}>
-                          {t("navigation.privacyAndConduct")}
-                        </NavLink>
-                      </NavDropdown.Item> */}
                   </NavDropdown>
 
                   <NavDropdown className={"navLink-primary"} title={t("learn")}>
                     <NavbarLinkEffective handleClick={closeNav} />
                     <NavbarLinkProcess handleClick={closeNav} />
-                    <NavDropdown.Item>
-                      <NavLink
-                        href="/why-use-maple/for-individuals"
-                        handleClick={closeNav}
-                      >
-                        {t("whyUseMaple")}
-                      </NavLink>
-                    </NavDropdown.Item>
+                    <NavbarLinkWhyUse handleClick={closeNav} />
                   </NavDropdown>
                 </Nav>
               </Navbar.Collapse>
@@ -132,7 +120,11 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   <Navbar.Collapse id="profile-nav">
                     <Nav className="me-4 d-flex align-items-end">
                       <NavbarLinkViewProfile userLink={userLink} />
-                      <NavbarLinkEditProfile />
+                      <NavbarLinkEditProfile
+                        handleClick={() => {
+                          closeNav()
+                        }}
+                      />
                       <NavbarLinkSignOut
                         handleClick={() => {
                           closeNav()
@@ -143,14 +135,12 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   </Navbar.Collapse>
                 </>
               ) : (
-                <></>
+                <SignInWithButton />
               )}
             </Navbar>
           </NavBarBox>
         </NavBarBoxContainer>
       </Container>
-
-      {!authenticated ? <SignInWithButton className={`w-100`} /> : null}
     </Navbar>
   )
 }
