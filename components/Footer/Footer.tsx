@@ -62,20 +62,6 @@ function MapleContainer({ className }: { className?: string }) {
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="light"
-            href="https://www.instagram.com/mapletestimony/?hl=en"
-            style={{ borderRadius: 50, padding: 8, margin: 5 }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/instagram.svg"
-              alt="Instagram Icon"
-              width="24"
-              height="24"
-            ></Image>
-          </Button>
-          <Button
-            variant="light"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
             href="https://twitter.com/MapleTestimony"
             target="_blank"
@@ -84,6 +70,20 @@ function MapleContainer({ className }: { className?: string }) {
             <Image
               src="/images/twitter.svg"
               alt="Twitter Icon"
+              width="24"
+              height="24"
+            ></Image>
+          </Button>
+          <Button
+            variant="light"
+            href="https://www.instagram.com/mapletestimony/?hl=en"
+            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/instagram.svg"
+              alt="Instagram Icon"
               width="24"
               height="24"
             ></Image>
@@ -116,47 +116,19 @@ function MapleContainer({ className }: { className?: string }) {
   )
 }
 
-const ResourcesLinks = () => {
+const TermsAndPolicies = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <StyledExternalLink href="https://malegislature.gov/Search/FindMyLegislator">
-        {t("links.resourcesLegislators")}
-      </StyledExternalLink>
-      <StyledExternalLink href="https://github.com/codeforboston/maple">
-        {t("links.resourcesGitHub")}
-      </StyledExternalLink>
-      <StyledExternalLink href="https://opencollective.com/mapletestimony">
-        {t("links.resourcesOpenCollective")}
-      </StyledExternalLink>
-    </>
-  )
-}
-
-const BrowseLinks = () => {
-  const { t } = useTranslation("common")
-  return (
-    <>
-      <StyledInternalLink href="/bills">
-        {t("navigation.browseBills")}
+      <StyledInternalLink href="/policies">
+        {t("Privacy Policy")}
       </StyledInternalLink>
-      <StyledInternalLink href="/testimony">
-        {t("navigation.browseTestimony")}
+      <StyledInternalLink href="/policies/copyright">
+        {t("Terms of Service")}
       </StyledInternalLink>
-    </>
-  )
-}
-
-const OurTeamLinks = () => {
-  const { t } = useTranslation("footer")
-  return (
-    <>
-      <StyledExternalLink href="https://www.nulawlab.org">
-        {t("links.teamNEU")}
-      </StyledExternalLink>
-      <StyledExternalLink href="https://www.codeforboston.org/">
-        {t("links.teamCFB")}
-      </StyledExternalLink>
+      <StyledInternalLink href="/policies/code-of-conduct">
+        {t("Code of Conduct")}
+      </StyledInternalLink>
     </>
   )
 }
@@ -193,13 +165,13 @@ const LearnLinks = () => {
   return (
     <>
       <StyledInternalLink href="/learn/writing-effective-testimony">
-        {t("links.learnWriting")}
+        {t("To Writing Effective Testimony")}
       </StyledInternalLink>
-      <StyledInternalLink href="/learn/communicating-with-legislators">
-        {t("links.learnLegislators")}
+      <StyledInternalLink href="/learn/legislative-process">
+        {t("About the Legislative Process", { ns: "common" })}
       </StyledInternalLink>
-      <StyledInternalLink href="/learn/additional-resources">
-        {t("navigation.additionalResources", { ns: "common" })}
+      <StyledInternalLink href="/why-use-maple/for-individuals">
+        {t("Why use MAPLE")}
       </StyledInternalLink>
     </>
   )
@@ -210,10 +182,38 @@ const AboutLinks = () => {
   return (
     <>
       <StyledInternalLink href="/about/mission-and-goals">
-        {t("navigation.missionAndGoals")}
+        {t("Mission & Goals")}
       </StyledInternalLink>
       <StyledInternalLink href="/about/our-team">
-        {t("team")}
+        {t("Team")}
+      </StyledInternalLink>
+      <StyledInternalLink href="/about/support-maple">
+        {t("Support MAPLE")}
+      </StyledInternalLink>
+      <StyledInternalLink href="/about/faq-page">
+        {t("navigation.faq")}
+      </StyledInternalLink>
+    </>
+  )
+}
+
+const BrowseTestimony = () => {
+  const { t } = useTranslation("common")
+  return (
+    <>
+      <StyledInternalLink href="/testimony">
+        {t("navigation.browseTestimony")}
+      </StyledInternalLink>
+    </>
+  )
+}
+
+const BrowseBills = () => {
+  const { t } = useTranslation("common")
+  return (
+    <>
+      <StyledInternalLink href="/bills">
+        {t("navigation.browseBills")}
       </StyledInternalLink>
     </>
   )
@@ -232,9 +232,10 @@ const PageFooter = (props: PageFooterProps) => {
         className="d-md-none w-100 order-1 p-2 mb-2"
       >
         <Nav className={`d-flex w-100`}>
-          <CustomDropdown title={t("headers.browse")}>
-            <BrowseLinks />
-          </CustomDropdown>
+          <BrowseTestimony />
+
+          <BrowseBills />
+
           <CustomDropdown title={t("headers.account")}>
             <AccountLinks {...props} />
           </CustomDropdown>
@@ -248,33 +249,27 @@ const PageFooter = (props: PageFooterProps) => {
           </CustomDropdown>
 
           <CustomDropdown title={t("headers.resources")}>
-            <ResourcesLinks />
-          </CustomDropdown>
-
-          <CustomDropdown title={t("team", { ns: "common" })}>
-            <OurTeamLinks />
+            <TermsAndPolicies />
           </CustomDropdown>
         </Nav>
       </Navbar>
       <div className={`d-none d-md-flex order-1 flex-grow-1`}>
         <Col>
-          <TextHeader>{t("headers.browse")}</TextHeader>
-          <BrowseLinks />
+          <BrowseTestimony />
+          <BrowseBills />
           <TextHeader>{t("headers.account")}</TextHeader>
 
           <AccountLinks {...props} />
         </Col>
         <Col>
-          <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
-          <LearnLinks />
           <TextHeader>{t("about", { ns: "common" })}</TextHeader>
           <AboutLinks />
+          <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
+          <LearnLinks />
         </Col>
         <Col>
           <TextHeader>{t("headers.resources")}</TextHeader>
-          <ResourcesLinks />
-          <TextHeader>{t("team", { ns: "common" })}</TextHeader>
-          <OurTeamLinks />
+          <TermsAndPolicies />
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
@@ -282,22 +277,6 @@ const PageFooter = (props: PageFooterProps) => {
         className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
       >
         <Col className="text-white col-md-auto">{t("legal.disclaimer")}</Col>
-        <Col className="text-center">
-          <StyledInternalLink href="/policies">
-            {t("legal.TOS")}
-          </StyledInternalLink>
-        </Col>
-        <Col className="">
-          <StyledInternalLink
-            href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
-            other={{
-              target: "_blank",
-              rel: "noopener noreferrer"
-            }}
-          >
-            {t("Click here to subscribe to our newsletter")}
-          </StyledInternalLink>
-        </Col>
       </div>
     </FooterContainer>
   )
