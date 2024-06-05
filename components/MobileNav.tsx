@@ -56,8 +56,6 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
-  console.log("is Expanded? ", isExpanded)
-
   return (
     <Navbar
       bg="secondary"
