@@ -70,7 +70,5 @@ Primary.args = {
     fullName: ""
   },
   isUser: true,
-  canEdit: true,
-  canDelete: false,
   onProfilePage: true
 }
