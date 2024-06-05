@@ -30,7 +30,7 @@ const FooterButton = ({
 }: FooterButtonProps) => {
   return (
     <Button
-      className={`text-decoration-none m-0 ${className}`}
+      className={`text-decoration-none m-0 p-0 ${className}`}
       variant={variant}
     >
       {children}
@@ -73,6 +73,24 @@ export const TestimonyItem = ({
   const canExpand = snippet.length !== testimonyContent.length
 
   const { t } = useTranslation("testimony")
+
+  const IconSpacer = () => {
+    /* this image does not appear to display anything,      *
+     * however it acts as a spacing element                 *
+     *                                                      *
+     * removing this image will throw off the alignment vs  *
+     * the nearby elements that contain visible icons      */
+
+    return (
+      <Image
+        className="ms-auto align-self-center"
+        src="/edit-testimony.svg"
+        alt=""
+        height={40}
+        width={0}
+      />
+    )
+  }
 
   return (
     <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
@@ -119,43 +137,45 @@ export const TestimonyItem = ({
               <FooterButton
                 variant="text"
                 onClick={() => setShowAllTestimony(true)}
-                className="p-2"
               >
                 {t("testimonyItem.expand")}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
           {testimony.id && (
             <Col>
-              <FooterButton variant="text" className="p-2">
+              <FooterButton variant="text">
                 <Internal
                   className={`text-decoration-none`}
                   href={maple.testimony({ publishedId: testimony.id })}
                 >
                   {t("testimonyItem.moreDetails")}
+                  <IconSpacer />
                 </Internal>
               </FooterButton>
             </Col>
           )}
           {testimony.attachmentId && (
             <Col className="d-flex">
-              <FooterButton variant="text" className="p-2">
+              <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
+
+                {/* Current bug Issue #1564 makes this instance of IconSpacer hard to test *
+                 * Please revisit once #1564 is resolved                                  */}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
           <Col xs="auto">
-            <FooterButton
-              variant="text"
-              onClick={() => setIsReporting(true)}
-              className="p-2"
-            >
+            <FooterButton variant="text" onClick={() => setIsReporting(true)}>
               Report
+              <IconSpacer />
             </FooterButton>
           </Col>
           {isUser && !isMobile && (
             <Col>
-              <FooterButton variant="text" className="p-0">
+              <FooterButton variant="text">
                 <Internal
                   className={`text-decoration-none text-secondary`}
                   href={formUrl(testimony.billId, testimony.court)}
