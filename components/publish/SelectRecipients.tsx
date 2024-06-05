@@ -1,14 +1,12 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import { isNotNull } from "components/utils"
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useEffect } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
 import { Button, Col, Row } from "../bootstrap"
 import { CopyButton } from "../buttons"
-import { Row, Col } from "../bootstrap"
 import { useMemberSearch } from "../db"
 import { useProfileState } from "../db/profile/redux"
 import { useAppDispatch } from "../hooks"
@@ -25,19 +23,41 @@ import {
   resolvedLegislatorSearch,
   setRecipients
 } from "./redux"
+import { isNotNull } from "components/utils"
+
+import { useMediaQuery } from "usehooks-ts"
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
   const email = useTestimonyEmail()
 
+  const isMobile = useMediaQuery("(max-width: 1199px)")
+
   return (
     <div {...props}>
       <Row className="d-flex">
-        <Col className="fs-4" md={9} xs={12}>
+        <Col className="align-self-center fs-4" xl={3} lg={12}>
           Email Recipients
         </Col>
-        <Col md={3} xs={12}>
+        <Col xl={6} lg={12}>
           <RecipientControls />
+        </Col>
+        <Col
+          className={`align-self-center ${isMobile ? "py-2" : ""}`}
+          xl={3}
+          lg={12}
+        >
+          {email.to ? (
+            <CopyButton
+              key="copy"
+              variant="outline-secondary"
+              text={email.to}
+              className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
+              format="text/plain"
+            >
+              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+            </CopyButton>
+          ) : null}
         </Col>
       </Row>
       <SelectLegislatorEmails className="my-2" />
@@ -113,8 +133,9 @@ const RecipientControls = styled(({ className }) => {
         .length < share.committeeChairs.length
     ) {
       buttons.push(
-        <Col md={6} xs={12}>
+        <Col className="align-self-center" xl={6} lg={12}>
           <Button
+            className="py-1"
             key="committee"
             variant="link"
             onClick={() => dispatch(addCommittee())}
@@ -125,8 +146,9 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col md={6} xs={12}>
+        <Col className="align-self-center" xl={6} lg={12}>
           <Button
+            className="py-1"
             key="committee"
             variant="link"
             onClick={() => dispatch(removeCommittee())}
@@ -138,7 +160,6 @@ const RecipientControls = styled(({ className }) => {
     }
   }
 
-<<<<<<< tweak-add-remove-recipients-testimony-flow
   if (share.userLegislators.length > 0) {
     const userLegislatorsCodes = share.userLegislators.map(
       item => item.MemberCode
@@ -148,8 +169,9 @@ const RecipientControls = styled(({ className }) => {
         .length < share.userLegislators.length
     ) {
       buttons.push(
-        <Col md={6} xs={12}>
+        <Col className="align-self-center" xl={6} lg={12}>
           <Button
+            className="py-1"
             key="legislators"
             variant="link"
             onClick={() => dispatch(addMyLegislators())}
@@ -160,8 +182,9 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col md={6} xs={12}>
+        <Col className="align-self-center" xl={6} lg={12}>
           <Button
+            className="py-1"
             key="legislators"
             variant="link"
             onClick={() => dispatch(removeMyLegislators())}
@@ -174,9 +197,6 @@ const RecipientControls = styled(({ className }) => {
   }
 
   return <Row>{buttons}</Row>
-=======
-  return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
->>>>>>> main
 })`
   flex-wrap: wrap;
 
