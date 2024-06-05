@@ -7,7 +7,6 @@ import AuthModal from "./auth/AuthModal"
 import { DesktopNav } from "./DesktopNav"
 import PageFooter from "./Footer/Footer"
 import { MobileNav } from "./MobileNav"
-import { UnifiedNavbar } from "./Navbar"
 
 export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   children
@@ -47,8 +46,6 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
           </Head>
           <PageContainer>
             {isMobile ? <MobileNav /> : <DesktopNav />}
-            <div>Alternate Navbar</div>
-            <UnifiedNavbar />
             <AuthModal />
             <div className={`col`}>{children}</div>
             <PageFooter
