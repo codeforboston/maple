@@ -61,21 +61,6 @@ export const SelectRecipients = styled(props => {
         </Col>
       </Row>
       <SelectLegislatorEmails className="my-2" />
-      <Row className="d-flex">
-        <Col md={3}>
-          {email.to ? (
-            <CopyButton
-              key="copy"
-              variant="outline-secondary"
-              text={email.to}
-              className="copy py-1 px-2"
-              format="text/plain"
-            >
-              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-            </CopyButton>
-          ) : null}
-        </Col>
-      </Row>
     </div>
   )
 })`
