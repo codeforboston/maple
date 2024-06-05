@@ -1,9 +1,9 @@
+import { faCheck } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "styled-components"
 import { isComplete, isCurrent, Step } from "./redux"
 import { chipHeight, StepChip } from "./StepChip"
-import { faCheck } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { join } from "lodash"
+
 const Divider = styled.div`
   height: 1px;
   background-color: var(--bs-gray-500);

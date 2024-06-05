@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Bill, Profile, Testimony } from "components/db"
 import { TestimonyQuery } from "components/db/api"
 import { createAppSelector, useAppSelector } from "components/hooks"
@@ -46,10 +46,10 @@ export const slice = createSlice({
       state.selectedVersion = action.payload
     }
   },
-  extraReducers: {
-    [HYDRATE]: (state, action) => {
+  extraReducers: builder => {
+    builder.addCase(HYDRATE, (state, action: AnyAction) => {
       Object.assign(state, action.payload[slice.name])
-    }
+    })
   }
 })
 

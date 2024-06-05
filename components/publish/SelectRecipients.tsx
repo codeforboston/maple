@@ -6,7 +6,7 @@ import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useEffect } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
-import { Button } from "../bootstrap"
+import { Button, Col, Row } from "../bootstrap"
 import { CopyButton } from "../buttons"
 import { Row, Col } from "../bootstrap"
 import { useMemberSearch } from "../db"
@@ -33,10 +33,10 @@ export const SelectRecipients = styled(props => {
   return (
     <div {...props}>
       <Row className="d-flex">
-        <Col className="fs-4" md={4} xs={12}>
+        <Col className="fs-4" md={9} xs={12}>
           Email Recipients
         </Col>
-        <Col md={8} xs={12}>
+        <Col md={3} xs={12}>
           <RecipientControls />
         </Col>
       </Row>
@@ -138,6 +138,7 @@ const RecipientControls = styled(({ className }) => {
     }
   }
 
+<<<<<<< tweak-add-remove-recipients-testimony-flow
   if (share.userLegislators.length > 0) {
     const userLegislatorsCodes = share.userLegislators.map(
       item => item.MemberCode
@@ -173,6 +174,9 @@ const RecipientControls = styled(({ className }) => {
   }
 
   return <Row>{buttons}</Row>
+=======
+  return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
+>>>>>>> main
 })`
   flex-wrap: wrap;
 

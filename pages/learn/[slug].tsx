@@ -4,7 +4,7 @@ import {
   Basics,
   Role,
   Write,
-  Legislative
+  CommunicatingWithLegislators
 } from "../../components/LearnTestimonyComponents/LearnComponents"
 import Tabs from "../../components/Tabs/Tabs"
 import { GetStaticPaths, GetStaticProps } from "next/types"
@@ -28,8 +28,8 @@ interface IParams extends ParsedUrlQuery {
 
 const tabs: TabsType[] = [
   {
-    label: "The Basics of Testimony",
-    slug: "basics-of-testimony",
+    label: "To Write Effective Testimony",
+    slug: "to-write-effective-testimony",
     index: 1,
     Component: Basics
   },
@@ -46,10 +46,10 @@ const tabs: TabsType[] = [
     Component: Write
   },
   {
-    label: "The MA Legislative Process",
-    slug: "legislative-process",
+    label: "Communicating with Legislators",
+    slug: "communicating-with-legislators",
     index: 4,
-    Component: Legislative
+    Component: CommunicatingWithLegislators
   }
 ]
 

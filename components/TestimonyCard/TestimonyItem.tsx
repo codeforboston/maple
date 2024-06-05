@@ -1,91 +1,50 @@
-import { formUrl } from "components/publish/hooks"
-import Image from "react-bootstrap/Image"
+import { useTranslation } from "next-i18next"
+import { ReactNode, useState } from "react"
+import { ButtonProps } from "react-admin"
 import { ToastContainer } from "react-bootstrap"
-import { useReportTestimony } from "components/api/report"
-import ReportToast from "./ReportToast"
+import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
-import { usePublishService } from "components/publish/hooks"
-import { Col, Row, Stack, Button, Spinner } from "../bootstrap"
-import styled from "styled-components"
+
+import { useReportTestimony } from "components/api/report"
+import { formUrl } from "components/publish/hooks"
+import { TestimonyContent } from "components/testimony"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { ViewAttachment } from "components/ViewAttachment"
+import { Button, Col, Row, Stack } from "../bootstrap"
 import { Testimony } from "../db"
 import { Internal, maple } from "../links"
-import { UserInfoHeader } from "./UserInfoHeader"
 import { BillInfoHeader } from "./BillInfoHeader"
 import { ReportModal, RequestDeleteOwnTestimonyModal } from "./ReportModal"
-import { useState } from "react"
-import { TestimonyContent } from "components/testimony"
-import { ViewAttachment } from "components/ViewAttachment"
-import styles from "./ViewTestimony.module.css"
-import { UseAsyncReturn } from "react-async-hook"
-import { useTranslation } from "next-i18next"
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
-import { flags } from "components/featureFlags"
+import ReportToast from "./ReportToast"
+import { UserInfoHeader } from "./UserInfoHeader"
 
-const FooterButton = styled(Button)`
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-`
-const StyledCol = styled(Col)`
-  font-size: 0.75rem;
+type FooterButtonProps = Omit<ButtonProps, "children"> & {
+  className?: string
+  children?: ReactNode
+}
 
-  .choice {
-    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
-    border-radius: 0.75rem;
-    color: white;
-    margin: 0;
-    font-size: 0.75rem;
-
-    align-items: center;
-  }
-`
-
-const ArchiveTestimonyConfirmation = ({
-  show,
-  onHide,
-  archiveTestimony
-}: {
-  show: boolean
-  onHide: () => void
-  archiveTestimony: UseAsyncReturn<void, []> | undefined
-}) => {
-  const { t } = useTranslation("testimony")
-
+const FooterButton = ({
+  variant = "text",
+  className,
+  children
+}: FooterButtonProps) => {
   return (
-    <>
-      <StyledCol>{t("testimonyItem.deleteTestimonyConfirmation")}</StyledCol>
-      <StyledCol>
-        <Button
-          className="choice me-4"
-          variant="secondary"
-          onClick={archiveTestimony?.execute}
-          disabled={archiveTestimony === undefined || archiveTestimony.loading}
-        >
-          {archiveTestimony?.loading ? (
-            <Spinner size="sm" animation="border" />
-          ) : (
-            "Yes"
-          )}
-        </Button>
-        <Button className="choice" variant="primary" onClick={onHide}>
-          {t("testimonyItem.no")}
-        </Button>
-      </StyledCol>
-    </>
+    <Button
+      className={`text-decoration-none m-0 p-0 ${className}`}
+      variant={variant}
+    >
+      {children}
+    </Button>
   )
 }
 
 export const TestimonyItem = ({
   testimony,
   isUser,
-  canEdit,
-  canDelete,
   onProfilePage
 }: {
   testimony: Testimony
   isUser: boolean
-  canEdit?: boolean
-  canDelete?: boolean
   onProfilePage: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -113,29 +72,39 @@ export const TestimonyItem = ({
     : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
-  const [showConfirm, setShowConfirm] = useState(false)
-  const { deleteTestimony } = usePublishService() ?? {}
-
   const { t } = useTranslation("testimony")
 
+  const IconSpacer = () => {
+    /* this image does not appear to display anything,      *
+     * however it acts as a spacing element                 *
+     *                                                      *
+     * removing this image will throw off the alignment vs  *
+     * the nearby elements that contain visible icons      */
+
+    return (
+      <Image
+        className="ms-auto align-self-center"
+        src="/edit-testimony.svg"
+        alt=""
+        height={40}
+        width={0}
+      />
+    )
+  }
+
   return (
-    <div
-      className={onProfilePage ? styles.bottomborder : styles.nobottomborder}
-    >
+    <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
       <div className={`border-0 h5 d-flex`}>
         {isMobile && isUser && (
           <>
-            {/**
-             * visually-hidden until delete is ready at a later stage
-             */}
             <Internal
-              className={`styles.link, visually-hidden`}
-              href={billLink}
+              className={`text-decoration-none`}
+              href={formUrl(testimony.billId, testimony.court)}
             >
               <Image
-                className="px-2 align-self-center"
-                src="/delete-testimony.svg"
-                alt={t("testimonyItem.deleteIcon") ?? "Delete testimony icon"}
+                className="px-2 ms-auto align-self-center"
+                src="/edit-testimony.svg"
+                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
                 height={50}
                 width={50}
               />
@@ -166,75 +135,60 @@ export const TestimonyItem = ({
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
-                variant="link"
+                variant="text"
                 onClick={() => setShowAllTestimony(true)}
               >
                 {t("testimonyItem.expand")}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
           {testimony.id && (
             <Col>
-              <FooterButton variant="link">
+              <FooterButton variant="text">
                 <Internal
-                  className={styles.link}
+                  className={`text-decoration-none`}
                   href={maple.testimony({ publishedId: testimony.id })}
                 >
                   {t("testimonyItem.moreDetails")}
+                  <IconSpacer />
                 </Internal>
               </FooterButton>
             </Col>
           )}
           {testimony.attachmentId && (
             <Col className="d-flex">
-              <FooterButton variant="link">
+              <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
+
+                {/* Current bug Issue #1564 makes this instance of IconSpacer hard to test *
+                 * Please revisit once #1564 is resolved                                  */}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
+          <Col xs="auto">
+            <FooterButton variant="text" onClick={() => setIsReporting(true)}>
+              Report
+              <IconSpacer />
+            </FooterButton>
+          </Col>
           {isUser && !isMobile && (
-            <>
-              {onProfilePage && (
-                <Col>
-                  <FooterButton variant="link">
-                    <Internal
-                      className={styles.link2}
-                      href={formUrl(testimony.billId, testimony.court)}
-                    >
-                      {t("testimonyItem.edit")}
-                    </Internal>
-                  </FooterButton>
-                </Col>
-              )}
-
-              {canDelete && (
-                <>
-                  {/* <Col>
-                    <FooterButton
-                      style={{ color: "#c71e32" }}
-                      onClick={() => setShowConfirm(s => !s)}
-                      variant="link"
-                    >
-                      {t("testimonyItem.rescind")}
-                    </FooterButton>
-                  </Col> */}
-
-                  {showConfirm && (
-                    <ArchiveTestimonyConfirmation
-                      show={showConfirm}
-                      onHide={() => setShowConfirm(false)}
-                      archiveTestimony={deleteTestimony}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
-          {/* report */}
-          {flags().reportTestimony && (
-            <Col xs="auto">
-              <FooterButton variant="link" onClick={() => setIsReporting(true)}>
-                Report
+            <Col>
+              <FooterButton variant="text">
+                <Internal
+                  className={`text-decoration-none text-secondary`}
+                  href={formUrl(testimony.billId, testimony.court)}
+                >
+                  Edit
+                  <Image
+                    className="px-2 ms-auto align-self-center"
+                    src="/edit-testimony.svg"
+                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    height={40}
+                    width={40}
+                  />
+                </Internal>
               </FooterButton>
             </Col>
           )}

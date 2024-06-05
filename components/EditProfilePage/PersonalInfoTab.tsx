@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Form, Row, Col, Button } from "../bootstrap"
 import { Profile, ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
-import { StyledSaveButton } from "./StyledEditProfileComponents"
 import { YourLegislators } from "./YourLegislators"
 import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
-import styles from "./PersonalInfoTab.module.css"
+import styled from "styled-components"
 
 type UpdateProfileData = {
   fullName: string
@@ -59,7 +58,6 @@ async function updateProfile(
   await updateAbout(data.aboutYou)
   await updateFullName(data.fullName)
 }
-
 export function PersonalInfoTab({
   profile,
   actions,
@@ -128,14 +126,16 @@ export function PersonalInfoTab({
               error={errors.fullName?.message}
             />
           </Row>
-          <Input
-            as="textarea"
-            {...register("aboutYou")}
-            style={{ height: "10rem" }}
-            className="mt-3"
-            label={t("forms.aboutYou")}
-            defaultValue={about}
-          />
+          <Row>
+            <Input
+              as="textarea"
+              {...register("aboutYou")}
+              style={{ height: "10rem" }}
+              className="mt-3"
+              label={t("forms.aboutYou")}
+              defaultValue={about}
+            />
+          </Row>
           <Row xs="auto" className="mt-2">
             <Col>
               <TooltipButton
@@ -146,37 +146,25 @@ export function PersonalInfoTab({
             </Col>
           </Row>
           {isOrg && (
-            <Form.Group className="mt-3" controlId="orgCategory">
-              <Form.FloatingLabel label={t("forms.selectOrgCategory")}>
-                <Form.Select
-                  as="select"
-                  value={category}
-                  {...register("orgCategory", {
-                    onChange: e => setCategory(e.value)
-                  })}
-                >
-                  {OrgCategories.map(c => (
-                    <>
-                      <option value={c}>{c}</option>
-                    </>
-                  ))}
-                </Form.Select>
-              </Form.FloatingLabel>
-            </Form.Group>
+            <SelectOrgCategory
+              t={t}
+              register={register}
+              category={category}
+              setCategory={setCategory}
+            />
           )}
 
           <div className="mb-3">
-            {/* {isOrg && <ImageInput />} */}
             <h4 className="mb-3 mt-5">{t("socialLinks.socialMedia")}</h4>
-            <div className={`row ${styles.socialInputs}`}>
-              <Input
+            <div className={`row`}>
+              <SocialInput
                 label={t("socialLinks.twitter")}
                 defaultValue={social?.twitter}
                 className="col-sm-12 col-md-6 mb-1"
                 iconSrc="./twitter.svg"
                 {...register("twitter")}
               />
-              <Input
+              <SocialInput
                 label={t("socialLinks.linkedIn")}
                 defaultValue={social?.linkedIn}
                 className="col-sm-12 col-md-6 mb-1"
@@ -185,14 +173,14 @@ export function PersonalInfoTab({
               />
               {isOrg && (
                 <>
-                  <Input
+                  <SocialInput
                     label={t("socialLinks.instagram")}
                     defaultValue={social?.instagram}
                     className="col-sm-12 col-md-6 mb-1"
                     iconSrc="./instagram.svg"
                     {...register("instagram")}
                   />
-                  <Input
+                  <SocialInput
                     label={t("socialLinks.facebook")}
                     defaultValue={social?.fb}
                     className="col-sm-12 col-md-6"
@@ -257,9 +245,40 @@ export function PersonalInfoTab({
 
       <Row>
         <Col>
-          <StyledSaveButton type="submit">{t("saveChanges")}</StyledSaveButton>
+          <Button className={`mt-2 mb-3 w-100 rounded-1`} type="submit">
+            {t("saveChanges")}
+          </Button>
         </Col>
       </Row>
     </Form>
   )
 }
+
+function SelectOrgCategory({ t, register, category, setCategory }: any) {
+  return (
+    <Form.Group className="mt-3" controlId="orgCategory">
+      <Form.FloatingLabel label={t("forms.selectOrgCategory")}>
+        <Form.Select
+          as="select"
+          value={category}
+          {...register("orgCategory", {
+            onChange: (e: React.ChangeEvent<HTMLSelectElement>) =>
+              setCategory(e.target.value)
+          })}
+        >
+          {OrgCategories.map(c => (
+            <>
+              <option value={c}>{c}</option>
+            </>
+          ))}
+        </Form.Select>
+      </Form.FloatingLabel>
+    </Form.Group>
+  )
+}
+
+const SocialInput = styled(Input)`
+  label {
+    display: inline-block !important;
+  }
+`

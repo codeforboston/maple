@@ -1,13 +1,10 @@
-import { Col, Row } from "../bootstrap"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 
-import { ProfileHook, useProfile } from "components/db"
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { FollowButton } from "./FollowButton" // TODO: move to /shared
 import { OrgContactInfo } from "./OrgContactInfo"
-import { EditProfileButton, ToggleProfilePrivate } from "./ProfileButtons"
+import { ProfileButtonsOrg, ProfileButtonsUser } from "./ProfileButtons"
 
 export const ProfileHeader = ({
   profileId,
@@ -41,8 +38,9 @@ export const ProfileHeader = ({
         </div>
       </div>
       <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
-        {isOrg ? <OrgContactInfo profile={profile} /> : null}
-        {isUser ? (
+        {isOrg ? (
+          <OrgContactInfo profile={profile} />
+        ) : isUser ? (
           <ProfileButtonsUser
             isProfilePublic={isProfilePublic}
             onProfilePublicityChanged={onProfilePublicityChanged}
@@ -51,42 +49,4 @@ export const ProfileHeader = ({
       </div>
     </Header>
   )
-}
-
-export function ProfileButtonsUser({
-  isProfilePublic,
-  onProfilePublicityChanged
-}: {
-  isProfilePublic: boolean | undefined
-  onProfilePublicityChanged: (isPublic: boolean) => void
-}) {
-  const { t } = useTranslation("editProfile")
-
-  const actions = useProfile()
-
-  const handleSave = async () => {
-    await updateProfile({ actions })
-  }
-  /** Only regular users are allowed to have a private profile. */
-  async function updateProfile({ actions }: { actions: ProfileHook }) {
-    const { updateIsPublic } = actions
-
-    await updateIsPublic(!isProfilePublic)
-    onProfilePublicityChanged(!isProfilePublic)
-  }
-  return (
-    <div className={`d-grid gap-1 col-12 m-3`}>
-      <EditProfileButton />
-      <ToggleProfilePrivate
-        onClick={handleSave}
-        isProfilePublic={isProfilePublic}
-      >
-        {isProfilePublic ? t("forms.makePrivate") : t("forms.makePublic")}
-      </ToggleProfilePrivate>
-    </div>
-  )
-}
-
-function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
-  return <>{isUser ? <EditProfileButton /> : <FollowButton />}</>
 }
