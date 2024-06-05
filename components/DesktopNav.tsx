@@ -18,7 +18,8 @@ import {
   NavbarLinkSupport,
   NavbarLinkTeam,
   NavbarLinkTestimony,
-  NavbarLinkViewProfile
+  NavbarLinkViewProfile,
+  NavbarLinkWhyUse
 } from "./NavbarComponents"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
@@ -60,15 +61,6 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkGoals />
             <NavbarLinkTeam />
             <NavbarLinkSupport />
-
-            {/* delete this after the link is relocated to the Footer */}
-
-            {/* <NavDropdown.Item>
-              <NavLink href="/policies">
-                {t("navigation.privacyAndConduct")}
-              </NavLink>
-            </NavDropdown.Item> */}
-
             <NavbarLinkFAQ />
           </Dropdown.Menu>
         </Dropdown>
@@ -81,30 +73,8 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <NavbarLinkEffective />
-            {/* <NavDropdown.Item>
-              <NavLink href="/learn/legislative-process">
-                {t("navigation.legislativeProcess")}
-              </NavLink>
-            </NavDropdown.Item> */}
             <NavbarLinkProcess />
-
-            {/* These 3 `Why Use...` links will be comboed into one link when their corresponding page is refactored */}
-
-            <NavDropdown.Item>
-              <NavLink href="/why-use-maple/for-individuals">
-                {t("navigation.forIndividuals")}
-              </NavLink>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
-              <NavLink href="/why-use-maple/for-orgs">
-                {t("navigation.forOrganizations")}
-              </NavLink>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
-              <NavLink href="/why-use-maple/for-legislators">
-                {t("navigation.forLegislators")}
-              </NavLink>
-            </NavDropdown.Item>
+            <NavbarLinkWhyUse />
           </Dropdown.Menu>
         </Dropdown>
       </div>

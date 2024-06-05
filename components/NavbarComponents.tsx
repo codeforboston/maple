@@ -283,3 +283,25 @@ export const NavbarLinkViewProfile: React.FC<
     </NavLink>
   )
 }
+
+export const NavbarLinkWhyUse: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavDropdown.Item>
+      <NavLink
+        className={isMobile ? "navLink-primary" : ""}
+        href="/why-use-maple/for-individuals"
+        onClick={isMobile ? handleClick : ""}
+        {...other}
+      >
+        {t("navigation.whyUseMaple")}
+      </NavLink>
+    </NavDropdown.Item>
+  )
+}
