@@ -76,7 +76,7 @@ export const Chip = styled.div`
     background: var(--bs-body-bg);
     display: flex;
     flex-direction: column;
-    padding: 2rem 1rem 1rem 1rem;
+    padding: 1rem;
     height: 100%;
   `
 

@@ -30,8 +30,6 @@ export const Primary: Story = {
   args: {
     testimony: createMockTestimony("H1002", "userId"),
     isUser: true,
-    canEdit: true,
-    canDelete: true,
     onProfilePage: true
   },
   name: "Testimony Item"
