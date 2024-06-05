@@ -118,7 +118,7 @@ const RecipientControls = styled(({ className }) => {
         .length < share.committeeChairs.length
     ) {
       buttons.push(
-        <Col className="align-self-center" xl={6} lg={12}>
+        <Col xl={6} lg={12}>
           <Button
             className="py-1"
             key="committee"
@@ -131,7 +131,7 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col className="align-self-center" xl={6} lg={12}>
+        <Col xl={6} lg={12}>
           <Button
             className="py-1"
             key="committee"
@@ -154,7 +154,7 @@ const RecipientControls = styled(({ className }) => {
         .length < share.userLegislators.length
     ) {
       buttons.push(
-        <Col className="align-self-center" xl={6} lg={12}>
+        <Col xl={6} lg={12}>
           <Button
             className="py-1"
             key="legislators"
@@ -167,7 +167,7 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col className="align-self-center" xl={6} lg={12}>
+        <Col xl={6} lg={12}>
           <Button
             className="py-1"
             key="legislators"
