@@ -197,21 +197,13 @@ const AboutLinks = () => {
   )
 }
 
-const BrowseTestimony = () => {
+const BrowseList = () => {
   const { t } = useTranslation("common")
   return (
     <>
       <StyledInternalLink href="/testimony">
         {t("navigation.browseTestimony")}
       </StyledInternalLink>
-    </>
-  )
-}
-
-const BrowseBills = () => {
-  const { t } = useTranslation("common")
-  return (
-    <>
       <StyledInternalLink href="/bills">
         {t("navigation.browseBills")}
       </StyledInternalLink>
@@ -232,9 +224,7 @@ const PageFooter = (props: PageFooterProps) => {
         className="d-md-none w-100 order-1 p-2 mb-2"
       >
         <Nav className={`d-flex w-100`}>
-          <BrowseTestimony />
-
-          <BrowseBills />
+          <BrowseList />
 
           <CustomDropdown title={t("headers.account")}>
             <AccountLinks {...props} />
@@ -255,8 +245,7 @@ const PageFooter = (props: PageFooterProps) => {
       </Navbar>
       <div className={`d-none d-md-flex order-1 flex-grow-1`}>
         <Col>
-          <BrowseTestimony />
-          <BrowseBills />
+          <BrowseList />
           <TextHeader>{t("headers.account")}</TextHeader>
 
           <AccountLinks {...props} />
