@@ -227,17 +227,6 @@ test.describe("Sort Bills test", () => {
         }, initialFirstBillTextContent)
       }
 
-      // let nextPage = 2
-      // let hasNextPage
-      // do {
-      //   hasNextPage = await page.$(
-      //     "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
-      //   )
-      //   if (hasNextPage) {
-      //     await hasNextPage.click()
-      //   }
-      // } while (nextPage-- > 0)
-
       // Verify the sorting result
       const sortedBills = page.locator("li.ais-Hits-item")
       const billValues = await sortedBills.evaluateAll(
@@ -305,26 +294,31 @@ test.describe("Sort Bills test", () => {
 })
 test.describe("Filter Bills test", () => {
   const filterCategories = [
-    "div.ais-RefinementList.mb-4:nth-of-type(1)", // General Court
-    "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
-    "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
-    "div.ais-RefinementList.mb-4:nth-of-type(4)", // Primary Sponsor
-    "div.ais-RefinementList.mb-4:nth-of-type(5)" // Cosponsor
+    {
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(1)",
+      usingNum: true
+    }, // General Court
+    {
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(2)",
+      usingNum: false
+    }, // Current Committee
+    {
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(3)",
+      usingNum: false
+    }, // City
+    {
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(4)",
+      usingNum: false
+    } // Primary Sponsor
   ]
 
   const filterItemSelector = "li:first-child input.ais-RefinementList-checkbox"
 
-  test("apply a first single filter from Current Committee, City and Primary Sponsor", async ({
+  test("apply a first single filter from General Court, Current Committee, City, and Primary Sponsor", async ({
     page
   }) => {
-    const filterCategories = [
-      "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
-      "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
-      "div.ais-RefinementList.mb-4:nth-of-type(4)" // Primary Sponsor
-    ]
-
     // Loop through each filter category and apply the first filter
-    for (const filterCategory of filterCategories) {
+    for (const { selector: filterCategory, usingNum } of filterCategories) {
       // Uncheck all filters first to ensure a clean state
       const checkedFilters = await page.$$(
         filterCategory + " " + filterItemSelector + ":checked"
@@ -341,6 +335,11 @@ test.describe("Filter Bills test", () => {
         )
         .innerText()
       await page.check(firstFilterItem)
+
+      // Normalize filter label if necessary
+      const normalizedFilterLabel = usingNum
+        ? filterLabel.match(/\d+/)
+        : filterLabel
 
       // Wait for the filtering to apply
       await page.waitForTimeout(2000)
