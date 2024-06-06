@@ -7,6 +7,7 @@ import AuthModal from "./auth/AuthModal"
 import { DesktopNav } from "./DesktopNav"
 import PageFooter from "./Footer/Footer"
 import { MobileNav } from "./MobileNav"
+import { MobileNavV2 } from "./MobileNavV2"
 
 export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   children
@@ -45,7 +46,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <PageContainer>
-            {isMobile ? <MobileNav /> : <DesktopNav />}
+            {isMobile ? <MobileNavV2 /> : <DesktopNav />}
             <AuthModal />
             <div className={`col`}>{children}</div>
             <PageFooter
