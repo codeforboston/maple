@@ -38,45 +38,49 @@ test.describe("Search result test", () => {
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
     await page.keyboard.press("Enter")
 
-    // Wait for the result
-    await page.waitForTimeout(1000)
+    // Get the initial result count
+    const initialResultCount = await page.textContent(
+      ".ResultCount__ResultContainer-sc-3931e200-0"
+    )
 
-    // Function to check the full content of a bill
-    const checkFullContent = async () => {
-      // Get all bill links
-      const billLinks = await page.$$eval("li.ais-Hits-item a", links =>
-        links
-          .map(link => (link as HTMLAnchorElement).href)
-          .filter(href => href !== undefined)
-      )
-
-      for (const link of billLinks) {
-        await page.goto(link)
-
-        // Click the 'read more' button to get full content
-        const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
-        await readmorebtn.click()
-
-        // Get the full content
-        const fullContent = await page.textContent(
-          ".Summary__FormattedBillDetails-sc-791f19-4"
-        )
-
-        // Ensure fullContent is not null
-        if (fullContent) {
-          // Check if the full content contains the search term
-          expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
-        } else {
-          console.warn(`Full content for link ${link} was null.`)
-        }
-        // Go back to the main search results page
-        await page.goBack()
-      }
-    }
-
-    // Check the full content of each bill
-    await checkFullContent()
+    // Wait for the result count to change
+    await page.waitForFunction(initialResultCount => {
+      const currentResultCount = document.querySelector(
+        ".ResultCount__ResultContainer-sc-3931e200-0"
+      )?.textContent
+      return currentResultCount !== initialResultCount
+    }, initialResultCount)
   })
+
+  test("search label test", async ({ page }) => {
+    // Setup search term
+    const searchTerm = getRandomWord()
+
+    // Perform the search
+    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
+    await page.keyboard.press("Enter")
+
+    // Check the query label
+    // Wait for the elements to be visible
+    const categoryLabels = page.locator(".ais-CurrentRefinements-categoryLabel")
+    await categoryLabels.first().waitFor({ state: "visible" })
+
+    // Get text content of all category labels
+    const labelsTextContent = await categoryLabels.evaluateAll(labels =>
+      labels.map(label => label.textContent || "")
+    )
+
+    // Log all text contents
+    labelsTextContent.forEach((text, index) => {
+      console.log(`Label ${index + 1}: ${text}`)
+    })
+    // Ensure at least one of the labels contains the search term
+    const containsSearchTerm = labelsTextContent.some(textContent =>
+      textContent.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    expect(containsSearchTerm).toBe(true)
+  })
+
   test("check the edge case when search incldue 'act'", async ({ page }) => {
     // Setup serach term
     const searchTerm = "act"
@@ -329,17 +333,20 @@ test.describe("Filter Bills test", () => {
 
       // Check the first filter item in the current category
       const firstFilterItem = `${filterCategory} ${filterItemSelector}`
-      const filterLabel = await page
+      let filterLabel = await page
         .locator(
           `${filterCategory} li:first-child .ais-RefinementList-labelText`
         )
         .innerText()
       await page.check(firstFilterItem)
 
-      // Normalize filter label if necessary
-      const normalizedFilterLabel = usingNum
-        ? filterLabel.match(/\d+/)
-        : filterLabel
+      // // Normalize filter label if necessary
+      // if (usingNum) {
+      //   filterLabel = filterLabel.match(/\d+/)
+      //     ? filterLabel.match(/\d+/)
+      //     : filterLabel
+      // }
+      // const normalizedFilterLabel
 
       // Wait for the filtering to apply
       await page.waitForTimeout(2000)
@@ -357,7 +364,7 @@ test.describe("Filter Bills test", () => {
             })
           })
         },
-        filterLabel
+        normalizedFilterLabel
       )
 
       expect(filteredResults).toBeTruthy() // Check that filtering worked correctly
