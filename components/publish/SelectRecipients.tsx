@@ -5,6 +5,7 @@ import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useEffect } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Row } from "../bootstrap"
 import { CopyButton } from "../buttons"
 import { useMemberSearch } from "../db"
@@ -24,8 +25,6 @@ import {
   setRecipients
 } from "./redux"
 import { isNotNull } from "components/utils"
-
-import { useMediaQuery } from "usehooks-ts"
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
@@ -109,6 +108,8 @@ const RecipientControls = styled(({ className }) => {
   const email = useTestimonyEmail()
   const buttons = []
 
+  const isMobile = useMediaQuery("(max-width: 1199px)")
+
   if (share.committeeChairs.length > 0) {
     const committeeChairsCodes = share.committeeChairs.map(
       item => item.MemberCode
@@ -118,11 +119,16 @@ const RecipientControls = styled(({ className }) => {
         .length < share.committeeChairs.length
     ) {
       buttons.push(
-        <Col xl={6} lg={12}>
+        <Col
+          className={`align-self-center ${isMobile ? "ms-3 my-1" : ""}`}
+          xl={6}
+          lg={12}
+        >
           <Button
             className="py-1"
             key="committee"
-            variant="link"
+            // variant="link"
+            variant="outline-secondary"
             onClick={() => dispatch(addCommittee())}
           >
             Add Relevant Committee Chairs
@@ -131,11 +137,16 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col xl={6} lg={12}>
+        <Col
+          className={`align-self-center ${isMobile ? "ms-3 my-1" : ""}`}
+          xl={6}
+          lg={12}
+        >
           <Button
             className="py-1"
             key="committee"
-            variant="link"
+            // variant="link"
+            variant="outline-secondary"
             onClick={() => dispatch(removeCommittee())}
           >
             Remove Relevant Committee Chairs
@@ -154,11 +165,16 @@ const RecipientControls = styled(({ className }) => {
         .length < share.userLegislators.length
     ) {
       buttons.push(
-        <Col xl={6} lg={12}>
+        <Col
+          className={`align-self-center ${isMobile ? "mb-1 ms-3 mt-2" : ""}`}
+          xl={6}
+          lg={12}
+        >
           <Button
             className="py-1"
             key="legislators"
-            variant="link"
+            // variant="link"
+            variant="outline-secondary"
             onClick={() => dispatch(addMyLegislators())}
           >
             Add My Legislators
@@ -167,11 +183,16 @@ const RecipientControls = styled(({ className }) => {
       )
     } else {
       buttons.push(
-        <Col xl={6} lg={12}>
+        <Col
+          className={`align-self-center ${isMobile ? "mb-1 ms-3 mt-2" : ""}`}
+          xl={6}
+          lg={12}
+        >
           <Button
             className="py-1"
             key="legislators"
-            variant="link"
+            // variant="link"
+            variant="outline-secondary"
             onClick={() => dispatch(removeMyLegislators())}
           >
             Remove My Legislators
