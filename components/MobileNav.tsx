@@ -127,24 +127,20 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           )}
         </Navbar.Brand>
       </Col>
-      <Col>
-        <div className="d-flex justify-content-center">
-          <NavbarLinkLogo />
-        </div>
+      <Col className="d-flex justify-content-center">
+        <NavbarLinkLogo handleClick={closeNav} />
       </Col>
       <Col className="d-flex justify-content-end me-3 pe-2">
         {authenticated ? (
-          <>
-            <Navbar.Brand onClick={toggleAvatar}>
-              <Nav.Link className="p-0 text-white">
-                {isExpanded && whichMenu == "profile" ? (
-                  <Image src="/Union.svg" alt="x" width="35" height="35" />
-                ) : (
-                  <Avatar />
-                )}
-              </Nav.Link>
-            </Navbar.Brand>
-          </>
+          <Navbar.Brand onClick={toggleAvatar}>
+            <Nav.Link className="p-0 text-white">
+              {isExpanded && whichMenu == "profile" ? (
+                <Image src="/Union.svg" alt="x" width="35" height="35" />
+              ) : (
+                <Avatar />
+              )}
+            </Nav.Link>
+          </Navbar.Brand>
         ) : (
           <SignInWithButton />
         )}
