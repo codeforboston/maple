@@ -48,167 +48,119 @@ const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
 }
 
 export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
+  const ProfileLinks = () => {
+    return (
+      <Nav className="me-4 d-flex align-items-start">
+        <NavbarLinkViewProfile />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            closeNav()
+          }}
+        />
+        <NavbarLinkSignOut
+          handleClick={() => {
+            closeNav()
+            void signOutAndRedirectToHome()
+          }}
+        />
+      </Nav>
+    )
+  }
+
+  const SiteLinks = () => {
+    return (
+      <Nav>
+        <NavbarLinkBills handleClick={closeNav} />
+        <NavbarLinkTestimony handleClick={closeNav} />
+
+        <NavDropdown className={"navLink-primary"} title={t("about")}>
+          <NavbarLinkGoals handleClick={closeNav} />
+          <NavbarLinkTeam handleClick={closeNav} />
+          <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkFAQ handleClick={closeNav} />
+        </NavDropdown>
+
+        <NavDropdown className={"navLink-primary"} title={t("learn")}>
+          <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkProcess handleClick={closeNav} />
+          <NavbarLinkWhyUse handleClick={closeNav} />
+        </NavDropdown>
+      </Nav>
+    )
+  }
+
   const { authenticated } = useAuth()
   const [isExpanded, setIsExpanded] = useState(false)
+  const [whichMenu, setWhichMenu] = useState("site")
   const { t } = useTranslation(["common", "auth"])
 
-  const toggleNav = () => setIsExpanded(!isExpanded)
+  const toggleSite = () => {
+    if (isExpanded && whichMenu == "profile") {
+      setWhichMenu("site")
+    } else {
+      setWhichMenu("site")
+      setIsExpanded(!isExpanded)
+    }
+  }
+
+  const toggleAvatar = () => {
+    if (isExpanded && whichMenu == "site") {
+      setWhichMenu("profile")
+    } else {
+      setWhichMenu("profile")
+      setIsExpanded(!isExpanded)
+    }
+  }
+
   const closeNav = () => setIsExpanded(false)
 
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
+  console.log("Is Expanded? ", isExpanded)
+  console.log("Which Menu? ", whichMenu)
+
   return (
     <>
-      <div
-        className={`d-flex flex-row align-items-start justify-content-between w-100`}
+      <Navbar
+        bg="secondary"
+        data-bs-theme="dark"
+        expand="lg"
+        expanded={isExpanded}
       >
-        <Col>
-          <Navbar
-            bg="secondary"
-            expand="lg"
-            // className="bg-body-tertiary"
-            // variant="dark"
-            data-bs-theme="dark"
-          >
-            <Container>
-              <Navbar.Brand href="#home">
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              </Navbar.Brand>
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="d-flex align-items-end">
-                  <Nav.Link href="#home">Home</Nav.Link>
-                  <Nav.Link href="#link">Link</Nav.Link>
-                  <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="#action/3.1">
-                      Action
-                    </NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">
-                      Another action
-                    </NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">
-                      Something
-                    </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">
-                      Separated link
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar>
-        </Col>
-        <Col>
-          <div className="d-flex justify-content-center">
-            <NavbarLinkLogo />
-          </div>
-        </Col>
-        <Col>
-          <div>
-            <Navbar
-              bg="secondary"
-              expand="lg"
-              // variant="dark"
-              data-bs-theme="dark"
-            >
-              <Container className="d-flex justify-content-end">
-                <Navbar.Brand href="#home">
-                  <Nav>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                  </Nav>
+        <Container>
+          <Col>
+            <Navbar.Brand href="#home">
+              <Navbar.Toggle
+                aria-controls="basic-navbar-nav"
+                onClick={toggleSite}
+              />
+            </Navbar.Brand>
+          </Col>
+          <Col>
+            <div className="d-flex justify-content-center">
+              <NavbarLinkLogo />
+            </div>
+          </Col>
+          <Col className="d-flex justify-content-end">
+            {authenticated ? (
+              <>
+                <Navbar.Brand onClick={toggleAvatar}>
+                  <Nav.Link className="p-0 text-white">
+                    <Avatar isOrg={isOrg} />
+                  </Nav.Link>
                 </Navbar.Brand>
-                <Navbar.Collapse id="profile-nav">
-                  <Nav className="me-4 d-flex align-items-end">
-                    <NavbarLinkViewProfile />
-                    <NavbarLinkEditProfile
-                      handleClick={() => {
-                        closeNav()
-                      }}
-                    />
-                    <NavbarLinkSignOut
-                      handleClick={() => {
-                        closeNav()
-                        void signOutAndRedirectToHome()
-                      }}
-                    />
-                  </Nav>
-                </Navbar.Collapse>
-              </Container>
-            </Navbar>
-          </div>
-        </Col>
-      </div>
+              </>
+            ) : (
+              <SignInWithButton />
+            )}
+          </Col>
 
-      {/* <Navbar
-        bg="secondary"
-        expand="lg"
-        // className="bg-body-tertiary"
-        // variant="dark"
-        data-bs-theme="dark"
-      >
-        <Container>
-          <Navbar.Brand href="#home">
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          </Navbar.Brand>
-          <NavbarLinkLogo />
-          <Navbar.Brand href="#home">
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          </Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
+            {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
           </Navbar.Collapse>
         </Container>
-      </Navbar> */}
-
-      {/* <Navbar
-        bg="secondary"
-        expand="lg"
-        // className="bg-body-tertiary"
-        // variant="dark"
-        data-bs-theme="dark"
-      >
-        <Container>
-          <Navbar.Brand href="#home">
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          </Navbar.Brand>
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar> */}
+      </Navbar>
     </>
   )
 }
