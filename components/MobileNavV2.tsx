@@ -22,6 +22,7 @@ import {
 
 import { Col, Row } from "./bootstrap"
 import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 
 const NavBarBoxContainer: FC<
   React.PropsWithChildren<{ className?: string }>
@@ -49,9 +50,22 @@ const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
 }
 
 export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
+  const BlackCollapse = styled(() => {
+    return (
+      <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
+        {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
+      </Navbar.Collapse>
+    )
+  })`
+    .bg-black {
+      background-color: black;
+      height: 100vh;
+    }
+  `
+
   const ProfileLinks = () => {
     return (
-      <Nav className="me-4 d-flex align-items-start">
+      <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
         <NavbarLinkEditProfile
           handleClick={() => {
@@ -70,10 +84,9 @@ export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   const SiteLinks = () => {
     return (
-      <Nav>
+      <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
         <NavbarLinkTestimony handleClick={closeNav} />
-
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
@@ -118,61 +131,53 @@ export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
-  console.log("Is Expanded? ", isExpanded)
-  console.log("Which Menu? ", whichMenu)
-
   return (
-    <>
-      <Navbar
-        bg="secondary"
-        data-bs-theme="dark"
-        expand="lg"
-        expanded={isExpanded}
-      >
-        <Container>
-          <Col>
-            <Navbar.Brand onClick={toggleSite}>
-              {isExpanded && whichMenu == "site" ? (
-                <Image
-                  src="/Union.svg"
-                  alt="x"
-                  width="35"
-                  height="35"
-                  className="ms-2"
-                />
-              ) : (
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              )}
+    <Navbar
+      bg="secondary"
+      className={`w-100 ${isExpanded ? "pb-0" : ""}`}
+      data-bs-theme="dark"
+      expand="lg"
+      expanded={isExpanded}
+    >
+      <Col className="ms-3 ps-2">
+        <Navbar.Brand onClick={toggleSite}>
+          {isExpanded && whichMenu == "site" ? (
+            <Image
+              src="/Union.svg"
+              alt="x"
+              width="35"
+              height="35"
+              className="ms-2"
+            />
+          ) : (
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          )}
+        </Navbar.Brand>
+      </Col>
+      <Col>
+        <div className="d-flex justify-content-center">
+          <NavbarLinkLogo />
+        </div>
+      </Col>
+      <Col className="d-flex justify-content-end me-3 pe-2">
+        {authenticated ? (
+          <>
+            <Navbar.Brand onClick={toggleAvatar}>
+              <Nav.Link className="p-0 text-white">
+                {isExpanded && whichMenu == "profile" ? (
+                  <Image src="/Union.svg" alt="x" width="35" height="35" />
+                ) : (
+                  <Avatar isOrg={isOrg} />
+                )}
+              </Nav.Link>
             </Navbar.Brand>
-          </Col>
-          <Col>
-            <div className="d-flex justify-content-center">
-              <NavbarLinkLogo />
-            </div>
-          </Col>
-          <Col className="d-flex justify-content-end">
-            {authenticated ? (
-              <>
-                <Navbar.Brand onClick={toggleAvatar}>
-                  <Nav.Link className="p-0 text-white">
-                    {isExpanded && whichMenu == "profile" ? (
-                      <Image src="/Union.svg" alt="x" width="35" height="35" />
-                    ) : (
-                      <Avatar isOrg={isOrg} />
-                    )}
-                  </Nav.Link>
-                </Navbar.Brand>
-              </>
-            ) : (
-              <SignInWithButton />
-            )}
-          </Col>
+          </>
+        ) : (
+          <SignInWithButton />
+        )}
+      </Col>
 
-          <Navbar.Collapse id="basic-navbar-nav">
-            {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </>
+      <BlackCollapse />
+    </Navbar>
   )
 }
