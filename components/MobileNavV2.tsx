@@ -21,6 +21,7 @@ import {
 } from "./NavbarComponents"
 
 import { Col, Row } from "./bootstrap"
+import Image from "react-bootstrap/Image"
 
 const NavBarBoxContainer: FC<
   React.PropsWithChildren<{ className?: string }>
@@ -130,11 +131,18 @@ export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
       >
         <Container>
           <Col>
-            <Navbar.Brand href="#home">
-              <Navbar.Toggle
-                aria-controls="basic-navbar-nav"
-                onClick={toggleSite}
-              />
+            <Navbar.Brand onClick={toggleSite}>
+              {isExpanded && whichMenu == "site" ? (
+                <Image
+                  src="/Union.svg"
+                  alt="x"
+                  width="35"
+                  height="35"
+                  className="ms-2"
+                />
+              ) : (
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              )}
             </Navbar.Brand>
           </Col>
           <Col>
@@ -147,7 +155,11 @@ export const MobileNavV2: React.FC<React.PropsWithChildren<unknown>> = () => {
               <>
                 <Navbar.Brand onClick={toggleAvatar}>
                   <Nav.Link className="p-0 text-white">
-                    <Avatar isOrg={isOrg} />
+                    {isExpanded && whichMenu == "profile" ? (
+                      <Image src="/Union.svg" alt="x" width="35" height="35" />
+                    ) : (
+                      <Avatar isOrg={isOrg} />
+                    )}
                   </Nav.Link>
                 </Navbar.Brand>
               </>
