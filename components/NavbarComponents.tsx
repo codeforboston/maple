@@ -3,9 +3,13 @@ import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
+import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
-export const Avatar = ({ isOrg }: { isOrg: boolean }) => {
+export const Avatar = () => {
+  const result = useProfile()
+  let isOrg = result?.profile?.role === "organization"
+
   return (
     <>
       {isOrg ? (

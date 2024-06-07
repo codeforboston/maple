@@ -1,10 +1,9 @@
 import { useTranslation } from "next-i18next"
-import React, { FC, useState } from "react"
+import React, { useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Nav, Navbar, NavDropdown } from "./bootstrap"
-import { useProfile } from "./db"
 import {
   Avatar,
   NavbarLinkBills,
@@ -26,9 +25,9 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const BlackCollapse = styled(() => {
     return (
       <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
-        {/* while MAPLE is trying to do away with inline styling *
-         *  both styled-components and bootstrap class have been *
-         *  ignoring height properties for some reason           */}
+        {/* while MAPLE is trying to do away with inline styling,   *
+         *  both styled-components and bootstrap classes have been  *
+         *  ignoring height properties for some reason              */}
         <div style={{ height: "100vh" }}>
           {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
         </div>
@@ -105,9 +104,6 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   const closeNav = () => setIsExpanded(false)
 
-  const result = useProfile()
-  let isOrg = result?.profile?.role === "organization"
-
   return (
     <Navbar
       bg="secondary"
@@ -144,7 +140,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 {isExpanded && whichMenu == "profile" ? (
                   <Image src="/Union.svg" alt="x" width="35" height="35" />
                 ) : (
-                  <Avatar isOrg={isOrg} />
+                  <Avatar />
                 )}
               </Nav.Link>
             </Navbar.Brand>

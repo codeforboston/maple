@@ -2,7 +2,6 @@ import { useTranslation } from "next-i18next"
 import React from "react"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
-import { useProfile } from "./db"
 
 import {
   Avatar,
@@ -24,9 +23,6 @@ import {
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
-
-  const result = useProfile()
-  let isOrg = result?.profile?.role === "organization"
 
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
@@ -81,7 +77,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <div className={`align-self-center justify-content-end`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
-              <Avatar isOrg={isOrg} />
+              <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavDropdown.Item>
