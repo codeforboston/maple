@@ -13,11 +13,11 @@ import { BillHistory } from "../bills/types"
 const db = admin.firestore()
 
 type Notification = {
-  type: string,
-  court: string,
-  id: string,
-  name: string,
-  history: BillHistory,
+  type: string
+  court: string
+  id: string
+  name: string
+  history: BillHistory
   historyUpdateTime: Timestamp
 }
 
@@ -29,30 +29,28 @@ export const populateNotificationEvents = functions.firestore
       console.error("New snapshot does not exist")
       return
     }
-    
+
     const documentCreated = !snapshot.before.exists
 
     const oldData = snapshot.before.data()
     const newData = snapshot.after.data()
-    
+
     const { court } = context.params
 
     // New bill added
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent : Notification = {
+      const newNotificationEvent: Notification = {
         type: "bill",
         court: court,
         id: newData?.id,
         name: newData?.id,
         history: newData?.history,
-        historyUpdateTime: Timestamp.now(),
+        historyUpdateTime: Timestamp.now()
       }
 
-      await db
-        .collection("/notificationEvents")
-        .add(newNotificationEvent)
+      await db.collection("/notificationEvents").add(newNotificationEvent)
 
       return
     }
@@ -64,11 +62,13 @@ export const populateNotificationEvents = functions.firestore
     console.log(`oldLength: ${oldLength}, newLength: ${newLength}`)
 
     const notificationEventSnapshot = await db
-        .collection("/notificationEvents")
-        .where("name", "==", newData?.id)
-        .get()
-    
-    console.log(`${notificationEventSnapshot.docs} ${notificationEventSnapshot.docs.length}`)
+      .collection("/notificationEvents")
+      .where("name", "==", newData?.id)
+      .get()
+
+    console.log(
+      `${notificationEventSnapshot.docs} ${notificationEventSnapshot.docs.length}`
+    )
 
     if (!notificationEventSnapshot.empty) {
       const notificationEventId = notificationEventSnapshot.docs[0].id
@@ -82,7 +82,7 @@ export const populateNotificationEvents = functions.firestore
           .doc(notificationEventId)
           .update({
             history: newData?.history,
-            historyUpdateTime: Timestamp.now(),
+            historyUpdateTime: Timestamp.now()
           })
       }
     }

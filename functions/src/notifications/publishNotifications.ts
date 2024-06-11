@@ -12,9 +12,15 @@ import { Timestamp } from "../firebase"
 const db = admin.firestore()
 
 const createNotificationFields = (
-  entity: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }, // history is an array, it needs to be concatenated
+  entity: {
+    court: any
+    id: string
+    name: string
+    history: string
+    lastUpdatedTime: any
+  }, // history is an array, it needs to be concatenated
   type: string
-)=>{
+) => {
   let topicName = ""
   let header = ""
   let court = null
@@ -42,7 +48,7 @@ const createNotificationFields = (
       header,
       id: entity.id,
       subheader: "Do we need a sub heading", // may change depending on event type
-      timestamp: entity.lastUpdatedTime , // could also be fullDate ; might need to remove this all together
+      timestamp: entity.lastUpdatedTime, // could also be fullDate ; might need to remove this all together
       type,
       court,
       delivered: false
@@ -68,15 +74,17 @@ export const publishNotifications = functions.firestore
     const notificationPromises: any[] = []
     console.log(`topic type: ${topic.type}`)
 
-    if (topic.type == "bill")
-    {
-      console.log('bill')
+    if (topic.type == "bill") {
+      console.log("bill")
 
-      const handleBillNotifications = async (topic: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }) => {
-        const notificationFields = createNotificationFields(
-          topic,
-          "bill"
-        )
+      const handleBillNotifications = async (topic: {
+        court: any
+        id: string
+        name: string
+        history: string
+        lastUpdatedTime: any
+      }) => {
+        const notificationFields = createNotificationFields(topic, "bill")
 
         console.log(JSON.stringify(notificationFields))
 
@@ -92,7 +100,9 @@ export const publishNotifications = functions.firestore
           // Add the uid to the notification document
           notificationFields.uid = uid
 
-          console.log(`Pushing notifications to users/${uid}/userNotificationFeed`)
+          console.log(
+            `Pushing notifications to users/${uid}/userNotificationFeed`
+          )
 
           // Create a notification document in the user's notification feed
           notificationPromises.push(
@@ -102,7 +112,7 @@ export const publishNotifications = functions.firestore
           )
         })
       }
-      
+
       await handleBillNotifications({
         court: topic.court,
         id: topic.id,
@@ -158,6 +168,3 @@ export const publishNotifications = functions.firestore
     // Wait for all notification documents to be created
     await Promise.all(notificationPromises)
   })
-
-
-  

@@ -4,17 +4,17 @@ import { Record, String, Number } from "runtypes"
 import { Script } from "./types"
 import { Bill, BillContent } from "../../functions/src/bills/types"
 
-const Args = Record({ 
-  court: Number, 
-  bills: String 
+const Args = Record({
+  court: Number,
+  bills: String
 })
 
 export const script: Script = async ({ db, args }) => {
   const a = Args.check(args)
   const bills = a.bills.split(" ")
   const court = a.court
-  let batch = db.batch();
-  let opsCounter = 0;
+  let batch = db.batch()
+  let opsCounter = 0
 
   for (const id of bills) {
     const newBillContent: BillContent = {
@@ -36,14 +36,14 @@ export const script: Script = async ({ db, args }) => {
       neutralCount: 0,
       fetchedAt: Timestamp.now(),
       history: [],
-      similar: [],
+      similar: []
     }
     console.log(`/generalCourts/${court}/bills/${id}`)
-    const billRef = db.collection(`/generalCourts/${court}/bills`).doc(`${id}`);
-    batch.set(billRef, newBill);
-    opsCounter++;
+    const billRef = db.collection(`/generalCourts/${court}/bills`).doc(`${id}`)
+    batch.set(billRef, newBill)
+    opsCounter++
   }
 
-  await batch.commit();
-  console.log(`Batch of ${opsCounter} bills added.`);
+  await batch.commit()
+  console.log(`Batch of ${opsCounter} bills added.`)
 }

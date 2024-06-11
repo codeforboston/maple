@@ -1,12 +1,12 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import { isNotNull } from "components/utils"
 import { cloneDeep, fromPairs, isString, last, sortBy } from "lodash"
 import { useEffect } from "react"
 import { components, GroupBase, MultiValueGenericProps } from "react-select"
 import styled from "styled-components"
-import { Button } from "../bootstrap"
+import { useMediaQuery } from "usehooks-ts"
+import { Button, Col, Row } from "../bootstrap"
 import { CopyButton } from "../buttons"
 import { useMemberSearch } from "../db"
 import { useProfileState } from "../db/profile/redux"
@@ -16,23 +16,50 @@ import { calloutLabels } from "./content"
 import { usePublishState, useTestimonyEmail } from "./hooks"
 import {
   addCommittee,
+  removeCommittee,
   addMyLegislators,
+  removeMyLegislators,
   clearLegislatorSearch,
   Legislator,
   resolvedLegislatorSearch,
   setRecipients
 } from "./redux"
+import { isNotNull } from "components/utils"
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
+  const email = useTestimonyEmail()
+
+  const isMobile = useMediaQuery("(max-width: 1199px)")
 
   return (
     <div {...props}>
-      <div className="d-flex justify-content-between">
-        <div className="fs-4">Email Recipients</div>
-        <RecipientControls />
-      </div>
-      <SelectLegislatorEmails className="mt-2" />
+      <Row className="d-flex">
+        <Col className="align-self-center fs-4" xl={3} lg={12}>
+          Email Recipients
+        </Col>
+        <Col xl={6} lg={12}>
+          <RecipientControls />
+        </Col>
+        <Col
+          className={`align-self-center ${isMobile ? "py-2" : ""}`}
+          xl={3}
+          lg={12}
+        >
+          {email.to ? (
+            <CopyButton
+              key="copy"
+              variant="outline-secondary"
+              text={email.to}
+              className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
+              format="text/plain"
+            >
+              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+            </CopyButton>
+          ) : null}
+        </Col>
+      </Row>
+      <SelectLegislatorEmails className="my-2" />
     </div>
   )
 })`
@@ -81,42 +108,101 @@ const RecipientControls = styled(({ className }) => {
   const email = useTestimonyEmail()
   const buttons = []
 
-  if (share.committeeChairs.length > 0)
-    buttons.push(
-      <Button
-        key="committee"
-        variant="link"
-        onClick={() => dispatch(addCommittee())}
-      >
-        Add Relevant Committee
-      </Button>
-    )
+  const isMobile = useMediaQuery("(max-width: 1199px)")
 
-  if (share.userLegislators.length > 0)
-    buttons.push(
-      <Button
-        key="legislators"
-        variant="link"
-        onClick={() => dispatch(addMyLegislators())}
-      >
-        Add My Legislators
-      </Button>
+  if (share.committeeChairs.length > 0) {
+    const committeeChairsCodes = share.committeeChairs.map(
+      item => item.MemberCode
     )
+    if (
+      share.recipients.filter(m => committeeChairsCodes.includes(m.MemberCode))
+        .length < share.committeeChairs.length
+    ) {
+      buttons.push(
+        <Col
+          className={`align-self-center ${isMobile ? "ms-3 my-1" : ""}`}
+          xl={6}
+          lg={12}
+        >
+          <Button
+            className="py-1"
+            key="committee"
+            // variant="link"
+            variant="outline-secondary"
+            onClick={() => dispatch(addCommittee())}
+          >
+            Add Relevant Committee Chairs
+          </Button>
+        </Col>
+      )
+    } else {
+      buttons.push(
+        <Col
+          className={`align-self-center ${isMobile ? "ms-3 my-1" : ""}`}
+          xl={6}
+          lg={12}
+        >
+          <Button
+            className="py-1"
+            key="committee"
+            // variant="link"
+            variant="outline-secondary"
+            onClick={() => dispatch(removeCommittee())}
+          >
+            Remove Relevant Committee Chairs
+          </Button>
+        </Col>
+      )
+    }
+  }
 
-  if (email.to)
-    buttons.push(
-      <CopyButton
-        key="copy"
-        variant="outline-secondary"
-        text={email.to}
-        className="copy"
-        format="text/plain"
-      >
-        <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
-      </CopyButton>
+  if (share.userLegislators.length > 0) {
+    const userLegislatorsCodes = share.userLegislators.map(
+      item => item.MemberCode
     )
+    if (
+      share.recipients.filter(m => userLegislatorsCodes.includes(m.MemberCode))
+        .length < share.userLegislators.length
+    ) {
+      buttons.push(
+        <Col
+          className={`align-self-center ${isMobile ? "mb-1 ms-3 mt-2" : ""}`}
+          xl={6}
+          lg={12}
+        >
+          <Button
+            className="py-1"
+            key="legislators"
+            // variant="link"
+            variant="outline-secondary"
+            onClick={() => dispatch(addMyLegislators())}
+          >
+            Add My Legislators
+          </Button>
+        </Col>
+      )
+    } else {
+      buttons.push(
+        <Col
+          className={`align-self-center ${isMobile ? "mb-1 ms-3 mt-2" : ""}`}
+          xl={6}
+          lg={12}
+        >
+          <Button
+            className="py-1"
+            key="legislators"
+            // variant="link"
+            variant="outline-secondary"
+            onClick={() => dispatch(removeMyLegislators())}
+          >
+            Remove My Legislators
+          </Button>
+        </Col>
+      )
+    }
+  }
 
-  return <div className={clsx("d-flex gap-4", className)}>{buttons}</div>
+  return <Row>{buttons}</Row>
 })`
   flex-wrap: wrap;
 
