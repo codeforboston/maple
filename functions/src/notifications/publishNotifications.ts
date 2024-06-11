@@ -112,6 +112,49 @@ export const publishNotifications = functions.firestore
       })
     }
 
+    else if (topic.type == "org") {
+      // console.log('org')
+
+      // const handleOrgNotifications = async (topic: { court: any; id: string; name: string; history: string; lastUpdatedTime: any }) => {
+      //   const notificationFields = createNotificationFields(
+      //     topic,
+      //     "org"
+      //   )
+
+      //   console.log(JSON.stringify(notificationFields))
+
+      //   const subscriptionsSnapshot = await db
+      //     .collectionGroup("activeTopicSubscriptions")
+      //     .where("topicName", "==", notificationFields.topicName)
+      //     .get()
+
+      //   subscriptionsSnapshot.docs.forEach(doc => {
+      //     const subscription = doc.data()
+      //     const { uid } = subscription
+
+      //     // Add the uid to the notification document
+      //     notificationFields.uid = uid
+
+      //     console.log(`Pushing notifications to users/${uid}/userNotificationFeed`)
+
+      //     // Create a notification document in the user's notification feed
+      //     notificationPromises.push(
+      //       db
+      //         .collection(`users/${uid}/userNotificationFeed`)
+      //         .add(notificationFields)
+      //     )
+      //   })
+      // }
+      
+      // await handleOrgNotifications({
+      //   court: topic.court,
+      //   id: topic.id,
+      //   name: topic.name,
+      //   history: JSON.stringify(topic.history),
+      //   lastUpdatedTime: topic.historyUpdateTime
+      // })
+    }
+
     // Wait for all notification documents to be created
     await Promise.all(notificationPromises)
   })
