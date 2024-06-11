@@ -32,7 +32,6 @@ test.describe("Search result test", () => {
   test("find bills via text search", async ({ page }) => {
     // Setup search term
     const searchTerm = getRandomWord()
-    test.setTimeout(100000)
 
     // Perform the search
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
@@ -300,71 +299,246 @@ test.describe("Sort Bills test", () => {
   }
 })
 
+interface FilterCategory {
+  selector: string
+}
+
+interface CheckedFilter {
+  selector: string
+  labelText: string
+}
+
+/**
+ * Describe and test the filtering functionality for Bills.
+ */
 test.describe("Filter Bills test", () => {
-  const filterCategories = [
+  // Define filter categories
+  const filterCategories: FilterCategory[] = [
     {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(1)",
-      usingNum: true
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(1)"
     }, // General Court
     {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(2)",
-      usingNum: false
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(2)"
     }, // Current Committee
     {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(3)",
-      usingNum: false
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(3)"
     }, // City
     {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(4)",
-      usingNum: false
-    } // Primary Sponsor
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(4)"
+    }, // Primary Sponsor
+    {
+      selector: "div.ais-RefinementList.mb-4:nth-of-type(5)"
+    } // Cosponsor
   ]
 
-  const filterItemSelector = "li:first-child input.ais-RefinementList-checkbox"
+  // Selector for the current refinement item
+  const categorySelector = ".ais-CurrentRefinements-item"
 
-  test("apply a first single filter from General Court, Current Committee, City, and Primary Sponsor", async ({
-    page
-  }) => {
-    // Loop through each filter category and apply the first filter
-    for (const { selector: filterCategory, usingNum } of filterCategories) {
-      // Uncheck all filters first to ensure a clean state
+  /**
+   * Uncheck all filters before each test.
+   * @param page - The Playwright page object.
+   */
+  const uncheckAllFilters = async (page: any) => {
+    for (const { selector: filterCategory } of filterCategories) {
       const checkedFilters = await page.$$(
-        filterCategory + " " + filterItemSelector + ":checked"
+        filterCategory + " " + "input.ais-RefinementList-checkbox" + ":checked"
       )
       for (const filter of checkedFilters) {
         await filter.uncheck()
       }
+    }
+  }
 
-      // Check the first filter item in the current category
-      const firstFilterItem = `${filterCategory} ${filterItemSelector}`
-      let filterLabel = await page
-        .locator(
-          `${filterCategory} li:first-child .ais-RefinementList-labelText`
-        )
-        .innerText()
-      await page.check(firstFilterItem)
+  /**
+   * Get a random filter item selector for a given filter category.
+   * @param page - The Playwright page object.
+   * @param filterCategory - The selector of the filter category.
+   * @returns The selector for a randomly chosen filter item.
+   */
+  const getRandomFilterItemSelector = async (
+    page: any,
+    filterCategory: string
+  ): Promise<string> => {
+    const filterItems = await page.$$(
+      `${filterCategory} li input.ais-RefinementList-checkbox`
+    )
+    const randomIndex = Math.floor(Math.random() * filterItems.length)
+    return `li:nth-child(${randomIndex + 1}) input.ais-RefinementList-checkbox`
+  }
 
-      // Wait for the filtering to apply
-      await page.waitForTimeout(2000)
+  /**
+   * Apply a filter by checking the specified filter item.
+   * @param page - The Playwright page object.
+   * @param filterCategory - The selector of the filter category.
+   * @param filterItemSelector - The selector of the filter item to apply.
+   * @returns The label text of the applied filter.
+   */
+  const applyFilter = async (
+    page: any,
+    filterCategory: string,
+    filterItemSelector: string
+  ): Promise<string> => {
+    // Set a timeout for the page.$$
+    const timeout = 2000
+    const filterItem = await page.locator(
+      `${filterCategory} ${filterItemSelector}`
+    )
+    const filterLabel = await filterItem
+      .locator("..")
+      .locator(".ais-RefinementList-labelText")
+      .innerText()
+    console.log(filterLabel)
+    await filterItem.click()
+    return filterLabel
+  }
 
-      // Verify the filtering result
-      const filteredResults = await page.$$eval(
-        ".ais-Hits-item",
-        (items, filterText) => {
-          return items.every(item => {
-            const labels = item.querySelectorAll(".blurb")
-            return Array.from(labels).some(label => {
-              const labalText = label.textContent ? label.textContent : ""
-              console.log(labalText, filterText)
-              return labalText.includes(filterText)
-            })
-          })
-        },
-        filterLabel
+  // clear the filter label before each test
+  test.beforeEach(async ({ page }) => {
+    await uncheckAllFilters(page)
+  })
+
+  // Test: Filter Bills by Court
+  test("Filter Bills by Court", async ({ page }) => {
+    const filterCategory = filterCategories[0].selector
+    const filterItemSelector = await getRandomFilterItemSelector(
+      page,
+      filterCategory
+    )
+    const filterLabel = await applyFilter(
+      page,
+      filterCategory,
+      filterItemSelector
+    )
+    const filterText = await page
+      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
+      .innerText()
+    // Extract the number from the filter item
+    let courtNumberMatch = filterLabel.match(/^\d+/)
+    let courtNumber = courtNumberMatch ? courtNumberMatch[0] : ""
+    expect(courtNumber).toEqual(filterText)
+    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+  })
+
+  // Test: Filter Bills by Current Committee
+  test("Filter Bills by Current Committee", async ({ page }) => {
+    const filterCategory = filterCategories[1].selector
+    const filterItemSelector = await getRandomFilterItemSelector(
+      page,
+      filterCategory
+    )
+    const filterLabel = await applyFilter(
+      page,
+      filterCategory,
+      filterItemSelector
+    )
+    const filterText = await page
+      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
+      .innerText()
+    expect(filterLabel).toEqual(filterText)
+    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+  })
+
+  // Test: Filter Bills by City
+  test("Filter Bills by City", async ({ page }) => {
+    const filterCategory = filterCategories[2].selector
+    const filterItemSelector = await getRandomFilterItemSelector(
+      page,
+      filterCategory
+    )
+    const filterLabel = await applyFilter(
+      page,
+      filterCategory,
+      filterItemSelector
+    )
+    const filterText = await page
+      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
+      .innerText()
+    expect(filterLabel).toEqual(filterText)
+    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+  })
+
+  // Test: Filter Bills by Primary Sponsor
+  test("Filter Bills by Primary Sponsor", async ({ page }) => {
+    const filterCategory = filterCategories[3].selector
+    const filterItemSelector = await getRandomFilterItemSelector(
+      page,
+      filterCategory
+    )
+    const filterLabel = await applyFilter(
+      page,
+      filterCategory,
+      filterItemSelector
+    )
+    const filterText = await page
+      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
+      .innerText()
+    expect(filterLabel).toEqual(filterText)
+    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+  })
+
+  // Test: Filter Bills by Cosponsor
+  test("Filter Bills by Cosponsor", async ({ page }) => {
+    const filterCategory = filterCategories[4].selector
+    const filterItemSelector = await getRandomFilterItemSelector(
+      page,
+      filterCategory
+    )
+    const filterLabel = await applyFilter(
+      page,
+      filterCategory,
+      filterItemSelector
+    )
+    const filterText = await page
+      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
+      .innerText()
+    expect(filterLabel).toEqual(filterText)
+    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+  })
+
+  // Test: Combination of Filters
+  test("Combination of Filters", async ({ page }) => {
+    const checkedFilters: string[] = []
+    for (const { selector: filterCategory } of filterCategories) {
+      // Check if filter items are available for the category
+      const filterItems = await page.$$(
+        `${filterCategory} li input.ais-RefinementList-checkbox`
       )
+      if (filterItems.length === 0) {
+        console.log(
+          `Skipping Combination of Filters test due to empty category: ${filterCategory}`
+        )
+        continue
+      }
+      const filterItemSelector = await getRandomFilterItemSelector(
+        page,
+        filterCategory
+      )
+      const filterLabel = await applyFilter(
+        page,
+        filterCategory,
+        filterItemSelector
+      )
+      checkedFilters.push(filterLabel)
+      await page.waitForTimeout(1000)
+    }
 
-      expect(filteredResults).toBeTruthy() // Check that filtering worked correctly
-      await page.uncheck(firstFilterItem)
+    const filteredResults = await page.$$(
+      `${categorySelector} .ais-CurrentRefinements-categoryLabel`
+    )
+    const resultsCount = filteredResults.length
+    expect(resultsCount).toBeGreaterThan(0)
+
+    for (let i = 0; i < resultsCount; i++) {
+      const resultText = await filteredResults[i].innerText()
+      expect(checkedFilters[i]).toContain(resultText)
+    }
+
+    for (const { selector: filterCategory } of filterCategories) {
+      const filterItemSelector = await getRandomFilterItemSelector(
+        page,
+        filterCategory
+      )
+      await page.uncheck(`${filterCategory} ${filterItemSelector}`)
     }
   })
 })
