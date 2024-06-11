@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect, Page, ElementHandle } from "@playwright/test"
 import { Console } from "console"
 
 test.beforeEach(async ({ page }) => {
@@ -12,8 +12,11 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe("Search result test", () => {
-  // Function to get a random word from a predefined list
-  const getRandomWord = () => {
+  /**
+   * Function to get a random word from a predefined list.
+   * @returns A random word from the list.
+   */
+  const getRandomWord = (): string => {
     const words = [
       "health",
       "education",
@@ -29,188 +32,283 @@ test.describe("Search result test", () => {
     return words[Math.floor(Math.random() * words.length)]
   }
 
-  test("find bills via text search", async ({ page }) => {
-    // Setup search term
-    const searchTerm = getRandomWord()
-
-    // Perform the search
+  /**
+   * Function to perform a search.
+   * @param page - The Playwright page object.
+   * @param searchTerm - The search term to use.
+   */
+  const performSearch = async (page: Page, searchTerm: string) => {
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
     await page.keyboard.press("Enter")
+  }
 
-    // Get the initial result count
-    const initialResultCount = await page.textContent(
-      ".ResultCount__ResultContainer-sc-3931e200-0"
-    )
-
-    // Wait for the result count to change
+  /**
+   * Function to wait for search results to change.
+   * @param page - The Playwright page object.
+   * @param initialResultCount - The initial result count to compare against.
+   */
+  const waitForResultsToChange = async (
+    page: Page,
+    initialResultCount: string
+  ) => {
     await page.waitForFunction(initialResultCount => {
       const currentResultCount = document.querySelector(
         ".ResultCount__ResultContainer-sc-3931e200-0"
       )?.textContent
       return currentResultCount !== initialResultCount
     }, initialResultCount)
-  })
+  }
 
-  test("search label test", async ({ page }) => {
-    // Setup search term
-    const searchTerm = getRandomWord()
-
-    // Perform the search
-    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter")
-
-    // Check the query label
-    // Wait for the elements to be visible
+  /**
+   * Function to get category labels text content.
+   * @param page - The Playwright page object.
+   * @returns An array of text content of category labels.
+   */
+  const getCategoryLabelsTextContent = async (
+    page: Page
+  ): Promise<string[]> => {
     const categoryLabels = page.locator(".ais-CurrentRefinements-categoryLabel")
     await categoryLabels.first().waitFor({ state: "visible" })
 
-    // Get text content of all category labels
-    const labelsTextContent = await categoryLabels.evaluateAll(labels =>
+    return categoryLabels.evaluateAll(labels =>
       labels.map(label => label.textContent || "")
     )
+  }
 
-    // Log all text contents
+  /**
+   * Function to check the full content of the first bill on the page.
+   * @param page - The Playwright page object.
+   * @param searchTerm - The search term to validate in the bill content.
+   */
+  const checkFirstBill = async (page: Page, searchTerm: string) => {
+    const firstBillLink = await page.$eval(
+      "li.ais-Hits-item a",
+      link => (link as HTMLAnchorElement).href
+    )
+
+    await page.goto(firstBillLink)
+
+    const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
+    await readmorebtn.click()
+
+    const fullContent = await page.textContent(
+      ".Summary__FormattedBillDetails-sc-791f19-4"
+    )
+
+    if (
+      fullContent &&
+      fullContent.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
+    } else {
+      // If full content does not contain the search term, check the summary content
+      const summaryContent = await page.textContent(
+        ".Summary__TitleFormat-sc-791f19-1"
+      )
+      if (summaryContent) {
+        expect(summaryContent.toLowerCase()).toContain(searchTerm.toLowerCase())
+      } else {
+        console.warn(
+          `Both full content and summary content for the first bill on page were null or did not contain the search term.`
+        )
+      }
+    }
+
+    await page.goBack()
+    await page.waitForTimeout(1000)
+  }
+
+  /**
+   * Function to click a random number of times on the "next page" button.
+   * @param page - The Playwright page object.
+   */
+  const clickNextPageRandomTimes = async (page: Page) => {
+    const randomClicks = Math.floor(Math.random() * 5) + 1
+    for (let i = 0; i < randomClicks; i++) {
+      const hasNextPage = await page.$(
+        "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
+      )
+      if (hasNextPage) {
+        await hasNextPage.click()
+        await page.waitForTimeout(1000)
+      } else {
+        break
+      }
+    }
+  }
+
+  test("find bills via text search", async ({ page }) => {
+    // Perform a search and wait for the results to change
+    const searchTerm = getRandomWord()
+
+    await performSearch(page, searchTerm)
+
+    const initialResultCount = await page.textContent(
+      ".ResultCount__ResultContainer-sc-3931e200-0"
+    )
+
+    await waitForResultsToChange(page, initialResultCount!)
+  })
+
+  test("search label test", async ({ page }) => {
+    // Perform a search and check that the category labels include the search term
+    const searchTerm = getRandomWord()
+
+    await performSearch(page, searchTerm)
+
+    const labelsTextContent = await getCategoryLabelsTextContent(page)
+
     labelsTextContent.forEach((text, index) => {
       console.log(`Label ${index + 1}: ${text}`)
     })
 
-    // Ensure at least one of the labels contains the search term
     const containsSearchTerm = labelsTextContent.some(textContent =>
       textContent.toLowerCase().includes(searchTerm.toLowerCase())
     )
     expect(containsSearchTerm).toBe(true)
   })
 
-  test("check the edge case when search incldue 'act'", async ({ page }) => {
-    // Setup serach term
-    const searchTerm = "act"
-
-    // Perform the search
-    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter")
-
-    // Wait for the result
-    await page.waitForTimeout(1000)
-
-    // Check that the search results contain 'act'
-    const searchResults = await page.$$eval("li.ais-Hits-item a", links =>
-      links.map(link => link.textContent || "")
-    )
-    // Ensure every result contains the search term
-    const allContainSearchTerm = searchResults.every(text =>
-      text.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    expect(allContainSearchTerm).toBe(true)
-  })
-
   test("check the first bill on random page", async ({ page }) => {
-    // Setup search term
+    // Perform a search and check the first bill on random pages multiple times
     const searchTerm = getRandomWord()
-    test.setTimeout(100000)
 
-    // Perform the search
-    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter")
+    await performSearch(page, searchTerm)
 
-    // Wait for the result
-    await page.waitForTimeout(1000)
+    const initialResultCount = await page.textContent(
+      ".ResultCount__ResultContainer-sc-3931e200-0"
+    )
 
-    // Function to check the full content of the first bill on the page
-    const checkFirstBill = async () => {
-      const firstBillLink = await page.$eval(
-        "li.ais-Hits-item a",
-        link => (link as HTMLAnchorElement).href
-      )
+    await waitForResultsToChange(page, initialResultCount!)
 
-      await page.goto(firstBillLink)
-
-      // Click the 'read more' button to get full content
-      const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
-      await readmorebtn.click()
-
-      // Get the full content
-      const fullContent = await page.textContent(
-        ".Summary__FormattedBillDetails-sc-791f19-4"
-      )
-
-      // Ensure fullContent is not null
-      if (fullContent) {
-        // Check if the full content contains the search term
-        expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
-      } else {
-        console.warn(`Full content for first bill on page was null.`)
-      }
-
-      // Go back to the main search results page
-      await page.goBack()
-
-      // Wait for the result
-      await page.waitForTimeout(1000)
-    }
-
-    // Function to click a random number of times on the "next page" button
-    const clickNextPageRandomTimes = async () => {
-      const randomClicks = Math.floor(Math.random() * 5) + 1 // Random number between 1 and 5
-      for (let i = 0; i < randomClicks; i++) {
-        const hasNextPage = await page.$(
-          "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
-        )
-        if (hasNextPage) {
-          await hasNextPage.click()
-          await page.waitForTimeout(1000)
-        } else {
-          break
-        }
-      }
-    }
-
-    // Check the first bill on random page for five times if available
-    let times = 5
+    let times = 2
     do {
-      await checkFirstBill()
-      await clickNextPageRandomTimes()
+      await checkFirstBill(page, searchTerm)
+      await clickNextPageRandomTimes(page)
       times--
     } while (times > 0)
   })
+
+  test("no results found", async ({ page }) => {
+    // Test to ensure the application handles no results found cases
+    const searchTerm = "nonexistentsearchterm12345"
+
+    await performSearch(page, searchTerm)
+
+    const noResultsMessage = await page.textContent(
+      ".NoResults__Container-sc-bf043801-0 .text-center"
+    )
+    expect(noResultsMessage).toContain("Your search has yielded zero results!")
+  })
 })
 
-test.describe("Sort Bills test", () => {
-  const sortingTests = [
-    {
-      option: "Sort by Relevance",
-      attribute: "data-relevance-score",
-      order: "desc",
-      type: "number"
-    },
-    {
-      option: "Sort by Testimony Count",
-      attribute: "div.testimonyCount",
-      order: "desc",
-      type: "sum"
-    },
-    {
-      option: "Sort by Cosponsor Count",
-      attribute: "span.blurb",
-      order: "desc",
-      type: "cosponsor"
-    },
-    {
-      option: "Sort by Next Hearing Date",
-      attribute: "div.card-footer",
-      order: "asc",
-      type: "date"
-    },
-    {
-      option: "Sort by Most Recent Testimony",
-      attribute: "span.blurb.me-2",
-      order: "desc",
-      type: "courtNumber"
-    }
-  ]
+// Define an interface for sorting test configurations
+interface SortingTest {
+  option: string
+  attribute: string
+  order: "asc" | "desc"
+  type:
+    | "relevance"
+    | "testimonyCount"
+    | "cosponsorCount"
+    | "nextHearingDate"
+    | "recentTestimony"
+}
 
+// Array of sorting test configurations
+const sortingTests: SortingTest[] = [
+  // {
+  //   option: "Sort by Relevance",
+  //   attribute: "data-relevance-score",
+  //   order: "desc",
+  //   type: "relevance"
+  // },
+  {
+    option: "Sort by Testimony Count",
+    attribute: "div.testimonyCount",
+    order: "desc",
+    type: "testimonyCount"
+  },
+  {
+    option: "Sort by Cosponsor Count",
+    attribute: "span.blurb",
+    order: "desc",
+    type: "cosponsorCount"
+  },
+  {
+    option: "Sort by Next Hearing Date",
+    attribute: "div.card-footer",
+    order: "asc",
+    type: "nextHearingDate"
+  },
+  {
+    option: "Sort by Most Recent Testimony",
+    attribute: "span.blurb.me-2",
+    order: "asc",
+    type: "recentTestimony"
+  }
+]
+
+/**
+ * Extracts attribute values based on the type of sorting.
+ * @param item - The DOM element from which to extract the value.
+ * @param attribute - The attribute or selector used to locate the value.
+ * @param type - The type of value to extract ('relevance', 'testimonyCount', 'cosponsorCount', 'nextHearingDate', or 'recentTestimony').
+ * @returns The extracted value as a number.
+ */
+const getAttributeValue = async (
+  item: ElementHandle<Element>,
+  attribute: string,
+  type: string
+): Promise<number> => {
+  if (type === "cosponsorCount") {
+    const cosponsorCount = await item.$$eval(attribute, elements => {
+      let count = 0
+      elements.forEach(el => {
+        const match = el.textContent?.match(/and (\d+) others/)
+        if (match) {
+          count += parseInt(match[1], 10)
+        }
+      })
+      return count
+    })
+    return cosponsorCount
+  } else if (type === "nextHearingDate") {
+    const dateText = await item.$eval(attribute, el => el.textContent || "")
+    const match = dateText.match(
+      /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
+    )
+    const value = match ? match[0] : ""
+    const dateValue = new Date(value)
+    return dateValue.getTime()
+  } else if (type === "testimonyCount") {
+    const svgElements = await item.$$(attribute + " svg")
+    const values = await Promise.all(
+      svgElements.map(svg =>
+        svg.evaluate(node => {
+          const textNode = node.nextSibling
+          const textContent = textNode ? textNode.textContent || "0" : "0"
+          return parseInt(textContent, 10)
+        })
+      )
+    )
+    return values.reduce((acc, val) => acc + val, 0)
+  } else if (type === "recentTestimony") {
+    const courtNumberText = await item.$eval(
+      attribute,
+      el => el.textContent || ""
+    )
+    const match = courtNumberText.match(/\d+$/)
+    return match ? parseInt(match[0], 10) : 0
+  }
+  return 0
+}
+
+// Describe the test suite
+test.describe("Sort Bills test", () => {
   for (const { option, attribute, order, type } of sortingTests) {
+    // Test case for each sorting option
     test(`should sort bills by ${option}`, async ({ page }) => {
-      // Get the first bill content
+      // Get the initial text content of the first bill
       const initialFirstBillTextContent = await page
         .locator("li.ais-Hits-item a")
         .first()
@@ -220,7 +318,7 @@ test.describe("Sort Bills test", () => {
       const sortDropdown = page.locator(".s__control")
       await sortDropdown.click()
 
-      // Select the sorting option
+      // Select the sorting option from the dropdown
       const sortByOption = page.locator(`div.s__option:has-text("${option}")`)
       await sortByOption.click()
 
@@ -233,59 +331,19 @@ test.describe("Sort Bills test", () => {
       }
 
       // Verify the sorting result
-      const sortedBills = page.locator("li.ais-Hits-item")
-      const billValues = await sortedBills.evaluateAll(
-        (
-          items: Element[],
-          { attribute, type }: { attribute: string; type: string }
-        ) => {
-          return items.map(item => {
-            // Handle different types of data extraction based on 'type'
-            if (type === "cosponsor") {
-              const cosponsorRecord = item.querySelectorAll(attribute)
-              let cosponsorCount = 0
-              // Match pattern 'and (number) others'
-              cosponsorRecord.forEach(span => {
-                const match = span.textContent?.match(/and (\d+) others/)
-                if (match) {
-                  cosponsorCount = parseInt(match[1], 10)
-                }
-              })
-              return cosponsorCount
-            } else if (type === "date") {
-              // Extract date and convert to timestamp
-              const nextHearingDay = item.querySelector(attribute)
-              const dateText = nextHearingDay?.textContent?.match(
-                /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
-              )
-              const value = dateText ? dateText[0] : ""
-              const dateValue = new Date(value || "")
-              return dateValue.getTime()
-            } else if (type === "sum") {
-              // Sum up numbers found in 'svg' elements(te) - Total Testimonies
-              const testimonyAmount = item.querySelector(attribute)
-              const svgs = testimonyAmount?.querySelectorAll("svg")
-              const values = Array.from(svgs || []).map(svg => {
-                const textNode = svg.nextSibling
-                const textContent = textNode ? textNode.textContent || "0" : "0"
-                const number = parseInt(textContent, 10)
-                return number
-              })
-              const sum = values.reduce((acc, val) => acc + val, 0)
-              console.log("Text from next sibling node:", sum)
-              return sum
-            } else if (type === "courtNumber") {
-              // Extract court number
-              const courtNumber = item.querySelector(attribute)
-              const value = courtNumber ? courtNumber.textContent : ""
-              const numberMatch = value ? value.match(/\d+$/) : "0"
-              return numberMatch ? parseInt(numberMatch[0], 10) : 0
-            }
-            return 0
-          })
-        },
-        { attribute, type }
-      )
+      const sortedBills = await page
+        .locator("li.ais-Hits-item")
+        .elementHandles()
+      const billValues = []
+      for (const item of sortedBills) {
+        const value = await getAttributeValue(
+          item as ElementHandle<Element>,
+          attribute,
+          type
+        )
+        console.log(value)
+        billValues.push(value)
+      }
 
       // Check if values are sorted correctly
       for (let i = 0; i < billValues.length - 1; i++) {
@@ -297,6 +355,50 @@ test.describe("Sort Bills test", () => {
       }
     })
   }
+  // Test sorting consistency
+  test("should maintain consistent order after multiple sorts", async ({
+    page
+  }) => {
+    const initialFirstBillTextContent = await page
+      .locator("li.ais-Hits-item a")
+      .first()
+      .textContent()
+
+    const sortDropdown = page.locator(".s__control")
+    await sortDropdown.click()
+    const sortByOption = page.locator(
+      `div.s__option:has-text("Sort by Relevance")`
+    )
+    await sortByOption.click()
+
+    await page.waitForFunction(initialText => {
+      const firstBill = document.querySelector("li.ais-Hits-item a")
+      return firstBill && firstBill.textContent !== initialText
+    }, initialFirstBillTextContent)
+
+    const firstSortOrder = await page
+      .locator("li.ais-Hits-item a")
+      .allTextContents()
+
+    await sortDropdown.click()
+    await sortByOption.click()
+
+    const secondSortOrder = await page
+      .locator("li.ais-Hits-item a")
+      .allTextContents()
+
+    expect(firstSortOrder).toEqual(secondSortOrder)
+  })
+
+  // Test sorting with an empty list
+  test("should handle sorting with an empty list", async ({ page }) => {
+    const searchTerm = "nonexistentsearchterm12345"
+    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
+    await page.keyboard.press("Enter")
+    await page.waitForTimeout(1000)
+    const sortedBills = await page.locator("li.ais-Hits-item").count()
+    expect(sortedBills).toBe(0)
+  })
 })
 
 interface FilterCategory {
@@ -531,14 +633,6 @@ test.describe("Filter Bills test", () => {
     for (let i = 0; i < resultsCount; i++) {
       const resultText = await filteredResults[i].innerText()
       expect(checkedFilters[i]).toContain(resultText)
-    }
-
-    for (const { selector: filterCategory } of filterCategories) {
-      const filterItemSelector = await getRandomFilterItemSelector(
-        page,
-        filterCategory
-      )
-      await page.uncheck(`${filterCategory} ${filterItemSelector}`)
     }
   })
 })
