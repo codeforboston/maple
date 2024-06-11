@@ -74,6 +74,7 @@ test.describe("Search result test", () => {
     labelsTextContent.forEach((text, index) => {
       console.log(`Label ${index + 1}: ${text}`)
     })
+
     // Ensure at least one of the labels contains the search term
     const containsSearchTerm = labelsTextContent.some(textContent =>
       textContent.toLowerCase().includes(searchTerm.toLowerCase())
@@ -102,6 +103,7 @@ test.describe("Search result test", () => {
     )
     expect(allContainSearchTerm).toBe(true)
   })
+
   test("check the first bill on random page", async ({ page }) => {
     // Setup search term
     const searchTerm = getRandomWord()
@@ -180,7 +182,7 @@ test.describe("Sort Bills test", () => {
       attribute: "data-relevance-score",
       order: "desc",
       type: "number"
-    }, // Assuming relevance score is a number attribute
+    },
     {
       option: "Sort by Testimony Count",
       attribute: "div.testimonyCount",
@@ -239,27 +241,29 @@ test.describe("Sort Bills test", () => {
           { attribute, type }: { attribute: string; type: string }
         ) => {
           return items.map(item => {
+            // Handle different types of data extraction based on 'type'
             if (type === "cosponsor") {
               const cosponsorRecord = item.querySelectorAll(attribute)
               let cosponsorCount = 0
+              // Match pattern 'and (number) others'
               cosponsorRecord.forEach(span => {
                 const match = span.textContent?.match(/and (\d+) others/)
                 if (match) {
                   cosponsorCount = parseInt(match[1], 10)
                 }
               })
-              console.log(cosponsorCount)
               return cosponsorCount
             } else if (type === "date") {
+              // Extract date and convert to timestamp
               const nextHearingDay = item.querySelector(attribute)
               const dateText = nextHearingDay?.textContent?.match(
                 /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
               )
               const value = dateText ? dateText[0] : ""
               const dateValue = new Date(value || "")
-              console.log(dateValue.getTime())
               return dateValue.getTime()
             } else if (type === "sum") {
+              // Sum up numbers found in 'svg' elements(te) - Total Testimonies
               const testimonyAmount = item.querySelector(attribute)
               const svgs = testimonyAmount?.querySelectorAll("svg")
               const values = Array.from(svgs || []).map(svg => {
@@ -270,13 +274,12 @@ test.describe("Sort Bills test", () => {
               })
               const sum = values.reduce((acc, val) => acc + val, 0)
               console.log("Text from next sibling node:", sum)
-
               return sum
             } else if (type === "courtNumber") {
+              // Extract court number
               const courtNumber = item.querySelector(attribute)
               const value = courtNumber ? courtNumber.textContent : ""
               const numberMatch = value ? value.match(/\d+$/) : "0"
-              console.log(numberMatch)
               return numberMatch ? parseInt(numberMatch[0], 10) : 0
             }
             return 0
@@ -296,6 +299,7 @@ test.describe("Sort Bills test", () => {
     })
   }
 })
+
 test.describe("Filter Bills test", () => {
   const filterCategories = [
     {
@@ -340,14 +344,6 @@ test.describe("Filter Bills test", () => {
         .innerText()
       await page.check(firstFilterItem)
 
-      // // Normalize filter label if necessary
-      // if (usingNum) {
-      //   filterLabel = filterLabel.match(/\d+/)
-      //     ? filterLabel.match(/\d+/)
-      //     : filterLabel
-      // }
-      // const normalizedFilterLabel
-
       // Wait for the filtering to apply
       await page.waitForTimeout(2000)
 
@@ -364,7 +360,7 @@ test.describe("Filter Bills test", () => {
             })
           })
         },
-        normalizedFilterLabel
+        filterLabel
       )
 
       expect(filteredResults).toBeTruthy() // Check that filtering worked correctly
