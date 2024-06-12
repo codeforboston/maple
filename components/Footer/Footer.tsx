@@ -5,12 +5,13 @@ import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { ExternalNavLink, NavLink } from "../Navlink"
+import { NavLink } from "../Navlink"
 import { Button, Col, Image, Container, Row, Nav, Navbar } from "../bootstrap"
 import CustomDropdown, {
   CustomDropdownProps
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
+import { useMediaQuery } from "usehooks-ts"
 
 export type PageFooterProps = {
   children?: any
@@ -27,23 +28,27 @@ const TextHeader = styled.h6`
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
+const BrowseHeader = styled(NavLink)`
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  font-family: Nunito;
+  padding: 0.5rem 1rem 0 0;
+  margin: 0 0 10px 0;
+
+  @media (max-width: 768px) {
+    padding-bottom: 0.5rem;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.75);
+    margin: 0;
+  }
+`
 
 const StyledInternalLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.55);
   font-family: Nunito;
   letter-spacing: -0.63px;
   padding-top: 4;
-
-  &:hover {
-    color: white;
-    text-decoration: none;
-  }
-`
-const StyledExternalLink = styled(ExternalNavLink)`
-  color: rgba(255, 255, 255, 0.55);
-  font-family: Nunito;
-  letter-spacing: -0.63px;
-  padding-top: 4;
+  margin: 5px 0;
 
   &:hover {
     color: white;
@@ -201,12 +206,10 @@ const BrowseList = () => {
   const { t } = useTranslation("common")
   return (
     <>
-      <StyledInternalLink href="/testimony">
+      <BrowseHeader href="/testimony">
         {t("navigation.browseTestimony")}
-      </StyledInternalLink>
-      <StyledInternalLink href="/bills">
-        {t("navigation.browseBills")}
-      </StyledInternalLink>
+      </BrowseHeader>
+      <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
     </>
   )
 }
