@@ -12,7 +12,7 @@ import { BillHistory } from "../bills/types"
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-type Notification = {
+export type Notification = {
   type: string
   court: string
   id: string
