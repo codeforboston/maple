@@ -30,15 +30,14 @@ const TextHeader = styled.h6`
 `
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
-  font-weight: bold;
   color: #fff;
   font-family: Nunito;
   padding: 0.5rem 1rem 0 0;
   margin: 0 0 10px 0;
 
   @media (max-width: 768px) {
-    padding-bottom: 0.5rem;
-    border-bottom: solid 1px rgba(255, 255, 255, 0.75);
+    padding-bottom: 0.6rem;
+    border-bottom: solid 1.5px rgba(255, 255, 255, 0.75);
     margin: 0;
   }
 `
