@@ -60,7 +60,7 @@ const Role = () => {
   }
   const roleContent = t("role.content", {
     returnObjects: true
-  }) as unknown as RoleContentItem[]
+  }) as RoleContentItem[]
 
   return (
     <Container fluid="md" className="mt-3">
@@ -90,7 +90,7 @@ const Write = () => {
   const { t } = useTranslation("learnComponents")
   const writeContent = t("write.content", {
     returnObjects: true
-  }) as unknown as WriteContentItem[]
+  }) as WriteContentItem[]
 
   return (
     <Container fluid="md" className="mt-3">
