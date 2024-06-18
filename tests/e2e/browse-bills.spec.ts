@@ -1,5 +1,4 @@
 import { test, expect, Page, ElementHandle } from "@playwright/test"
-import { Console } from "console"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
