@@ -11,7 +11,6 @@ import CustomDropdown, {
   CustomDropdownProps
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
-import { useMediaQuery } from "usehooks-ts"
 
 export type PageFooterProps = {
   children?: any
