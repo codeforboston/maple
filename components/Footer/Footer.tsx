@@ -124,13 +124,13 @@ const TermsAndPolicies = () => {
   return (
     <>
       <StyledInternalLink href="/policies">
-        {t("Privacy Policy")}
+        {t("legal.privacyPolicy")}
       </StyledInternalLink>
       <StyledInternalLink href="/policies/copyright">
-        {t("Terms of Service")}
+        {t("legal.TOS")}
       </StyledInternalLink>
       <StyledInternalLink href="/policies/code-of-conduct">
-        {t("Code of Conduct")}
+        {t("legal.codeOfConduct")}
       </StyledInternalLink>
     </>
   )
@@ -168,33 +168,33 @@ const LearnLinks = () => {
   return (
     <>
       <StyledInternalLink href="/learn/writing-effective-testimony">
-        {t("To Writing Effective Testimony")}
+        {t("links.learnWriting")}
       </StyledInternalLink>
       <StyledInternalLink href="/learn/legislative-process">
-        {t("About the Legislative Process", { ns: "common" })}
+        {t("links.learnProcess")}
       </StyledInternalLink>
       <StyledInternalLink href="/why-use-maple/for-individuals">
-        {t("Why use MAPLE")}
+        {t("links.learnWhy")}
       </StyledInternalLink>
     </>
   )
 }
 
 const AboutLinks = () => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation(["footer", "common"])
   return (
     <>
       <StyledInternalLink href="/about/mission-and-goals">
-        {t("Mission & Goals")}
+        {t("links.ourMission")}
       </StyledInternalLink>
       <StyledInternalLink href="/about/our-team">
-        {t("Team")}
+        {t("links.team")}
       </StyledInternalLink>
       <StyledInternalLink href="/about/support-maple">
-        {t("Support MAPLE")}
+        {t("links.supportMaple")}
       </StyledInternalLink>
       <StyledInternalLink href="/about/faq-page">
-        {t("navigation.faq")}
+        {t("links.faq")}
       </StyledInternalLink>
     </>
   )
