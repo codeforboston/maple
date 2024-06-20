@@ -39,6 +39,10 @@ const BrowseHeader = styled(NavLink)`
     border-bottom: solid 1.5px rgba(255, 255, 255, 0.75);
     margin: 0;
   }
+
+  &:hover {
+    color: white;
+  }
 `
 
 const StyledInternalLink = styled(NavLink)`
