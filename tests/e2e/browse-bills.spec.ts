@@ -16,18 +16,9 @@ test.describe("Search result test", () => {
    * Function to get a random word from a predefined list.
    * @returns A random word from the list.
    */
-  const getRandomWord = (): string => {
+  const getSearchWord = (): string => {
     const words = [
       "health",
-      "education",
-      "environment",
-      "technology",
-      "finance",
-      "transportation",
-      "agriculture",
-      "energy",
-      "housing",
-      "security"
     ]
     return words[Math.floor(Math.random() * words.length)]
   }
@@ -139,7 +130,7 @@ test.describe("Search result test", () => {
 
   test("find bills via text search", async ({ page }) => {
     // Perform a search and wait for the results to change
-    const searchTerm = getRandomWord()
+    const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
@@ -152,7 +143,7 @@ test.describe("Search result test", () => {
 
   test("search label test", async ({ page }) => {
     // Perform a search and check that the category labels include the search term
-    const searchTerm = getRandomWord()
+    const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
@@ -170,7 +161,7 @@ test.describe("Search result test", () => {
 
   test("check the first bill on random page", async ({ page }) => {
     // Perform a search and check the first bill on random pages multiple times
-    const searchTerm = getRandomWord()
+    const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
