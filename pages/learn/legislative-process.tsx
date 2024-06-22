@@ -21,6 +21,5 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
-  "testimony",
-  "learnComponents"
+  "testimony"
 ])
