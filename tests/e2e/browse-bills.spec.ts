@@ -33,22 +33,25 @@ test.describe("Search result test", () => {
     await page.keyboard.press("Enter")
   }
 
-  /**
-   * Function to wait for search results to change.
-   * @param page - The Playwright page object.
-   * @param initialResultCount - The initial result count to compare against.
-   */
-  const waitForResultsToChange = async (
-    page: Page,
-    initialResultCount: string
-  ) => {
-    await page.waitForFunction(initialResultCount => {
-      const currentResultCount = document.querySelector(
-        ".ResultCount__ResultContainer-sc-3931e200-0"
-      )?.textContent
-      return currentResultCount !== initialResultCount
-    }, initialResultCount)
-  }
+/**
+ * Function to wait for search results to change.
+ * @param page - The Playwright page object.
+ * @param initialResultCount - The initial result count to compare against.
+ */
+const waitForResultsToChange = async (
+  page: Page,
+  initialResultCount: string
+) => {
+  await page.waitForFunction(initialResultCount => {
+    const elements = Array.from(document.querySelectorAll("span"));
+    const resultElement = elements.find(element =>
+      element.textContent?.includes("Showing")
+    );
+    const currentResultCount = resultElement ? resultElement.textContent : null;
+    console.log(currentResultCount);
+    return currentResultCount !== initialResultCount;
+  }, initialResultCount);
+}
 
   /**
    * Function to get category labels text content.
