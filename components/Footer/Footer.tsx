@@ -42,6 +42,7 @@ const BrowseHeader = styled(NavLink)`
 
   &:hover {
     color: white;
+    text-decoration: underline 1.5px;
   }
 `
 
