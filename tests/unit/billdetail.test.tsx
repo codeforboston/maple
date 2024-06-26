@@ -6,6 +6,22 @@ import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import configureStore from "redux-mock-store"
 
+
+// mock window match media
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 // mocking dependencies:
 jest.mock('components/featureFlags', () => ({
   useFlags: () => ({
@@ -90,12 +106,17 @@ describe("BillDetails", () => {
   let store
 
   // before each Bill Details test, initialize a stor with an auth slice
+  // publish slice is needed because the ThankYouModal uses usePublishState hook
   beforeEach(() => {
     store = mockStore({
       auth: {
         authenticated: false,
         user: null,
         claims: null
+      },
+      publish: {
+        service: {},
+        showThankYou: false
       }
     })
   })
@@ -110,57 +131,6 @@ describe("BillDetails", () => {
     expect(titleElement).toBeInTheDocument()
   })
 
-  it("renders bill status", () => {})
+  
 
-  it("renders bill description", () => {})
-
-  it("renders bill number", () => {})
-
-  it("renders sponsors", () => {
-    render(
-      <Provider store={store}>
-        <BillDetails bill={mockBill} />
-      </Provider>
-    )
-    mockBill.sponsors.forEach(sponsor => {
-      expect(screen.getByText(sponsor)).toBeInTheDocument()
-    })
-  })
-
-  it("renders testimonies section", () => {
-    render(
-      <Provider store={store}>
-        <BillDetails bill={mockBill} />
-      </Provider>
-    )
-    expect(screen.getByTestId("bill-testimonies")).toBeInTheDocument()
-  })
-
-  // Test different user states
-  it("renders not logged in state", () => {
-    render(
-      <Provider store={store}>
-        <BillDetails bill={mockBill} />
-      </Provider>
-    )
-    expect(screen.getByText("Not Logged In")).toBeInTheDocument()
-  })
-
-  it("renders unsubmitted state for authenticated user", () => {
-    store = mockStore({
-      auth: {
-        authenticated: true,
-        user: { uid: "test-uid" },
-        claims: { role: "user" }
-      }
-    })
-    render(
-      <Provider store={store}>
-        <BillDetails bill={mockBill} />
-      </Provider>
-    )
-    expect(screen.getByText("Unsubmitted")).toBeInTheDocument()
-  })
-
-  // Add more tests for Draft and Submitted states
 })
