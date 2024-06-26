@@ -3,9 +3,13 @@ import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
+import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
-export const Avatar = ({ isOrg }: { isOrg: boolean }) => {
+export const Avatar = () => {
+  const result = useProfile()
+  let isOrg = result?.profile?.role === "organization"
+
   return (
     <>
       {isOrg ? (
@@ -134,9 +138,10 @@ export const NavbarLinkGoals: React.FC<
 
 export const NavbarLinkLogo: React.FC<
   React.PropsWithChildren<{
+    handleClick?: any
     other?: any
   }>
-> = ({ other }) => {
+> = ({ handleClick, other }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth"])
   return (
@@ -144,6 +149,7 @@ export const NavbarLinkLogo: React.FC<
       className={
         isMobile ? "" : "align-items-center justify-content-start me-3"
       }
+      onClick={handleClick}
     >
       <NavLink className={isMobile ? "" : "py-0 px-2"} href="/" {...other}>
         <Image
