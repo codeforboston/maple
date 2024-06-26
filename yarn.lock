@@ -7,6 +7,15 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.4.0.tgz#728c484f4e10df03d5a3acd0d8adcbbebff8ad63"
   integrity sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==
 
+"@alexjball/react-instantsearch-hooks-web@~6.29.1":
+  version "6.29.1"
+  resolved "https://registry.yarnpkg.com/@alexjball/react-instantsearch-hooks-web/-/react-instantsearch-hooks-web-6.29.1.tgz#3768239d6d94e6b2170b26403c06fbfd69d36b7b"
+  integrity sha512-fKLP7VBCXVyS60boiSBKdkbnHnC/EiZRalBrbgAtqbufxbCNdMxknIr53fozy4CWfiRT2sJu33OwiCTDFYF84A==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    instantsearch.js "^4.43.0"
+    react-instantsearch-hooks "6.29.0"
+
 "@algolia/events@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@algolia/events/-/events-4.0.1.tgz#fd39e7477e7bc703d7f893b556f676c032af3950"
@@ -5032,13 +5041,6 @@ algoliasearch-helper@3.22.1, algoliasearch-helper@^3.9.0:
   version "3.22.1"
   resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-3.22.1.tgz#c4b91265aa2e58eea4413bc57c4611eaf391e597"
   integrity sha512-fSxJ4YreH4kOME9CnKazbAn2tK/rvBoV37ETd6nTt4j7QfkcnW+c+F22WfuE9Q/sRpvOMnUwU/BXAVEiwW7p/w==
-  dependencies:
-    "@algolia/events" "^4.0.1"
-
-algoliasearch-helper@3.22.3:
-  version "3.22.3"
-  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-3.22.3.tgz#7c67a1a87c3adb0b52ef726a3de3c0b0edcbb5d1"
-  integrity sha512-2eoEz8mG4KHE+DzfrBTrCmDPxVXv7aZZWPojAJFtARpxxMO6lkos1dJ+XDCXdPvq7q3tpYWRi6xXmVQikejtpA==
   dependencies:
     "@algolia/events" "^4.0.1"
 
