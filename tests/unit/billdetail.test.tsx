@@ -6,6 +6,8 @@ import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import configureStore from "redux-mock-store"
 
+
+
 // mock window match media
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -21,36 +23,7 @@ Object.defineProperty(window, "matchMedia", {
   }))
 })
 
-// mocking dependencies:
-jest.mock("components/featureFlags", () => ({
-  useFlags: () => ({
-    testimonyDiffing: false,
-    notifications: true,
-    billTracker: true,
-    followOrg: true,
-    lobbyingTable: false
-  })
-}))
-
-jest.mock("next-i18next", () => ({
-  useTranslation: () => ({ t: (key: string) => key })
-}))
-
-// Mock resolveBill to return a simple action obj instead of thunk bc BillDetail page always provides the bill object
-const mockResolveBill = jest.fn()
-
-jest.mock("components/publish/hooks", () => ({
-  ...jest.requireActual("components/publish/hooks"),
-  resolveBill: (...args) => mockResolveBill(...args)
-}))
-
-const mockDispatch = jest.fn()
-
-jest.mock("components/hooks", () => ({
-  ...jest.requireActual("components/hooks"),
-  useAppDispatch: () => mockDispatch
-}))
-
+// mock bill (later used in redux store)
 const mockBill: Bill = {
   id: "S1653",
   court: 193,
@@ -113,14 +86,55 @@ const mockBill: Bill = {
   city: "Sample City"
 }
 
+// mocking dependencies:
+
+// setting mock feature flags
+jest.mock("components/featureFlags", () => ({
+  useFlags: () => ({
+    testimonyDiffing: false,
+    notifications: true,
+    billTracker: true,
+    followOrg: true,
+    lobbyingTable: false
+  })
+}))
+
+// translation dependency -mocking so that we aren't actually translating anything in this test
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key })
+}))
+
+// Mock resolveBill to return a simple action obj instead of thunk bc BillDetail page always provides the bill object
+// mock useAppDispatch to dispatch that action obj
+// the actual implementation of these mock functions is specified within the tests
+const mockDispatch = jest.fn()
+
+const mockResolveBill = jest.fn(({ bill }) => {
+  return (dispatch) => {
+    dispatch({ type: "publish/setBill", payload: bill })
+  }
+})
+
+jest.mock("components/publish/hooks", () => ({
+  ...jest.requireActual("components/publish/hooks"),
+  resolveBill: (...args) => mockResolveBill(...args)
+}))
+
+jest.mock("components/hooks", () => ({
+  ...jest.requireActual("components/hooks"),
+  useAppDispatch: () => mockDispatch
+}))
+
+
 // set up Redux mock store
 const mockStore = configureStore([])
 
 describe("BillDetails", () => {
   let store
 
-  // before each Bill Details test, initialize a stor with an auth slice
+  // before each Bill Details test, initialize a store with an auth slice
   // publish slice is needed because the ThankYouModal uses usePublishState hook
+  // bill needs to be stored bc resolveBill sets it
   beforeEach(() => {
     store = mockStore({
       auth: {
@@ -137,10 +151,6 @@ describe("BillDetails", () => {
   })
 
   it("renders bill title", () => {
-    mockResolveBill.mockImplementation(({ bill }) => dispatch => {
-      dispatch({ type: "publish/setBill", payload: bill })
-    })
-
     render(
       <Provider store={store}>
         <BillDetails bill={mockBill} />
@@ -148,8 +158,11 @@ describe("BillDetails", () => {
     )
 
     const titleElement = screen.getByText(
+      // looking for 'S.1653' instead of S1653
       `${mockBill.id[0]}.${mockBill.id.substring(1)}`
     )
     expect(titleElement).toBeInTheDocument()
   })
+
+  
 })
