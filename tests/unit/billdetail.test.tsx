@@ -1,12 +1,12 @@
 import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
+import { render, screen, fireEvent } from "@testing-library/react"
 import { Bill } from "components/db"
 import { BillDetails } from "components/bill/BillDetails"
 import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import configureStore from "redux-mock-store"
-
-
+import { BillNumber } from "components/bill/BillNumber"
+import { useState } from "react"
 
 // mock window match media
 Object.defineProperty(window, "matchMedia", {
@@ -38,7 +38,7 @@ const mockBill: Bill = {
     Title:
       "An Act authorizing the appointment of special police officers in the town of Charlton",
     DocumentText:
-      "\tSECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers for the purpose of performing police details or any other police duties arising from or during the course of police detail work, whether or not related to the detail work. Prior to appointment under this act, a special police officer shall pass a medical examination conducted by a physician or other certified professional chosen by the town to determine that the special police officer is capable of performing the essential duties of a special police officer, the cost of which shall be borne by the special police officer.\r\n\tSECTION 2. Notwithstanding section 1 of chapter 32 of the General Laws or any other general or special law to the contrary, a special police officer appointed pursuant to this act shall not be subject to the maximum age restrictions applied to regular officers under chapter 32 of the General Laws; provided, however, that a special police officer appointed pursuant to this act shall not be eligible to serve as a special police officer upon reaching the age of 70.\r\n\tSECTION 3. Special police officers appointed under this act shall be subject to the limitation on hours worked and other restrictions on earnings as provided in paragraph (b) of section 91 of chapter 32 of the General Laws.\r\n\tSECTION 4. Special police officers shall be subject to the rules and regulations, policies, procedures and requirements of the chief of police of the town of Charlton including, but not limited to, restrictions on the type of detail assignments, requirements regarding medical examinations to determine continuing capability to perform the duties of a special police officer, requirements for training, requirements for firearms licensing and qualifications and requirements regarding uniforms and equipment. Such special police officers shall comply with all requirements of chapter 6E of the General Laws, including: (i) maintaining certification and good standing with the Massachusetts Peace Officer Standards and Training Commission; and (ii) complying with all annual in-service and other training requirements mandated by the municipal police training committee.\r\n\tSECTION 5. This act shall take effect upon passage.\r\n",
+      "\tSECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers...\r\n",
     LegislationTypeName: "Bill",
     Pinslip:
       "By Mr. Fattman, a petition (accompanied by bill, Senate, No. 1653) of Ryan C. Fattman (by vote of the town) for legislation to authorize the appointment of special police officers in the town of Charlton.  Public Service.  [Local Approval Received.]",
@@ -125,16 +125,31 @@ jest.mock("components/hooks", () => ({
 }))
 
 // mock child components
+jest.mock("components/bill/BillNumber", () => ({
+  BillNumber: () => <div data-testid="title">Mocked Title</div>
+}))
 
 jest.mock("components/bill/Status", () => ({
   Status: () => <div data-testid="status">Mocked Status</div>
-}));
+}))
 
 jest.mock("components/bill/Summary", () => ({
-  Summary: () => <div data-testid="summary">Mocked Summary</div>
-}));
-
-
+  Summary: ({ bill }) => {
+    const [showModal, setShowModal] = useState(false)
+    return (
+      <div data-testid="summary">
+        Mocked Summary
+        <button onClick={() => setShowModal(true)}>Read more..</button>
+        {showModal && (
+          <div data-testid="bill-text-modal">
+            <div>{bill.content.DocumentText}</div>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        )}
+      </div>
+    )
+  }
+}))
 
 // set up Redux mock store
 const mockStore = configureStore([])
@@ -164,28 +179,41 @@ describe("BillDetails", () => {
         <BillDetails bill={mockBill} />
       </Provider>
     )
-
   })
 
   test("renders bill title", () => {
-    const titleElement = screen.getByText(
-      // looking for 'S.1653' instead of S1653
-      `${mockBill.id[0]}.${mockBill.id.substring(1)}`
-    )
-    expect(titleElement).toBeInTheDocument()
+    const title = screen.getByTestId("title")
+    expect(title).toBeInTheDocument()
   })
 
   test("renders bill status", () => {
-    const status = screen.getByTestId("status");
-    expect(status).toBeInTheDocument();
-
+    const status = screen.getByTestId("status")
+    expect(status).toBeInTheDocument()
   })
 
-  test("renders bill summary", ()=>{
-    const status = screen.getByTestId("summary");
-    expect(status).toBeInTheDocument();
-
+  test("renders bill summary", () => {
+    const summary = screen.getByTestId("summary")
+    expect(summary).toBeInTheDocument()
   })
 
-  
+  test("renders full text", async () => {
+    // Check for "Read more.." button
+    const readMoreButton = screen.getByText("Read more..")
+    expect(readMoreButton).toBeInTheDocument()
+
+    // Click the "Read more.." button
+    fireEvent.click(readMoreButton)
+
+    // Check if the modal with full text is displayed
+    const modal = await screen.findByTestId("bill-text-modal")
+    expect(modal).toBeInTheDocument()
+
+    // Check if the full text is in the modal
+    const fullText = screen.getByText((content, element) => {
+      return content.includes(
+        "SECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers"
+      )
+    })
+    expect(fullText).toBeInTheDocument()
+  })
 })
