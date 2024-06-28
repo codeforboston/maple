@@ -106,11 +106,10 @@ jest.mock("next-i18next", () => ({
 
 // Mock resolveBill to return a simple action obj instead of thunk bc BillDetail page always provides the bill object
 // mock useAppDispatch to dispatch that action obj
-// the actual implementation of these mock functions is specified within the tests
 const mockDispatch = jest.fn()
 
 const mockResolveBill = jest.fn(({ bill }) => {
-  return (dispatch) => {
+  return () => {
     dispatch({ type: "publish/setBill", payload: bill })
   }
 })
@@ -124,6 +123,17 @@ jest.mock("components/hooks", () => ({
   ...jest.requireActual("components/hooks"),
   useAppDispatch: () => mockDispatch
 }))
+
+// mock child components
+
+jest.mock("components/bill/Status", () => ({
+  Status: () => <div data-testid="status">Mocked Status</div>
+}));
+
+jest.mock("components/bill/Summary", () => ({
+  Summary: () => <div data-testid="summary">Mocked Summary</div>
+}));
+
 
 
 // set up Redux mock store
@@ -148,20 +158,33 @@ describe("BillDetails", () => {
         bill: mockBill
       }
     })
-  })
 
-  it("renders bill title", () => {
     render(
       <Provider store={store}>
         <BillDetails bill={mockBill} />
       </Provider>
     )
 
+  })
+
+  test("renders bill title", () => {
     const titleElement = screen.getByText(
       // looking for 'S.1653' instead of S1653
       `${mockBill.id[0]}.${mockBill.id.substring(1)}`
     )
     expect(titleElement).toBeInTheDocument()
+  })
+
+  test("renders bill status", () => {
+    const status = screen.getByTestId("status");
+    expect(status).toBeInTheDocument();
+
+  })
+
+  test("renders bill summary", ()=>{
+    const status = screen.getByTestId("summary");
+    expect(status).toBeInTheDocument();
+
   })
 
   
