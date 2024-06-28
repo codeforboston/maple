@@ -6,9 +6,8 @@ import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import configureStore from "redux-mock-store"
 
-
 // mock window match media
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
     matches: false,
@@ -18,12 +17,12 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+    dispatchEvent: jest.fn()
+  }))
+})
 
 // mocking dependencies:
-jest.mock('components/featureFlags', () => ({
+jest.mock("components/featureFlags", () => ({
   useFlags: () => ({
     testimonyDiffing: false,
     notifications: true,
@@ -31,10 +30,25 @@ jest.mock('components/featureFlags', () => ({
     followOrg: true,
     lobbyingTable: false
   })
-}));
+}))
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
+}))
+
+// Mock resolveBill to return a simple action obj instead of thunk bc BillDetail page always provides the bill object
+const mockResolveBill = jest.fn()
+
+jest.mock("components/publish/hooks", () => ({
+  ...jest.requireActual("components/publish/hooks"),
+  resolveBill: (...args) => mockResolveBill(...args)
+}))
+
+const mockDispatch = jest.fn()
+
+jest.mock("components/hooks", () => ({
+  ...jest.requireActual("components/hooks"),
+  useAppDispatch: () => mockDispatch
 }))
 
 const mockBill: Bill = {
@@ -116,21 +130,26 @@ describe("BillDetails", () => {
       },
       publish: {
         service: {},
-        showThankYou: false
+        showThankYou: false,
+        bill: mockBill
       }
     })
   })
 
   it("renders bill title", () => {
+    mockResolveBill.mockImplementation(({ bill }) => dispatch => {
+      dispatch({ type: "publish/setBill", payload: bill })
+    })
+
     render(
       <Provider store={store}>
         <BillDetails bill={mockBill} />
       </Provider>
     )
-    const titleElement = screen.getByText(mockBill.id)
+
+    const titleElement = screen.getByText(
+      `${mockBill.id[0]}.${mockBill.id.substring(1)}`
+    )
     expect(titleElement).toBeInTheDocument()
   })
-
-  
-
 })
