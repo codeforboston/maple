@@ -146,6 +146,10 @@ jest.mock("components/bill/SponsorsAndCommittees", () => ({
   Hearing: () => <div data-testid="hearing">Mocked Hearing</div>
 }));
 
+jest.mock("components/bill/BillTestimonies", () => ({
+  BillTestimonies: () => <div data-testid="testimonies">Mocked Bill Testimonies</div>
+}))
+
 
 
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
@@ -220,7 +224,11 @@ describe("BillDetails", () => {
     expect(sponsors).toBeInTheDocument()
   })
 
-  
+  test("renders bill testimonies", () => {
+    const testimonies = screen.getByTestId("testimonies")
+    expect(testimonies).toBeInTheDocument()
+  })
+
 
 
 
