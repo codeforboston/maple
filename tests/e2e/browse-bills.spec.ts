@@ -1,5 +1,4 @@
 import { test, expect, Page, ElementHandle } from "@playwright/test"
-import { Console } from "console"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -42,15 +41,8 @@ const waitForResultsToChange = async (
   page: Page,
   initialResultCount: string
 ) => {
-  await page.waitForFunction(initialResultCount => {
-    const elements = Array.from(document.querySelectorAll("span"));
-    const resultElement = elements.find(element =>
-      element.textContent?.includes("Showing")
-    );
-    const currentResultCount = resultElement ? resultElement.textContent : null;
-    console.log(currentResultCount);
-    return currentResultCount !== initialResultCount;
-  }, initialResultCount);
+  const resultCounts = await page.getByText("Showing").first().textContent()
+  await expect(resultCounts).toBe(initialResultCount);
 }
 
   /**
@@ -82,8 +74,8 @@ const waitForResultsToChange = async (
 
     await page.goto(firstBillLink)
 
-    const readmorebtn = page.locator(".Summary__StyledButton-sc-791f19-3")
-    await readmorebtn.click()
+    const readMorebBtn = page.locator(".Summary__StyledButton-sc-791f19-3")
+    await readMorebBtn.click()
 
     const fullContent = await page.textContent(
       ".Summary__FormattedBillDetails-sc-791f19-4"
@@ -131,7 +123,7 @@ const waitForResultsToChange = async (
     }
   }
 
-  test("find bills via text search", async ({ page }) => {
+  test("should search for bills", async ({ page }) => {
     // Perform a search and wait for the results to change
     const searchTerm = getSearchWord()
 
