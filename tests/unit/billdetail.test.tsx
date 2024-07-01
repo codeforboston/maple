@@ -4,6 +4,7 @@ import { Bill } from "components/db"
 import { BillDetails } from "components/bill/BillDetails"
 import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
+import { thunk } from "redux-thunk" // Import redux-thunk
 import configureStore from "redux-mock-store"
 import { BillNumber } from "components/bill/BillNumber"
 import { useState } from "react"
@@ -104,24 +105,12 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
 
-// Mock resolveBill to return a simple action obj instead of thunk bc BillDetail page always provides the bill object
-// mock useAppDispatch to dispatch that action obj
-const mockDispatch = jest.fn()
-
-const mockResolveBill = jest.fn(({ bill }) => {
-  return () => {
-    dispatch({ type: "publish/setBill", payload: bill })
-  }
-})
-
+// Mock resolveBill
 jest.mock("components/publish/hooks", () => ({
   ...jest.requireActual("components/publish/hooks"),
-  resolveBill: (...args) => mockResolveBill(...args)
-}))
-
-jest.mock("components/hooks", () => ({
-  ...jest.requireActual("components/hooks"),
-  useAppDispatch: () => mockDispatch
+  resolveBill: bill => dispatch => {
+    dispatch({ type: "publish/setBill", payload: bill })
+  }
 }))
 
 // mock child components
@@ -151,8 +140,17 @@ jest.mock("components/bill/Summary", () => ({
   }
 }))
 
-// set up Redux mock store
-const mockStore = configureStore([])
+jest.mock("components/bill/SponsorsAndCommittees", () => ({
+  Sponsors: () => <div data-testid="sponsors">Mocked Sponsors</div>,
+  Committees: () => <div data-testid="committees">Mocked Committees</div>,
+  Hearing: () => <div data-testid="hearing">Mocked Hearing</div>
+}));
+
+
+
+// set up Redux mock store with thunk middleware bc resolveBill is thunk
+const middlewares = [thunk]
+const mockStore = configureStore(middlewares)
 
 describe("BillDetails", () => {
   let store
@@ -216,4 +214,14 @@ describe("BillDetails", () => {
     })
     expect(fullText).toBeInTheDocument()
   })
+
+  test("renders bill sponsors", () => {
+    const sponsors = screen.getByTestId("sponsors")
+    expect(sponsors).toBeInTheDocument()
+  })
+
+  
+
+
+
 })
