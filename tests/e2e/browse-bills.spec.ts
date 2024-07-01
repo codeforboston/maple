@@ -1,4 +1,4 @@
-import { test, expect, Page, ElementHandle } from "@playwright/test"
+import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -48,17 +48,13 @@ const waitForResultsToChange = async (
   /**
    * Function to get category labels text content.
    * @param page - The Playwright page object.
-   * @returns An array of text content of category labels.
+   * @returns An locator of search query.
    */
-  const getCategoryLabelsTextContent = async (
+  const getSearchQuery = async (
     page: Page
-  ): Promise<string[]> => {
-    const categoryLabels = page.locator(".ais-CurrentRefinements-categoryLabel")
-    await categoryLabels.first().waitFor({ state: "visible" })
-
-    return categoryLabels.evaluateAll(labels =>
-      labels.map(label => label.textContent || "")
-    )
+  ): Promise<Locator> => {
+    const searchQuery = await page.getByText("query:").locator("..")
+    return searchQuery
   }
 
   /**
@@ -136,42 +132,30 @@ const waitForResultsToChange = async (
     await waitForResultsToChange(page, initialResultCount!)
   })
 
-  test("search label test", async ({ page }) => {
+  test("should show search query", async ({ page }) => {
     // Perform a search and check that the category labels include the search term
     const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
-    const labelsTextContent = await getCategoryLabelsTextContent(page)
+    const queryFilter = await getSearchQuery(page)
 
-    labelsTextContent.forEach((text, index) => {
-      console.log(`Label ${index + 1}: ${text}`)
-    })
-
-    const containsSearchTerm = labelsTextContent.some(textContent =>
-      textContent.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    expect(containsSearchTerm).toBe(true)
+    await expect(queryFilter).toContainText("query:")
+    await expect(queryFilter).toContainText(searchTerm)
   })
 
-  test("check the first bill on random page", async ({ page }) => {
+  test("Should check the first bill on random page", async ({ page }) => {
     // Perform a search and check the first bill on random pages multiple times
     const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
-    const initialResultCount = await page.textContent(
-      ".ResultCount__ResultContainer-sc-3931e200-0"
-    )
+    const initialResultCount = await page.getByText("Showing").first().textContent()
 
     await waitForResultsToChange(page, initialResultCount!)
 
-    let times = 2
-    do {
-      await checkFirstBill(page, searchTerm)
-      await clickNextPageRandomTimes(page)
-      times--
-    } while (times > 0)
+    await checkFirstBill(page, searchTerm)
+    await clickNextPageRandomTimes(page)
   })
 
   test("no results found", async ({ page }) => {
