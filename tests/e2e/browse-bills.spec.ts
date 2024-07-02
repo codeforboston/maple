@@ -115,7 +115,7 @@ const waitForResultsToChange = async (
   })
 
   
-  test("should check the bill is clickable", async ({ page }) => {
+  test("should click the bill and render to new page", async ({ page }) => {
     // Perform a search and check the first bill on a random page
     const searchTerm = getSearchWord()
 
@@ -132,16 +132,20 @@ const waitForResultsToChange = async (
   })
 
 
-  test("no results found", async ({ page }) => {
+  test("should show no results found", async ({ page }) => {
     // Test to ensure the application handles no results found cases
     const searchTerm = "nonexistentsearchterm12345"
 
     await performSearch(page, searchTerm)
 
-    const noResultsMessage = await page.textContent(
-      ".NoResults__Container-sc-bf043801-0 .text-center"
-    )
-    expect(noResultsMessage).toContain("Your search has yielded zero results!")
+    const noResultsText = await page.getByText('Looks Pretty Empty Here')
+    const noResultsImg = page.getByAltText("No Results")
+    const resultCOunts = await page.getByText("Showing").first();
+
+    await expect(noResultsText).toBeVisible();
+    await expect(noResultsImg).toBeVisible();
+    await expect(resultCOunts).toBeVisible();
+
   })
 })
 
