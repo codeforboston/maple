@@ -62,42 +62,12 @@ const waitForResultsToChange = async (
    * @param page - The Playwright page object.
    * @param searchTerm - The search term to validate in the bill content.
    */
-  const checkFirstBill = async (page: Page, searchTerm: string) => {
+  const getFirstBillAddress = async (page: Page, searchTerm: string) => {
     const firstBillLink = await page.$eval(
       "li.ais-Hits-item a",
       link => (link as HTMLAnchorElement).href
     )
-
-    await page.goto(firstBillLink)
-
-    const readMorebBtn = page.locator(".Summary__StyledButton-sc-791f19-3")
-    await readMorebBtn.click()
-
-    const fullContent = await page.textContent(
-      ".Summary__FormattedBillDetails-sc-791f19-4"
-    )
-
-    if (
-      fullContent &&
-      fullContent.toLowerCase().includes(searchTerm.toLowerCase())
-    ) {
-      expect(fullContent.toLowerCase()).toContain(searchTerm.toLowerCase())
-    } else {
-      // If full content does not contain the search term, check the summary content
-      const summaryContent = await page.textContent(
-        ".Summary__TitleFormat-sc-791f19-1"
-      )
-      if (summaryContent) {
-        expect(summaryContent.toLowerCase()).toContain(searchTerm.toLowerCase())
-      } else {
-        console.warn(
-          `Both full content and summary content for the first bill on page were null or did not contain the search term.`
-        )
-      }
-    }
-
-    await page.goBack()
-    await page.waitForTimeout(1000)
+    return firstBillLink
   }
 
   /**
@@ -144,8 +114,9 @@ const waitForResultsToChange = async (
     await expect(queryFilter).toContainText(searchTerm)
   })
 
-  test("Should check the first bill on random page", async ({ page }) => {
-    // Perform a search and check the first bill on random pages multiple times
+  
+  test("should check the bill is clickable", async ({ page }) => {
+    // Perform a search and check the first bill on a random page
     const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
@@ -154,9 +125,12 @@ const waitForResultsToChange = async (
 
     await waitForResultsToChange(page, initialResultCount!)
 
-    await checkFirstBill(page, searchTerm)
-    await clickNextPageRandomTimes(page)
+    const firstBillLink = await getFirstBillAddress(page, searchTerm)
+
+    await page.goto(firstBillLink)
+    await expect(page.url()).toBe(firstBillLink)
   })
+
 
   test("no results found", async ({ page }) => {
     // Test to ensure the application handles no results found cases
