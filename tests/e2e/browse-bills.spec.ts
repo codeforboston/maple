@@ -95,9 +95,7 @@ const waitForResultsToChange = async (
 
     await performSearch(page, searchTerm)
 
-    const initialResultCount = await page.textContent(
-      ".ResultCount__ResultContainer-sc-3931e200-0"
-    )
+    const initialResultCount = await page.getByText("Showing").first().textContent()
 
     await waitForResultsToChange(page, initialResultCount!)
   })
@@ -163,13 +161,8 @@ interface SortingTest {
 }
 
 // Array of sorting test configurations
+// Need to add test for sort by relevant
 const sortingTests: SortingTest[] = [
-  // {
-  //   option: "Sort by Relevance",
-  //   attribute: "data-relevance-score",
-  //   order: "desc",
-  //   type: "relevance"
-  // },
   {
     option: "Sort by Testimony Count",
     attribute: "div.testimonyCount",
