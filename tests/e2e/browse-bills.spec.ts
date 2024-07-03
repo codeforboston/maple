@@ -70,25 +70,6 @@ const waitForResultsToChange = async (
     return firstBillLink
   }
 
-  /**
-   * Function to click a random number of times on the "next page" button.
-   * @param page - The Playwright page object.
-   */
-  const clickNextPageRandomTimes = async (page: Page) => {
-    const randomClicks = Math.floor(Math.random() * 5) + 1
-    for (let i = 0; i < randomClicks; i++) {
-      const hasNextPage = await page.$(
-        "li.ais-Pagination-item--nextPage:not(.ais-Pagination-item--disabled)"
-      )
-      if (hasNextPage) {
-        await hasNextPage.click()
-        await page.waitForTimeout(1000)
-      } else {
-        break
-      }
-    }
-  }
-
   test("should search for bills", async ({ page }) => {
     // Perform a search and wait for the results to change
     const searchTerm = getSearchWord()
@@ -250,20 +231,18 @@ test.describe("Sort Bills test", () => {
     // Test case for each sorting option
     test(`should sort bills by ${option}`, async ({ page }) => {
       // Get the initial text content of the first bill
-      const initialFirstBillTextContent = await page
-        .locator("li.ais-Hits-item a")
-        .first()
-        .textContent()
+      const initialFirstBill = page.getByRole('link', { name: /S./ }).first()
+      const initialFirstBillTextContent = await initialFirstBill.textContent()
+      console.log(initialFirstBillTextContent)
 
       // Interact with the sorting dropdown
-      const sortDropdown = page.locator(".s__control")
-      await sortDropdown.click()
+      await page.getByText("Sort by Most Recent Testimony").click()
 
       // Select the sorting option from the dropdown
-      const sortByOption = page.locator(`div.s__option:has-text("${option}")`)
-      await sortByOption.click()
+      await page.getByText(`${option}`).first().click()
 
       // Wait for the sorting to finish
+      // * pending to chnage
       if (option !== "Sort by Most Recent Testimony") {
         await page.waitForFunction(initialText => {
           const firstBill = document.querySelector("li.ais-Hits-item a")
@@ -282,7 +261,6 @@ test.describe("Sort Bills test", () => {
           attribute,
           type
         )
-        console.log(value)
         billValues.push(value)
       }
 
@@ -313,7 +291,8 @@ test.describe("Sort Bills test", () => {
     await sortByOption.click()
 
     await page.waitForFunction(initialText => {
-      const firstBill = document.querySelector("li.ais-Hits-item a")
+      const firstBill = document.querySelector('a[href*="bills"]')
+      console.log(firstBill?.textContent)
       return firstBill && firstBill.textContent !== initialText
     }, initialFirstBillTextContent)
 
