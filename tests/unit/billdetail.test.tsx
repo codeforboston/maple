@@ -6,8 +6,8 @@ import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import { thunk } from "redux-thunk" // Import redux-thunk
 import configureStore from "redux-mock-store"
-import { BillNumber } from "components/bill/BillNumber"
 import { useState } from "react"
+import { usePanelStatus } from "components/publish/hooks"
 
 // mock window match media
 Object.defineProperty(window, "matchMedia", {
@@ -105,13 +105,14 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
 
-// Mock resolveBill
-jest.mock("components/publish/hooks", () => ({
-  ...jest.requireActual("components/publish/hooks"),
-  resolveBill: bill => dispatch => {
-    dispatch({ type: "publish/setBill", payload: bill })
-  }
-}))
+// Mock resolveBill and usePanelStatus
+// jest.mock("components/publish/hooks", () => ({
+//   ...jest.requireActual("components/publish/hooks"),
+//   resolveBill: bill => dispatch => {
+//     dispatch({ type: "publish/setBill", payload: bill })
+//   },
+//   usePanelStatus: jest.fn()
+// }))
 
 // mock child components
 jest.mock("components/bill/BillNumber", () => ({
@@ -144,19 +145,35 @@ jest.mock("components/bill/SponsorsAndCommittees", () => ({
   Sponsors: () => <div data-testid="sponsors">Mocked Sponsors</div>,
   Committees: () => <div data-testid="committees">Mocked Committees</div>,
   Hearing: () => <div data-testid="hearing">Mocked Hearing</div>
-}));
-
-jest.mock("components/bill/BillTestimonies", () => ({
-  BillTestimonies: () => <div data-testid="testimonies">Mocked Bill Testimonies</div>
 }))
 
+jest.mock("components/bill/BillTestimonies", () => ({
+  BillTestimonies: () => (
+    <div data-testid="testimonies">Mocked Bill Testimonies</div>
+  )
+}))
 
+jest.mock("components/publish/panel/ctas", () => ({
+  SignedOut: () => <div data-testid="signed-out" />,
+  UnverifiedEmail: () => <div data-testid="unverified-email" />,
+  CreateTestimony: () => <div data-testid="create-testimony" />,
+  CompleteTestimony: () => <div data-testid="complete-testimony" />,
+  PendingUpgrade: () => <div data-testid="pending-upgrade" />
+}))
 
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
 const middlewares = [thunk]
 const mockStore = configureStore(middlewares)
 
 describe("BillDetails", () => {
+  jest.mock("components/publish/hooks", () => ({
+    ...jest.requireActual("components/publish/hooks"),
+    resolveBill: bill => dispatch => {
+      dispatch({ type: "publish/setBill", payload: bill })
+    },
+    usePanelStatus: jest.fn()
+  }));
+  
   let store
 
   // before each Bill Details test, initialize a store with an auth slice
@@ -229,7 +246,40 @@ describe("BillDetails", () => {
     expect(testimonies).toBeInTheDocument()
   })
 
-
-
-
 })
+
+// describe("User Testimony States", () => {
+//   let store;
+
+//   beforeEach(() => {
+//     jest.clearAllMocks()
+//     store = mockStore({
+//       auth: {
+//         authenticated: false,
+//         user: null,
+//         claims: null
+//       },
+//       publish: {
+//         service: {},
+//         showThankYou: false,
+//         bill: mockBill
+//       }
+//     })
+//   })
+
+//   test("renders Signed Out", () => {
+//     hooks.usePanelStatus.mockReturnValue("signedOut")
+    
+//     render(
+//       <Provider store={store}>
+//         <BillDetails bill={mockBill} />
+//       </Provider>
+//     )
+
+//     const signedOut = screen.getByTestId("signed-out")
+//     expect(signedOut).toBeInTheDocument()
+//   })
+
+ 
+//   // ... other tests for different states
+// })
