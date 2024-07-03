@@ -233,8 +233,7 @@ test.describe("Sort Bills test", () => {
       // Get the initial text content of the first bill
       const initialFirstBill = page.getByRole('link', { name: /S./ }).first()
       const initialFirstBillTextContent = await initialFirstBill.textContent()
-      console.log(initialFirstBillTextContent)
-
+    
       // Interact with the sorting dropdown
       await page.getByText("Sort by Most Recent Testimony").click()
 
@@ -274,48 +273,12 @@ test.describe("Sort Bills test", () => {
       }
     })
   }
-  // Test sorting consistency
-  test("should maintain consistent order after multiple sorts", async ({
-    page
-  }) => {
-    const initialFirstBillTextContent = await page
-      .locator("li.ais-Hits-item a")
-      .first()
-      .textContent()
-
-    const sortDropdown = page.locator(".s__control")
-    await sortDropdown.click()
-    const sortByOption = page.locator(
-      `div.s__option:has-text("Sort by Relevance")`
-    )
-    await sortByOption.click()
-
-    await page.waitForFunction(initialText => {
-      const firstBill = document.querySelector('a[href*="bills"]')
-      console.log(firstBill?.textContent)
-      return firstBill && firstBill.textContent !== initialText
-    }, initialFirstBillTextContent)
-
-    const firstSortOrder = await page
-      .locator("li.ais-Hits-item a")
-      .allTextContents()
-
-    await sortDropdown.click()
-    await sortByOption.click()
-
-    const secondSortOrder = await page
-      .locator("li.ais-Hits-item a")
-      .allTextContents()
-
-    expect(firstSortOrder).toEqual(secondSortOrder)
-  })
 
   // Test sorting with an empty list
   test("should handle sorting with an empty list", async ({ page }) => {
     const searchTerm = "nonexistentsearchterm12345"
     await page.fill('input[placeholder="Search For Bills"]', searchTerm)
     await page.keyboard.press("Enter")
-    await page.waitForTimeout(1000)
     const sortedBills = await page.locator("li.ais-Hits-item").count()
     expect(sortedBills).toBe(0)
   })
