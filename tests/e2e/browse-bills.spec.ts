@@ -340,15 +340,11 @@ test.describe("Filter Bills test", () => {
    * @param filterCategory - The selector of the filter category.
    * @returns The selector for a randomly chosen filter item.
    */
-  const getRandomFilterItemSelector = async (
+  const getFirstFilterItemSelector = async (
     page: any,
     filterCategory: string
   ): Promise<string> => {
-    const filterItems = await page.$$(
-      `${filterCategory} li input.ais-RefinementList-checkbox`
-    )
-    const randomIndex = Math.floor(Math.random() * filterItems.length)
-    return `li:nth-child(${randomIndex + 1}) input.ais-RefinementList-checkbox`
+    return `li:nth-child(1) input.ais-RefinementList-checkbox`
   }
 
   /**
@@ -363,8 +359,6 @@ test.describe("Filter Bills test", () => {
     filterCategory: string,
     filterItemSelector: string
   ): Promise<string> => {
-    // Set a timeout for the page.$$
-    const timeout = 2000
     const filterItem = await page.locator(
       `${filterCategory} ${filterItemSelector}`
     )
@@ -385,7 +379,7 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Court
   test("Filter Bills by Court", async ({ page }) => {
     const filterCategory = filterCategories[0].selector
-    const filterItemSelector = await getRandomFilterItemSelector(
+    const filterItemSelector = await getFirstFilterItemSelector(
       page,
       filterCategory
     )
@@ -407,7 +401,7 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Current Committee
   test("Filter Bills by Current Committee", async ({ page }) => {
     const filterCategory = filterCategories[1].selector
-    const filterItemSelector = await getRandomFilterItemSelector(
+    const filterItemSelector = await getFirstFilterItemSelector(
       page,
       filterCategory
     )
@@ -426,7 +420,7 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by City
   test("Filter Bills by City", async ({ page }) => {
     const filterCategory = filterCategories[2].selector
-    const filterItemSelector = await getRandomFilterItemSelector(
+    const filterItemSelector = await getFirstFilterItemSelector(
       page,
       filterCategory
     )
@@ -445,7 +439,7 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Primary Sponsor
   test("Filter Bills by Primary Sponsor", async ({ page }) => {
     const filterCategory = filterCategories[3].selector
-    const filterItemSelector = await getRandomFilterItemSelector(
+    const filterItemSelector = await getFirstFilterItemSelector(
       page,
       filterCategory
     )
@@ -464,7 +458,7 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Cosponsor
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const filterCategory = filterCategories[4].selector
-    const filterItemSelector = await getRandomFilterItemSelector(
+    const filterItemSelector = await getFirstFilterItemSelector(
       page,
       filterCategory
     )
@@ -494,7 +488,7 @@ test.describe("Filter Bills test", () => {
         )
         continue
       }
-      const filterItemSelector = await getRandomFilterItemSelector(
+      const filterItemSelector = await getFirstFilterItemSelector(
         page,
         filterCategory
       )
