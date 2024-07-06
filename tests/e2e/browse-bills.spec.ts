@@ -1,4 +1,7 @@
 import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
+import { BillPage } from "./page_objects/billPage"
+import { bill } from "stories/organisms/billDetail/MockBillData"
+import { waitFor } from "@testing-library/dom"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -16,9 +19,7 @@ test.describe("Search result test", () => {
    * @returns A random word from the list.
    */
   const getSearchWord = (): string => {
-    const words = [
-      "health",
-    ]
+    const words = ["health"]
     return words[Math.floor(Math.random() * words.length)]
   }
 
@@ -32,27 +33,25 @@ test.describe("Search result test", () => {
     await page.keyboard.press("Enter")
   }
 
-/**
- * Function to wait for search results to change.
- * @param page - The Playwright page object.
- * @param initialResultCount - The initial result count to compare against.
- */
-const waitForResultsToChange = async (
-  page: Page,
-  initialResultCount: string
-) => {
-  const resultCounts = await page.getByText("Showing").first().textContent()
-  await expect(resultCounts).toBe(initialResultCount);
-}
+  /**
+   * Function to wait for search results to change.
+   * @param page - The Playwright page object.
+   * @param initialResultCount - The initial result count to compare against.
+   */
+  const waitForResultsToChange = async (
+    page: Page,
+    initialResultCount: string
+  ) => {
+    const resultCounts = await page.getByText("Showing").first().textContent()
+    await expect(resultCounts).toBe(initialResultCount)
+  }
 
   /**
    * Function to get category labels text content.
    * @param page - The Playwright page object.
    * @returns An locator of search query.
    */
-  const getSearchQuery = async (
-    page: Page
-  ): Promise<Locator> => {
+  const getSearchQuery = async (page: Page): Promise<Locator> => {
     const searchQuery = await page.getByText("query:").locator("..")
     return searchQuery
   }
@@ -69,14 +68,22 @@ const waitForResultsToChange = async (
     )
     return firstBillLink
   }
-
+  test("test", async ({ page }) => {
+    const billpage = new BillPage(page)
+    await billpage.goto()
+    const { bills } = billpage
+    console.log(await bills.first().textContent())
+  })
   test("should search for bills", async ({ page }) => {
     // Perform a search and wait for the results to change
     const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
-    const initialResultCount = await page.getByText("Showing").first().textContent()
+    const initialResultCount = await page
+      .getByText("Showing")
+      .first()
+      .textContent()
 
     await waitForResultsToChange(page, initialResultCount!)
   })
@@ -93,14 +100,16 @@ const waitForResultsToChange = async (
     await expect(queryFilter).toContainText(searchTerm)
   })
 
-  
   test("should click the bill and render to new page", async ({ page }) => {
     // Perform a search and check the first bill on a random page
     const searchTerm = getSearchWord()
 
     await performSearch(page, searchTerm)
 
-    const initialResultCount = await page.getByText("Showing").first().textContent()
+    const initialResultCount = await page
+      .getByText("Showing")
+      .first()
+      .textContent()
 
     await waitForResultsToChange(page, initialResultCount!)
 
@@ -110,21 +119,19 @@ const waitForResultsToChange = async (
     await expect(page.url()).toBe(firstBillLink)
   })
 
-
   test("should show no results found", async ({ page }) => {
     // Test to ensure the application handles no results found cases
     const searchTerm = "nonexistentsearchterm12345"
 
     await performSearch(page, searchTerm)
 
-    const noResultsText = await page.getByText('Looks Pretty Empty Here')
+    const noResultsText = await page.getByText("Looks Pretty Empty Here")
     const noResultsImg = page.getByAltText("No Results")
-    const resultCOunts = await page.getByText("Showing").first();
+    const resultCOunts = await page.getByText("Showing").first()
 
-    await expect(noResultsText).toBeVisible();
-    await expect(noResultsImg).toBeVisible();
-    await expect(resultCOunts).toBeVisible();
-
+    await expect(noResultsText).toBeVisible()
+    await expect(noResultsImg).toBeVisible()
+    await expect(resultCOunts).toBeVisible()
   })
 })
 
@@ -231,9 +238,9 @@ test.describe("Sort Bills test", () => {
     // Test case for each sorting option
     test(`should sort bills by ${option}`, async ({ page }) => {
       // Get the initial text content of the first bill
-      const initialFirstBill = page.getByRole('link', { name: /S./ }).first()
+      const initialFirstBill = page.getByRole("link", { name: /S./ }).first()
       const initialFirstBillTextContent = await initialFirstBill.textContent()
-    
+
       // Interact with the sorting dropdown
       await page.getByText("Sort by Most Recent Testimony").click()
 
