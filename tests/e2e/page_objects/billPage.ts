@@ -17,4 +17,13 @@ export class BillPage {
     await this.page.goto("http://localhost:3000/bills")
     await this.page.waitForSelector("ol.ais-Hits-list")
   }
+
+  async search(query: string) {
+    const initialResultCount = await this.resultCount.textContent()
+    await this.searchBar.fill(query)
+    await this.page.waitForFunction(async initialResultCount => {
+      const searchResultCount = await this.resultCount.textContent()
+      return searchResultCount !== initialResultCount
+    }, initialResultCount)
+  }
 }

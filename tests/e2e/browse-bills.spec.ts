@@ -15,12 +15,12 @@ test.beforeEach(async ({ page }) => {
 
 test.describe("Search result test", () => {
   /**
-   * Function to get a random word from a predefined list.
-   * @returns A random word from the list.
+   * Function to get a word from a predefined list.
+   * @returns A word from the list.
    */
   const getSearchWord = (): string => {
     const words = ["health"]
-    return words[Math.floor(Math.random() * words.length)]
+    return words[0]
   }
 
   /**
@@ -75,17 +75,17 @@ test.describe("Search result test", () => {
     console.log(await bills.first().textContent())
   })
   test("should search for bills", async ({ page }) => {
-    // Perform a search and wait for the results to change
+    const billpage = new BillPage(page)
+    billpage.goto()
+
     const searchTerm = getSearchWord()
+    const resultCount = billpage.resultCount
+    const initialResultCount = await resultCount.textContent()
 
-    await performSearch(page, searchTerm)
+    billpage.search(searchTerm)
 
-    const initialResultCount = await page
-      .getByText("Showing")
-      .first()
-      .textContent()
-
-    await waitForResultsToChange(page, initialResultCount!)
+    const searchResultCount = await resultCount.textContent()
+    await expect(searchResultCount).not.toBe(initialResultCount)
   })
 
   test("should show search query", async ({ page }) => {
