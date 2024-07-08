@@ -74,15 +74,16 @@ test.describe("Search result test", () => {
     const { bills } = billpage
     console.log(await bills.first().textContent())
   })
+
   test("should search for bills", async ({ page }) => {
     const billpage = new BillPage(page)
-    billpage.goto()
+    await billpage.goto()
 
-    const searchTerm = getSearchWord()
+    const searchTerm = billpage.searchWord
     const resultCount = billpage.resultCount
     const initialResultCount = await resultCount.textContent()
 
-    billpage.search(searchTerm)
+    await billpage.search(searchTerm)
 
     const searchResultCount = await resultCount.textContent()
     await expect(searchResultCount).not.toBe(initialResultCount)
@@ -90,11 +91,14 @@ test.describe("Search result test", () => {
 
   test("should show search query", async ({ page }) => {
     // Perform a search and check that the category labels include the search term
-    const searchTerm = getSearchWord()
+    const billpage = new BillPage(page)
+    billpage.goto()
 
-    await performSearch(page, searchTerm)
+    const searchTerm = billpage.searchWord
 
-    const queryFilter = await getSearchQuery(page)
+    await billpage.search(searchTerm)
+
+    const queryFilter = await billpage.queryFilter
 
     await expect(queryFilter).toContainText("query:")
     await expect(queryFilter).toContainText(searchTerm)
