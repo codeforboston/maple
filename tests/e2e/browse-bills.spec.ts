@@ -2,6 +2,7 @@ import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 import { bill } from "stories/organisms/billDetail/MockBillData"
 import { waitFor } from "@testing-library/dom"
+import { billPdfUrl } from "components/links"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -92,7 +93,7 @@ test.describe("Search result test", () => {
   test("should show search query", async ({ page }) => {
     // Perform a search and check that the category labels include the search term
     const billpage = new BillPage(page)
-    billpage.goto()
+    await billpage.goto()
 
     const searchTerm = billpage.searchWord
 
@@ -106,20 +107,13 @@ test.describe("Search result test", () => {
 
   test("should click the bill and render to new page", async ({ page }) => {
     // Perform a search and check the first bill on a random page
-    const searchTerm = getSearchWord()
+    const billpage = new BillPage(page)
+    await billpage.goto()
 
-    await performSearch(page, searchTerm)
-
-    const initialResultCount = await page
-      .getByText("Showing")
-      .first()
-      .textContent()
-
-    await waitForResultsToChange(page, initialResultCount!)
-
-    const firstBillLink = await getFirstBillAddress(page, searchTerm)
-
-    await page.goto(firstBillLink)
+    const firstBillLink = await billpage.bills.evaluate(
+      (link: HTMLAnchorElement) => link.href
+    )
+    await billpage.clcikFirstBill()
     await expect(page.url()).toBe(firstBillLink)
   })
 

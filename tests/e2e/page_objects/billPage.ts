@@ -7,6 +7,7 @@ export class BillPage {
   readonly searchBar: Locator
   readonly queryFilter: Locator
   readonly searchWord: string
+  readonly billPageBackToList: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -15,6 +16,7 @@ export class BillPage {
     this.resultCount = page.getByText("Showing").first()
     this.searchBar = page.getByPlaceholder("Search For Bills")
     this.queryFilter = page.getByText("query:").locator("..")
+    this.billPageBackToList = page.getByText("back to list of bills")
   }
 
   async goto() {
@@ -31,5 +33,11 @@ export class BillPage {
       console.log(searchResult && searchResult.textContent)
       return searchResult && searchResult.textContent != initialResult
     }, initialResult)
+  }
+
+  async clcikFirstBill() {
+    await this.bills.click()
+    //need to be canged to waitForSelector
+    await this.page.waitForTimeout(1000)
   }
 }
