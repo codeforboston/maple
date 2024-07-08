@@ -88,7 +88,6 @@ const mockBill: Bill = {
 }
 
 // mocking dependencies:
-
 // setting mock feature flags
 jest.mock("components/featureFlags", () => ({
   useFlags: () => ({
@@ -104,15 +103,6 @@ jest.mock("components/featureFlags", () => ({
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
-
-// Mock resolveBill and usePanelStatus
-// jest.mock("components/publish/hooks", () => ({
-//   ...jest.requireActual("components/publish/hooks"),
-//   resolveBill: bill => dispatch => {
-//     dispatch({ type: "publish/setBill", payload: bill })
-//   },
-//   usePanelStatus: jest.fn()
-// }))
 
 // mock child components
 jest.mock("components/bill/BillNumber", () => ({
@@ -165,20 +155,17 @@ jest.mock("components/publish/panel/ctas", () => ({
 const middlewares = [thunk]
 const mockStore = configureStore(middlewares)
 
+jest.mock("components/publish/hooks", () => ({
+  ...jest.requireActual("components/publish/hooks"),
+  resolveBill: bill => dispatch => {
+    dispatch({ type: "publish/setBill", payload: bill })
+  },
+  usePanelStatus: jest.fn()
+}))
+
 describe("BillDetails", () => {
-  jest.mock("components/publish/hooks", () => ({
-    ...jest.requireActual("components/publish/hooks"),
-    resolveBill: bill => dispatch => {
-      dispatch({ type: "publish/setBill", payload: bill })
-    },
-    usePanelStatus: jest.fn()
-  }));
-  
   let store
 
-  // before each Bill Details test, initialize a store with an auth slice
-  // publish slice is needed because the ThankYouModal uses usePublishState hook
-  // bill needs to be stored bc resolveBill sets it
   beforeEach(() => {
     store = mockStore({
       auth: {
@@ -246,40 +233,15 @@ describe("BillDetails", () => {
     expect(testimonies).toBeInTheDocument()
   })
 
+  test("renders Signed Out when state is signedOut", () => {
+    ;(usePanelStatus as jest.Mock).mockReturnValue({ status: "signedOut" })
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    )
+
+    const signedOut = screen.getByTestId("signed-out")
+    expect(signedOut).toBeInTheDocument()
+  })
 })
-
-// describe("User Testimony States", () => {
-//   let store;
-
-//   beforeEach(() => {
-//     jest.clearAllMocks()
-//     store = mockStore({
-//       auth: {
-//         authenticated: false,
-//         user: null,
-//         claims: null
-//       },
-//       publish: {
-//         service: {},
-//         showThankYou: false,
-//         bill: mockBill
-//       }
-//     })
-//   })
-
-//   test("renders Signed Out", () => {
-//     hooks.usePanelStatus.mockReturnValue("signedOut")
-    
-//     render(
-//       <Provider store={store}>
-//         <BillDetails bill={mockBill} />
-//       </Provider>
-//     )
-
-//     const signedOut = screen.getByTestId("signed-out")
-//     expect(signedOut).toBeInTheDocument()
-//   })
-
- 
-//   // ... other tests for different states
-// })
