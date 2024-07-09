@@ -244,9 +244,6 @@ test.describe("Sort Bills test", () => {
       await billpage.sort(option)
 
       // Verify the sorting result
-      // const sortedBills = await page
-      //   .locator("li.ais-Hits-item")
-      //   .elementHandles()
       const billValues = []
       const sortedBills = await billpage.bills
       const billsCount = await sortedBills.count()
@@ -273,9 +270,9 @@ test.describe("Sort Bills test", () => {
 
   // Test sorting with an empty list
   test("should handle sorting with an empty list", async ({ page }) => {
+    const billpage = new BillPage(page)
     const searchTerm = "nonexistentsearchterm12345"
-    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter")
+    await billpage.search(searchTerm)
     const sortedBills = await page.locator("li.ais-Hits-item").count()
     expect(sortedBills).toBe(0)
   })
