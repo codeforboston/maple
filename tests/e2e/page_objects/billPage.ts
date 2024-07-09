@@ -8,6 +8,7 @@ export class BillPage {
   readonly queryFilter: Locator
   readonly bills: Locator
   readonly searchWord: string
+  readonly firstFilterItemSelector: string
   readonly billPageBackToList: Locator
 
   constructor(page: Page) {
@@ -19,6 +20,8 @@ export class BillPage {
     this.searchBar = page.getByPlaceholder("Search For Bills")
     this.queryFilter = page.getByText("query:").locator("..")
     this.billPageBackToList = page.getByText("back to list of bills")
+    this.firstFilterItemSelector =
+      "li:nth-child(1) input.ais-RefinementList-checkbox"
   }
 
   async goto() {
@@ -63,5 +66,55 @@ export class BillPage {
     await this.firstBill.click()
 
     await this.page.waitForURL(targetLink)
+  }
+
+  async getAttributeValue(
+    item: Locator,
+    attribute: string,
+    type: string
+  ): Promise<number> {
+    if (type === "cosponsorCount") {
+      const cosponsorCount = await item
+        .locator(attribute)
+        .evaluateAll(elements => {
+          let count = 0
+          elements.forEach(el => {
+            const match = el.textContent?.match(/and (\d+) others/)
+            if (match) {
+              count += parseInt(match[1], 10)
+            }
+          })
+          return count
+        })
+      return cosponsorCount
+    } else if (type === "nextHearingDate") {
+      const dateText = (await item.locator(attribute).textContent()) || ""
+      const match = dateText.match(
+        /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
+      )
+      const value = match ? match[0] : ""
+      const dateValue = new Date(value)
+      return dateValue.getTime()
+    } else if (type === "testimonyCount") {
+      const svgElements = await item
+        .locator(attribute + " svg")
+        .elementHandles()
+      const values = await Promise.all(
+        svgElements.map(svg =>
+          svg.evaluate(node => {
+            const textNode = node.nextSibling
+            const textContent = textNode ? textNode.textContent || "0" : "0"
+            return parseInt(textContent, 10)
+          })
+        )
+      )
+      return values.reduce((acc, val) => acc + val, 0)
+    } else if (type === "recentTestimony") {
+      const courtNumberText =
+        (await item.locator(attribute).textContent()) || ""
+      const match = courtNumberText.match(/\d+$/)
+      return match ? parseInt(match[0], 10) : 0
+    }
+    return 0
   }
 }

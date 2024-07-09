@@ -1,8 +1,5 @@
 import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
-import { bill } from "stories/organisms/billDetail/MockBillData"
-import { waitFor } from "@testing-library/dom"
-import { billPdfUrl } from "components/links"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -15,60 +12,6 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe("Search result test", () => {
-  /**
-   * Function to get a word from a predefined list.
-   * @returns A word from the list.
-   */
-  const getSearchWord = (): string => {
-    const words = ["health"]
-    return words[0]
-  }
-
-  /**
-   * Function to perform a search.
-   * @param page - The Playwright page object.
-   * @param searchTerm - The search term to use.
-   */
-  const performSearch = async (page: Page, searchTerm: string) => {
-    await page.fill('input[placeholder="Search For Bills"]', searchTerm)
-    await page.keyboard.press("Enter")
-  }
-
-  /**
-   * Function to wait for search results to change.
-   * @param page - The Playwright page object.
-   * @param initialResultCount - The initial result count to compare against.
-   */
-  const waitForResultsToChange = async (
-    page: Page,
-    initialResultCount: string
-  ) => {
-    const resultCounts = await page.getByText("Showing").first().textContent()
-    await expect(resultCounts).toBe(initialResultCount)
-  }
-
-  /**
-   * Function to get category labels text content.
-   * @param page - The Playwright page object.
-   * @returns An locator of search query.
-   */
-  const getSearchQuery = async (page: Page): Promise<Locator> => {
-    const searchQuery = await page.getByText("query:").locator("..")
-    return searchQuery
-  }
-
-  /**
-   * Function to check the full content of the first bill on the page.
-   * @param page - The Playwright page object.
-   * @param searchTerm - The search term to validate in the bill content.
-   */
-  const getFirstBillAddress = async (page: Page, searchTerm: string) => {
-    const firstBillLink = await page.$eval(
-      "li.ais-Hits-item a",
-      link => (link as HTMLAnchorElement).href
-    )
-    return firstBillLink
-  }
   test("test", async ({ page }) => {
     const billpage = new BillPage(page)
     await billpage.goto()
@@ -178,60 +121,6 @@ const sortingTests: SortingTest[] = [
   }
 ]
 
-/**
- * Extracts attribute values based on the type of sorting.
- * @param item - The DOM element from which to extract the value.
- * @param attribute - The attribute or selector used to locate the value.
- * @param type - The type of value to extract ('relevance', 'testimonyCount', 'cosponsorCount', 'nextHearingDate', or 'recentTestimony').
- * @returns The extracted value as a number.
- */
-const getAttributeValue = async (
-  item: Locator,
-  attribute: string,
-  type: string
-): Promise<number> => {
-  if (type === "cosponsorCount") {
-    const cosponsorCount = await item
-      .locator(attribute)
-      .evaluateAll(elements => {
-        let count = 0
-        elements.forEach(el => {
-          const match = el.textContent?.match(/and (\d+) others/)
-          if (match) {
-            count += parseInt(match[1], 10)
-          }
-        })
-        return count
-      })
-    return cosponsorCount
-  } else if (type === "nextHearingDate") {
-    const dateText = (await item.locator(attribute).textContent()) || ""
-    const match = dateText.match(
-      /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
-    )
-    const value = match ? match[0] : ""
-    const dateValue = new Date(value)
-    return dateValue.getTime()
-  } else if (type === "testimonyCount") {
-    const svgElements = await item.locator(attribute + " svg").elementHandles()
-    const values = await Promise.all(
-      svgElements.map(svg =>
-        svg.evaluate(node => {
-          const textNode = node.nextSibling
-          const textContent = textNode ? textNode.textContent || "0" : "0"
-          return parseInt(textContent, 10)
-        })
-      )
-    )
-    return values.reduce((acc, val) => acc + val, 0)
-  } else if (type === "recentTestimony") {
-    const courtNumberText = (await item.locator(attribute).textContent()) || ""
-    const match = courtNumberText.match(/\d+$/)
-    return match ? parseInt(match[0], 10) : 0
-  }
-  return 0
-}
-
 // Describe the test suite
 test.describe("Sort Bills test", () => {
   for (const { option, attribute, order, type } of sortingTests) {
@@ -249,7 +138,7 @@ test.describe("Sort Bills test", () => {
       const billsCount = await sortedBills.count()
 
       for (let i = 0; i < billsCount; i++) {
-        const value = await getAttributeValue(
+        const value = await billpage.getAttributeValue(
           sortedBills.nth(i) as Locator,
           attribute,
           type
@@ -280,11 +169,6 @@ test.describe("Sort Bills test", () => {
 
 interface FilterCategory {
   selector: string
-}
-
-interface CheckedFilter {
-  selector: string
-  labelText: string
 }
 
 /**
@@ -319,26 +203,14 @@ test.describe("Filter Bills test", () => {
    */
   const uncheckAllFilters = async (page: any) => {
     for (const { selector: filterCategory } of filterCategories) {
-      const checkedFilters = await page.$$(
+      const checkedFilters = await page.locator(
         filterCategory + " " + "input.ais-RefinementList-checkbox" + ":checked"
       )
-      for (const filter of checkedFilters) {
-        await filter.uncheck()
+      const numberOfFilters = await checkedFilters.count()
+      for (let i = 0; i < numberOfFilters; i++) {
+        await checkedFilters.nth(i).uncheck()
       }
     }
-  }
-
-  /**
-   * Get a random filter item selector for a given filter category.
-   * @param page - The Playwright page object.
-   * @param filterCategory - The selector of the filter category.
-   * @returns The selector for a randomly chosen filter item.
-   */
-  const getFirstFilterItemSelector = async (
-    page: any,
-    filterCategory: string
-  ): Promise<string> => {
-    return `li:nth-child(1) input.ais-RefinementList-checkbox`
   }
 
   /**
@@ -372,11 +244,9 @@ test.describe("Filter Bills test", () => {
 
   // Test: Filter Bills by Court
   test("Filter Bills by Court", async ({ page }) => {
+    const billPage = new BillPage(page)
     const filterCategory = filterCategories[0].selector
-    const filterItemSelector = await getFirstFilterItemSelector(
-      page,
-      filterCategory
-    )
+    const filterItemSelector = await billPage.firstFilterItemSelector
     const filterLabel = await applyFilter(
       page,
       filterCategory,
@@ -394,11 +264,10 @@ test.describe("Filter Bills test", () => {
 
   // Test: Filter Bills by Current Committee
   test("Filter Bills by Current Committee", async ({ page }) => {
+    const billPage = new BillPage(page)
     const filterCategory = filterCategories[1].selector
-    const filterItemSelector = await getFirstFilterItemSelector(
-      page,
-      filterCategory
-    )
+    const filterItemSelector = await billPage.firstFilterItemSelector
+
     const filterLabel = await applyFilter(
       page,
       filterCategory,
@@ -413,11 +282,10 @@ test.describe("Filter Bills test", () => {
 
   // Test: Filter Bills by City
   test("Filter Bills by City", async ({ page }) => {
+    const billPage = new BillPage(page)
     const filterCategory = filterCategories[2].selector
-    const filterItemSelector = await getFirstFilterItemSelector(
-      page,
-      filterCategory
-    )
+    const filterItemSelector = await billPage.firstFilterItemSelector
+
     const filterLabel = await applyFilter(
       page,
       filterCategory,
@@ -432,11 +300,10 @@ test.describe("Filter Bills test", () => {
 
   // Test: Filter Bills by Primary Sponsor
   test("Filter Bills by Primary Sponsor", async ({ page }) => {
+    const billPage = new BillPage(page)
     const filterCategory = filterCategories[3].selector
-    const filterItemSelector = await getFirstFilterItemSelector(
-      page,
-      filterCategory
-    )
+    const filterItemSelector = await billPage.firstFilterItemSelector
+
     const filterLabel = await applyFilter(
       page,
       filterCategory,
@@ -451,11 +318,10 @@ test.describe("Filter Bills test", () => {
 
   // Test: Filter Bills by Cosponsor
   test("Filter Bills by Cosponsor", async ({ page }) => {
+    const billPage = new BillPage(page)
     const filterCategory = filterCategories[4].selector
-    const filterItemSelector = await getFirstFilterItemSelector(
-      page,
-      filterCategory
-    )
+    const filterItemSelector = await billPage.firstFilterItemSelector
+
     const filterLabel = await applyFilter(
       page,
       filterCategory,
@@ -473,19 +339,18 @@ test.describe("Filter Bills test", () => {
     const checkedFilters: string[] = []
     for (const { selector: filterCategory } of filterCategories) {
       // Check if filter items are available for the category
-      const filterItems = await page.$$(
+      const filterItems = await page.locator(
         `${filterCategory} li input.ais-RefinementList-checkbox`
       )
-      if (filterItems.length === 0) {
+      if ((await filterItems.count()) === 0) {
         console.log(
           `Skipping Combination of Filters test due to empty category: ${filterCategory}`
         )
         continue
       }
-      const filterItemSelector = await getFirstFilterItemSelector(
-        page,
-        filterCategory
-      )
+      const billPage = new BillPage(page)
+      const filterItemSelector = await billPage.firstFilterItemSelector
+
       const filterLabel = await applyFilter(
         page,
         filterCategory,
@@ -495,14 +360,14 @@ test.describe("Filter Bills test", () => {
       await page.waitForTimeout(1000)
     }
 
-    const filteredResults = await page.$$(
+    const filteredResults = await page.locator(
       `${categorySelector} .ais-CurrentRefinements-categoryLabel`
     )
-    const resultsCount = filteredResults.length
+    const resultsCount = await filteredResults.count()
     expect(resultsCount).toBeGreaterThan(0)
 
     for (let i = 0; i < resultsCount; i++) {
-      const resultText = await filteredResults[i].innerText()
+      const resultText = await filteredResults.nth(i).innerText()
       expect(checkedFilters[i]).toContain(resultText)
     }
   })
