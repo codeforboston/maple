@@ -72,7 +72,7 @@ test.describe("Search result test", () => {
   test("test", async ({ page }) => {
     const billpage = new BillPage(page)
     await billpage.goto()
-    const { bills } = billpage
+    const { firstBill: bills } = billpage
     console.log(await bills.first().textContent())
   })
 
@@ -110,22 +110,24 @@ test.describe("Search result test", () => {
     const billpage = new BillPage(page)
     await billpage.goto()
 
-    const firstBillLink = await billpage.bills.evaluate(
+    const firstBillLink = await billpage.firstBill.evaluate(
       (link: HTMLAnchorElement) => link.href
     )
-    await billpage.clcikFirstBill()
+    await billpage.clickFirstBill()
     await expect(page.url()).toBe(firstBillLink)
   })
 
   test("should show no results found", async ({ page }) => {
     // Test to ensure the application handles no results found cases
     const searchTerm = "nonexistentsearchterm12345"
+    const billpage = new BillPage(page)
+    await billpage.goto()
 
-    await performSearch(page, searchTerm)
+    billpage.search(searchTerm)
 
     const noResultsText = await page.getByText("Looks Pretty Empty Here")
     const noResultsImg = page.getByAltText("No Results")
-    const resultCOunts = await page.getByText("Showing").first()
+    const resultCOunts = await billpage.resultCount
 
     await expect(noResultsText).toBeVisible()
     await expect(noResultsImg).toBeVisible()
@@ -236,6 +238,7 @@ test.describe("Sort Bills test", () => {
     // Test case for each sorting option
     test(`should sort bills by ${option}`, async ({ page }) => {
       // Get the initial text content of the first bill
+      const billpage = new BillPage(page)
       const initialFirstBill = page.getByRole("link", { name: /S./ }).first()
       const initialFirstBillTextContent = await initialFirstBill.textContent()
 
