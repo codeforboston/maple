@@ -150,6 +150,7 @@ interface SortingTest {
 
 // Array of sorting test configurations
 // Need to add test for sort by relevant
+// Need to add TestId attribute for maintainability
 const sortingTests: SortingTest[] = [
   {
     option: "Sort by Testimony Count",
@@ -185,24 +186,26 @@ const sortingTests: SortingTest[] = [
  * @returns The extracted value as a number.
  */
 const getAttributeValue = async (
-  item: ElementHandle<Element>,
+  item: Locator,
   attribute: string,
   type: string
 ): Promise<number> => {
   if (type === "cosponsorCount") {
-    const cosponsorCount = await item.$$eval(attribute, elements => {
-      let count = 0
-      elements.forEach(el => {
-        const match = el.textContent?.match(/and (\d+) others/)
-        if (match) {
-          count += parseInt(match[1], 10)
-        }
+    const cosponsorCount = await item
+      .locator(attribute)
+      .evaluateAll(elements => {
+        let count = 0
+        elements.forEach(el => {
+          const match = el.textContent?.match(/and (\d+) others/)
+          if (match) {
+            count += parseInt(match[1], 10)
+          }
+        })
+        return count
       })
-      return count
-    })
     return cosponsorCount
   } else if (type === "nextHearingDate") {
-    const dateText = await item.$eval(attribute, el => el.textContent || "")
+    const dateText = (await item.locator(attribute).textContent()) || ""
     const match = dateText.match(
       /\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (AM|PM)/
     )
@@ -210,7 +213,7 @@ const getAttributeValue = async (
     const dateValue = new Date(value)
     return dateValue.getTime()
   } else if (type === "testimonyCount") {
-    const svgElements = await item.$$(attribute + " svg")
+    const svgElements = await item.locator(attribute + " svg").elementHandles()
     const values = await Promise.all(
       svgElements.map(svg =>
         svg.evaluate(node => {
@@ -222,10 +225,7 @@ const getAttributeValue = async (
     )
     return values.reduce((acc, val) => acc + val, 0)
   } else if (type === "recentTestimony") {
-    const courtNumberText = await item.$eval(
-      attribute,
-      el => el.textContent || ""
-    )
+    const courtNumberText = (await item.locator(attribute).textContent()) || ""
     const match = courtNumberText.match(/\d+$/)
     return match ? parseInt(match[0], 10) : 0
   }
@@ -239,32 +239,21 @@ test.describe("Sort Bills test", () => {
     test(`should sort bills by ${option}`, async ({ page }) => {
       // Get the initial text content of the first bill
       const billpage = new BillPage(page)
-      const initialFirstBill = page.getByRole("link", { name: /S./ }).first()
-      const initialFirstBillTextContent = await initialFirstBill.textContent()
+      const initialFirstBill = billpage.firstBill
 
-      // Interact with the sorting dropdown
-      await page.getByText("Sort by Most Recent Testimony").click()
-
-      // Select the sorting option from the dropdown
-      await page.getByText(`${option}`).first().click()
-
-      // Wait for the sorting to finish
-      // * pending to chnage
-      if (option !== "Sort by Most Recent Testimony") {
-        await page.waitForFunction(initialText => {
-          const firstBill = document.querySelector("li.ais-Hits-item a")
-          return firstBill && firstBill.textContent !== initialText
-        }, initialFirstBillTextContent)
-      }
+      await billpage.sort(option)
 
       // Verify the sorting result
-      const sortedBills = await page
-        .locator("li.ais-Hits-item")
-        .elementHandles()
+      // const sortedBills = await page
+      //   .locator("li.ais-Hits-item")
+      //   .elementHandles()
       const billValues = []
-      for (const item of sortedBills) {
+      const sortedBills = await billpage.bills
+      const billsCount = await sortedBills.count()
+
+      for (let i = 0; i < billsCount; i++) {
         const value = await getAttributeValue(
-          item as ElementHandle<Element>,
+          sortedBills.nth(i) as Locator,
           attribute,
           type
         )
