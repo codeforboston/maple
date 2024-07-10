@@ -104,7 +104,7 @@ const mockBill: Bill = {
 }
 
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
-const mockStore = configureStore([])
+const mockStore = configureStore([thunk])
 
 describe('BillDetails', () => {
   it('renders the bill details correctly', () => {
