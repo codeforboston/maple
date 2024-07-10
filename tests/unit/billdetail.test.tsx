@@ -107,27 +107,40 @@ const mockBill: Bill = {
 const mockStore = configureStore([thunk])
 
 describe('BillDetails', () => {
-  it('renders the bill details correctly', () => {
-    const store = mockStore({
-            auth: {
-              authenticated: false,
-              user: null,
-              claims: null
-            },
-            publish: {
-              service: {},
-              showThankYou: false,
-              bill: mockBill
-            }
-          })
+
+  let store: ReturnType<typeof mockStore>;
+  beforeEach(() => {
+    store = mockStore({
+      auth: {
+        authenticated: false,
+        user: null,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+      },
+    });
+
     render(
       <Provider store={store}>
         <BillDetails bill={mockBill} />
       </Provider>
-      );
-    
-    expect(screen.getByText('S.1653')).toBeInTheDocument();
+    );
   });
+
+  it('renders a link with the bill number as the link text and links to the appropriate bill', () => {
+      const linkElement = screen.getByRole('link', { name: "S.1653" });
+      expect(linkElement).toHaveAttribute('href', "https://malegislature.gov/Bills/193/S1653");    
+  });
+
+  it("renders the Bill Status button", ()=>{
+    const buttonElement = screen.getByRole('button', { name: "Accompanied a new draft, see S2416"});
+    expect(buttonElement).toBeInTheDocument();
+  });
+
+  
 
   
 });
