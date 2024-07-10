@@ -131,16 +131,27 @@ describe('BillDetails', () => {
   });
 
   it('renders a link with the bill number as the link text and links to the appropriate bill', () => {
-      const linkElement = screen.getByRole('link', { name: "S.1653" });
-      expect(linkElement).toHaveAttribute('href', "https://malegislature.gov/Bills/193/S1653");    
+      const linkElement = screen.getByRole('link', { name: mockBill.id[0] + '.' + mockBill.id.slice(1)});
+      expect(linkElement).toHaveAttribute('href', `https://malegislature.gov/Bills/193/${mockBill.id}`);    
   });
 
-  it("renders the Bill Status button", ()=>{
-    const buttonElement = screen.getByRole('button', { name: "Accompanied a new draft, see S2416"});
+  it("renders the Bill Status button with the last Action showing as text", ()=>{
+    const buttonElement = screen.getByRole('button', { name: mockBill.history[mockBill.history.length-1].Action});
     expect(buttonElement).toBeInTheDocument();
   });
 
+  it("renders the summary title and Read More button",()=>{
+    const summaryTitle = screen.getByText(mockBill.content.Title) 
+    const buttonElement = screen.getByRole('button', { name: "Read more.."});
+    expect(summaryTitle).toBeInTheDocument
+    expect(buttonElement).toBeInTheDocument
+  })
+
   
+
+
+
+
 
   
 });
