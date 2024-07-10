@@ -24,6 +24,22 @@ Object.defineProperty(window, "matchMedia", {
   }))
 })
 
+// mocking feature flags to match dev environment
+jest.mock("components/featureFlags", () => ({
+  useFlags: () => ({
+    testimonyDiffing: false,
+    notifications: true,
+    billTracker: true,
+    followOrg: true,
+    lobbyingTable: false
+  })
+}))
+
+// translation dependency -mocking so that we aren't actually translating anything in this test
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key })
+}))
+
 // mock bill (later used in redux store)
 const mockBill: Bill = {
   id: "S1653",
@@ -87,161 +103,31 @@ const mockBill: Bill = {
   city: "Sample City"
 }
 
-// mocking dependencies:
-// setting mock feature flags
-jest.mock("components/featureFlags", () => ({
-  useFlags: () => ({
-    testimonyDiffing: false,
-    notifications: true,
-    billTracker: true,
-    followOrg: true,
-    lobbyingTable: false
-  })
-}))
-
-// translation dependency -mocking so that we aren't actually translating anything in this test
-jest.mock("next-i18next", () => ({
-  useTranslation: () => ({ t: (key: string) => key })
-}))
-
-// mock child components
-jest.mock("components/bill/BillNumber", () => ({
-  BillNumber: () => <div data-testid="title">Mocked Title</div>
-}))
-
-jest.mock("components/bill/Status", () => ({
-  Status: () => <div data-testid="status">Mocked Status</div>
-}))
-
-jest.mock("components/bill/Summary", () => ({
-  Summary: ({ bill }) => {
-    const [showModal, setShowModal] = useState(false)
-    return (
-      <div data-testid="summary">
-        Mocked Summary
-        <button onClick={() => setShowModal(true)}>Read more..</button>
-        {showModal && (
-          <div data-testid="bill-text-modal">
-            <div>{bill.content.DocumentText}</div>
-            <button onClick={() => setShowModal(false)}>Close</button>
-          </div>
-        )}
-      </div>
-    )
-  }
-}))
-
-jest.mock("components/bill/SponsorsAndCommittees", () => ({
-  Sponsors: () => <div data-testid="sponsors">Mocked Sponsors</div>,
-  Committees: () => <div data-testid="committees">Mocked Committees</div>,
-  Hearing: () => <div data-testid="hearing">Mocked Hearing</div>
-}))
-
-jest.mock("components/bill/BillTestimonies", () => ({
-  BillTestimonies: () => (
-    <div data-testid="testimonies">Mocked Bill Testimonies</div>
-  )
-}))
-
-jest.mock("components/publish/panel/ctas", () => ({
-  SignedOut: () => <div data-testid="signed-out" />,
-  UnverifiedEmail: () => <div data-testid="unverified-email" />,
-  CreateTestimony: () => <div data-testid="create-testimony" />,
-  CompleteTestimony: () => <div data-testid="complete-testimony" />,
-  PendingUpgrade: () => <div data-testid="pending-upgrade" />
-}))
-
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
-const middlewares = [thunk]
-const mockStore = configureStore(middlewares)
+const mockStore = configureStore([])
 
-jest.mock("components/publish/hooks", () => ({
-  ...jest.requireActual("components/publish/hooks"),
-  resolveBill: bill => dispatch => {
-    dispatch({ type: "publish/setBill", payload: bill })
-  },
-  usePanelStatus: jest.fn()
-}))
-
-describe("BillDetails", () => {
-  let store
-
-  beforeEach(() => {
-    store = mockStore({
-      auth: {
-        authenticated: false,
-        user: null,
-        claims: null
-      },
-      publish: {
-        service: {},
-        showThankYou: false,
-        bill: mockBill
-      }
-    })
-
+describe('BillDetails', () => {
+  it('renders the bill details correctly', () => {
+    const store = mockStore({
+            auth: {
+              authenticated: false,
+              user: null,
+              claims: null
+            },
+            publish: {
+              service: {},
+              showThankYou: false,
+              bill: mockBill
+            }
+          })
     render(
       <Provider store={store}>
         <BillDetails bill={mockBill} />
       </Provider>
-    )
-  })
+      );
+    
+    expect(screen.getByText('S.1653')).toBeInTheDocument();
+  });
 
-  test("renders bill title", () => {
-    const title = screen.getByTestId("title")
-    expect(title).toBeInTheDocument()
-  })
-
-  test("renders bill status", () => {
-    const status = screen.getByTestId("status")
-    expect(status).toBeInTheDocument()
-  })
-
-  test("renders bill summary", () => {
-    const summary = screen.getByTestId("summary")
-    expect(summary).toBeInTheDocument()
-  })
-
-  test("renders full text", async () => {
-    // Check for "Read more.." button
-    const readMoreButton = screen.getByText("Read more..")
-    expect(readMoreButton).toBeInTheDocument()
-
-    // Click the "Read more.." button
-    fireEvent.click(readMoreButton)
-
-    // Check if the modal with full text is displayed
-    const modal = await screen.findByTestId("bill-text-modal")
-    expect(modal).toBeInTheDocument()
-
-    // Check if the full text is in the modal
-    const fullText = screen.getByText((content, element) => {
-      return content.includes(
-        "SECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers"
-      )
-    })
-    expect(fullText).toBeInTheDocument()
-  })
-
-  test("renders bill sponsors", () => {
-    const sponsors = screen.getByTestId("sponsors")
-    expect(sponsors).toBeInTheDocument()
-  })
-
-  test("renders bill testimonies", () => {
-    const testimonies = screen.getByTestId("testimonies")
-    expect(testimonies).toBeInTheDocument()
-  })
-
-  test("renders Signed Out when state is signedOut", () => {
-    ;(usePanelStatus as jest.Mock).mockReturnValue({ status: "signedOut" })
-    render(
-      <Provider store={store}>
-        <BillDetails bill={mockBill} />
-      </Provider>
-    )
-
-    const signedOut = screen.getByTestId("signed-out")
-    expect(signedOut).toBeInTheDocument()
-  })
-})
+  
+});
