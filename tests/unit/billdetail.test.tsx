@@ -168,15 +168,19 @@ describe('BillDetails', () => {
     expect(fullText).toBeInTheDocument
   })
 
+
+// below test assumes mockBill contains a primary sponsor
   it("renders Sponsors",()=>{
     const primary = mockBill.content?.PrimarySponsor
     const cosponsors = mockBill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
 
     const sponsorsHeading = screen.getByText("Sponsors")
     const leadSponsorImg = screen.getByRole('img',{name: "Lead Sponsor image"})
+    const leadSponsorLink = screen.getByRole('link', { name: primary?.Name});
     
     expect(sponsorsHeading).toBeInTheDocument
     expect(leadSponsorImg).toBeInTheDocument
+    expect(leadSponsorLink).toBeInTheDocument
 
     // if the mockBill has cosponsors (excluding primary), then atleast one cosponsor image and link should show
     if (cosponsors.length > 0){
@@ -194,5 +198,3 @@ describe('BillDetails', () => {
   })
 
 });
-
-// also check for the link presense and maybe also that the modal with other sponsors in the list opens up?
