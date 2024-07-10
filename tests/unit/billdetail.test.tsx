@@ -55,7 +55,7 @@ const mockBill: Bill = {
     Title:
       "An Act authorizing the appointment of special police officers in the town of Charlton",
     DocumentText:
-      "\tSECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers...\r\n",
+      "SECTION 1. The chief of police of the town of Charlton may appoint, if the chief deems necessary, individuals with a law enforcement background as special police officers...",
     LegislationTypeName: "Bill",
     Pinslip:
       "By Mr. Fattman, a petition (accompanied by bill, Senate, No. 1653) of Ryan C. Fattman (by vote of the town) for legislation to authorize the appointment of special police officers in the town of Charlton.  Public Service.  [Local Approval Received.]",
@@ -64,11 +64,27 @@ const mockBill: Bill = {
         Type: 1,
         Id: "RCF0",
         Name: "Ryan C. Fattman"
-      }
+      },
+      {
+        Type: 1,
+        Id: "AAAA",
+        Name: "Second Sponsor"
+      },
+      {
+        Type: 1,
+        Id: "BBBB",
+        Name: "Third Sponsor"
+      },
+      {
+        Type: 1,
+        Id: "CCCC",
+        Name: "Fourth Sponsor"
+      },
+
     ],
     GeneralCourtNumber: 193
   },
-  cosponsorCount: 1,
+  cosponsorCount: 4,
   testimonyCount: 2,
   endorseCount: 2,
   opposeCount: 0,
@@ -103,6 +119,7 @@ const mockBill: Bill = {
   city: "Sample City"
 }
 
+
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
 const mockStore = configureStore([thunk])
 
@@ -131,27 +148,51 @@ describe('BillDetails', () => {
   });
 
   it('renders a link with the bill number as the link text and links to the appropriate bill', () => {
-      const linkElement = screen.getByRole('link', { name: mockBill.id[0] + '.' + mockBill.id.slice(1)});
-      expect(linkElement).toHaveAttribute('href', `https://malegislature.gov/Bills/193/${mockBill.id}`);    
+      const title = screen.getByRole('link', { name: mockBill.id[0] + '.' + mockBill.id.slice(1)});
+      expect(title).toHaveAttribute('href', `https://malegislature.gov/Bills/193/${mockBill.id}`);   
   });
 
-  it("renders the Bill Status button with the last Action showing as text", ()=>{
-    const buttonElement = screen.getByRole('button', { name: mockBill.history[mockBill.history.length-1].Action});
-    expect(buttonElement).toBeInTheDocument();
+  it("renders the Bill Status button with the last Action when mockBill has history", ()=>{
+    const statusButton = screen.getByRole('button', { name: mockBill.history[mockBill.history.length-1].Action});
+    expect(statusButton).toBeInTheDocument();
   });
 
-  it("renders the summary title and Read More button",()=>{
+
+  it("renders the summary and full text",()=>{
     const summaryTitle = screen.getByText(mockBill.content.Title) 
-    const buttonElement = screen.getByRole('button', { name: "Read more.."});
+    const readMoreButton = screen.getByRole('button', { name: "Read more.."});
     expect(summaryTitle).toBeInTheDocument
-    expect(buttonElement).toBeInTheDocument
+    expect(readMoreButton).toBeInTheDocument
+    fireEvent.click(readMoreButton)
+    const fullText = screen.getByText(mockBill.content.DocumentText)
+    expect(fullText).toBeInTheDocument
   })
 
-  
+  it("renders Sponsors",()=>{
+    const primary = mockBill.content?.PrimarySponsor
+    const cosponsors = mockBill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
 
+    const sponsorsHeading = screen.getByText("Sponsors")
+    const leadSponsorImg = screen.getByRole('img',{name: "Lead Sponsor image"})
+    
+    expect(sponsorsHeading).toBeInTheDocument
+    expect(leadSponsorImg).toBeInTheDocument
 
+    // if the mockBill has cosponsors (excluding primary), then atleast one cosponsor image and link should show
+    if (cosponsors.length > 0){
+      const cosponsorImgs = screen.getAllByRole('img',{name: "Sponsor image"})
+      const cosponsorLinks = screen.getAllByRole('link', { name: cosponsors[0].Name});
+      expect(cosponsorImgs[0]).toBeInTheDocument
+      expect(cosponsorLinks[0]).toBeInTheDocument
+    }
 
+    // expect the 'See X Sponsors' button if there are more than two cosponsors (excluding primary)
+    if (cosponsors.length > 2){
+      const seeSponsorsButton = screen.getByRole('button', { name: `See ${mockBill.cosponsorCount} Sponsors`});
+      expect(seeSponsorsButton).toBeInTheDocument
+    }
+  })
 
-
-  
 });
+
+// also check for the link presense and maybe also that the modal with other sponsors in the list opens up?
