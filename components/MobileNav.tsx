@@ -1,8 +1,9 @@
 import { useTranslation } from "next-i18next"
-import React, { FC, useState } from "react"
+import React, { useState } from "react"
+import Image from "react-bootstrap/Image"
+import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import { Container, Nav, Navbar, NavDropdown } from "./bootstrap"
-import { useProfile } from "./db"
+import { Col, Nav, Navbar, NavDropdown } from "./bootstrap"
 import {
   Avatar,
   NavbarLinkBills,
@@ -20,122 +21,132 @@ import {
   NavbarLinkWhyUse
 } from "./NavbarComponents"
 
-const NavBarBoxContainer: FC<
-  React.PropsWithChildren<{ className?: string }>
-> = ({ children, className }) => {
-  return (
-    <div
-      className={`d-flex flex-row align-items-start justify-content-between w-100`}
-    >
-      {children}
-    </div>
-  )
-}
-
-const NavBarBox: FC<React.PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className
-}) => {
-  return (
-    <div
-      className={`col d-flex justify-content-start align-items-center ${className}`}
-    >
-      {children}
-    </div>
-  )
-}
-
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+  const BlackCollapse = styled(() => {
+    return (
+      <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
+        {/* while MAPLE is trying to do away with inline styling,   *
+         *  both styled-components and bootstrap classes have been  *
+         *  ignoring height properties for some reason              */}
+        <div style={{ height: "100vh" }}>
+          {whichMenu == "site" ? <SiteLinks /> : <ProfileLinks />}
+        </div>
+      </Navbar.Collapse>
+    )
+  })`
+    .bg-black {
+      background-color: black;
+    }
+  `
+
+  const ProfileLinks = () => {
+    return (
+      <Nav className="my-4 d-flex align-items-start">
+        <NavbarLinkViewProfile />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            closeNav()
+          }}
+        />
+        <NavbarLinkSignOut
+          handleClick={() => {
+            closeNav()
+            void signOutAndRedirectToHome()
+          }}
+        />
+      </Nav>
+    )
+  }
+
+  const SiteLinks = () => {
+    return (
+      <Nav className="my-4">
+        <NavbarLinkBills handleClick={closeNav} />
+        <NavbarLinkTestimony handleClick={closeNav} />
+        <NavDropdown className={"navLink-primary"} title={t("about")}>
+          <NavbarLinkGoals handleClick={closeNav} />
+          <NavbarLinkTeam handleClick={closeNav} />
+          <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkFAQ handleClick={closeNav} />
+        </NavDropdown>
+
+        <NavDropdown className={"navLink-primary"} title={t("learn")}>
+          <NavbarLinkEffective handleClick={closeNav} />
+          <NavbarLinkProcess handleClick={closeNav} />
+          <NavbarLinkWhyUse handleClick={closeNav} />
+        </NavDropdown>
+      </Nav>
+    )
+  }
+
   const { authenticated } = useAuth()
   const [isExpanded, setIsExpanded] = useState(false)
+  const [whichMenu, setWhichMenu] = useState("site")
   const { t } = useTranslation(["common", "auth"])
 
-  const toggleNav = () => setIsExpanded(!isExpanded)
-  const closeNav = () => setIsExpanded(false)
+  const toggleSite = () => {
+    if (isExpanded && whichMenu == "profile") {
+      setWhichMenu("site")
+    } else {
+      setWhichMenu("site")
+      setIsExpanded(!isExpanded)
+    }
+  }
 
-  const result = useProfile()
-  let isOrg = result?.profile?.role === "organization"
+  const toggleAvatar = () => {
+    if (isExpanded && whichMenu == "site") {
+      setWhichMenu("profile")
+    } else {
+      setWhichMenu("profile")
+      setIsExpanded(!isExpanded)
+    }
+  }
+
+  const closeNav = () => setIsExpanded(false)
 
   return (
     <Navbar
       bg="secondary"
-      variant="dark"
-      sticky="top"
-      expand={false}
-      expanded={isExpanded}
+      className={`w-100 ${isExpanded ? "pb-0" : ""}`}
       data-bs-theme="dark"
+      expand="lg"
+      expanded={isExpanded}
     >
-      <Container fluid>
-        <NavBarBoxContainer>
-          <NavBarBox>
-            <Navbar expand={false} expanded={isExpanded}>
-              <Navbar.Brand>
-                <Navbar.Toggle aria-controls="topnav" onClick={toggleNav} />
-              </Navbar.Brand>
-              <Navbar.Collapse id="topnav">
-                <Nav className="me-auto">
-                  <NavbarLinkBills handleClick={closeNav} />
-                  <NavbarLinkTestimony handleClick={closeNav} />
-
-                  <NavDropdown className={"navLink-primary"} title={t("about")}>
-                    <NavbarLinkGoals handleClick={closeNav} />
-                    <NavbarLinkTeam handleClick={closeNav} />
-                    <NavbarLinkSupport handleClick={closeNav} />
-                    <NavbarLinkFAQ handleClick={closeNav} />
-                  </NavDropdown>
-
-                  <NavDropdown className={"navLink-primary"} title={t("learn")}>
-                    <NavbarLinkEffective handleClick={closeNav} />
-                    <NavbarLinkProcess handleClick={closeNav} />
-                    <NavbarLinkWhyUse handleClick={closeNav} />
-                  </NavDropdown>
-                </Nav>
-              </Navbar.Collapse>
-            </Navbar>
-          </NavBarBox>
-
-          <NavbarLinkLogo />
-
-          <NavBarBox className={`justify-content-end`}>
-            <Navbar
-              expand={false}
-              expanded={isExpanded}
-              variant="dark"
-              bg="secondary"
-              collapseOnSelect={true}
-              className="d-flex justify-content-end"
-            >
-              {authenticated ? (
-                <>
-                  <Navbar.Brand onClick={toggleNav}>
-                    <Nav.Link className="p-0 text-white">
-                      <Avatar isOrg={isOrg} />
-                    </Nav.Link>
-                  </Navbar.Brand>
-                  <Navbar.Collapse id="profile-nav">
-                    <Nav className="me-4 d-flex align-items-end">
-                      <NavbarLinkViewProfile />
-                      <NavbarLinkEditProfile
-                        handleClick={() => {
-                          closeNav()
-                        }}
-                      />
-                      <NavbarLinkSignOut
-                        handleClick={() => {
-                          closeNav()
-                          void signOutAndRedirectToHome()
-                        }}
-                      />
-                    </Nav>
-                  </Navbar.Collapse>
-                </>
+      <Col className="ms-3 ps-2">
+        <Navbar.Brand onClick={toggleSite}>
+          {isExpanded && whichMenu == "site" ? (
+            <Image
+              src="/Union.svg"
+              alt="x"
+              width="35"
+              height="35"
+              className="ms-2"
+            />
+          ) : (
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          )}
+        </Navbar.Brand>
+      </Col>
+      <Col className="d-flex justify-content-center">
+        <NavbarLinkLogo handleClick={closeNav} />
+      </Col>
+      <Col className="d-flex justify-content-end me-3 pe-2">
+        {authenticated ? (
+          <Navbar.Brand onClick={toggleAvatar}>
+            <Nav.Link className="p-0 text-white">
+              {isExpanded && whichMenu == "profile" ? (
+                <Image src="/Union.svg" alt="x" width="35" height="35" />
               ) : (
-                <SignInWithButton />
+                <Avatar />
               )}
-            </Navbar>
-          </NavBarBox>
-        </NavBarBoxContainer>
-      </Container>
+            </Nav.Link>
+          </Navbar.Brand>
+        ) : (
+          <SignInWithButton />
+        )}
+      </Col>
+
+      <BlackCollapse />
     </Navbar>
   )
 }
