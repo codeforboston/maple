@@ -400,10 +400,15 @@ const mockTestimonyDraft = {
       </Provider>
     );
 
-    const yourTestimonyPrompt = screen.getByText("Your Testimony")
-    // const completeTestimonyButton = screen.getByRole('button', { name: "Complete Testimony"});
-    // expect(completeTestimonyButton).toBeInTheDocument
-    expect(yourTestimonyPrompt).toBeInTheDocument
+    expect(screen.getByText("Your Testimony")).toBeInTheDocument()
+    const editTestimonyButton = screen.getByRole("button", { name: "edit testimony" });
+    const emailButton = screen.getByRole("button", { name: "Email Your Published Testimony" });
+    const twitterShareLinkButton = screen.getByRole("button", { name: "link.twitter" });
+
+    expect(editTestimonyButton).toBeInTheDocument();
+    expect(twitterShareLinkButton).toBeInTheDocument();
+    expect(emailButton).toBeInTheDocument();
+
   })
 
 
