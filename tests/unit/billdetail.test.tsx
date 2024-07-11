@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { Bill, draftAttachment } from "components/db"
 import { BillDetails } from "components/bill/BillDetails"
 import { Timestamp } from "firebase/firestore"
@@ -378,7 +378,9 @@ const mockTestimonyDraft = {
     expect(completeTestimonyPrompt).toBeInTheDocument
   })
 
-  it("renders appropriate testimony panel state when user has a submitted testimony",()=>{
+
+  // made below test async bc of async updating that is likely related to the testimony preview subcomponent 
+  it("renders appropriate testimony panel state when user has a submitted testimony",async ()=>{
     store = mockStore({
       auth: {
         authenticated: true,
@@ -400,7 +402,9 @@ const mockTestimonyDraft = {
       </Provider>
     );
 
-    expect(screen.getByText("Your Testimony")).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText("Your Testimony")).toBeInTheDocument();
+    });
     const editTestimonyButton = screen.getByRole("button", { name: "edit testimony" });
     const emailButton = screen.getByRole("button", { name: "Email Your Published Testimony" });
     const twitterShareLinkButton = screen.getByRole("button", { name: "link.twitter" });
