@@ -1,13 +1,11 @@
 import "@testing-library/jest-dom"
 import { render, screen, fireEvent } from "@testing-library/react"
-import { Bill } from "components/db"
+import { Bill, draftAttachment } from "components/db"
 import { BillDetails } from "components/bill/BillDetails"
 import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
-import { thunk } from "redux-thunk" // Import redux-thunk
-import configureStore from "redux-mock-store"
-import { useState } from "react"
-import { usePanelStatus } from "components/publish/hooks"
+import { thunk } from "redux-thunk" 
+import configureStore from "redux-mock-store" 
 
 // mock window match media
 Object.defineProperty(window, "matchMedia", {
@@ -119,12 +117,10 @@ const mockBill: Bill = {
   city: "Sample City"
 }
 
-
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
 const mockStore = configureStore([thunk])
 
 describe('BillDetails', () => {
-
   let store: ReturnType<typeof mockStore>;
   beforeEach(() => {
     store = mockStore({
@@ -197,4 +193,219 @@ describe('BillDetails', () => {
     }
   })
 
+  it("renders testimony section headings and subheadings", ()=>{
+    const testimoniesHeading = screen.getByText("Testimonies")
+    const allTestimonies = screen.getAllByText("All Testimonies")
+    const individuals = screen.getAllByText("Individuals")
+    const organizations = screen.getAllByText("Organizations")
+    expect(testimoniesHeading).toBeInTheDocument
+    expect(allTestimonies).toBeInTheDocument
+    expect(individuals).toBeInTheDocument
+    expect(organizations).toBeInTheDocument
+  })
+
 });
+
+describe("Bill Details Testimony States",()=>{
+  const firebaseUser = {
+    uid: "user123",
+    email: "user@example.com",
+    emailVerified: true,
+  };
+
+  const unverifiedUser = {
+    uid: "user123",
+  }
+
+  // Mock Testimony object
+  const mockTestimonyPublication = {
+  id: "testimony123",
+  billId: "bill123",
+  court: 1,
+  position: "endorse",
+  content: "This is a sample testimony content that is less than 10,000 characters.",
+  attachmentId: null,
+  editReason: null,
+  authorUid: "user123",
+  authorDisplayName: "John Doe",
+  authorRole: "user", // Assuming Role.User is defined in your Role enum
+  billTitle: "Sample Bill Title",
+  version: 1,
+  publishedAt: Timestamp.fromMillis(Date.now()),
+  representativeId: null,
+  senatorId: null,
+  senatorDistrict: null,
+  representativeDistrict: null,
+  draftAttachmentId: null,
+  fullName: "John Doe"
+}
+
+const mockTestimonyDraft = {
+  position: "endorse",
+  content: "This is a sample testimony content that is less than 10,000 characters.",
+  draftAttachmentId: null,
+}
+
+
+  let store: ReturnType<typeof mockStore>;
+
+  it("renders appropriate testimony panel state when user is not logged in",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: false,
+        user: null,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        draft: {},
+        sync: "synced",
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const loginButton = screen.getByRole('button', { name: "logInSignUp"});
+    const signInPrompt = screen.getByText("Sign In to Add Testimony")
+    expect(loginButton).toBeInTheDocument
+    expect(signInPrompt).toBeInTheDocument
+  })
+
+  it("renders appropriate testimony panel state when user has unverified email",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: true,
+        user: unverifiedUser,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        sync: "synced",
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const verifyButton = screen.getByRole('button', { name: "Verify Your Email"});
+    expect(verifyButton).toBeInTheDocument
+  })
+
+  it("renders appropriate testimony panel state when user has unverified email",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: true,
+        user: unverifiedUser,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        sync: "synced",
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const verifyButton = screen.getByRole('button', { name: "Verify Your Email"});
+    expect(verifyButton).toBeInTheDocument
+  })
+
+  it("renders appropriate testimony panel state when user is logged in and does NOT have a testimony draft",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: true,
+        user: firebaseUser,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        sync: "synced",
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const createTestimonyPrompt = screen.getByText("You Haven't Submitted Testimony")
+    const createTestimonyButton = screen.getByRole('button', { name: "Create Testimony"});
+    expect(createTestimonyButton).toBeInTheDocument
+    expect(createTestimonyPrompt).toBeInTheDocument
+    
+  })
+
+  it("renders appropriate testimony panel state when user is logged in and has a testimony draft",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: true,
+        user: firebaseUser,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        draft: mockTestimonyDraft,
+        sync: "synced",
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const completeTestimonyPrompt = screen.getByText("You Have Draft Testimony")
+    const completeTestimonyButton = screen.getByRole('button', { name: "Complete Testimony"});
+    expect(completeTestimonyButton).toBeInTheDocument
+    expect(completeTestimonyPrompt).toBeInTheDocument
+  })
+
+  it("renders appropriate testimony panel state when user has a submitted testimony",()=>{
+    store = mockStore({
+      auth: {
+        authenticated: true,
+        user: firebaseUser,
+        claims: null,
+      },
+      publish: {
+        service: {},
+        showThankYou: false,
+        bill: mockBill,
+        draft: mockTestimonyDraft,
+        sync: "synced",
+        publication: mockTestimonyPublication,
+      },
+    });
+    render(
+      <Provider store={store}>
+        <BillDetails bill={mockBill} />
+      </Provider>
+    );
+
+    const yourTestimonyPrompt = screen.getByText("Your Testimony")
+    // const completeTestimonyButton = screen.getByRole('button', { name: "Complete Testimony"});
+    // expect(completeTestimonyButton).toBeInTheDocument
+    expect(yourTestimonyPrompt).toBeInTheDocument
+  })
+
+
+})
+
