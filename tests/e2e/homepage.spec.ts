@@ -13,7 +13,6 @@ test.describe("Maple Homepage", () => {
 
   test("should navigate to the Browse Testimony page", async ({ page }) => {
     await page.getByRole("button", { name: "Browse All Testimony" }).click()
-    // await page.waitForURL("**/testimony")
     await page.waitForURL(/\/testimony/)
     await expect(page).toHaveURL(/\/testimony/)
   })
