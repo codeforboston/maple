@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test"
+import { Console } from "console"
 
 export class BillPage {
   readonly page: Page
@@ -9,6 +10,8 @@ export class BillPage {
   readonly bills: Locator
   readonly searchWord: string
   readonly firstFilterItemSelector: string
+  readonly currentCategorySelector: string
+  readonly basicCategorySelector: string
   readonly billPageBackToList: Locator
 
   constructor(page: Page) {
@@ -22,6 +25,8 @@ export class BillPage {
     this.billPageBackToList = page.getByText("back to list of bills")
     this.firstFilterItemSelector =
       "li:nth-child(1) input.ais-RefinementList-checkbox"
+    this.currentCategorySelector = ".ais-CurrentRefinements-item"
+    this.basicCategorySelector = "div.ais-RefinementList.mb-4"
   }
 
   async goto() {
@@ -116,5 +121,26 @@ export class BillPage {
       return match ? parseInt(match[0], 10) : 0
     }
     return 0
+  }
+
+  /**
+   * Uncheck all filters before each test.
+   */
+  async uncheckAllFilters() {
+    const allCategory = this.page.locator(this.basicCategorySelector)
+    const numberOfCategories = await allCategory.count()
+
+    for (let i = 1; i <= numberOfCategories; i++) {
+      const filterCategory =
+        this.basicCategorySelector + ":nth-of-type(" + i + ")"
+
+      const checkedFilters = await this.page.locator(
+        filterCategory + " " + "input.ais-RefinementList-checkbox" + ":checked"
+      )
+      const numberOfFilters = await checkedFilters.count()
+      for (let j = 0; j < numberOfFilters; j++) {
+        await checkedFilters.nth(i).uncheck()
+      }
+    }
   }
 }

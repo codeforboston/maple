@@ -1,16 +1,6 @@
 import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 
-test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:3000/bills")
-  // Wait for the list of bills to be visible
-  await page.waitForSelector("ol.ais-Hits-list")
-
-  // Check that there are list items within the list
-  const bills = await page.$$("li.ais-Hits-item")
-  expect(bills.length).toBeGreaterThan(0)
-})
-
 test.describe("Search result test", () => {
   test("test", async ({ page }) => {
     const billpage = new BillPage(page)
@@ -128,7 +118,7 @@ test.describe("Sort Bills test", () => {
     test(`should sort bills by ${option}`, async ({ page }) => {
       // Get the initial text content of the first bill
       const billpage = new BillPage(page)
-      const initialFirstBill = billpage.firstBill
+      await billpage.goto()
 
       await billpage.sort(option)
 
@@ -198,22 +188,6 @@ test.describe("Filter Bills test", () => {
   const categorySelector = ".ais-CurrentRefinements-item"
 
   /**
-   * Uncheck all filters before each test.
-   * @param page - The Playwright page object.
-   */
-  const uncheckAllFilters = async (page: any) => {
-    for (const { selector: filterCategory } of filterCategories) {
-      const checkedFilters = await page.locator(
-        filterCategory + " " + "input.ais-RefinementList-checkbox" + ":checked"
-      )
-      const numberOfFilters = await checkedFilters.count()
-      for (let i = 0; i < numberOfFilters; i++) {
-        await checkedFilters.nth(i).uncheck()
-      }
-    }
-  }
-
-  /**
    * Apply a filter by checking the specified filter item.
    * @param page - The Playwright page object.
    * @param filterCategory - The selector of the filter category.
@@ -239,7 +213,8 @@ test.describe("Filter Bills test", () => {
 
   // clear the filter label before each test
   test.beforeEach(async ({ page }) => {
-    await uncheckAllFilters(page)
+    const billPage = new BillPage(page)
+    await billPage.uncheckAllFilters()
   })
 
   // Test: Filter Bills by Court
