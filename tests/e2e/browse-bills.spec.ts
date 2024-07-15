@@ -7,6 +7,7 @@ test.describe("Search result test", () => {
     await billpage.goto()
     const { firstBill: bills } = billpage
     console.log(await bills.first().textContent())
+    billpage.uncheckAllFilters()
   })
 
   test("should search for bills", async ({ page }) => {
@@ -187,42 +188,14 @@ test.describe("Filter Bills test", () => {
   // Selector for the current refinement item
   const categorySelector = ".ais-CurrentRefinements-item"
 
-  /**
-   * Apply a filter by checking the specified filter item.
-   * @param page - The Playwright page object.
-   * @param filterCategory - The selector of the filter category.
-   * @param filterItemSelector - The selector of the filter item to apply.
-   * @returns The label text of the applied filter.
-   */
-  const applyFilter = async (
-    page: any,
-    filterCategory: string,
-    filterItemSelector: string
-  ): Promise<string> => {
-    const filterItem = await page.locator(
-      `${filterCategory} ${filterItemSelector}`
-    )
-    const filterLabel = await filterItem
-      .locator("..")
-      .locator(".ais-RefinementList-labelText")
-      .innerText()
-    console.log(filterLabel)
-    await filterItem.click()
-    return filterLabel
-  }
-
-  // clear the filter label before each test
-  test.beforeEach(async ({ page }) => {
-    const billPage = new BillPage(page)
-    await billPage.uncheckAllFilters()
-  })
-
   // Test: Filter Bills by Court
   test("Filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[0].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
-    const filterLabel = await applyFilter(
+    const filterLabel = await billPage.applyFilter(
       page,
       filterCategory,
       filterItemSelector
@@ -240,10 +213,12 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Current Committee
   test("Filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[1].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
-    const filterLabel = await applyFilter(
+    const filterLabel = await billPage.applyFilter(
       page,
       filterCategory,
       filterItemSelector
@@ -251,6 +226,8 @@ test.describe("Filter Bills test", () => {
     const filterText = await page
       .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
       .innerText()
+    console.log(filterLabel)
+    console.log(filterText)
     expect(filterLabel).toEqual(filterText)
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
@@ -258,10 +235,12 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by City
   test("Filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[2].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
-    const filterLabel = await applyFilter(
+    const filterLabel = await billPage.applyFilter(
       page,
       filterCategory,
       filterItemSelector
@@ -276,10 +255,12 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Primary Sponsor
   test("Filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[3].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
-    const filterLabel = await applyFilter(
+    const filterLabel = await billPage.applyFilter(
       page,
       filterCategory,
       filterItemSelector
@@ -294,10 +275,12 @@ test.describe("Filter Bills test", () => {
   // Test: Filter Bills by Cosponsor
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[4].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
-    const filterLabel = await applyFilter(
+    const filterLabel = await billPage.applyFilter(
       page,
       filterCategory,
       filterItemSelector
@@ -326,7 +309,7 @@ test.describe("Filter Bills test", () => {
       const billPage = new BillPage(page)
       const filterItemSelector = await billPage.firstFilterItemSelector
 
-      const filterLabel = await applyFilter(
+      const filterLabel = await billPage.applyFilter(
         page,
         filterCategory,
         filterItemSelector

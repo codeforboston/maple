@@ -139,8 +139,32 @@ export class BillPage {
       )
       const numberOfFilters = await checkedFilters.count()
       for (let j = 0; j < numberOfFilters; j++) {
-        await checkedFilters.nth(i).uncheck()
+        await checkedFilters.nth(j).uncheck()
       }
     }
+  }
+
+  /**
+   * Apply a filter by checking the specified filter item.
+   * @param page - The Playwright page object.
+   * @param filterCategory - The selector of the filter category.
+   * @param filterItemSelector - The selector of the filter item to apply.
+   * @returns The label text of the applied filter.
+   */
+  async applyFilter(
+    page: any,
+    filterCategory: string,
+    filterItemSelector: string
+  ): Promise<string> {
+    const filterItem = await this.page.locator(
+      `${filterCategory} ${filterItemSelector}`
+    )
+    const filterLabel = await filterItem
+      .locator("..")
+      .locator(".ais-RefinementList-labelText")
+      .innerText()
+    console.log(filterLabel)
+    await filterItem.click()
+    return filterLabel
   }
 }
