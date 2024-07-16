@@ -2,14 +2,6 @@ import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 
 test.describe("Search result test", () => {
-  test("test", async ({ page }) => {
-    const billpage = new BillPage(page)
-    await billpage.goto()
-    const { firstBill: bills } = billpage
-    console.log(await bills.first().textContent())
-    billpage.uncheckAllFilters()
-  })
-
   test("should search for bills", async ({ page }) => {
     const billpage = new BillPage(page)
     await billpage.goto()
@@ -227,8 +219,7 @@ test.describe("Filter Bills test", () => {
     const filterText = await page
       .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
       .innerText()
-    console.log(filterLabel)
-    console.log(filterText)
+
     expect(filterLabel).toEqual(filterText)
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
