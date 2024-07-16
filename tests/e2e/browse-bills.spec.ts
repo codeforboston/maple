@@ -150,9 +150,10 @@ test.describe("Sort Bills test", () => {
 
   // Test sorting with an empty list
   test("should handle sorting with an empty list", async ({ page }) => {
-    const billpage = new BillPage(page)
+    const billPage = new BillPage(page)
+    await billPage.goto()
     const searchTerm = "nonexistentsearchterm12345"
-    await billpage.search(searchTerm)
+    await billPage.search(searchTerm)
     const sortedBills = await page.locator("li.ais-Hits-item").count()
     expect(sortedBills).toBe(0)
   })
@@ -294,6 +295,9 @@ test.describe("Filter Bills test", () => {
 
   // Test: Combination of Filters
   test("Combination of Filters", async ({ page }) => {
+    const billPage = new BillPage(page)
+    await billPage.goto()
+    await billPage.uncheckAllFilters()
     const checkedFilters: string[] = []
     for (const { selector: filterCategory } of filterCategories) {
       // Check if filter items are available for the category
@@ -306,7 +310,6 @@ test.describe("Filter Bills test", () => {
         )
         continue
       }
-      const billPage = new BillPage(page)
       const filterItemSelector = await billPage.firstFilterItemSelector
 
       const filterLabel = await billPage.applyFilter(
@@ -315,7 +318,6 @@ test.describe("Filter Bills test", () => {
         filterItemSelector
       )
       checkedFilters.push(filterLabel)
-      await page.waitForTimeout(1000)
     }
 
     const filteredResults = await page.locator(

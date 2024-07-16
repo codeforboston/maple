@@ -156,6 +156,7 @@ export class BillPage {
     filterCategory: string,
     filterItemSelector: string
   ): Promise<string> {
+    const initialResult = await this.firstBill.textContent()
     const filterItem = await this.page.locator(
       `${filterCategory} ${filterItemSelector}`
     )
@@ -163,8 +164,17 @@ export class BillPage {
       .locator("..")
       .locator(".ais-RefinementList-labelText")
       .innerText()
-    console.log(filterLabel)
+
     await filterItem.click()
+
+    await this.page.waitForFunction(initialResult => {
+      const searchResult = document.querySelector("li.ais-Hits-item a")
+
+      return (
+        !searchResult ||
+        (searchResult && searchResult.textContent != initialResult)
+      )
+    }, initialResult)
     return filterLabel
   }
 }
