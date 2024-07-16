@@ -76,7 +76,6 @@ interface SortingTest {
 
 // Array of sorting test configurations
 // Need to add test for sort by relevant
-// Need to add TestId attribute for maintainability
 const sortingTests: SortingTest[] = [
   {
     option: "Sort by Testimony Count",
@@ -104,12 +103,9 @@ const sortingTests: SortingTest[] = [
   }
 ]
 
-// Describe the test suite
 test.describe("Sort Bills test", () => {
   for (const { option, attribute, order, type } of sortingTests) {
-    // Test case for each sorting option
     test(`should sort bills by ${option}`, async ({ page }) => {
-      // Get the initial text content of the first bill
       const billpage = new BillPage(page)
       await billpage.goto()
 
@@ -155,11 +151,7 @@ interface FilterCategory {
   selector: string
 }
 
-/**
- * Describe and test the filtering functionality for Bills.
- */
 test.describe("Filter Bills test", () => {
-  // Define filter categories
   const filterCategories: FilterCategory[] = [
     {
       selector: "div.ais-RefinementList.mb-4:nth-of-type(1)"
@@ -178,10 +170,8 @@ test.describe("Filter Bills test", () => {
     } // Cosponsor
   ]
 
-  // Selector for the current refinement item
   const categorySelector = ".ais-CurrentRefinements-item"
 
-  // Test: Filter Bills by Court
   test("should filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
@@ -203,7 +193,6 @@ test.describe("Filter Bills test", () => {
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
 
-  // Test: Filter Bills by Current Committee
   test("should filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
@@ -224,7 +213,6 @@ test.describe("Filter Bills test", () => {
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
 
-  // Test: Filter Bills by City
   test("should filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
@@ -244,7 +232,6 @@ test.describe("Filter Bills test", () => {
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
 
-  // Test: Filter Bills by Primary Sponsor
   test("should filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
@@ -264,7 +251,6 @@ test.describe("Filter Bills test", () => {
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
   })
 
-  // Test: Filter Bills by Cosponsor
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()

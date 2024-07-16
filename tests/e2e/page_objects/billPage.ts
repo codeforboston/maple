@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from "@playwright/test"
-import { Console } from "console"
 
 export class BillPage {
   readonly page: Page
