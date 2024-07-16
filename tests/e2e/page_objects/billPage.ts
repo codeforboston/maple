@@ -39,7 +39,6 @@ export class BillPage {
     await this.searchBar.fill(query)
     await this.page.waitForFunction(initialResult => {
       const searchResult = document.querySelector("li.ais-Hits-item a")
-
       return (
         !searchResult ||
         (searchResult && searchResult.textContent != initialResult)
@@ -156,25 +155,15 @@ export class BillPage {
     filterCategory: string,
     filterItemSelector: string
   ): Promise<string> {
-    const initialResult = await this.firstBill.textContent()
     const filterItem = await this.page.locator(
       `${filterCategory} ${filterItemSelector}`
     )
+    await filterItem.click()
     const filterLabel = await filterItem
       .locator("..")
       .locator(".ais-RefinementList-labelText")
       .innerText()
 
-    await filterItem.click()
-
-    await this.page.waitForFunction(initialResult => {
-      const searchResult = document.querySelector("li.ais-Hits-item a")
-
-      return (
-        !searchResult ||
-        (searchResult && searchResult.textContent != initialResult)
-      )
-    }, initialResult)
     return filterLabel
   }
 }

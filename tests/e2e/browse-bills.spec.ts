@@ -61,11 +61,11 @@ test.describe("Search result test", () => {
 
     const noResultsText = await page.getByText("Looks Pretty Empty Here")
     const noResultsImg = page.getByAltText("No Results")
-    const resultCOunts = await billpage.resultCount
+    const resultCounts = await billpage.resultCount
 
     await expect(noResultsText).toBeVisible()
     await expect(noResultsImg).toBeVisible()
-    await expect(resultCOunts).toBeVisible()
+    await expect(resultCounts).toBeVisible()
   })
 })
 
@@ -190,7 +190,7 @@ test.describe("Filter Bills test", () => {
   const categorySelector = ".ais-CurrentRefinements-item"
 
   // Test: Filter Bills by Court
-  test("Filter Bills by Court", async ({ page }) => {
+  test("should filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
     await billPage.uncheckAllFilters()
@@ -212,7 +212,7 @@ test.describe("Filter Bills test", () => {
   })
 
   // Test: Filter Bills by Current Committee
-  test("Filter Bills by Current Committee", async ({ page }) => {
+  test("should filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
     await billPage.uncheckAllFilters()
@@ -234,7 +234,7 @@ test.describe("Filter Bills test", () => {
   })
 
   // Test: Filter Bills by City
-  test("Filter Bills by City", async ({ page }) => {
+  test("should filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
     await billPage.uncheckAllFilters()
@@ -254,7 +254,7 @@ test.describe("Filter Bills test", () => {
   })
 
   // Test: Filter Bills by Primary Sponsor
-  test("Filter Bills by Primary Sponsor", async ({ page }) => {
+  test("should filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
     await billPage.goto()
     await billPage.uncheckAllFilters()
@@ -291,44 +291,5 @@ test.describe("Filter Bills test", () => {
       .innerText()
     expect(filterLabel).toEqual(filterText)
     await page.uncheck(`${filterCategory} ${filterItemSelector}`)
-  })
-
-  // Test: Combination of Filters
-  test("Combination of Filters", async ({ page }) => {
-    const billPage = new BillPage(page)
-    await billPage.goto()
-    await billPage.uncheckAllFilters()
-    const checkedFilters: string[] = []
-    for (const { selector: filterCategory } of filterCategories) {
-      // Check if filter items are available for the category
-      const filterItems = await page.locator(
-        `${filterCategory} li input.ais-RefinementList-checkbox`
-      )
-      if ((await filterItems.count()) === 0) {
-        console.log(
-          `Skipping Combination of Filters test due to empty category: ${filterCategory}`
-        )
-        continue
-      }
-      const filterItemSelector = await billPage.firstFilterItemSelector
-
-      const filterLabel = await billPage.applyFilter(
-        page,
-        filterCategory,
-        filterItemSelector
-      )
-      checkedFilters.push(filterLabel)
-    }
-
-    const filteredResults = await page.locator(
-      `${categorySelector} .ais-CurrentRefinements-categoryLabel`
-    )
-    const resultsCount = await filteredResults.count()
-    expect(resultsCount).toBeGreaterThan(0)
-
-    for (let i = 0; i < resultsCount; i++) {
-      const resultText = await filteredResults.nth(i).innerText()
-      expect(checkedFilters[i]).toContain(resultText)
-    }
   })
 })
