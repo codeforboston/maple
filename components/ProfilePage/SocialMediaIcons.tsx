@@ -17,7 +17,7 @@ export const SocialMediaIcons = ({
       {twitter && (
         <Col>
           <External plain href={`https://www.twitter.com/${twitter}`}>
-            <Image alt="twitter" src="/twitter.svg" />
+            <Image alt="Visit the organization's Twitter Page." src="/twitter.svg" />
           </External>
         </Col>
       )}
@@ -25,7 +25,7 @@ export const SocialMediaIcons = ({
       {linkedIn && (
         <Col>
           <External plain href={`${linkedIn}`}>
-            <Image alt="linkedIn" src="/linkedin.svg" />
+            <Image alt="Visit the organization's LinkedIn Page." src="/linkedin.svg" />
           </External>
         </Col>
       )}
@@ -33,7 +33,7 @@ export const SocialMediaIcons = ({
       {instagram && (
         <Col>
           <External plain href={`https://www.instagram.com/${instagram}`}>
-            <Image alt="instagram" src="/instagram.svg" />
+            <Image alt="Visit the organization's Instagram Page." src="/instagram.svg" />
           </External>
         </Col>
       )}
@@ -41,7 +41,7 @@ export const SocialMediaIcons = ({
       {fb && (
         <Col>
           <External plain href={`https://www.facebook.com/${fb}`}>
-            <Image alt="facebook" src="/facebook.svg" />
+            <Image alt="Visit the organization's Facebook Page." src="/facebook.svg" />
           </External>
         </Col>
       )}

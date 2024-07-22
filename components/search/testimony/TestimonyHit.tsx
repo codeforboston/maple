@@ -58,7 +58,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
       >
         <Image
           src={isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"}
-          alt="profile icon"
+          alt=""
           height="30px"
           width="30px"
         />

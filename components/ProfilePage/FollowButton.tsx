@@ -101,7 +101,7 @@ export const FollowButton = ({
     queryResult === topicName ? t("button.following") : t("button.follow")
   const checkmark =
     queryResult === topicName ? (
-      <StyledImage src="/check-white.svg" alt="checkmark" />
+      <StyledImage src="/check-white.svg" alt="" />
     ) : null
 
   return (

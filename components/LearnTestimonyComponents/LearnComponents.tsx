@@ -68,21 +68,18 @@ const RoleContent = [
     paragraph:
       "It could guide the agenda of the legislature, what topics and bills they consider, and how they decide to act and vote on each bill. ",
     src: "speaker-with-thumbs.svg",
-    alt: "Speaker with thumbs"
   },
   {
     title: "Your voice give them insight",
     paragraph:
       "It can inform legislators of the benefits or negative consequences of proposed policies.",
     src: "speaker-with-leg.svg",
-    alt: "Speaker with documents"
   },
   {
     title: "You can give suggestions",
     paragraph:
       "You can also recommend specific changes or improvements to legislation, whether you generally support or oppose the bill.",
     src: "speaker-with-pen.svg",
-    alt: "Speaker with pen"
   }
 ]
 
@@ -94,7 +91,7 @@ const WriteContent = [
       `Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.`
     ],
     src: "leg-with-clock.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     title: "Be Original",
@@ -102,7 +99,7 @@ const WriteContent = [
       `Legislators receive a lot of form letters and repeated sentiments from organized groups of constituents. These communications are important and their volume can be meaningful to legislators. But, almost always, an individual and personalized letter will have a greater impact.`
     ],
     src: "leg-with-lightbulb.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     title: "Be Informative",
@@ -110,7 +107,7 @@ const WriteContent = [
       `Whether you are a longtime advocate or a first time testifier, whether you have a doctoral degree in the subject or lived experience regarding a policy, and no matter your age, race, creed, or background, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another. For example, your being a parent gives you special insight into education policy, your living in a community affected by pollution gives you special insight into environmental policy, etc.`
     ],
     src: "writing.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     title: "Be Direct",
@@ -118,7 +115,7 @@ const WriteContent = [
       `State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't have to know specific legal precedents or legislative language; just explain what you would like to happen and why.`
     ],
     src: "opinions.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     title: "Be Respectful",
@@ -126,7 +123,7 @@ const WriteContent = [
       `No matter how strongly and sincerely held your position is, there may be people of good intent who feel oppositely and expect and deserve to have their opinions considered by their legislators also. Respectful testimony will carry more weight with legislators, especially those who you may need to persuade to your side of an issue.`
     ],
     src: "respect-with-blob.svg",
-    alt: "Document with clock"
+    alt: ""
   }
 ]
 

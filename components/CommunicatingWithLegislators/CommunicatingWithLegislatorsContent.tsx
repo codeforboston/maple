@@ -37,7 +37,7 @@ const WritingContent = () => (
         className={`float-md-end`}
         fluid
         src="/computer-text-blob.svg"
-        alt="computer display with lines representing text"
+        alt=""
       />
     </Col>
   </Row>
@@ -53,7 +53,7 @@ const OralContent = () => (
       <StyledImage
         fluid
         src="/mic-with-testify.svg"
-        alt="microphone next to a sheet of paper"
+        alt=""
       />
     </Col>
     <Col
@@ -86,7 +86,7 @@ const WriteOrCallContent = () => (
         className={`float-md-end`}
         fluid
         src="/open-envelope.svg"
-        alt="envelope with letter sticking out"
+        alt=""
       />
     </Col>
   </Row>

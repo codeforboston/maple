@@ -9,7 +9,7 @@ const NuLawLabCardContent = () => {
           <Image
             fluid
             src="/northeastern_school_of_law_logo.svg"
-            alt="Northeatern School of Law icon"
+            alt="Northeatern School of Law Logo"
           />
         </Col>
         <Col className="align-self-center" md={9}>
@@ -57,7 +57,7 @@ const CodeForBostonCardContent = () => {
           <Image
             fluid
             src="/codeforbostonicon.png"
-            alt="Code for Boston icon"
+            alt="Code for Boston Logo"
           />
         </Col>
         <Col className="align-self-center" md={9}>
@@ -100,7 +100,7 @@ const OpenCollectiveContent = () => {
           <Image
             fluid
             src="/open_collective_logo.png"
-            alt="open_collective_logo"
+            alt="Open Collective Logo"
           />
         </Col>
         <Col className="align-self-center" md={9}>

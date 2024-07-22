@@ -20,9 +20,9 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
       >
         <div className={`align-items-center d-flex mt-4`}>
           {open ? (
-            <Image src="/minus.svg" className={`me-2`} alt="minus icon" />
+            <Image src="/minus.svg" className={`me-2`} alt="Hide Answer" />
           ) : (
-            <Image src="/add.svg" className={`me-2`} alt="plus icon" />
+            <Image src="/add.svg" className={`me-2`} alt="Show Answer" />
           )}
           {question}
         </div>

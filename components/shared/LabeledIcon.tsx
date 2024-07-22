@@ -49,7 +49,7 @@ export const LabeledIcon = ({
   return (
     <div className={`d-flex flex-grow-1 mb-2`}>
       <CircleImage>
-        <img src={idImage} alt={`${mainText}`} className={`image`} />
+        <img src={idImage} alt={""} className={`image`} />
       </CircleImage>
       <StyledColLabels>
         <div className="main-text">{mainText}</div>

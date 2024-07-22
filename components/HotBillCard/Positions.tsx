@@ -13,21 +13,21 @@ export const Positions = (props: {
       <PositionStyle>
         <p className="stanceTitle">Endorse</p>
         <div>
-          <Image className="svg" alt="" src="/thumbs-endorse.svg" />
+          <Image className="svg" alt="The total number of testimonies that endorse the bill." src="/thumbs-endorse.svg" />
           <p>{props.endorseCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Neutral</p>
         <div>
-          <Image className="svg" alt="" src="/thumbs-neutral.svg" />
+          <Image className="svg" alt="The total number of testimonies that are neutral towards the bill." src="/thumbs-neutral.svg" />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Oppose</p>
         <div>
-          <Image className="svg" alt="" src="/thumbs-oppose.svg" />
+          <Image className="svg" alt="The total number of testimonies that oppose the bill." src="/thumbs-oppose.svg" />
           <p>{props.opposeCount}</p>
         </div>
       </PositionStyle>

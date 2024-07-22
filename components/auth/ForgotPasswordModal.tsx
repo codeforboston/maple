@@ -52,7 +52,7 @@ export default function ForgotPasswordModal({
           <Stack direction="vertical" className="align-items-center mb-2">
             <Image
               src="/mailbox.svg"
-              alt={t("mailboxImgAlt") ?? "Mail entering mailbox"}
+              alt=""
               fluid
             />
 

@@ -72,7 +72,7 @@ export default function PolicyPage({
           <Col xs={12} className={style.blueBox}>
             <Image
               src="handShake.jpg"
-              alt="hand shake"
+              alt=""
               className={style.symbol}
             ></Image>
             <p className={style.values}>Humility</p>
@@ -80,7 +80,7 @@ export default function PolicyPage({
           <Col xs={12} className={style.blueBox}>
             <Image
               src="compassion.png"
-              alt="cupped hand holding heart"
+              alt=""
               className={style.symbol}
             ></Image>
             <p className={style.values}>Compassion</p>
@@ -88,7 +88,7 @@ export default function PolicyPage({
           <Col xs={12} className={style.blueBox}>
             <Image
               src="lightBulb.png"
-              alt="lightbulb"
+              alt=""
               className={style.symbol}
             ></Image>
             <p className={style.values}>Curiosity</p>

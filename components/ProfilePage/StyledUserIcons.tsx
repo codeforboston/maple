@@ -25,7 +25,7 @@ export const BaseProfileIcon = ({
       iconSrc = "/profile-individual-icon.svg"
       break
   }
-  return <Image src={iconSrc} className={`${className}`} alt="profile icon" />
+  return <Image src={iconSrc} className={`${className}`} alt="" />
 }
 
 export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(

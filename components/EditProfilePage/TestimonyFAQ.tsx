@@ -21,7 +21,7 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
           <Image
             className="w-100"
             fluid
-            alt="writing icon"
+            alt=""
             src="/writing.svg"
           ></Image>
         </div>

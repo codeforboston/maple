@@ -20,7 +20,7 @@ export default function VerifyEmailModal({
               fluid
               height={`18em`}
               src="/mailbox.svg"
-              alt={t("mailboxImgAlt") ?? "Mail entering mailbox"}
+              alt=""
             />
             <h2 className={`fw-bold`}>{t("verifyEmail")}</h2>
             <h6>{t("verifyLinkSent")}</h6>

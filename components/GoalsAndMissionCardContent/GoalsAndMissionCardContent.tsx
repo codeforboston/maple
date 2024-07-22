@@ -30,7 +30,7 @@ const OurGoalsCardContent = () => {
             <OurGoalsImage
               fluid
               src="/gov-with-key.svg"
-              alt="government building with key"
+              alt=""
             />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.increase")}
@@ -43,7 +43,7 @@ const OurGoalsCardContent = () => {
             <OurGoalsImage
               fluid
               src="/doc-with-arrows-from-people.svg"
-              alt="government building with key"
+              alt=""
             />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.engage")}
@@ -58,7 +58,7 @@ const OurGoalsCardContent = () => {
             <OurGoalsImage
               fluid
               src="/doc-with-arrows-to-people.svg"
-              alt="government building with key"
+              alt=""
             />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.strengthen")}
@@ -71,7 +71,7 @@ const OurGoalsCardContent = () => {
             <OurGoalsImage
               fluid
               src="/gov-with-key.svg"
-              alt="government building with key"
+              alt=""
             />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.encourage")}
@@ -107,7 +107,7 @@ const OurMissionCardContent = () => {
           <MissionImage
             fluid
             src="/leg-with-mag-glass.svg"
-            alt="document with magnifying glass"
+            alt=""
           />
         </Col>
       </Row>
@@ -122,7 +122,7 @@ const OurMissionCardContent = () => {
           <MissionImage
             fluid
             src="/doc-treasure-box.svg"
-            alt="document with magnifying glass"
+            alt=""
           />
         </Col>
         <Col
