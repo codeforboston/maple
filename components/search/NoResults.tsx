@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { Image } from "../bootstrap"
+import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
   background-color: white;
@@ -18,9 +19,10 @@ const Container = styled.div`
 export const NoResults: React.FC<React.PropsWithChildren<unknown>> = ({
   children
 }) => {
+  const {t} = useTranslation("common")
   return (
     <Container>
-      <Image src="/no-results.svg" alt="No results" />
+      <Image src="/no-results.svg" alt={t("noResults")} />
       <div className="fs-3">Looks Pretty Empty Here</div>
       <div className="text-center">{children}</div>
     </Container>

@@ -77,7 +77,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/twitter.svg"
-              alt="Follow MAPLE on Twitter"
+              alt={t("links.socials.twitter")}
               width="24"
               height="24"
             ></Image>
@@ -91,7 +91,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/instagram.svg"
-              alt="Follow MAPLE on Instagram"
+              alt={t("links.socials.instagram")}
               width="24"
               height="24"
             ></Image>
@@ -105,7 +105,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/Linked In.svg"
-              alt="Follow MAPLE on LinkedIn"
+              alt={t("links.socials.linkedin")}
               width="24"
               height="24"
             ></Image>
@@ -116,7 +116,7 @@ function MapleContainer({ className }: { className?: string }) {
         <Image
           className="bg-transparent"
           src="/maple-footer-white.png"
-          alt="MAPLE Massachusetts Platform for Legislative Engagement logo"
+          alt={t("logo")}
           width={100}
         />
       </Row>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Image, Collapse } from "../bootstrap"
+import { useTranslation } from "next-i18next"
 
 type faqQandAProps = {
   question: string
@@ -7,6 +8,7 @@ type faqQandAProps = {
 }
 
 export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
+  const { t } = useTranslation("common")
   const [open, setOpen] = useState(false)
 
   useEffect(() => {}, [open])
@@ -20,9 +22,9 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
       >
         <div className={`align-items-center d-flex mt-4`}>
           {open ? (
-            <Image src="/minus.svg" className={`me-2`} alt="Hide Answer" />
+            <Image src="/minus.svg" className={`me-2`} alt={t("hideAns")} />
           ) : (
-            <Image src="/add.svg" className={`me-2`} alt="Show Answer" />
+            <Image src="/add.svg" className={`me-2`} alt={t("showAns")} />
           )}
           {question}
         </div>

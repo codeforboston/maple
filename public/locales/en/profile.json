@@ -6,7 +6,7 @@
   "anonymousUser": "Anonymous User",
   "joinDate": "Joined in {{date}}",
   "button":{
-    "editProfile": "Edit\u00A0Profile",
+    "editProfile": "Edit\u00A0Profile",    
     "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
     "follow" : "Follow",
     "following" : "Following"
@@ -16,13 +16,18 @@
     "publicProfile": "Your profile is currently public. You can change this in \"settings\"",
     "privateProfile": "Your profile is currently private. You can change this in \"settings\"",
     "noLegislatorInfo": "No legislator information given"
-    },
+  },
   "verifyAccountSection":{
     "verifyAccount": "We sent a link to your email to verify your account, but you haven't\nclicked it yet. If you don't see it, be sure to check your spam\nfolder.",
     "checkEmail": "Check your email!",
     "sendAnotherLink": "Send Another Link"
   },
   "legislators": "Legislators",
+  "position": {
+    "endorse":"This testimony endorses the bill.",
+    "neutral":"This testimony is neutral towards the bill.",
+    "oppose": "This testimony opposes the bill."
+  },
   "representative": "Representative",
   "senator": "Senator",
   "orgIcon": {

@@ -1,6 +1,7 @@
 import { Role } from "components/auth"
 import { Image } from "components/bootstrap"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 type ProfileIconProps = {
   profileImage?: string
@@ -15,6 +16,8 @@ export const BaseProfileIcon = ({
   role,
   className
 }: ProfileIconProps) => {
+  const {t} = useTranslation("auth");
+
   let iconSrc
   switch (role) {
     case "organization": {
@@ -25,7 +28,7 @@ export const BaseProfileIcon = ({
       iconSrc = "/profile-individual-icon.svg"
       break
   }
-  return <Image src={iconSrc} className={`${className}`} alt="" />
+  return <Image src={iconSrc} className={`${className}`} alt={t("profileIcon")} />
 }
 
 export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(

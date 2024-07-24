@@ -2,32 +2,35 @@ import React from "react"
 import { Container, CardImg } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 export const Positions = (props: {
   endorseCount: number
   opposeCount: number
   neutralCount: number
 }) => {
+  const { t } = useTranslation("testimony")
+
   return (
     <PositionsStyle>
       <PositionStyle>
         <p className="stanceTitle">Endorse</p>
         <div>
-          <Image className="svg" alt="The total number of testimonies that endorse the bill." src="/thumbs-endorse.svg" />
+          <Image className="svg" alt={t("counts.endorsements")} />
           <p>{props.endorseCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Neutral</p>
         <div>
-          <Image className="svg" alt="The total number of testimonies that are neutral towards the bill." src="/thumbs-neutral.svg" />
+          <Image className="svg" alt={t("counts.neutral")} src="/thumbs-neutral.svg" />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Oppose</p>
         <div>
-          <Image className="svg" alt="The total number of testimonies that oppose the bill." src="/thumbs-oppose.svg" />
+          <Image className="svg" alt={t("counts.oppose")} src="/thumbs-oppose.svg" />
           <p>{props.opposeCount}</p>
         </div>
       </PositionStyle>

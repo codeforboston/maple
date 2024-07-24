@@ -1,5 +1,6 @@
 import { Row, Col, Image } from "react-bootstrap"
 import { External } from "components/links"
+import { useTranslation } from "next-i18next"
 
 export const SocialMediaIcons = ({
   twitter,
@@ -11,13 +12,18 @@ export const SocialMediaIcons = ({
   instagram?: string
   fb?: string
   linkedIn?: string
-}) => (
-  <div>
+}) => {
+
+  const { t } = useTranslation("common")
+
+  return(
+
+    <div>
     <Row xs="auto">
       {twitter && (
         <Col>
           <External plain href={`https://www.twitter.com/${twitter}`}>
-            <Image alt="Visit the organization's Twitter Page." src="/twitter.svg" />
+            <Image alt={t("socials.twitter")} src="/twitter.svg" />
           </External>
         </Col>
       )}
@@ -25,7 +31,7 @@ export const SocialMediaIcons = ({
       {linkedIn && (
         <Col>
           <External plain href={`${linkedIn}`}>
-            <Image alt="Visit the organization's LinkedIn Page." src="/linkedin.svg" />
+            <Image alt={t("socials.linkedin")} src="/linkedin.svg" />
           </External>
         </Col>
       )}
@@ -33,7 +39,7 @@ export const SocialMediaIcons = ({
       {instagram && (
         <Col>
           <External plain href={`https://www.instagram.com/${instagram}`}>
-            <Image alt="Visit the organization's Instagram Page." src="/instagram.svg" />
+            <Image alt={t("socials.instagram")} src="/instagram.svg" />
           </External>
         </Col>
       )}
@@ -41,10 +47,11 @@ export const SocialMediaIcons = ({
       {fb && (
         <Col>
           <External plain href={`https://www.facebook.com/${fb}`}>
-            <Image alt="Visit the organization's Facebook Page." src="/facebook.svg" />
+            <Image alt={t("socials.facebook")} src="/facebook.svg" />
           </External>
         </Col>
       )}
     </Row>
   </div>
 )
+}

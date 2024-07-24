@@ -7,7 +7,7 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 export const Avatar = () => {
-  const { t } = useTranslation(["common",])
+  const { t } = useTranslation("auth")
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 

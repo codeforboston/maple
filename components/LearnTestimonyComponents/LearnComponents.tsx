@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Container, Card, Row, Col } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
@@ -26,7 +27,7 @@ const BasicsContent = [
     paragraph:
       "Legislators tend to value testimony most when it comes from their own constituents. Testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district.",
     src: "who.svg",
-    alt: "Who"
+    alt: "who.title"
   },
   {
     title:
@@ -34,7 +35,7 @@ const BasicsContent = [
     paragraph:
       "Be sure to write your own text and explain why you are interested in an issue.",
     src: "what.svg",
-    alt: "What"
+    alt: "what.title"
   },
   {
     title:
@@ -42,7 +43,7 @@ const BasicsContent = [
     paragraph:
       " You can use the bill pages on this website to identify relevant committee dates. Although some committees will accept testimony after this date, for the greatest impact you should submit your testimony before the hearing.",
     src: "when.svg",
-    alt: "When"
+    alt: "when.title"
   },
   {
     title:
@@ -50,7 +51,7 @@ const BasicsContent = [
     paragraph:
       "This website, MAPLE, will help you to do this by making it easy to find a bill you want to testify in and then generate an email, which you fully control, which you can then send to the relevant personnel.",
     src: "where.svg",
-    alt: "Where"
+    alt: "where.title"
   },
   {
     title:
@@ -58,7 +59,7 @@ const BasicsContent = [
     paragraph:
       "If you don't share your perspective, it will not be taken into account when policymakers make decisions about the laws that govern all our lives.",
     src: "why.svg",
-    alt: "why"
+    alt: "why.title"
   }
 ]
 
@@ -67,19 +68,19 @@ const RoleContent = [
     title: "Your voice is instrumental to the legislative process",
     paragraph:
       "It could guide the agenda of the legislature, what topics and bills they consider, and how they decide to act and vote on each bill. ",
-    src: "speaker-with-thumbs.svg",
+    src: "speaker-with-thumbs.svg"
   },
   {
     title: "Your voice give them insight",
     paragraph:
       "It can inform legislators of the benefits or negative consequences of proposed policies.",
-    src: "speaker-with-leg.svg",
+    src: "speaker-with-leg.svg"
   },
   {
     title: "You can give suggestions",
     paragraph:
       "You can also recommend specific changes or improvements to legislation, whether you generally support or oppose the bill.",
-    src: "speaker-with-pen.svg",
+    src: "speaker-with-pen.svg"
   }
 ]
 
@@ -128,6 +129,7 @@ const WriteContent = [
 ]
 
 const Basics = () => {
+  const { t } = useTranslation("homepage")
   return (
     <Container fluid="md" className="mt-3">
       <h1 className="fw-bold tracking-tighter lh-base">
@@ -148,7 +150,7 @@ const Basics = () => {
           title={value.title}
           index={index}
           key={value.title}
-          alt={value.alt}
+          alt={t(value.alt)}
           paragraph={value.paragraph}
           src={`/${value.src}`}
         />
@@ -176,7 +178,7 @@ const Role = () => {
           title={value.title}
           index={index}
           key={value.title}
-          alt={value.alt}
+          alt=""
           paragraph={value.paragraph}
           src={`/${value.src}`}
         />

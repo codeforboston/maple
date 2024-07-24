@@ -60,11 +60,10 @@
   "testimonyItem": {
     "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
     "no": "No",
-    "editIcon": "Edit icon",
     "deleteIcon": "Delete testimony icon",
     "expand": "Expand",
     "moreDetails": "More Details",
-    "edit": "Edit",
+    "edit": "Edit Testimony",
     "rescind": "Rescind",
     "toast": {
       "successful": {

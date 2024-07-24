@@ -1,7 +1,9 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
+import { useTranslation } from "next-i18next"
 
 const NuLawLabCardContent = () => {
+  const {t} = useTranslation("common")
   return (
     <>
       <Row className="mb-5">
@@ -9,7 +11,7 @@ const NuLawLabCardContent = () => {
           <Image
             fluid
             src="/northeastern_school_of_law_logo.svg"
-            alt="Northeatern School of Law Logo"
+            alt={t("partnerLogos.NuLaw")}
           />
         </Col>
         <Col className="align-self-center" md={9}>
@@ -50,6 +52,8 @@ const NuLawLabCardContent = () => {
 }
 
 const CodeForBostonCardContent = () => {
+  const {t} = useTranslation("common")
+
   return (
     <>
       <Row className="mb-3">
@@ -57,7 +61,7 @@ const CodeForBostonCardContent = () => {
           <Image
             fluid
             src="/codeforbostonicon.png"
-            alt="Code for Boston Logo"
+            alt={t("partnerLogos.CodeForBoston")}
           />
         </Col>
         <Col className="align-self-center" md={9}>
@@ -93,6 +97,8 @@ const CodeForBostonCardContent = () => {
 }
 
 const OpenCollectiveContent = () => {
+  const {t} = useTranslation("common")
+
   return (
     <>
       <Row className="mb-3">
@@ -100,7 +106,7 @@ const OpenCollectiveContent = () => {
           <Image
             fluid
             src="/open_collective_logo.png"
-            alt="Open Collective Logo"
+            alt={t("partnerLogos.OpenCollective")}
           />
         </Col>
         <Col className="align-self-center" md={9}>
