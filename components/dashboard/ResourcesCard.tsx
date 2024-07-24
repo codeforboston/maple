@@ -1,8 +1,10 @@
 import styled from "styled-components"
-
+import { useTranslation } from "next-i18next"
 type Props = {}
 
 export function ResourcesCard({}: Props) {
+  const { t } = useTranslation(["common",])
+
   return (
     <Container>
       <Wrapper>
@@ -24,13 +26,13 @@ export function ResourcesCard({}: Props) {
         </PrivacyContainer>
         <SocialContainer>
           <InnerContainer>
-            <img src="/images/instagram.svg" alt="instagram" />
+            <img src="/images/instagram.svg" alt={t("socials.instagram")} />
           </InnerContainer>
           <InnerContainer>
-            <img src="/images/twitter.svg" alt="twitter" />
+            <img src="/images/twitter.svg" alt={t("socials.twitter")} />
           </InnerContainer>{" "}
           <InnerContainer>
-            <img src="/images/facebook.svg" alt="facebook" />
+            <img src="/images/facebook.svg" alt={t("socials.facebook")} />
           </InnerContainer>
         </SocialContainer>
       </Wrapper>

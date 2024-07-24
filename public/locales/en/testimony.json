@@ -1,4 +1,9 @@
 {
+  "counts": {
+    "endorsements": "The total number of testimonies that endorse the bill.",
+    "neutral":"The total number of testimonies that are neutral towards the bill.",
+    "oppose":"The total number of testimonies that oppose the bill."
+    },
   "link": {
     "tweetContent": "I provided testimony on Bill {{billNumber}}. See {{link}} for details.",
     "twitter": "Tweet Your Published Testimony"

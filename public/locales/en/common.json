@@ -26,6 +26,8 @@
     "additionalResources": "Additional Resources",
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
+    "closeNavMenu": "Close Navigation Menu",
+    "closeProfileMenu":"Close Profile Menu",
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
@@ -49,5 +51,11 @@
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future."
+  "profileIcon": "Profile Icon",
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
+  "socials":{
+    "instagram":"Instagram",
+    "twitter": "Twitter",
+    "facebook":"Facebook"
+  }
 }

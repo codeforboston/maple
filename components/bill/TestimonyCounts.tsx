@@ -1,7 +1,8 @@
 import styled from "styled-components"
 import { Col, Image, Row, Stack } from "../bootstrap"
 import { BillProps } from "./types"
-
+import { useTranslation } from "next-i18next"
+ 
 const CountDirection = styled.div`
   display: flex;
   flex-direction: row;
@@ -58,6 +59,9 @@ export const TestimonyCounts = ({
     opposeCount: oppose
   }
 }: BillProps) => {
+
+  const { t } = useTranslation(["testimony"])
+
   return (
     <Stack className={`align-self-center mx-auto`}>
       <CountTotal className={`ms-2`}>{total} Total Testimonies</CountTotal>
@@ -65,7 +69,7 @@ export const TestimonyCounts = ({
         <Col className={`px-2`}>
           <CountCategory>Endorse</CountCategory>
           <Row className={`justify-content-start`}>
-            <CountIcon src="/thumbs-endorse.svg" alt="The total number of testimonies that endorse the bill." height="23" />
+            <CountIcon src="/thumbs-endorse.svg" alt={t("counts.endorsements")} height="23" />
             <CountTally className={`align-self-center pe-0 ps-2`}>
               {endorse}
             </CountTally>
@@ -74,7 +78,7 @@ export const TestimonyCounts = ({
         <Col className={`px-2`}>
           <CountCategory>Neutral</CountCategory>
           <Row className={`justify-content-start`}>
-            <CountIcon src="/thumbs-neutral.svg" alt="The total number of testimonies that are neutral towards the bill." height="23" />
+            <CountIcon src="/thumbs-neutral.svg" alt={t("counts.neutral")} height="23" />
             <CountTally className={`align-self-center pe-0 ps-2`}>
               {neutral}
             </CountTally>
@@ -83,7 +87,7 @@ export const TestimonyCounts = ({
         <Col className={`px-2`}>
           <CountCategory>Oppose</CountCategory>
           <Row className={`justify-content-start`}>
-            <CountIcon src="/thumbs-oppose.svg" alt="The total number of testimonies that oppose the bill." height="23" />
+            <CountIcon src="/thumbs-oppose.svg" alt={t("counts.oppose")} height="23" />
             <CountTally className={`align-self-center pe-0 ps-2`}>
               {oppose}
             </CountTally>
