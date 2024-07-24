@@ -9,7 +9,7 @@ export function PositionLabel({ position }: { position: Position }) {
   const iconSrc = `/thumbs-${position}.svg`
   return (
     <div>
-      <Image alt={t('position.oppose')} src={iconSrc} />
+      <Image alt={t(`position.${position}`)} src={iconSrc} />
     </div>
   )
 }
