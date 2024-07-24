@@ -7,6 +7,7 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
+import { BillHistoryAction } from "../bills/types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -113,11 +114,22 @@ export const publishNotifications = functions.firestore
         })
       }
 
+      // await handleBillNotifications({
+      //   court: topic.court,
+      //   id: topic.id,
+      //   name: topic.name,
+      //   history: JSON.stringify(topic.history),
+      //   lastUpdatedTime: topic.historyUpdateTime
+      // })
+
+      let recentBillAction: BillHistoryAction = topic.history[topic.history.length - 1]
+      let historyStr = `${recentBillAction.Branch} - ${recentBillAction.Action}`
+
       await handleBillNotifications({
         court: topic.court,
         id: topic.id,
         name: topic.name,
-        history: JSON.stringify(topic.history),
+        history: historyStr,
         lastUpdatedTime: topic.historyUpdateTime
       })
     }
