@@ -24,10 +24,11 @@
   },
   "legislators": "Legislators",
   "position": {
-    "endorse":"This testimony endorses the bill.",
-    "neutral":"This testimony is neutral towards the bill.",
-    "oppose": "This testimony opposes the bill."
+    "endorse":"The author of the submitted testimony endorses the bill.",
+    "neutral":"The author of the submitted testimony is neutral towards the bill.",
+    "oppose": "The author of the submitted testimony opposes the bill."
   },
+  "profileMenu": "Open/Close Profile Menu",
   "representative": "Representative",
   "senator": "Senator",
   "orgIcon": {
