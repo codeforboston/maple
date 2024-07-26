@@ -1,10 +1,15 @@
 import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 
+
+test.beforeEach(async ({ page }) => {
+  await page.goto("http://localhost:3000/bills")
+  await page.waitForSelector("li.ais-Hits-item a")
+})
+
 test.describe("Search result test", () => {
   test("should search for bills", async ({ page }) => {
     const billpage = new BillPage(page)
-    await billpage.goto()
 
     const searchTerm = billpage.searchWord
     const resultCount = billpage.resultCount
@@ -19,7 +24,6 @@ test.describe("Search result test", () => {
   test("should show search query", async ({ page }) => {
     // Perform a search and check that the category labels include the search term
     const billpage = new BillPage(page)
-    await billpage.goto()
 
     const searchTerm = billpage.searchWord
 
@@ -34,7 +38,6 @@ test.describe("Search result test", () => {
   test("should click the bill and render to new page", async ({ page }) => {
     // Perform a search and check the first bill on a random page
     const billpage = new BillPage(page)
-    await billpage.goto()
 
     const firstBillLink = await billpage.firstBill.evaluate(
       (link: HTMLAnchorElement) => link.href
@@ -47,7 +50,6 @@ test.describe("Search result test", () => {
     // Test to ensure the application handles no results found cases
     const searchTerm = "nonexistentsearchterm12345"
     const billpage = new BillPage(page)
-    await billpage.goto()
 
     billpage.search(searchTerm)
 
@@ -107,7 +109,6 @@ test.describe("Sort Bills test", () => {
   for (const { option, attribute, order, type } of sortingTests) {
     test(`should sort bills by ${option}`, async ({ page }) => {
       const billpage = new BillPage(page)
-      await billpage.goto()
 
       await billpage.sort(option)
 
@@ -139,7 +140,6 @@ test.describe("Sort Bills test", () => {
   // Test sorting with an empty list
   test("should handle sorting with an empty list", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
     const searchTerm = "nonexistentsearchterm12345"
     await billPage.search(searchTerm)
     const sortedBills = await page.locator("li.ais-Hits-item").count()
@@ -174,7 +174,7 @@ test.describe("Filter Bills test", () => {
 
   test("should filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
+
     await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[0].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
@@ -195,7 +195,7 @@ test.describe("Filter Bills test", () => {
 
   test("should filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
+
     await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[1].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
@@ -215,7 +215,7 @@ test.describe("Filter Bills test", () => {
 
   test("should filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
+
     await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[2].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
@@ -234,7 +234,7 @@ test.describe("Filter Bills test", () => {
 
   test("should filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
+
     await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[3].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
@@ -253,7 +253,7 @@ test.describe("Filter Bills test", () => {
 
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const billPage = new BillPage(page)
-    await billPage.goto()
+
     await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[4].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
