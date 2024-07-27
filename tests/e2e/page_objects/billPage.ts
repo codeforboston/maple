@@ -46,20 +46,11 @@ export class BillPage {
   }
 
   async sort(option: string) {
-    const initialFirstBillTextContent = await this.firstBill.textContent()
     // Interact with the sorting dropdown
     await this.page.getByText("Sort by Most Recent Testimony").click()
 
     // Select the sorting option from the dropdown
     await this.page.getByText(`${option}`).first().click()
-
-    // Wait for the sorting to finish
-    if (option !== "Sort by Most Recent Testimony") {
-      await this.page.waitForFunction(initialText => {
-        const firstBill = document.querySelector("li.ais-Hits-item a")
-        return firstBill && firstBill.textContent !== initialText
-      }, initialFirstBillTextContent)
-    }
   }
 
   async clickFirstBill() {

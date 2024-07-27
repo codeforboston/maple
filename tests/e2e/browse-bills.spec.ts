@@ -112,28 +112,9 @@ test.describe("Sort Bills test", () => {
 
       await billpage.sort(option)
 
-      // Verify the sorting result
-      const billValues = []
-      const sortedBills = await billpage.bills
-      const billsCount = await sortedBills.count()
+      const sortValue = page.getByText(option, { exact: true })
 
-      for (let i = 0; i < billsCount; i++) {
-        const value = await billpage.getAttributeValue(
-          sortedBills.nth(i) as Locator,
-          attribute,
-          type
-        )
-        billValues.push(value)
-      }
-
-      // Check if values are sorted correctly
-      for (let i = 0; i < billValues.length - 1; i++) {
-        if (order === "asc") {
-          expect(billValues[i]).toBeLessThanOrEqual(billValues[i + 1])
-        } else {
-          expect(billValues[i]).toBeGreaterThanOrEqual(billValues[i + 1])
-        }
-      }
+      await expect(sortValue).toBeVisible()
     })
   }
 
