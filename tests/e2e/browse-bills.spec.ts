@@ -156,7 +156,6 @@ test.describe("Filter Bills test", () => {
   test("should filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[0].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
     const filterLabel = await billPage.applyFilter(
@@ -164,20 +163,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const filterText = await page
-      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
-      .innerText()
-    // Extract the number from the filter item
-    let courtNumberMatch = filterLabel.match(/^\d+/)
-    let courtNumber = courtNumberMatch ? courtNumberMatch[0] : ""
-    expect(courtNumber).toEqual(filterText)
-    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
+    await expect(page).toHaveURL(new RegExp(`court%5D%5B1%5D=${encodedFilterLabel}`))
   })
 
   test("should filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[1].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
@@ -186,18 +178,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const filterText = await page
-      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
-      .innerText()
-
-    expect(filterLabel).toEqual(filterText)
-    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
+    await expect(page).toHaveURL(new RegExp(`currentCommittee%5D%5B0%5D=${encodedFilterLabel}`))
   })
 
   test("should filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[2].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
@@ -206,17 +193,12 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const filterText = await page
-      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
-      .innerText()
-    expect(filterLabel).toEqual(filterText)
-    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
+    await expect(page).toHaveURL(new RegExp(`city%5D%5B0%5D=${encodedFilterLabel}`))
   })
 
   test("should filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
-
-    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[3].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
@@ -225,17 +207,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const filterText = await page
-      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
-      .innerText()
-    expect(filterLabel).toEqual(filterText)
-    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
+    await expect(page).toHaveURL(new RegExp(`primarySponsor%5D%5B0%5D=${encodedFilterLabel}`))
   })
 
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    await billPage.uncheckAllFilters()
     const filterCategory = filterCategories[4].selector
     const filterItemSelector = await billPage.firstFilterItemSelector
 
@@ -244,10 +222,7 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const filterText = await page
-      .locator(`${categorySelector} .ais-CurrentRefinements-categoryLabel`)
-      .innerText()
-    expect(filterLabel).toEqual(filterText)
-    await page.uncheck(`${filterCategory} ${filterItemSelector}`)
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
+    await expect(page).toHaveURL(new RegExp(`cosponsors%5D%5B0%5D=${encodedFilterLabel}`))
   })
 })

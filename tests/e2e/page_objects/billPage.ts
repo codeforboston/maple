@@ -23,7 +23,7 @@ export class BillPage {
     this.queryFilter = page.getByText("query:").locator("..")
     this.billPageBackToList = page.getByText("back to list of bills")
     this.firstFilterItemSelector =
-      "li:nth-child(1) input.ais-RefinementList-checkbox"
+      "li:nth-child(2) input.ais-RefinementList-checkbox"
     this.currentCategorySelector = ".ais-CurrentRefinements-item"
     this.basicCategorySelector = "div.ais-RefinementList.mb-4"
   }
@@ -148,11 +148,8 @@ export class BillPage {
     const filterItem = await this.page.locator(
       `${filterCategory} ${filterItemSelector}`
     )
+    const filterLabel = await filterItem.inputValue()
     await filterItem.click()
-    const filterLabel = await filterItem
-      .locator("..")
-      .locator(".ais-RefinementList-labelText")
-      .innerText()
 
     return filterLabel
   }
