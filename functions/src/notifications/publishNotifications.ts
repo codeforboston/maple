@@ -7,6 +7,7 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
+import { BillHistoryAction } from "../bills/types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -16,7 +17,7 @@ const createNotificationFields = (
     court: any
     id: string
     name: string
-    history: string
+    history: BillHistoryAction
     lastUpdatedTime: any
   }, // history is an array, it needs to be concatenated
   type: string
@@ -44,15 +45,15 @@ const createNotificationFields = (
     topicName,
     uid: "", // user id will be populated in the publishNotifications function
     notification: {
-      bodyText: entity.history, // may change depending on event type
+      bodyText: `${entity.history.Action}`, // may change depending on event type
       header,
       id: entity.id,
-      subheader: "Do we need a sub heading", // may change depending on event type
+      subheader: `${entity.history.Branch}`, // may change depending on event type
       timestamp: entity.lastUpdatedTime, // could also be fullDate ; might need to remove this all together
       type,
       court,
       delivered: false
-    },
+    }, 
     createdAt: Timestamp.now()
   }
 }
@@ -81,7 +82,7 @@ export const publishNotifications = functions.firestore
         court: any
         id: string
         name: string
-        history: string
+        history: BillHistoryAction
         lastUpdatedTime: any
       }) => {
         const notificationFields = createNotificationFields(topic, "bill")
@@ -100,9 +101,7 @@ export const publishNotifications = functions.firestore
           // Add the uid to the notification document
           notificationFields.uid = uid
 
-          console.log(
-            `Pushing notifications to users/${uid}/userNotificationFeed`
-          )
+          console.log(`Pushing notifications to users/${uid}/userNotificationFeed`)
 
           // Create a notification document in the user's notification feed
           notificationPromises.push(
@@ -117,7 +116,7 @@ export const publishNotifications = functions.firestore
         court: topic.court,
         id: topic.id,
         name: topic.name,
-        history: JSON.stringify(topic.history),
+        history: topic.history[topic.history.length - 1],
         lastUpdatedTime: topic.historyUpdateTime
       })
     }
