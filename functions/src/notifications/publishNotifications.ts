@@ -112,17 +112,6 @@ export const publishNotifications = functions.firestore
         })
       }
 
-      // await handleBillNotifications({
-      //   court: topic.court,
-      //   id: topic.id,
-      //   name: topic.name,
-      //   history: JSON.stringify(topic.history),
-      //   lastUpdatedTime: topic.historyUpdateTime
-      // })
-
-      let recentBillAction: BillHistoryAction = topic.history[topic.history.length - 1]
-      let historyStr = `${recentBillAction.Branch} - ${recentBillAction.Action}`
-
       await handleBillNotifications({
         court: topic.court,
         id: topic.id,
