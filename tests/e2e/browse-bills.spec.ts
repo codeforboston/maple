@@ -1,4 +1,4 @@
-import { test, expect} from "@playwright/test"
+import { test, expect } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 
 test.beforeEach(async ({ page }) => {
@@ -65,12 +65,9 @@ test.describe("Search result test", () => {
 // Array of sorting test configurations
 // Need to add test for sort by relevant
 const sortingTests: string[] = [
-  "Sort by Testimony Count"
-  ,
-  "Sort by Cosponsor Count"
-  ,
-  "Sort by Next Hearing Date"
-  ,
+  "Sort by Testimony Count",
+  "Sort by Cosponsor Count",
+  "Sort by Next Hearing Date",
   "Sort by Most Recent Testimony"
 ]
 
@@ -99,14 +96,10 @@ test.describe("Sort Bills test", () => {
 
 test.describe("Filter Bills test", () => {
   const filterCategories = [
-    "div.ais-RefinementList.mb-4:nth-of-type(1)"
-    , // General Court
-    "div.ais-RefinementList.mb-4:nth-of-type(2)"
-    , // Current Committee
-    "div.ais-RefinementList.mb-4:nth-of-type(3)"
-    , // City
-    "div.ais-RefinementList.mb-4:nth-of-type(4)"
-    , // Primary Sponsor
+    "div.ais-RefinementList.mb-4:nth-of-type(1)", // General Court
+    "div.ais-RefinementList.mb-4:nth-of-type(2)", // Current Committee
+    "div.ais-RefinementList.mb-4:nth-of-type(3)", // City
+    "div.ais-RefinementList.mb-4:nth-of-type(4)", // Primary Sponsor
     "div.ais-RefinementList.mb-4:nth-of-type(5)"
     // Cosponsor
   ]
@@ -120,8 +113,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
-    await expect(page).toHaveURL(new RegExp(`court%5D%5B1%5D=${encodedFilterLabel}`))
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(
+      /'/g,
+      "%27"
+    )
+    await expect(page).toHaveURL(
+      new RegExp(`court%5D%5B1%5D=${encodedFilterLabel}`)
+    )
   })
 
   test("should filter Bills by Current Committee", async ({ page }) => {
@@ -134,8 +132,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
-    await expect(page).toHaveURL(new RegExp(`currentCommittee%5D%5B0%5D=${encodedFilterLabel}`))
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(
+      /'/g,
+      "%27"
+    )
+    await expect(page).toHaveURL(
+      new RegExp(`currentCommittee%5D%5B0%5D=${encodedFilterLabel}`)
+    )
   })
 
   test("should filter Bills by City", async ({ page }) => {
@@ -148,8 +151,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
-    await expect(page).toHaveURL(new RegExp(`city%5D%5B0%5D=${encodedFilterLabel}`))
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(
+      /'/g,
+      "%27"
+    )
+    await expect(page).toHaveURL(
+      new RegExp(`city%5D%5B0%5D=${encodedFilterLabel}`)
+    )
   })
 
   test("should filter Bills by Primary Sponsor", async ({ page }) => {
@@ -161,8 +169,13 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
-    await expect(page).toHaveURL(new RegExp(`primarySponsor%5D%5B0%5D=${encodedFilterLabel}`))
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(
+      /'/g,
+      "%27"
+    )
+    await expect(page).toHaveURL(
+      new RegExp(`primarySponsor%5D%5B0%5D=${encodedFilterLabel}`)
+    )
   })
 
   test("Filter Bills by Cosponsor", async ({ page }) => {
@@ -175,7 +188,12 @@ test.describe("Filter Bills test", () => {
       filterCategory,
       filterItemSelector
     )
-    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(/'/g, "%27")
-    await expect(page).toHaveURL(new RegExp(`cosponsors%5D%5B0%5D=${encodedFilterLabel}`))
+    const encodedFilterLabel = encodeURIComponent(filterLabel).replace(
+      /'/g,
+      "%27"
+    )
+    await expect(page).toHaveURL(
+      new RegExp(`cosponsors%5D%5B0%5D=${encodedFilterLabel}`)
+    )
   })
 })
