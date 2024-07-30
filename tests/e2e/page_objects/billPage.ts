@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from "@playwright/test"
+import {type Locator, type Page } from "@playwright/test"
 
 export class BillPage {
   readonly page: Page
@@ -141,7 +141,6 @@ export class BillPage {
    * @returns The label text of the applied filter.
    */
   async applyFilter(
-    page: any,
     filterCategory: string,
     filterItemSelector: string
   ): Promise<string> {

@@ -1,6 +1,5 @@
-import { test, expect, Page, ElementHandle, Locator } from "@playwright/test"
+import { test, expect} from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
-
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/bills")
@@ -36,7 +35,7 @@ test.describe("Search result test", () => {
   })
 
   test("should click the bill and render to new page", async ({ page }) => {
-    // Perform a search and check the first bill on a random page
+    // Perform a search and check the first bill link
     const billpage = new BillPage(page)
 
     const firstBillLink = await billpage.firstBill.evaluate(
@@ -63,50 +62,20 @@ test.describe("Search result test", () => {
   })
 })
 
-// Define an interface for sorting test configurations
-interface SortingTest {
-  option: string
-  attribute: string
-  order: "asc" | "desc"
-  type:
-    | "relevance"
-    | "testimonyCount"
-    | "cosponsorCount"
-    | "nextHearingDate"
-    | "recentTestimony"
-}
-
 // Array of sorting test configurations
 // Need to add test for sort by relevant
-const sortingTests: SortingTest[] = [
-  {
-    option: "Sort by Testimony Count",
-    attribute: "div.testimonyCount",
-    order: "desc",
-    type: "testimonyCount"
-  },
-  {
-    option: "Sort by Cosponsor Count",
-    attribute: "span.blurb",
-    order: "desc",
-    type: "cosponsorCount"
-  },
-  {
-    option: "Sort by Next Hearing Date",
-    attribute: "div.card-footer",
-    order: "asc",
-    type: "nextHearingDate"
-  },
-  {
-    option: "Sort by Most Recent Testimony",
-    attribute: "span.blurb.me-2",
-    order: "asc",
-    type: "recentTestimony"
-  }
+const sortingTests: string[] = [
+  "Sort by Testimony Count"
+  ,
+  "Sort by Cosponsor Count"
+  ,
+  "Sort by Next Hearing Date"
+  ,
+  "Sort by Most Recent Testimony"
 ]
 
 test.describe("Sort Bills test", () => {
-  for (const { option, attribute, order, type } of sortingTests) {
+  for (const option of sortingTests) {
     test(`should sort bills by ${option}`, async ({ page }) => {
       const billpage = new BillPage(page)
 
@@ -128,38 +97,26 @@ test.describe("Sort Bills test", () => {
   })
 })
 
-interface FilterCategory {
-  selector: string
-}
-
 test.describe("Filter Bills test", () => {
-  const filterCategories: FilterCategory[] = [
-    {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(1)"
-    }, // General Court
-    {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(2)"
-    }, // Current Committee
-    {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(3)"
-    }, // City
-    {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(4)"
-    }, // Primary Sponsor
-    {
-      selector: "div.ais-RefinementList.mb-4:nth-of-type(5)"
-    } // Cosponsor
+  const filterCategories = [
+    "div.ais-RefinementList.mb-4:nth-of-type(1)"
+    , // General Court
+    "div.ais-RefinementList.mb-4:nth-of-type(2)"
+    , // Current Committee
+    "div.ais-RefinementList.mb-4:nth-of-type(3)"
+    , // City
+    "div.ais-RefinementList.mb-4:nth-of-type(4)"
+    , // Primary Sponsor
+    "div.ais-RefinementList.mb-4:nth-of-type(5)"
+    // Cosponsor
   ]
-
-  const categorySelector = ".ais-CurrentRefinements-item"
 
   test("should filter Bills by Court", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    const filterCategory = filterCategories[0].selector
+    const filterCategory = filterCategories[0]
     const filterItemSelector = await billPage.firstFilterItemSelector
     const filterLabel = await billPage.applyFilter(
-      page,
       filterCategory,
       filterItemSelector
     )
@@ -170,11 +127,10 @@ test.describe("Filter Bills test", () => {
   test("should filter Bills by Current Committee", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    const filterCategory = filterCategories[1].selector
+    const filterCategory = filterCategories[1]
     const filterItemSelector = await billPage.firstFilterItemSelector
 
     const filterLabel = await billPage.applyFilter(
-      page,
       filterCategory,
       filterItemSelector
     )
@@ -185,11 +141,10 @@ test.describe("Filter Bills test", () => {
   test("should filter Bills by City", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    const filterCategory = filterCategories[2].selector
+    const filterCategory = filterCategories[2]
     const filterItemSelector = await billPage.firstFilterItemSelector
 
     const filterLabel = await billPage.applyFilter(
-      page,
       filterCategory,
       filterItemSelector
     )
@@ -199,11 +154,10 @@ test.describe("Filter Bills test", () => {
 
   test("should filter Bills by Primary Sponsor", async ({ page }) => {
     const billPage = new BillPage(page)
-    const filterCategory = filterCategories[3].selector
+    const filterCategory = filterCategories[3]
     const filterItemSelector = await billPage.firstFilterItemSelector
 
     const filterLabel = await billPage.applyFilter(
-      page,
       filterCategory,
       filterItemSelector
     )
@@ -214,11 +168,10 @@ test.describe("Filter Bills test", () => {
   test("Filter Bills by Cosponsor", async ({ page }) => {
     const billPage = new BillPage(page)
 
-    const filterCategory = filterCategories[4].selector
+    const filterCategory = filterCategories[4]
     const filterItemSelector = await billPage.firstFilterItemSelector
 
     const filterLabel = await billPage.applyFilter(
-      page,
       filterCategory,
       filterItemSelector
     )
