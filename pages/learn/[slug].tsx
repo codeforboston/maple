@@ -100,7 +100,8 @@ export const getStaticProps: GetStaticProps = async context => {
         "auth",
         "common",
         "footer",
-        "testimony"
+        "testimony",
+        "learnComponents"
       ]))
     }
   }
