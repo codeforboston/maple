@@ -4,6 +4,7 @@ import {
   OurGoalsCardContent,
   OurMissionCardContent
 } from "../GoalsAndMissionCardContent/GoalsAndMissionCardContent"
+import styles from "./GoalsAndMission.module.css"
 import { useTranslation } from "next-i18next"
 
 const GoalsAndMission = () => {
@@ -12,11 +13,7 @@ const GoalsAndMission = () => {
     <Container>
       <Row>
         <Col>
-          <h1
-            className={`fw-bold lh-base tracking-tighter mt-3 mt-sm-4 mt-md-5`}
-          >
-            {t("header")}
-          </h1>
+          <h1 className={`fw-bold ${styles.header}`}>{t("header")}</h1>
           <AboutPagesCard title={t("goals.title")}>
             <OurGoalsCardContent />
           </AboutPagesCard>

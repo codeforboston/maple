@@ -68,24 +68,13 @@ git pull upstream main
 - `yarn dev:up:detach`: Run the application, and keep it running once you stop this command.
 - `yarn dev:down`: Stop the application.
 - `yarn dev:update`: Update the application images. Run this whenever dependencies in `package.json` change.
+- `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
 
 Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) and [React DevTools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extensions if you're developing frontend
 
 ## Contributing Backend Features to Dev/Prod:
 
 - If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK. The same would apply to production.
-
-## Testing
-
-MAPLE uses Jest for unit and integration testing, and Playwright for e2e testing.
-
-To start running tests, use one of the following commands:
-
-- `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
-- `yarn test:e2e`: Run e2e tests in `tests/e2e` with the Playwright UI
-- `yarn test:e2e:headless`: Run e2e tests in `tests/e2e` headless (no UI)
-
-For more information on our end-to-end testing, go to our [e2e test README](tests/e2e/README.md). For an introduction on how to write e2e tests with Playwright, go to the [Playwright docs](https://playwright.dev/docs/writing-tests). An example of an e2e test can be found in [tests/e2e/homepage.spec.ts](tests/e2e/homepage.spec.ts).
 
 ## Code Formatting and Linting
 
@@ -121,6 +110,7 @@ Thanks to all our contributors!
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/almaraz333"><img src="https://avatars.githubusercontent.com/u/60356596?v=4?s=100" width="100px;" alt="Colton Almaraz"/><br /><sub><b>Colton Almaraz</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=almaraz333" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dev1nxavier"><img src="https://avatars.githubusercontent.com/u/7763861?v=4?s=100" width="100px;" alt="Dev1nxavier"/><br /><sub><b>Dev1nxavier</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=Dev1nxavier" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gerlinp"><img src="https://avatars.githubusercontent.com/u/68314210?v=4?s=100" width="100px;" alt="Gerlin"/><br /><sub><b>Gerlin</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=gerlinp" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://hshareef9.github.io/Profile/"><img src="https://avatars.githubusercontent.com/u/101157878?v=4?s=100" width="100px;" alt="Hajara Shareef"/><br /><sub><b>Hajara Shareef</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=hshareef9" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt="Ikko Eltociear Ashimine"/><br /><sub><b>Ikko Eltociear Ashimine</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=eltociear" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jkoren"><img src="https://avatars.githubusercontent.com/u/67333843?v=4?s=100" width="100px;" alt="Jeff Korenstein"/><br /><sub><b>Jeff Korenstein</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=jkoren" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/KY233466"><img src="https://avatars.githubusercontent.com/u/81402259?v=4?s=100" width="100px;" alt="KY233466"/><br /><sub><b>KY233466</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=KY233466" title="Code">💻</a></td>

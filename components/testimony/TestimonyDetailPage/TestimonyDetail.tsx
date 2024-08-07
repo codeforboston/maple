@@ -4,7 +4,7 @@ import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { TestimonyContent } from "../TestimonyContent"
-import { useFlags } from "components/featureFlags"
+import { flags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
@@ -16,8 +16,9 @@ const Container = styled.div`
 
 const Testimony = styled(props => {
   const { revision, authorTitle } = useCurrentTestimonyDetails()
-  const { testimonyDiffing } = useFlags()
-  const previous = testimonyDiffing ? revision.previous?.content : undefined
+  const previous = flags().testimonyDiffing
+    ? revision.previous?.content
+    : undefined
 
   const { t } = useTranslation("testimony")
 

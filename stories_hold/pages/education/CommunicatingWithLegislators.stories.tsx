@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
 import { createMeta } from "stories/utils"
-import { CommunicatingWithLegislators } from "components/LearnTestimonyComponents/LearnComponents"
+import CommunicatingWithLegislators from "components/CommunicatingWithLegislators/CommunicatingWithLegislators"
 export default createMeta({
   title: "Pages/Education/CommunicatingWithLegislators",
   component: CommunicatingWithLegislators

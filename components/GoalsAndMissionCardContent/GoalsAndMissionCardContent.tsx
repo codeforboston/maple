@@ -1,38 +1,25 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
+import styles from "./GoalsAndMissionCardContent.module.css"
 import { SignInWithButton } from "../auth"
 import { useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
-import styled from "styled-components"
-
-const OurGoalsImage = styled(Image)`
-  height: 8rem;
-`
-const MissionImage = styled(Image)`
-  @media (max-width: 36em) {
-    height: 5.625rem;
-  }
-`
-const StepsImage = styled(Image)`
-  @media (max-width: 36em) {
-    height: 7.375rem;
-  }
-`
 
 const OurGoalsCardContent = () => {
   const { t } = useTranslation("goalsandmission")
   return (
     <>
-      <h5 className="pb-4 tracking-tight lh-sm">{t("goals.overview")}</h5>
+      <h3 className={styles.goalsHeader}>{t("goals.overview")}</h3>
       <Row className="mb-4">
         <Col md={6}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
+            <Image
+              className={styles.imgsize}
               fluid
               src="/gov-with-key.svg"
               alt="government building with key"
             />
-            <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
+            <figcaption className={`fw-bold ${styles.caption}`}>
               {t("goals.increase")}
             </figcaption>
           </figure>
@@ -40,12 +27,13 @@ const OurGoalsCardContent = () => {
 
         <Col md={6}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
+            <Image
+              className={styles.imgsize}
               fluid
               src="/doc-with-arrows-from-people.svg"
               alt="government building with key"
             />
-            <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
+            <figcaption className={`fw-bold ${styles.caption}`}>
               {t("goals.engage")}
             </figcaption>
           </figure>
@@ -55,12 +43,13 @@ const OurGoalsCardContent = () => {
       <Row>
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
+            <Image
+              className={styles.imgsize}
               fluid
               src="/doc-with-arrows-to-people.svg"
               alt="government building with key"
             />
-            <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
+            <figcaption className={`fw-bold ${styles.caption}`}>
               {t("goals.strengthen")}
             </figcaption>
           </figure>
@@ -68,12 +57,13 @@ const OurGoalsCardContent = () => {
 
         <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
+            <Image
+              className={styles.imgsize}
               fluid
               src="/gov-with-key.svg"
               alt="government building with key"
             />
-            <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
+            <figcaption className={`fw-bold ${styles.caption}`}>
               {t("goals.encourage")}
             </figcaption>
           </figure>
@@ -86,17 +76,15 @@ const OurGoalsCardContent = () => {
 const OurMissionCardContent = () => {
   const { t } = useTranslation("goalsandmission")
   const { authenticated } = useAuth()
-
   return (
     <>
-      <h5 className="text-center fw-bold fs-sm-2 tracking-tight pb-3 pb-sm-4 text-info">
+      <h3 className={`text-center fw-bold ${styles.missionHeader}`}>
         {t("mission.overview")}
-      </h5>
+      </h3>
+
       <Row className="mb-4">
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }} lg={8}>
-          <p className="fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4 p-md-0">
-            {t("mission.connect")}
-          </p>
+          <p className={styles.body}>{t("mission.connect")}</p>
         </Col>
         <Col
           xs={{ span: 12, order: 1 }}
@@ -104,7 +92,8 @@ const OurMissionCardContent = () => {
           lg={4}
           className={`text-center`}
         >
-          <MissionImage
+          <Image
+            className={styles.missionImages}
             fluid
             src="/leg-with-mag-glass.svg"
             alt="document with magnifying glass"
@@ -119,7 +108,8 @@ const OurMissionCardContent = () => {
           lg={4}
           className="text-center"
         >
-          <MissionImage
+          <Image
+            className={styles.missionImages}
             fluid
             src="/doc-treasure-box.svg"
             alt="document with magnifying glass"
@@ -129,50 +119,56 @@ const OurMissionCardContent = () => {
           sm={{ span: 12, order: 2 }}
           md={{ span: 6, order: 1 }}
           lg={8}
-          className={`fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4 p-md-0`}
+          className={`text-end ${styles.body}`}
         >
           <p>{t("mission.disclosure")}</p>
         </Col>
       </Row>
       <Row>
-        <Col
-          className={`p-3 fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4`}
-        >
+        <Col className={`p-3 ${styles.body}`}>
           <p className="text-center">{t("mission.callout")}</p>
         </Col>
       </Row>
       <Row>
         <Col>
-          <p
-            className={`bg-secondary text-white my-n3 my-lg-0 mx-n4 py-4 px-3 fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4`}
-          >
+          <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
             {t("mission.publish1")}
           </p>
-          <p
-            className={`bg-secondary text-white my-n3 my-lg-0 mx-n4 py-4 px-3 fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4`}
-          >
+          <p className={`${styles.testimonyDisclaimer} ${styles.body}`}>
             {t("mission.publish2")}
           </p>
         </Col>
       </Row>
 
-      <Row className="align-items-end mt-5">
-        <Col lg={4} className="text-lg-center text-start pb-0">
-          <StepsImage
+      <Row className={`${styles.oneTwoThreeImage}`}>
+        <Col
+          lg={4}
+          className={`text-center ${styles.one} ${styles.oneTwoImage}`}
+        >
+          <Image
+            className={styles.stepsImages}
             fluid
             src="/step-1.svg"
             alt="step 1 of the legislative process"
           />
         </Col>
-        <Col lg={4} className="text-lg-center text-end pb-0">
-          <StepsImage
+        <Col
+          lg={4}
+          className={`text-center ${styles.two} ${styles.oneTwoImage}`}
+        >
+          <Image
+            className={styles.stepsImages}
             fluid
             src="/step-2.svg"
             alt="step 2 of the legislative process"
           />
         </Col>
-        <Col lg={4} className="text-lg-center text-start ps-lg-0">
-          <StepsImage
+        <Col
+          lg={4}
+          className={`text-center ${styles.three} ${styles.threeImage}`}
+        >
+          <Image
+            className={styles.stepsImages}
             fluid
             src="/step-3.svg"
             alt="step 3 of the legislative process"
@@ -183,7 +179,7 @@ const OurMissionCardContent = () => {
         <>
           <Row className="text-center">
             <Col>
-              <h3 className="fw-bold mt-3 text-primary">
+              <h3 className={`fw-bold mt-3 ${styles.submitTestimony}`}>
                 {t("mission.submit_now")}
               </h3>
             </Col>

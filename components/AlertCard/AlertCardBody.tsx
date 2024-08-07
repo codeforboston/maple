@@ -1,5 +1,6 @@
 import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
+import styles from "./AlertCard.module.css"
 
 interface AlertCardBodyProps {
   imgSrc?: string
@@ -13,7 +14,7 @@ export const AlertCardBody = (props: AlertCardBodyProps) => {
     <div>
       {imgSrc && <img src={imgSrc} width="100%" alt={imgAltTxt}></img>}
       <CardBootstrap.Body>
-        <CardBootstrap.Text>{text}</CardBootstrap.Text>
+        <CardBootstrap.Text className={styles.body}>{text}</CardBootstrap.Text>
       </CardBootstrap.Body>
     </div>
   )

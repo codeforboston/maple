@@ -1,8 +1,12 @@
 import React, { useState } from "react"
 import { Container, Carousel, Spinner } from "react-bootstrap"
-import styled from "styled-components"
-import { Col, Row } from "../bootstrap"
+import { Col, Image, Row } from "../bootstrap"
+import styles from "./HearingsScheduled.module.css"
+import { useUpcomingEvents } from "../db/events"
+import { formatDate, numberToFullMonth } from "./dateUtils"
 import { useCalendarEvents } from "./calendarEvents"
+import * as admin from "firebase-admin"
+import { Timestamp } from "functions/src/firebase"
 
 export type EventData = {
   index: number
@@ -38,38 +42,6 @@ Event types handled: sessions, hearings.
   It is missing name and location which are used on the event cards:
   A decision needs to be made as what info would go on cards and determine what the base URL is.
 */
-
-const EventCardContainer = styled.div`
-  border: 2px var(--bs-blue) solid;
-  width: 20rem; /* width: 269px; */
-  margin-bottom: 2em;
-  border-radius: 0.5rem;
-  display: block;
-  height: fit-content;
-  @media (max-width: 87.5em) {
-    .card {
-      margin-left: 8.2em;
-    }
-  }
-  @media (max-width: 31em) {
-    .card {
-      margin-left: 0em;
-    }
-  }
-`
-
-const EventCardHeader = styled.div`
-  color: white;
-  background: var(--bs-blue);
-  padding-top: 0.25em;
-  padding-left: 1em;
-  height: 3.21em; /* 51.94px */
-  border-radius: 0.3125em 0.3125em 0 0;
-  display: grid;
-  grid-template-columns: 35% 65%;
-  align-items: center;
-`
-
 export const EventCard = ({
   index,
   type,
@@ -90,88 +62,50 @@ export const EventCard = ({
   const truncateEntry = (entry: string): string => {
     const maxLength = 38
 
-    if (!!entry && entry.length > maxLength)
-      return entry.slice(0, maxLength) + "..."
+    if (entry.length > maxLength) return entry.slice(0, maxLength) + "..."
     return entry
   }
 
   return (
-    <EventCardContainer>
-      <EventCardHeader>
-        <div className={`d-grid align-items-start`}>
-          <div className={`h6 m-0 p-0`}>{month}</div>
-          <div className={`h4 m-0 p-0`}>{date}</div>
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <div>
+          <p className={styles.month}>{month}</p>
+          <p className={styles.date}>{date}</p>
         </div>
-        <div className={`h4 mb-0 `}>{day}</div>
-      </EventCardHeader>
+        <div className={styles.day}>{day}</div>
+      </div>
 
-      <div className={`container pt-3 px-4`}>
-        <div className="row">
-          <div className="col-sm-4">
-            <p>{time}</p>
-          </div>
-          <div className="col-sm-8">
-            <p className={`lh-sm mb-2 ms-2 text-secondary`}>
-              {type === "hearing" ? (
-                <a
-                  href={`${hearingBaseURL}${id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {truncateEntry(name)}
-                </a>
-              ) : (
-                <a
-                  href={`${sessionBaseURL}${id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {truncateEntry(name)}
-                </a>
-              )}
-            </p>
-            <p className={`lh-sm mb-3 ms-2 text-secondary`}>
-              {truncateEntry(location)}
-            </p>
-          </div>
+      <div className={styles.cardBody}>
+        <div>
+          <p className={styles.time}>{time}</p>
+        </div>
+        <div>
+          <p className={styles.name}>
+            {type === "hearing" ? (
+              <a
+                href={`${hearingBaseURL}${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {truncateEntry(name)}
+              </a>
+            ) : (
+              <a
+                href={`${sessionBaseURL}${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {truncateEntry(name)}
+              </a>
+            )}
+          </p>
+          <p className={styles.location}>{truncateEntry(location)}</p>
         </div>
       </div>
-    </EventCardContainer>
+    </div>
   )
 }
-
-const EventSection = styled.section`
-  min-width: fit-content;
-  max-width: 43rem;
-  margin-bottom: 2em;
-`
-
-const HearingImage = styled.img`
-  margin-bottom: 10.3em;
-  width: 20rem;
-
-  @media (max-width: 48em) {
-    margin-bottom: 4.5em;
-  }
-
-  @media (max-width: 23.44em) {
-    width: 12.94rem;
-  }
-`
-
-const CarouselControlNextIcon = styled.span`
-  width: 2.3125rem;
-  height: 2.3125rem;
-  background-image: url("/carousel-right.png");
-  background-repeat: no-repeat;
-`
-
-const CarouselControlPrevIcon = styled.span`
-  width: 2.3125rem;
-  height: 2.3125rem;
-  background-image: url("/carousel-left.png");
-  background-repeat: no-repeat;
-`
 
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
@@ -194,21 +128,19 @@ export const HearingsScheduled = () => {
     <Container fluid>
       <Row className="mt-5">
         <Col>
-          <div className={`h1 mb-5 text-center text-secondary`}>
-            Hearings Scheduled
-          </div>
+          <h1 className={`${styles.heading}`}>Hearings Scheduled</h1>
         </Col>
       </Row>
       <Row>
         <Col xs={{ order: 1 }} md={{ span: 5, order: 0 }}>
-          <HearingImage
-            className={`d-block mx-auto`}
+          <Image
+            className={`ml-5 ${styles.podium}`}
             src="/speaker-podium.svg"
             alt="speaker at podium"
           />
         </Col>
         <Col md={7}>
-          <section className={`mb-5`}>
+          <section className={`${styles.carousel}`}>
             <Carousel
               variant="dark"
               interval={null}
@@ -217,13 +149,23 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              prevIcon={<CarouselControlNextIcon aria-hidden="true" />}
-              nextIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              prevIcon={
+                <span
+                  aria-hidden="true"
+                  className={styles.carouselControlPrevIcon}
+                />
+              }
+              nextIcon={
+                <span
+                  aria-hidden="true"
+                  className={styles.carouselControlNextIcon}
+                />
+              }
             >
               {monthsList?.map(month => {
                 return (
                   <Carousel.Item key={month}>
-                    <div className="h1 text-center">{month}</div>
+                    <h1 className="text-center">{month}</h1>
                   </Carousel.Item>
                 )
               })}
@@ -231,14 +173,14 @@ export const HearingsScheduled = () => {
           </section>
 
           {loading ? (
-            <div className={`d-grid`}>
+            <div className={styles.loading}>
               <Spinner animation="border" className="mx-auto" />
             </div>
           ) : (
             <>
               {thisMonthsEvents.length ? (
-                <EventSection>
-                  <Container>
+                <section className={styles.eventSection}>
+                  <Container className="">
                     <Row className="gx-5 justify-content-center">
                       {thisMonthsEvents?.map(e => {
                         return (
@@ -261,9 +203,9 @@ export const HearingsScheduled = () => {
                       })}
                     </Row>
                   </Container>
-                </EventSection>
+                </section>
               ) : (
-                <section className={`text-center text-secondary`}>
+                <section className={styles.noEvents}>
                   <h2>No Scheduled Events</h2>
                 </section>
               )}

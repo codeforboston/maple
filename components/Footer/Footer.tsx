@@ -5,7 +5,7 @@ import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
-import { NavLink } from "../Navlink"
+import { ExternalNavLink, NavLink } from "../Navlink"
 import { Button, Col, Image, Container, Row, Nav, Navbar } from "../bootstrap"
 import CustomDropdown, {
   CustomDropdownProps
@@ -27,31 +27,23 @@ const TextHeader = styled.h6`
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
-const BrowseHeader = styled(NavLink)`
-  font-size: 1rem;
-  color: #fff;
-  font-family: Nunito;
-  padding: 0.5rem 1rem 0 0;
-  margin: 0 0 10px 0;
-
-  @media (max-width: 768px) {
-    padding-bottom: 0.6rem;
-    border-bottom: solid 1.5px rgba(255, 255, 255, 0.75);
-    margin: 0;
-  }
-
-  &:hover {
-    color: white;
-    text-decoration: underline 1.5px;
-  }
-`
 
 const StyledInternalLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.55);
   font-family: Nunito;
   letter-spacing: -0.63px;
   padding-top: 4;
-  margin: 5px 0;
+
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+`
+const StyledExternalLink = styled(ExternalNavLink)`
+  color: rgba(255, 255, 255, 0.55);
+  font-family: Nunito;
+  letter-spacing: -0.63px;
+  padding-top: 4;
 
   &:hover {
     color: white;
@@ -70,20 +62,6 @@ function MapleContainer({ className }: { className?: string }) {
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="light"
-            style={{ borderRadius: 50, padding: 8, margin: 5 }}
-            href="https://twitter.com/MapleTestimony"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/twitter.svg"
-              alt="Twitter Icon"
-              width="24"
-              height="24"
-            ></Image>
-          </Button>
-          <Button
-            variant="light"
             href="https://www.instagram.com/mapletestimony/?hl=en"
             style={{ borderRadius: 50, padding: 8, margin: 5 }}
             target="_blank"
@@ -92,6 +70,20 @@ function MapleContainer({ className }: { className?: string }) {
             <Image
               src="/images/instagram.svg"
               alt="Instagram Icon"
+              width="24"
+              height="24"
+            ></Image>
+          </Button>
+          <Button
+            variant="light"
+            style={{ borderRadius: 50, padding: 8, margin: 5 }}
+            href="https://twitter.com/MapleTestimony"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/twitter.svg"
+              alt="Twitter Icon"
               width="24"
               height="24"
             ></Image>
@@ -124,19 +116,47 @@ function MapleContainer({ className }: { className?: string }) {
   )
 }
 
-const TermsAndPolicies = () => {
+const ResourcesLinks = () => {
   const { t } = useTranslation("footer")
   return (
     <>
-      <StyledInternalLink href="/policies">
-        {t("legal.privacyPolicy")}
+      <StyledExternalLink href="https://malegislature.gov/Search/FindMyLegislator">
+        {t("links.resourcesLegislators")}
+      </StyledExternalLink>
+      <StyledExternalLink href="https://github.com/codeforboston/maple">
+        {t("links.resourcesGitHub")}
+      </StyledExternalLink>
+      <StyledExternalLink href="https://opencollective.com/mapletestimony">
+        {t("links.resourcesOpenCollective")}
+      </StyledExternalLink>
+    </>
+  )
+}
+
+const BrowseLinks = () => {
+  const { t } = useTranslation("common")
+  return (
+    <>
+      <StyledInternalLink href="/bills">
+        {t("navigation.browseBills")}
       </StyledInternalLink>
-      <StyledInternalLink href="/policies/copyright">
-        {t("legal.TOS")}
+      <StyledInternalLink href="/testimony">
+        {t("navigation.browseTestimony")}
       </StyledInternalLink>
-      <StyledInternalLink href="/policies/code-of-conduct">
-        {t("legal.codeOfConduct")}
-      </StyledInternalLink>
+    </>
+  )
+}
+
+const OurTeamLinks = () => {
+  const { t } = useTranslation("footer")
+  return (
+    <>
+      <StyledExternalLink href="https://www.nulawlab.org">
+        {t("links.teamNEU")}
+      </StyledExternalLink>
+      <StyledExternalLink href="https://www.codeforboston.org/">
+        {t("links.teamCFB")}
+      </StyledExternalLink>
     </>
   )
 }
@@ -175,44 +195,26 @@ const LearnLinks = () => {
       <StyledInternalLink href="/learn/writing-effective-testimony">
         {t("links.learnWriting")}
       </StyledInternalLink>
-      <StyledInternalLink href="/learn/legislative-process">
-        {t("links.learnProcess")}
+      <StyledInternalLink href="/learn/communicating-with-legislators">
+        {t("links.learnLegislators")}
       </StyledInternalLink>
-      <StyledInternalLink href="/why-use-maple/for-individuals">
-        {t("links.learnWhy")}
+      <StyledInternalLink href="/learn/additional-resources">
+        {t("navigation.additionalResources", { ns: "common" })}
       </StyledInternalLink>
     </>
   )
 }
 
 const AboutLinks = () => {
-  const { t } = useTranslation(["footer", "common"])
-  return (
-    <>
-      <StyledInternalLink href="/about/mission-and-goals">
-        {t("links.ourMission")}
-      </StyledInternalLink>
-      <StyledInternalLink href="/about/our-team">
-        {t("links.team")}
-      </StyledInternalLink>
-      <StyledInternalLink href="/about/support-maple">
-        {t("links.supportMaple")}
-      </StyledInternalLink>
-      <StyledInternalLink href="/about/faq-page">
-        {t("links.faq")}
-      </StyledInternalLink>
-    </>
-  )
-}
-
-const BrowseList = () => {
   const { t } = useTranslation("common")
   return (
     <>
-      <BrowseHeader href="/testimony">
-        {t("navigation.browseTestimony")}
-      </BrowseHeader>
-      <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
+      <StyledInternalLink href="/about/mission-and-goals">
+        {t("navigation.missionAndGoals")}
+      </StyledInternalLink>
+      <StyledInternalLink href="/about/our-team">
+        {t("team")}
+      </StyledInternalLink>
     </>
   )
 }
@@ -230,8 +232,9 @@ const PageFooter = (props: PageFooterProps) => {
         className="d-md-none w-100 order-1 p-2 mb-2"
       >
         <Nav className={`d-flex w-100`}>
-          <BrowseList />
-
+          <CustomDropdown title={t("headers.browse")}>
+            <BrowseLinks />
+          </CustomDropdown>
           <CustomDropdown title={t("headers.account")}>
             <AccountLinks {...props} />
           </CustomDropdown>
@@ -245,26 +248,33 @@ const PageFooter = (props: PageFooterProps) => {
           </CustomDropdown>
 
           <CustomDropdown title={t("headers.resources")}>
-            <TermsAndPolicies />
+            <ResourcesLinks />
+          </CustomDropdown>
+
+          <CustomDropdown title={t("team", { ns: "common" })}>
+            <OurTeamLinks />
           </CustomDropdown>
         </Nav>
       </Navbar>
       <div className={`d-none d-md-flex order-1 flex-grow-1`}>
         <Col>
-          <BrowseList />
+          <TextHeader>{t("headers.browse")}</TextHeader>
+          <BrowseLinks />
           <TextHeader>{t("headers.account")}</TextHeader>
 
           <AccountLinks {...props} />
         </Col>
         <Col>
-          <TextHeader>{t("about", { ns: "common" })}</TextHeader>
-          <AboutLinks />
           <TextHeader>{t("learn", { ns: "common" })}</TextHeader>
           <LearnLinks />
+          <TextHeader>{t("about", { ns: "common" })}</TextHeader>
+          <AboutLinks />
         </Col>
         <Col>
           <TextHeader>{t("headers.resources")}</TextHeader>
-          <TermsAndPolicies />
+          <ResourcesLinks />
+          <TextHeader>{t("team", { ns: "common" })}</TextHeader>
+          <OurTeamLinks />
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
@@ -272,6 +282,22 @@ const PageFooter = (props: PageFooterProps) => {
         className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
       >
         <Col className="text-white col-md-auto">{t("legal.disclaimer")}</Col>
+        <Col className="text-center">
+          <StyledInternalLink href="/policies">
+            {t("legal.TOS")}
+          </StyledInternalLink>
+        </Col>
+        <Col className="">
+          <StyledInternalLink
+            href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
+            other={{
+              target: "_blank",
+              rel: "noopener noreferrer"
+            }}
+          >
+            {t("Click here to subscribe to our newsletter")}
+          </StyledInternalLink>
+        </Col>
       </div>
     </FooterContainer>
   )

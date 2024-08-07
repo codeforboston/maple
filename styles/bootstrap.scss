@@ -19,8 +19,6 @@ $dark: $dark-blue;
 
 $link-color: $secondary;
 
-$line-height-0: 0;
-
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
   "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
@@ -73,16 +71,6 @@ $font-sizes: (
   4: $h4-font-size,
   5: $h5-font-size,
   6: $h6-font-size
-) !default;
-
-$utilities: (
-  "font-size": (
-    rfs: true,
-    responsive: true,
-    property: font-size,
-    class: fs,
-    values: $font-sizes
-  )
 ) !default;
 
 @import "bootstrap/scss/bootstrap";

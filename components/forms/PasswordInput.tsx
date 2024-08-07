@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { forwardRef, useState } from "react"
 import type { FormControlProps } from "react-bootstrap"
 import { Form, FloatingLabel } from "../bootstrap"
-import styled from "styled-components"
+import styles from "./PasswordInput.module.css"
 
 type PasswordInputProps = Omit<
   FormControlProps,
@@ -15,23 +15,6 @@ type PasswordInputProps = Omit<
   label: string
   error?: string
 }
-
-const StyledFormControl = styled(Form.Control)`
-  background-image: none !important;
-`
-
-const ToggleButton = styled.button`
-  top: 20px;
-  right: 10px;
-
-  &:hover {
-    color: var(--bs-gray-700);
-  }
-
-  &.toggleButtonShowing {
-    right: 9px;
-  }
-`
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, error, className, ...restProps }, ref) => {
@@ -48,14 +31,17 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         <FloatingLabel
           controlId={id}
           label={label}
-          className="position-relative"
+          className={styles.passwordContainer}
         >
-          <StyledFormControl
+          <Form.Control
             {...restProps}
             ref={ref}
             type={isShowing ? "text" : "password"}
             placeholder={label}
-            className="pe-5"
+            className={clsx(
+              styles.passwordInput,
+              hasError && styles.passwordInputInvalid
+            )}
             isInvalid={hasError}
             aria-invalid={hasError}
             aria-describedby={clsx(hasError && errorId)}
@@ -65,19 +51,19 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             {isShowing ? `${label} showing` : `${label} hidden`}
           </p>
 
-          <ToggleButton
+          <button
             type="button"
             onClick={toggleIsShowing}
             role="switch"
             aria-checked={isShowing}
             aria-label={isShowing ? `Hide ${label}` : `Show ${label}`}
             className={clsx(
-              "position-absolute p-0 border-0 bg-white",
-              isShowing && "toggleButtonShowing"
+              styles.toggleButton,
+              isShowing && styles.toggleButtonShowing
             )}
           >
             <FontAwesomeIcon icon={isShowing ? faEyeSlash : faEye} />
-          </ToggleButton>
+          </button>
 
           <Form.Control.Feedback type="invalid" id={errorId}>
             {error}

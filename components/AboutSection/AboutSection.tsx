@@ -1,24 +1,17 @@
-import styled from "styled-components"
 import AboutInfoCard from "../AboutSectionInfoCard/AboutInfoCard"
 import { Col, Container, Row } from "../bootstrap"
 import BackgroundLogo from "../LogoPlacements/BackgroundLogo"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
 import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
+import styles from "./AboutSection.module.css"
 import { useTranslation } from "next-i18next"
-
-const AngledTopRow = styled(Row)`
-  padding-top: 10em;
-  padding-bottom: 8em;
-  z-index: 1;
-  clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
-`
 
 export default function AboutSection() {
   const { t } = useTranslation("homepage")
 
   return (
     <Container fluid>
-      <AngledTopRow className="position-relative h-auto bg-secondary overflow-hidden">
+      <Row className={`${styles.angledTop}`}>
         <Row className="justify-content-center">
           <ScrollTrackerContainer>
             <ScrollTrackingItem speed={0.5}>
@@ -59,7 +52,7 @@ export default function AboutSection() {
             </Row>
           </Col>
         </Row>
-      </AngledTopRow>
+      </Row>
     </Container>
   )
 }

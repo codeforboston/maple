@@ -52,7 +52,8 @@ export const script: Script = async ({ env, args }) => {
   for (const event of events.docs) {
     // Extract the id of the event
     const topicEventId = event.id
-    console.log("Topic event id", topicEventId)
+
+    // Loop through each function name
     for (const target of targets) {
       console.log("Running", target)
       const start = performance.now()

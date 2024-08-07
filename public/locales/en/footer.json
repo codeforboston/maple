@@ -6,18 +6,17 @@
     "resources": "Resources"
   },
   "links": {
-    "learnWriting": "To Writing Effective Testimony",
-    "learnProcess": "About the Legislative Process",
-    "learnWhy": "Why use MAPLE",
-    "supportMaple": "Support MAPLE",
-    "ourMission": "Mission & Goals",
-    "team": "Team",
-    "faq": "FAQ"
+    "learnWriting": "Writing Effective Testimony",
+    "learnLegislators": "Contacting Legislators",
+    "resourcesLegislators": "Find your Legislators",
+    "resourcesGitHub": "MAPLE on GitHub",
+    "resourcesOpenCollective": "MAPLE OpenCollective",
+    "teamNEU": "Northeastern University NuLawLab",
+    "teamCFB": "Code for Boston",
+    "teamHarvard": "Harvard Berkman Klein Center"
   },
   "legal": {
     "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",
-    "privacyPolicy": "Privacy Policy",
-    "TOS": "Terms of Service",
-    "codeOfConduct": "Code of Conduct"
+    "TOS": "Our Privacy Policy & Terms of Service"
   }
 }

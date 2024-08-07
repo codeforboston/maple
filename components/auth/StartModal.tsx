@@ -1,5 +1,6 @@
 import type { ModalProps } from "react-bootstrap"
 import { Button, Col, Image, Modal, Stack } from "../bootstrap"
+import styles from "./StartModal.module.css"
 import { useTranslation } from "next-i18next"
 
 export default function StartModal({
@@ -15,7 +16,7 @@ export default function StartModal({
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="start-modal" centered>
-      <Modal.Header closeButton className={`py-4`}>
+      <Modal.Header closeButton className={styles.modalHeader}>
         <Modal.Title id="start-modal" className="visually-hidden">
           {t("signUpOrIn")}
         </Modal.Title>

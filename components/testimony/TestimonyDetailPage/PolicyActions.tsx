@@ -1,5 +1,5 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
-import { useFlags } from "components/featureFlags"
+import { flags } from "components/featureFlags"
 import { formatBillId } from "components/formatting"
 import { formUrl } from "components/publish"
 import { isNotNull } from "components/utils"
@@ -26,10 +26,9 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
 }) => {
   const { bill } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
-  const { notifications } = useFlags()
 
   const items: ReactElement[] = []
-  if (notifications)
+  if (flags().notifications)
     items.push(
       <PolicyActionItem
         onClick={() => window.alert("TODO")} // TODO: add follow action here

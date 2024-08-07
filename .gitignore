@@ -4,16 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
-.yarn*
 
 # testing
 /coverage
-
-# testing - playwright e2e
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 
 .next/
 .eslintcache

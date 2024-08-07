@@ -449,6 +449,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hshareef9",
+      "name": "Hajara Shareef",
+      "avatar_url": "https://avatars.githubusercontent.com/u/101157878?v=4",
+      "profile": "https://hshareef9.github.io/Profile/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"

@@ -2,12 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import type { RowProps } from "react-bootstrap"
 import { Col, Row } from "../bootstrap"
-import styled from "styled-components"
+import styles from "./Divider.module.css"
 
-const Line = styled("hr")`
-  height: 2px !important;
-  opacity: 1;
-`
 export default function Divider({
   children,
   className,
@@ -16,11 +12,11 @@ export default function Divider({
   return (
     <Row {...restProps} className={clsx("text-secondary", className)}>
       <Col>
-        <Line />
+        <hr className={styles.line} />
       </Col>
       <Col className="col-auto fs-5">{children}</Col>
       <Col>
-        <Line />
+        <hr className={styles.line} />
       </Col>
     </Row>
   )
