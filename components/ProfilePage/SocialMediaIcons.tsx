@@ -13,45 +13,43 @@ export const SocialMediaIcons = ({
   fb?: string
   linkedIn?: string
 }) => {
-
   const { t } = useTranslation("common")
 
-  return(
-
+  return (
     <div>
-    <Row xs="auto">
-      {twitter && (
-        <Col>
-          <External plain href={`https://www.twitter.com/${twitter}`}>
-            <Image alt={t("socials.twitter")} src="/twitter.svg" />
-          </External>
-        </Col>
-      )}
+      <Row xs="auto">
+        {twitter && (
+          <Col>
+            <External plain href={`https://www.twitter.com/${twitter}`}>
+              <Image alt={t("socials.twitter")} src="/twitter.svg" />
+            </External>
+          </Col>
+        )}
 
-      {linkedIn && (
-        <Col>
-          <External plain href={`${linkedIn}`}>
-            <Image alt={t("socials.linkedin")} src="/linkedin.svg" />
-          </External>
-        </Col>
-      )}
+        {linkedIn && (
+          <Col>
+            <External plain href={`${linkedIn}`}>
+              <Image alt={t("socials.linkedin")} src="/linkedin.svg" />
+            </External>
+          </Col>
+        )}
 
-      {instagram && (
-        <Col>
-          <External plain href={`https://www.instagram.com/${instagram}`}>
-            <Image alt={t("socials.instagram")} src="/instagram.svg" />
-          </External>
-        </Col>
-      )}
+        {instagram && (
+          <Col>
+            <External plain href={`https://www.instagram.com/${instagram}`}>
+              <Image alt={t("socials.instagram")} src="/instagram.svg" />
+            </External>
+          </Col>
+        )}
 
-      {fb && (
-        <Col>
-          <External plain href={`https://www.facebook.com/${fb}`}>
-            <Image alt={t("socials.facebook")} src="/facebook.svg" />
-          </External>
-        </Col>
-      )}
-    </Row>
-  </div>
-)
+        {fb && (
+          <Col>
+            <External plain href={`https://www.facebook.com/${fb}`}>
+              <Image alt={t("socials.facebook")} src="/facebook.svg" />
+            </External>
+          </Col>
+        )}
+      </Row>
+    </div>
+  )
 }

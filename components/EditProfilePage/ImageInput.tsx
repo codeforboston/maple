@@ -25,7 +25,7 @@ export const ImageInput = ({ className }: ImageInputProps) => {
     },
     [updateProfileImage]
   )
-  const { t } = useTranslation(["profile","auth"])
+  const { t } = useTranslation(["profile", "auth"])
 
   return (
     <div className="d-flex flex-row px-3 col">

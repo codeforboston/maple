@@ -16,7 +16,7 @@ export const BaseProfileIcon = ({
   role,
   className
 }: ProfileIconProps) => {
-  const {t} = useTranslation("auth");
+  const { t } = useTranslation("auth")
 
   let iconSrc
   switch (role) {
@@ -28,7 +28,9 @@ export const BaseProfileIcon = ({
       iconSrc = "/profile-individual-icon.svg"
       break
   }
-  return <Image src={iconSrc} className={`${className}`} alt={t("profileIcon")} />
+  return (
+    <Image src={iconSrc} className={`${className}`} alt={t("profileIcon")} />
+  )
 }
 
 export const ProfileIcon = styled(BaseProfileIcon).attrs<{ large: boolean }>(

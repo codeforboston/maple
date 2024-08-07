@@ -18,12 +18,7 @@ export const TestimonyFAQ = ({ className }: { className: string }) => {
       <Card.Body>
         <h2>{t("testimonies.faq")}</h2>
         <div className="p-4 m-3 d-flex justify-content-center">
-          <Image
-            className="w-100"
-            fluid
-            alt=""
-            src="/writing.svg"
-          ></Image>
+          <Image className="w-100" fluid alt="" src="/writing.svg"></Image>
         </div>
 
         <h4>{t("testimonies.edit")}</h4>

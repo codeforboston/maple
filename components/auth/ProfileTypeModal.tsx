@@ -56,10 +56,7 @@ export default function ProfileTypeModal({
               >
                 <Row>
                   <Col xs="auto" className="d-flex align-items-center">
-                    <Image
-                      alt=""
-                      src="/profile-individual-white.svg"
-                    />
+                    <Image alt="" src="/profile-individual-white.svg" />
                   </Col>
 
                   <Col>
@@ -78,10 +75,7 @@ export default function ProfileTypeModal({
               >
                 <Row>
                   <Col xs="auto" className="d-flex align-items-center">
-                    <Image
-                      alt=""
-                      src="/profile-org-white.svg"
-                    />
+                    <Image alt="" src="/profile-org-white.svg" />
                   </Col>
 
                   <Col>

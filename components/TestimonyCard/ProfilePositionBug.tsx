@@ -12,7 +12,7 @@ export function ProfilePositionLabel({
   position: Position
   avatar: string
 }) {
-  const {t} = useTranslation("profile")
+  const { t } = useTranslation("profile")
 
   return (
     <Container pos={position}>

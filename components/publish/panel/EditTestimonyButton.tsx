@@ -12,7 +12,7 @@ export const EditTestimonyButton = ({
   billId: string
   court: number
 }) => {
-  const {t} = useTranslation("testimony")
+  const { t } = useTranslation("testimony")
   const url = formUrl(billId, court)
 
   return (

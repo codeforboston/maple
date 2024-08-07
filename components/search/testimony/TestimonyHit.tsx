@@ -22,7 +22,7 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
 }
 
 const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
-  const { t } = useTranslation(["auth",])
+  const { t } = useTranslation(["auth"])
 
   const date = new Date(
     parseInt(hit.publishedAt.toString())

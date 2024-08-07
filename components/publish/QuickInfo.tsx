@@ -96,7 +96,7 @@ export const SponsorList = styled.div`
     }
   `,
   Sponsors = ({ bill }: { bill: Bill }) => {
-    const {t} = useTranslation("common")
+    const { t } = useTranslation("common")
     const { PrimarySponsor: primarySponsor, Cosponsors: cosponsors } =
       bill.content
 

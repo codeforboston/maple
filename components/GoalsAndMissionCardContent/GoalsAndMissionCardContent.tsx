@@ -27,11 +27,7 @@ const OurGoalsCardContent = () => {
       <Row className="mb-4">
         <Col md={6}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
-              fluid
-              src="/gov-with-key.svg"
-              alt=""
-            />
+            <OurGoalsImage fluid src="/gov-with-key.svg" alt="" />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.increase")}
             </figcaption>
@@ -55,11 +51,7 @@ const OurGoalsCardContent = () => {
       <Row>
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
-              fluid
-              src="/doc-with-arrows-to-people.svg"
-              alt=""
-            />
+            <OurGoalsImage fluid src="/doc-with-arrows-to-people.svg" alt="" />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.strengthen")}
             </figcaption>
@@ -68,11 +60,7 @@ const OurGoalsCardContent = () => {
 
         <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }}>
           <figure className="text-center mb-3">
-            <OurGoalsImage
-              fluid
-              src="/gov-with-key.svg"
-              alt=""
-            />
+            <OurGoalsImage fluid src="/gov-with-key.svg" alt="" />
             <figcaption className="text-align-center text-align-sm-start fs-5 fw-bold mt-3">
               {t("goals.encourage")}
             </figcaption>
@@ -104,11 +92,7 @@ const OurMissionCardContent = () => {
           lg={4}
           className={`text-center`}
         >
-          <MissionImage
-            fluid
-            src="/leg-with-mag-glass.svg"
-            alt=""
-          />
+          <MissionImage fluid src="/leg-with-mag-glass.svg" alt="" />
         </Col>
       </Row>
 
@@ -119,11 +103,7 @@ const OurMissionCardContent = () => {
           lg={4}
           className="text-center"
         >
-          <MissionImage
-            fluid
-            src="/doc-treasure-box.svg"
-            alt=""
-          />
+          <MissionImage fluid src="/doc-treasure-box.svg" alt="" />
         </Col>
         <Col
           sm={{ span: 12, order: 2 }}

@@ -50,11 +50,7 @@ const OralContent = () => (
       md={{ span: 4, order: 0 }}
       lg={{ span: 3, order: 0, offset: 1 }}
     >
-      <StyledImage
-        fluid
-        src="/mic-with-testify.svg"
-        alt=""
-      />
+      <StyledImage fluid src="/mic-with-testify.svg" alt="" />
     </Col>
     <Col
       xs={{ span: 12, order: 1 }}

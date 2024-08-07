@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { useTranslation } from "next-i18next"
 
 export const ArchiveTestimonyButton = (props: ImageProps) => {
-  const {t} = useTranslation("testimony")
+  const { t } = useTranslation("testimony")
   return (
     <ImageButton
       alt={t("deleteTestimony")}

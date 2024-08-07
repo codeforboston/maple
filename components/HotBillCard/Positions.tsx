@@ -23,14 +23,22 @@ export const Positions = (props: {
       <PositionStyle>
         <p className="stanceTitle">Neutral</p>
         <div>
-          <Image className="svg" alt={t("counts.neutral")} src="/thumbs-neutral.svg" />
+          <Image
+            className="svg"
+            alt={t("counts.neutral")}
+            src="/thumbs-neutral.svg"
+          />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
         <p className="stanceTitle">Oppose</p>
         <div>
-          <Image className="svg" alt={t("counts.oppose")} src="/thumbs-oppose.svg" />
+          <Image
+            className="svg"
+            alt={t("counts.oppose")}
+            src="/thumbs-oppose.svg"
+          />
           <p>{props.opposeCount}</p>
         </div>
       </PositionStyle>

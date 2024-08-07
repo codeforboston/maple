@@ -3,7 +3,7 @@ import Image from "react-bootstrap/Image"
 import { useTranslation } from "next-i18next"
 
 const NuLawLabCardContent = () => {
-  const {t} = useTranslation("common")
+  const { t } = useTranslation("common")
   return (
     <>
       <Row className="mb-5">
@@ -52,7 +52,7 @@ const NuLawLabCardContent = () => {
 }
 
 const CodeForBostonCardContent = () => {
-  const {t} = useTranslation("common")
+  const { t } = useTranslation("common")
 
   return (
     <>
@@ -97,7 +97,7 @@ const CodeForBostonCardContent = () => {
 }
 
 const OpenCollectiveContent = () => {
-  const {t} = useTranslation("common")
+  const { t } = useTranslation("common")
 
   return (
     <>
