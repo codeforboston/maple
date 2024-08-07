@@ -12,7 +12,6 @@ export type RoleOfTestimonyCardProps = {
 const RoleOfTestimonyCard = ({
   title,
   index,
-  alt,
   paragraph,
   src
 }: RoleOfTestimonyCardProps) => {
@@ -26,7 +25,7 @@ const RoleOfTestimonyCard = ({
         sm={{ span: 12, order: 0 }}
         md={{ order: index % 2 == 0 ? 0 : 5 }}
       >
-        <Image fluid src={src} alt={alt} style={{ height: "10rem" }} />
+        <Image fluid src={src} alt="" style={{ height: "10rem" }} />
       </Col>
       <Col
         className={clsx(

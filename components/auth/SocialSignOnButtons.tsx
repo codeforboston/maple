@@ -18,7 +18,7 @@ const GoogleButton: AuthButton = ({ onClick, loading }) => {
       loading={loading}
       spinnerProps={{ className: "me-4" }}
     >
-      <Image src="/google-icon.svg" alt="Google" className="me-4" />
+      <Image src="/google-icon.svg" alt="" className="me-4" />
       {t("continueGoogle")}
     </LoadingButton>
   )

@@ -32,7 +32,7 @@ const Leaf = ({
 }) => {
   return (
     <LeafContainer className="w-100">
-      <LeafImage className={position} fluid src="/leaf.svg" alt="leaf" />
+      <LeafImage className={position} fluid src="/leaf.svg" alt="" />
     </LeafContainer>
   )
 }

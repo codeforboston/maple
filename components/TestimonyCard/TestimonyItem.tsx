@@ -104,7 +104,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                alt={t("testimonyItem.edit")}
                 height={50}
                 width={50}
               />
@@ -184,7 +184,7 @@ export const TestimonyItem = ({
                   <Image
                     className="px-2 ms-auto align-self-center"
                     src="/edit-testimony.svg"
-                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    alt={t("")}
                     height={40}
                     width={40}
                   />

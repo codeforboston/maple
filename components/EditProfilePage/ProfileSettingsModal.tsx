@@ -41,15 +41,19 @@ function RenderPrivacyText(role: Role, isPublic: boolean) {
   }
 }
 
-const EmailIcon = () => (
-  <Image
-    className={`me-1`}
-    src="/mail.svg"
-    alt="open envelope with letter, toggles update frequency options"
-    width="22"
-    height="19"
-  />
-)
+const EmailIcon = () => {
+  const { t } = useTranslation("editProfile")
+
+  return (
+    <Image
+      className={`me-1`}
+      src="/mail.svg"
+      alt={t("emailIconAlt")}
+      width="22"
+      height="19"
+    />
+  )
+}
 
 export default function ProfileSettingsModal({
   actions,

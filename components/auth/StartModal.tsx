@@ -23,7 +23,7 @@ export default function StartModal({
       <Modal.Body>
         <Col md={7} className="mx-auto">
           <Stack gap={3} direction="vertical" className="mb-4 text-center">
-            <Image fluid src="/gov-with-mics.svg" alt="Government Building" />
+            <Image fluid src="/gov-with-mics.svg" alt="" />
 
             <p className="h5">{t("addVoice")}</p>
           </Stack>

@@ -27,8 +27,8 @@ export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
     <Image
       fluid
       style={voteHandPositionStyles[position]}
-      alt={t("testimonyCallout.position", { position1: position }) ?? position}
       src="/VoteHand.png"
+      alt={t("testimonyCallout.position", { position1: position }) ?? position}
     />
   )
 }

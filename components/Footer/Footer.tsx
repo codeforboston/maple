@@ -77,7 +77,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/twitter.svg"
-              alt="Twitter Icon"
+              alt={t("links.socials.twitter")}
               width="24"
               height="24"
             ></Image>
@@ -91,7 +91,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/instagram.svg"
-              alt="Instagram Icon"
+              alt={t("links.socials.instagram")}
               width="24"
               height="24"
             ></Image>
@@ -105,7 +105,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/Linked In.svg"
-              alt="LinkedIn Icon"
+              alt={t("links.socials.linkedin")}
               width="24"
               height="24"
             ></Image>
@@ -116,7 +116,7 @@ function MapleContainer({ className }: { className?: string }) {
         <Image
           className="bg-transparent"
           src="/maple-footer-white.png"
-          alt="MAPLE logo"
+          alt={t("logo")}
           width={100}
         />
       </Row>

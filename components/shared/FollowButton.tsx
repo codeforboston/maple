@@ -17,7 +17,7 @@ export const BaseFollowButton = ({
   unfollowAction: () => Promise<void>
   hide?: boolean
 }) => {
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation(["profile"])
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -43,7 +43,7 @@ export const BaseFollowButton = ({
   const isFollowing = queryResult
   const text = isFollowing ? t("button.following") : t("button.follow")
   const checkmark = isFollowing ? (
-    <StyledImage src="/check-white.svg" alt="checkmark" />
+    <StyledImage src="/check-white.svg" alt="" />
   ) : null
   const handleClick = () => {
     isFollowing ? UnfollowClick() : FollowClick()
