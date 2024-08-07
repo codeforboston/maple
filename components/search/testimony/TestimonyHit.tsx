@@ -7,11 +7,10 @@ import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
 import { FollowOrgButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
-import { flags } from "components/featureFlags"
+import { useFlags } from "components/featureFlags"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
-  console.log(url)
   return (
     <Link href={url} legacyBehavior>
       <a style={{ all: "unset", cursor: "pointer" }} className="w-100">
@@ -38,6 +37,8 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
     ) : (
       hit.authorDisplayName
     )
+  const { followOrg } = useFlags()
+
   return (
     <div
       style={{
@@ -64,9 +65,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {flags().followOrg && isOrg && (
-          <FollowOrgButton profileId={hit.authorUid} />
-        )}
+        {followOrg && isOrg && <FollowOrgButton profileId={hit.authorUid} />}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>

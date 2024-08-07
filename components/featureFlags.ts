@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import { z } from "zod"
 
 export const FeatureFlags = z.object({
@@ -10,11 +11,7 @@ export const FeatureFlags = z.object({
   /** Follow button for organizations */
   followOrg: z.boolean().default(false),
   /** Lobbying Table */
-  lobbyingTable: z.boolean().default(false),
-  /** Submitting testimony fron mobile views */
-  mobileTestimony: z.boolean().default(false),
-  /** Report testimony */
-  reportTestimony: z.boolean().default(false)
+  lobbyingTable: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -32,27 +29,21 @@ const defaults: Record<Env, FeatureFlags> = {
     notifications: true,
     billTracker: true,
     followOrg: true,
-    lobbyingTable: false,
-    mobileTestimony: false,
-    reportTestimony: true
+    lobbyingTable: false
   },
   production: {
     testimonyDiffing: false,
     notifications: false,
     billTracker: false,
     followOrg: false,
-    lobbyingTable: false,
-    mobileTestimony: false,
-    reportTestimony: true
+    lobbyingTable: false
   },
   test: {
     testimonyDiffing: false,
     notifications: false,
     billTracker: false,
     followOrg: false,
-    lobbyingTable: false,
-    mobileTestimony: false,
-    reportTestimony: false
+    lobbyingTable: false
   }
 }
 
@@ -63,3 +54,15 @@ const values = FeatureFlags.parse(defaults[envName])
 
 // Add a function call of indirection to allow reloading values in the future
 export const flags = () => values
+
+export function useFlags() {
+  const router = useRouter()
+  const { query } = router
+
+  return FeatureFlags.keyof().options.reduce((acc, flagName) => {
+    if (flagName in query) {
+      acc[flagName] = query[flagName] === "enabled"
+    }
+    return acc
+  }, FeatureFlags.parse(defaults[envName]))
+}

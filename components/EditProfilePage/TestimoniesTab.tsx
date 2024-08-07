@@ -56,8 +56,6 @@ export const TestimoniesTab = ({
                 testimony={t}
                 isUser={true}
                 onProfilePage={true}
-                canEdit={true}
-                canDelete={false}
               />
             ))}
           </TitledSectionCard>
@@ -69,8 +67,6 @@ export const TestimoniesTab = ({
                 testimony={t}
                 isUser={true}
                 onProfilePage={true}
-                canEdit={true}
-                canDelete={false}
               />
             ))}
           </TitledSectionCard>
