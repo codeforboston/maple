@@ -8,11 +8,12 @@ test.describe('Admin Page', () => {
   test.beforeEach(async ({ page }) => {
     adminPage = new AdminPage(page);
     // Replace the credentials with valid admin credentials
-    await page.goto('/login');
-    await page.fill('#username', 'admin_username');
-    await page.fill('#password', 'admin_password');
+    await page.goto("http://localhost:3000")
+    await page.getByRole('button', { name: 'Log in / Sign up' }).nth(1).click()
+    await page.getByRole('button', { name: 'Sign In' }).click()
+    await page.fill('input[name="email"]', 'test');
+    await page.fill('input[name="password"]', 'password');
     await page.click('button[type="submit"]');
-    await page.waitForNavigation();
   });
 
   test('should load successfully', async () => {
