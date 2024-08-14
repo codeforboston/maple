@@ -135,8 +135,13 @@ export class SearchIndexer {
     await this.client
       .aliases()
       .upsert(alias, { collection_name: this.collectionName })
-    if (obsoleteCollection)
-      await this.client.collections(obsoleteCollection).delete()
+    if (obsoleteCollection && obsoleteCollection !== this.collectionName) {
+      const collection = this.client.collections(obsoleteCollection)
+      const exists = await collection.exists()
+      if (exists) {
+        await collection.delete()
+      }
+    }
   }
 
   private async *listCollection() {
