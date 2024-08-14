@@ -179,8 +179,8 @@ export default function OrgSignUpModal({
                         validate: confirmedPassword => {
                           const password = getValues("password")
                           return confirmedPassword !== password
-                            ? t("mustMatch") ??
-                                "Confirmed password must match password."
+                            ? (t("mustMatch") ??
+                                "Confirmed password must match password.")
                             : undefined
                         }
                       })}
