@@ -1,4 +1,4 @@
-import { Highlight } from "@alexjball/react-instantsearch-hooks-web"
+import { Highlight } from "react-instantsearch"
 import {
   faCheckCircle,
   faMinusCircle,
