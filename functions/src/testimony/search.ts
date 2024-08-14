@@ -19,8 +19,11 @@ export const {
       { name: "authorUid", type: "string", facet: false },
       { name: "authorRole", type: "string", facet: true },
       { name: "authorDisplayName", type: "string", facet: true },
+      { name: "fullName", type: "string", facet: false },
       { name: "version", type: "int32", facet: false },
-      { name: "publishedAt", type: "int64", facet: false }
+      { name: "public", type: "bool", facet: false },
+      { name: "publishedAt", type: "int64", facet: false },
+      { name: "updatedAt", type: "int64", facet: false }
     ],
     default_sorting_field: "publishedAt"
   },
@@ -42,7 +45,9 @@ export const {
       authorRole: testimony.authorRole,
       version: testimony.version,
       publishedAt: testimony.publishedAt.toMillis(),
-      fullName: testimony.fullName
+      updatedAt: testimony.updatedAt.toMillis(),
+      fullName: testimony.fullName,
+      public: testimony.public
     }
     return TestimonySearchRecord.check(record)
   }
