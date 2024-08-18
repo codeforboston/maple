@@ -27,17 +27,20 @@
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
     "communicatingWithLegislators": "Communicating with Legislators",
+    "editProfile": "Edit Profile",
     "faq": "FAQ",
-    "forIndividuals": "For Individuals",
-    "forLegislators": "For Legislators",
-    "forOrganizations": "For Organizations",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
-    "missionAndGoals": "Our Mission & Goals",
+    "logo": "MAPLE logo",
+    "missionAndGoals": "Mission & Goals",
+    "team": "Team",
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
-    "supportMaple": "How to Support MAPLE",
-    "toWriteEffectiveTestimony": "To Write Effective Testimony"
+    "signOut": "Sign Out",
+    "supportMaple": "Support MAPLE",
+    "toWriteEffectiveTestimony": "To Write Effective Testimony",
+    "viewProfile": "View Profile",
+    "whyUseMaple": "Why Use MAPLE"
   },
   "newcomer" : "New to MAPLE? For extra support, check",
   "notInCommittee": "Bill not currently in committee",
@@ -46,7 +49,5 @@
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
-  "team": "Our Team",
-  "whyUseMaple": "Why Use MAPLE"
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future."
 }

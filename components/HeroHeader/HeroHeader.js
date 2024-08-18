@@ -1,4 +1,4 @@
-import { SignInWithButton } from "../auth"
+import { AltSignInWithButton } from "components/auth/SignInWithButton"
 import { Button, Col, Container, Image, Row } from "../bootstrap"
 import { Wrap } from "../links"
 import ScrollTrackerContainer from "../ScrollTrackEffect/ScrollTrackerContainer"
@@ -6,8 +6,6 @@ import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
-import { auth } from "../firebase"
-import { useEffect } from "react"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
@@ -73,12 +71,12 @@ const HeroHeader = ({ authenticated }) => {
                   <div className="text-end m-5">
                     {!authenticated && (
                       <div className={styles.btncontainer}>
-                        <SignInWithButton label="Sign in to Testify" />
+                        <AltSignInWithButton />
                       </div>
                     )}
                     <Wrap href="/bills">
                       <div className={styles.btncontainer}>
-                        <Button variant="outline-secondary">
+                        <Button variant="light" className="text-secondary">
                           {capitalize(t("browse_bills"))}
                         </Button>
                       </div>

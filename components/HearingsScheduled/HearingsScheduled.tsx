@@ -90,7 +90,8 @@ export const EventCard = ({
   const truncateEntry = (entry: string): string => {
     const maxLength = 38
 
-    if (entry.length > maxLength) return entry.slice(0, maxLength) + "..."
+    if (!!entry && entry.length > maxLength)
+      return entry.slice(0, maxLength) + "..."
     return entry
   }
 
