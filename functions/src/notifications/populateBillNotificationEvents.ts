@@ -14,15 +14,23 @@ const db = admin.firestore()
 
 export type Notification = {
   type: string
-  court: string
-  id: string
-  name: string
-  history: BillHistory
-  historyUpdateTime: Timestamp
+
+  billCourt: string
+  billId: string
+  billName: string
+
+  billHistory: BillHistory
+
+  testimonyUser: string
+  testimonyPosition: string
+  testimonyContent: string
+  testimonyVersion: number
+  
+  updateTime: Timestamp
 }
 
-// Define the populateNotificationEvents function
-export const populateNotificationEvents = functions.firestore
+// Define the populateBillNotificationEvents function
+export const populateBillNotificationEvents = functions.firestore
   .document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
@@ -43,11 +51,19 @@ export const populateNotificationEvents = functions.firestore
 
       const newNotificationEvent: Notification = {
         type: "bill",
-        court: court,
-        id: newData?.id,
-        name: newData?.id,
-        history: newData?.history,
-        historyUpdateTime: Timestamp.now()
+
+        billCourt: court,
+        billId: newData?.id,
+        billName: newData?.id,
+
+        billHistory: newData?.history,
+
+        testimonyUser: "",
+        testimonyPosition: "",
+        testimonyContent: "",
+        testimonyVersion: -1,
+
+        updateTime: Timestamp.now(),
       }
 
       await db.collection("/notificationEvents").add(newNotificationEvent)
@@ -63,7 +79,9 @@ export const populateNotificationEvents = functions.firestore
 
     const notificationEventSnapshot = await db
       .collection("/notificationEvents")
-      .where("name", "==", newData?.id)
+      .where("type", "==", "bill")
+      .where("billCourt", "==", court)
+      .where("billId", "==", newData?.id)
       .get()
 
     console.log(
@@ -81,8 +99,8 @@ export const populateNotificationEvents = functions.firestore
           .collection("/notificationEvents")
           .doc(notificationEventId)
           .update({
-            history: newData?.history,
-            historyUpdateTime: Timestamp.now()
+            billHistory: newData?.history,
+            updateTime: Timestamp.now(),
           })
       }
     }
