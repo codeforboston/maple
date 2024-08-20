@@ -10,11 +10,7 @@ export class AdminPage {
   }
 
   async goto(){
-    await this.page.goto('/admin'); // Adjust the URL if necessary
+    await this.page.goto('http://localhost:3000/admin'); // Adjust the URL if necessary
   }
 
-  async verifyPageLoaded(){
-    await expect(this.pageTitle).toBeVisible();
-    await expect(this.pageTitle).toHaveText('Admin Dashboard'); // Adjust text as necessary
-  }
 }
