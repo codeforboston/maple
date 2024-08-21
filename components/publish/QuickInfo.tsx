@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { Image } from "../bootstrap"
 import { Bill, Profile } from "../db"
 
@@ -76,7 +77,7 @@ export const Chip = styled.div`
     background: var(--bs-body-bg);
     display: flex;
     flex-direction: column;
-    padding: 2rem 1rem 1rem 1rem;
+    padding: 1rem;
     height: 100%;
   `
 
@@ -95,8 +96,11 @@ export const SponsorList = styled.div`
   `,
   Sponsors = ({ bill }: { bill: Bill }) => {
     const { PrimarySponsor: primarySponsor, Cosponsors: cosponsors } =
-        bill.content,
-      cosponsorsShown = 5,
+      bill.content
+
+    const isMobile = useMediaQuery("(max-width: 768px)")
+
+    let cosponsorsShown = isMobile ? 0 : 5,
       shown = cosponsors.slice(0, cosponsorsShown),
       overflowCount = cosponsors.length - shown.length
 

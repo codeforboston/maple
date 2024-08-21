@@ -1,41 +1,25 @@
 import clsx from "clsx"
+import { useState } from "react"
 import styled from "styled-components"
-import {
-  Col,
-  Container,
-  Image,
-  Row,
-  Spinner,
-  Button,
-  Collapse,
-  Modal
-} from "../bootstrap"
+import { useMediaQuery } from "usehooks-ts"
+
+import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormInfo } from "./hooks"
-import { useState } from "react"
-import { useMediaQuery } from "usehooks-ts"
+import { KeepNote, KeepNoteMobile } from "./KeepNote"
 import { ProgressBar } from "./ProgressBar"
-import { PublishInfo } from "./PublishInfo"
 import { PublishTestimony } from "./PublishTestimony"
 import { QuickInfo } from "./QuickInfo"
 import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
-import { KeepNote, KeepNoteMobile } from "./KeepNote"
 
 const Background = styled.div`
   background: var(--bs-white);
   height: 100%;
-`
-
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-  background: var(--bs-white);
-  width: 100%;
-  margin: 0;
 `
 
 export const SubmitTestimonyForm = () => {
@@ -44,19 +28,14 @@ export const SubmitTestimonyForm = () => {
 
   return form.ready ? (
     <Background className="p-0">
-      {/* <StyledContainer className="pl-4"> */}
-
-      <Row className="px-4 fixed-top" style={{ marginTop: 80 }}>
+      <Row className="px-4">
         <Col xs={12}>
           {isMobile ? (
             <PolicyDetails bill={form.bill} profile={form.profile} />
           ) : null}
         </Col>
       </Row>
-      <Row
-        className="g-0 h-100"
-        style={isMobile ? { paddingTop: 56 } : { paddingTop: 0 }}
-      >
+      <Row className="g-0 h-100">
         <Col md={9} xs={12} className="px-4">
           <Form step={form.step} bill={form.bill} synced={form.synced} />
         </Col>
@@ -68,7 +47,6 @@ export const SubmitTestimonyForm = () => {
           )}
         </Col>
       </Row>
-      {/* </StyledContainer> */}
     </Background>
   ) : (
     <Spinner animation="border" />
@@ -111,7 +89,7 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
         {isCollapsed ? (
           <div>View Less Details &#9650;</div>
         ) : (
-          <div>View Policy Details &#9660;</div>
+          <div>View Bill Details &#9660;</div>
         )}
       </div>
     </PolicyDetailsStyle>

@@ -1,14 +1,15 @@
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
-import { ViewAttachment } from "components/ViewAttachment"
-import { useReportTestimony } from "components/api/report"
-import { formUrl } from "components/publish/hooks"
-import { TestimonyContent } from "components/testimony"
 import { useTranslation } from "next-i18next"
 import { ReactNode, useState } from "react"
 import { ButtonProps } from "react-admin"
 import { ToastContainer } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
+
+import { useReportTestimony } from "components/api/report"
+import { formUrl } from "components/publish/hooks"
+import { TestimonyContent } from "components/testimony"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
+import { ViewAttachment } from "components/ViewAttachment"
 import { Button, Col, Row, Stack } from "../bootstrap"
 import { Testimony } from "../db"
 import { Internal, maple } from "../links"
@@ -21,6 +22,7 @@ type FooterButtonProps = Omit<ButtonProps, "children"> & {
   className?: string
   children?: ReactNode
 }
+
 const FooterButton = ({
   variant = "text",
   className,
@@ -39,14 +41,10 @@ const FooterButton = ({
 export const TestimonyItem = ({
   testimony,
   isUser,
-  canEdit,
-  canDelete,
   onProfilePage
 }: {
   testimony: Testimony
   isUser: boolean
-  canEdit?: boolean
-  canDelete?: boolean
   onProfilePage: boolean
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -75,6 +73,24 @@ export const TestimonyItem = ({
   const canExpand = snippet.length !== testimonyContent.length
 
   const { t } = useTranslation("testimony")
+
+  const IconSpacer = () => {
+    /* this image does not appear to display anything,      *
+     * however it acts as a spacing element                 *
+     *                                                      *
+     * removing this image will throw off the alignment vs  *
+     * the nearby elements that contain visible icons      */
+
+    return (
+      <Image
+        className="ms-auto align-self-center"
+        src="/edit-testimony.svg"
+        alt=""
+        height={40}
+        width={0}
+      />
+    )
+  }
 
   return (
     <div className={`py-3 px-2 ${onProfilePage && "border-bottom border-2"}`}>
@@ -123,6 +139,7 @@ export const TestimonyItem = ({
                 onClick={() => setShowAllTestimony(true)}
               >
                 {t("testimonyItem.expand")}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
@@ -134,6 +151,7 @@ export const TestimonyItem = ({
                   href={maple.testimony({ publishedId: testimony.id })}
                 >
                   {t("testimonyItem.moreDetails")}
+                  <IconSpacer />
                 </Internal>
               </FooterButton>
             </Col>
@@ -142,31 +160,38 @@ export const TestimonyItem = ({
             <Col className="d-flex">
               <FooterButton variant="text">
                 <ViewAttachment testimony={testimony} />
+
+                {/* Current bug Issue #1564 makes this instance of IconSpacer hard to test *
+                 * Please revisit once #1564 is resolved                                  */}
+                <IconSpacer />
               </FooterButton>
             </Col>
           )}
-          {isUser && !isMobile && (
-            <>
-              {onProfilePage && (
-                <Col>
-                  <FooterButton variant="text">
-                    <Internal
-                      className={`text-decoration-none text-secondary`}
-                      href={formUrl(testimony.billId, testimony.court)}
-                    >
-                      {t("testimonyItem.edit")}
-                    </Internal>
-                  </FooterButton>
-                </Col>
-              )}
-            </>
-          )}
-          {/* report */}
           <Col xs="auto">
             <FooterButton variant="text" onClick={() => setIsReporting(true)}>
               Report
+              <IconSpacer />
             </FooterButton>
           </Col>
+          {isUser && !isMobile && (
+            <Col>
+              <FooterButton variant="text">
+                <Internal
+                  className={`text-decoration-none text-secondary`}
+                  href={formUrl(testimony.billId, testimony.court)}
+                >
+                  Edit
+                  <Image
+                    className="px-2 ms-auto align-self-center"
+                    src="/edit-testimony.svg"
+                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    height={40}
+                    width={40}
+                  />
+                </Internal>
+              </FooterButton>
+            </Col>
+          )}
         </Row>
       </Stack>
 

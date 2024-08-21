@@ -8,10 +8,7 @@ interface Props {
   className?: string
 }
 
-export default function SignInWithButton({
-  label = "Log in / Sign up",
-  className
-}: Props) {
+export default function SignInWithButton({ className }: Props) {
   const { t } = useTranslation("auth")
   const dispatch = useAppDispatch()
   const setCurrentModal = (step: AuthFlowStep) =>
@@ -25,6 +22,25 @@ export default function SignInWithButton({
         onClick={() => setCurrentModal("start")}
       >
         {t("logInSignUp")}
+      </Button>
+    </span>
+  )
+}
+
+export function AltSignInWithButton({ className }: Props) {
+  const { t } = useTranslation("auth")
+  const dispatch = useAppDispatch()
+  const setCurrentModal = (step: AuthFlowStep) =>
+    dispatch(authStepChanged(step))
+
+  return (
+    <span className={className}>
+      <Button
+        variant="primary"
+        className="w-100"
+        onClick={() => setCurrentModal("start")}
+      >
+        {t("altLogInSignUp")}
       </Button>
     </span>
   )
