@@ -765,6 +765,16 @@
       "collectionGroup": "bills",
       "fieldPath": "id",
       "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
+    },
+    {
+      "collectionGroup": "activeTopicSubscriptions",
+      "fieldPath": "nextDigestAt",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "authorUid",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
     }
   ]
 }
