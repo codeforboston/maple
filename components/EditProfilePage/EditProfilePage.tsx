@@ -121,7 +121,7 @@ export function EditProfileForm({
       )
     },
     {
-      title: "Following",
+      title: t("tabs.following"),
       eventKey: "Following",
       content: <FollowingTab className="mt-3 mb-4" />
     }
