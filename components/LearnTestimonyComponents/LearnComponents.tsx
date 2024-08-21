@@ -84,21 +84,15 @@ const WriteSrcAlt = [
 
 const Basics = () => {
   const { t } = useTranslation("learnComponents")
-  interface BasicsContentItem {
-    title: string
-    paragraph: string
-    src: string
-    alt: string
-  }
   return (
     <Container fluid="md" className="mt-3">
       <h1 className="fw-bold tracking-tighter lh-base">{t("basics.title")}</h1>
       <p className="fs-4 tracking-tight lh-base">{t("basics.intro")}</p>
       {BasicsSrcAlt.map((value, index) => (
         <BasicsOfTestimonyCard
-          title={t(`basics.contents.${index}.title`)}
+          title={t(`basics.content.${index}.title`)}
           index={index}
-          key={t(`basics.contents.${index}.title`)}
+          key={t(`basics.content.${index}.title`)}
           alt={value.alt}
           paragraph={t(`basics.content.${index}.paragraph`)}
           src={`/${value.src}`}
