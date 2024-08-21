@@ -85,6 +85,7 @@ export class SearchIndexer {
     if (!this.collection) {
       const collection = this.client.collections(this.collectionName)
       const exists = await collection.exists()
+      console.log("Collection exists", exists)
       if (!exists) await this.createCollection()
       this.collection = collection
     }
@@ -104,7 +105,15 @@ export class SearchIndexer {
       currentBatch++
       if (numBatches && currentBatch > numBatches) return
 
-      const docs = batch.map(d => convert(d.data()))
+      const docs = batch.reduce((acc, d) => {
+        try {
+          const doc = convert(d.data())
+          acc.push(doc)
+        } catch (error: any) {
+          console.error(`Failed to convert document: ${error.message}`)
+        }
+        return acc
+      }, [] as any[])
       const collection = await this.getCollection()
       try {
         await collection.documents().import(docs, { action: "upsert" })
@@ -131,7 +140,14 @@ export class SearchIndexer {
 
   private async upgradeAlias() {
     const { alias } = this.config
+    console.log("Upgrading alias", alias)
     const obsoleteCollection = await this.getCurrentCollectionName()
+    console.log(
+      "Upgrading collection",
+      obsoleteCollection,
+      "to",
+      this.collectionName
+    )
     await this.client
       .aliases()
       .upsert(alias, { collection_name: this.collectionName })
