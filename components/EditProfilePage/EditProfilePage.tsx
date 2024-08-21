@@ -1,3 +1,4 @@
+import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
@@ -125,6 +126,12 @@ export function EditProfileForm({
       content: <FollowingTab className="mt-3 mb-4" />
     }
   ]
+
+  const { followOrg } = useFlags()
+
+  if (followOrg === false) {
+    tabs.splice(2, 1)
+  }
 
   return (
     <>
