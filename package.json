@@ -106,6 +106,7 @@
     "next-i18next": "^13.1.5",
     "next-redux-wrapper": "^8.1.0",
     "papaparse": "^5.3.0",
+    "playwright": "^1.46.1",
     "react": "^18.2.0",
     "react-admin": "^4.16.4",
     "react-admin-firebase": "^4.1.3",
