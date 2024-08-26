@@ -5,7 +5,7 @@ import {
   Pagination,
   SearchBox,
   useInstantSearch
-} from "@alexjball/react-instantsearch-hooks-web"
+} from "react-instantsearch"
 import {
   StyledTabContent,
   StyledTabNav
