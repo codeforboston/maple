@@ -71,6 +71,7 @@
     ]
   },
   "dependencies": {
+    "@alexjball/react-instantsearch-hooks-web": "~6.29.1",
     "@emotion/weak-memoize": "^0.3.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
@@ -182,7 +183,7 @@
     "mustache": "^4.2.0",
     "ncp": "^2.0.0",
     "npm-check": "^6.0.1",
-    "prettier": "2.8.3",
+    "prettier": "^3.3.3",
     "sass": "^1.49.0",
     "storybook": "^7.6.4",
     "ts-node": "^10.9.2",

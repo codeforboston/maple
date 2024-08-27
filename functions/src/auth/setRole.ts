@@ -21,7 +21,6 @@ export const setRole = async ({
   if (email) user = await auth.getUserByEmail(email)
   else if (uid) user = await auth.getUser(uid)
   else throw Error("Missing uid or email")
-  
 
   const claim: Claim = { role }
   await auth.setCustomUserClaims(user.uid, claim)

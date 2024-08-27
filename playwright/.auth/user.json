@@ -1,0 +1,49 @@
+{
+  "cookies": [
+    {
+      "name": "_lr_tabs_-a9zjgu%2Fmaple",
+      "value": "{%22sessionID%22:0%2C%22recordingID%22:%225-f69ce752-c9f4-4fa2-8db0-bf100502c7e7%22%2C%22lastActivity%22:1724683517810}",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1724769917,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_lr_hb_-a9zjgu%2Fmaple",
+      "value": "{%22heartbeat%22:1724683517811}",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1724769917,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_lr_uf_-a9zjgu",
+      "value": "f6bfcb02-2f9a-4626-a345-2f3a7aaa7e60",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "_lr_id_",
+          "value": "{\"userID\":\"565bfad9-aa0f-4799-9e09-8b8405b84fd8\"}"
+        },
+        {
+          "name": "loglevel",
+          "value": "WARN"
+        }
+      ]
+    }
+  ]
+}
