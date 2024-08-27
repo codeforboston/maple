@@ -70,7 +70,6 @@
     ]
   },
   "dependencies": {
-    "@alexjball/react-instantsearch-hooks-web": "~6.29.1",
     "@emotion/weak-memoize": "^0.3.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
@@ -116,6 +115,7 @@
     "react-hook-form": "^7.33.1",
     "react-i18next": "^13.2.2",
     "react-inlinesvg": "^3.0.1",
+    "react-instantsearch": "^7.12.4",
     "react-is": "^18.2.0",
     "react-markdown": "^8.0.4",
     "react-overlays": "^5.1.1",
