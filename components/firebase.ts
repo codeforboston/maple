@@ -96,7 +96,7 @@ if (!initialized && process.env.NODE_ENV !== "production") {
 /** Connect emulators according to `firebase.json` */
 function connectEmulators() {
   const host =
-    (process.env.NEXT_PUBLIC_EMULATOR_HOST ?? typeof window === "undefined")
+    process.env.NEXT_PUBLIC_EMULATOR_HOST ?? typeof window === "undefined"
       ? "firebase"
       : "127.0.0.1"
   connectFirestoreEmulator(firestore, host, 8080)

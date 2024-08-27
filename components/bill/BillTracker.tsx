@@ -54,8 +54,8 @@ export const BillStageStrip = ({
   const color = isCurrentStage
     ? "var(--bs-green)"
     : isPastStage
-      ? "#8EBC81"
-      : "var(--bs-gray)"
+    ? "#8EBC81"
+    : "var(--bs-gray)"
 
   return (
     <div className={className}>

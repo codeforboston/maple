@@ -33,14 +33,14 @@ export class Schema {
         matches.length === 0
           ? "unknown"
           : matches.length === 1
-            ? matches[0].type
-            : "conflicting",
+          ? matches[0].type
+          : "conflicting",
       context:
         matches.length === 0
           ? {}
           : matches.length === 1
-            ? matches[0].context
-            : { types: matches.map(({ type }) => type) }
+          ? matches[0].context
+          : { types: matches.map(({ type }) => type) }
     }
     return classified
   }

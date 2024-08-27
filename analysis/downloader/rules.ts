@@ -183,10 +183,10 @@ export const rules: Rules = {
         action: action.includes("Hearing canceled")
           ? "canceled"
           : action.includes("Hearing scheduled")
-            ? "scheduled"
-            : action.includes("Hearing rescheduled")
-              ? "rescheduled"
-              : "unknown",
+          ? "scheduled"
+          : action.includes("Hearing rescheduled")
+          ? "rescheduled"
+          : "unknown",
         format: /in (.*?)$/.exec(action)?.[1],
         locationChanged: action.includes("Location Changed"),
         time: /(?:scheduled from|scheduled for|rescheduled to) (.*) in/.exec(

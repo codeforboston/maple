@@ -31,8 +31,8 @@ export const useTestimonyEmail = () => {
       position == "endorse"
         ? "Support of"
         : position == "oppose"
-          ? "Opposition to"
-          : "Opinion on",
+        ? "Opposition to"
+        : "Opinion on",
     subject = `${subjectPosition} Bill ${billId}`
 
   const markdownBody = [intro, content, cta, ending]

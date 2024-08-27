@@ -29,8 +29,8 @@ export const TestimoniesTab = ({
           ? 1
           : -1
         : a.publishedAt < b.publishedAt
-          ? 1
-          : -1
+        ? 1
+        : -1
     )
   }, [orderBy, publishedTestimonies])
 

@@ -130,8 +130,8 @@ const ViewTestimony = (
                         ? 1
                         : -1
                       : a.publishedAt < b.publishedAt
-                        ? 1
-                        : -1
+                      ? 1
+                      : -1
                   )
                   .map(t => (
                     <TestimonyItem

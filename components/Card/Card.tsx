@@ -86,7 +86,7 @@ export const Card = (CardProps: CardProps) => {
           />
         )
       )
-    : (items ?? [])
+    : items ?? []
   const shown = showAll ? allItems : allItems.slice(0, initialRowCount)
 
   return (

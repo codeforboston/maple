@@ -215,8 +215,8 @@ export const createNewTestimony = async (uid: string, billId: string) => {
       !pubTest.empty && archTest.empty
         ? "pubTest"
         : !archTest.empty && pubTest.empty
-          ? "archTest"
-          : "error"
+        ? "archTest"
+        : "error"
 
     return result
   }

@@ -75,9 +75,7 @@ export const ImageButton = styled<
 })`
   cursor: pointer;
 
-  transition:
-    filter 0.15s ease-in-out,
-    outline-width 0.1s ease-in-out;
+  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
   &:hover {
     filter: brightness(70%);
   }
@@ -286,9 +284,7 @@ export const TooltipButton = styled<{
 })`
   font-size: 14px;
 
-  transition:
-    filter 0.15s ease-in-out,
-    outline-width 0.1s ease-in-out;
+  transition: filter 0.15s ease-in-out, outline-width 0.1s ease-in-out;
   &:hover {
     filter: brightness(70%);
   }
