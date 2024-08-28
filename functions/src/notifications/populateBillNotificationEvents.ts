@@ -25,7 +25,7 @@ export type Notification = {
   testimonyPosition: string
   testimonyContent: string
   testimonyVersion: number
-  
+
   updateTime: Timestamp
 }
 
@@ -63,7 +63,7 @@ export const populateBillNotificationEvents = functions.firestore
         testimonyContent: "",
         testimonyVersion: -1,
 
-        updateTime: Timestamp.now(),
+        updateTime: Timestamp.now()
       }
 
       await db.collection("/notificationEvents").add(newNotificationEvent)
@@ -100,7 +100,7 @@ export const populateBillNotificationEvents = functions.firestore
           .doc(notificationEventId)
           .update({
             billHistory: newData?.history,
-            updateTime: Timestamp.now(),
+            updateTime: Timestamp.now()
           })
       }
     }

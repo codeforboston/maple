@@ -89,10 +89,22 @@ export function ProfileButtonsUser({
   )
 }
 
-export function ProfileButtonsOrg({ profileId, isUser }: { profileId: string, isUser: boolean }) {
+export function ProfileButtonsOrg({
+  profileId,
+  isUser
+}: {
+  profileId: string
+  isUser: boolean
+}) {
   const { followOrg } = useFlags()
   const { user } = useAuth()
   return (
-    <>{isUser ? <EditProfileButton /> : followOrg && user ? <FollowButton profileId={profileId} user={user} /> : null}</>
+    <>
+      {isUser ? (
+        <EditProfileButton />
+      ) : followOrg && user ? (
+        <FollowButton profileId={profileId} user={user} />
+      ) : null}
+    </>
   )
 }

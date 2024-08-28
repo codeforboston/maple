@@ -14,7 +14,7 @@ export const FollowButton = ({
   profileId,
   user
 }: {
-  profileId?: string,
+  profileId?: string
   user: Maybe<User>
 }) => {
   const { t } = useTranslation("profile")
