@@ -1,10 +1,5 @@
-import { useConnector } from "@alexjball/react-instantsearch-hooks-web"
-import connectStats from "instantsearch.js/es/connectors/stats/connectStats"
+import { useStats } from "react-instantsearch"
 import styled from "styled-components"
-
-function useStats(): any {
-  return useConnector(connectStats)
-}
 
 const ResultContainer = styled.span`
   font-size: 0.75rem;
@@ -12,8 +7,9 @@ const ResultContainer = styled.span`
 export function ResultCount(props: any) {
   const { hitsPerPage, nbHits, page } = useStats()
 
-  const pageStart = Math.min(page * hitsPerPage + 1, nbHits)
-  const pageEnd = Math.min(pageStart + hitsPerPage - 1, nbHits)
+  const limit = hitsPerPage || 0
+  const pageStart = Math.min(page * limit + 1, nbHits)
+  const pageEnd = Math.min(pageStart + limit - 1, nbHits)
 
   return (
     <ResultContainer {...props}>
