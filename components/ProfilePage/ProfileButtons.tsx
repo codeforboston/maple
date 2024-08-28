@@ -3,12 +3,11 @@ import { useTranslation } from "next-i18next"
 import { Button } from "../bootstrap"
 import styled from "styled-components"
 import { FillButton, GearButton, ToggleButton } from "components/buttons"
-import { Col } from "react-bootstrap"
-import { Story } from "stories/atoms/BaseButton.stories"
 import { Internal } from "components/links"
 import { useProfile, ProfileHook } from "components/db"
 import { FollowButton } from "./FollowButton"
 import { useFlags } from "components/featureFlags"
+import { useAuth } from "../auth"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -90,9 +89,10 @@ export function ProfileButtonsUser({
   )
 }
 
-export function ProfileButtonsOrg({ isUser }: { isUser: boolean }) {
+export function ProfileButtonsOrg({ profileId, isUser }: { profileId: string, isUser: boolean }) {
   const { followOrg } = useFlags()
+  const { user } = useAuth()
   return (
-    <>{isUser ? <EditProfileButton /> : followOrg ? <FollowButton /> : null}</>
+    <>{isUser ? <EditProfileButton /> : followOrg && user ? <FollowButton profileId={profileId} user={user} /> : null}</>
   )
 }
