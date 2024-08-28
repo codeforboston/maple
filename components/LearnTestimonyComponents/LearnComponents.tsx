@@ -9,6 +9,7 @@ import {
   OralContent,
   WriteOrCallContent
 } from "components/CommunicatingWithLegislators/CommunicatingWithLegislatorsContent"
+import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   p {
@@ -21,165 +22,99 @@ const StyledCardBody = styled(Card.Body)`
   line-height: 2.05rem;
 `
 
-const BasicsContent = [
+const BasicsSrcAlt = [
   {
-    title: "Anyone can submit testimony to the MA legislature",
-    paragraph:
-      "Legislators tend to value testimony most when it comes from their own constituents. Testimony from MA residents is typically directed to both the committee that is substantively responsible for the bill as well as the legislators (House member and Senator) representing your district.",
     src: "who.svg",
     alt: "who.title"
   },
   {
-    title:
-      "Your testimony will be most impactful when it feels distinctive and relevant",
-    paragraph:
-      "Be sure to write your own text and explain why you are interested in an issue.",
     src: "what.svg",
     alt: "what.title"
   },
   {
-    title:
-      "Committees generally accept testimony up until the hearing date designated for a bill",
-    paragraph:
-      " You can use the bill pages on this website to identify relevant committee dates. Although some committees will accept testimony after this date, for the greatest impact you should submit your testimony before the hearing.",
     src: "when.svg",
     alt: "when.title"
   },
   {
-    title:
-      "Testimony is generally accepted by committees of the legislature by sending an email to their Chairs",
-    paragraph:
-      "This website, MAPLE, will help you to do this by making it easy to find a bill you want to testify in and then generate an email, which you fully control, which you can then send to the relevant personnel.",
     src: "where.svg",
     alt: "where.title"
   },
   {
-    title:
-      "The key role of testimony is to let your legislators know how you feel about an issue",
-    paragraph:
-      "If you don't share your perspective, it will not be taken into account when policymakers make decisions about the laws that govern all our lives.",
     src: "why.svg",
-    alt: "why.title"
+    alt: "Why"
   }
 ]
 
-const RoleContent = [
+const RoleSrcAlt = [
   {
-    title: "Your voice is instrumental to the legislative process",
-    paragraph:
-      "It could guide the agenda of the legislature, what topics and bills they consider, and how they decide to act and vote on each bill. ",
-    src: "speaker-with-thumbs.svg"
+    src: "speaker-with-thumbs.svg",
+    alt: "Speaker with thumbs"
   },
   {
-    title: "Your voice give them insight",
-    paragraph:
-      "It can inform legislators of the benefits or negative consequences of proposed policies.",
-    src: "speaker-with-leg.svg"
+    src: "speaker-with-leg.svg",
+    alt: "Speaker with documents"
   },
   {
-    title: "You can give suggestions",
-    paragraph:
-      "You can also recommend specific changes or improvements to legislation, whether you generally support or oppose the bill.",
-    src: "speaker-with-pen.svg"
+    src: "speaker-with-pen.svg",
+    alt: "Speaker with pen"
   }
 ]
 
-const WriteContent = [
+const WriteSrcAlt = [
   {
-    title: "Be Timely",
-    paragraphs: [
-      `Written testimony should be targeted towards specific bills being considered by the legislature. All Committees should formally accept testimony on each bill in the time between the start of the legislative session and the public hearing of that bill.`,
-      `Some committees will continue accepting testimony after the hearing date, but it may not have the same impact on their deliberations.`
-    ],
     src: "leg-with-clock.svg",
     alt: ""
   },
   {
-    title: "Be Original",
-    paragraphs: [
-      `Legislators receive a lot of form letters and repeated sentiments from organized groups of constituents. These communications are important and their volume can be meaningful to legislators. But, almost always, an individual and personalized letter will have a greater impact.`
-    ],
     src: "leg-with-lightbulb.svg",
     alt: ""
   },
   {
-    title: "Be Informative",
-    paragraphs: [
-      `Whether you are a longtime advocate or a first time testifier, whether you have a doctoral degree in the subject or lived experience regarding a policy, and no matter your age, race, creed, or background, your testimony is important. Explain why you are concerned about an issue and why you think one policy choice would be better than another. For example, your being a parent gives you special insight into education policy, your living in a community affected by pollution gives you special insight into environmental policy, etc.`
-    ],
     src: "writing.svg",
     alt: ""
   },
   {
-    title: "Be Direct",
-    paragraphs: [
-      `State whether you support or oppose a bill. Be clear and specific about the policies you want to see. You don't have to know specific legal precedents or legislative language; just explain what you would like to happen and why.`
-    ],
     src: "opinions.svg",
     alt: ""
   },
   {
-    title: "Be Respectful",
-    paragraphs: [
-      `No matter how strongly and sincerely held your position is, there may be people of good intent who feel oppositely and expect and deserve to have their opinions considered by their legislators also. Respectful testimony will carry more weight with legislators, especially those who you may need to persuade to your side of an issue.`
-    ],
     src: "respect-with-blob.svg",
     alt: ""
   }
 ]
 
 const Basics = () => {
-  const { t } = useTranslation("homepage")
+  const { t } = useTranslation("learnComponents")
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">
-        To Write Effective Testimony
-      </h1>
-      <p className="fs-4 tracking-tight lh-base">
-        All laws passed by state legislatures should consider feedback from
-        residents and community stakeholders. In Massachusetts, one way to have
-        your voice heard is by submitting written testimony regarding specific
-        bills. <br /> <br /> This website, the MAPLE platform, can help you
-        submit your written testimony to the MA Legislature. However, please
-        note that this is not an official government website and is not the only
-        way to submit your testimony. Here are the essential things to know
-        before submitting testimony:
-      </p>
-      {BasicsContent.map((value, index) => (
+      <h1 className="fw-bold tracking-tighter lh-base">{t("basics.title")}</h1>
+      <p className="fs-4 tracking-tight lh-base">{t("basics.intro")}</p>
+      {BasicsSrcAlt.map((value, index) => (
         <BasicsOfTestimonyCard
-          title={value.title}
+          title={t(`basics.content.${index}.title`)}
           index={index}
-          key={value.title}
-          alt={t(value.alt)}
-          paragraph={value.paragraph}
+          key={t(`basics.content.${index}.title`)}
+          alt={value.alt}
+          paragraph={t(`basics.content.${index}.paragraph`)}
           src={`/${value.src}`}
         />
       ))}
     </Container>
   )
 }
-
 const Role = () => {
+  const { t } = useTranslation("learnComponents")
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">
-        The Role of Testimony
-      </h1>
-      <p className="fs-4 tracking-tight lh-base">
-        By speaking up, you can make the laws of Massachusetts work better for
-        all of us! <br /> <br /> Everyone is able to convey their opinions to
-        the legislature, but the process to submit testimony can be confusing
-        and intimidating. We hope that this website, the MAPLE platform, will
-        make that process easier, more straightforward, and more accessible to
-        all stakeholders.
-      </p>
-      {RoleContent.map((value, index) => (
+      <h1 className="fw-bold tracking-tighter lh-base">{t("role.title")}</h1>
+      <p className="fs-4 tracking-tight lh-base">{t("role.intro")}</p>
+      {RoleSrcAlt.map((value, index) => (
         <RoleOfTestimonyCard
-          title={value.title}
+          title={t(`role.content.${index}.title`)}
           index={index}
-          key={value.title}
-          alt=""
-          paragraph={value.paragraph}
+          key={value.src}
+          alt={value.alt}
+          paragraph={t(`role.content.${index}.paragraph`)}
           src={`/${value.src}`}
         />
       ))}
@@ -188,25 +123,37 @@ const Role = () => {
 }
 
 const Write = () => {
+  interface WriteContentItem {
+    title: string
+    paragraphs: string[]
+    src: string
+    alt: string
+  }
+  const { t } = useTranslation("learnComponents")
+  const writeContent = t("write.content", {
+    returnObjects: true
+  }) as WriteContentItem[]
+
+  const mergedContent = WriteSrcAlt.map((item, index) => ({
+    ...item,
+    ...writeContent[index]
+  }))
+
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className="fw-bold tracking-tighter lh-base">
-        Writing Effective Testimony
-      </h1>
-      <p className="fs-4 tracking-tight lh-base">
-        The basics of writing effective testimony are to clearly outline what
-        bill you are testifying about, whether you support or oppose it, why you
-        are concerned about the issue, what policy you would like to see
-        enacted, and what legislative district you live in. Here are some tips
-        you can use to make sure the testimony you submit is as impactful as
-        possible:
-      </p>
-      <TestimonyCardList contents={WriteContent} shouldAlternateImages={true} />
+      <h1 className="fw-bold tracking-tighter lh-base">{t("write.title")}</h1>
+      <p className="fs-4 tracking-tight lh-base">{t("write.intro")}</p>
+      <TestimonyCardList
+        contents={mergedContent}
+        shouldAlternateImages={true}
+      />
     </Container>
   )
 }
 
 const CommunicatingWithLegislators = () => {
+  const { t } = useTranslation("learnComponents")
+
   const CommWithLegCard = ({
     title,
     children
@@ -231,22 +178,19 @@ const CommunicatingWithLegislators = () => {
       <Row className={"mb-5"}>
         <Col fluid="m" lg={{ span: 10, offset: 1 }} xl={{ span: 8, offset: 2 }}>
           <h1 className={"fw-bold text-center display-4 mt-5 mx-n4"}>
-            Communicating with Legislators
+            {t("communicating.title")}
           </h1>
-          <p className={"ms-1 fs-4"}>
-            There are multiple ways to share your perspective and knowledge with
-            your legislators.
-          </p>
+          <p className={"ms-1 fs-4"}>{t("communicating.intro")}</p>
 
-          <CommWithLegCard title="Testify in writing">
+          <CommWithLegCard title={t("communicating.testifyInWriting")}>
             <WritingContent />
           </CommWithLegCard>
 
-          <CommWithLegCard title="Testify orally">
+          <CommWithLegCard title={t("communicating.testifyOrally")}>
             <OralContent />
           </CommWithLegCard>
 
-          <CommWithLegCard title="Write or call them">
+          <CommWithLegCard title={t("communicating.writeOrCall")}>
             <WriteOrCallContent />
           </CommWithLegCard>
         </Col>

@@ -4,11 +4,9 @@ import {
   InstantSearch,
   Pagination,
   SearchBox,
-  useConfigure,
   useInstantSearch
-} from "@alexjball/react-instantsearch-hooks-web"
+} from "react-instantsearch"
 import { currentGeneralCourt } from "functions/src/shared"
-import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../../bootstrap"
@@ -78,6 +76,7 @@ const Layout: FC<
 > = ({ items }) => {
   const refinements = useBillRefinements()
   const status = useSearchStatus()
+
   return (
     <SearchContainer>
       <Row>

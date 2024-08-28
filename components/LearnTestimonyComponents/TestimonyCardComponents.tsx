@@ -15,13 +15,17 @@ export const TestimonyCardList = ({
   contents: TestimonyCardContent[]
   shouldAlternateImages: boolean
 }) => {
-  return contents.map((value, index) => (
-    <TestimonyCard
-      key={value.title}
-      content={value}
-      shouldAlternateImage={shouldAlternateImages && index % 2 !== 0}
-    />
-  ))
+  return (
+    <div>
+      {contents.map((value, index) => (
+        <TestimonyCard
+          key={value.title}
+          content={value}
+          shouldAlternateImage={shouldAlternateImages && index % 2 !== 0}
+        />
+      ))}
+    </div>
+  )
 }
 
 export type TestimonyCardProps = {
