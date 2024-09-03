@@ -2,27 +2,27 @@
   "cookies": [
     {
       "name": "_lr_tabs_-a9zjgu%2Fmaple",
-      "value": "{%22sessionID%22:0%2C%22recordingID%22:%225-c049e2f9-6076-412d-a67d-055484d16a48%22%2C%22lastActivity%22:1724697919601}",
+      "value": "{%22sessionID%22:0%2C%22recordingID%22:%225-051ebaf4-0f82-4402-bb92-e2b6a68f1f8e%22%2C%22lastActivity%22:1724799256299}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1724784319,
+      "expires": 1724885656,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_hb_-a9zjgu%2Fmaple",
-      "value": "{%22heartbeat%22:1724697919601}",
+      "value": "{%22heartbeat%22:1724799256300}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1724784319,
+      "expires": 1724885656,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_uf_-a9zjgu",
-      "value": "1e3f46eb-52b6-4f5c-810d-d9a1e0b63213",
+      "value": "0f9b9184-c92c-46d0-93c2-754410b91fc5",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -36,12 +36,12 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
-          "name": "_lr_id_",
-          "value": "{\"userID\":\"64ae7194-1294-4911-bb35-64ac00b33043\"}"
+          "name": "firebase-heartbeat-database",
+          "value": "{\"firebase-heartbeat-store\":{\"[DEFAULT]!1:313437920642:web:42723233282dbcac37439b\":\"{\\\"lastSentHeartbeatDate\\\":\\\"2024-08-27\\\",\\\"heartbeats\\\":[]}\"}}"
         },
         {
-          "name": "loglevel",
-          "value": "WARN"
+          "name": "firebaseLocalStorageDb",
+          "value": "{\"firebaseLocalStorage\":{}}"
         }
       ]
     }

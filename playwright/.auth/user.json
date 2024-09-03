@@ -2,27 +2,27 @@
   "cookies": [
     {
       "name": "_lr_tabs_-a9zjgu%2Fmaple",
-      "value": "{%22sessionID%22:0%2C%22recordingID%22:%225-f69ce752-c9f4-4fa2-8db0-bf100502c7e7%22%2C%22lastActivity%22:1724683517810}",
+      "value": "{%22sessionID%22:0%2C%22recordingID%22:%225-9f28bda0-e5be-4003-8748-c53accf1cf8b%22%2C%22lastActivity%22:1724800021996}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1724769917,
+      "expires": 1724886421,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_hb_-a9zjgu%2Fmaple",
-      "value": "{%22heartbeat%22:1724683517811}",
+      "value": "{%22heartbeat%22:1724800021997}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1724769917,
+      "expires": 1724886421,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_uf_-a9zjgu",
-      "value": "f6bfcb02-2f9a-4626-a345-2f3a7aaa7e60",
+      "value": "c80b022c-ab4a-4002-8cc4-ba58c35a452f",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -36,12 +36,12 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
-          "name": "_lr_id_",
-          "value": "{\"userID\":\"565bfad9-aa0f-4799-9e09-8b8405b84fd8\"}"
+          "name": "firebase-heartbeat-database",
+          "value": "{\"firebase-heartbeat-store\":{\"[DEFAULT]!1:313437920642:web:42723233282dbcac37439b\":\"{\\\"lastSentHeartbeatDate\\\":\\\"2024-08-27\\\",\\\"heartbeats\\\":[]}\"}}"
         },
         {
-          "name": "loglevel",
-          "value": "WARN"
+          "name": "firebaseLocalStorageDb",
+          "value": "{\"firebaseLocalStorage\":{\"firebase:authUser:AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo:[DEFAULT]\":\"{\\\"fbase_key\\\":\\\"firebase:authUser:AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo:[DEFAULT]\\\",\\\"value\\\":{\\\"uid\\\":\\\"05lcy6YQrPvPRvVPlZFbCA0O81TF\\\",\\\"email\\\":\\\"testadmin@example.com\\\",\\\"emailVerified\\\":true,\\\"isAnonymous\\\":false,\\\"providerData\\\":[{\\\"providerId\\\":\\\"password\\\",\\\"uid\\\":\\\"testadmin@example.com\\\",\\\"displayName\\\":null,\\\"email\\\":\\\"testadmin@example.com\\\",\\\"phoneNumber\\\":null,\\\"photoURL\\\":null}],\\\"stsTokenManager\\\":{\\\"refreshToken\\\":\\\"eyJfQXV0aEVtdWxhdG9yUmVmcmVzaFRva2VuIjoiRE8gTk9UIE1PRElGWSIsImxvY2FsSWQiOiIwNWxjeTZZUXJQdlBSdlZQbFpGYkNBME84MVRGIiwicHJvdmlkZXIiOiJwYXNzd29yZCIsImV4dHJhQ2xhaW1zIjp7fSwicHJvamVjdElkIjoiZGVtby1kdHAifQ==\\\",\\\"accessToken\\\":\\\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJuYW1lIjoiIiwicGljdHVyZSI6IiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoidGVzdGFkbWluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF1dGhfdGltZSI6MTcyNDgwMDAyMywidXNlcl9pZCI6IjA1bGN5NllRclB2UFJ2VlBsWkZiQ0EwTzgxVEYiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRlc3RhZG1pbkBleGFtcGxlLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn0sImlhdCI6MTcyNDgwMDAyMywiZXhwIjoxNzI0ODAzNjIzLCJhdWQiOiJkZW1vLWR0cCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9kZW1vLWR0cCIsInN1YiI6IjA1bGN5NllRclB2UFJ2VlBsWkZiQ0EwTzgxVEYifQ.\\\",\\\"expirationTime\\\":1724803623270},\\\"createdAt\\\":\\\"1682192575545\\\",\\\"lastLoginAt\\\":\\\"1724800023256\\\",\\\"apiKey\\\":\\\"AIzaSyDtqmwBWy-uM-ycTczU8Bt0scM7Pa7MBYo\\\",\\\"appName\\\":\\\"[DEFAULT]\\\"}}\"}}"
         }
       ]
     }
