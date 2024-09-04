@@ -84,7 +84,7 @@ export const populateOrgNotificationEvents = functions.firestore
             testimonyPosition: newData?.position,
             testimonyContent: newData?.content,
             testimonyVersion: newData?.version,
-            updateTime: Timestamp.now(),
+            updateTime: Timestamp.now()
           })
       }
     }

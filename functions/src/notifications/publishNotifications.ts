@@ -44,7 +44,7 @@ const createNotificationFields = (entity: Notification) => {
       console.log(`Invalid entity type: ${entity.type}`)
       throw new Error(`Invalid entity type: ${entity.type}`)
   }
-  
+
   return {
     topicName,
     uid: "",
@@ -57,7 +57,7 @@ const createNotificationFields = (entity: Notification) => {
       type: entity.type,
       court,
       delivered: false
-    }, 
+    },
     createdAt: Timestamp.now()
   }
 }
@@ -95,7 +95,9 @@ export const publishNotifications = functions.firestore
         // Add the uid to the notification document
         notificationFields.uid = uid
 
-        console.log(`Pushing notifications to users/${uid}/userNotificationFeed`)
+        console.log(
+          `Pushing notifications to users/${uid}/userNotificationFeed`
+        )
 
         // Create a notification document in the user's notification feed
         notificationPromises.push(

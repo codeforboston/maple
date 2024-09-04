@@ -18,7 +18,7 @@ export const script: Script = async ({ db, args }) => {
   for (const id of bills) {
     const billHistoryAction: BillHistoryAction = {
       Date: Timestamp.now().valueOf(),
-      Branch: Math.random() < 0.5 ? 'Senate' : 'House',
+      Branch: Math.random() < 0.5 ? "Senate" : "House",
       Action: (Math.random() + 1).toString(36).substring(2)
     }
 
