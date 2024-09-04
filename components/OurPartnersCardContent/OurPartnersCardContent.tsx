@@ -1,5 +1,6 @@
-import { Row, Col } from "../bootstrap"
+import { useTranslation } from "next-i18next"
 import Image from "react-bootstrap/Image"
+import { Row, Col } from "../bootstrap"
 
 const NuLawLabCardContent = () => {
   return (
@@ -93,22 +94,17 @@ const CodeForBostonCardContent = () => {
 }
 
 const OpenCollectiveContent = () => {
+  const { t } = useTranslation("common")
+
   return (
     <>
       <Row className="mb-3">
         <Col className="text-center align-self-center" md={3}>
-          <Image
-            fluid
-            src="/open_collective_logo.png"
-            alt="open_collective_logo"
-          />
+          <Image fluid src="/pid.png" alt="partners in democracy logo" />
         </Col>
         <Col className="align-self-center" md={9}>
           <p className="lh-sm tracking-wide fs-5 pt-4 pt-md-0">
-            MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open
-            Collective Foundation (OCF). You can see a full list of our donors
-            and expenditures on our Open Collective webpage. You can also join
-            the list and make a donation through the sit.
+            {t("partners.pid")}
           </p>
         </Col>
       </Row>

@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
@@ -7,8 +8,6 @@ import {
   OpenCollectiveContent
 } from "../OurPartnersCardContent/OurPartnersCardContent"
 import { PageTitle, PageDescr } from "./CommonComponents"
-
-import { useTranslation } from "next-i18next"
 
 export const OurPartners = () => {
   const { t } = useTranslation("common")
