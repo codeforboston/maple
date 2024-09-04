@@ -7,13 +7,12 @@ const DonateCardContent = () => {
       <p>
         <span>{`${t("donate.bodytextOne")} `}</span>
         <a
-          href="https://opencollective.com/mapletestimony"
+          href="https://crm.bloomerang.co/HostedDonation?ApiKey=pub_89ca6da3-3b89-11ed-ba98-0665072ac94d&WidgetId=20480"
           target="_blank"
           rel="noopener noreferrer"
         >
           {t("donate.donorsLink")}
         </a>
-        <span>{` ${t("donate.bodytextTwo")}`}</span>
       </p>
     </>
   )
