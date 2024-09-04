@@ -45,6 +45,13 @@
   "newcomer" : "New to MAPLE? For extra support, check",
   "notInCommittee": "Bill not currently in committee",
   "orgs": "Organizations",
+  "partners": {
+    "header": "Our Partners",
+    "desc1": "The project is developed in partnership between the NuLawLab and scholars at",
+    "desc2": "Boston College Law School",
+    "desc3": "and",
+    "desc4": "Harvard University's Berkman Klein Center for Internet & Society"
+  },
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
