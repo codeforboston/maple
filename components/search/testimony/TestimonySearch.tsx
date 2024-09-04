@@ -5,7 +5,7 @@ import {
   Pagination,
   SearchBox,
   useInstantSearch
-} from "@alexjball/react-instantsearch-hooks-web"
+} from "react-instantsearch"
 import {
   StyledTabContent,
   StyledTabNav
@@ -110,7 +110,10 @@ const Layout = () => {
           : ["user", "organization"]
       return {
         ...prevState,
-        refinementList: { ...prevState.refinementList, authorRole: role }
+        refinementList: {
+          ...prevState.refinementList,
+          authorRole: role
+        }
       }
     })
   }
