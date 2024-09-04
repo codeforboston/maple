@@ -13,6 +13,14 @@ import { useTranslation } from "next-i18next"
 export const OurPartners = () => {
   const { t } = useTranslation("common")
 
+  {
+    /*linter does not like literal strings */
+  }
+  const untranslatedProperTitle1 = "NuLawLab"
+  const untranslatedProperTitle2 = "Boston College Law School"
+  const untranslatedProperTitle3 =
+    "Harvard University's Berkman Klein Center for Internet & Society"
+
   return (
     <Container>
       <Row>
@@ -23,13 +31,15 @@ export const OurPartners = () => {
       <Row>
         <Col className="py-3">
           <PageDescr>
-            {t("partners.desc1")}{" "}
+            {t("partners.desc1")} {untranslatedProperTitle1}{" "}
+            {t("partners.desc2")}
             <StyleLink
               href="https://www.bc.edu/bc-web/schools/law.html"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("partners.desc2")}
+              {" "}
+              {untranslatedProperTitle2}
             </StyleLink>{" "}
             {t("partners.desc3")}{" "}
             <StyleLink
@@ -37,7 +47,7 @@ export const OurPartners = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("partners.desc4")}
+              {untranslatedProperTitle3}
             </StyleLink>
             .
           </PageDescr>

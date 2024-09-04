@@ -47,10 +47,9 @@
   "orgs": "Organizations",
   "partners": {
     "header": "Our Partners",
-    "desc1": "The project is developed in partnership between the NuLawLab and scholars at",
-    "desc2": "Boston College Law School",
-    "desc3": "and",
-    "desc4": "Harvard University's Berkman Klein Center for Internet & Society"
+    "desc1": "The project is developed in partnership between the",
+    "desc2": "and scholars at",
+    "desc3": "and"
   },
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
