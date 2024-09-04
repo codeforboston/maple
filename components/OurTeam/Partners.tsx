@@ -12,9 +12,8 @@ import { PageTitle, PageDescr } from "./CommonComponents"
 export const OurPartners = () => {
   const { t } = useTranslation("common")
 
-  {
-    /*linter does not like literal strings */
-  }
+  // linter does not like literal strings
+
   const untranslatedProperTitle1 = "NuLawLab"
   const untranslatedProperTitle2 = "Boston College Law School"
   const untranslatedProperTitle3 =
