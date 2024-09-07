@@ -1,12 +1,12 @@
 // adminPage.spec.ts
-import { test, expect, chromium, Browser } from "@playwright/test"
+import { test, expect, chromium, Browser, BrowserContext, Page } from "@playwright/test"
 import { AdminPage } from "./page_objects/adminPage"
 // import { authenticate } from './auth.utils'
 
 test.describe("Admin Page", () => {
   let browser: Browser
-  let context
-  let page
+  let context: BrowserContext
+  let page: Page
 
   test.beforeAll(async () => {
     // Create a new browser instance
@@ -28,51 +28,90 @@ test.describe("Admin Page", () => {
     await browser.close() // Close the browser instance after all tests
   })
 
-  test("should display menu icon", async ({ page }) => {
+  test("should display menu icon", async () => {
     const menuIcon = page.getByTestId("MenuIcon")
     await expect(menuIcon).toBeVisible()
   })
 
-  test("should display refresh icon", async ({ page }) => {
+  test("should display refresh icon", async () => {
     const refreshIcon = page.getByTestId("RefreshIcon")
     await expect(refreshIcon).toBeVisible()
   })
 
-  test("should display viewList icon", async ({ page }) => {
-    const viewListIcon = page.getByTestId("ViewListIcon")
-    await expect(viewListIcon).toBeVisible()
+  test("should display viewList icon", async () => {
+    const userReports = page.getByRole('menuitem', { name: 'User Reports' })
+    const upgradeRequests = page.getByRole('menuitem', { name: 'Upgrade Requests' })
+    await expect(userReports).toBeVisible()
+    await expect(upgradeRequests).toBeVisible()
   })
 
-  test("should display getApp icon", async ({ page }) => {
+  test("should display getApp icon", async () => {
     const getAppIcon = page.getByTestId("GetAppIcon")
     await expect(getAppIcon).toBeVisible()
   })
 
-  test("should allow adding a report and display it in the table", async ({
-    page
-  }) => {
+
+  test("should display the table in acending order", async () => {
+    const reportIdHeader = await page.getByText("report id")
+    await reportIdHeader.click()
+    const currentUrl = await page.url()
+    if(!currentUrl.includes("order=ASC")) {
+      await reportIdHeader.click()
+    }
+    const newUrl = await page.url()
+    const classList = await reportIdHeader.locator("..").getAttribute('class')
+
+    expect(newUrl).toContain("order=ASC") 
+    expect(newUrl).toContain("sort=id") 
+    expect(classList).toContain('Mui-active')
+  })
+
+  test("should display the table in descending order", async () => {
+    const reportIdHeader = await page.getByText("Testimony", { exact: true })
+    await reportIdHeader.click()
+    const currentUrl = await page.url()
+    if(!currentUrl.includes("order=DESC")) {
+      await reportIdHeader.click()
+    }
+    const newUrl = await page.url()
+    const classList = await reportIdHeader.locator("..").getAttribute('class')
+
+    expect(newUrl).toContain("order=DESC") 
+    expect(newUrl).toContain("sort=testimonyId") 
+    expect(classList).toContain('Mui-active')
+  })
+
+  test("should allow adding a report", async () => {
     // Click the "SEED WITH A FAKE REPORT" button
     await page.getByRole("button", { name: "SEED WITH A FAKE REPORT" }).click()
-    await page.getByText("reportTestimony")
-    await page.getByText("Violent").click()
-    await page.click('button[type="submit"]')
-    // Verify that the report appears in the table
-    const reportRow = page.getByRole("row", { name: "reprot id" })
-    console.log(reportRow.count())
-    // Check that the specific cells contain the expected content
-    await expect(page.getByRole("row", { name: "reprot id" })).toBeVisible() // Report ID column
-    await expect(page.getByRole("row", { name: "Testimony" })).toBeVisible() // Testimony column
-    await expect(page.getByRole("row", { name: "archived id" })).toBeVisible() // Reason column
-    await expect(page.getByRole("row", { name: "Reason" })).toBeVisible() // Status column
-    await expect(page.getByRole("row", { name: "status" })).toBeVisible() // Report ID column
-    await expect(page.getByRole("row", { name: "resolution" })).toBeVisible() // Testimony column
-    await expect(page.getByRole("row", { name: "moderated by" })).toBeVisible() // Reason column
-    await expect(
-      page.getByRole("row", { name: "Resolve Report" })
-    ).toBeVisible()
-    // Optionally, interact with the "RESOLVE REPORT" button
-    await expect(
-      reportRow.getByRole("button", { name: "RESOLVE REPORT" })
-    ).toBeVisible()
+    await expect(page.getByText("reportTestimony")).toBeVisible()
+    await page.getByRole("radio", {name: "Violent"}).click()
+    await await page.getByRole('button', { name: '' }).click()
   })
+
+  test("should allow resolve a report", async () => {
+    const resolvedCases = await page.getByText("resolved").count()
+    await page.getByLabel("RESOLVE REPORT").first().click()
+    await expect(page.getByText("User Report Content")).toBeVisible()
+    await page.getByRole("radio", {name: "Remove"}).click()
+    await page.locator('form').getByText('Reason:').fill('This is the reason text.')
+    await page.click('button[type="submit"]')
+    const currentResolvedCases = await page.getByText("resolved").count()
+    expect(currentResolvedCases == resolvedCases + 1).toBeTruthy()
+  })
+
+  test("should display a table with differet categories", async () => {
+    await expect(page.getByText("report id", { exact: true })).toBeVisible() 
+    await expect(page.getByText("Testimony", { exact: true } )).toBeVisible() 
+    await expect(page.getByText("archived id", { exact: true } )).toBeVisible()
+    await expect(page.getByText("Reason", { exact: true } )).toBeVisible()
+    await expect(page.getByText("status", { exact: true } )).toBeVisible()
+    await expect(page.getByText("resolution", { exact: true } )).toBeVisible() 
+    await expect(page.getByText("moderated by" , { exact: true })).toBeVisible()
+    await expect(page.getByText("Resolve Report", { exact: true })).toBeVisible()
+  })
+
+
+
+
 })
