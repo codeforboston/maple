@@ -38,6 +38,7 @@ const createNotificationFields = (
     case "org":
       topicName = `org-${entity.orgId}`
       header = entity.billName
+      court = entity.billCourt
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       break
@@ -90,12 +91,31 @@ export const publishNotifications = functions.firestore
 
       console.log(JSON.stringify(notificationFields))
 
-      const subscriptionsSnapshot = await db
+      const topicNameSnapshot = await db
         .collectionGroup("activeTopicSubscriptions")
         .where("topicName", "==", notificationFields.topicName)
         .get()
 
-      subscriptionsSnapshot.docs.forEach(doc => {
+      // Send a testimony notification to all users subscribed to the Bill
+      let billSnapshot
+      if (notificationFields.notification.type !== "bill") {
+        billSnapshot = await db
+          .collectionGroup("activeTopicSubscriptions")
+          .where(
+            "topicName",
+            "==",
+            `bill-${notificationFields.notification.court}-${notificationFields.notification.id}`
+          )
+          .get()
+      }
+
+      // Merge the snapshots
+      const subscriptionsSnapshot = [
+        ...topicNameSnapshot.docs,
+        ...(billSnapshot?.docs ?? [])
+      ]
+
+      subscriptionsSnapshot.forEach(doc => {
         const subscription = doc.data()
         const { uid } = subscription
 

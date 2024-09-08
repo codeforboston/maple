@@ -34,7 +34,7 @@ export const populateOrgNotificationEvents = functions.firestore
         type: "org",
 
         billCourt: newData?.court.toString(),
-        billId: newData?.id,
+        billId: newData?.billId,
         billName: newData?.billTitle,
 
         orgId: newData?.authorUid,
@@ -61,7 +61,7 @@ export const populateOrgNotificationEvents = functions.firestore
       .collection("/notificationEvents")
       .where("type", "==", "org")
       .where("billCourt", "==", newData?.court.toString())
-      .where("billId", "==", newData?.id)
+      .where("billId", "==", newData?.billId)
       .where("authorUid", "==", newData?.authorUid)
       .get()
 
