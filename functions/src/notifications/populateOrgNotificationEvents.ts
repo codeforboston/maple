@@ -12,7 +12,7 @@ import { OrgNotification } from "./types"
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-// Define the populateBillNotificationEvents function
+// Define the populateOrgNotificationEvents function
 export const populateOrgNotificationEvents = functions.firestore
   .document("/users/{userId}/publishedTestimony/{testimonyId}")
   .onWrite(async (snapshot, context) => {
@@ -25,7 +25,6 @@ export const populateOrgNotificationEvents = functions.firestore
 
     const oldData = snapshot.before.data()
     const newData = snapshot.after.data()
-    console.log(newData)
 
     // New testimony added
     if (documentCreated) {
