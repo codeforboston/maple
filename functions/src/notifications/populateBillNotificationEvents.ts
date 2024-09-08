@@ -7,27 +7,10 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { BillHistory } from "../bills/types"
+import { BillNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
-
-export type Notification = {
-  type: string
-
-  billCourt: string
-  billId: string
-  billName: string
-
-  billHistory: BillHistory
-
-  testimonyUser: string
-  testimonyPosition: string
-  testimonyContent: string
-  testimonyVersion: number
-
-  updateTime: Timestamp
-}
 
 // Define the populateBillNotificationEvents function
 export const populateBillNotificationEvents = functions.firestore
@@ -49,19 +32,14 @@ export const populateBillNotificationEvents = functions.firestore
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: Notification = {
+      const newNotificationEvent: BillNotification = {
         type: "bill",
 
         billCourt: court,
         billId: newData?.id,
-        billName: newData?.id,
+        billName: newData?.content.Title,
 
         billHistory: newData?.history,
-
-        testimonyUser: "",
-        testimonyPosition: "",
-        testimonyContent: "",
-        testimonyVersion: -1,
 
         updateTime: Timestamp.now()
       }

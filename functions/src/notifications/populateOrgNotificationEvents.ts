@@ -7,7 +7,7 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { Notification } from "./populateBillNotificationEvents"
+import { OrgNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -25,20 +25,20 @@ export const populateOrgNotificationEvents = functions.firestore
 
     const oldData = snapshot.before.data()
     const newData = snapshot.after.data()
+    console.log(newData)
 
     // New testimony added
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: Notification = {
+      const newNotificationEvent: OrgNotification = {
         type: "org",
 
         billCourt: newData?.court.toString(),
         billId: newData?.id,
-        billName: newData?.id,
+        billName: newData?.billTitle,
 
-        billHistory: [],
-
+        orgId: newData?.authorUid,
         testimonyUser: newData?.fullName,
         testimonyPosition: newData?.position,
         testimonyContent: newData?.content,
@@ -63,7 +63,7 @@ export const populateOrgNotificationEvents = functions.firestore
       .where("type", "==", "org")
       .where("billCourt", "==", newData?.court.toString())
       .where("billId", "==", newData?.id)
-      .where("fullName", "==", newData?.fullName)
+      .where("authorUid", "==", newData?.authorUid)
       .get()
 
     console.log(

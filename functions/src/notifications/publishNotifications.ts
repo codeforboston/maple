@@ -7,12 +7,14 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { Notification } from "./populateBillNotificationEvents"
+import { BillNotification, OrgNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-const createNotificationFields = (entity: Notification) => {
+const createNotificationFields = (
+  entity: BillNotification | OrgNotification
+) => {
   let topicName: string
   let header: string
   let court: string | null = null
@@ -34,15 +36,15 @@ const createNotificationFields = (entity: Notification) => {
       break
 
     case "org":
-      topicName = `org-${entity.testimonyUser}`
+      topicName = `org-${entity.orgId}`
       header = entity.billName
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       break
 
     default:
-      console.log(`Invalid entity type: ${entity.type}`)
-      throw new Error(`Invalid entity type: ${entity.type}`)
+      console.log(`Invalid entity: ${entity}`)
+      throw new Error(`Invalid entity: ${entity}`)
   }
 
   return {
@@ -67,7 +69,10 @@ export const publishNotifications = functions.firestore
   .document("/notificationEvents/{topicEventId}")
   .onWrite(async (snapshot, context) => {
     // Get the newly created topic event data
-    const topic = snapshot?.after.data() as Notification | undefined
+    const topic = snapshot?.after.data() as
+      | BillNotification
+      | OrgNotification
+      | undefined
 
     if (!topic) {
       console.error("Invalid topic data:", topic)
@@ -78,7 +83,9 @@ export const publishNotifications = functions.firestore
     const notificationPromises: any[] = []
     console.log(`topic type: ${topic.type}`)
 
-    const handleNotifications = async (topic: Notification) => {
+    const handleNotifications = async (
+      topic: BillNotification | OrgNotification
+    ) => {
       const notificationFields = createNotificationFields(topic)
 
       console.log(JSON.stringify(notificationFields))
