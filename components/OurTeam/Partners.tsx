@@ -12,13 +12,6 @@ import { PageTitle, PageDescr } from "./CommonComponents"
 export const OurPartners = () => {
   const { t } = useTranslation("common")
 
-  // linter does not like literal strings
-
-  const untranslatedProperTitle1 = "NuLawLab"
-  const untranslatedProperTitle2 = "Boston College Law School"
-  const untranslatedProperTitle3 =
-    "Harvard University's Berkman Klein Center for Internet & Society"
-
   return (
     <Container>
       <Row>
@@ -29,23 +22,31 @@ export const OurPartners = () => {
       <Row>
         <Col className="py-3">
           <PageDescr>
-            {t("partners.desc1")} {untranslatedProperTitle1}{" "}
-            {t("partners.desc2")}
+            {t("partners.desc1")}
+            <StyleLink
+              href="https://www.nulawlab.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {" "}
+              {t("partners.desc2")}
+            </StyleLink>{" "}
+            {t("partners.desc3")}
             <StyleLink
               href="https://www.bc.edu/bc-web/schools/law.html"
               target="_blank"
               rel="noopener noreferrer"
             >
               {" "}
-              {untranslatedProperTitle2}
+              {t("partners.desc4")}
             </StyleLink>{" "}
-            {t("partners.desc3")}{" "}
+            {t("partners.desc5")}{" "}
             <StyleLink
               href="https://cyber.harvard.edu/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {untranslatedProperTitle3}
+              {t("partners.desc6")}
             </StyleLink>
             .
           </PageDescr>
