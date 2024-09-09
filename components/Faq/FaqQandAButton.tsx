@@ -11,6 +11,8 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
 
   useEffect(() => {}, [open])
 
+  const supportLink = "this page"
+
   return (
     <>
       <a
@@ -30,6 +32,12 @@ export const FaqQandAButton = ({ question, answer }: faqQandAProps) => {
       <Collapse in={open}>
         <p id="example-collapse-text" className={`mt-3 mb-0`}>
           {answer}
+          {question == "How can I support MAPLE?" ? (
+            <a href="https://www.mapletestimony.org/about/support-maple">
+              {" "}
+              {supportLink}
+            </a>
+          ) : null}
         </p>
       </Collapse>
     </>
