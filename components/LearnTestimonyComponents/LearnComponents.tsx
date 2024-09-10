@@ -9,7 +9,7 @@ import {
   OralContent,
   WriteOrCallContent
 } from "components/CommunicatingWithLegislators/CommunicatingWithLegislatorsContent"
-import { useTranslation } from "next-i18next"
+// import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   p {
@@ -25,23 +25,23 @@ const StyledCardBody = styled(Card.Body)`
 const BasicsSrcAlt = [
   {
     src: "who.svg",
-    alt: "who.title"
+    alt: "who"
   },
   {
     src: "what.svg",
-    alt: "what.title"
+    alt: "what"
   },
   {
     src: "when.svg",
-    alt: "when.title"
+    alt: "when"
   },
   {
     src: "where.svg",
-    alt: "where.title"
+    alt: "where"
   },
   {
     src: "why.svg",
-    alt: "Why"
+    alt: "why"
   }
 ]
 
@@ -94,7 +94,7 @@ const Basics = () => {
           title={t(`basics.content.${index}.title`)}
           index={index}
           key={t(`basics.content.${index}.title`)}
-          alt={value.alt}
+          alt={t(`basics.alt.${value.alt}`)}
           paragraph={t(`basics.content.${index}.paragraph`)}
           src={`/${value.src}`}
         />
