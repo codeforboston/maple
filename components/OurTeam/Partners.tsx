@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
@@ -9,32 +10,43 @@ import {
 import { PageTitle, PageDescr } from "./CommonComponents"
 
 export const OurPartners = () => {
+  const { t } = useTranslation("common")
+
   return (
     <Container>
       <Row>
         <Col>
-          <PageTitle>Our Partners</PageTitle>
+          <PageTitle>{t("partners.header")}</PageTitle>
         </Col>
       </Row>
       <Row>
         <Col className="py-3">
           <PageDescr>
-            The project is developed in partnership between the NuLawLab and
-            scholars at{" "}
+            {t("partners.desc1")}
+            <StyleLink
+              href="https://www.nulawlab.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {" "}
+              {t("partners.desc2")}
+            </StyleLink>{" "}
+            {t("partners.desc3")}
             <StyleLink
               href="https://www.bc.edu/bc-web/schools/law.html"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Boston College Law School
+              {" "}
+              {t("partners.desc4")}
             </StyleLink>{" "}
-            and{" "}
+            {t("partners.desc5")}{" "}
             <StyleLink
               href="https://cyber.harvard.edu/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Harvard University's Berkman Klein Center for Internet & Society
+              {t("partners.desc6")}
             </StyleLink>
             .
           </PageDescr>
@@ -56,7 +68,7 @@ export const OurPartners = () => {
       </Row>
       <Row>
         <Col>
-          <AboutPagesCard title="How to Support Us">
+          <AboutPagesCard title="Partners in Democracy">
             <Row>
               <OpenCollectiveContent />
             </Row>
