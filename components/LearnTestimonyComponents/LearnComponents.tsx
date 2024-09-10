@@ -48,15 +48,15 @@ const BasicsSrcAlt = [
 const RoleSrcAlt = [
   {
     src: "speaker-with-thumbs.svg",
-    alt: "Speaker with thumbs"
+    alt: ""
   },
   {
     src: "speaker-with-leg.svg",
-    alt: "Speaker with documents"
+    alt: ""
   },
   {
     src: "speaker-with-pen.svg",
-    alt: "Speaker with pen"
+    alt: ""
   }
 ]
 
