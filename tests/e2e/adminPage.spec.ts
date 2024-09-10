@@ -1,5 +1,12 @@
 // adminPage.spec.ts
-import { test, expect, chromium, Browser, BrowserContext, Page } from "@playwright/test"
+import {
+  test,
+  expect,
+  chromium,
+  Browser,
+  BrowserContext,
+  Page
+} from "@playwright/test"
 import { AdminPage } from "./page_objects/adminPage"
 // import { authenticate } from './auth.utils'
 
@@ -33,7 +40,7 @@ test.describe("Admin Page", () => {
   test("should display the User Reports page", async () => {
     const adminPage = new AdminPage(page)
     await expect(adminPage.menuIcon).toBeVisible()
-    await expect( adminPage.refreshIcon).toBeVisible()
+    await expect(adminPage.refreshIcon).toBeVisible()
     await expect(adminPage.userReports).toBeVisible()
     await expect(adminPage.upgradeRequests).toBeVisible()
     await expect(adminPage.getAppIcon).toBeVisible()
@@ -52,7 +59,6 @@ test.describe("Admin Page", () => {
     await expect(adminPage.navigateNextIcon).toBeVisible()
   })
 
-
   test("should display the table in acending order", async () => {
     const adminPage = new AdminPage(page)
     adminPage.gotoUserReportPage()
@@ -61,15 +67,15 @@ test.describe("Admin Page", () => {
     await reportIdHeader.click()
 
     const currentUrl = await page.url()
-    if(!currentUrl.includes("order=ASC")) {
+    if (!currentUrl.includes("order=ASC")) {
       await reportIdHeader.click()
     }
     const newUrl = await page.url()
-    const classList = await reportIdHeader.locator("..").getAttribute('class')
+    const classList = await reportIdHeader.locator("..").getAttribute("class")
 
-    expect(newUrl).toContain("order=ASC") 
-    expect(newUrl).toContain("sort=id") 
-    expect(classList).toContain('Mui-active')
+    expect(newUrl).toContain("order=ASC")
+    expect(newUrl).toContain("sort=id")
+    expect(classList).toContain("Mui-active")
   })
 
   test("should display the table in descending order", async () => {
@@ -79,15 +85,15 @@ test.describe("Admin Page", () => {
     const testimonyHeader = adminPage.testimonyHeader
     await testimonyHeader.click()
     const currentUrl = await page.url()
-    if(!currentUrl.includes("order=DESC")) {
+    if (!currentUrl.includes("order=DESC")) {
       await testimonyHeader.click()
     }
     const newUrl = await page.url()
-    const classList = await testimonyHeader.locator("..").getAttribute('class')
+    const classList = await testimonyHeader.locator("..").getAttribute("class")
 
-    expect(newUrl).toContain("order=DESC") 
-    expect(newUrl).toContain("sort=testimonyId") 
-    expect(classList).toContain('Mui-active')
+    expect(newUrl).toContain("order=DESC")
+    expect(newUrl).toContain("sort=testimonyId")
+    expect(classList).toContain("Mui-active")
   })
 
   test("should allow adding a report", async () => {
@@ -97,7 +103,7 @@ test.describe("Admin Page", () => {
 
     await adminPage.fakeReportbtn.click()
     await expect(page.getByText("reportTestimony")).toBeVisible()
-    await page.getByRole("radio", {name: "Violent"}).click()
+    await page.getByRole("radio", { name: "Violent" }).click()
     await page.click('button[type="submit"]')
   })
 
@@ -109,36 +115,37 @@ test.describe("Admin Page", () => {
     const pendingCases = await page.getByText("pending").count()
     const filledReason = "This is the reason text."
 
-    if(pendingCases > 0 ){
+    if (pendingCases > 0) {
       const resolvedCases = await page.getByText("resloves").count()
       await page.getByLabel("RESOLVE REPORT").first().click()
       await expect(page.getByText("User Report Content")).toBeVisible()
-      await page.getByRole("radio", {name: "Remove"}).click()
-      await page.locator('form').getByText('Reason:').fill(filledReason)
+      await page.getByRole("radio", { name: "Remove" }).click()
+      await page.locator("form").getByText("Reason:").fill(filledReason)
       await page.click('input[type="submit"]')
       await expect(adminPage.fakeReportbtn).toBeVisible()
       const currentResolvedCases = await page.getByText("resolved").count()
       expect(currentResolvedCases).toBeGreaterThan(resolvedCases)
     }
-    
   })
 
   test("should display a table with differet categories", async () => {
-    await expect(page.getByText("report id", { exact: true })).toBeVisible() 
-    await expect(page.getByText("Testimony", { exact: true } )).toBeVisible() 
-    await expect(page.getByText("archived id", { exact: true } )).toBeVisible()
-    await expect(page.getByText("Reason", { exact: true } )).toBeVisible()
-    await expect(page.getByText("status", { exact: true } )).toBeVisible()
-    await expect(page.getByText("resolution", { exact: true } )).toBeVisible() 
-    await expect(page.getByText("moderated by" , { exact: true })).toBeVisible()
-    await expect(page.getByText("Resolve Report", { exact: true })).toBeVisible()
+    await expect(page.getByText("report id", { exact: true })).toBeVisible()
+    await expect(page.getByText("Testimony", { exact: true })).toBeVisible()
+    await expect(page.getByText("archived id", { exact: true })).toBeVisible()
+    await expect(page.getByText("Reason", { exact: true })).toBeVisible()
+    await expect(page.getByText("status", { exact: true })).toBeVisible()
+    await expect(page.getByText("resolution", { exact: true })).toBeVisible()
+    await expect(page.getByText("moderated by", { exact: true })).toBeVisible()
+    await expect(
+      page.getByText("Resolve Report", { exact: true })
+    ).toBeVisible()
   })
 
   test("should filter the profile with pending upgrade", async () => {
     const adminPage = new AdminPage(page)
     adminPage.gotoUpgradeRequests()
 
-    await page.getByRole("button", {name:"pendingUpgrades"}).click()
+    await page.getByRole("button", { name: "pendingUpgrades" }).click()
     await expect(page).toHaveURL(/.*pendingUpgrade/)
   })
 
@@ -146,9 +153,7 @@ test.describe("Admin Page", () => {
     const adminPage = new AdminPage(page)
     adminPage.gotoUpgradeRequests()
 
-    await page.getByRole("button", {name:"organization"}).click()
+    await page.getByRole("button", { name: "organization" }).click()
     await expect(page).toHaveURL(/.*organization/)
   })
-  
-
 })

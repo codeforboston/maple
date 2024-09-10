@@ -18,20 +18,23 @@ export class AdminPage {
     this.page = page
     this.menuIcon = page.getByTestId("MenuIcon")
     this.refreshIcon = page.getByTestId("RefreshIcon")
-    this.userReports =page.getByRole('menuitem', { name: 'User Reports' })
-    this.upgradeRequests = page.getByRole('menuitem', { name: 'Upgrade Requests' })
+    this.userReports = page.getByRole("menuitem", { name: "User Reports" })
+    this.upgradeRequests = page.getByRole("menuitem", {
+      name: "Upgrade Requests"
+    })
     this.arrowDropDownIcon = page.getByTestId("ArrowDropDownIcon")
-    this.navigateBeforeIcon =  page.getByTestId("NavigateBeforeIcon")
+    this.navigateBeforeIcon = page.getByTestId("NavigateBeforeIcon")
     this.navigateNextIcon = page.getByTestId("NavigateNextIcon")
-    this.getAppIcon =  page.getByTestId("GetAppIcon")
-    this.reportIdHeader =  page.getByText("report id")
-    this.testimonyHeader =  page.getByText("Testimony", { exact: true })
-    this.fakeReportbtn = page.getByRole("button", { name: "SEED WITH A FAKE REPORT" })
+    this.getAppIcon = page.getByTestId("GetAppIcon")
+    this.reportIdHeader = page.getByText("report id")
+    this.testimonyHeader = page.getByText("Testimony", { exact: true })
+    this.fakeReportbtn = page.getByRole("button", {
+      name: "SEED WITH A FAKE REPORT"
+    })
   }
 
-
   async goto() {
-    await this.page.goto("http://localhost:3000/admin") 
+    await this.page.goto("http://localhost:3000/admin")
   }
 
   async gotoUserReportPage() {
