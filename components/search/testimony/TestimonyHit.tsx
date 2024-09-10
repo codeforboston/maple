@@ -8,6 +8,7 @@ import { useBill } from "components/db/bills"
 import { FollowOrgButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
 import { useFlags } from "components/featureFlags"
+import { useAuth } from "components/auth"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -37,6 +38,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
     ) : (
       hit.fullName
     )
+  const { user } = useAuth()
   const { followOrg } = useFlags()
 
   return (
@@ -65,7 +67,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {followOrg && isOrg && <FollowOrgButton profileId={hit.authorUid} />}
+        {followOrg && isOrg && user && (
+          <FollowOrgButton profileId={hit.authorUid} />
+        )}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>
