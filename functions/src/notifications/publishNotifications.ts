@@ -82,6 +82,9 @@ export const publishNotifications = functions.firestore
 
     // Extract related Bill or Org data from the topic event
     const notificationPromises: any[] = []
+
+    // Create a batch
+    const batch = db.batch()
     console.log(`topic type: ${topic.type}`)
 
     const handleNotifications = async (
@@ -109,14 +112,24 @@ export const publishNotifications = functions.firestore
           .get()
       }
 
-      // Merge the snapshots
-      const subscriptionsSnapshot = [
-        ...topicNameSnapshot.docs,
-        ...(billSnapshot?.docs ?? [])
-      ]
+      const uniqueDocs = new Map()
 
-      subscriptionsSnapshot.forEach(doc => {
-        const subscription = doc.data()
+      // Add documents from topicNameSnapshot to the Map
+      topicNameSnapshot.docs.forEach(doc => {
+        uniqueDocs.set(doc.data().uid, doc.data())
+      })
+
+      // If billSnapshot exists, add its documents to the Map
+      if (billSnapshot) {
+        billSnapshot.docs.forEach(doc => {
+          uniqueDocs.set(doc.data().uid, doc.data())
+        })
+      }
+
+      // Convert the Map values to an array to get the unique documents
+      const subscriptionsSnapshot = Array.from(uniqueDocs.values())
+
+      subscriptionsSnapshot.forEach(subscription => {
         const { uid } = subscription
 
         // Add the uid to the notification document
@@ -126,17 +139,15 @@ export const publishNotifications = functions.firestore
           `Pushing notifications to users/${uid}/userNotificationFeed`
         )
 
-        // Create a notification document in the user's notification feed
-        notificationPromises.push(
-          db
-            .collection(`users/${uid}/userNotificationFeed`)
-            .add(notificationFields)
-        )
+        // Get a reference to the new notification document
+        const docRef = db.collection(`users/${uid}/userNotificationFeed`).doc()
+
+        // Add the write operation to the batch
+        batch.set(docRef, notificationFields)
       })
     }
 
     await handleNotifications(topic)
 
-    // Wait for all notification documents to be created
-    await Promise.all(notificationPromises)
+    notificationPromises.push(batch.commit())
   })
