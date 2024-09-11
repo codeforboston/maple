@@ -1,11 +1,10 @@
-import { Container, Row, Col } from "../../bootstrap"
-import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import { useTranslation } from "next-i18next"
-
+import { Container, Row, Col } from "../../bootstrap"
 import {
   MemberItem,
   Divider,
   DescrContainer,
+  NameContainer,
   PageTitle,
   PageDescr,
   SectionContainer,
@@ -80,14 +79,26 @@ const MapleAI = () => {
         <Col className="py-3">
           <SectionContainer>
             <SectionTitle className="p-2">{t("section3.title")}</SectionTitle>
-            <DescrContainer className="py-3 px-4">test</DescrContainer>
+            <MemberItem
+              name={t("section3.desc1Title")}
+              descr={t("section3.desc1Main")}
+            />
             <DescrContainer className="pb-3 px-4">
               <b>{t("legal-advisory")}</b>
             </DescrContainer>
             <Divider />
-            <DescrContainer className="py-3 px-4">test 2</DescrContainer>
+            <MemberItem
+              name={t("section3.desc2Title")}
+              descr={t("section3.desc2Main")}
+            />
             <Divider />
-            <DescrContainer className="py-3 px-4">test 3</DescrContainer>
+            <NameContainer className="py-3 px-4">
+              {t("section3.desc3Title")}
+            </NameContainer>
+            <DescrContainer className="pb-3 px-4">
+              {t("section3.desc3Pre")} <i>{t("section3.desc3Italic")}</i>{" "}
+              {t("section3.desc3Main")}
+            </DescrContainer>
           </SectionContainer>
         </Col>
       </Row>

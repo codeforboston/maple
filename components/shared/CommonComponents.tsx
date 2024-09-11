@@ -35,7 +35,7 @@ const EmailContainer = styled.a`
   text-align: left;
   text-decoration: underline;
 `
-const NameContainer = styled.div`
+export const NameContainer = styled.div`
   color: #1a3185;
   font-size: 25px;
   font-weight: 600;
