@@ -106,22 +106,28 @@ export default function Newsfeed() {
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
-                    {filteredResults.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis()).map((element: NotificationProps) => (
-                      <div className="pb-4" key={element.id}>
-                        <AlertCard
-                          header={element.header}
-                          subheader={element.subheader}
-                          timestamp={element.timestamp}
-                          headerImgSrc={`${element.type === `org`
-                            ? `/profile-org-white.svg`
-                            : ``
+                    {filteredResults
+                      .sort(
+                        (a, b) =>
+                          b.timestamp.toMillis() - a.timestamp.toMillis()
+                      )
+                      .map((element: NotificationProps) => (
+                        <div className="pb-4" key={element.id}>
+                          <AlertCard
+                            header={element.header}
+                            subheader={element.subheader}
+                            timestamp={element.timestamp}
+                            headerImgSrc={`${
+                              element.type === `org`
+                                ? `/profile-org-white.svg`
+                                : ``
                             }`}
-                          bodyImgSrc={``}
-                          bodyImgAltTxt={``}
-                          bodyText={element.bodyText}
-                        />
-                      </div>
-                    ))}
+                            bodyImgSrc={``}
+                            bodyImgAltTxt={``}
+                            bodyText={element.bodyText}
+                          />
+                        </div>
+                      ))}
                   </>
                 ) : (
                   <div className="pb-4">
@@ -166,8 +172,9 @@ function FilterBoxes({
   return (
     <>
       <Row
-        className={`${isMobile ? "justify-content-center" : "justify-content-end"
-          }`}
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
       >
         <div className="form-check checkbox">
           <input
@@ -186,8 +193,9 @@ function FilterBoxes({
         </div>
       </Row>
       <Row
-        className={`${isMobile ? "justify-content-center" : "justify-content-end"
-          }`}
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
       >
         <div className="form-check checkbox">
           <input
