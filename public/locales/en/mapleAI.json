@@ -1,7 +1,40 @@
 {
   "title": "How MAPLE Uses AI",
   "mission-statement": "Our commitment is to provide you with the most reliable and accessible legislative information using cutting-edge AI technology. Stay tuned for continuous improvements and new features as we enhance MAPLE’s AI capabilities.",
-  "section1": "How AI is used on MAPLE",
-  "section2": "Our Guiding Principles"
+  "legal-advisory": "We advise users to consult the full text of the legislation and official resources for the most accurate and comprehensive understanding. Our Guiding Principles",
+  "section1": {
+    "title": "How MAPLE Uses AI",
+    "desc1": "We use Artificial Intelligence (AI) on MAPLE to help you quickly understand legislative information and navigate to policies that interest you. Right now, we use AI in two ways:",
+    "desc2Bold": "Bill Summaries",
+    "desc2Main": "We use AI to generate concise summaries for each piece of legislation. These summaries help you grasp the essentials of a bill without wading through dense legal text.",
+    "desc3Bold": "Topic Tags",
+    "desc3Main": "AI tags each bill with relevant topics, making it easier for you to find related legislation and understand the broader context. These tags categorize bills by subject matter, allowing for efficient searching and filtering."
+  },
+  "section2": {
+    "title": "Our Guiding Principles",
+    "desc1Title": "Transparency",
+    "desc1Main": "We are open about how our AI systems function and their limitations, so that users understand the extent and limits of AI's role in enhancing their legislative engagement.",
+    "desc2Title": "Accessibility",
+    "desc2Main": "We seek to make legislative information easily understandable and navigable for everyone.",
+    "desc3Title": "Accuracy & Fairness",
+    "desc3Main": "We strive to minimize biases and value impartiality in our use of AI, acknowledging that AI is a tool to aid but not replace detailed review.",
+    "desc4Title": "Community Input",
+    "desc4Main": "We integrate feedback from a range of stakeholders to build our AI deployments, and solicit community input to continually improve our use of AI. You can email any questions or ideas to admin@mapletestimony.org."
+  },
+  "section3": {
+    "title": "Limitations and Risks of AI",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": ""
+  },
+  
+
+  "": ""
 
 }
