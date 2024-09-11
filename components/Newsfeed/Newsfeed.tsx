@@ -31,7 +31,6 @@ export default function Newsfeed() {
   useEffect(() => {
     const seenTimestamps = new Set()
     const results = allResults.filter(result => {
-      console.log(result)
       const timestampIdentifier = `${result.timestamp.seconds}-${result.timestamp.nanoseconds}`
       if (seenTimestamps.has(timestampIdentifier)) {
         return false
@@ -60,7 +59,6 @@ export default function Newsfeed() {
           const notifications = await notificationQuery(uid)
           setAllResults(notifications)
           setFilteredResults(notifications)
-          console.log(notifications)
         }
       } catch (error) {
         console.error("Error fetching notifications: " + error)
