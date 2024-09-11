@@ -27,8 +27,8 @@ export const AdvisoryBoard = () => {
         <Col className="my-3">
           <SectionContainer className="py-1">
             <MemberItem
-              name="Danielle Allen"
-              descr="Danielle is the James Bryant Conant University Professor at Harvard University, Director of the Allen Lab for Democracy Renovation at Harvard Kennedy School's Ash Center for Democratic Governance and Innovation, and President of Partners in Democracy. She is a professor of political philosophy, ethics, and public policy. She is also a seasoned nonprofit leader, democracy advocate, tech ethicist, distinguished author, and mom."
+              name="John Griffin"
+              descr="John Griffin is the Managing Partner for Strategy at Partners in Democracy. He has spent a decade working in Massachusetts policy and politics, including as Massachusetts Policy Director at Democrats for Education Reform. John holds a Master in Public Policy degree from the Harvard Kennedy School."
             />
             <Divider />
             <MemberItem
@@ -37,8 +37,8 @@ export const AdvisoryBoard = () => {
             />
             <Divider />
             <MemberItem
-              name="Beth Noveck"
-              descr="Beth Simone Noveck is a professor at Northeastern University, where she directs the Burnes Center for Social Change and its partner project, The Governance Lab (The GovLab) and its MacArthur Research Network on Opening Governance. The author of Solving Public Problems: How to Fix Our Government and Change Our World (Yale Press 2021), named a Best Book of 2021 by Stanford Social Innovation Review, she is a member of the faculty at Northeastern’s Institute for Experiential AI. New Jersey governor Phil Murphy appointed her as the state’s first Chief Innovation Officer and Chancellor Angela Merkel named her to her Digital Council in 2018."
+              name="David Fields"
+              descr="David Fields, Ph.D., is Professor of the Practice within the Graduate School of Education at Northeastern University and Senior Fellow with The Burnes Center for Social Change. He brings over 20 years of higher education experience building, launching, and scaling industry aligned programs. At the Burnes Center, his work includes supporting AI for Impact, and its InnovateMA co-op program in partnership with the Commonwealth of Massachusetts."
             />
             <Divider />
             <MemberItem
