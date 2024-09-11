@@ -137,8 +137,7 @@ const OurMissionCardContent = () => {
       <Row>
         <Col
           className={`p-3 fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4`}
-        >
-        </Col>
+        ></Col>
       </Row>
       <Row>
         <Col>

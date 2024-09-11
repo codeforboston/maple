@@ -95,8 +95,7 @@ export const SteeringCommittee = () => {
             <MemberItem
               name="Minqi Chai"
               descr="Minqi Chai is a social scientist and user experience researcher, advocating for human-centered approaches in digital transformation. She received her PhD in Political Science and Government from Cornell University."
-              />
-            
+            />
           </SectionContainer>
         </Col>
       </Row>
