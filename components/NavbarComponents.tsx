@@ -42,7 +42,7 @@ export const NavbarLinkAI: React.FC<
   return (
     <NavDropdown.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary text-white-50" : ""}
+        className={isMobile ? "navLink-primary" : ""}
         href="/about/how-maple-uses-ai"
         {...other}
       >

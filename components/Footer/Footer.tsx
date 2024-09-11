@@ -27,6 +27,7 @@ const TextHeader = styled.h6`
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
+
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
   color: #fff;
