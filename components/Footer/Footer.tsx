@@ -201,6 +201,9 @@ const AboutLinks = () => {
       <StyledInternalLink href="/about/faq-page">
         {t("links.faq")}
       </StyledInternalLink>
+      <StyledInternalLink href="/about/how-maple-uses-ai">
+        {t("links.mapleAI")}
+      </StyledInternalLink>
     </>
   )
 }
