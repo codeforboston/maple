@@ -21,7 +21,7 @@ export const SteeringCommittee = () => {
       </Row>
       <Row>
         <Col className="py-3">
-          <PageDescr></PageDescr>
+          <PageDescr>{t("steering.desc")}</PageDescr>
         </Col>
       </Row>
       <Row>
