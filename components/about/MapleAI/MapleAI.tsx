@@ -116,9 +116,22 @@ const MapleAI = () => {
         <Col className="py-3">
           <SectionContainer>
             <SectionTitle className="p-2">{t("section5.title")}</SectionTitle>
-            <DescrContainer className="py-3 px-4">test</DescrContainer>
-            <DescrContainer className="pb-3 px-4">test 2</DescrContainer>
-            <DescrContainer className="pb-3 px-4">test 3</DescrContainer>
+            <DescrContainer className="py-3 px-4">
+              {t("section5.desc1")}
+            </DescrContainer>
+            <DescrContainer className="pb-1 px-4">
+              <ul>
+                <li className="pb-3">
+                  <b>{t("section5.desc2Bold")}</b> {t("section5.desc2Main")}
+                </li>
+                <li className="pb-3">
+                  <b>{t("section5.desc3Bold")}</b> {t("section5.desc3Main")}
+                </li>
+                <li>
+                  <b>{t("section5.desc4Bold")}</b> {t("section5.desc4Main")}
+                </li>
+              </ul>
+            </DescrContainer>
           </SectionContainer>
         </Col>
       </Row>
