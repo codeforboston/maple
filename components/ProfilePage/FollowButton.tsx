@@ -5,19 +5,19 @@ import { Internal } from "components/links"
 import { StyledImage } from "./StyledProfileComponents"
 import { useTranslation } from "next-i18next"
 import { getFunctions, httpsCallable } from "firebase/functions"
-import { useAuth } from "../auth"
 import { useState, useEffect, useCallback } from "react"
 import { FillButton } from "components/buttons"
+import { User } from "firebase/auth"
+import { Maybe } from "components/db/common"
 
 export const FollowButton = ({
   profileId,
-  uid
+  user
 }: {
   profileId?: string
-  uid?: string
+  user: Maybe<User>
 }) => {
   const { t } = useTranslation("profile")
-  const { user } = useAuth()
   const functions = getFunctions()
   const followBillFunction = httpsCallable(functions, "followOrg")
   const unfollowBillFunction = httpsCallable(functions, "unfollowOrg")
@@ -25,7 +25,7 @@ export const FollowButton = ({
   const topicName = `org-${profileId}`
   const subscriptionRef = collection(
     firestore,
-    `/users/${uid}/activeTopicSubscriptions/`
+    `/users/${user?.uid}/activeTopicSubscriptions/`
   )
   const [queryResult, setQueryResult] = useState("")
 
@@ -42,8 +42,8 @@ export const FollowButton = ({
   }, [subscriptionRef, profileId, setQueryResult]) // dependencies of orgQuery
 
   useEffect(() => {
-    uid ? orgQuery() : null
-  }, [uid, orgQuery]) // dependencies of useEffect
+    user?.uid ? orgQuery() : null
+  }, [user?.uid, orgQuery]) // dependencies of useEffect
 
   const handleFollowClick = async () => {
     // ensure user is not null
@@ -52,9 +52,6 @@ export const FollowButton = ({
     }
 
     try {
-      if (!uid) {
-        throw new Error("User not found")
-      }
       const orgLookup = {
         profileId: profileId,
         type: "org"
@@ -76,9 +73,6 @@ export const FollowButton = ({
     }
 
     try {
-      if (!uid) {
-        throw new Error("User not found")
-      }
       const orgLookup = {
         profileId: profileId,
         type: "org"
