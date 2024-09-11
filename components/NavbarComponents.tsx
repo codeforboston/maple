@@ -31,6 +31,27 @@ export const Avatar = () => {
   )
 }
 
+export const NavbarLinkAI: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavDropdown.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary text-white-50" : ""}
+        href="/about/how-maple-uses-ai"
+        {...other}
+      >
+        {t("navigation.ai")}
+      </NavLink>
+    </NavDropdown.Item>
+  )
+}
+
 export const NavbarLinkBills: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
