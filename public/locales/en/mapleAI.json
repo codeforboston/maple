@@ -34,13 +34,26 @@
   },
   "section4": {
     "title": "About Our Model",
-    "": "",
-    "": "",
-    "": "",
-    "": "",
-    "": "",
-    "": "",
-    "": ""
+    "sub1": {
+      "title": "Overview",
+      "desc1": "Our AI features are built with advanced language processing technologies. Using a state-of-the-art language model, we generate summaries and tags by analyzing the full text of each bill and associated metadata, including the relevant sections of the existing law.",
+      "desc2": "Key features of our AI deployment include:",
+      "desc3Bold": "Real-time Summaries:",
+      "desc3Main": "AI generates summaries as new bills are filed or updated.",
+      "desc4Bold": "Dynamic Tagging:",
+      "desc4Main": "Bills are tagged with multiple relevant topics, helping you find similar legislation quickly.",
+      "desc5Bold": "Scalability:",
+      "desc5Main": "Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
+    },
+    "sub2": {
+      "title": "Technical details",
+      "desc1Bold": "Backend Integration:",
+      "desc1Main": "We use Python functions to call the AI model, integrating seamlessly with our backend systems.",
+      "desc2Bold": "API Utilization:",
+      "desc2Main": "OpenAI’s GPT-4o model powers our AI capabilities, with the ability to automatically ingest and interpret about 100,000 words of bill and law text at once, and to query additional information on demand from our database.",
+      "desc3Bold": "Data Management:",
+      "desc3Main": "Summaries and tags are stored in our backend, timestamped, and linked to specific bills and legislative sessions. We may regenerate them periodically as modeling capabilities evolve."
+    }
   },
   "section5": {
     "title": "Future Deployments of AI",

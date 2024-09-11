@@ -106,9 +106,51 @@ const MapleAI = () => {
         <Col className="py-3">
           <SectionContainer>
             <SectionTitle className="p-2">{t("section4.title")}</SectionTitle>
-            <DescrContainer className="py-3 px-4">test</DescrContainer>
-            <DescrContainer className="pb-3 px-4">test 2</DescrContainer>
-            <DescrContainer className="pb-3 px-4">test 3</DescrContainer>
+            <NameContainer className="py-3 px-4">
+              {t("section4.sub1.title")}
+            </NameContainer>
+            <DescrContainer className="pb-3 px-4">
+              {t("section4.sub1.desc1")}
+            </DescrContainer>
+            <DescrContainer className="pb-3 px-4">
+              {t("section4.sub1.desc2")}
+            </DescrContainer>
+            <DescrContainer className="pb-1 px-4">
+              <ul>
+                <li className="pb-3">
+                  <b>{t("section4.sub1.desc3Bold")}</b>{" "}
+                  {t("section4.sub1.desc3Main")}
+                </li>
+                <li className="pb-3">
+                  <b>{t("section4.sub1.desc4Bold")}</b>{" "}
+                  {t("section4.sub1.desc4Main")}
+                </li>
+                <li>
+                  <b>{t("section4.sub1.desc5Bold")}</b>{" "}
+                  {t("section4.sub1.desc5Main")}
+                </li>
+              </ul>
+            </DescrContainer>
+            <Divider />
+            <NameContainer className="py-3 px-4">
+              {t("section4.sub2.title")}
+            </NameContainer>
+            <DescrContainer className="pb-1 px-4">
+              <ul>
+                <li className="pb-3">
+                  <b>{t("section4.sub2.desc1Bold")}</b>{" "}
+                  {t("section4.sub2.desc1Main")}
+                </li>
+                <li className="pb-3">
+                  <b>{t("section4.sub2.desc2Bold")}</b>{" "}
+                  {t("section4.sub2.desc2Main")}
+                </li>
+                <li>
+                  <b>{t("section4.sub2.desc3Bold")}</b>{" "}
+                  {t("section4.sub2.desc3Main")}
+                </li>
+              </ul>
+            </DescrContainer>
           </SectionContainer>
         </Col>
       </Row>
