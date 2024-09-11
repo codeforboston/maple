@@ -37,7 +37,7 @@ export const populateBillNotificationEvents = functions.firestore
 
         billCourt: court,
         billId: newData?.id,
-        billName: newData?.content.Title,
+        billName: newData?.id,
 
         billHistory: newData?.history,
 

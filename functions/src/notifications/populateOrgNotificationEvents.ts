@@ -35,7 +35,7 @@ export const populateOrgNotificationEvents = functions.firestore
 
         billCourt: newData?.court.toString(),
         billId: newData?.billId,
-        billName: newData?.billTitle,
+        billName: newData?.billId,
 
         orgId: newData?.authorUid,
         testimonyUser: newData?.fullName,
