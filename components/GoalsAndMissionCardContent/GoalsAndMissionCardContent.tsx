@@ -137,9 +137,7 @@ const OurMissionCardContent = () => {
       <Row>
         <Col
           className={`p-3 fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4`}
-        >
-          <p className="text-center">{t("mission.callout")}</p>
-        </Col>
+        ></Col>
       </Row>
       <Row>
         <Col>
@@ -156,29 +154,6 @@ const OurMissionCardContent = () => {
         </Col>
       </Row>
 
-      <Row className="align-items-end mt-5">
-        <Col lg={4} className="text-lg-center text-start pb-0">
-          <StepsImage
-            fluid
-            src="/step-1.svg"
-            alt="step 1 of the legislative process"
-          />
-        </Col>
-        <Col lg={4} className="text-lg-center text-end pb-0">
-          <StepsImage
-            fluid
-            src="/step-2.svg"
-            alt="step 2 of the legislative process"
-          />
-        </Col>
-        <Col lg={4} className="text-lg-center text-start ps-lg-0">
-          <StepsImage
-            fluid
-            src="/step-3.svg"
-            alt="step 3 of the legislative process"
-          />
-        </Col>
-      </Row>
       {!authenticated && (
         <>
           <Row className="text-center">

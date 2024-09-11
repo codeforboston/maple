@@ -44,7 +44,20 @@ export const SteeringCommittee = () => {
             <Divider />
             <MemberItem name="Anna Steele" descr={t("steering.ASteele")} />
             <Divider />
-            <MemberItem name="Dan Jackson" descr={t("steering.DJackson")} />
+            <MemberItem
+              name="Dan Jackson"
+              descr="Dan Jackson directs Northeastern University School of Law’s NuLawLab, where he draws on his design and law backgrounds to educate the legal inventors of the future."
+            />
+            <Divider />
+            <MemberItem
+              name="John Griffin"
+              descr="John Griffin is the Managing Partner for Strategy at Partners in Democracy. John spent a decade working in Massachusetts policy and politics, including as Massachusetts Policy Director at Democrats for Education Reform. He has experience advising nonprofits, campaigns, and civil society organizations on achieving their policy goals."
+            />
+            <Divider />
+            <MemberItem
+              name="Elaine Almquist"
+              descr="Elaine F. Almquist is the founder and principal of Almquist & Associates, where she advises candidates and organizations on how to build political power, win office, and nurture long-term movements. Elaine has spent twenty years on the ground in campaigns and organizations, and serves on the advisory board of Rank The Vote."
+            />
           </SectionContainer>
         </Col>
       </Row>
@@ -52,13 +65,32 @@ export const SteeringCommittee = () => {
         <Col className="my-3">
           <SectionContainer>
             <SectionTitle className="p-2">
-              {t("steering.section2Title")}
+              User Experience, Design & Engineering Leads
             </SectionTitle>
-            <MemberItem name="Alex Ball" descr={t("steering.ABall")} />
+            <MemberItem
+              name="James Vasquez"
+              descr="James Vasquez is a User Experience Product Designer who has been in the digital product industry for 9 years (professionally, and volunteering for projects). He currently works at CVS Health, mentors UX students at Designlab, and is a Board Member of UXPA Boston. "
+            />
             <Divider />
-            <MemberItem name="Sasha Goldberg" descr={t("steering.SGoldberg")} />
+            <MemberItem
+              name="Matt King"
+              descr="Matt King is a Full-Stack Software Engineer. He received a Bachelor's Degree in Computer Science and Cognitive Psychology from Northeastern University."
+            />
             <Divider />
-            <MemberItem name="James Vasquez" descr={t("steering.JVasquez")} />
+            <MemberItem
+              name="Merritt Baggett"
+              descr="Merritt Baggett is a freelance React Front-End Web Developer. He received a Bachelor's Degree in Psychology from Virginia Tech."
+            />
+            <Divider />
+            <MemberItem
+              name="Kimin Kim"
+              descr="Kimin Kim is a Lead Front-end Developer at the Data Lab for Tech Impact with a Bachelor's Degree of Computer Science from Northeastern University. His hobbies are playing volleyball/badminton, eating good food, and learning new skills."
+            />
+            <Divider />
+            <MemberItem
+              name="Minqi Chai"
+              descr="Minqi Chai is a social scientist and user experience researcher, advocating for human-centered approaches in digital transformation. She received her PhD in Political Science and Government from Cornell University."
+            />
           </SectionContainer>
         </Col>
       </Row>
