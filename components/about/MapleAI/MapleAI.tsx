@@ -1,34 +1,50 @@
 import { Container, Row, Col } from "../../bootstrap"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
-// import {
-//   DonateCardContent,
-//   VolunteerCardContent,
-//   FeedbackCardContent,
-//   UseMAPLECardContent
-// } from "../SupportMapleCardContent/SupportMapleCardContent"
 import { useTranslation } from "next-i18next"
 
+import {
+  MemberItem,
+  Divider,
+  DescrContainer,
+  PageTitle,
+  PageDescr,
+  SectionContainer,
+  SectionTitle
+} from "../../shared/CommonComponents"
+
 const MapleAI = () => {
-  // const { t } = useTranslation("supportmaple")
+  const { t } = useTranslation("mapleAI")
 
   return (
     <Container>
       <Row>
         <Col>
-          {"Maple AI"}
-          {/* <h1 className="fw-bold m-5">{t("title")}</h1>
-          <AboutPagesCard title={t("donate.header")}>
-            <DonateCardContent />
-          </AboutPagesCard>
-          <AboutPagesCard title={t("volunteer.header")}>
-            <VolunteerCardContent />
-          </AboutPagesCard>
-          <AboutPagesCard title={t("feedback.header")}>
-            <FeedbackCardContent />
-          </AboutPagesCard>
-          <AboutPagesCard title={t("useMAPLE.header")}>
-            <UseMAPLECardContent />
-          </AboutPagesCard> */}
+          <PageTitle>{t("title")}</PageTitle>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="py-3">
+          <PageDescr>{t("mission-statement")}</PageDescr>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="py-3">
+          <SectionContainer>
+            <SectionTitle className="p-2">{t("section1")}</SectionTitle>
+            <DescrContainer className="py-3 px-4">test</DescrContainer>
+            <DescrContainer className="pb-3 px-4">test 2</DescrContainer>
+            <DescrContainer className="pb-3 px-4">test 3</DescrContainer>
+          </SectionContainer>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="py-3">
+          <SectionContainer>
+            <SectionTitle className="p-2">{t("section2")}</SectionTitle>
+            <DescrContainer className="py-3 px-4">test</DescrContainer>
+            <DescrContainer className="pb-3 px-4">test 2</DescrContainer>
+            <DescrContainer className="pb-3 px-4">test 3</DescrContainer>
+          </SectionContainer>
         </Col>
       </Row>
     </Container>

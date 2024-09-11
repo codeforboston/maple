@@ -5,7 +5,7 @@ import {
   PageDescr,
   SectionContainer,
   Divider
-} from "./CommonComponents"
+} from "../shared/CommonComponents"
 
 export const AdvisoryBoard = () => {
   return (

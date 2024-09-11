@@ -6,7 +6,7 @@ import {
   PageDescr,
   SectionContainer,
   SectionTitle
-} from "./CommonComponents"
+} from "../shared/CommonComponents"
 
 export const SteeringCommittee = () => {
   return (
