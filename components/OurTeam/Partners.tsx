@@ -7,7 +7,7 @@ import {
   NuLawLabCardContent,
   OpenCollectiveContent
 } from "../OurPartnersCardContent/OurPartnersCardContent"
-import { PageTitle, PageDescr } from "./CommonComponents"
+import { PageTitle, PageDescr } from "../shared/CommonComponents"
 
 export const OurPartners = () => {
   const { t } = useTranslation("common")

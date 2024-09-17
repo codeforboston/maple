@@ -5,6 +5,7 @@ import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 
 import {
   Avatar,
+  NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkEditProfile,
   NavbarLinkEffective,
@@ -30,7 +31,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center flex-grow-1 invisible`}>
         <button className={`bg-light col my-2 w-100`}>
-          <div className={`text-dark`}>Placeholder Search Widget</div>
+          <div className={`text-dark`}>{"Placeholder Search Widget"}</div>
         </button>
       </div>
 
@@ -56,6 +57,7 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkTeam />
             <NavbarLinkSupport />
             <NavbarLinkFAQ />
+            <NavbarLinkAI />
           </Dropdown.Menu>
         </Dropdown>
       </div>

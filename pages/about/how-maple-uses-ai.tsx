@@ -1,13 +1,13 @@
 import { createPage } from "../../components/page"
 import { createGetStaticTranslationProps } from "components/translations"
-import { OurTeam } from "../../components/OurTeam/OurTeam"
+import MapleAI from "components/about/MapleAI/MapleAI"
 
 export default createPage({
-  title: "Our Team",
+  title: "How Maple Uses AI",
   Page: () => {
     return (
       <div>
-        <OurTeam />
+        <MapleAI />
       </div>
     )
   }
@@ -17,5 +17,5 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
-  "our-team"
+  "mapleAI"
 ])
