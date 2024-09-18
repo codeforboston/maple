@@ -16,16 +16,12 @@ const createNotificationFields = (
   entity: BillNotification | OrgNotification
 ) => {
   let topicName: string
-  let header: string
-  let court: string | null = null
   let bodyText: string
   let subheader: string
 
   switch (entity.type) {
     case "bill":
       topicName = `bill-${entity.billCourt}-${entity.billId}`
-      header = entity.billId
-      court = entity.billCourt
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
@@ -37,8 +33,6 @@ const createNotificationFields = (
 
     case "org":
       topicName = `org-${entity.orgId}`
-      header = entity.billName
-      court = entity.billCourt
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       break
@@ -53,12 +47,12 @@ const createNotificationFields = (
     uid: "",
     notification: {
       bodyText: bodyText,
-      header,
+      header: entity.billId,
+      court: entity.billCourt,
       id: entity.billId,
       subheader: subheader,
       timestamp: entity.updateTime,
       type: entity.type,
-      court,
       delivered: false
     },
     createdAt: Timestamp.now()
@@ -112,28 +106,33 @@ export const publishNotifications = functions.firestore
           .get()
       }
 
-      const uniqueDocs = new Map()
+      // Combine topicNameSnapshot and billSnapshot in an array
+      const combinedSnapshots: any[] = []
 
-      // Add documents from topicNameSnapshot to the Map
-      topicNameSnapshot.docs.forEach(doc => {
-        uniqueDocs.set(doc.data().uid, doc.data())
+      // Add documents from combinedSnapshots to the Map
+      topicNameSnapshot.forEach(doc => {
+        const data = doc.data()
+        combinedSnapshots.push(data)
       })
 
       // If billSnapshot exists, add its documents to the Map
       if (billSnapshot) {
         billSnapshot.docs.forEach(doc => {
-          uniqueDocs.set(doc.data().uid, doc.data())
+          const data = { ...doc.data(), type: "bill" }
+          combinedSnapshots.push(data)
         })
       }
 
-      // Convert the Map values to an array to get the unique documents
-      const subscriptionsSnapshot = Array.from(uniqueDocs.values())
-
-      subscriptionsSnapshot.forEach(subscription => {
-        const { uid } = subscription
-
-        // Add the uid to the notification document
-        notificationFields.uid = uid
+      combinedSnapshots.forEach(subscription => {
+        const { uid, type } = subscription
+        const newNotificationFields = {
+          ...notificationFields,
+          uid: uid,
+          notification: {
+            ...notificationFields.notification,
+            type: type
+          }
+        }
 
         console.log(
           `Pushing notifications to users/${uid}/userNotificationFeed`
@@ -143,7 +142,7 @@ export const publishNotifications = functions.firestore
         const docRef = db.collection(`users/${uid}/userNotificationFeed`).doc()
 
         // Add the write operation to the batch
-        batch.set(docRef, notificationFields)
+        batch.set(docRef, newNotificationFields)
       })
     }
 
