@@ -19,7 +19,7 @@ export default async function notificationQuery(uid: string | undefined) {
   if (!querySnapshot.empty) {
     querySnapshot.forEach(doc => {
       const notification = doc.data().notification
-      notificationMap.set(doc.id, { ...notification, id: doc.id })
+      notificationMap.set(notification.id, notification) // using notification id as key
     })
   }
 

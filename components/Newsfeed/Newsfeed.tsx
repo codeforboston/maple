@@ -29,18 +29,12 @@ export default function Newsfeed() {
 
   // Update the filter function
   useEffect(() => {
-    const seenTimestamps = new Set()
     const results = allResults.filter(result => {
-      const timestampIdentifier = `${result.timestamp.seconds}-${result.timestamp.nanoseconds}`
-      if (seenTimestamps.has(timestampIdentifier)) {
-        return false
-      } else {
-        seenTimestamps.add(timestampIdentifier)
-        if (isShowingOrgs && result.type === "org") return true
-        if (isShowingBills && result.type === "bill") return true
-        return false
-      }
+      if (isShowingOrgs && result.type === "org") return true
+      if (isShowingBills && result.type === "bill") return true
+      return false
     })
+
     setFilteredResults(results)
   }, [isShowingOrgs, isShowingBills, allResults])
 
@@ -106,28 +100,23 @@ export default function Newsfeed() {
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
-                    {filteredResults
-                      .sort(
-                        (a, b) =>
-                          b.timestamp.toMillis() - a.timestamp.toMillis()
-                      )
-                      .map((element: NotificationProps) => (
-                        <div className="pb-4" key={element.id}>
-                          <AlertCard
-                            header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgSrc={`${
-                              element.type === `org`
-                                ? `/profile-org-white.svg`
-                                : ``
-                            }`}
-                            bodyImgSrc={``}
-                            bodyImgAltTxt={``}
-                            bodyText={element.bodyText}
-                          />
-                        </div>
-                      ))}
+                    {filteredResults.map((element: NotificationProps) => (
+                      <div className="pb-4" key={element.id}>
+                        <AlertCard
+                          header={element.header}
+                          subheader={element.subheader}
+                          timestamp={element.timestamp}
+                          headerImgSrc={`${
+                            element.type === `org`
+                              ? `/profile-org-white.svg`
+                              : ``
+                          }`}
+                          bodyImgSrc={``}
+                          bodyImgAltTxt={``}
+                          bodyText={element.bodyText}
+                        />
+                      </div>
+                    ))}
                   </>
                 ) : (
                   <div className="pb-4">
