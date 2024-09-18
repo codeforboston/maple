@@ -16,16 +16,12 @@ const createNotificationFields = (
   entity: BillNotification | OrgNotification
 ) => {
   let topicName: string
-  let header: string
-  let court: string | null = null
   let bodyText: string
   let subheader: string
 
   switch (entity.type) {
     case "bill":
       topicName = `bill-${entity.billCourt}-${entity.billId}`
-      header = entity.billId
-      court = entity.billCourt
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
@@ -37,8 +33,6 @@ const createNotificationFields = (
 
     case "org":
       topicName = `org-${entity.orgId}`
-      header = entity.billName
-      court = entity.billCourt
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       break
@@ -53,12 +47,12 @@ const createNotificationFields = (
     uid: "",
     notification: {
       bodyText: bodyText,
-      header,
+      header: entity.billId,
+      court: entity.billCourt,
       id: entity.billId,
       subheader: subheader,
       timestamp: entity.updateTime,
       type: entity.type,
-      court,
       delivered: false
     },
     createdAt: Timestamp.now()
