@@ -35,7 +35,7 @@ const EmailContainer = styled.a`
   text-align: left;
   text-decoration: underline;
 `
-const NameContainer = styled.div`
+export const NameContainer = styled.div`
   color: #1a3185;
   font-size: 25px;
   font-weight: 600;
@@ -43,7 +43,7 @@ const NameContainer = styled.div`
   letter-spacing: 0em;
   text-align: left;
 `
-const DescrContainer = styled.div`
+export const DescrContainer = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;

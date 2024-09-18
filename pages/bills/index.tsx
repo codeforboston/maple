@@ -8,7 +8,7 @@ export default createPage({
   Page: () => {
     return (
       <Container fluid="md" className="mt-3">
-        <h1>All Bills</h1>
+        <h1>Browse Bills</h1>
         <BillSearch />
       </Container>
     )

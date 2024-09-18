@@ -6,9 +6,9 @@
     "resources": "Resources"
   },
   "links": {
-    "learnWriting": "To Writing Effective Testimony",
+    "learnWriting": "To Write Effective Testimony",
     "learnProcess": "About the Legislative Process",
-    "learnWhy": "Why use MAPLE",
+    "learnWhy": "Why Use MAPLE",
     "supportMaple": "Support MAPLE",
     "ourMission": "Mission & Goals",
     "team": "Team",
@@ -18,7 +18,7 @@
       "linkedin":"Follow MAPLE on LinkedIn",
       "twitter":"Follow MAPLE on Twitter"
     }
-
+    "mapleAI": "How MAPLE Uses AI"
   },
   "legal": {
     "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",

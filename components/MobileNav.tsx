@@ -6,6 +6,7 @@ import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Nav, Navbar, NavDropdown } from "./bootstrap"
 import {
   Avatar,
+  NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkEditProfile,
   NavbarLinkEffective,
@@ -68,6 +69,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkTeam handleClick={closeNav} />
           <NavbarLinkSupport handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
+          <NavbarLinkAI handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>

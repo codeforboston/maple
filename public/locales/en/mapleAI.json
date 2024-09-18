@@ -1,0 +1,68 @@
+{
+  "title": "How MAPLE Uses AI",
+  "mission-statement": "Our commitment is to provide you with the most reliable and accessible legislative information using cutting-edge AI technology. Stay tuned for continuous improvements and new features as we enhance MAPLE’s AI capabilities.",
+  "legal-advisory": "We advise users to consult the full text of the legislation and official resources for the most accurate and comprehensive understanding.",
+  "section1": {
+    "title": "How MAPLE Uses AI",
+    "desc1": "We use Artificial Intelligence (AI) on MAPLE to help you quickly understand legislative information and navigate to policies that interest you. Right now, we use AI in two ways:",
+    "desc2Bold": "Bill Summaries",
+    "desc2Main": "We use AI to generate concise summaries for each piece of legislation. These summaries help you grasp the essentials of a bill without wading through dense legal text.",
+    "desc3Bold": "Topic Tags",
+    "desc3Main": "AI tags each bill with relevant topics, making it easier for you to find related legislation and understand the broader context. These tags categorize bills by subject matter, allowing for efficient searching and filtering."
+  },
+  "section2": {
+    "title": "Our Guiding Principles",
+    "desc1Title": "Transparency",
+    "desc1Main": "We are open about how our AI systems function and their limitations, so that users understand the extent and limits of AI's role in enhancing their legislative engagement.",
+    "desc2Title": "Accessibility",
+    "desc2Main": "We seek to make legislative information easily understandable and navigable for everyone.",
+    "desc3Title": "Accuracy & Fairness",
+    "desc3Main": "We strive to minimize biases and value impartiality in our use of AI, acknowledging that AI is a tool to aid but not replace detailed review.",
+    "desc4Title": "Community Input",
+    "desc4Main": "We integrate feedback from a range of stakeholders to build our AI deployments, and solicit community input to continually improve our use of AI. You can email any questions or ideas to admin@mapletestimony.org."
+  },
+  "section3": {
+    "title": "Limitations and Risks of AI",
+    "desc1Title": "Limitations",
+    "desc1Main": "While we believe AI significantly enhances your experience on MAPLE, it has limitations. AI-generated summaries and tags are based on limited information about the bill in question and existing law and may not always capture every nuance or recent events. Legislative information is also complex and can use archaic or legal language that is difficult for AI models to properly understand and summarize. Finally, like us humans, AI can make mistakes in both understanding and explaining policies.",
+    "desc2Title": "Risks",
+    "desc2Main": "If the bill summaries produced by AI models are wrong or misleading, they present a risk of misinforming the public about legislative proposals. We have mitigated risk by testing and iterating on the implementation of our models in collaboration with academic researchers at Boston University’s Spark! program. While we cannot guarantee that the model will never make mistakes, we have found it to be generally accurate and helpful in the summaries it provides.",
+    "desc3Title": "Data privacy",
+    "desc3Pre": "We only run",
+    "desc3Italic": "publicly available",
+    "desc3Main": "information through AI models and do not expose any private or sensitive data to AI models or third party APIs. Data we do pass through AI models includes bill and law text. In the future, we may also use AI to summarize testimony documents that you publish to MAPLE, but only testimony that you have chosen to display publicly. Like other information on public websites, this text is already available to be accessed and processed by any search engine, web crawler, or AI model."
+  },
+  "section4": {
+    "title": "About Our Model",
+    "sub1": {
+      "title": "Overview",
+      "desc1": "Our AI features are built with advanced language processing technologies. Using a state-of-the-art language model, we generate summaries and tags by analyzing the full text of each bill and associated metadata, including the relevant sections of the existing law.",
+      "desc2": "Key features of our AI deployment include:",
+      "desc3Bold": "Real-time Summaries:",
+      "desc3Main": "AI generates summaries as new bills are filed or updated.",
+      "desc4Bold": "Dynamic Tagging:",
+      "desc4Main": "Bills are tagged with multiple relevant topics, helping you find similar legislation quickly.",
+      "desc5Bold": "Scalability:",
+      "desc5Main": "Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
+    },
+    "sub2": {
+      "title": "Technical details",
+      "desc1Bold": "Backend Integration:",
+      "desc1Main": "We use Python functions to call the AI model, integrating seamlessly with our backend systems.",
+      "desc2Bold": "API Utilization:",
+      "desc2Main": "OpenAI’s GPT-4o model powers our AI capabilities, with the ability to automatically ingest and interpret about 100,000 words of bill and law text at once, and to query additional information on demand from our database.",
+      "desc3Bold": "Data Management:",
+      "desc3Main": "Summaries and tags are stored in our backend, timestamped, and linked to specific bills and legislative sessions. We may regenerate them periodically as modeling capabilities evolve."
+    }
+  },
+  "section5": {
+    "title": "Future Deployments of AI",
+    "desc1": "We are continually exploring new ways to leverage AI to improve your experience on MAPLE. Future enhancements may include more personalized recommendations, deeper insights into legislative trends, and interactive tools to engage with legislative data more effectively. Here are some projects we are considering:",
+    "desc2Bold": "Testimony Summarizer:",
+    "desc2Main": "AI will summarize all of the testimonies on a single bill or related bills, and identify points of consensus, disagreement and notable points.",
+    "desc3Bold": "Testimony-Drafting Copilot:",
+    "desc3Main": "AI will help a user organize their thoughts, compose appropriate testimony and cite relevant sources.",
+    "desc4Bold": "Bill Comparison Tool:",
+    "desc4Main": "AI will identify and compare similar bills, summarizing their commonalities and distinctions to help you understand the differences in legislative approaches."
+  }
+}
