@@ -9,7 +9,6 @@ import {
   OralContent,
   WriteOrCallContent
 } from "components/CommunicatingWithLegislators/CommunicatingWithLegislatorsContent"
-import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   p {
