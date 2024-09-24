@@ -112,7 +112,7 @@ export default function Newsfeed() {
                             subheader={element.subheader}
                             timestamp={element.timestamp}
                             headerImgSrc={`${element.type === `bill`
-                              ? `/profile-org-white.svg`
+                              ? ``
                               : `/thumbs-${element.position}.svg`
                               }`}
                             headerImgTitle={`${element.type === `bill`
