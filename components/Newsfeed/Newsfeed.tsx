@@ -111,14 +111,14 @@ export default function Newsfeed() {
                             header={element.header}
                             subheader={element.subheader}
                             timestamp={element.timestamp}
-                            headerImgSrc={`${element.type === `bill`
-                              ? ``
-                              : `/thumbs-${element.position}.svg`
-                              }`}
-                            headerImgTitle={`${element.type === `bill`
-                              ? ''
-                              : element.position
-                              }`}
+                            headerImgSrc={`${
+                              element.type === `bill`
+                                ? ``
+                                : `/thumbs-${element.position}.svg`
+                            }`}
+                            headerImgTitle={`${
+                              element.type === `bill` ? "" : element.position
+                            }`}
                             bodyImgSrc={``}
                             bodyImgAltTxt={``}
                             bodyText={element.bodyText}
@@ -169,8 +169,9 @@ function FilterBoxes({
   return (
     <>
       <Row
-        className={`${isMobile ? "justify-content-center" : "justify-content-end"
-          }`}
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
       >
         <div className="form-check checkbox">
           <input
@@ -189,8 +190,9 @@ function FilterBoxes({
         </div>
       </Row>
       <Row
-        className={`${isMobile ? "justify-content-center" : "justify-content-end"
-          }`}
+        className={`${
+          isMobile ? "justify-content-center" : "justify-content-end"
+        }`}
       >
         <div className="form-check checkbox">
           <input
