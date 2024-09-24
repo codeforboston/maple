@@ -8,6 +8,7 @@ import { useBill } from "components/db/bills"
 import { FollowOrgButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
 import { useFlags } from "components/featureFlags"
+import { useAuth } from "components/auth"
 import { useTranslation } from "next-i18next"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
@@ -35,11 +36,12 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const committee = bill?.currentCommittee
   const isOrg = hit.authorRole === "organization"
   const writtenBy =
-    isOrg || hit.authorDisplayName !== "<private user>" ? (
-      <Link href={`/profile?id=${hit.authorUid}`}>{hit.authorDisplayName}</Link>
+    isOrg || hit.public ? (
+      <Link href={`/profile?id=${hit.authorUid}`}>{hit.fullName}</Link>
     ) : (
-      hit.authorDisplayName
+      hit.fullName
     )
+  const { user } = useAuth()
   const { followOrg } = useFlags()
 
   return (
@@ -68,7 +70,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {followOrg && isOrg && <FollowOrgButton profileId={hit.authorUid} />}
+        {followOrg && isOrg && user && (
+          <FollowOrgButton profileId={hit.authorUid} />
+        )}
       </div>
       <hr />
       <div style={{ display: "flex", alignItems: "center" }}>

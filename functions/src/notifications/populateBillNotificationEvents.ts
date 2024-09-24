@@ -7,22 +7,13 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { BillHistory } from "../bills/types"
+import { BillNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-type Notification = {
-  type: string
-  court: string
-  id: string
-  name: string
-  history: BillHistory
-  historyUpdateTime: Timestamp
-}
-
-// Define the populateNotificationEvents function
-export const populateNotificationEvents = functions.firestore
+// Define the populateBillNotificationEvents function
+export const populateBillNotificationEvents = functions.firestore
   .document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
@@ -41,13 +32,16 @@ export const populateNotificationEvents = functions.firestore
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: Notification = {
+      const newNotificationEvent: BillNotification = {
         type: "bill",
-        court: court,
-        id: newData?.id,
-        name: newData?.id,
-        history: newData?.history,
-        historyUpdateTime: Timestamp.now()
+
+        billCourt: court,
+        billId: newData?.id,
+        billName: newData?.content.Title,
+
+        billHistory: newData?.history,
+
+        updateTime: Timestamp.now()
       }
 
       await db.collection("/notificationEvents").add(newNotificationEvent)
@@ -63,7 +57,9 @@ export const populateNotificationEvents = functions.firestore
 
     const notificationEventSnapshot = await db
       .collection("/notificationEvents")
-      .where("name", "==", newData?.id)
+      .where("type", "==", "bill")
+      .where("billCourt", "==", court)
+      .where("billId", "==", newData?.id)
       .get()
 
     console.log(
@@ -81,8 +77,8 @@ export const populateNotificationEvents = functions.firestore
           .collection("/notificationEvents")
           .doc(notificationEventId)
           .update({
-            history: newData?.history,
-            historyUpdateTime: Timestamp.now()
+            billHistory: newData?.history,
+            updateTime: Timestamp.now()
           })
       }
     }
