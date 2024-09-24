@@ -7,12 +7,14 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { Notification } from "./populateBillNotificationEvents"
+import { BillNotification, OrgNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-const createNotificationFields = (entity: Notification) => {
+const createNotificationFields = (
+  entity: BillNotification | OrgNotification
+) => {
   let topicName: string
   let header: string
   let court: string | null = null
@@ -34,15 +36,16 @@ const createNotificationFields = (entity: Notification) => {
       break
 
     case "org":
-      topicName = `org-${entity.testimonyUser}`
+      topicName = `org-${entity.orgId}`
       header = entity.billName
+      court = entity.billCourt
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       break
 
     default:
-      console.log(`Invalid entity type: ${entity.type}`)
-      throw new Error(`Invalid entity type: ${entity.type}`)
+      console.log(`Invalid entity: ${entity}`)
+      throw new Error(`Invalid entity: ${entity}`)
   }
 
   return {
@@ -67,7 +70,10 @@ export const publishNotifications = functions.firestore
   .document("/notificationEvents/{topicEventId}")
   .onWrite(async (snapshot, context) => {
     // Get the newly created topic event data
-    const topic = snapshot?.after.data() as Notification | undefined
+    const topic = snapshot?.after.data() as
+      | BillNotification
+      | OrgNotification
+      | undefined
 
     if (!topic) {
       console.error("Invalid topic data:", topic)
@@ -76,20 +82,54 @@ export const publishNotifications = functions.firestore
 
     // Extract related Bill or Org data from the topic event
     const notificationPromises: any[] = []
+
+    // Create a batch
+    const batch = db.batch()
     console.log(`topic type: ${topic.type}`)
 
-    const handleNotifications = async (topic: Notification) => {
+    const handleNotifications = async (
+      topic: BillNotification | OrgNotification
+    ) => {
       const notificationFields = createNotificationFields(topic)
 
       console.log(JSON.stringify(notificationFields))
 
-      const subscriptionsSnapshot = await db
+      const topicNameSnapshot = await db
         .collectionGroup("activeTopicSubscriptions")
         .where("topicName", "==", notificationFields.topicName)
         .get()
 
-      subscriptionsSnapshot.docs.forEach(doc => {
-        const subscription = doc.data()
+      // Send a testimony notification to all users subscribed to the Bill
+      let billSnapshot
+      if (notificationFields.notification.type !== "bill") {
+        billSnapshot = await db
+          .collectionGroup("activeTopicSubscriptions")
+          .where(
+            "topicName",
+            "==",
+            `bill-${notificationFields.notification.court}-${notificationFields.notification.id}`
+          )
+          .get()
+      }
+
+      const uniqueDocs = new Map()
+
+      // Add documents from topicNameSnapshot to the Map
+      topicNameSnapshot.docs.forEach(doc => {
+        uniqueDocs.set(doc.data().uid, doc.data())
+      })
+
+      // If billSnapshot exists, add its documents to the Map
+      if (billSnapshot) {
+        billSnapshot.docs.forEach(doc => {
+          uniqueDocs.set(doc.data().uid, doc.data())
+        })
+      }
+
+      // Convert the Map values to an array to get the unique documents
+      const subscriptionsSnapshot = Array.from(uniqueDocs.values())
+
+      subscriptionsSnapshot.forEach(subscription => {
         const { uid } = subscription
 
         // Add the uid to the notification document
@@ -99,17 +139,15 @@ export const publishNotifications = functions.firestore
           `Pushing notifications to users/${uid}/userNotificationFeed`
         )
 
-        // Create a notification document in the user's notification feed
-        notificationPromises.push(
-          db
-            .collection(`users/${uid}/userNotificationFeed`)
-            .add(notificationFields)
-        )
+        // Get a reference to the new notification document
+        const docRef = db.collection(`users/${uid}/userNotificationFeed`).doc()
+
+        // Add the write operation to the batch
+        batch.set(docRef, notificationFields)
       })
     }
 
     await handleNotifications(topic)
 
-    // Wait for all notification documents to be created
-    await Promise.all(notificationPromises)
+    notificationPromises.push(batch.commit())
   })

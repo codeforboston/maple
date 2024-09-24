@@ -2,9 +2,8 @@
   "title": "How to Support MAPLE",
   "donate": {
     "header": "Donate",
-    "bodytextOne": "MAPLE is a fiscally sponsored initiative of the 501(c)(3), the Open Collective Foundation (OCF).",
-    "donorsLink": "You can see a full list of our donors and expenditures on our Open Collective webpage.",
-    "bodytextTwo": "This is where you can view the details of every donation we've received and every dollar we've spent - we are 100% transparent. We would be grateful for your financial support. "
+    "bodytextOne": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. You can donate directly to the development of MAPLE through this ",
+    "donorsLink": "link"
   },
   "volunteer": {
     "header": "Volunteer",

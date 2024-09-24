@@ -7,13 +7,12 @@ const DonateCardContent = () => {
       <p>
         <span>{`${t("donate.bodytextOne")} `}</span>
         <a
-          href="https://opencollective.com/mapletestimony"
+          href="https://crm.bloomerang.co/HostedDonation?ApiKey=pub_89ca6da3-3b89-11ed-ba98-0665072ac94d&WidgetId=20480"
           target="_blank"
           rel="noopener noreferrer"
         >
           {t("donate.donorsLink")}
         </a>
-        <span>{` ${t("donate.bodytextTwo")}`}</span>
       </p>
     </>
   )
@@ -33,7 +32,9 @@ const VolunteerCardContent = () => {
           {t("volunteer.githubLink")}
         </a>
         <span>{`, ${t("volunteer.bodytextTwo")} `}</span>
-        <a href="mailto:info@mapletestimony.org">info@mapletestimony.org.</a>
+        <a href="mailto:admin@mapletestimony.org">
+          {"admin@mapletestimony.org."}
+        </a>
       </p>
     </>
   )
