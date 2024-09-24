@@ -30,8 +30,8 @@ export default function Newsfeed() {
   // Update the filter function
   useEffect(() => {
     const results = allResults.filter(result => {
-      if (isShowingOrgs && result.type === "org") return true
-      if (isShowingBills && result.type === "bill") return true
+      if (isShowingOrgs && result.isUserMatch) return true
+      if (isShowingBills && result.isBillMatch) return true
       return false
     })
 
@@ -100,23 +100,31 @@ export default function Newsfeed() {
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
-                    {filteredResults.map((element: NotificationProps) => (
-                      <div className="pb-4" key={element.id}>
-                        <AlertCard
-                          header={element.header}
-                          subheader={element.subheader}
-                          timestamp={element.timestamp}
-                          headerImgSrc={`${
-                            element.type === `org`
+                    {filteredResults
+                      .sort(
+                        (a, b) =>
+                          b.timestamp.toMillis() - a.timestamp.toMillis()
+                      )
+                      .map((element: NotificationProps) => (
+                        <div className="pb-4" key={element.id}>
+                          <AlertCard
+                            header={element.header}
+                            subheader={element.subheader}
+                            timestamp={element.timestamp}
+                            headerImgSrc={`${element.type === `bill`
                               ? `/profile-org-white.svg`
-                              : ``
-                          }`}
-                          bodyImgSrc={``}
-                          bodyImgAltTxt={``}
-                          bodyText={element.bodyText}
-                        />
-                      </div>
-                    ))}
+                              : `/thumbs-${element.position}.svg`
+                              }`}
+                            headerImgTitle={`${element.type === `bill`
+                              ? ''
+                              : element.position
+                              }`}
+                            bodyImgSrc={``}
+                            bodyImgAltTxt={``}
+                            bodyText={element.bodyText}
+                          />
+                        </div>
+                      ))}
                   </>
                 ) : (
                   <div className="pb-4">
@@ -161,9 +169,8 @@ function FilterBoxes({
   return (
     <>
       <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
+        className={`${isMobile ? "justify-content-center" : "justify-content-end"
+          }`}
       >
         <div className="form-check checkbox">
           <input
@@ -182,9 +189,8 @@ function FilterBoxes({
         </div>
       </Row>
       <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
+        className={`${isMobile ? "justify-content-center" : "justify-content-end"
+          }`}
       >
         <div className="form-check checkbox">
           <input

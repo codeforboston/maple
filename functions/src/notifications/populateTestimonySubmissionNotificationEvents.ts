@@ -7,13 +7,13 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { OrgNotification } from "./types"
+import { TestimonySubmissionNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 // Define the populateOrgNotificationEvents function
-export const populateOrgNotificationEvents = functions.firestore
+export const populateTestimonySubmissionNotificationEvents = functions.firestore
   .document("/users/{userId}/publishedTestimony/{testimonyId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
@@ -30,8 +30,8 @@ export const populateOrgNotificationEvents = functions.firestore
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: OrgNotification = {
-        type: "org",
+      const newNotificationEvent: TestimonySubmissionNotification = {
+        type: "testimony",
 
         billCourt: newData?.court.toString(),
         billId: newData?.billId,

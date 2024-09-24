@@ -7,15 +7,17 @@ export interface Notification {
   billCourt: string
   billId: string
   billName: string
+  /*isBillMatch: boolean
+  isUserMatch: boolean*/
 }
 
-export type BillNotification = Notification & {
+export type BillHistoryUpdateNotification = Notification & {
   type: "bill"
   billHistory: BillHistory
 }
 
-export type OrgNotification = Notification & {
-  type: "org"
+export type TestimonySubmissionNotification = Notification & {
+  type: "testimony"
   orgId: string
   testimonyUser: string
   testimonyPosition: string

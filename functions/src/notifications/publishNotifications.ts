@@ -7,25 +7,25 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { BillNotification, OrgNotification } from "./types"
+import {
+  BillHistoryUpdateNotification,
+  TestimonySubmissionNotification
+} from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 const createNotificationFields = (
-  entity: BillNotification | OrgNotification
+  entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
 ) => {
-  let topicName: string
-  let header: string
-  let court: string | null = null
+  let topicName: string[]
   let bodyText: string
   let subheader: string
+  let position: string | undefined
 
   switch (entity.type) {
     case "bill":
-      topicName = `bill-${entity.billCourt}-${entity.billId}`
-      header = entity.billId
-      court = entity.billCourt
+      topicName = [`bill-${entity.billCourt}-${entity.billId}`]
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
@@ -35,12 +35,14 @@ const createNotificationFields = (
       subheader = `${lastHistoryAction.Branch}`
       break
 
-    case "org":
-      topicName = `org-${entity.orgId}`
-      header = entity.billName
-      court = entity.billCourt
+    case "testimony":
+      topicName = [
+        `testimony-${entity.orgId}`,
+        `bill-${entity.billCourt}-${entity.billId}`
+      ]
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
+      position = entity.testimonyPosition
       break
 
     default:
@@ -53,12 +55,15 @@ const createNotificationFields = (
     uid: "",
     notification: {
       bodyText: bodyText,
-      header,
+      header: entity.billId,
+      court: entity.billCourt,
       id: entity.billId,
       subheader: subheader,
       timestamp: entity.updateTime,
       type: entity.type,
-      court,
+      position: position ?? "",
+      isBillMatch: entity.type === "bill" || entity.type === "testimony",
+      isUserMatch: entity.type === "testimony",
       delivered: false
     },
     createdAt: Timestamp.now()
@@ -71,8 +76,8 @@ export const publishNotifications = functions.firestore
   .onWrite(async (snapshot, context) => {
     // Get the newly created topic event data
     const topic = snapshot?.after.data() as
-      | BillNotification
-      | OrgNotification
+      | BillHistoryUpdateNotification
+      | TestimonySubmissionNotification
       | undefined
 
     if (!topic) {
@@ -88,7 +93,7 @@ export const publishNotifications = functions.firestore
     console.log(`topic type: ${topic.type}`)
 
     const handleNotifications = async (
-      topic: BillNotification | OrgNotification
+      topic: BillHistoryUpdateNotification | TestimonySubmissionNotification
     ) => {
       const notificationFields = createNotificationFields(topic)
 
@@ -96,41 +101,12 @@ export const publishNotifications = functions.firestore
 
       const topicNameSnapshot = await db
         .collectionGroup("activeTopicSubscriptions")
-        .where("topicName", "==", notificationFields.topicName)
+        .where("topicName", "in", notificationFields.topicName)
         .get()
 
-      // Send a testimony notification to all users subscribed to the Bill
-      let billSnapshot
-      if (notificationFields.notification.type !== "bill") {
-        billSnapshot = await db
-          .collectionGroup("activeTopicSubscriptions")
-          .where(
-            "topicName",
-            "==",
-            `bill-${notificationFields.notification.court}-${notificationFields.notification.id}`
-          )
-          .get()
-      }
-
-      const uniqueDocs = new Map()
-
       // Add documents from topicNameSnapshot to the Map
-      topicNameSnapshot.docs.forEach(doc => {
-        uniqueDocs.set(doc.data().uid, doc.data())
-      })
-
-      // If billSnapshot exists, add its documents to the Map
-      if (billSnapshot) {
-        billSnapshot.docs.forEach(doc => {
-          uniqueDocs.set(doc.data().uid, doc.data())
-        })
-      }
-
-      // Convert the Map values to an array to get the unique documents
-      const subscriptionsSnapshot = Array.from(uniqueDocs.values())
-
-      subscriptionsSnapshot.forEach(subscription => {
-        const { uid } = subscription
+      topicNameSnapshot.forEach(subscription => {
+        const { uid } = subscription.data()
 
         // Add the uid to the notification document
         notificationFields.uid = uid
