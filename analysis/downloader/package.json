@@ -4,6 +4,7 @@
   "description": "Analyze bill history",
   "license": "MIT",
   "dependencies": {
+    "analysis": "file:",
     "csv": "^6.1.3",
     "runtypes": "^6.5.1",
     "ts-node": "^10.9.1"
