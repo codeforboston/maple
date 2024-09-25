@@ -1,4 +1,8 @@
-import { runWith } from "firebase-functions"
+// import { runWith } from "firebase-functions"
+// import { runWith } from "firebase-functions/v2/options"
+
+import { onRequest } from "firebase-functions/v2/https"
+
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
 import { db, Timestamp } from "../firebase"
@@ -9,9 +13,15 @@ const currentTrackerVersion = 1
 export const billTrackerPath = (billId: string, court: number) =>
   `/billTracker/${court}-${billId}`
 
-export const updateBillTracker = runWith({
-  timeoutSeconds: 10
-})
+// export const updateBillTracker = runWith({
+export const updateBillTracker = onRequest(
+  {
+    timeoutSeconds: 10
+  },
+  (req, res) => {
+    res.status(200).send("Hello world!")
+  }
+)
   .firestore.document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (change, context) => {
     const params = context.params,
