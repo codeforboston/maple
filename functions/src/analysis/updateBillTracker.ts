@@ -23,7 +23,7 @@ export const updateBillTracker = onRequest(
   }
 )
   .firestore.document("/generalCourts/{court}/bills/{billId}")
-  .onWrite(async (change, context) => {
+  .onWrite(async (change: any, context: any) => {
     const params = context.params,
       billId = String(params.billId),
       court = Number(params.court)
