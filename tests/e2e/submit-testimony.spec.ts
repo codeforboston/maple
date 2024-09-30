@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test"
-const testBillPage = "http://localhost:3000/bills/193/S2097"
+import { BillPage } from "./page_objects/billPage"
+const testUserEmail = "testimonysubmit@gmail.com"
+const testUserPassword = "maple123@"
+
 
 test("is my stuff running", async ({ page }) => {
   await page.goto("http://localhost:3000")
@@ -23,30 +26,46 @@ test.describe("Submit Testimony Flow for logged in User", () => {
     await page.goto("http://localhost:3000")
     await page.getByRole("button", { name: "Log in / Sign up" }).click()
     await page.getByRole("button", { name: "Sign In", exact: true }).click()
-    await page.fill('input[name="email"]', "testimonysubmit@gmail.com") // Use test user credentials
-    await page.fill('input[name="password"]', "maple123@")
+    await page.fill('input[name="email"]', testUserEmail) // Use test user credentials
+    await page.fill('input[name="password"]', testUserPassword)
     await page
       .getByLabel("Sign In", { exact: true })
       .getByRole("button", { name: "Sign In" })
       .click()
+    const profileIcon = page.getByAltText("profile icon")
+    await expect(profileIcon).toBeVisible()
+
   })
 
-  test("should display Create Testimony Button", async ({ page }) => {
-    await page.goto(testBillPage)
-    // await page.getByRole('button',{name:'Create Testimony'}).click()
-    // await expect(page).toHaveURL(/.*submit-testimony/)
-    const buttons = await page.$$("button")
+  test("should navigate to a bill", async ({ page }) => {
+    // click browse bills
+    await page.getByRole("link",{name:"Browse Bills"}).first().click()
 
-    // Extract text content from each button
-    const buttonTexts = []
-    for (const button of buttons) {
-      const text = await button.innerText() // Get the button's text
-      buttonTexts.push(text) // Add the text to the array
-    }
+    // select the first bill in the list
+    const firstBillLink = page.locator('a[href*="/bills"]').first();
+    await firstBillLink.click()
 
-    // Log the button texts to the console
-    console.log("Buttons on the page:", buttonTexts)
   })
 
-  // test("should redirect to submit testimonu rl when button is selected")
+  test("should successfully submit testimony when starting from the bills page",async({page})=>{
+    
+    // go to browse bills page
+    await page.goto("http://localhost:3000/bills")
+    await page.waitForSelector("li.ais-Hits-item a")
+
+    // click the first bill
+    const billpage = new BillPage(page)
+    await billpage.clickFirstBill()
+    await page.screenshot({ path: 'screenshot.png' });
+
+    // click the create testimony button
+    const createTestimonyButton = page.getByRole("button",{name: "Create Testimony"})
+    await expect(createTestimonyButton).toBeVisible()
+    await page.screenshot({ path: 'screenshot.png' });
+    await createTestimonyButton.click()
+
+
+
+
+  })
 })
