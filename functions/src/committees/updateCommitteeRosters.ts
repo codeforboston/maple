@@ -1,4 +1,6 @@
-import { runWith } from "firebase-functions"
+import { onRequest } from "firebase-functions/v2/https"
+
+// import { runWith } from "firebase-functions"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
@@ -6,7 +8,13 @@ import { Committee } from "./types"
 import { currentGeneralCourt } from "../shared"
 
 /** Updates the list of members in each committee.  */
-export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
+// export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
+export const updateCommitteeRosters = onRequest(
+  { timeoutSeconds: 120 },
+  (req, res) => {
+    res.status(200).send("Hello world!")
+  }
+)
   .pubsub.schedule("every 24 hours")
   .onRun(async () => {
     const members = await db

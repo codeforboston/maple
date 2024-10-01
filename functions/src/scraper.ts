@@ -1,5 +1,9 @@
+import { onRequest } from "firebase-functions/v2/https"
+
 import axios, { AxiosError } from "axios"
-import { logger, runWith } from "firebase-functions"
+// import { logger, runWith } from "firebase-functions"
+import { logger } from "firebase-functions"
+
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./shared"
@@ -78,7 +82,13 @@ export function createScraper<T>({
   resourcesPerBatch: number
   batchesPerRun: number
 }) {
-  const startBatches = runWith({ timeoutSeconds: startBatchTimeout })
+  // const startBatches = runWith({ timeoutSeconds: startBatchTimeout })
+  const startBatches = onRequest(
+    { timeoutSeconds: startBatchTimeout },
+    (req, res) => {
+      res.status(200).send("Hello world!")
+    }
+  )
     .pubsub.schedule(startBatchSchedule)
     .onRun(async () => {
       const scraper = await db.doc(`/scrapers/${resourceName}`).get(),
@@ -114,9 +124,15 @@ export function createScraper<T>({
    * Fetches document content and writes it to firestore for application
    * consumption.
    */
-  const fetchBatch = runWith({ timeoutSeconds: fetchBatchTimeout })
+  // const fetchBatch = runWith({ timeoutSeconds: fetchBatchTimeout })
+  const fetchBatch = onRequest(
+    { timeoutSeconds: fetchBatchTimeout },
+    (req, res) => {
+      res.status(200).send("Hello world!")
+    }
+  )
     .firestore.document(`/scrapers/${resourceName}/batches/{batchId}`)
-    .onCreate(async snap => {
+    .onCreate(async (snap: any) => {
       const batch = snap.data() as Batch,
         court = batch.court,
         writer = db.bulkWriter()

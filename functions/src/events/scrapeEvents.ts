@@ -1,4 +1,6 @@
-import { runWith } from "firebase-functions"
+import { onRequest } from "firebase-functions/v2/https"
+
+// import { runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"
@@ -26,7 +28,10 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   get function() {
-    return runWith({ timeoutSeconds: this.timeout })
+    // return runWith({ timeoutSeconds: this.timeout })
+    return onRequest({ timeoutSeconds: this.timeout }, (req, res) => {
+      res.status(200).send("Hello world!")
+    })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
   }
