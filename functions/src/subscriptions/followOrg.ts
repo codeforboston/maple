@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions"
-import { subscribeToOrgTopic } from "./subscribeToOrgTopic"
+import { subscribeToTestimonyTopic } from "./subscribeToTestimonyTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
 
@@ -28,7 +28,7 @@ export const followOrg = functions.https.onCall(async (data, context) => {
   const db: Firestore = getFirestore()
 
   try {
-    await subscribeToOrgTopic({ user, orgLookup, db })
+    await subscribeToTestimonyTopic({ user, orgLookup, db })
     return { status: "success", message: "Org subscription added" }
   } catch (error: any) {
     throw new functions.https.HttpsError(

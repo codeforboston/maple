@@ -54,7 +54,7 @@ export const FollowButton = ({
     try {
       const orgLookup = {
         profileId: profileId,
-        type: "org"
+        type: "testimony"
       }
       const token = await user.getIdToken()
       const response = await followBillFunction({ orgLookup, token })
@@ -75,7 +75,7 @@ export const FollowButton = ({
     try {
       const orgLookup = {
         profileId: profileId,
-        type: "org"
+        type: "testimony"
       }
       const token = await user.getIdToken()
       const response = await unfollowBillFunction({ orgLookup, token })

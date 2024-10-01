@@ -4,7 +4,7 @@ import { TopicSubscription } from "./types"
 import { addTopicSubscription } from "./addTopicSubscription"
 import { Timestamp } from "../firebase"
 
-export const subscribeToOrgTopic = async ({
+export const subscribeToTestimonyTopic = async ({
   user,
   orgLookup,
   db
@@ -19,7 +19,7 @@ export const subscribeToOrgTopic = async ({
     console.log("Debug: OrgLookup", orgLookup)
 
     const uid = user.uid
-    const topicName = `org-${orgLookup.profileId.toString()}`
+    const topicName = `testimony-${orgLookup.profileId.toString()}`
 
     // Debug: Log the generated uid and topicName
     console.log("Debug: UID", uid)
@@ -28,7 +28,7 @@ export const subscribeToOrgTopic = async ({
     const subscriptionData: TopicSubscription = {
       topicName,
       uid,
-      type: "org",
+      type: "testimony",
       orgLookup,
       nextDigestAt: Timestamp.fromDate(new Date())
     }

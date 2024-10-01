@@ -63,7 +63,7 @@ export const script: Script = async ({ db, auth }) => {
         fullName: "Tammy's Tamales"
       },
       public: true,
-      type: "org",
+      type: "testimony",
       nextDigestAt: Timestamp.fromDate(monthAhead)
     }
 

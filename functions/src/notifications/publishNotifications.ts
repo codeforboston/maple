@@ -11,6 +11,7 @@ import {
   BillHistoryUpdateNotification,
   TestimonySubmissionNotification
 } from "./types"
+import { cloneDeep } from "lodash"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -18,14 +19,12 @@ const db = admin.firestore()
 const createNotificationFields = (
   entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
 ) => {
-  let topicName: string[]
   let bodyText: string
   let subheader: string
   let position: string | undefined
 
   switch (entity.type) {
     case "bill":
-      topicName = [`bill-${entity.billCourt}-${entity.billId}`]
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
@@ -36,10 +35,6 @@ const createNotificationFields = (
       break
 
     case "testimony":
-      topicName = [
-        `testimony-${entity.orgId}`,
-        `bill-${entity.billCourt}-${entity.billId}`
-      ]
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       position = entity.testimonyPosition
@@ -51,7 +46,6 @@ const createNotificationFields = (
   }
 
   return {
-    topicName,
     uid: "",
     notification: {
       bodyText: bodyText,
@@ -62,8 +56,8 @@ const createNotificationFields = (
       timestamp: entity.updateTime,
       type: entity.type,
       position: position ?? "",
-      isBillMatch: entity.type === "bill" || entity.type === "testimony",
-      isUserMatch: entity.type === "testimony",
+      isBillMatch: false,
+      isUserMatch: false,
       delivered: false
     },
     createdAt: Timestamp.now()
@@ -97,29 +91,50 @@ export const publishNotifications = functions.firestore
     ) => {
       const notificationFields = createNotificationFields(topic)
 
-      console.log(JSON.stringify(notificationFields))
-
       const topicNameSnapshot = await db
         .collectionGroup("activeTopicSubscriptions")
-        .where("topicName", "in", notificationFields.topicName)
+        .where(
+          "topicName",
+          "in",
+          topic.type === "bill"
+            ? [`bill-${topic.billCourt}-${topic.billId}`]
+            : [
+                `testimony-${topic.orgId}`,
+                `bill-${topic.billCourt}-${topic.billId}`
+              ]
+        )
         .get()
 
-      // Add documents from topicNameSnapshot to the Map
+      const users: { [uid: string]: any } = {}
+
+      // Iterate through the topicNameSnapshots and set the notifications
       topicNameSnapshot.forEach(subscription => {
-        const { uid } = subscription.data()
+        const { uid, type } = subscription.data()
+        if (topic.type === "testimony" && topic.orgId !== uid) {
+          // If the user does not exist, create new notificationFields for the user
+          if (!users[uid]) {
+            users[uid] = cloneDeep(notificationFields)
+            users[uid].uid = uid
+          }
 
-        // Add the uid to the notification document
-        notificationFields.uid = uid
+          // Set isUserMatch or isBillMatch based on the type of notification
+          users[uid].notification[
+            type === "testimony" ? "isUserMatch" : "isBillMatch"
+          ] = true
+        }
+      })
 
+      // Iterate through users and set the notifications
+      Object.values(users).forEach(user => {
+        const { uid } = user
         console.log(
           `Pushing notifications to users/${uid}/userNotificationFeed`
         )
-
         // Get a reference to the new notification document
         const docRef = db.collection(`users/${uid}/userNotificationFeed`).doc()
 
         // Add the write operation to the batch
-        batch.set(docRef, notificationFields)
+        batch.set(docRef, user)
       })
     }
 

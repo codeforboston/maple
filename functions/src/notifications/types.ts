@@ -7,8 +7,6 @@ export interface Notification {
   billCourt: string
   billId: string
   billName: string
-  /*isBillMatch: boolean
-  isUserMatch: boolean*/
 }
 
 export type BillHistoryUpdateNotification = Notification & {

@@ -4,7 +4,7 @@ import { TopicSubscription } from "./types"
 import { removeTopicSubscription } from "./removeTopicSubscription"
 import { Timestamp } from "../firebase"
 
-export const unsubscribeToOrgTopic = async ({
+export const unsubscribeToTestimonyTopic = async ({
   user,
   orgLookup,
   db
@@ -28,7 +28,7 @@ export const unsubscribeToOrgTopic = async ({
     const subscriptionData: TopicSubscription = {
       topicName,
       uid,
-      type: "org",
+      type: "testimony",
       orgLookup,
       nextDigestAt: Timestamp.fromDate(new Date())
     }

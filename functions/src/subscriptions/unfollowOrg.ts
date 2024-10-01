@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions"
-import { unsubscribeToOrgTopic } from "./unsubscribeToOrgTopic"
+import { unsubscribeToTestimonyTopic } from "./unsubscribeToTestimonyTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
 
@@ -28,7 +28,7 @@ export const unfollowOrg = functions.https.onCall(async (data, context) => {
   const db: Firestore = getFirestore()
 
   try {
-    await unsubscribeToOrgTopic({ user, orgLookup, db })
+    await unsubscribeToTestimonyTopic({ user, orgLookup, db })
     return { status: "success", message: "Org subscription removed" }
   } catch (error: any) {
     throw new functions.https.HttpsError(
