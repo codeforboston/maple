@@ -83,22 +83,22 @@ export async function setFollow(
 
   bill
     ? await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      billLookup: {
-        billId: billId,
-        court: courtId
-      },
-      type: "bill"
-    })
+        topicName: topicName,
+        uid: uid,
+        billLookup: {
+          billId: billId,
+          court: courtId
+        },
+        type: "bill"
+      })
     : await setDoc(doc(subscriptionRef, topicName), {
-      topicName: topicName,
-      uid: uid,
-      orgLookup: {
-        profileId: profileId
-      },
-      type: "testimony"
-    })
+        topicName: topicName,
+        uid: uid,
+        orgLookup: {
+          profileId: profileId
+        },
+        type: "testimony"
+      })
 }
 
 export async function setUnfollow(uid: string | undefined, topicName: string) {
