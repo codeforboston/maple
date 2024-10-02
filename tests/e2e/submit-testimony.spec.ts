@@ -26,6 +26,7 @@ test.describe("Submit Testimony Flow for logged in User", () => {
       .click()
     const profileIcon = page.getByAltText("profile icon")
     await expect(profileIcon).toBeVisible()
+
   })
 
   test("should navigate to a bill", async ({ page }) => {
@@ -50,7 +51,7 @@ test.describe("Submit Testimony Flow for logged in User", () => {
     console.log("Clicked first bill")
 
     // wait for URL change
-    await page.waitForURL(/\/bills\/\d+/, { timeout: 10000 })
+    await page.waitForURL(/\/bills\/\d+/)
     console.log("URL changed to bill detail")
     const currentUrl = page.url()
     console.log("Current URL:", currentUrl)
@@ -59,11 +60,15 @@ test.describe("Submit Testimony Flow for logged in User", () => {
     page.on("requestfailed", request => {
       console.log(`Failed request: ${request.url()}`)
     })
-
+    
+    // wait for network idle
+    await page.waitForLoadState('networkidle');
+    console.log("network idle")
+    
     // take screenshot
     await page.screenshot({ path: "screenshot.png" })
     console.log("Screenshot taken")
-
+    
     // Wait for create testimony bnutton to become visible
     const createTestimonyButton = page.getByRole("button", {
       name: "Create Testimony"
@@ -71,10 +76,10 @@ test.describe("Submit Testimony Flow for logged in User", () => {
     console.log("Waiting for Create Testimony button...")
     await page.waitForSelector(
       'button:has-text("Create") , button:has-text("Testimony")',
-      { state: "visible", timeout: 30000 }
+      { state: "visible" }
     )
     console.log("Create Testimony button is visible")
-    await expect(createTestimonyButton).toBeVisible({ timeout: 30000 }) 
+    await expect(createTestimonyButton).toBeVisible() 
     // click the create testimony button
     await createTestimonyButton.click()
 
