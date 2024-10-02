@@ -45,7 +45,8 @@ export const BaseFollowButton = ({
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="checkmark" />
   ) : null
-  const handleClick = () => {
+  const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
