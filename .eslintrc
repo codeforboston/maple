@@ -1,5 +1,5 @@
 {
-  "extends": ["next", "next/core-web-vitals", "prettier", "plugin:jsx-a11y/recommended"],
+  "extends": ["next", "next/core-web-vitals", "prettier"],
   "plugins": ["i18next", "jsx-a11y"],
   "rules": {
     // TODO: Fix these warnings and make them errors by removing these overrides.
@@ -12,13 +12,16 @@
         "additionalHooks": "^useAsync$"
       }
     ],
-    "jsx-a11y/alt-text": [ 2, {
-            "elements": [ "img", "object", "area", "input[type=\"image\"]" ],
-            "img": ["Image"],
-            "object": ["Object"],
-            "area": ["Area"],
-            "input[type=\"image\"]": ["InputImage"]
-          }],
+    "jsx-a11y/alt-text": [
+      2,
+      {
+        "elements": ["img", "object", "area", "input[type=\"image\"]"],
+        "img": ["Image"],
+        "object": ["Object"],
+        "area": ["Area"],
+        "input[type=\"image\"]": ["InputImage"]
+      }
+    ],
     // TODO: Fix existing warnings and make them errors going forward
     "i18next/no-literal-string": "warn"
   }
