@@ -70,27 +70,15 @@ export default function PolicyPage({
           )}
         >
           <Col xs={12} className={style.blueBox}>
-            <Image
-              src="handShake.jpg"
-              alt="hand shake"
-              className={style.symbol}
-            ></Image>
+            <Image src="handShake.jpg" alt="" className={style.symbol}></Image>
             <p className={style.values}>Humility</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
-            <Image
-              src="compassion.png"
-              alt="cupped hand holding heart"
-              className={style.symbol}
-            ></Image>
+            <Image src="compassion.png" alt="" className={style.symbol}></Image>
             <p className={style.values}>Compassion</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
-            <Image
-              src="lightBulb.png"
-              alt="lightbulb"
-              className={style.symbol}
-            ></Image>
+            <Image src="lightBulb.png" alt="" className={style.symbol}></Image>
             <p className={style.values}>Curiosity</p>
           </Col>
         </Row>

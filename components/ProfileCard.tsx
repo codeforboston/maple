@@ -13,13 +13,13 @@ export const ProfileCard: FC<React.PropsWithChildren<Props>> = ({
   profileImageSrc,
   joinDate
 }) => {
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation(["profile", "auth"])
 
   return (
     <Container>
       <Wrapper>
         <ImageContainer>
-          <img src={profileImageSrc} alt="profile image" />
+          <img src={profileImageSrc} alt={t("profileIcon")} />
         </ImageContainer>
         <ProfileName>{name}</ProfileName>
         <JoinYear>{t("joinDate", { date: joinDate.getFullYear() })}</JoinYear>

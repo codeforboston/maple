@@ -8,7 +8,6 @@ import {
   Page
 } from "@playwright/test"
 import { AdminPage } from "./page_objects/adminPage"
-// import { authenticate } from './auth.utils'
 
 test.describe("Admin Page", () => {
   let browser: Browser
@@ -18,14 +17,19 @@ test.describe("Admin Page", () => {
   test.beforeAll(async () => {
     // Create a new browser instance
     browser = await chromium.launch()
-    context = await browser.newContext() // Create a new context for all tests
+    context = await browser.newContext()
     page = await context.newPage()
-    // Replace the credentials with valid admin credentials
+
+    // Emulator admin account or Dev admin account
+    const adminEmail =
+      process.env.TEST_ADMIN_USERNAME ?? "testadmin@example.com"
+    const adminPassword = process.env.TEST_ADMIN_PASSWORD ?? "password"
+
     await page.goto("http://localhost:3000")
     await page.getByRole("button", { name: "Log in / Sign up" }).click()
     await page.getByRole("button", { name: "Sign In", exact: true }).click()
-    await page.fill('input[name="email"]', "testadmin@example.com")
-    await page.fill('input[name="password"]', "password")
+    await page.fill('input[name="email"]', adminEmail)
+    await page.fill('input[name="password"]', adminPassword)
     await page.click('button[type="submit"]')
     await expect(page.getByAltText("profile icon")).toBeVisible()
   })
