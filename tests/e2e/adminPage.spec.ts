@@ -35,7 +35,8 @@ test.describe.serial("Admin Page", () => {
     await page.goto("http://localhost:3000/admin")
   })
   test.afterAll(async () => {
-    await browser.close() // Close the browser instance after all tests
+    // Close the browser instance after all tests
+    await browser.close() 
   })
 
   test("should allow adding a report", async () => {

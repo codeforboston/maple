@@ -34,7 +34,6 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    // { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
       name: "chromium",
       use: {
@@ -42,7 +41,6 @@ export default defineConfig({
         // Use prepared auth state.
         storageState: "playwright/.auth/user.json"
       }
-      // dependencies: ["setup"]
     },
 
     {
@@ -52,7 +50,6 @@ export default defineConfig({
         // Use prepared auth state.
         storageState: "playwright/.auth/user.json"
       }
-      // dependencies: ["setup"]
     },
 
     {
@@ -62,7 +59,6 @@ export default defineConfig({
         // Use prepared auth state.
         storageState: "playwright/.auth/user.json"
       }
-      // dependencies: ["setup"]
     }
 
     /* Test against mobile viewports. */
