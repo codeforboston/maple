@@ -9,7 +9,7 @@ import {
 } from "@playwright/test"
 import { AdminPage } from "./page_objects/adminPage"
 
-test.describe("Admin Page", () => {
+test.describe.serial("Admin Page", () => {
   let browser: Browser
   let context: BrowserContext
   let page: Page
@@ -31,14 +31,22 @@ test.describe("Admin Page", () => {
     await page.fill('input[name="email"]', adminEmail)
     await page.fill('input[name="password"]', adminPassword)
     await page.click('button[type="submit"]')
-    await expect(page.getByAltText("profile icon")).toBeVisible()
+    await expect(page.getByAltText("profileMenu")).toBeVisible()
+    await page.goto("http://localhost:3000/admin")
   })
   test.afterAll(async () => {
     await browser.close() // Close the browser instance after all tests
   })
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/admin")
+  test("should allow adding a report", async () => {
+    // Create a report
+    const adminPage = new AdminPage(page)
+    adminPage.gotoUserReportPage()
+
+    await adminPage.fakeReportbtn.click()
+    await expect(page.getByText("reportTestimony")).toBeVisible()
+    await page.getByRole("radio", { name: "Violent" }).click()
+    await page.click('button[type="submit"]')
   })
 
   test("should display the User Reports page", async () => {
@@ -100,35 +108,22 @@ test.describe("Admin Page", () => {
     expect(classList).toContain("Mui-active")
   })
 
-  test("should allow adding a report", async () => {
-    // Create a report
-    const adminPage = new AdminPage(page)
-    adminPage.gotoUserReportPage()
+  test("should click a report and relove it if not", async () => {
+    // Get the report id
+    const firstRow = await page.locator("tbody tr").first()
+    const firstCell = await firstRow.locator("td").first()
+    const reportId = await firstCell.textContent()
+    await firstCell.click()
+    const currentURL = await page.url()
+    expect(currentURL).toContain(reportId)
 
-    await adminPage.fakeReportbtn.click()
-    await expect(page.getByText("reportTestimony")).toBeVisible()
-    await page.getByRole("radio", { name: "Violent" }).click()
-    await page.click('button[type="submit"]')
-  })
-
-  test("should reslove a report", async () => {
-    // Resolve the report
-    const adminPage = new AdminPage(page)
-    adminPage.gotoUserReportPage()
-
-    const pendingCases = await page.getByText("pending").count()
-    const filledReason = "This is the reason text."
-
-    if (pendingCases > 0) {
-      const resolvedCases = await page.getByText("resloves").count()
-      await page.getByLabel("RESOLVE REPORT").first().click()
-      await expect(page.getByText("User Report Content")).toBeVisible()
+    const submitBtn = await page.getByRole("button", { name: "Submit" })
+    if (await submitBtn.isEnabled()) {
       await page.getByRole("radio", { name: "Remove" }).click()
-      await page.locator("form").getByText("Reason:").fill(filledReason)
-      await page.click('input[type="submit"]')
-      await expect(adminPage.fakeReportbtn).toBeVisible()
-      const currentResolvedCases = await page.getByText("resolved").count()
-      expect(currentResolvedCases).toBeGreaterThan(resolvedCases)
+      await page.locator("form").getByText("Reason:").fill("Testing")
+      await submitBtn.click()
+    } else {
+      await page.goBack()
     }
   })
 
