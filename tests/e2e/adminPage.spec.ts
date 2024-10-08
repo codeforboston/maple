@@ -36,7 +36,7 @@ test.describe.serial("Admin Page", () => {
   })
   test.afterAll(async () => {
     // Close the browser instance after all tests
-    await browser.close() 
+    await browser.close()
   })
 
   test("should allow adding a report", async () => {
