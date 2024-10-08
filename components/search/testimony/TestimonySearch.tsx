@@ -26,6 +26,7 @@ import { getServerConfig } from "../common"
 import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
+import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -118,8 +119,11 @@ const Layout = () => {
     })
   }
 
+  const [orgFollowGroup, setOrgFollowGroup] = useState<OrgFollowStatus>({})
+
   return (
     <>
+    <FollowContext.Provider value ={{orgFollowGroup, setOrgFollowGroup: setOrgFollowGroup}}>
       <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
         <StyledTabNav>
           {tabs.map((t, i) => (
@@ -166,6 +170,7 @@ const Layout = () => {
           </Col>
         </Row>
       </SearchContainer>
+      </FollowContext.Provider>
     </>
   )
 }

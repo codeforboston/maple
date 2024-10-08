@@ -1,10 +1,11 @@
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { useEffect, useContext } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { Bill } from "../db"
 import { TopicQuery, setFollow, setUnfollow } from "./FollowingQueries"
+import {FollowContext} from './FollowContext'
 
 export const BaseFollowButton = ({
   topicName,
@@ -22,25 +23,31 @@ export const BaseFollowButton = ({
   const { user } = useAuth()
   const uid = user?.uid
 
-  const [queryResult, setQueryResult] = useState("")
+  const {orgFollowGroup, setOrgFollowGroup} = useContext(FollowContext);
+  
 
   useEffect(() => {
     uid
-      ? TopicQuery(uid, topicName).then(result => setQueryResult(result))
+      ? TopicQuery(uid, topicName).then(result => {
+        setOrgFollowGroup((prevOrgFollowGroup) => { 
+return {...prevOrgFollowGroup, [topicName]: Boolean(result)}
+        }) 
+      })
       : null
-  }, [uid, topicName, setQueryResult])
+  }, [uid, topicName, setOrgFollowGroup])
+  
 
   const FollowClick = async () => {
     await followAction()
-    setQueryResult(topicName)
+    setOrgFollowGroup({...orgFollowGroup, [topicName]: true })
   }
 
   const UnfollowClick = async () => {
     await unfollowAction()
-    setQueryResult("")
+    setOrgFollowGroup({...orgFollowGroup, [topicName]: false })
   }
 
-  const isFollowing = queryResult
+  const isFollowing = orgFollowGroup[topicName]
   const text = isFollowing ? t("button.following") : t("button.follow")
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="checkmark" />
