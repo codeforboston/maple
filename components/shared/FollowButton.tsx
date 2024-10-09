@@ -86,7 +86,7 @@ export const ButtonWithCheckmark = ({
 export function FollowOrgButton({ profileId }: { profileId: string }) {
   const { user } = useAuth()
   const uid = user?.uid
-  const topicName = `org-${profileId}`
+  const topicName = `testimony-${profileId}`
   const followAction = () =>
     setFollow(uid, topicName, undefined, undefined, undefined, profileId)
   const unfollowAction = () => setUnfollow(uid, topicName)

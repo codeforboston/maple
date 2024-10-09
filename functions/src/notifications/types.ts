@@ -9,14 +9,14 @@ export interface Notification {
   billName: string
 }
 
-export type BillNotification = Notification & {
+export type BillHistoryUpdateNotification = Notification & {
   type: "bill"
   billHistory: BillHistory
 }
 
-export type OrgNotification = Notification & {
-  type: "org"
-  orgId: string
+export type TestimonySubmissionNotification = Notification & {
+  type: "testimony"
+  userId: string
   testimonyUser: string
   testimonyPosition: string
   testimonyContent: string

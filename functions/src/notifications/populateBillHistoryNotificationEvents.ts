@@ -7,14 +7,14 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { OrgNotification } from "./types"
+import { BillHistoryUpdateNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
-// Define the populateOrgNotificationEvents function
-export const populateOrgNotificationEvents = functions.firestore
-  .document("/users/{userId}/publishedTestimony/{testimonyId}")
+// Define the populateBillNotificationEvents function
+export const populateBillHistoryNotificationEvents = functions.firestore
+  .document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (snapshot, context) => {
     if (!snapshot.after.exists) {
       console.error("New snapshot does not exist")
@@ -26,22 +26,20 @@ export const populateOrgNotificationEvents = functions.firestore
     const oldData = snapshot.before.data()
     const newData = snapshot.after.data()
 
-    // New testimony added
+    const { court } = context.params
+
+    // New bill added
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: OrgNotification = {
-        type: "org",
+      const newNotificationEvent: BillHistoryUpdateNotification = {
+        type: "bill",
 
-        billCourt: newData?.court.toString(),
-        billId: newData?.billId,
-        billName: newData?.billTitle,
+        billCourt: court,
+        billId: newData?.id,
+        billName: newData?.content.Title,
 
-        orgId: newData?.authorUid,
-        testimonyUser: newData?.fullName,
-        testimonyPosition: newData?.position,
-        testimonyContent: newData?.content,
-        testimonyVersion: newData?.version,
+        billHistory: newData?.history,
 
         updateTime: Timestamp.now()
       }
@@ -51,18 +49,17 @@ export const populateOrgNotificationEvents = functions.firestore
       return
     }
 
-    const oldVersion = oldData?.version
-    const newVersion = newData?.version
+    const oldLength = oldData?.history.length
+    const newLength = newData?.history.length
 
-    const testimonyChanged = oldVersion !== newVersion
-    console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`)
+    const historyChanged = oldLength !== newLength
+    console.log(`oldLength: ${oldLength}, newLength: ${newLength}`)
 
     const notificationEventSnapshot = await db
       .collection("/notificationEvents")
-      .where("type", "==", "org")
-      .where("billCourt", "==", newData?.court.toString())
-      .where("billId", "==", newData?.billId)
-      .where("authorUid", "==", newData?.authorUid)
+      .where("type", "==", "bill")
+      .where("billCourt", "==", court)
+      .where("billId", "==", newData?.id)
       .get()
 
     console.log(
@@ -72,17 +69,15 @@ export const populateOrgNotificationEvents = functions.firestore
     if (!notificationEventSnapshot.empty) {
       const notificationEventId = notificationEventSnapshot.docs[0].id
 
-      if (testimonyChanged) {
-        console.log("Testimony changed")
+      if (historyChanged) {
+        console.log("History changed")
 
         // Update the existing notification event
         await db
           .collection("/notificationEvents")
           .doc(notificationEventId)
           .update({
-            testimonyPosition: newData?.position,
-            testimonyContent: newData?.content,
-            testimonyVersion: newData?.version,
+            billHistory: newData?.history,
             updateTime: Timestamp.now()
           })
       }

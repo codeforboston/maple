@@ -32,8 +32,8 @@ export {
 } from "./testimony"
 export {
   publishNotifications,
-  populateBillNotificationEvents,
-  populateOrgNotificationEvents,
+  populateBillHistoryNotificationEvents,
+  populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
   httpsPublishNotifications,
@@ -46,8 +46,8 @@ export {
 export {
   followBill,
   unfollowBill,
-  followOrg,
-  unfollowOrg
+  followUser,
+  unfollowUser
 } from "./subscriptions"
 
 export * from "./triggerPubsubFunction"

@@ -17,7 +17,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
 
 export type UnfollowModalConfig = {
   court: number
-  orgName: string
+  userName: string
   type: string
   typeId: string
 }
@@ -35,7 +35,7 @@ export default function UnfollowItem({
     if (unfollowItem?.type == "bill") {
       return ` Bill ${formatBillId(unfollowItem?.typeId)}`
     } else {
-      return ` ${unfollowItem?.orgName}`
+      return ` ${unfollowItem?.userName}`
     }
   }
 

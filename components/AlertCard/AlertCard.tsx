@@ -8,6 +8,7 @@ export const AlertCard = (props: {
   subheader: string
   timestamp: Timestamp
   headerImgSrc: string
+  headerImgTitle?: string
   bodyImgSrc: string
   bodyImgAltTxt: string
   bodyText: string
@@ -20,6 +21,7 @@ export const AlertCard = (props: {
       subheader={props.subheader}
       timestamp={formattedTimestamp}
       imgSrc={props.headerImgSrc}
+      imgTitle={props.headerImgTitle ?? ""}
     />
   )
 

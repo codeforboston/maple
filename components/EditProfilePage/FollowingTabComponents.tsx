@@ -78,7 +78,7 @@ export function UnfollowButton({
       setUnfollow({
         court: 0,
         orgName: fullName,
-        type: "org",
+        type: "testimony",
         typeId: element.profileId
       })
     }

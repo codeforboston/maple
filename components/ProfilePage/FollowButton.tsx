@@ -19,20 +19,20 @@ export const FollowButton = ({
 }) => {
   const { t } = useTranslation("profile")
   const functions = getFunctions()
-  const followBillFunction = httpsCallable(functions, "followOrg")
-  const unfollowBillFunction = httpsCallable(functions, "unfollowOrg")
+  const followUserFunction = httpsCallable(functions, "followUser")
+  const unfollowUserFunction = httpsCallable(functions, "unfollowUser")
 
-  const topicName = `org-${profileId}`
+  const topicName = `testimony-${profileId}`
   const subscriptionRef = collection(
     firestore,
     `/users/${user?.uid}/activeTopicSubscriptions/`
   )
   const [queryResult, setQueryResult] = useState("")
 
-  const orgQuery = useCallback(async () => {
+  const userQuery = useCallback(async () => {
     const q = query(
       subscriptionRef,
-      where("topicName", "==", `org-${profileId}`)
+      where("topicName", "==", `testimony-${profileId}`)
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -42,8 +42,8 @@ export const FollowButton = ({
   }, [subscriptionRef, profileId, setQueryResult]) // dependencies of orgQuery
 
   useEffect(() => {
-    user?.uid ? orgQuery() : null
-  }, [user?.uid, orgQuery]) // dependencies of useEffect
+    user?.uid ? userQuery() : null
+  }, [user?.uid, userQuery]) // dependencies of useEffect
 
   const handleFollowClick = async () => {
     // ensure user is not null
@@ -52,12 +52,12 @@ export const FollowButton = ({
     }
 
     try {
-      const orgLookup = {
+      const userLookup = {
         profileId: profileId,
-        type: "org"
+        type: "testimony"
       }
       const token = await user.getIdToken()
-      const response = await followBillFunction({ orgLookup, token })
+      const response = await followUserFunction({ userLookup, token })
       if (response.data) {
         setQueryResult(topicName)
       }
@@ -73,12 +73,12 @@ export const FollowButton = ({
     }
 
     try {
-      const orgLookup = {
+      const userLookup = {
         profileId: profileId,
-        type: "org"
+        type: "testimony"
       }
       const token = await user.getIdToken()
-      const response = await unfollowBillFunction({ orgLookup, token })
+      const response = await unfollowUserFunction({ userLookup, token })
       if (response.data) {
         setQueryResult("")
       }
