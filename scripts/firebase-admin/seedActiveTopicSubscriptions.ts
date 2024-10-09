@@ -56,9 +56,9 @@ export const script: Script = async ({ db, auth }) => {
 
   for (const user of allUsers) {
     const subscriptionData = {
-      topicName: "org-nceMDdeA4zV9Qzo0rBOjoRrMjq53",
+      topicName: "testimony-nceMDdeA4zV9Qzo0rBOjoRrMjq53",
       uid: user.uid,
-      orgLookup: {
+      userLookup: {
         profileId: "nceMDdeA4zV9Qzo0rBOjoRrMjq53",
         fullName: "Tammy's Tamales"
       },

@@ -46,8 +46,8 @@ export {
 export {
   followBill,
   unfollowBill,
-  followOrg,
-  unfollowOrg
+  followUser,
+  unfollowUser
 } from "./subscriptions"
 
 export * from "./triggerPubsubFunction"

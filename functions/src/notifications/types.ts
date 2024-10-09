@@ -16,7 +16,7 @@ export type BillHistoryUpdateNotification = Notification & {
 
 export type TestimonySubmissionNotification = Notification & {
   type: "testimony"
-  orgId: string
+  userId: string
   testimonyUser: string
   testimonyPosition: string
   testimonyContent: string

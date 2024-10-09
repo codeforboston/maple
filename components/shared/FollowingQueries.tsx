@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { Bill } from "../db"
 import { firestore } from "../firebase"
-import { UnfollowModalConfig } from "../EditProfilePage/FollowingTab"
+import { UnfollowModalConfig } from "components/EditProfilePage/UnfollowModal"
 
 export type Results = { [key: string]: string[] }
 
@@ -31,7 +31,7 @@ export async function deleteItem({
     if (unfollowItem.type == "bill") {
       topicName = `bill-${unfollowItem.court.toString()}-${unfollowItem.typeId}`
     } else {
-      topicName = `org-${unfollowItem.typeId}`
+      topicName = `testimony-${unfollowItem.typeId}`
     }
 
     await deleteDoc(doc(subscriptionRef, topicName))

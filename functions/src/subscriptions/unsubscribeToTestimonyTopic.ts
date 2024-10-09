@@ -6,20 +6,20 @@ import { Timestamp } from "../firebase"
 
 export const unsubscribeToTestimonyTopic = async ({
   user,
-  orgLookup,
+  userLookup,
   db
 }: {
   user: UserRecord
-  orgLookup: { profileId: string; fullName: string }
+  userLookup: { profileId: string; fullName: string }
   db: Database
 }) => {
   try {
     // Debug: Log the input parameters
     console.log("Debug: User", user)
-    console.log("Debug: OrgLookup", orgLookup)
+    console.log("Debug: userLookup", userLookup)
 
     const uid = user.uid
-    const topicName = `org-${orgLookup.profileId.toString()}`
+    const topicName = `testimony-${userLookup.profileId.toString()}`
 
     // Debug: Log the generated uid and topicName
     console.log("Debug: UID", uid)
@@ -29,7 +29,7 @@ export const unsubscribeToTestimonyTopic = async ({
       topicName,
       uid,
       type: "testimony",
-      orgLookup,
+      userLookup,
       nextDigestAt: Timestamp.fromDate(new Date())
     }
 

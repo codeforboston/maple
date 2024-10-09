@@ -99,7 +99,7 @@ export const publishNotifications = functions.firestore
           topic.type === "bill"
             ? [`bill-${topic.billCourt}-${topic.billId}`]
             : [
-                `testimony-${topic.orgId}`,
+                `testimony-${topic.userId}`,
                 `bill-${topic.billCourt}-${topic.billId}`
               ]
         )
@@ -110,14 +110,14 @@ export const publishNotifications = functions.firestore
       // Iterate through the topicNameSnapshots and set the notifications
       topicNameSnapshot.forEach(subscription => {
         const { uid, type } = subscription.data()
-        if (topic.type === "testimony" && topic.orgId !== uid) {
+        if (topic.type === "testimony" && topic.userId !== uid) {
           // If the user does not exist, create new notificationFields for the user
           if (!users[uid]) {
             users[uid] = cloneDeep(notificationFields)
             users[uid].uid = uid
           }
 
-          // Set isUserMatch or isBillMatch based on the type of notification
+          // Set isUserMatch or isBillMatch based on the type of notification from the topic subscription
           users[uid].notification[
             type === "testimony" ? "isUserMatch" : "isBillMatch"
           ] = true
