@@ -1,6 +1,6 @@
 # Massachusetts Legislative Bill Analysis
 
-This repository contains code for summarizing and tagging Massachusetts Legislative bills using LLMs.
+This directory contains code for summarizing and tagging Massachusetts Legislative bills using LLMs.
 
 ## Overview
 
