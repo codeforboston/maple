@@ -1,5 +1,5 @@
 """
-This code implements text summarization, category selection and tagging bills using a single prompt.
+This code implements text summarization, category selection and tagging bills using templated LLM prompts.
 
 The main functions and their objectives are: 
 1. get_summary_api_function: Function used to summarize a bill - It takes in bill id, bill title and bill text 
