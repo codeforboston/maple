@@ -4,7 +4,7 @@ This directory contains code for summarizing and tagging Massachusetts Legislati
 
 ## Overview
 
-The main functionality is implemented in `demo_app_functions.py`, which provides methods for:
+The main functionality is implemented in `llm_functions.py`, which provides methods for:
 
 1. Summarizing bills
 2. Categorizing bills
