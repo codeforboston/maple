@@ -524,7 +524,6 @@ def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
     category_tags = get_category_tags(categories)
 
     # for cat, tags in new_tags_for_bill_dict.items(): category_tags += tags
-    
     query_2 = get_query_for_tagging(bill_details, category_tags, llm_call_type)
     tag_response = call_llm(bill_details, query_2, llm_call_type)
 
@@ -788,6 +787,10 @@ def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbedding
             chunk_size = 2000,
             chunk_overlap = 200
         )
+
+        if len(bill_details.mgl_ref) > 1e06:
+            bill_details.mgl_ref = bill_details.mgl_ref[:1000000]
+
         documents = text_splitter.split_text(bill_details.mgl_ref)
 
         embeddings = emb_api.embed_documents(documents)
