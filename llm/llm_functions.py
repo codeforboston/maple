@@ -46,7 +46,7 @@ from typing import Tuple, List
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from prompts import *
-from tagging import *
+from tag_categories import *
 
 GPT_MDOEL_VERSION = 'gpt-4o-mini'
 MAX_TOKEN_LIMIT = 128000
