@@ -46,5 +46,3 @@ tags = get_tags_api_function(bill_id, bill_title, bill_text)
 ## Note
 
 This project is designed to work with Massachusetts legislative bills and may require specific data sources or API access for full functionality.
-
-For more detailed information on each module and function, please refer to the individual file docstrings.
