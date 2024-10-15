@@ -83,3 +83,42 @@ The use of this local Parquet file is a temporary solution. In future iterations
 When working on features that interact with MGL chapter and section data, please be aware that the data source for this information will change in the future. Design your code with this eventual transition in mind.
 
 If you're adding new features that require MGL data, consider how they might interface with a database in the future instead of relying solely on the Parquet file.
+
+
+## Environment Setup
+
+### OpenAI API Key
+
+This project uses OpenAI's API for various language processing tasks. To use the OpenAI API, you need to set up your API key as an environment variable. The application expects the API key to be available in the `OPENAI_API_KEY` environment variable.
+
+#### Setting up the API Key
+
+1. **Obtain an API Key**: If you haven't already, sign up for an OpenAI account and obtain an API key from the [OpenAI website](https://openai.com/).
+
+2. **Set the Environment Variable**:
+
+   - **On Unix-based systems (Linux, macOS)**:
+     Open your terminal and add the following line to your shell configuration file (e.g., `.bashrc`, `.zshrc`):
+     ```
+     export OPENAI_API_KEY='your-api-key-here'
+     ```
+     Then, reload your shell configuration:
+     ```
+     source ~/.bashrc  # or ~/.zshrc, depending on your shell
+     ```
+
+   - **On Windows**:
+     Open Command Prompt and run:
+     ```
+     setx OPENAI_API_KEY "your-api-key-here"
+     ```
+     Note: You'll need to restart your command prompt for the changes to take effect.
+
+   - **For development environments**:
+     If you're using a development environment like PyCharm or VS Code, you can set environment variables in your project configuration.
+
+3. **Verify the Setup**:
+   You can verify that the environment variable is set correctly by running:
+   ```python
+   import os
+   print(os.environ.get('OPENAI_API_KEY'))
