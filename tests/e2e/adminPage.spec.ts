@@ -8,6 +8,7 @@ import {
   Page
 } from "@playwright/test"
 import { AdminPage } from "./page_objects/adminPage"
+require("dotenv").config()
 
 test.describe.serial("Admin Page", () => {
   let browser: Browser
@@ -20,27 +21,43 @@ test.describe.serial("Admin Page", () => {
     context = await browser.newContext()
     page = await context.newPage()
 
-    // Emulator admin account or Dev admin account
-    const adminEmail =
-      process.env.TEST_ADMIN_USERNAME ?? "testadmin@example.com"
-    const adminPassword = process.env.TEST_ADMIN_PASSWORD ?? "password"
+    // Fetch the admin credentials and application URL from the environment variables
+    const adminEmail = process.env.TEST_ADMIN_USERNAME
+    const adminPassword = process.env.TEST_ADMIN_PASSWORD
+    const url = process.env.APP_API_URL
 
-    await page.goto("http://localhost:3000")
+    // Ensure admin credentials and URL are set, otherwise throw an error
+    if (!adminEmail || !adminPassword) {
+      throw new Error(
+        "Admin credentials are not defined in the environment variables."
+      )
+    }
+
+    if (!url) {
+      throw new Error(
+        "URL credentials are not defined in the environment variables."
+      )
+    }
+
+    // Navigate to the application URL, perform login, and verify successful login
+    await page.goto(url)
     await page.getByRole("button", { name: "Log in / Sign up" }).click()
     await page.getByRole("button", { name: "Sign In", exact: true }).click()
     await page.fill('input[name="email"]', adminEmail)
     await page.fill('input[name="password"]', adminPassword)
     await page.click('button[type="submit"]')
     await expect(page.getByAltText("profileMenu")).toBeVisible()
-    await page.goto("http://localhost:3000/admin")
+
+    // Navigate to the admin page
+    await page.goto(url + "/admin")
   })
+
   test.afterAll(async () => {
     // Close the browser instance after all tests
     await browser.close()
   })
 
   test("should allow adding a report", async () => {
-    // Create a report
     const adminPage = new AdminPage(page)
     adminPage.gotoUserReportPage()
 

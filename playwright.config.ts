@@ -37,27 +37,21 @@ export default defineConfig({
     {
       name: "chromium",
       use: {
-        ...devices["Desktop Chrome"],
-        // Use prepared auth state.
-        storageState: "playwright/.auth/user.json"
+        ...devices["Desktop Chrome"]
       }
     },
 
     {
       name: "firefox",
       use: {
-        ...devices["Desktop Firefox"],
-        // Use prepared auth state.
-        storageState: "playwright/.auth/user.json"
+        ...devices["Desktop Firefox"]
       }
     },
 
     {
       name: "webkit",
       use: {
-        ...devices["Desktop Safari"],
-        // Use prepared auth state.
-        storageState: "playwright/.auth/user.json"
+        ...devices["Desktop Safari"]
       }
     }
 
