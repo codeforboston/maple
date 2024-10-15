@@ -267,7 +267,6 @@ def set_my_llm_cache(cache_file: Path=LLM_CACHE) -> SQLiteCache:
 
 @dataclass()
 class BillDetails():
-
     '''
     A class to store all the details pertaining to a bill. 
     '''
