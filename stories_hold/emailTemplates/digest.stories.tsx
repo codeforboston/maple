@@ -86,7 +86,7 @@ export const DigestEmail: Story = {
       org: {
         1: {
           orgTitle: "Boston’s Teacher Union",
-          orgLookup: "Tfh1tp2faYbSWsYYsvUS4F23mtD2",
+          userLookup: "Tfh1tp2faYbSWsYYsvUS4F23mtD2",
           counter: "3",
           item: {
             1: {
@@ -105,7 +105,7 @@ export const DigestEmail: Story = {
         },
         2: {
           orgTitle: "Moms for Liberty",
-          orgLookup: "c31R5rjWG9eTUopP7yeA5tZQtJX2",
+          userLookup: "c31R5rjWG9eTUopP7yeA5tZQtJX2",
           counter: "6",
           item: {
             1: {
@@ -136,7 +136,7 @@ export const DigestEmail: Story = {
         },
         3: {
           orgTitle: "La Le Lu Le Lo",
-          orgLookup: "8P5Ar8NyAcNEVJMTexezXvRbept2",
+          userLookup: "8P5Ar8NyAcNEVJMTexezXvRbept2",
           counter: "8",
           item: {
             1: {

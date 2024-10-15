@@ -8,7 +8,7 @@ import { firestore } from "../firebase"
 import { TitledSectionCard } from "../shared"
 import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
 import { FollowedItem } from "./FollowingTabComponents"
-import { BillElement, OrgElement } from "./FollowingTabComponents"
+import { BillElement, UserElement } from "./FollowingTabComponents"
 
 const functions = getFunctions()
 
@@ -31,7 +31,7 @@ export function FollowingTab({ className }: { className?: string }) {
   const close = () => setUnfollow(null)
 
   const [billsFollowing, setBillsFollowing] = useState<BillElement[]>([])
-  const [usersFollowing, setUsersFollowing] = useState<OrgElement[]>([])
+  const [usersFollowing, setUsersFollowing] = useState<UserElement[]>([])
 
   const billsFollowingQuery = useCallback(async () => {
     if (!subscriptionRef) return // handle the case where subscriptionRef is null
@@ -57,7 +57,7 @@ export function FollowingTab({ className }: { className?: string }) {
 
   const orgsFollowingQuery = useCallback(async () => {
     if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const usersList: OrgElement[] = []
+    const usersList: UserElement[] = []
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
@@ -66,7 +66,7 @@ export function FollowingTab({ className }: { className?: string }) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      usersList.push(doc.data().orgLookup)
+      usersList.push(doc.data().userLookup)
     })
 
     if (usersFollowing.length === 0 && usersFollowing.length != 0) {
@@ -150,7 +150,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {usersFollowing.map((element: OrgElement, index: number) => (
+            {usersFollowing.map((element: UserElement, index: number) => (
               <FollowedItem
                 key={index}
                 index={index}

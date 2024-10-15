@@ -15,7 +15,7 @@ export const followUser = functions.https.onCall(async (data, context) => {
     )
   }
 
-  // Runtime check for 'orgLookup' property
+  // Runtime check for 'userLookup' property
   if (!data.hasOwnProperty("userLookup")) {
     throw new functions.https.HttpsError(
       "failed-precondition",

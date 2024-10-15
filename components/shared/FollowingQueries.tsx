@@ -65,7 +65,7 @@ export async function FollowingQuery(uid: string | undefined) {
   const querySnapshotOrgs = await getDocs(q2)
   querySnapshotOrgs.forEach(doc => {
     // doc.data() is never undefined for query doc snapshots
-    doc.data().orgLookup ? results.orgs.push(doc.data().orgLookup) : null
+    doc.data().userLookup ? results.orgs.push(doc.data().userLookup) : null
   })
 
   return results
@@ -83,22 +83,22 @@ export async function setFollow(
 
   bill
     ? await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        billLookup: {
-          billId: billId,
-          court: courtId
-        },
-        type: "bill"
-      })
+      topicName: topicName,
+      uid: uid,
+      billLookup: {
+        billId: billId,
+        court: courtId
+      },
+      type: "bill"
+    })
     : await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        orgLookup: {
-          profileId: profileId
-        },
-        type: "testimony"
-      })
+      topicName: topicName,
+      uid: uid,
+      userLookup: {
+        profileId: profileId
+      },
+      type: "testimony"
+    })
 }
 
 export async function setUnfollow(uid: string | undefined, topicName: string) {
