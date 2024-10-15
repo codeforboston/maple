@@ -28,7 +28,7 @@ export const script: Script = async ({ db }) => {
       ]
     },
     {
-      topicName: "org-example-1",
+      topicName: "testimony-example-1",
       index: 2,
       type: "session",
       name: "Example Session",
