@@ -27,6 +27,7 @@ const TextHeader = styled.h6`
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
+
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
   color: #fff;
@@ -77,7 +78,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/twitter.svg"
-              alt="Twitter Icon"
+              alt={t("links.socials.twitter")}
               width="24"
               height="24"
             ></Image>
@@ -91,7 +92,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/images/instagram.svg"
-              alt="Instagram Icon"
+              alt={t("links.socials.instagram")}
               width="24"
               height="24"
             ></Image>
@@ -105,7 +106,7 @@ function MapleContainer({ className }: { className?: string }) {
           >
             <Image
               src="/Linked In.svg"
-              alt="LinkedIn Icon"
+              alt={t("links.socials.linkedin")}
               width="24"
               height="24"
             ></Image>
@@ -116,7 +117,7 @@ function MapleContainer({ className }: { className?: string }) {
         <Image
           className="bg-transparent"
           src="/maple-footer-white.png"
-          alt="MAPLE logo"
+          alt={t("logo")}
           width={100}
         />
       </Row>
@@ -200,6 +201,9 @@ const AboutLinks = () => {
       </StyledInternalLink>
       <StyledInternalLink href="/about/faq-page">
         {t("links.faq")}
+      </StyledInternalLink>
+      <StyledInternalLink href="/about/how-maple-uses-ai">
+        {t("links.mapleAI")}
       </StyledInternalLink>
     </>
   )

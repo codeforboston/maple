@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Container, Card, Row, Col } from "../bootstrap"
 import RoleOfTestimonyCard from "./RoleOfTestimony/RoleOfTestimonyCard"
 import BasicsOfTestimonyCard from "./BasicsOfTestimony/BasicsOfTestimonyCard"
@@ -8,7 +9,6 @@ import {
   OralContent,
   WriteOrCallContent
 } from "components/CommunicatingWithLegislators/CommunicatingWithLegislatorsContent"
-import { useTranslation } from "next-i18next"
 
 const StyledContainer = styled(Container)`
   p {
@@ -24,19 +24,19 @@ const StyledCardBody = styled(Card.Body)`
 const BasicsSrcAlt = [
   {
     src: "who.svg",
-    alt: "Who"
+    alt: "who.title"
   },
   {
     src: "what.svg",
-    alt: "What"
+    alt: "what.title"
   },
   {
     src: "when.svg",
-    alt: "When"
+    alt: "when.title"
   },
   {
     src: "where.svg",
-    alt: "Where"
+    alt: "where.title"
   },
   {
     src: "why.svg",
@@ -62,23 +62,23 @@ const RoleSrcAlt = [
 const WriteSrcAlt = [
   {
     src: "leg-with-clock.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     src: "leg-with-lightbulb.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     src: "writing.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     src: "opinions.svg",
-    alt: "Document with clock"
+    alt: ""
   },
   {
     src: "respect-with-blob.svg",
-    alt: "Document with clock"
+    alt: ""
   }
 ]
 

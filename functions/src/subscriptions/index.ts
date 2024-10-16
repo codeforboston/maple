@@ -1,8 +1,8 @@
 // import the functions
 import { followBill } from "./followBill"
 import { unfollowBill } from "./unfollowBill"
-import { followOrg } from "./followOrg"
-import { unfollowOrg } from "./unfollowOrg"
+import { followUser } from "./followUser"
+import { unfollowUser } from "./unfollowUser"
 
 // export the functions
-export { followBill, unfollowBill, followOrg, unfollowOrg }
+export { followBill, unfollowBill, followUser, unfollowUser }

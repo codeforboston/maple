@@ -1,6 +1,7 @@
 import { capitalize } from "lodash"
 import { Image } from "react-bootstrap"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 export type Position = "endorse" | "neutral" | "oppose"
 
@@ -11,13 +12,15 @@ export function ProfilePositionLabel({
   position: Position
   avatar: string
 }) {
+  const { t } = useTranslation("profile")
+
   return (
     <Container pos={position}>
       <ImageContainer>
         <StyledImage alt="profile image" src={avatar} />
       </ImageContainer>
       <Image
-        alt="thumbs icon"
+        alt={t(`position.${position}`)}
         className="position"
         src={`/thumbs-${position}.svg`}
       />

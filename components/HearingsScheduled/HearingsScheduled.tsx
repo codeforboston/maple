@@ -204,7 +204,7 @@ export const HearingsScheduled = () => {
           <HearingImage
             className={`d-block mx-auto`}
             src="/speaker-podium.svg"
-            alt="speaker at podium"
+            alt=""
           />
         </Col>
         <Col md={7}>

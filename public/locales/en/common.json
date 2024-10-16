@@ -8,6 +8,7 @@
     "followed" : "Followed"
   },
   "calendar": "Our Calendar",
+  "hideAns": "Hide Answer",
   "joinTraining": "and join an upcoming training session!",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
@@ -24,15 +25,18 @@
   "navigation": {
     "accountProfile": "Profile",
     "additionalResources": "Additional Resources",
+    "ai": "How MAPLE Uses AI",
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
+    "closeNavMenu": "Close Navigation Menu",
+    "closeProfileMenu":"Close Profile Menu",
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
-    "logo": "MAPLE logo",
+    "logo": "Massachusetts Platform for Legislative Engagement home",
     "missionAndGoals": "Mission & Goals",
     "team": "Team",
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
@@ -44,6 +48,7 @@
   },
   "newcomer" : "New to MAPLE? For extra support, check",
   "notInCommittee": "Bill not currently in committee",
+  "noResults": "No Results",
   "orgs": "Organizations",
   "partners": {
     "header": "Our Partners",
@@ -59,5 +64,13 @@
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future."
+  "primarySponsor": "Primary Sponsor",
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
+  "showAns": "Show Answer",
+  "socials":{
+    "instagram":"Instagram",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "facebook":"Facebook"
+  }
 }
