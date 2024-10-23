@@ -60,3 +60,39 @@ jobs:
           tests/integration/auth.test.ts
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
+
+  e2e_tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: check_code_quality
+
+    services:
+      typesense:
+        image: typesense/typesense:0.24.0
+        ports:
+          - 8108:8108
+        env:
+          TYPESENSE_DATA_DIR: /app/data
+          TYPESENSE_API_KEY: test-api-key
+          TYPESENSE_ENABLE_CORS: "true"
+        volumes:
+          - typesense-data:/app/data
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: yarn install
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn test:e2e:headless
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
