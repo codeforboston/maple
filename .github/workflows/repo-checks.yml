@@ -64,7 +64,6 @@ jobs:
   e2e_tests:
     name: E2E Tests
     runs-on: ubuntu-latest
-    environment: dev
     needs: check_code_quality
 
     services:
