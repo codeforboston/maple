@@ -315,7 +315,8 @@ export const Bill = withDefaults(
     similar: Array(Id),
     currentCommittee: Optional(CurrentCommittee),
     city: Optional(String),
-    topics: Optional(Array(String))
+    topics: Optional(Array(String)),
+    summary: Optional(String)
   }),
   {
     court: 0,

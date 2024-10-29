@@ -79,5 +79,6 @@ export const bill: Bill = {
   topics: [
     "Criminal investigation, prosecution, interrogation",
     "Criminal sentencing"
-  ]
+  ],
+  summary: "This is the summary"
 }

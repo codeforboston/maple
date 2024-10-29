@@ -53,6 +53,7 @@ export type Bill = {
   currentCommittee?: CurrentCommittee
   city?: string
   topics?: string[]
+  summary?: string
 }
 
 export function useBill(court: number, id: string) {
