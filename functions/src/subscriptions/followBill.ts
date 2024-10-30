@@ -2,9 +2,10 @@ import * as functions from "firebase-functions"
 import { subscribeToBillTopic } from "./subscribeToBillTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
+import { onCall } from "firebase-functions/v2/https"
 
-export const followBill = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
+export const followBill = onCall(async request => {
+  if (!request.auth) {
     // Throwing an HttpsError so that the client gets the error details.
     throw new functions.https.HttpsError(
       "failed-precondition",
@@ -12,8 +13,8 @@ export const followBill = functions.https.onCall(async (data, context) => {
     )
   }
 
-  const user: UserRecord = await getAuth().getUser(context.auth.uid) // Get user based on UID
-  const billLookup = data.billLookup
+  const user: UserRecord = await getAuth().getUser(request.auth.uid) // Get user based on UID
+  const billLookup = request.data.billLookup
   const db: Firestore = getFirestore()
 
   try {

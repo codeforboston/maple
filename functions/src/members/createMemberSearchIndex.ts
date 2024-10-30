@@ -1,12 +1,12 @@
-import { pubsub } from "firebase-functions"
 import { db } from "../firebase"
 import { currentGeneralCourt } from "../shared"
+import { onSchedule } from "firebase-functions/scheduler"
 
 /** Create a document that aggregates all legislative members for easier
  * searching on the client.  */
-export const createMemberSearchIndex = pubsub
-  .schedule("every 24 hours")
-  .onRun(async () => {
+export const createMemberSearchIndex = onSchedule(
+  "every 24 hours",
+  async () => {
     const members = await db
       .collection(`/generalCourts/${currentGeneralCourt}/members`)
       .get()
@@ -24,4 +24,5 @@ export const createMemberSearchIndex = pubsub
         representatives: index.filter(d => d.Branch === "House"),
         senators: index.filter(d => d.Branch === "Senate")
       })
-  })
+  }
+)

@@ -38,17 +38,17 @@ export function checkRequestZod<T extends ZodTypeAny>(
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
 export function checkAuth(
-  context: https.CallableContext,
+  request: https.CallableRequest,
   checkEmailVerification = false
 ) {
-  const uid = context.auth?.uid
+  const uid = request.auth?.uid
 
   if (!uid) {
     throw fail("unauthenticated", "Caller must be signed in")
   }
 
   if (checkEmailVerification && process.env.FUNCTIONS_EMULATOR !== "true") {
-    const email_verified = context.auth?.token?.email_verified
+    const email_verified = request.auth?.token?.email_verified
 
     if (!email_verified) {
       throw fail("permission-denied", "You must verify an account first")
@@ -61,8 +61,8 @@ export function checkAuth(
 /**
  * Checks that the caller is an admin.
  */
-export function checkAdmin(context: https.CallableContext) {
-  const callerRole = context.auth?.token.role
+export function checkAdmin(request: https.CallableRequest) {
+  const callerRole = request.auth?.token.role
   if (callerRole !== "admin") {
     throw fail("permission-denied", "You must be an admin")
   }

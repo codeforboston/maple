@@ -1,41 +1,36 @@
-import { onRequest } from "firebase-functions/v2/https"
-
-//import { runWith } from "firebase-functions"
 import { BaseRecord, CollectionConfig, registerConfig } from "./config"
 import { SearchIndexer } from "./SearchIndexer"
+import {
+  onDocumentCreated,
+  onDocumentWritten
+} from "firebase-functions/v2/firestore"
 
 export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
   config: CollectionConfig<T>
 ) {
   registerConfig(config)
   return {
-    // upgradeSearchIndex: runWith({
-    upgradeSearchIndex: onRequest(
+    upgradeSearchIndex: onDocumentCreated(
       {
+        document: SearchIndexer.upgradePath(config.alias),
         timeoutSeconds: 240,
         secrets: ["TYPESENSE_API_KEY"]
       },
-      (req, res) => {
-        res.status(200).send("Hello world!")
+      async event => {
+        await new SearchIndexer(config).performUpgrade(event.data)
       }
-    )
-      .firestore.document(SearchIndexer.upgradePath(config.alias))
-      .onCreate(async (snap: any) => {
-        await new SearchIndexer(config).performUpgrade(snap.data())
-      }),
-    // syncToSearchIndex: runWith({
-    syncToSearchIndex: onRequest(
+    ),
+    syncToSearchIndex: onDocumentWritten(
       {
+        document: config.documentTrigger,
         timeoutSeconds: 30,
         secrets: ["TYPESENSE_API_KEY"]
       },
-      (req, res) => {
-        res.status(200).send("Hello world!")
+      async event => {
+        const before = event.data?.before!
+        const after = event.data?.after!
+        await new SearchIndexer(config).syncDocument({ before, after })
       }
     )
-      .firestore.document(config.documentTrigger)
-      .onWrite(async (change: any) => {
-        await new SearchIndexer(config).syncDocument(change)
-      })
   }
 }

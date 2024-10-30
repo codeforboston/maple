@@ -9,6 +9,7 @@ import { supportedGeneralCourts } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
+import { onCall } from "firebase-functions/v2/https"
 
 const PublishTestimonyRequest = Record({
   draftId: Id
@@ -18,10 +19,10 @@ const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
   MAX_VERSION = INITIAL_VERSION + MAX_EDITS
 
-export const publishTestimony = https.onCall(async (data, context) => {
+export const publishTestimony = onCall(async request => {
   const checkEmailVerification = true
-  const uid = checkAuth(context, checkEmailVerification)
-  const { draftId } = checkRequest(PublishTestimonyRequest, data)
+  const uid = checkAuth(request, checkEmailVerification)
+  const { draftId } = checkRequest(PublishTestimonyRequest, request.data)
 
   let output: TransactionOutput
   try {

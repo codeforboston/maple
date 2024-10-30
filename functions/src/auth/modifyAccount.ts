@@ -11,11 +11,11 @@ const Request = z.object({
   role: ZRole
 })
 
-export const modifyAccount = functions.https.onCall(async (data, context) => {
-  checkAuth(context, false)
-  checkAdmin(context)
+export const modifyAccount = functions.https.onCall(async request => {
+  checkAuth(request, false)
+  checkAdmin(request)
 
-  const { uid, role } = checkRequestZod(Request, data)
+  const { uid, role } = checkRequestZod(Request, request.data)
 
   await setRole({ role, auth, db, uid })
 })

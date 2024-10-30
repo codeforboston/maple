@@ -1,22 +1,14 @@
-import { onRequest } from "firebase-functions/v2/https"
-
-// import { runWith } from "firebase-functions"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
 import { Committee } from "./types"
 import { currentGeneralCourt } from "../shared"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 
 /** Updates the list of members in each committee.  */
-// export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })
-export const updateCommitteeRosters = onRequest(
-  { timeoutSeconds: 120 },
-  (req, res) => {
-    res.status(200).send("Hello world!")
-  }
-)
-  .pubsub.schedule("every 24 hours")
-  .onRun(async () => {
+export const updateCommitteeRosters = onSchedule(
+  { schedule: "every 24 hours", timeoutSeconds: 120 },
+  async () => {
     const members = await db
       .collection(`/generalCourts/${currentGeneralCourt}/members`)
       .get()
@@ -35,7 +27,8 @@ export const updateCommitteeRosters = onRequest(
       )
     })
     await writer.close()
-  })
+  }
+)
 
 function computeRosters(members: Member[]) {
   const rosters = new Map<string, Member[]>()

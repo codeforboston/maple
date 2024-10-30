@@ -1,18 +1,18 @@
-import * as functions from "firebase-functions"
 import { db, auth } from "../firebase"
 import { z } from "zod"
 import { checkRequestZod, checkAuth } from "../common"
 import { setRole } from "../auth"
 import { Role } from "../auth/types"
+import { onCall } from "firebase-functions/v2/https"
 
 const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization", "pendingUpgrade"])
 })
 
-export const finishSignup = functions.https.onCall(async (data, context) => {
-  const uid = checkAuth(context, false)
+export const finishSignup = onCall(async request => {
+  const uid = checkAuth(request, false)
 
-  const { requestedRole } = checkRequestZod(CreateProfileRequest, data)
+  const { requestedRole } = checkRequestZod(CreateProfileRequest, request.data)
 
   let role: Role = "user"
 

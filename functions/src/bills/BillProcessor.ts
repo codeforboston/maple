@@ -1,7 +1,4 @@
-import { onRequest } from "firebase-functions/v2/https"
-
 import { QuerySnapshot } from "@google-cloud/firestore"
-// import { runWith } from "firebase-functions"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -9,6 +6,8 @@ import { db } from "../firebase"
 import { Member } from "../members/types"
 import { Bill } from "./types"
 import { currentGeneralCourt } from "../shared"
+import { onMessagePublished } from "firebase-functions/v2/pubsub"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 
 export type BillUpdates = Map<string, DocUpdate<Bill>>
 
@@ -25,16 +24,14 @@ export default abstract class BillProcessor {
     topic: string,
     timeoutSeconds = 120
   ) {
-    // return runWith({ timeoutSeconds })
-    return onRequest({ timeoutSeconds }, (req, res) => {
-      res.status(200).send("Hello world!")
-    })
-      .pubsub.topic(topic)
-      .onPublish(async (message: any) => {
+    return onMessagePublished(
+      { topic, timeoutSeconds },
+      async (message: any) => {
         if (message.json.run !== true)
           throw Error('Expected { "run": true } message')
         await new Processor(message.json).run()
-      })
+      }
+    )
   }
 
   static scheduled(
@@ -42,11 +39,7 @@ export default abstract class BillProcessor {
     schedule = "every 24 hours",
     timeoutSeconds = 120
   ) {
-    return onRequest({ timeoutSeconds }, (req, res) => {
-      res.status(200).send("Hello world!")
-    })
-      .pubsub.schedule(schedule)
-      .onRun(() => new Processor().run())
+    return onSchedule({ schedule, timeoutSeconds }, () => new Processor().run())
   }
 
   private async run() {

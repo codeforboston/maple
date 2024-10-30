@@ -1,14 +1,14 @@
-import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 // Define the cleanupNotifications function
-export const cleanupNotifications = functions.pubsub
-  .schedule("every 24 hours")
-  .onRun(async context => {
+export const cleanupNotifications = onSchedule(
+  "every 24 hours",
+  async context => {
     // Define the time threshold for old notifications, topic events, and email documents
     const retentionPeriodDays = 60 // Adjust this value as needed
     const threshold = new Timestamp(
@@ -46,4 +46,5 @@ export const cleanupNotifications = functions.pubsub
 
     const deleteEmailPromises = emailsSnapshot.docs.map(doc => doc.ref.delete())
     await Promise.all(deleteEmailPromises)
-  })
+  }
+)

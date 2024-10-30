@@ -2,13 +2,14 @@ import * as functions from "firebase-functions"
 import { unsubscribeToOrgTopic } from "./unsubscribeToOrgTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
+import { onCall } from "firebase-functions/v2/https"
 
-export const unfollowOrg = functions.https.onCall(async (data, context) => {
+export const unfollowOrg = onCall(async request => {
   // Debug: Log the received data
-  console.log("Debug: Data received in unfollowOrg:", data)
+  console.log("Debug: Data received in unfollowOrg:", request.data)
 
   // Check for authentication
-  if (!context.auth) {
+  if (!request.auth) {
     throw new functions.https.HttpsError(
       "failed-precondition",
       "The function must be called while authenticated."
@@ -16,15 +17,15 @@ export const unfollowOrg = functions.https.onCall(async (data, context) => {
   }
 
   // Runtime check for 'orgLookup' property
-  if (!data.hasOwnProperty("orgLookup")) {
+  if (!request.data.hasOwnProperty("orgLookup")) {
     throw new functions.https.HttpsError(
       "failed-precondition",
       "orgLookup must be provided."
     )
   }
 
-  const user: UserRecord = await getAuth().getUser(context.auth.uid)
-  const orgLookup = data.orgLookup
+  const user: UserRecord = await getAuth().getUser(request.auth.uid)
+  const orgLookup = request.data.orgLookup
   const db: Firestore = getFirestore()
 
   try {
