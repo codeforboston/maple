@@ -783,6 +783,12 @@ def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbedding
     if not existing_docs["ids"]:
         # print(f"Creating new embeddings for bill {bill_id}")
 
+        # The text is split into 2000-token chunks for two primary purposes:
+        # 1. Enhanced Retrieval Precision: Smaller chunks create more granular embeddings,
+        #    enabling more accurate similarity matching during retrieval.
+        # 2. Optimal Context Utilization: Smaller chunks allow for more efficient use of
+        #    the model's context window, as opposed to larger chunks that might contain
+        #    irrelevant information and waste context space.
         text_splitter = TokenTextSplitter.from_tiktoken_encoder(
             chunk_size = 2000,
             chunk_overlap = 200
