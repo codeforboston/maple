@@ -78,6 +78,6 @@ export const bill: Bill = {
   city: "Boston",
   topics: [
     "Criminal investigation, prosecution, interrogation",
-    "Criminal procedure and sentencing"
+    "Criminal sentencing"
   ]
 }
