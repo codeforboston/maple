@@ -75,5 +75,9 @@ export const bill: Bill = {
       email: "a@b.com"
     }
   },
-  city: "Boston"
+  city: "Boston",
+  topics: [
+    "Criminal investigation, prosecution, interrogation",
+    "Criminal sentencing"
+  ]
 }
