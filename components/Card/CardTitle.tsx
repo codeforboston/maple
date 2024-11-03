@@ -6,16 +6,21 @@ interface CardTitleProps {
   subheader?: string
   timestamp?: string
   imgSrc?: string
+  imgTitle?: string
   inHeaderElement?: ReactElement
 }
 
 export const CardTitle = (props: CardTitleProps) => {
-  const { header, subheader, timestamp, imgSrc, inHeaderElement } = props
+  const { header, subheader, timestamp, imgSrc, imgTitle, inHeaderElement } =
+    props
   return (
     <CardBootstrap.Body
       className={`align-items-center bg-secondary d-flex text-white`}
     >
-      {imgSrc && <img alt="" src={imgSrc} width="75" height="75" />}
+      <div className="justify-content-middle d-flex flex-column align-items-center">
+        {imgSrc && <img alt="" src={imgSrc} width="75" height="75" />}
+        <div className="mt-1">{imgTitle}</div>
+      </div>
       <CardBootstrap.Body>
         {header && (
           <CardBootstrap.Title className={`fs-4 lh-sm mb-1`}>
