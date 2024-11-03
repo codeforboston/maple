@@ -83,14 +83,17 @@ Environment Setup for Testing
 
 To set up your environment for testing, make sure you have a .env file configured with the necessary variables. You can create it by copying the provided .env.example template:
 
-bash
-Copy code
+```
 cp .env.example .env
+```
+
 This file includes placeholders for key environment variables, which you should customize as needed:
 
+```
 TEST_ADMIN_USERNAME: Username for admin testing.
 TEST_ADMIN_PASSWORD: Password for admin testing.
 APP_API_URL: The base URL for the application API (default is http://localhost:3000).
+```
 
 Running Tests
 Once your environment is set up, you can start running tests with one of the following commands:
