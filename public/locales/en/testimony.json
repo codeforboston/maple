@@ -97,6 +97,7 @@
       }
     }
   },
+  "thankYouModal": "Thank You For Submitting Testimony!",
   "userFilterDropdown": {
     "publishedTestimonies": "All Published Testimonies",
     "usersOnly": "Users Only",
