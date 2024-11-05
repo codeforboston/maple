@@ -85,7 +85,8 @@
     "overview": {
       "title": "Write, Publish, and Send Your Testimony!",
       "description": "Your voice matters. And it's important that you share it. MAPLE helps you 1) write testimony, 2) publish it to our community, and 3) send it to the right legislators so it can be formally considered. It's easy as 1-2-3!"
-    }
+    },
+    "chooseStance": "Choose Your Stance"
   },
   "testimonyItem": {
     "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
