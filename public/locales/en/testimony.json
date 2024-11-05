@@ -8,6 +8,27 @@
     "tweetContent": "I provided testimony on Bill {{billNumber}}. See {{link}} for details.",
     "twitter": "Tweet Your Published Testimony"
   },
+  "panel": {
+    "createTestimony": {
+      "title": "You Haven't Submitted Testimony",
+      "label": "Create Testimony"
+    },
+    "completeTestimony": {
+      "title": "You Have Draft Testimony",
+      "label": "Complete Testimony"
+    },
+    "pendingUpgrade": {
+      "title": "Pending Upgrade",
+      "label": "Your Organization Registration is Pending"
+    },
+    "signedOut": {
+      "title": "Sign In to Add Testimony"
+    },
+    "unverifiedEmail": {
+      "title": "Verify Your Email to Add Testimony",
+      "label": "Verify Your Email"
+    }
+  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",
