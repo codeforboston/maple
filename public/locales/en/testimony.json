@@ -111,5 +111,10 @@
     "showing1": "Showing 1 - ",
     "outOf": " out of ",
     "noTestimonies": "There are no testimonies "
+  },
+  "yourTestimony": {
+    "title": "Your Testimony",
+    "draft": "Draft",
+    "emailCta": "Email Your Published Testimony"
   }
 }
