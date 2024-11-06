@@ -1,5 +1,7 @@
+import { onRequest } from "firebase-functions/v2/https"
+
 import { QuerySnapshot } from "@google-cloud/firestore"
-import { runWith } from "firebase-functions"
+// import { runWith } from "firebase-functions"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
@@ -23,9 +25,12 @@ export default abstract class BillProcessor {
     topic: string,
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
+    // return runWith({ timeoutSeconds })
+    return onRequest({ timeoutSeconds }, (req, res) => {
+      res.status(200).send("Hello world!")
+    })
       .pubsub.topic(topic)
-      .onPublish(async message => {
+      .onPublish(async (message: any) => {
         if (message.json.run !== true)
           throw Error('Expected { "run": true } message')
         await new Processor(message.json).run()
@@ -37,7 +42,9 @@ export default abstract class BillProcessor {
     schedule = "every 24 hours",
     timeoutSeconds = 120
   ) {
-    return runWith({ timeoutSeconds })
+    return onRequest({ timeoutSeconds }, (req, res) => {
+      res.status(200).send("Hello world!")
+    })
       .pubsub.schedule(schedule)
       .onRun(() => new Processor().run())
   }
