@@ -90,6 +90,21 @@
     "selectLegislators": {
       "title": "Select Your Legislators",
       "description": "It looks like you haven't selected your legislators. Please use the <0>find your legislator tool</0> and select your State Representative and Senator below."
+    },
+    "keepNote": {
+      "header": "Keep Note",
+      "about": "About MAPLE Testimony",
+      "howTestimoniesWork": "How MAPLE Testimonies Work",
+      "publishing": "Publishing to MAPLE",
+      "keepInMind": "Please keep in mind...",
+      "noEmailWarning": "We do not send an email for you.",
+      "emailPreview": " This is a preview of what your email to legislators will look like. On the next page, you will be asked to “send email” which will open your email client (e.g., Outlook) and populate an email with your testimony.",
+      "shareEmail": "Your testimony needs to be shared with the right legislators. Your email “To:” box will be populated with the legislators you add here. We've pre-populated this with the most relevant legislators: 1) the Chairs of the Committee reviewing this bill; and 2) your own legislators.",
+      "thankYou": "When you send this email, you are submitting formal public testimony! As fellow constituents, we thank you for sharing your voice.",
+      "rulesHeader": "Rules for Testimony on MAPLE:",
+      "editLimit": "You can edit your testimony up to 5 times but the previous versions will remain available.",
+      "cannotDelete": "Since MAPLE is an archive, you cannot remove your testimony from the site. You may request a deletion in certain circumstances (see our <0>FAQ page</0>)",
+      "emailReminder": "Don't forget to send the email to your legislator."
     }
   },
   "testimonyItem": {
