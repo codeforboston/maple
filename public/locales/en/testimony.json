@@ -105,6 +105,15 @@
       "editLimit": "You can edit your testimony up to 5 times but the previous versions will remain available.",
       "cannotDelete": "Since MAPLE is an archive, you cannot remove your testimony from the site. You may request a deletion in certain circumstances (see our <0>FAQ page</0>)",
       "emailReminder": "Don't forget to send the email to your legislator."
+    },
+    "write": {
+      "header": "Write Your Testimony",
+      "testimonyLabel": "Testimony",
+      "testimonyPlaceholder": "Add your testimony here",
+      "testimonyHelp": "Testimony is limited to 10,000 characters.",
+      "tips": "Need help? Read our <0>testimony writing tips</0>",
+      "codeOfConduct": "View our code of conduct",
+      "confirmRemoveAttachment": "Are you sure you want to remove your attachment?"
     }
   },
   "testimonyItem": {
