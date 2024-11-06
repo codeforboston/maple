@@ -4,10 +4,12 @@ import { Image, Modal } from "../../bootstrap"
 import { useAppDispatch } from "../../hooks"
 import { usePublishState } from "../hooks"
 import { setShowThankYou } from "../redux"
+import { useTranslation } from "react-i18next"
 
 const modalDurationMs = 2000
 
 export const ThankYouModal = styled(({ ...rest }) => {
+  const { t } = useTranslation("testimony")
   const show = usePublishState().showThankYou
   const dispatch = useAppDispatch()
   const timeout = useRef<number>(-1)
@@ -43,7 +45,7 @@ export const ThankYouModal = styled(({ ...rest }) => {
       <Modal.Body className=" d-flex align-items-center">
         <Image alt="" src="/leaf-bundle.png" className="leaves-ul" />
         <Image alt="" src="/leaf-bundle.png" className="leaves-br" />
-        <div className="thank-you">Thank You For Submitting Testimony!</div>
+        <div className="thank-you">{t("thankYouModal")}</div>
         <Image alt="" src="/bill-thank-you.svg" />
       </Modal.Body>
     </Modal>

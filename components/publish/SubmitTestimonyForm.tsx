@@ -16,6 +16,9 @@ import { Step } from "./redux"
 import { SelectLegislatorsCta } from "./SelectLegislatorsCta"
 import { ShareTestimony } from "./ShareTestimony"
 import { WriteTestimony } from "./WriteTestimony"
+import { Trans, useTranslation } from "react-i18next"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
 
 const Background = styled.div`
   background: var(--bs-white);
@@ -74,6 +77,7 @@ const PolicyDetailsStyle = styled.div`
 `
 
 const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
+  const { t } = useTranslation("testimony")
   const [isCollapsed, setCollapsed] = useState(false)
 
   return (
@@ -87,9 +91,15 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
 
       <div onClick={() => setCollapsed(!isCollapsed)}>
         {isCollapsed ? (
-          <div>View Less Details &#9650;</div>
+          <div>
+            {t("submitTestimonyForm.viewLess")}
+            <FontAwesomeIcon icon={faCaretUp} />
+          </div>
         ) : (
-          <div>View Bill Details &#9660;</div>
+          <div>
+            {t("submitTestimonyForm.viewMore")}
+            <FontAwesomeIcon icon={faCaretDown} />
+          </div>
         )}
       </div>
     </PolicyDetailsStyle>
@@ -105,6 +115,7 @@ export const Form = ({
   bill: Bill
   synced: boolean
 }) => {
+  const { t } = useTranslation("testimony")
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
     selectLegislators: <SelectLegislatorsCta />,
@@ -120,7 +131,7 @@ export const Form = ({
         href={links.maple.bill(bill)}
         className={clsx(!synced && "pe-none")}
       >
-        Back to Bill (Bill {bill.id})
+        {t("submitTestimonyForm.backToBill", { billId: bill.id })}
       </links.Internal>
       <Overview className="mt-3" />
       {isMobile && (step == "write" || step == "publish" || step == "share") ? (
@@ -132,24 +143,24 @@ export const Form = ({
   )
 }
 
-const Overview = ({ className }: { className: string }) => (
-  <div className={clsx("d-flex", className)}>
-    <Row className="align-items-center">
-      <Col md={10} xs={12}>
-        <h1>Write, Publish, and Send Your Testimony!</h1>
-        <Divider className="me-5" />
-        <div className="mt-2" style={{ fontWeight: "bolder" }}>
-          Your voice matters. And it's important that you share it. MAPLE helps
-          you 1) write testimony, 2) publish it to our community, and 3) send it
-          to the right legislators so it can be formally considered. It's easy
-          as 1-2-3!
-        </div>
-      </Col>
-      <Col md={2} xs={12}>
-        <div className="mx-auto text-center">
-          <Image alt="" src="/writing.svg" />
-        </div>
-      </Col>
-    </Row>
-  </div>
-)
+const Overview = ({ className }: { className: string }) => {
+  const { t } = useTranslation("testimony")
+  return (
+    <div className={clsx("d-flex", className)}>
+      <Row className="align-items-center">
+        <Col md={10} xs={12}>
+          <h1>{t("submitTestimonyForm.overview.title")}</h1>
+          <Divider className="me-5" />
+          <div className="mt-2" style={{ fontWeight: "bolder" }}>
+            {t("submitTestimonyForm.overview.description")}
+          </div>
+        </Col>
+        <Col md={2} xs={12}>
+          <div className="mx-auto text-center">
+            <Image alt="" src="/writing.svg" />
+          </div>
+        </Col>
+      </Row>
+    </div>
+  )
+}

@@ -72,5 +72,8 @@
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
     "facebook":"Facebook"
+  },
+  "table": {
+    "page": "Page {{currentPage}}"
   }
 }
