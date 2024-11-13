@@ -7,7 +7,7 @@ const DonateCardContent = () => {
       <p>
         <span>{`${t("donate.bodytextOne")} `}</span>
         <a
-          href="https://crm.bloomerang.co/HostedDonation?ApiKey=pub_89ca6da3-3b89-11ed-ba98-0665072ac94d&WidgetId=20480"
+          href="https://partnersindemocracy.us/donate-to-maple/"
           target="_blank"
           rel="noopener noreferrer"
         >

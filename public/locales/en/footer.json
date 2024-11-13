@@ -13,12 +13,19 @@
     "ourMission": "Mission & Goals",
     "team": "Team",
     "faq": "FAQ",
-    "mapleAI": "How MAPLE Uses AI"
+    "mapleAI": "How MAPLE Uses AI",
+    "socials": {
+      "instagram": "Follow MAPLE on Intagram",
+      "linkedin":"Follow MAPLE on LinkedIn",
+      "twitter":"Follow MAPLE on Twitter"
+    }
+
   },
   "legal": {
     "disclaimer": "MAPLE is an independent project, not affiliated with the Massachusetts legislature",
     "privacyPolicy": "Privacy Policy",
     "TOS": "Terms of Service",
     "codeOfConduct": "Code of Conduct"
-  }
+  },
+  "logo": "MAPLE Massachusetts Platform for Legislative Engagement logo"
 }

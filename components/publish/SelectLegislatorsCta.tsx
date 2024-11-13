@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "react-i18next"
 import { useProfileState } from "../db/profile/redux"
 import { Loading } from "../legislatorSearch"
 import { External } from "../links"
@@ -13,18 +14,24 @@ function useSelectLegislators() {
 }
 
 export const SelectLegislatorsCta = ({ className }: { className?: string }) => {
+  const { t } = useTranslation("testimony")
   const loading = useSelectLegislators()
   return loading ? (
     <Loading />
   ) : (
     <div className={className}>
-      <StepHeader>Select Your Legislators</StepHeader>
+      <StepHeader>
+        {t("submitTestimonyForm.selectLegislators.title")}
+      </StepHeader>
       <p>
-        It looks like you haven't selected your legislators. Please use the{" "}
-        <External href="https://malegislature.gov/Search/FindMyLegislator">
-          find your legislator tool
-        </External>{" "}
-        and select your State Representative and Senator below.
+        <Trans
+          t={t}
+          i18nKey="submitTestimonyForm.selectLegislators.description"
+          components={[
+            // eslint-disable-next-line react/jsx-key
+            <External href="https://malegislature.gov/Search/FindMyLegislator" />
+          ]}
+        />
       </p>
       <SelectLegislators />
       <nav.FormNavigation left={<nav.Previous />} right={<nav.Next />} />

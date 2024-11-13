@@ -79,7 +79,25 @@ Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-dev
 
 MAPLE uses Jest for unit and integration testing, and Playwright for e2e testing.
 
-To start running tests, use one of the following commands:
+Environment Setup for Testing.
+
+To set up your environment for testing, make sure you have a .env file configured with the necessary variables. You can create it by copying the provided .env.example template:
+
+```
+cp .env.example .env
+```
+
+This file includes placeholders for key environment variables, which you should customize as needed:
+
+```
+TEST_ADMIN_USERNAME: Username for admin testing.
+TEST_ADMIN_PASSWORD: Password for admin testing.
+APP_API_URL: The base URL for the application API (default is http://localhost:3000).
+```
+
+Running Tests.
+
+Once your environment is set up, you can start running tests with one of the following commands:
 
 - `yarn test:integration [--watch] [-t testNamePattern] [my/feature.test.ts]`: Run integration tests in `components/` and `tests/integration/`. These tests run against the full local application -- start it with `yarn up`. You can use `--watch` to rerun your tests as you change them and filter by test name and file.
 - `yarn test:e2e`: Run e2e tests in `tests/e2e` with the Playwright UI

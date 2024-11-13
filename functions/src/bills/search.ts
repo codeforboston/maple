@@ -1,7 +1,7 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
-import { Bill } from "./types"
+import { Bill, CATEGORIES_BY_TOPIC } from "./types"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,
@@ -32,7 +32,10 @@ export const {
 
       { name: "endorseCount", type: "int32" },
       { name: "opposeCount", type: "int32" },
-      { name: "neutralCount", type: "int32" }
+      { name: "neutralCount", type: "int32" },
+
+      { name: "topics.lvl0", type: "string[]", facet: true, optional: true },
+      { name: "topics.lvl1", type: "string[]", facet: true, optional: true }
     ],
     default_sorting_field: "testimonyCount"
   },
@@ -42,6 +45,9 @@ export const {
       console.error(data, validation.message, validation.details)
     }
     const bill = Bill.checkWithDefaults(data)
+
+    const { categories, topics } = buildTopicsForSearch(bill.topics)
+
     return {
       id: `${bill.court}-${bill.id}`,
       court: bill.court,
@@ -58,7 +64,34 @@ export const {
       latestTestimonyAt: bill.latestTestimonyAt?.toMillis(),
       endorseCount: bill.endorseCount,
       opposeCount: bill.opposeCount,
-      neutralCount: bill.neutralCount
+      neutralCount: bill.neutralCount,
+      "topics.lvl0": categories,
+      "topics.lvl1": topics
     }
   }
 })
+
+const buildTopicsForSearch = (billTopics: string[] = []) => {
+  // We need to enrich the topics with the associated topic categories for the hierachical facets
+  const topicsByCategory = billTopics.reduce((acc, topic) => {
+    const category = CATEGORIES_BY_TOPIC[topic]
+    if (!category) {
+      console.error(`No category found for topic ${topic}`)
+      return acc
+    }
+    if (!acc[category]) acc[category] = []
+    acc[category].push(topic)
+    return acc
+  }, {} as { [key: string]: string[] })
+
+  const categories = Object.keys(topicsByCategory).sort()
+  const topicsSorted = Object.entries(topicsByCategory)
+    .reduce((acc, [category, topics]) => {
+      // Instantsearch needs lower hierarchical levels in the form "category > topic"
+      acc.push(...topics.map(topic => `${category} > ${topic}`))
+      return acc
+    }, [] as string[])
+    .sort()
+
+  return { categories, topics: topicsSorted }
+}
