@@ -1,4 +1,5 @@
 import * as links from "components/links"
+import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import styled from "styled-components"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
@@ -22,7 +23,7 @@ const TitleFormat = styled(Col)`
 `
 
 const Divider = styled(Col)`
-  width: 1px;
+  width: 2px;
   padding: 0;
   background-color: var(--bs-blue-100);
   align-self: stretch;
@@ -49,6 +50,8 @@ export const Summary = ({
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
 
+  const { t } = useTranslation("common")
+
   return (
     <SummaryContainer className={className}>
       <Row>
@@ -61,14 +64,14 @@ export const Summary = ({
                 className="m-1"
                 onClick={handleShowBillDetails}
               >
-                Read more..
+                {t("bill.read_more")}
               </StyledButton>
             ) : (
               <links.External
                 className="fst-normal fs-body"
                 href={links.billPdfUrl(bill.court, bill.id)}
               >
-                Download PDF
+                {t("bill.download_pdf")}
               </links.External>
             )}
           </div>
@@ -89,11 +92,12 @@ export const Summary = ({
           </Modal>
         </TitleFormat>
 
-        <Divider xs="auto" />
+        <Divider className={`my-2`} xs="auto" />
         <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
       </Row>
+      <hr className={`m-0 border-bottom border-2`}></hr>
     </SummaryContainer>
   )
 }
