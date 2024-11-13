@@ -136,11 +136,12 @@ test.describe("Testimony Filtering", () => {
       await page.getByRole("checkbox", { name: authorName }).check()
       const testimonyPage = new TestimonyPage(page)
       await expect(testimonyPage.authorFilterItem).toContainText(authorName)
-      const encodedAuthorName = encodeURIComponent(authorName).replace("'", "%27")
+      const encodedAuthorName = encodeURIComponent(authorName).replace(
+        "'",
+        "%27"
+      )
       await expect(page).toHaveURL(
-        new RegExp(
-          `.*authorDisplayName%5D%5B0%5D=${encodedAuthorName}`
-        )
+        new RegExp(`.*authorDisplayName%5D%5B0%5D=${encodedAuthorName}`)
       )
     }
   })
