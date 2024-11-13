@@ -52,7 +52,11 @@ export const BillDetails = ({ bill }: BillProps) => {
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
         <Banner>
-          this bill is from session {bill.court} - not the current session
+          {t("bill.banner1")}
+          {"\u00A0"}
+          {bill.court}
+          {"\u00A0"}
+          {t("bill.banner2")}
         </Banner>
       )}
 

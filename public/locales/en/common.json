@@ -62,6 +62,8 @@
   },
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "bill": {
+    "banner1": "this bill is from session",
+    "banner2": "- not the current session",
     "read_more": "Read More",
     "download_pdf": "Download PDF"
   }
