@@ -15,7 +15,7 @@ export const SmartDisclaimer = () => {
   return (
     <>
       {isMobile ? (
-        <div className={`mx-2`}>
+        <div className={`m-3`}>
           <div className={`d-flex justify-content-center`}>
             <Image src="/smart-tag.png" alt={t("bill.smart-tag")} />
           </div>

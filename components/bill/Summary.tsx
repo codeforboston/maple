@@ -45,6 +45,19 @@ const FormattedBillDetails = styled(Col)`
   white-space: pre-wrap;
 `
 
+const SmartTagButton = styled.button`
+  border-radius: 12px;
+  font-size: 12px;
+`
+
+const SmartTag = ({ tagName }: { tagName: String }) => {
+  return (
+    <SmartTagButton className={`btn btn-secondary mx-1 p-0`}>
+      &nbsp;{tagName}&nbsp;&nbsp;
+    </SmartTagButton>
+  )
+}
+
 export const Summary = ({
   bill,
   className
@@ -55,6 +68,8 @@ export const Summary = ({
   const billText = bill?.content?.DocumentText
 
   const { showLLMFeatures } = useFlags()
+
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { t } = useTranslation("common")
 
@@ -107,9 +122,20 @@ export const Summary = ({
       </Row>
       {showLLMFeatures ? (
         <>
-          <hr className={`m-0 border-bottom border-2`} />
-          <SmartDisclaimer />
-          <Row className="fst-italic mx-2">{bill.summary}</Row>
+          {bill.summary !== undefined && bill.topics !== undefined ? (
+            <>
+              <hr className={`m-0 border-bottom border-2`} />
+              <SmartDisclaimer />
+            </>
+          ) : (
+            <></>
+          )}
+          <Row className="fst-italic mx-1 mb-4">{bill.summary}</Row>
+          <Row className={`d-flex mx-0 my-1`} xs="auto">
+            {bill.topics?.map(t => (
+              <SmartTag key={t} tagName={t} />
+            ))}
+          </Row>
         </>
       ) : (
         <></>
