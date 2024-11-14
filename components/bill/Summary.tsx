@@ -1,3 +1,4 @@
+import { useFlags } from "components/featureFlags"
 import * as links from "components/links"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
@@ -53,6 +54,8 @@ export const Summary = ({
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
 
+  const { showLLMFeatures } = useFlags()
+
   const { t } = useTranslation("common")
 
   console.log("Bill: ", bill)
@@ -102,8 +105,15 @@ export const Summary = ({
           <TestimonyCounts bill={bill} />
         </Col>
       </Row>
-      <hr className={`m-0 border-bottom border-2`} />
-      <SmartDisclaimer />
+      {showLLMFeatures ? (
+        <>
+          <hr className={`m-0 border-bottom border-2`} />
+          <SmartDisclaimer />
+          <Row className="fst-italic mx-2">{bill.summary}</Row>
+        </>
+      ) : (
+        <></>
+      )}
     </SummaryContainer>
   )
 }
