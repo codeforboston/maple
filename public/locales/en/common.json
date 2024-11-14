@@ -72,7 +72,7 @@
     "download_pdf": "Download PDF",
     "smart_tag": "AI Smart Tag",
     "smart_summary": "Smart Summary & Tags",
-    "smart_explanation": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
+    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
   },  
   "primarySponsor": "Primary Sponsor",
   "showAns": "Show Answer",
