@@ -16,9 +16,6 @@ export const SmartDisclaimer = () => {
     <>
       {isMobile ? (
         <div className={`m-3`}>
-          <div className={`d-flex justify-content-center`}>
-            <Image src="/smart-tag.png" alt={t("bill.smart-tag")} />
-          </div>
           <Row className={`fs-5 fw-bold`}>{t("bill.smart_summary")}</Row>
           <SmartTagDesc>{t("bill.smart_disclaimer")}</SmartTagDesc>
         </div>
