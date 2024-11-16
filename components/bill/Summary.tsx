@@ -69,11 +69,7 @@ export const Summary = ({
 
   const { showLLMFeatures } = useFlags()
 
-  const isMobile = useMediaQuery("(max-width: 768px)")
-
   const { t } = useTranslation("common")
-
-  console.log("Bill: ", bill)
 
   return (
     <SummaryContainer className={className}>
