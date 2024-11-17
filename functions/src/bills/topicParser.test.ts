@@ -21,6 +21,8 @@ describe("assignCategoriesToTopics", () => {
   it("ignores topics with missing categories", () => {
     const topics = ["Consumer protection", "Unknown topic"]
     const categories = assignCategoriesToTopics(topics)
-    expect(categories).toEqual([{ category: "Commerce", topic: "Consumer protection" }])
+    expect(categories).toEqual([
+      { category: "Commerce", topic: "Consumer protection" }
+    ])
   })
 })
