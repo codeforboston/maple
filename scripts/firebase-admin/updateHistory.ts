@@ -12,7 +12,7 @@ export const script: Script = async ({ db, args }) => {
       history: FieldValue.arrayUnion({
         Action: "Placed on file",
         Branch: "Senate",
-        Date: "2023-01-05T00:00:00"
+        Date: Timestamp.now().valueOf()
       })
     })
     console.log("Updated history", id)
