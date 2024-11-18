@@ -3,9 +3,24 @@ This code implements text summarization, category selection and tagging bills us
 
 The main functions and their objectives are: 
 1. get_summary_api_function: Function used to summarize a bill - It takes in bill id, bill title and bill text 
-                             and returns summary of the bill.
+                            and returns summary of the bill.
+
 2. get_tags_api_function:    Function used to tag a bill with pre specified tags - It takes in bill id, bill title
-                             and bill text and returns the selected tags from specified tags.
+                            and bill text and returns the selected tags from specified tags.
+                            
+3. get_summaries_and_tags_api_function: Combined function that generates both summary and tags in a single call - 
+                            It takes in bill id, bill title and bill text, first generates a summary, and then 
+                            uses this summary to generate relevant tags. This approach ensures tags are based on 
+                            the distilled information in the summary rather than the full bill text.
+
+4. get_tags_api_function_v2: Optimized version of tag generation that works with bill summaries - It takes in 
+                            bill id, bill title and bill summary (instead of full text) to generate tags. This 
+                            version provides more focused tagging by working with already-distilled information.
+
+Note:
+    - All functions return standardized response objects with status codes indicating success or specific failure modes
+    - The v2 functions represent an improved approach that uses bill summaries for more efficient and accurate tagging
+    - Templates for prompts are maintained separately to ensure consistency across different parts of the application
 
 """
 import json
@@ -278,6 +293,7 @@ class BillDetails():
     committee_info: str = ''
     mgl_names: str = ''
     invoke_dict: dict = field(default_factory=list)
+    summary: str = ''
 
 @dataclass()
 class LLMResults: 
@@ -308,6 +324,63 @@ def extract_bill_context(bill_text: str) -> tuple:
     mgl_names = get_chap_sec_names_internal(sections)
 
     return combined_mgl, mgl_names
+
+def get_summaries_and_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
+
+    """
+    Generates both a summary and relevant tags for a given legislative bill in a single API call.
+
+    This function processes the bill in two steps:
+    1. Generates a summary of the bill using get_summary_api_function
+    2. Uses this summary to generate relevant tags using get_tags_api_function_v2
+
+    The sequential processing ensures that tags are generated based on the distilled 
+    information in the summary rather than the full bill text, potentially improving 
+    tagging accuracy and consistency.
+
+    Args:
+        bill_id (str): The unique identifier of the bill.
+        bill_title (str): The title of the bill.
+        bill_text (str): The full text content of the bill.
+
+    Returns:
+        dict: A dictionary containing:
+            - 'status' (int): Indicates the processing status:
+               * 1: Both summary and tags generated successfully
+               * -1: Failed to generate summary
+               * -2: Failed to generate tags
+            - 'summary' (str): The generated summary if successful, empty string otherwise
+            - 'tags' (list): List of generated tags if successful, empty list otherwise
+
+    Process:
+        1. Attempts to generate a summary using get_summary_api_function
+        2. If summary generation succeeds, proceeds to generate tags using get_tags_api_function_v2
+        3. If either step fails, returns appropriate status code and partial results
+
+    Note:
+        - The function uses get_tags_api_function_v2 which is optimized to work with
+         bill summaries rather than full bill text
+        - If summary generation fails, tag generation is not attempted
+    """
+
+    response_obj = {
+        'status': -1,
+        'summary': '',
+        'tags': []
+    }
+
+    # Get the summary
+    summary_response = get_summary_api_function(bill_id, bill_title, bill_text)
+
+    response_obj.update(summary_response)
+
+    if response_obj['summary'] == '' or response_obj['status'] != 1: 
+        return response_obj
+
+    # Get tags
+    tags_response = get_tags_api_function_v2(bill_id, bill_title, response_obj['summary'])
+    response_obj.update(tags_response)
+    return response_obj
 
 def get_summary_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
 
@@ -411,6 +484,54 @@ def get_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict
     status_code, results = get_tags(bill_details)
 
     # return response attribute of returned value
+    if status_code != 1: 
+        return {'status': status_code, 'tags': []}
+    else: 
+        return {'status': status_code, 'tags': results.response}
+
+def get_tags_api_function_v2(bill_id: str, bill_title: str, bill_summary: str) -> dict:
+
+    """
+    Generates tags for a legislative bill using its summary instead of full text.
+
+    This version (v2) of the tag generation API offers a more streamlined approach by working
+    with bill summaries rather than full bill text. This approach potentially provides more
+    focused and relevant tags as it works with already-distilled information.
+
+    Args:
+       bill_id (str): The unique identifier of the bill.
+       bill_title (str): The title of the bill.
+       bill_summary (str): A summarized version of the bill's content, typically
+                          generated by get_summary_api_function.
+
+    Returns:
+       dict: A dictionary containing:
+           - 'status' (int): Indicates the processing status:
+               * 1: Tags generated successfully
+               * -2: Failed to generate tags or necessary details not found
+           - 'tags' (list): List of generated tags if successful, empty list otherwise
+
+    Process:
+       1. Creates a BillDetails object with bill ID, title, and summary
+       2. Calls get_tags_v2 to generate tags based on the summary
+       3. Formats and returns the results
+
+    Note:
+       - This function is optimized to work with bill summaries rather than full bill text,
+         making it more efficient and potentially more accurate than the original version
+       - It is commonly used in conjunction with get_summary_api_function as part of a
+         combined summary and tagging pipeline
+       - The function uses an alternative tagging method (get_tags_v2) specifically
+         designed to work with summarized content
+    """
+
+    bill_details = BillDetails(
+        bill_id = bill_id,
+        bill_title = bill_title, 
+        summary = bill_summary
+    )
+    status_code, results = get_tags_v2(bill_details)
+
     if status_code != 1: 
         return {'status': status_code, 'tags': []}
     else: 
@@ -530,6 +651,58 @@ def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
     # parses the response from LLM and removes hallucinated tags
     tag_response.response = list(set(extract_categories_tags(tag_response.response)) & set(category_tags))
 
+    return 1, tag_response
+
+def get_tags_v2(bill_details: BillDetails) -> LLMResults:
+
+    """
+    Helper function that generates tags for a bill using its summary.
+
+    This optimized version of the tagging function works directly with bill summaries
+    instead of full bill text. It uses a predefined prompt template specifically designed
+    for processing summarized content.
+
+    Args:
+       bill_details (BillDetails): Object containing bill information, must include:
+           - summary: Summarized content of the bill
+           - bill_title: Title of the bill
+
+    Returns:
+       tuple[int, LLMResults]: A tuple containing:
+           - int: Status code indicating the operation result:
+               * 1: Tags generated successfully
+               * -2: Required bill details missing
+           - LLMResults: Object containing the query and response from the LLM.
+                        Response contains a list of generated tags if successful.
+
+    Process:
+       1. Validates presence of required bill attributes
+       2. Sets up LLM cache for efficient processing
+       3. Prepares the input dictionary with bill summary and title
+       4. Calls the language model with a summary-specific prompt
+       5. Filters generated tags to ensure they exist in predefined tag set
+
+    Note:
+       - Uses 'small' LLM call type as summaries are typically compact
+       - Automatically deduplicates tags using set operations
+       - Validates generated tags against a predefined set of allowed tags
+       - Relies on TAGGING_PROMPT_USING_SUMMARIES template from prompts.py
+    """
+
+    if not all(hasattr(bill_details, attr) for attr in ("summary", "bill_title")): 
+        return -2, LLMResults()
+
+    set_my_llm_cache()
+    llm_call_type = 'small'
+    query = TAGGING_PROMPT_USING_SUMMARIES
+    bill_details.invoke_dict = {
+        'bill_title': bill_details.bill_title,
+        'context': [Document(page_content = f"```{bill_details.summary}```")],
+        'tags': new_tags
+    }
+
+    tag_response = call_llm(bill_details, query, llm_call_type)
+    tag_response.response = list(set(extract_categories_tags(tag_response.response)) & set(new_tags))
     return 1, tag_response
 
 def extract_categories_tags(response: str) -> list:

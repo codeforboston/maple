@@ -195,3 +195,18 @@ TAGGING_PROMPT_LARGE = f"""
 	The relevant section names are: {{mgl_names}}
 
 	{TAGGING_INSTRUCTIONS}"""
+
+TAGGING_PROMPT_USING_SUMMARIES = f"""
+	Your Job here is to identify the tags that can be associated to the following MA Legislative bill. 
+	Choose the closest relevant tags and do not output tags outside of the provided tags. 
+	Please be politically neutral, keeping in mind that readers may have various ideological perspectives. 
+	Below is the summary of the bill.
+	
+	The bill title is: {{bill_title}}
+
+	The bill summary is: {{context}}
+
+	List of tags: 
+	- {{tags}}
+
+	{TAGGING_INSTRUCTIONS}"""
