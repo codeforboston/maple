@@ -1,7 +1,7 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
-import { Bill, CATEGORIES_BY_TOPIC } from "./types"
+import { Bill, BillTopic } from "./types"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,
@@ -71,27 +71,10 @@ export const {
   }
 })
 
-const buildTopicsForSearch = (billTopics: string[] = []) => {
-  // We need to enrich the topics with the associated topic categories for the hierachical facets
-  const topicsByCategory = billTopics.reduce((acc, topic) => {
-    const category = CATEGORIES_BY_TOPIC[topic]
-    if (!category) {
-      console.error(`No category found for topic ${topic}`)
-      return acc
-    }
-    if (!acc[category]) acc[category] = []
-    acc[category].push(topic)
-    return acc
-  }, {} as { [key: string]: string[] })
+const buildTopicsForSearch = (billTopics: BillTopic[] = []) => {
+  const categoriesSorted = billTopics.map(t => t.category).sort()
 
-  const categories = Object.keys(topicsByCategory).sort()
-  const topicsSorted = Object.entries(topicsByCategory)
-    .reduce((acc, [category, topics]) => {
-      // Instantsearch needs lower hierarchical levels in the form "category > topic"
-      acc.push(...topics.map(topic => `${category} > ${topic}`))
-      return acc
-    }, [] as string[])
-    .sort()
-
-  return { categories, topics: topicsSorted }
+  // Instantsearch needs lower hierarchical levels in the form "category > topic"
+  const topicsSorted = billTopics.map(t => `${t.category} > ${t.topic}`).sort()
+  return { categories: categoriesSorted, topics: topicsSorted }
 }
