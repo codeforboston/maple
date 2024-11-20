@@ -22,7 +22,7 @@ export const SmartDisclaimer = () => {
       ) : (
         <Row className={`d-flex my-3`} xs="auto">
           <Col>
-            <Image src="/smart-tag.png" alt={t("bill.smart_tag")} />
+            <Image src="/images/smart-summary.svg" alt={t("bill.smart_tag")} />
           </Col>
           <Col className={`mt-1`} xs="10">
             <Row className={`fs-5 fw-bold`}>{t("bill.smart_summary")}</Row>
