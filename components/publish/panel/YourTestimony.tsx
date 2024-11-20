@@ -22,6 +22,7 @@ export const YourTestimony = () => {
 }
 
 const MainPanel = styled(({ ...rest }) => {
+  const { t } = useTranslation("testimony")
   const { draft, deleteTestimony, publication } = usePublishService() ?? {}
   const unpublishedDraft = hasDraftChanged(draft, publication)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -30,7 +31,7 @@ const MainPanel = styled(({ ...rest }) => {
   return (
     <div {...rest}>
       <div className="d-flex">
-        <span className="title">Your Testimony</span>
+        <span className="title">{t("yourTestimony.title")}</span>
         <EditTestimonyButton
           className="me-1"
           billId={bill.id}
@@ -48,7 +49,9 @@ const MainPanel = styled(({ ...rest }) => {
       /> */}
       <div className="divider mt-3 mb-3" />
       <TestimonyPreview type="draft" className="mb-2" />
-      {unpublishedDraft && <div className="draft-badge">Draft</div>}
+      {unpublishedDraft && (
+        <div className="draft-badge">{t("yourTestimony.draft")}</div>
+      )}
     </div>
   )
 })`
@@ -122,10 +125,11 @@ const TwitterButton = (props: ClsProps) => {
 }
 
 const EmailButton = (props: ClsProps) => {
+  const { t } = useTranslation("testimony")
   const { publication, bill: { id: billId, court } = {} } = usePublishState()
   return publication ? (
     <Wrap href={formUrl(billId!, court!, "share")}>
-      <Cta {...props}>Email Your Published Testimony </Cta>
+      <Cta {...props}>{t("yourTestimony.emailCta")} </Cta>
     </Wrap>
   ) : null
 }
