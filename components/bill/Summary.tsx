@@ -2,9 +2,7 @@ import { useFlags } from "components/featureFlags"
 import * as links from "components/links"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
-import Image from "react-bootstrap/Image"
 import styled from "styled-components"
-import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { SmartDisclaimer } from "./SmartDisclaimer"
 import { SmartIcon } from "./SmartIcon"
@@ -55,8 +53,7 @@ const SmartTag = ({ icon, tagName }: { icon: String; tagName: String }) => {
   return (
     <SmartTagButton className={`btn btn-secondary d-flex mt-1 mx-1 p-1`}>
       &nbsp;
-      {/* <SmartIcon icon={icon} /> */}
-      <SmartIcon icon="Healthcare" />
+      <SmartIcon icon={icon} />
       &nbsp;
       {tagName}
       &nbsp;
@@ -76,11 +73,6 @@ export const Summary = ({
   const { showLLMFeatures } = useFlags()
 
   const { t } = useTranslation("common")
-
-  console.log("bill.topics: ", bill.topics)
-  console.log("bill.topics?.[0]: ", bill.topics?.[0])
-  console.log("bill.topics?.[0].category: ", bill.topics?.[0].category)
-  console.log("bill.topics?.[0].topic: ", bill.topics?.[0].topic)
 
   return (
     <SummaryContainer className={className}>
