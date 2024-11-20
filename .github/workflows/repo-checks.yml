@@ -67,12 +67,8 @@ jobs:
     needs: check_code_quality
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: yarn install
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-repo
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
