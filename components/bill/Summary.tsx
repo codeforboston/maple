@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
 import { SmartDisclaimer } from "./SmartDisclaimer"
+import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 
@@ -50,10 +51,15 @@ const SmartTagButton = styled.button`
   font-size: 12px;
 `
 
-const SmartTag = ({ tagName }: { tagName: String }) => {
+const SmartTag = ({ icon, tagName }: { icon: String; tagName: String }) => {
   return (
-    <SmartTagButton className={`btn btn-secondary mx-1 p-0`}>
-      &nbsp;{tagName}&nbsp;&nbsp;
+    <SmartTagButton className={`btn btn-secondary d-flex mt-1 mx-1 p-1`}>
+      &nbsp;
+      {/* <SmartIcon icon={icon} /> */}
+      <SmartIcon icon="Healthcare" />
+      &nbsp;
+      {tagName}
+      &nbsp;
     </SmartTagButton>
   )
 }
@@ -131,10 +137,10 @@ export const Summary = ({
           ) : (
             <></>
           )}
-          <Row className="fst-italic mx-1 mb-4">{bill.summary}</Row>
+          <Row className="fst-italic mx-1 mb-3">{bill.summary}</Row>
           <Row className={`d-flex mx-0 my-1`} xs="auto">
             {bill.topics?.map(t => (
-              <SmartTag key={t.topic} tagName={t.topic} />
+              <SmartTag key={t.topic} icon={t.category} tagName={t.topic} />
             ))}
           </Row>
         </>

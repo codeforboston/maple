@@ -66,18 +66,19 @@
   },
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "bill": {
-    "banner": "this bill is from session {{billCourt}} - not the current session",
-    "banner1": "this bill is from session",
-    "banner2": "- not the current session",
+    "old_session": "this bill is from session {{billCourt}} - not the current session",
     "read_more": "Read More",
     "download_pdf": "Download PDF",
+    "icon": {
+      "commerce": "Commerce"
+    },
     "smart_tag": "AI Smart Tag",
     "smart_summary": "Smart Summary & Tags",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
   },  
   "primarySponsor": "Primary Sponsor",
   "showAns": "Show Answer",
-  "socials":{
+  "socials": {
     "instagram":"Instagram",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
