@@ -156,7 +156,7 @@ export const SmartIcon = ({ icon }: { icon: String }) => {
       return (
         <Image
           src="/SmartTagIcons/Transportation-and-Public-Works.svg"
-          alt={t("bill.icon.transportation_and_Public_Works")}
+          alt={t("bill.icon.transportation_and_public_works")}
         />
       )
     default:
