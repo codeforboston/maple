@@ -51,13 +51,7 @@ export const BillDetails = ({ bill }: BillProps) => {
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
-        <Banner>
-          {t("bill.banner1")}
-          {"\u00A0"}
-          {bill.court}
-          {"\u00A0"}
-          {t("bill.banner2")}
-        </Banner>
+        <Banner>{t("bill.banner", { billCourt: bill.court })}</Banner>
       )}
 
       <StyledContainer className="mt-3 mb-3">

@@ -71,6 +71,11 @@ export const Summary = ({
 
   const { t } = useTranslation("common")
 
+  console.log("bill.topics: ", bill.topics)
+  console.log("bill.topics?.[0]: ", bill.topics?.[0])
+  console.log("bill.topics?.[0].category: ", bill.topics?.[0].category)
+  console.log("bill.topics?.[0].topic: ", bill.topics?.[0].topic)
+
   return (
     <SummaryContainer className={className}>
       <Row>
@@ -129,7 +134,7 @@ export const Summary = ({
           <Row className="fst-italic mx-1 mb-4">{bill.summary}</Row>
           <Row className={`d-flex mx-0 my-1`} xs="auto">
             {bill.topics?.map(t => (
-              <SmartTag key={t} tagName={t} />
+              <SmartTag key={t.topic} tagName={t.topic} />
             ))}
           </Row>
         </>
