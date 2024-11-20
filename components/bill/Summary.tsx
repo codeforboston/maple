@@ -51,7 +51,9 @@ const SmartTagButton = styled.button`
 
 const SmartTag = ({ icon, tagName }: { icon: String; tagName: String }) => {
   return (
-    <SmartTagButton className={`btn btn-secondary d-flex mt-1 mx-1 p-1`}>
+    <SmartTagButton
+      className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+    >
       &nbsp;
       <SmartIcon icon={icon} />
       &nbsp;
