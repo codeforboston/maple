@@ -196,7 +196,7 @@ export const NavbarLinkNewsfeed: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : ""}
+        className={isMobile ? "navLink-primary" : "text-white-50"}
         href="/newsfeed"
         {...other}
       >

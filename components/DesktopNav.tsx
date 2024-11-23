@@ -1,3 +1,4 @@
+import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 import React from "react"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
@@ -12,6 +13,7 @@ import {
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkLogo,
+  NavbarLinkNewsfeed,
   NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
@@ -24,6 +26,7 @@ import {
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
+  const { notifications } = useFlags()
 
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
@@ -46,6 +49,16 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkTestimony />
         </Nav>
       </div>
+
+      {notifications ? (
+        <div className="align-self-center">
+          <Nav>
+            <NavbarLinkNewsfeed />
+          </Nav>
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className={`align-self-center`}>
         <Dropdown>
