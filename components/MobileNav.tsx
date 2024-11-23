@@ -1,3 +1,4 @@
+import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 import React, { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -13,6 +14,7 @@ import {
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkLogo,
+  NavbarLinkNewsfeed,
   NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
@@ -60,10 +62,13 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   }
 
   const SiteLinks = () => {
+    const { notifications } = useFlags()
+
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
         <NavbarLinkTestimony handleClick={closeNav} />
+        {notifications ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
