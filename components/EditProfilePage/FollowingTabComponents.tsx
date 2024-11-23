@@ -4,7 +4,7 @@ import { useBill, usePublicProfile } from "components/db"
 import { Dispatch, SetStateAction } from "react"
 import { Col } from "../bootstrap"
 import { TextButton } from "../buttons"
-import { UnfollowModalConfig } from "./FollowingTab"
+import { UnfollowModalConfig } from "./UnfollowModal"
 import { formatBillId } from "components/formatting"
 import { Internal } from "components/links"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
@@ -36,19 +36,19 @@ export type BillElement = {
   court: number
   billId: string
 }
-export type OrgElement = {
+export type UserElement = {
   profileId: string
   fullName: string
 }
 
-export type Element = BillElement | OrgElement
+export type Element = BillElement | UserElement
 
 export const isBillElement = (element: Element): element is BillElement => {
   return (element as BillElement).billId !== undefined
 }
 
-export const isOrgElement = (element: Element): element is OrgElement => {
-  return (element as OrgElement).profileId !== undefined
+export const isUserElement = (element: Element): element is UserElement => {
+  return (element as UserElement).profileId !== undefined
 }
 
 export function UnfollowButton({
@@ -70,15 +70,15 @@ export function UnfollowButton({
     if (isBillElement(element)) {
       setUnfollow({
         court: element.court,
-        orgName: "",
+        userName: "",
         type: "bill",
         typeId: element.billId
       })
     } else {
       setUnfollow({
         court: 0,
-        orgName: fullName,
-        type: "org",
+        userName: fullName,
+        type: "testimony",
         typeId: element.profileId
       })
     }
@@ -107,7 +107,7 @@ export function FollowedItem({
   setUnfollow: Dispatch<SetStateAction<UnfollowModalConfig | null>>
   type: string
 }) {
-  const elementId = isOrgElement(element) ? element.profileId : element.billId
+  const elementId = isUserElement(element) ? element.profileId : element.billId
 
   const { result: profile, loading } = usePublicProfile(elementId)
 

@@ -3,6 +3,7 @@ import Image from "react-bootstrap/Image"
 import { Row, Col } from "../bootstrap"
 
 const NuLawLabCardContent = () => {
+  const { t } = useTranslation("common")
   return (
     <>
       <Row className="mb-5">
@@ -10,7 +11,7 @@ const NuLawLabCardContent = () => {
           <Image
             fluid
             src="/northeastern_school_of_law_logo.svg"
-            alt="Northeatern School of Law icon"
+            alt={t("partnerLogos.NuLaw")}
           />
         </Col>
         <Col className="align-self-center" md={9}>
@@ -51,6 +52,8 @@ const NuLawLabCardContent = () => {
 }
 
 const CodeForBostonCardContent = () => {
+  const { t } = useTranslation("common")
+
   return (
     <>
       <Row className="mb-3">
@@ -58,7 +61,7 @@ const CodeForBostonCardContent = () => {
           <Image
             fluid
             src="/codeforbostonicon.png"
-            alt="Code for Boston icon"
+            alt={t("partnerLogos.CodeForBoston")}
           />
         </Col>
         <Col className="align-self-center" md={9}>

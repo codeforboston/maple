@@ -36,6 +36,11 @@ export type BillContent = {
   DocumentText: string
 }
 
+export type BillTopic = {
+  category: string
+  topic: string
+}
+
 export type Bill = {
   id: string
   court: number
@@ -52,6 +57,8 @@ export type Bill = {
   history: BillHistory
   currentCommittee?: CurrentCommittee
   city?: string
+  topics?: BillTopic[]
+  summary?: string
 }
 
 export function useBill(court: number, id: string) {
