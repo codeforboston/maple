@@ -12,15 +12,13 @@ export const AlertCard = (props: {
   bodyImgAltTxt: string
   bodyText: string
 }) => {
-  console.log("date: ", typeof props.timestamp)
-  console.log("dateL ", props.timestamp)
-
   const date = props.timestamp
 
   // const date = props.timestamp.toDate()
 
-  /* toDate is not a function error *
-   * some change to the code is making date alternate between being an object or a string */
+  /* toDate is not a function error                *
+   * some change to the code is making date        *
+   * alternate between being an object or a string */
 
   // const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
 
@@ -37,7 +35,6 @@ export const AlertCard = (props: {
         <CardTitle
           header={props.header}
           subheader={props.subheader}
-          // timestamp={formattedTimestamp}
           imgSrc={props.headerImgSrc}
         />
       )}
