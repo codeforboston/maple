@@ -9,6 +9,7 @@ import { FollowOrgButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
 import { useFlags } from "components/featureFlags"
 import { useAuth } from "components/auth"
+import { useTranslation } from "next-i18next"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -22,6 +23,8 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
 }
 
 const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
+  const { t } = useTranslation(["auth"])
+
   const date = new Date(
     parseInt(hit.publishedAt.toString())
   ).toLocaleDateString("en-US", {
@@ -60,7 +63,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
       >
         <Image
           src={isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"}
-          alt="profile icon"
+          alt={t("profileIcon")}
           height="30px"
           width="30px"
         />

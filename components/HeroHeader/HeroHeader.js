@@ -43,7 +43,7 @@ const HeroHeader = ({ authenticated }) => {
                 <Image
                   className={`${styles.statehouse}`}
                   src="/statehouse.svg"
-                  alt="statehouse"
+                  alt=""
                 ></Image>
               </Col>
               <Col

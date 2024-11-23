@@ -7,7 +7,7 @@ export interface TopicSubscription {
     court: string
   }
 
-  orgLookup?: {
+  userLookup?: {
     profileId: string
     fullName: string
   }

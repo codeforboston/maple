@@ -8,6 +8,7 @@ export const AlertCard = (props: {
   subheader: string
   timestamp: Timestamp
   headerImgSrc: string
+  headerImgTitle?: string
   bodyImgSrc: string
   bodyImgAltTxt: string
   bodyText: string

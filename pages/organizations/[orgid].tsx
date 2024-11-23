@@ -20,14 +20,14 @@ export default createPage({
 
 const useOrgRouting = () => {
   const router = useRouter()
-  const { orgLookup } = router.query
+  const { userLookup } = router.query
   const [id, setId] = useState<string>("")
 
   useEffect(() => {
-    if (typeof orgLookup === "string") {
-      setId(orgLookup)
+    if (typeof userLookup === "string") {
+      setId(userLookup)
     }
-  }, [id, orgLookup])
+  }, [id, userLookup])
 
   return id
 }
