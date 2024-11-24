@@ -1,4 +1,5 @@
 import ErrorPage from "next/error"
+import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
@@ -9,12 +10,14 @@ import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import { Timestamp } from "firebase/firestore"
 import {
+  BillCol,
   Header,
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
 
 export default function Newsfeed() {
+  const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
@@ -64,7 +67,6 @@ export default function Newsfeed() {
   function Filters() {
     return (
       <FilterBoxes
-        isMobile={isMobile}
         onOrgFilterChange={(isShowing: boolean) => {
           onOrgFilterChange(isShowing)
         }}
@@ -74,6 +76,57 @@ export default function Newsfeed() {
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
       />
+    )
+  }
+
+  function FilterBoxes({
+    onOrgFilterChange,
+    onBillFilterChange,
+    isShowingOrgs,
+    isShowingBills
+  }: {
+    onOrgFilterChange: any
+    onBillFilterChange: any
+    isShowingOrgs: boolean
+    isShowingBills: boolean
+  }) {
+    const { t } = useTranslation("common")
+
+    return (
+      <>
+        <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
+          <Col className="form-check checkbox">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="orgCheck"
+              onChange={event => {
+                const inputDomElement = event.target
+                onOrgFilterChange(inputDomElement.checked)
+              }}
+              checked={isShowingOrgs}
+            />
+            <label className="form-check-label" htmlFor="orgCheck">
+              {t("user_updates")}
+            </label>
+          </Col>
+          <BillCol className="form-check checkbox">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="billCheck"
+              onChange={event => {
+                const inputDomElement = event.target
+                onBillFilterChange(inputDomElement.checked)
+              }}
+              checked={isShowingBills}
+            />
+            <label className="form-check-label" htmlFor="billCheck">
+              {t("bill_updates")}
+            </label>
+          </BillCol>
+        </Row>
+      </>
     )
   }
 
@@ -89,14 +142,10 @@ export default function Newsfeed() {
             <>
               <StyledContainer>
                 <Header>
-                  <HeaderTitle>Newsfeed</HeaderTitle>
-                  {isMobile ? (
-                    <Filters />
-                  ) : (
-                    <Col className="d-flex flex-column">
-                      <Filters />
-                    </Col>
-                  )}
+                  <HeaderTitle className={`mb-5`}>
+                    {t("navigation.newsfeed")}
+                  </HeaderTitle>
+                  <Filters />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
@@ -149,67 +198,6 @@ export default function Newsfeed() {
           )}
         </>
       )}
-    </>
-  )
-}
-
-function FilterBoxes({
-  isMobile,
-  onOrgFilterChange,
-  onBillFilterChange,
-  isShowingOrgs,
-  isShowingBills
-}: {
-  isMobile: boolean
-  onOrgFilterChange: any
-  onBillFilterChange: any
-  isShowingOrgs: boolean
-  isShowingBills: boolean
-}) {
-  return (
-    <>
-      <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
-      >
-        <div className="form-check checkbox">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="orgCheck"
-            onChange={event => {
-              const inputDomElement = event.target
-              onOrgFilterChange(inputDomElement.checked)
-            }}
-            checked={isShowingOrgs}
-          />
-          <label className="form-check-label" htmlFor="orgCheck">
-            Organization Updates
-          </label>
-        </div>
-      </Row>
-      <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
-      >
-        <div className="form-check checkbox">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="billCheck"
-            onChange={event => {
-              const inputDomElement = event.target
-              onBillFilterChange(inputDomElement.checked)
-            }}
-            checked={isShowingBills}
-          />
-          <label className="form-check-label" htmlFor="billCheck">
-            Bill Updates
-          </label>
-        </div>
-      </Row>
     </>
   )
 }
