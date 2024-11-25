@@ -5,7 +5,7 @@ import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
-import { AlertCard } from "components/AlertCard/AlertCard"
+import { AlertCard, AlertCardV2 } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import { Timestamp } from "firebase/firestore"
@@ -18,7 +18,7 @@ import {
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  // const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -130,6 +130,8 @@ export default function Newsfeed() {
     )
   }
 
+  console.log("results: ", filteredResults)
+
   return (
     <>
       {loading ? (
@@ -156,22 +158,37 @@ export default function Newsfeed() {
                       )
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
-                          <AlertCard
-                            header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgSrc={`${
-                              element.type === `bill`
-                                ? ``
-                                : `/thumbs-${element.position}.svg`
-                            }`}
-                            headerImgTitle={`${
-                              element.type === `bill` ? "" : element.position
-                            }`}
-                            bodyImgSrc={``}
-                            bodyImgAltTxt={``}
-                            bodyText={element.bodyText}
-                          />
+                          {element.type === `bill` ? (
+                            <AlertCardV2
+                              header={element.header}
+                              subheader={element.subheader}
+                              timestamp={element.timestamp}
+                              headerImgSrc={`/images/bill-capitol.svg`}
+                              headerImgTitle={`${
+                                element.type === `bill` ? "" : element.position
+                              }`}
+                              bodyImgSrc={``}
+                              bodyImgAltTxt={``}
+                              bodyText={element.bodyText}
+                            />
+                          ) : (
+                            <AlertCard
+                              header={element.header}
+                              subheader={element.subheader}
+                              timestamp={element.timestamp}
+                              headerImgSrc={`${
+                                element.type === `bill`
+                                  ? ``
+                                  : `/thumbs-${element.position}.svg`
+                              }`}
+                              headerImgTitle={`${
+                                element.type === `bill` ? "" : element.position
+                              }`}
+                              bodyImgSrc={``}
+                              bodyImgAltTxt={``}
+                              bodyText={element.bodyText}
+                            />
+                          )}
                         </div>
                       ))}
                   </>
