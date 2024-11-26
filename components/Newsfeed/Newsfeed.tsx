@@ -160,13 +160,15 @@ export default function Newsfeed() {
                         <div className="pb-4" key={element.id}>
                           {element.type === `bill` ? (
                             <AlertCardV2
+                              court={element.court}
                               header={element.header}
                               subheader={element.subheader}
                               timestamp={element.timestamp}
                               headerImgSrc={`/images/bill-capitol.svg`}
-                              headerImgTitle={`${
-                                element.type === `bill` ? "" : element.position
-                              }`}
+                              // headerImgTitle={`${
+                              //   element.type === `bill` ? "" : element.position
+                              // }`}
+                              headerImgTitle={``}
                               bodyImgSrc={``}
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}

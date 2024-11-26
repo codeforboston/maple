@@ -1,7 +1,7 @@
 import { CardTitle, CardTitleV2 } from "components/Card"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
-import { AlertCardBody } from "./AlertCardBody"
+import { AlertCardBody, AlertCardBodyV2 } from "./AlertCardBody"
 
 export const AlertCard = (props: {
   header: string
@@ -38,6 +38,7 @@ export const AlertCard = (props: {
 
 // newsfeed bill card
 export const AlertCardV2 = (props: {
+  court: string
   header: string
   subheader: string
   timestamp: Timestamp
@@ -48,9 +49,10 @@ export const AlertCardV2 = (props: {
   bodyText: string
 }) => {
   const date = props.timestamp.toDate()
-  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
+  const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
     <CardTitleV2
+      court={props.court}
       header={props.header}
       subheader={props.subheader}
       timestamp={formattedTimestamp}
@@ -60,10 +62,11 @@ export const AlertCardV2 = (props: {
   )
 
   const body = (
-    <AlertCardBody
+    <AlertCardBodyV2
       imgSrc={props.bodyImgSrc}
       imgAltTxt={props.bodyImgAltTxt}
       text={props.bodyText}
+      timestamp={formattedTimestamp}
     />
   )
 
