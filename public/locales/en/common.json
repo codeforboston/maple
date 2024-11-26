@@ -80,6 +80,11 @@
     "whyUseMaple": "Why Use MAPLE"
   },
   "newcomer" : "New to MAPLE? For extra support, check",
+  "newsfeed": {
+    "action_update": "has an action update from the ",
+    "follow": "You follow ",
+    "not_follow": "You do not follow "
+  },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
   "orgs": "Organizations",

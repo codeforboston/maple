@@ -1,6 +1,8 @@
 import ErrorPage from "next/error"
+import { collection, getDocs, query, where } from "firebase/firestore"
+import { getFunctions, httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
@@ -8,6 +10,7 @@ import { usePublicProfile } from "../db"
 import { AlertCard, AlertCardV2 } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
+import { firestore } from "components/firebase"
 import { Timestamp } from "firebase/firestore"
 import {
   BillCol,
@@ -15,6 +18,10 @@ import {
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
+import {
+  BillElement,
+  UserElement
+} from "components/EditProfilePage/FollowingTabComponents"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -130,7 +137,14 @@ export default function Newsfeed() {
     )
   }
 
-  console.log("results: ", filteredResults)
+  const subscriptionRef = useMemo(
+    () =>
+      // returns new object only if uid changes
+      uid
+        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
+        : null,
+    [uid]
+  )
 
   return (
     <>
@@ -165,9 +179,6 @@ export default function Newsfeed() {
                               subheader={element.subheader}
                               timestamp={element.timestamp}
                               headerImgSrc={`/images/bill-capitol.svg`}
-                              // headerImgTitle={`${
-                              //   element.type === `bill` ? "" : element.position
-                              // }`}
                               headerImgTitle={``}
                               bodyImgSrc={``}
                               bodyImgAltTxt={``}
