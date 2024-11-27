@@ -5,11 +5,9 @@ import styled from "styled-components"
 import { FillButton, GearButton, ToggleButton } from "components/buttons"
 import { Internal } from "components/links"
 import { useProfile, ProfileHook } from "components/db"
-import { FollowButton } from "./FollowButton"
 import { useFlags } from "components/featureFlags"
-import { useAuth } from "../auth"
-
 import { FollowOrgButton } from "components/shared/FollowButton"
+import { useAuth } from "../auth"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -106,6 +104,13 @@ export function ProfileButtonsOrg({
         <EditProfileButton />
       ) : followOrg && user ? (
         // <FollowButton profileId={profileId} user={user} />
+
+        /* go back and eliminate redunt follow button at *
+         * /ProfilePage/FollowButton.tsx                 *
+         *                                               *
+         * keep button from                              *
+         * /components/shared/FollowButton               */
+
         <FollowOrgButton profileId={profileId} />
       ) : null}
     </>
