@@ -66,7 +66,7 @@ export function FollowingTab({ className }: { className?: string }) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      usersList.push(doc.data().orgLookup)
+      usersList.push(doc.data().userLookup)
     })
 
     console.log("users: ", usersList)
