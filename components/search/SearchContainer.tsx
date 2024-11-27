@@ -146,4 +146,69 @@ export const SearchContainer = styled.div`
   .ais-RefinementList-label {
     border-bottom: dashed 1px;
   }
+
+  .ais-HierarchicalMenu-list {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .ais-HierarchicalMenu-item {
+    font-size: 1rem;
+    border-bottom: dashed 1px;
+  }
+
+  .ais-HierarchicalMenu-label {
+    white-space: normal;
+    display: inline-block;
+    width: 75%;
+  }
+
+  .ais-HierarchicalMenu-count {
+    background: var(--bs-blue);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding-right: 10px;
+    padding-left: 10px;
+    border: none;
+  }
+
+  .ais-HierarchicalMenu-list--child {
+    margin-left: -1rem;
+    padding-left: 1rem;
+    border-left: none;
+    white-space: normal;
+    /* word-wrap: break-word; */
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-label {
+    display: block;
+    word-wrap: break-word;
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-list {
+    display: block;
+    display: inline-block;
+    overflow: visible;
+    max-width: 200%;
+  }
+  .ais-HierarchicalMenu-link::before {
+    content: "+";
+    background-image: none;
+    font-size: 35px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    line-height: -3;
+    margin-bottom: 1rem;
+  }
 `
