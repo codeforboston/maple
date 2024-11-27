@@ -22,6 +22,7 @@ const createNotificationFields = (
   let bodyText: string
   let subheader: string
   let position: string | undefined
+  let authorUid: string | undefined
 
   switch (entity.type) {
     case "bill":
@@ -38,6 +39,7 @@ const createNotificationFields = (
       bodyText = entity.testimonyContent
       subheader = entity.testimonyUser
       position = entity.testimonyPosition
+      authorUid = entity.userId
       break
 
     default:
@@ -58,7 +60,8 @@ const createNotificationFields = (
       position: position ?? "",
       isBillMatch: false,
       isUserMatch: false,
-      delivered: false
+      delivered: false,
+      authorUid: authorUid ?? ""
     },
     createdAt: Timestamp.now()
   }

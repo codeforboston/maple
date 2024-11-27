@@ -14,6 +14,7 @@ export type NotificationProps = {
   position: string
   isBillMatch: boolean
   isUserMatch: boolean
+  authorUid: string
 }
 
 export type Notifications = NotificationProps[]
