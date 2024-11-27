@@ -18,6 +18,7 @@ import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
+import { useState } from "react"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
