@@ -9,6 +9,8 @@ import { FollowButton } from "./FollowButton"
 import { useFlags } from "components/featureFlags"
 import { useAuth } from "../auth"
 
+import { FollowOrgButton } from "components/shared/FollowButton"
+
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
   size: "lg"
@@ -103,7 +105,8 @@ export function ProfileButtonsOrg({
       {isUser ? (
         <EditProfileButton />
       ) : followOrg && user ? (
-        <FollowButton profileId={profileId} user={user} />
+        // <FollowButton profileId={profileId} user={user} />
+        <FollowOrgButton profileId={profileId} />
       ) : null}
     </>
   )
