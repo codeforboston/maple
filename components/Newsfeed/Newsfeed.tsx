@@ -99,6 +99,8 @@ export default function Newsfeed() {
   }) {
     const { t } = useTranslation("common")
 
+    console.log("results: ", filteredResults)
+
     return (
       <>
         <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">

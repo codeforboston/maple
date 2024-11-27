@@ -66,10 +66,12 @@ export function FollowingTab({ className }: { className?: string }) {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      usersList.push(doc.data().userLookup)
+      usersList.push(doc.data().orgLookup)
     })
 
-    if (usersFollowing.length === 0 && usersFollowing.length != 0) {
+    console.log("users: ", usersList)
+
+    if (usersFollowing.length === 0 && usersList.length != 0) {
       setUsersFollowing(usersList)
     }
   }, [subscriptionRef, uid, usersFollowing])
