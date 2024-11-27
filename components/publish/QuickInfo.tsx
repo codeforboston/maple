@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Image } from "../bootstrap"
 import { Bill, Profile } from "../db"
+import { useTranslation } from "next-i18next"
 
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   const {
@@ -95,6 +96,7 @@ export const SponsorList = styled.div`
     }
   `,
   Sponsors = ({ bill }: { bill: Bill }) => {
+    const { t } = useTranslation("common")
     const { PrimarySponsor: primarySponsor, Cosponsors: cosponsors } =
       bill.content
 
@@ -110,7 +112,7 @@ export const SponsorList = styled.div`
         <SponsorList>
           {primarySponsor && (
             <Chip>
-              <Image alt="Primary Sponsor" src="/star.svg" />
+              <Image alt={t("primarySponsor")} src="/star.svg" />
               {primarySponsor.Name}
             </Chip>
           )}

@@ -8,6 +8,7 @@
     "followed" : "Followed"
   },
   "calendar": "Our Calendar",
+  "hideAns": "Hide Answer",
   "joinTraining": "and join an upcoming training session!",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
@@ -27,13 +28,15 @@
     "ai": "How MAPLE Uses AI",
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
+    "closeNavMenu": "Close Navigation Menu",
+    "closeProfileMenu":"Close Profile Menu",
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
-    "logo": "MAPLE logo",
+    "logo": "Massachusetts Platform for Legislative Engagement home",
     "missionAndGoals": "Mission & Goals",
     "team": "Team",
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
@@ -45,6 +48,7 @@
   },
   "newcomer" : "New to MAPLE? For extra support, check",
   "notInCommittee": "Bill not currently in committee",
+  "noResults": "No Results",
   "orgs": "Organizations",
   "partners": {
     "header": "Our Partners",
@@ -60,5 +64,47 @@
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future."
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
+  "bill": {
+    "old_session": "this bill is from session {{billCourt}} - not the current session",
+    "read_more": "Read More",
+    "download_pdf": "Download PDF",
+    "icon": {
+      "commerce": "Commerce",
+      "crime_and_law_enforcement": "Crime and Law Enforcement",
+      "economics_and_public_finance": "Economics and Public Finance",
+      "education": "Education",
+      "emergency_management": "Emergency Management",
+      "energy": "Energy",
+      "environmental_protection": "Environmental Protection",
+      "families": "Families",
+      "food_drugs_and_alcohol": "Food, Drugs and Alcohol",
+      "government_operations_and_elections": "Government Operations and Elections",
+      "healthcare": "Healthcare",
+      "housing_and_community_development": "Housing and Community Development",
+      "immigrants_and_foreign_nationals": "Immigrants and Foreign Nationals",
+      "labor_and_employment": "Labor and Employment",
+      "law_and_judiciary": "Law and Judiciary",
+      "public_and_natural_resources": "Public and Natural Resources",
+      "social_services": "Social Services",
+      "sports_and_recreation": "Sports and Recreation",
+      "taxation": "Taxation",
+      "technology_and_communications": "Technology and Communications",
+      "transportation_and_public_works": "Transportation and Public Works"
+    },
+    "smart_tag": "AI Smart Tag",
+    "smart_summary": "Smart Summary & Tags",
+    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
+  },  
+  "primarySponsor": "Primary Sponsor",
+  "showAns": "Show Answer",
+  "socials": {
+    "instagram":"Instagram",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "facebook":"Facebook"
+  },
+  "table": {
+    "page": "Page {{currentPage}}"
+  }
 }

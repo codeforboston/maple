@@ -1,6 +1,6 @@
 import { Timestamp } from "functions/src/firebase"
 import { Script } from "./types"
-import { BillNotification } from "functions/src/notifications/types"
+import { BillHistoryUpdateNotification } from "functions/src/notifications/types"
 import { Record, Number } from "runtypes"
 
 const Args = Record({
@@ -23,7 +23,7 @@ export const script: Script = async ({ db, args }) => {
     const data = doc.data()
 
     if (data) {
-      const notificationEvent: BillNotification = {
+      const notificationEvent: BillHistoryUpdateNotification = {
         type: "bill",
 
         billCourt: court,

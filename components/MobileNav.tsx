@@ -119,7 +119,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           {isExpanded && whichMenu == "site" ? (
             <Image
               src="/Union.svg"
-              alt="x"
+              alt={t("navigation.closeNavMenu")}
               width="35"
               height="35"
               className="ms-2"
@@ -137,7 +137,12 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <Navbar.Brand onClick={toggleAvatar}>
             <Nav.Link className="p-0 text-white">
               {isExpanded && whichMenu == "profile" ? (
-                <Image src="/Union.svg" alt="x" width="35" height="35" />
+                <Image
+                  src="/Union.svg"
+                  alt={t("navigation.closeProfileMenu")}
+                  width="35"
+                  height="35"
+                />
               ) : (
                 <Avatar />
               )}

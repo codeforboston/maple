@@ -19,7 +19,7 @@ If an event has certain fields that correspond to fields in the uesr's subscript
 
 ## Following Orgs
 
-- orgLookup
+- userLookup
   - fullName
   - profileId
 - relatedBills

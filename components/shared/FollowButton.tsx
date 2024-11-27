@@ -18,7 +18,7 @@ export const BaseFollowButton = ({
   unfollowAction: () => Promise<void>
   hide?: boolean
 }) => {
-  const { t } = useTranslation("profile")
+  const { t } = useTranslation(["profile"])
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -48,7 +48,7 @@ export const BaseFollowButton = ({
   const isFollowing = followStatus[topicName]
   const text = isFollowing ? t("button.following") : t("button.follow")
   const checkmark = isFollowing ? (
-    <StyledImage src="/check-white.svg" alt="checkmark" />
+    <StyledImage src="/check-white.svg" alt="" />
   ) : null
   const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -92,7 +92,7 @@ export const ButtonWithCheckmark = ({
 export function FollowOrgButton({ profileId }: { profileId: string }) {
   const { user } = useAuth()
   const uid = user?.uid
-  const topicName = `org-${profileId}`
+  const topicName = `testimony-${profileId}`
   const followAction = () =>
     setFollow(uid, topicName, undefined, undefined, undefined, profileId)
   const unfollowAction = () => setUnfollow(uid, topicName)

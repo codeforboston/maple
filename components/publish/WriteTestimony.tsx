@@ -12,6 +12,7 @@ import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
 import { useFormRedirection, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
+import { Trans, useTranslation } from "react-i18next"
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 
@@ -36,6 +37,7 @@ function useWriteTestimony() {
 }
 
 export const WriteTestimony = styled(props => {
+  const { t } = useTranslation("testimony")
   const write = useWriteTestimony()
   // const tabs = useTabs(write)
 
@@ -43,7 +45,7 @@ export const WriteTestimony = styled(props => {
 
   return (
     <div {...props}>
-      <StepHeader step={2}>Write Your Testimony</StepHeader>
+      <StepHeader step={2}>{t("submitTestimonyForm.write.header")}</StepHeader>
       <SelectRecipients className="my-4" />
 
       <div className="divider" />
@@ -53,21 +55,25 @@ export const WriteTestimony = styled(props => {
           setContent={write.setContent}
           content={write.content}
           error={write.error}
-          label="Testimony"
-          placeholder="Add your testimony here"
-          help="Testimony is limited to 10,000 characters."
+          label={t("submitTestimonyForm.write.testimonyLabel")}
+          placeholder={t("submitTestimonyForm.write.testimonyPlaceholder")}
+          help={t("submitTestimonyForm.write.testimonyHelp")}
           className="text-container"
         />
         <div>
-          Need help? Read our{" "}
-          <links.Internal href="/learn/writing-effective-testimony">
-            testimony writing tips
-          </links.Internal>
+          <Trans
+            t={t}
+            i18nKey="submitTestimonyForm.write.tips"
+            components={[
+              // eslint-disable-next-line react/jsx-key
+              <links.Internal href="/learn/writing-effective-testimony" />
+            ]}
+          />
         </div>
 
         <div>
           <links.Internal href="/policies/code-of-conduct">
-            View our code of conduct
+            {t("submitTestimonyForm.write.codeOfConduct")}
           </links.Internal>
         </div>
 
@@ -105,6 +111,7 @@ const useTabs = ({
   attachmentId,
   attachment: { remove: removeAttachment }
 }: UseWriteTestimony) => {
+  const { t } = useTranslation("testimony")
   const [activeKey, setActiveKey] = useState<TabKey | undefined>()
 
   useEffect(() => {
@@ -117,13 +124,13 @@ const useTabs = ({
     (k: string | null) => {
       const key: TabKey | null = k as TabKey
       if (key === "text" && attachmentId) {
-        if (confirm("Are you sure you want to remove your attachment?"))
+        if (confirm(t("submitTestimonyForm.write.confirmRemoveAttachment")))
           removeAttachment().then(() => setActiveKey(key))
       } else if (key !== null) {
         setActiveKey(key)
       }
     },
-    [attachmentId, removeAttachment]
+    [attachmentId, removeAttachment, t]
   )
 
   return { onSelect, activeKey, loading: activeKey === undefined }

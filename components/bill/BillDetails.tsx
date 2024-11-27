@@ -1,19 +1,7 @@
 import { useFlags } from "components/featureFlags"
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Image, Row } from "../bootstrap"
-import { firestore } from "../firebase"
+import { Col, Container, Image, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
 import { Back } from "./Back"
@@ -55,9 +43,7 @@ export const BillDetails = ({ bill }: BillProps) => {
       <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
         {isPendingUpgrade && <PendingUpgradeBanner />}
         {!isCurrentCourt(bill.court) && (
-          <Banner>
-            this bill is from session {bill.court} - not the current session
-          </Banner>
+          <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
         )}
 
         <StyledContainer className="mt-3 mb-3">
