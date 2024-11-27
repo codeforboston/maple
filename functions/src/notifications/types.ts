@@ -22,3 +22,22 @@ export type TestimonySubmissionNotification = Notification & {
   testimonyContent: string
   testimonyVersion: number
 }
+
+export interface NotificationFields {
+  uid: string
+  notification: {
+    bodyText: string
+    header: string
+    court: string
+    id: string
+    subheader: string
+    timestamp: FirebaseFirestore.Timestamp
+    type: string
+    position?: string
+    isBillMatch: boolean
+    isUserMatch: boolean
+    delivered: boolean
+    authorUid?: string
+  }
+  createdAt: FirebaseFirestore.Timestamp
+}

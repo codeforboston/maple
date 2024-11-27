@@ -11,9 +11,10 @@ export type NotificationProps = {
   topicName: string
   timestamp: Timestamp
   createdAt: Timestamp
-  position: string
+  position?: string
   isBillMatch: boolean
   isUserMatch: boolean
+  authorUid?: string
 }
 
 export type Notifications = NotificationProps[]
