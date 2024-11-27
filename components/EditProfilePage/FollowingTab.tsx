@@ -69,8 +69,6 @@ export function FollowingTab({ className }: { className?: string }) {
       usersList.push(doc.data().userLookup)
     })
 
-    console.log("users: ", usersList)
-
     if (usersFollowing.length === 0 && usersList.length != 0) {
       setUsersFollowing(usersList)
     }

@@ -99,8 +99,6 @@ export default function Newsfeed() {
   }) {
     const { t } = useTranslation("common")
 
-    console.log("results: ", filteredResults)
-
     return (
       <>
         <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
@@ -139,15 +137,6 @@ export default function Newsfeed() {
     )
   }
 
-  const subscriptionRef = useMemo(
-    () =>
-      // returns new object only if uid changes
-      uid
-        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
-        : null,
-    [uid]
-  )
-
   return (
     <>
       {loading ? (
@@ -185,6 +174,7 @@ export default function Newsfeed() {
                               bodyImgSrc={``}
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
+                              isBillMatch={element.isBillMatch}
                             />
                           ) : (
                             <AlertCard

@@ -15,6 +15,7 @@ import {
   BillElement,
   UserElement
 } from "components/EditProfilePage/FollowingTabComponents"
+import { is } from "date-fns/locale"
 
 interface CardTitleProps {
   court?: string
@@ -24,6 +25,8 @@ interface CardTitleProps {
   imgSrc?: string
   imgTitle?: string
   inHeaderElement?: ReactElement
+  isBillMatch?: boolean
+  isUserMatch?: boolean
 }
 
 export const CardTitle = (props: CardTitleProps) => {
@@ -68,45 +71,10 @@ export const CardTitleV2 = (props: CardTitleProps) => {
     timestamp,
     imgSrc,
     imgTitle,
-    inHeaderElement
+    inHeaderElement,
+    isBillMatch
   } = props
   const { t } = useTranslation("common")
-
-  const { user } = useAuth()
-  const uid = user?.uid
-  const subscriptionRef = useMemo(
-    () =>
-      // returns new object only if uid changes
-      uid
-        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
-        : null,
-    [uid]
-  )
-  const topicName = `bill-${court}-${header}`
-  const [following, setFollowing] = useState<BillElement[]>([])
-
-  const soloBillFollowingQuery = useCallback(async () => {
-    if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const soloBill: BillElement[] = []
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "bill"),
-      where("topicName", "==", `${topicName}`)
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      soloBill.push(doc.data().billLookup)
-      if (following.length === 0 && soloBill.length != 0) {
-        setFollowing(soloBill)
-      }
-    })
-  }, [subscriptionRef, uid, topicName, following])
-
-  useEffect(() => {
-    uid ? soloBillFollowingQuery() : null
-  })
 
   return (
     <CardBootstrap.Body className={`align-items-center d-flex px-2 pt-2 pb-0`}>
@@ -135,7 +103,7 @@ export const CardTitleV2 = (props: CardTitleProps) => {
           <CardBootstrap.Title
             className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
           >
-            {following.length && header ? (
+            {header && isBillMatch ? (
               <>{t("newsfeed.follow")}</>
             ) : (
               <>{t("newsfeed.not_follow")}</>

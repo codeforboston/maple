@@ -47,6 +47,7 @@ export const AlertCardV2 = (props: {
   bodyImgSrc: string
   bodyImgAltTxt: string
   bodyText: string
+  isBillMatch: boolean
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
@@ -58,6 +59,7 @@ export const AlertCardV2 = (props: {
       timestamp={formattedTimestamp}
       imgSrc={props.headerImgSrc}
       imgTitle={props.headerImgTitle ?? ""}
+      isBillMatch={props.isBillMatch}
     />
   )
 
