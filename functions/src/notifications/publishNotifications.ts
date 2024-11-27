@@ -9,6 +9,7 @@ import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
 import {
   BillHistoryUpdateNotification,
+  NotificationFields,
   TestimonySubmissionNotification
 } from "./types"
 import { cloneDeep } from "lodash"
@@ -18,7 +19,7 @@ const db = admin.firestore()
 
 const createNotificationFields = (
   entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
-) => {
+): NotificationFields => {
   let bodyText: string
   let subheader: string
   let position: string | undefined
@@ -57,11 +58,11 @@ const createNotificationFields = (
       subheader: subheader,
       timestamp: entity.updateTime,
       type: entity.type,
-      position: position ?? "",
+      position: position,
       isBillMatch: false,
       isUserMatch: false,
       delivered: false,
-      authorUid: authorUid ?? ""
+      authorUid: authorUid
     },
     createdAt: Timestamp.now()
   }
