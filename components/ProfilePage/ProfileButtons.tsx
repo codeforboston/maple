@@ -68,7 +68,7 @@ export function ProfileButtonsUser({
   const handleSave = async () => {
     await updateProfile({ actions })
   }
-  /** Only regular users are allowed to have a private profile. */
+  /* Only regular users are allowed to have a private profile. */
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
 
