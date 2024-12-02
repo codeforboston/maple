@@ -103,14 +103,6 @@ export function ProfileButtonsOrg({
       {isUser ? (
         <EditProfileButton />
       ) : followOrg && user ? (
-        // <FollowButton profileId={profileId} user={user} />
-
-        /* go back and eliminate redunt follow button at *
-         * /ProfilePage/FollowButton.tsx                 *
-         *                                               *
-         * keep button from                              *
-         * /components/shared/FollowButton               */
-
         <FollowOrgButton profileId={profileId} />
       ) : null}
     </>
