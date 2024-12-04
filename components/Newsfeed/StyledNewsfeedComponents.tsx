@@ -1,6 +1,16 @@
 import styled from "styled-components"
 import { Container, Col, Row } from "../bootstrap"
 
+export const BillCol = styled(Col)`
+  position: relative;
+  right: 35px;
+
+  @media (max-width: 450px) {
+    flex-direction: column;
+    right: 0px;
+  }
+`
+
 export const Header = styled(Row)`
   align-items: center;
   margin: 2.5rem 0;
@@ -11,9 +21,9 @@ export const Header = styled(Row)`
 export const HeaderTitle = styled(Col)`
   font-family: "Nunito";
   font-style: normal;
-  font-weight: 600;
-  font-size: 61px;
-  line-height: 125%;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
   letter-spacing: -0.03em;
   color: #000000;
 `
@@ -32,7 +42,5 @@ export const StyledContainer = styled(Container)`
   }
   .checkbox input:checked {
     background-color: #12266f;
-  }
-  @media (min-width: 768px) {
   }
 `

@@ -186,6 +186,27 @@ export const NavbarLinkLogo: React.FC<
   )
 }
 
+export const NavbarLinkNewsfeed: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth", "profile"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : "text-white-50"}
+        href="/newsfeed"
+        {...other}
+      >
+        {t("navigation.newsfeed")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
 export const NavbarLinkProcess: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
