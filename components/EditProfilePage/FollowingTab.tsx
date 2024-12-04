@@ -61,7 +61,7 @@ export function FollowingTab({ className }: { className?: string }) {
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
-      where("type", "==", "org")
+      where("type", "==", "testimony")
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
