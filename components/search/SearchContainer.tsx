@@ -146,4 +146,66 @@ export const SearchContainer = styled.div`
   .ais-RefinementList-label {
     border-bottom: dashed 1px;
   }
+
+  .ais-HierarchicalMenu-list {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .ais-HierarchicalMenu-item {
+    font-size: 1rem;
+    border-bottom: dashed 1px;
+  }
+
+  .ais-HierarchicalMenu-label {
+    white-space: normal;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .ais-HierarchicalMenu-count {
+    background: var(--bs-blue);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding-right: 10px;
+    padding-left: 10px;
+    border: none;
+  }
+
+  .ais-HierarchicalMenu-list .ais-HierarchicalMenu-list--child {
+    display: block;
+    display: inline-block;
+    overflow-y: visible;
+    margin: 0;
+    padding: 0 0 0 0rem;
+    width: 100%;
+  }
+  .ais-HierarchicalMenu-link::before {
+    content: "+";
+    background-image: none;
+    font-size: 35px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    line-height: -3;
+    margin-bottom: 1rem;
+  }
+  .ais-HierarchicalMenu-link--selected::before {
+    content: "-";
+    background-image: none;
+    font-size: 50px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    line-height: -3;
+    margin-bottom: 1rem;
+  }
+
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
+    border-top: none; /* Remove top border for the last child */
+  }
 `
