@@ -165,7 +165,7 @@ export const SearchContainer = styled.div`
   .ais-HierarchicalMenu-label {
     white-space: normal;
     display: inline-block;
-    width: 75%;
+    width: 100%;
   }
 
   .ais-HierarchicalMenu-count {
@@ -178,29 +178,13 @@ export const SearchContainer = styled.div`
     border: none;
   }
 
-  .ais-HierarchicalMenu-list--child {
-    margin-left: -1rem;
-    padding-left: 1rem;
-    border-left: none;
-    white-space: normal;
-    /* word-wrap: break-word; */
-    overflow-x: hidden;
-    max-width: 100%;
+  .ais-HierarchicalMenu-list .ais-HierarchicalMenu-list--child {
+    display: block;
+    display: inline-block;
+    overflow-y: visible;
+    margin: 0;
+    padding: 0 0 0 0rem;
     width: 100%;
-  }
-
-  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-label {
-    display: block;
-    word-wrap: break-word;
-    display: inline-block;
-    max-width: 100%;
-  }
-
-  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-list {
-    display: block;
-    display: inline-block;
-    overflow: visible;
-    max-width: 200%;
   }
   .ais-HierarchicalMenu-link::before {
     content: "+";
@@ -210,5 +194,18 @@ export const SearchContainer = styled.div`
     vertical-align: middle;
     line-height: -3;
     margin-bottom: 1rem;
+  }
+  .ais-HierarchicalMenu-link--selected::before {
+    content: "-";
+    background-image: none;
+    font-size: 50px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    line-height: -3;
+    margin-bottom: 1rem;
+  }
+
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
+    border-top: none; /* Remove top border for the last child */
   }
 `

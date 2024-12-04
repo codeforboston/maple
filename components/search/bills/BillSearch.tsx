@@ -1,6 +1,5 @@
 import {
   CurrentRefinements,
-  HierarchicalMenu,
   Hits,
   InstantSearch,
   Pagination,

@@ -1,5 +1,6 @@
 import {
   HierarchicalMenu,
+  HierarchicalMenuProps,
   RefinementList,
   useInstantSearch
 } from "react-instantsearch"
@@ -44,9 +45,10 @@ export const useRefinements = ({
     <>
       <HierarchicalMenu
         attributes={[
-          refinementProps[0]?.attribute,
-          refinementProps[1]?.attribute
+          refinementProps[1]?.attribute,
+          refinementProps[2]?.attribute
         ]}
+        sortBy={["count:desc"]}
       />
       {refinementProps.slice(2).map((p, i) => (
         <RefinementList className="mb-4" key={i + 2} {...(p as any)} />
