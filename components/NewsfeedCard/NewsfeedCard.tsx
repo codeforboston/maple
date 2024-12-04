@@ -1,43 +1,12 @@
 import { CardTitle, CardTitleV2 } from "components/Card"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
-import { AlertCardBody, AlertCardBodyV2 } from "./AlertCardBody"
+import {
+  NewsfeedBillCardBody,
+  NewsfeedTestimonyCardBody
+} from "./NewsfeedCardBody"
 
-export const AlertCard = (props: {
-  header: string
-  subheader: string
-  timestamp: Timestamp
-  headerImgSrc: string
-  headerImgTitle?: string
-  bodyImgSrc: string
-  bodyImgAltTxt: string
-  bodyText: string
-}) => {
-  const date = props.timestamp.toDate()
-  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
-  const header = (
-    <CardTitle
-      header={props.header}
-      subheader={props.subheader}
-      timestamp={formattedTimestamp}
-      imgSrc={props.headerImgSrc}
-      imgTitle={props.headerImgTitle ?? ""}
-    />
-  )
-
-  const body = (
-    <AlertCardBody
-      imgSrc={props.bodyImgSrc}
-      imgAltTxt={props.bodyImgAltTxt}
-      text={props.bodyText}
-    />
-  )
-
-  return <MapleCard headerElement={header} body={body} />
-}
-
-// newsfeed bill card
-export const AlertCardV2 = (props: {
+export const NewsfeedBillCard = (props: {
   court: string
   header: string
   subheader: string
@@ -64,11 +33,44 @@ export const AlertCardV2 = (props: {
   )
 
   const body = (
-    <AlertCardBodyV2
+    <NewsfeedBillCardBody
       imgSrc={props.bodyImgSrc}
       imgAltTxt={props.bodyImgAltTxt}
       text={props.bodyText}
       timestamp={formattedTimestamp}
+    />
+  )
+
+  return <MapleCard headerElement={header} body={body} />
+}
+
+export const NewsfeedTestimonyCard = (props: {
+  header: string
+  subheader: string
+  timestamp: Timestamp
+  headerImgSrc: string
+  headerImgTitle?: string
+  bodyImgSrc: string
+  bodyImgAltTxt: string
+  bodyText: string
+}) => {
+  const date = props.timestamp.toDate()
+  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
+  const header = (
+    <CardTitle
+      header={props.header}
+      subheader={props.subheader}
+      timestamp={formattedTimestamp}
+      imgSrc={props.headerImgSrc}
+      imgTitle={props.headerImgTitle ?? ""}
+    />
+  )
+
+  const body = (
+    <NewsfeedTestimonyCardBody
+      imgSrc={props.bodyImgSrc}
+      imgAltTxt={props.bodyImgAltTxt}
+      text={props.bodyText}
     />
   )
 

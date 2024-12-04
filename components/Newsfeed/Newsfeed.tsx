@@ -1,5 +1,11 @@
 import ErrorPage from "next/error"
-import { collection, getDocs, query, where } from "firebase/firestore"
+import {
+  collection,
+  getDocs,
+  query,
+  Timestamp,
+  where
+} from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -7,11 +13,8 @@ import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
-import { AlertCard, AlertCardV2 } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
-import { firestore } from "components/firebase"
-import { Timestamp } from "firebase/firestore"
 import {
   BillCol,
   Header,
@@ -22,6 +25,11 @@ import {
   BillElement,
   UserElement
 } from "components/EditProfilePage/FollowingTabComponents"
+import { firestore } from "components/firebase"
+import {
+  NewsfeedBillCard,
+  NewsfeedTestimonyCard
+} from "components/NewsfeedCard/NewsfeedCard"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -164,7 +172,7 @@ export default function Newsfeed() {
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
                           {element.type === `bill` ? (
-                            <AlertCardV2
+                            <NewsfeedBillCard
                               court={element.court}
                               header={element.header}
                               subheader={element.subheader}
@@ -177,7 +185,7 @@ export default function Newsfeed() {
                               isBillMatch={element.isBillMatch}
                             />
                           ) : (
-                            <AlertCard
+                            <NewsfeedTestimonyCard
                               header={element.header}
                               subheader={element.subheader}
                               timestamp={element.timestamp}
@@ -199,7 +207,7 @@ export default function Newsfeed() {
                   </>
                 ) : (
                   <div className="pb-4">
-                    <AlertCard
+                    <NewsfeedTestimonyCard
                       header={`No Results`}
                       subheader={``}
                       timestamp={Timestamp.now()}
