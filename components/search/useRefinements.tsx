@@ -11,7 +11,9 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Offcanvas } from "../bootstrap"
 import { SearchContainer } from "./SearchContainer"
-import SearchableHierarchicalMenu from "./SearchableHierarchicalMenu"
+import HierarchicalMenuWidget, {
+  HierarchicalItem
+} from "./HierarchicalMenuWidget"
 
 export const FilterButton = styled(Button)`
   font-size: 1rem;
@@ -20,7 +22,6 @@ export const FilterButton = styled(Button)`
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   align-self: flex-start;
 `
-
 const useHasRefinements = () => {
   const { results } = useInstantSearch()
   const refinements = results.getRefinements()
@@ -37,21 +38,17 @@ export const useRefinements = ({
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
-  useEffect(() => {
-    if (inline) setShow(false)
-  }, [inline])
-
   const refinements = (
     <>
       <HierarchicalMenu
         attributes={[
-          refinementProps[1]?.attribute,
-          refinementProps[2]?.attribute
+          refinementProps[0].attribute,
+          refinementProps[1].attribute
         ]}
         sortBy={["count:desc"]}
       />
       {refinementProps.slice(2).map((p, i) => (
-        <RefinementList className="mb-4" key={i + 2} {...(p as any)} />
+        <RefinementList className="mb-4" key={i + 1} {...(p as any)} />
       ))}
     </>
   )
