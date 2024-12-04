@@ -1,21 +1,31 @@
 import ErrorPage from "next/error"
-import { useEffect, useState } from "react"
+import { collection, getDocs, query, where } from "firebase/firestore"
+import { getFunctions, httpsCallable } from "firebase/functions"
+import { useTranslation } from "next-i18next"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
-import { AlertCard } from "components/AlertCard/AlertCard"
+import { AlertCard, AlertCardV2 } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
+import { firestore } from "components/firebase"
 import { Timestamp } from "firebase/firestore"
 import {
+  BillCol,
   Header,
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
+import {
+  BillElement,
+  UserElement
+} from "components/EditProfilePage/FollowingTabComponents"
 
 export default function Newsfeed() {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation("common")
+  // const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -64,7 +74,6 @@ export default function Newsfeed() {
   function Filters() {
     return (
       <FilterBoxes
-        isMobile={isMobile}
         onOrgFilterChange={(isShowing: boolean) => {
           onOrgFilterChange(isShowing)
         }}
@@ -74,6 +83,57 @@ export default function Newsfeed() {
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
       />
+    )
+  }
+
+  function FilterBoxes({
+    onOrgFilterChange,
+    onBillFilterChange,
+    isShowingOrgs,
+    isShowingBills
+  }: {
+    onOrgFilterChange: any
+    onBillFilterChange: any
+    isShowingOrgs: boolean
+    isShowingBills: boolean
+  }) {
+    const { t } = useTranslation("common")
+
+    return (
+      <>
+        <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
+          <Col className="form-check checkbox">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="orgCheck"
+              onChange={event => {
+                const inputDomElement = event.target
+                onOrgFilterChange(inputDomElement.checked)
+              }}
+              checked={isShowingOrgs}
+            />
+            <label className="form-check-label" htmlFor="orgCheck">
+              {t("user_updates")}
+            </label>
+          </Col>
+          <BillCol className="form-check checkbox">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="billCheck"
+              onChange={event => {
+                const inputDomElement = event.target
+                onBillFilterChange(inputDomElement.checked)
+              }}
+              checked={isShowingBills}
+            />
+            <label className="form-check-label" htmlFor="billCheck">
+              {t("bill_updates")}
+            </label>
+          </BillCol>
+        </Row>
+      </>
     )
   }
 
@@ -89,14 +149,10 @@ export default function Newsfeed() {
             <>
               <StyledContainer>
                 <Header>
-                  <HeaderTitle>Newsfeed</HeaderTitle>
-                  {isMobile ? (
-                    <Filters />
-                  ) : (
-                    <Col className="d-flex flex-column">
-                      <Filters />
-                    </Col>
-                  )}
+                  <HeaderTitle className={`mb-5`}>
+                    {t("navigation.newsfeed")}
+                  </HeaderTitle>
+                  <Filters />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
@@ -107,22 +163,37 @@ export default function Newsfeed() {
                       )
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
-                          <AlertCard
-                            header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgSrc={`${
-                              element.type === `bill`
-                                ? ``
-                                : `/thumbs-${element.position}.svg`
-                            }`}
-                            headerImgTitle={`${
-                              element.type === `bill` ? "" : element.position
-                            }`}
-                            bodyImgSrc={``}
-                            bodyImgAltTxt={``}
-                            bodyText={element.bodyText}
-                          />
+                          {element.type === `bill` ? (
+                            <AlertCardV2
+                              court={element.court}
+                              header={element.header}
+                              subheader={element.subheader}
+                              timestamp={element.timestamp}
+                              headerImgSrc={`/images/bill-capitol.svg`}
+                              headerImgTitle={``}
+                              bodyImgSrc={``}
+                              bodyImgAltTxt={``}
+                              bodyText={element.bodyText}
+                              isBillMatch={element.isBillMatch}
+                            />
+                          ) : (
+                            <AlertCard
+                              header={element.header}
+                              subheader={element.subheader}
+                              timestamp={element.timestamp}
+                              headerImgSrc={`${
+                                element.type === `bill`
+                                  ? ``
+                                  : `/thumbs-${element.position}.svg`
+                              }`}
+                              headerImgTitle={`${
+                                element.type === `bill` ? "" : element.position
+                              }`}
+                              bodyImgSrc={``}
+                              bodyImgAltTxt={``}
+                              bodyText={element.bodyText}
+                            />
+                          )}
                         </div>
                       ))}
                   </>
@@ -149,67 +220,6 @@ export default function Newsfeed() {
           )}
         </>
       )}
-    </>
-  )
-}
-
-function FilterBoxes({
-  isMobile,
-  onOrgFilterChange,
-  onBillFilterChange,
-  isShowingOrgs,
-  isShowingBills
-}: {
-  isMobile: boolean
-  onOrgFilterChange: any
-  onBillFilterChange: any
-  isShowingOrgs: boolean
-  isShowingBills: boolean
-}) {
-  return (
-    <>
-      <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
-      >
-        <div className="form-check checkbox">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="orgCheck"
-            onChange={event => {
-              const inputDomElement = event.target
-              onOrgFilterChange(inputDomElement.checked)
-            }}
-            checked={isShowingOrgs}
-          />
-          <label className="form-check-label" htmlFor="orgCheck">
-            Organization Updates
-          </label>
-        </div>
-      </Row>
-      <Row
-        className={`${
-          isMobile ? "justify-content-center" : "justify-content-end"
-        }`}
-      >
-        <div className="form-check checkbox">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="billCheck"
-            onChange={event => {
-              const inputDomElement = event.target
-              onBillFilterChange(inputDomElement.checked)
-            }}
-            checked={isShowingBills}
-          />
-          <label className="form-check-label" htmlFor="billCheck">
-            Bill Updates
-          </label>
-        </div>
-      </Row>
     </>
   )
 }
