@@ -56,12 +56,17 @@ export const EditProfileButton = ({ className }: { className?: string }) => {
 
 export function ProfileButtonsUser({
   isProfilePublic,
-  onProfilePublicityChanged
+  onProfilePublicityChanged,
+  isUser,
+  profileId
 }: {
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
+  isUser: boolean
+  profileId: string
 }) {
   const { t } = useTranslation("editProfile")
+  const { user } = useAuth()
 
   const actions = useProfile()
 
@@ -76,16 +81,24 @@ export function ProfileButtonsUser({
     onProfilePublicityChanged(!isProfilePublic)
   }
   return (
-    <div className={`d-grid gap-2 col-12 m-3`}>
-      <EditProfileButton className={`py-1`} />
-      <ToggleButton
-        toggleState={isProfilePublic || false}
-        stateTrueLabel={t("forms.makePrivate")}
-        stateFalseLabel={t("forms.makePublic")}
-        onClick={handleSave}
-        className={`py-1`}
-      />
-    </div>
+    <>
+      {isUser ? (
+        <div className={`d-grid gap-2 col-12 m-3`}>
+          <EditProfileButton className={`py-1`} />
+          <ToggleButton
+            toggleState={isProfilePublic || false}
+            stateTrueLabel={t("forms.makePrivate")}
+            stateFalseLabel={t("forms.makePublic")}
+            onClick={handleSave}
+            className={`py-1`}
+          />
+        </div>
+      ) : (
+        <div className={`d-grid gap-2 col-12 m-3`}>
+          <FollowButton profileId={profileId} user={user} />
+        </div>
+      )}
+    </>
   )
 }
 
