@@ -61,15 +61,9 @@ export const NewsfeedTestimonyCard = (props: {
   type: string
 }) => {
   const date = props.timestamp.toDate()
-  const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
+  // const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
+  const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
-    // <CardTitle
-    //   header={props.header}
-    //   subheader={props.subheader}
-    //   timestamp={formattedTimestamp}
-    //   imgSrc={props.headerImgSrc}
-    //   imgTitle={props.headerImgTitle ?? ""}
-    // />
     <CardTitle
       court={props.court}
       header={props.header}
@@ -88,8 +82,11 @@ export const NewsfeedTestimonyCard = (props: {
       imgSrc={props.bodyImgSrc}
       imgAltTxt={props.bodyImgAltTxt}
       text={props.bodyText}
+      timestamp={formattedTimestamp}
     />
   )
+
+  console.log("altImgText: ", typeof props.bodyImgAltTxt)
 
   return <MapleCard headerElement={header} body={body} />
 }

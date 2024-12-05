@@ -194,12 +194,9 @@ export default function Newsfeed() {
                               subheader={element.subheader}
                               timestamp={element.timestamp}
                               headerImgSrc={`/individualUser.svg`}
-                              headerImgTitle={`${
-                                element.type === `bill` ? "" : element.position
-                              }`}
-                              // bodyImgSrc={`/thumbs-${element.position}.svg`}
-                              bodyImgSrc={``}
-                              bodyImgAltTxt={``}
+                              headerImgTitle={``}
+                              bodyImgSrc={`/thumbs-${element.position}.svg`}
+                              bodyImgAltTxt={`${element.position}`}
                               bodyText={element.bodyText}
                               isBillMatch={element.isBillMatch}
                               isUserMatch={element.isUserMatch}
