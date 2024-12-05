@@ -145,6 +145,8 @@ export default function Newsfeed() {
     )
   }
 
+  console.log("results: ", filteredResults)
+
   return (
     <>
       {loading ? (
@@ -183,23 +185,25 @@ export default function Newsfeed() {
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
                               isBillMatch={element.isBillMatch}
+                              type={element.type}
                             />
                           ) : (
                             <NewsfeedTestimonyCard
+                              court={element.court}
                               header={element.header}
                               subheader={element.subheader}
                               timestamp={element.timestamp}
-                              headerImgSrc={`${
-                                element.type === `bill`
-                                  ? ``
-                                  : `/thumbs-${element.position}.svg`
-                              }`}
+                              headerImgSrc={`/individualUser.svg`}
                               headerImgTitle={`${
                                 element.type === `bill` ? "" : element.position
                               }`}
+                              // bodyImgSrc={`/thumbs-${element.position}.svg`}
                               bodyImgSrc={``}
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
+                              isBillMatch={element.isBillMatch}
+                              isUserMatch={element.isUserMatch}
+                              type={element.type}
                             />
                           )}
                         </div>
@@ -208,6 +212,7 @@ export default function Newsfeed() {
                 ) : (
                   <div className="pb-4">
                     <NewsfeedTestimonyCard
+                      court={``}
                       header={`No Results`}
                       subheader={``}
                       timestamp={Timestamp.now()}
@@ -215,6 +220,9 @@ export default function Newsfeed() {
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}
                       bodyText={`There are no news updates for your current followed topics`}
+                      isBillMatch={false}
+                      isUserMatch={false}
+                      type={`no results`}
                     />
                   </div>
                 )}

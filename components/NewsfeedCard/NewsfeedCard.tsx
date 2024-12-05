@@ -1,4 +1,4 @@
-import { CardTitle, CardTitleV2 } from "components/Card"
+import { CardTitle } from "components/Card"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
 import {
@@ -17,11 +17,12 @@ export const NewsfeedBillCard = (props: {
   bodyImgAltTxt: string
   bodyText: string
   isBillMatch: boolean
+  type: string
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
-    <CardTitleV2
+    <CardTitle
       court={props.court}
       header={props.header}
       subheader={props.subheader}
@@ -29,6 +30,7 @@ export const NewsfeedBillCard = (props: {
       imgSrc={props.headerImgSrc}
       imgTitle={props.headerImgTitle ?? ""}
       isBillMatch={props.isBillMatch}
+      type={props.type}
     />
   )
 
@@ -45,6 +47,7 @@ export const NewsfeedBillCard = (props: {
 }
 
 export const NewsfeedTestimonyCard = (props: {
+  court: string
   header: string
   subheader: string
   timestamp: Timestamp
@@ -53,16 +56,30 @@ export const NewsfeedTestimonyCard = (props: {
   bodyImgSrc: string
   bodyImgAltTxt: string
   bodyText: string
+  isBillMatch: boolean
+  isUserMatch: boolean
+  type: string
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
   const header = (
+    // <CardTitle
+    //   header={props.header}
+    //   subheader={props.subheader}
+    //   timestamp={formattedTimestamp}
+    //   imgSrc={props.headerImgSrc}
+    //   imgTitle={props.headerImgTitle ?? ""}
+    // />
     <CardTitle
+      court={props.court}
       header={props.header}
       subheader={props.subheader}
       timestamp={formattedTimestamp}
       imgSrc={props.headerImgSrc}
       imgTitle={props.headerImgTitle ?? ""}
+      isBillMatch={props.isBillMatch}
+      isUserMatch={props.isUserMatch}
+      type={props.type}
     />
   )
 
