@@ -48,8 +48,8 @@ export default function Newsfeed() {
   // Update the filter function
   useEffect(() => {
     const results = allResults.filter(result => {
-      if (isShowingOrgs && result.isUserMatch) return true
-      if (isShowingBills && result.isBillMatch) return true
+      if (isShowingOrgs && result.type == `testimony`) return true
+      if (isShowingBills && result.type == `bill`) return true
       return false
     })
 
