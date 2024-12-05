@@ -29,6 +29,7 @@ export const HeaderTitle = styled(Col)`
 `
 
 export const StyledContainer = styled(Container)`
+  max-width: 700px;
   .checkbox {
     width: 187px;
     padding: 0px;

@@ -1,3 +1,4 @@
+import styled from "styled-components"
 import { CardTitle } from "components/Card"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
@@ -6,47 +7,11 @@ import {
   NewsfeedTestimonyCardBody
 } from "./NewsfeedCardBody"
 
-export const NewsfeedBillCard = (props: {
-  court: string
-  header: string
-  subheader: string
-  timestamp: Timestamp
-  headerImgSrc: string
-  headerImgTitle?: string
-  bodyImgSrc: string
-  bodyImgAltTxt: string
-  bodyText: string
-  isBillMatch: boolean
-  type: string
-}) => {
-  const date = props.timestamp.toDate()
-  const formattedTimestamp = `${date.toLocaleDateString()}`
-  const header = (
-    <CardTitle
-      court={props.court}
-      header={props.header}
-      subheader={props.subheader}
-      timestamp={formattedTimestamp}
-      imgSrc={props.headerImgSrc}
-      imgTitle={props.headerImgTitle ?? ""}
-      isBillMatch={props.isBillMatch}
-      type={props.type}
-    />
-  )
+const Container = styled.div`
+  max-width: 700px;
+`
 
-  const body = (
-    <NewsfeedBillCardBody
-      imgSrc={props.bodyImgSrc}
-      imgAltTxt={props.bodyImgAltTxt}
-      text={props.bodyText}
-      timestamp={formattedTimestamp}
-    />
-  )
-
-  return <MapleCard headerElement={header} body={body} />
-}
-
-export const NewsfeedTestimonyCard = (props: {
+export const NewsfeedCard = (props: {
   court: string
   header: string
   subheader: string
@@ -61,7 +26,6 @@ export const NewsfeedTestimonyCard = (props: {
   type: string
 }) => {
   const date = props.timestamp.toDate()
-  // const formattedTimestamp = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`
   const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
     <CardTitle
@@ -77,7 +41,7 @@ export const NewsfeedTestimonyCard = (props: {
     />
   )
 
-  const body = (
+  let body = (
     <NewsfeedTestimonyCardBody
       imgSrc={props.bodyImgSrc}
       imgAltTxt={props.bodyImgAltTxt}
@@ -86,7 +50,20 @@ export const NewsfeedTestimonyCard = (props: {
     />
   )
 
-  console.log("altImgText: ", typeof props.bodyImgAltTxt)
+  if (props.type == `bill`) {
+    body = (
+      <NewsfeedBillCardBody
+        imgSrc={props.bodyImgSrc}
+        imgAltTxt={props.bodyImgAltTxt}
+        text={props.bodyText}
+        timestamp={formattedTimestamp}
+      />
+    )
+  }
 
-  return <MapleCard headerElement={header} body={body} />
+  return (
+    <Container>
+      <MapleCard headerElement={header} body={body} />
+    </Container>
+  )
 }

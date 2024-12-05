@@ -64,7 +64,8 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
     <div>
       <CardBootstrap.Body className={`p-2`}>
         <CardBootstrap.Text className={`text-secondary mb-2`}>
-          <strong>{text}</strong>
+          {/* uncomment when bill text is made available to for results: type testimony */}
+          {/* <strong>{testimonyText}</strong> */}
         </CardBootstrap.Text>
         <Row className={`bg-body mx-0 mt-1 rounded`}>
           <Col className={`d-flex flex-column mx-2 my-2`} xs="2">
@@ -76,14 +77,20 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
             </div>
           </Col>
           <Col className={`d-flex align-self-center`}>
-            {`"`}
-            <strong>{text}</strong>
-            {`"`}
+            <strong>
+              {`"`}
+              {text}
+              {`"`}
+            </strong>
           </Col>
         </Row>
-        <div className={`mt-2 mb-2`}>
-          {"Endorsement Posted "}
-          {timestamp}
+        <div className={`d-flex justify-content-between mt-2 mb-2`}>
+          <div>
+            {"Endorsement Posted "}
+            {timestamp}
+          </div>
+          {/* convert to link when testionyID is made available through newsfeed-results object*/}
+          {/* <div>{"View Full Testimony"}</div> */}
         </div>
       </CardBootstrap.Body>
     </div>

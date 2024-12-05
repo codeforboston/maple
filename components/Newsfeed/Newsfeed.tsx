@@ -26,10 +26,7 @@ import {
   UserElement
 } from "components/EditProfilePage/FollowingTabComponents"
 import { firestore } from "components/firebase"
-import {
-  NewsfeedBillCard,
-  NewsfeedTestimonyCard
-} from "components/NewsfeedCard/NewsfeedCard"
+import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -156,7 +153,7 @@ export default function Newsfeed() {
       ) : (
         <>
           {profile ? (
-            <>
+            <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
                   <HeaderTitle className={`mb-5`}>
@@ -174,7 +171,7 @@ export default function Newsfeed() {
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
                           {element.type === `bill` ? (
-                            <NewsfeedBillCard
+                            <NewsfeedCard
                               court={element.court}
                               header={element.header}
                               subheader={element.subheader}
@@ -185,10 +182,11 @@ export default function Newsfeed() {
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
                               isBillMatch={element.isBillMatch}
+                              isUserMatch={element.isUserMatch}
                               type={element.type}
                             />
                           ) : (
-                            <NewsfeedTestimonyCard
+                            <NewsfeedCard
                               court={element.court}
                               header={element.header}
                               subheader={element.subheader}
@@ -208,7 +206,7 @@ export default function Newsfeed() {
                   </>
                 ) : (
                   <div className="pb-4">
-                    <NewsfeedTestimonyCard
+                    <NewsfeedCard
                       court={``}
                       header={`No Results`}
                       subheader={``}
@@ -227,7 +225,7 @@ export default function Newsfeed() {
                   Pagination Element to be wired to backend
                 </div>
               </StyledContainer>
-            </>
+            </div>
           ) : (
             <ErrorPage statusCode={404} withDarkMode={false} />
           )}
