@@ -16,14 +16,6 @@ interface CardTitleProps {
   type?: string
 }
 
-interface CardTitleFollowingProps {
-  header?: string
-  subheader?: string
-  isBillMatch?: boolean
-  isUserMatch?: boolean
-  type?: string
-}
-
 export const CardTitle = (props: CardTitleProps) => {
   const { court, header, subheader, imgSrc, isBillMatch, isUserMatch, type } =
     props
@@ -91,7 +83,7 @@ export const CardTitle = (props: CardTitleProps) => {
   )
 }
 
-const CardTitleFollowing = (props: CardTitleFollowingProps) => {
+const CardTitleFollowing = (props: CardTitleProps) => {
   const { header, subheader, isBillMatch, isUserMatch, type } = props
   const { t } = useTranslation("common")
 
