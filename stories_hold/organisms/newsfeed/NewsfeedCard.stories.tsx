@@ -1,16 +1,16 @@
 import { ComponentStory } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
-import { NewsfeedBillCard } from "components/NewsfeedCard/NewsfeedCard"
+import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { Timestamp } from "firebase/firestore"
 
 export default createMeta({
   title: "Dashboard/Newsfeed/NewsfeedCard",
-  component: NewsfeedBillCard
+  component: NewsfeedCard
 })
 
-const Template: ComponentStory<typeof NewsfeedBillCard> = props => {
-  return <NewsfeedBillCard {...props} />
+const Template: ComponentStory<typeof NewsfeedCard> = props => {
+  return <NewsfeedCard {...props} />
 }
 
 export const OrgWithBodyImage = Template.bind({})
