@@ -1,15 +1,7 @@
 import ErrorPage from "next/error"
-import {
-  collection,
-  getDocs,
-  query,
-  Timestamp,
-  where
-} from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
+import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { useMediaQuery } from "usehooks-ts"
+import { useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
@@ -21,16 +13,10 @@ import {
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
-import {
-  BillElement,
-  UserElement
-} from "components/EditProfilePage/FollowingTabComponents"
-import { firestore } from "components/firebase"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
-  // const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -42,7 +28,6 @@ export default function Newsfeed() {
   const [allResults, setAllResults] = useState<Notifications>([])
   const [filteredResults, setFilteredResults] = useState<Notifications>([])
 
-  // Update the filter function
   useEffect(() => {
     const results = allResults.filter(result => {
       if (isShowingOrgs && result.type == `testimony`) return true
@@ -141,8 +126,6 @@ export default function Newsfeed() {
       </>
     )
   }
-
-  console.log("results: ", filteredResults)
 
   return (
     <>
