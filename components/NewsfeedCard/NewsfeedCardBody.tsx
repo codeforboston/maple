@@ -11,7 +11,7 @@ interface NewsfeedCardBodyProps {
 
 export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
   const { imgAltTxt, text, timestamp } = props
-  const isMobile = useMediaQuery("(max-width: 500px)")
+  const isMobile = useMediaQuery("(max-width: 550px)")
   return (
     <CardBootstrap.Body className={`p-0`}>
       <div
@@ -63,7 +63,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
 
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
   const { imgSrc, imgAltTxt, text, timestamp } = props
-  const isMobile = useMediaQuery("(max-width: 500px)")
+  const isMobile = useMediaQuery("(max-width: 550px)")
 
   function capitalizeFirstLetter(x: String | undefined) {
     return String(x).charAt(0).toUpperCase() + String(x).slice(1)
