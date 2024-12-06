@@ -1,11 +1,11 @@
 import styled from "styled-components"
-import { CardTitle } from "components/Card"
 import { Timestamp } from "firebase/firestore"
 import { Card as MapleCard } from "../Card/Card"
 import {
   NewsfeedBillCardBody,
   NewsfeedTestimonyCardBody
 } from "./NewsfeedCardBody"
+import { CardTitle } from "components/Card"
 
 const Container = styled.div`
   max-width: 700px;
