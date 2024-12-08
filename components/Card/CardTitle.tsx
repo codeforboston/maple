@@ -27,50 +27,12 @@ export const CardTitle = (props: CardTitleProps) => {
         {imgSrc && <img alt="" src={imgSrc} width="32" height="32" />}
       </div>
       <CardBootstrap.Body className="px-3 py-0">
-        {type == `no results` ? (
-          <>
-            <CardBootstrap.Title
-              className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
-            >
-              <strong>{header}</strong>
-            </CardBootstrap.Title>
-          </>
-        ) : (
-          <>
-            {type == `bill` ? (
-              <>
-                {header && (
-                  <CardBootstrap.Title
-                    className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
-                  >
-                    <a href={`/bills/${court}/${header}`}>
-                      <strong>{formatBillId(header)}</strong>
-                    </a>{" "}
-                    {subheader && (
-                      <>
-                        {t("newsfeed.action_update")}
-                        {subheader}
-                      </>
-                    )}
-                  </CardBootstrap.Title>
-                )}
-              </>
-            ) : (
-              <>
-                {header && subheader && (
-                  <CardBootstrap.Title
-                    className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
-                  >
-                    {subheader} {t("newsfeed.endorsed")}
-                    <a href={`/bills/${court}/${header}`}>
-                      <strong>{formatBillId(header)}</strong>
-                    </a>
-                  </CardBootstrap.Title>
-                )}
-              </>
-            )}
-          </>
-        )}
+        <CardTitleHeadline
+          court={court}
+          header={header}
+          subheader={subheader}
+          type={type}
+        />
         <CardTitleFollowing
           header={header}
           subheader={subheader}
@@ -81,6 +43,57 @@ export const CardTitle = (props: CardTitleProps) => {
       </CardBootstrap.Body>
     </CardBootstrap.Body>
   )
+}
+
+const CardTitleHeadline = (props: CardTitleProps) => {
+  const { court, header, subheader, type } = props
+  const { t } = useTranslation("common")
+
+  switch (type) {
+    case "testimony":
+      return (
+        <>
+          {header && subheader && (
+            <CardBootstrap.Title
+              className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
+            >
+              {subheader} {t("newsfeed.endorsed")}
+              <a href={`/bills/${court}/${header}`}>
+                <strong>{formatBillId(header)}</strong>
+              </a>
+            </CardBootstrap.Title>
+          )}
+        </>
+      )
+    case "bill":
+      return (
+        <>
+          {header && (
+            <CardBootstrap.Title
+              className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
+            >
+              <a href={`/bills/${court}/${header}`}>
+                <strong>{formatBillId(header)}</strong>
+              </a>{" "}
+              {subheader && (
+                <>
+                  {t("newsfeed.action_update")}
+                  {subheader}
+                </>
+              )}
+            </CardBootstrap.Title>
+          )}
+        </>
+      )
+    default:
+      return (
+        <CardBootstrap.Title
+          className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
+        >
+          <strong>{header}</strong>
+        </CardBootstrap.Title>
+      )
+  }
 }
 
 const CardTitleFollowing = (props: CardTitleProps) => {

@@ -158,7 +158,7 @@ const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
           </Row>
           {/* convert to link when testionyID is made available through newsfeed-results object*/}
           <Row className={`w-100`}>
-            <div>{"View Full Testimony"}</div>
+            {/* <div>{"View Full Testimony"}</div> */}
           </Row>
         </Col>
       ) : (
@@ -168,7 +168,7 @@ const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
             {timestamp}
           </div>
           {/* convert to link when testionyID is made available through newsfeed-results object*/}
-          <div>{"View Full Testimony"}</div>
+          {/* <div>{"View Full Testimony"}</div> */}
         </div>
       )}
     </>
