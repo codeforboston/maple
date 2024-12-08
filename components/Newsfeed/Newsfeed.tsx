@@ -1,31 +1,22 @@
 import ErrorPage from "next/error"
-import { collection, getDocs, query, where } from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
+import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { useMediaQuery } from "usehooks-ts"
+import { useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
-import { AlertCard, AlertCardV2 } from "components/AlertCard/AlertCard"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
-import { firestore } from "components/firebase"
-import { Timestamp } from "firebase/firestore"
 import {
   BillCol,
   Header,
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
-import {
-  BillElement,
-  UserElement
-} from "components/EditProfilePage/FollowingTabComponents"
+import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
-  // const isMobile = useMediaQuery("(max-width: 768px)")
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -37,11 +28,10 @@ export default function Newsfeed() {
   const [allResults, setAllResults] = useState<Notifications>([])
   const [filteredResults, setFilteredResults] = useState<Notifications>([])
 
-  // Update the filter function
   useEffect(() => {
     const results = allResults.filter(result => {
-      if (isShowingOrgs && result.isUserMatch) return true
-      if (isShowingBills && result.isBillMatch) return true
+      if (isShowingOrgs && result.type == `testimony`) return true
+      if (isShowingBills && result.type == `bill`) return true
       return false
     })
 
@@ -146,7 +136,7 @@ export default function Newsfeed() {
       ) : (
         <>
           {profile ? (
-            <>
+            <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
                   <HeaderTitle className={`mb-5`}>
@@ -164,7 +154,7 @@ export default function Newsfeed() {
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
                           {element.type === `bill` ? (
-                            <AlertCardV2
+                            <NewsfeedCard
                               court={element.court}
                               header={element.header}
                               subheader={element.subheader}
@@ -175,23 +165,23 @@ export default function Newsfeed() {
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
                               isBillMatch={element.isBillMatch}
+                              isUserMatch={element.isUserMatch}
+                              type={element.type}
                             />
                           ) : (
-                            <AlertCard
+                            <NewsfeedCard
+                              court={element.court}
                               header={element.header}
                               subheader={element.subheader}
                               timestamp={element.timestamp}
-                              headerImgSrc={`${
-                                element.type === `bill`
-                                  ? ``
-                                  : `/thumbs-${element.position}.svg`
-                              }`}
-                              headerImgTitle={`${
-                                element.type === `bill` ? "" : element.position
-                              }`}
-                              bodyImgSrc={``}
-                              bodyImgAltTxt={``}
+                              headerImgSrc={`/individualUser.svg`}
+                              headerImgTitle={``}
+                              bodyImgSrc={`/thumbs-${element.position}.svg`}
+                              bodyImgAltTxt={`${element.position}`}
                               bodyText={element.bodyText}
+                              isBillMatch={element.isBillMatch}
+                              isUserMatch={element.isUserMatch}
+                              type={element.type}
                             />
                           )}
                         </div>
@@ -199,7 +189,8 @@ export default function Newsfeed() {
                   </>
                 ) : (
                   <div className="pb-4">
-                    <AlertCard
+                    <NewsfeedCard
+                      court={``}
                       header={`No Results`}
                       subheader={``}
                       timestamp={Timestamp.now()}
@@ -207,6 +198,9 @@ export default function Newsfeed() {
                       bodyImgSrc={``}
                       bodyImgAltTxt={``}
                       bodyText={`There are no news updates for your current followed topics`}
+                      isBillMatch={false}
+                      isUserMatch={false}
+                      type={`no results`}
                     />
                   </div>
                 )}
@@ -214,7 +208,7 @@ export default function Newsfeed() {
                   Pagination Element to be wired to backend
                 </div>
               </StyledContainer>
-            </>
+            </div>
           ) : (
             <ErrorPage statusCode={404} withDarkMode={false} />
           )}
