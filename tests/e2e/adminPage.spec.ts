@@ -21,6 +21,13 @@ test.describe.serial("Admin Page", () => {
     context = await browser.newContext()
     page = await context.newPage()
 
+    console.log({
+      username: process.env.TEST_ADMIN_USERNAME,
+      pw: process.env.TEST_ADMIN_PASSWORD,
+      url: process.env.APP_API_URL,
+      ci: process.env.ci
+    })
+
     // Fetch the admin credentials and application URL from the environment variables
     const adminEmail = process.env.TEST_ADMIN_USERNAME
     const adminPassword = process.env.TEST_ADMIN_PASSWORD
