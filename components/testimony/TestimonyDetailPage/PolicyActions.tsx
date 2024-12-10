@@ -25,7 +25,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   isReporting,
   setReporting,
 }) => {
-  const { bill } = useCurrentTestimonyDetails(),
+  const { bill } = useCurrentTestimonyDetails(), 
     billLabel = formatBillId(bill.id);
   const { notifications } = useFlags();
 
