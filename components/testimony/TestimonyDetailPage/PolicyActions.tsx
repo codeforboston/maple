@@ -6,7 +6,7 @@ import { isNotNull } from "components/utils";
 import { FC, ReactElement, useState, useEffect } from "react";
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice";
 import { useTranslation } from "next-i18next";
-import { followBill, unfollowBill } from "../api/bills"; // Adjust the import path as needed
+import { followBill, unfollowBill } from "../../api/bills";
 
 interface PolicyActionsProps {
   className?: string;
