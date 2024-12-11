@@ -767,14 +767,25 @@
       "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
     },
     {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "authorUid",
+      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
+    },
+    //// notifications ////
+    {
       "collectionGroup": "activeTopicSubscriptions",
       "fieldPath": "nextDigestAt",
       "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
     },
     {
-      "collectionGroup": "publishedTestimony",
-      "fieldPath": "authorUid",
-      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
+      "collectionGroup": "activeTopicSubscriptions",
+      "fieldPath": "topicName",
+      "indexes": [
+        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" },
+        { "queryScope": "COLLECTION", "order": "ASCENDING" },
+        { "queryScope": "COLLECTION", "order": "DESCENDING" },
+        { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
+      ]
     }
   ]
 }
