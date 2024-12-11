@@ -82,8 +82,12 @@
   "newcomer" : "New to MAPLE? For extra support, check",
   "newsfeed": {
     "action_update": "has an action update from the ",
+    "and": " and ",
+    "not_follow_either": "You do not follow either",
+    "endorsed": "endorsed ",
     "follow": "You follow ",
-    "not_follow": "You do not follow "
+    "not_follow": "You do not follow ",
+    "or": " or "
   },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
