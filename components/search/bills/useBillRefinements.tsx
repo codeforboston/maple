@@ -7,14 +7,6 @@ export const useBillRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
   const propsList = [
     {
-      attribute: "topics.lvl0",
-      ...baseProps
-    },
-    {
-      attribute: "topics.lvl1",
-      ...baseProps
-    },
-    {
       transformItems: useCallback(
         (i: RefinementListItem[]) =>
           i

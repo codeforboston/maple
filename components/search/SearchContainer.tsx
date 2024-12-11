@@ -183,7 +183,7 @@ export const SearchContainer = styled.div`
     display: inline-block;
     overflow-y: visible;
     margin: 0;
-    padding: 0 0 0 0rem;
+    padding: 0 0 0 20px;
     width: 100%;
   }
   .ais-HierarchicalMenu-link::before {
@@ -206,6 +206,12 @@ export const SearchContainer = styled.div`
   }
 
   .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
-    border-top: none; /* Remove top border for the last child */
+    border-top: none;
+  }
+
+  .bill-search-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
   }
 `

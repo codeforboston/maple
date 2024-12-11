@@ -142,7 +142,9 @@ const Layout = () => {
           <SearchBox placeholder="Search For Testimony" className="mt-2 mb-3" />
         </Row>
         <Row>
-          {refinements.options}
+          <Col xs={3} lg={3}>
+            {refinements.options}
+          </Col>
           <Col className="d-flex flex-column">
             <RefinementRow>
               <ResultCount className="flex-grow-1 m-1" />

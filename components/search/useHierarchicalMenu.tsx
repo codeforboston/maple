@@ -1,9 +1,4 @@
-import {
-  HierarchicalMenu,
-  HierarchicalMenuProps,
-  RefinementList,
-  useInstantSearch
-} from "react-instantsearch"
+import { HierarchicalMenu, useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useEffect, useState } from "react"
@@ -25,35 +20,39 @@ const useHasRefinements = () => {
   return refinements.length !== 0
 }
 
-export const useRefinements = ({
-  refinementProps
+export const useHierarchicalMenu = ({
+  hierarchicalMenuProps
 }: {
-  refinementProps: any[]
+  hierarchicalMenuProps: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
-  const refinements = (
+  const hierarchicalMenu = (
     <>
-      {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i + 1} {...(p as any)} />
-      ))}
+      <HierarchicalMenu
+        attributes={[
+          hierarchicalMenuProps[0].attribute,
+          hierarchicalMenuProps[1].attribute
+        ]}
+        sortBy={["count:desc"]}
+      />
     </>
   )
   const hasRefinements = useHasRefinements()
 
   return {
     options: inline ? (
-      <div>{refinements}</div>
+      <div>{hierarchicalMenu}</div>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Filter</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <SearchContainer>{refinements}</SearchContainer>
+          <SearchContainer>{hierarchicalMenu}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
     ),
