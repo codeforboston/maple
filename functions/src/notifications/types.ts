@@ -17,6 +17,8 @@ export type BillHistoryUpdateNotification = Notification & {
 export type TestimonySubmissionNotification = Notification & {
   type: "testimony"
   userId: string
+  userRole: string
+  testimonyId: string
   testimonyUser: string
   testimonyPosition: string
   testimonyContent: string
@@ -37,6 +39,8 @@ export interface NotificationFields {
     isBillMatch: boolean
     isUserMatch: boolean
     delivered: boolean
+    testimonyId?: string
+    userRole?: string
     authorUid?: string
   }
   createdAt: FirebaseFirestore.Timestamp
