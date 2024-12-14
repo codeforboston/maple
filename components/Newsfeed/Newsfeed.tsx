@@ -181,14 +181,8 @@ export default function Newsfeed() {
                               header={element.header}
                               subheader={element.subheader}
                               timestamp={element.timestamp}
-                              headerImgSrc={`${
-                                element.type === `bill`
-                                  ? ``
-                                  : `/thumbs-${element.position}.svg`
-                              }`}
-                              headerImgTitle={`${
-                                element.type === `bill` ? "" : element.position
-                              }`}
+                              headerImgSrc={`${`/thumbs-${element.position}.svg`}`}
+                              headerImgTitle={element.position}
                               bodyImgSrc={``}
                               bodyImgAltTxt={``}
                               bodyText={element.bodyText}
