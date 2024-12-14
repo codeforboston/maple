@@ -25,23 +25,40 @@ export type TestimonySubmissionNotification = Notification & {
   testimonyVersion: number
 }
 
-export interface NotificationFields {
+export interface TestimonySubmissionNotificationFields {
   uid: string
   notification: {
     bodyText: string
     header: string
     court: string
-    id: string
+    billId: string
     subheader: string
     timestamp: FirebaseFirestore.Timestamp
     type: string
-    position?: string
+    position: string
     isBillMatch: boolean
     isUserMatch: boolean
     delivered: boolean
-    testimonyId?: string
-    userRole?: string
-    authorUid?: string
+    testimonyId: string
+    userRole: string
+    authorUid: string
+  }
+  createdAt: FirebaseFirestore.Timestamp
+}
+
+export interface BillHistoryUpdateNotificationFields {
+  uid: string
+  notification: {
+    bodyText: string
+    header: string
+    court: string
+    billId: string
+    subheader: string
+    timestamp: FirebaseFirestore.Timestamp
+    type: string
+    isBillMatch: boolean
+    isUserMatch: boolean
+    delivered: boolean
   }
   createdAt: FirebaseFirestore.Timestamp
 }

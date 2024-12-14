@@ -9,8 +9,9 @@ import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
 import {
   BillHistoryUpdateNotification,
-  NotificationFields,
-  TestimonySubmissionNotification
+  BillHistoryUpdateNotificationFields,
+  TestimonySubmissionNotification,
+  TestimonySubmissionNotificationFields
 } from "./types"
 import { cloneDeep } from "lodash"
 
@@ -19,58 +20,58 @@ const db = admin.firestore()
 
 const createNotificationFields = (
   entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
-): NotificationFields => {
-  let bodyText: string
-  let subheader: string
-  let position: string | undefined
-  let authorUid: string | undefined
-  let testimonyId: string | undefined
-  let userRole: string | undefined
-
+):
+  | BillHistoryUpdateNotificationFields
+  | TestimonySubmissionNotificationFields => {
   switch (entity.type) {
     case "bill":
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
       }
-      let lastHistoryAction = entity.billHistory[entity.billHistory.length - 1]
-      bodyText = `${lastHistoryAction.Action}`
-      subheader = `${lastHistoryAction.Branch}`
-      break
+      const lastHistoryAction =
+        entity.billHistory[entity.billHistory.length - 1]
+      return {
+        uid: "",
+        notification: {
+          header: entity.billName,
+          court: entity.billCourt,
+          billId: entity.billId,
+          bodyText: `${lastHistoryAction.Action}`,
+          subheader: `${lastHistoryAction.Branch}`,
+          timestamp: entity.updateTime,
+          type: "bill",
+          isBillMatch: false,
+          isUserMatch: false,
+          delivered: false
+        },
+        createdAt: Timestamp.now()
+      }
 
     case "testimony":
-      bodyText = entity.testimonyContent
-      subheader = entity.testimonyUser
-      position = entity.testimonyPosition
-      authorUid = entity.userId
-      testimonyId = entity.testimonyId
-      userRole = entity.userRole
-      break
-
+      return {
+        uid: "",
+        notification: {
+          header: entity.billName,
+          court: entity.billCourt,
+          billId: entity.billId,
+          bodyText: entity.testimonyContent,
+          subheader: entity.testimonyUser,
+          timestamp: entity.updateTime,
+          position: entity.testimonyPosition,
+          type: "testimony",
+          isBillMatch: false,
+          isUserMatch: false,
+          delivered: false,
+          authorUid: entity.userId,
+          testimonyId: entity.testimonyId,
+          userRole: entity.userRole
+        },
+        createdAt: Timestamp.now()
+      }
     default:
       console.log(`Invalid entity: ${entity}`)
       throw new Error(`Invalid entity: ${entity}`)
-  }
-
-  return {
-    uid: "",
-    notification: {
-      bodyText: bodyText,
-      header: entity.billName,
-      court: entity.billCourt,
-      id: entity.billId,
-      subheader: subheader,
-      timestamp: entity.updateTime,
-      type: entity.type,
-      position: position,
-      isBillMatch: false,
-      isUserMatch: false,
-      delivered: false,
-      testimonyId: testimonyId,
-      userRole: userRole,
-      authorUid: authorUid
-    },
-    createdAt: Timestamp.now()
   }
 }
 
