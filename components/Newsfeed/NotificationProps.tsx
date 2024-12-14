@@ -9,6 +9,7 @@ type BillHistoryNotification = {
   delivered: boolean
   header: string // Bill Title
   id: number
+  billId: string
   subheader: string
   topicName: string
   timestamp: Timestamp
@@ -24,6 +25,7 @@ interface TestimonyNotification {
   delivered: boolean
   header: string // Bill Title
   id: number
+  billId: string
   subheader: string
   topicName: string
   timestamp: Timestamp
