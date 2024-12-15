@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import CardBootstrap from "react-bootstrap/Card"
 import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
@@ -14,6 +15,7 @@ interface NewsfeedCardBodyProps {
 
 export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
   const { position, text, timestamp } = props
+  const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 550px)")
   return (
     <CardBootstrap.Body className={`p-0`}>
@@ -34,7 +36,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
                 <strong>{text}</strong>
               </CardBootstrap.Text>
               <>
-                {"Action taken on "}
+                {t("newsfeed.actionTaken")}
                 {timestamp}
               </>
             </Col>
@@ -53,7 +55,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
                 <strong>{text}</strong>
               </CardBootstrap.Text>
               <>
-                {"Action taken on "}
+                {t("newsfeed.actionTaken")}
                 {timestamp}
               </>
             </Col>
@@ -152,6 +154,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
 
 const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
   const { testimonyId, timestamp } = props
+  const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 576px)")
   return (
     <>
@@ -159,24 +162,24 @@ const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
         <Col className={`d-flex flex-wrap mt-2 mb-2`}>
           <Row className={`w-100`}>
             <div>
-              {"Endorsement Posted "}
+              {t("newsfeed.endorsementPost")}
               {timestamp}
             </div>
           </Row>
           <Row className={`w-100`}>
             <Internal href={`/testimony/${testimonyId}`}>
-              <div>{"View Full Testimony"}</div>
+              <div>{t("newsfeed.viewFullTestimony")}</div>
             </Internal>
           </Row>
         </Col>
       ) : (
         <div className={`d-flex justify-content-between mt-2 mb-2`}>
           <div>
-            {"Endorsement Posted "}
+            {t("newsfeed.endorsementPost")}
             {timestamp}
           </div>
           <Internal href={`/testimony/${testimonyId}`}>
-            <div>{"View Full Testimony"}</div>
+            <div>{t("newsfeed.viewFullTestimony")}</div>
           </Internal>
         </div>
       )}

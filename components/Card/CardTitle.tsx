@@ -126,7 +126,7 @@ const CardTitleHeadline = (props: CardTitleProps) => {
               )}{" "}
               {subheader && (
                 <>
-                  {t("newsfeed.action_update")}
+                  {t("newsfeed.actionUpdate")}
                   {subheader}
                 </>
               )}
@@ -161,7 +161,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
             {isBillMatch ? (
               <>{t("newsfeed.follow")}</>
             ) : (
-              <>{t("newsfeed.not_follow")}</>
+              <>{t("newsfeed.notFollow")}</>
             )}
             {billId && <strong>{formatBillId(billId)}</strong>}
           </CardBootstrap.Title>
@@ -202,7 +202,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
       <CardBootstrap.Title
         className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
       >
-        {t("newsfeed.not_follow_either")}
+        {t("newsfeed.notFollowEither")}
         {billId && <strong>{formatBillId(billId)}</strong>}
         {t("newsfeed.or")}
         {subheader}
