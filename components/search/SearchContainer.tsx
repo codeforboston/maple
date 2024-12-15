@@ -147,96 +147,6 @@ export const SearchContainer = styled.div`
     border-bottom: dashed 1px;
   }
 
-  .ais-HierarchicalMenu-list {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
-    max-height: 250px;
-    overflow-y: auto;
-  }
-
-  .ais-HierarchicalMenu-item {
-    font-size: 1rem;
-    /* border-bottom: dashed 1px; */
-  }
-
-  .ais-HierarchicalMenu-label {
-    white-space: normal;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .ais-HierarchicalMenu-count {
-    background: var(--bs-blue);
-    color: white;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    padding-right: 10px;
-    padding-left: 10px;
-    border: none;
-  }
-
-  .ais-HierarchicalMenu-list .ais-HierarchicalMenu-list--child {
-    display: block;
-    display: inline-block;
-    overflow-y: visible;
-    margin: 0;
-    padding: 0 0 0 20px;
-    width: 100%;
-  }
-  .ais-HierarchicalMenu-link::before {
-    content: "+";
-    background-image: none;
-    font-size: 35px;
-    color: var(--bs-blue);
-    vertical-align: middle;
-    line-height: -3;
-    margin-bottom: 1rem;
-  }
-  .ais-HierarchicalMenu-link--selected::before {
-    content: "-";
-    background-image: none;
-    font-size: 50px;
-    color: var(--bs-blue);
-    vertical-align: middle;
-    line-height: -3;
-    margin-bottom: 1rem;
-  }
-
-  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
-    border-top: none;
-  }
-
-  .bill-search-filter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-link::before {
-    content: "";
-    width: 22px;
-    height: 16px;
-    border: 2px solid navy;
-    background-color: white;
-    background-image: none;
-    font-size: 35px;
-    vertical-align: middle;
-    margin-bottom: 0rem;
-    box-shadow: 0 0 0 1.5px black;
-  }
-  .ais-HierarchicalMenu-list--child
-    .ais-HierarchicalMenu-link--selected::before {
-    content: "✔";
-    display: inline-block;
-    font-size: 16px;
-    text-align: center;
-    line-height: 14px;
-    width: 22px;
-    height: 16px;
-  }
-
   .ais-MultiselectHierarchicalMenu-list {
     background-color: white;
     padding: 1rem;
@@ -245,11 +155,12 @@ export const SearchContainer = styled.div`
     margin-bottom: 1.5rem;
     max-height: 250px;
     overflow-y: auto;
+    list-style: none;
   }
 
   .ais-MultiselectHierarchicalMenu-item {
     font-size: 1rem;
-    /* border-bottom: dashed 1px; */
+    border-bottom: dashed 1px;
   }
 
   .ais-MultiselectHierarchicalMenu-label {
@@ -258,7 +169,7 @@ export const SearchContainer = styled.div`
     width: 100%;
     align-items: center;
     gap: 10px;
-}
+    cursor: pointer;
   }
 
   .ais-MultiselectHierarchicalMenu-count {
@@ -270,37 +181,71 @@ export const SearchContainer = styled.div`
     padding-left: 10px;
     border-radius: 10px;
     border: none;
+    cursor: pointer;
+  }
+  .ais-MultiselectHierarchicalMenu-toggle {
+    font-size: 30px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    /* margin-bottom: 1rem; */
+    background-color: transparent;
+    border: none;
+    padding: 0%;
+    cursor: pointer;
   }
 
-  .ais-MultiselectHierarchicalMenu-list
-    .ais-MultiselectHierarchicalMenu-list--child {
-    display: block;
+  .ais-MultiselectHierarchicalMenu-list--child {
     display: inline-block;
     overflow-y: visible;
     margin: 0;
-    padding: 0 0 0 20px;
+    padding: 0 0 0 4px;
     width: 100%;
+    list-style: none;
   }
-  .ais-MultiselectHierarchicalMenu-toggle {
-    font-size: 25px;
+  .ais-MultiselectHierarchicalMenu-checkbox--child {
+    box-shadow: none;
+    outline: 1px solid black;
+    border-radius: 1px;
     color: var(--bs-blue);
-    vertical-align: middle;
-    margin-bottom: 1rem;
-    background-color: transparent;
-    border: none;
+    margin-right: 6px;
     cursor: pointer;
   }
-  .ais-MultiselectHierarchicalMenu-link--selected::before {
-    content: "-";
-    background-image: none;
-    font-size: 50px;
-    color: var(--bs-blue);
-    vertical-align: middle;
-    line-height: -3;
-    margin-bottom: 1rem;
+  .ais-MultiselectHierarchicalMenu-item--selected
+    .ais-MultiselectHierarchicalMenu-label {
+    font-weight: bold;
   }
-
-  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
-    border-top: none;
+  .ais-MultiselectHierarchicalMenu-item--child--selected
+    .ais-MultiselectHierarchicalMenu-label--child {
+    font-weight: bold;
+  }
+  .ais-MultiselectHierarchicalMenu-item--child--selected
+    .ais-MultiselectHierarchicalMenu-checkbox--child {
+    background-image: url("/check-solid.svg");
+    background-size: 0.75rem;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .ais-MultiselectHierarchicalMenu-item--child {
+    font-size: 1rem;
+    border-top: dashed 1px;
+  }
+  .ais-MultiselectHierarchicalMenu-label--child {
+    white-space: normal;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .ais-MultiselectHierarchicalMenu-count--child {
+    background: var(--bs-blue);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
   }
 `

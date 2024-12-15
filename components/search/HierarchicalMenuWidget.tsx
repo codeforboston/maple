@@ -71,27 +71,36 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           // Get the last refinement.
           const lastRefinement = results.getRefinements().pop()?.attributeName
 
+          // Cache for static counts
+          const cachedCounts = new Map<string, number>()
           // Merge the results items with the initial ones.
           const getItems = (
             attribute: string
           ): MultiselectHierarchicalMenuItem[] => {
             // Safely attempt to retrieve facet values, default to an empty array if unavailable
             const facetValues =
-              (results?.getFacetValues(attribute, {
-                sortBy: ["name:asc"]
-              }) as SearchResults.FacetValue[]) || []
+              (results?.getFacetValues(
+                attribute,
+                {}
+              ) as SearchResults.FacetValue[]) || []
 
             // Mapping over facetValues with an additional safety check
-            const resultsItems =
-              facetValues.length > 0
-                ? facetValues.map(facetValue => ({
-                    ...facetValue,
-                    label: facetValue.name
-                      .split(separator || " > ")
-                      .pop() as string,
-                    count: facetValue.count
-                  }))
-                : []
+            const resultsItems = facetValues.map(facetValue => {
+              const count = facetValue.count
+
+              // Cache static counts on the first render
+              if (!cachedCounts.has(facetValue.name)) {
+                cachedCounts.set(facetValue.name, count)
+              }
+
+              return {
+                ...facetValue,
+                label: facetValue.name
+                  .split(separator || " > ")
+                  .pop() as string,
+                count: cachedCounts.get(facetValue.name) || count // Use static count
+              }
+            })
 
             if (lastRefinement && !attributes.includes(lastRefinement))
               return resultsItems
@@ -112,7 +121,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
               return resultsItem ? { ...levelItem, ...resultsItem } : levelItem
             })
 
-            return mergedItems.sort((a, b) => a.name.localeCompare(b.name))
+            return mergedItems.sort((a, b) => b.count - a.count)
           }
 
           // Register refinements and items for each attribute.
@@ -331,9 +340,14 @@ const MultiselectHierarchicalMenuItem = ({
 
   return (
     <li
-      className={`ais-MultiselectHierarchicalMenu-item${
-        hasSubLevel ? "" : "--child"
-      }`}
+      className={cx(
+        `ais-MultiselectHierarchicalMenu-item${hasSubLevel ? "" : "--child"}`,
+        isOpen
+          ? `ais-MultiselectHierarchicalMenu-item${
+              hasSubLevel ? "" : "--child"
+            }--selected`
+          : ""
+      )}
     >
       <label
         className={`ais-MultiselectHierarchicalMenu-label${
@@ -350,20 +364,18 @@ const MultiselectHierarchicalMenuItem = ({
             {isOpen ? "-" : "+"}
           </button>
         ) : (
-          <span className={`ais-MultiselectHierarchicalMenu-toggle`}></span>
+          <input
+            type="checkbox"
+            className={`ais-MultiselectHierarchicalMenu-checkbox${
+              hasSubLevel ? "" : "--child"
+            }`}
+          ></input>
         )}
         <span
           onClick={onLabelClick}
-          className={cx(
-            `ais-MultiselectHierarchicalMenu-label${
-              hasSubLevel ? "" : "--child"
-            }`,
-            item.isRefined
-              ? `ais-MultiselectHierarchicalMenu-label--active${
-                  hasSubLevel ? "" : "--child"
-                }`
-              : ""
-          )}
+          className={`ais-MultiselectHierarchicalMenu-label${
+            hasSubLevel ? "" : "--child"
+          }`}
         >
           {item.label}
         </span>
@@ -400,7 +412,11 @@ const MultiselectHierarchicalMenuList = ({
   )
 
   return (
-    <ul className="ais-MultiselectHierarchicalMenu-list">
+    <ul
+      className={`ais-MultiselectHierarchicalMenu-list${
+        index == 0 ? "" : "--child"
+      }`}
+    >
       {levelItems.map(levelItem => (
         <MultiselectHierarchicalMenuItem
           key={levelItem.name}
@@ -415,7 +431,7 @@ const MultiselectHierarchicalMenuList = ({
 
 export const MultiselectHierarchicalMenu = ({
   attributes,
-  separator = " + "
+  separator = " > "
 }: MultiselectHierarchicalMenuParams): JSX.Element => {
   const { levels } = useMultiselectHierarchicalMenu({ attributes, separator })
 

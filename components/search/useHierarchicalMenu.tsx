@@ -1,4 +1,8 @@
-import { HierarchicalMenu, useInstantSearch } from "react-instantsearch"
+import {
+  HierarchicalMenu,
+  RefinementList,
+  useInstantSearch
+} from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useEffect, useState } from "react"
@@ -6,7 +10,10 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Offcanvas } from "../bootstrap"
 import { SearchContainer } from "./SearchContainer"
-import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
+import {
+  MultiselectHierarchicalMenu,
+  MultiselectHierarchicalMenuWithInit
+} from "./HierarchicalMenuWidget"
 export const FilterButton = styled(Button)`
   font-size: 1rem;
   line-height: 1rem;
@@ -32,6 +39,12 @@ export const useHierarchicalMenu = ({
 
   const hierarchicalMenu = (
     <>
+      {/* need to be changed */}
+      <div style={{ display: "none" }}>
+        {hierarchicalMenuProps.map((p, i) => (
+          <RefinementList className="mb-4" key={i} {...(p as any)} />
+        ))}
+      </div>
       <MultiselectHierarchicalMenu
         attributes={[
           hierarchicalMenuProps[0].attribute,
