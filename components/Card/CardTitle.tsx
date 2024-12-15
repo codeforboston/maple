@@ -2,9 +2,7 @@ import { useTranslation } from "next-i18next"
 import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import { formatBillId } from "components/formatting"
-
 import { Internal } from "components/links"
-import { bill } from "stories/organisms/billDetail/MockBillData"
 
 interface CardTitleProps {
   authorUid?: string

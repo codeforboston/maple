@@ -21,6 +21,7 @@ export const NewsfeedCard = (props: {
   isUserMatch?: boolean
   position?: string
   subheader?: string
+  testimonyId?: string
   timestamp: Timestamp
   type: string
   userRole?: string
@@ -43,20 +44,22 @@ export const NewsfeedCard = (props: {
   )
 
   let body = (
-    <NewsfeedTestimonyCardBody
-      billText={props.header}
+    <NewsfeedBillCardBody
       position={props.position}
       text={props.bodyText}
       timestamp={formattedTimestamp}
-      type={props.type}
     />
   )
 
-  if (props.type == `bill`) {
+  if (props.type == `testimony`) {
     body = (
-      <NewsfeedBillCardBody
+      <NewsfeedTestimonyCardBody
+        billText={props.header}
+        position={props.position}
         text={props.bodyText}
+        testimonyId={props.testimonyId}
         timestamp={formattedTimestamp}
+        type={props.type}
       />
     )
   }

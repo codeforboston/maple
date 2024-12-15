@@ -1,12 +1,14 @@
 import CardBootstrap from "react-bootstrap/Card"
 import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
+import { Internal } from "components/links"
 
 interface NewsfeedCardBodyProps {
   billText?: string
   position?: string
   text?: string
   timestamp?: string
+  testimonyId?: string
   type?: string
 }
 
@@ -63,7 +65,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
 }
 
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
-  const { billText, position, text, timestamp, type } = props
+  const { billText, position, text, testimonyId, timestamp } = props
   const isMobile = useMediaQuery("(max-width: 576px)")
 
   function capitalizeFirstLetter(x: String | undefined) {
@@ -88,7 +90,6 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
     <div>
       <CardBootstrap.Body className={`p-2`}>
         <CardBootstrap.Text className={`text-secondary mb-2`}>
-          {/* uncomment when bill text is made available to for results: type testimony */}
           <strong>{billText}</strong>
         </CardBootstrap.Text>
         <Row className={`bg-body mx-0 mt-1 rounded`}>
@@ -140,14 +141,17 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
             </>
           )}
         </Row>
-        <NewsfeedTestimonyCardTail timestamp={timestamp} />
+        <NewsfeedTestimonyCardTail
+          testimonyId={testimonyId}
+          timestamp={timestamp}
+        />
       </CardBootstrap.Body>
     </div>
   )
 }
 
 const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
-  const { timestamp } = props
+  const { testimonyId, timestamp } = props
   const isMobile = useMediaQuery("(max-width: 576px)")
   return (
     <>
@@ -159,9 +163,10 @@ const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
               {timestamp}
             </div>
           </Row>
-          {/* convert to link when testionyID is made available through newsfeed-results object*/}
           <Row className={`w-100`}>
-            {/* <div>{"View Full Testimony"}</div> */}
+            <Internal href={`/testimony/${testimonyId}`}>
+              <div>{"View Full Testimony"}</div>
+            </Internal>
           </Row>
         </Col>
       ) : (
@@ -170,8 +175,9 @@ const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
             {"Endorsement Posted "}
             {timestamp}
           </div>
-          {/* convert to link when testionyID is made available through newsfeed-results object*/}
-          {/* <div>{"View Full Testimony"}</div> */}
+          <Internal href={`/testimony/${testimonyId}`}>
+            <div>{"View Full Testimony"}</div>
+          </Internal>
         </div>
       )}
     </>

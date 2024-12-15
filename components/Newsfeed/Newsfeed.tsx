@@ -127,8 +127,6 @@ export default function Newsfeed() {
     )
   }
 
-  console.log("results: ", filteredResults)
-
   return (
     <>
       {loading ? (
@@ -166,11 +164,9 @@ export default function Newsfeed() {
                             position={element.position}
                             subheader={element.subheader}
                             timestamp={element.timestamp}
+                            testimonyId={element.testimonyId}
                             type={element.type}
                             userRole={element.userRole}
-
-                            // testimonyId: string
-                            // topicName: string
                           />
                         </div>
                       ))}
@@ -187,9 +183,9 @@ export default function Newsfeed() {
                     </div>
                   </>
                 )}
-                <div className="d-flex justify-content-center mt-2 mb-3">
+                {/* <div className="d-flex justify-content-center mt-2 mb-3">
                   Pagination Element to be wired to backend
-                </div>
+                </div> */}
               </StyledContainer>
             </div>
           ) : (
