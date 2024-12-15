@@ -1,40 +1,22 @@
 import { Timestamp } from "firebase/firestore"
 
-export type NotificationProps = BillHistoryNotification | TestimonyNotification
-
-type BillHistoryNotification = {
-  type: "bill"
-  bodyText: string
-  court: string
-  delivered: boolean
-  header: string // Bill Title
-  id: number
-  billId: string
-  subheader: string
-  topicName: string
-  timestamp: Timestamp
-  createdAt: Timestamp
-  isBillMatch: boolean // Is subscribed to Bill
-  isUserMatch: boolean // is subscribed to User/Org
-}
-
-interface TestimonyNotification {
-  type: "testimony"
-  bodyText: string
-  court: string
-  delivered: boolean
-  header: string // Bill Title
-  id: number
-  billId: string
-  subheader: string
-  topicName: string
-  timestamp: Timestamp
-  createdAt: Timestamp
-  position: string
-  isBillMatch: boolean // Is subscribed to Bill
-  isUserMatch: boolean // is subscribed to User/Org
+export type NotificationProps = {
   authorUid: string // Testimony author
+  billId: string
+  bodyText: string
+  court: string
+  createdAt: Timestamp
+  delivered: boolean
+  header: string // Bill Title
+  id: number
+  isBillMatch: boolean // Is subscribed to Bill
+  isUserMatch: boolean // is subscribed to User/Org
+  position: string
+  subheader: string
   testimonyId: string
+  timestamp: Timestamp
+  topicName: string
+  type: string
   userRole: string
 }
 
