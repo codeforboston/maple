@@ -11,6 +11,7 @@ interface CardTitleProps {
   header?: string
   subheader?: string
   timestamp?: string
+  imgSrc?: string
   inHeaderElement?: ReactElement
   isBillMatch?: boolean
   isUserMatch?: boolean
