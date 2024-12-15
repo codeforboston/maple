@@ -30,12 +30,13 @@ export const NewsfeedCard = (props: {
   const header = (
     <CardTitle
       authorUid={props.authorUid}
+      billId={props.billId}
       court={props.court}
       header={props.header}
-      subheader={props.subheader}
-      timestamp={formattedTimestamp}
       isBillMatch={props.isBillMatch}
       isUserMatch={props.isUserMatch}
+      subheader={props.subheader}
+      timestamp={formattedTimestamp}
       type={props.type}
       userRole={props.userRole}
     />

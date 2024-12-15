@@ -7,6 +7,7 @@ import { Internal } from "components/links"
 
 interface CardTitleProps {
   authorUid?: string
+  billId?: string
   court?: string
   header?: string
   subheader?: string
@@ -22,11 +23,12 @@ interface CardTitleProps {
 export const CardTitle = (props: CardTitleProps) => {
   const {
     authorUid,
+    billId,
     court,
     header,
-    subheader,
     isBillMatch,
     isUserMatch,
+    subheader,
     type,
     userRole
   } = props
@@ -37,12 +39,14 @@ export const CardTitle = (props: CardTitleProps) => {
       <CardBootstrap.Body className="px-3 py-0">
         <CardTitleHeadline
           authorUid={authorUid}
+          billId={billId}
           court={court}
           header={header}
           subheader={subheader}
           type={type}
         />
         <CardTitleFollowing
+          billId={billId}
           header={header}
           subheader={subheader}
           isBillMatch={isBillMatch}
@@ -86,7 +90,7 @@ const CardHeaderImg = (props: CardTitleProps) => {
 }
 
 const CardTitleHeadline = (props: CardTitleProps) => {
-  const { authorUid, court, header, subheader, type } = props
+  const { authorUid, billId, court, header, subheader, type } = props
   const { t } = useTranslation("common")
 
   switch (type) {
@@ -102,8 +106,8 @@ const CardTitleHeadline = (props: CardTitleProps) => {
               </Internal>
 
               {t("newsfeed.endorsed")}
-              <a href={`/bills/${court}/${header}`}>
-                <strong>{formatBillId(header)}</strong>
+              <a href={`/bills/${court}/${billId}`}>
+                {billId && <strong>{formatBillId(billId)}</strong>}
               </a>
             </CardBootstrap.Title>
           )}
@@ -116,9 +120,11 @@ const CardTitleHeadline = (props: CardTitleProps) => {
             <CardBootstrap.Title
               className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
             >
-              <a href={`/bills/${court}/${header}`}>
-                <strong>{formatBillId(header)}</strong>
-              </a>{" "}
+              {billId && (
+                <a href={`/bills/${court}/${billId}`}>
+                  <strong>{formatBillId(billId)}</strong>
+                </a>
+              )}{" "}
               {subheader && (
                 <>
                   {t("newsfeed.action_update")}
@@ -141,10 +147,10 @@ const CardTitleHeadline = (props: CardTitleProps) => {
 }
 
 const CardTitleFollowing = (props: CardTitleProps) => {
-  const { header, subheader, isBillMatch, isUserMatch, type } = props
+  const { billId, header, isBillMatch, isUserMatch, subheader, type } = props
   const { t } = useTranslation("common")
 
-  if (type == `no results`) {
+  if (type == ``) {
     return <></>
   } else if (type === `bill`) {
     return (
@@ -158,7 +164,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
             ) : (
               <>{t("newsfeed.not_follow")}</>
             )}
-            <strong>{formatBillId(header)}</strong>
+            {billId && <strong>{formatBillId(billId)}</strong>}
           </CardBootstrap.Title>
         )}
       </>
