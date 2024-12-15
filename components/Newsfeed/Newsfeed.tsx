@@ -129,11 +129,6 @@ export default function Newsfeed() {
 
   console.log("results: ", filteredResults)
 
-  let element = {
-    position: ``,
-    type: `no results`
-  }
-
   return (
     <>
       {loading ? (
@@ -162,35 +157,35 @@ export default function Newsfeed() {
                         <div className="pb-4" key={element.id}>
                           <NewsfeedCard
                             authorUid={element.authorUid}
+                            billId={element.billId}
+                            bodyText={element.bodyText}
                             court={element.court}
                             header={element.header}
-                            subheader={element.subheader}
-                            timestamp={element.timestamp}
-                            headerImgTitle={``}
-                            bodyText={element.bodyText}
                             isBillMatch={element.isBillMatch}
                             isUserMatch={element.isUserMatch}
                             position={element.position}
+                            subheader={element.subheader}
+                            timestamp={element.timestamp}
                             type={element.type}
                             userRole={element.userRole}
+
+                            // testimonyId: string
+                            // topicName: string
                           />
                         </div>
                       ))}
                   </>
                 ) : (
-                  <div className="pb-4">
-                    <NewsfeedCard
-                      court={``}
-                      header={`No Results`}
-                      subheader={``}
-                      timestamp={Timestamp.now()}
-                      bodyText={`There are no news updates for your current followed topics`}
-                      isBillMatch={false}
-                      isUserMatch={false}
-                      // type={`no results`}
-                      type={element.type}
-                    />
-                  </div>
+                  <>
+                    <div className="pb-4">
+                      <NewsfeedCard
+                        header={`No Results`}
+                        timestamp={Timestamp.now()}
+                        bodyText={`There are no news updates for your current followed topics`}
+                        type={``}
+                      />
+                    </div>
+                  </>
                 )}
                 <div className="d-flex justify-content-center mt-2 mb-3">
                   Pagination Element to be wired to backend

@@ -6,6 +6,7 @@ interface NewsfeedCardBodyProps {
   position?: string
   text?: string
   timestamp?: string
+  type?: string
 }
 
 export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
@@ -61,8 +62,8 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
 }
 
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
-  const { position, text, timestamp } = props
-  const isMobile = useMediaQuery("(max-width: 550px)")
+  const { position, text, timestamp, type } = props
+  const isMobile = useMediaQuery("(max-width: 576px)")
 
   function capitalizeFirstLetter(x: String | undefined) {
     return String(x).charAt(0).toUpperCase() + String(x).slice(1)
@@ -92,7 +93,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
         <Row className={`bg-body mx-0 mt-1 rounded`}>
           {isMobile ? (
             <Col className={`d-flex flex-column m-2 w-100`} xs="2">
-              <div className={`align-self-center my-3`}>
+              <div className={`align-self-center justify-content-center my-3`}>
                 {position && (
                   <>
                     <img
@@ -107,7 +108,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
                   </>
                 )}
               </div>
-              <strong>
+              <strong className={`mb-4`}>
                 {`"`}
                 {text}
                 {`"`}
@@ -115,8 +116,11 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
             </Col>
           ) : (
             <>
-              <Col className={`d-flex flex-column m-2`} xs="2">
-                {position && (
+              {position && (
+                <Col
+                  className={`d-flex align-self-center flex-column m-2`}
+                  xs="2"
+                >
                   <>
                     <img
                       src={`/thumbs-${position}.svg`}
@@ -129,10 +133,12 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
                       {capitalizeFirstLetter(props.position)}
                     </div>
                   </>
-                )}
-              </Col>
-              <Col className={`d-flex align-self-center`}>
-                <strong>
+                </Col>
+              )}
+              <Col
+                className={`d-flex align-self-center justify-content-center`}
+              >
+                <strong className={`m-4`}>
                   {`"`}
                   {text}
                   {`"`}
@@ -149,7 +155,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
 
 const NewsfeedTestimonyCardTail = (props: NewsfeedCardBodyProps) => {
   const { timestamp } = props
-  const isMobile = useMediaQuery("(max-width: 500px)")
+  const isMobile = useMediaQuery("(max-width: 576px)")
   return (
     <>
       {isMobile ? (

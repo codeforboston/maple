@@ -13,15 +13,15 @@ const Container = styled.div`
 
 export const NewsfeedCard = (props: {
   authorUid?: string
-  court: string
-  header: string
-  subheader: string
-  timestamp: Timestamp
-  headerImgTitle?: string
+  billId?: string
   bodyText: string
-  isBillMatch: boolean
-  isUserMatch: boolean
+  court?: string
+  header: string
+  isBillMatch?: boolean
+  isUserMatch?: boolean
   position?: string
+  subheader?: string
+  timestamp: Timestamp
   type: string
   userRole?: string
 }) => {
@@ -34,7 +34,6 @@ export const NewsfeedCard = (props: {
       header={props.header}
       subheader={props.subheader}
       timestamp={formattedTimestamp}
-      imgTitle={props.headerImgTitle ?? ""}
       isBillMatch={props.isBillMatch}
       isUserMatch={props.isUserMatch}
       type={props.type}
@@ -47,6 +46,7 @@ export const NewsfeedCard = (props: {
       position={props.position}
       text={props.bodyText}
       timestamp={formattedTimestamp}
+      type={props.type}
     />
   )
 
