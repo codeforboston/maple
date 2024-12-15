@@ -255,7 +255,7 @@ export const useMultiselectHierarchicalMenu = (
   additionalWidgetProperties?: AdditionalWidgetProperties
 ): MultiselectHierarchicalMenuState => {
   return useConnector(
-    connectMultiselectHierarchicalMenu,
+    connectMultiselectHierarchicalMenu as any,
     props,
     additionalWidgetProperties
   ) as MultiselectHierarchicalMenuState
