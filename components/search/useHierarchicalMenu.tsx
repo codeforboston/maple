@@ -8,12 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Offcanvas } from "../bootstrap"
+import { Button, Offcanvas } from "../bootstrap"
 import { SearchContainer } from "./SearchContainer"
-import {
-  MultiselectHierarchicalMenu,
-  MultiselectHierarchicalMenuWithInit
-} from "./HierarchicalMenuWidget"
+import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 export const FilterButton = styled(Button)`
   font-size: 1rem;
   line-height: 1rem;

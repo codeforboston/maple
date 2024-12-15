@@ -71,11 +71,10 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           // Get the last refinement.
           const lastRefinement = results.getRefinements().pop()?.attributeName
 
-          // Cache for static counts
-          const cachedCounts = new Map<string, number>()
           // Merge the results items with the initial ones.
           const getItems = (
-            attribute: string
+            attribute: string,
+            isParent: boolean
           ): MultiselectHierarchicalMenuItem[] => {
             // Safely attempt to retrieve facet values, default to an empty array if unavailable
             const facetValues =
@@ -85,22 +84,16 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
               ) as SearchResults.FacetValue[]) || []
 
             // Mapping over facetValues with an additional safety check
-            const resultsItems = facetValues.map(facetValue => {
-              const count = facetValue.count
-
-              // Cache static counts on the first render
-              if (!cachedCounts.has(facetValue.name)) {
-                cachedCounts.set(facetValue.name, count)
-              }
-
-              return {
-                ...facetValue,
-                label: facetValue.name
-                  .split(separator || " > ")
-                  .pop() as string,
-                count: cachedCounts.get(facetValue.name) || count // Use static count
-              }
-            })
+            const resultsItems =
+              facetValues.length > 0
+                ? facetValues.map(facetValue => ({
+                    ...facetValue,
+                    label: facetValue.name
+                      .split(separator || " > ")
+                      .pop() as string,
+                    count: facetValue.count
+                  }))
+                : []
 
             if (lastRefinement && !attributes.includes(lastRefinement))
               return resultsItems
@@ -121,7 +114,13 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
               return resultsItem ? { ...levelItem, ...resultsItem } : levelItem
             })
 
-            return mergedItems.sort((a, b) => b.count - a.count)
+            return mergedItems.sort((a, b) => {
+              if (isParent) {
+                return a.label.localeCompare(b.label) // Alphabetical sort for parent
+              } else {
+                return b.count - a.count // Sort by count descending for child
+              }
+            })
           }
 
           // Register refinements and items for each attribute.
@@ -146,19 +145,24 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                   : helper.addDisjunctiveFacetRefinement(attribute, value)
                 helper.search()
               }
-              connectorState.levels[i] = { attribute, refine, items: [] }
+              // Apply sorting logic during initialization
+              connectorState.levels[i] = {
+                attribute,
+                refine,
+                items: getItems(attribute, i === 0) // Sort parent and child appropriately
+              }
             }
 
             // Register the initial items.
             if (results && !connectorState.levels[i].items.length) {
-              connectorState.levels[i].items = getItems(attribute)
+              connectorState.levels[i].items = getItems(attribute, i === 0)
             }
           }
 
           // Call the getItems to get the updated items state.
-          const levels = connectorState.levels.map(level => ({
+          const levels = connectorState.levels.map((level, i) => ({
             ...level,
-            items: getItems(level.attribute)
+            items: getItems(level.attribute, i === 0)
           }))
 
           return { levels, widgetParams }
@@ -173,7 +177,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         init(initOptions) {
-          const { instantSearchInstance } = initOptions
+          const { helper, instantSearchInstance } = initOptions
           const renderState = this.getWidgetRenderState(initOptions)
           console.log("RenderState at init:", renderState)
 
@@ -317,10 +321,6 @@ const MultiselectHierarchicalMenuItem = ({
   }, [isOpen, levels])
 
   const onLabelClick = useCallback(() => {
-    if (hasSubLevel) {
-      onButtonClick
-      return
-    }
     if (item.isRefined && isOpen && !isSubLevelRefined) {
       setIsOpen(false)
       refine(item.name)
@@ -342,7 +342,7 @@ const MultiselectHierarchicalMenuItem = ({
     <li
       className={cx(
         `ais-MultiselectHierarchicalMenu-item${hasSubLevel ? "" : "--child"}`,
-        isOpen
+        item.isRefined
           ? `ais-MultiselectHierarchicalMenu-item${
               hasSubLevel ? "" : "--child"
             }--selected`
@@ -366,26 +366,28 @@ const MultiselectHierarchicalMenuItem = ({
         ) : (
           <input
             type="checkbox"
+            checked={item.isRefined}
+            onClick={onLabelClick}
             className={`ais-MultiselectHierarchicalMenu-checkbox${
               hasSubLevel ? "" : "--child"
             }`}
           ></input>
         )}
         <span
-          onClick={onLabelClick}
           className={`ais-MultiselectHierarchicalMenu-label${
             hasSubLevel ? "" : "--child"
           }`}
         >
           {item.label}
         </span>
-        <span
-          className={`ais-MultiselectHierarchicalMenu-count${
-            hasSubLevel ? "" : "--child"
-          }`}
-        >
-          {item.count}
-        </span>
+        {!hasSubLevel && ( // Only render count if it's child
+          <span
+            className={`ais-MultiselectHierarchicalMenu-count--child
+            }`}
+          >
+            {item.count}
+          </span>
+        )}
       </label>
       {hasSubLevel && isOpen && (
         <MultiselectHierarchicalMenuList
