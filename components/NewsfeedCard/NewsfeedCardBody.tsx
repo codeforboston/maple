@@ -108,11 +108,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
                   </>
                 )}
               </div>
-              <strong className={`mb-4`}>
-                {`"`}
-                {text}
-                {`"`}
-              </strong>
+              <strong className={`mb-4`}>{`"${text}"`}</strong>
             </Col>
           ) : (
             <>
@@ -138,11 +134,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
               <Col
                 className={`d-flex align-self-center justify-content-center`}
               >
-                <strong className={`m-4`}>
-                  {`"`}
-                  {text}
-                  {`"`}
-                </strong>
+                <strong className={`m-4`}>{`"${text}"`}</strong>
               </Col>
             </>
           )}

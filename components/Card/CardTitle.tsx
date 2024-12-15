@@ -170,7 +170,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
         )}
       </>
     )
-  } else if (isBillMatch === true && isUserMatch === true) {
+  } else if (isBillMatch && isUserMatch) {
     return (
       <CardBootstrap.Title
         className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
