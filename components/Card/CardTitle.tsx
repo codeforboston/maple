@@ -4,6 +4,7 @@ import CardBootstrap from "react-bootstrap/Card"
 import { formatBillId } from "components/formatting"
 
 import { Internal } from "components/links"
+import { bill } from "stories/organisms/billDetail/MockBillData"
 
 interface CardTitleProps {
   authorUid?: string
@@ -175,7 +176,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
         className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
       >
         {t("newsfeed.follow")}
-        {header && <strong>{formatBillId(header)}</strong>}
+        {billId && <strong>{formatBillId(billId)}</strong>}
         {t("newsfeed.and")}
         {subheader}
       </CardBootstrap.Title>
@@ -186,7 +187,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
         className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
       >
         {t("newsfeed.follow")}
-        {header && <strong>{formatBillId(header)}</strong>}
+        {billId && <strong>{formatBillId(billId)}</strong>}
       </CardBootstrap.Title>
     )
   } else if (isBillMatch === false && isUserMatch === true) {
@@ -204,7 +205,7 @@ const CardTitleFollowing = (props: CardTitleProps) => {
         className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
       >
         {t("newsfeed.not_follow_either")}
-        {header && <strong>{formatBillId(header)}</strong>}
+        {billId && <strong>{formatBillId(billId)}</strong>}
         {t("newsfeed.or")}
         {subheader}
       </CardBootstrap.Title>
