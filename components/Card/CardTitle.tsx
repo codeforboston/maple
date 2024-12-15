@@ -11,12 +11,12 @@ interface CardTitleProps {
   header?: string
   subheader?: string
   timestamp?: string
-  imgSrc?: string
   imgTitle?: string
   inHeaderElement?: ReactElement
   isBillMatch?: boolean
   isUserMatch?: boolean
   type?: string
+  userRole?: string
 }
 
 export const CardTitle = (props: CardTitleProps) => {
@@ -25,18 +25,15 @@ export const CardTitle = (props: CardTitleProps) => {
     court,
     header,
     subheader,
-    imgSrc,
     isBillMatch,
     isUserMatch,
-    type
+    type,
+    userRole
   } = props
-  const { t } = useTranslation("common")
 
   return (
     <CardBootstrap.Body className={`align-items-center d-flex px-2 pt-2 pb-0`}>
-      <div className="justify-content-middle d-flex flex-column align-items-center">
-        {imgSrc && <img alt="" src={imgSrc} width="32" height="32" />}
-      </div>
+      <CardHeaderImg type={type} userRole={userRole} />
       <CardBootstrap.Body className="px-3 py-0">
         <CardTitleHeadline
           authorUid={authorUid}
@@ -55,6 +52,37 @@ export const CardTitle = (props: CardTitleProps) => {
       </CardBootstrap.Body>
     </CardBootstrap.Body>
   )
+}
+
+const CardHeaderImg = (props: CardTitleProps) => {
+  const { type, userRole } = props
+
+  let avatar = `individualUser.svg`
+  if (userRole == `organization`) {
+    avatar = `OrganizationUser.svg`
+  }
+
+  switch (type) {
+    case "testimony":
+      return (
+        <div className="justify-content-middle d-flex flex-column align-items-center">
+          <img alt="capitol building" src={avatar} width="32" height="32" />
+        </div>
+      )
+    case "bill":
+      return (
+        <div className="justify-content-middle d-flex flex-column align-items-center">
+          <img
+            alt="capitol building"
+            src={`/images/bill-capitol.svg`}
+            width="32"
+            height="32"
+          />
+        </div>
+      )
+    default:
+      return <></>
+  }
 }
 
 const CardTitleHeadline = (props: CardTitleProps) => {

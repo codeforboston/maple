@@ -129,6 +129,11 @@ export default function Newsfeed() {
 
   console.log("results: ", filteredResults)
 
+  let element = {
+    position: ``,
+    type: `no results`
+  }
+
   return (
     <>
       {loading ? (
@@ -155,38 +160,20 @@ export default function Newsfeed() {
                       )
                       .map((element: NotificationProps) => (
                         <div className="pb-4" key={element.id}>
-                          {element.type === `bill` ? (
-                            <NewsfeedCard
-                              court={element.court}
-                              header={element.header}
-                              subheader={element.subheader}
-                              timestamp={element.timestamp}
-                              headerImgSrc={`/images/bill-capitol.svg`}
-                              headerImgTitle={``}
-                              bodyImgSrc={``}
-                              bodyImgAltTxt={``}
-                              bodyText={element.bodyText}
-                              isBillMatch={element.isBillMatch}
-                              isUserMatch={element.isUserMatch}
-                              type={element.type}
-                            />
-                          ) : (
-                            <NewsfeedCard
-                              authorUid={element.authorUid}
-                              court={element.court}
-                              header={element.header}
-                              subheader={element.subheader}
-                              timestamp={element.timestamp}
-                              headerImgSrc={`/individualUser.svg`}
-                              headerImgTitle={``}
-                              bodyImgSrc={`/thumbs-${element.position}.svg`}
-                              bodyImgAltTxt={`${element.position}`}
-                              bodyText={element.bodyText}
-                              isBillMatch={element.isBillMatch}
-                              isUserMatch={element.isUserMatch}
-                              type={element.type}
-                            />
-                          )}
+                          <NewsfeedCard
+                            authorUid={element.authorUid}
+                            court={element.court}
+                            header={element.header}
+                            subheader={element.subheader}
+                            timestamp={element.timestamp}
+                            headerImgTitle={``}
+                            bodyText={element.bodyText}
+                            isBillMatch={element.isBillMatch}
+                            isUserMatch={element.isUserMatch}
+                            position={element.position}
+                            type={element.type}
+                            userRole={element.userRole}
+                          />
                         </div>
                       ))}
                   </>
@@ -197,13 +184,11 @@ export default function Newsfeed() {
                       header={`No Results`}
                       subheader={``}
                       timestamp={Timestamp.now()}
-                      headerImgSrc={``}
-                      bodyImgSrc={``}
-                      bodyImgAltTxt={``}
                       bodyText={`There are no news updates for your current followed topics`}
                       isBillMatch={false}
                       isUserMatch={false}
-                      type={`no results`}
+                      // type={`no results`}
+                      type={element.type}
                     />
                   </div>
                 )}

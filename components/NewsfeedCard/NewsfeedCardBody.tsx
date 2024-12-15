@@ -3,14 +3,13 @@ import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
 
 interface NewsfeedCardBodyProps {
-  imgSrc?: string
-  imgAltTxt?: string
+  position?: string
   text?: string
   timestamp?: string
 }
 
 export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
-  const { imgAltTxt, text, timestamp } = props
+  const { position, text, timestamp } = props
   const isMobile = useMediaQuery("(max-width: 550px)")
   return (
     <CardBootstrap.Body className={`p-0`}>
@@ -24,7 +23,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
                 src="\images\clock.svg"
                 height="105.6"
                 width="105.6"
-                alt={imgAltTxt}
+                alt={position}
                 className={`m-3`}
               />
               <CardBootstrap.Text className={`mb-0 mt-2`}>
@@ -42,7 +41,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
               src="\images\clock.svg"
               height="105.6"
               width="105.6"
-              alt={imgAltTxt}
+              alt={position}
               className={`m-3`}
             />
             <Col className={`m-2`}>
@@ -62,7 +61,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
 }
 
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
-  const { imgSrc, imgAltTxt, text, timestamp } = props
+  const { position, text, timestamp } = props
   const isMobile = useMediaQuery("(max-width: 550px)")
 
   function capitalizeFirstLetter(x: String | undefined) {
@@ -71,7 +70,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
 
   let endorsementColor = ""
 
-  switch (imgAltTxt) {
+  switch (position) {
     case "endorse":
       endorsementColor = `text-success`
       break
@@ -94,17 +93,19 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
           {isMobile ? (
             <Col className={`d-flex flex-column m-2 w-100`} xs="2">
               <div className={`align-self-center my-3`}>
-                {imgSrc && (
-                  <img
-                    src={imgSrc}
-                    height="108"
-                    width="106.5"
-                    alt={imgAltTxt}
-                  ></img>
+                {position && (
+                  <>
+                    <img
+                      src={`/thumbs-${position}.svg`}
+                      height="108"
+                      width="106.5"
+                      alt={position}
+                    />
+                    <div className={`${endorsementColor} fs-5`}>
+                      {capitalizeFirstLetter(props.position)}
+                    </div>
+                  </>
                 )}
-                <div className={`${endorsementColor} fs-5`}>
-                  {capitalizeFirstLetter(props.imgAltTxt)}
-                </div>
               </div>
               <strong>
                 {`"`}
@@ -115,17 +116,20 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
           ) : (
             <>
               <Col className={`d-flex flex-column m-2`} xs="2">
-                {imgSrc && (
-                  <img
-                    src={imgSrc}
-                    height="72"
-                    width="72"
-                    alt={imgAltTxt}
-                  ></img>
+                {position && (
+                  <>
+                    <img
+                      src={`/thumbs-${position}.svg`}
+                      height="72"
+                      width="72"
+                      alt={position}
+                    />
+
+                    <div className={`${endorsementColor}`}>
+                      {capitalizeFirstLetter(props.position)}
+                    </div>
+                  </>
                 )}
-                <div className={`${endorsementColor}`}>
-                  {capitalizeFirstLetter(props.imgAltTxt)}
-                </div>
               </Col>
               <Col className={`d-flex align-self-center`}>
                 <strong>

@@ -17,14 +17,13 @@ export const NewsfeedCard = (props: {
   header: string
   subheader: string
   timestamp: Timestamp
-  headerImgSrc: string
   headerImgTitle?: string
-  bodyImgSrc: string
-  bodyImgAltTxt: string
   bodyText: string
   isBillMatch: boolean
   isUserMatch: boolean
+  position?: string
   type: string
+  userRole?: string
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
@@ -35,18 +34,17 @@ export const NewsfeedCard = (props: {
       header={props.header}
       subheader={props.subheader}
       timestamp={formattedTimestamp}
-      imgSrc={props.headerImgSrc}
       imgTitle={props.headerImgTitle ?? ""}
       isBillMatch={props.isBillMatch}
       isUserMatch={props.isUserMatch}
       type={props.type}
+      userRole={props.userRole}
     />
   )
 
   let body = (
     <NewsfeedTestimonyCardBody
-      imgSrc={props.bodyImgSrc}
-      imgAltTxt={props.bodyImgAltTxt}
+      position={props.position}
       text={props.bodyText}
       timestamp={formattedTimestamp}
     />
@@ -55,8 +53,6 @@ export const NewsfeedCard = (props: {
   if (props.type == `bill`) {
     body = (
       <NewsfeedBillCardBody
-        imgSrc={props.bodyImgSrc}
-        imgAltTxt={props.bodyImgAltTxt}
         text={props.bodyText}
         timestamp={formattedTimestamp}
       />
