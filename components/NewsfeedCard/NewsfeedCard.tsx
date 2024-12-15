@@ -44,6 +44,7 @@ export const NewsfeedCard = (props: {
 
   let body = (
     <NewsfeedTestimonyCardBody
+      billText={props.header}
       position={props.position}
       text={props.bodyText}
       timestamp={formattedTimestamp}

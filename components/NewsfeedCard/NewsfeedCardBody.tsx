@@ -3,6 +3,7 @@ import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
 
 interface NewsfeedCardBodyProps {
+  billText?: string
   position?: string
   text?: string
   timestamp?: string
@@ -62,7 +63,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
 }
 
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
-  const { position, text, timestamp, type } = props
+  const { billText, position, text, timestamp, type } = props
   const isMobile = useMediaQuery("(max-width: 576px)")
 
   function capitalizeFirstLetter(x: String | undefined) {
@@ -88,7 +89,7 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
       <CardBootstrap.Body className={`p-2`}>
         <CardBootstrap.Text className={`text-secondary mb-2`}>
           {/* uncomment when bill text is made available to for results: type testimony */}
-          {/* <strong>{testimonyText}</strong> */}
+          <strong>{billText}</strong>
         </CardBootstrap.Text>
         <Row className={`bg-body mx-0 mt-1 rounded`}>
           {isMobile ? (
