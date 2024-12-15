@@ -3,7 +3,10 @@ import { ReactElement } from "react"
 import CardBootstrap from "react-bootstrap/Card"
 import { formatBillId } from "components/formatting"
 
+import { Internal } from "components/links"
+
 interface CardTitleProps {
+  authorUid?: string
   court?: string
   header?: string
   subheader?: string
@@ -17,8 +20,16 @@ interface CardTitleProps {
 }
 
 export const CardTitle = (props: CardTitleProps) => {
-  const { court, header, subheader, imgSrc, isBillMatch, isUserMatch, type } =
-    props
+  const {
+    authorUid,
+    court,
+    header,
+    subheader,
+    imgSrc,
+    isBillMatch,
+    isUserMatch,
+    type
+  } = props
   const { t } = useTranslation("common")
 
   return (
@@ -28,6 +39,7 @@ export const CardTitle = (props: CardTitleProps) => {
       </div>
       <CardBootstrap.Body className="px-3 py-0">
         <CardTitleHeadline
+          authorUid={authorUid}
           court={court}
           header={header}
           subheader={subheader}
@@ -46,7 +58,7 @@ export const CardTitle = (props: CardTitleProps) => {
 }
 
 const CardTitleHeadline = (props: CardTitleProps) => {
-  const { court, header, subheader, type } = props
+  const { authorUid, court, header, subheader, type } = props
   const { t } = useTranslation("common")
 
   switch (type) {
@@ -57,7 +69,11 @@ const CardTitleHeadline = (props: CardTitleProps) => {
             <CardBootstrap.Title
               className={`align-items-start fs-6 lh-sm mb-1 text-secondary`}
             >
-              {subheader} {t("newsfeed.endorsed")}
+              <Internal href={`/profile?id=${authorUid}`}>
+                <strong>{subheader}</strong>
+              </Internal>
+
+              {t("newsfeed.endorsed")}
               <a href={`/bills/${court}/${header}`}>
                 <strong>{formatBillId(header)}</strong>
               </a>

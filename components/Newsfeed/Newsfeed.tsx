@@ -127,6 +127,8 @@ export default function Newsfeed() {
     )
   }
 
+  console.log("results: ", filteredResults)
+
   return (
     <>
       {loading ? (
@@ -170,6 +172,7 @@ export default function Newsfeed() {
                             />
                           ) : (
                             <NewsfeedCard
+                              authorUid={element.authorUid}
                               court={element.court}
                               header={element.header}
                               subheader={element.subheader}

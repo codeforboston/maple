@@ -12,6 +12,7 @@ const Container = styled.div`
 `
 
 export const NewsfeedCard = (props: {
+  authorUid?: string
   court: string
   header: string
   subheader: string
@@ -29,6 +30,7 @@ export const NewsfeedCard = (props: {
   const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
     <CardTitle
+      authorUid={props.authorUid}
       court={props.court}
       header={props.header}
       subheader={props.subheader}
