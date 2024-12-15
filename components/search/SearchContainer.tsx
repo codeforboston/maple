@@ -159,7 +159,7 @@ export const SearchContainer = styled.div`
 
   .ais-HierarchicalMenu-item {
     font-size: 1rem;
-    border-bottom: dashed 1px;
+    /* border-bottom: dashed 1px; */
   }
 
   .ais-HierarchicalMenu-label {
@@ -213,5 +213,94 @@ export const SearchContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
+  }
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-link::before {
+    content: "";
+    width: 22px;
+    height: 16px;
+    border: 2px solid navy;
+    background-color: white;
+    background-image: none;
+    font-size: 35px;
+    vertical-align: middle;
+    margin-bottom: 0rem;
+    box-shadow: 0 0 0 1.5px black;
+  }
+  .ais-HierarchicalMenu-list--child
+    .ais-HierarchicalMenu-link--selected::before {
+    content: "✔";
+    display: inline-block;
+    font-size: 16px;
+    text-align: center;
+    line-height: 14px;
+    width: 22px;
+    height: 16px;
+  }
+
+  .ais-MultiselectHierarchicalMenu-list {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .ais-MultiselectHierarchicalMenu-item {
+    font-size: 1rem;
+    /* border-bottom: dashed 1px; */
+  }
+
+  .ais-MultiselectHierarchicalMenu-label {
+    white-space: normal;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+}
+  }
+
+  .ais-MultiselectHierarchicalMenu-count {
+    background: var(--bs-blue);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 10px;
+    border: none;
+  }
+
+  .ais-MultiselectHierarchicalMenu-list
+    .ais-MultiselectHierarchicalMenu-list--child {
+    display: block;
+    display: inline-block;
+    overflow-y: visible;
+    margin: 0;
+    padding: 0 0 0 20px;
+    width: 100%;
+  }
+  .ais-MultiselectHierarchicalMenu-toggle {
+    font-size: 25px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .ais-MultiselectHierarchicalMenu-link--selected::before {
+    content: "-";
+    background-image: none;
+    font-size: 50px;
+    color: var(--bs-blue);
+    vertical-align: middle;
+    line-height: -3;
+    margin-bottom: 1rem;
+  }
+
+  .ais-HierarchicalMenu-list--child .ais-HierarchicalMenu-item:last-child {
+    border-top: none;
   }
 `

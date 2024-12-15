@@ -38,7 +38,7 @@ export const useRefinements = ({
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i + 1} {...(p as any)} />
+        <RefinementList className="mb-4" key={i} {...(p as any)} />
       ))}
     </>
   )

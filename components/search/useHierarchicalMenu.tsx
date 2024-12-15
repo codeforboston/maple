@@ -6,7 +6,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Offcanvas } from "../bootstrap"
 import { SearchContainer } from "./SearchContainer"
-
+import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 export const FilterButton = styled(Button)`
   font-size: 1rem;
   line-height: 1rem;
@@ -32,12 +32,11 @@ export const useHierarchicalMenu = ({
 
   const hierarchicalMenu = (
     <>
-      <HierarchicalMenu
+      <MultiselectHierarchicalMenu
         attributes={[
           hierarchicalMenuProps[0].attribute,
           hierarchicalMenuProps[1].attribute
         ]}
-        sortBy={["count:desc"]}
       />
     </>
   )

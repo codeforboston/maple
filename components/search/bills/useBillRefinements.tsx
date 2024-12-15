@@ -40,6 +40,16 @@ export const useBillRefinements = () => {
       attribute: "cosponsors",
       ...baseProps,
       searchablePlaceholder: "Cosponsor"
+    },
+    {
+      attribute: "topics.lvl0",
+      ...baseProps,
+      searchablePlaceholder: "topics.lvl0"
+    },
+    {
+      attribute: "topics.lvl1",
+      ...baseProps,
+      searchablePlaceholder: "topics.lvl1"
     }
   ]
 
