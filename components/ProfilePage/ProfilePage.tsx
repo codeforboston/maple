@@ -1,5 +1,6 @@
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { firestore } from "components/firebase"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
@@ -50,6 +51,7 @@ export function ProfilePage(profileprops: {
   }, [profileprops.id])
 
   const { t } = useTranslation("profile")
+  const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
 
   const [isProfilePublic, onProfilePublicityChanged] = useState<
     boolean | undefined
@@ -81,7 +83,7 @@ export function ProfilePage(profileprops: {
   }
 
   return (
-    <>
+    <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
       {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}
       {["user", "admin"].includes(role) && isCurrentUser ? (
         <>
@@ -140,6 +142,6 @@ export function ProfilePage(profileprops: {
           </Col>
         </Row>
       </Container>
-    </>
+    </FollowContext.Provider>
   )
 }

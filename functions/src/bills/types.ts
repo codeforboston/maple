@@ -49,6 +49,12 @@ export const BillContent = Record({
   Cosponsors: Array(Record({ Name: Maybe(String) }))
 })
 
+export type BillTopic = Static<typeof BillTopic>
+export const BillTopic = Record({
+  category: String,
+  topic: String
+})
+
 /** Represents a missing timestamp value. This allows documents without values
  * to appear in results when sorting by that value. */
 export const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
@@ -315,7 +321,7 @@ export const Bill = withDefaults(
     similar: Array(Id),
     currentCommittee: Optional(CurrentCommittee),
     city: Optional(String),
-    topics: Optional(Array(String)),
+    topics: Optional(Array(BillTopic)),
     summary: Optional(String)
   }),
   {

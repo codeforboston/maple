@@ -26,6 +26,7 @@ import { getServerConfig } from "../common"
 import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
+import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -118,56 +119,61 @@ const Layout = () => {
     })
   }
 
+  const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
+
   return (
     <>
-      <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
-        <StyledTabNav>
-          {tabs.map((t, i) => (
-            <Nav.Item key={t}>
-              <Nav.Link
-                eventKey={t}
-                className={`rounded-top m-0 p-0`}
-                onClick={e => onTabClick(t)}
-              >
-                <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
-                <hr className={`my-0`} />
-              </Nav.Link>
-            </Nav.Item>
-          ))}
-        </StyledTabNav>
-        <StyledTabContent></StyledTabContent>
-      </TabContainer>
-      <SearchContainer>
-        <Row>
-          <SearchBox placeholder="Search For Testimony" className="mt-2 mb-3" />
-        </Row>
-        <Row>
-          <Col xs={3} lg={3}>
-            {refinements.options}
-          </Col>
-          <Col className="d-flex flex-column">
-            <RefinementRow>
-              <ResultCount className="flex-grow-1 m-1" />
-              <SortBy items={items} />
-              {refinements.show}
-            </RefinementRow>
-            <CurrentRefinements
-              className="mt-2 mb-2"
-              excludedAttributes={["authorRole"]}
+      <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
+        <TabContainer activeKey={key} onSelect={(k: any) => setKey(k)}>
+          <StyledTabNav>
+            {tabs.map((t, i) => (
+              <Nav.Item key={t}>
+                <Nav.Link
+                  eventKey={t}
+                  className={`rounded-top m-0 p-0`}
+                  onClick={e => onTabClick(t)}
+                >
+                  <p className={`my-0 ${i == 0 ? "" : "mx-4"}`}>{t}</p>
+                  <hr className={`my-0`} />
+                </Nav.Link>
+              </Nav.Item>
+            ))}
+          </StyledTabNav>
+          <StyledTabContent></StyledTabContent>
+        </TabContainer>
+        <SearchContainer>
+          <Row>
+            <SearchBox
+              placeholder="Search For Testimony"
+              className="mt-2 mb-3"
             />
-            {status === "empty" ? (
-              <NoResults>
-                Your search has yielded zero results!
-                <br />
-                <b>Try another search term</b>
-              </NoResults>
-            ) : (
-              <Hits hitComponent={TestimonyHit} />
-            )}
-            <Pagination className="mx-auto mt-2 mb-3" />
-          </Col>
-        </Row>
-      </SearchContainer>
+          </Row>
+          <Row>
+            {refinements.options}
+            <Col className="d-flex flex-column">
+              <RefinementRow>
+                <ResultCount className="flex-grow-1 m-1" />
+                <SortBy items={items} />
+                {refinements.show}
+              </RefinementRow>
+              <CurrentRefinements
+                className="mt-2 mb-2"
+                excludedAttributes={["authorRole"]}
+              />
+              {status === "empty" ? (
+                <NoResults>
+                  Your search has yielded zero results!
+                  <br />
+                  <b>Try another search term</b>
+                </NoResults>
+              ) : (
+                <Hits hitComponent={TestimonyHit} />
+              )}
+              <Pagination className="mx-auto mt-2 mb-3" />
+            </Col>
+          </Row>
+        </SearchContainer>
+      </FollowContext.Provider>
     </>
   )
 }

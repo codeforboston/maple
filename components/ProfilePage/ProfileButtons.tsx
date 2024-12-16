@@ -5,8 +5,8 @@ import styled from "styled-components"
 import { FillButton, GearButton, ToggleButton } from "components/buttons"
 import { Internal } from "components/links"
 import { useProfile, ProfileHook } from "components/db"
-import { FollowButton } from "./FollowButton"
 import { useFlags } from "components/featureFlags"
+import { FollowOrgButton } from "components/shared/FollowButton"
 import { useAuth } from "../auth"
 
 export const StyledButton = styled(Button).attrs(props => ({
@@ -68,7 +68,7 @@ export function ProfileButtonsUser({
   const handleSave = async () => {
     await updateProfile({ actions })
   }
-  /** Only regular users are allowed to have a private profile. */
+  /* Only regular users are allowed to have a private profile. */
   async function updateProfile({ actions }: { actions: ProfileHook }) {
     const { updateIsPublic } = actions
 
@@ -103,7 +103,7 @@ export function ProfileButtonsOrg({
       {isUser ? (
         <EditProfileButton />
       ) : followOrg && user ? (
-        <FollowButton profileId={profileId} user={user} />
+        <FollowOrgButton profileId={profileId} />
       ) : null}
     </>
   )

@@ -61,7 +61,7 @@ export function FollowingTab({ className }: { className?: string }) {
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
-      where("type", "==", "org")
+      where("type", "==", "testimony")
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -69,7 +69,7 @@ export function FollowingTab({ className }: { className?: string }) {
       usersList.push(doc.data().userLookup)
     })
 
-    if (usersFollowing.length === 0 && usersFollowing.length != 0) {
+    if (usersFollowing.length === 0 && usersList.length != 0) {
       setUsersFollowing(usersList)
     }
   }, [subscriptionRef, uid, usersFollowing])
