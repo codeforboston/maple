@@ -37,11 +37,8 @@ export const BillDetails = ({ bill }: BillProps) => {
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
   const flags = useFlags()
 
-  const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
-
   return (
     <>
-      <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
         {isPendingUpgrade && <PendingUpgradeBanner />}
         {!isCurrentCourt(bill.court) && (
           <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
@@ -111,7 +108,6 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
           </Row>
         </StyledContainer>
-      </FollowContext.Provider>
     </>
   )
 }
