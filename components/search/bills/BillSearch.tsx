@@ -17,6 +17,7 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
+import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
 import { useBillSort } from "./useBillSort"
@@ -75,6 +76,7 @@ const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
   const refinements = useBillRefinements()
+  const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
 
   return (
@@ -83,11 +85,15 @@ const Layout: FC<
         <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
-        {refinements.options}
+        <Col xs={3} lg={3}>
+          {hierarchicalMenu.options}
+          {refinements.options}
+        </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
+            {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements
