@@ -2,7 +2,7 @@ import { useConnector } from "react-instantsearch"
 import type { SearchResults } from "algoliasearch-helper"
 import type { Connector } from "instantsearch.js"
 import type { AdditionalWidgetProperties } from "react-instantsearch"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 const cx = (...classNames: string[]): string =>
   classNames.filter(Boolean).join(" ")
@@ -115,11 +115,11 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             })
 
             return mergedItems.sort((a, b) => {
-              if (isParent) {
-                return a.label.localeCompare(b.label) // Alphabetical sort for parent
-              } else {
-                return b.count - a.count // Sort by count descending for child
-              }
+              // if (isParent) {
+              //   return a.label.localeCompare(b.label) // Alphabetical sort for parent
+              // } else {
+              return b.count - a.count // Sort by count descending for child
+              // }
             })
           }
 
@@ -145,12 +145,8 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                   : helper.addDisjunctiveFacetRefinement(attribute, value)
                 helper.search()
               }
-              // Apply sorting logic during initialization
-              connectorState.levels[i] = {
-                attribute,
-                refine,
-                items: getItems(attribute, i === 0) // Sort parent and child appropriately
-              }
+
+              connectorState.levels[i] = { attribute, refine, items: [] }
             }
 
             // Register the initial items.
@@ -177,9 +173,8 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         init(initOptions) {
-          const { helper, instantSearchInstance } = initOptions
+          const { instantSearchInstance } = initOptions
           const renderState = this.getWidgetRenderState(initOptions)
-          console.log("RenderState at init:", renderState)
 
           renderFn(
             {
@@ -192,7 +187,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         render(renderOptions) {
           const { instantSearchInstance } = renderOptions
           const renderState = this.getWidgetRenderState(renderOptions)
-          console.log("RenderState at render:", renderState)
 
           renderFn(
             {
@@ -219,7 +213,8 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             ...uiState,
             multiselectHierarchicalMenu: {
               ...uiState.multiselectHierarchicalMenu,
-              levels: uiState.multiselectHierarchicalMenu?.levels || []
+              levels: uiState.multiselectHierarchicalMenu?.levels || [],
+              ...state
             }
           }
         },
@@ -338,11 +333,15 @@ const MultiselectHierarchicalMenuItem = ({
     onButtonClick
   ])
 
+  useEffect(() => {
+    setIsOpen(item.isRefined || isSubLevelRefined)
+  }, [item.isRefined, isSubLevelRefined])
+
   return (
     <li
       className={cx(
         `ais-MultiselectHierarchicalMenu-item${hasSubLevel ? "" : "--child"}`,
-        item.isRefined
+        isOpen
           ? `ais-MultiselectHierarchicalMenu-item${
               hasSubLevel ? "" : "--child"
             }--selected`
