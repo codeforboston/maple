@@ -32,7 +32,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   setReporting,
   topicName,
   followAction,
-  unfollowAction,
+  unfollowAction
 }) => {
   const { bill } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
@@ -78,7 +78,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   if (notifications)
     items.push(
       <PolicyActionItem
-        onClick={(e) => handleClick(e)}
+        onClick={e => handleClick(e)}
         key="follow"
         billName={`${text} ${billLabel}`}
       />
