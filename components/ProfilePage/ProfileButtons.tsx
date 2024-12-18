@@ -93,11 +93,7 @@ export function ProfileButtonsUser({
             className={`py-1`}
           />
         </div>
-      ) : (
-        <div className={`d-grid gap-2 col-12 m-3`}>
-          <FollowButton profileId={profileId} user={user} />
-        </div>
-      )}
+      ) : null}
     </>
   )
 }
@@ -113,9 +109,7 @@ export function ProfileButtonsOrg({
   const { user } = useAuth()
   return (
     <>
-      {isUser ? (
-        <EditProfileButton />
-      ) : followOrg && user ? (
+      {followOrg && user && !isUser ? (
         <FollowOrgButton profileId={profileId} />
       ) : null}
     </>
