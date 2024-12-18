@@ -1,4 +1,3 @@
-import { runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"
@@ -15,6 +14,7 @@ import {
   SpecialEventContent
 } from "./types"
 import { currentGeneralCourt } from "../shared"
+import { onSchedule } from "firebase-functions/scheduler"
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
@@ -26,9 +26,13 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   get function() {
-    return runWith({ timeoutSeconds: this.timeout })
-      .pubsub.schedule(this.schedule)
-      .onRun(() => this.run())
+    return onSchedule(
+      {
+        schedule: this.schedule,
+        timeoutSeconds: this.timeout
+      },
+      () => this.run()
+    )
   }
 
   abstract listEvents(): Promise<ListItem[]>

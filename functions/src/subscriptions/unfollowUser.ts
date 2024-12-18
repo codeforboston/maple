@@ -2,13 +2,14 @@ import * as functions from "firebase-functions"
 import { unsubscribeToTestimonyTopic } from "./unsubscribeToTestimonyTopic"
 import { getAuth, UserRecord } from "firebase-admin/auth"
 import { getFirestore, Firestore } from "firebase-admin/firestore"
+import { onCall } from "firebase-functions/v2/https"
 
-export const unfollowUser = functions.https.onCall(async (data, context) => {
+export const unfollowUser = onCall(async request => {
   // Debug: Log the received data
-  console.log("Debug: Data received in unfollowUser:", data)
+  console.log("Debug: Data received in unfollowUser:", request.data)
 
   // Check for authentication
-  if (!context.auth) {
+  if (!request.auth) {
     throw new functions.https.HttpsError(
       "failed-precondition",
       "The function must be called while authenticated."
@@ -16,15 +17,15 @@ export const unfollowUser = functions.https.onCall(async (data, context) => {
   }
 
   // Runtime check for 'userLookup' property
-  if (!data.hasOwnProperty("userLookup")) {
+  if (!request.data.hasOwnProperty("userLookup")) {
     throw new functions.https.HttpsError(
       "failed-precondition",
       "userLookup must be provided."
     )
   }
 
-  const user: UserRecord = await getAuth().getUser(context.auth.uid)
-  const userLookup = data.userLookup
+  const user: UserRecord = await getAuth().getUser(request.auth.uid)
+  const userLookup = request.data.userLookup
   const db: Firestore = getFirestore()
 
   try {

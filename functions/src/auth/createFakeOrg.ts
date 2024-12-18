@@ -1,15 +1,16 @@
 import * as functions from "firebase-functions"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
+import { onCall } from "firebase-functions/v2/https"
 
 // for populating admin module for testing & demonstration
 //@TODO: remove
 
-export const createFakeOrg = functions.https.onCall(async (data, context) => {
-  checkAuth(context, false)
-  checkAdmin(context)
+export const createFakeOrg = onCall(async request => {
+  checkAuth(request, false)
+  checkAdmin(request)
 
-  const { uid, fullName, email } = data
+  const { uid, fullName, email } = request.data
 
   const newUser = {
     uid,
