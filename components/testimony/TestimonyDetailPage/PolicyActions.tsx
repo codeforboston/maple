@@ -2,8 +2,7 @@ import { Card, ListItem, ListItemProps } from "components/Card"
 import { useFlags } from "components/featureFlags"
 import { formatBillId } from "components/formatting"
 import { formUrl } from "components/publish"
-import { isNotNull } from "components/utils"
-import { FC, FormEvent, ReactElement, useContext, useEffect } from "react"
+import { FC, ReactElement, useContext, useEffect } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
@@ -64,7 +63,6 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   }
 
   const isFollowing = followStatus[topicName]
-  console.log(isFollowing)
   const text = isFollowing ? "Unfollow" : "Follow"
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />

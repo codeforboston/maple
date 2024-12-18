@@ -23,15 +23,13 @@ export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
   const didReport = reportMutation.isError || reportMutation.isSuccess
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { authorUid, revision } = useCurrentTestimonyDetails()
+  const { bill } = useCurrentTestimonyDetails()
   const { user } = useAuth()
   const isUser = user?.uid === authorUid
   const handleReporting = (boolean: boolean) => {
     setIsReporting(boolean)
   }
   const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
-
-  const { bill } = useCurrentTestimonyDetails()
-
   const uid = user?.uid
   const { id: billId, court: courtId } = bill
   const topicName = `bill-${courtId}-${billId}`
