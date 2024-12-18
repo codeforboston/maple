@@ -48,16 +48,16 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
-          <PageContainer>
-            {isMobile ? <MobileNav /> : <DesktopNav />}
-            <AuthModal />
-            <div className={`col`}>{children}</div>
-            <PageFooter
-              authenticated={authenticated}
-              user={user as any}
-              signOut={signOutAndRedirectToHome}
-            />
-          </PageContainer>
+            <PageContainer>
+              {isMobile ? <MobileNav /> : <DesktopNav />}
+              <AuthModal />
+              <div className={`col`}>{children}</div>
+              <PageFooter
+                authenticated={authenticated}
+                user={user as any}
+                signOut={signOutAndRedirectToHome}
+              />
+            </PageContainer>
           </FollowContext.Provider>
         </>
       ) : (
