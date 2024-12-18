@@ -4,40 +4,42 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
+import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { OrgNotification } from "./types"
-import { onDocumentWritten } from "firebase-functions/v2/firestore"
+import { TestimonySubmissionNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 // Define the populateOrgNotificationEvents function
-export const populateOrgNotificationEvents = onDocumentWritten(
-  "/users/{userId}/publishedTestimony/{testimonyId}",
-  async event => {
-    if (!event.data?.after.exists) {
+export const populateTestimonySubmissionNotificationEvents = functions.firestore
+  .document("/users/{userId}/publishedTestimony/{testimonyId}")
+  .onWrite(async (snapshot, context) => {
+    if (!snapshot.after.exists) {
       console.error("New snapshot does not exist")
       return
     }
 
-    const documentCreated = !event.data.before.exists
+    const documentCreated = !snapshot.before.exists
 
-    const oldData = event.data.before.data()
-    const newData = event.data.after.data()
+    const oldData = snapshot.before.data()
+    const newData = snapshot.after.data()
 
     // New testimony added
     if (documentCreated) {
       console.log("New document created")
 
-      const newNotificationEvent: OrgNotification = {
-        type: "org",
+      const newNotificationEvent: TestimonySubmissionNotification = {
+        type: "testimony",
 
         billCourt: newData?.court.toString(),
         billId: newData?.billId,
         billName: newData?.billTitle,
 
-        orgId: newData?.authorUid,
+        userId: newData?.authorUid,
+        userRole: newData?.authorRole,
+        testimonyId: context.params.testimonyId,
         testimonyUser: newData?.fullName,
         testimonyPosition: newData?.position,
         testimonyContent: newData?.content,
@@ -87,5 +89,4 @@ export const populateOrgNotificationEvents = onDocumentWritten(
           })
       }
     }
-  }
-)
+  })

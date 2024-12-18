@@ -1,7 +1,7 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
-import { Bill } from "./types"
+import { Bill, BillTopic } from "./types"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,
@@ -32,7 +32,10 @@ export const {
 
       { name: "endorseCount", type: "int32" },
       { name: "opposeCount", type: "int32" },
-      { name: "neutralCount", type: "int32" }
+      { name: "neutralCount", type: "int32" },
+
+      { name: "topics.lvl0", type: "string[]", facet: true, optional: true },
+      { name: "topics.lvl1", type: "string[]", facet: true, optional: true }
     ],
     default_sorting_field: "testimonyCount"
   },
@@ -42,6 +45,9 @@ export const {
       console.error(data, validation.message, validation.details)
     }
     const bill = Bill.checkWithDefaults(data)
+
+    const { categories, topics } = buildTopicsForSearch(bill.topics)
+
     return {
       id: `${bill.court}-${bill.id}`,
       court: bill.court,
@@ -58,7 +64,17 @@ export const {
       latestTestimonyAt: bill.latestTestimonyAt?.toMillis(),
       endorseCount: bill.endorseCount,
       opposeCount: bill.opposeCount,
-      neutralCount: bill.neutralCount
+      neutralCount: bill.neutralCount,
+      "topics.lvl0": categories,
+      "topics.lvl1": topics
     }
   }
 })
+
+const buildTopicsForSearch = (billTopics: BillTopic[] = []) => {
+  const categoriesSorted = billTopics.map(t => t.category).sort()
+
+  // Instantsearch needs lower hierarchical levels in the form "category > topic"
+  const topicsSorted = billTopics.map(t => `${t.category} > ${t.topic}`).sort()
+  return { categories: categoriesSorted, topics: topicsSorted }
+}

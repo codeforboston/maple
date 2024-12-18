@@ -24,7 +24,7 @@
   },
   "follow": {
     "bills": "Bills You Follow",
-    "orgs": "Organizations You Follow",
+    "orgs": "Users You Follow",
     "unfollow": "Unfollow"
   },
   "confirmation": {
@@ -38,6 +38,7 @@
     "weekly": "Weekly",
     "monthly": "Monthly"
   },
+  "emailIconAlt":"open envelope with letter, toggles update frequency options",
   "legislator": {
     "representative": "Representative",
     "searchRepresentative": "Search your representative",

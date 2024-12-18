@@ -9,16 +9,56 @@ export interface Notification {
   billName: string
 }
 
-export type BillNotification = Notification & {
+export type BillHistoryUpdateNotification = Notification & {
   type: "bill"
   billHistory: BillHistory
 }
 
-export type OrgNotification = Notification & {
-  type: "org"
-  orgId: string
+export type TestimonySubmissionNotification = Notification & {
+  type: "testimony"
+  userId: string
+  userRole: string
+  testimonyId: string
   testimonyUser: string
   testimonyPosition: string
   testimonyContent: string
   testimonyVersion: number
+}
+
+export interface TestimonySubmissionNotificationFields {
+  uid: string
+  notification: {
+    bodyText: string
+    header: string
+    court: string
+    billId: string
+    subheader: string
+    timestamp: FirebaseFirestore.Timestamp
+    type: string
+    position: string
+    isBillMatch: boolean
+    isUserMatch: boolean
+    delivered: boolean
+    testimonyId: string
+    userRole: string
+    authorUid: string
+  }
+  createdAt: FirebaseFirestore.Timestamp
+}
+
+export interface BillHistoryUpdateNotificationFields {
+  uid: string
+  notification: {
+    bodyText: string
+    header: string
+    court: string
+    billId: string
+    subheader: string
+    timestamp: FirebaseFirestore.Timestamp
+    type: string
+    isBillMatch: boolean
+    isUserMatch: boolean
+    delivered: boolean
+  }
+  createdAt: FirebaseFirestore.Timestamp
 }

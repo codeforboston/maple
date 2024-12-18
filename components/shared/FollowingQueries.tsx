@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { Bill } from "../db"
 import { firestore } from "../firebase"
-import { UnfollowModalConfig } from "../EditProfilePage/FollowingTab"
+import { UnfollowModalConfig } from "components/EditProfilePage/UnfollowModal"
 
 export type Results = { [key: string]: string[] }
 
@@ -31,7 +31,7 @@ export async function deleteItem({
     if (unfollowItem.type == "bill") {
       topicName = `bill-${unfollowItem.court.toString()}-${unfollowItem.typeId}`
     } else {
-      topicName = `org-${unfollowItem.typeId}`
+      topicName = `testimony-${unfollowItem.typeId}`
     }
 
     await deleteDoc(doc(subscriptionRef, topicName))
@@ -65,7 +65,7 @@ export async function FollowingQuery(uid: string | undefined) {
   const querySnapshotOrgs = await getDocs(q2)
   querySnapshotOrgs.forEach(doc => {
     // doc.data() is never undefined for query doc snapshots
-    doc.data().orgLookup ? results.orgs.push(doc.data().orgLookup) : null
+    doc.data().userLookup ? results.orgs.push(doc.data().userLookup) : null
   })
 
   return results
@@ -94,10 +94,10 @@ export async function setFollow(
     : await setDoc(doc(subscriptionRef, topicName), {
         topicName: topicName,
         uid: uid,
-        orgLookup: {
+        userLookup: {
           profileId: profileId
         },
-        type: "org"
+        type: "testimony"
       })
 }
 

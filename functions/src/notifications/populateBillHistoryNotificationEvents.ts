@@ -4,48 +4,44 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
+import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
-import { BillNotification } from "./types"
-import { onDocumentWritten } from "firebase-functions/v2/firestore"
+import { BillHistoryUpdateNotification } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 // Define the populateBillNotificationEvents function
-export const populateBillNotificationEvents = onDocumentWritten(
-  "/generalCourts/{court}/bills/{billId}",
-  async event => {
-    if (!event.data?.after.exists) {
+export const populateBillHistoryNotificationEvents = functions.firestore
+  .document("/generalCourts/{court}/bills/{billId}")
+  .onWrite(async (snapshot, context) => {
+    if (!snapshot.after.exists) {
       console.error("New snapshot does not exist")
       return
     }
 
-    const documentCreated = !event.data.before.exists
+    const documentCreated = !snapshot.before.exists
 
-    const oldData = event.data.before.data()
-    const newData = event.data.after.data()
+    const oldData = snapshot.before.data()
+    const newData = snapshot.after.data()
 
-    const { court } = event.params
+    const { court } = context.params
 
-    // New bill added
-    if (documentCreated) {
-      console.log("New document created")
-
-      const newNotificationEvent: BillNotification = {
+    // Create a notification event
+    const createNotificationEvent = async (
+      data: FirebaseFirestore.DocumentData
+    ) => {
+      const notificationEvent: BillHistoryUpdateNotification = {
         type: "bill",
-
         billCourt: court,
-        billId: newData?.id,
-        billName: newData?.content.Title,
-
-        billHistory: newData?.history,
-
+        billId: data?.id,
+        billName: data?.content.Title,
+        billHistory: data?.history,
         updateTime: Timestamp.now()
       }
 
-      await db.collection("/notificationEvents").add(newNotificationEvent)
-
+      await db.collection("/notificationEvents").add(notificationEvent)
       return
     }
 
@@ -54,6 +50,22 @@ export const populateBillNotificationEvents = onDocumentWritten(
 
     const historyChanged = oldLength !== newLength
     console.log(`oldLength: ${oldLength}, newLength: ${newLength}`)
+
+    if (!historyChanged) {
+      console.log(
+        "Bill History unchanged, skipping notification event creation/update"
+      )
+      return
+    }
+
+    // New bill added
+    if (documentCreated && newData) {
+      console.log("New Bill History notification event created")
+
+      await createNotificationEvent(newData)
+
+      return
+    }
 
     const notificationEventSnapshot = await db
       .collection("/notificationEvents")
@@ -70,7 +82,7 @@ export const populateBillNotificationEvents = onDocumentWritten(
       const notificationEventId = notificationEventSnapshot.docs[0].id
 
       if (historyChanged) {
-        console.log("History changed")
+        console.log("History changed, updating existing notification event")
 
         // Update the existing notification event
         await db
@@ -81,6 +93,13 @@ export const populateBillNotificationEvents = onDocumentWritten(
             updateTime: Timestamp.now()
           })
       }
+    } else {
+      console.log(
+        "No existing notification event found, creating new notification event"
+      )
+
+      if (newData) {
+        await createNotificationEvent(newData)
+      }
     }
-  }
-)
+  })

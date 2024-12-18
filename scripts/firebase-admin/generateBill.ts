@@ -36,7 +36,9 @@ export const script: Script = async ({ db, args }) => {
       neutralCount: 0,
       fetchedAt: Timestamp.now(),
       history: [],
-      similar: []
+      similar: [],
+      topics: [],
+      summary: "This is the summary"
     }
     console.log(`/generalCourts/${court}/bills/${id}`)
     const billRef = db.collection(`/generalCourts/${court}/bills`).doc(`${id}`)

@@ -7,6 +7,7 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 
 export const Avatar = () => {
+  const { t } = useTranslation("profile")
   const result = useProfile()
   let isOrg = result?.profile?.role === "organization"
 
@@ -15,14 +16,14 @@ export const Avatar = () => {
       {isOrg ? (
         <Image
           src="/profile-org-white.svg"
-          alt="profile icon"
+          alt={t("profileMenu")}
           width="35"
           height="35"
         />
       ) : (
         <Image
           src="/profile-individual-white.svg"
-          alt="profile icon"
+          alt={t("profileMenu")}
           width="35"
           height="35"
         />
@@ -182,6 +183,27 @@ export const NavbarLinkLogo: React.FC<
         />
       </NavLink>
     </div>
+  )
+}
+
+export const NavbarLinkNewsfeed: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth", "profile"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : "text-white-50"}
+        href="/newsfeed"
+        {...other}
+      >
+        {t("navigation.newsfeed")}
+      </NavLink>
+    </Nav.Item>
   )
 }
 

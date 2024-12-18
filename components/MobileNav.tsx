@@ -1,3 +1,4 @@
+import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 import React, { useState } from "react"
 import Image from "react-bootstrap/Image"
@@ -13,6 +14,7 @@ import {
   NavbarLinkFAQ,
   NavbarLinkGoals,
   NavbarLinkLogo,
+  NavbarLinkNewsfeed,
   NavbarLinkProcess,
   NavbarLinkSignOut,
   NavbarLinkSupport,
@@ -64,6 +66,11 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
         <NavbarLinkTestimony handleClick={closeNav} />
+        {authenticated && notifications ? (
+          <NavbarLinkNewsfeed handleClick={closeNav} />
+        ) : (
+          <></>
+        )}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
@@ -82,6 +89,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   }
 
   const { authenticated } = useAuth()
+  const { notifications } = useFlags()
   const [isExpanded, setIsExpanded] = useState(false)
   const [whichMenu, setWhichMenu] = useState("site")
   const { t } = useTranslation(["common", "auth"])
@@ -119,7 +127,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           {isExpanded && whichMenu == "site" ? (
             <Image
               src="/Union.svg"
-              alt="x"
+              alt={t("navigation.closeNavMenu")}
               width="35"
               height="35"
               className="ms-2"
@@ -137,7 +145,12 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <Navbar.Brand onClick={toggleAvatar}>
             <Nav.Link className="p-0 text-white">
               {isExpanded && whichMenu == "profile" ? (
-                <Image src="/Union.svg" alt="x" width="35" height="35" />
+                <Image
+                  src="/Union.svg"
+                  alt={t("navigation.closeProfileMenu")}
+                  width="35"
+                  height="35"
+                />
               ) : (
                 <Avatar />
               )}

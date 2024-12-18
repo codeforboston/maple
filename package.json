@@ -45,7 +45,8 @@
     "chromatic": "chromatic --project-token=f8618e690599",
     "copy-handlebars": "echo 'Copying handlebars files to /lib/email/...' && ncp functions/src/email/ functions/lib/email/ && echo '...done!'",
     "backfill-user-emails": "ts-node -P tsconfig.script.json scripts/firebase-admin//backfillUserEmails.ts --swc",
-    "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc"
+    "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc",
+    "setRole": "ts-node -P tsconfig.script.json scripts/firebase-admin/setRole.ts"
   },
   "engines": {
     "node": ">=16",
@@ -171,8 +172,9 @@
     "eslint": "^8.7.0",
     "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-i18next": "^6.0.3",
     "firebase-admin": "^10",
+    "eslint-plugin-i18next": "^6.0.3",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
     "firebase-tools": "^11.16.0",
     "ini": "^1.3.5",
     "inquirer": "^6.5.1",

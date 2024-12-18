@@ -104,7 +104,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                alt={t("testimonyItem.edit")}
                 height={50}
                 width={50}
               />
@@ -169,7 +169,7 @@ export const TestimonyItem = ({
           )}
           <Col xs="auto">
             <FooterButton variant="text" onClick={() => setIsReporting(true)}>
-              Report
+              {t("reportModal.report")}
               <IconSpacer />
             </FooterButton>
           </Col>
@@ -180,11 +180,11 @@ export const TestimonyItem = ({
                   className={`text-decoration-none text-secondary`}
                   href={formUrl(testimony.billId, testimony.court)}
                 >
-                  Edit
+                  {t("testimonyItem.edit")}
                   <Image
                     className="px-2 ms-auto align-self-center"
                     src="/edit-testimony.svg"
-                    alt={t("testimonyItem.editIcon") ?? "Edit icon"}
+                    alt={t("")}
                     height={40}
                     width={40}
                   />
