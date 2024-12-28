@@ -78,10 +78,9 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           ): MultiselectHierarchicalMenuItem[] => {
             // Safely attempt to retrieve facet values, default to an empty array if unavailable
             const facetValues =
-              (results?.getFacetValues(
-                attribute,
-                {}
-              ) as SearchResults.FacetValue[]) || []
+              (results?.getFacetValues(attribute, {
+                sortBy: ["name:asc"]
+              }) as SearchResults.FacetValue[]) || []
 
             // Mapping over facetValues with an additional safety check
             const resultsItems =
@@ -174,23 +173,21 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         },
         init(initOptions) {
           const { instantSearchInstance } = initOptions
-          const renderState = this.getWidgetRenderState(initOptions)
-
+          console.log("initOptions", { initOptions })
           renderFn(
             {
-              ...renderState,
+              ...this.getWidgetRenderState(initOptions),
               instantSearchInstance
             },
-            false
+            true
           )
         },
         render(renderOptions) {
           const { instantSearchInstance } = renderOptions
-          const renderState = this.getWidgetRenderState(renderOptions)
 
           renderFn(
             {
-              ...renderState,
+              ...this.getWidgetRenderState(renderOptions),
               instantSearchInstance
             },
             false
@@ -219,7 +216,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         getWidgetSearchParameters(searchParameters, { uiState }) {
-          // Apply the refinements from the URL parameters.
           for (const attribute of attributes) {
             const values =
               (uiState.multiselectHierarchicalMenu?.[
