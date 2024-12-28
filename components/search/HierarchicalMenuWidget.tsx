@@ -76,10 +76,11 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             attribute: string,
             isParent: boolean
           ): MultiselectHierarchicalMenuItem[] => {
-            // Safely attempt to retrieve facet values, default to an empty array if unavailable
+            const sortByParameter = isParent ? ["name:asc"] : ["count:desc"]
+
             const facetValues =
               (results?.getFacetValues(attribute, {
-                sortBy: ["name:asc"]
+                sortBy: sortByParameter
               }) as SearchResults.FacetValue[]) || []
 
             // Mapping over facetValues with an additional safety check
@@ -113,13 +114,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
               return resultsItem ? { ...levelItem, ...resultsItem } : levelItem
             })
 
-            return mergedItems.sort((a, b) => {
-              // if (isParent) {
-              //   return a.label.localeCompare(b.label) // Alphabetical sort for parent
-              // } else {
-              return b.count - a.count // Sort by count descending for child
-              // }
-            })
+            return mergedItems
           }
 
           // Register refinements and items for each attribute.
