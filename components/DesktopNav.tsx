@@ -11,6 +11,7 @@ import {
   NavbarLinkEditProfile,
   NavbarLinkEffective,
   NavbarLinkFAQ,
+  NavbarLinkFollowTab,
   NavbarLinkGoals,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
@@ -23,10 +24,15 @@ import {
   NavbarLinkWhyUse
 } from "./NavbarComponents"
 
+import { useEffect, useContext } from "react"
+import { TabContext } from "./shared/ProfileTabsContext"
+
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
   const { notifications } = useFlags()
   const { t } = useTranslation(["common", "auth"])
+
+  const { tabStatus, setTabStatus } = useContext(TabContext)
 
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
@@ -99,7 +105,20 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <NavbarLinkViewProfile />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavbarLinkEditProfile />
+                <NavbarLinkEditProfile
+                  handleClick={() => {
+                    setTabStatus("AboutYou")
+                  }}
+                />
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <TabContext.Provider value={{ tabStatus, setTabStatus }}>
+                  <NavbarLinkFollowTab
+                    handleClick={() => {
+                      setTabStatus("Following")
+                    }}
+                  />
+                </TabContext.Provider>
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <NavbarLinkSignOut

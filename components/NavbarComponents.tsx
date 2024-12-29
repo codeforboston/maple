@@ -137,6 +137,28 @@ export const NavbarLinkFAQ: React.FC<
   )
 }
 
+export const NavbarLinkFollowTab: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth", "profile"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : ""}
+        href="/editprofile"
+        {...other}
+      >
+        {/* {t("navigation.editProfile")} */}
+        {"Follow Tab"}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
 export const NavbarLinkGoals: React.FC<
   React.PropsWithChildren<{
     handleClick?: any

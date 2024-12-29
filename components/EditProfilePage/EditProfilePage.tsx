@@ -26,6 +26,9 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 
+import { TabContext, TabStatus } from "components/shared/ProfileTabsContext"
+import { useEffect, useContext } from "react"
+
 export function EditProfile() {
   const { user } = useAuth()
   const uid = user?.uid
@@ -62,7 +65,7 @@ export function EditProfileForm({
     notificationFrequency: notificationFrequency
   }: Profile = profile
 
-  const [key, setKey] = useState("AboutYou")
+  const { tabStatus, setTabStatus } = useContext(TabContext)
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<
@@ -144,26 +147,28 @@ export function EditProfileForm({
           uid={uid}
           role={profile.role}
         />
-        <TabContainer
-          defaultActiveKey="AboutYou"
-          activeKey={key}
-          onSelect={(k: any) => setKey(k)}
-        >
-          <TabNavWrapper>
-            {tabs.map((t, i) => (
-              <>
-                <TabNavItem tab={t} i={i} />
-              </>
-            ))}
-          </TabNavWrapper>
-          <StyledTabContent>
-            {tabs.map(t => (
-              <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
-                {t.content}
-              </TabPane>
-            ))}
-          </StyledTabContent>
-        </TabContainer>
+        <TabContext.Provider value={{ tabStatus, setTabStatus }}>
+          <TabContainer
+            // defaultActiveKey="AboutYou"
+            activeKey={tabStatus}
+            onSelect={(k: any) => setTabStatus(k)}
+          >
+            <TabNavWrapper>
+              {tabs.map((t, i) => (
+                <>
+                  <TabNavItem tab={t} i={i} />
+                </>
+              ))}
+            </TabNavWrapper>
+            <StyledTabContent>
+              {tabs.map(t => (
+                <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+                  {t.content}
+                </TabPane>
+              ))}
+            </StyledTabContent>
+          </TabContainer>
+        </TabContext.Provider>
       </Container>
       <ProfileSettingsModal
         actions={actions}
