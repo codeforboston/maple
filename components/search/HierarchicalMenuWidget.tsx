@@ -55,7 +55,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
   (renderFn, unmountFn = () => {}) => {
     return widgetParams => {
       const { attributes, separator } = widgetParams
-
+      console.log(attributes)
       // Store information that needs to be shared across multiple method calls.
       const connectorState: MultiselectHierarchicalMenuState = {
         levels: [],
@@ -69,7 +69,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           if (!results) return { levels: [], widgetParams }
 
           // Get the last refinement.
-          const lastRefinement = results.getRefinements().pop()?.attributeName
+          // const lastRefinement = results.getRefinements().pop()?.attributeName
 
           // Merge the results items with the initial ones.
           const getItems = (
@@ -95,8 +95,8 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                   }))
                 : []
 
-            if (lastRefinement && !attributes.includes(lastRefinement))
-              return resultsItems
+            // if (lastRefinement && !attributes.includes(lastRefinement))
+            //   return resultsItems
 
             const level = connectorState.levels.find(
               level => level.attribute === attribute
@@ -131,6 +131,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                   )
                     helper.clearRefinements(attr)
                 }
+
                 const refinement = helper
                   .getRefinements(attribute)
                   .find(ref => ref.value === value)

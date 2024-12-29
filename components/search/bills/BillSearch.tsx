@@ -31,6 +31,31 @@ const searchClient = new TypesenseInstantSearchAdapter({
   }
 }).searchClient
 
+const extractLastSegmentOfRefinements = (items: any[]) => {
+  return items.map(item => {
+    console.log(item)
+    if (item.label != "topics.lvl1") return item
+    const newRefinements = item.refinements.map(
+      (refinement: { label: string }) => {
+        // Split the label to extract the last part of the hierarchy
+        const lastPartOfLabel = refinement.label.split(" > ").pop()
+
+        return {
+          ...refinement,
+          // Update label to only show the last part
+          label: lastPartOfLabel
+        }
+      }
+    )
+
+    return {
+      ...item,
+      label: "Tags",
+      refinements: newRefinements
+    }
+  })
+}
+
 export const BillSearch = () => {
   const items = useBillSort()
   const initialSortByValue = items[0].value
@@ -99,6 +124,7 @@ const Layout: FC<
           <CurrentRefinements
             className="mt-2 mb-2"
             excludedAttributes={["nextHearingAt"]}
+            transformItems={extractLastSegmentOfRefinements}
           />
           {status === "empty" ? (
             <NoResults>
