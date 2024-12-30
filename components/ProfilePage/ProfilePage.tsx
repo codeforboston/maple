@@ -85,6 +85,8 @@ export function ProfilePage(profileprops: {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
 
+  console.log(profileprops.id)
+
   return (
     <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
       {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}

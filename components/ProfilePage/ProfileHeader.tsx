@@ -35,6 +35,9 @@ export function HeaderWrapper({
   const uid = user?.uid
   const result = useProfile()
 
+  console.log("target: ", profile)
+  console.log("me: ", result.profile)
+
   if (result.loading) {
     return (
       <Row>
@@ -50,8 +53,9 @@ export function HeaderWrapper({
         isUser={isUser}
         isOrg={isOrg}
         onProfilePublicityChanged={onProfilePublicityChanged}
-        profile={result.profile}
+        profile={profile}
         profileId={profileId}
+        result={result.profile}
         uid={uid}
       />
     )
@@ -62,19 +66,23 @@ export function HeaderWrapper({
 
 export const ProfileHeader = ({
   actions,
+  // isProPublic,
   isUser,
   isOrg,
   onProfilePublicityChanged,
   profile,
   profileId,
+  result,
   uid
 }: {
   actions: ProfileHook
+  // isProPublic: boolean | undefined
   isUser: boolean
   isOrg: boolean
   onProfilePublicityChanged: (isPublic: boolean) => void
   profile: Profile
   profileId: string
+  result: Profile
   uid: string
 }) => {
   const { t } = useTranslation("profile")
