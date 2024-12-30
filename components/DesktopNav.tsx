@@ -1,8 +1,10 @@
 import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 import React from "react"
+import { useContext } from "react"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
+import { TabContext } from "./shared/ProfileTabsContext"
 
 import {
   Avatar,
@@ -11,7 +13,6 @@ import {
   NavbarLinkEditProfile,
   NavbarLinkEffective,
   NavbarLinkFAQ,
-  NavbarLinkFollowTab,
   NavbarLinkGoals,
   NavbarLinkLogo,
   NavbarLinkNewsfeed,
@@ -23,9 +24,6 @@ import {
   NavbarLinkViewProfile,
   NavbarLinkWhyUse
 } from "./NavbarComponents"
-
-import { useEffect, useContext } from "react"
-import { TabContext } from "./shared/ProfileTabsContext"
 
 export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
@@ -109,14 +107,16 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                   handleClick={() => {
                     setTabStatus("AboutYou")
                   }}
+                  tab={"navigation.editProfile"}
                 />
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <TabContext.Provider value={{ tabStatus, setTabStatus }}>
-                  <NavbarLinkFollowTab
+                  <NavbarLinkEditProfile
                     handleClick={() => {
                       setTabStatus("Following")
                     }}
+                    tab={"navigation.followingTab"}
                   />
                 </TabContext.Provider>
               </NavDropdown.Item>

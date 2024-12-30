@@ -1,7 +1,5 @@
-import { useFlags } from "components/featureFlags"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -25,9 +23,9 @@ import {
   TabNavWrapper
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
-
-import { TabContext, TabStatus } from "components/shared/ProfileTabsContext"
-import { useEffect, useContext } from "react"
+import { useFlags } from "components/featureFlags"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { TabContext } from "components/shared/ProfileTabsContext"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -149,7 +147,7 @@ export function EditProfileForm({
         />
         <TabContext.Provider value={{ tabStatus, setTabStatus }}>
           <TabContainer
-            // defaultActiveKey="AboutYou"
+            defaultActiveKey="AboutYou"
             activeKey={tabStatus}
             onSelect={(k: any) => setTabStatus(k)}
           >

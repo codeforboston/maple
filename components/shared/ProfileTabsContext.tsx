@@ -8,6 +8,6 @@ interface TabContextType {
 }
 
 export const TabContext = createContext<TabContextType>({
-  tabStatus: "",
+  tabStatus: "AboutYou",
   setTabStatus: () => {}
 })

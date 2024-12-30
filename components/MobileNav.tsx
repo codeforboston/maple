@@ -24,6 +24,9 @@ import {
   NavbarLinkWhyUse
 } from "./NavbarComponents"
 
+import { useContext } from "react"
+import { TabContext } from "./shared/ProfileTabsContext"
+
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const BlackCollapse = styled(() => {
     return (
@@ -42,14 +45,25 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     }
   `
 
+  const { tabStatus, setTabStatus } = useContext(TabContext)
+
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
         <NavbarLinkEditProfile
           handleClick={() => {
+            setTabStatus("AboutYou")
             closeNav()
           }}
+          tab={"navigation.editProfile"}
+        />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            closeNav()
+            setTabStatus("Following")
+          }}
+          tab={"navigation.followingTab"}
         />
         <NavbarLinkSignOut
           handleClick={() => {
