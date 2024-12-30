@@ -90,6 +90,10 @@ export const NavbarLinkEditProfile: React.FC<
         href={
           tab == "navigation.editProfile" ? "/editprofile" : "/editprofilealt"
         }
+        /* editprofilealt identical to editprofile except that the mobile Nav   *
+         * link to Following Tab needs a unique url otherwise both Edit Profile *
+         * and Following Tab will light up when either one is selected          */
+
         {...other}
       >
         {t(tab)}
