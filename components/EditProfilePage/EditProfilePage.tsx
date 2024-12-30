@@ -145,28 +145,26 @@ export function EditProfileForm({
           uid={uid}
           role={profile.role}
         />
-        <TabContext.Provider value={{ tabStatus, setTabStatus }}>
-          <TabContainer
-            defaultActiveKey="AboutYou"
-            activeKey={tabStatus}
-            onSelect={(k: any) => setTabStatus(k)}
-          >
-            <TabNavWrapper>
-              {tabs.map((t, i) => (
-                <>
-                  <TabNavItem tab={t} i={i} />
-                </>
-              ))}
-            </TabNavWrapper>
-            <StyledTabContent>
-              {tabs.map(t => (
-                <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
-                  {t.content}
-                </TabPane>
-              ))}
-            </StyledTabContent>
-          </TabContainer>
-        </TabContext.Provider>
+        <TabContainer
+          defaultActiveKey="AboutYou"
+          activeKey={tabStatus}
+          onSelect={(k: any) => setTabStatus(k)}
+        >
+          <TabNavWrapper>
+            {tabs.map((t, i) => (
+              <>
+                <TabNavItem tab={t} i={i} />
+              </>
+            ))}
+          </TabNavWrapper>
+          <StyledTabContent>
+            {tabs.map(t => (
+              <TabPane key={t.eventKey} title={t.title} eventKey={t.eventKey}>
+                {t.content}
+              </TabPane>
+            ))}
+          </StyledTabContent>
+        </TabContainer>
       </Container>
       <ProfileSettingsModal
         actions={actions}
