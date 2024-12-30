@@ -9,8 +9,9 @@ import { useProfile, ProfileHook } from "components/db"
 import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
-
 import { TabContext } from "components/shared/ProfileTabsContext"
+
+import { GearIcon, OutlineButton } from "../buttons"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -71,11 +72,13 @@ export const EditProfileButton = ({
 export function ProfileButtons({
   isProfilePublic,
   onProfilePublicityChanged,
+  onSettingsModalOpen,
   isUser,
   profileId
 }: {
   isProfilePublic: boolean | undefined
   onProfilePublicityChanged: (isPublic: boolean) => void
+  onSettingsModalOpen: () => void
   isUser: boolean
   profileId: string
 }) {
@@ -121,6 +124,12 @@ export function ProfileButtons({
             stateFalseLabel={t("forms.makePublic")}
             onClick={handleSave}
             className={`py-1`}
+          />
+          <OutlineButton
+            className={`py-1`}
+            label={t("settings")}
+            Icon={GearIcon}
+            onClick={() => onSettingsModalOpen()}
           />
         </div>
       ) : null}

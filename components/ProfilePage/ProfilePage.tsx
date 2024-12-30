@@ -16,6 +16,8 @@ import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 
+import { HeaderWrapper } from "./ProfileHeader"
+
 export function ProfilePage(profileprops: {
   id: string
   verifyisorg?: boolean
@@ -99,11 +101,10 @@ export function ProfilePage(profileprops: {
         </>
       ) : null}
       <Container>
-        <ProfileHeader
+        <HeaderWrapper
           profileId={profileprops.id}
           isUser={isCurrentUser}
           isOrg={isOrg}
-          isProfilePublic={isProfilePublic}
           onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />

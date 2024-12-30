@@ -67,7 +67,7 @@ export function EditProfileForm({
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<
-    "Daily" | "Weekly" | "Monthly" | "None"
+    "Weekly" | "Monthly" | "None"
   >(notificationFrequency ? notificationFrequency : "Monthly")
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
