@@ -1,17 +1,9 @@
 import { useTranslation } from "next-i18next"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { Container, Row, Spinner } from "../bootstrap"
-import { Profile } from "../db"
-import {
-  ProfileHook,
-  UseDraftTestimonyListing,
-  UsePublishedTestimonyListing,
-  useDraftTestimonyListing,
-  useProfile,
-  usePublishedTestimonyListing
-} from "../db"
+import { Row, Spinner } from "../bootstrap"
+import { Profile, ProfileHook, useProfile } from "../db"
 import { EditProfileButton, ProfileButtons } from "./ProfileButtons"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
@@ -35,9 +27,6 @@ export function HeaderWrapper({
   const uid = user?.uid
   const result = useProfile()
 
-  console.log("target: ", profile)
-  console.log("me: ", result.profile)
-
   if (result.loading) {
     return (
       <Row>
@@ -51,12 +40,9 @@ export function HeaderWrapper({
       <ProfileHeader
         actions={result}
         isUser={isUser}
-        isOrg={isOrg}
         onProfilePublicityChanged={onProfilePublicityChanged}
         profile={profile}
         profileId={profileId}
-        result={result.profile}
-        uid={uid}
       />
     )
   }
@@ -67,21 +53,15 @@ export function HeaderWrapper({
 export const ProfileHeader = ({
   actions,
   isUser,
-  isOrg,
   onProfilePublicityChanged,
   profile,
-  profileId,
-  result,
-  uid
+  profileId
 }: {
   actions: ProfileHook
   isUser: boolean
-  isOrg: boolean
   onProfilePublicityChanged: (isPublic: boolean) => void
   profile: Profile
   profileId: string
-  result: Profile
-  uid: string
 }) => {
   const { t } = useTranslation("profile")
   const { role } = profile // When we have more types of profile than org and user, we will need to use the actual role from the profile, and move away from isOrg boolean.
@@ -145,7 +125,12 @@ export const ProfileHeader = ({
         notifications={notifications}
         setNotifications={setNotifications}
         onHide={close}
-        onSettingsModalClose={() => setSettingsModal(null)}
+        onSettingsModalClose={() => {
+          setSettingsModal(null)
+          window.location.reload()
+          /* when saved and reopened, modal wasn't updating *
+           * would like to find cleaner solution            */
+        }}
         show={settingsModal === "show"}
       />
     </Header>
