@@ -58,8 +58,8 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         />
         <NavbarLinkEditProfile
           handleClick={() => {
-            closeNav()
             setTabStatus("Following")
+            closeNav()
           }}
           tab={"navigation.followingTab"}
         />

@@ -87,7 +87,9 @@ export const NavbarLinkEditProfile: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href={tab == "AboutYou" ? "/editprofile" : "/editprofile#following"}
+        href={
+          tab == "navigation.editProfile" ? "/editprofile" : "/editprofilealt"
+        }
         {...other}
       >
         {t(tab)}
