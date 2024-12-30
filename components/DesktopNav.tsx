@@ -110,14 +110,12 @@ export const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <TabContext.Provider value={{ tabStatus, setTabStatus }}>
-                  <NavbarLinkEditProfile
-                    handleClick={() => {
-                      setTabStatus("Following")
-                    }}
-                    tab={"navigation.followingTab"}
-                  />
-                </TabContext.Provider>
+                <NavbarLinkEditProfile
+                  handleClick={() => {
+                    setTabStatus("Following")
+                  }}
+                  tab={"navigation.followingTab"}
+                />
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <NavbarLinkSignOut
