@@ -64,7 +64,11 @@ export const EditProfileButton = ({
       href="/editprofile"
       className={`text-decoration-none text-white d-flex justify-content-center align-items-center col-12 ${className}`}
     >
-      <FillButton label={t(tab)} onClick={handleClick} />
+      <FillButton
+        label={t(tab)}
+        onClick={handleClick}
+        className={`${tab == "button.followedContent" ? `btn-secondary` : ``}`}
+      />
     </Internal>
   )
 }
@@ -117,13 +121,6 @@ export function ProfileButtons({
               setTabStatus("Testimonies")
             }}
             tab={"button.yourTestimonies"}
-          />
-          <ToggleButton
-            toggleState={isProfilePublic || false}
-            stateTrueLabel={t("forms.makePrivate")}
-            stateFalseLabel={t("forms.makePublic")}
-            onClick={handleSave}
-            className={`py-1`}
           />
           <OutlineButton
             className={`py-1`}
