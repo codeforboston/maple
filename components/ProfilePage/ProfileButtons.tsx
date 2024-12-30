@@ -6,7 +6,7 @@ import { FillButton, GearButton, ToggleButton } from "components/buttons"
 import { Internal } from "components/links"
 import { useProfile, ProfileHook } from "components/db"
 import { useFlags } from "components/featureFlags"
-import { FollowOrgButton } from "components/shared/FollowButton"
+import { FollowUserButton } from "components/shared/FollowButton"
 import { useAuth } from "../auth"
 
 export const StyledButton = styled(Button).attrs(props => ({
@@ -110,7 +110,7 @@ export function ProfileButtonsOrg({
   return (
     <>
       {followOrg && user && !isUser ? (
-        <FollowOrgButton profileId={profileId} />
+        <FollowUserButton profileId={profileId} />
       ) : null}
     </>
   )

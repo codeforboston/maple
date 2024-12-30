@@ -3,7 +3,6 @@ import { ProfileIcon } from "./StyledUserIcons"
 
 import { useTranslation } from "next-i18next"
 import { Profile } from "../db"
-import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileButtonsOrg, ProfileButtonsUser } from "./ProfileButtons"
 
 export const ProfileHeader = ({
@@ -37,17 +36,15 @@ export const ProfileHeader = ({
           <ProfileButtonsOrg profileId={profileId} isUser={isUser} />
         </div>
       </div>
-      <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ">
-        {isOrg ? (
-          <OrgContactInfo profile={profile} />
-        ) : (
-          <ProfileButtonsUser
-            isProfilePublic={isProfilePublic}
-            onProfilePublicityChanged={onProfilePublicityChanged}
-            isUser={isUser}
-            profileId={profileId}
-          />
-        )}
+      <div
+        className={`col-12 col-md-2 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto`}
+      >
+        <ProfileButtonsUser
+          isProfilePublic={isProfilePublic}
+          onProfilePublicityChanged={onProfilePublicityChanged}
+          isUser={isUser}
+          profileId={profileId}
+        />
       </div>
     </Header>
   )
