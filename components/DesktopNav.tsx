@@ -1,7 +1,6 @@
 import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
-import React from "react"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Container, Dropdown, Nav, NavDropdown } from "./bootstrap"
 import { TabContext } from "./shared/ProfileTabsContext"

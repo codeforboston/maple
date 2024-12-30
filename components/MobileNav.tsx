@@ -1,6 +1,6 @@
 import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
@@ -23,8 +23,6 @@ import {
   NavbarLinkViewProfile,
   NavbarLinkWhyUse
 } from "./NavbarComponents"
-
-import { useContext } from "react"
 import { TabContext } from "./shared/ProfileTabsContext"
 
 export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
