@@ -66,7 +66,6 @@ export function HeaderWrapper({
 
 export const ProfileHeader = ({
   actions,
-  // isProPublic,
   isUser,
   isOrg,
   onProfilePublicityChanged,
@@ -76,7 +75,6 @@ export const ProfileHeader = ({
   uid
 }: {
   actions: ProfileHook
-  // isProPublic: boolean | undefined
   isUser: boolean
   isOrg: boolean
   onProfilePublicityChanged: (isPublic: boolean) => void

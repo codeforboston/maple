@@ -12,11 +12,9 @@ import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
-import { ProfileHeader } from "./ProfileHeader"
+import { HeaderWrapper } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "./VerifyAccountSection"
-
-import { HeaderWrapper } from "./ProfileHeader"
 
 export function ProfilePage(profileprops: {
   id: string
@@ -84,8 +82,6 @@ export function ProfilePage(profileprops: {
   if (!profile) {
     return <ErrorPage statusCode={404} withDarkMode={false} />
   }
-
-  console.log(profileprops.id)
 
   return (
     <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
