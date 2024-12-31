@@ -1,17 +1,11 @@
 import { useTranslation } from "next-i18next"
-import React, { useContext, useState } from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
-import { useAuth } from "../auth"
+import { FillButton, GearIcon, OutlineButton } from "../buttons"
 import { Button } from "../bootstrap"
 import { Role } from "components/auth/types"
-import { FillButton, GearButton, ToggleButton } from "components/buttons"
-import { useProfile, ProfileHook } from "components/db"
-import { useFlags } from "components/featureFlags"
 import { Internal } from "components/links"
-import { FollowUserButton } from "components/shared/FollowButton"
 import { TabContext } from "components/shared/ProfileTabsContext"
-
-import { GearIcon, OutlineButton } from "../buttons"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -74,33 +68,13 @@ export const EditProfileButton = ({
 }
 
 export function ProfileButtons({
-  isProfilePublic,
-  onProfilePublicityChanged,
   onSettingsModalOpen,
-  isUser,
-  profileId
+  isUser
 }: {
-  isProfilePublic: boolean | undefined
-  onProfilePublicityChanged: (isPublic: boolean) => void
   onSettingsModalOpen: () => void
   isUser: boolean
-  profileId: string
 }) {
   const { t } = useTranslation("editProfile")
-  const { user } = useAuth()
-
-  const actions = useProfile()
-
-  const handleSave = async () => {
-    await updateProfile({ actions })
-  }
-  /* Only regular users are allowed to have a private profile. */
-  async function updateProfile({ actions }: { actions: ProfileHook }) {
-    const { updateIsPublic } = actions
-
-    await updateIsPublic(!isProfilePublic)
-    onProfilePublicityChanged(!isProfilePublic)
-  }
 
   const { tabStatus, setTabStatus } = useContext(TabContext)
 
