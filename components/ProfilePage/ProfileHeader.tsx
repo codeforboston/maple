@@ -65,7 +65,7 @@ export const ProfileHeader = ({
   const { t } = useTranslation("profile")
   const { role } = profile // When we have more types of profile than org and user, we will need to use the actual role from the profile, and move away from isOrg boolean.
   const { user } = useAuth()
-  const isLg = useMediaQuery("(max-width: 992px)")
+  const isMd = useMediaQuery("(max-width: 992px)")
 
   const {
     public: isPublic,
@@ -102,7 +102,7 @@ export const ProfileHeader = ({
             <FollowUserButton profileId={profileId} />
           ) : (
             <EditProfileButton
-              className={`py-1`}
+              className={`py-1 col-md-8`}
               handleClick={() => {
                 setTabStatus("AboutYou")
               }}
@@ -113,7 +113,7 @@ export const ProfileHeader = ({
       </div>
       <div
         className={`col-12 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ${
-          isLg ? `col-md-3` : `col-md-2`
+          isMd ? `col-md-3` : `col-md-2`
         }`}
       >
         <ProfileButtons
