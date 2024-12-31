@@ -30,17 +30,17 @@ const meta: Meta = {
 
 export default meta
 
-type Story = StoryObj<typeof ProfileButtons>
+// type Story = StoryObj<typeof ProfileButtons>
 
-export const Primary: Story = {
-  args: {
-    isProfilePublic: true,
-    onProfilePublicityChanged: () => {
-      console.log("clicked")
-    }
-  },
-  argTypes: {
-    isProfilePublic: { control: { type: "boolean" } }
-  },
-  name: "Profile Buttons"
-}
+// export const Primary: Story = {
+//   args: {
+//     isProfilePublic: true,
+//     onProfilePublicityChanged: () => {
+//       console.log("clicked")
+//     }
+//   },
+//   argTypes: {
+//     isProfilePublic: { control: { type: "boolean" } }
+//   },
+//   name: "Profile Buttons"
+// }
