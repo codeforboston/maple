@@ -102,7 +102,6 @@ export function ProfilePage(profileprops: {
         <HeaderWrapper
           profileId={profileprops.id}
           isUser={isCurrentUser}
-          isOrg={isOrg}
           onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />

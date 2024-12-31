@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
 import { Row, Spinner } from "../bootstrap"
@@ -9,16 +9,15 @@ import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { FollowUserButton } from "components/shared/FollowButton"
+import { TabContext } from "components/shared/ProfileTabsContext"
 
 export function HeaderWrapper({
   profileId,
   isUser,
-  isOrg,
   onProfilePublicityChanged,
   profile
 }: {
   isUser: boolean
-  isOrg: boolean
   profile: Profile
   profileId: string
   onProfilePublicityChanged: (isPublic: boolean) => void
@@ -87,6 +86,8 @@ export const ProfileHeader = ({
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
+  const { tabStatus, setTabStatus } = useContext(TabContext)
+
   return (
     <Header>
       <div
@@ -100,7 +101,13 @@ export const ProfileHeader = ({
           {user && !isUser ? (
             <FollowUserButton profileId={profileId} />
           ) : (
-            <EditProfileButton className={`py-1`} tab="button.editProfile" />
+            <EditProfileButton
+              className={`py-1`}
+              handleClick={() => {
+                setTabStatus("AboutYou")
+              }}
+              tab="button.editProfile"
+            />
           )}
         </div>
       </div>
@@ -110,11 +117,8 @@ export const ProfileHeader = ({
         }`}
       >
         <ProfileButtons
-          isProfilePublic={isProfilePublic}
           isUser={isUser}
-          onProfilePublicityChanged={onProfilePublicityChanged}
           onSettingsModalOpen={onSettingsModalOpen}
-          profileId={profileId}
         />
       </div>
       <ProfileSettingsModal
