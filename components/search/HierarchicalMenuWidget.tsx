@@ -66,7 +66,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         getWidgetRenderState({ results, helper }) {
           // When there are no results, return the API with default values.
           if (!results) return { levels: [], widgetParams }
-          
+
           // Merge the results items with the initial ones.
           const getItems = (
             attribute: string,
@@ -78,10 +78,10 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             if (!helper.state.disjunctiveFacets.includes(attribute)) {
               helper.setQueryParameter("disjunctiveFacets", [
                 ...helper.state.disjunctiveFacets,
-                attribute,
-              ]);
-              helper.search(); 
-            }            
+                attribute
+              ])
+              helper.search()
+            }
 
             const facetValues =
               (results?.getFacetValues(attribute, {
