@@ -32,12 +32,6 @@ export const useHierarchicalMenu = ({
 
   const hierarchicalMenu = (
     <>
-      {/* need to be changed */}
-      <div style={{ display: "none" }}>
-        {hierarchicalMenuProps.map((p, i) => (
-          <RefinementList className="mb-4" key={i} {...(p as any)} />
-        ))}
-      </div>
       <MultiselectHierarchicalMenu
         attributes={[
           hierarchicalMenuProps[0].attribute,

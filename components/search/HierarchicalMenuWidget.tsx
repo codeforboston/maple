@@ -55,7 +55,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
   (renderFn, unmountFn = () => {}) => {
     return widgetParams => {
       const { attributes, separator } = widgetParams
-      console.log(attributes)
       // Store information that needs to be shared across multiple method calls.
       const connectorState: MultiselectHierarchicalMenuState = {
         levels: [],
@@ -67,16 +66,22 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         getWidgetRenderState({ results, helper }) {
           // When there are no results, return the API with default values.
           if (!results) return { levels: [], widgetParams }
-
-          // Get the last refinement.
-          // const lastRefinement = results.getRefinements().pop()?.attributeName
-
+          
           // Merge the results items with the initial ones.
           const getItems = (
             attribute: string,
             isParent: boolean
           ): MultiselectHierarchicalMenuItem[] => {
             const sortByParameter = isParent ? ["name:asc"] : ["count:desc"]
+
+            // Trigger a new search to apply the updated facets
+            if (!helper.state.disjunctiveFacets.includes(attribute)) {
+              helper.setQueryParameter("disjunctiveFacets", [
+                ...helper.state.disjunctiveFacets,
+                attribute,
+              ]);
+              helper.search(); 
+            }            
 
             const facetValues =
               (results?.getFacetValues(attribute, {
@@ -94,9 +99,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                     count: facetValue.count
                   }))
                 : []
-
-            // if (lastRefinement && !attributes.includes(lastRefinement))
-            //   return resultsItems
 
             const level = connectorState.levels.find(
               level => level.attribute === attribute
@@ -131,7 +133,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                   )
                     helper.clearRefinements(attr)
                 }
-
                 const refinement = helper
                   .getRefinements(attribute)
                   .find(ref => ref.value === value)
@@ -169,7 +170,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         },
         init(initOptions) {
           const { instantSearchInstance } = initOptions
-          console.log("initOptions", { initOptions })
           renderFn(
             {
               ...this.getWidgetRenderState(initOptions),

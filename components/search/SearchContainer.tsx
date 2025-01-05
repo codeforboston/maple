@@ -151,7 +151,6 @@ export const SearchContainer = styled.div`
     background-color: white;
     padding: 1rem;
     border-radius: 4px;
-    margin-top: 0.5rem;
     margin-bottom: 1.5rem;
     max-height: 250px;
     overflow-y: auto;
