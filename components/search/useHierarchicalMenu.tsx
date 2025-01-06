@@ -1,17 +1,12 @@
-import {
-  HierarchicalMenu,
-  HierarchicalMenuProps,
-  RefinementList,
-  useInstantSearch
-} from "react-instantsearch"
+import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Offcanvas } from "../bootstrap"
+import { Button, Offcanvas } from "../bootstrap"
 import { SearchContainer } from "./SearchContainer"
-
+import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 export const FilterButton = styled(Button)`
   font-size: 1rem;
   line-height: 1rem;
@@ -25,35 +20,38 @@ const useHasRefinements = () => {
   return refinements.length !== 0
 }
 
-export const useRefinements = ({
-  refinementProps
+export const useHierarchicalMenu = ({
+  hierarchicalMenuProps
 }: {
-  refinementProps: any[]
+  hierarchicalMenuProps: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
-  const refinements = (
+  const hierarchicalMenu = (
     <>
-      {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i} {...(p as any)} />
-      ))}
+      <MultiselectHierarchicalMenu
+        attributes={[
+          hierarchicalMenuProps[0].attribute,
+          hierarchicalMenuProps[1].attribute
+        ]}
+      />
     </>
   )
   const hasRefinements = useHasRefinements()
 
   return {
     options: inline ? (
-      <div>{refinements}</div>
+      <div>{hierarchicalMenu}</div>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Filter</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <SearchContainer>{refinements}</SearchContainer>
+          <SearchContainer>{hierarchicalMenu}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
     ),

@@ -17,6 +17,7 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
+import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
 import { useBillSort } from "./useBillSort"
@@ -29,6 +30,31 @@ const searchClient = new TypesenseInstantSearchAdapter({
     exclude_fields: "body"
   }
 }).searchClient
+
+const extractLastSegmentOfRefinements = (items: any[]) => {
+  return items.map(item => {
+    console.log(item)
+    if (item.label != "topics.lvl1") return item
+    const newRefinements = item.refinements.map(
+      (refinement: { label: string }) => {
+        // Split the label to extract the last part of the hierarchy
+        const lastPartOfLabel = refinement.label.split(" > ").pop()
+
+        return {
+          ...refinement,
+          // Update label to only show the last part
+          label: lastPartOfLabel
+        }
+      }
+    )
+
+    return {
+      ...item,
+      label: "Tags",
+      refinements: newRefinements
+    }
+  })
+}
 
 export const BillSearch = () => {
   const items = useBillSort()
@@ -75,6 +101,7 @@ const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
   const refinements = useBillRefinements()
+  const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
 
   return (
@@ -83,16 +110,21 @@ const Layout: FC<
         <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
-        {refinements.options}
+        <Col xs={3} lg={3}>
+          {hierarchicalMenu.options}
+          {refinements.options}
+        </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
+            {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements
             className="mt-2 mb-2"
             excludedAttributes={["nextHearingAt"]}
+            transformItems={extractLastSegmentOfRefinements}
           />
           {status === "empty" ? (
             <NoResults>
