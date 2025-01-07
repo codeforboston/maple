@@ -41,7 +41,7 @@ export const Primary: Story = {
         district: "District 1"
       },
       public: true,
-      notificationFrequency: "Daily",
+      notificationFrequency: "Weekly",
       about: "About me",
       social: {
         twitter: "johndoe",

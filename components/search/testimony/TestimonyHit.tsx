@@ -5,7 +5,7 @@ import { Testimony } from "components/db/testimony"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
-import { FollowOrgButton } from "components/shared/FollowButton"
+import { FollowUserButton } from "components/shared/FollowButton"
 import { Image } from "react-bootstrap"
 import { useFlags } from "components/featureFlags"
 import { useAuth } from "components/auth"
@@ -72,7 +72,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           <b>Written by {writtenBy}</b>
         </span>
         {!isCurrentUser && followOrg && user && (
-          <FollowOrgButton profileId={hit.authorUid} />
+          <FollowUserButton profileId={hit.authorUid} />
         )}
       </div>
       <hr />
