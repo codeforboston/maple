@@ -89,7 +89,13 @@ export const ButtonWithCheckmark = ({
   )
 }
 
-export function FollowOrgButton({ profileId }: { profileId: string }) {
+export function FollowUserButton({
+  className,
+  profileId
+}: {
+  className?: string
+  profileId: string
+}) {
   const { user } = useAuth()
   const uid = user?.uid
   const topicName = `testimony-${profileId}`

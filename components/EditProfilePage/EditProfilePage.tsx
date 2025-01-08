@@ -1,7 +1,5 @@
-import { useFlags } from "components/featureFlags"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 import { useTranslation } from "next-i18next"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -25,6 +23,9 @@ import {
   TabNavWrapper
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
+import { useFlags } from "components/featureFlags"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { TabContext } from "components/shared/ProfileTabsContext"
 
 export function EditProfile() {
   const { user } = useAuth()
@@ -62,11 +63,11 @@ export function EditProfileForm({
     notificationFrequency: notificationFrequency
   }: Profile = profile
 
-  const [key, setKey] = useState("AboutYou")
+  const { tabStatus, setTabStatus } = useContext(TabContext)
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<
-    "Daily" | "Weekly" | "Monthly" | "None"
+    "Weekly" | "Monthly" | "None"
   >(notificationFrequency ? notificationFrequency : "Monthly")
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
@@ -146,8 +147,8 @@ export function EditProfileForm({
         />
         <TabContainer
           defaultActiveKey="AboutYou"
-          activeKey={key}
-          onSelect={(k: any) => setKey(k)}
+          activeKey={tabStatus}
+          onSelect={(k: any) => setTabStatus(k)}
         >
           <TabNavWrapper>
             {tabs.map((t, i) => (

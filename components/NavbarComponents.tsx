@@ -78,18 +78,25 @@ export const NavbarLinkEditProfile: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    tab: string
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, tab }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href="/editprofile"
+        href={
+          tab == "navigation.editProfile" ? "/editprofile" : "/editprofilealt"
+        }
+        /* editprofilealt identical to editprofile except that the mobile Nav   *
+         * link to Following Tab needs a unique url otherwise both Edit Profile *
+         * and Following Tab will light up when either one is selected          */
+
         {...other}
       >
-        {t("navigation.editProfile")}
+        {t(tab)}
       </NavLink>
     </Nav.Item>
   )
