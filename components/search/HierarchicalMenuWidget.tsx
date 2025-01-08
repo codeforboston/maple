@@ -120,9 +120,11 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
 
           // Register refinements and items for each attribute.
-          for (const [i, attribute] of attributes.entries()) {
+          for (let i = 0; i < attributes.length; i++) {
+            const attribute = attributes[i];
             if (!connectorState.levels[i]) {
               const refine = (value: string) => {
+                console.log("attributes", attributes)
                 for (const attr of attributes) {
                   const isLastAttribute =
                     attribute === attributes[attributes.length - 1] &&
@@ -358,7 +360,7 @@ const MultiselectHierarchicalMenuItem = ({
           <input
             type="checkbox"
             checked={item.isRefined}
-            onClick={onLabelClick}
+            onChange={onLabelClick}
             className={`ais-MultiselectHierarchicalMenu-checkbox${
               hasSubLevel ? "" : "--child"
             }`}
