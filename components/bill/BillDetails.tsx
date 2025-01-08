@@ -34,7 +34,8 @@ const StyledImage = styled(Image)`
 export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
 
-  const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+  const { user } = useAuth()  // Get the logged-in user (adjust according to your auth logic)
+  const isPendingUpgrade = user?.claims?.role === "pendingUpgrade" // Ensure the role check is based on the authenticated user
   const flags = useFlags()
 
   const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
@@ -69,7 +70,7 @@ export const BillDetails = ({ bill }: BillProps) => {
               </Row>
               <Row className="mb-4">
                 <Col xs={12} className="d-flex justify-content-end">
-                  {flags.notifications && <FollowBillButton bill={bill} />}
+                  {flags.notifications && user && <FollowBillButton bill={bill} />}
                 </Col>
               </Row>
             </>
@@ -80,7 +81,7 @@ export const BillDetails = ({ bill }: BillProps) => {
               </Col>
               <Col xs={6} className="d-flex justify-content-end">
                 <Styled>
-                  {flags.notifications && <FollowBillButton bill={bill} />}
+                  {flags.notifications && user && <FollowBillButton bill={bill} />}
                 </Styled>
               </Col>
             </Row>
