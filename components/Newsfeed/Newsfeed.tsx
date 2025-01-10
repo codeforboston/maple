@@ -1,7 +1,7 @@
 import ErrorPage from "next/error"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { usePublicProfile } from "../db"
@@ -15,12 +15,18 @@ import {
 } from "./StyledNewsfeedComponents"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 
+import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { TabContext } from "components/shared/ProfileTabsContext"
+import { Profile, ProfileHook, useProfile } from "../db"
+import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
+
 export default function Newsfeed() {
   const { t } = useTranslation("common")
 
   const { user } = useAuth()
   const uid = user?.uid
   const { result: profile, loading } = usePublicProfile(uid)
+  const isUser = user?.uid !== undefined
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
@@ -127,6 +133,58 @@ export default function Newsfeed() {
     )
   }
 
+  function Buttons({ profile }: { profile: Profile }) {
+    const {
+      public: isPublic,
+      notificationFrequency: notificationFrequency
+    }: Profile = profile
+
+    const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+    const [notifications, setNotifications] = useState<
+      "Weekly" | "Monthly" | "None"
+    >(notificationFrequency ? notificationFrequency : "Monthly")
+    const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
+      isPublic ? isPublic : false
+    )
+
+    const onSettingsModalOpen = () => {
+      setSettingsModal("show")
+      setNotifications(
+        notificationFrequency ? notificationFrequency : "Monthly"
+      )
+      setIsProfilePublic(isPublic ? isPublic : false)
+    }
+
+    const actions = useProfile()
+
+    const { t } = useTranslation("profile")
+
+    return (
+      <>
+        <ProfileButtons
+          isUser={isUser}
+          onSettingsModalOpen={onSettingsModalOpen}
+        />
+        <ProfileSettingsModal
+          actions={actions}
+          role={profile.role}
+          isProfilePublic={isProfilePublic}
+          setIsProfilePublic={setIsProfilePublic}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          onHide={close}
+          onSettingsModalClose={() => {
+            setSettingsModal(null)
+            window.location.reload()
+            /* when saved and reopened, modal wasn't updating *
+             * would like to find cleaner solution            */
+          }}
+          show={settingsModal === "show"}
+        />
+      </>
+    )
+  }
+
   return (
     <>
       {loading ? (
@@ -143,6 +201,7 @@ export default function Newsfeed() {
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
                   <Filters />
+                  <Buttons profile={profile} />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
