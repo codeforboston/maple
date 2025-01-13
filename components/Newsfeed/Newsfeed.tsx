@@ -67,7 +67,7 @@ export default function Newsfeed() {
     fetchNotifications()
   }, [uid])
 
-  function Filters() {
+  function Filters({ profile }: { profile: Profile }) {
     return (
       <FilterBoxes
         onOrgFilterChange={(isShowing: boolean) => {
@@ -78,27 +78,30 @@ export default function Newsfeed() {
         }}
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
+        profile={profile}
       />
     )
   }
 
   function FilterBoxes({
-    onOrgFilterChange,
-    onBillFilterChange,
+    isShowingBills,
     isShowingOrgs,
-    isShowingBills
+    onBillFilterChange,
+    onOrgFilterChange,
+    profile
   }: {
-    onOrgFilterChange: any
-    onBillFilterChange: any
-    isShowingOrgs: boolean
     isShowingBills: boolean
+    isShowingOrgs: boolean
+    onBillFilterChange: any
+    onOrgFilterChange: any
+    profile: Profile
   }) {
     const { t } = useTranslation("common")
 
     return (
       <>
         <Row className={`d-flex ms-5 mt-2 ps-4`} xs="auto">
-          <Col className="form-check checkbox">
+          <Col className="form-check checkbox mt-3">
             <input
               className="form-check-input"
               type="checkbox"
@@ -113,7 +116,7 @@ export default function Newsfeed() {
               {t("user_updates")}
             </label>
           </Col>
-          <BillCol className="form-check checkbox">
+          <BillCol className="form-check checkbox mt-3">
             <input
               className="form-check-input"
               type="checkbox"
@@ -128,6 +131,7 @@ export default function Newsfeed() {
               {t("bill_updates")}
             </label>
           </BillCol>
+          <Buttons profile={profile} />
         </Row>
       </>
     )
@@ -161,10 +165,13 @@ export default function Newsfeed() {
 
     return (
       <>
-        <ProfileButtons
-          isUser={isUser}
-          onSettingsModalOpen={onSettingsModalOpen}
-        />
+        <div>
+          <ProfileButtons
+            isUser={isUser}
+            hideTestimonyButton={true}
+            onSettingsModalOpen={onSettingsModalOpen}
+          />
+        </div>
         <ProfileSettingsModal
           actions={actions}
           role={profile.role}
@@ -197,11 +204,10 @@ export default function Newsfeed() {
             <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
-                  <HeaderTitle className={`mb-5`}>
+                  <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
-                  <Filters />
-                  <Buttons profile={profile} />
+                  <Filters profile={profile} />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
