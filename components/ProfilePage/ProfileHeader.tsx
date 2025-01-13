@@ -117,6 +117,7 @@ export const ProfileHeader = ({
         }`}
       >
         <ProfileButtons
+          hideTestimonyButton={false}
           isUser={isUser}
           onSettingsModalOpen={onSettingsModalOpen}
         />
