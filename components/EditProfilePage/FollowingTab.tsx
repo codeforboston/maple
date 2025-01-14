@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
+import { getFunctions } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
@@ -10,11 +10,6 @@ import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
 import { FollowedItem } from "./FollowingTabComponents"
 import { BillElement, UserElement } from "./FollowingTabComponents"
 import { deleteItem } from "components/shared/FollowingQueries"
-
-const functions = getFunctions()
-
-const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
-const unfollowUserFunction = httpsCallable(functions, "unfollowUser")
 
 export function FollowingTab({ className }: { className?: string }) {
   const { user } = useAuth()
