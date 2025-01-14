@@ -9,6 +9,7 @@ import { TitledSectionCard } from "../shared"
 import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
 import { FollowedItem } from "./FollowingTabComponents"
 import { BillElement, UserElement } from "./FollowingTabComponents"
+import { deleteItem } from "components/shared/FollowingQueries"
 
 const functions = getFunctions()
 
@@ -97,28 +98,10 @@ export function FollowingTab({ className }: { className?: string }) {
     if (unfollow === null) {
       return
     }
-    // rest of what was inside the original if statement
-    if (unfollow.type == "bill") {
-      const billLookup = { billId: unfollow.typeId, court: unfollow.court }
-      try {
-        const response = await unfollowBillFunction({
-          billLookup
-        })
-        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-      } catch (error: any) {
-        console.log(error.message)
-      }
-    } else {
-      const userLookup = {
-        profileId: unfollow.typeId,
-        fullName: unfollow.userName
-      }
-      try {
-        const response = await unfollowUserFunction({ userLookup: userLookup })
-        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
-      } catch (error: any) {
-        console.log(error.message)
-      }
+    try {
+      deleteItem({ uid, unfollowItem: unfollow })
+    } catch (error: any) {
+      console.log(error.message)
     }
 
     setBillsFollowing([])
