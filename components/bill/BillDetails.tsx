@@ -70,7 +70,9 @@ export const BillDetails = ({ bill }: BillProps) => {
               </Row>
               <Row className="mb-4">
                 <Col xs={12} className="d-flex justify-content-end">
-                  {flags.notifications && user && <FollowBillButton bill={bill} />}
+                  {flags.notifications && user && (
+                    <FollowBillButton bill={bill} />
+                  )}
                 </Col>
               </Row>
             </>
@@ -81,7 +83,9 @@ export const BillDetails = ({ bill }: BillProps) => {
               </Col>
               <Col xs={6} className="d-flex justify-content-end">
                 <Styled>
-                  {flags.notifications && user && <FollowBillButton bill={bill} />}
+                  {flags.notifications && user && (
+                    <FollowBillButton bill={bill} />
+                  )}
                 </Styled>
               </Col>
             </Row>
