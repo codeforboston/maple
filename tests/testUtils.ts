@@ -15,9 +15,9 @@ export const testTimestamp = admin.firestore.Timestamp
 export { admin as testAdmin }
 
 export async function terminateFirebase() {
-  await deleteApp(app)
   await terminate(firestore)
   await clearIndexedDbPersistence(firestore)
+  await deleteApp(app)
   // Despite the above calls to teardown firebase resources, Jest still
   // complains about unstopped async operations. Adding a 3 second pause fixes
   // the warning but increases test time. Firebase eventually does exit, but the
