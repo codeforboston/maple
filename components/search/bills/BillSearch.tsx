@@ -38,7 +38,9 @@ const extractLastSegmentOfRefinements = (items: any[]) => {
     const newRefinements = item.refinements.map(
       (refinement: { label: string }) => {
         // Split the label to extract the last part of the hierarchy
-        const lastPartOfLabel = refinement.label.split(" > ").pop()
+        const lastPartOfLabel = refinement.label.includes(">")
+          ? refinement.label.split(" > ").pop()
+          : refinement.label
 
         return {
           ...refinement,

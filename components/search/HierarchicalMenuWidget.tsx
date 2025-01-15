@@ -67,6 +67,9 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           // When there are no results, return the API with default values.
           if (!results) return { levels: [], widgetParams }
 
+          // Get the last refinement.
+          const lastRefinement = results.getRefinements().pop()?.attributeName
+
           // Merge the results items with the initial ones.
           const getItems = (
             attribute: string,
@@ -99,6 +102,8 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                     count: facetValue.count
                   }))
                 : []
+            if (lastRefinement && !attributes.includes(lastRefinement))
+              return resultsItems
 
             const level = connectorState.levels.find(
               level => level.attribute === attribute
@@ -121,10 +126,9 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
 
           // Register refinements and items for each attribute.
           for (let i = 0; i < attributes.length; i++) {
-            const attribute = attributes[i];
+            const attribute = attributes[i]
             if (!connectorState.levels[i]) {
               const refine = (value: string) => {
-                console.log("attributes", attributes)
                 for (const attr of attributes) {
                   const isLastAttribute =
                     attribute === attributes[attributes.length - 1] &&
@@ -138,9 +142,13 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                 const refinement = helper
                   .getRefinements(attribute)
                   .find(ref => ref.value === value)
-                refinement
-                  ? helper.removeDisjunctiveFacetRefinement(attribute, value)
-                  : helper.addDisjunctiveFacetRefinement(attribute, value)
+
+                if (!refinement) {
+                  helper.addDisjunctiveFacetRefinement(attribute, value)
+                } else {
+                  helper.removeDisjunctiveFacetRefinement(attribute, value)
+                }
+
                 helper.search()
               }
 
@@ -203,7 +211,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             }),
             {}
           )
-
           return {
             ...uiState,
             multiselectHierarchicalMenu: {
@@ -215,18 +222,22 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         },
         getWidgetSearchParameters(searchParameters, { uiState }) {
           for (const attribute of attributes) {
-            const values =
+            const allTags =
               (uiState.multiselectHierarchicalMenu?.[
                 attribute as keyof MultiselectHierarchicalMenuRender
               ] as unknown as string[]) || []
 
-            if (Array.isArray(values)) {
-              const refinements =
+            if (Array.isArray(allTags)) {
+              const currentRefinements =
                 searchParameters.disjunctiveFacetsRefinements[attribute] || []
+
+              const newTags = allTags.filter(
+                allTags => !currentRefinements.includes(allTags)
+              )
 
               searchParameters.disjunctiveFacetsRefinements = {
                 ...searchParameters.disjunctiveFacetsRefinements,
-                [attribute]: [...refinements, ...values]
+                [attribute]: [...currentRefinements, ...newTags]
               }
             }
           }
