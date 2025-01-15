@@ -101,23 +101,23 @@ const Layout = () => {
 
   const onTabClick = (t: Tab) => {
     setKey(t)
-    setIndexUiState((prevState) => {
-      const validRoles = ["user", "organization", "admin"] 
+    setIndexUiState(prevState => {
+      const validRoles = ["user", "organization", "admin"]
       const role =
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
           ? ["organization"]
-          : validRoles 
+          : validRoles
       return {
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          authorRole: role,
-        },
+          authorRole: role
+        }
       }
     })
-  }  
+  }
 
   const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
 
