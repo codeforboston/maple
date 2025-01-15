@@ -102,13 +102,13 @@ const Layout = () => {
   const onTabClick = (t: Tab) => {
     setKey(t)
     setIndexUiState(prevState => {
-      const prevRefinements = prevState.refinementList
+      const validRoles = ["user", "organization", "admin"]
       const role =
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
           ? ["organization"]
-          : ["user", "organization"]
+          : validRoles
       return {
         ...prevState,
         refinementList: {
