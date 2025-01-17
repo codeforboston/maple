@@ -8,7 +8,11 @@ import classNames from "classnames"
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
 
-export default function PolicyPage({ policy }: { policy?: Policy }) {
+export default function PolicyPage({
+  policy = "privacy-policy"
+git }: {
+  policy?: Policy
+}) {
   const handleOnClick = (p: Policy) => {
     Router.push(`/policies/${p}`)
   }
