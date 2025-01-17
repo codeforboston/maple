@@ -8,11 +8,7 @@ import classNames from "classnames"
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
 
-export default function PolicyPage({
-  policy = "privacy-policy"
-}: {
-  policy?: Policy
-}) {
+export default function PolicyPage({ policy }: { policy?: Policy }) {
   const handleOnClick = (p: Policy) => {
     Router.push(`/policies/${p}`)
   }
@@ -70,15 +66,19 @@ export default function PolicyPage({
           )}
         >
           <Col xs={12} className={style.blueBox}>
-            <Image src="handShake.jpg" alt="" className={style.symbol}></Image>
+            <Image src="/handShake.jpg" alt="" className={style.symbol}></Image>
             <p className={style.values}>Humility</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
-            <Image src="compassion.png" alt="" className={style.symbol}></Image>
+            <Image
+              src="/compassion.png"
+              alt=""
+              className={style.symbol}
+            ></Image>
             <p className={style.values}>Compassion</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
-            <Image src="lightBulb.png" alt="" className={style.symbol}></Image>
+            <Image src="/lightBulb.png" alt="" className={style.symbol}></Image>
             <p className={style.values}>Curiosity</p>
           </Col>
         </Row>
