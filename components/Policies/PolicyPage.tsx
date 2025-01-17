@@ -10,7 +10,7 @@ export type Policy = (typeof policies)[number]
 
 export default function PolicyPage({
   policy = "privacy-policy"
-git }: {
+}: {
   policy?: Policy
 }) {
   const handleOnClick = (p: Policy) => {
