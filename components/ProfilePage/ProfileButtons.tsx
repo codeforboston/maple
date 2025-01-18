@@ -68,11 +68,13 @@ export const EditProfileButton = ({
 }
 
 export function ProfileButtons({
-  onSettingsModalOpen,
-  isUser
+  isUser,
+  hideTestimonyButton,
+  onSettingsModalOpen
 }: {
-  onSettingsModalOpen: () => void
   isUser: boolean
+  hideTestimonyButton: boolean
+  onSettingsModalOpen: () => void
 }) {
   const { t } = useTranslation("editProfile")
 
@@ -89,13 +91,17 @@ export function ProfileButtons({
             }}
             tab={"button.followedContent"}
           />
-          <EditProfileButton
-            className={`py-1`}
-            handleClick={() => {
-              setTabStatus("Testimonies")
-            }}
-            tab={"button.yourTestimonies"}
-          />
+          {hideTestimonyButton ? (
+            <></>
+          ) : (
+            <EditProfileButton
+              className={`py-1`}
+              handleClick={() => {
+                setTabStatus("Testimonies")
+              }}
+              tab={"button.yourTestimonies"}
+            />
+          )}
           <OutlineButton
             className={`py-1`}
             label={t("settings")}
