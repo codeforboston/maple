@@ -18,14 +18,14 @@ import { Results } from "components/shared/FollowingQueries"
 export interface State {
   /** null if the user is signed out, undefined if the auth state hasn't been
    * initialized */
-  //user: Maybe<User>
-  /** Only set if authenticated */
-  //bill?: Bill
-  /** True iff user is signed in */
- //following: boolean
-  //bills: { [key: string]: string[] }
-  //authenticated: boolean
-  //authFlowStep: AuthFlowStep
+//user: Maybe<User>
+/** Only set if authenticated */
+//bill?: Bill
+/** True iff user is signed in */
+//following: boolean
+//bills: { [key: string]: string[] }
+//authenticated: boolean
+//authFlowStep: AuthFlowStep
 //}
 /*
 export interface State {
@@ -59,7 +59,6 @@ export const {
 export const useAuth = () => useAppSelector(state => state.bills)
 
 */
-
 
 /*
 export interface State {

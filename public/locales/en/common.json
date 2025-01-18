@@ -5,6 +5,7 @@
     "old_session": "this bill is from session {{billCourt}} - not the current session",
     "read_more": "Read More",
     "download_pdf": "Download PDF",
+    "view_bill": "View Bill Text",
     "icon": {
       "commerce": "Commerce",
       "crime_and_law_enforcement": "Crime and Law Enforcement",
@@ -30,7 +31,7 @@
     },
     "smart_tag": "AI Smart Tag",
     "smart_summary": "Smart Summary & Tags",
-    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
+    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation.  Learn more about {{howToLink}}. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
   },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
@@ -76,7 +77,7 @@
     "privacyAndConduct": "Privacy Policy & Code of Conduct",
     "signOut": "Sign Out",
     "supportMaple": "Support MAPLE",
-    "toWriteEffectiveTestimony": "To Write Effective Testimony",
+    "aboutTestimony": "About Testimony",
     "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE"
   },
