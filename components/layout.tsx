@@ -49,7 +49,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
           </Head>
           <TabContext.Provider value={{ tabStatus, setTabStatus }}>
             <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
-            <PageContainer>
+              <PageContainer>
                 <MainNavbar />
                 <AuthModal />
                 <div className={`col`}>{children}</div>
@@ -59,7 +59,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
                   signOut={signOutAndRedirectToHome}
                 />
               </PageContainer>
-          </FollowContext.Provider>
+            </FollowContext.Provider>
           </TabContext.Provider>
         </>
       ) : (
