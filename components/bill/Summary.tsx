@@ -88,7 +88,7 @@ export const Summary = ({
                 className="m-1"
                 onClick={handleShowBillDetails}
               >
-                {t("bill.read_more")}
+                {t("bill.view_bill")}
               </StyledButton>
             ) : (
               <links.External
@@ -131,7 +131,7 @@ export const Summary = ({
           ) : (
             <></>
           )}
-          <Row className="fst-italic mx-1 mb-3">{bill.summary}</Row>
+          <Row className="mx-1 mb-3">{bill.summary}</Row>
           <Row className={`d-flex mx-0 my-1`} xs="auto">
             {bill.topics?.map(t => (
               <SmartTag key={t.topic} icon={t.category} tagName={t.topic} />

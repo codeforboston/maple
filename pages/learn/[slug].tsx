@@ -28,8 +28,8 @@ interface IParams extends ParsedUrlQuery {
 
 const tabs: TabsType[] = [
   {
-    label: "To Write Effective Testimony",
-    slug: "to-write-effective-testimony",
+    label: "Testimony Basics",
+    slug: "testimony-basics",
     index: 1,
     Component: Basics
   },
