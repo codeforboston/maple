@@ -65,6 +65,7 @@
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
+    "followingTab": "Following Tab",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
@@ -81,9 +82,16 @@
   },
   "newcomer" : "New to MAPLE? For extra support, check",
   "newsfeed": {
-    "action_update": "has an action update from the ",
+    "actionTaken": "Action taken on ",
+    "actionUpdate": "has an action update from the ",
+    "and": " and ",
+    "notFollowEither": "You do not follow either",
+    "endorsed": " endorsed ",
+    "endorsementPost": "Endorsement Posted ",
     "follow": "You follow ",
-    "not_follow": "You do not follow "
+    "notFollow": "You do not follow ",
+    "or": " or ",
+    "viewFullTestimony": "View Full Testimony"
   },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",

@@ -102,13 +102,13 @@ const Layout = () => {
   const onTabClick = (t: Tab) => {
     setKey(t)
     setIndexUiState(prevState => {
-      const prevRefinements = prevState.refinementList
+      const validRoles = ["user", "organization", "admin"]
       const role =
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
           ? ["organization"]
-          : ["user", "organization"]
+          : validRoles
       return {
         ...prevState,
         refinementList: {
@@ -149,7 +149,9 @@ const Layout = () => {
             />
           </Row>
           <Row>
-            {refinements.options}
+            <Col xs={3} lg={3}>
+              {refinements.options}
+            </Col>
             <Col className="d-flex flex-column">
               <RefinementRow>
                 <ResultCount className="flex-grow-1 m-1" />

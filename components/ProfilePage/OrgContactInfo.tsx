@@ -22,23 +22,23 @@ export const OrgContactInfo = ({ profile }: { profile?: Profile }) => {
   const location = profile?.location ?? null
 
   return (
-    <div>
+    <div className={`ms-4 mb-4`}>
       {publicEmail && (
         <ContactInfoRow>
-          <div className="d-flex justify-content-end">{publicEmail}</div>
+          <div className="d-flex justify-content-start">{publicEmail}</div>
         </ContactInfoRow>
       )}
 
       {publicPhone && (
         <ContactInfoRow>
-          <div className="d-flex justify-content-end">{publicPhone}</div>
+          <div className="d-flex justify-content-start">{publicPhone}</div>
         </ContactInfoRow>
       )}
 
       {website && (
         <ContactInfoRow>
           <External
-            className="d-flex justify-content-end"
+            className="d-flex justify-content-start"
             plain
             href={`https://${website}`}
           >
@@ -49,12 +49,12 @@ export const OrgContactInfo = ({ profile }: { profile?: Profile }) => {
 
       {location && (
         <ContactInfoRow>
-          <div className="d-flex justify-content-end fw-bold">{location}</div>
+          <div className="d-flex justify-content-start fw-bold">{location}</div>
         </ContactInfoRow>
       )}
 
       <ContactInfoRow>
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-start">
           <SocialMediaIcons
             twitter={twitter}
             linkedIn={linkedIn}

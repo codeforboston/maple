@@ -1,10 +1,12 @@
-import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
-import { Col, Nav, Navbar, NavDropdown } from "./bootstrap"
+import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
+import { TabContext } from "./shared/ProfileTabsContext"
+
 import {
   Avatar,
   NavbarLinkAI,
@@ -24,7 +26,13 @@ import {
   NavbarLinkWhyUse
 } from "./NavbarComponents"
 
-export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  return <>{isMobile ? <MobileNav /> : <DesktopNav />}</>
+}
+
+const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const BlackCollapse = styled(() => {
     return (
       <Navbar.Collapse id="basic-navbar-nav" className="bg-black mt-2 ps-4">
@@ -42,14 +50,25 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     }
   `
 
+  const { tabStatus, setTabStatus } = useContext(TabContext)
+
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
         <NavbarLinkEditProfile
           handleClick={() => {
+            setTabStatus("AboutYou")
             closeNav()
           }}
+          tab={"navigation.editProfile"}
+        />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            setTabStatus("Following")
+            closeNav()
+          }}
+          tab={"navigation.followingTab"}
         />
         <NavbarLinkSignOut
           handleClick={() => {
@@ -66,11 +85,7 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
         <NavbarLinkTestimony handleClick={closeNav} />
-        {authenticated && notifications ? (
-          <NavbarLinkNewsfeed handleClick={closeNav} />
-        ) : (
-          <></>
-        )}
+        {authenticated ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
           <NavbarLinkGoals handleClick={closeNav} />
           <NavbarLinkTeam handleClick={closeNav} />
@@ -89,7 +104,6 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   }
 
   const { authenticated } = useAuth()
-  const { notifications } = useFlags()
   const [isExpanded, setIsExpanded] = useState(false)
   const [whichMenu, setWhichMenu] = useState("site")
   const { t } = useTranslation(["common", "auth"])
@@ -163,5 +177,116 @@ export const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <BlackCollapse />
     </Navbar>
+  )
+}
+
+const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
+  const { authenticated } = useAuth()
+  const { t } = useTranslation(["common", "auth"])
+
+  const { tabStatus, setTabStatus } = useContext(TabContext)
+
+  return (
+    <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
+      <NavbarLinkLogo />
+
+      <div className={`align-self-center flex-grow-1 invisible`}>
+        <button className={`bg-light col my-2 w-100`}>
+          <div className={`text-dark`}>{"Placeholder Search Widget"}</div>
+        </button>
+      </div>
+
+      <div className={`align-self-center ms-3`}>
+        <Nav>
+          <NavbarLinkBills />
+        </Nav>
+      </div>
+
+      <div className="align-self-center">
+        <Nav>
+          <NavbarLinkTestimony />
+        </Nav>
+      </div>
+
+      {authenticated ? (
+        <div className="align-self-center">
+          <Nav>
+            <NavbarLinkNewsfeed />
+          </Nav>
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <div className={`align-self-center`}>
+        <Dropdown>
+          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+            {t("about")}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <NavbarLinkGoals />
+            <NavbarLinkTeam />
+            <NavbarLinkSupport />
+            <NavbarLinkFAQ />
+            <NavbarLinkAI />
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      <div className={`align-self-center justify-content-end`}>
+        <Dropdown>
+          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+            {t("learn")}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <NavbarLinkEffective />
+            <NavbarLinkProcess />
+            <NavbarLinkWhyUse />
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      {authenticated ? (
+        <div className={`align-self-center justify-content-end`}>
+          <Dropdown>
+            <Dropdown.Toggle className={`btn-secondary`}>
+              <Avatar />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <NavDropdown.Item>
+                <NavbarLinkViewProfile />
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavbarLinkEditProfile
+                  handleClick={() => {
+                    setTabStatus("AboutYou")
+                  }}
+                  tab={"navigation.editProfile"}
+                />
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavbarLinkEditProfile
+                  handleClick={() => {
+                    setTabStatus("Following")
+                  }}
+                  tab={"navigation.followingTab"}
+                />
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <NavbarLinkSignOut
+                  handleClick={() => {
+                    void signOutAndRedirectToHome()
+                  }}
+                />
+              </NavDropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      ) : (
+        <div className={`align-self-center justify-content-end`}>
+          <SignInWithButton />
+        </div>
+      )}
+    </Container>
   )
 }

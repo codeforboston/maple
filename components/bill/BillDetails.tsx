@@ -37,6 +37,8 @@ export const BillDetails = ({ bill }: BillProps) => {
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
   const flags = useFlags()
 
+  const { user } = useAuth()
+
   return (
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
@@ -44,70 +46,74 @@ export const BillDetails = ({ bill }: BillProps) => {
         <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
       )}
 
-      <StyledContainer className="mt-3 mb-3">
-        <Row>
-          <Col>
-            <Back href="/bills">{t("back_to_bills")}</Back>
-          </Col>
-        </Row>
-        {bill.history.length > 0 ? (
-          <>
-            <Row className="align-items-end justify-content-start">
-              <Col md={2}>
-                <BillNumber bill={bill} />
-              </Col>
-              <Col
-                xs={10}
-                md={6}
-                className="mb-3 ms-auto d-flex justify-content-end"
-              >
-                <Status bill={bill} />
-              </Col>
-            </Row>
-            <Row className="mb-4">
-              <Col xs={12} className="d-flex justify-content-end">
-                {flags.notifications && <FollowBillButton bill={bill} />}
-              </Col>
-            </Row>
-          </>
-        ) : (
+        <StyledContainer className="mt-3 mb-3">
           <Row>
             <Col>
-              <BillNumber bill={bill} />
-            </Col>
-            <Col xs={6} className="d-flex justify-content-end">
-              <Styled>
-                {flags.notifications && <FollowBillButton bill={bill} />}
-              </Styled>
+              <Back href="/bills">{t("back_to_bills")}</Back>
             </Col>
           </Row>
-        )}
-        <Row className="mt-2">
-          <Col>
-            <Summary bill={bill} />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={8}>
-            <Sponsors bill={bill} className="mt-4 pb-1" />
-            <BillTestimonies bill={bill} className="mt-4" />
-            {flags.lobbyingTable && (
-              <LobbyingTable bill={bill} className="mt-4 pb-1" />
-            )}
-          </Col>
-          <Col md={4}>
-            <Committees bill={bill} className="mt-4 pb-1" />
-            <Hearing
-              bill={bill}
-              className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
-            />
-            <TestimonyFormPanel bill={bill} />
-            {flags.billTracker && (
-              <BillTrackerConnectedView bill={bill} className="mt-4" />
-            )}
-          </Col>
-        </Row>
-      </StyledContainer>
+          {bill.history.length > 0 ? (
+            <>
+              <Row className="align-items-end justify-content-start">
+                <Col md={2}>
+                  <BillNumber bill={bill} />
+                </Col>
+                <Col
+                  xs={10}
+                  md={6}
+                  className="mb-3 ms-auto d-flex justify-content-end"
+                >
+                  <Status bill={bill} />
+                </Col>
+              </Row>
+              <Row className="mb-4">
+                <Col xs={12} className="d-flex justify-content-end">
+                  {flags.notifications && user && (
+                    <FollowBillButton bill={bill} />
+                  )}
+                </Col>
+              </Row>
+            </>
+          ) : (
+            <Row>
+              <Col>
+                <BillNumber bill={bill} />
+              </Col>
+              <Col xs={6} className="d-flex justify-content-end">
+                <Styled>
+                  {flags.notifications && user && (
+                    <FollowBillButton bill={bill} />
+                  )}
+                </Styled>
+              </Col>
+            </Row>
+          )}
+          <Row className="mt-2">
+            <Col>
+              <Summary bill={bill} />
+            </Col>
+          </Row>
+          <Row>
+            <Col md={8}>
+              <Sponsors bill={bill} className="mt-4 pb-1" />
+              <BillTestimonies bill={bill} className="mt-4" />
+              {flags.lobbyingTable && (
+                <LobbyingTable bill={bill} className="mt-4 pb-1" />
+              )}
+            </Col>
+            <Col md={4}>
+              <Committees bill={bill} className="mt-4 pb-1" />
+              <Hearing
+                bill={bill}
+                className="bg-secondary d-flex justify-content-center mt-4 pb-1 text-light"
+              />
+              <TestimonyFormPanel bill={bill} />
+              {flags.billTracker && (
+                <BillTrackerConnectedView bill={bill} className="mt-4" />
+              )}
+            </Col>
+          </Row>
+        </StyledContainer>
     </>
   )
 }
