@@ -5,6 +5,7 @@ import { signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import PageFooter from "./Footer/Footer"
 import { MainNavbar } from "./Navbar"
+import { FollowContext, OrgFollowStatus } from "./shared/FollowContext"
 
 export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   children
@@ -33,6 +34,8 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     setIsClient(true)
   }, [])
 
+  const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
+
   return (
     <>
       {isClient ? (
@@ -41,16 +44,18 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
             <title>{formattedTitle}</title>
             <link rel="icon" href="/favicon.ico" />
           </Head>
-          <PageContainer>
-            <MainNavbar />
-            <AuthModal />
-            <div className={`col`}>{children}</div>
-            <PageFooter
-              authenticated={authenticated}
-              user={user as any}
-              signOut={signOutAndRedirectToHome}
-            />
-          </PageContainer>
+          <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
+            <PageContainer>
+              <MainNavbar />
+              <AuthModal />
+              <div className={`col`}>{children}</div>
+              <PageFooter
+                authenticated={authenticated}
+                user={user as any}
+                signOut={signOutAndRedirectToHome}
+              />
+            </PageContainer>
+          </FollowContext.Provider>
         </>
       ) : (
         <>
