@@ -53,8 +53,18 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
-        <NavbarLinkEditProfile tab={"navigation.editProfile"} />
-        <NavbarLinkEditProfile tab={"navigation.followingTab"} />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            closeNav()
+          }}
+          tab={"navigation.editProfile"}
+        />
+        <NavbarLinkEditProfile
+          handleClick={() => {
+            closeNav()
+          }}
+          tab={"navigation.followingTab"}
+        />
         <NavbarLinkSignOut
           handleClick={() => {
             closeNav()
