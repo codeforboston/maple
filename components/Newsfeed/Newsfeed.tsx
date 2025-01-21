@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next"
 import { useContext, useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { usePublicProfile } from "../db"
+import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import {
@@ -13,12 +13,9 @@ import {
   HeaderTitle,
   StyledContainer
 } from "./StyledNewsfeedComponents"
-import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
-
-import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
-import { TabContext } from "components/shared/ProfileTabsContext"
-import { Profile, ProfileHook, useProfile } from "../db"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
+import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
+import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")

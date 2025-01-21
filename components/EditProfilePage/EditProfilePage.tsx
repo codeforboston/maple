@@ -25,9 +25,22 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-import { TabContext } from "components/shared/ProfileTabsContext"
 
-export function EditProfile() {
+// import { PolicyContent } from "./PolicyContent"
+import { Button, Stack, Image, Col } from "react-bootstrap"
+import { ButtonHTMLAttributes, useEffect } from "react"
+import style from "./PolicyPage.module.css"
+import Router from "next/router"
+import classNames from "classnames"
+
+const tabTitles = ["about-you", "testimonies", "following"] as const
+export type TabTitles = (typeof tabTitles)[number]
+
+export default function EditProfile({
+  tabTitles = "about-you"
+}: {
+  tabTitles?: TabTitles
+}) {
   const { user } = useAuth()
   const uid = user?.uid
   const result = useProfile()
@@ -42,7 +55,12 @@ export function EditProfile() {
 
   if (result?.profile && uid) {
     return (
-      <EditProfileForm profile={result.profile} actions={result} uid={uid} />
+      <EditProfileForm
+        actions={result}
+        profile={result.profile}
+        tabTitles={tabTitles}
+        uid={uid}
+      />
     )
   }
 
@@ -50,20 +68,25 @@ export function EditProfile() {
 }
 
 export function EditProfileForm({
-  profile,
   actions,
+  profile,
+  tabTitles,
   uid
 }: {
-  profile: Profile
   actions: ProfileHook
+  profile: Profile
+  tabTitles: TabTitles
   uid: string
 }) {
+  const handleOnClick = (t: TabTitles) => {
+    Router.push(`/edit-profile/${t}`)
+  }
+
   const {
     public: isPublic,
     notificationFrequency: notificationFrequency
   }: Profile = profile
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<
@@ -99,7 +122,7 @@ export function EditProfileForm({
   const tabs = [
     {
       title: t("tabs.personalInfo"),
-      eventKey: "AboutYou",
+      eventKey: "about-you",
       content: (
         <PersonalInfoTab
           profile={profile}
@@ -113,7 +136,7 @@ export function EditProfileForm({
     },
     {
       title: t("tabs.testimonies"),
-      eventKey: "Testimonies",
+      eventKey: "testimonies",
       content: (
         <TestimoniesTab
           publishedTestimonies={publishedTestimonies.items.result ?? []}
@@ -123,7 +146,7 @@ export function EditProfileForm({
     },
     {
       title: t("tabs.following"),
-      eventKey: "Following",
+      eventKey: "following",
       content: <FollowingTab className="mt-3 mb-4" />
     }
   ]
@@ -146,9 +169,9 @@ export function EditProfileForm({
           role={profile.role}
         />
         <TabContainer
-          defaultActiveKey="AboutYou"
-          activeKey={tabStatus}
-          onSelect={(k: any) => setTabStatus(k)}
+          defaultActiveKey="about-you"
+          activeKey={tabTitles}
+          onSelect={(tabTitles: any) => handleOnClick(tabTitles)}
         >
           <TabNavWrapper>
             {tabs.map((t, i) => (

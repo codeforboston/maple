@@ -5,7 +5,6 @@ import { signOutAndRedirectToHome, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import PageFooter from "./Footer/Footer"
 import { MainNavbar } from "./Navbar"
-import { TabContext, TabStatus } from "./shared/ProfileTabsContext"
 
 export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   children
@@ -27,8 +26,6 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
-  const [tabStatus, setTabStatus] = useState<TabStatus>("AboutYou")
-
   // isClient used to prevent hydration issues: quite possibly better solutions exist
 
   const [isClient, setIsClient] = useState(false)
@@ -44,18 +41,16 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
             <title>{formattedTitle}</title>
             <link rel="icon" href="/favicon.ico" />
           </Head>
-          <TabContext.Provider value={{ tabStatus, setTabStatus }}>
-            <PageContainer>
-              <MainNavbar />
-              <AuthModal />
-              <div className={`col`}>{children}</div>
-              <PageFooter
-                authenticated={authenticated}
-                user={user as any}
-                signOut={signOutAndRedirectToHome}
-              />
-            </PageContainer>
-          </TabContext.Provider>
+          <PageContainer>
+            <MainNavbar />
+            <AuthModal />
+            <div className={`col`}>{children}</div>
+            <PageFooter
+              authenticated={authenticated}
+              user={user as any}
+              signOut={signOutAndRedirectToHome}
+            />
+          </PageContainer>
         </>
       ) : (
         <>

@@ -5,7 +5,6 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
 import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
-import { TabContext } from "./shared/ProfileTabsContext"
 
 import {
   Avatar,
@@ -50,26 +49,12 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     }
   `
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
-
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
-        <NavbarLinkEditProfile
-          handleClick={() => {
-            setTabStatus("AboutYou")
-            closeNav()
-          }}
-          tab={"navigation.editProfile"}
-        />
-        <NavbarLinkEditProfile
-          handleClick={() => {
-            setTabStatus("Following")
-            closeNav()
-          }}
-          tab={"navigation.followingTab"}
-        />
+        <NavbarLinkEditProfile tab={"navigation.editProfile"} />
+        <NavbarLinkEditProfile tab={"navigation.followingTab"} />
         <NavbarLinkSignOut
           handleClick={() => {
             closeNav()
@@ -184,8 +169,6 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
-
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
       <NavbarLinkLogo />
@@ -257,20 +240,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
                 <NavbarLinkViewProfile />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavbarLinkEditProfile
-                  handleClick={() => {
-                    setTabStatus("AboutYou")
-                  }}
-                  tab={"navigation.editProfile"}
-                />
+                <NavbarLinkEditProfile tab={"navigation.editProfile"} />
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <NavbarLinkEditProfile
-                  handleClick={() => {
-                    setTabStatus("Following")
-                  }}
-                  tab={"navigation.followingTab"}
-                />
+                <NavbarLinkEditProfile tab={"navigation.followingTab"} />
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <NavbarLinkSignOut

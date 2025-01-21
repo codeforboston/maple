@@ -9,7 +9,6 @@ import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { FollowUserButton } from "components/shared/FollowButton"
-import { TabContext } from "components/shared/ProfileTabsContext"
 
 export function HeaderWrapper({
   profileId,
@@ -86,8 +85,6 @@ export const ProfileHeader = ({
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
-
   return (
     <Header>
       <div
@@ -103,9 +100,6 @@ export const ProfileHeader = ({
           ) : (
             <EditProfileButton
               className={`py-1 col-md-8`}
-              handleClick={() => {
-                setTabStatus("AboutYou")
-              }}
               tab="button.editProfile"
             />
           )}
