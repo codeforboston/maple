@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
-import { useContext, useState } from "react"
+import Router from "next/router"
+import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
@@ -25,13 +26,6 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-
-// import { PolicyContent } from "./PolicyContent"
-import { Button, Stack, Image, Col } from "react-bootstrap"
-import { ButtonHTMLAttributes, useEffect } from "react"
-import style from "./PolicyPage.module.css"
-import Router from "next/router"
-import classNames from "classnames"
 
 const tabTitles = ["about-you", "testimonies", "following"] as const
 export type TabTitles = (typeof tabTitles)[number]
