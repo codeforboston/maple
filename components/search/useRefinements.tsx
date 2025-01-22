@@ -1,6 +1,4 @@
 import {
-  HierarchicalMenu,
-  HierarchicalMenuProps,
   RefinementList,
   useInstantSearch
 } from "react-instantsearch"
