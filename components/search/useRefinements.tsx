@@ -1,7 +1,4 @@
-import {
-  RefinementList,
-  useInstantSearch
-} from "react-instantsearch"
+import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useEffect, useState } from "react"
