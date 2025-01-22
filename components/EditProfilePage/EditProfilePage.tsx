@@ -27,13 +27,13 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
-const tabTitles = ["about-you", "testimonies", "following"] as const
-export type TabTitles = (typeof tabTitles)[number]
+const tabTitle = ["about-you", "testimonies", "following"] as const
+export type TabTitles = (typeof tabTitle)[number]
 
 export default function EditProfile({
-  tabTitles = "about-you"
+  tabTitle = "about-you"
 }: {
-  tabTitles?: TabTitles
+  tabTitle?: TabTitles
 }) {
   const { user } = useAuth()
   const uid = user?.uid
@@ -52,7 +52,7 @@ export default function EditProfile({
       <EditProfileForm
         actions={result}
         profile={result.profile}
-        tabTitles={tabTitles}
+        tabTitle={tabTitle}
         uid={uid}
       />
     )
@@ -64,12 +64,12 @@ export default function EditProfile({
 export function EditProfileForm({
   actions,
   profile,
-  tabTitles,
+  tabTitle,
   uid
 }: {
   actions: ProfileHook
   profile: Profile
-  tabTitles: TabTitles
+  tabTitle: TabTitles
   uid: string
 }) {
   const handleOnClick = (t: TabTitles) => {
@@ -164,8 +164,8 @@ export function EditProfileForm({
         />
         <TabContainer
           defaultActiveKey="about-you"
-          activeKey={tabTitles}
-          onSelect={(tabTitles: any) => handleOnClick(tabTitles)}
+          activeKey={tabTitle}
+          onSelect={(tabTitle: any) => handleOnClick(tabTitle)}
         >
           <TabNavWrapper>
             {tabs.map((t, i) => (
