@@ -22,14 +22,16 @@ export const SmartDisclaimer = () => {
             {t("bill.smart_summary")}
           </Row>
           <SmartTagDesc>
-            <Trans
-              t={t}
-              i18nKey="bill.smart_disclaimer"
-              components={[
-                // eslint-disable-next-line react/jsx-key
-                <links.Internal href="/about/how-maple-uses-ai" />
-              ]}
-            />
+            <Col>
+              <Trans
+                t={t}
+                i18nKey="bill.smart_disclaimer"
+                components={[
+                  // eslint-disable-next-line react/jsx-key
+                  <links.Internal href="/about/how-maple-uses-ai" />
+                ]}
+              />
+            </Col>
           </SmartTagDesc>
         </div>
       ) : (
@@ -40,14 +42,16 @@ export const SmartDisclaimer = () => {
           <Col className={`mt-1`} xs="10">
             <Row className={`fs-5 fw-bold`}>{t("bill.smart_summary")}</Row>
             <SmartTagDesc>
-              <Trans
-                t={t}
-                i18nKey="bill.smart_disclaimer"
-                components={[
-                  // eslint-disable-next-line react/jsx-key
-                  <links.Internal href="/about/how-maple-uses-ai" />
-                ]}
-              />
+              <Col>
+                <Trans
+                  t={t}
+                  i18nKey="bill.smart_disclaimer"
+                  components={[
+                    // eslint-disable-next-line react/jsx-key
+                    <links.Internal href="/about/how-maple-uses-ai" />
+                  ]}
+                />
+              </Col>
             </SmartTagDesc>
           </Col>
         </Row>
@@ -55,19 +59,3 @@ export const SmartDisclaimer = () => {
     </>
   )
 }
-
-/* 
-
-            {
-              "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation."
-            }
-            <NavLink
-              className={"navLink-primary"}
-              href="/about/how-maple-uses-ai"
-            >{`Learn more about How MAPLE Uses AI. `}</NavLink>
-            {
-              "To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
-            }
-
-
-*/
