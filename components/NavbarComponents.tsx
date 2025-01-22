@@ -114,10 +114,10 @@ export const NavbarLinkEffective: React.FC<
     <NavDropdown.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href="/learn/to-write-effective-testimony"
+        href="/learn/testimony-basics"
         {...other}
       >
-        {t("navigation.toWriteEffectiveTestimony")}
+        {t("navigation.aboutTestimony")}
       </NavLink>
     </NavDropdown.Item>
   )
