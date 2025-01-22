@@ -78,7 +78,10 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             const sortByParameter = isParent ? ["name:asc"] : ["count:desc"]
 
             // Trigger a new search to apply the updated facets
-            if (!helper.state.disjunctiveFacets.includes(attribute)) {
+            if (
+              helper.state.disjunctiveFacets.length != 0 &&
+              !helper.state.disjunctiveFacets.includes(attribute)
+            ) {
               helper.setQueryParameter("disjunctiveFacets", [
                 ...helper.state.disjunctiveFacets,
                 attribute
@@ -211,6 +214,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
             }),
             {}
           )
+
           return {
             ...uiState,
             multiselectHierarchicalMenu: {
@@ -334,8 +338,7 @@ const MultiselectHierarchicalMenuItem = ({
     item.name,
     isOpen,
     isSubLevelRefined,
-    refine,
-    onButtonClick
+    refine
   ])
 
   useEffect(() => {

@@ -33,7 +33,6 @@ const searchClient = new TypesenseInstantSearchAdapter({
 
 const extractLastSegmentOfRefinements = (items: any[]) => {
   return items.map(item => {
-    console.log(item)
     if (item.label != "topics.lvl1") return item
     const newRefinements = item.refinements.map(
       (refinement: { label: string }) => {
