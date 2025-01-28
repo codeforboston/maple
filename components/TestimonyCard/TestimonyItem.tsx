@@ -169,7 +169,7 @@ export const TestimonyItem = ({
           )}
           <Col xs="auto">
             <FooterButton variant="text" onClick={() => setIsReporting(true)}>
-              Report
+              {t("reportModal.report")}
               <IconSpacer />
             </FooterButton>
           </Col>
@@ -180,7 +180,7 @@ export const TestimonyItem = ({
                   className={`text-decoration-none text-secondary`}
                   href={formUrl(testimony.billId, testimony.court)}
                 >
-                  Edit
+                  {t("testimonyItem.edit")}
                   <Image
                     className="px-2 ms-auto align-self-center"
                     src="/edit-testimony.svg"

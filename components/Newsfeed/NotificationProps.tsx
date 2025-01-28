@@ -1,19 +1,23 @@
 import { Timestamp } from "firebase/firestore"
 
 export type NotificationProps = {
+  authorUid: string // Testimony author
+  billId: string
   bodyText: string
   court: string
-  delivered: boolean
-  header: string
-  id: number
-  subheader: string
-  type: string
-  topicName: string
-  timestamp: Timestamp
   createdAt: Timestamp
+  delivered: boolean
+  header: string // Bill Title
+  id: number
+  isBillMatch: boolean // Is subscribed to Bill
+  isUserMatch: boolean // is subscribed to User/Org
   position: string
-  isBillMatch: boolean
-  isUserMatch: boolean
+  subheader: string
+  testimonyId: string
+  timestamp: Timestamp
+  topicName: string
+  type: string
+  userRole: string
 }
 
 export type Notifications = NotificationProps[]

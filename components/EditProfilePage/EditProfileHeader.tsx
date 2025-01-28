@@ -1,7 +1,8 @@
 import { useTranslation } from "next-i18next"
 import { Role } from "../auth"
 import { Col, Row } from "../bootstrap"
-import { FillButton, GearIcon, OutlineButton } from "../buttons"
+import { GearIcon, OutlineButton } from "../buttons"
+import { ProfileEditToggle } from "components/ProfilePage/ProfileButtons"
 
 export const EditProfileHeader = ({
   formUpdated,
@@ -28,15 +29,7 @@ export const EditProfileHeader = ({
           Icon={GearIcon}
           onClick={() => onSettingsModalOpen()}
         />
-        <FillButton
-          disabled={!!formUpdated}
-          href={`/profile?id=${uid}`}
-          label={
-            role === "organization" || role === "pendingUpgrade"
-              ? t("viewOrgProfile")
-              : t("viewMyProfile")
-          }
-        />
+        <ProfileEditToggle formUpdated={formUpdated} role={role} uid={uid} />
       </Col>
     </Row>
   )

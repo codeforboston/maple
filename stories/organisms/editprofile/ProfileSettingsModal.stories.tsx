@@ -33,7 +33,7 @@ export const Primary: Story = {
     actions: {} as ProfileHook,
     isProfilePublic: true,
     role: "user",
-    notifications: "Daily",
+    notifications: "Weekly",
     show: true
   },
   name: "ProfileSettingsModal"

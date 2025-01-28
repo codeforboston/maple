@@ -1,10 +1,11 @@
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { useEffect, useContext } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { Bill } from "../db"
 import { TopicQuery, setFollow, setUnfollow } from "./FollowingQueries"
+import { FollowContext } from "./FollowContext"
 
 export const BaseFollowButton = ({
   topicName,
@@ -22,30 +23,35 @@ export const BaseFollowButton = ({
   const { user } = useAuth()
   const uid = user?.uid
 
-  const [queryResult, setQueryResult] = useState("")
+  const { followStatus, setFollowStatus } = useContext(FollowContext)
 
   useEffect(() => {
     uid
-      ? TopicQuery(uid, topicName).then(result => setQueryResult(result))
+      ? TopicQuery(uid, topicName).then(result => {
+          setFollowStatus(prevOrgFollowGroup => {
+            return { ...prevOrgFollowGroup, [topicName]: Boolean(result) }
+          })
+        })
       : null
-  }, [uid, topicName, setQueryResult])
+  }, [uid, topicName, setFollowStatus])
 
   const FollowClick = async () => {
     await followAction()
-    setQueryResult(topicName)
+    setFollowStatus({ ...followStatus, [topicName]: true })
   }
 
   const UnfollowClick = async () => {
     await unfollowAction()
-    setQueryResult("")
+    setFollowStatus({ ...followStatus, [topicName]: false })
   }
 
-  const isFollowing = queryResult
+  const isFollowing = followStatus[topicName]
   const text = isFollowing ? t("button.following") : t("button.follow")
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />
   ) : null
-  const handleClick = () => {
+  const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
@@ -83,7 +89,13 @@ export const ButtonWithCheckmark = ({
   )
 }
 
-export function FollowOrgButton({ profileId }: { profileId: string }) {
+export function FollowUserButton({
+  className,
+  profileId
+}: {
+  className?: string
+  profileId: string
+}) {
   const { user } = useAuth()
   const uid = user?.uid
   const topicName = `testimony-${profileId}`
