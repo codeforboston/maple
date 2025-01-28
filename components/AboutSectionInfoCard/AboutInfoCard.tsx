@@ -21,7 +21,7 @@ export default function AboutInfoCard({ title, bodytext }: AboutInfoCardProps) {
       <Card className="h-100 bg-white">
         <StyledCardHeader
           forwardedAs="h3"
-          className="text-center align-self-center bg-warning text-white rounded-0 border-0 mb-n3 overflow-visible"
+          className="text-center align-self-center bg-info text-white rounded-0 border-0 mb-n3 overflow-visible"
         >
           {title}
         </StyledCardHeader>

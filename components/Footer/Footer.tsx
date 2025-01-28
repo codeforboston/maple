@@ -154,9 +154,6 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
           >
             {t("navigation.accountProfile")}
           </StyledInternalLink>
-          <StyledInternalLink href={"/newsfeed"}>
-            {t("navigation.newsfeed")}
-          </StyledInternalLink>
           <StyledInternalLink handleClick={() => signOut()}>
             {t("signOut", { ns: "auth" })}
           </StyledInternalLink>

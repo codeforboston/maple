@@ -4,7 +4,6 @@ import styled from "styled-components"
 import { SignInWithButton, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
-import { useTranslation } from "react-i18next"
 
 const Styled = styled.div`
   display: flex;
@@ -50,51 +49,43 @@ const OpenForm = ({ label, ...props }: { label: string } & ButtonProps) => {
   )
 }
 
-export const CreateTestimony = () => {
-  const { t } = useTranslation("testimony")
+export const CreateTestimony = () => (
+  <Cta
+    title="You Haven't Submitted Testimony"
+    cta={<OpenForm label="Create Testimony" />}
+  />
+)
 
-  return (
-    <Cta
-      title={t("panel.createTestimony.title")}
-      cta={<OpenForm label={t("panel.createTestimony.label")} />}
-    />
-  )
-}
+export const CompleteTestimony = () => (
+  <Cta
+    title="You Have Draft Testimony"
+    cta={
+      <OpenForm
+        label="Complete Testimony"
+        variant="info"
+        className="text-white"
+      />
+    }
+    className="text-info"
+  />
+)
 
-export const CompleteTestimony = () => {
-  const { t } = useTranslation("testimony")
-
-  return (
-    <Cta
-      title={t("panel.completeTestimony.title")}
-      cta={
-        <OpenForm
-          label={t("panel.completeTestimony.label")}
-          variant="info"
-          className="text-white"
-        />
-      }
-      className="text-info"
-    />
-  )
-}
-
-export const SignedOut = () => {
-  const { t } = useTranslation("testimony")
-
-  return <Cta title={t("panel.signedOut.title")} cta={<SignInWithButton />} />
-}
+export const SignedOut = () => (
+  <Cta
+    title="Sign In to Add Testimony"
+    cta={<SignInWithButton label="Sign In/Sign Up" />}
+  />
+)
 
 export const UnverifiedEmail = () => {
-  const { t } = useTranslation("testimony")
   const id = useAuth().user?.uid!
 
   return (
     <Cta
-      title={t("panel.unverifiedEmail.title")}
+      title="Verify Your Email to Add Testimony"
       cta={
         <Wrap href={`/profile?id=${id}`}>
-          <Button variant="primary">{t("panel.unverifiedEmail.label")}</Button>
+          <Button variant="primary">Verify Your Email</Button>
         </Wrap>
       }
     />
@@ -102,14 +93,12 @@ export const UnverifiedEmail = () => {
 }
 
 export const PendingUpgrade = () => {
-  const { t } = useTranslation("testimony")
-
   return (
     <Cta
-      title={t("panel.pendingUpgrade.title")}
+      title="Pending Upgrade"
       cta={
         <Button variant="primary" disabled>
-          {t("panel.pendingUpgrade.label")}
+          Your Organization Registration is Pending
         </Button>
       }
     />

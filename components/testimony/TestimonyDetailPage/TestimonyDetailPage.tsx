@@ -15,7 +15,6 @@ import { TestimonyDetail } from "./TestimonyDetail"
 import { VersionBanner } from "./TestimonyVersionBanner"
 import { useAuth } from "components/auth"
 import { useMediaQuery } from "usehooks-ts"
-import { setFollow, setUnfollow } from "components/shared/FollowingQueries"
 
 export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
   const [isReporting, setIsReporting] = useState(false)
@@ -23,19 +22,12 @@ export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
   const didReport = reportMutation.isError || reportMutation.isSuccess
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { authorUid, revision } = useCurrentTestimonyDetails()
-  const { bill } = useCurrentTestimonyDetails()
   const { user } = useAuth()
   const isUser = user?.uid === authorUid
   const handleReporting = (boolean: boolean) => {
     setIsReporting(boolean)
   }
   const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
-  const uid = user?.uid
-  const { id: billId, court: courtId } = bill
-  const topicName = `bill-${courtId}-${billId}`
-  const followAction = () =>
-    setFollow(uid, topicName, bill, billId, courtId, undefined)
-  const unfollowAction = () => setUnfollow(uid, topicName)
 
   return (
     <>
@@ -57,9 +49,6 @@ export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
                 isUser={isUser}
                 isReporting={isReporting}
                 setReporting={handleReporting}
-                topicName={topicName}
-                followAction={followAction}
-                unfollowAction={unfollowAction}
               />
             )}
             <RevisionHistory />

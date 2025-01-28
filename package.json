@@ -45,8 +45,7 @@
     "chromatic": "chromatic --project-token=f8618e690599",
     "copy-handlebars": "echo 'Copying handlebars files to /lib/email/...' && ncp functions/src/email/ functions/lib/email/ && echo '...done!'",
     "backfill-user-emails": "ts-node -P tsconfig.script.json scripts/firebase-admin//backfillUserEmails.ts --swc",
-    "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc",
-    "setRole": "ts-node -P tsconfig.script.json scripts/firebase-admin/setRole.ts"
+    "backfill-user-nf": "ts-node -P tsconfig.script.json scripts/firebase-admin/backfillNotificationFrequency.ts --swc"
   },
   "engines": {
     "node": ">=16",

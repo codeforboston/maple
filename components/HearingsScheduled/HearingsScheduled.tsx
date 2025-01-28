@@ -3,7 +3,6 @@ import { Container, Carousel, Spinner } from "react-bootstrap"
 import styled from "styled-components"
 import { Col, Row } from "../bootstrap"
 import { useCalendarEvents } from "./calendarEvents"
-import { useTranslation } from "react-i18next"
 
 export type EventData = {
   index: number
@@ -176,7 +175,6 @@ const CarouselControlPrevIcon = styled.span`
 
 export const HearingsScheduled = () => {
   const [monthIndex, setMonthIndex] = useState(0)
-  const { t } = useTranslation("homepage")
 
   const handleSelect = (
     selectedIndex: number,
@@ -197,7 +195,7 @@ export const HearingsScheduled = () => {
       <Row className="mt-5">
         <Col>
           <div className={`h1 mb-5 text-center text-secondary`}>
-            {t("hearingsScheduled.title")}
+            Hearings Scheduled
           </div>
         </Col>
       </Row>
@@ -266,7 +264,7 @@ export const HearingsScheduled = () => {
                 </EventSection>
               ) : (
                 <section className={`text-center text-secondary`}>
-                  <h2>{t("hearingsScheduled.noEvents")}</h2>
+                  <h2>No Scheduled Events</h2>
                 </section>
               )}
             </>

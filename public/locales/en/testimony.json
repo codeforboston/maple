@@ -8,27 +8,6 @@
     "tweetContent": "I provided testimony on Bill {{billNumber}}. See {{link}} for details.",
     "twitter": "Tweet Your Published Testimony"
   },
-  "panel": {
-    "createTestimony": {
-      "title": "You Haven't Submitted Testimony",
-      "label": "Create Testimony"
-    },
-    "completeTestimony": {
-      "title": "You Have Draft Testimony",
-      "label": "Complete Testimony"
-    },
-    "pendingUpgrade": {
-      "title": "Pending Upgrade",
-      "label": "Your Organization Registration is Pending"
-    },
-    "signedOut": {
-      "title": "Sign In to Add Testimony"
-    },
-    "unverifiedEmail": {
-      "title": "Verify Your Email to Add Testimony",
-      "label": "Verify Your Email"
-    }
-  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",
@@ -78,44 +57,6 @@
     "recentFirst": "Most Recent First",
     "oldestFirst": "Oldest First"
   },
-  "submitTestimonyForm": {
-    "viewLess": "View Less Details",
-    "viewMore": "View Bill Details",
-    "backToBill": "Back to Bill (Bill {{billId}})",
-    "overview": {
-      "title": "Write, Publish, and Send Your Testimony!",
-      "description": "Your voice matters. And it's important that you share it. MAPLE helps you 1) write testimony, 2) publish it to our community, and 3) send it to the right legislators so it can be formally considered. It's easy as 1-2-3!"
-    },
-    "chooseStance": "Choose Your Stance",
-    "selectLegislators": {
-      "title": "Select Your Legislators",
-      "description": "It looks like you haven't selected your legislators. Please use the <0>find your legislator tool</0> and select your State Representative and Senator below."
-    },
-    "keepNote": {
-      "header": "Keep Note",
-      "about": "About MAPLE Testimony",
-      "howTestimoniesWork": "How MAPLE Testimonies Work",
-      "publishing": "Publishing to MAPLE",
-      "keepInMind": "Please keep in mind...",
-      "noEmailWarning": "We do not send an email for you.",
-      "emailPreview": " This is a preview of what your email to legislators will look like. On the next page, you will be asked to “send email” which will open your email client (e.g., Outlook) and populate an email with your testimony.",
-      "shareEmail": "Your testimony needs to be shared with the right legislators. Your email “To:” box will be populated with the legislators you add here. We've pre-populated this with the most relevant legislators: 1) the Chairs of the Committee reviewing this bill; and 2) your own legislators.",
-      "thankYou": "When you send this email, you are submitting formal public testimony! As fellow constituents, we thank you for sharing your voice.",
-      "rulesHeader": "Rules for Testimony on MAPLE:",
-      "editLimit": "You can edit your testimony up to 5 times but the previous versions will remain available.",
-      "cannotDelete": "Since MAPLE is an archive, you cannot remove your testimony from the site. You may request a deletion in certain circumstances (see our <0>FAQ page</0>)",
-      "emailReminder": "Don't forget to send the email to your legislator."
-    },
-    "write": {
-      "header": "Write Your Testimony",
-      "testimonyLabel": "Testimony",
-      "testimonyPlaceholder": "Add your testimony here",
-      "testimonyHelp": "Testimony is limited to 10,000 characters.",
-      "tips": "Need help? Read our <0>testimony writing tips</0>",
-      "codeOfConduct": "View our code of conduct",
-      "confirmRemoveAttachment": "Are you sure you want to remove your attachment?"
-    }
-  },
   "testimonyItem": {
     "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
     "no": "No",
@@ -135,7 +76,6 @@
       }
     }
   },
-  "thankYouModal": "Thank You For Submitting Testimony!",
   "userFilterDropdown": {
     "publishedTestimonies": "All Published Testimonies",
     "usersOnly": "Users Only",
@@ -150,10 +90,5 @@
     "showing1": "Showing 1 - ",
     "outOf": " out of ",
     "noTestimonies": "There are no testimonies "
-  },
-  "yourTestimony": {
-    "title": "Your Testimony",
-    "draft": "Draft",
-    "emailCta": "Email Your Published Testimony"
   }
 }

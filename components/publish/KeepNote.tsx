@@ -3,15 +3,11 @@ import { useState } from "react"
 import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 import { Internal } from "components/links"
-import { Trans, useTranslation } from "react-i18next"
 
 export const KeepNote = (props: { currentStep: Step }) => {
-  const { t } = useTranslation("testimony")
   return (
     <NoteContainer className="p-0">
-      <HeaderContainer>
-        {t("submitTestimonyForm.keepNote.header")}
-      </HeaderContainer>
+      <HeaderContainer>Keep Note</HeaderContainer>
       {props.currentStep == "selectLegislators" ||
       props.currentStep == "write" ? (
         <YourTestimony />
@@ -23,7 +19,6 @@ export const KeepNote = (props: { currentStep: Step }) => {
 }
 
 export const KeepNoteMobile = () => {
-  const { t } = useTranslation("testimony")
   const [showYourTestimony, setShowYourTestimony] = useState(false)
   const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false)
 
@@ -36,14 +31,12 @@ export const KeepNoteMobile = () => {
   return (
     <Col className="py-1">
       <Row xs={12}>
-        <p style={{ fontWeight: "bolder" }}>
-          {t("submitTestimonyForm.keepNote.about")}
-        </p>
+        <p style={{ fontWeight: "bolder" }}>About MAPLE Testimony</p>
       </Row>
 
       <Row xs={12} className="my-3">
         <Button variant="outline-secondary" onClick={handleShowYourTestimony}>
-          {t("submitTestimonyForm.keepNote.howTestimoniesWork")}
+          How MAPLE Testimonies Work
         </Button>
       </Row>
 
@@ -52,15 +45,13 @@ export const KeepNoteMobile = () => {
           variant="outline-secondary"
           onClick={handleShowPublishingToMAPLE}
         >
-          {t("submitTestimonyForm.keepNote.publishing")}
+          Publishing to MAPLE
         </Button>
       </Row>
 
       <Modal show={showYourTestimony} onHide={handleCloseYourTestimony}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {t("submitTestimonyForm.keepNote.howTestimoniesWork")}
-          </Modal.Title>
+          <Modal.Title>How MAPLE Testimonies Work</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <YourTestimony />
@@ -69,9 +60,7 @@ export const KeepNoteMobile = () => {
 
       <Modal show={showPublishingToMAPLE} onHide={handleClosePublishingToMAPLE}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {t("submitTestimonyForm.keepNote.publishing")}
-          </Modal.Title>
+          <Modal.Title>Publishing to MAPLE</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PublishingToMAPLE />
@@ -82,7 +71,6 @@ export const KeepNoteMobile = () => {
 }
 
 export const YourTestimony = () => {
-  const { t } = useTranslation("testimony")
   return (
     <NoteContent>
       <div className="text-center">
@@ -93,42 +81,48 @@ export const YourTestimony = () => {
           style={{ transform: "scaleY(0.85)" }}
         />
       </div>
-      <NoteSubtitle>
-        {t("submitTestimonyForm.keepNote.keepInMind")}
-      </NoteSubtitle>
+      <NoteSubtitle>Please keep in mind...</NoteSubtitle>
       <ul>
         <NoteItem>
-          <u>{t("submitTestimonyForm.keepNote.noEmailWarning")}</u>
-          {t("submitTestimonyForm.keepNote.emailPreview")}
+          <u>We do not send an email for you.</u> This is a preview of what your
+          email to legislators will look like. On the next page, you will be
+          asked to “send email” which will open your email client (e.g.,
+          Outlook) and populate an email with your testimony.
         </NoteItem>
-        <NoteItem>{t("submitTestimonyForm.keepNote.shareEmail")}</NoteItem>
-        <NoteItem>{t("submitTestimonyForm.keepNote.thankYou")}</NoteItem>
+        <NoteItem>
+          Your testimony needs to be shared with the right legislators. Your
+          email “To:” box will be populated with the legislators you add here.
+          We've pre-populated this with the most relevant legislators: 1) the
+          Chairs of the Committee reviewing this bill; and 2) your own
+          legislators.
+        </NoteItem>
+        <NoteItem>
+          When you send this email, you are submitting formal public testimony!
+          As fellow constituents, we thank you for sharing your voice.
+        </NoteItem>
       </ul>
     </NoteContent>
   )
 }
 
 export const PublishingToMAPLE = () => {
-  const { t } = useTranslation("testimony")
   return (
     <NoteContent>
       <div className="text-center">
         <Image className="mx-auto" alt="" src="/computertextblob.svg" />
       </div>
-      <NoteSubtitle>
-        {t("submitTestimonyForm.keepNote.rulesHeader")}
-      </NoteSubtitle>
+      <NoteSubtitle>Rules for Testimony on MAPLE:</NoteSubtitle>
       <ul style={{ color: "var(--bs-blue)" }}>
-        <NoteItem>{t("submitTestimonyForm.keepNote.editLimit")}</NoteItem>
         <NoteItem>
-          <Trans
-            t={t}
-            i18nKey="submitTestimonyForm.keepNote.cannotDelete"
-            // eslint-disable-next-line react/jsx-key
-            components={[<Internal href="/about/faq-page" />]}
-          />
+          You can edit your testimony up to 5 times but the previous versions
+          will remain available.
         </NoteItem>
-        <NoteItem>{t("submitTestimonyForm.keepNote.emailReminder")}</NoteItem>
+        <NoteItem>
+          Since MAPLE is an archive, you cannot remove your testimony from the
+          site. You may request a deletion in certain circumstances (see our{" "}
+          <Internal href="/about/faq-page">FAQ page</Internal>)
+        </NoteItem>
+        <NoteItem>Don't forget to send the email to your legislator.</NoteItem>
       </ul>
     </NoteContent>
   )

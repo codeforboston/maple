@@ -1,6 +1,5 @@
-import { firestore } from "components/firebase"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
+import { firestore } from "components/firebase"
 import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
@@ -10,7 +9,6 @@ import { Role, useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
-import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
@@ -52,7 +50,6 @@ export function ProfilePage(profileprops: {
   }, [profileprops.id])
 
   const { t } = useTranslation("profile")
-  const [followStatus, setFollowStatus] = useState<OrgFollowStatus>({})
 
   const [isProfilePublic, onProfilePublicityChanged] = useState<
     boolean | undefined
@@ -84,7 +81,7 @@ export function ProfilePage(profileprops: {
   }
 
   return (
-    <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
+    <>
       {isPendingUpgrade && isCurrentUser && <PendingUpgradeBanner />}
       {["user", "admin"].includes(role) && isCurrentUser ? (
         <>
@@ -102,6 +99,9 @@ export function ProfilePage(profileprops: {
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
+          isOrg={isOrg}
+          isProfilePublic={isProfilePublic}
+          onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />
 
@@ -112,8 +112,6 @@ export function ProfilePage(profileprops: {
             </Col>
           </Row>
         ) : null}
-
-        <Row>{isOrg ? <OrgContactInfo profile={profile} /> : <></>}</Row>
 
         <Row>
           <Col className={`mb-4 mb-md-0`}>
@@ -142,6 +140,6 @@ export function ProfilePage(profileprops: {
           </Col>
         </Row>
       </Container>
-    </FollowContext.Provider>
+    </>
   )
 }

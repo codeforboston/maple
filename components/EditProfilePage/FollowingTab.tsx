@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
-import { getFunctions } from "firebase/functions"
+import { getFunctions, httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
@@ -9,7 +9,11 @@ import { TitledSectionCard } from "../shared"
 import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
 import { FollowedItem } from "./FollowingTabComponents"
 import { BillElement, UserElement } from "./FollowingTabComponents"
-import { deleteItem } from "components/shared/FollowingQueries"
+
+const functions = getFunctions()
+
+const unfollowBillFunction = httpsCallable(functions, "unfollowBill")
+const unfollowUserFunction = httpsCallable(functions, "unfollowUser")
 
 export function FollowingTab({ className }: { className?: string }) {
   const { user } = useAuth()
@@ -57,7 +61,7 @@ export function FollowingTab({ className }: { className?: string }) {
     const q = query(
       subscriptionRef,
       where("uid", "==", `${uid}`),
-      where("type", "==", "testimony")
+      where("type", "==", "org")
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
@@ -65,7 +69,7 @@ export function FollowingTab({ className }: { className?: string }) {
       usersList.push(doc.data().userLookup)
     })
 
-    if (usersFollowing.length === 0 && usersList.length != 0) {
+    if (usersFollowing.length === 0 && usersFollowing.length != 0) {
       setUsersFollowing(usersList)
     }
   }, [subscriptionRef, uid, usersFollowing])
@@ -93,10 +97,28 @@ export function FollowingTab({ className }: { className?: string }) {
     if (unfollow === null) {
       return
     }
-    try {
-      deleteItem({ uid, unfollowItem: unfollow })
-    } catch (error: any) {
-      console.log(error.message)
+    // rest of what was inside the original if statement
+    if (unfollow.type == "bill") {
+      const billLookup = { billId: unfollow.typeId, court: unfollow.court }
+      try {
+        const response = await unfollowBillFunction({
+          billLookup
+        })
+        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
+      } catch (error: any) {
+        console.log(error.message)
+      }
+    } else {
+      const userLookup = {
+        profileId: unfollow.typeId,
+        fullName: unfollow.userName
+      }
+      try {
+        const response = await unfollowUserFunction({ userLookup: userLookup })
+        console.log(response.data) // This should print { status: 'success', message: 'Subscription removed' }
+      } catch (error: any) {
+        console.log(error.message)
+      }
     }
 
     setBillsFollowing([])

@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { EditProfileHeader } from "components/EditProfilePage/EditProfileHeader"
-import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { ProfileButtonsUser } from "components/ProfilePage/ProfileButtons"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Col, Row } from "react-bootstrap"
@@ -8,7 +8,7 @@ import { Provider as Redux } from "react-redux"
 
 const meta: Meta = {
   title: "Atoms/Buttons/Profile Buttons",
-  component: ProfileButtons,
+  component: ProfileButtonsUser,
   decorators: [
     (Story, ...rest) => {
       const { store, props } = wrapper.useWrappedStore(...rest)
@@ -30,17 +30,17 @@ const meta: Meta = {
 
 export default meta
 
-// type Story = StoryObj<typeof ProfileButtons>
+type Story = StoryObj<typeof ProfileButtonsUser>
 
-// export const Primary: Story = {
-//   args: {
-//     isProfilePublic: true,
-//     onProfilePublicityChanged: () => {
-//       console.log("clicked")
-//     }
-//   },
-//   argTypes: {
-//     isProfilePublic: { control: { type: "boolean" } }
-//   },
-//   name: "Profile Buttons"
-// }
+export const Primary: Story = {
+  args: {
+    isProfilePublic: true,
+    onProfilePublicityChanged: () => {
+      console.log("clicked")
+    }
+  },
+  argTypes: {
+    isProfilePublic: { control: { type: "boolean" } }
+  },
+  name: "Profile Buttons"
+}

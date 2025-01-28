@@ -18,7 +18,7 @@ export const EditTestimonyButton = ({
   return (
     <ImageButton
       alt={t("testimonyItem.edit")}
-      tooltip={t("testimonyItem.edit")}
+      tooltip="Edit Testimony"
       src="/edit-testimony.svg"
       href={url}
       className={clsx("testimony-button", className)}
