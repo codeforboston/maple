@@ -1,5 +1,9 @@
 {
   "About_MAPLE": "About MAPLE",
+  "hearingsScheduled": {
+    "noEvents": "No Scheduled Events",
+    "title": "Hearings Scheduled"
+  },
   "who": {
     "title": "Who",
     "bodytext": "All Massachusetts residents can use MAPLE to fulfill their civic responsibility to our state democracy."

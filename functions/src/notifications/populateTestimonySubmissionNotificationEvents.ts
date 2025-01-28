@@ -38,6 +38,8 @@ export const populateTestimonySubmissionNotificationEvents = functions.firestore
         billName: newData?.billTitle,
 
         userId: newData?.authorUid,
+        userRole: newData?.authorRole,
+        testimonyId: context.params.testimonyId,
         testimonyUser: newData?.fullName,
         testimonyPosition: newData?.position,
         testimonyContent: newData?.content,
