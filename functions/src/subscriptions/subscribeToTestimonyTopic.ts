@@ -2,7 +2,6 @@ import { Database } from "../types"
 import { UserRecord } from "firebase-admin/auth"
 import { TopicSubscription } from "./types"
 import { addTopicSubscription } from "./addTopicSubscription"
-import { Timestamp } from "../firebase"
 
 export const subscribeToTestimonyTopic = async ({
   user,
