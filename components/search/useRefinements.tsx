@@ -14,7 +14,6 @@ export const FilterButton = styled(Button)`
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   align-self: flex-start;
 `
-
 const useHasRefinements = () => {
   const { results } = useInstantSearch()
   const refinements = results.getRefinements()
@@ -31,10 +30,6 @@ export const useRefinements = ({
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
-  useEffect(() => {
-    if (inline) setShow(false)
-  }, [inline])
-
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
@@ -46,9 +41,7 @@ export const useRefinements = ({
 
   return {
     options: inline ? (
-      <Col xs={3} lg={3}>
-        {refinements}
-      </Col>
+      <div>{refinements}</div>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>

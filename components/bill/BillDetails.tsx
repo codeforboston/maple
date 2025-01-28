@@ -1,19 +1,7 @@
 import { useFlags } from "components/featureFlags"
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAuth } from "../auth"
-import { Button, Col, Container, Image, Row } from "../bootstrap"
-import { firestore } from "../firebase"
+import { Col, Container, Image, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
 import { Back } from "./Back"
@@ -29,6 +17,8 @@ import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
+import { useState } from "react"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
@@ -47,13 +37,13 @@ export const BillDetails = ({ bill }: BillProps) => {
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
   const flags = useFlags()
 
+  const { user } = useAuth()
+
   return (
     <>
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
-        <Banner>
-          this bill is from session {bill.court} - not the current session
-        </Banner>
+        <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
       )}
 
       <StyledContainer className="mt-3 mb-3">
@@ -78,7 +68,9 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Row>
             <Row className="mb-4">
               <Col xs={12} className="d-flex justify-content-end">
-                {flags.notifications && <FollowBillButton bill={bill} />}
+                {flags.notifications && user && (
+                  <FollowBillButton bill={bill} />
+                )}
               </Col>
             </Row>
           </>
@@ -89,7 +81,9 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
             <Col xs={6} className="d-flex justify-content-end">
               <Styled>
-                {flags.notifications && <FollowBillButton bill={bill} />}
+                {flags.notifications && user && (
+                  <FollowBillButton bill={bill} />
+                )}
               </Styled>
             </Col>
           </Row>
