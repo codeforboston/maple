@@ -6,7 +6,13 @@ import * as fs from "fs"
 import { Timestamp } from "../firebase"
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { startOfDay } from "date-fns"
-import { User } from "./types"
+import { TestimonySubmissionNotificationFields, User } from "./types"
+import {
+  BillDigest,
+  NotificationEmailDigest,
+  Position,
+  UserDigest
+} from "../email/types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -16,8 +22,6 @@ const path = require("path")
 handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
 handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
 handlebars.registerHelper("isDefined", helpers.isDefined)
-
-// Function to register partials for the email template
 function registerPartials(directoryPath: string) {
   const filenames = fs.readdirSync(directoryPath)
 
@@ -36,13 +40,15 @@ function registerPartials(directoryPath: string) {
     }
   })
 }
+const NUM_BILLS_TO_DISPLAY = 4
+const NUM_USERS_TO_DISPLAY = 4
+const NUM_TESTIMONIES_TO_DISPLAY = 6
 
 const PARTIALS_DIR = "/app/functions/lib/email/partials/"
 const EMAIL_TEMPLATE_PATH = "/app/functions/lib/email/digestEmail.handlebars"
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
-// TODO: Break up into smaller functions (getDigestData, buildMessage, sendEmail)
 const deliverEmailNotifications = async () => {
   const now = Timestamp.fromDate(startOfDay(new Date()))
 
@@ -53,37 +59,9 @@ const deliverEmailNotifications = async () => {
 
   const emailPromises = usersSnapshot.docs.map(async userDoc => {
     const user = userDoc.data() as User
-    const startDate = getNotificationStartDate(user.notificationFrequency, now)
+    const digestData = await buildDigestData(user, userDoc.id, now)
 
-    const notificationsSnapshot = await db
-      .collection(`users/${userDoc.id}/userNotificationFeed`)
-      .where("notification.timestamp", ">=", startDate)
-      .where("notification.timestamp", "<", now)
-      .get()
-
-    // Process notifications into a digest type
-    const digestData = notificationsSnapshot.docs.map(notificationDoc => {
-      const notification = notificationDoc.data() as Notification
-
-      // TODO: Process and structure the notification data for display in the email template
-      return notification
-    })
-
-    // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
-    registerPartials(PARTIALS_DIR)
-
-    console.log("DEBUG: Working directory: ", process.cwd())
-    console.log(
-      "DEBUG: Digest template path: ",
-      path.resolve("/app/functions/lib/email/digestEmail.handlebars")
-    )
-
-    const templateSource = fs.readFileSync(
-      path.join(__dirname, EMAIL_TEMPLATE_PATH),
-      "utf8"
-    )
-    const compiledTemplate = handlebars.compile(templateSource)
-    const htmlString = compiledTemplate({ digestData })
+    const htmlString = renderToHtmlString(digestData)
 
     // Create an email document in /notifications_mails to queue up the send
     await db.collection("notifications_mails").add({
@@ -96,12 +74,136 @@ const deliverEmailNotifications = async () => {
       createdAt: Timestamp.now()
     })
 
+    console.log(`Saved email message to user ${user.email}`)
+
     const nextDigestAt = getNextDigestAt(user.notificationFrequency)
     await userDoc.ref.update({ nextDigestAt })
+
+    console.log(`Updated nextDigestAt for ${user.email} to ${nextDigestAt}`)
   })
 
   // Wait for all email documents to be created
   await Promise.all(emailPromises)
+}
+
+// TODO: Unit tests
+const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
+  const startDate = getNotificationStartDate(user.notificationFrequency, now)
+
+  const notificationsSnapshot = await db
+    .collection(`users/${userId}/userNotificationFeed`)
+    .where("notification.type", "==", "testimony") // Email digest only cares about testimony
+    .where("notification.timestamp", ">=", startDate)
+    .where("notification.timestamp", "<", now)
+    .get()
+
+  const billsById: { [billId: string]: BillDigest } = {}
+  const usersById: { [userId: string]: UserDigest } = {}
+
+  notificationsSnapshot.docs.forEach(notificationDoc => {
+    const { notification } =
+      notificationDoc.data() as TestimonySubmissionNotificationFields
+
+    if (notification.isBillMatch) {
+      if (billsById[notification.billId]) {
+        const bill = billsById[notification.billId]
+
+        switch (notification.position) {
+          case "endorse":
+            bill.endorseCount++
+            break
+          case "neutral":
+            bill.neutralCount++
+            break
+          case "oppose":
+            bill.opposeCount++
+            break
+          default:
+            console.error(`Unknown position: ${notification.position}`)
+            break
+        }
+      } else {
+        billsById[notification.billId] = {
+          billId: notification.billId,
+          billName: notification.header,
+          billCourt: notification.court,
+          endorseCount: notification.position === "endorse" ? 1 : 0,
+          neutralCount: notification.position === "neutral" ? 1 : 0,
+          opposeCount: notification.position === "oppose" ? 1 : 0
+        }
+      }
+    }
+
+    if (notification.isUserMatch) {
+      const billResult = {
+        billId: notification.billId,
+        court: notification.court,
+        position: notification.position as Position
+      }
+      if (usersById[notification.authorUid]) {
+        const user = usersById[notification.authorUid]
+        user.bills.push(billResult)
+        user.newTestimonyCount++
+      } else {
+        usersById[notification.authorUid] = {
+          userId: notification.authorUid,
+          userName: notification.subheader,
+          bills: [billResult],
+          newTestimonyCount: 1
+        }
+      }
+    }
+  })
+
+  const bills = Object.values(billsById).sort((a, b) => {
+    return (
+      b.endorseCount +
+      b.neutralCount +
+      b.opposeCount -
+      a.endorseCount -
+      a.neutralCount -
+      a.opposeCount
+    )
+  })
+
+  const users = Object.values(usersById)
+    .map(userDigest => {
+      return {
+        ...userDigest,
+        bills: userDigest.bills.slice(0, NUM_TESTIMONIES_TO_DISPLAY)
+      }
+    })
+    .sort((a, b) => b.newTestimonyCount - a.newTestimonyCount)
+
+  const digestData = {
+    notificationFrequency: user.notificationFrequency,
+    startDate: startDate.toDate(),
+    endDate: now.toDate(),
+    bills: bills.slice(0, NUM_BILLS_TO_DISPLAY),
+    numBillsWithNewTestimony: bills.length,
+    users: users.slice(0, NUM_USERS_TO_DISPLAY),
+    numUsersWithNewTestimony: users.length
+  }
+
+  return digestData
+}
+
+const renderToHtmlString = (digestData: NotificationEmailDigest) => {
+  // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
+  registerPartials(PARTIALS_DIR)
+
+  console.log("DEBUG: Working directory: ", process.cwd())
+  console.log(
+    "DEBUG: Digest template path: ",
+    path.resolve(EMAIL_TEMPLATE_PATH)
+  )
+
+  const templateSource = fs.readFileSync(
+    path.join(__dirname, EMAIL_TEMPLATE_PATH),
+    "utf8"
+  )
+  const compiledTemplate = handlebars.compile(templateSource)
+  return compiledTemplate({ digestData })
 }
 
 // Firebase Functions

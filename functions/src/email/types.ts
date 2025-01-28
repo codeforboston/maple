@@ -3,15 +3,15 @@ import { Frequency } from "../auth/types"
 export type BillDigest = {
   billId: string
   billName: string
-  billCourt: number
+  billCourt: string
   endorseCount: number
   neutralCount: number
   opposeCount: number
-  // numNewTestimonies = endorse + neutral + oppose
 }
 export type Position = "endorse" | "neutral" | "oppose"
 export type BillResult = {
   billId: string
+  court: string
   position: Position
 }
 export type UserDigest = {
