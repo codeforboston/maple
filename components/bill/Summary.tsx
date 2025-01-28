@@ -1,11 +1,7 @@
-import { useFlags } from "components/featureFlags"
 import * as links from "components/links"
-import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import styled from "styled-components"
 import { Button, Col, Container, Modal, Row } from "../bootstrap"
-import { SmartDisclaimer } from "./SmartDisclaimer"
-import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 
@@ -26,7 +22,7 @@ const TitleFormat = styled(Col)`
 `
 
 const Divider = styled(Col)`
-  width: 2px;
+  width: 1px;
   padding: 0;
   background-color: var(--bs-blue-100);
   align-self: stretch;
@@ -44,25 +40,6 @@ const FormattedBillDetails = styled(Col)`
   white-space: pre-wrap;
 `
 
-const SmartTagButton = styled.button`
-  border-radius: 12px;
-  font-size: 12px;
-`
-
-const SmartTag = ({ icon, tagName }: { icon: String; tagName: String }) => {
-  return (
-    <SmartTagButton
-      className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
-    >
-      &nbsp;
-      <SmartIcon icon={icon} />
-      &nbsp;
-      {tagName}
-      &nbsp;
-    </SmartTagButton>
-  )
-}
-
 export const Summary = ({
   bill,
   className
@@ -71,10 +48,6 @@ export const Summary = ({
   const handleShowBillDetails = () => setShowBillDetails(true)
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
-
-  const { showLLMFeatures } = useFlags()
-
-  const { t } = useTranslation("common")
 
   return (
     <SummaryContainer className={className}>
@@ -88,14 +61,14 @@ export const Summary = ({
                 className="m-1"
                 onClick={handleShowBillDetails}
               >
-                {t("bill.view_bill")}
+                Read more..
               </StyledButton>
             ) : (
               <links.External
                 className="fst-normal fs-body"
                 href={links.billPdfUrl(bill.court, bill.id)}
               >
-                {t("bill.download_pdf")}
+                Download PDF
               </links.External>
             )}
           </div>
@@ -116,31 +89,11 @@ export const Summary = ({
           </Modal>
         </TitleFormat>
 
-        <Divider className={`my-2`} xs="auto" />
+        <Divider xs="auto" />
         <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
       </Row>
-      {showLLMFeatures ? (
-        <>
-          {bill.summary !== undefined && bill.topics !== undefined ? (
-            <>
-              <hr className={`m-0 border-bottom border-2`} />
-              <SmartDisclaimer />
-            </>
-          ) : (
-            <></>
-          )}
-          <Row className="mx-1 mb-3">{bill.summary}</Row>
-          <Row className={`d-flex mx-0 my-1`} xs="auto">
-            {bill.topics?.map(t => (
-              <SmartTag key={t.topic} icon={t.category} tagName={t.topic} />
-            ))}
-          </Row>
-        </>
-      ) : (
-        <></>
-      )}
     </SummaryContainer>
   )
 }

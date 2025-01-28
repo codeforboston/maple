@@ -55,17 +55,6 @@ export const newBillContent: BillContent = {
   DocumentText: "this is the document text"
 }
 
-export const newBillTopics = [
-  {
-    category: "Crime and Law Enforcement",
-    topic: "Criminal investigation, prosecution, interrogation"
-  },
-  {
-    category: "Economics and Public Finance",
-    topic: "Budget process"
-  }
-]
-
 export const bill: Bill = {
   id: "123",
   court: 192,
@@ -86,7 +75,5 @@ export const bill: Bill = {
       email: "a@b.com"
     }
   },
-  city: "Boston",
-  topics: newBillTopics,
-  summary: "This is the summary"
+  city: "Boston"
 }

@@ -33,26 +33,19 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Setup project
     {
       name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"]
-      }
+      use: { ...devices["Desktop Chrome"] }
     },
 
     {
       name: "firefox",
-      use: {
-        ...devices["Desktop Firefox"]
-      }
+      use: { ...devices["Desktop Firefox"] }
     },
 
     {
       name: "webkit",
-      use: {
-        ...devices["Desktop Safari"]
-      }
+      use: { ...devices["Desktop Safari"] }
     }
 
     /* Test against mobile viewports. */
@@ -78,7 +71,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "yarn dev:up",
+    command: "yarn dev",
     url: "http://localhost:3000/",
     reuseExistingServer: !process.env.CI
   }

@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button } from "../bootstrap"
 import { Pagination } from "../db"
 import styled from "styled-components"
-import { useTranslation } from "react-i18next"
 
 export const PaginationButtons = ({
   pagination: {
@@ -24,8 +23,6 @@ export const PaginationButtons = ({
   pagination: Pagination
   totalItems: number | undefined
 }) => {
-  const { t } = useTranslation("common")
-
   if (totalItems === undefined) {
     return null
   }
@@ -41,7 +38,7 @@ export const PaginationButtons = ({
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </PreviousStyle>
       <SpanStyle variant="secondary" className="align-self-center">
-        {t("table.page", { currentPage })}
+        Page {currentPage}
       </SpanStyle>
       <NextStyle
         variant="secondary"

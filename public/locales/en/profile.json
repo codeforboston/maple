@@ -9,9 +9,7 @@
     "editProfile": "Edit\u00A0Profile",    
     "notficationFrequencyDropdown": "open envelope with letter, toggles update frequency options",
     "follow" : "Follow",
-    "followedContent": "Followed Content",
-    "following" : "Following",
-    "yourTestimonies": "Your Testimonies"
+    "following" : "Following"
   },
   "content": {
     "viewingProfile": "Currently viewing your profile",

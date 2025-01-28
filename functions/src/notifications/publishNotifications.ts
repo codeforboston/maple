@@ -9,9 +9,7 @@ import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
 import {
   BillHistoryUpdateNotification,
-  BillHistoryUpdateNotificationFields,
-  TestimonySubmissionNotification,
-  TestimonySubmissionNotificationFields
+  TestimonySubmissionNotification
 } from "./types"
 import { cloneDeep } from "lodash"
 
@@ -20,58 +18,49 @@ const db = admin.firestore()
 
 const createNotificationFields = (
   entity: BillHistoryUpdateNotification | TestimonySubmissionNotification
-):
-  | BillHistoryUpdateNotificationFields
-  | TestimonySubmissionNotificationFields => {
+) => {
+  let bodyText: string
+  let subheader: string
+  let position: string | undefined
+
   switch (entity.type) {
     case "bill":
       if (entity.billHistory.length < 1) {
         console.log(`Invalid history length: ${entity.billHistory.length}`)
         throw new Error(`Invalid history length: ${entity.billHistory.length}`)
       }
-      const lastHistoryAction =
-        entity.billHistory[entity.billHistory.length - 1]
-      return {
-        uid: "",
-        notification: {
-          header: entity.billName,
-          court: entity.billCourt,
-          billId: entity.billId,
-          bodyText: `${lastHistoryAction.Action}`,
-          subheader: `${lastHistoryAction.Branch}`,
-          timestamp: entity.updateTime,
-          type: "bill",
-          isBillMatch: false,
-          isUserMatch: false,
-          delivered: false
-        },
-        createdAt: Timestamp.now()
-      }
+      let lastHistoryAction = entity.billHistory[entity.billHistory.length - 1]
+      bodyText = `${lastHistoryAction.Action}`
+      subheader = `${lastHistoryAction.Branch}`
+      break
 
     case "testimony":
-      return {
-        uid: "",
-        notification: {
-          header: entity.billName,
-          court: entity.billCourt,
-          billId: entity.billId,
-          bodyText: entity.testimonyContent,
-          subheader: entity.testimonyUser,
-          timestamp: entity.updateTime,
-          position: entity.testimonyPosition,
-          type: "testimony",
-          isBillMatch: false,
-          isUserMatch: false,
-          delivered: false,
-          authorUid: entity.userId,
-          testimonyId: entity.testimonyId,
-          userRole: entity.userRole
-        },
-        createdAt: Timestamp.now()
-      }
+      bodyText = entity.testimonyContent
+      subheader = entity.testimonyUser
+      position = entity.testimonyPosition
+      break
+
     default:
       console.log(`Invalid entity: ${entity}`)
       throw new Error(`Invalid entity: ${entity}`)
+  }
+
+  return {
+    uid: "",
+    notification: {
+      bodyText: bodyText,
+      header: entity.billId,
+      court: entity.billCourt,
+      id: entity.billId,
+      subheader: subheader,
+      timestamp: entity.updateTime,
+      type: entity.type,
+      position: position ?? "",
+      isBillMatch: false,
+      isUserMatch: false,
+      delivered: false
+    },
+    createdAt: Timestamp.now()
   }
 }
 
@@ -121,27 +110,17 @@ export const publishNotifications = functions.firestore
       // Iterate through the topicNameSnapshots and set the notifications
       topicNameSnapshot.forEach(subscription => {
         const { uid, type } = subscription.data()
-
-        // Initialize user notification fields if they don't exist
-        const initializeUserNotification = (uid: string) => {
+        if (topic.type === "testimony" && topic.userId !== uid) {
+          // If the user does not exist, create new notificationFields for the user
           if (!users[uid]) {
             users[uid] = cloneDeep(notificationFields)
             users[uid].uid = uid
           }
-        }
 
-        // If the topic is a testimony and the user is not the author of the testimony
-        if (topic.type === "testimony" && topic.userId !== uid) {
-          initializeUserNotification(uid)
+          // Set isUserMatch or isBillMatch based on the type of notification from the topic subscription
           users[uid].notification[
             type === "testimony" ? "isUserMatch" : "isBillMatch"
           ] = true
-        }
-
-        // If the topic is a bill
-        if (topic.type === "bill") {
-          initializeUserNotification(uid)
-          users[uid].notification["isBillMatch"] = true
         }
       })
 

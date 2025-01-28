@@ -15,7 +15,9 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   role: Role
   setIsProfilePublic: Dispatch<SetStateAction<false | true>>
   notifications: Frequency
-  setNotifications: Dispatch<SetStateAction<"Weekly" | "Monthly" | "None">>
+  setNotifications: Dispatch<
+    SetStateAction<"Daily" | "Weekly" | "Monthly" | "None">
+  >
   onSettingsModalClose: () => void
 }
 
@@ -98,16 +100,8 @@ export default function ProfileSettingsModal({
       aria-labelledby="notifications-modal"
       centered
     >
-      <Modal.Header>
+      <Modal.Header closeButton>
         <Modal.Title id="notifications-modal">{t("setting")}</Modal.Title>
-        <Image
-          src="/x_cancel.png"
-          alt={t("navigation.closeNavMenu")}
-          width="30"
-          height="30"
-          className="ms-2"
-          onClick={handleCancel}
-        />
       </Modal.Header>
       <Modal.Body className={`p-3`}>
         <Form>
@@ -146,6 +140,9 @@ export default function ProfileSettingsModal({
                     variant="outline-secondary"
                   />
                   <Dropdown.Menu className={`col-12 bg-white `}>
+                    <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                      {t("email.daily")}
+                    </Dropdown.Item>
                     <Dropdown.Item onClick={() => setNotifications("Weekly")}>
                       {t("email.weekly")}
                     </Dropdown.Item>

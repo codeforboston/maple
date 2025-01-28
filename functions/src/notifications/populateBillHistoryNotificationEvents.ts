@@ -28,20 +28,24 @@ export const populateBillHistoryNotificationEvents = functions.firestore
 
     const { court } = context.params
 
-    // Create a notification event
-    const createNotificationEvent = async (
-      data: FirebaseFirestore.DocumentData
-    ) => {
-      const notificationEvent: BillHistoryUpdateNotification = {
+    // New bill added
+    if (documentCreated) {
+      console.log("New document created")
+
+      const newNotificationEvent: BillHistoryUpdateNotification = {
         type: "bill",
+
         billCourt: court,
-        billId: data?.id,
-        billName: data?.content.Title,
-        billHistory: data?.history,
+        billId: newData?.id,
+        billName: newData?.content.Title,
+
+        billHistory: newData?.history,
+
         updateTime: Timestamp.now()
       }
 
-      await db.collection("/notificationEvents").add(notificationEvent)
+      await db.collection("/notificationEvents").add(newNotificationEvent)
+
       return
     }
 
@@ -50,22 +54,6 @@ export const populateBillHistoryNotificationEvents = functions.firestore
 
     const historyChanged = oldLength !== newLength
     console.log(`oldLength: ${oldLength}, newLength: ${newLength}`)
-
-    if (!historyChanged) {
-      console.log(
-        "Bill History unchanged, skipping notification event creation/update"
-      )
-      return
-    }
-
-    // New bill added
-    if (documentCreated && newData) {
-      console.log("New Bill History notification event created")
-
-      await createNotificationEvent(newData)
-
-      return
-    }
 
     const notificationEventSnapshot = await db
       .collection("/notificationEvents")
@@ -82,7 +70,7 @@ export const populateBillHistoryNotificationEvents = functions.firestore
       const notificationEventId = notificationEventSnapshot.docs[0].id
 
       if (historyChanged) {
-        console.log("History changed, updating existing notification event")
+        console.log("History changed")
 
         // Update the existing notification event
         await db
@@ -92,14 +80,6 @@ export const populateBillHistoryNotificationEvents = functions.firestore
             billHistory: newData?.history,
             updateTime: Timestamp.now()
           })
-      }
-    } else {
-      console.log(
-        "No existing notification event found, creating new notification event"
-      )
-
-      if (newData) {
-        await createNotificationEvent(newData)
       }
     }
   })

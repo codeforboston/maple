@@ -51,7 +51,6 @@ export async function createNewBill(props?: Partial<Bill>) {
     fetchedAt: Timestamp.fromMillis(0),
     history: [],
     similar: [],
-    topics: [],
     ...props
   }
 

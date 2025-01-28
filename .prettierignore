@@ -13,4 +13,3 @@ dist
 *.handlebars
 coverage
 storybook-static
-llm

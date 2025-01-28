@@ -78,25 +78,18 @@ export const NavbarLinkEditProfile: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
-    tab: string
   }>
-> = ({ handleClick, other, tab }) => {
+> = ({ handleClick, other }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href={
-          tab == "navigation.editProfile" ? "/editprofile" : "/editprofilealt"
-        }
-        /* editprofilealt identical to editprofile except that the mobile Nav   *
-         * link to Following Tab needs a unique url otherwise both Edit Profile *
-         * and Following Tab will light up when either one is selected          */
-
+        href="/editprofile"
         {...other}
       >
-        {t(tab)}
+        {t("navigation.editProfile")}
       </NavLink>
     </Nav.Item>
   )
@@ -114,10 +107,10 @@ export const NavbarLinkEffective: React.FC<
     <NavDropdown.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href="/learn/testimony-basics"
+        href="/learn/to-write-effective-testimony"
         {...other}
       >
-        {t("navigation.aboutTestimony")}
+        {t("navigation.toWriteEffectiveTestimony")}
       </NavLink>
     </NavDropdown.Item>
   )
@@ -190,27 +183,6 @@ export const NavbarLinkLogo: React.FC<
         />
       </NavLink>
     </div>
-  )
-}
-
-export const NavbarLinkNewsfeed: React.FC<
-  React.PropsWithChildren<{
-    handleClick?: any
-    other?: any
-  }>
-> = ({ handleClick, other }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)")
-  const { t } = useTranslation(["common", "auth", "profile"])
-  return (
-    <Nav.Item onClick={handleClick}>
-      <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
-        href="/newsfeed"
-        {...other}
-      >
-        {t("navigation.newsfeed")}
-      </NavLink>
-    </Nav.Item>
   )
 }
 
