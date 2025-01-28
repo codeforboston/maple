@@ -39,8 +39,7 @@ export {
   httpsPublishNotifications,
   httpsDeliverNotifications,
   httpsCleanupNotifications,
-  updateUserNotificationFrequency,
-  updateNextDigestAt
+  updateUserNotificationFrequency
 } from "./notifications"
 
 export {

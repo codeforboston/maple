@@ -7,7 +7,6 @@ import { deliverNotifications, httpsDeliverNotifications } from "./deliverNotifi
 import { httpsPublishNotifications } from "./httpsPublishNotifications"
 import { httpsCleanupNotifications } from "./httpsCleanupNotifications"
 import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
-import { updateNextDigestAt } from "./updateNextDigestAt"
 
 // Export the functions
 export {
@@ -19,6 +18,5 @@ export {
   httpsPublishNotifications,
   httpsDeliverNotifications,
   httpsCleanupNotifications,
-  updateUserNotificationFrequency,
-  updateNextDigestAt
+  updateUserNotificationFrequency
 }

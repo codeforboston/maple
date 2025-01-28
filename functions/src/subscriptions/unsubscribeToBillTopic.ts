@@ -24,8 +24,7 @@ export const unsubscribeToBillTopic = async ({
       topicName,
       uid,
       type: "bill",
-      billLookup,
-      nextDigestAt: Timestamp.fromDate(new Date())
+      billLookup
     }
 
     await removeTopicSubscription({ user, subscriptionData, db })

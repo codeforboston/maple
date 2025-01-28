@@ -4,6 +4,8 @@ import * as handlebars from "handlebars"
 import * as helpers from "../email/helpers"
 import * as fs from "fs"
 import { Timestamp } from "../firebase"
+import { getNextDigestAt } from "./helpers"
+import { Frequency } from "../auth/types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -53,7 +55,7 @@ const deliverEmailNotifications = async () => {
     const { uid } = subscriptions
 
     interface User {
-      notificationFrequency: string
+      notificationFrequency: Frequency
       email: string
     }
 
@@ -130,35 +132,7 @@ const deliverEmailNotifications = async () => {
     await Promise.all(updatePromises)
 
     // Update nextDigestAt timestamp for the current feed
-    let nextDigestAt
-
-    // Get the amount of milliseconds for the notificationFrequency
-    switch (notificationFrequency) {
-      case "Daily":
-        nextDigestAt = Timestamp.fromMillis(
-          now.toMillis() + 24 * 60 * 60 * 1000
-        )
-        break
-      case "Weekly":
-        nextDigestAt = Timestamp.fromMillis(
-          now.toMillis() + 7 * 24 * 60 * 60 * 1000
-        )
-        break
-      case "Monthly":
-        const monthAhead = new Date(now.toDate())
-        monthAhead.setMonth(monthAhead.getMonth() + 1)
-        nextDigestAt = Timestamp.fromDate(monthAhead)
-        break
-      case "None":
-        nextDigestAt = null
-        break
-      default:
-        console.error(
-          `Unknown notification frequency: ${notificationFrequency}`
-        )
-        break
-    }
-
+    const nextDigestAt = getNextDigestAt(notificationFrequency)
     await doc.ref.update({ nextDigestAt })
   })
 

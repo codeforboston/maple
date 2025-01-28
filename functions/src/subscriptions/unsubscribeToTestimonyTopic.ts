@@ -29,8 +29,7 @@ export const unsubscribeToTestimonyTopic = async ({
       topicName,
       uid,
       type: "testimony",
-      userLookup,
-      nextDigestAt: Timestamp.fromDate(new Date())
+      userLookup
     }
 
     // Debug: Log the subscription data
