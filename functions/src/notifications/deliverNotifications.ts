@@ -1,10 +1,3 @@
-// Path: functions/src/shared/deliverNotifications.ts
-// Function that finds all notification feed documents that are ready to be digested and emails them to the user.
-// Creates an email document in /notifications_mails to queue up the send, which is done by email/emailDelivery.ts
-
-// runs at least every 24 hours, but can be more or less frequent, depending on the value stored in the user's userNotificationFeed document, as well as a nextDigestTime value stored in the user's userNotificationFeed document.
-
-// Import necessary Firebase modules and libraries
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
@@ -18,9 +11,7 @@ const path = require("path")
 
 // Define Handlebars helper functions
 handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-
 handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
-
 handlebars.registerHelper("isDefined", helpers.isDefined)
 
 // Function to register partials for the email template
@@ -44,7 +35,7 @@ function registerPartials(directoryPath: string) {
 }
 
 
-const sharedDeliverNotifications = async () => {
+const deliverEmailNotifications = async () => {
   // Get the current timestamp
   const now = Timestamp.fromDate(new Date())
 
@@ -178,12 +169,12 @@ const sharedDeliverNotifications = async () => {
 // Define the deliverNotifications function
 export const deliverNotifications = functions.pubsub
   .schedule("every 24 hours")
-  .onRun(sharedDeliverNotifications)
+  .onRun(deliverEmailNotifications)
 
 export const httpsDeliverNotifications = functions.https.onRequest(
   async (request, response) => {
     try {
-      await sharedDeliverNotifications()
+      await deliverEmailNotifications()
 
       console.log("DEBUG: deliverNotifications completed")
 
