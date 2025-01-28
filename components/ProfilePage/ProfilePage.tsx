@@ -12,7 +12,7 @@ import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
 import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
-import { HeaderWrapper } from "./ProfileHeader"
+import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "./VerifyAccountSection"
 
@@ -99,10 +99,9 @@ export function ProfilePage(profileprops: {
         </>
       ) : null}
       <Container>
-        <HeaderWrapper
+        <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
-          onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />
 

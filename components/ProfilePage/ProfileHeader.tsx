@@ -2,8 +2,7 @@ import { useTranslation } from "next-i18next"
 import { useContext, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { Row, Spinner } from "../bootstrap"
-import { Profile, ProfileHook, useProfile } from "../db"
+import { Profile, useProfile } from "../db"
 import { EditProfileButton, ProfileButtons } from "./ProfileButtons"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
@@ -11,57 +10,16 @@ import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModa
 import { FollowUserButton } from "components/shared/FollowButton"
 import { TabContext } from "components/shared/ProfileTabsContext"
 
-export function HeaderWrapper({
-  profileId,
-  isUser,
-  onProfilePublicityChanged,
-  profile
-}: {
-  isUser: boolean
-  profile: Profile
-  profileId: string
-  onProfilePublicityChanged: (isPublic: boolean) => void
-}) {
-  const { user } = useAuth()
-  const uid = user?.uid
-  const result = useProfile()
-
-  if (result.loading) {
-    return (
-      <Row>
-        <Spinner animation="border" className="mx-auto" />
-      </Row>
-    )
-  }
-
-  if (result?.profile && uid) {
-    return (
-      <ProfileHeader
-        actions={result}
-        isUser={isUser}
-        onProfilePublicityChanged={onProfilePublicityChanged}
-        profile={profile}
-        profileId={profileId}
-      />
-    )
-  }
-
-  // Todo add error handling/404 page?
-}
-
 export const ProfileHeader = ({
-  actions,
   isUser,
-  onProfilePublicityChanged,
   profile,
   profileId
 }: {
-  actions: ProfileHook
   isUser: boolean
-  onProfilePublicityChanged: (isPublic: boolean) => void
   profile: Profile
   profileId: string
 }) => {
+  const actions = useProfile()
   const { t } = useTranslation("profile")
   const { role } = profile // When we have more types of profile than org and user, we will need to use the actual role from the profile, and move away from isOrg boolean.
   const { user } = useAuth()
@@ -94,13 +52,9 @@ export const ProfileHeader = ({
         className={`d-flex flex-row justify-content-start align-items-center gap-3 mx-5`}
       >
         <ProfileIcon role={role} large />
-        <div>
-          <ProfileDisplayName className={`col-3 col-md-auto`}>
-            {profile.fullName}
-          </ProfileDisplayName>
-          {user && !isUser ? (
-            <FollowUserButton profileId={profileId} />
-          ) : (
+        <div className={`d-grid col-6 col-md-10 gap-2`}>
+          <ProfileDisplayName>{profile.fullName}</ProfileDisplayName>
+          {user && isUser ? ( // Am I Logged In? and Is This My Profile?
             <EditProfileButton
               className={`py-1 col-md-8`}
               handleClick={() => {
@@ -108,6 +62,11 @@ export const ProfileHeader = ({
               }}
               tab="button.editProfile"
             />
+          ) : user ? ( // Am I Logged In? and Is This Not My Profile?
+            <FollowUserButton profileId={profileId} />
+          ) : (
+            // I Am Not Logged In and This Is Not My Profile
+            <></>
           )}
         </div>
       </div>
