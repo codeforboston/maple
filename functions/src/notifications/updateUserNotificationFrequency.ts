@@ -1,6 +1,6 @@
 const functions = require("firebase-functions")
 import * as admin from "firebase-admin"
-import { getNextDigestAt } from "./helpers";
+import { getNextDigestAt } from "./helpers"
 
 export const updateUserNotificationFrequency = functions.firestore
   .document("profiles/{userId}")
@@ -36,13 +36,17 @@ export const updateUserNotificationFrequency = functions.firestore
       }
 
       // Update user document in the 'users' collection
-      await admin.firestore().collection("users").doc(userId).set(
-        {
-          notificationFrequency: notificationFrequency,
-          nextDigestAt: getNextDigestAt(notificationFrequency)
-        },
-        { merge: true }
-      )
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .set(
+          {
+            notificationFrequency: notificationFrequency,
+            nextDigestAt: getNextDigestAt(notificationFrequency)
+          },
+          { merge: true }
+        )
 
       return null
     }

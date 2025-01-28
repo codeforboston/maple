@@ -4,8 +4,9 @@ import * as handlebars from "handlebars"
 import * as helpers from "../email/helpers"
 import * as fs from "fs"
 import { Timestamp } from "../firebase"
-import { getNextDigestAt } from "./helpers"
-import { Frequency } from "../auth/types"
+import { getNextDigestAt, getNotificationStartDate } from "./helpers"
+import { startOfDay } from "date-fns"
+import { User } from "./types"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -36,68 +37,40 @@ function registerPartials(directoryPath: string) {
   })
 }
 
+const PARTIALS_DIR = "/app/functions/lib/email/partials/"
+const EMAIL_TEMPLATE_PATH = "/app/functions/lib/email/digestEmail.handlebars"
 
+// TODO: Batching (at both user + email level)?
+//       Going to wait until we have a better idea of the performance impact
+// TODO: Break up into smaller functions (getDigestData, buildMessage, sendEmail)
 const deliverEmailNotifications = async () => {
-  // Get the current timestamp
-  const now = Timestamp.fromDate(new Date())
+  const now = Timestamp.fromDate(startOfDay(new Date()))
 
-  // check if the nextDigestAt is less than the current timestamp, so that we know it's time to send the digest
-  // if nextDigestAt does not equal null, then the user has a notification digest scheduled
-  const subscriptionSnapshot = await db
-    .collectionGroup("activeTopicSubscriptions")
-    .where("nextDigestAt", "<", now)
+  const usersSnapshot = await db
+    .collection("users")
+    .where("nextDigestAt", "<=", now)
     .get()
 
-  // Iterate through each feed, load up all undelivered notification documents, and process them into a digest
-  const emailPromises = subscriptionSnapshot.docs.map(async doc => {
-    const subscriptions = doc.data()
+  const emailPromises = usersSnapshot.docs.map(async userDoc => {
+    const user = userDoc.data() as User
+    const startDate = getNotificationStartDate(user.notificationFrequency, now)
 
-    const { uid } = subscriptions
-
-    interface User {
-      notificationFrequency: Frequency
-      email: string
-    }
-
-    // Fetch the user document
-    const userDoc = await db.collection("users").doc(uid).get()
-
-    if (!userDoc.exists || !userDoc.data()) {
-      console.warn(
-        `User document with id ${uid} does not exist or has no data.`
-      )
-      return // Skip processing for this user
-    }
-
-    const userData: User = userDoc.data() as User
-
-    if (!("notificationFrequency" in userData) || !("email" in userData)) {
-      console.warn(
-        `User document with id ${uid} does not have notificationFrequency and/or email property.`
-      )
-      return // Skip processing for this user
-    }
-
-    const { notificationFrequency, email } = userData
-
-    // Get the undelivered notification documents
     const notificationsSnapshot = await db
-      .collection(`users/${uid}/userNotificationFeed`)
-      .where("delivered", "==", false)
+      .collection(`users/${userDoc.id}/userNotificationFeed`)
+      .where("notification.timestamp", ">=", startDate)
+      .where("notification.timestamp", "<", now)
       .get()
 
     // Process notifications into a digest type
     const digestData = notificationsSnapshot.docs.map(notificationDoc => {
-      const notification = notificationDoc.data()
-      // Process and structure the notification data for display in the email template
-      // ...
+      const notification = notificationDoc.data() as Notification
 
+      // TODO: Process and structure the notification data for display in the email template
       return notification
     })
 
-    // Register partials for the email template
-    const partialsDir = "/app/functions/lib/email/partials/"
-    registerPartials(partialsDir)
+    // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
+    registerPartials(PARTIALS_DIR)
 
     console.log("DEBUG: Working directory: ", process.cwd())
     console.log(
@@ -105,10 +78,8 @@ const deliverEmailNotifications = async () => {
       path.resolve("/app/functions/lib/email/digestEmail.handlebars")
     )
 
-    // Render the email template using the digest data
-    const emailTemplate = "/app/functions/lib/email/digestEmail.handlebars"
     const templateSource = fs.readFileSync(
-      path.join(__dirname, emailTemplate),
+      path.join(__dirname, EMAIL_TEMPLATE_PATH),
       "utf8"
     )
     const compiledTemplate = handlebars.compile(templateSource)
@@ -116,7 +87,7 @@ const deliverEmailNotifications = async () => {
 
     // Create an email document in /notifications_mails to queue up the send
     await db.collection("notifications_mails").add({
-      to: [email],
+      to: [user.email],
       message: {
         subject: "Your Notifications Digest",
         text: "", // blank because we're sending HTML
@@ -125,22 +96,15 @@ const deliverEmailNotifications = async () => {
       createdAt: Timestamp.now()
     })
 
-    // Mark the notifications as delivered
-    const updatePromises = notificationsSnapshot.docs.map(notificationDoc =>
-      notificationDoc.ref.update({ delivered: true })
-    )
-    await Promise.all(updatePromises)
-
-    // Update nextDigestAt timestamp for the current feed
-    const nextDigestAt = getNextDigestAt(notificationFrequency)
-    await doc.ref.update({ nextDigestAt })
+    const nextDigestAt = getNextDigestAt(user.notificationFrequency)
+    await userDoc.ref.update({ nextDigestAt })
   })
 
   // Wait for all email documents to be created
   await Promise.all(emailPromises)
 }
 
-// Define the deliverNotifications function
+// Firebase Functions
 export const deliverNotifications = functions.pubsub
   .schedule("every 24 hours")
   .onRun(deliverEmailNotifications)
