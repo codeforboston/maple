@@ -2,7 +2,7 @@ import { Timestamp } from "firebase-admin/firestore"
 import { Frequency } from "../auth/types"
 import { startOfDay } from "date-fns"
 
-// TODO - Unit test this function
+// TODO - Unit tests
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
   let nextDigestAt = null

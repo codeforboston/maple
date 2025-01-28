@@ -61,25 +61,33 @@ const deliverEmailNotifications = async () => {
     const user = userDoc.data() as User
     const digestData = await buildDigestData(user, userDoc.id, now)
 
-    const htmlString = renderToHtmlString(digestData)
+    // If there are no new notifications, don't send an email
+    if (
+      digestData.numBillsWithNewTestimony === 0 &&
+      digestData.numUsersWithNewTestimony === 0
+    ) {
+      console.log(`No new notifications for ${userDoc.id} - not sending email`)
+    } else {
+      const htmlString = renderToHtmlString(digestData)
 
-    // Create an email document in /notifications_mails to queue up the send
-    await db.collection("notifications_mails").add({
-      to: [user.email],
-      message: {
-        subject: "Your Notifications Digest",
-        text: "", // blank because we're sending HTML
-        html: htmlString
-      },
-      createdAt: Timestamp.now()
-    })
+      // Create an email document in /notifications_mails to queue up the send
+      await db.collection("notifications_mails").add({
+        to: [user.email],
+        message: {
+          subject: "Your Notifications Digest",
+          text: "", // blank because we're sending HTML
+          html: htmlString
+        },
+        createdAt: Timestamp.now()
+      })
 
-    console.log(`Saved email message to user ${user.email}`)
+      console.log(`Saved email message to user ${userDoc.id}`)
+    }
 
     const nextDigestAt = getNextDigestAt(user.notificationFrequency)
     await userDoc.ref.update({ nextDigestAt })
 
-    console.log(`Updated nextDigestAt for ${user.email} to ${nextDigestAt}`)
+    console.log(`Updated nextDigestAt for ${userDoc.id} to ${nextDigestAt}`)
   })
 
   // Wait for all email documents to be created
