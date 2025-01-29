@@ -5,7 +5,6 @@ import { FillButton, GearIcon, OutlineButton } from "../buttons"
 import { Button } from "../bootstrap"
 import { Role } from "components/auth/types"
 import { Internal } from "components/links"
-import { TabContext } from "components/shared/ProfileTabsContext"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -53,9 +52,19 @@ export const EditProfileButton = ({
 }) => {
   const { t } = useTranslation("profile")
 
+  let path = `about-you`
+
+  if (tab == "button.followedContent") {
+    path = `following`
+  }
+
+  if (tab == "button.yourTestimonies") {
+    path = `testimonies`
+  }
+
   return (
     <Internal
-      href="/editprofile"
+      href={`/edit-profile/${path}`}
       className={`text-decoration-none text-white d-flex justify-content-center align-items-center col-12 ${className}`}
     >
       <FillButton
@@ -78,17 +87,12 @@ export function ProfileButtons({
 }) {
   const { t } = useTranslation("editProfile")
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
-
   return (
     <>
       {isUser ? (
         <div className={`d-grid gap-2 col-12 m-3`}>
           <EditProfileButton
             className={`py-1`}
-            handleClick={() => {
-              setTabStatus("Following")
-            }}
             tab={"button.followedContent"}
           />
           {hideTestimonyButton ? (
@@ -96,9 +100,6 @@ export function ProfileButtons({
           ) : (
             <EditProfileButton
               className={`py-1`}
-              handleClick={() => {
-                setTabStatus("Testimonies")
-              }}
               tab={"button.yourTestimonies"}
             />
           )}

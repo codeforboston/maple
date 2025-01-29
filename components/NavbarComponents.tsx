@@ -88,12 +88,10 @@ export const NavbarLinkEditProfile: React.FC<
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
         href={
-          tab == "navigation.editProfile" ? "/editprofile" : "/editprofilealt"
+          tab == "navigation.editProfile"
+            ? "/edit-profile/about-you"
+            : "/edit-profile/following"
         }
-        /* editprofilealt identical to editprofile except that the mobile Nav   *
-         * link to Following Tab needs a unique url otherwise both Edit Profile *
-         * and Following Tab will light up when either one is selected          */
-
         {...other}
       >
         {t(tab)}

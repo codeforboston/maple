@@ -8,7 +8,6 @@ import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { FollowUserButton } from "components/shared/FollowButton"
-import { TabContext } from "components/shared/ProfileTabsContext"
 
 export const ProfileHeader = ({
   isUser,
@@ -44,8 +43,6 @@ export const ProfileHeader = ({
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
-  const { tabStatus, setTabStatus } = useContext(TabContext)
-
   return (
     <Header>
       <div
@@ -57,9 +54,6 @@ export const ProfileHeader = ({
           {user && isUser ? ( // Am I Logged In? and Is This My Profile?
             <EditProfileButton
               className={`py-1 col-md-8`}
-              handleClick={() => {
-                setTabStatus("AboutYou")
-              }}
               tab="button.editProfile"
             />
           ) : user ? ( // Am I Logged In? and Is This Not My Profile?
