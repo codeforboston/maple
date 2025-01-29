@@ -278,7 +278,18 @@ const PageFooter = (props: PageFooterProps) => {
       <div
         className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
       >
-        <Col className="text-white col-md-auto">{t("legal.disclaimer")}</Col>
+        <Col className="text-white col-md-auto">
+          {t("legal.disclaimer")}
+          {" - "}
+          <a
+            href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
+            style={{ color: "white" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("newsletter")}
+          </a>
+        </Col>
       </div>
     </FooterContainer>
   )
