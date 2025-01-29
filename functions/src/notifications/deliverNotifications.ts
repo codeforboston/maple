@@ -168,9 +168,7 @@ const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
       b.endorseCount +
       b.neutralCount +
       b.opposeCount -
-      a.endorseCount -
-      a.neutralCount -
-      a.opposeCount
+      (a.endorseCount + a.neutralCount + a.opposeCount)
     )
   })
 
