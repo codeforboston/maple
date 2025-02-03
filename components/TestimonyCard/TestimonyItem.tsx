@@ -21,17 +21,20 @@ import { UserInfoHeader } from "./UserInfoHeader"
 type FooterButtonProps = Omit<ButtonProps, "children"> & {
   className?: string
   children?: ReactNode
+  onClick?: any // Cannot find name 'MouseEventHandler'
 }
 
 const FooterButton = ({
   variant = "text",
   className,
-  children
+  children,
+  onClick
 }: FooterButtonProps) => {
   return (
     <Button
       className={`text-decoration-none m-0 p-0 ${className}`}
       variant={variant}
+      onClick={onClick}
     >
       {children}
     </Button>
@@ -135,6 +138,7 @@ export const TestimonyItem = ({
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
+                className="text-secondary"
                 variant="text"
                 onClick={() => setShowAllTestimony(true)}
               >
@@ -168,7 +172,11 @@ export const TestimonyItem = ({
             </Col>
           )}
           <Col xs="auto">
-            <FooterButton variant="text" onClick={() => setIsReporting(true)}>
+            <FooterButton
+              className="text-secondary"
+              variant="text"
+              onClick={() => setIsReporting(true)}
+            >
               {t("reportModal.report")}
               <IconSpacer />
             </FooterButton>
