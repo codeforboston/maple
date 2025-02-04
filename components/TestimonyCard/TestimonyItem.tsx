@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import { ReactNode, useState } from "react"
+import { MouseEventHandler, ReactNode, useState } from "react"
 import { ButtonProps } from "react-admin"
 import { ToastContainer } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
@@ -21,7 +21,7 @@ import { UserInfoHeader } from "./UserInfoHeader"
 type FooterButtonProps = Omit<ButtonProps, "children"> & {
   className?: string
   children?: ReactNode
-  onClick?: any // Cannot find name 'MouseEventHandler'
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }
 
 const FooterButton = ({
