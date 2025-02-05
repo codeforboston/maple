@@ -117,7 +117,9 @@
     "instagram": "Instagram",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
-    "facebook": "Facebook"
+    "facebook": "Facebook",
+    "bluesky": "BlueSky",
+    "mastodon": "Mastodon"
   },
   "table": {
     "page": "Page {{currentPage}}"

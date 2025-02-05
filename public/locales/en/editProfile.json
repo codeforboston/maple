@@ -71,7 +71,9 @@
     "twitter": "Twitter Username",
     "linkedIn": "LinkedIn Url",
     "instagram": "Instagram Username",
-    "facebook": "Facebook Link"
+    "facebook": "Facebook Link",
+    "blueSky": "BlueSky Link",
+    "mastodon": "Mastodon Link"
   },
   "contact": {
     "contactInfo": "Contact Information",
