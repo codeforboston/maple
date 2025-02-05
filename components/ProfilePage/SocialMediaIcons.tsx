@@ -56,7 +56,7 @@ export const SocialMediaIcons = ({
 
         {blueSky && (
           <Col>
-            <External plain href={`https://blulesky.org/${blueSky}`}>
+            <External plain href={`https://bsky.app.profile/${blueSky}`}>
               <Image alt={t("socials.bluesky")} src="/bluesky.svg" />
             </External>
           </Col>
