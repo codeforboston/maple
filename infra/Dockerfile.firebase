@@ -1,4 +1,4 @@
-FROM andreysenov/firebase-tools:latest-node-16
+FROM andreysenov/firebase-tools:latest-node-18
 
 USER root
 RUN apt update && apt install -y curl
@@ -6,3 +6,5 @@ RUN apt update && apt install -y curl
 WORKDIR /app
 RUN chown -R node:node .
 USER node
+
+RUN node -v

@@ -49,7 +49,7 @@
     "setRole": "ts-node -P tsconfig.script.json scripts/firebase-admin/setRole.ts"
   },
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "yarn": "^1.22.19"
   },
   "browserslist": {
