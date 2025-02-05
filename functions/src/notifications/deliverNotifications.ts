@@ -214,7 +214,7 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
 
 // Firebase Functions
 export const deliverNotifications = functions.pubsub
-  .schedule("every 24 hours")
+  .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
   .onRun(deliverEmailNotifications)
 
 export const httpsDeliverNotifications = functions.https.onRequest(
