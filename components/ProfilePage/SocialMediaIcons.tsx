@@ -64,7 +64,7 @@ export const SocialMediaIcons = ({
 
         {mastodon && (
           <Col>
-            <External plain href={`https://mastodon.org/${mastodon}`}>
+            <External plain href={`https://mastodon.social/@${mastodon}`}>
               <Image alt={t("socials.mastodon")} src="/mastodon.svg" />
             </External>
           </Col>

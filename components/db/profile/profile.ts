@@ -67,7 +67,7 @@ export function useProfile() {
           instagram: false,
           fb: false,
           blueSky: false,
-          mastodon: false,
+          mastodon: false
         },
         updatingBillsFollowing: false,
         profile

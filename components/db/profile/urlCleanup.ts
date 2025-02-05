@@ -7,6 +7,15 @@ export function cleanSocialLinks(network: keyof SocialLinks, link: string) {
       const index: number = path.indexOf(".com/") + 5
       path = path.substring(index)
     }
+    if (
+      network === "mastodon" &&
+      path.substring(path.indexOf("@") + 1).charAt(0) === "@"
+    ) {
+      path.replace(
+        path.substring(path.indexOf("@") + 1),
+        path.substring(path.indexOf("@") + 2)
+      )
+    }
   }
 
   return path
