@@ -1,15 +1,16 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
+import { onDocumentCreated } from "firebase-functions/v2/firestore"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 
 // Function to trigger whenever a document is created in activeTopicSubscriptions
-export const updateNextDigestAt = functions.firestore
-  .document("users/{userId}/activeTopicSubscriptions/{subscriptionId}")
-  .onCreate(async (snapshot, context) => {
-    const { userId } = context.params
+export const updateNextDigestAt = onDocumentCreated(
+  "users/{userId}/activeTopicSubscriptions/{subscriptionId}",
+  async event => {
+    const { userId } = event.params
 
     // Get the user's notificationFrequency
     const userDoc = await db.collection("users").doc(userId).get()
@@ -54,8 +55,9 @@ export const updateNextDigestAt = functions.firestore
       }
 
       // Add nextDigestAt to the activeTopicSubscriptions document
-      return snapshot.ref.update({ nextDigestAt })
+      return event.data?.ref.update({ nextDigestAt })
     } else {
       throw new Error(`User document for user ${userId} does not exist`)
     }
-  })
+  }
+)

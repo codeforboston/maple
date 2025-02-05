@@ -14,21 +14,25 @@ import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
+import { onCall } from "firebase-functions/v2/https"
 
 const DeleteTestimonyRequest = Record({
   uid: Id,
   publicationId: Id
 })
 
-export const deleteTestimony = https.onCall(async (data, context) => {
-  checkAuth(context)
+export const deleteTestimony = onCall(async request => {
+  checkAuth(request)
 
   // Only admins can delete testimony. Previously we used the caller's UID to
   // select the testimony to delete, but admins need to be able to delete other
   // users testimony so we require the uid to be specified in the request.
-  checkAdmin(context)
+  checkAdmin(request)
 
-  const { uid, publicationId } = checkRequest(DeleteTestimonyRequest, data)
+  const { uid, publicationId } = checkRequest(
+    DeleteTestimonyRequest,
+    request.data
+  )
 
   return performDeleteTestimony(uid, publicationId)
 })

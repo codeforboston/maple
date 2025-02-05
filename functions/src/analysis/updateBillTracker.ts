@@ -1,4 +1,5 @@
-import { runWith } from "firebase-functions"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
+
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
 import { db, Timestamp } from "../firebase"
@@ -9,19 +10,18 @@ const currentTrackerVersion = 1
 export const billTrackerPath = (billId: string, court: number) =>
   `/billTracker/${court}-${billId}`
 
-export const updateBillTracker = runWith({
-  timeoutSeconds: 10
-})
-  .firestore.document("/generalCourts/{court}/bills/{billId}")
-  .onWrite(async (change, context) => {
-    const params = context.params,
+// export const updateBillTracker = runWith({
+export const updateBillTracker = onDocumentWritten(
+  "/generalCourts/{court}/bills/{billId}",
+  async event => {
+    const params = event.params,
       billId = String(params.billId),
       court = Number(params.court)
-    const previousBill = change.before.exists
-      ? Bill.checkWithDefaults(change.before.data())
+    const previousBill = event.data?.before.exists
+      ? Bill.checkWithDefaults(event.data.before.data())
       : undefined
-    const newBill = change.after.exists
-      ? Bill.checkWithDefaults(change.after.data())
+    const newBill = event.data?.after.exists
+      ? Bill.checkWithDefaults(event.data.after.data())
       : undefined
 
     if (await shouldUpdateBillTracker(newBill, previousBill)) {
@@ -36,7 +36,8 @@ export const updateBillTracker = runWith({
       }
       await db.doc(billTrackerPath(billId, court)).set(tracker, { merge: true })
     }
-  })
+  }
+)
 
 async function shouldUpdateBillTracker(
   newBill: Bill | undefined,

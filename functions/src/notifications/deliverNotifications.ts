@@ -5,12 +5,12 @@
 // runs at least every 24 hours, but can be more or less frequent, depending on the value stored in the user's userNotificationFeed document, as well as a nextDigestTime value stored in the user's userNotificationFeed document.
 
 // Import necessary Firebase modules and libraries
-import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
 import * as helpers from "../email/helpers"
 import * as fs from "fs"
 import { Timestamp } from "../firebase"
+import { onSchedule } from "firebase-functions/v2/scheduler"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
@@ -44,9 +44,9 @@ function registerPartials(directoryPath: string) {
 }
 
 // Define the deliverNotifications function
-export const deliverNotifications = functions.pubsub
-  .schedule("every 24 hours")
-  .onRun(async context => {
+export const deliverNotifications = onSchedule(
+  "every 24 hours",
+  async context => {
     // Get the current timestamp
     const now = Timestamp.fromDate(new Date())
 
@@ -169,4 +169,5 @@ export const deliverNotifications = functions.pubsub
 
     // Wait for all email documents to be created
     await Promise.all(emailPromises)
-  })
+  }
+)
