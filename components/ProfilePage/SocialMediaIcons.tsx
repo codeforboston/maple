@@ -8,7 +8,7 @@ export const SocialMediaIcons = ({
   instagram,
   fb,
   blueSky,
-  mastodon,
+  mastodon
 }: {
   twitter?: string
   instagram?: string

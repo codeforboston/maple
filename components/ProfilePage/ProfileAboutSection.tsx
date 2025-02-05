@@ -18,9 +18,15 @@ export const ProfileAboutSection = ({
     instagram,
     fb,
     blueSky,
-    mastodon,
-  }: { twitter?: string; linkedIn?: string; instagram?: string; fb?: string, blueSky?: string, mastodon?: string } =
-    profile?.social ?? {}
+    mastodon
+  }: {
+    twitter?: string
+    linkedIn?: string
+    instagram?: string
+    fb?: string
+    blueSky?: string
+    mastodon?: string
+  } = profile?.social ?? {}
   const { t } = useTranslation("profile")
   const title = isOrg
     ? t("aboutUs")

@@ -212,7 +212,7 @@ export function PersonalInfoTab({
                     iconSrc="./bluesky.svg"
                     {...register("blueSky")}
                   />
-                    <SocialInput
+                  <SocialInput
                     label={t("socialLinks.mastodon")}
                     defaultValue={social?.mastodon}
                     className="col-sm-12 col-md-6 mb-1"

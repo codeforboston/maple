@@ -19,7 +19,7 @@ export const SOCIAL_NETWORKS = [
   "instagram",
   "fb",
   "blueSky",
-  "mastodon",
+  "mastodon"
 ] as const
 
 export type SocialLinks = Partial<
