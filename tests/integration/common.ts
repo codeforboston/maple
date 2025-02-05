@@ -332,8 +332,12 @@ export const testCreatePendingOrgWithEmailAndPassword = async (
   return userCreds
 }
 
-export const deleteUser = async (user: { uid: string }) => {
-  await testAuth.deleteUser(user.uid)
+export const deleteUser = async (uid: string) => {
+  const userDoc = await testDb.doc(`/users/${uid}`).get()
+  const userData = userDoc.data()
+  console.log(userData)
+  await testAuth.deleteUser(uid)
+  await testDb.doc(`/users/${uid}`).delete()
 }
 
 export const expectUser = async (

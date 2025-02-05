@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   setDoc,
+  Timestamp,
   where
 } from "firebase/firestore"
 import { Bill } from "../db"
@@ -83,22 +84,24 @@ export async function setFollow(
 
   bill
     ? await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        billLookup: {
-          billId: billId,
-          court: courtId
-        },
-        type: "bill"
-      })
+      topicName: topicName,
+      uid: uid,
+      billLookup: {
+        billId: billId,
+        court: courtId
+      },
+      type: "bill",
+      nextDigestAt: Timestamp.fromDate(new Date())
+    })
     : await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        userLookup: {
-          profileId: profileId
-        },
-        type: "testimony"
-      })
+      topicName: topicName,
+      uid: uid,
+      userLookup: {
+        profileId: profileId
+      },
+      type: "testimony",
+      nextDigestAt: Timestamp.fromDate(new Date())
+    })
 }
 
 export async function setUnfollow(uid: string | undefined, topicName: string) {
