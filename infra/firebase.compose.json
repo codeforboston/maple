@@ -7,7 +7,7 @@
   "functions": {
     "predeploy": ["yarn build:functions"],
     "source": "functions",
-    "runtime": "nodejs16"
+    "runtime": "nodejs18"
   },
   "firestore": {
     "rules": "firestore.rules",
