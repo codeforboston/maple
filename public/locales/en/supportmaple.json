@@ -1,5 +1,9 @@
 {
   "title": "How to Support MAPLE",
+  "useMAPLE": {
+    "header": "Use our Platform!",
+    "bodytext": "The best way to support MAPLE is by using our platform and sharing it with friends and colleagues! That is the best endorsement we could receive."
+  },
   "donate": {
     "header": "Donate",
     "bodytextOne": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. You can donate directly to the development of MAPLE through this ",
@@ -7,9 +11,9 @@
   },
   "volunteer": {
     "header": "Volunteer",
-    "bodytextOne": "MAPLE is volunteer-powered. Over 40 developers have worked on ",
+    "bodytextOne": "MAPLE is volunteer-powered. Over one hundred developers, designers and researchers contributed to MAPLE (check us out on ",
     "githubLink": "our github",
-    "bodytextTwo": "and that doesn't include our design, management and communication teams! If you'd like to get involved, email "
+    "bodytextTwo": "and that doesn't include our advisors, partners and communication team! If you'd like to get involved, email "
   },
   "feedback": {
     "header": "Feedback",
@@ -17,9 +21,5 @@
     "feedbackForm": "feedback form!",
     "bodytextTwo": "You can also let us know about 'bugs' you've encountered in our ",
     "bugForm": "report a bug form."
-  },
-  "useMAPLE": {
-    "header": "Use our Platform!",
-    "bodytext": "Finally, the best way to support MAPLE is by using our platform and sharing it with friends and colleagues! That is the best endorsement we could receive."
-  }
+  }  
 }
