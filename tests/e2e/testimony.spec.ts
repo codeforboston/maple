@@ -34,7 +34,7 @@ test.describe("Testimony Search", () => {
     await testimonyPage.search(queryText)
 
     const { queryFilterItem, resultsCountText } = testimonyPage
-    await expect(queryFilterItem).toContainText("query:")
+    await expect(queryFilterItem).toContainText("Query:")
     await expect(queryFilterItem).toContainText(queryText)
     await expect(resultsCountText).toBeVisible()
   })
@@ -129,21 +129,19 @@ test.describe("Testimony Filtering", () => {
   })
 
   test("should filter by author", async ({ page }) => {
-    const writtenByText = await page
-      .getByText(/Written by/)
-      .first()
-      .textContent()
-    expect(writtenByText).toBeTruthy()
+    const authorName = await page.getByTestId("author").first().textContent()
+    expect(authorName).toBeTruthy()
 
-    if (writtenByText) {
-      const authorName = writtenByText.slice(11)
+    if (authorName) {
       await page.getByRole("checkbox", { name: authorName }).check()
       const testimonyPage = new TestimonyPage(page)
       await expect(testimonyPage.authorFilterItem).toContainText(authorName)
+      const encodedAuthorName = encodeURIComponent(authorName).replace(
+        "'",
+        "%27"
+      )
       await expect(page).toHaveURL(
-        new RegExp(
-          `.*authorDisplayName%5D%5B0%5D=${encodeURIComponent(authorName)}`
-        )
+        new RegExp(`.*authorDisplayName%5D%5B0%5D=${encodedAuthorName}`)
       )
     }
   })
