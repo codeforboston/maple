@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Container, Row, Col } from "../../bootstrap"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import {
@@ -6,7 +7,6 @@ import {
   FeedbackCardContent,
   UseMAPLECardContent
 } from "../SupportMapleCardContent/SupportMapleCardContent"
-import { useTranslation } from "next-i18next"
 
 const SupportMaple = () => {
   const { t } = useTranslation("supportmaple")
