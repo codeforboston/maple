@@ -26,7 +26,6 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 
 - [Development site](https://maple-dev.vercel.app/), for testing and development. Feel free to play with the site!
 - [Production site](https://mapletestimony.org), for public use and real testimony. Please only use this site to submit real testimony, not for testing.
-- [Version 1](https://goodgovproject.com/) site, for posterity
 
 ## Getting Started
 
@@ -73,7 +72,22 @@ Install the [Redux DevTools](https://chrome.google.com/webstore/detail/redux-dev
 
 ## Contributing Backend Features to Dev/Prod:
 
-- If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, download [Google application credentials for the dev project](https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk) (you will need to be added as an editor of the project). Then, run `export GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json` before running `yarn dev`. This is necessary to authenticate the Firebase Admin SDK. The same would apply to production.
+- If you are developing backend features involving only Next.js API routes and need to deploy them to the Dev site, you will need to login through Google Cloud Auth:
+
+1. Ensure you are added as an editor of the Firebase project (https://console.firebase.google.com/u/0/project/digital-testimony-dev for development)
+
+2. Download and initialize gcloud : https://cloud.google.com/sdk/docs/install
+
+3. Authenticate with Google Cloud by running: `gcloud auth application-default login --no-launch-browser`. This will generate an application credentials file using your Google account.
+
+4. At this point, you should also have an environment variable `GOOGLE_APPLICATION_CREDENTIALS` set to the path to that generated config file. If you have it, your setup is complete. If not, you will need to configure it by:
+
+- Try running the `gcloud auth application-default login --no-launch-browser` again (for some reason, the environment variable will sometimes not be created on the first login)
+- If that doesn't work, you will need to manually set the environment variable. In your `.bashrc`/`.zshrc`, add the line: `export GOOGLE_APPLICATION_CREDENTIALS=path/to/application_default_credentials.json` (with the correct file path)
+- The needed file path is documented here, depending on your operating system: https://cloud.google.com/docs/authentication/application-default-credentials#:~:text=User%20credentials%20provided%20by%20using%20the%20gcloud%20CLI,-You%20can%20provide&text=The%20location%20depends%20on%20your,APPDATA%25%5Cgcloud%5Capplication_default_credentials.json
+- Once that is set, you should be able to run the dev site from any new command line window/tab.
+
+The main development/production site uses a Google Service Account to authenticate - there is a very low limit on the number of service accounts we can have, so we reserve those for official deployments. The method documented above simulates a service account using your personal Google account as a base to get around this limitation. If needed, the real Service Accounts can be found in the Firebase console: https://console.firebase.google.com/u/0/project/digital-testimony-dev/settings/serviceaccounts/adminsdk)
 
 ## Testing
 
