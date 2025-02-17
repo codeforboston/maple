@@ -487,6 +487,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "SamuelBuhan",
+      "name": "Samuel BUHAN",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47086819?v=4",
+      "profile": "http://samuelbuhan.com",
+      "contributions": [
+        "code",
+        "userTesting"
+      ]
     }
   ],
   "commitType": "docs"
