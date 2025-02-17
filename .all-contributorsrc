@@ -478,6 +478,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "aaerhart",
+      "name": "Aaron",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45613289?v=4",
+      "profile": "https://github.com/aaerhart",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
