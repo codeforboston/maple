@@ -46,14 +46,14 @@ The following cloud functions are involved in the notification process:
 
 2. **cleanUpNotifications**:
    - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.
-   - Removes notifications from the events collection that are older than 60 days.
+   - Removes notifications from the notificationEvents collection that are older than 60 days.
    - Removes notifications from the emails collection that are older than 60 days.
 
 ### Database Collections
 
 - `activeTopicSubscriptions`: Stores the active topic subscriptions for users.
 - `emails`: Stores the notification mails sent to users.
-- `events`: Stores the events that trigger notifications.
+- `notificationEvents`: Stores the events that trigger notifications.
 
 ### Query Logic
 
@@ -69,7 +69,7 @@ yarn firebase-admin -e local run-script <name-of-script>
 
 ## Future Considerations
 
-- `publishNotifications` currently listens to the `events` collection but could be extended to include other collections.
+- `publishNotifications` currently listens to the `notificationEvents` collection but could be extended to include other collections.
 - Formatting of fields may need to be changed if scraping of hearings is included.
 
 ## References
