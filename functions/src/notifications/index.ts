@@ -10,7 +10,6 @@ import {
   deliverNotifications,
   httpsDeliverNotifications
 } from "./deliverNotifications"
-import { httpsPublishNotifications } from "./httpsPublishNotifications"
 import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
 
 // Export the functions
@@ -20,7 +19,6 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  httpsPublishNotifications,
   httpsDeliverNotifications,
   httpsCleanupNotifications,
   updateUserNotificationFrequency
