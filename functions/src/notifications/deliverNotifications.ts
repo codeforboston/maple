@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
-import * as helpers from "../email/helpers"
 import * as fs from "fs"
 import { Timestamp } from "../firebase"
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
@@ -13,44 +12,25 @@ import {
   Position,
   UserDigest
 } from "../email/types"
+import { prepareHandlebars } from "../email/handlebarsHelpers"
+
+const NUM_BILLS_TO_DISPLAY = 4
+const NUM_USERS_TO_DISPLAY = 4
+const NUM_TESTIMONIES_TO_DISPLAY = 6
+const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
 const path = require("path")
 
-// Define Handlebars helper functions
-handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
-handlebars.registerHelper("isDefined", helpers.isDefined)
-function registerPartials(directoryPath: string) {
-  const filenames = fs.readdirSync(directoryPath)
-
-  filenames.forEach(filename => {
-    const partialPath = path.join(directoryPath, filename)
-    const stats = fs.statSync(partialPath)
-
-    if (stats.isDirectory()) {
-      // Recursive call for directories
-      registerPartials(partialPath)
-    } else if (stats.isFile() && path.extname(filename) === ".handlebars") {
-      // Register partials for .handlebars files
-      const partialName = path.basename(filename, ".handlebars")
-      const partialContent = fs.readFileSync(partialPath, "utf8")
-      handlebars.registerPartial(partialName, partialContent)
-    }
-  })
-}
-const NUM_BILLS_TO_DISPLAY = 4
-const NUM_USERS_TO_DISPLAY = 4
-const NUM_TESTIMONIES_TO_DISPLAY = 6
-
-const PARTIALS_DIR = "/app/functions/lib/email/partials/"
-const EMAIL_TEMPLATE_PATH = "/app/functions/lib/email/digestEmail.handlebars"
-
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
 const deliverEmailNotifications = async () => {
   const now = Timestamp.fromDate(startOfDay(new Date()))
+
+  console.log("Preparing handlebars helpers and partials")
+  prepareHandlebars()
+  console.log("Handlebars helpers and partials prepared")
 
   const usersSnapshot = await db
     .collection("users")
@@ -195,15 +175,6 @@ const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
 }
 
 const renderToHtmlString = (digestData: NotificationEmailDigest) => {
-  // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
-  registerPartials(PARTIALS_DIR)
-
-  console.log("DEBUG: Working directory: ", process.cwd())
-  console.log(
-    "DEBUG: Digest template path: ",
-    path.resolve(EMAIL_TEMPLATE_PATH)
-  )
-
   const templateSource = fs.readFileSync(
     path.join(__dirname, EMAIL_TEMPLATE_PATH),
     "utf8"
