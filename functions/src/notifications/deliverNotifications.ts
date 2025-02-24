@@ -50,8 +50,8 @@ const deliverEmailNotifications = async () => {
     } else {
       const htmlString = renderToHtmlString(digestData)
 
-      // Create an email document in /notifications_mails to queue up the send
-      await db.collection("notifications_mails").add({
+      // Create an email document in /emails to queue up the send
+      await db.collection("emails").add({
         to: [user.email],
         message: {
           subject: "Your Notifications Digest",

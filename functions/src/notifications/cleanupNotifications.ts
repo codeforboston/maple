@@ -38,9 +38,9 @@ export const cleanupNotifications = functions.pubsub
     )
     await Promise.all(deleteTopicEventPromises)
 
-    // Delete old email documents from the notifications_mails collection
+    // Delete old email documents from the emails collection
     const emailsSnapshot = await db
-      .collection("notifications_mails")
+      .collection("emails")
       .where("createdAt", "<", threshold)
       .get()
 
