@@ -786,6 +786,20 @@
         { "queryScope": "COLLECTION", "order": "DESCENDING" },
         { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
       ]
+    },
+    {
+      "collectionGroup": "userNotificationFeed",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "notification.type",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "notification.timestamp",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ]
 }

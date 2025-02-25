@@ -44,7 +44,6 @@ const deliverEmailNotifications = async () => {
   prepareHandlebars()
   console.log("Handlebars helpers and partials prepared")
 
-  // TODO: Add index
   const usersSnapshot = await db
     .collection("users")
     .where("nextDigestAt", "<=", now)
