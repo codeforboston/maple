@@ -1,3 +1,4 @@
+import { Frequency } from "../auth/types"
 import { BillHistory } from "../bills/types"
 import { Timestamp } from "../firebase"
 
@@ -61,4 +62,9 @@ export interface BillHistoryUpdateNotificationFields {
     delivered: boolean
   }
   createdAt: FirebaseFirestore.Timestamp
+}
+
+export interface Profile {
+  notificationFrequency?: Frequency
+  nextDigestAt?: FirebaseFirestore.Timestamp
 }

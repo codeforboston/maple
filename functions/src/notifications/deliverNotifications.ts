@@ -5,7 +5,7 @@ import * as fs from "fs"
 import { Timestamp } from "../firebase"
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { startOfDay } from "date-fns"
-import { TestimonySubmissionNotificationFields } from "./types"
+import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
   BillDigest,
   NotificationEmailDigest,
@@ -15,7 +15,6 @@ import {
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { getAuth } from "firebase-admin/auth"
 import { Frequency } from "../auth/types"
-import { Profile } from "../../../components/db/profile/types"
 
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
@@ -51,8 +50,8 @@ const deliverEmailNotifications = async () => {
     .get()
 
   const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
-    const user = profileDoc.data() as Profile
-    if (!user || !user.notificationFrequency) {
+    const profile = profileDoc.data() as Profile
+    if (!profile || !profile.notificationFrequency) {
       console.log(
         `User ${profileDoc.id} has no notificationFrequency - skipping`
       )
@@ -70,7 +69,7 @@ const deliverEmailNotifications = async () => {
     const digestData = await buildDigestData(
       profileDoc.id,
       now,
-      user.notificationFrequency
+      profile.notificationFrequency
     )
 
     // If there are no new notifications, don't send an email
@@ -98,7 +97,7 @@ const deliverEmailNotifications = async () => {
       console.log(`Saved email message to user ${profileDoc.id}`)
     }
 
-    const nextDigestAt = getNextDigestAt(user.notificationFrequency)
+    const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
     await profileDoc.ref.update({ nextDigestAt })
 
     console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
