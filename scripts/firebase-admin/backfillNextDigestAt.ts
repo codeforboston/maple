@@ -13,11 +13,6 @@ import { Profile } from "../../components/db/profile/types"
 import { Script } from "./types"
 import { Boolean, Record } from "runtypes"
 
-// todo - actually move nextDigestAt into profiles
-// - no reason not to do it now, we have the backfill and the rules
-//  don't protect any collection
-// I'll need to fix the rules so that writes to the `profiles::nextDigestAt` field can only be made by admins
-//  - e.g. this script, the deliverNotifcaitons script, or theupdateNotifiaciotn script
 const Args = Record({
   dryRun: Boolean
 })
