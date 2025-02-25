@@ -13,6 +13,7 @@ import {
   UserDigest
 } from "../email/types"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
+import { getAuth } from "firebase-admin/auth"
 
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
@@ -21,7 +22,13 @@ const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
+const auth = getAuth()
 const path = require("path")
+
+const isEmailVerified = async (uid: string) => {
+  const userRecord = await auth.getUser(uid)
+  return userRecord && userRecord.emailVerified
+}
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
@@ -39,6 +46,13 @@ const deliverEmailNotifications = async () => {
 
   const emailPromises = usersSnapshot.docs.map(async userDoc => {
     const user = userDoc.data() as User
+
+    const emailVerified = await isEmailVerified(userDoc.id)
+    if (!emailVerified) {
+      console.log(`Skipping user ${userDoc.id} because email is not verified`)
+      return
+    }
+
     const digestData = await buildDigestData(user, userDoc.id, now)
 
     // If there are no new notifications, don't send an email
