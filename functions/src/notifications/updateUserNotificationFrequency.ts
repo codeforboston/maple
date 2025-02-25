@@ -35,14 +35,13 @@ export const updateUserNotificationFrequency = functions.firestore
         return null
       }
 
-      // Update user document in the 'users' collection
+      // Update the profile document to include the computed `nextDigestAt`
       await admin
         .firestore()
-        .collection("users")
+        .collection("profiles")
         .doc(userId)
         .set(
           {
-            notificationFrequency: notificationFrequency,
             nextDigestAt: getNextDigestAt(notificationFrequency)
           },
           { merge: true }

@@ -23,7 +23,7 @@ export const SOCIAL_NETWORKS = [
 ] as const
 
 export type SocialLinks = Partial<
-  Record<(typeof SOCIAL_NETWORKS)[number], string>
+  Record<typeof SOCIAL_NETWORKS[number], string>
 >
 
 export type Profile = {
@@ -35,6 +35,7 @@ export type Profile = {
   senator?: ProfileMember
   public?: boolean
   notificationFrequency?: Frequency
+  nextDigestAt?: FirebaseFirestore.Timestamp
   about?: string
   social?: SocialLinks
   profileImage?: string

@@ -1,13 +1,5 @@
-import { Frequency } from "../auth/types"
 import { BillHistory } from "../bills/types"
 import { Timestamp } from "../firebase"
-
-// This should probably live somewhere else once other code starts caring about this
-export interface User {
-  email?: string
-  notificationFrequency?: Frequency
-  nextDigestAt?: Timestamp
-}
 
 export interface Notification {
   type: string
