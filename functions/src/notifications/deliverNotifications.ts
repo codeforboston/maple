@@ -14,6 +14,7 @@ import {
 } from "../email/types"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { getAuth } from "firebase-admin/auth"
+import { Frequency } from "../auth/types"
 
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
@@ -25,9 +26,13 @@ const db = admin.firestore()
 const auth = getAuth()
 const path = require("path")
 
-const isEmailVerified = async (uid: string) => {
+const getVerifiedUserEmail = async (uid: string) => {
   const userRecord = await auth.getUser(uid)
-  return userRecord && userRecord.emailVerified
+  if (userRecord && userRecord.email && userRecord.emailVerified) {
+    return userRecord.email
+  } else {
+    return null
+  }
 }
 
 // TODO: Batching (at both user + email level)?
@@ -39,6 +44,7 @@ const deliverEmailNotifications = async () => {
   prepareHandlebars()
   console.log("Handlebars helpers and partials prepared")
 
+  // TODO: Add index
   const usersSnapshot = await db
     .collection("users")
     .where("nextDigestAt", "<=", now)
@@ -46,14 +52,24 @@ const deliverEmailNotifications = async () => {
 
   const emailPromises = usersSnapshot.docs.map(async userDoc => {
     const user = userDoc.data() as User
-
-    const emailVerified = await isEmailVerified(userDoc.id)
-    if (!emailVerified) {
-      console.log(`Skipping user ${userDoc.id} because email is not verified`)
+    if (!user || !user.notificationFrequency) {
+      console.log(`User ${userDoc.id} has no notificationFrequency - skipping`)
       return
     }
 
-    const digestData = await buildDigestData(user, userDoc.id, now)
+    const verifiedEmail = await getVerifiedUserEmail(userDoc.id)
+    if (!verifiedEmail) {
+      console.log(
+        `Skipping user ${userDoc.id} because they have no verified email address`
+      )
+      return
+    }
+
+    const digestData = await buildDigestData(
+      userDoc.id,
+      now,
+      user.notificationFrequency
+    )
 
     // If there are no new notifications, don't send an email
     if (
@@ -66,7 +82,7 @@ const deliverEmailNotifications = async () => {
 
       // Create an email document in /emails to queue up the send
       await db.collection("emails").add({
-        to: [user.email],
+        to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
           text: "", // blank because we're sending HTML
@@ -89,8 +105,12 @@ const deliverEmailNotifications = async () => {
 }
 
 // TODO: Unit tests
-const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
-  const startDate = getNotificationStartDate(user.notificationFrequency, now)
+const buildDigestData = async (
+  userId: string,
+  now: Timestamp,
+  notificationFrequency: Frequency
+) => {
+  const startDate = getNotificationStartDate(notificationFrequency, now)
 
   const notificationsSnapshot = await db
     .collection(`users/${userId}/userNotificationFeed`)
@@ -176,7 +196,7 @@ const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
     .sort((a, b) => b.newTestimonyCount - a.newTestimonyCount)
 
   const digestData = {
-    notificationFrequency: user.notificationFrequency,
+    notificationFrequency,
     startDate: startDate.toDate(),
     endDate: now.toDate(),
     bills: bills.slice(0, NUM_BILLS_TO_DISPLAY),
