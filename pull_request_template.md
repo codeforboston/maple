@@ -5,6 +5,7 @@ _Add a short summary of the changes, and a reference to the original issue using
 # Checklist
 
 - [ ] On the frontend, I've made my strings translate-able.
+- [ ] On the backend, I've updated `firestore.indexes.json` with new indexes (`firebase firestore:indexes > firestore.indexes.json`)
 - [ ] If I've added shared components, I've added a storybook story.
 - [ ] I've made pages responsive and look good on mobile.
 
