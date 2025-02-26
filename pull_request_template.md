@@ -8,6 +8,11 @@ _Add a short summary of the changes, and a reference to the original issue using
 - [ ] If I've added shared components, I've added a storybook story.
 - [ ] I've made pages responsive and look good on mobile.
 
+For any new firestore queries, are all new required indexes:
+- [ ] Created on development
+- [ ] Created on production
+- [ ] Added to firestore.indexes.json (either manually or with the command firebase firestore:indexes > firestore.indexes.json)
+
 # Screenshots
 
 _Add some screenshots highlighting your changes._
