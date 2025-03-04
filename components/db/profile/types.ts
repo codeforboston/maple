@@ -35,6 +35,7 @@ export type Profile = {
   senator?: ProfileMember
   public?: boolean
   notificationFrequency?: Frequency
+  nextDigestAt?: FirebaseFirestore.Timestamp
   about?: string
   social?: SocialLinks
   profileImage?: string

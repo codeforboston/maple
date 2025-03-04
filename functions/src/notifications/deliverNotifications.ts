@@ -5,7 +5,7 @@ import * as fs from "fs"
 import { Timestamp } from "../firebase"
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { startOfDay } from "date-fns"
-import { TestimonySubmissionNotificationFields, User } from "./types"
+import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
   BillDigest,
   NotificationEmailDigest,
@@ -44,30 +44,32 @@ const deliverEmailNotifications = async () => {
   prepareHandlebars()
   console.log("Handlebars helpers and partials prepared")
 
-  const usersSnapshot = await db
-    .collection("users")
+  const profilesSnapshot = await db
+    .collection("profiles")
     .where("nextDigestAt", "<=", now)
     .get()
 
-  const emailPromises = usersSnapshot.docs.map(async userDoc => {
-    const user = userDoc.data() as User
-    if (!user || !user.notificationFrequency) {
-      console.log(`User ${userDoc.id} has no notificationFrequency - skipping`)
+  const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
+    const profile = profileDoc.data() as Profile
+    if (!profile || !profile.notificationFrequency) {
+      console.log(
+        `User ${profileDoc.id} has no notificationFrequency - skipping`
+      )
       return
     }
 
-    const verifiedEmail = await getVerifiedUserEmail(userDoc.id)
+    const verifiedEmail = await getVerifiedUserEmail(profileDoc.id)
     if (!verifiedEmail) {
       console.log(
-        `Skipping user ${userDoc.id} because they have no verified email address`
+        `Skipping user ${profileDoc.id} because they have no verified email address`
       )
       return
     }
 
     const digestData = await buildDigestData(
-      userDoc.id,
+      profileDoc.id,
       now,
-      user.notificationFrequency
+      profile.notificationFrequency
     )
 
     // If there are no new notifications, don't send an email
@@ -75,7 +77,9 @@ const deliverEmailNotifications = async () => {
       digestData.numBillsWithNewTestimony === 0 &&
       digestData.numUsersWithNewTestimony === 0
     ) {
-      console.log(`No new notifications for ${userDoc.id} - not sending email`)
+      console.log(
+        `No new notifications for ${profileDoc.id} - not sending email`
+      )
     } else {
       const htmlString = renderToHtmlString(digestData)
 
@@ -90,13 +94,13 @@ const deliverEmailNotifications = async () => {
         createdAt: Timestamp.now()
       })
 
-      console.log(`Saved email message to user ${userDoc.id}`)
+      console.log(`Saved email message to user ${profileDoc.id}`)
     }
 
-    const nextDigestAt = getNextDigestAt(user.notificationFrequency)
-    await userDoc.ref.update({ nextDigestAt })
+    const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
+    await profileDoc.ref.update({ nextDigestAt })
 
-    console.log(`Updated nextDigestAt for ${userDoc.id} to ${nextDigestAt}`)
+    console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
   })
 
   // Wait for all email documents to be created
