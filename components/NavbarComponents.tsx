@@ -78,18 +78,23 @@ export const NavbarLinkEditProfile: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
     other?: any
+    tab: string
   }>
-> = ({ handleClick, other }) => {
+> = ({ handleClick, other, tab }) => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { t } = useTranslation(["common", "auth", "profile"])
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href="/editprofile"
+        href={
+          tab == "navigation.editProfile"
+            ? "/edit-profile/about-you"
+            : "/edit-profile/following"
+        }
         {...other}
       >
-        {t("navigation.editProfile")}
+        {t(tab)}
       </NavLink>
     </Nav.Item>
   )
@@ -107,10 +112,10 @@ export const NavbarLinkEffective: React.FC<
     <NavDropdown.Item onClick={handleClick}>
       <NavLink
         className={isMobile ? "navLink-primary" : ""}
-        href="/learn/to-write-effective-testimony"
+        href="/learn/testimony-basics"
         {...other}
       >
-        {t("navigation.toWriteEffectiveTestimony")}
+        {t("navigation.aboutTestimony")}
       </NavLink>
     </NavDropdown.Item>
   )

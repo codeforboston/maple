@@ -10,6 +10,7 @@ import { Role, useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
+import { OrgContactInfo } from "./OrgContactInfo"
 import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
@@ -101,9 +102,6 @@ export function ProfilePage(profileprops: {
         <ProfileHeader
           profileId={profileprops.id}
           isUser={isCurrentUser}
-          isOrg={isOrg}
-          isProfilePublic={isProfilePublic}
-          onProfilePublicityChanged={onProfilePublicityChanged}
           profile={profile}
         />
 
@@ -114,6 +112,8 @@ export function ProfilePage(profileprops: {
             </Col>
           </Row>
         ) : null}
+
+        <Row>{isOrg ? <OrgContactInfo profile={profile} /> : <></>}</Row>
 
         <Row>
           <Col className={`mb-4 mb-md-0`}>

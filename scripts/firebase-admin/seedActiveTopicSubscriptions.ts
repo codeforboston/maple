@@ -25,8 +25,7 @@ export const script: Script = async ({ db, auth }) => {
         court: "exampleCourt"
       },
       public: true,
-      type: "bill",
-      nextDigestAt: Timestamp.fromDate(monthAhead)
+      type: "bill"
     }
 
     await addTopicSubscription({ user, subscriptionData, db })
@@ -63,8 +62,7 @@ export const script: Script = async ({ db, auth }) => {
         fullName: "Tammy's Tamales"
       },
       public: true,
-      type: "testimony",
-      nextDigestAt: Timestamp.fromDate(monthAhead)
+      type: "testimony"
     }
 
     await addTopicSubscription({ user, subscriptionData, db })

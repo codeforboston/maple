@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import { ReactNode, useState } from "react"
+import { MouseEventHandler, ReactNode, useState } from "react"
 import { ButtonProps } from "react-admin"
 import { ToastContainer } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
@@ -21,17 +21,20 @@ import { UserInfoHeader } from "./UserInfoHeader"
 type FooterButtonProps = Omit<ButtonProps, "children"> & {
   className?: string
   children?: ReactNode
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }
 
 const FooterButton = ({
   variant = "text",
   className,
-  children
+  children,
+  onClick
 }: FooterButtonProps) => {
   return (
     <Button
       className={`text-decoration-none m-0 p-0 ${className}`}
       variant={variant}
+      onClick={onClick}
     >
       {children}
     </Button>
@@ -135,6 +138,7 @@ export const TestimonyItem = ({
           {canExpand && (
             <Col className="justify-content-end d-flex">
               <FooterButton
+                className="text-secondary"
                 variant="text"
                 onClick={() => setShowAllTestimony(true)}
               >
@@ -168,7 +172,11 @@ export const TestimonyItem = ({
             </Col>
           )}
           <Col xs="auto">
-            <FooterButton variant="text" onClick={() => setIsReporting(true)}>
+            <FooterButton
+              className="text-secondary"
+              variant="text"
+              onClick={() => setIsReporting(true)}
+            >
               {t("reportModal.report")}
               <IconSpacer />
             </FooterButton>

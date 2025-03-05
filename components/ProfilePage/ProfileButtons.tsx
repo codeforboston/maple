@@ -1,13 +1,10 @@
-import { Role } from "components/auth/types"
 import { useTranslation } from "next-i18next"
-import { Button } from "../bootstrap"
+import React, { useContext } from "react"
 import styled from "styled-components"
-import { FillButton, GearButton, ToggleButton } from "components/buttons"
+import { FillButton, GearIcon, OutlineButton } from "../buttons"
+import { Button } from "../bootstrap"
+import { Role } from "components/auth/types"
 import { Internal } from "components/links"
-import { useProfile, ProfileHook } from "components/db"
-import { useFlags } from "components/featureFlags"
-import { FollowOrgButton } from "components/shared/FollowButton"
-import { useAuth } from "../auth"
 
 export const StyledButton = styled(Button).attrs(props => ({
   className: `col-12 d-flex align-items-center justify-content-center py-3 text-nowrap`,
@@ -33,77 +30,86 @@ export const ProfileEditToggle = ({ formUpdated, uid, role }: Props) => {
   const { t } = useTranslation(["editProfile"])
   return (
     <FillButton
-      className={`py-1 ml-2 text-decoration-none`}
       disabled={!!formUpdated}
-      href={`/ profile ? id = ${uid} `}
-      label={role !== "organization" ? t("viewMyProfile") : t("viewOrgProfile")}
+      href={`/profile?id=${uid}`}
+      label={
+        role === "organization" || role === "pendingUpgrade"
+          ? t("viewOrgProfile")
+          : t("viewMyProfile")
+      }
     />
   )
 }
 
-export const EditProfileButton = ({ className }: { className?: string }) => {
+export const EditProfileButton = ({
+  className,
+  handleClick,
+  tab
+}: {
+  className?: string
+  handleClick?: any
+  tab: string
+}) => {
   const { t } = useTranslation("profile")
+
+  let path = `about-you`
+
+  if (tab == "button.followedContent") {
+    path = `following`
+  }
+
+  if (tab == "button.yourTestimonies") {
+    path = `testimonies`
+  }
 
   return (
     <Internal
-      href="/editprofile"
+      href={`/edit-profile/${path}`}
       className={`text-decoration-none text-white d-flex justify-content-center align-items-center col-12 ${className}`}
     >
-      <FillButton label={t("button.editProfile")} />
+      <FillButton
+        label={t(tab)}
+        onClick={handleClick}
+        className={`${tab == "button.followedContent" ? `btn-secondary` : ``}`}
+      />
     </Internal>
   )
 }
 
-export function ProfileButtonsUser({
-  isProfilePublic,
-  onProfilePublicityChanged
+export function ProfileButtons({
+  isUser,
+  hideTestimonyButton,
+  onSettingsModalOpen
 }: {
-  isProfilePublic: boolean | undefined
-  onProfilePublicityChanged: (isPublic: boolean) => void
+  isUser: boolean
+  hideTestimonyButton: boolean
+  onSettingsModalOpen: () => void
 }) {
   const { t } = useTranslation("editProfile")
 
-  const actions = useProfile()
-
-  const handleSave = async () => {
-    await updateProfile({ actions })
-  }
-  /* Only regular users are allowed to have a private profile. */
-  async function updateProfile({ actions }: { actions: ProfileHook }) {
-    const { updateIsPublic } = actions
-
-    await updateIsPublic(!isProfilePublic)
-    onProfilePublicityChanged(!isProfilePublic)
-  }
-  return (
-    <div className={`d-grid gap-2 col-12 m-3`}>
-      <EditProfileButton className={`py-1`} />
-      <ToggleButton
-        toggleState={isProfilePublic || false}
-        stateTrueLabel={t("forms.makePrivate")}
-        stateFalseLabel={t("forms.makePublic")}
-        onClick={handleSave}
-        className={`py-1`}
-      />
-    </div>
-  )
-}
-
-export function ProfileButtonsOrg({
-  profileId,
-  isUser
-}: {
-  profileId: string
-  isUser: boolean
-}) {
-  const { followOrg } = useFlags()
-  const { user } = useAuth()
   return (
     <>
       {isUser ? (
-        <EditProfileButton />
-      ) : followOrg && user ? (
-        <FollowOrgButton profileId={profileId} />
+        <div className={`d-grid gap-2 col-12 m-3`}>
+          <EditProfileButton
+            className={`py-1`}
+            tab={"button.followedContent"}
+          />
+          {hideTestimonyButton ? (
+            <></>
+          ) : (
+            <EditProfileButton
+              className={`py-1`}
+              tab={"button.yourTestimonies"}
+            />
+          )}
+          <OutlineButton
+            className={`py-1`}
+            label={t("settings")}
+            Icon={GearIcon}
+            onClick={() => onSettingsModalOpen()}
+          />
+        </div>
       ) : null}
     </>
   )

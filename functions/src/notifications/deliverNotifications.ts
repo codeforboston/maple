@@ -1,125 +1,91 @@
-// Path: functions/src/shared/deliverNotifications.ts
-// Function that finds all notification feed documents that are ready to be digested and emails them to the user.
-// Creates an email document in /notifications_mails to queue up the send, which is done by email/emailDelivery.ts
-
-// runs at least every 24 hours, but can be more or less frequent, depending on the value stored in the user's userNotificationFeed document, as well as a nextDigestTime value stored in the user's userNotificationFeed document.
-
-// Import necessary Firebase modules and libraries
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
-import * as helpers from "../email/helpers"
 import * as fs from "fs"
 import { Timestamp } from "../firebase"
+import { getNextDigestAt, getNotificationStartDate } from "./helpers"
+import { startOfDay } from "date-fns"
+import { TestimonySubmissionNotificationFields, Profile } from "./types"
+import {
+  BillDigest,
+  NotificationEmailDigest,
+  Position,
+  UserDigest
+} from "../email/types"
+import { prepareHandlebars } from "../email/handlebarsHelpers"
+import { getAuth } from "firebase-admin/auth"
+import { Frequency } from "../auth/types"
+
+const NUM_BILLS_TO_DISPLAY = 4
+const NUM_USERS_TO_DISPLAY = 4
+const NUM_TESTIMONIES_TO_DISPLAY = 6
+const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 // Get a reference to the Firestore database
 const db = admin.firestore()
+const auth = getAuth()
 const path = require("path")
 
-// Define Handlebars helper functions
-handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-
-handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
-
-handlebars.registerHelper("isDefined", helpers.isDefined)
-
-// Function to register partials for the email template
-function registerPartials(directoryPath: string) {
-  const filenames = fs.readdirSync(directoryPath)
-
-  filenames.forEach(filename => {
-    const partialPath = path.join(directoryPath, filename)
-    const stats = fs.statSync(partialPath)
-
-    if (stats.isDirectory()) {
-      // Recursive call for directories
-      registerPartials(partialPath)
-    } else if (stats.isFile() && path.extname(filename) === ".handlebars") {
-      // Register partials for .handlebars files
-      const partialName = path.basename(filename, ".handlebars")
-      const partialContent = fs.readFileSync(partialPath, "utf8")
-      handlebars.registerPartial(partialName, partialContent)
-    }
-  })
+const getVerifiedUserEmail = async (uid: string) => {
+  const userRecord = await auth.getUser(uid)
+  if (userRecord && userRecord.email && userRecord.emailVerified) {
+    return userRecord.email
+  } else {
+    return null
+  }
 }
 
-// Define the deliverNotifications function
-export const deliverNotifications = functions.pubsub
-  .schedule("every 24 hours")
-  .onRun(async context => {
-    // Get the current timestamp
-    const now = Timestamp.fromDate(new Date())
+// TODO: Batching (at both user + email level)?
+//       Going to wait until we have a better idea of the performance impact
+const deliverEmailNotifications = async () => {
+  const now = Timestamp.fromDate(startOfDay(new Date()))
 
-    // check if the nextDigestAt is less than the current timestamp, so that we know it's time to send the digest
-    // if nextDigestAt does not equal null, then the user has a notification digest scheduled
-    const subscriptionSnapshot = await db
-      .collectionGroup("activeTopicSubscriptions")
-      .where("nextDigestAt", "<", now)
-      .get()
+  console.log("Preparing handlebars helpers and partials")
+  prepareHandlebars()
+  console.log("Handlebars helpers and partials prepared")
 
-    // Iterate through each feed, load up all undelivered notification documents, and process them into a digest
-    const emailPromises = subscriptionSnapshot.docs.map(async doc => {
-      const subscriptions = doc.data()
+  const profilesSnapshot = await db
+    .collection("profiles")
+    .where("nextDigestAt", "<=", now)
+    .get()
 
-      const { uid } = subscriptions
-
-      interface User {
-        notificationFrequency: string
-        email: string
-      }
-
-      // Fetch the user document
-      const userDoc = await db.collection("users").doc(uid).get()
-
-      if (!userDoc.exists || !userDoc.data()) {
-        console.warn(
-          `User document with id ${uid} does not exist or has no data.`
-        )
-        return // Skip processing for this user
-      }
-
-      const userData: User = userDoc.data() as User
-
-      if (!("notificationFrequency" in userData) || !("email" in userData)) {
-        console.warn(
-          `User document with id ${uid} does not have notificationFrequency and/or email property.`
-        )
-        return // Skip processing for this user
-      }
-
-      const { notificationFrequency, email } = userData
-
-      // Get the undelivered notification documents
-      const notificationsSnapshot = await db
-        .collection(`users/${uid}/userNotificationFeed`)
-        .where("delivered", "==", false)
-        .get()
-
-      // Process notifications into a digest type
-      const digestData = notificationsSnapshot.docs.map(notificationDoc => {
-        const notification = notificationDoc.data()
-        // Process and structure the notification data for display in the email template
-        // ...
-
-        return notification
-      })
-
-      // Register partials for the email template
-      const partialsDir = "/app/functions/lib/email/partials/"
-      registerPartials(partialsDir)
-
-      // Render the email template using the digest data
-      const emailTemplate = "/app/functions/lib/email/digestEmail.handlebars"
-      const templateSource = fs.readFileSync(
-        path.join(__dirname, emailTemplate),
-        "utf8"
+  const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
+    const profile = profileDoc.data() as Profile
+    if (!profile || !profile.notificationFrequency) {
+      console.log(
+        `User ${profileDoc.id} has no notificationFrequency - skipping`
       )
-      const compiledTemplate = handlebars.compile(templateSource)
-      const htmlString = compiledTemplate({ digestData })
+      return
+    }
 
-      // Create an email document in /notifications_mails to queue up the send
-      await db.collection("notifications_mails").add({
-        to: [email],
+    const verifiedEmail = await getVerifiedUserEmail(profileDoc.id)
+    if (!verifiedEmail) {
+      console.log(
+        `Skipping user ${profileDoc.id} because they have no verified email address`
+      )
+      return
+    }
+
+    const digestData = await buildDigestData(
+      profileDoc.id,
+      now,
+      profile.notificationFrequency
+    )
+
+    // If there are no new notifications, don't send an email
+    if (
+      digestData.numBillsWithNewTestimony === 0 &&
+      digestData.numUsersWithNewTestimony === 0
+    ) {
+      console.log(
+        `No new notifications for ${profileDoc.id} - not sending email`
+      )
+    } else {
+      const htmlString = renderToHtmlString(digestData)
+
+      // Create an email document in /emails to queue up the send
+      await db.collection("emails").add({
+        to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
           text: "", // blank because we're sending HTML
@@ -128,45 +94,148 @@ export const deliverNotifications = functions.pubsub
         createdAt: Timestamp.now()
       })
 
-      // Mark the notifications as delivered
-      const updatePromises = notificationsSnapshot.docs.map(notificationDoc =>
-        notificationDoc.ref.update({ delivered: true })
-      )
-      await Promise.all(updatePromises)
+      console.log(`Saved email message to user ${profileDoc.id}`)
+    }
 
-      // Update nextDigestAt timestamp for the current feed
-      let nextDigestAt
+    const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
+    await profileDoc.ref.update({ nextDigestAt })
 
-      // Get the amount of milliseconds for the notificationFrequency
-      switch (notificationFrequency) {
-        case "Daily":
-          nextDigestAt = Timestamp.fromMillis(
-            now.toMillis() + 24 * 60 * 60 * 1000
-          )
-          break
-        case "Weekly":
-          nextDigestAt = Timestamp.fromMillis(
-            now.toMillis() + 7 * 24 * 60 * 60 * 1000
-          )
-          break
-        case "Monthly":
-          const monthAhead = new Date(now.toDate())
-          monthAhead.setMonth(monthAhead.getMonth() + 1)
-          nextDigestAt = Timestamp.fromDate(monthAhead)
-          break
-        case "None":
-          nextDigestAt = null
-          break
-        default:
-          console.error(
-            `Unknown notification frequency: ${notificationFrequency}`
-          )
-          break
-      }
-
-      await doc.ref.update({ nextDigestAt })
-    })
-
-    // Wait for all email documents to be created
-    await Promise.all(emailPromises)
+    console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
   })
+
+  // Wait for all email documents to be created
+  await Promise.all(emailPromises)
+}
+
+// TODO: Unit tests
+const buildDigestData = async (
+  userId: string,
+  now: Timestamp,
+  notificationFrequency: Frequency
+) => {
+  const startDate = getNotificationStartDate(notificationFrequency, now)
+
+  const notificationsSnapshot = await db
+    .collection(`users/${userId}/userNotificationFeed`)
+    .where("notification.type", "==", "testimony") // Email digest only cares about testimony
+    .where("notification.timestamp", ">=", startDate)
+    .where("notification.timestamp", "<", now)
+    .get()
+
+  const billsById: { [billId: string]: BillDigest } = {}
+  const usersById: { [userId: string]: UserDigest } = {}
+
+  notificationsSnapshot.docs.forEach(notificationDoc => {
+    const { notification } =
+      notificationDoc.data() as TestimonySubmissionNotificationFields
+
+    if (notification.isBillMatch) {
+      if (billsById[notification.billId]) {
+        const bill = billsById[notification.billId]
+
+        switch (notification.position) {
+          case "endorse":
+            bill.endorseCount++
+            break
+          case "neutral":
+            bill.neutralCount++
+            break
+          case "oppose":
+            bill.opposeCount++
+            break
+          default:
+            console.error(`Unknown position: ${notification.position}`)
+            break
+        }
+      } else {
+        billsById[notification.billId] = {
+          billId: notification.billId,
+          billName: notification.header,
+          billCourt: notification.court,
+          endorseCount: notification.position === "endorse" ? 1 : 0,
+          neutralCount: notification.position === "neutral" ? 1 : 0,
+          opposeCount: notification.position === "oppose" ? 1 : 0
+        }
+      }
+    }
+
+    if (notification.isUserMatch) {
+      const billResult = {
+        billId: notification.billId,
+        court: notification.court,
+        position: notification.position as Position
+      }
+      if (usersById[notification.authorUid]) {
+        const user = usersById[notification.authorUid]
+        user.bills.push(billResult)
+        user.newTestimonyCount++
+      } else {
+        usersById[notification.authorUid] = {
+          userId: notification.authorUid,
+          userName: notification.subheader,
+          bills: [billResult],
+          newTestimonyCount: 1
+        }
+      }
+    }
+  })
+
+  const bills = Object.values(billsById).sort((a, b) => {
+    return (
+      b.endorseCount +
+      b.neutralCount +
+      b.opposeCount -
+      (a.endorseCount + a.neutralCount + a.opposeCount)
+    )
+  })
+
+  const users = Object.values(usersById)
+    .map(userDigest => {
+      return {
+        ...userDigest,
+        bills: userDigest.bills.slice(0, NUM_TESTIMONIES_TO_DISPLAY)
+      }
+    })
+    .sort((a, b) => b.newTestimonyCount - a.newTestimonyCount)
+
+  const digestData = {
+    notificationFrequency,
+    startDate: startDate.toDate(),
+    endDate: now.toDate(),
+    bills: bills.slice(0, NUM_BILLS_TO_DISPLAY),
+    numBillsWithNewTestimony: bills.length,
+    users: users.slice(0, NUM_USERS_TO_DISPLAY),
+    numUsersWithNewTestimony: users.length
+  }
+
+  return digestData
+}
+
+const renderToHtmlString = (digestData: NotificationEmailDigest) => {
+  const templateSource = fs.readFileSync(
+    path.join(__dirname, EMAIL_TEMPLATE_PATH),
+    "utf8"
+  )
+  const compiledTemplate = handlebars.compile(templateSource)
+  return compiledTemplate({ digestData })
+}
+
+// Firebase Functions
+export const deliverNotifications = functions.pubsub
+  .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
+  .onRun(deliverEmailNotifications)
+
+export const httpsDeliverNotifications = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      await deliverEmailNotifications()
+
+      console.log("DEBUG: deliverNotifications completed")
+
+      response.status(200).send("Successfully delivered notifications")
+    } catch (error) {
+      console.error("Error in deliverNotifications:", error)
+      response.status(500).send("Internal server error")
+    }
+  }
+)

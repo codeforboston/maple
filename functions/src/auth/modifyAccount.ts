@@ -17,5 +17,7 @@ export const modifyAccount = functions.https.onCall(async (data, context) => {
 
   const { uid, role } = checkRequestZod(Request, data)
 
+  console.log(`Setting role for ${uid} to ${role}`)
+
   await setRole({ role, auth, db, uid })
 })

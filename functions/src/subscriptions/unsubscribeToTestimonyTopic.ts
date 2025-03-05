@@ -2,7 +2,6 @@ import { Database } from "../types"
 import { UserRecord } from "firebase-admin/auth"
 import { TopicSubscription } from "./types"
 import { removeTopicSubscription } from "./removeTopicSubscription"
-import { Timestamp } from "../firebase"
 
 export const unsubscribeToTestimonyTopic = async ({
   user,
@@ -29,8 +28,7 @@ export const unsubscribeToTestimonyTopic = async ({
       topicName,
       uid,
       type: "testimony",
-      userLookup,
-      nextDigestAt: Timestamp.fromDate(new Date())
+      userLookup
     }
 
     // Debug: Log the subscription data
