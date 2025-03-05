@@ -18,7 +18,6 @@ import { FieldValue, Timestamp } from "functions/src/firebase"
 let billId: string
 
 type Request = { uid: string; fullName: string; email: string }
-type Response = { uid: string; tid: string }
 
 export const createFakeOrg = httpsCallable<Request, void>(
   functions,
@@ -29,6 +28,8 @@ let authorUid: string
 let email: string
 let author: UserRecord
 let orgId: string
+
+jest.setTimeout(10000)
 
 beforeAll(async () => {
   billId = await createNewBill()
