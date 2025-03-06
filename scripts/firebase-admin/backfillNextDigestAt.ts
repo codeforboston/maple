@@ -17,8 +17,10 @@ const Args = Record({
   dryRun: Boolean
 })
 
-export const script: Script = async ({ db, auth, args }) => {
+export const script: Script = async ({ db, args }) => {
   const profilesSnapshot = await db.collection("profiles").get()
+
+  console.log(profilesSnapshot.docs.length, "profiles found")
 
   const updatePromises = profilesSnapshot.docs.map(async profileDoc => {
     const profile = profileDoc.data() as Profile
@@ -30,7 +32,7 @@ export const script: Script = async ({ db, auth, args }) => {
         await profileDoc.ref.update({ nextDigestAt })
       }
       console.log(
-        `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`
+        `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
       )
     } else {
       console.log(

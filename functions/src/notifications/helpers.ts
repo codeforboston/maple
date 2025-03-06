@@ -1,21 +1,23 @@
-import { Timestamp } from "firebase-admin/firestore"
+import { Timestamp } from "../firebase"
 import { Frequency } from "../auth/types"
-import { startOfDay } from "date-fns"
+import { startOfDay, addDays, addMonths, setDay, setDate } from "date-fns"
 
-// TODO - Unit tests
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
   let nextDigestAt = null
   switch (notificationFrequency) {
     case "Weekly":
-      const weekAhead = new Date(now)
-      weekAhead.setDate(weekAhead.getDate() + 7)
-      nextDigestAt = Timestamp.fromDate(weekAhead)
+      // Weekly notifications are sent on Tuesdays
+      // - this should be the next available Tuesday
+      const nextTuesday = setDay(now, 2, { weekStartsOn: 1 })
+      nextDigestAt = Timestamp.fromDate(
+        nextTuesday <= now ? addDays(nextTuesday, 7) : nextTuesday
+      )
       break
     case "Monthly":
-      const monthAhead = new Date(now)
-      monthAhead.setMonth(monthAhead.getMonth() + 1)
-      nextDigestAt = Timestamp.fromDate(monthAhead)
+      // Monthly notifications are sent on the 1st of the month
+      const nextMonthFirst = setDate(addMonths(now, 1), 1)
+      nextDigestAt = Timestamp.fromDate(nextMonthFirst)
       break
     case "None":
       nextDigestAt = null
@@ -28,6 +30,8 @@ export const getNextDigestAt = (notificationFrequency: Frequency) => {
   return nextDigestAt
 }
 
+// TODO: Rewrite with date-fns for consistency
+// TODO: Unit tests
 export const getNotificationStartDate = (
   notificationFrequency: Frequency,
   now: Timestamp
