@@ -4,7 +4,7 @@
 // Creates a notification document in the user's notification feed for each active subscription.
 
 // Import necessary Firebase modules
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
 import * as admin from "firebase-admin"
 import { Timestamp } from "../firebase"
 import {

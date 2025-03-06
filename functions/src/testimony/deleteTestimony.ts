@@ -1,5 +1,5 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
-import { https, logger } from "firebase-functions"
+import { https, logger } from "firebase-functions/v1"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
 import {

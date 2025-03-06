@@ -1,5 +1,5 @@
 import { QuerySnapshot } from "@google-cloud/firestore"
-import { runWith } from "firebase-functions"
+import { runWith } from "firebase-functions/v1"
 import { City } from "../cities/types"
 import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"

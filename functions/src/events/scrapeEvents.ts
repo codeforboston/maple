@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { runWith } from "firebase-functions/v1"
 import { DateTime } from "luxon"
 import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"

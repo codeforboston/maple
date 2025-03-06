@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
 
 if (process.env.FUNCTIONS_EMULATOR === "true") {
   // Export a health check used

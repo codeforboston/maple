@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
 import { checkAdmin, checkAuth } from "../common"
 import { auth, db } from "../firebase"
 import { Testimony } from "../testimony/types"

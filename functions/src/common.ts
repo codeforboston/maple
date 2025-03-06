@@ -1,6 +1,6 @@
 import { FieldValue } from "@google-cloud/firestore"
 import axios from "axios"
-import { https, logger } from "firebase-functions"
+import { https, logger } from "firebase-functions/v1"
 import {
   Null,
   Nullish,

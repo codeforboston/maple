@@ -1,4 +1,4 @@
-const functions = require("firebase-functions")
+const functions = require("firebase-functions/v1")
 import * as admin from "firebase-admin"
 import { getNextDigestAt } from "./helpers"
 
