@@ -1,4 +1,4 @@
-import { runWith } from 'firebase-functions/v1'
+import { runWith } from "firebase-functions/v1"
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
 import { db, Timestamp } from "../firebase"
@@ -11,7 +11,7 @@ export const billTrackerPath = (billId: string, court: number) =>
 
 export const updateBillTracker = runWith({
   timeoutSeconds: 10
-  })
+})
   .firestore.document("/generalCourts/{court}/bills/{billId}")
   .onWrite(async (change, context) => {
     const params = context.params,
