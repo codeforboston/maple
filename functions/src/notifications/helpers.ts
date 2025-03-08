@@ -32,7 +32,6 @@ export const getNextDigestAt = (notificationFrequency: Frequency) => {
   return nextDigestAt
 }
 
-// TODO: Get the stupid Firebase WARN logs out of the unit tests
 export const getNotificationStartDate = (
   notificationFrequency: Frequency,
   now: Timestamp
