@@ -1,4 +1,4 @@
-import { getNextDigestAt } from "./helpers"
+import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { Timestamp } from "../firebase"
 import { Frequency } from "../auth/types"
 
@@ -78,5 +78,23 @@ describe("getNextDigestAt", () => {
       "Unknown notification frequency: SomeNewFrequency"
     )
     consoleSpy.mockRestore()
+  })
+})
+
+describe("getNotificationStartDate", () => {
+  it("should return the previous Tuesday for weekly frequency", () => {
+    const fixedDate = Timestamp.fromDate(new Date(2025, 2, 11))
+    const expectedDate = Timestamp.fromDate(new Date(2025, 2, 4))
+
+    const result = getNotificationStartDate("Weekly", fixedDate)
+    expect(result).toEqual(expectedDate)
+  })
+
+  it("should return the previous 1st of the month for monthly frequency", () => {
+    const fixedDate = Timestamp.fromDate(new Date(2025, 2, 1))
+    const expectedDate = Timestamp.fromDate(new Date(2025, 1, 1))
+
+    const result = getNotificationStartDate("Monthly", fixedDate)
+    expect(result).toEqual(expectedDate)
   })
 })

@@ -1,18 +1,20 @@
 import { Timestamp } from "../firebase"
 import { Frequency } from "../auth/types"
-import { startOfDay, addDays, addMonths, setDay, setDate } from "date-fns"
+import {
+  startOfDay,
+  addMonths,
+  setDate,
+  previousTuesday,
+  nextTuesday,
+  subMonths
+} from "date-fns"
 
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
   let nextDigestAt = null
   switch (notificationFrequency) {
     case "Weekly":
-      // Weekly notifications are sent on Tuesdays
-      // - this should be the next available Tuesday
-      const nextTuesday = setDay(now, 2, { weekStartsOn: 1 })
-      nextDigestAt = Timestamp.fromDate(
-        nextTuesday <= now ? addDays(nextTuesday, 7) : nextTuesday
-      )
+      nextDigestAt = Timestamp.fromDate(nextTuesday(now))
       break
     case "Monthly":
       // Monthly notifications are sent on the 1st of the month
@@ -30,21 +32,18 @@ export const getNextDigestAt = (notificationFrequency: Frequency) => {
   return nextDigestAt
 }
 
-// TODO: Rewrite with date-fns for consistency
-// TODO: Unit tests
+// TODO: Get the stupid Firebase WARN logs out of the unit tests
 export const getNotificationStartDate = (
   notificationFrequency: Frequency,
   now: Timestamp
 ) => {
   switch (notificationFrequency) {
     case "Weekly":
-      const weekAgo = new Date(now.toDate())
-      weekAgo.setDate(weekAgo.getDate() - 7)
-      return Timestamp.fromDate(weekAgo)
+      return Timestamp.fromDate(previousTuesday(now.toDate()))
     case "Monthly":
-      const monthAgo = new Date(now.toDate())
-      monthAgo.setMonth(monthAgo.getMonth() - 1)
-      return Timestamp.fromDate(monthAgo)
+      const firstOfMonth = setDate(now.toDate(), 1)
+      const previousFirstOfMonth = subMonths(firstOfMonth, 1)
+      return Timestamp.fromDate(previousFirstOfMonth)
     // We can safely fallthrough here because if the user has no notification frequency set,
     // we won't even send a notification
     default:
