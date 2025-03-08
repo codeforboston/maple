@@ -19,10 +19,10 @@ jobs:
         if: always()
         run: yarn check-formatting
 
-      # TODO: Add unit tests
-      # - name: Unit Tests
-      #   if: always()
-      #   run: yarn test
+      # TODO: Fix non-functions unit tests
+      - name: Unit Tests
+        if: always()
+        run: yarn test
 
       - name: Types
         if: always()
