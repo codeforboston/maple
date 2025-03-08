@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { runWith } from "firebase-functions/v1"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"

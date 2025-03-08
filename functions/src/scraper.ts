@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios"
-import { logger, runWith } from "firebase-functions"
+import { logger, runWith } from "firebase-functions/v1"
 import { last } from "lodash"
 import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
 import { currentGeneralCourt } from "./shared"

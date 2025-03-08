@@ -1,5 +1,5 @@
 import { PubSub } from "@google-cloud/pubsub"
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
 
 const projectId = process.env.GCLOUD_PROJECT
 const pubsubClient = new PubSub({ projectId })

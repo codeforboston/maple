@@ -1,4 +1,4 @@
-import { pubsub } from "firebase-functions"
+import { pubsub } from "firebase-functions/v1"
 import { db } from "../firebase"
 import { currentGeneralCourt } from "../shared"
 

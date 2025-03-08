@@ -1,4 +1,4 @@
-import { Change } from "firebase-functions"
+import { Change } from "firebase-functions/v1"
 import { isEqual, last } from "lodash"
 import hash from "object-hash"
 import Collection from "typesense/lib/Typesense/Collection"

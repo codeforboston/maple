@@ -1,3 +1,9 @@
+import { TextEncoder, TextDecoder } from 'util';
+if (!global.TextEncoder) {
+   global.TextEncoder = TextEncoder;
+   global.TextDecoder = TextDecoder;
+}
+
 export {}
 
 jest.mock("../components/db/common", () => {
