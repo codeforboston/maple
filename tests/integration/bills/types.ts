@@ -1,3 +1,5 @@
+import { FieldValue } from "@google-cloud/firestore"
+import { Timestamp } from "../firebase"
 import {
   Array,
   InstanceOf,
@@ -6,22 +8,13 @@ import {
   Number,
   Optional,
   Record,
+  Result,
   Runtype,
   Static,
   String
 } from "runtypes"
 
-import { Timestamp } from "../firebase"
-
-// In particular, reject "/" in ID strings
-const simpleId = /^[A-Za-z0-9-_ ]+$/
-/** Validates firestore-compatible ID's */
-export const Id = String.withConstraint(s => simpleId.test(s))
-
-export const NullStr = String.Or(Null)
-export const Nullable = <T>(t: Runtype<T>) => Null.Or(t)
-export const Maybe = <T>(t: Runtype<T>) => Optional(t.Or(Nullish))
-export type Maybe<T> = T | null | undefined
+import { Id, NullStr, Nullable, Maybe } from "../common"
 
 /** Allows specifying defaults that are merged into records before validation.
  * This is useful for compatibility with documents created before adding a field
@@ -35,6 +28,29 @@ export function withDefaults<T extends RecordSpec>(
   Type.checkWithDefaults = (v: any) => Base.check(mix(v, defaults))
   Type.validateWithDefaults = (v: any) => Base.validate(mix(v, defaults))
   return Type
+}
+
+function mix(v: any, defaults: {}) {
+  if (!!v && typeof v === "object") {
+    return { ...defaults, ...v }
+  }
+  return v
+}
+
+type RecordWithDefaults<T extends RecordSpec> = Record<T, false> & {
+  checkWithDefaults(v: any): RecordType<T>
+  validateWithDefaults(v: any): Result<RecordType<T>>
+}
+
+type RecordSpec = {
+  [_: string]: Runtype
+}
+
+type RecordType<T extends RecordSpec> = Static<Record<T, false>>
+
+/** A Partial that also allows `FieldValue` */
+export type DocUpdate<T> = {
+  [Prop in keyof T]?: T[Prop] | FieldValue
 }
 
 export type BillReference = Static<typeof BillReference>
