@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions"
+import * as functions from "firebase-functions/v1"
 import { db } from "../firebase"
 import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"

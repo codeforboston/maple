@@ -1,3 +1,4 @@
+import { FieldValue } from "@google-cloud/firestore"
 import { fail } from "assert"
 import { Role, finishSignup } from "components/auth"
 import { Report } from "components/moderation/types"
@@ -9,13 +10,77 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "firebase/auth"
+import {
+  Array,
+  InstanceOf,
+  Null,
+  Nullish,
+  Number,
+  Optional,
+  Record,
+  Result,
+  Runtype,
+  Static,
+  String
+} from "runtypes"
+
+// In particular, reject "/" in ID strings
+const simpleId = /^[A-Za-z0-9-_ ]+$/
+/** Validates firestore-compatible ID's */
+export const Id = String.withConstraint(s => simpleId.test(s))
+
+export const NullStr = String.Or(Null)
+export const Nullable = <T>(t: Runtype<T>) => Null.Or(t)
+export const Maybe = <T>(t: Runtype<T>) => Optional(t.Or(Nullish))
+export type Maybe<T> = T | null | undefined
+
+/** Allows specifying defaults that are merged into records before validation.
+ * This is useful for compatibility with documents created before adding a field
+ * to the type. This adds `checkWithDefaults` and `valideWithDefaults` to the
+ * record. `checkWithDefaults` returns a shallow copy of the input. */
+export function withDefaults<T extends RecordSpec>(
+  Base: Record<T, false>,
+  defaults: Partial<RecordType<T>>
+): RecordWithDefaults<T> {
+  const Type = Base as RecordWithDefaults<T>
+  Type.checkWithDefaults = (v: any) => Base.check(mix(v, defaults))
+  Type.validateWithDefaults = (v: any) => Base.validate(mix(v, defaults))
+  return Type
+}
+
+function mix(v: any, defaults: {}) {
+  if (!!v && typeof v === "object") {
+    return { ...defaults, ...v }
+  }
+  return v
+}
+
+type RecordWithDefaults<T extends RecordSpec> = Record<T, false> & {
+  checkWithDefaults(v: any): RecordType<T>
+  validateWithDefaults(v: any): Result<RecordType<T>>
+}
+
+type RecordSpec = {
+  [_: string]: Runtype
+}
+
+type RecordType<T extends RecordSpec> = Static<Record<T, false>>
+
+/** A Partial that also allows `FieldValue` */
+export type DocUpdate<T> = {
+  [Prop in keyof T]?: T[Prop] | FieldValue
+}
+
 import { currentGeneralCourt } from "functions/src/shared"
-import { Testimony } from "functions/src/testimony/types"
+//import { Testimony } from "functions/src/testimony/types"
+import { Testimony } from "./testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
-import { Bill, BillContent } from "../../functions/src/bills/types"
+//import { Bill, BillContent, createNewBill, deleteBill } from "./bills/types"
+//import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
-import { Timestamp } from "functions/src/firebase"
+
+import { Timestamp } from "./firebase"
 import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
 
 export async function signInUser(email: string) {
@@ -28,51 +93,6 @@ export const signInUser2 = () => signInUser("test2@example.com")
 export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
 export const signInTestAdmin = () => signInUser("testadmin@example.com")
-
-export async function createNewBill(props?: Partial<Bill>) {
-  const billId = props?.id ?? nanoid()
-  const content: BillContent = {
-    Pinslip: null,
-    Title: "fake",
-    PrimarySponsor: null,
-    Cosponsors: []
-  }
-  const bill: Bill = {
-    id: billId,
-    court: currentGeneralCourt,
-    content,
-    cosponsorCount: 0,
-    testimonyCount: 0,
-    endorseCount: 0,
-    neutralCount: 0,
-    opposeCount: 0,
-    latestTestimonyAt: Timestamp.fromMillis(0),
-    nextHearingAt: Timestamp.fromMillis(0),
-    fetchedAt: Timestamp.fromMillis(0),
-    history: [],
-    similar: [],
-    topics: [],
-    ...props
-  }
-
-  expect(Bill.validate(bill).success).toBeTruthy()
-
-  testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
-    .create({
-      ...bill,
-      latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
-      nextHearingAt: FirestoreTimestamp.fromMillis(0),
-      fetchedAt: FirestoreTimestamp.fromMillis(0)
-    })
-    .catch(err => console.log(err))
-
-  return billId
-}
-
-export async function deleteBill(id: string) {
-  await testDb.doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`).delete()
-}
 
 export async function createNewOrg() {
   const id = nanoid()
@@ -88,8 +108,6 @@ export async function createNewOrg() {
 export async function deleteOrg(id: string) {
   await testDb.doc(`/profiles/${id}`).delete()
 }
-
-export const createFakeBill = () => createNewBill().then(b => b)
 
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
@@ -128,13 +146,6 @@ export async function expectInvalidArgument(work: Promise<any>) {
     .catch(e => e)
   expect(e.code).toBe("invalid-argument")
   console.warn = warn
-}
-
-export async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
-    .get()
-  return doc.data() as any
 }
 
 export const getProfile = (user: { uid: string }) =>

@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { runWith } from "firebase-functions/v1"
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
 import { db, Timestamp } from "../firebase"
