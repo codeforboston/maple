@@ -596,6 +596,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "soundarzozm",
+      "name": "Soundar Murugan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55850316?v=4",
+      "profile": "http://soundarmurugan.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
