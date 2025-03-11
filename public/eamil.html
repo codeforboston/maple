@@ -1,0 +1,59 @@
+<html>
+
+<head>
+    <title>Digest Email</title>
+    <link rel="stylesheet" type="text/css" href="./email/emailStyle.css" />
+</head>
+
+<body class="font">
+    <div id="logo" class="logo bg-blue"> <img src="nav-logo.svg" alt="Maple Logo" /> </div>
+    <header class="header">
+        <div>
+            <h2 class="headline blue">Here is your report! </h2>
+            <p class="subheadline blue center"> - </p>
+        </div> <img src="Mail Report.svg" alt="Maple Logo" />
+    </header>
+    <section class="Bills">
+        <div class="sectionHeader">
+            <h5 class="sectionTitle">Bills</h5>
+            <div class="sectionLine"></div>
+        </div>
+        <div class="sectionBills">
+            <article class="billNoUpdates">
+                <div class="noUpdatesIcon"> <img src="empty mail.svg" alt="Empty Mail" /> </div>
+                <h5 class="noUpdatesTitle">No updates for today! </h5>
+            </article>
+        </div>
+    </section>
+    <section class="Orgs">
+        <div class="sectionHeader">
+            <h5 class="sectionTitle">Organizations</h5>
+            <div class="sectionLine"></div>
+        </div>
+        <div class="sectionOrgs">
+            <article class="orgNoUpdates">
+                <div class="noUpdatesIcon"> <img src="empty mail.svg" alt="Empty Mail" /> </div>
+                <h5 class="noUpdatesTitle">No updates for today! </h5>
+            </article>
+        </div>
+    </section>
+    <nav class="navHeader bg-blue white">
+        <p class="navText">see more at your</p> <!-- change link to newsfeed page on maple website when available -->
+        <button onclick="window.location.href='https://mapletestimony.org/newsfeed';" class="navButton bg-blue"> <img
+                src="Newsfeed Icon.svg" alt="Newsfeed Icon" />
+            <p class="navButtonText white">Newsfeed</p>
+        </button>
+    </nav>
+    <footer class="footer">
+        <div class="footerLine"></div>
+        <p class="footerContent">This is an automatically-generated email from MAPLE that you opted into from your
+            settings. <br /> <br /> <!-- Unsubscribe -> add link to User's profile - notifications model -->
+            <!-- or backend function that handles Unsubscribe --> Unsubscribe | <a
+                href="https://mapletestimony.org/policies/copyright" target="_blank"
+                rel="noopener noreferrer">Copyright</a> | <a href="https://mapletestimony.org/policies/privacy-policy"
+                target="_blank" rel="noopener noreferrer">Privacy and Community Guidelines</a>
+        </p>
+    </footer>
+</body>
+
+</html>
