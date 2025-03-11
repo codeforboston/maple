@@ -6,12 +6,16 @@ import * as handlebars from "handlebars"
  import { BillDigest, NotificationEmailDigest, UserDigest } from "functions/src/email/types"
  import { Record, String } from "runtypes"
  import { Timestamp } from "functions/src/firebase"
-import { User } from "firebase/auth"
+ import * as juice from "juice"
+ import { User } from "firebase/auth"
 
  const path = require("path")
 
  const PARTIALS_DIR = "./functions/lib/email/partials/"
  const EMAIL_TEMPLATE_PATH = "./functions/lib/email/digestEmail.handlebars"
+
+ const CSS_PATH = "../../public/email/emailStyle.css"
+ const CSS_CONTENT = fs.readFileSync(path.join(__dirname, CSS_PATH), "utf8")
 
  // Define Handlebars helper functions
  handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
@@ -53,19 +57,22 @@ import { User } from "firebase/auth"
      "utf8"
    )
    const compiledTemplate = handlebars.compile(templateSource)
-   return compiledTemplate({ digestData })
+   const htmlString = compiledTemplate({ digestData })
+  console.log("css",CSS_CONTENT)
+  // Inline CSS using Juice
+  const inlinedHtml = juice.inlineContent(htmlString, CSS_CONTENT, {
+    preserveMediaQueries: true,  
+    removeStyleTags: true,       
+  })
+
+  return inlinedHtml
  }
 
  const Args = Record({ email: String })
 
  export const script: Script = async ({ db, args }) => {
    const { email } = Args.check(args)
-//    const user:User = {
-//        n
-//    }
-//    3yAipp6oEPQKN3g7shMukCKG0CL2
-//     const digestDATA = buildDigestData()
-
+   
    const digestData: NotificationEmailDigest = {
      notificationFrequency: "Monthly",
      startDate: new Date(),
