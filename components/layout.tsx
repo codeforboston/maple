@@ -27,8 +27,6 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
     ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
-  const [tabStatus, setTabStatus] = useState<TabStatus>("AboutYou")
-
   // isClient used to prevent hydration issues: quite possibly better solutions exist
 
   const [isClient, setIsClient] = useState(false)
