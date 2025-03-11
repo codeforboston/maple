@@ -35,7 +35,11 @@ export async function createNewBill(props?: Partial<Bill>) {
     Pinslip: null,
     Title: "fake",
     PrimarySponsor: null,
-    Cosponsors: []
+    Cosponsors: [],
+    BillNumber: "",
+    DocketNumber: "",
+    GeneralCourtNumber: 0,
+    LegislationTypeName: ""
   }
   const bill: Bill = {
     id: billId,

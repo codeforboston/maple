@@ -26,14 +26,14 @@ export type MemberReference = {
 
 export type BillContent = {
   Title: string
+  Pinslip: string | null
   BillNumber: string
   DocketNumber: string
   GeneralCourtNumber: number
-  PrimarySponsor?: MemberReference
+  PrimarySponsor: MemberReference | null
   Cosponsors: MemberReference[]
   LegislationTypeName: string
-  Pinslip: string
-  DocumentText: string
+  DocumentText?: string | null
 }
 
 export type BillTopic = {
@@ -51,10 +51,12 @@ export type Bill = {
   opposeCount: number
   neutralCount: number
   nextHearingAt?: Timestamp
+  nextHearingId?: string
   latestTestimonyAt?: Timestamp
   latestTestimonyId?: string
   fetchedAt: Timestamp
   history: BillHistory
+  similar: string[]
   currentCommittee?: CurrentCommittee
   city?: string
   topics?: BillTopic[]

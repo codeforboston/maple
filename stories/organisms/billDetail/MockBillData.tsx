@@ -88,5 +88,6 @@ export const bill: Bill = {
   },
   city: "Boston",
   topics: newBillTopics,
-  summary: "This is the summary"
+  summary: "This is the summary",
+  similar: []
 }

@@ -151,7 +151,14 @@ describe("Following/Unfollowing user/bill", () => {
     const bill = await getBill(billId)
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
-    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
+    await setFollow(
+      authorUid,
+      topicName,
+      bill as any,
+      billId,
+      courtId,
+      undefined
+    )
 
     let subscriptions = await testDb
       .collection(`/users/${authorUid}/activeTopicSubscriptions`)
@@ -308,7 +315,14 @@ describe("Receiving notifications", () => {
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
     await signInUser(author.email!)
-    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
+    await setFollow(
+      authorUid,
+      topicName,
+      bill as any,
+      billId,
+      courtId,
+      undefined
+    )
 
     const initialNotificationCount = (
       await testDb
@@ -360,7 +374,14 @@ describe("Receiving notifications", () => {
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
     await signInUser(author.email!)
-    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
+    await setFollow(
+      authorUid,
+      topicName,
+      bill as any,
+      billId,
+      courtId,
+      undefined
+    )
 
     const history1 = {
       Date: Timestamp.now().toDate().toISOString(),
@@ -427,7 +448,7 @@ describe("Receiving notifications", () => {
     await setFollow(
       authorUid,
       `bill-${bill.court.toString()}-${billId}`,
-      bill,
+      bill as any,
       billId,
       courtId,
       undefined
