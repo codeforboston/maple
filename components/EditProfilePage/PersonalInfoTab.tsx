@@ -17,6 +17,8 @@ type UpdateProfileData = {
   linkedIn: string
   instagram: string
   fb: string
+  blueSky: string
+  mastodon: string
   publicEmail: string
   publicPhone: number
   website: string
@@ -54,6 +56,8 @@ async function updateProfile(
   await updateSocial("linkedIn", data.linkedIn)
   await updateSocial("twitter", data.twitter)
   await updateSocial("instagram", data.instagram)
+  await updateSocial("blueSky", data.blueSky)
+  await updateSocial("mastodon", data.mastodon)
   await updateSocial("fb", data.fb)
   await updateAbout(data.aboutYou)
   await updateFullName(data.fullName)
@@ -171,6 +175,20 @@ export function PersonalInfoTab({
                 iconSrc="./linkedin.svg"
                 {...register("linkedIn")}
               />
+              <SocialInput
+                label={t("socialLinks.blueSky")}
+                defaultValue={social?.blueSky}
+                className="col-sm-12 col-md-6 mb-1"
+                iconSrc="./bluesky.svg"
+                {...register("blueSky")}
+              />
+              <SocialInput
+                label={t("socialLinks.mastodon")}
+                defaultValue={social?.mastodon}
+                className="col-sm-12 col-md-6 mb-1"
+                iconSrc="./mastodon.svg"
+                {...register("mastodon")}
+              />
               {isOrg && (
                 <>
                   <SocialInput
@@ -186,6 +204,20 @@ export function PersonalInfoTab({
                     className="col-sm-12 col-md-6"
                     iconSrc="./facebook.svg"
                     {...register("fb")}
+                  />
+                  <SocialInput
+                    label={t("socialLinks.bluesky")}
+                    defaultValue={social?.blueSky}
+                    className="col-sm-12 col-md-6 mb-1"
+                    iconSrc="./bluesky.svg"
+                    {...register("blueSky")}
+                  />
+                  <SocialInput
+                    label={t("socialLinks.mastodon")}
+                    defaultValue={social?.mastodon}
+                    className="col-sm-12 col-md-6 mb-1"
+                    iconSrc="./mastodon.svg"
+                    {...register("mastodon")}
                   />
                 </>
               )}

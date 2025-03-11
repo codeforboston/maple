@@ -1,3 +1,6 @@
+// DEPRECATED - This will no longer be useful after we've moved notificationFrequency to profiles
+// This should no longer be run and will be removed in a future update
+
 import { Script } from "./types"
 import { listAllUsers } from "./list-all-users"
 
@@ -9,7 +12,7 @@ export const script: Script = async ({ db, auth }) => {
 
   for (const user of allUsers) {
     // Get user document from Firestore
-    const userDoc = db.collection("users").doc(user.uid)
+    const userDoc = db.collection("profiles").doc(user.uid)
     const doc = await userDoc.get()
 
     // If the user document exists in Firestore

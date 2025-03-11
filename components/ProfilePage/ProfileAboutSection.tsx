@@ -16,9 +16,17 @@ export const ProfileAboutSection = ({
     twitter,
     linkedIn,
     instagram,
-    fb
-  }: { twitter?: string; linkedIn?: string; instagram?: string; fb?: string } =
-    profile?.social ?? {}
+    fb,
+    blueSky,
+    mastodon
+  }: {
+    twitter?: string
+    linkedIn?: string
+    instagram?: string
+    fb?: string
+    blueSky?: string
+    mastodon?: string
+  } = profile?.social ?? {}
   const { t } = useTranslation("profile")
   const title = isOrg
     ? t("aboutUs")
@@ -37,6 +45,8 @@ export const ProfileAboutSection = ({
             linkedIn={linkedIn}
             instagram={instagram}
             fb={fb}
+            blueSky={blueSky}
+            mastodon={mastodon}
           />
         ) : (
           <></>

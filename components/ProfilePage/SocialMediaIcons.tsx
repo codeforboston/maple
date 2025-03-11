@@ -6,12 +6,16 @@ export const SocialMediaIcons = ({
   twitter,
   linkedIn,
   instagram,
-  fb
+  fb,
+  blueSky,
+  mastodon
 }: {
   twitter?: string
   instagram?: string
   fb?: string
   linkedIn?: string
+  blueSky?: string
+  mastodon?: string
 }) => {
   const { t } = useTranslation("common")
 
@@ -46,6 +50,22 @@ export const SocialMediaIcons = ({
           <Col>
             <External plain href={`https://www.facebook.com/${fb}`}>
               <Image alt={t("socials.facebook")} src="/facebook.svg" />
+            </External>
+          </Col>
+        )}
+
+        {blueSky && (
+          <Col>
+            <External plain href={`https://bsky.app.profile/${blueSky}`}>
+              <Image alt={t("socials.bluesky")} src="/bluesky.svg" />
+            </External>
+          </Col>
+        )}
+
+        {mastodon && (
+          <Col>
+            <External plain href={`https://mastodon.social/@${mastodon}`}>
+              <Image alt={t("socials.mastodon")} src="/mastodon.svg" />
             </External>
           </Col>
         )}

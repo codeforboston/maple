@@ -35,10 +35,10 @@
   },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
-  "button":{
-    "follow" : "Follow",
-    "following" : "Following",
-    "followed" : "Followed"
+  "button": {
+    "follow": "Follow",
+    "following": "Following",
+    "followed": "Followed"
   },
   "calendar": "Our Calendar",
   "hideAns": "Hide Answer",
@@ -62,11 +62,11 @@
     "browseBills": "Browse Bills",
     "browseTestimony": "Browse Testimony",
     "closeNavMenu": "Close Navigation Menu",
-    "closeProfileMenu":"Close Profile Menu",
+    "closeProfileMenu": "Close Profile Menu",
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
-    "followingTab": "Following Tab",
+    "followingTab": "Followed Content",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
@@ -81,7 +81,8 @@
     "viewProfile": "View Profile",
     "whyUseMaple": "Why Use MAPLE"
   },
-  "newcomer" : "New to MAPLE? For extra support, check",
+  "newcomer": "New to MAPLE? For extra support, check",
+  "newsletter": "Click Here to Subscribe to Our Newsletter",
   "newsfeed": {
     "actionTaken": "Action taken on ",
     "actionUpdate": "has an action update from the ",
@@ -118,7 +119,9 @@
     "instagram": "Instagram",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
-    "facebook": "Facebook"
+    "facebook": "Facebook",
+    "bluesky": "BlueSky",
+    "mastodon": "Mastodon"
   },
   "table": {
     "page": "Page {{currentPage}}"

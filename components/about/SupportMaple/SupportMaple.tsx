@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { Container, Row, Col } from "../../bootstrap"
 import AboutPagesCard from "../../AboutPagesCard/AboutPagesCard"
 import {
@@ -6,7 +7,6 @@ import {
   FeedbackCardContent,
   UseMAPLECardContent
 } from "../SupportMapleCardContent/SupportMapleCardContent"
-import { useTranslation } from "next-i18next"
 
 const SupportMaple = () => {
   const { t } = useTranslation("supportmaple")
@@ -16,6 +16,9 @@ const SupportMaple = () => {
       <Row>
         <Col>
           <h1 className="fw-bold m-5">{t("title")}</h1>
+          <AboutPagesCard title={t("useMAPLE.header")}>
+            <UseMAPLECardContent />
+          </AboutPagesCard>
           <AboutPagesCard title={t("donate.header")}>
             <DonateCardContent />
           </AboutPagesCard>
@@ -24,9 +27,6 @@ const SupportMaple = () => {
           </AboutPagesCard>
           <AboutPagesCard title={t("feedback.header")}>
             <FeedbackCardContent />
-          </AboutPagesCard>
-          <AboutPagesCard title={t("useMAPLE.header")}>
-            <UseMAPLECardContent />
           </AboutPagesCard>
         </Col>
       </Row>
