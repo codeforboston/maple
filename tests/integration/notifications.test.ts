@@ -188,7 +188,65 @@ describe("Following/Unfollowing user/bill", () => {
 })
 
 describe("Receiving notifications", () => {
+  let unsubscribeFunctions: (() => void)[] = []
+  afterEach(async () => {
+    // Unsubscribe all snapshot listeners
+    unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+    unsubscribeFunctions = []
+
+    // Clean up notificationEvents collection
+    const notificationEventsSnapshot = await testDb
+      .collection("/notificationEvents")
+      .get()
+    const deletePromises = notificationEventsSnapshot.docs.map(doc =>
+      doc.ref.delete()
+    )
+    await Promise.all(deletePromises)
+
+    // Clean up userNotificationFeed collection
+    const notificationsSnapshot = await testDb
+      .collection(`/users/${authorUid}/userNotificationFeed`)
+      .get()
+    const deleteNotificationPromises = notificationsSnapshot.docs.map(doc =>
+      doc.ref.delete()
+    )
+    await Promise.all(deleteNotificationPromises)
+  })
+  const waitForNotificationEvent = async (
+    initialCount: number,
+    type: string
+  ) => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = testDb
+        .collection("/notificationEvents")
+        .where("type", "==", type)
+        .onSnapshot(snapshot => {
+          console.log("Snapshot size:", snapshot.size)
+          if (snapshot.size === initialCount + 1) {
+            unsubscribe()
+            resolve(snapshot)
+          }
+        }, reject)
+      unsubscribeFunctions.push(unsubscribe)
+    })
+  }
+
+  const waitForUserNotificationFeed = async (testimonyId: string) => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = testDb
+        .collection(`/users/${authorUid}/userNotificationFeed`)
+        .where("notification.testimonyId", "==", testimonyId)
+        .onSnapshot(snapshot => {
+          if (snapshot.size === 1) {
+            unsubscribe()
+            resolve(snapshot)
+          }
+        }, reject)
+      unsubscribeFunctions.push(unsubscribe)
+    })
+  }
   it("Receiving TestimonySubmissionNotification from Organization", async () => {
+    const unsubscribeFunctions: (() => void)[] = []
     const topicName = `testimony-${orgId}`
     await signInUser(author.email!)
 
@@ -209,43 +267,42 @@ describe("Receiving notifications", () => {
         .get()
     ).size
 
+    console.log("Initial notification count:", initialNotificationCount)
+
     const { tid } = await createNewTestimony(orgId, billId)
 
-    // Use onSnapshot to listen for changes in notificationEvents
-    const notificationEventsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection("/notificationEvents")
-        .where("type", "==", "testimony")
-        .onSnapshot(snapshot => {
-          if (snapshot.size === initialNotificationCount + 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
+    const notificationEventsPromise = waitForNotificationEvent(
+      initialNotificationCount,
+      "testimony"
+    )
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+        reject(new Error("Test timed out"))
+      }, 10000) // 20 seconds timeout
     })
 
-    const notificationEvents =
-      (await notificationEventsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notificationEvents.size).toBe(initialNotificationCount + 1)
+    try {
+      const notificationEvents = (await Promise.race([
+        notificationEventsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notificationEvents.size).toBe(initialNotificationCount + 1)
 
-    // Use onSnapshot to listen for changes in userNotificationFeed
-    const notificationsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection(`/users/${authorUid}/userNotificationFeed`)
-        .where("notification.testimonyId", "==", tid)
-        .onSnapshot(snapshot => {
-          if (snapshot.size === 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
-    })
-
-    const notifications =
-      (await notificationsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notifications.size).toBe(1)
-    const notification = notifications.docs[0].data().notification
-    expect(notification.isUserMatch).toBe(true)
+      const notificationsPromise = waitForUserNotificationFeed(tid)
+      const notifications = (await Promise.race([
+        notificationsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notifications.size).toBe(1)
+      const notification = notifications.docs[0].data().notification
+      expect(notification.isUserMatch).toBe(true)
+      expect(notification.isBillMatch).toBe(false)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   })
 
   it("Receiving TestimonySubmissionNotification from User", async () => {
@@ -270,43 +327,41 @@ describe("Receiving notifications", () => {
         .get()
     ).size
 
+    console.log("Initial notification count:", initialNotificationCount)
+
     const { tid } = await createNewTestimony(testUserId, billId)
 
-    // Use onSnapshot to listen for changes in notificationEvents
-    const notificationEventsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection("/notificationEvents")
-        .where("type", "==", "testimony")
-        .onSnapshot(snapshot => {
-          if (snapshot.size === initialNotificationCount + 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
+    const notificationEventsPromise = waitForNotificationEvent(
+      initialNotificationCount,
+      "testimony"
+    )
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+        reject(new Error("Test timed out"))
+      }, 10000)
     })
 
-    const notificationEvents =
-      (await notificationEventsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notificationEvents.size).toBe(initialNotificationCount + 1)
+    try {
+      const notificationEvents = (await Promise.race([
+        notificationEventsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notificationEvents.size).toBe(initialNotificationCount + 1)
 
-    // Use onSnapshot to listen for changes in userNotificationFeed
-    const notificationsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection(`/users/${authorUid}/userNotificationFeed`)
-        .where("notification.testimonyId", "==", tid)
-        .onSnapshot(snapshot => {
-          if (snapshot.size === 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
-    })
-
-    const notifications =
-      (await notificationsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notifications.size).toBe(1)
-    const notification = notifications.docs[0].data().notification
-    expect(notification.isUserMatch).toBe(true)
+      const notificationsPromise = waitForUserNotificationFeed(tid)
+      const notifications = (await Promise.race([
+        notificationsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notifications.size).toBe(1)
+      const notification = notifications.docs[0].data().notification
+      expect(notification.isUserMatch).toBe(true)
+      expect(notification.isBillMatch).toBe(false)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   })
   it("Receiving TestimonySubmissionNotification from Bill", async () => {
     const testUser = await createUser("user")
@@ -331,42 +386,39 @@ describe("Receiving notifications", () => {
         .get()
     ).size
     const { tid } = await createNewTestimony(testUserId, billId, courtId)
+    console.log("Initial notification count:", initialNotificationCount)
 
-    // Use onSnapshot to listen for changes in notificationEvents
-    const notificationEventsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection("/notificationEvents")
-        .where("type", "==", "testimony")
-        .onSnapshot(snapshot => {
-          if (snapshot.size === initialNotificationCount + 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
+    const notificationEventsPromise = waitForNotificationEvent(
+      initialNotificationCount,
+      "testimony"
+    )
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+        reject(new Error("Test timed out"))
+      }, 10000)
     })
 
-    const notificationEvents =
-      (await notificationEventsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notificationEvents.size).toBe(initialNotificationCount + 1)
+    try {
+      const notificationEvents = (await Promise.race([
+        notificationEventsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notificationEvents.size).toBe(initialNotificationCount + 1)
 
-    // Use onSnapshot to listen for changes in userNotificationFeed
-    const notificationsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection(`/users/${authorUid}/userNotificationFeed`)
-        .where("notification.testimonyId", "==", tid)
-        .onSnapshot(snapshot => {
-          if (snapshot.size === 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
-    })
-
-    const notifications =
-      (await notificationsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notifications.size).toBe(1)
-    const notification = notifications.docs[0].data().notification
-    expect(notification.isBillMatch).toBe(true)
+      const notificationsPromise = waitForUserNotificationFeed(tid)
+      const notifications = (await Promise.race([
+        notificationsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notifications.size).toBe(1)
+      const notification = notifications.docs[0].data().notification
+      expect(notification.isUserMatch).toBe(false)
+      expect(notification.isBillMatch).toBe(true)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   })
 
   it("Receiving BillHistoryUpdateNotificationEvent", async () => {
@@ -470,42 +522,38 @@ describe("Receiving notifications", () => {
     ).size
 
     const { tid } = await createNewTestimony(testUserId, billId, courtId)
+    console.log("Initial notification count:", initialNotificationCount)
 
-    // Use onSnapshot to listen for changes in notificationEvents
-    const notificationEventsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection("/notificationEvents")
-        .where("type", "==", "testimony")
-        .onSnapshot(snapshot => {
-          if (snapshot.size === initialNotificationCount + 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
+    const notificationEventsPromise = waitForNotificationEvent(
+      initialNotificationCount,
+      "testimony"
+    )
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+        reject(new Error("Test timed out"))
+      }, 10000)
     })
 
-    const notificationEvents =
-      (await notificationEventsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notificationEvents.size).toBe(initialNotificationCount + 1)
+    try {
+      const notificationEvents = (await Promise.race([
+        notificationEventsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notificationEvents.size).toBe(initialNotificationCount + 1)
 
-    // Use onSnapshot to listen for changes in userNotificationFeed
-    const notificationsPromise = new Promise((resolve, reject) => {
-      const unsubscribe = testDb
-        .collection(`/users/${authorUid}/userNotificationFeed`)
-        .where("notification.testimonyId", "==", tid)
-        .onSnapshot(snapshot => {
-          if (snapshot.size === 1) {
-            unsubscribe()
-            resolve(snapshot)
-          }
-        }, reject)
-    })
-
-    const notifications =
-      (await notificationsPromise) as FirebaseFirestore.QuerySnapshot
-    expect(notifications.size).toBe(1)
-    const notification = notifications.docs[0].data().notification
-    expect(notification.isUserMatch).toBe(true)
-    expect(notification.isBillMatch).toBe(true)
+      const notificationsPromise = waitForUserNotificationFeed(tid)
+      const notifications = (await Promise.race([
+        notificationsPromise,
+        timeoutPromise
+      ])) as FirebaseFirestore.QuerySnapshot
+      expect(notifications.size).toBe(1)
+      const notification = notifications.docs[0].data().notification
+      expect(notification.isUserMatch).toBe(true)
+      expect(notification.isBillMatch).toBe(true)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   })
 })
