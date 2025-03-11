@@ -1,13 +1,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { User } from "firebase/auth"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "../../../tests/integration/constants"
 import { nanoid } from "nanoid"
 import { DraftTestimony, Testimony, useEditTestimony } from "."
-import {
-  createFakeBill,
-  signInUser1,
-  signInUser3
-} from "../../../tests/integration/common"
+import { signInUser1, signInUser3 } from "../../../tests/integration/common"
+import { createFakeBill } from "../../../tests/integration/bills/types"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
 
 let uid: string

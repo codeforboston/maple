@@ -76,8 +76,8 @@ import { currentGeneralCourt } from "functions/src/shared"
 import { Testimony } from "./testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
+//import { Bill, BillContent, createNewBill, deleteBill } from "./bills/types"
 //import { Bill, BillContent } from "../../functions/src/bills/types"
-import { Bill, BillContent } from "./bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
 
 import { Timestamp } from "./firebase"
@@ -94,51 +94,6 @@ export const signInUser3 = () => signInUser("test3@example.com")
 export const signInUser4 = () => signInUser("test4@example.com")
 export const signInTestAdmin = () => signInUser("testadmin@example.com")
 
-export async function createNewBill(props?: Partial<Bill>) {
-  const billId = props?.id ?? nanoid()
-  const content: BillContent = {
-    Pinslip: null,
-    Title: "fake",
-    PrimarySponsor: null,
-    Cosponsors: []
-  }
-  const bill: Bill = {
-    id: billId,
-    court: currentGeneralCourt,
-    content,
-    cosponsorCount: 0,
-    testimonyCount: 0,
-    endorseCount: 0,
-    neutralCount: 0,
-    opposeCount: 0,
-    latestTestimonyAt: Timestamp.fromMillis(0),
-    nextHearingAt: Timestamp.fromMillis(0),
-    fetchedAt: Timestamp.fromMillis(0),
-    history: [],
-    similar: [],
-    topics: [],
-    ...props
-  }
-
-  expect(Bill.validate(bill).success).toBeTruthy()
-
-  testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
-    .create({
-      ...bill,
-      latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
-      nextHearingAt: FirestoreTimestamp.fromMillis(0),
-      fetchedAt: FirestoreTimestamp.fromMillis(0)
-    })
-    .catch(err => console.log(err))
-
-  return billId
-}
-
-export async function deleteBill(id: string) {
-  await testDb.doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`).delete()
-}
-
 export async function createNewOrg() {
   const id = nanoid()
   await testDb.doc(`/profiles/${id}`).create({
@@ -153,8 +108,6 @@ export async function createNewOrg() {
 export async function deleteOrg(id: string) {
   await testDb.doc(`/profiles/${id}`).delete()
 }
-
-export const createFakeBill = () => createNewBill().then(b => b)
 
 export async function expectPermissionDenied(work: Promise<any>) {
   const warn = console.warn
@@ -193,13 +146,6 @@ export async function expectInvalidArgument(work: Promise<any>) {
     .catch(e => e)
   expect(e.code).toBe("invalid-argument")
   console.warn = warn
-}
-
-export async function getBill(id: string): Promise<Bill> {
-  const doc = await testDb
-    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
-    .get()
-  return doc.data() as any
 }
 
 export const getProfile = (user: { uid: string }) =>

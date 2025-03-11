@@ -1,7 +1,7 @@
 import { UserRecord } from "firebase-admin/auth"
 import { nanoid } from "nanoid"
 import { Role } from "../../components/auth"
-import { setRole } from "../../functions/src/auth"
+import { setRole } from "./auth/setRole"
 import { terminateFirebase, testAuth, testDb } from "../testUtils"
 import { getProfile } from "./common"
 

@@ -1,5 +1,9 @@
+import { nanoid } from "nanoid"
+import { currentGeneralCourt } from "../constants"
 import { FieldValue } from "@google-cloud/firestore"
+import { testDb } from "../../testUtils"
 import { Timestamp } from "../firebase"
+import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
 import {
   Array,
   InstanceOf,
@@ -13,45 +17,7 @@ import {
   Static,
   String
 } from "runtypes"
-
-import { Id, NullStr, Nullable, Maybe } from "../common"
-
-/** Allows specifying defaults that are merged into records before validation.
- * This is useful for compatibility with documents created before adding a field
- * to the type. This adds `checkWithDefaults` and `valideWithDefaults` to the
- * record. `checkWithDefaults` returns a shallow copy of the input. */
-export function withDefaults<T extends RecordSpec>(
-  Base: Record<T, false>,
-  defaults: Partial<RecordType<T>>
-): RecordWithDefaults<T> {
-  const Type = Base as RecordWithDefaults<T>
-  Type.checkWithDefaults = (v: any) => Base.check(mix(v, defaults))
-  Type.validateWithDefaults = (v: any) => Base.validate(mix(v, defaults))
-  return Type
-}
-
-function mix(v: any, defaults: {}) {
-  if (!!v && typeof v === "object") {
-    return { ...defaults, ...v }
-  }
-  return v
-}
-
-type RecordWithDefaults<T extends RecordSpec> = Record<T, false> & {
-  checkWithDefaults(v: any): RecordType<T>
-  validateWithDefaults(v: any): Result<RecordType<T>>
-}
-
-type RecordSpec = {
-  [_: string]: Runtype
-}
-
-type RecordType<T extends RecordSpec> = Static<Record<T, false>>
-
-/** A Partial that also allows `FieldValue` */
-export type DocUpdate<T> = {
-  [Prop in keyof T]?: T[Prop] | FieldValue
-}
+import { Id, Maybe, Nullable, NullStr, withDefaults } from "../common"
 
 export type BillReference = Static<typeof BillReference>
 export const BillReference = Record({
@@ -382,3 +348,57 @@ export const Bill = withDefaults(
     topics: []
   }
 )
+
+export async function createNewBill(props?: Partial<Bill>) {
+  const billId = props?.id ?? nanoid()
+  const content: BillContent = {
+    Pinslip: null,
+    Title: "fake",
+    PrimarySponsor: null,
+    Cosponsors: []
+  }
+  const bill: Bill = {
+    id: billId,
+    court: currentGeneralCourt,
+    content,
+    cosponsorCount: 0,
+    testimonyCount: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0,
+    latestTestimonyAt: Timestamp.fromMillis(0),
+    nextHearingAt: Timestamp.fromMillis(0),
+    fetchedAt: Timestamp.fromMillis(0),
+    history: [],
+    similar: [],
+    topics: [],
+    ...props
+  }
+
+  expect(Bill.validate(bill).success).toBeTruthy()
+
+  testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
+    .create({
+      ...bill,
+      latestTestimonyAt: FirestoreTimestamp.fromMillis(0),
+      nextHearingAt: FirestoreTimestamp.fromMillis(0),
+      fetchedAt: FirestoreTimestamp.fromMillis(0)
+    })
+    .catch(err => console.log(err))
+
+  return billId
+}
+
+export async function deleteBill(id: string) {
+  await testDb.doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`).delete()
+}
+
+export async function getBill(id: string): Promise<Bill> {
+  const doc = await testDb
+    .doc(`/generalCourts/${currentGeneralCourt}/bills/${id}`)
+    .get()
+  return doc.data() as any
+}
+
+export const createFakeBill = () => createNewBill().then(b => b)
