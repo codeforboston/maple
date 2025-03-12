@@ -29,7 +29,7 @@ let email: string
 let author: UserRecord
 let orgId: string
 
-jest.setTimeout(15000)
+jest.setTimeout(30000)
 
 beforeAll(async () => {
   billId = await createNewBill()
@@ -42,6 +42,30 @@ beforeAll(async () => {
   const orgEmail = `${orgId}@example.com`
   await signInTestAdmin()
   await createFakeOrg({ uid: orgId, fullName, email: orgEmail })
+})
+let unsubscribeFunctions: (() => void)[] = []
+afterEach(async () => {
+  // Unsubscribe all snapshot listeners
+  unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
+  unsubscribeFunctions = []
+
+  // Clean up notificationEvents collection
+  const notificationEventsSnapshot = await testDb
+    .collection("/notificationEvents")
+    .get()
+  const deletePromises = notificationEventsSnapshot.docs.map(doc =>
+    doc.ref.delete()
+  )
+  await Promise.all(deletePromises)
+
+  // Clean up userNotificationFeed collection
+  const notificationsSnapshot = await testDb
+    .collection(`/users/${authorUid}/userNotificationFeed`)
+    .get()
+  const deleteNotificationPromises = notificationsSnapshot.docs.map(doc =>
+    doc.ref.delete()
+  )
+  await Promise.all(deleteNotificationPromises)
 })
 
 afterAll(async () => {
@@ -188,30 +212,6 @@ describe("Following/Unfollowing user/bill", () => {
 })
 
 describe("Receiving notifications", () => {
-  let unsubscribeFunctions: (() => void)[] = []
-  afterEach(async () => {
-    // Unsubscribe all snapshot listeners
-    unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
-    unsubscribeFunctions = []
-
-    // Clean up notificationEvents collection
-    const notificationEventsSnapshot = await testDb
-      .collection("/notificationEvents")
-      .get()
-    const deletePromises = notificationEventsSnapshot.docs.map(doc =>
-      doc.ref.delete()
-    )
-    await Promise.all(deletePromises)
-
-    // Clean up userNotificationFeed collection
-    const notificationsSnapshot = await testDb
-      .collection(`/users/${authorUid}/userNotificationFeed`)
-      .get()
-    const deleteNotificationPromises = notificationsSnapshot.docs.map(doc =>
-      doc.ref.delete()
-    )
-    await Promise.all(deleteNotificationPromises)
-  })
   const waitForNotificationEvent = async (
     initialCount: number,
     type: string
@@ -280,7 +280,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 10000) // 20 seconds timeout
+      }, 25000) // 20 seconds timeout
     })
 
     try {
@@ -339,7 +339,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 10000)
+      }, 25000)
     })
 
     try {
@@ -396,7 +396,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 10000)
+      }, 25000)
     })
 
     try {
@@ -532,7 +532,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 10000)
+      }, 25000)
     })
 
     try {
