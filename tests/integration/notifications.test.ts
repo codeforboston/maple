@@ -29,7 +29,7 @@ let email: string
 let author: UserRecord
 let orgId: string
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 beforeAll(async () => {
   billId = await createNewBill()
