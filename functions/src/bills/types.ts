@@ -40,13 +40,24 @@ export const CommitteeMember = Record({
     senateChair: Maybe(CommitteeMember)
   })
 
+export type MemberReference = Static<typeof MemberReference>
+export const MemberReference = Record({
+  Id: String,
+  Name: String,
+  Type: Number
+})
+
 export type BillContent = Static<typeof BillContent>
 export const BillContent = Record({
-  Pinslip: Nullable(String),
   Title: String,
-  PrimarySponsor: Nullable(Record({ Name: String })),
-  DocumentText: Maybe(String),
-  Cosponsors: Array(Record({ Name: Maybe(String) }))
+  Pinslip: Nullable(String),
+  BillNumber: String,
+  DocketNumber: String,
+  GeneralCourtNumber: Number,
+  PrimarySponsor: Nullable(MemberReference),
+  Cosponsors: Array(MemberReference),
+  LegislationTypeName: String,
+  DocumentText: Maybe(String)
 })
 
 export type BillTopic = Static<typeof BillTopic>
