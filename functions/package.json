@@ -33,6 +33,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/luxon": "^3.4.2",
+    "@types/node": "20",
     "@types/object-hash": "^3.0.6",
     "copyfiles": "^2.4.1",
     "firebase-functions-test": "^3.4.0",
