@@ -1,11 +1,4 @@
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  Timestamp,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, limit, orderBy, where } from "firebase/firestore"
 import { useAsync } from "react-async-hook"
 import type {
   BillHistory,
@@ -14,6 +7,7 @@ import type {
 import { firestore } from "../firebase"
 import { loadDoc, midnight, nullableQuery } from "./common"
 import { currentGeneralCourt } from "functions/src/shared"
+import { Timestamp } from "functions/src/firebase"
 export type { BillHistory } from "../../functions/src/bills/types"
 
 export type MemberReference = {

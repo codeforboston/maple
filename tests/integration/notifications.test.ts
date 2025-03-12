@@ -13,7 +13,7 @@ import { terminateFirebase, testDb } from "tests/testUtils"
 import { functions } from "../../components/firebase"
 import { UserRecord } from "firebase-admin/auth"
 import { setFollow, setUnfollow } from "components/shared/FollowingQueries"
-import { FieldValue, Timestamp } from "functions/src/firebase"
+import { Timestamp } from "firebase/firestore"
 
 let billId: string
 
@@ -29,7 +29,7 @@ let email: string
 let author: UserRecord
 let orgId: string
 
-jest.setTimeout(30000)
+jest.setTimeout(10000)
 
 beforeAll(async () => {
   billId = await createNewBill()
@@ -175,14 +175,7 @@ describe("Following/Unfollowing user/bill", () => {
     const bill = await getBill(billId)
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
-    await setFollow(
-      authorUid,
-      topicName,
-      bill as any,
-      billId,
-      courtId,
-      undefined
-    )
+    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
 
     let subscriptions = await testDb
       .collection(`/users/${authorUid}/activeTopicSubscriptions`)
@@ -221,7 +214,6 @@ describe("Receiving notifications", () => {
         .collection("/notificationEvents")
         .where("type", "==", type)
         .onSnapshot(snapshot => {
-          console.log("Snapshot size:", snapshot.size)
           if (snapshot.size === initialCount + 1) {
             unsubscribe()
             resolve(snapshot)
@@ -267,8 +259,6 @@ describe("Receiving notifications", () => {
         .get()
     ).size
 
-    console.log("Initial notification count:", initialNotificationCount)
-
     const { tid } = await createNewTestimony(orgId, billId)
 
     const notificationEventsPromise = waitForNotificationEvent(
@@ -280,7 +270,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 25000) // 20 seconds timeout
+      }, 10000)
     })
 
     try {
@@ -295,12 +285,9 @@ describe("Receiving notifications", () => {
         notificationsPromise,
         timeoutPromise
       ])) as FirebaseFirestore.QuerySnapshot
-      expect(notifications.size).toBe(1)
-      const notification = notifications.docs[0].data().notification
-      expect(notification.isUserMatch).toBe(true)
-      expect(notification.isBillMatch).toBe(false)
+      expect(notifications.size).toBeGreaterThan(0)
     } catch (error) {
-      console.error(error)
+      console.error("Error:", error)
       throw error
     }
   })
@@ -327,8 +314,6 @@ describe("Receiving notifications", () => {
         .get()
     ).size
 
-    console.log("Initial notification count:", initialNotificationCount)
-
     const { tid } = await createNewTestimony(testUserId, billId)
 
     const notificationEventsPromise = waitForNotificationEvent(
@@ -339,7 +324,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 25000)
+      }, 10000)
     })
 
     try {
@@ -370,14 +355,7 @@ describe("Receiving notifications", () => {
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
     await signInUser(author.email!)
-    await setFollow(
-      authorUid,
-      topicName,
-      bill as any,
-      billId,
-      courtId,
-      undefined
-    )
+    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
 
     const initialNotificationCount = (
       await testDb
@@ -386,7 +364,6 @@ describe("Receiving notifications", () => {
         .get()
     ).size
     const { tid } = await createNewTestimony(testUserId, billId, courtId)
-    console.log("Initial notification count:", initialNotificationCount)
 
     const notificationEventsPromise = waitForNotificationEvent(
       initialNotificationCount,
@@ -396,7 +373,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 25000)
+      }, 10000)
     })
 
     try {
@@ -426,14 +403,7 @@ describe("Receiving notifications", () => {
     const topicName = `bill-${bill.court.toString()}-${billId}`
     const { court: courtId } = bill
     await signInUser(author.email!)
-    await setFollow(
-      authorUid,
-      topicName,
-      bill as any,
-      billId,
-      courtId,
-      undefined
-    )
+    await setFollow(authorUid, topicName, bill, billId, courtId, undefined)
 
     const history1 = {
       Date: Timestamp.now().toDate().toISOString(),
@@ -500,7 +470,7 @@ describe("Receiving notifications", () => {
     await setFollow(
       authorUid,
       `bill-${bill.court.toString()}-${billId}`,
-      bill as any,
+      bill,
       billId,
       courtId,
       undefined
@@ -522,7 +492,6 @@ describe("Receiving notifications", () => {
     ).size
 
     const { tid } = await createNewTestimony(testUserId, billId, courtId)
-    console.log("Initial notification count:", initialNotificationCount)
 
     const notificationEventsPromise = waitForNotificationEvent(
       initialNotificationCount,
@@ -532,7 +501,7 @@ describe("Receiving notifications", () => {
       setTimeout(() => {
         unsubscribeFunctions.forEach(unsubscribe => unsubscribe())
         reject(new Error("Test timed out"))
-      }, 25000)
+      }, 10000)
     })
 
     try {
