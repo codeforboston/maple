@@ -1,7 +1,7 @@
-import { TextEncoder, TextDecoder } from 'util';
+import { TextEncoder, TextDecoder } from "util"
 if (!global.TextEncoder) {
-   global.TextEncoder = TextEncoder;
-   global.TextDecoder = TextDecoder;
+  global.TextEncoder = TextEncoder
+  global.TextDecoder = TextDecoder
 }
 
 export {}
