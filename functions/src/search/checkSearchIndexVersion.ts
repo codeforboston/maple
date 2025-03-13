@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { runWith } from "firebase-functions/v1"
 import { getRegisteredConfigs } from "./config"
 import { SearchIndexer } from "./SearchIndexer"
 

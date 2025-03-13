@@ -1,3 +1,10 @@
+import { TextEncoder, TextDecoder as NodeTextDecoder } from "util"
+
+if (!global.TextEncoder) {
+  global.TextEncoder = TextEncoder
+  global.TextDecoder = NodeTextDecoder as typeof TextDecoder
+}
+
 export {}
 
 jest.mock("../components/db/common", () => {
