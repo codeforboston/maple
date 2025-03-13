@@ -79,7 +79,8 @@ export const Hearing = BaseEvent.extend({
   content: HearingContent,
   videoURL: Nullable(String),
   videoAssemblyId: Nullable(String),
-  videoFetchedAt: Nullable(InstanceOf(Timestamp))
+  videoFetchedAt: Nullable(InstanceOf(Timestamp)),
+  videoAssemblyWebhookToken: Nullable(String)
 })
 
 export type Event = Static<typeof Event>

@@ -17,6 +17,8 @@ import {
   SpecialEventContent
 } from "./types"
 import { currentGeneralCourt } from "../shared"
+import { randomBytes } from "node:crypto"
+import { sha256 } from "js-sha256"
 
 const assembly = new AssemblyAI({
   apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
@@ -146,8 +148,10 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
 
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
     const data = await api.getHearing(EventId)
-    const hearing = Hearing.check(data)
     const content = HearingContent.check(data)
+    const EventInDb = await db.collection("events").doc(String(EventId)).get()
+    const hearing = Hearing.check(EventInDb)
+    const newToken = randomBytes(16).toString("hex")
 
     let maybeVideoURL = null
     let transcript = null
@@ -165,11 +169,13 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
             maybeVideoURL = firstVideoSource.src
 
-            transcript = await assembly.transcripts.transcribe({
+            transcript = await assembly.transcripts.submit({
               webhook_url:
                 process.env.NODE_ENV === "development"
                   ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
                   : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
+              webhook_auth_header_name: "X-Maple-Webhook",
+              webhook_auth_header_value: newToken,
               audio: firstVideoSource.src,
               auto_highlights: true,
               custom_topics: true,
@@ -193,6 +199,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       videoURL: maybeVideoURL,
       videoFetchedAt: maybeVideoURL ? Timestamp.now() : null,
       videoAssemblyId: transcript ? transcript.id : null,
+      videoAssemblyWebhookToken: sha256(newToken),
       ...this.timestamps(content)
     }
     return event
