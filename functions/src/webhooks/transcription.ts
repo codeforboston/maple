@@ -33,7 +33,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
               await db
                 .collection("transcriptions")
                 .doc(transcript.id)
-                .set(transcript)
+                .set({ _timestamp: new Date(), ...transcript })
               console.log("transcript saved in db")
             } catch (error) {
               console.log(error)
