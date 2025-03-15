@@ -149,13 +149,20 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
-    const eventInDb = await db.collection("events").doc(String(EventId)).get()
-    const hearing = Hearing.check(eventInDb)
-    const newToken = randomBytes(16).toString("hex")
+    const eventInDb = await db
+      .collection("events")
+      .doc(`hearing-${String(EventId)}`)
+      .get()
+    const eventData = eventInDb.data()
+    const hearing = Hearing.check(eventData)
+    const now = new Date()
+    const hearingIsTodayOrFuture =
+      hearing.startsAt.toDate().getDate() - now.getDate() > -1
 
+    const newToken = randomBytes(16).toString("hex")
     let maybeVideoURL = null
     let transcript = null
-    if (!hearing.videoFetchedAt) {
+    if (!hearing.videoFetchedAt && hearingIsTodayOrFuture) {
       const req = await fetch(
         `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
       )
@@ -199,7 +206,9 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       videoURL: maybeVideoURL,
       videoFetchedAt: maybeVideoURL ? Timestamp.now() : null,
       videoAssemblyId: transcript ? transcript.id : null,
-      videoAssemblyWebhookToken: sha256(newToken),
+      videoAssemblyWebhookToken: hearingIsTodayOrFuture
+        ? sha256(newToken)
+        : null,
       ...this.timestamps(content)
     }
     return event

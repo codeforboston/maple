@@ -34,6 +34,12 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 .collection("transcriptions")
                 .doc(transcript.id)
                 .set({ _timestamp: new Date(), ...transcript })
+
+              authenticatedEventsInDb.forEach(d => {
+                d.ref.update({
+                  ["webhook_auth_header_value"]: null
+                })
+              })
               console.log("transcript saved in db")
             } catch (error) {
               console.log(error)
