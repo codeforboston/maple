@@ -22,11 +22,13 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           .get()
         if (maybeEventInDb.docs.length) {
           const authenticatedEventsInDb = maybeEventInDb.docs.filter(e => {
-            const hearing = Hearing.check(e.data())
             const hashedToken = sha256(
               String(req.headers["webhook_auth_header_value"])
             )
-            return hashedToken === hearing.videoAssemblyWebhookToken
+            return (
+              hashedToken ===
+              e.get("webhookAuth").data().videoAssemblyWebhookToken
+            )
           })
           if (authenticatedEventsInDb) {
             try {

@@ -161,7 +161,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const hearingIsTodayOrFuture =
       differenceInDays(hearing.startsAt.toDate(), now) < 8
 
-    const newToken = randomBytes(16).toString("hex")
     let maybeVideoURL = null
     let transcript = null
     if (!hearing.videoFetchedAt && hearingIsTodayOrFuture) {
@@ -175,6 +174,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           const maybeVideoSource =
             dom.window.document.querySelectorAll("video source")
           if (maybeVideoSource.length && maybeVideoSource[0]) {
+            const newToken = randomBytes(16).toString("hex")
             const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
             maybeVideoURL = firstVideoSource.src
 
@@ -197,6 +197,17 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
               summary_model: "informative",
               summary_type: "bullets"
             })
+
+            await db
+              .collection("events")
+              .doc(String(EventId))
+              .collection("private")
+              .doc("webhookAuth")
+              .set({
+                videoAssemblyWebhookToken: hearingIsTodayOrFuture
+                  ? sha256(newToken)
+                  : null
+              })
           }
         }
       }
@@ -208,9 +219,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       videoURL: maybeVideoURL,
       videoFetchedAt: maybeVideoURL ? Timestamp.now() : null,
       videoAssemblyId: transcript ? transcript.id : null,
-      videoAssemblyWebhookToken: hearingIsTodayOrFuture
-        ? sha256(newToken)
-        : null,
       ...this.timestamps(content)
     }
     return event
