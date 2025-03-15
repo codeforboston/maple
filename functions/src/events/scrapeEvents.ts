@@ -157,7 +157,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const hearing = Hearing.check(eventData)
     const now = new Date()
     const hearingIsTodayOrFuture =
-      hearing.startsAt.toDate().getDate() - now.getDate() > -1
+      hearing.startsAt.toDate().getDate() - now.getDate() > -8
 
     const newToken = randomBytes(16).toString("hex")
     let maybeVideoURL = null
