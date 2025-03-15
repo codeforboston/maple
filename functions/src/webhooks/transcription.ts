@@ -22,7 +22,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           .get()
         if (maybeEventInDb.docs.length) {
           const authenticatedEventsInDb = maybeEventInDb.docs.filter(e => {
-            const hearing = Hearing.check(e)
+            const hearing = Hearing.check(e.data())
             const hashedToken = sha256(
               String(req.headers["webhook_auth_header_value"])
             )
@@ -35,8 +35,8 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 .doc(transcript.id)
                 .set({ _timestamp: new Date(), ...transcript })
 
-              authenticatedEventsInDb.forEach(d => {
-                d.ref.update({
+              authenticatedEventsInDb.forEach(async d => {
+                await d.ref.update({
                   ["webhook_auth_header_value"]: null
                 })
               })
@@ -45,6 +45,8 @@ export const transcription = functions.https.onRequest(async (req, res) => {
               console.log(error)
             }
           }
+        } else {
+          res.status(404).send("Not Found")
         }
       }
     }

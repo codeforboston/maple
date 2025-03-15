@@ -19,6 +19,7 @@ import {
 import { currentGeneralCourt } from "../shared"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
+import { differenceInDays } from "date-fns"
 
 const assembly = new AssemblyAI({
   apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
@@ -156,8 +157,9 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const eventData = eventInDb.data()
     const hearing = Hearing.check(eventData)
     const now = new Date()
+
     const hearingIsTodayOrFuture =
-      hearing.startsAt.toDate().getDate() - now.getDate() > -8
+      differenceInDays(hearing.startsAt.toDate(), now) < 8
 
     const newToken = randomBytes(16).toString("hex")
     let maybeVideoURL = null
