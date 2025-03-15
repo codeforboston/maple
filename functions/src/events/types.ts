@@ -76,7 +76,11 @@ export const HearingListItem = Record({ EventId: Number })
 export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({
   type: L("hearing"),
-  content: HearingContent
+  content: HearingContent,
+  videoURL: Nullable(String),
+  videoAssemblyId: Nullable(String),
+  videoFetchedAt: Nullable(InstanceOf(Timestamp)),
+  videoAssemblyWebhookToken: Nullable(String)
 })
 
 export type Event = Static<typeof Event>
