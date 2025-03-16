@@ -19,7 +19,7 @@ import {
 import { currentGeneralCourt } from "../shared"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
-import { differenceInDays } from "date-fns"
+import { withinCutoff } from "./helpers"
 
 const assembly = new AssemblyAI({
   apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
@@ -156,14 +156,11 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       .get()
     const eventData = eventInDb.data()
     const hearing = Hearing.check(eventData)
-    const now = new Date()
-
-    const hearingIsTodayOrFuture =
-      differenceInDays(hearing.startsAt.toDate(), now) < 8
+    const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
     let maybeVideoURL = null
     let transcript = null
-    if (!hearing.videoFetchedAt && hearingIsTodayOrFuture) {
+    if (!hearing.videoFetchedAt && shouldScrape) {
       const req = await fetch(
         `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
       )
@@ -204,9 +201,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
               .collection("private")
               .doc("webhookAuth")
               .set({
-                videoAssemblyWebhookToken: hearingIsTodayOrFuture
-                  ? sha256(newToken)
-                  : null
+                videoAssemblyWebhookToken: sha256(newToken)
               })
           }
         }

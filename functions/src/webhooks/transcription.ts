@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions"
 import { AssemblyAI } from "assemblyai"
 import { db } from "../firebase"
-import { Hearing } from "../events/types"
 import { sha256 } from "js-sha256"
 
 const assembly = new AssemblyAI({
