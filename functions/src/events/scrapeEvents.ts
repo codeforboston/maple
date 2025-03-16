@@ -197,7 +197,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
 
             await db
               .collection("events")
-              .doc(String(EventId))
+              .doc(`hearing-${String(EventId)}`)
               .collection("private")
               .doc("webhookAuth")
               .set({
