@@ -1,5 +1,7 @@
 import { runWith } from "firebase-functions"
 import { DateTime } from "luxon"
+import { JSDOM } from "jsdom"
+import { AssemblyAI } from "assemblyai"
 import { logFetchError } from "../common"
 import { db, Timestamp } from "../firebase"
 import * as api from "../malegislature"
@@ -15,6 +17,13 @@ import {
   SpecialEventContent
 } from "./types"
 import { currentGeneralCourt } from "../shared"
+import { randomBytes } from "node:crypto"
+import { sha256 } from "js-sha256"
+import { withinCutoff } from "./helpers"
+
+const assembly = new AssemblyAI({
+  apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
+})
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
@@ -40,7 +49,7 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
     if (!list) return
 
     const writer = db.bulkWriter()
-    const upcomingOrRecentCutoff = DateTime.now().minus({ days: 1 })
+    const upcomingOrRecentCutoff = DateTime.now().minus({ days: 8 })
 
     for (let item of list) {
       const id = (item as any)?.EventId,
@@ -138,12 +147,73 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     return events.filter(HearingListItem.guard)
   }
 
-  async getEvent({ EventId }: HearingListItem) {
-    const content = HearingContent.check(await api.getHearing(EventId))
+  async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
+    const data = await api.getHearing(EventId)
+    const content = HearingContent.check(data)
+    const eventInDb = await db
+      .collection("events")
+      .doc(`hearing-${String(EventId)}`)
+      .get()
+    const eventData = eventInDb.data()
+    const hearing = Hearing.check(eventData)
+    const shouldScrape = withinCutoff(hearing.startsAt.toDate())
+
+    let maybeVideoURL = null
+    let transcript = null
+    if (!hearing.videoFetchedAt && shouldScrape) {
+      const req = await fetch(
+        `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
+      )
+      const res = await req.text()
+      if (res) {
+        const dom = new JSDOM(res)
+        if (dom) {
+          const maybeVideoSource =
+            dom.window.document.querySelectorAll("video source")
+          if (maybeVideoSource.length && maybeVideoSource[0]) {
+            const newToken = randomBytes(16).toString("hex")
+            const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
+            maybeVideoURL = firstVideoSource.src
+
+            transcript = await assembly.transcripts.submit({
+              webhook_url:
+                process.env.NODE_ENV === "development"
+                  ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
+                  : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
+              webhook_auth_header_name: "X-Maple-Webhook",
+              webhook_auth_header_value: newToken,
+              audio: firstVideoSource.src,
+              auto_highlights: true,
+              custom_topics: true,
+              entity_detection: true,
+              iab_categories: false,
+              format_text: true,
+              punctuate: true,
+              speaker_labels: true,
+              summarization: true,
+              summary_model: "informative",
+              summary_type: "bullets"
+            })
+
+            await db
+              .collection("events")
+              .doc(`hearing-${String(EventId)}`)
+              .collection("private")
+              .doc("webhookAuth")
+              .set({
+                videoAssemblyWebhookToken: sha256(newToken)
+              })
+          }
+        }
+      }
+    }
     const event: Hearing = {
-      id: `hearing-${content.EventId}`,
+      id: `hearing-${EventId}`,
       type: "hearing",
       content,
+      videoURL: maybeVideoURL,
+      videoFetchedAt: maybeVideoURL ? Timestamp.now() : null,
+      videoAssemblyId: transcript ? transcript.id : null,
       ...this.timestamps(content)
     }
     return event
