@@ -17,18 +17,9 @@ import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
-import { useState } from "react"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
-`
-
-const StyledImage = styled(Image)`
-  width: 14.77px;
-  height: 12.66px;
-
-  margin-left: 8px;
 `
 
 export const BillDetails = ({ bill }: BillProps) => {

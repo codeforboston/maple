@@ -9,7 +9,7 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row } from "../../bootstrap"
+import { Col, Container, Row, Spinner } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -21,7 +21,7 @@ import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
 import { useBillSort } from "./useBillSort"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -87,14 +87,53 @@ const RefinementRow = styled.div`
 `
 
 const useSearchStatus = () => {
-  const { results } = useInstantSearch()
+  const { results, status } = useInstantSearch()
 
-  if (!results.query) {
+  if (status === "loading" || status === "stalled") {
     return "loading"
   } else if (results.nbHits === 0) {
     return "empty"
   } else {
     return "results"
+  }
+}
+
+const StyledLoadingContainer = styled(Container)`
+  background-color: white;
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+`
+
+const Results = ({
+  status
+}: {
+  status: ReturnType<typeof useSearchStatus>
+}) => {
+  const [isLoadingBillDetails, setIsLoadingBillDetails] = useState(false)
+
+  if (isLoadingBillDetails) {
+    return (
+      <StyledLoadingContainer>
+        <Spinner animation="border" className="mx-auto" />
+      </StyledLoadingContainer>
+    )
+  } else if (status === "empty") {
+    return (
+      <NoResults>
+        Your search has yielded zero results!
+        <br />
+        <b>Try another search term</b>
+      </NoResults>
+    )
+  } else {
+    return (
+      <Hits
+        hitComponent={BillHit}
+        onClick={() => setIsLoadingBillDetails(true)}
+      />
+    )
   }
 }
 
@@ -127,15 +166,7 @@ const Layout: FC<
             excludedAttributes={["nextHearingAt"]}
             transformItems={extractLastSegmentOfRefinements}
           />
-          {status === "empty" ? (
-            <NoResults>
-              Your search has yielded zero results!
-              <br />
-              <b>Try another search term</b>
-            </NoResults>
-          ) : (
-            <Hits hitComponent={BillHit} />
-          )}
+          <Results status={status} />
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>
