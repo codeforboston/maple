@@ -1,4 +1,4 @@
-import { subDays } from "date-fns"
+import { addDays, subDays } from "date-fns"
 import { withinCutoff } from "./helpers"
 
 describe("withinCutoff true", () => {
@@ -23,6 +23,15 @@ describe("withinCutoff true", () => {
     const now = new Date()
 
     const threeDaysAgo = subDays(now, 9)
+
+    const result = withinCutoff(threeDaysAgo)
+    expect(result).toEqual(false)
+  })
+
+  it("should return false for a date that is 2 days in the future", () => {
+    const now = new Date()
+
+    const threeDaysAgo = addDays(now, 2)
 
     const result = withinCutoff(threeDaysAgo)
     expect(result).toEqual(false)
