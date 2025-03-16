@@ -20,15 +20,25 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           .where("videoAssemblyId", "==", transcript.id)
           .get()
         if (maybeEventInDb.docs.length) {
-          const authenticatedEventsInDb = maybeEventInDb.docs.filter(e => {
-            const hashedToken = sha256(
-              String(req.headers["webhook_auth_header_value"])
-            )
-            return (
-              hashedToken ===
-              e.get("webhookAuth").data().videoAssemblyWebhookToken
-            )
-          })
+          const authenticatedEventsInDb = maybeEventInDb.docs.filter(
+            async e => {
+              const hashedToken = sha256(
+                String(req.headers["webhook_auth_header_value"])
+              )
+
+              const tokenInDb = await db
+                .collection("events")
+                .doc(e.id)
+                .collection("private")
+                .doc("webhookAuth")
+                .get()
+              const tokenInDbData = tokenInDb.data()
+              if (tokenInDbData) {
+                return hashedToken === tokenInDbData.videoAssemblyWebhookToken
+              }
+              return false
+            }
+          )
           if (authenticatedEventsInDb) {
             try {
               await db
