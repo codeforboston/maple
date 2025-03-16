@@ -1,7 +1,7 @@
 import { subDays } from "date-fns"
 import { withinCutoff } from "./helpers"
 
-describe("withinCutoff", () => {
+describe("withinCutoff true", () => {
   beforeEach(() => {
     jest.useFakeTimers()
   })
@@ -17,5 +17,14 @@ describe("withinCutoff", () => {
 
     const result = withinCutoff(threeDaysAgo)
     expect(result).toEqual(true)
+  })
+
+  it("should return false for a date that is 9 days ago", () => {
+    const now = new Date()
+
+    const threeDaysAgo = subDays(now, 9)
+
+    const result = withinCutoff(threeDaysAgo)
+    expect(result).toEqual(false)
   })
 })
