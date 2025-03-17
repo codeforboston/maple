@@ -3,9 +3,9 @@ import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-li
 import { useCallback } from "react"
 import { useRefinements } from "../useRefinements"
 
-export const useCourtRefinements = () => {
+export const useBillRefinements = (list: Number) => {
   const baseProps = { limit: 500, searchable: true }
-  const propsList = [
+  const propsList1 = [
     {
       transformItems: useCallback(
         (i: RefinementListItem[]) =>
@@ -18,17 +18,11 @@ export const useCourtRefinements = () => {
         []
       ),
       attribute: "court",
-      searchablePlaceholder: "Legislative Session",
+      searchablePlaceholder: "General Court",
       ...baseProps
     }
   ]
-
-  return useRefinements({ refinementProps: propsList })
-}
-
-export const useBillRefinements = () => {
-  const baseProps = { limit: 500, searchable: true }
-  const propsList = [
+  const propsList2 = [
     {
       attribute: "currentCommittee",
       ...baseProps,
@@ -50,6 +44,13 @@ export const useBillRefinements = () => {
       searchablePlaceholder: "Cosponsor"
     }
   ]
+
+  let propsList = []
+  if (list === 1) {
+    propsList = propsList1
+  } else {
+    propsList = propsList2
+  }
 
   return useRefinements({ refinementProps: propsList })
 }

@@ -6,7 +6,7 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt, isCurrentCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../../bootstrap"
@@ -16,7 +16,7 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
-import { useBillRefinements, useCourtRefinements } from "./useBillRefinements"
+import { useBillRefinements } from "./useBillRefinements"
 import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
@@ -101,8 +101,8 @@ const useSearchStatus = () => {
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
-  const courtRefinements = useCourtRefinements()
-  const refinements = useBillRefinements()
+  const courtRefinements = useBillRefinements(1)
+  const refinements = useBillRefinements(2)
   const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
 
