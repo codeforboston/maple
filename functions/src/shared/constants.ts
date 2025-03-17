@@ -33,5 +33,5 @@ export const supportedGeneralCourts = Object.keys(generalCourts)
 
 export const currentGeneralCourt = supportedGeneralCourts[0]
 
-export const isCurrentCourt = (courtSession: number) =>
-  courtSession === currentGeneralCourt
+export const isCurrentCourt = (courtNumber: number) =>
+  courtNumber === currentGeneralCourt
