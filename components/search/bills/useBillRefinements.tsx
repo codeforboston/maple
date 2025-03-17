@@ -18,7 +18,7 @@ export const useBillRefinements = (list: Number) => {
         []
       ),
       attribute: "court",
-      searchablePlaceholder: "General Court",
+      searchablePlaceholder: "Legislative Session",
       ...baseProps
     }
   ]
