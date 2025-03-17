@@ -211,9 +211,9 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
-      videoURL: maybeVideoURL,
-      videoFetchedAt: maybeVideoURL ? Timestamp.now() : null,
-      videoAssemblyId: transcript ? transcript.id : null,
+      videoURL: maybeVideoURL ? maybeVideoURL : undefined,
+      videoFetchedAt: maybeVideoURL ? Timestamp.now() : undefined,
+      videoAssemblyId: transcript ? transcript.id : undefined,
       ...this.timestamps(content)
     }
     return event
