@@ -6,7 +6,7 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { currentLegislativeSession } from "functions/src/shared"
+import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../../bootstrap"
@@ -66,14 +66,7 @@ export const BillSearch = () => {
         indexName={initialSortByValue}
         initialUiState={{
           [initialSortByValue]: {
-            refinementList: { court: [String(currentLegislativeSession)] }
-            // `court:` should be `session:` but 404 - Could not find a facet field named `session` in the schema.
-            //
-            // needs adjusting? :
-            // node_modules\typesense-instantsearch-adapter\lib\TypesenseInstantsearchAdapter.js
-            //
-            // see also useBillRefinements.tsx:
-            //   attribute: "court",
+            refinementList: { court: [String(currentGeneralCourt)] }
           }
         }}
         searchClient={searchClient}
