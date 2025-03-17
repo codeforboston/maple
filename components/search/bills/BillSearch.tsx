@@ -16,7 +16,7 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
-import { useBillRefinements, useSessionRefinements } from "./useBillRefinements"
+import { useBillRefinements, useCourtRefinements } from "./useBillRefinements"
 import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
@@ -101,7 +101,7 @@ const useSearchStatus = () => {
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
-  const sessionRefinements = useSessionRefinements()
+  const courtRefinements = useCourtRefinements()
   const refinements = useBillRefinements()
   const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
@@ -113,7 +113,7 @@ const Layout: FC<
       </Row>
       <Row>
         <Col xs={3} lg={3}>
-          {sessionRefinements.options}
+          {courtRefinements.options}
           {hierarchicalMenu.options}
           {refinements.options}
         </Col>
@@ -121,7 +121,7 @@ const Layout: FC<
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
-            {sessionRefinements.show}
+            {courtRefinements.show}
             {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>

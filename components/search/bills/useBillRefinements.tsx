@@ -3,7 +3,7 @@ import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-li
 import { useCallback } from "react"
 import { useRefinements } from "../useRefinements"
 
-export const useSessionRefinements = () => {
+export const useCourtRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
   const propsList = [
     {
