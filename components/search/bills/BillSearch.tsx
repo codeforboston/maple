@@ -6,7 +6,7 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentLegislativeSession } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
 import { Col, Row } from "../../bootstrap"
@@ -16,7 +16,7 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
-import { useBillRefinements, useCourtRefinements } from "./useBillRefinements"
+import { useBillRefinements, useSessionRefinements } from "./useBillRefinements"
 import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
@@ -66,7 +66,14 @@ export const BillSearch = () => {
         indexName={initialSortByValue}
         initialUiState={{
           [initialSortByValue]: {
-            refinementList: { court: [String(currentGeneralCourt)] }
+            refinementList: { court: [String(currentLegislativeSession)] }
+            // `court:` should be `session:` but 404 - Could not find a facet field named `session` in the schema.
+            //
+            // needs adjusting? :
+            // node_modules\typesense-instantsearch-adapter\lib\TypesenseInstantsearchAdapter.js
+            //
+            // see also useBillRefinements.tsx:
+            //   attribute: "court",
           }
         }}
         searchClient={searchClient}
@@ -101,12 +108,10 @@ const useSearchStatus = () => {
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
-  const courtRefinements = useCourtRefinements()
+  const sessionRefinements = useSessionRefinements()
   const refinements = useBillRefinements()
   const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
-
-  console.log("Refinement Options", refinements.options)
 
   return (
     <SearchContainer>
@@ -115,7 +120,7 @@ const Layout: FC<
       </Row>
       <Row>
         <Col xs={3} lg={3}>
-          {courtRefinements.options}
+          {sessionRefinements.options}
           {hierarchicalMenu.options}
           {refinements.options}
         </Col>
@@ -123,6 +128,7 @@ const Layout: FC<
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
+            {sessionRefinements.show}
             {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>

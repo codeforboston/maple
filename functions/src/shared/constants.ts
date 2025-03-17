@@ -1,11 +1,14 @@
-export type GeneralCourt = {
+export type LegislativeSession = {
   Name: string
   Number: number
   FirstYear: number
   SecondYear: number
 }
 
-export const generalCourts: Record<number, GeneralCourt | undefined> = {
+export const legislativeSessions: Record<
+  number,
+  LegislativeSession | undefined
+> = {
   194: {
     Name: "194th (Current)",
     Number: 194,
@@ -26,12 +29,12 @@ export const generalCourts: Record<number, GeneralCourt | undefined> = {
   }
 }
 
-export const supportedGeneralCourts = Object.keys(generalCourts)
+export const supportedLegislativeSessions = Object.keys(legislativeSessions)
   .map(n => Number.parseInt(n))
   .sort()
   .reverse()
 
-export const currentGeneralCourt = supportedGeneralCourts[0]
+export const currentLegislativeSession = supportedLegislativeSessions[0]
 
-export const isCurrentCourt = (courtNumber: number) =>
-  courtNumber === currentGeneralCourt
+export const isCurrentSession = (courtSession: number) =>
+  courtSession === currentLegislativeSession
