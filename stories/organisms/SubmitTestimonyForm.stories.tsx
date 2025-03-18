@@ -67,7 +67,7 @@ export const FormStory = {
             BillNumber: "",
             DocketNumber: "",
             GeneralCourtNumber: 0,
-            PrimarySponsor: undefined,
+            PrimarySponsor: null,
             Cosponsors: [],
             LegislationTypeName: "",
             Pinslip: "",
@@ -84,7 +84,8 @@ export const FormStory = {
           fetchedAt: Timestamp.fromDate(new Date()),
           history: [],
           currentCommittee: undefined,
-          city: undefined
+          city: undefined,
+          similar: []
         }}
         synced={false}
       />
