@@ -47,10 +47,10 @@
     max-width: 100px; 
     margin-top: 10px;
   }
-  
+
   /* Bills and Organizations Sections */
   .sectionHeader {
-    margin: 20px 0;
+    gap: 24px;
     display: flex;
     align-items: center; 
     justify-content: space-between; 
@@ -159,7 +159,147 @@
     text-decoration: underline;
     font-size: 12px;
   }
+
+  /* org card */
+  .orgContainer {
+    width: 100%;
+  }
+  .org-row {
+      display: flex;
+      padding-top: 12px;
+      padding-bottom: 24px;
+      gap: 4px;
+  }
+  .orgCell {
+    width: 50%;
+    padding: 0 10px;
+  }
+  .org {
+    background-color: #EAE7E7;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    height: 100%;
+  }
+  .orgContent {
+    position: relative;
+  }
+  .org-name {
+      padding: 4px 10px 4px 24px;
+      gap: 10px;
+      line-height: 120%;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+  }
+  .testimonies-blurb {
+    display: flex; 
+    align-items: center; 
+    padding-left: 30px; 
+    gap: 24px;
+  }
+  .testimonies-container {
+    margin-left: 100px;
+  }
+
+  .testimonies-number {
+      font-size: 61px;
+      font-weight: 400;
+      color: #1A3185;
+      line-height: 125%;
+      letter-spacing: -3%;
+      text-align: center;
+  }
+  .testimonies-label {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 125%;
+      letter-spacing: 1.5%;
+  }
+  .bills-list {
+      display: flex;
+  }
+  .bill-column {
+      margin-right: 30px;
+  }
+  .bill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 5px;
+  }
+  .bill-item img {
+    margin-left: 5px; 
+    max-width: 20px; 
+    height: auto;
+}
+  .bill-link {
+      font-weight: 300;
+      line-height: 125%;
+      letter-spacing: 1.5%;
+      font-size: 18px;
+      color: #000000;
+  }
+
   
+  /* bill card */
+  .billContainer {
+    width: 100%;
+  }
+  .billContent {
+    background-color: #EAE7E7;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 13px;
+  }
+  .testimonyRow {
+    display: flex;
+    align-items: center;
+    padding-top: 12px;
+    border-bottom: 1px solid #979797;
+    padding-bottom: 12px;
+    justify-content: space-between;
+  }
+  .testimonies-count{
+    font-weight: 700;
+  }
+  .vote-count {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+  .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .billContentRow {
+    padding: 8px;
+  }
+  .billNumber {
+    font-weight: 500;
+    color: #1A3185;
+    margin-bottom: 5px;
+    line-height: 150%;
+    font-size: 20px;
+  }
+  .billTitle {
+    font-size: 16px;
+    color: #000000;
+    line-height: 150%;
+    font-weight: 400;
+  }
+  .blue-circle {
+    background-color: #2196F3;
+  }
+  .green-circle {
+    background-color: #4CAF50;
+  }
+  .orange-circle {
+    background-color: #FF9800;
+  }
   
   /* General Layout Adjustments */
   .center {

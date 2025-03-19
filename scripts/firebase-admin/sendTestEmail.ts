@@ -3,16 +3,16 @@ import * as handlebars from "handlebars"
  import { Script } from "./types"
  import * as helpers from "../../functions/src/email/helpers"
 
- import { BillDigest, NotificationEmailDigest, UserDigest } from "functions/src/email/types"
+ import { BillDigest, NotificationEmailDigest, OrgDigest } from "functions/src/email/types"
  import { Record, String } from "runtypes"
  import { Timestamp } from "functions/src/firebase"
  import * as juice from "juice"
- import { User } from "firebase/auth"
+
 
  const path = require("path")
 
- const PARTIALS_DIR = "./functions/lib/email/partials/"
- const EMAIL_TEMPLATE_PATH = "./functions/lib/email/digestEmail.handlebars"
+ const PARTIALS_DIR = "./functions/src/email/partials/"
+ const EMAIL_TEMPLATE_PATH = "./functions/src/email/digestEmail.handlebars"
 
  const CSS_PATH = "../../public/email/emailStyle.css"
  const CSS_CONTENT = fs.readFileSync(path.join(__dirname, CSS_PATH), "utf8")
@@ -58,29 +58,75 @@ import * as handlebars from "handlebars"
    )
    const compiledTemplate = handlebars.compile(templateSource)
    const htmlString = compiledTemplate({ digestData })
-  console.log("css",CSS_CONTENT)
-  // Inline CSS using Juice
-  const inlinedHtml = juice.inlineContent(htmlString, CSS_CONTENT, {
-    preserveMediaQueries: true,  
-    removeStyleTags: true,       
-  })
 
-  return inlinedHtml
+  // Inline CSS using Juice
+  // const inlinedHtml = juice.inlineContent(htmlString, CSS_CONTENT, {
+  //   preserveMediaQueries: true,  
+  //   removeStyleTags: true,       
+  // })
+
+  return htmlString
  }
 
  const Args = Record({ email: String })
 
  export const script: Script = async ({ db, args }) => {
    const { email } = Args.check(args)
+   const billDigest1: BillDigest = {
+    billNumber: "H.1289",
+    billTitle: "An Act Prohibiting the use of Native American mascots by public schools in the Commonwealth", 
+    testimonies: 12,
+    endorseCount: 6,
+    neutralCount: 4,
+    opposeCount: 2,
+  };
+  
+  const billDigest2: BillDigest = {
+    billNumber: "H.1289",
+    billTitle: "An Act Prohibiting the use of Native American mascots by public schools in the Commonwealth",
+    testimonies: 12,
+    endorseCount: 6,
+    neutralCount: 4,
+    opposeCount: 2,
+  };
+  
+  const orgDigest1: OrgDigest = {
+    orgTitle: "Boston’s Teacher Union",
+    counter: 6,
+    items: [
+      { title: "S.128", icon: "up" },
+      { title: "H.1000", icon: "down" },
+      { title: "S.128", icon: "up" },
+      { title: "H.1000", icon: "down" },
+      { title: "S.128", icon: "neutral" },
+      { title: "S.128", icon: "neutral" },
+    ],
+    userLookup: "boston-teacher-union",
+  };
+  
+  const orgDigest2:OrgDigest = {
+    orgTitle: "American Promise",
+    counter: 5,
+    items: [
+      { title: "S.128", icon: "up" },
+      { title: "H.1000", icon: "down" },
+      { title: "S.128", icon: "up" },
+      { title: "H.1000", icon: "down" },
+      { title: "S.128", icon: "neutral" },
+    ],
+    userLookup: "american-promise",
+  }
    
+  const startDate = new Date()
+
    const digestData: NotificationEmailDigest = {
      notificationFrequency: "Monthly",
-     startDate: new Date(),
-     endDate: new Date(),
-     bills: [],
-     users: [],
-     numBillsWithNewTestimony: 0,
-     numUsersWithNewTestimony: 0
+     startDate: startDate,
+     endDate: startDate,
+     bills: [billDigest1, billDigest2],
+     orgs: [orgDigest1, orgDigest2],
+     numBillsWithNewTestimony: 2,
+     numUsersWithNewTestimony: 2
    }
 
    const htmlString = renderToHtmlString(digestData)
