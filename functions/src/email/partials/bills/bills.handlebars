@@ -4,14 +4,14 @@
     <div class="sectionLine"></div>
   </div>
   <div class="sectionBills">
-    {{#if bill.1.title}}
-      {{#each bill}}
-        {{> bill }}
-      {{/each}}
+    {{#if digestData.bills.length}}
+    {{#each digestData.bills}}
+    {{> bill }}
+    {{/each}}
     {{else}}
-      <article class="billNoUpdates">
-        {{> noUpdates }}
-      </article>
+    <article class="billNoUpdates">
+      {{> noUpdates }}
+    </article>
     {{/if}}
   </div>
 </section>
