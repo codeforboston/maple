@@ -7,44 +7,55 @@ The notification feature is responsible for sending notifications to users based
 ## Features
 
 - **Topic-Based Notifications**: Users receive notifications based on topics they are interested in.
-- **Scheduled Triggers**: Functions are triggered based on a publication schedule.
-- **Multi-Environment Support**: Both HTTP callable and pubSub versions of functions are available for testing and production, respectively.
+  - It can be either a Bill Topic or an Org Topic
+- **Notification Events**
+  - A BillHistoryNotificationEvent is created when a subscribed Bill has an updated history
+  - A TestimonySubmissionNotificationEvent is created when a subscribed Bill has testimony published and when a Organization/User publishes testimony
+- **Event Triggers**: Functions are triggered based on changes in the `notificationEvents` collection
 
 ## Architecture
 
-### Events
+### Notification Events
 
 A user could be subscribed to a given topic, and receive a notification of a bill or profile (such as an organization) that fall under that topic have an event.
 
-Example event regarding a bill:
-![example-bill-event](/functions/src/notifications/images/example-bill-event.png)
+Example event regarding a bill history update:
+![example-bill-notification-event](/functions/src/notifications/images/example-bill-notification-event.png)
 
-Example event regarding an organization:
-![example-org-event](/functions/src/notifications/images/example-bill-event.png)
-
-Example event created from the web scraper (notice the difference in fields):
-![example-scraped_hearing-event](/functions/src/notifications/images/example-scraped_hearing-event.png)
+Example event regarding an testimony:
+![example-testimony-notification-event](/functions/src/notifications/images/example-testimony-notification-event.png)
 
 ### Cloud Functions
 
 The following cloud functions are involved in the notification process:
 
-1. **publishNotifications**:
+1. **populateBillHistoryNotifictionEvents** and **populateTestimonySubmissionNotificationEvents**:
 
-   - Creates a notification document from an event.
+   - Creates/Updates a notificationEvent document when:
+     - A Bill is created or updated, if the history is updated, it will update the notificationEvent history and not create a new one.
+     - Testimony is published or updated, if the testimony content is updated, it will update the notificationEvent testimony content an not create a new one.
+
+2. **publishNotifications**:
+
+   - Creates a notification document from an notification event.
    - Populates the user's `userNotificationFeed` collection with a notification document.
    - Populates the newsfeed.
 
    For example, here is a notification document in a given user's feed:
 
-![example-org-notification](/functions/src/notifications/images/example-org-notification.png)
+![example-bill-history-update-notification](/functions/src/notifications/images/example-bill-history-update-notification.png)
 
-1. **deliverNotifications**:
+- There are two key fields to differentiate whether a notification came from following a bill or following a user/organization:
+  - `isBillMatch` and `isUserMatch` indicate the source of the notification.
+    - For example, if a user follows both a bill and an organization, and the organization posts testimony to that same bill, both `isBillMatch` and `isUserMatch` will be true.
+    - If a user follows only the bill and not the organization, `isBillMatch` will be true and `isUserMatch` will be false, and vice versa.
+
+3. **deliverNotifications**:
 
    - Sends notifications to users who have a `notificationFrequency` of 'daily' and whose `nextDigestAt` is less than or equal to the current time.
    - Populates the `emails` collection with a notification document.
 
-2. **cleanUpNotifications**:
+4. **cleanUpNotifications**:
    - Removes notifications from the users' userNotificationFeed collection that are older than 60 days.
    - Removes notifications from the notificationEvents collection that are older than 60 days.
    - Removes notifications from the emails collection that are older than 60 days.
@@ -54,6 +65,7 @@ The following cloud functions are involved in the notification process:
 - `activeTopicSubscriptions`: Stores the active topic subscriptions for users.
 - `emails`: Stores the notification mails sent to users.
 - `notificationEvents`: Stores the events that trigger notifications.
+- `userNotificationFeed`: Stores the notifications for each user
 
 ### Query Logic
 
@@ -65,6 +77,12 @@ To test these functions in a container environment, use the following command:
 
 ```bash
 yarn firebase-admin -e local run-script <name-of-script>
+```
+
+or to test the notifications as a whole
+
+```bash
+yarn test:integration notifications.test.ts
 ```
 
 ## Future Considerations
