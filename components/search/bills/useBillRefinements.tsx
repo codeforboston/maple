@@ -3,6 +3,19 @@ import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-li
 import { useCallback } from "react"
 import { useRefinements } from "../useRefinements"
 
+// for legacy code purposes, things like:
+//
+//   `legislative session` and `session`
+//
+// are used by variables that are named things like:
+//
+//   `general court` and `court`
+//
+// see example below:
+//
+//   attribute: "court",
+//   searchablePlaceholder: "Legislative Session",
+
 export const useBillRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
   const propsList = [
@@ -18,7 +31,7 @@ export const useBillRefinements = () => {
         []
       ),
       attribute: "court",
-      searchablePlaceholder: "General Court",
+      searchablePlaceholder: "Legislative Session",
       ...baseProps
     },
     {

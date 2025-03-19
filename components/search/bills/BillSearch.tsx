@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import {
   CurrentRefinements,
   Hits,
@@ -105,6 +106,8 @@ const Layout: FC<
   const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
 
+  const { t } = useTranslation("billSearch")
+
   return (
     <SearchContainer>
       <Row>
@@ -129,9 +132,9 @@ const Layout: FC<
           />
           {status === "empty" ? (
             <NoResults>
-              Your search has yielded zero results!
+              {t("zero_results")}
               <br />
-              <b>Try another search term</b>
+              <b>{t("another_term")}</b>
             </NoResults>
           ) : (
             <Hits hitComponent={BillHit} />
