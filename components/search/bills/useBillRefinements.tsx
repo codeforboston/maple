@@ -16,9 +16,9 @@ import { useRefinements } from "../useRefinements"
 //   attribute: "court",
 //   searchablePlaceholder: "Legislative Session",
 
-export const useBillRefinements = (list: Number) => {
+export const useBillRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
-  const propsList1 = [
+  const propsList = [
     {
       transformItems: useCallback(
         (i: RefinementListItem[]) =>
@@ -33,9 +33,7 @@ export const useBillRefinements = (list: Number) => {
       attribute: "court",
       searchablePlaceholder: "Legislative Session",
       ...baseProps
-    }
-  ]
-  const propsList2 = [
+    },
     {
       attribute: "currentCommittee",
       ...baseProps,
@@ -57,13 +55,6 @@ export const useBillRefinements = (list: Number) => {
       searchablePlaceholder: "Cosponsor"
     }
   ]
-
-  let propsList = []
-  if (list === 1) {
-    propsList = propsList1
-  } else {
-    propsList = propsList2
-  }
 
   return useRefinements({ refinementProps: propsList })
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -42,13 +43,15 @@ export const useHierarchicalMenu = ({
   )
   const hasRefinements = useHasRefinements()
 
+  const { t } = useTranslation("billSearch")
+
   return {
     options: inline ? (
       <div>{hierarchicalMenu}</div>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Filter</Offcanvas.Title>
+          <Offcanvas.Title>{t("topics")}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <SearchContainer>{hierarchicalMenu}</SearchContainer>
@@ -62,7 +65,7 @@ export const useHierarchicalMenu = ({
         onClick={handleOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
       >
-        <FontAwesomeIcon icon={faFilter} /> Filter
+        <FontAwesomeIcon icon={faFilter} /> {t("topics")}
       </FilterButton>
     )
   }

@@ -102,8 +102,7 @@ const useSearchStatus = () => {
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
-  const courtRefinements = useBillRefinements(1)
-  const refinements = useBillRefinements(2)
+  const refinements = useBillRefinements()
   const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
 
@@ -116,7 +115,6 @@ const Layout: FC<
       </Row>
       <Row>
         <Col xs={3} lg={3}>
-          {courtRefinements.options}
           {hierarchicalMenu.options}
           {refinements.options}
         </Col>
@@ -124,7 +122,6 @@ const Layout: FC<
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
-            {courtRefinements.show}
             {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>

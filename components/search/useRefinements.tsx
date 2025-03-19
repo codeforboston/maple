@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -39,13 +40,15 @@ export const useRefinements = ({
   )
   const hasRefinements = useHasRefinements()
 
+  const { t } = useTranslation("billSearch")
+
   return {
     options: inline ? (
       <div>{refinements}</div>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Filter</Offcanvas.Title>
+          <Offcanvas.Title>{t("filter")}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <SearchContainer>{refinements}</SearchContainer>
@@ -59,7 +62,7 @@ export const useRefinements = ({
         onClick={handleOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
       >
-        <FontAwesomeIcon icon={faFilter} /> Filter
+        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
       </FilterButton>
     )
   }
