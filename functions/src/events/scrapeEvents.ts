@@ -147,15 +147,23 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     return events.filter(HearingListItem.guard)
   }
 
-  async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
+  async getEvent() {
+    const EventId = 5091
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
     const eventInDb = await db
       .collection("events")
       .doc(`hearing-${String(EventId)}`)
       .get()
+
     const eventData = eventInDb.data()
+    try {
+      Hearing.check(eventData)
+    } catch (e) {
+      console.log(e)
+    }
     const hearing = Hearing.check(eventData)
+
     const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
     let maybeVideoURL = null
@@ -207,13 +215,26 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
         }
       }
     }
+
     const event: Hearing = {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
-      videoURL: maybeVideoURL ? maybeVideoURL : undefined,
-      videoFetchedAt: maybeVideoURL ? Timestamp.now() : undefined,
-      videoAssemblyId: transcript ? transcript.id : undefined,
+      videoURL: hearing.videoURL
+        ? hearing.videoURL
+        : maybeVideoURL
+        ? maybeVideoURL
+        : null,
+      videoFetchedAt: hearing.videoFetchedAt
+        ? hearing.videoFetchedAt
+        : maybeVideoURL
+        ? Timestamp.now()
+        : null,
+      videoAssemblyId: hearing.videoAssemblyId
+        ? hearing.videoAssemblyId
+        : transcript
+        ? transcript.id
+        : null,
       ...this.timestamps(content)
     }
     return event
