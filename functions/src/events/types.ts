@@ -4,7 +4,6 @@ import {
   Literal as L,
   Null,
   Number,
-  Optional,
   Record,
   Runtype,
   Static,
