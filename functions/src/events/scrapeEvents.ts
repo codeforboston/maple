@@ -148,7 +148,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   }
 
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
-    EventId = 5091
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
     const eventInDb = await db
