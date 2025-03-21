@@ -148,21 +148,15 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   }
 
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
+    EventId = 5091
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
     const eventInDb = await db
       .collection("events")
       .doc(`hearing-${String(EventId)}`)
       .get()
-
     const eventData = eventInDb.data()
-    try {
-      Hearing.check(eventData)
-    } catch (e) {
-      console.log(e)
-    }
     const hearing = Hearing.check(eventData)
-
     const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
     let maybeVideoURL = null
@@ -214,28 +208,32 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
         }
       }
     }
-
-    const event: Hearing = {
+    let payload: Hearing = {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
-      videoURL: hearing.videoURL
-        ? hearing.videoURL
-        : maybeVideoURL
-        ? maybeVideoURL
-        : null,
-      videoFetchedAt: hearing.videoFetchedAt
-        ? hearing.videoFetchedAt
-        : maybeVideoURL
-        ? Timestamp.now()
-        : null,
-      videoAssemblyId: hearing.videoAssemblyId
-        ? hearing.videoAssemblyId
-        : transcript
-        ? transcript.id
-        : null,
       ...this.timestamps(content)
     }
+    if (hearing.videoURL) {
+      payload = { ...payload, videoURL: hearing.videoURL }
+    }
+    if (maybeVideoURL) {
+      payload = { ...payload, videoURL: maybeVideoURL }
+    }
+    if (hearing.videoFetchedAt) {
+      payload = { ...payload, videoFetchedAt: hearing.videoFetchedAt }
+    }
+    if (maybeVideoURL) {
+      payload = { ...payload, videoFetchedAt: Timestamp.now() }
+    }
+    if (hearing.videoAssemblyId) {
+      payload = { ...payload, videoAssemblyId: hearing.videoAssemblyId }
+    }
+    if (transcript) {
+      payload = { ...payload, videoAssemblyId: transcript.id }
+    }
+
+    const event: Hearing = payload
     return event
   }
 }
