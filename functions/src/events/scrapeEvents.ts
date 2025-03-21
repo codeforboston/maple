@@ -158,8 +158,23 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const hearing = Hearing.check(eventData)
     const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
+    let payload: Hearing = {
+      id: `hearing-${EventId}`,
+      type: "hearing",
+      content,
+      ...this.timestamps(content)
+    }
+    if (hearing) {
+      payload = {
+        ...payload,
+        videoURL: hearing.videoURL,
+        videoFetchedAt: hearing.videoFetchedAt,
+        videoAssemblyId: hearing.videoAssemblyId
+      }
+    }
     let maybeVideoURL = null
     let transcript = null
+
     if (!hearing.videoFetchedAt && shouldScrape) {
       const req = await fetch(
         `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
@@ -203,33 +218,16 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
               .set({
                 videoAssemblyWebhookToken: sha256(newToken)
               })
+
+            payload = {
+              ...payload,
+              videoURL: maybeVideoURL,
+              videoFetchedAt: Timestamp.now(),
+              videoAssemblyId: transcript.id
+            }
           }
         }
       }
-    }
-    let payload: Hearing = {
-      id: `hearing-${EventId}`,
-      type: "hearing",
-      content,
-      ...this.timestamps(content)
-    }
-    if (hearing.videoURL) {
-      payload = { ...payload, videoURL: hearing.videoURL }
-    }
-    if (maybeVideoURL) {
-      payload = { ...payload, videoURL: maybeVideoURL }
-    }
-    if (hearing.videoFetchedAt) {
-      payload = { ...payload, videoFetchedAt: hearing.videoFetchedAt }
-    }
-    if (maybeVideoURL) {
-      payload = { ...payload, videoFetchedAt: Timestamp.now() }
-    }
-    if (hearing.videoAssemblyId) {
-      payload = { ...payload, videoAssemblyId: hearing.videoAssemblyId }
-    }
-    if (transcript) {
-      payload = { ...payload, videoAssemblyId: transcript.id }
     }
 
     const event: Hearing = payload
