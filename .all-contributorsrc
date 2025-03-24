@@ -605,6 +605,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "oneeyedego",
+      "name": "Oliver Herman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6138460?v=4",
+      "profile": "http://olivertarrherman.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
