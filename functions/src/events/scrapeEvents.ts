@@ -158,8 +158,23 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const hearing = Hearing.check(eventData)
     const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
+    let payload: Hearing = {
+      id: `hearing-${EventId}`,
+      type: "hearing",
+      content,
+      ...this.timestamps(content)
+    }
+    if (hearing) {
+      payload = {
+        ...payload,
+        videoURL: hearing.videoURL,
+        videoFetchedAt: hearing.videoFetchedAt,
+        videoAssemblyId: hearing.videoAssemblyId
+      }
+    }
     let maybeVideoURL = null
     let transcript = null
+
     if (!hearing.videoFetchedAt && shouldScrape) {
       const req = await fetch(
         `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
@@ -203,19 +218,19 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
               .set({
                 videoAssemblyWebhookToken: sha256(newToken)
               })
+
+            payload = {
+              ...payload,
+              videoURL: maybeVideoURL,
+              videoFetchedAt: Timestamp.now(),
+              videoAssemblyId: transcript.id
+            }
           }
         }
       }
     }
-    const event: Hearing = {
-      id: `hearing-${EventId}`,
-      type: "hearing",
-      content,
-      videoURL: maybeVideoURL ? maybeVideoURL : undefined,
-      videoFetchedAt: maybeVideoURL ? Timestamp.now() : undefined,
-      videoAssemblyId: transcript ? transcript.id : undefined,
-      ...this.timestamps(content)
-    }
+
+    const event: Hearing = payload
     return event
   }
 }
