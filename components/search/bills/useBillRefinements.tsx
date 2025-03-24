@@ -56,7 +56,7 @@ export const useBillRefinements = () => {
     }
   ]
 
-  const hierarchoicalPropsList = [
+  const hierarchicalPropsList = [
     {
       attribute: "topics.lvl0",
       ...baseProps
@@ -68,7 +68,7 @@ export const useBillRefinements = () => {
   ]
 
   return useRefinements({
-    hierarchicalMenuProps: hierarchoicalPropsList,
+    hierarchicalMenuProps: hierarchicalPropsList,
     refinementProps: propsList
   })
 }
