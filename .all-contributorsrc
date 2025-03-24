@@ -614,6 +614,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rdhss",
+      "name": "Ridho Suhendar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91738561?v=4",
+      "profile": "https://rdhss.netlify.app/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
