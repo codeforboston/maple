@@ -1,5 +1,5 @@
 import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
-import { useBasicRefinements } from "../useRefinements"
+import { useRefinements } from "../useRefinements"
 import { useCallback } from "react"
 
 export const useTestimonyRefinements = () => {
@@ -37,5 +37,5 @@ export const useTestimonyRefinements = () => {
     }
   ]
 
-  return useBasicRefinements({ refinementProps: propsList })
+  return useRefinements({ refinementProps: propsList })
 }

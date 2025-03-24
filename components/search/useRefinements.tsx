@@ -27,7 +27,7 @@ export const useRefinements = ({
   hierarchicalMenuProps,
   refinementProps
 }: {
-  hierarchicalMenuProps: any[]
+  hierarchicalMenuProps?: any[]
   refinementProps: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
@@ -43,16 +43,20 @@ export const useRefinements = ({
     </>
   )
 
-  const hierarchicalMenu = (
-    <>
-      <MultiselectHierarchicalMenu
-        attributes={[
-          hierarchicalMenuProps[0].attribute,
-          hierarchicalMenuProps[1].attribute
-        ]}
-      />
-    </>
-  )
+  let hierarchicalMenu = <></>
+
+  if (hierarchicalMenuProps) {
+    hierarchicalMenu = (
+      <>
+        <MultiselectHierarchicalMenu
+          attributes={[
+            hierarchicalMenuProps[0].attribute,
+            hierarchicalMenuProps[1].attribute
+          ]}
+        />
+      </>
+    )
+  }
 
   const hasRefinements = useHasRefinements()
 
@@ -71,56 +75,6 @@ export const useRefinements = ({
         </Offcanvas.Header>
         <Offcanvas.Body>
           <SearchContainer>{hierarchicalMenu}</SearchContainer>
-          <SearchContainer>{refinements}</SearchContainer>
-        </Offcanvas.Body>
-      </Offcanvas>
-    ),
-    show: inline ? null : (
-      <FilterButton
-        variant="secondary"
-        active={show}
-        onClick={handleOpen}
-        className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
-      >
-        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
-      </FilterButton>
-    )
-  }
-}
-
-export const useBasicRefinements = ({
-  refinementProps
-}: {
-  refinementProps: any[]
-}) => {
-  const inline = useMediaQuery("(min-width: 768px)")
-  const [show, setShow] = useState(false)
-  const handleClose = useCallback(() => setShow(false), [])
-  const handleOpen = useCallback(() => setShow(true), [])
-
-  const refinements = (
-    <>
-      {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i} {...(p as any)} />
-      ))}
-    </>
-  )
-
-  const hasRefinements = useHasRefinements()
-
-  const { t } = useTranslation("billSearch")
-
-  return {
-    options: inline ? (
-      <>
-        <div>{refinements}</div>
-      </>
-    ) : (
-      <Offcanvas show={show} onHide={handleClose}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{t("filter")}</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
           <SearchContainer>{refinements}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
