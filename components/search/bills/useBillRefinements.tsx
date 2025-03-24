@@ -56,5 +56,19 @@ export const useBillRefinements = () => {
     }
   ]
 
-  return useRefinements({ refinementProps: propsList })
+  const hierarchoicalPropsList = [
+    {
+      attribute: "topics.lvl0",
+      ...baseProps
+    },
+    {
+      attribute: "topics.lvl1",
+      ...baseProps
+    }
+  ]
+
+  return useRefinements({
+    hierarchicalMenuProps: hierarchoicalPropsList,
+    refinementProps: propsList
+  })
 }
