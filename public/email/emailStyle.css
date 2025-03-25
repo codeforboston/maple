@@ -65,12 +65,13 @@
   }
   
   .sectionLine {
-    flex-grow: 1;
+    width: 100%;
     border-bottom: 2px solid #C71E32; 
+    line-height: 0.5rem;
   }
   
   .Bills, .Orgs {
-    padding: 1.5rem 1.5rem 5.5rem 5.5rem;
+    padding: 1rem 1rem 5.5rem 5.5rem;
   }
   
   .billNoUpdates, .orgNoUpdates {
@@ -97,9 +98,8 @@
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     gap: 0.5rem;
-    display: flex;
-    align-items: center; 
     justify-content: center; 
+    text-align: center;
   }
   
   .navText {
@@ -107,6 +107,9 @@
     font-weight: 500;
     line-height: 1.5rem;
     letter-spacing: 1.5%;
+    display: inline-block;
+    margin-right: 0.5rem;
+    vertical-align: middle;
   }
   
   .navButton {
@@ -269,12 +272,8 @@
     align-items: center;
     margin-left: 0.75rem;
   }
-  .circle {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
+  .billContentNumInner {
+    margin-left: 0.5rem;
   }
   .billContentRow {
     padding: 8px;
@@ -332,6 +331,6 @@
       padding-bottom: 2rem;
     }
     .testimonies-container {
-      margin-left: 1rem;
+      margin-left: 2rem;
     }
   }
