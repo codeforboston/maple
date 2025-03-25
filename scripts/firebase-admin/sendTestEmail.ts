@@ -46,26 +46,30 @@ import * as handlebars from "handlebars"
    // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
    registerPartials(PARTIALS_DIR)
 
-   console.log("DEBUG: Working directory: ", process.cwd())
-   console.log(
-     "DEBUG: Digest template path: ",
-     path.resolve(EMAIL_TEMPLATE_PATH)
-   )
+  //  console.log("DEBUG: Working directory: ", process.cwd())
+  //  console.log(
+  //    "DEBUG: Digest template path: ",
+  //    path.resolve(EMAIL_TEMPLATE_PATH)
+  //  )
 
-   const templateSource = fs.readFileSync(
-     path.resolve(EMAIL_TEMPLATE_PATH),
-     "utf8"
-   )
-   const compiledTemplate = handlebars.compile(templateSource)
-   const htmlString = compiledTemplate({ digestData })
+  //  const templateSource = fs.readFileSync(
+  //    path.resolve(EMAIL_TEMPLATE_PATH),
+  //    "utf8"
+  //  )
+  //  const compiledTemplate = handlebars.compile(templateSource)
+  //  const htmlString = compiledTemplate({ digestData })
 
+  const fs = require("fs")
+
+  // Read the HTML file synchronously
+  let htmlString = fs.readFileSync("./public/email.html", "utf8")
   // Inline CSS using Juice
-  // const inlinedHtml = juice.inlineContent(htmlString, CSS_CONTENT, {
-  //   preserveMediaQueries: true,  
-  //   removeStyleTags: true,       
-  // })
+  const inlinedHtml = juice.inlineContent(htmlString, CSS_CONTENT, {
+    preserveMediaQueries: true,  
+    removeStyleTags: true,       
+  })
 
-  return htmlString
+  return inlinedHtml
  }
 
  const Args = Record({ email: String })

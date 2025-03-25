@@ -8,25 +8,25 @@
     font-family: Arial, sans-serif; 
     line-height: 1.6;
     color: #333;
-    margin: 0; 
   }
   
   /* Logo and Header Styles */
   .logo {
     background-color: #1A3185; 
-    padding: 10px;
+    padding: 1rem;
     text-align: center;
     width: 100%;
   }
   
   .logo img {
-    max-width: 337px; 
+    max-width: 50%; 
+    height: auto;
   }
   
   .header {
-    font-size: 40px;
-    padding-top: 42px;
-    padding-right: 12px;
+    font-size: 2.5rem;
+    padding-top: 2.6rem;
+    padding-right: 1rem;
     border-bottom: 2px;
     gap: 16px;
     text-align: center;
@@ -34,23 +34,23 @@
   
   .header .headline {
     color: #1A3185;
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
   
   .header .subheadline {
     color: #1A3185;
-    font-size: 14px;
+    font-size:0.875rem;
   }
   
   .header img {
-    max-width: 100px; 
-    margin-top: 10px;
+    max-width: 6.25rem;
+    margin-top: 0.5rem;
   }
 
   /* Bills and Organizations Sections */
   .sectionHeader {
-    gap: 24px;
+    gap: 1.5rem;
     display: flex;
     align-items: center; 
     justify-content: space-between; 
@@ -59,9 +59,9 @@
   .sectionTitle {
     color: #C71E32; 
     font-weight: 500;
-    line-height: 38.4px;
-    font-size: 32px;
-    margin-right: 10px; 
+    line-height: 2rem;
+    font-size: 2rem;
+    margin-right: 0.52rem; 
   }
   
   .sectionLine {
@@ -70,24 +70,22 @@
   }
   
   .Bills, .Orgs {
-    padding: 20px;
-    padding-left: 90px;
-    padding-right: 90px;
+    padding: 1.5rem 1.5rem 5.5rem 5.5rem;
   }
   
   .billNoUpdates, .orgNoUpdates {
     text-align: center;
-    padding: 20px;
+    padding: 1.5rem;
   }
   
   .noUpdatesIcon img {
-    max-width: 50px;
-    margin-bottom: 10px;
+    max-width: 3.12rem;
+    margin-bottom: 0.52rem;
   }
   
   .noUpdatesTitle {
-    font-size: 32px;
-    line-height: 38.4px;
+    font-size: 2rem;
+    line-height: 2.4rem;
     font-weight: 500;
     color:  #000000;
   }
@@ -96,26 +94,26 @@
   .navHeader {
     background-color: #1A3185;
     color: white;
-    padding-top: 12px;
-    padding-bottom: 13px;
-    gap: 9px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    gap: 0.5rem;
     display: flex;
     align-items: center; 
     justify-content: center; 
   }
   
   .navText {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 500;
-    line-height: 20px;
+    line-height: 1.5rem;
     letter-spacing: 1.5%;
   }
   
   .navButton {
     background-color: #1A3185;
     border: 1px solid #fff;
-    color: #fff;
-    padding: 8px 12px 8px 12px;
+    color: hsl(0, 0%, 100%);
+    padding: 0.5rem 0.75rem;
     gap: 4px;
     border-radius: 4px;
     cursor: pointer;
@@ -124,23 +122,23 @@
   }
   
   .navButton img {
-    max-width: 25px;
-    max-height: 25px;
+    max-width:  1.5rem;
+    max-height: 1.5rem;
   }
   
   .navButtonText {
-    font-size: 20px;
+    font-size:  1.5rem;
     font-weight: 500;
-    line-height: 25px;
+    line-height: 1.75rem;
     letter-spacing: 1.5%;
     align-content: center;
   }
   
   /* Footer */
   .footer {
-    padding-top: 36px;
-    padding-bottom: 36px;
-    gap: 10px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    gap: 0.5rem;
     border-top: 2px solid #979797;
     text-align: center;
     margin-top: 20px; 
@@ -150,25 +148,24 @@
   }
   
   .footerContent{
-    font-size: 12px;
+    font-size: 0.75rem;
     color: black;
   }
   
   .footerContent a {
     color: black;
     text-decoration: underline;
-    font-size: 12px;
+    font-size: 0.75rem;
   }
 
   /* org card */
-  .orgContainer {
+  .orgContainer{
     width: 100%;
   }
   .org-row {
       display: flex;
-      padding-top: 12px;
-      padding-bottom: 24px;
-      gap: 4px;
+      padding-top: 0.75rem;
+      padding-bottom: 0.25rem;
   }
   .orgCell {
     width: 50%;
@@ -176,8 +173,8 @@
   }
   .org {
     background-color: #EAE7E7;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 0.75rem;
+    padding: 1rem;
     position: relative;
     height: 100%;
   }
@@ -185,25 +182,23 @@
     position: relative;
   }
   .org-name {
-      padding: 4px 10px 4px 24px;
-      gap: 10px;
       line-height: 120%;
-      font-size: 24px;
+      font-size: 1.75rem;
       font-weight: 700;
       text-align: center;
   }
   .testimonies-blurb {
     display: flex; 
     align-items: center; 
-    padding-left: 30px; 
-    gap: 24px;
+    padding-left: 0.75rem; 
+    gap: 1rem;
   }
   .testimonies-container {
-    margin-left: 100px;
+    margin-left: 2rem;
   }
 
   .testimonies-number {
-      font-size: 61px;
+      font-size: 3rem;
       font-weight: 400;
       color: #1A3185;
       line-height: 125%;
@@ -211,7 +206,7 @@
       text-align: center;
   }
   .testimonies-label {
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 700;
       line-height: 125%;
       letter-spacing: 1.5%;
@@ -220,7 +215,9 @@
       display: flex;
   }
   .bill-column {
-      margin-right: 30px;
+      margin-right: 1.75rem;
+      flex-direction: column;
+      gap: 0.25rem;
   }
   .bill-item {
     display: flex;
@@ -230,14 +227,14 @@
   }
   .bill-item img {
     margin-left: 5px; 
-    max-width: 20px; 
+    max-width: 1.5rem; 
     height: auto;
 }
   .bill-link {
       font-weight: 300;
       line-height: 125%;
       letter-spacing: 1.5%;
-      font-size: 18px;
+      font-size: 1.25rem;
       color: #000000;
   }
 
@@ -245,19 +242,23 @@
   /* bill card */
   .billContainer {
     width: 100%;
+    display: flex;
+  }
+  .bill-row {
+    display: flex;
   }
   .billContent {
     background-color: #EAE7E7;
-    border-radius: 12px;
-    padding: 24px;
-    margin: 13px;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 0.75rem;
   }
   .testimonyRow {
     display: flex;
     align-items: center;
-    padding-top: 12px;
+    padding-top: 0.75rem;
     border-bottom: 1px solid #979797;
-    padding-bottom: 12px;
+    padding-bottom: 0.75rem;
     justify-content: space-between;
   }
   .testimonies-count{
@@ -266,11 +267,11 @@
   .vote-count {
     display: flex;
     align-items: center;
-    margin-left: 10px;
+    margin-left: 0.75rem;
   }
   .circle {
-    width: 20px;
-    height: 20px;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
     display: inline-block;
     margin-right: 5px;
@@ -283,7 +284,7 @@
     color: #1A3185;
     margin-bottom: 5px;
     line-height: 150%;
-    font-size: 20px;
+    font-size: 1.75rem;
   }
   .billTitle {
     font-size: 16px;
@@ -316,4 +317,21 @@
   
   .blue {
     color: #1A3185;
+  }
+
+  @media (max-width: 768px) {
+    .org-row {
+      flex-direction: column;
+    }
+    .bill-row{
+      flex-direction: column;
+    }
+
+    .orgCell {
+      width: 100%;
+      padding-bottom: 2rem;
+    }
+    .testimonies-container {
+      margin-left: 1rem;
+    }
   }
