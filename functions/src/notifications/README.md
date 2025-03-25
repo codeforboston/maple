@@ -6,8 +6,11 @@ The notification feature is responsible for sending notifications to users based
 
 ## Features
 
-- **Topic-Based Notifications**: Users receive notifications based on topics they are interested in.
-  - It can be either a Bill Topic or an Org Topic
+- **Topic-Based Notifications**: Users receive notifications based on topics they are subscribed to.
+  - Each user has a list of topics created when subscribing to a Bill, User, or Organization.
+  - Topics can be categorized as either Bill Topics or Organization Topics:
+    - `bill-[courtId]-[billId]`: Triggers when a subscribed Bill has a history update or when testimony is posted on the Bill.
+    - `testimony-[userId]`: Triggers when a subscribed User or Organization posts testimony.
 - **Notification Events**
   - A BillHistoryNotificationEvent is created when a subscribed Bill has an updated history
   - A TestimonySubmissionNotificationEvent is created when a subscribed Bill has testimony published and when a Organization/User publishes testimony
