@@ -1,7 +1,10 @@
 from flask import Flask, jsonify, abort, request
 from llm_functions import get_summary_api_function, get_tags_api_function
 import json
+from firebase_admin import initialize_app
+from firebase_functions import https_fn
 
+initialize_app()
 app = Flask(__name__)
 
 
@@ -40,3 +43,9 @@ def tags():
         abort(500, description="Unable to generate tags")
 
     return jsonify(tags["tags"])
+
+
+@https_fn.on_request(secrets=["OPENAI_DEV"])
+def httpsflaskexample(req: https_fn.Request) -> https_fn.Response:
+    with app.request_context(req.environ):
+        return app.full_dispatch_request()
