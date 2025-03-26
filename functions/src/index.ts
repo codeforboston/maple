@@ -37,6 +37,7 @@ export {
   cleanupNotifications,
   deliverNotifications,
   httpsDeliverNotifications,
+  httpsDeliverAdminNotifications,
   httpsCleanupNotifications,
   updateUserNotificationFrequency
 } from "./notifications"

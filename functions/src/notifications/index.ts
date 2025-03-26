@@ -8,7 +8,8 @@ import {
 } from "./cleanupNotifications"
 import {
   deliverNotifications,
-  httpsDeliverNotifications
+  httpsDeliverNotifications,
+  httpsDeliverAdminNotifications,
 } from "./deliverNotifications"
 import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
 
@@ -20,6 +21,7 @@ export {
   cleanupNotifications,
   deliverNotifications,
   httpsDeliverNotifications,
+  httpsDeliverAdminNotifications,
   httpsCleanupNotifications,
   updateUserNotificationFrequency
 }
