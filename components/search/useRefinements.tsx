@@ -83,16 +83,14 @@ export const useRefinements = ({
       //     </Offcanvas.Body>
       //   </Offcanvas>
     ),
-    show: inline
-      ? null
-      : null
-        // <FilterButton
-        //   variant="secondary"
-        //   active={show}
-        //   onClick={handleOpen}
-        //   className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
-        // >
-        //   <FontAwesomeIcon icon={faFilter} /> {t("filter")}
-        // </FilterButton>
+    show: inline ? null : null
+    // <FilterButton
+    //   variant="secondary"
+    //   active={show}
+    //   onClick={handleOpen}
+    //   className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+    // >
+    //   <FontAwesomeIcon icon={faFilter} /> {t("filter")}
+    // </FilterButton>
   }
 }
