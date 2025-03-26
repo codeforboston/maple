@@ -72,6 +72,8 @@ const deliverEmailNotifications = async () => {
       profile.notificationFrequency
     )
 
+    const batch = db.batch()
+
     // If there are no new notifications, don't send an email
     if (
       digestData.numBillsWithNewTestimony === 0 &&
@@ -83,8 +85,7 @@ const deliverEmailNotifications = async () => {
     } else {
       const htmlString = renderToHtmlString(digestData)
 
-      // Create an email document in /emails to queue up the send
-      await db.collection("emails").add({
+      const email = {
         to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
@@ -92,13 +93,15 @@ const deliverEmailNotifications = async () => {
           html: htmlString
         },
         createdAt: Timestamp.now()
-      })
+      }
+      batch.create(db.collection("emails").doc(), email)
 
-      console.log(`Saved email message to user ${profileDoc.id}`)
+      console.log(`Saving email message to user ${profileDoc.id}`)
     }
 
     const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
-    await profileDoc.ref.update({ nextDigestAt })
+    batch.update(profileDoc.ref, { nextDigestAt })
+    await batch.commit()
 
     console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
   })
