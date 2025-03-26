@@ -8,23 +8,23 @@ const assembly = new AssemblyAI({
 })
 
 export const transcription = functions.https.onRequest(async (req, res) => {
-  if (
-    req.headers["X-Maple-Webhook"] &&
-    req.headers["webhook_auth_header_value"]
-  ) {
+  console.log("req.headers", req.headers)
+  if (req.headers["x-maple-webhook"]) {
+    console.log("req.body.status", req.body.status)
+
     if (req.body.status === "completed") {
       const transcript = await assembly.transcripts.get(req.body.transcript_id)
+      console.log("transcript.webhook_auth", transcript.webhook_auth)
       if (transcript && transcript.webhook_auth) {
         const maybeEventInDb = await db
           .collection("events")
           .where("videoAssemblyId", "==", transcript.id)
           .get()
+        console.log("maybeEventInDb.docs.length", maybeEventInDb.docs.length)
         if (maybeEventInDb.docs.length) {
           const authenticatedEventsInDb = maybeEventInDb.docs.filter(
             async e => {
-              const hashedToken = sha256(
-                String(req.headers["webhook_auth_header_value"])
-              )
+              const hashedToken = sha256(String(req.headers["x-maple-webhook"]))
 
               const tokenInDb = await db
                 .collection("events")
@@ -33,12 +33,16 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 .doc("webhookAuth")
                 .get()
               const tokenInDbData = tokenInDb.data()
+              console.log("tokenInDbData", tokenInDbData)
+
               if (tokenInDbData) {
                 return hashedToken === tokenInDbData.videoAssemblyWebhookToken
               }
               return false
             }
           )
+          console.log("authenticatedEventsInDb", authenticatedEventsInDb)
+
           if (authenticatedEventsInDb) {
             try {
               await db
@@ -48,7 +52,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
 
               authenticatedEventsInDb.forEach(async d => {
                 await d.ref.update({
-                  ["webhook_auth_header_value"]: null
+                  ["x-maple-webhook"]: null
                 })
               })
               console.log("transcript saved in db")
