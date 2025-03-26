@@ -36,19 +36,19 @@ const defaults: Record<Env, FeatureFlags> = {
   },
   production: {
     testimonyDiffing: false,
-    notifications: false,
+    notifications: true,
     billTracker: false,
-    followOrg: false,
+    followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: false
+    showLLMFeatures: true
   },
   test: {
     testimonyDiffing: false,
-    notifications: false,
+    notifications: true,
     billTracker: false,
-    followOrg: false,
+    followOrg: true,
     lobbyingTable: false,
-    showLLMFeatures: false
+    showLLMFeatures: true
   }
 }
 

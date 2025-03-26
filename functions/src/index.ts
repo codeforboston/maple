@@ -48,6 +48,8 @@ export {
   unfollowUser
 } from "./subscriptions"
 
+export { transcription } from "./webhooks"
+
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.

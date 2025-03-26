@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import {
   CurrentRefinements,
   Hits,
@@ -17,11 +18,11 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
-import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
 import { useBillSort } from "./useBillSort"
 import { FC } from "react"
+import { useMediaQuery } from "usehooks-ts"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -102,8 +103,11 @@ const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
   const refinements = useBillRefinements()
-  const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
+
+  const { t } = useTranslation("billSearch")
+
+  const inline = useMediaQuery("(min-width: 768px)")
 
   return (
     <SearchContainer>
@@ -112,14 +116,12 @@ const Layout: FC<
       </Row>
       <Row>
         <Col xs={3} lg={3}>
-          {hierarchicalMenu.options}
-          {refinements.options}
+          {inline ? refinements.options : null}
         </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
-            {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements
@@ -129,9 +131,9 @@ const Layout: FC<
           />
           {status === "empty" ? (
             <NoResults>
-              Your search has yielded zero results!
+              {t("zero_results")}
               <br />
-              <b>Try another search term</b>
+              <b>{t("another_term")}</b>
             </NoResults>
           ) : (
             <Hits hitComponent={BillHit} />

@@ -165,28 +165,28 @@ export function PersonalInfoTab({
                 label={t("socialLinks.twitter")}
                 defaultValue={social?.twitter}
                 className="col-sm-12 col-md-6 mb-1"
-                iconSrc="./twitter.svg"
+                iconSrc="/twitter.svg"
                 {...register("twitter")}
               />
               <SocialInput
                 label={t("socialLinks.linkedIn")}
                 defaultValue={social?.linkedIn}
                 className="col-sm-12 col-md-6 mb-1"
-                iconSrc="./linkedin.svg"
+                iconSrc="/linkedin.svg"
                 {...register("linkedIn")}
               />
               <SocialInput
                 label={t("socialLinks.blueSky")}
                 defaultValue={social?.blueSky}
                 className="col-sm-12 col-md-6 mb-1"
-                iconSrc="./bluesky.svg"
+                iconSrc="/bluesky.svg"
                 {...register("blueSky")}
               />
               <SocialInput
                 label={t("socialLinks.mastodon")}
                 defaultValue={social?.mastodon}
                 className="col-sm-12 col-md-6 mb-1"
-                iconSrc="./mastodon.svg"
+                iconSrc="/mastodon.svg"
                 {...register("mastodon")}
               />
               {isOrg && (
