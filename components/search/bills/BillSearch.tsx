@@ -22,6 +22,7 @@ import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig } from "../common"
 import { useBillSort } from "./useBillSort"
 import { FC } from "react"
+import { useMediaQuery } from "usehooks-ts"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -106,6 +107,8 @@ const Layout: FC<
 
   const { t } = useTranslation("billSearch")
 
+  const inline = useMediaQuery("(min-width: 768px)")
+
   return (
     <SearchContainer>
       <Row>
@@ -113,7 +116,7 @@ const Layout: FC<
       </Row>
       <Row>
         <Col xs={3} lg={3}>
-          {refinements.options}
+          {inline ? refinements.options : null}
         </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>
