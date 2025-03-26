@@ -1,38 +1,33 @@
 <article class="bill">
-  <div class="billTitle">
-    {{this.title}}
+  <div class="billNumber">
+    {{billNumber}}
   </div>
-  <div class="billSubtitle">
-    {{this.subtitle}}
+  <div class="billTitle">
+    {{billTitle}}
   </div>
   <div class="billContent">
     <div class="billContentRow">
       <div class="billContentNum numBox1">
-        <div class="billContentNumInner">
-          {{this.testimonies}}
-        </div>
+        <div class="billContentNumInner">{{testimonies}}</div>
       </div>
       <div class="billContentNum numBox2">
-        <div class="billContentNumInner">
-          {{this.cosponsors}}
-        </div>
+        <div class="circle green-circle"></div>
+        <div class="billContentNumInner">{{endorse}}</div>
       </div>
       <div class="billContentNum numBox3">
-        <div class="billContentNumInner">
-          {{this.hearingDate}}
-        </div>
+        <div class="circle blue-circle"></div>
+        <div class="billContentNumInner">{{neutral}}</div>
+      </div>
+      <div class="billContentNum numBox4">
+        <div class="circle orange-circle"></div>
+        <div class="billContentNumInner">{{oppose}}</div>
       </div>
     </div>
     <div class="billContentRow">
-      <div class="billContentTitle">
-        New Testimonies
-      </div>
-      <div class="billContentTitle">
-        New Co-Sponsors
-      </div>
-      <div class="billContentTitle">
-        Hearing Date
-      </div>
+      <div class="billContentTitle">New Testimonies</div>
+      <div class="billContentTitle">Endorse</div>
+      <div class="billContentTitle">Neutral</div>
+      <div class="billContentTitle">Oppose</div>
     </div>
   </div>
 </article>

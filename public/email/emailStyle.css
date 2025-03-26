@@ -1,0 +1,336 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif; 
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  /* Logo and Header Styles */
+  .logo {
+    background-color: #1A3185; 
+    padding: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .logo img {
+    max-width: 50%; 
+    height: auto;
+  }
+  
+  .header {
+    font-size: 2.5rem;
+    padding-top: 2.6rem;
+    padding-right: 1rem;
+    border-bottom: 2px;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .header .headline {
+    color: #1A3185;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .header .subheadline {
+    color: #1A3185;
+    font-size:0.875rem;
+  }
+  
+  .header img {
+    max-width: 6.25rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Bills and Organizations Sections */
+  .sectionHeader {
+    gap: 1.5rem;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+  }
+  
+  .sectionTitle {
+    color: #C71E32; 
+    font-weight: 500;
+    line-height: 2rem;
+    font-size: 2rem;
+    margin-right: 0.52rem; 
+  }
+  
+  .sectionLine {
+    width: 100%;
+    border-bottom: 2px solid #C71E32; 
+    line-height: 0.5rem;
+  }
+  
+  .Bills, .Orgs {
+    padding: 1rem 1rem 5.5rem 5.5rem;
+  }
+  
+  .billNoUpdates, .orgNoUpdates {
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .noUpdatesIcon img {
+    max-width: 3.12rem;
+    margin-bottom: 0.52rem;
+  }
+  
+  .noUpdatesTitle {
+    font-size: 2rem;
+    line-height: 2.4rem;
+    font-weight: 500;
+    color:  #000000;
+  }
+  
+  /* Navigation Header (Newsfeed Button) */
+  .navHeader {
+    background-color: #1A3185;
+    color: white;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    gap: 0.5rem;
+    justify-content: center; 
+    text-align: center;
+  }
+  
+  .navText {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    letter-spacing: 1.5%;
+    display: inline-block;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+  
+  .navButton {
+    background-color: #1A3185;
+    border: 1px solid #fff;
+    color: hsl(0, 0%, 100%);
+    padding: 0.5rem 0.75rem;
+    gap: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .navButton img {
+    max-width:  1.5rem;
+    max-height: 1.5rem;
+  }
+  
+  .navButtonText {
+    font-size:  1.5rem;
+    font-weight: 500;
+    line-height: 1.75rem;
+    letter-spacing: 1.5%;
+    align-content: center;
+  }
+  
+  /* Footer */
+  .footer {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    gap: 0.5rem;
+    border-top: 2px solid #979797;
+    text-align: center;
+    margin-top: 20px; 
+    width: 100%;
+    background-color: white; 
+    color: black; 
+  }
+  
+  .footerContent{
+    font-size: 0.75rem;
+    color: black;
+  }
+  
+  .footerContent a {
+    color: black;
+    text-decoration: underline;
+    font-size: 0.75rem;
+  }
+
+  /* org card */
+  .orgContainer{
+    width: 100%;
+  }
+  .org-row {
+      display: flex;
+      padding-top: 0.75rem;
+      padding-bottom: 0.25rem;
+  }
+  .orgCell {
+    width: 50%;
+    padding: 0 10px;
+  }
+  .org {
+    background-color: #EAE7E7;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    position: relative;
+    height: 100%;
+  }
+  .orgContent {
+    position: relative;
+  }
+  .org-name {
+      line-height: 120%;
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+  }
+  .testimonies-blurb {
+    display: flex; 
+    align-items: center; 
+    padding-left: 0.75rem; 
+    gap: 1rem;
+  }
+  .testimonies-container {
+    margin-left: 2rem;
+  }
+
+  .testimonies-number {
+      font-size: 3rem;
+      font-weight: 400;
+      color: #1A3185;
+      line-height: 125%;
+      letter-spacing: -3%;
+      text-align: center;
+  }
+  .testimonies-label {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 125%;
+      letter-spacing: 1.5%;
+  }
+  .bills-list {
+      display: flex;
+  }
+  .bill-column {
+      margin-right: 1.75rem;
+      flex-direction: column;
+      gap: 0.25rem;
+  }
+  .bill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 5px;
+  }
+  .bill-item img {
+    margin-left: 5px; 
+    max-width: 1.5rem; 
+    height: auto;
+}
+  .bill-link {
+      font-weight: 300;
+      line-height: 125%;
+      letter-spacing: 1.5%;
+      font-size: 1.25rem;
+      color: #000000;
+  }
+
+  
+  /* bill card */
+  .billContainer {
+    width: 100%;
+    display: flex;
+  }
+  .bill-row {
+    display: flex;
+  }
+  .billContent {
+    background-color: #EAE7E7;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 0.75rem;
+  }
+  .testimonyRow {
+    display: flex;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-bottom: 1px solid #979797;
+    padding-bottom: 0.75rem;
+    justify-content: space-between;
+  }
+  .testimonies-count{
+    font-weight: 700;
+  }
+  .vote-count {
+    display: flex;
+    align-items: center;
+    margin-left: 0.75rem;
+  }
+  .billContentNumInner {
+    margin-left: 0.5rem;
+  }
+  .billContentRow {
+    padding: 8px;
+  }
+  .billNumber {
+    font-weight: 500;
+    color: #1A3185;
+    margin-bottom: 5px;
+    line-height: 150%;
+    font-size: 1.75rem;
+  }
+  .billTitle {
+    font-size: 16px;
+    color: #000000;
+    line-height: 150%;
+    font-weight: 400;
+  }
+  .blue-circle {
+    background-color: #2196F3;
+  }
+  .green-circle {
+    background-color: #4CAF50;
+  }
+  .orange-circle {
+    background-color: #FF9800;
+  }
+  
+  /* General Layout Adjustments */
+  .center {
+    text-align: center;
+  }
+  
+  .bg-blue {
+    background-color: #1A3185;
+  }
+  
+  .white {
+    color: #fff;
+  }
+  
+  .blue {
+    color: #1A3185;
+  }
+
+  @media (max-width: 768px) {
+    .org-row {
+      flex-direction: column;
+    }
+    .bill-row{
+      flex-direction: column;
+    }
+
+    .orgCell {
+      width: 100%;
+      padding-bottom: 2rem;
+    }
+    .testimonies-container {
+      margin-left: 2rem;
+    }
+  }
