@@ -107,6 +107,137 @@ const deliverEmailNotifications = async () => {
   await Promise.all(emailPromises)
 }
 
+export const deliverOrgUpgradeStatus = async (userId: string, accept: boolean) => {
+   //// const reportRef = db.collection("users").doc(userId)
+
+   type Profile = {
+    email: string,
+    fullName: string,
+    role: string,
+   }
+
+   const userProf = await db
+   .collection("profiles")
+   //.where("id", "==", userId)
+   .get()
+
+   functions.firestore.document(`/profiles/${userId}`)
+   .onWrite(async (snapshot, context) => {
+     console.log(snapshot.before.data)
+     console.log(snapshot.after.data)
+
+    const userSnap = userProf.docs.map((doc => {
+      return doc
+  
+    })).find((doc => {
+      const profile = doc.data() as Profile
+      profile.role === 'statusPending'
+
+    }))?.id
+
+    const before = snapshot.before.data() as Profile
+    const after = snapshot.after.data() as Profile
+    if(before.role === 'statusPending' && after.role === 'organization') {
+      let statusMessage: {subject: string, text: string, html: string };
+
+      accept ? statusMessage = {
+        subject: "Organization Approved",
+          text: "Your organization's profile has been approved on MAPLE. Thank you for signing up! You can now post testimony for your community to see!",
+          html: "Your organization's profile has been approved on MAPLE. Thank you for signing up! You can now post testimony for your community to see!",
+      } :
+      statusMessage = {
+        subject:"Organization Denied",
+          text: "Unfortunately, your request for an organization profile on MAPLE was denied. We apologize for any confusion. Please email admin@mapletestimony.org for further discussion.",
+          html: "Unfortunately, your request for an organization profile on MAPLE was denied. We apologize for any confusion. Please email admin@mapletestimony.org for further discussion.",
+      }
+
+      await db.collection("emails").add({
+        to: ['aerhartic@gmail.com'],
+        message: statusMessage,
+        createdAt: Timestamp.now()
+      })
+    }
+    if (!snapshot.after.exists) {
+      console.error("New snapshot does not exist")
+     return
+    }
+   })  
+  }
+
+export const adminNotification = async (orgName?: string, email?: string) => {
+  
+
+      ////const admins = ['mvictor@mapletestimony.org', 'nsanders@mapletestimony.org']
+
+      functions.firestore.document("/profiles/")
+      .onWrite(async (snapshot, context) => {
+        console.log(snapshot.before.data)
+        console.log(snapshot.after.data)
+
+       //if(snapshot.after.data.length > snapshot.before.data.length) {
+         await db.collection("emails").add({
+        to: ['aerhartic@gmail.com'],
+        message: { 
+          subject: `The organization test requests approval`,
+          text: `The organization test has signed up and now requests approval. Please decide whether to accept or reject their request. Along with responding via the Admin page, you can also contact them at ${email}`,
+          html: `The organization test has signed up and now requests approval. Please decide whether to accept or reject their request. Along with responding via the Admin page, you can also contact them at ${email}`,
+        } ,
+      createdAt: Timestamp.now()
+    })
+      // }
+        if (!snapshot.after.exists) {
+          console.error("New snapshot does not exist")
+         return
+        }
+       })
+  }
+
+  export type Report = {
+    userId?: string, 
+    userName?: string | null, 
+    userEmail?: string | null,
+  }
+
+  export const adminTestimonyNotification = async (report?: Report, testimonyTitle?: string, testimonyId?: string) => {
+   //// const users = await db.collection("/users/RxvVz9ua1GYxnYjPJQ6yKmEkdfC2").select("email").get()
+      
+     /* const orgUser = users.docs.find(async user =>  user?.email === userId)
+  
+    if(userAdmin1 && userAdmin2) {
+      const verifiedEmail = await getVerifiedUserEmail(userAdmin1.id)
+      const verifiedEmailalt = await getVerifiedUserEmail(reportRef?.id)
+      if (!verifiedEmail) {
+        console.log(
+          `Skipping user ${orgUser?.id} because they have no verified email address`
+        )
+        return
+      } */
+  
+        ////const admins = ['mvictor@mapletestimony.org', 'nsanders@mapletestimony.org']
+
+       // .firestore.document('/profiles/${resourceName}/batches/{batchId}')
+
+    
+
+          await db.collection("emails").add({
+            to: ['aerhartic@gmail.com'],
+            message: { 
+              subject: `The testimony ${testimonyTitle} requests approval`,
+              text: `The testimony ${testimonyTitle} has been reported and requires approval. Please respond accordingly, you can also contact them at ${report?.userEmail}`,
+              html: `The testimony ${testimonyTitle} has been reported and requires approval. Please respond accordingly, you can also contact them at ${report?.userEmail}`,
+            } ,
+            createdAt: Timestamp.now()
+          
+
+      /*  const profilesSnapshot = await db
+        .document("profiles").onCreate()
+        //.where("nextDigestAt", "<=", now)
+        .get()
+      // */
+     
+    })
+  }
+
 // TODO: Unit tests
 const buildDigestData = async (
   userId: string,
@@ -226,6 +357,51 @@ export const deliverNotifications = functions.pubsub
   .onRun(deliverEmailNotifications)
 
 export const httpsDeliverNotifications = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      await deliverEmailNotifications()
+
+      console.log("DEBUG: deliverNotifications completed")
+
+      response.status(200).send("Successfully delivered notifications")
+    } catch (error) {
+      console.error("Error in deliverNotifications:", error)
+      response.status(500).send("Internal server error")
+    }
+  }
+)
+
+export const httpsDeliverOrgUpgradeStatus = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      await deliverEmailNotifications()
+
+      console.log("DEBUG: deliverNotifications completed")
+
+      response.status(200).send("Successfully delivered notifications")
+    } catch (error) {
+      console.error("Error in deliverNotifications:", error)
+      response.status(500).send("Internal server error")
+    }
+  }
+) 
+
+export const httpsDeliverAdminNotifications = functions.https.onRequest(
+  async (request, response) => {
+    try {
+    await adminNotification()
+
+      console.log("DEBUG: deliverAdminNotifications completed")
+
+      response.status(200).send("Successfully delivered admin notifications")
+    } catch (error) {
+      console.error("Error in deliverNotifications:", error)
+      response.status(500).send("Internal server error")
+    }
+  }
+)
+
+export const httpsDeliverAdminTestinomyNotifications = functions.https.onRequest(
   async (request, response) => {
     try {
       await deliverEmailNotifications()
