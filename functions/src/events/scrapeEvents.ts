@@ -177,24 +177,17 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             maybeVideoURL = firstVideoSource.src
 
             transcript = await assembly.transcripts.submit({
+              audio:
+                // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
+                firstVideoSource.src,
               webhook_url:
                 // test with: "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
                 process.env.NODE_ENV === "development"
                   ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
                   : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
-              webhook_auth_header_name: "x-maple-webhook",
-              webhook_auth_header_value: newToken,
-              audio:
-                // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
-                firstVideoSource.src,
-              auto_highlights: false,
-              custom_topics: false,
-              entity_detection: false,
-              iab_categories: false,
-              format_text: true,
-              punctuate: true,
               speaker_labels: true,
-              summarization: false
+              webhook_auth_header_name: "x-maple-webhook",
+              webhook_auth_header_value: newToken
             })
 
             await db
