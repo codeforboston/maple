@@ -50,6 +50,8 @@ export {
 
 export { transcription } from "./webhooks"
 
+export { pingVercel } from "./keepwarm"
+
 export * from "./triggerPubsubFunction"
 
 // Export the health check last so it is loaded last.
