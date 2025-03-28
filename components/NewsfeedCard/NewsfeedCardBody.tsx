@@ -3,6 +3,7 @@ import CardBootstrap from "react-bootstrap/Card"
 import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
 import { Internal } from "components/links"
+import { truncateText } from "components/formatting"
 
 interface NewsfeedCardBodyProps {
   billText?: string
@@ -33,7 +34,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
                 className={`m-3`}
               />
               <CardBootstrap.Text className={`mb-0 mt-2`}>
-                <strong>{text}</strong>
+                <strong>{truncateText(text, 600)}</strong>
               </CardBootstrap.Text>
               <>
                 {t("newsfeed.actionTaken")}
@@ -52,7 +53,7 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
             />
             <Col className={`m-2`}>
               <CardBootstrap.Text className={`mb-0`}>
-                <strong>{text}</strong>
+                <strong>{truncateText(text, 600)}</strong>
               </CardBootstrap.Text>
               <>
                 {t("newsfeed.actionTaken")}
@@ -112,7 +113,10 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
                   </>
                 )}
               </div>
-              <strong className={`mb-4`}>{`"${text}"`}</strong>
+              <strong className={`mb-4`}>{`"${truncateText(
+                text,
+                600
+              )}"`}</strong>
             </Col>
           ) : (
             <>
@@ -138,7 +142,10 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
               <Col
                 className={`d-flex align-self-center justify-content-center`}
               >
-                <strong className={`m-4`}>{`"${text}"`}</strong>
+                <strong className={`m-4`}>{`"${truncateText(
+                  text,
+                  600
+                )}"`}</strong>
               </Col>
             </>
           )}
