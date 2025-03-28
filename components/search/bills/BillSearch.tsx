@@ -7,15 +7,16 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { currentGeneralCourt } from "functions/src/shared"
+import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
+import singletonRouter from "next/router"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
+import { currentGeneralCourt } from "functions/src/shared"
 import { Col, Row } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
-import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
@@ -71,7 +72,14 @@ export const BillSearch = () => {
           }
         }}
         searchClient={searchClient}
-        routing={useRouting()}
+        routing={{
+          router: createInstantSearchRouterNext({
+            singletonRouter,
+            routerOptions: {
+              cleanUrlOnDispose: false
+            }
+          })
+        }}
       >
         <Layout items={items} />
       </InstantSearch>
