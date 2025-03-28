@@ -158,20 +158,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const hearing = Hearing.check(eventData)
     const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
-    let payload: Hearing = {
-      id: `hearing-${EventId}`,
-      type: "hearing",
-      content,
-      ...this.timestamps(content)
-    }
-    if (hearing) {
-      payload = {
-        ...payload,
-        videoURL: hearing.videoURL,
-        videoFetchedAt: hearing.videoFetchedAt,
-        videoAssemblyId: hearing.videoAssemblyId
-      }
-    }
     let maybeVideoURL = null
     let transcript = null
 
@@ -191,24 +177,31 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             maybeVideoURL = firstVideoSource.src
 
             transcript = await assembly.transcripts.submit({
+              audio:
+                // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
+                firstVideoSource.src,
               webhook_url:
+                // test with: "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
                 process.env.NODE_ENV === "development"
                   ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
                   : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
-              webhook_auth_header_name: "X-Maple-Webhook",
-              webhook_auth_header_value: newToken,
-              audio: firstVideoSource.src,
-              auto_highlights: true,
-              custom_topics: true,
-              entity_detection: true,
-              iab_categories: false,
-              format_text: true,
-              punctuate: true,
               speaker_labels: true,
-              summarization: true,
-              summary_model: "informative",
-              summary_type: "bullets"
+              webhook_auth_header_name: "x-maple-webhook",
+              webhook_auth_header_value: newToken
             })
+
+            await db
+              .collection("events")
+              .doc(`hearing-${String(EventId)}`)
+              .set({
+                id: `hearing-${EventId}`,
+                type: "hearing",
+                content,
+                ...this.timestamps(content),
+                videoURL: maybeVideoURL,
+                videoFetchedAt: Timestamp.now(),
+                videoAssemblyId: transcript.id
+              })
 
             await db
               .collection("events")
@@ -218,20 +211,17 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
               .set({
                 videoAssemblyWebhookToken: sha256(newToken)
               })
-
-            payload = {
-              ...payload,
-              videoURL: maybeVideoURL,
-              videoFetchedAt: Timestamp.now(),
-              videoAssemblyId: transcript.id
-            }
           }
         }
       }
     }
 
-    const event: Hearing = payload
-    return event
+    return {
+      id: `hearing-${EventId}`,
+      type: "hearing",
+      content,
+      ...this.timestamps(content)
+    } as Hearing
   }
 }
 
