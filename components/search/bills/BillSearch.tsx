@@ -22,7 +22,6 @@ import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
 import { FC } from "react"
-import { useMediaQuery } from "usehooks-ts"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
