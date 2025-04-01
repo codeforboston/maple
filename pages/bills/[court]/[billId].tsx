@@ -31,18 +31,38 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
-  const bill = await dbService().getBill(query.data)
+
+  const dbsStart = performance.now()
+  const dbs = dbService()
+  const dbsEnd = performance.now()
+  console.log("Getting dbService took", dbsEnd - dbsStart, "ms")
+
+  const billStart = performance.now()
+  const bill = await dbs.getBill(query.data)
+  const billEnd = performance.now()
+  console.log("Getting bill took", billEnd - billStart, "ms")
+
   if (!bill) return { notFound: true }
+
+  const translationsStart = performance.now()
+  const translations = await serverSideTranslations(locale, [
+    "auth",
+    "common",
+    "footer",
+    "testimony",
+    "profile"
+  ])
+  const translationsEnd = performance.now()
+  console.log(
+    "Getting translations took",
+    translationsEnd - translationsStart,
+    "ms"
+  )
+
   return {
     props: {
       bill: JSON.parse(JSON.stringify(bill)),
-      ...(await serverSideTranslations(locale, [
-        "auth",
-        "common",
-        "footer",
-        "testimony",
-        "profile"
-      ]))
+      ...translations
     }
   }
 }
