@@ -109,16 +109,14 @@ const Layout: FC<
 
   const { t } = useTranslation("billSearch")
 
-  const inline = useMediaQuery("(min-width: 768px)")
-
   return (
     <SearchContainer>
       <Row>
         <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
-        <Col xs={3} lg={3}>
-          {inline ? refinements.options : null}
+        <Col xs={0} lg={3}>
+          {refinements.options}
         </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>

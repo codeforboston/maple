@@ -151,7 +151,7 @@ const Layout = () => {
             />
           </Row>
           <Row>
-            <Col xs={3} lg={3}>
+            <Col xs={0} lg={3}>
               {refinements.options}
             </Col>
             <Col className="d-flex flex-column">
