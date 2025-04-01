@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
-import { CurrentCommittee } from "../functions/src/bills/types"
+import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
@@ -129,4 +129,12 @@ export const twitterShareLink = (publication: Testimony, t: TFunction) => {
     tweetUrl = `https://twitter.com/intent/tweet?text=${tweet}`
 
   return tweetUrl
+}
+
+export const billSearchByTopicLink = (court: number, topic: BillTopic) => {
+  const params = {
+    "bills/sort/latestTestimonyAt:desc[multiselectHierarchicalMenu][topics.lvl1][0]": `${topic.category} > ${topic.topic}`,
+    "bills/sort/latestTestimonyAt:desc[refinementList][court][0]": `${court}`
+  }
+  return `/bills?${new URLSearchParams(params).toString()}`
 }

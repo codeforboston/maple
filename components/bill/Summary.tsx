@@ -8,6 +8,8 @@ import { SmartDisclaimer } from "./SmartDisclaimer"
 import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
+import { currentGeneralCourt } from "functions/src/shared"
+import { BillTopic } from "functions/src/bills/types"
 
 const SummaryContainer = styled(Container)`
   background-color: white;
@@ -49,17 +51,21 @@ const SmartTagButton = styled.button`
   font-size: 12px;
 `
 
-const SmartTag = ({ icon, tagName }: { icon: String; tagName: String }) => {
+const SmartTag = ({ topic }: { topic: BillTopic }) => {
   return (
-    <SmartTagButton
-      className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+    <links.Internal
+      href={links.billSearchByTopicLink(currentGeneralCourt, topic)}
     >
-      &nbsp;
-      <SmartIcon icon={icon} />
-      &nbsp;
-      {tagName}
-      &nbsp;
-    </SmartTagButton>
+      <SmartTagButton
+        className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+      >
+        &nbsp;
+        <SmartIcon icon={topic.category} />
+        &nbsp;
+        {topic.topic}
+        &nbsp;
+      </SmartTagButton>
+    </links.Internal>
   )
 }
 
@@ -134,7 +140,7 @@ export const Summary = ({
           <Row className="mx-1 mb-3">{bill.summary}</Row>
           <Row className={`d-flex mx-0 my-1`} xs="auto">
             {bill.topics?.map(t => (
-              <SmartTag key={t.topic} icon={t.category} tagName={t.topic} />
+              <SmartTag key={t.topic} topic={t} />
             ))}
           </Row>
         </>
