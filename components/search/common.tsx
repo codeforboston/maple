@@ -29,33 +29,30 @@ export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"
   }
 }
 
+function RefinementList({ attribute }: { attribute: string }) {
+  useRefinementList({ attribute })
+  return null
+}
 
-export function VirtualFilters({ type }: { type: 'bill' | 'testimony' }) {
-  let refinementAttributes;
+export function VirtualFilters({ type }: { type: "bill" | "testimony" }) {
+  const refinementAttributes =
+    type === "testimony"
+      ? ["authorDisplayName", "court", "position", "billId", "authorRole"]
+      : [
+          "court",
+          "currentCommittee",
+          "city",
+          "primarySponsor",
+          "cosponsors",
+          "topics.lvl0",
+          "topics.lvl1"
+        ]
 
-  if (type === 'testimony') {
-    refinementAttributes = [
-      'authorDisplayName',
-      'court',
-      'position',
-      'billId',
-      'authorRole'
-    ];
-  } else if (type === 'bill') {
-    refinementAttributes = [
-      'court',
-      'currentCommittee',
-      'city',
-      'primarySponsor',
-      'cosponsors',
-      'topics.lvl0',
-      'topics.lvl1',
-    ];
-  }
-
-  refinementAttributes?.forEach((attribute) => {
-    useRefinementList({ attribute });
-  });
-
-  return null;
+  return (
+    <>
+      {refinementAttributes.map(attribute => (
+        <RefinementList key={attribute} attribute={attribute} />
+      ))}
+    </>
+  )
 }

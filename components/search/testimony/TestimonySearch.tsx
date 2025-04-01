@@ -109,8 +109,8 @@ const Layout = () => {
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
-            ? ["organization"]
-            : validRoles
+          ? ["organization"]
+          : validRoles
       return {
         ...prevState,
         refinementList: {
