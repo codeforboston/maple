@@ -19,7 +19,7 @@ import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
-import { getServerConfig } from "../common"
+import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
 import { FC } from "react"
 
@@ -71,7 +71,9 @@ export const BillSearch = () => {
         }}
         searchClient={searchClient}
         routing={useRouting()}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
+        <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
     </SearchErrorBoundary>

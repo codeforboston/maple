@@ -22,7 +22,7 @@ import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
-import { getServerConfig } from "../common"
+import { getServerConfig, VirtualFilters } from "../common"
 import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
@@ -64,7 +64,9 @@ export const TestimonySearch = () => (
       }}
       searchClient={searchClient}
       routing={useRouting()}
+      future={{ preserveSharedStateOnUnmount: true }}
     >
+      <VirtualFilters type="testimony" />
       <Layout />
     </InstantSearch>
   </SearchErrorBoundary>
@@ -107,8 +109,8 @@ const Layout = () => {
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
-          ? ["organization"]
-          : validRoles
+            ? ["organization"]
+            : validRoles
       return {
         ...prevState,
         refinementList: {

@@ -1,3 +1,4 @@
+import { useRefinementList } from "react-instantsearch"
 import { TypesenseInstantsearchAdapterOptions } from "typesense-instantsearch-adapter"
 
 const devConfig = {
@@ -26,4 +27,35 @@ export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"
       }
     ]
   }
+}
+
+
+export function VirtualFilters({ type }: { type: 'bill' | 'testimony' }) {
+  let refinementAttributes;
+
+  if (type === 'testimony') {
+    refinementAttributes = [
+      'authorDisplayName',
+      'court',
+      'position',
+      'billId',
+      'authorRole'
+    ];
+  } else if (type === 'bill') {
+    refinementAttributes = [
+      'court',
+      'currentCommittee',
+      'city',
+      'primarySponsor',
+      'cosponsors',
+      'topics.lvl0',
+      'topics.lvl1',
+    ];
+  }
+
+  refinementAttributes?.forEach((attribute) => {
+    useRefinementList({ attribute });
+  });
+
+  return null;
 }
