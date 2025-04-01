@@ -67,11 +67,27 @@ export const { Provider } = createService(() => {
   }, [])
 })
 
+const timedGetFirestore = () => {
+  const start = performance.now()
+  const firestore = getFirestore()
+  const end = performance.now()
+  console.log("Getting firestore took", end - start, "ms")
+  return firestore
+}
+
+const timedInitializeFirestore = () => {
+  const start = performance.now()
+  const firestore = initializeFirestore(app, {
+    ignoreUndefinedProperties: true
+  })
+  const end = performance.now()
+  console.log("Initializing firestore took", end - start, "ms")
+  return firestore
+}
+
 export const firestore = initialized
-  ? getFirestore()
-  : initializeFirestore(app, {
-      ignoreUndefinedProperties: true
-    })
+  ? timedGetFirestore()
+  : timedInitializeFirestore
 export const auth = getAuth()
 export const storage = getStorage()
 export const functions = getFunctions()
