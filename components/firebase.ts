@@ -87,7 +87,7 @@ const timedInitializeFirestore = () => {
 
 export const firestore = initialized
   ? timedGetFirestore()
-  : timedInitializeFirestore
+  : timedInitializeFirestore()
 export const auth = getAuth()
 export const storage = getStorage()
 export const functions = getFunctions()
