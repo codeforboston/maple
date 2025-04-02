@@ -1,4 +1,4 @@
-import { useTranslation } from "next-i18next"
+import { TFunction, useTranslation } from "next-i18next"
 import {
   CurrentRefinements,
   Hits,
@@ -10,7 +10,7 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row } from "../../bootstrap"
+import { Col, Container, Row, Spinner } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -21,7 +21,7 @@ import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -100,6 +100,47 @@ const useSearchStatus = () => {
   }
 }
 
+const StyledLoadingContainer = styled(Container)`
+  background-color: white;
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+`
+
+const Results = ({
+  status,
+  t
+}: {
+  status: ReturnType<typeof useSearchStatus>
+  t: TFunction
+}) => {
+  const [isLoadingBillDetails, setIsLoadingBillDetails] = useState(false)
+
+  if (isLoadingBillDetails) {
+    return (
+      <StyledLoadingContainer>
+        <Spinner animation="border" className="mx-auto" />
+      </StyledLoadingContainer>
+    )
+  } else if (status === "empty") {
+    return (
+      <NoResults>
+        {t("zero_results")}
+        <br />
+        <b>{t("another_term")}</b>
+      </NoResults>
+    )
+  } else {
+    return (
+      <Hits
+        hitComponent={BillHit}
+        onClick={() => setIsLoadingBillDetails(true)}
+      />
+    )
+  }
+}
+
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
@@ -128,15 +169,7 @@ const Layout: FC<
             excludedAttributes={["nextHearingAt"]}
             transformItems={extractLastSegmentOfRefinements}
           />
-          {status === "empty" ? (
-            <NoResults>
-              {t("zero_results")}
-              <br />
-              <b>{t("another_term")}</b>
-            </NoResults>
-          ) : (
-            <Hits hitComponent={BillHit} />
-          )}
+          <Results status={status} t={t} />
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>
