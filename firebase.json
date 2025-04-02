@@ -15,7 +15,7 @@
     {
       "source": "llm",
       "codebase": "maple-llm",
-      "runtime": "python312"
+      "runtime": "python310"
     }
   ],
   "firestore": {
