@@ -23,7 +23,9 @@ const OurGoalsCardContent = () => {
   const { t } = useTranslation("goalsandmission")
   return (
     <>
-      <h5 className="pb-4 tracking-tight lh-sm">{t("goals.overview")}</h5>
+      <h5 className="text-center fw-bold fs-sm-2 tracking-tight pb-3 pb-sm-4">
+        {t("goals.overview")}
+      </h5>
       <Row className="mb-4">
         <Col md={6}>
           <figure className="text-center mb-3">
@@ -77,7 +79,7 @@ const OurMissionCardContent = () => {
 
   return (
     <>
-      <h5 className="text-center fw-bold fs-sm-2 tracking-tight pb-3 pb-sm-4 text-info">
+      <h5 className="text-center fw-bold fs-sm-2 tracking-tight pb-3 pb-sm-4">
         {t("mission.overview")}
       </h5>
       <Row className="mb-4">
