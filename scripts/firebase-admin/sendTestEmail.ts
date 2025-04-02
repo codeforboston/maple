@@ -57,6 +57,8 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
 
 const Args = Record({ email: String })
 
+// Send a test email with:
+//   yarn firebase-admin -e dev run-script sendTestEmail --email="youremail@example.com"
 export const script: Script = async ({ db, args }) => {
   const { email } = Args.check(args)
   const digestData: NotificationEmailDigest = {
@@ -71,14 +73,18 @@ export const script: Script = async ({ db, args }) => {
 
   const htmlString = renderToHtmlString(digestData)
 
+  console.log("DEBUG: HTML String: ", htmlString)
+  console.log("DEBUG: Email: ", email)
+
   // Create an email document in /notifications_mails to queue up the send
-  await db.collection("notifications_mails").add({
+  const result = await db.collection("emails").add({
     to: [email],
     message: {
       subject: "Test Notifications Digest",
-      text: "", // blank because we're sending HTML
       html: htmlString
     },
     createdAt: Timestamp.now()
   })
+
+  console.log("DEBUG: Email document created with ID: ", result.id)
 }
