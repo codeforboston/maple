@@ -19,9 +19,8 @@ import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
-import { getServerConfig } from "../common"
+import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
-import { useMediaQuery } from "usehooks-ts"
 import { FC, useState } from "react"
 
 const searchClient = new TypesenseInstantSearchAdapter({
@@ -72,7 +71,9 @@ export const BillSearch = () => {
         }}
         searchClient={searchClient}
         routing={useRouting()}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
+        <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
     </SearchErrorBoundary>
@@ -148,16 +149,14 @@ const Layout: FC<
 
   const { t } = useTranslation("billSearch")
 
-  const inline = useMediaQuery("(min-width: 768px)")
-
   return (
     <SearchContainer>
       <Row>
         <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
-        <Col xs={3} lg={3}>
-          {inline ? refinements.options : null}
+        <Col xs={0} lg={3}>
+          {refinements.options}
         </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>

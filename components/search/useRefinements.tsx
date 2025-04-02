@@ -69,28 +69,25 @@ export const useRefinements = ({
         <div>{refinements}</div>
       </>
     ) : (
-      <>
-        <div>{hierarchicalMenu}</div>
-        <div>{refinements}</div>
-      </>
-      //   <Offcanvas show={show} onHide={handleClose}>
-      //     <Offcanvas.Header closeButton>
-      //       <Offcanvas.Title>{t("filter")}</Offcanvas.Title>
-      //     </Offcanvas.Header>
-      //     <Offcanvas.Body>
-      //       <SearchContainer>{hierarchicalMenu}</SearchContainer>
-      //       <SearchContainer>{refinements}</SearchContainer>
-      //     </Offcanvas.Body>
-      //   </Offcanvas>
+      <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>{t("filter")}</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <SearchContainer>{hierarchicalMenu}</SearchContainer>
+          <SearchContainer>{refinements}</SearchContainer>
+        </Offcanvas.Body>
+      </Offcanvas>
     ),
-    show: inline ? null : null
-    // <FilterButton
-    //   variant="secondary"
-    //   active={show}
-    //   onClick={handleOpen}
-    //   className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
-    // >
-    //   <FontAwesomeIcon icon={faFilter} /> {t("filter")}
-    // </FilterButton>
+    show: inline ? null : (
+      <FilterButton
+        variant="secondary"
+        active={show}
+        onClick={handleOpen}
+        className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
+      >
+        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
+      </FilterButton>
+    )
   }
 }

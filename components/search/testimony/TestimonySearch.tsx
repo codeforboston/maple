@@ -22,7 +22,7 @@ import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
-import { getServerConfig } from "../common"
+import { getServerConfig, VirtualFilters } from "../common"
 import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
@@ -64,7 +64,9 @@ export const TestimonySearch = () => (
       }}
       searchClient={searchClient}
       routing={useRouting()}
+      future={{ preserveSharedStateOnUnmount: true }}
     >
+      <VirtualFilters type="testimony" />
       <Layout />
     </InstantSearch>
   </SearchErrorBoundary>
@@ -149,7 +151,7 @@ const Layout = () => {
             />
           </Row>
           <Row>
-            <Col xs={3} lg={3}>
+            <Col xs={0} lg={3}>
               {refinements.options}
             </Col>
             <Col className="d-flex flex-column">
