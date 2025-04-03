@@ -17,6 +17,7 @@ export default createPage({
 
 export const getStaticProps = createGetStaticTranslationProps([
   "auth",
+  "billSearch",
   "common",
   "footer",
   "testimony",

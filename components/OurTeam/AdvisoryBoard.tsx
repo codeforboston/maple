@@ -26,11 +26,16 @@ export const AdvisoryBoard = () => {
       <Row>
         <Col className="my-3">
           <SectionContainer className="py-1">
+            <MemberItem name="David Fields" descr={t("advisory.DFields")} />
+            <Divider />
             <MemberItem name="John Griffin" descr={t("advisory.JGriffin")} />
             <Divider />
             <MemberItem name="Marci Harris" descr={t("advisory.MHarris")} />
             <Divider />
-            <MemberItem name="David Fields" descr={t("advisory.DFields")} />
+            <MemberItem
+              name="Jake Hirsh-Allen"
+              descr={t("advisory.JakeHirshAllen")}
+            />
             <Divider />
             <MemberItem name="Matt Prewitt" descr={t("advisory.MPrewitt")} />
             <Divider />
