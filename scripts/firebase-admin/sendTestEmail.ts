@@ -9,8 +9,8 @@ import { Timestamp } from "functions/src/firebase"
 
 const path = require("path")
 
-const PARTIALS_DIR = "./functions/lib/email/partials/"
-const EMAIL_TEMPLATE_PATH = "./functions/lib/email/digestEmail.handlebars"
+const PARTIALS_DIR = "./functions/src/email/partials/"
+const EMAIL_TEMPLATE_PATH = "./functions/src/email/digestEmail.handlebars"
 
 // Define Handlebars helper functions
 handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
