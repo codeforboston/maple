@@ -8,19 +8,15 @@ const assembly = new AssemblyAI({
 })
 
 export const transcription = functions.https.onRequest(async (req, res) => {
-  console.log("req.headers", req.headers)
   if (req.headers["x-maple-webhook"]) {
-    console.log("req.body.status", req.body.status)
-
     if (req.body.status === "completed") {
       const transcript = await assembly.transcripts.get(req.body.transcript_id)
-      console.log("transcript.webhook_auth", transcript.webhook_auth)
       if (transcript && transcript.webhook_auth) {
         const maybeEventInDb = await db
           .collection("events")
           .where("videoAssemblyId", "==", transcript.id)
           .get()
-        console.log("maybeEventInDb.docs.length", maybeEventInDb.docs.length)
+
         if (maybeEventInDb.docs.length) {
           const authenticatedEventsInDb = maybeEventInDb.docs.filter(
             async e => {
@@ -41,20 +37,54 @@ export const transcription = functions.https.onRequest(async (req, res) => {
               return false
             }
           )
-          console.log("authenticatedEventsInDb", authenticatedEventsInDb)
 
+          const { id, text, audio_url, utterances, words } = transcript
           if (authenticatedEventsInDb) {
             try {
-              await db
+              const transcriptionInDb = db
                 .collection("transcriptions")
                 .doc(transcript.id)
-                .set({ _timestamp: new Date(), ...transcript })
 
-              authenticatedEventsInDb.forEach(async d => {
-                await d.ref.update({
-                  ["x-maple-webhook"]: null
-                })
+              transcriptionInDb.set({
+                id,
+                text,
+                timestamp: new Date(),
+                audio_url,
+                words
               })
+
+              transcriptionInDb
+                .collection("timestamps")
+                .doc("utterances")
+                .set({
+                  utterances: utterances?.map(
+                    ({ speaker, confidence, start, end, text }) => ({
+                      speaker,
+                      confidence,
+                      start,
+                      end,
+                      text
+                    })
+                  )
+                })
+
+              transcriptionInDb.collection("timestamps").doc("words").set({
+                words
+              })
+
+              const batch = db.batch()
+
+              batch.set(db.collection("transcriptions").doc(transcript.id), {
+                _timestamp: new Date(),
+                ...transcript
+              })
+
+              authenticatedEventsInDb.forEach(doc => {
+                batch.update(doc.ref, { ["x-maple-webhook"]: null })
+              })
+
+              await batch.commit()
+
               console.log("transcript saved in db")
             } catch (error) {
               console.log(error)
