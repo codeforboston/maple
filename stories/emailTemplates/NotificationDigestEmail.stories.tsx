@@ -1,8 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react"
 import digestEmail from "functions/src/email/digestEmail.handlebars"
-import example1 from "functions/src/email/example1.handlebars"
-import example2 from "functions/src/email/example2.handlebars"
-import { EmailTemplateRenderer } from "./email-template-renderer"
+import { EmailTemplateRenderer } from "./EmailTemplateRenderer"
 
 const meta: Meta = {
   title: "Email Templates/Digest",
@@ -21,43 +19,6 @@ const meta: Meta = {
 export default meta
 
 type Story = StoryObj<typeof EmailTemplateRenderer>
-
-export const Example1: Story = {
-  args: {
-    templateSrcUrl: example1,
-    context: {
-      name: "Derek",
-      street: "123 Main St",
-      city: "Pittsburgh",
-      state: "PA"
-    }
-  }
-}
-
-export const Example2: Story = {
-  args: {
-    templateSrcUrl: example2,
-    context: {
-      name: "Yogi Berra",
-      quotes: [
-        {
-          quote:
-            "If you don't know where you are going, you might wind up someplace else."
-        },
-        {
-          quote:
-            "You better cut the pizza in four pieces because I'm not hungry enough to eat six."
-        },
-        { quote: "I never said most of the things I said." },
-        { quote: "Nobody goes there anymore because it's too crowded." }
-      ],
-      yogiBio:
-        '<i>Lawrence Peter "Yogi" Berra (May 12, 1925 - September 22, 2015) was an American professional baseball catcher, manager, and coach who played 19 seasons in Major League Baseball (MLB) (1946 - 63, 1965), all but the last for the New York Yankees. An 18-time All-Star and 10-time World Series champion as a player, Berra had a career batting average of .285, while compiling 358 home runs and 1,430 runs batted in.</i>',
-      url: "http://yogiberramuseum.org/",
-      text: "Yogi Berra Museum"
-    }
-  }
-}
 
 export const DigestEmail: Story = {
   args: {
