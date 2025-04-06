@@ -1,9 +1,16 @@
 import { Meta, StoryObj } from "@storybook/react"
 import digestEmail from "functions/src/email/digestEmail.handlebars"
 import { EmailTemplateRenderer } from "./EmailTemplateRenderer"
+import {
+  BillDigest,
+  BillResult,
+  NotificationEmailDigest,
+  UserDigest
+} from "functions/src/notifications/emailTypes"
+import { Frequency } from "components/auth"
 
 const meta: Meta = {
-  title: "Email Templates/Digest",
+  title: "Email Templates/Notifications Digest",
   component: EmailTemplateRenderer,
   decorators: [
     Story => (
@@ -20,121 +27,168 @@ export default meta
 
 type Story = StoryObj<typeof EmailTemplateRenderer>
 
-export const DigestEmail: Story = {
-  args: {
-    templateSrcUrl: digestEmail,
-    context: {
-      notificationFrequency: "Monthly",
-      startDate: "2/1/2023",
-      endDate: "2/7/2023",
-      bill: {
-        1: {
-          title: "H.1289",
-          subtitle:
-            "An Act to protect the civil rights and safety of all Massachusetts residents",
-          testimonies: "12",
-          cosponsors: "2",
-          hearingDate: "Jan 31"
-        },
-        2: {
-          title: "H.98",
-          subtitle: "An Act to further govt. transparency",
-          testimonies: "2",
-          cosponsors: "0",
-          hearingDate: "-"
-        }
-      },
-      org: {
-        1: {
-          orgTitle: "Boston’s Teacher Union",
-          userLookup: "Tfh1tp2faYbSWsYYsvUS4F23mtD2",
-          counter: "3",
-          item: {
-            1: {
-              title: "S.77",
-              icon: "endorse"
-            },
-            2: {
-              title: "S.77",
-              icon: "neutral"
-            },
-            3: {
-              title: "S.77",
-              icon: "neutral"
-            }
-          }
-        },
-        2: {
-          orgTitle: "Moms for Liberty",
-          userLookup: "c31R5rjWG9eTUopP7yeA5tZQtJX2",
-          counter: "6",
-          item: {
-            1: {
-              title: "S.128",
-              icon: "endorse"
-            },
-            2: {
-              title: "S.1000",
-              icon: "neutral"
-            },
-            3: {
-              title: "S.543",
-              icon: "oppose"
-            },
-            4: {
-              title: "S.767",
-              icon: "endorse"
-            },
-            5: {
-              title: "S.992",
-              icon: "neutral"
-            },
-            6: {
-              title: "S.1",
-              icon: "oppose"
-            }
-          }
-        },
-        3: {
-          orgTitle: "La Le Lu Le Lo",
-          userLookup: "8P5Ar8NyAcNEVJMTexezXvRbept2",
-          counter: "8",
-          item: {
-            1: {
-              title: "S.128",
-              icon: "endorse"
-            },
-            2: {
-              title: "S.1000",
-              icon: "neutral"
-            },
-            3: {
-              title: "S.543",
-              icon: "oppose"
-            },
-            4: {
-              title: "S.767",
-              icon: "endorse"
-            },
-            5: {
-              title: "S.992",
-              icon: "neutral"
-            },
-            6: {
-              title: "S.1",
-              icon: "oppose"
-            },
-            7: {
-              title: "S.22",
-              icon: "oppose"
-            },
-            8: {
-              title: "S.393",
-              icon: "neutral"
-            }
-          }
-        }
-      }
+// Generate test data for the digest email
+
+// Summary of Bills
+const bills: BillDigest[] = [
+  {
+    billId: "H868",
+    billName:
+      "An Act improving campaign finance reporting by state ballot question committees",
+    billCourt: "194",
+    endorseCount: 2,
+    neutralCount: 0,
+    opposeCount: 1
+  },
+  {
+    billId: "H1436",
+    billName: "An Act relative to debt-free public higher education",
+    billCourt: "194",
+    endorseCount: 2,
+    neutralCount: 0,
+    opposeCount: 0
+  },
+  {
+    billId: "H533",
+    billName: "An Act to expand the use of career and academic plans",
+    billCourt: "194",
+    endorseCount: 10,
+    neutralCount: 2,
+    opposeCount: 24
+  },
+  {
+    billId: "H841",
+    billName:
+      "An Act granting the city of Boston the authority to endow legal voting rights in municipal elections for city of Boston residents aged 16 and 17 years old",
+    billCourt: "194",
+    endorseCount: 35,
+    neutralCount: 20,
+    opposeCount: 10
+  },
+  {
+    billId: "H54",
+    billName:
+      "An Act to build resilient infrastructure to generate higher-ed transformation",
+    billCourt: "194",
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 1
+  }
+]
+
+const billResults: BillResult[] = [
+  {
+    billId: "H868",
+    court: "194",
+    position: "endorse"
+  },
+  {
+    billId: "H1436",
+    court: "194",
+    position: "neutral"
+  },
+  {
+    billId: "H533",
+    court: "194",
+    position: "oppose"
+  },
+  {
+    billId: "H841",
+    court: "194",
+    position: "endorse"
+  },
+  {
+    billId: "H54",
+    court: "194",
+    position: "oppose"
+  },
+  {
+    billId: "H66",
+    court: "194",
+    position: "neutral"
+  },
+  {
+    billId: "H30",
+    court: "194",
+    position: "endorse"
+  }
+]
+
+const generateTestUserData = (
+  userId: string,
+  userName: string,
+  numBillsWithTestimony: number
+): UserDigest => {
+  return {
+    userId,
+    userName,
+    bills: billResults.slice(0, Math.min(6, numBillsWithTestimony)),
+    newTestimonyCount: numBillsWithTestimony
+  }
+}
+
+const users = [
+  generateTestUserData("0BvO7rSlFjRVHuLfd7RlHRYg2DN1", "John Doe", 7),
+  generateTestUserData("2jBTpZQ1kXVVSaJvLy2mxfduoc64", "Jane Roe", 6),
+  generateTestUserData(
+    "381slAnGbzP6atlF4Af4D9pYQT24",
+    "Society for the Humane Prevention of Testimony",
+    5
+  ),
+  generateTestUserData("Nyvk23VDNQSoK9TQ9LK5xF1DwT64", "Person McPersonson", 4),
+  generateTestUserData("QDPq42rNB0O6wqVzfMmDHmNE8sN3", "Iranout Ofnameideas", 3)
+]
+
+const generateTestData = (
+  frequency: Frequency,
+  numBills: number,
+  numUsers: number
+): NotificationEmailDigest => {
+  return {
+    notificationFrequency: frequency,
+    startDate: new Date("2025-04-01T04:00:00Z"),
+    endDate: new Date(
+      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
+    ),
+    bills: bills.slice(0, Math.min(4, numBills)),
+    users: users.slice(0, Math.min(4, numUsers)),
+    numBillsWithNewTestimony: numBills,
+    numUsersWithNewTestimony: numUsers
+  }
+}
+
+// Frequency is guaranteed to be Monthly or Weekly,
+// and there must be at least 1 bill OR 1 user with testimony
+// or else a digest wouldn't be generated
+const createDigestStory = (context: NotificationEmailDigest) => {
+  return {
+    args: {
+      templateSrcUrl: digestEmail,
+      context
     }
   }
 }
+
+export const FullDigest: Story = createDigestStory(
+  generateTestData("Monthly", 4, 4)
+)
+
+export const OnlyBills: Story = createDigestStory(
+  generateTestData("Weekly", 4, 0)
+)
+
+export const OnlyUsers: Story = createDigestStory(
+  generateTestData("Weekly", 0, 4)
+)
+
+export const TooManyBills: Story = createDigestStory(
+  generateTestData("Monthly", 100, 0)
+)
+
+export const TooManyUsers: Story = createDigestStory(
+  generateTestData("Monthly", 0, 100)
+)
+
+export const TooManyBillsAndUsers: Story = createDigestStory(
+  generateTestData("Monthly", 100, 100)
+)
