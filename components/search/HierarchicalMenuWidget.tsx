@@ -77,18 +77,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           ): MultiselectHierarchicalMenuItem[] => {
             const sortByParameter = isParent ? ["name:asc"] : ["count:desc"]
 
-            // Trigger a new search to apply the updated facets
-            if (
-              helper.state.disjunctiveFacets.length != 0 &&
-              !helper.state.disjunctiveFacets.includes(attribute)
-            ) {
-              helper.setQueryParameter("disjunctiveFacets", [
-                ...helper.state.disjunctiveFacets,
-                attribute
-              ])
-              helper.search()
-            }
-
             const facetValues =
               (results?.getFacetValues(attribute, {
                 sortBy: sortByParameter
@@ -182,6 +170,15 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         init(initOptions) {
+          const { helper } = initOptions
+          attributes.forEach(attr => {
+            if (!helper.state.disjunctiveFacets.includes(attr)) {
+              helper.setQueryParameter("disjunctiveFacets", [
+                ...helper.state.disjunctiveFacets,
+                attr
+              ])
+            }
+          })
           const { instantSearchInstance } = initOptions
           renderFn(
             {
@@ -388,10 +385,7 @@ const MultiselectHierarchicalMenuItem = ({
           {item.label}
         </span>
         {!hasSubLevel && ( // Only render count if it's child
-          <span
-            className={`ais-MultiselectHierarchicalMenu-count--child
-            }`}
-          >
+          <span className={`ais-MultiselectHierarchicalMenu-count--child`}>
             {item.count}
           </span>
         )}

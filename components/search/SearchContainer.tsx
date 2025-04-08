@@ -186,7 +186,6 @@ export const SearchContainer = styled.div`
     font-size: 30px;
     color: var(--bs-blue);
     vertical-align: middle;
-    /* margin-bottom: 1rem; */
     background-color: transparent;
     border: none;
     padding: 0%;
@@ -246,5 +245,33 @@ export const SearchContainer = styled.div`
     border-radius: 10px;
     border: none;
     cursor: pointer;
+  }
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 768px) {
+    .ais-MultiselectHierarchicalMenu-toggle {
+      font-size: 16px; /* Smaller on mobile */
+      min-width: 16px;
+    }
+    .ais-MultiselectHierarchicalMenu-list {
+      max-height: 400px; /* More space on mobile */
+      padding: 0.5rem; /* Reduced padding for smaller screens */
+    }
+
+    .ais-MultiselectHierarchicalMenu-list--child {
+      padding: 0 0 0 12px; /* Adjust indent for mobile */
+    }
+
+    .ais-MultiselectHierarchicalMenu-label,
+    .ais-MultiselectHierarchicalMenu-label--child {
+      font-size: 0.875rem; /* Smaller font on mobile */
+      gap: 6px;
+    }
+
+    .ais-MultiselectHierarchicalMenu-count,
+    .ais-MultiselectHierarchicalMenu-count--child {
+      font-size: 0.625rem;
+      padding: 1px 6px;
+    }
   }
 `
