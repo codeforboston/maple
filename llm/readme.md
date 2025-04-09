@@ -137,5 +137,6 @@ python3 -m flask --app main run
 TODO:
 
 - [x] Get an OpenAPI key `firebase functions:secrets:access OPENAI_DEV`
+- [ ] Need to get docker running locally `yarn compose up --build`
 - [ ] Try to deploy the function `firebase deploy --only functions:maple-llm`
 - [ ] Alphabetize the requirements.txt file
