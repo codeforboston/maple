@@ -11,7 +11,7 @@ import {
   NotificationEmailDigest,
   Position,
   UserDigest
-} from "../email/types"
+} from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { getAuth } from "firebase-admin/auth"
 import { Frequency } from "../auth/types"

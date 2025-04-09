@@ -77,18 +77,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           ): MultiselectHierarchicalMenuItem[] => {
             const sortByParameter = isParent ? ["name:asc"] : ["count:desc"]
 
-            // Trigger a new search to apply the updated facets
-            if (
-              helper.state.disjunctiveFacets.length != 0 &&
-              !helper.state.disjunctiveFacets.includes(attribute)
-            ) {
-              helper.setQueryParameter("disjunctiveFacets", [
-                ...helper.state.disjunctiveFacets,
-                attribute
-              ])
-              helper.search()
-            }
-
             const facetValues =
               (results?.getFacetValues(attribute, {
                 sortBy: sortByParameter
@@ -151,7 +139,6 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
                 } else {
                   helper.removeDisjunctiveFacetRefinement(attribute, value)
                 }
-
                 helper.search()
               }
 
@@ -182,7 +169,17 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         init(initOptions) {
-          const { instantSearchInstance } = initOptions
+          const { helper, instantSearchInstance } = initOptions
+          attributes.forEach(attr => {
+            if (!helper.state.disjunctiveFacets.includes(attr)) {
+              helper.setQueryParameter("disjunctiveFacets", [
+                ...helper.state.disjunctiveFacets,
+                attr
+              ])
+            }
+          })
+          helper.search()
+
           renderFn(
             {
               ...this.getWidgetRenderState(initOptions),
