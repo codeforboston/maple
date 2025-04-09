@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions"
 import { AssemblyAI } from "assemblyai"
-import { db } from "../firebase"
+import { db, Timestamp } from "../firebase"
 import { sha256 } from "js-sha256"
 
 const assembly = new AssemblyAI({
@@ -29,7 +29,6 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 .doc("webhookAuth")
                 .get()
               const tokenInDbData = tokenInDb.data()
-              console.log("tokenInDbData", tokenInDbData)
 
               if (tokenInDbData) {
                 return hashedToken === tokenInDbData.videoAssemblyWebhookToken
@@ -41,19 +40,18 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           const { id, text, audio_url, utterances, words } = transcript
           if (authenticatedEventsInDb) {
             try {
-              const transcriptionInDb = db
+              const transcriptionInDb = await db
                 .collection("transcriptions")
                 .doc(transcript.id)
 
-              transcriptionInDb.set({
+              await transcriptionInDb.set({
                 id,
                 text,
-                timestamp: new Date(),
-                audio_url,
-                words
+                createdAt: Timestamp.now(),
+                audio_url
               })
 
-              transcriptionInDb
+              await transcriptionInDb
                 .collection("timestamps")
                 .doc("utterances")
                 .set({
@@ -68,14 +66,17 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                   )
                 })
 
-              transcriptionInDb.collection("timestamps").doc("words").set({
-                words
-              })
+              await transcriptionInDb
+                .collection("timestamps")
+                .doc("words")
+                .set({
+                  words
+                })
 
               const batch = db.batch()
 
               batch.set(db.collection("transcriptions").doc(transcript.id), {
-                _timestamp: new Date(),
+                _timestamp: Timestamp.now(),
                 ...transcript
               })
 

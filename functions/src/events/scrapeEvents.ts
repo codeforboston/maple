@@ -197,11 +197,12 @@ const shouldScrapeVideo = async (EventId: number) => {
     .doc(`hearing-${String(EventId)}`)
     .get()
   const eventData = eventInDb.data()
+
   if (!eventData) {
     return false
   }
   if (!eventData.videoFetchedAt) {
-    return withinCutoff(new Date(eventData.StartTime))
+    return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
   }
   return false
 }
