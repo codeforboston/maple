@@ -10,6 +10,11 @@ import {
   deliverNotifications,
   httpsDeliverNotifications,
   httpsDeliverAdminNotifications,
+  adminNotification,
+  deliverOrgUpgradeStatus,
+  httpsDeliverOrgUpgradeStatus,
+  adminTestimonyNotification,
+  httpsDeliverAdminTestinomyNotifications
 } from "./deliverNotifications"
 import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
 
@@ -22,6 +27,11 @@ export {
   deliverNotifications,
   httpsDeliverNotifications,
   httpsDeliverAdminNotifications,
+  adminNotification,
   httpsCleanupNotifications,
-  updateUserNotificationFrequency
+  updateUserNotificationFrequency,
+  deliverOrgUpgradeStatus,
+  httpsDeliverAdminTestinomyNotifications,
+  adminTestimonyNotification,
+  httpsDeliverOrgUpgradeStatus
 }
