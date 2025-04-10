@@ -1,14 +1,23 @@
-<div id="logo" class="logo bg-blue">
-  <img src="/nav-logo.svg" alt="Maple Logo" />
+<div id="logo" style="background-color: #1a3185;padding: 16px 20px 16px 50px">
+  <img src="email\images_no-svgs\Logo.png" alt="Maple Logo" />
 </div>
 
-<header class="header">
+<header style="background-color: #FFFFFF; padding: 24px 0px 12px;
+  gap: 16px">
   <div>
-    <h2 class="headline blue">Here is your
+    <h2 style="font-weight: 700; font-size: 31px; line-height: 125%; margin: 0px; color: #1a3185">
+      Here is your
       {{toLowerCase notificationFrequency}}
       report!
     </h2>
-    <p class="subheadline blue center">{{startDate}} - {{endDate}}</p>
+    <p class="subheadline blue center" style="font-weight: 600; font-size: 12px; line-height: 125%;
+    color: #1a3185; display: block; margin: auto; width: 75%;">
+      {{startDate}} -
+    </p>
+    <p class="subheadline blue center" style="font-weight: 600; font-size: 12px; line-height: 125%;
+    color: #1a3185; display: block; margin: auto; width: 75%;">
+      {{endDate}}
+    </p>
   </div>
-  <img src="/Mail Report.svg" alt="Maple Logo" />
+  <img src="email\images_no-svgs\Mail Report.png" alt="Report" style="display: block; margin: auto; width: 32%;" />
 </header>
