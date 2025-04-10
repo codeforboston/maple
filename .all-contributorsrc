@@ -623,6 +623,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "azheng1991",
+      "name": "Allan Zheng ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58377006?v=4",
+      "profile": "http://www.careergpt.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
