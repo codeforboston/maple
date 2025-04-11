@@ -36,7 +36,7 @@ const bills: BillDigest[] = [
     billName:
       "An Act improving campaign finance reporting by state ballot question committees",
     billCourt: "194",
-    newTestimonyCount: 5,
+    newTestimonyCount: 1005,
     endorseCount: 2,
     neutralCount: 0,
     opposeCount: 1
