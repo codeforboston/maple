@@ -4,6 +4,7 @@ export type BillDigest = {
   billId: string
   billName: string
   billCourt: string
+  newTestimonyCount: number
   endorseCount: number
   neutralCount: number
   opposeCount: number
@@ -22,8 +23,8 @@ export type UserDigest = {
 }
 export type NotificationEmailDigest = {
   notificationFrequency: Frequency
-  startDate: Date
-  endDate: Date
+  startDate: string
+  endDate: string
   bills: BillDigest[] // cap of 4
   numBillsWithNewTestimony: number
   users: UserDigest[] // cap of 4

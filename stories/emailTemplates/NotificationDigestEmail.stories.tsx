@@ -36,6 +36,7 @@ const bills: BillDigest[] = [
     billName:
       "An Act improving campaign finance reporting by state ballot question committees",
     billCourt: "194",
+    newTestimonyCount: 5,
     endorseCount: 2,
     neutralCount: 0,
     opposeCount: 1
@@ -44,6 +45,7 @@ const bills: BillDigest[] = [
     billId: "H1436",
     billName: "An Act relative to debt-free public higher education",
     billCourt: "194",
+    newTestimonyCount: 3,
     endorseCount: 2,
     neutralCount: 0,
     opposeCount: 0
@@ -52,6 +54,7 @@ const bills: BillDigest[] = [
     billId: "H533",
     billName: "An Act to expand the use of career and academic plans",
     billCourt: "194",
+    newTestimonyCount: 7,
     endorseCount: 10,
     neutralCount: 2,
     opposeCount: 24
@@ -61,6 +64,7 @@ const bills: BillDigest[] = [
     billName:
       "An Act granting the city of Boston the authority to endow legal voting rights in municipal elections for city of Boston residents aged 16 and 17 years old",
     billCourt: "194",
+    newTestimonyCount: 0,
     endorseCount: 35,
     neutralCount: 20,
     opposeCount: 10
@@ -70,6 +74,7 @@ const bills: BillDigest[] = [
     billName:
       "An Act to build resilient infrastructure to generate higher-ed transformation",
     billCourt: "194",
+    newTestimonyCount: 9,
     endorseCount: 0,
     neutralCount: 0,
     opposeCount: 1
@@ -144,12 +149,24 @@ const generateTestData = (
   numBills: number,
   numUsers: number
 ): NotificationEmailDigest => {
+  const testStartDate = new Date("2025-04-01T04:00:00Z")
+  const testStartMonth = testStartDate.getMonth() + 1 // Month is 0-indexed
+  const testStartDay = testStartDate.getDate()
+  const testStartYear = testStartDate.getFullYear()
+  const testStartformattedDate = `${testStartMonth}/${testStartDay}/${testStartYear}`
+
+  const testEndDate = new Date(
+    `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
+  )
+  const testEndMonth = testEndDate.getMonth() + 1 // Month is 0-indexed
+  const testEndDay = testEndDate.getDate()
+  const testEndYear = testEndDate.getFullYear()
+  const testEndformattedDate = `${testEndMonth}/${testEndDay}/${testEndYear}`
+
   return {
     notificationFrequency: frequency,
-    startDate: new Date("2025-04-01T04:00:00Z"),
-    endDate: new Date(
-      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
-    ),
+    startDate: testStartformattedDate,
+    endDate: testEndformattedDate,
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
