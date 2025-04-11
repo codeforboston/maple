@@ -1,13 +1,16 @@
-<section class="Bills" style="margin-left: 47.5px; margin-right: 47.5px; padding-bottom: 20px">
-  <div class="sectionHeader">
-    <h5 class="sectionTitle">Bills</h5>
-    <div class="sectionLine"></div>
+<section style="margin-left: 47.5px; margin-right: 47.5px; padding-bottom: 20px">
+  <div style="margin-bottom: 20px;">
+    <h5 style="display: inline-block; font-weight: 600; font-size: 25px; line-height: 125%; margin-right: 20px; margin-bottom: 0px;
+               color: #C71E32;">
+      Bills
+    </h5>
+    <div style="border: 1px solid #C71E32; height: 0px; width: 400px; display: inline-block; margin-bottom: 8px"></div>
   </div>
-  <div class="sectionBills">
+  <div id="sectionBills">
     {{#each bills}}
       {{> bill}}
     {{else}}
-      <article class="billNoUpdates">
+      <article style="margin-bottom: 12px">
         {{> noUpdates }}
       </article>
     {{/each}}
