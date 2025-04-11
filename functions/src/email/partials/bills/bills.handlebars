@@ -15,4 +15,29 @@
       </article>
     {{/each}}
   </div>
+  <div>
+    {{#ifGreaterThan numBillsWithNewTestimony 4}}
+      <div style="padding: 12px 0px 12px 36px; background: #EAE7E7;
+                  border-radius: 12px; margin-bottom: 36px;"> 
+        <div style="font-weight: 700; font-size: 14px; line-height: 125%; letter-spacing: 3%; margin-top: 5px">
+          {{#ifGreaterThan numBillsWithNewTestimony 5}}
+            {{minusFour numBillsWithNewTestimony}} other bills you follow received testimony since your last update
+          {{else}}
+            {{minusFour numBillsWithNewTestimony}} other bill you follow received testimony since your last update
+          {{/ifGreaterThan}}
+        </div>
+        <div style="padding: 20px 0 15px 0; margin: auto; text-align: center">
+          <a 
+            style="background-color: #C61E32; padding: 10px 20px;
+                   color: white; text-decoration:none;font-size:14px;
+                   font-family:Roboto,sans-serif;border-radius:5px" 
+            href="https://www.mapletestimony.org/edit-profile/following"
+          > 
+            View All
+          </a>
+        </div>
+      </div>  
+    {{else}}
+    {{/ifGreaterThan}}
+  </div>
 </section>

@@ -1,7 +1,3 @@
-export function isDefined(v: unknown) {
-  return v !== undefined
-}
-
 export function addCounts() {
   let sum = 0
   for (let i = 0; i < arguments.length - 1; i++) {
@@ -10,13 +6,25 @@ export function addCounts() {
   return sum
 }
 
-export function toLowerCase(aString: unknown) {
-  if (typeof aString === "string") {
-    console.log(`Attempting to convert to lowercase: ${aString}`)
-    return aString.toLowerCase()
+export function ifGreaterThan(
+  this: any,
+  value: number,
+  comparisonValue: number,
+  options: any
+) {
+  if (value > comparisonValue) {
+    return options.fn(this) // Render the block if true
   }
-  console.error(`toLowerCase received a non-string value: ${aString}`)
-  return undefined
+  return options.inverse(this)
+}
+
+export function isDefined(v: unknown) {
+  return v !== undefined
+}
+
+export function minusFour(value: number) {
+  const result = value - 4
+  return result
 }
 
 export function noUpdatesFormat(aString: string) {
@@ -32,4 +40,13 @@ export function noUpdatesFormat(aString: string) {
       result = "today"
   }
   return result
+}
+
+export function toLowerCase(aString: unknown) {
+  if (typeof aString === "string") {
+    console.log(`Attempting to convert to lowercase: ${aString}`)
+    return aString.toLowerCase()
+  }
+  console.error(`toLowerCase received a non-string value: ${aString}`)
+  return undefined
 }

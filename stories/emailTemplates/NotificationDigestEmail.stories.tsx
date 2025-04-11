@@ -36,7 +36,6 @@ const bills: BillDigest[] = [
     billName:
       "An Act improving campaign finance reporting by state ballot question committees",
     billCourt: "194",
-    newTestimonyCount: 1005,
     endorseCount: 2,
     neutralCount: 0,
     opposeCount: 1
@@ -45,7 +44,6 @@ const bills: BillDigest[] = [
     billId: "H1436",
     billName: "An Act relative to debt-free public higher education",
     billCourt: "194",
-    newTestimonyCount: 3,
     endorseCount: 2,
     neutralCount: 0,
     opposeCount: 0
@@ -54,7 +52,6 @@ const bills: BillDigest[] = [
     billId: "H533",
     billName: "An Act to expand the use of career and academic plans",
     billCourt: "194",
-    newTestimonyCount: 7,
     endorseCount: 10,
     neutralCount: 2,
     opposeCount: 24
@@ -64,7 +61,6 @@ const bills: BillDigest[] = [
     billName:
       "An Act granting the city of Boston the authority to endow legal voting rights in municipal elections for city of Boston residents aged 16 and 17 years old",
     billCourt: "194",
-    newTestimonyCount: 0,
     endorseCount: 35,
     neutralCount: 20,
     opposeCount: 10
@@ -74,7 +70,6 @@ const bills: BillDigest[] = [
     billName:
       "An Act to build resilient infrastructure to generate higher-ed transformation",
     billCourt: "194",
-    newTestimonyCount: 9,
     endorseCount: 0,
     neutralCount: 0,
     opposeCount: 1
@@ -187,7 +182,7 @@ const createDigestStory = (context: NotificationEmailDigest) => {
 }
 
 export const FullDigest: Story = createDigestStory(
-  generateTestData("Monthly", 4, 4)
+  generateTestData("Monthly", 5, 4)
 )
 
 export const OnlyBills: Story = createDigestStory(

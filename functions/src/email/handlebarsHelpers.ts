@@ -8,9 +8,11 @@ const PARTIALS_DIR = "../../lib/email/partials"
 // Register Handlebars helper functions
 export const registerHelpers = () => {
   handlebars.registerHelper("addCounts", helpers.addCounts)
-  handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-  handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+  handlebars.registerHelper("ifGreaterThan", helpers.ifGreaterThan)
   handlebars.registerHelper("isDefined", helpers.isDefined)
+  handlebars.registerHelper("minusFour", helpers.minusFour)
+  handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+  handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
 }
 
 // Register all Handlebars partials
