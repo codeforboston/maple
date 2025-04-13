@@ -42,7 +42,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
             try {
               const transcriptionInDb = await db
                 .collection("transcriptions")
-                .doc(transcript.id)
+                .doc(id)
 
               await transcriptionInDb.set({
                 id,
@@ -51,42 +51,44 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 audio_url
               })
 
-              await transcriptionInDb
-                .collection("timestamps")
-                .doc("utterances")
-                .set({
-                  utterances: utterances?.map(
-                    ({ speaker, confidence, start, end, text }) => ({
-                      speaker,
-                      confidence,
-                      start,
-                      end,
-                      text
-                    })
+              if (utterances) {
+                const writer = db.bulkWriter()
+                for (let utterance of utterances) {
+                  const { speaker, confidence, start, end, text } = utterance
+                  writer.set(
+                    db.doc(
+                      `/transcriptions/${transcript.id}/utterances/${utterance.start}`
+                    ),
+                    { speaker, confidence, start, end, text }
                   )
-                })
+                }
 
-              await transcriptionInDb
-                .collection("timestamps")
-                .doc("words")
-                .set({
-                  words
-                })
+                await writer.close()
+              }
+
+              if (words) {
+                const writer = db.bulkWriter()
+                for (let word of words) {
+                  writer.set(
+                    db.doc(
+                      `/transcriptions/${transcript.id}/words/${word.start}`
+                    ),
+                    word
+                  )
+                }
+
+                await writer.close()
+              }
 
               const batch = db.batch()
-
               batch.set(db.collection("transcriptions").doc(transcript.id), {
                 _timestamp: Timestamp.now(),
                 ...transcript
               })
-
               authenticatedEventsInDb.forEach(doc => {
                 batch.update(doc.ref, { ["x-maple-webhook"]: null })
               })
-
               await batch.commit()
-
-              console.log("transcript saved in db")
             } catch (error) {
               console.log(error)
             }
