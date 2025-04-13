@@ -122,3 +122,21 @@ This project uses OpenAI's API for various language processing tasks. To use the
    ```python
    import os
    print(os.environ.get('OPENAI_API_KEY'))
+
+# Running the API
+
+Set up a virtual environment and run the Flask app
+
+```
+python3 -m venv venv
+source venv/bin/activate # .fish if using fish
+pip3 install -r requirements.txt
+python3 -m flask --app main run
+```
+
+TODO:
+
+- [x] Get an OpenAPI key `firebase functions:secrets:access OPENAI_DEV`
+- [ ] Need to get docker running locally `yarn compose up --build`
+- [ ] Try to deploy the function `firebase deploy --only functions:maple-llm`
+- [ ] Alphabetize the requirements.txt file
