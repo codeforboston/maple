@@ -182,7 +182,7 @@ const createDigestStory = (context: NotificationEmailDigest) => {
 }
 
 export const FullDigest: Story = createDigestStory(
-  generateTestData("Monthly", 5, 4)
+  generateTestData("Monthly", 4, 4)
 )
 
 export const OnlyBills: Story = createDigestStory(

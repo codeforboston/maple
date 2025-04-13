@@ -1,0 +1,23 @@
+<section style="margin: 0 47.5px; padding-bottom: 12px">
+  <div style="margin-bottom: 20px">
+    <h5 style="font-weight: 600; font-size: 25px; line-height: 125%;
+               margin-bottom: 0px;color: #C71E32; margin-right: 20px;
+               display: inline-block;"
+    >
+      Users
+    </h5>
+    <div style="border: 1px solid #C71E32; height: 0px; width: 400px;
+                display: inline-block; margin-bottom: 8px"
+    >
+    </div>
+  </div>
+  <div id="sectionOrgs">
+    {{#each users}}
+      {{> user}}
+    {{else}}  
+      <article style="margin-bottom: 20px">
+        {{> noUpdates }}
+      </article>
+    {{/each}}
+  </div>
+</section>
