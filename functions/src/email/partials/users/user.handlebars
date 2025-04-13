@@ -1,1 +1,132 @@
-<p>test - rebuild old_user.handlebars here</p>
+<article style="padding: 16px 0px 26px 24px; gap: 4px; background: #EAE7E7;
+                border-radius: 12px; margin-bottom: 20px"
+>
+  <div style="font-weight: 500; font-size: 22px; line-height: 125%; color: #000000;
+              margin-right: auto"
+  >
+    {{this.userName}}
+  </div>
+  <div style="margin-right: auto;">
+    <div style="margin-right: 24px; display: inline-block">
+      <div style="width: 37px; height: 76px; font-weight: 600; font-size: 61px;
+                  line-height: 125%; letter-spacing: -0.03em; color: #1A3185;
+                  margin-left: auto; margin-right: auto;"
+      >
+        {{this.newTestimonyCount}}
+      </div>
+      <div style="font-weight: 700; font-size: 16px; line-height: 125%; letter-spacing: 0.015em;
+                  color: #000000; width: 135px"
+      >
+        New Testimonies
+      </div>
+    </div>
+    <table style="display: inline-block; margin: 0; padding: 0">
+      <tr>
+        {{!-- the possibility of the 6th item being handled differently and
+          the possibility of more than 6 data points makes iterating 
+          through an array of items difficult --}}
+
+        {{!-- Item 1 --}}
+
+        {{#if this.bills.1.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.1.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.1.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+        {{!-- Item 2 --}}
+          
+        {{#if this.bills.2.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.2.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.2.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+      </tr>
+      <tr>
+        {{!-- Item 3 --}}
+
+        {{#if this.bills.3.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.3.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.3.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+        {{!-- Item 4 --}}
+        
+        {{#if this.bills.4.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.4.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.4.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+      </tr>
+      </tr>
+        {{!-- Item 5 --}}
+
+        {{#if this.bills.5.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.5.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.5.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+        {{!-- Item 6 --}}
+
+        {{#if this.bills.6.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.6.billId}}
+            </div>
+            
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.6.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+        {{!-- add code for See More  --}}
+      </tr>
+    </table>
+  </div>  
+</article>
