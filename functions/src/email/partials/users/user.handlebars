@@ -28,12 +28,26 @@
 
         {{!-- Item 1 --}}
 
+        {{#if this.bills.0.billId}}
+          <td style="width: 75px">
+            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+              {{this.bills.0.billId}}
+            </div>
+          </td>
+          <td style="width: 75px">
+            <img
+              src="email\images_no-svgs\\{{this.bills.0.position}}.jpg"
+            />
+          </td>
+        {{/if}}
+
+        {{!-- Item 2 --}}
+          
         {{#if this.bills.1.billId}}
           <td style="width: 75px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               {{this.bills.1.billId}}
             </div>
-            
           </td>
           <td style="width: 75px">
             <img
@@ -41,15 +55,15 @@
             />
           </td>
         {{/if}}
+      </tr>
+      <tr>
+        {{!-- Item 3 --}}
 
-        {{!-- Item 2 --}}
-          
         {{#if this.bills.2.billId}}
           <td style="width: 75px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               {{this.bills.2.billId}}
             </div>
-            
           </td>
           <td style="width: 75px">
             <img
@@ -57,16 +71,14 @@
             />
           </td>
         {{/if}}
-      </tr>
-      <tr>
-        {{!-- Item 3 --}}
 
+        {{!-- Item 4 --}}
+        
         {{#if this.bills.3.billId}}
           <td style="width: 75px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               {{this.bills.3.billId}}
             </div>
-            
           </td>
           <td style="width: 75px">
             <img
@@ -75,14 +87,15 @@
           </td>
         {{/if}}
 
-        {{!-- Item 4 --}}
-        
+      </tr>
+      </tr>
+        {{!-- Item 5 --}}
+
         {{#if this.bills.4.billId}}
           <td style="width: 75px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
               {{this.bills.4.billId}}
             </div>
-            
           </td>
           <td style="width: 75px">
             <img
@@ -91,38 +104,32 @@
           </td>
         {{/if}}
 
-      </tr>
-      </tr>
-        {{!-- Item 5 --}}
-
-        {{#if this.bills.5.billId}}
-          <td style="width: 75px">
-            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              {{this.bills.5.billId}}
-            </div>
-            
-          </td>
-          <td style="width: 75px">
-            <img
-              src="email\images_no-svgs\\{{this.bills.5.position}}.jpg"
-            />
-          </td>
-        {{/if}}
-
         {{!-- Item 6 --}}
 
-        {{#if this.bills.6.billId}}
-          <td style="width: 75px">
-            <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              {{this.bills.6.billId}}
-            </div>
-            
-          </td>
-          <td style="width: 75px">
-            <img
-              src="email\images_no-svgs\\{{this.bills.6.position}}.jpg"
-            />
-          </td>
+        {{#if this.bills.5.billId}}
+          {{#if this.bills.6.billId}}
+            <td style="width: 75px">
+              <a class="orgItemText" href="https://mapletestimony.org/profile?id={{this.userLookup}}" target="_blank" rel="noopener noreferrer">
+                see more
+              </a>
+            </td>
+            <td style="width: 75px">
+              <div style="color: #1A3185; font-weight: bold;">
+                +
+              </div>
+            </td>
+          {{else}}
+            <td style="width: 75px">
+              <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
+                {{this.bills.5.billId}}
+              </div>
+            </td>
+            <td style="width: 75px">
+              <img
+                src="email\images_no-svgs\\{{this.bills.5.position}}.jpg"
+              />
+            </td>
+          {{/if}}
         {{/if}}
 
         {{!-- add code for See More  --}}

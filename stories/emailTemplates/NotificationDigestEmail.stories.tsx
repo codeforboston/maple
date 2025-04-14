@@ -122,7 +122,7 @@ const generateTestUserData = (
   return {
     userId,
     userName,
-    bills: billResults.slice(0, Math.min(6, numBillsWithTestimony)),
+    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)),
     newTestimonyCount: numBillsWithTestimony
   }
 }
@@ -163,7 +163,7 @@ const generateTestData = (
     startDate: testStartformattedDate,
     endDate: testEndformattedDate,
     bills: bills.slice(0, Math.min(4, numBills)),
-    users: users.slice(0, Math.min(4, numUsers)),
+    users: users.slice(0, Math.min(5, numUsers)),
     numBillsWithNewTestimony: numBills,
     numUsersWithNewTestimony: numUsers
   }
@@ -190,7 +190,7 @@ export const OnlyBills: Story = createDigestStory(
 )
 
 export const OnlyUsers: Story = createDigestStory(
-  generateTestData("Weekly", 0, 4)
+  generateTestData("Weekly", 0, 5)
 )
 
 export const TooManyBills: Story = createDigestStory(
