@@ -55,10 +55,9 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 const writer = db.bulkWriter()
                 for (let utterance of utterances) {
                   const { speaker, confidence, start, end, text } = utterance
+
                   writer.set(
-                    db.doc(
-                      `/transcriptions/${transcript.id}/utterances/${utterance.start}`
-                    ),
+                    db.doc(`/transcriptions/${transcript.id}/utterances/`),
                     { speaker, confidence, start, end, text }
                   )
                 }
@@ -66,25 +65,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 await writer.close()
               }
 
-              if (words) {
-                const writer = db.bulkWriter()
-                for (let word of words) {
-                  writer.set(
-                    db.doc(
-                      `/transcriptions/${transcript.id}/words/${word.start}`
-                    ),
-                    word
-                  )
-                }
-
-                await writer.close()
-              }
-
               const batch = db.batch()
-              batch.set(db.collection("transcriptions").doc(transcript.id), {
-                _timestamp: Timestamp.now(),
-                ...transcript
-              })
               authenticatedEventsInDb.forEach(doc => {
                 batch.update(doc.ref, { ["x-maple-webhook"]: null })
               })
