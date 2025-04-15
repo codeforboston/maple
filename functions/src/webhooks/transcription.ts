@@ -10,35 +10,44 @@ const assembly = new AssemblyAI({
 export const transcription = functions.https.onRequest(async (req, res) => {
   if (req.headers["x-maple-webhook"]) {
     if (req.body.status === "completed") {
+      // If we get a request with the right header and status, get the
+      // transcription from the assembly API.
       const transcript = await assembly.transcripts.get(req.body.transcript_id)
       if (transcript && transcript.webhook_auth) {
-        const maybeEventInDb = await db
+        // If there is a transcript and the transcript has an auth property,
+        // look for an event (aka Hearing) in the DB with a matching ID.
+        const maybeEventsInDb = await db
           .collection("events")
           .where("videoAssemblyId", "==", transcript.id)
           .get()
 
-        if (maybeEventInDb.docs.length) {
-          const authenticatedEventsInDb = maybeEventInDb.docs.filter(
-            async e => {
-              const hashedToken = sha256(String(req.headers["x-maple-webhook"]))
+        if (maybeEventsInDb.docs.length) {
+          // If we have a match look for one that matches a hash of the token
+          // we gave Assembly. There should only be one of these but firestore
+          // gives us an array. If there is more than one member, something is
+          // wrong
+          const authenticatedEventIds = [] as string[]
+          const hashedToken = sha256(String(req.headers["x-maple-webhook"]))
 
-              const tokenInDb = await db
-                .collection("events")
-                .doc(e.id)
-                .collection("private")
-                .doc("webhookAuth")
-                .get()
-              const tokenInDbData = tokenInDb.data()
+          maybeEventsInDb.docs.forEach(async doc => {
+            const tokenDocInDb = await db
+              .collection("events")
+              .doc(doc.id)
+              .collection("private")
+              .doc("webhookAuth")
+              .get()
 
-              if (tokenInDbData) {
-                return hashedToken === tokenInDbData.videoAssemblyWebhookToken
-              }
-              return false
+            const tokenDataInDb = tokenDocInDb.data()?.videoAssemblyWebhookToken
+
+            if (hashedToken === tokenDataInDb) {
+              authenticatedEventIds.push(doc.id)
             }
-          )
+          })
 
-          const { id, text, audio_url, utterances, words } = transcript
-          if (authenticatedEventsInDb) {
+          if (authenticatedEventIds.length === 1) {
+            // If there is one authenticated event, pull out the parts we want to
+            // save and try to save them in the db.
+            const { id, text, audio_url, utterances } = transcript
             try {
               const transcriptionInDb = await db
                 .collection("transcriptions")
@@ -51,13 +60,21 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 audio_url
               })
 
+              // Put each `utterance` in a separate doc in an utterances
+              // collection. Previously had done the same for `words` but
+              // got worried about collection size and write times since
+              // `words` can be tens of thousands of members.
               if (utterances) {
                 const writer = db.bulkWriter()
                 for (let utterance of utterances) {
                   const { speaker, confidence, start, end, text } = utterance
 
                   writer.set(
-                    db.doc(`/transcriptions/${transcript.id}/utterances/`),
+                    db
+                      .collection("transcriptions")
+                      .doc(`${transcript.id}`)
+                      .collection("utterances")
+                      .doc(),
                     { speaker, confidence, start, end, text }
                   )
                 }
@@ -65,11 +82,11 @@ export const transcription = functions.https.onRequest(async (req, res) => {
                 await writer.close()
               }
 
-              const batch = db.batch()
-              authenticatedEventsInDb.forEach(doc => {
-                batch.update(doc.ref, { ["x-maple-webhook"]: null })
+              // Delete the hashed webhook auth token from our db now that
+              // we're done.
+              authenticatedEventIds.forEach(async docId => {
+                await db.doc(docId).set({ ["x-maple-webhook"]: null })
               })
-              await batch.commit()
             } catch (error) {
               console.log(error)
             }
