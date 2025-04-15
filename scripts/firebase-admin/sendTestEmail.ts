@@ -19,9 +19,12 @@ const PARTIALS_DIR = "./functions/src/email/partials/"
 const EMAIL_TEMPLATE_PATH = "./functions/src/email/digestEmail.handlebars"
 
 // Define Handlebars helper functions
-handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+handlebars.registerHelper("addCounts", helpers.addCounts)
+handlebars.registerHelper("ifGreaterThan", helpers.ifGreaterThan)
 handlebars.registerHelper("isDefined", helpers.isDefined)
+handlebars.registerHelper("minusFour", helpers.minusFour)
+handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
 function registerPartials(directoryPath: string) {
   console.log("REGISTERING PARTIALS")
 
@@ -154,7 +157,7 @@ const generateTestUserData = (
   return {
     userId,
     userName,
-    bills: billResults.slice(0, Math.min(6, numBillsWithTestimony)),
+    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)),
     newTestimonyCount: numBillsWithTestimony
   }
 }
@@ -176,12 +179,23 @@ const generateTestData = (
   numBills: number,
   numUsers: number
 ): NotificationEmailDigest => {
+  const testStartDate = new Date("2025-04-01T04:00:00Z")
+  const testStartMonth = testStartDate.getMonth() + 1 // Month is 0-indexed
+  const testStartDay = testStartDate.getDate()
+  const testStartYear = testStartDate.getFullYear()
+  const testStartformattedDate = `${testStartMonth}/${testStartDay}/${testStartYear}`
+
+  const testEndDate = new Date(
+    `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
+  )
+  const testEndMonth = testEndDate.getMonth() + 1 // Month is 0-indexed
+  const testEndDay = testEndDate.getDate()
+  const testEndYear = testEndDate.getFullYear()
+  const testEndformattedDate = `${testEndMonth}/${testEndDay}/${testEndYear}`
   return {
     notificationFrequency: frequency,
-    startDate: new Date("2025-04-01T04:00:00Z"),
-    endDate: new Date(
-      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
-    ),
+    startDate: testStartformattedDate,
+    endDate: testEndformattedDate,
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
