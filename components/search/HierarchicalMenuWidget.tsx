@@ -309,14 +309,18 @@ const MultiselectHierarchicalMenuItem = ({
 
   const onButtonClick = useCallback(() => {
     if (isOpen) {
-      // Clear all refinements
-      levels.forEach(level => {
-        level.items.forEach(subItem => {
-          if (subItem.isRefined) {
-            level.refine(subItem.name)
-          }
-        })
-      })
+      const currentLevel = levels[index]
+      const subLevel = levels[index + 1]
+      if (item.isRefined) {
+        currentLevel.refine(item.name)
+      }
+      if (subLevel) {
+        subLevel.items
+          .filter(
+            subItem => subItem.name.startsWith(item.name) && subItem.isRefined
+          )
+          .forEach(subItem => subLevel.refine(subItem.name))
+      }
     }
     setIsOpen(!isOpen)
   }, [isOpen, levels])
