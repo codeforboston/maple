@@ -163,7 +163,7 @@ const generateTestData = (
     startDate: testStartformattedDate,
     endDate: testEndformattedDate,
     bills: bills.slice(0, Math.min(4, numBills)),
-    users: users.slice(0, Math.min(5, numUsers)),
+    users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
     numUsersWithNewTestimony: numUsers
   }
@@ -186,7 +186,7 @@ export const FullDigest: Story = createDigestStory(
 )
 
 export const OnlyBills: Story = createDigestStory(
-  generateTestData("Weekly", 4, 0)
+  generateTestData("Weekly", 5, 0)
 )
 
 export const OnlyUsers: Story = createDigestStory(

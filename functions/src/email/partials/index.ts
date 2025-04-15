@@ -5,7 +5,6 @@ import header from "./header.handlebars"
 import newsFeedLink from "./newsFeedLink.handlebars"
 import noUpdates from "./noUpdates.handlebars"
 import user from "./users/user.handlebars"
-import userItemEmpty from "./users/userItemEmpty.handlebars"
 import users from "./users/users.handlebars"
 
 export const partials = {
@@ -16,6 +15,5 @@ export const partials = {
   newsFeedLink,
   noUpdates,
   user,
-  userItemEmpty,
   users
 }
