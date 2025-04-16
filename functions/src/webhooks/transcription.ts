@@ -29,7 +29,9 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           const authenticatedEventIds = [] as string[]
           const hashedToken = sha256(String(req.headers["x-maple-webhook"]))
 
-          maybeEventsInDb.docs.forEach(async doc => {
+          for (const index in maybeEventsInDb.docs){
+            const doc = maybeEventsInDb.docs[index]
+
             const tokenDocInDb = await db
               .collection("events")
               .doc(doc.id)
@@ -42,7 +44,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
             if (hashedToken === tokenDataInDb) {
               authenticatedEventIds.push(doc.id)
             }
-          })
+          }
 
           if (authenticatedEventIds.length === 1) {
             // If there is one authenticated event, pull out the parts we want to
@@ -85,7 +87,15 @@ export const transcription = functions.https.onRequest(async (req, res) => {
               // Delete the hashed webhook auth token from our db now that
               // we're done.
               authenticatedEventIds.forEach(async docId => {
-                await db.doc(docId).set({ ["x-maple-webhook"]: null })
+                
+                await db.collection("events")
+                .doc(docId)
+                .collection("private")
+                .doc("webhookAuth")
+                .set({
+                  videoAssemblyWebhookToken: null
+                })
+            
               })
             } catch (error) {
               console.log(error)
