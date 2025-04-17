@@ -144,24 +144,12 @@ const generateTestData = (
   numBills: number,
   numUsers: number
 ): NotificationEmailDigest => {
-  const testStartDate = new Date("2025-04-01T04:00:00Z")
-  const testStartMonth = testStartDate.getMonth() + 1 // Month is 0-indexed
-  const testStartDay = testStartDate.getDate()
-  const testStartYear = testStartDate.getFullYear()
-  const testStartformattedDate = `${testStartMonth}/${testStartDay}/${testStartYear}`
-
-  const testEndDate = new Date(
-    `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
-  )
-  const testEndMonth = testEndDate.getMonth() + 1 // Month is 0-indexed
-  const testEndDay = testEndDate.getDate()
-  const testEndYear = testEndDate.getFullYear()
-  const testEndformattedDate = `${testEndMonth}/${testEndDay}/${testEndYear}`
-
   return {
     notificationFrequency: frequency,
-    startDate: testStartformattedDate,
-    endDate: testEndformattedDate,
+    startDate: new Date("2025-04-01T04:00:00Z"),
+    endDate: new Date(
+      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
+    ),
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,

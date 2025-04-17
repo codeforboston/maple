@@ -22,10 +22,10 @@ export type UserDigest = {
 }
 export type NotificationEmailDigest = {
   notificationFrequency: Frequency
-  startDate: string
-  endDate: string
+  startDate: Date
+  endDate: Date
   bills: BillDigest[]
   numBillsWithNewTestimony: number
-  users: UserDigest[]
+  users: UserDigest[] // cap of 4
   numUsersWithNewTestimony: number
 }
