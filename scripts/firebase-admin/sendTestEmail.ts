@@ -157,7 +157,7 @@ const generateTestUserData = (
   return {
     userId,
     userName,
-    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)),
+    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)), // need a potential 7th bill to trigger 'See more' option
     newTestimonyCount: numBillsWithTestimony
   }
 }
