@@ -29,7 +29,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
           const authenticatedEventIds = [] as string[]
           const hashedToken = sha256(String(req.headers["x-maple-webhook"]))
 
-          for (const index in maybeEventsInDb.docs){
+          for (const index in maybeEventsInDb.docs) {
             const doc = maybeEventsInDb.docs[index]
 
             const tokenDocInDb = await db
@@ -44,6 +44,17 @@ export const transcription = functions.https.onRequest(async (req, res) => {
             if (hashedToken === tokenDataInDb) {
               authenticatedEventIds.push(doc.id)
             }
+          }
+
+          // Log edge cases
+          if (maybeEventsInDb.docs.length === 0) {
+            console.log("No matching event in db.")
+          }
+          if (authenticatedEventIds.length === 0) {
+            console.log("No authenticated events in db.")
+          }
+          if (authenticatedEventIds.length > 1) {
+            console.log("More than one matching event in db.")
           }
 
           if (authenticatedEventIds.length === 1) {
@@ -86,17 +97,16 @@ export const transcription = functions.https.onRequest(async (req, res) => {
 
               // Delete the hashed webhook auth token from our db now that
               // we're done.
-              authenticatedEventIds.forEach(async docId => {
-                
-                await db.collection("events")
-                .doc(docId)
-                .collection("private")
-                .doc("webhookAuth")
-                .set({
-                  videoAssemblyWebhookToken: null
-                })
-            
-              })
+              for (const index in authenticatedEventIds) {
+                await db
+                  .collection("events")
+                  .doc(authenticatedEventIds[index])
+                  .collection("private")
+                  .doc("webhookAuth")
+                  .set({
+                    videoAssemblyWebhookToken: null
+                  })
+              }
             } catch (error) {
               console.log(error)
             }
