@@ -18,7 +18,7 @@ export const transcription = functions.https.onRequest(async (req, res) => {
         // look for an event (aka Hearing) in the DB with a matching ID.
         const maybeEventsInDb = await db
           .collection("events")
-          .where("videoAssemblyId", "==", transcript.id)
+          .where("videoTranscriptionId", "==", transcript.id)
           .get()
 
         if (maybeEventsInDb.docs.length) {
