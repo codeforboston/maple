@@ -25,7 +25,8 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
     paths: [
       { params: { docName: ["about-you"] } },
       { params: { docName: ["testimonies"] } },
-      { params: { docName: ["following"] } }
+      { params: { docName: ["following"] } },
+      { params: { docName: [] } }
     ],
     fallback: false
   }
