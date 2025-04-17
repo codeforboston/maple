@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from "react"
 import Head from "next/head"
 import styles from "../../styles/VideoTranscription.module.css" // Adjust the path as necessary
 import { firestore } from "../../components/firebase"
-import { doc, getDoc } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  where,
+  orderBy,
+  query as fbQuery
+} from "firebase/firestore"
 import { z } from "zod"
 import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
@@ -132,7 +140,23 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const transcription = rawTranscription.data() as any
 
   const videoUrl = transcription.data().audio_url
-  const utterances = transcription.data().utterances
+
+  const docRef = collection(
+    firestore,
+    `transcriptions/${transcriptionId}/utterances`
+  )
+  const q = fbQuery(docRef, orderBy("start", "asc"))
+
+  const rawUtterances = await getDocs(q)
+  if (rawUtterances.empty) {
+    console.log("No utterances found")
+    return { notFound: true }
+  }
+
+  const utterances = rawUtterances.docs.map(doc => ({
+    ...doc.data(),
+    id: doc.id
+  }))
 
   return {
     props: {
