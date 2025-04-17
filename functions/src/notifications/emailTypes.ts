@@ -24,7 +24,7 @@ export type NotificationEmailDigest = {
   notificationFrequency: Frequency
   startDate: Date
   endDate: Date
-  bills: BillDigest[]
+  bills: BillDigest[] // cap of 4
   numBillsWithNewTestimony: number
   users: UserDigest[] // cap of 4
   numUsersWithNewTestimony: number
