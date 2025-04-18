@@ -19,9 +19,12 @@ const PARTIALS_DIR = "./functions/src/email/partials/"
 const EMAIL_TEMPLATE_PATH = "./functions/src/email/digestEmail.handlebars"
 
 // Define Handlebars helper functions
-handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+handlebars.registerHelper("addCounts", helpers.addCounts)
+handlebars.registerHelper("ifGreaterThan", helpers.ifGreaterThan)
 handlebars.registerHelper("isDefined", helpers.isDefined)
+handlebars.registerHelper("minusFour", helpers.minusFour)
+handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
+handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
 function registerPartials(directoryPath: string) {
   console.log("REGISTERING PARTIALS")
 
@@ -154,7 +157,7 @@ const generateTestUserData = (
   return {
     userId,
     userName,
-    bills: billResults.slice(0, Math.min(6, numBillsWithTestimony)),
+    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)), // need a potential 7th bill to trigger 'See more' option
     newTestimonyCount: numBillsWithTestimony
   }
 }

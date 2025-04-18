@@ -122,7 +122,7 @@ const generateTestUserData = (
   return {
     userId,
     userName,
-    bills: billResults.slice(0, Math.min(6, numBillsWithTestimony)),
+    bills: billResults.slice(0, Math.min(7, numBillsWithTestimony)), // need a potential 7th bill to trigger 'See more' option
     newTestimonyCount: numBillsWithTestimony
   }
 }
@@ -174,11 +174,11 @@ export const FullDigest: Story = createDigestStory(
 )
 
 export const OnlyBills: Story = createDigestStory(
-  generateTestData("Weekly", 4, 0)
+  generateTestData("Weekly", 5, 0)
 )
 
 export const OnlyUsers: Story = createDigestStory(
-  generateTestData("Weekly", 0, 4)
+  generateTestData("Weekly", 0, 5)
 )
 
 export const TooManyBills: Story = createDigestStory(

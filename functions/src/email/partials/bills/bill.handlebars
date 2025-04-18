@@ -1,38 +1,36 @@
-<article class="bill">
-  <div class="billTitle">
-    {{this.title}}
+<article id="bill">
+  <div style="font-weight: 500; font-size: 22px; line-height: 125%; 
+              text-decoration-line: underline; color: #000000; margin-bottom: 24px">
+    {{this.billId}}
   </div>
-  <div class="billSubtitle">
-    {{this.subtitle}}
+  <div style="font-weight: 600; font-size: 12px; line-height: 125%; 
+              color: #000000; letter-spacing: 0.03em; margin-bottom: 24px">
+    {{this.billName}}
   </div>
-  <div class="billContent">
-    <div class="billContentRow">
-      <div class="billContentNum numBox1">
-        <div class="billContentNumInner">
-          {{this.testimonies}}
-        </div>
-      </div>
-      <div class="billContentNum numBox2">
-        <div class="billContentNumInner">
-          {{this.cosponsors}}
-        </div>
-      </div>
-      <div class="billContentNum numBox3">
-        <div class="billContentNumInner">
-          {{this.hearingDate}}
-        </div>
+  <div style="padding: 12px 0px 12px 36px; background: #EAE7E7;
+              border-radius: 12px; margin-bottom: 36px;">
+    <div>
+      <div style="height: 49px; font-weight: 500; font-size: 39px; line-height: 125%;
+                  letter-spacing: -0.015em; color: #000000; margin: auto; text-align: center">
+        {{addCounts this.endorseCount this.neutralCount this.opposeCount}}
       </div>
     </div>
-    <div class="billContentRow">
-      <div class="billContentTitle">
-        New Testimonies
-      </div>
-      <div class="billContentTitle">
-        New Co-Sponsors
-      </div>
-      <div class="billContentTitle">
-        Hearing Date
-      </div>
+    <div style="height: 20px; font-weight: 700; font-size: 16px; line-height: 125%;
+                letter-spacing: 0.015em; color: #3E3E3E; margin: auto; text-align: center">
+      New Testimonies
+    </div>
+    <div style="height: 19px; font-weight: 700; font-size: 14px; line-height: 100%;
+                color: #000000; margin: auto; padding: 16px 0px 26px 0px;
+                text-align: center">
+      <img src="email\images_no-svgs\endorse.png" alt="checkmark" style="padding-right: 18px"/>
+      {{!-- replace with link to mapletestimony.org when going live --}}
+      {{this.endorseCount}} Endorse 
+      <img src="email\images_no-svgs\neutral.png" alt="dash" style="padding: 0 18px"/>
+      {{!-- replace with link to mapletestimony.org when going live --}}
+      {{this.neutralCount}} Neutral 
+      <img src="email\images_no-svgs\oppose.png" alt="x-mark" style="padding: 0 18px"/>
+      {{!-- replace with link to mapletestimony.org when going live --}}
+      {{this.opposeCount}} Oppose
     </div>
   </div>
 </article>
