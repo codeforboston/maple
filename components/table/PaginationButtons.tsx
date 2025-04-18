@@ -1,6 +1,4 @@
 import {
-  faAngleLeft,
-  faAngleRight,
   faAngleDoubleLeft,
   faAngleDoubleRight
 } from "@fortawesome/free-solid-svg-icons"
@@ -16,20 +14,12 @@ export const PaginationButtons = ({
     nextPage,
     hasNextPage,
     previousPage,
-    hasPreviousPage,
-    itemsPerPage
-  },
-  totalItems
+    hasPreviousPage
+  }
 }: {
   pagination: Pagination
-  totalItems: number | undefined
 }) => {
   const { t } = useTranslation("common")
-
-  if (totalItems === undefined) {
-    return null
-  }
-  let currentPageEnd = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
     <div className="d-flex justify-content-center my-3">
@@ -43,23 +33,13 @@ export const PaginationButtons = ({
       <SpanStyle variant="secondary" className="align-self-center">
         {t("table.page", { currentPage })}
       </SpanStyle>
-      <NextStyle
-        variant="secondary"
-        onClick={nextPage}
-        disabled={!hasNextPage || currentPageEnd >= totalItems}
-      >
+      <NextStyle variant="secondary" onClick={nextPage} disabled={!hasNextPage}>
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </NextStyle>
     </div>
   )
 }
 
-const SetPageStyle = styled(Button)`
-  font-family: nunito;
-  background-color: #1a3185;
-  margin: 2px;
-  border-radius: 0;
-`
 const SpanStyle = styled(Button)`
   background-color: #1a3185;
   color: white;
