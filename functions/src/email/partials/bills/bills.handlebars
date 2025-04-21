@@ -1,17 +1,45 @@
-<section class="Bills">
-  <div class="sectionHeader">
-    <h5 class="sectionTitle">Bills</h5>
-    <div class="sectionLine"></div>
+<section style="margin-left: 47.5px; margin-right: 47.5px; padding-bottom: 20px">
+  <div style="margin-bottom: 20px;">
+    <h5 style="display: inline-block; font-weight: 600; font-size: 25px; line-height: 125%; margin-right: 20px; margin-bottom: 0px;
+               color: #C71E32;">
+      Bills
+    </h5>
+    <div style="border: 1px solid #C71E32; height: 0px; width: 400px; display: inline-block; margin-bottom: 8px"></div>
   </div>
-  <div class="sectionBills">
-    {{#if bill.1.title}}
-      {{#each bill}}
-        {{> bill }}
-      {{/each}}
+  <div id="sectionBills">
+    {{#each bills}}
+      {{> bill}}
     {{else}}
-      <article class="billNoUpdates">
+      <article style="margin-bottom: 12px">
         {{> noUpdates }}
       </article>
-    {{/if}}
+    {{/each}}
+  </div>
+  <div>
+    {{#ifGreaterThan numBillsWithNewTestimony 4}}
+      <div style="padding: 12px 0px 12px 36px; background: #EAE7E7;
+                  border-radius: 12px; margin-bottom: 36px;"> 
+        <div style="font-weight: 700; font-size: 14px; line-height: 125%; letter-spacing: 3%; margin-top: 5px">
+          {{#ifGreaterThan numBillsWithNewTestimony 5}}
+            {{minusFour numBillsWithNewTestimony}} other bills you follow received testimony since your last update
+          {{else}}
+            {{minusFour numBillsWithNewTestimony}} other bill you follow received testimony since your last update
+          {{/ifGreaterThan}}
+        </div>
+        <div style="padding: 20px 0 15px 0; margin: auto; text-align: center">
+          <a 
+            style="background-color: #C61E32; padding: 10px 20px;
+                   color: white; text-decoration:none;font-size:14px;
+                   font-family:Roboto,sans-serif;border-radius:5px" 
+            href="https://www.mapletestimony.org/edit-profile/following"
+            target="_blank" 
+            rel="noopener noreferrer"
+          > 
+            View All
+          </a>
+        </div>
+      </div>  
+    {{else}}
+    {{/ifGreaterThan}}
   </div>
 </section>
