@@ -21,10 +21,6 @@ import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
 import { withinCutoff } from "./helpers"
 
-const assembly = new AssemblyAI({
-  apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
-})
-
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
@@ -35,7 +31,10 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   get function() {
-    return runWith({ timeoutSeconds: this.timeout })
+    return runWith({
+      timeoutSeconds: this.timeout,
+      secrets: ["ASSEMBLY_API_KEY"]
+    })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
   }
@@ -144,6 +143,10 @@ const submitTranscription = async ({
   EventId: number
   maybeVideoUrl: string
 }) => {
+  const assembly = new AssemblyAI({
+    apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
+  })
+
   const newToken = randomBytes(16).toString("hex")
 
   const transcript = await assembly.transcripts.submit({
