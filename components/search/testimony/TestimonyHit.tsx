@@ -1,15 +1,17 @@
 import { Hit } from "instantsearch.js"
-import { maple } from "components/links"
 import Link from "next/link"
-import { Testimony } from "components/db/testimony"
-import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
-import { formatBillId } from "components/formatting"
-import { useBill } from "components/db/bills"
-import { FollowUserButton } from "components/shared/FollowButton"
-import { Image } from "react-bootstrap"
-import { useFlags } from "components/featureFlags"
-import { useAuth } from "components/auth"
 import { useTranslation } from "next-i18next"
+import { Image } from "react-bootstrap"
+import { useMediaQuery } from "usehooks-ts"
+
+import { useAuth } from "components/auth"
+import { useBill } from "components/db/bills"
+import { Testimony } from "components/db/testimony"
+import { useFlags } from "components/featureFlags"
+import { formatBillId } from "components/formatting"
+import { maple } from "components/links"
+import { FollowUserButton } from "components/shared/FollowButton"
+import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })
@@ -44,6 +46,14 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const { user } = useAuth()
   const { followOrg } = useFlags()
   const isCurrentUser = user?.uid === hit.authorUid
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  function limitStringLength35Char(str: string) {
+    if (str.length > 35) {
+      return str.substring(0, 35)
+    }
+    return str
+  }
 
   return (
     <div
@@ -104,7 +114,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
                   padding: "5px 10px"
                 }}
               >
-                {committee.name}
+                {isMobile
+                  ? limitStringLength35Char(committee.name)
+                  : committee.name}
               </span>
             )}
           </div>
