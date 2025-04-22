@@ -641,6 +641,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "navdeep1840",
+      "name": "Navdeep",
+      "avatar_url": "https://avatars.githubusercontent.com/u/80774259?v=4",
+      "profile": "http://navdeep.xyz",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
