@@ -3,6 +3,7 @@ import { AssemblyAI } from "assemblyai"
 import { db, Timestamp } from "../firebase"
 import { sha256 } from "js-sha256"
 
+
 export const transcription = functions
   .runWith({ secrets: ["ASSEMBLY_API_KEY"] })
   .https.onRequest(async (req, res) => {
@@ -11,9 +12,7 @@ export const transcription = functions
         // If we get a request with the right header and status, get the
         // transcription from the assembly API.
         const assembly = new AssemblyAI({
-          apiKey: process.env.ASSEMBLY_API_KEY
-            ? process.env.ASSEMBLY_API_KEY
-            : ""
+          apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
         })
 
         const transcript = await assembly.transcripts.get(
