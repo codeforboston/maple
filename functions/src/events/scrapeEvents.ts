@@ -156,7 +156,7 @@ const submitTranscription = async ({
     webhook_url:
       // make sure process.env.FUNCTIONS_API_BASE equals
       // https://us-central1-digital-testimony-prod.cloudfunctions.net
-      // on prod. test with: 
+      // on prod. test with:
       // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
       `${process.env.FUNCTIONS_API_BASE}/transcription`,
     speaker_labels: true,
