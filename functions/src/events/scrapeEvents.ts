@@ -154,10 +154,11 @@ const submitTranscription = async ({
       // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
       maybeVideoUrl,
     webhook_url:
-      // test with: "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
-      process.env.NODE_ENV === "development"
-        ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
-        : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
+      // make sure process.env.FUNCTIONS_API_BASE equals
+      // https://us-central1-digital-testimony-prod.cloudfunctions.net
+      // on prod. test with:
+      // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
+      `${process.env.FUNCTIONS_API_BASE}/transcription`,
     speaker_labels: true,
     webhook_auth_header_name: "x-maple-webhook",
     webhook_auth_header_value: newToken
