@@ -8,6 +8,7 @@ import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
 
 import {
   Avatar,
+  NavbarLink21stCentury,
   NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkEditProfile,
@@ -87,6 +88,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           <NavbarLinkSupport handleClick={closeNav} />
           <NavbarLinkFAQ handleClick={closeNav} />
           <NavbarLinkAI handleClick={closeNav} />
+          <NavbarLink21stCentury handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
@@ -222,6 +224,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             <NavbarLinkSupport />
             <NavbarLinkFAQ />
             <NavbarLinkAI />
+            <NavbarLink21stCentury />
           </Dropdown.Menu>
         </Dropdown>
       </div>
