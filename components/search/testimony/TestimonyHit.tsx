@@ -50,7 +50,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
 
   function limitStringLength35Char(str: string) {
     if (str.length > 35) {
-      return str.substring(0, 35)
+      return str.substring(0, 35) + "..."
     }
     return str
   }
