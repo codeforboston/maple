@@ -56,11 +56,11 @@ export const script: Script = async ({ db, args }) => {
       let hasBeenUpdated = false
       let data = user.data() as Profile
       if (data.hasOwnProperty("senator")) {
-        const updateData = updateProfileMember(data, "senator", courtMembersMap)
+        let updateData = updateProfileMember(data, "senator", courtMembersMap)
         if (updateData) {
           // update profile
           if (!dryRun) {
-            await writer.update(user.ref, updateData)
+            writer.update(user.ref, updateData)
           }
           hasBeenUpdated = true
           numUsersWithUpToDateSenator++
@@ -74,14 +74,14 @@ export const script: Script = async ({ db, args }) => {
         const updateData = updateProfileMember(data, "representative", courtMembersMap)
         if (updateData) {
           // update profile
+          if (!dryRun) {
+            writer.update(user.ref, updateData)
+          }
           hasBeenUpdated = hasBeenUpdated || true
-          // if (!dryRun) {
-          //   await writer.set(user.ref, {repres})
-          // }
           numUsersWithUpToDateRepres++
         } 
       } else {
-        console.log(`No senator set on profile ${user.id}!`)
+        console.log(`No representative set on profile ${user.id}!`)
         numUsersWithoutRepres++
       }
 
