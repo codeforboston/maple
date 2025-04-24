@@ -22,6 +22,15 @@ export function isDefined(v: unknown) {
   return v !== undefined
 }
 
+export function formatDate(timestamp: Date) {
+  const date = new Date(timestamp)
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  const year = date.getFullYear()
+
+  return `${month}/${day}/${year}`
+}
+
 export function minusFour(value: number) {
   const result = value - 4
   return result
