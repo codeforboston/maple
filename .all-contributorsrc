@@ -623,6 +623,42 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "azheng1991",
+      "name": "Allan Zheng ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58377006?v=4",
+      "profile": "http://www.careergpt.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "asiakay",
+      "name": "Asia K",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66960776?v=4",
+      "profile": "http://asialakay.net",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "navdeep1840",
+      "name": "Navdeep",
+      "avatar_url": "https://avatars.githubusercontent.com/u/80774259?v=4",
+      "profile": "http://navdeep.xyz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "YuhaoT",
+      "name": "YuhaoT",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30719318?v=4",
+      "profile": "https://github.com/YuhaoT",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"

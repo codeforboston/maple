@@ -21,10 +21,6 @@ import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
 import { withinCutoff } from "./helpers"
 
-const assembly = new AssemblyAI({
-  apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
-})
-
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
@@ -35,7 +31,10 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   }
 
   get function() {
-    return runWith({ timeoutSeconds: this.timeout })
+    return runWith({
+      timeoutSeconds: this.timeout,
+      secrets: ["ASSEMBLY_API_KEY"]
+    })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
   }
@@ -137,6 +136,81 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   }
 }
 
+const submitTranscription = async ({
+  EventId,
+  maybeVideoUrl
+}: {
+  EventId: number
+  maybeVideoUrl: string
+}) => {
+  const assembly = new AssemblyAI({
+    apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
+  })
+
+  const newToken = randomBytes(16).toString("hex")
+
+  const transcript = await assembly.transcripts.submit({
+    audio:
+      // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
+      maybeVideoUrl,
+    webhook_url:
+      // make sure process.env.FUNCTIONS_API_BASE equals
+      // https://us-central1-digital-testimony-prod.cloudfunctions.net
+      // on prod. test with:
+      // "https://ngrokid.ngrok-free.app/demo-dtp/us-central1/transcription",
+      `${process.env.FUNCTIONS_API_BASE}/transcription`,
+    speaker_labels: true,
+    webhook_auth_header_name: "x-maple-webhook",
+    webhook_auth_header_value: newToken
+  })
+
+  await db
+    .collection("events")
+    .doc(`hearing-${String(EventId)}`)
+    .collection("private")
+    .doc("webhookAuth")
+    .set({
+      videoAssemblyWebhookToken: sha256(newToken)
+    })
+
+  return transcript.id
+}
+
+const getHearingVideoUrl = async (EventId: number) => {
+  const req = await fetch(
+    `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
+  )
+  const res = await req.text()
+  if (res) {
+    const dom = new JSDOM(res)
+    if (dom) {
+      const maybeVideoSource =
+        dom.window.document.querySelectorAll("video source")
+      if (maybeVideoSource.length && maybeVideoSource[0]) {
+        const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
+        return firstVideoSource.src
+      }
+    }
+  }
+  return null
+}
+
+const shouldScrapeVideo = async (EventId: number) => {
+  const eventInDb = await db
+    .collection("events")
+    .doc(`hearing-${String(EventId)}`)
+    .get()
+  const eventData = eventInDb.data()
+
+  if (!eventData) {
+    return false
+  }
+  if (!eventData.videoFetchedAt) {
+    return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+  }
+  return false
+}
+
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
     super("every 60 minutes", 240)
@@ -150,88 +224,33 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
-    const eventInDb = await db
-      .collection("events")
-      .doc(`hearing-${String(EventId)}`)
-      .get()
-    const eventData = eventInDb.data()
-    const hearing = Hearing.check(eventData)
-    const shouldScrape = withinCutoff(hearing.startsAt.toDate())
 
-    let payload: Hearing = {
+    if (await shouldScrapeVideo(EventId)) {
+      const maybeVideoUrl = await getHearingVideoUrl(EventId)
+      if (maybeVideoUrl) {
+        const transcriptId = await submitTranscription({
+          maybeVideoUrl,
+          EventId
+        })
+
+        return {
+          id: `hearing-${EventId}`,
+          type: "hearing",
+          content,
+          ...this.timestamps(content),
+          videoURL: maybeVideoUrl,
+          videoFetchedAt: Timestamp.now(),
+          videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
+        } as Hearing
+      }
+    }
+
+    return {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
       ...this.timestamps(content)
-    }
-    if (hearing) {
-      payload = {
-        ...payload,
-        videoURL: hearing.videoURL,
-        videoFetchedAt: hearing.videoFetchedAt,
-        videoAssemblyId: hearing.videoAssemblyId
-      }
-    }
-    let maybeVideoURL = null
-    let transcript = null
-
-    if (!hearing.videoFetchedAt && shouldScrape) {
-      const req = await fetch(
-        `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
-      )
-      const res = await req.text()
-      if (res) {
-        const dom = new JSDOM(res)
-        if (dom) {
-          const maybeVideoSource =
-            dom.window.document.querySelectorAll("video source")
-          if (maybeVideoSource.length && maybeVideoSource[0]) {
-            const newToken = randomBytes(16).toString("hex")
-            const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
-            maybeVideoURL = firstVideoSource.src
-
-            transcript = await assembly.transcripts.submit({
-              webhook_url:
-                process.env.NODE_ENV === "development"
-                  ? "https://us-central1-digital-testimony-dev.cloudfunctions.net/transcription"
-                  : "https://us-central1-digital-testimony-prod.cloudfunctions.net/transcription",
-              webhook_auth_header_name: "X-Maple-Webhook",
-              webhook_auth_header_value: newToken,
-              audio: firstVideoSource.src,
-              auto_highlights: true,
-              custom_topics: true,
-              entity_detection: true,
-              iab_categories: false,
-              format_text: true,
-              punctuate: true,
-              speaker_labels: true,
-              summarization: true,
-              summary_model: "informative",
-              summary_type: "bullets"
-            })
-
-            await db
-              .collection("events")
-              .doc(`hearing-${String(EventId)}`)
-              .collection("private")
-              .doc("webhookAuth")
-              .set({
-                videoAssemblyWebhookToken: sha256(newToken)
-              })
-
-            payload = {
-              ...payload,
-              videoURL: maybeVideoURL,
-              videoFetchedAt: Timestamp.now(),
-              videoAssemblyId: transcript.id
-            }
-          }
-        }
-      }
-    }
-
-    const event: Hearing = payload
-    return event
+    } as Hearing
   }
 }
 
