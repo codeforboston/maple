@@ -22,6 +22,7 @@ const EMAIL_TEMPLATE_PATH = "./functions/src/email/digestEmail.handlebars"
 handlebars.registerHelper("addCounts", helpers.addCounts)
 handlebars.registerHelper("ifGreaterThan", helpers.ifGreaterThan)
 handlebars.registerHelper("isDefined", helpers.isDefined)
+handlebars.registerHelper("formatDate", helpers.formatDate)
 handlebars.registerHelper("minusFour", helpers.minusFour)
 handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
 handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
