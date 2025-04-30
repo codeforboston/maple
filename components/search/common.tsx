@@ -39,13 +39,13 @@ export function VirtualFilters({ type }: { type: "bill" | "testimony" }) {
     type === "testimony"
       ? ["authorDisplayName", "court", "position", "billId", "authorRole"]
       : [
-        "court",
-        "currentCommittee",
-        "city",
-        "primarySponsor",
-        "cosponsors",
-        "topics.lvl1"
-      ]
+          "court",
+          "currentCommittee",
+          "city",
+          "primarySponsor",
+          "cosponsors",
+          "topics.lvl1"
+        ]
 
   return (
     <>
