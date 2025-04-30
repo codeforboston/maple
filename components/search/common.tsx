@@ -30,7 +30,7 @@ export function getServerConfig(): TypesenseInstantsearchAdapterOptions["server"
 }
 
 function RefinementList({ attribute }: { attribute: string }) {
-  useRefinementList({ attribute })
+  useRefinementList({ attribute, limit: 500 })
   return null
 }
 
@@ -39,13 +39,13 @@ export function VirtualFilters({ type }: { type: "bill" | "testimony" }) {
     type === "testimony"
       ? ["authorDisplayName", "court", "position", "billId", "authorRole"]
       : [
-          "court",
-          "currentCommittee",
-          "city",
-          "primarySponsor",
-          "cosponsors",
-          "topics.lvl1"
-        ]
+        "court",
+        "currentCommittee",
+        "city",
+        "primarySponsor",
+        "cosponsors",
+        "topics.lvl1"
+      ]
 
   return (
     <>
