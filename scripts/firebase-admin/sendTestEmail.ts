@@ -62,7 +62,7 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
     "utf8"
   )
   const compiledTemplate = handlebars.compile(templateSource)
-  return compiledTemplate({ digestData })
+  return compiledTemplate(digestData)
 }
 
 // Summary of Bills
