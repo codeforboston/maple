@@ -30,7 +30,7 @@ test.describe("Search result test", () => {
 
     const queryFilter = await billpage.queryFilter
 
-    await expect(queryFilter).toContainText("query:")
+    await expect(queryFilter).toContainText("Query:")
     await expect(queryFilter).toContainText(searchTerm)
   })
 
