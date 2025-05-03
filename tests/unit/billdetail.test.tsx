@@ -109,7 +109,8 @@ const mockBill: Bill = {
       Branch: "Senate"
     }
   ],
-  city: "Sample City"
+  city: "Sample City",
+  similar: []
 }
 
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
@@ -162,7 +163,9 @@ describe("BillDetails", () => {
     const readMoreButton = screen.getByRole("button", { name: "Read more.." })
     expect(readMoreButton).toBeInTheDocument
     fireEvent.click(readMoreButton)
-    expect(screen.getByText(DocumentText)).toBeInTheDocument
+    if (DocumentText) {
+      expect(screen.getByText(DocumentText)).toBeInTheDocument()
+    }
   })
 
   // below test assumes mockBill contains a primary sponsor
