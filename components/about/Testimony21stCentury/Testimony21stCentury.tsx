@@ -13,6 +13,7 @@ import {
 
 const Testimony21stCentury = () => {
   const { t } = useTranslation("testimony21stCentury")
+  const whiteSpace = "\u00A0"
 
   return (
     <Container>
@@ -24,7 +25,7 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2"></SectionTitle>
+            <SectionTitle className="p-2">{whiteSpace}</SectionTitle>
             <DescrContainer className="py-3 px-4">
               {t("section1.desc1")}
             </DescrContainer>
@@ -34,7 +35,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section2.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section2.title")}
+            </SectionTitle>
             <DescrContainer className="py-3 px-4">
               {t("section2.desc1Main")}
             </DescrContainer>
@@ -49,7 +53,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section3.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section3.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section3.desc1Main")}
             </DescrContainer>
@@ -59,7 +66,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section4.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section4.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section4.desc1Main")}
             </DescrContainer>
@@ -69,7 +79,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section5.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section5.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section5.desc1Main")}
             </DescrContainer>
@@ -79,7 +92,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section6.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section6.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section6.desc1Main")}
             </DescrContainer>
@@ -89,7 +105,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section7.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section7.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section7.desc1Main")}
             </DescrContainer>
@@ -99,7 +118,10 @@ const Testimony21stCentury = () => {
       <Row>
         <Col className="py-3">
           <SectionContainer>
-            <SectionTitle className="p-2">{t("section8.title")}</SectionTitle>
+            <SectionTitle className="p-2">
+              {whiteSpace}
+              {t("section8.title")}
+            </SectionTitle>
             <DescrContainer className="pb-3 px-4">
               {t("section8.desc1Main")}
             </DescrContainer>
