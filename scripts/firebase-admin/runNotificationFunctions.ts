@@ -13,6 +13,7 @@ const notificationFunctions: {
   [K in FunctionName]?: K
 } = {
   httpsDeliverNotifications: "httpsDeliverNotifications",
+  httpsDeliverAdminNotifications: "httpsDeliverAdminNotifications",
   httpsCleanupNotifications: "httpsCleanupNotifications"
 }
 
