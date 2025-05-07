@@ -44,7 +44,8 @@ export function VirtualFilters({ type }: { type: "bill" | "testimony" }) {
           "city",
           "primarySponsor",
           "cosponsors",
-          "topics.lvl1"
+          "topics.lvl1",
+          "topics.lvl0"
         ]
 
   return (

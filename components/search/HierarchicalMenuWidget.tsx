@@ -169,7 +169,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
           }
         },
         init(initOptions) {
-          const { helper, instantSearchInstance } = initOptions
+          const { helper } = initOptions
           attributes.forEach(attr => {
             if (!helper.state.disjunctiveFacets.includes(attr)) {
               helper.setQueryParameter("disjunctiveFacets", [
@@ -178,8 +178,7 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
               ])
             }
           })
-          helper.search()
-
+          const { instantSearchInstance } = initOptions
           renderFn(
             {
               ...this.getWidgetRenderState(initOptions),
@@ -309,18 +308,14 @@ const MultiselectHierarchicalMenuItem = ({
 
   const onButtonClick = useCallback(() => {
     if (isOpen) {
-      const currentLevel = levels[index]
-      const subLevel = levels[index + 1]
-      if (item.isRefined) {
-        currentLevel.refine(item.name)
-      }
-      if (subLevel) {
-        subLevel.items
-          .filter(
-            subItem => subItem.name.startsWith(item.name) && subItem.isRefined
-          )
-          .forEach(subItem => subLevel.refine(subItem.name))
-      }
+      // Clear all refinements
+      levels.forEach(level => {
+        level.items.forEach(subItem => {
+          if (subItem.isRefined) {
+            level.refine(subItem.name)
+          }
+        })
+      })
     }
     setIsOpen(!isOpen)
   }, [isOpen, levels])
@@ -389,10 +384,7 @@ const MultiselectHierarchicalMenuItem = ({
           {item.label}
         </span>
         {!hasSubLevel && ( // Only render count if it's child
-          <span
-            className={`ais-MultiselectHierarchicalMenu-count--child
-            }`}
-          >
+          <span className={`ais-MultiselectHierarchicalMenu-count--child`}>
             {item.count}
           </span>
         )}
