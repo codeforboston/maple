@@ -3,6 +3,8 @@ import type { SearchResults } from "algoliasearch-helper"
 import type { Connector } from "instantsearch.js"
 import type { AdditionalWidgetProperties } from "react-instantsearch"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 const cx = (...classNames: string[]): string =>
   classNames.filter(Boolean).join(" ")
@@ -369,7 +371,11 @@ const MultiselectHierarchicalMenuItem = ({
               hasSubLevel ? "" : "--child"
             }`}
           >
-            {isOpen ? "-" : "+"}
+            {isOpen ? (
+              <FontAwesomeIcon icon={faMinus} size="2xs" />
+            ) : (
+              <FontAwesomeIcon icon={faPlus} size="2xs" />
+            )}
           </button>
         ) : (
           <input
