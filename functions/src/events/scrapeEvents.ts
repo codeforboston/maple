@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
 import { logFetchError } from "../common"
-import { db, Timestamp } from "../firebase"
+import { admin, db, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
   BaseEvent,
@@ -20,6 +20,7 @@ import { currentGeneralCourt } from "../shared"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
 import { withinCutoff } from "./helpers"
+import ffmpeg from "fluent-ffmpeg"
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
@@ -33,7 +34,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   get function() {
     return runWith({
       timeoutSeconds: this.timeout,
-      secrets: ["ASSEMBLY_API_KEY"]
+      secrets: ["ASSEMBLY_API_KEY"],
+      memory: "2GB"
     })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
@@ -94,7 +96,7 @@ class SpecialEventsScraper extends EventScraper<
   SpecialEvent
 > {
   constructor() {
-    super("every 60 minutes", 120)
+    super("every 60 minutes", 540)
   }
 
   async listEvents() {
@@ -136,6 +138,45 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   }
 }
 
+const extractAudioFromVideo = async (
+  EventId: number,
+  videoUrl: string
+): Promise<string> => {
+  const audioBuffer = await new Promise<Buffer>((resolve, reject) => {
+    ffmpeg()
+      .input(videoUrl)
+      .toFormat("mp3")
+      .on("end", () => resolve(audioBuffer))
+      .on("error", reject)
+      .pipe()
+  })
+
+  const bucket = admin.storage().bucket()
+  const audioFileName = `hearing-${EventId}-${Date.now()}.mp3`
+  const file = bucket.file(audioFileName)
+  await file.save(audioBuffer)
+
+  const [url] = await file.getSignedUrl({
+    action: "read",
+    expires: Date.now() + 24 * 60 * 60 * 1000
+  })
+
+  // Delete old files
+  const [files] = await bucket.getFiles({
+    prefix: "hearing-",
+    maxResults: 1000
+  })
+  const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000
+  const oldFiles = files.filter(file => {
+    const timestamp = parseInt(file.name.split("-").pop()?.split(".")[0] || "0")
+    return timestamp < oneDayAgo
+  })
+  await Promise.all(oldFiles.map(file => file.delete()))
+
+  // Return the new audio url
+  return url
+}
+
 const submitTranscription = async ({
   EventId,
   maybeVideoUrl
@@ -149,10 +190,12 @@ const submitTranscription = async ({
 
   const newToken = randomBytes(16).toString("hex")
 
+  const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
+
   const transcript = await assembly.transcripts.submit({
     audio:
       // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
-      maybeVideoUrl,
+      audioUrl,
     webhook_url:
       // make sure process.env.FUNCTIONS_API_BASE equals
       // https://us-central1-digital-testimony-prod.cloudfunctions.net
@@ -226,21 +269,31 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const content = HearingContent.check(data)
 
     if (await shouldScrapeVideo(EventId)) {
-      const maybeVideoUrl = await getHearingVideoUrl(EventId)
-      if (maybeVideoUrl) {
-        const transcriptId = await submitTranscription({
-          maybeVideoUrl,
-          EventId
-        })
+      try {
+        const maybeVideoUrl = await getHearingVideoUrl(EventId)
+        if (maybeVideoUrl) {
+          const transcriptId = await submitTranscription({
+            maybeVideoUrl,
+            EventId
+          })
 
+          return {
+            id: `hearing-${EventId}`,
+            type: "hearing",
+            content,
+            ...this.timestamps(content),
+            videoURL: maybeVideoUrl,
+            videoFetchedAt: Timestamp.now(),
+            videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
+          } as Hearing
+        }
+      } catch (error) {
+        console.error(`Failed to process audio for hearing ${EventId}:`, error)
         return {
           id: `hearing-${EventId}`,
           type: "hearing",
           content,
-          ...this.timestamps(content),
-          videoURL: maybeVideoUrl,
-          videoFetchedAt: Timestamp.now(),
-          videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
+          ...this.timestamps(content)
         } as Hearing
       }
     }
