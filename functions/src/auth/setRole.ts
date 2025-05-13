@@ -9,13 +9,15 @@ export const setRole = async ({
   uid,
   role,
   auth,
-  db
+  db,
+  newProfile
 }: {
   email?: string
   uid?: string
   role: Role
   auth: Auth
   db: Database
+  newProfile?: Partial<Profile>
 }) => {
   let user: UserRecord
   if (email) user = await auth.getUserByEmail(email)
@@ -30,7 +32,8 @@ export const setRole = async ({
   const currentProfile = Profile.Or(Undefined).check(profileData)
   const profileUpdate: Partial<Profile> = {
     role,
-    public: isPublic(currentProfile, role)
+    public: isPublic(currentProfile, role),
+    ...newProfile
   }
   await profile.set(profileUpdate, { merge: true })
 
