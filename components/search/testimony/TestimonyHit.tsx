@@ -71,7 +71,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
         <span style={{ flexGrow: 1 }}>
           <b>Written by {writtenBy}</b>
         </span>
-        {!isCurrentUser && followOrg && user && (
+        {hit.public && !isCurrentUser && followOrg && user && (
           <FollowUserButton profileId={hit.authorUid} />
         )}
       </div>
