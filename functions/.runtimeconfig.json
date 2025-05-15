@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "nodejs18": {
+      "apt": {
+        "packages": ["ffmpeg"]
+      }
+    }
+  }
+}
