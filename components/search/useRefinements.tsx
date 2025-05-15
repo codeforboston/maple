@@ -25,19 +25,29 @@ const useHasRefinements = () => {
 
 export const useRefinements = ({
   hierarchicalMenuProps,
-  refinementProps
+  refinementProps1,
+  refinementProps2
 }: {
   hierarchicalMenuProps?: any[]
-  refinementProps: any[]
+  refinementProps1: any[]
+  refinementProps2: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
   const handleClose = useCallback(() => setShow(false), [])
   const handleOpen = useCallback(() => setShow(true), [])
 
-  const refinements = (
+  const refinements1 = (
     <>
-      {refinementProps.map((p, i) => (
+      {refinementProps1.map((p, i) => (
+        <RefinementList className="mb-4" key={i} {...(p as any)} />
+      ))}
+    </>
+  )
+
+  const refinements2 = (
+    <>
+      {refinementProps2.map((p, i) => (
         <RefinementList className="mb-4" key={i} {...(p as any)} />
       ))}
     </>
@@ -66,7 +76,9 @@ export const useRefinements = ({
     options: inline ? (
       <>
         <div>{hierarchicalMenu}</div>
-        <div>{refinements}</div>
+        <div>{refinements1}</div>
+        <div>test</div>
+        <div>{refinements2}</div>
       </>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
@@ -75,7 +87,8 @@ export const useRefinements = ({
         </Offcanvas.Header>
         <Offcanvas.Body>
           <SearchContainer>{hierarchicalMenu}</SearchContainer>
-          <SearchContainer>{refinements}</SearchContainer>
+          <SearchContainer>{refinements1}</SearchContainer>
+          <SearchContainer>{refinements2}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
     ),

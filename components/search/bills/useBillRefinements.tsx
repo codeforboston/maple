@@ -18,7 +18,7 @@ import { useRefinements } from "../useRefinements"
 
 export const useBillRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
-  const propsList = [
+  const propsList1 = [
     {
       transformItems: useCallback(
         (i: RefinementListItem[]) =>
@@ -38,7 +38,10 @@ export const useBillRefinements = () => {
       attribute: "currentCommittee",
       ...baseProps,
       searchablePlaceholder: "Current Committee"
-    },
+    }
+  ]
+
+  const propsList2 = [
     {
       attribute: "city",
       searchablePlaceholder: "City",
@@ -69,6 +72,7 @@ export const useBillRefinements = () => {
 
   return useRefinements({
     hierarchicalMenuProps: hierarchicalPropsList,
-    refinementProps: propsList
+    refinementProps1: propsList1,
+    refinementProps2: propsList2
   })
 }
