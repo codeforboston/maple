@@ -38,7 +38,10 @@ export const useBillRefinements = () => {
       attribute: "currentCommittee",
       ...baseProps,
       searchablePlaceholder: "Current Committee"
-    },
+    }
+  ]
+
+  const propsList2 = [
     {
       attribute: "city",
       searchablePlaceholder: "City",
@@ -69,6 +72,7 @@ export const useBillRefinements = () => {
 
   return useRefinements({
     hierarchicalMenuProps: hierarchicalPropsList,
-    refinementProps: propsList
+    refinementProps: propsList,
+    refinementProps2: propsList2
   })
 }
