@@ -21,7 +21,7 @@ import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
 import { withinCutoff } from "./helpers"
 import ffmpeg from "fluent-ffmpeg"
-
+import fs from "fs"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
@@ -34,7 +34,6 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   get function() {
     return runWith({
       timeoutSeconds: this.timeout,
-      secrets: ["ASSEMBLY_API_KEY"],
       memory: "2GB"
     })
       .pubsub.schedule(this.schedule)
@@ -142,19 +141,27 @@ const extractAudioFromVideo = async (
   EventId: number,
   videoUrl: string
 ): Promise<string> => {
-  const audioBuffer = await new Promise<Buffer>((resolve, reject) => {
-    ffmpeg()
-      .input(videoUrl)
-      .toFormat("mp3")
-      .on("end", () => resolve(audioBuffer))
+  const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.wav`
+
+  // Stream directly from URL to MP3
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(videoUrl)
+      .noVideo()
+      .audioCodec("copy")
+      .format("wav")
+      .on("end", () => resolve())
       .on("error", reject)
-      .pipe()
+      .save(tmpFilePath)
   })
 
+  // Upload the audio file
   const bucket = admin.storage().bucket()
-  const audioFileName = `hearing-${EventId}-${Date.now()}.mp3`
+  const audioFileName = `hearing-${EventId}-${Date.now()}.wav`
   const file = bucket.file(audioFileName)
-  await file.save(audioBuffer)
+  await file.save(tmpFilePath)
+
+  // Clean up temporary file
+  await fs.promises.unlink(tmpFilePath)
 
   const [url] = await file.getSignedUrl({
     action: "read",
@@ -189,7 +196,6 @@ const submitTranscription = async ({
   })
 
   const newToken = randomBytes(16).toString("hex")
-
   const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
 
   const transcript = await assembly.transcripts.submit({
@@ -297,7 +303,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
         } as Hearing
       }
     }
-
     return {
       id: `hearing-${EventId}`,
       type: "hearing",
