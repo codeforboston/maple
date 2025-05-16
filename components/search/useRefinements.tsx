@@ -9,6 +9,8 @@ import { Button, Offcanvas } from "../bootstrap"
 import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 import { SearchContainer } from "./SearchContainer"
 
+import { Tooltip } from "react-tooltip"
+
 export const FilterButton = styled(Button)`
   font-size: 1rem;
   line-height: 1rem;
@@ -81,7 +83,16 @@ export const useRefinements = ({
       <>
         <div>{hierarchicalMenu}</div>
         <div>{refinements}</div>
-        {refinementProps2 ? <div>test 2</div> : <></>}
+        {refinementProps2 ? (
+          <>
+            <a className="my-anchor-element">◕‿‿◕</a>
+            <Tooltip anchorSelect=".my-anchor-element" place="top">
+              Hello world!
+            </Tooltip>
+          </>
+        ) : (
+          <></>
+        )}
         <div>{refinements2}</div>
       </>
     ) : (
