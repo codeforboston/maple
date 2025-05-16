@@ -38,7 +38,10 @@ export const useBillRefinements = () => {
       attribute: "currentCommittee",
       ...baseProps,
       searchablePlaceholder: "Current Committee"
-    },
+    }
+  ]
+
+  const propsList2 = [
     {
       attribute: "city",
       searchablePlaceholder: "City",
