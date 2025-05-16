@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
+import { Tooltip } from "react-tooltip"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useState } from "react"
@@ -8,8 +9,6 @@ import { useMediaQuery } from "usehooks-ts"
 import { Button, Offcanvas } from "../bootstrap"
 import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 import { SearchContainer } from "./SearchContainer"
-
-import { Tooltip } from "react-tooltip"
 
 export const FilterButton = styled(Button)`
   font-size: 1rem;
