@@ -81,7 +81,7 @@ export const useRefinements = ({
       <>
         <div>{hierarchicalMenu}</div>
         <div>{refinements}</div>
-        {refinementProps2 ? <div>test</div> : <></>}
+        {refinementProps2 ? <div>test 2</div> : <></>}
         <div>{refinements2}</div>
       </>
     ) : (
