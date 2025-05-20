@@ -1,4 +1,5 @@
 import { useTranslation } from "next-i18next"
+import Image from "react-bootstrap/Image"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { Tooltip } from "react-tooltip"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
@@ -17,6 +18,32 @@ export const FilterButton = styled(Button)`
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   align-self: flex-start;
 `
+
+export const CityTooltip = () => {
+  const { t } = useTranslation("billSearch")
+
+  return (
+    <>
+      <Image
+        src="/info.svg"
+        alt={t("navigation.closeNavMenu")}
+        width="25"
+        height="25"
+        className="ms-2 my-anchor-element mb-1"
+      />
+      <Tooltip
+        anchorSelect=".my-anchor-element"
+        place="top"
+        style={{ maxWidth: "220px", zIndex: "6" }}
+      >
+        This filter only captures bills submitted via "home rule" petition;
+        which is when a town/city requires the state’s approval to implement a
+        policy. This does not capture every bill that concerns or affects a
+        specific city.
+      </Tooltip>
+    </>
+  )
+}
 
 const useHasRefinements = () => {
   const { results } = useInstantSearch()
@@ -82,16 +109,7 @@ export const useRefinements = ({
       <>
         <div>{hierarchicalMenu}</div>
         <div>{refinements}</div>
-        {refinementProps2 ? (
-          <>
-            <a className="my-anchor-element">◕‿‿◕</a>
-            <Tooltip anchorSelect=".my-anchor-element" place="top">
-              Hello world!
-            </Tooltip>
-          </>
-        ) : (
-          <></>
-        )}
+        {refinementProps2 ? <CityTooltip /> : <></>}
         <div>{refinements2}</div>
       </>
     ) : (
@@ -102,6 +120,9 @@ export const useRefinements = ({
         <Offcanvas.Body>
           <SearchContainer>{hierarchicalMenu}</SearchContainer>
           <SearchContainer>{refinements}</SearchContainer>
+          <SearchContainer>
+            {refinementProps2 ? <CityTooltip /> : <></>}
+          </SearchContainer>
           <SearchContainer>{refinements2}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
