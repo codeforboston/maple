@@ -29,14 +29,25 @@ export const CityTooltip = () => {
         alt=""
         width="25"
         height="25"
-        className="ms-2 my-anchor-element mb-1"
+        className="ms-2 mb-1"
+        id="clickable"
       />
       <Tooltip
-        anchorSelect=".my-anchor-element"
+        anchorSelect="#clickable"
+        clickable
         place="top"
-        style={{ maxWidth: "220px", zIndex: "6" }}
+        style={{ maxWidth: "220px", opacity: 1, zIndex: "6" }}
       >
-        {t("city_tooltip")}
+        {t("city_tooltip1")}
+        <a
+          href="https://www.somervillecdc.org/news/what-is-a-home-rule-petition/#:~:text=A%20Home%20Rule%20Petition%20is,an%20aspect%20of%20state%20law"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "rgba(173, 216, 230, 1)" }}
+        >
+          {t("home_rule_petition")}
+        </a>
+        {t("city_tooltip2")}
       </Tooltip>
     </>
   )
