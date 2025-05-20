@@ -25,7 +25,7 @@ export const CityTooltip = () => {
   return (
     <>
       <Image
-        src="/info.svg"
+        src="/info2.svg"
         alt=""
         width="25"
         height="25"
