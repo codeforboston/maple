@@ -26,7 +26,7 @@ export const CityTooltip = () => {
     <>
       <Image
         src="/info.svg"
-        alt={t("navigation.closeNavMenu")}
+        alt=""
         width="25"
         height="25"
         className="ms-2 my-anchor-element mb-1"
@@ -36,10 +36,7 @@ export const CityTooltip = () => {
         place="top"
         style={{ maxWidth: "220px", zIndex: "6" }}
       >
-        This filter only captures bills submitted via "home rule" petition;
-        which is when a town/city requires the state’s approval to implement a
-        policy. This does not capture every bill that concerns or affects a
-        specific city.
+        {t("city_tooltip")}
       </Tooltip>
     </>
   )

@@ -3,5 +3,10 @@
   "browse_bills" : "Browse Bills",
   "filter" : "Filter",
   "topics" : "Topics",
-  "zero_results" : "Your search has yielded zero results!"
+  "zero_results" : "Your search has yielded zero results!",
+  "city_tooltip": "This filter only captures bills submitted via \"home rule\" petition; which is when a town/city requires the state’s approval to implement a policy. This does not capture every bill that concerns or affects a specific city."
 }
+
+
+
+
