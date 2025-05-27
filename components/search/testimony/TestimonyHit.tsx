@@ -114,7 +114,9 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           <h6 style={{ color: "var(--bs-blue)", fontWeight: 600 }}>
             {bill?.content.Title}
           </h6>
-          <p>"{trimContent(hit.content, 500)}"</p>
+          <p style={{ wordBreak: "break-all" }}>
+            "{trimContent(hit.content, 500)}"
+          </p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {/* {hit.content.trim().length > 0 && <a className="w-20">Read More</a>} */}
             <span style={{ marginLeft: "auto" }}>{`Posted ${date}`}</span>
