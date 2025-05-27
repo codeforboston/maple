@@ -8,7 +8,7 @@ import { useAuth } from "components/auth"
 import { useBill } from "components/db/bills"
 import { Testimony } from "components/db/testimony"
 import { useFlags } from "components/featureFlags"
-import { formatBillId } from "components/formatting"
+import { formatBillId, truncateText } from "components/formatting"
 import { maple } from "components/links"
 import { FollowUserButton } from "components/shared/FollowButton"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
@@ -47,13 +47,6 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const { followOrg } = useFlags()
   const isCurrentUser = user?.uid === hit.authorUid
   const isMobile = useMediaQuery("(max-width: 768px)")
-
-  function limitStringLength35Char(str: string) {
-    if (str.length > 35) {
-      return str.substring(0, 35) + "..."
-    }
-    return str
-  }
 
   return (
     <div
@@ -114,9 +107,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
                   padding: "5px 10px"
                 }}
               >
-                {isMobile
-                  ? limitStringLength35Char(committee.name)
-                  : committee.name}
+                {isMobile ? truncateText(committee.name, 35) : committee.name}
               </span>
             )}
           </div>
