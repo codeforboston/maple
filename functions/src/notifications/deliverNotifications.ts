@@ -1,8 +1,7 @@
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
 import * as fs from "fs"
-import { Timestamp } from "../firebase"
+import { auth, db, Timestamp } from "../firebase"
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { startOfDay } from "date-fns"
 import { TestimonySubmissionNotificationFields, Profile } from "./types"
@@ -13,7 +12,6 @@ import {
   UserDigest
 } from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
-import { getAuth } from "firebase-admin/auth"
 import { Frequency } from "../auth/types"
 
 const NUM_BILLS_TO_DISPLAY = 4
@@ -21,9 +19,6 @@ const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
 const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
-// Get a reference to the Firestore database
-const db = admin.firestore()
-const auth = getAuth()
 const path = require("path")
 
 const getVerifiedUserEmail = async (uid: string) => {
@@ -103,7 +98,9 @@ const deliverEmailNotifications = async () => {
     batch.update(profileDoc.ref, { nextDigestAt })
     await batch.commit()
 
-    console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
+    console.log(
+      `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
+    )
   })
 
   // Wait for all email documents to be created
