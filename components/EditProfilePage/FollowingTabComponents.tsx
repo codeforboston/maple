@@ -124,7 +124,7 @@ export function FollowedItem({
       <Row className={`align-items-center flex-column flex-md-row`}>
         {isBillElement(element) ? (
           <>
-            <Internal href={`bills/${element.court}/${element.billId}`}>
+            <Internal href={`/bills/${element.court}/${element.billId}`}>
               {formatBillId(element.billId)}
             </Internal>
             <Col xs={12} md={8} className={`d-flex`}>
