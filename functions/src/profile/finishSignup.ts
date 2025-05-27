@@ -14,13 +14,17 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
 
   const { requestedRole } = checkRequestZod(CreateProfileRequest, data)
 
-  let role: Role = "user"
+  let role: Role = requestedRole
 
   // Only an admin can approve organizations, after they've signed up initially
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
-  if (requestedRole === "organization") {
-    role = "pendingUpgrade"
-  }
+
+  // Removing the "pendingUpgrade" flow  (temporarily) because the
+  // organization approval process is currently  too cumbersome.
+
+  // if (requestedRole === "organization") {
+  //   role = "pendingUpgrade"
+  // }
 
   await setRole({ role, auth, db, uid })
 
