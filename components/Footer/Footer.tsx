@@ -208,6 +208,9 @@ const AboutLinks = () => {
       <StyledInternalLink href="/about/how-maple-uses-ai">
         {t("links.mapleAI")}
       </StyledInternalLink>
+      <StyledInternalLink href="/about/testimony-in-the-21st-century">
+        {t("links.testimony21stCentury")}
+      </StyledInternalLink>
     </>
   )
 }
