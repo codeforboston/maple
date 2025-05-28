@@ -1,5 +1,6 @@
 import json
 import numpy as np
+from dotenv import load_dotenv
 import os
 import pandas as pd
 import tiktoken
@@ -22,6 +23,7 @@ from typing import Tuple, List
 
 from prompts import *
 from tag_categories import *
+load_dotenv()
 
 
 
@@ -107,7 +109,7 @@ The summaries of each bill mentioned during the hearing are as follows:
 '''
 # Set up the OpenAI API client
 import openai
-openai.api_key ='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'
+openai.api_key = os.getenv('OPENAI_API_KEY')
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
     "Authorization": f"Bearer " + openai.api_key,
