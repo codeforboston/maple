@@ -34,6 +34,7 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
   get function() {
     return runWith({
       timeoutSeconds: this.timeout,
+      secrets: ["ASSEMBLY_API_KEY"],
       memory: "2GB"
     })
       .pubsub.schedule(this.schedule)
