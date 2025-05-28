@@ -109,7 +109,7 @@ The summaries of each bill mentioned during the hearing are as follows:
 '''
 # Set up the OpenAI API client
 import openai
-openai.api_key = os.getenv('OPENAI_API_KEY')
+# openai.api_key = os.getenv('OPENAI_API_KEY')
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
     "Authorization": f"Bearer " + openai.api_key,
