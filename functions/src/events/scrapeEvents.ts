@@ -154,7 +154,13 @@ const extractAudioFromVideo = async (
         console.log(`Spawned FFmpeg with command: ${commandLine}`)
       })
       .on("progress", progress => {
-        console.log(`Processing: ${progress.percent}% done`)
+        if (
+          progress &&
+          progress.percent &&
+          Math.round(progress.percent) % 10 === 0
+        ) {
+          console.log(`Processing: ${progress.percent}% done`)
+        }
       })
       .on("end", () => {
         console.log("FFmpeg processing finished successfully")
