@@ -19,7 +19,7 @@ import {
 import { currentGeneralCourt } from "../shared"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
-import { withinCutoff } from "./helpers"
+import { isValidVideoUrl, withinCutoff } from "./helpers"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
@@ -238,7 +238,9 @@ const getHearingVideoUrl = async (EventId: number) => {
         dom.window.document.querySelectorAll("video source")
       if (maybeVideoSource.length && maybeVideoSource[0]) {
         const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
-        return firstVideoSource.src
+        const maybeVideoUrl = firstVideoSource.src
+
+        return isValidVideoUrl(maybeVideoUrl) ? maybeVideoUrl : null
       }
     }
   }
