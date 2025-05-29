@@ -142,24 +142,42 @@ const extractAudioFromVideo = async (
   EventId: number,
   videoUrl: string
 ): Promise<string> => {
-  const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.wav`
+  const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.m4a`
 
-  // Stream directly from URL to MP3
+  // Stream directly from URL and copy audio codec
   await new Promise<void>((resolve, reject) => {
     ffmpeg(videoUrl)
       .noVideo()
       .audioCodec("copy")
-      .format("wav")
-      .on("end", () => resolve())
-      .on("error", reject)
+      .format("mp4")
+      .on("start", commandLine => {
+        console.log(`Spawned FFmpeg with command: ${commandLine}`)
+      })
+      .on("progress", progress => {
+        console.log(`Processing: ${progress.percent}% done`)
+      })
+      .on("end", () => {
+        console.log("FFmpeg processing finished successfully")
+        resolve()
+      })
+      .on("error", err => {
+        console.error("FFmpeg error:", err)
+        reject(err)
+      })
       .save(tmpFilePath)
   })
 
   // Upload the audio file
   const bucket = admin.storage().bucket()
-  const audioFileName = `hearing-${EventId}-${Date.now()}.wav`
+  const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
   const file = bucket.file(audioFileName)
-  await file.save(tmpFilePath)
+
+  const fileContent = await fs.promises.readFile(tmpFilePath)
+  await file.save(fileContent, {
+    metadata: {
+      contentType: "audio/mp4"
+    }
+  })
 
   // Clean up temporary file
   await fs.promises.unlink(tmpFilePath)
