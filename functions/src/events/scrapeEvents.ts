@@ -263,7 +263,7 @@ const shouldScrapeVideo = async (EventId: number) => {
 
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
-    super("every 60 minutes", 240)
+    super("every 60 minutes", 480)
   }
 
   async listEvents() {
