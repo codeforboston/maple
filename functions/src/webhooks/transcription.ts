@@ -19,6 +19,7 @@ export const transcription = functions
         const transcript = await assembly.transcripts.get(
           req.body.transcript_id
         )
+
         if (transcript && transcript.webhook_auth) {
           // If there is a transcript and the transcript has an auth property,
           // look for an event (aka Hearing) in the DB with a matching ID.
@@ -67,6 +68,10 @@ export const transcription = functions
             if (authenticatedEventIds.length === 1) {
               // If there is one authenticated event, pull out the parts we want to
               // save and try to save them in the db.
+
+              const { sentences } = await assembly.transcripts.sentences(
+                transcript.id
+              )
               const { id, text, audio_url, utterances } = transcript
               try {
                 const transcriptionInDb = await db
@@ -96,6 +101,24 @@ export const transcription = functions
                         .collection("utterances")
                         .doc(),
                       { speaker, confidence, start, end, text }
+                    )
+                  }
+
+                  await writer.close()
+                }
+
+                if (sentences) {
+                  const writer = db.bulkWriter()
+                  for (let sentence of sentences) {
+                    const { confidence, start, end, text } = sentence
+
+                    writer.set(
+                      db
+                        .collection("transcriptions")
+                        .doc(`${transcript.id}`)
+                        .collection("sentences")
+                        .doc(),
+                      { confidence, start, end, text }
                     )
                   }
 
