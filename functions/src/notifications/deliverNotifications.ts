@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions"
 import * as handlebars from "handlebars"
 import * as fs from "fs"
-import { auth, db, Timestamp } from "../firebase"
+import { db, Timestamp } from "../firebase"
+//import { auth, db, Timestamp } from "../firebase" // Temporarily using email from the profile to test the non-auth issues
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { startOfDay } from "date-fns"
 import { TestimonySubmissionNotificationFields, Profile } from "./types"
@@ -21,14 +22,15 @@ const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 const path = require("path")
 
-const getVerifiedUserEmail = async (uid: string) => {
-  const userRecord = await auth.getUser(uid)
-  if (userRecord && userRecord.email && userRecord.emailVerified) {
-    return userRecord.email
-  } else {
-    return null
-  }
-}
+// Temporarily using email from the profile to test the non-auth issues
+// const getVerifiedUserEmail = async (uid: string) => {
+//   const userRecord = await auth.getUser(uid)
+//   if (userRecord && userRecord.email && userRecord.emailVerified) {
+//     return userRecord.email
+//   } else {
+//     return null
+//   }
+// }
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
@@ -44,6 +46,12 @@ const deliverEmailNotifications = async () => {
     .where("nextDigestAt", "<=", now)
     .get()
 
+  console.log(
+    `Processing ${
+      profilesSnapshot.size
+    } profiles with nextDigestAt <= ${now.toDate()}`
+  )
+
   const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
     const profile = profileDoc.data() as Profile
     if (!profile || !profile.notificationFrequency) {
@@ -53,7 +61,8 @@ const deliverEmailNotifications = async () => {
       return
     }
 
-    const verifiedEmail = await getVerifiedUserEmail(profileDoc.id)
+    // Temporarily using email from the profile to test the non-auth issues
+    const verifiedEmail = profile.email //await getVerifiedUserEmail(profileDoc.id)
     if (!verifiedEmail) {
       console.log(
         `Skipping user ${profileDoc.id} because they have no verified email address`
