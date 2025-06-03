@@ -9,6 +9,8 @@ import {
   subMonths
 } from "date-fns"
 
+import { JSDOM } from "jsdom"
+
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
   let nextDigestAt = null
@@ -48,4 +50,9 @@ export const getNotificationStartDate = (
     default:
       return now
   }
+}
+
+export const convertHtmlToText = (html: string) => {
+  const dom = new JSDOM(html)
+  return dom.window.document.body.textContent || "No content"
 }

@@ -3,7 +3,11 @@ import * as handlebars from "handlebars"
 import * as fs from "fs"
 import { db, Timestamp } from "../firebase"
 //import { auth, db, Timestamp } from "../firebase" // Temporarily using email from the profile to test the non-auth issues
-import { getNextDigestAt, getNotificationStartDate } from "./helpers"
+import {
+  convertHtmlToText,
+  getNextDigestAt,
+  getNotificationStartDate
+} from "./helpers"
 import { startOfDay } from "date-fns"
 import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
@@ -87,13 +91,16 @@ const deliverEmailNotifications = async () => {
         `No new notifications for ${profileDoc.id} - not sending email`
       )
     } else {
+      console.log(
+        `Sending email to user ${profileDoc.id} with data: ${digestData}`
+      )
       const htmlString = renderToHtmlString(digestData)
 
       const email = {
         to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
-          text: "", // blank because we're sending HTML
+          text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
           html: htmlString
         },
         createdAt: Timestamp.now()
