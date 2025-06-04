@@ -2,13 +2,36 @@
   "hosting": {
     "public": "out",
     "cleanUrls": true,
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
   },
-  "functions": {
-    "predeploy": ["yarn build:functions"],
-    "source": "functions",
-    "runtime": "nodejs16"
-  },
+  "functions": [
+    {
+      "predeploy": [
+        "yarn build:functions"
+      ],
+      "source": "functions",
+      "runtime": "nodejs16",
+      "codebase": "default"
+    },
+    {
+      "source": "test",
+      "codebase": "test",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ],
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

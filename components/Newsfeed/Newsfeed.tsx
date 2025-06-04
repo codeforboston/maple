@@ -7,6 +7,9 @@ import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
+import SignInModal from "components/auth/SignInModal"
+import StartModal from "components/auth/StartModal"
+import { AltSignInWithButton } from "components/auth/SignInWithButton"
 import {
   BillCol,
   Header,
@@ -16,6 +19,8 @@ import {
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { useAppDispatch } from "components/hooks"
+import { authStepChanged } from "components/auth/redux"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -30,6 +35,16 @@ export default function Newsfeed() {
 
   const [allResults, setAllResults] = useState<Notifications>([])
   const [filteredResults, setFilteredResults] = useState<Notifications>([])
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    // console.log("useEffect: user:", user, "authLoading:", loading)
+    if (!loading && !user) {
+      // Trigger login modal
+      dispatch(authStepChanged("start"))
+    }
+  }, [dispatch, loading, user])
 
   useEffect(() => {
     const results = allResults.filter(result => {
@@ -251,7 +266,7 @@ export default function Newsfeed() {
               </StyledContainer>
             </div>
           ) : (
-            <ErrorPage statusCode={404} withDarkMode={false} />
+            <ErrorPage statusCode={401} withDarkMode={false} />
           )}
         </>
       )}
