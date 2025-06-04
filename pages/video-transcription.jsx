@@ -2,7 +2,16 @@ import { useEffect, useRef, useState } from "react"
 import Head from "next/head"
 import styles from "../styles/VideoTranscription.module.css"
 import { firestore } from "../components/firebase"
-import { doc, getDoc } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query
+} from "firebase/firestore"
+import { useQuery } from "react-query"
+import { useRouter } from "next/router"
 
 export default function VideoTranscription({ videoUrl, utterances }) {
   const [currentTime, setCurrentTime] = useState(0)
@@ -102,19 +111,29 @@ function formatTime(ms) {
 }
 
 export async function getServerSideProps() {
-  const exampleTranscriptionId = "17c91397-c023-4f28-a621-4cef45c70749"
-  const transcription = await getDoc(
-    doc(firestore, `transcriptions/${exampleTranscriptionId}`)
-  )
-  console.log(transcription.data())
+  const hearingId = "hearing-5180"
+  const hearing = await getDoc(doc(firestore, `events/${hearingId}`))
+  const { videoTranscriptionId, videoURL } = hearing.data()
 
-  const videoUrl = transcription.data().audio_url
-  const utterances = transcription.data().utterances
+  // should be
+  // const exampleTranscriptionId = "639e73ff-bd01-4902-bba7-88faaf39afa9"
+  const transcription = await getDoc(
+    doc(firestore, `transcriptions/${videoTranscriptionId}`)
+  )
+  const utterances = await getDocs(
+    query(
+      collection(
+        firestore,
+        `transcriptions/${videoTranscriptionId}/utterances`
+      ),
+      orderBy("start", "asc")
+    )
+  )
 
   return {
     props: {
-      videoUrl,
-      utterances
+      videoUrl: videoURL,
+      utterances: utterances.docs.map(doc => doc.data())
     }
   }
 }
