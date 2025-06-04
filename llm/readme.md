@@ -138,5 +138,20 @@ TODO:
 
 - [x] Get an OpenAPI key `firebase functions:secrets:access OPENAI_DEV`
 - [ ] Need to get docker running locally `yarn compose up --build`
-- [ ] Try to deploy the function `firebase deploy --only functions:maple-llm`
-- [ ] Alphabetize the requirements.txt file
+- [x] Try to deploy the function `firebase deploy --only functions:maple-llm`
+- [x] Alphabetize the requirements.txt file
+- [ ] Add some deploying/testing from the command line notes
+```bash
+# not sure if the GOOGLE_APPLICATION_CREDENTIALS is strictly necessary, but I
+# had a number of problems with authorization
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json \
+  firebase deploy --only functions:maple-llm --debug
+
+# This is an example curl command for hitting the production function
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -d '{"bill_id": "1234","bill_title": "A title","bill_text": "Some bill text"}' \
+  https://httpsflaskexample-ke6znoupgq-uc.a.run.app/summary
+```
