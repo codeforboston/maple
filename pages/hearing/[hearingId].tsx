@@ -122,37 +122,42 @@ function formatTime(ms: number) {
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
-  const query = Query.safeParse(ctx.query)
+  const query = Query.safeParse(ctx.params)
   if (!query.success) return { notFound: true }
   const { hearingId } = query.data
 
+  // Example: const hearingId = "hearing-5180"
   const rawHearing = await getDoc(doc(firestore, `events/hearing-${hearingId}`))
-  if (!rawHearing.exists) return { notFound: true }
-
+  if (!rawHearing.exists()) return { notFound: true }
   const hearing = rawHearing.data() as any
-  const transcriptionId = hearing.videoAssemblyId
-  if (!transcriptionId) return { notFound: true }
+  const { videoTranscriptionId, videoURL } = hearing
+  if (!videoTranscriptionId || !videoURL) {
+    return { notFound: true }
+  }
 
+  // Example: constt videoTranscriptionId = "639e73ff-bd01-4902-bba7-88faaf39afa9"
   const rawTranscription = await getDoc(
-    doc(firestore, `transcriptions/${transcriptionId}`)
+    doc(firestore, `transcriptions/${videoTranscriptionId}`)
   )
   if (!rawTranscription.exists()) return { notFound: true }
   const transcription = rawTranscription.data() as any
-
-  const videoUrl = transcription.data().audio_url
-
-  const docRef = collection(
-    firestore,
-    `transcriptions/${transcriptionId}/utterances`
+  console.log(
+    `Hearing ${hearingId} was transcribed at: ${transcription.createdAt?.toDate()}`
   )
-  const q = fbQuery(docRef, orderBy("start", "asc"))
 
-  const rawUtterances = await getDocs(q)
+  const rawUtterances = await getDocs(
+    fbQuery(
+      collection(
+        firestore,
+        `transcriptions/${videoTranscriptionId}/utterances`
+      ),
+      orderBy("start", "asc")
+    )
+  )
   if (rawUtterances.empty) {
     console.log("No utterances found")
     return { notFound: true }
   }
-
   const utterances = rawUtterances.docs.map(doc => ({
     ...doc.data(),
     id: doc.id
@@ -160,7 +165,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   return {
     props: {
-      videoUrl,
+      videoUrl: videoURL,
       utterances,
       ...(await serverSideTranslations(locale, [
         "auth",
