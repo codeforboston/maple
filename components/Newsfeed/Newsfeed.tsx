@@ -42,7 +42,7 @@ export default function Newsfeed() {
     // console.log("useEffect: user:", user, "authLoading:", loading)
     if (!loading && !user) {
       // Trigger login modal
-      dispatch(authStepChanged("start"))
+      dispatch(authStepChanged("protectedpage"))
     }
   }, [dispatch, loading, user])
 

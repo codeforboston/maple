@@ -7,6 +7,7 @@ import VerifyEmailModal from "./VerifyEmailModal"
 import ProfileTypeModal from "./ProfileTypeModal"
 import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import { useAppDispatch } from "components/hooks"
+import ProtectedPageAuthModal from "./ProtectedPageAuthModal"
 
 export default function AuthModal() {
   const dispatch = useAppDispatch()
@@ -48,6 +49,13 @@ export default function AuthModal() {
       <ForgotPasswordModal
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}
+      />
+
+      <ProtectedPageAuthModal
+        show={currentModal === "protectedpage"}
+        onHide={close}
+        onSignInClick={() => setCurrentModal("signIn")}
+        onSignUpClick={() => setCurrentModal("chooseProfileType")}
       />
     </>
   )
