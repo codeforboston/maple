@@ -2,17 +2,11 @@
   "hosting": {
     "public": "out",
     "cleanUrls": true,
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
   "functions": [
     {
-      "predeploy": [
-        "yarn build:functions"
-      ],
+      "predeploy": ["yarn build:functions"],
       "source": "functions",
       "runtime": "nodejs16",
       "codebase": "default"
@@ -27,9 +21,7 @@
         "firebase-debug.*.log",
         "*.local"
       ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint"
-      ]
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint"]
     }
   ],
   "firestore": {

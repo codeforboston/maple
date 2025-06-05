@@ -1,179 +1,180 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif; 
-    line-height: 1.6;
-    color: #333;
-    margin: 0; 
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
 }
 
 /* Logo and Header Styles */
 .logo {
-    background-color: #1A3185; 
-    padding: 10px;
-    text-align: center;
-    width: 100%;
+  background-color: #1a3185;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 .logo img {
-    max-width: 100px; 
+  max-width: 100px;
 }
 
 .header {
-    font-size: 40px;
-    padding-top: 42px;
-    padding-right: 12px;
-    border-bottom: 2px;
-    gap: 16px;
-    text-align: center;
+  font-size: 40px;
+  padding-top: 42px;
+  padding-right: 12px;
+  border-bottom: 2px;
+  gap: 16px;
+  text-align: center;
 }
 
 .header .headline {
-    color: #1A3185;
-    font-size: 24px;
-    margin-bottom: 10px;
+  color: #1a3185;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .header .subheadline {
-    color: #1A3185;
-    font-size: 14px;
+  color: #1a3185;
+  font-size: 14px;
 }
 
 .header img {
-    max-width: 100px; 
-    margin-top: 10px;
+  max-width: 100px;
+  margin-top: 10px;
 }
 
 /* Bills and Organizations Sections */
 .sectionHeader {
-    margin: 20px 0;
-    display: flex;
-    align-items: center; 
-    justify-content: space-between; 
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .sectionTitle {
-    color: #C71E32; 
-    font-weight: 500;
-    line-height: 38.4px;
-    font-size: 32px;
-    margin-right: 10px; 
+  color: #c71e32;
+  font-weight: 500;
+  line-height: 38.4px;
+  font-size: 32px;
+  margin-right: 10px;
 }
 
 .sectionLine {
-    flex-grow: 1;
-    border-bottom: 2px solid #C71E32; 
+  flex-grow: 1;
+  border-bottom: 2px solid #c71e32;
 }
 
-.Bills, .Orgs {
-    padding: 20px;
-    padding-left: 90px;
-    padding-right: 90px;
+.Bills,
+.Orgs {
+  padding: 20px;
+  padding-left: 90px;
+  padding-right: 90px;
 }
 
-.billNoUpdates, .orgNoUpdates {
-    text-align: center;
-    padding: 20px;
+.billNoUpdates,
+.orgNoUpdates {
+  text-align: center;
+  padding: 20px;
 }
 
 .noUpdatesIcon img {
-    max-width: 50px;
-    margin-bottom: 10px;
+  max-width: 50px;
+  margin-bottom: 10px;
 }
 
 .noUpdatesTitle {
-    font-size: 32px;
-    line-height: 38.4px;
-    font-weight: 500;
-    color:  #000000;
+  font-size: 32px;
+  line-height: 38.4px;
+  font-weight: 500;
+  color: #000000;
 }
 
 /* Navigation Header (Newsfeed Button) */
 .navHeader {
-    background-color: #1A3185;
-    color: white;
-    padding-top: 12px;
-    padding-bottom: 13px;
-    gap: 9px;
-    display: flex;
-    align-items: center; 
-    justify-content: center; 
+  background-color: #1a3185;
+  color: white;
+  padding-top: 12px;
+  padding-bottom: 13px;
+  gap: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navText {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 1.5%;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 1.5%;
 }
 
 .navButton {
-    background-color: #1A3185;
-    border: 1px solid #fff;
-    color: #fff;
-    padding: 8px 12px 8px 12px;
-    gap: 4px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
+  background-color: #1a3185;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 12px 8px 12px;
+  gap: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
 }
 
 .navButton img {
-    max-width: 25px;
-    max-height: 25px;
+  max-width: 25px;
+  max-height: 25px;
 }
 
 .navButtonText {
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 25px;
-    letter-spacing: 1.5%;
-    align-content: center;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 25px;
+  letter-spacing: 1.5%;
+  align-content: center;
 }
 
 /* Footer */
 .footer {
-    padding-top: 36px;
-    padding-bottom: 36px;
-    gap: 10px;
-    border: 2px solid #979797;
-    text-align: center;
-    margin-top: 20px; 
-    width: 100%;
-    background-color: white; 
-    color: black; 
+  padding-top: 36px;
+  padding-bottom: 36px;
+  gap: 10px;
+  border: 2px solid #979797;
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+  background-color: white;
+  color: black;
 }
 
-.footerContent{
-    font-size: 12px;
-    color: black;
+.footerContent {
+  font-size: 12px;
+  color: black;
 }
 
 .footerContent a {
-    color: black;
-    text-decoration: underline;
-    font-size: 12px;
+  color: black;
+  text-decoration: underline;
+  font-size: 12px;
 }
-
 
 /* General Layout Adjustments */
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .bg-blue {
-    background-color: #1A3185;
+  background-color: #1a3185;
 }
 
 .white {
-    color: #fff;
+  color: #fff;
 }
 
 .blue {
-    color: #1A3185;
+  color: #1a3185;
 }
