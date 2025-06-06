@@ -1,5 +1,7 @@
 import { useTranslation } from "next-i18next"
+import Image from "react-bootstrap/Image"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
+import { Tooltip } from "react-tooltip"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useState } from "react"
@@ -17,6 +19,40 @@ export const FilterButton = styled(Button)`
   align-self: flex-start;
 `
 
+export const CityTooltip = () => {
+  const { t } = useTranslation("billSearch")
+
+  return (
+    <>
+      <Image
+        src="/info2.svg"
+        alt=""
+        width="25"
+        height="25"
+        className="ms-2 mb-1"
+        id="clickable"
+      />
+      <Tooltip
+        anchorSelect="#clickable"
+        clickable
+        place="top"
+        style={{ maxWidth: "220px", opacity: 1, zIndex: "6" }}
+      >
+        {t("city_tooltip1")}
+        <a
+          href="https://www.somervillecdc.org/news/what-is-a-home-rule-petition/#:~:text=A%20Home%20Rule%20Petition%20is,an%20aspect%20of%20state%20law"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "rgba(173, 216, 230, 1)" }}
+        >
+          {t("home_rule_petition")}
+        </a>
+        {t("city_tooltip2")}
+      </Tooltip>
+    </>
+  )
+}
+
 const useHasRefinements = () => {
   const { results } = useInstantSearch()
   const refinements = results.getRefinements()
@@ -25,10 +61,12 @@ const useHasRefinements = () => {
 
 export const useRefinements = ({
   hierarchicalMenuProps,
-  refinementProps
+  refinementProps,
+  refinementProps2
 }: {
   hierarchicalMenuProps?: any[]
   refinementProps: any[]
+  refinementProps2?: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -42,6 +80,18 @@ export const useRefinements = ({
       ))}
     </>
   )
+
+  let refinements2 = <></>
+
+  if (refinementProps2) {
+    refinements2 = (
+      <>
+        {refinementProps2.map((p, i) => (
+          <RefinementList className="mb-4" key={i} {...(p as any)} />
+        ))}
+      </>
+    )
+  }
 
   let hierarchicalMenu = <></>
 
@@ -67,6 +117,8 @@ export const useRefinements = ({
       <>
         <div>{hierarchicalMenu}</div>
         <div>{refinements}</div>
+        {refinementProps2 ? <CityTooltip /> : <></>}
+        <div>{refinements2}</div>
       </>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
@@ -76,6 +128,10 @@ export const useRefinements = ({
         <Offcanvas.Body>
           <SearchContainer>{hierarchicalMenu}</SearchContainer>
           <SearchContainer>{refinements}</SearchContainer>
+          <SearchContainer>
+            {refinementProps2 ? <CityTooltip /> : <></>}
+          </SearchContainer>
+          <SearchContainer>{refinements2}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
     ),
