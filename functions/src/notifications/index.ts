@@ -2,10 +2,7 @@
 import { publishNotifications } from "./publishNotifications"
 import { populateBillHistoryNotificationEvents } from "./populateBillHistoryNotificationEvents"
 import { populateTestimonySubmissionNotificationEvents } from "./populateTestimonySubmissionNotificationEvents"
-import {
-  cleanupNotifications,
-  httpsCleanupNotifications
-} from "./cleanupNotifications"
+import { cleanupNotifications } from "./cleanupNotifications"
 import { deliverNotifications } from "./deliverNotifications"
 import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
 
@@ -16,6 +13,5 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  httpsCleanupNotifications,
   updateUserNotificationFrequency
 }
