@@ -12,7 +12,6 @@ const db = admin.firestore()
 const notificationFunctions: {
   [K in FunctionName]?: K
 } = {
-  httpsDeliverNotifications: "httpsDeliverNotifications",
   httpsCleanupNotifications: "httpsCleanupNotifications"
 }
 

@@ -233,7 +233,7 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
     "utf8"
   )
   const compiledTemplate = handlebars.compile(templateSource)
-  return compiledTemplate({ digestData })
+  return compiledTemplate(digestData)
 }
 
 // Firebase Functions
@@ -241,18 +241,3 @@ export const deliverNotifications = functions.pubsub
   .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
   .timeZone("America/New_York")
   .onRun(deliverEmailNotifications)
-
-export const httpsDeliverNotifications = functions.https.onRequest(
-  async (request, response) => {
-    try {
-      await deliverEmailNotifications()
-
-      console.log("DEBUG: deliverNotifications completed")
-
-      response.status(200).send("Successfully delivered notifications")
-    } catch (error) {
-      console.error("Error in deliverNotifications:", error)
-      response.status(500).send("Internal server error")
-    }
-  }
-)
