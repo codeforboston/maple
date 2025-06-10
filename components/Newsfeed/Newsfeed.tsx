@@ -7,9 +7,7 @@ import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
-import SignInModal from "components/auth/SignInModal"
-import StartModal from "components/auth/StartModal"
-import { AltSignInWithButton } from "components/auth/SignInWithButton"
+
 import {
   BillCol,
   Header,
@@ -39,12 +37,14 @@ export default function Newsfeed() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    // console.log("useEffect: user:", user, "authLoading:", loading)
-    if (!loading && !user) {
-      // Trigger login modal
+    console.log("loading", loading, "profile", profile)
+    console.log(!loading && !profile)
+    if (!loading && !profile) {
       dispatch(authStepChanged("protectedpage"))
+    } else {
+      dispatch(authStepChanged(null))
     }
-  }, [dispatch, loading, user])
+  }, [dispatch, loading, profile])
 
   useEffect(() => {
     const results = allResults.filter(result => {
