@@ -29,7 +29,7 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.firebase
-    command: yarn emulators:start
+    command: yarn emulators:start --debug # TODO: REMOVE THIS
     working_dir: /app
     depends_on:
       init:
