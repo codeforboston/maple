@@ -1,22 +1,12 @@
 import { Frequency } from "../auth/types"
 
 export type BillDigest = {
-  billNumber: string
-  billTitle: string
-  testimonies: number
+  billId: string
+  billName: string
+  billCourt: string
   endorseCount: number
   neutralCount: number
   opposeCount: number
-}
-
-export type OrgDigest = {
-  orgTitle: string
-  counter: number
-  userLookup: string
-  items: Array<{
-    title: string
-    icon: string
-  }>
 }
 export type Position = "endorse" | "neutral" | "oppose"
 export type BillResult = {
@@ -36,6 +26,6 @@ export type NotificationEmailDigest = {
   endDate: Date
   bills: BillDigest[] // cap of 4
   numBillsWithNewTestimony: number
-  orgs: OrgDigest[] // cap of 4
+  users: UserDigest[] // cap of 4
   numUsersWithNewTestimony: number
 }
