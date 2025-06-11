@@ -7,6 +7,7 @@ import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
+
 import {
   BillCol,
   Header,
@@ -16,6 +17,8 @@ import {
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { useAppDispatch } from "components/hooks"
+import { authStepChanged } from "components/auth/redux"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
@@ -30,6 +33,18 @@ export default function Newsfeed() {
 
   const [allResults, setAllResults] = useState<Notifications>([])
   const [filteredResults, setFilteredResults] = useState<Notifications>([])
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    console.log("loading", loading, "profile", profile)
+    console.log(!loading && !profile)
+    if (!loading && !profile) {
+      dispatch(authStepChanged("protectedpage"))
+    } else {
+      dispatch(authStepChanged(null))
+    }
+  }, [dispatch, loading, profile])
 
   useEffect(() => {
     const results = allResults.filter(result => {
@@ -251,7 +266,7 @@ export default function Newsfeed() {
               </StyledContainer>
             </div>
           ) : (
-            <ErrorPage statusCode={404} withDarkMode={false} />
+            <ErrorPage statusCode={401} withDarkMode={false} />
           )}
         </>
       )}
