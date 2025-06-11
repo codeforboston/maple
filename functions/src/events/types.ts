@@ -4,6 +4,7 @@ import {
   Literal as L,
   Null,
   Number,
+  Optional,
   Record,
   Runtype,
   Static,
@@ -76,7 +77,10 @@ export const HearingListItem = Record({ EventId: Number })
 export type Hearing = Static<typeof Hearing>
 export const Hearing = BaseEvent.extend({
   type: L("hearing"),
-  content: HearingContent
+  content: HearingContent,
+  videoURL: Optional(String),
+  videoAssemblyId: Optional(String),
+  videoFetchedAt: Optional(InstanceOf(Timestamp))
 })
 
 export type Event = Static<typeof Event>

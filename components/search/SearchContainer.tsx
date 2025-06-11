@@ -149,7 +149,7 @@ export const SearchContainer = styled.div`
 
   .ais-MultiselectHierarchicalMenu-list {
     background-color: white;
-    padding: 1rem;
+    padding: 0.5rem 1rem 1rem;
     border-radius: 4px;
     margin-bottom: 1.5rem;
     max-height: 250px;
@@ -200,22 +200,21 @@ export const SearchContainer = styled.div`
     width: 100%;
     list-style: none;
   }
+
   .ais-MultiselectHierarchicalMenu-checkbox--child {
     box-shadow: none;
     outline: 1px solid black;
     border-radius: 1px;
     color: var(--bs-blue);
-    margin-right: 6px;
     cursor: pointer;
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid var(--bs-blue);
+    height: 1rem;
+    margin: 0 0.5rem 0 0;
+    min-width: 1rem;
   }
-  .ais-MultiselectHierarchicalMenu-item--selected
-    .ais-MultiselectHierarchicalMenu-label {
-    font-weight: bold;
-  }
-  .ais-MultiselectHierarchicalMenu-item--child--selected
-    .ais-MultiselectHierarchicalMenu-label--child {
-    font-weight: bold;
-  }
+
   .ais-MultiselectHierarchicalMenu-item--child--selected
     .ais-MultiselectHierarchicalMenu-checkbox--child {
     background-image: url("/check-solid.svg");
@@ -223,10 +222,12 @@ export const SearchContainer = styled.div`
     background-position: center;
     background-repeat: no-repeat;
   }
-  .ais-MultiselectHierarchicalMenu-item--child {
-    font-size: 1rem;
-    border-top: dashed 1px;
+
+  .ais-MultiselectHierarchicalMenu-item--selected
+    .ais-MultiselectHierarchicalMenu-label {
+    font-weight: bold;
   }
+
   .ais-MultiselectHierarchicalMenu-label--child {
     white-space: normal;
     display: flex;
@@ -235,6 +236,17 @@ export const SearchContainer = styled.div`
     gap: 10px;
     cursor: pointer;
   }
+
+  .ais-MultiselectHierarchicalMenu-item--child--selected
+    .ais-MultiselectHierarchicalMenu-label--child {
+    font-weight: bold;
+  }
+
+  .ais-MultiselectHierarchicalMenu-item--child {
+    font-size: 1rem;
+    border-top: dashed 1px;
+  }
+
   .ais-MultiselectHierarchicalMenu-count--child {
     background: var(--bs-blue);
     color: white;

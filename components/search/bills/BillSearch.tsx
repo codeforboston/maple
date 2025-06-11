@@ -1,3 +1,4 @@
+import { TFunction, useTranslation } from "next-i18next"
 import {
   CurrentRefinements,
   Hits,
@@ -9,7 +10,7 @@ import {
 import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { Col, Row } from "../../bootstrap"
+import { Col, Container, Row, Spinner } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
@@ -17,11 +18,10 @@ import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
-import { useBillHierarchicalMenu } from "./useBillHierarchicalMenu"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
-import { getServerConfig } from "../common"
+import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -71,7 +71,9 @@ export const BillSearch = () => {
         }}
         searchClient={searchClient}
         routing={useRouting()}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
+        <VirtualFilters type="bill" />
         <Layout items={items} />
       </InstantSearch>
     </SearchErrorBoundary>
@@ -98,12 +100,54 @@ const useSearchStatus = () => {
   }
 }
 
+const StyledLoadingContainer = styled(Container)`
+  background-color: white;
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+`
+
+const Results = ({
+  status,
+  t
+}: {
+  status: ReturnType<typeof useSearchStatus>
+  t: TFunction
+}) => {
+  const [isLoadingBillDetails, setIsLoadingBillDetails] = useState(false)
+
+  if (isLoadingBillDetails) {
+    return (
+      <StyledLoadingContainer>
+        <Spinner animation="border" className="mx-auto" />
+      </StyledLoadingContainer>
+    )
+  } else if (status === "empty") {
+    return (
+      <NoResults>
+        {t("zero_results")}
+        <br />
+        <b>{t("another_term")}</b>
+      </NoResults>
+    )
+  } else {
+    return (
+      <Hits
+        hitComponent={BillHit}
+        onClick={() => setIsLoadingBillDetails(true)}
+      />
+    )
+  }
+}
+
 const Layout: FC<
   React.PropsWithChildren<{ items: SortByWithConfigurationItem[] }>
 > = ({ items }) => {
   const refinements = useBillRefinements()
-  const hierarchicalMenu = useBillHierarchicalMenu()
   const status = useSearchStatus()
+
+  const { t } = useTranslation("billSearch")
 
   return (
     <SearchContainer>
@@ -111,15 +155,13 @@ const Layout: FC<
         <SearchBox placeholder="Search For Bills" className="mt-2 mb-3" />
       </Row>
       <Row>
-        <Col xs={3} lg={3}>
-          {hierarchicalMenu.options}
+        <Col xs={0} lg={3}>
           {refinements.options}
         </Col>
         <Col className="d-flex flex-column">
           <RefinementRow>
             <ResultCount className="flex-grow-1 m-1" />
             <SortBy items={items} />
-            {hierarchicalMenu.show}
             {refinements.show}
           </RefinementRow>
           <CurrentRefinements
@@ -127,15 +169,7 @@ const Layout: FC<
             excludedAttributes={["nextHearingAt"]}
             transformItems={extractLastSegmentOfRefinements}
           />
-          {status === "empty" ? (
-            <NoResults>
-              Your search has yielded zero results!
-              <br />
-              <b>Try another search term</b>
-            </NoResults>
-          ) : (
-            <Hits hitComponent={BillHit} />
-          )}
+          <Results status={status} t={t} />
           <Pagination className="mx-auto mt-2 mb-3" />
         </Col>
       </Row>

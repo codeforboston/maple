@@ -21,4 +21,5 @@ jobs:
           args: deploy --force --only firestore,functions,storage
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
           PROJECT_ID: digital-testimony-prod

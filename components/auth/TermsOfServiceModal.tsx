@@ -80,7 +80,7 @@ export default function TermsOfServiceModal({
               </Row>
               <Row>
                 <NavLink
-                  href="https://cdn.forms-content.sg-form.com/fc8a7d49-d903-11ed-9e53-c2519c5b83a4"
+                  href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
                   other={{
                     className: `text-center fs-5 mt-4 text-secondary`,
                     target: "_blank",

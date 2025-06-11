@@ -1,3 +1,8 @@
+// DEPRECATED - This will no longer be useful going forward
+//              We plan to rely on the `profiles` collection for casual email use
+//              and the firebase-auth API where we need verified email addresses
+// This should no longer be run and will be removed in a future update
+
 import { UserRecord } from "firebase-admin/auth"
 import { Auth } from "functions/src/types"
 import { Script } from "./types"

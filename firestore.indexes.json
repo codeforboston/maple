@@ -731,6 +731,20 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "userNotificationFeed",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "notification.type",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "notification.timestamp",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

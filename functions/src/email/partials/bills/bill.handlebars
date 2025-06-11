@@ -1,33 +1,34 @@
-<article class="bill">
-  <div class="billNumber">
-    {{billNumber}}
+<article id="bill">
+  <div style="font-weight: 500; font-size: 22px; line-height: 125%; 
+              text-decoration-line: underline; color: #000000; margin-bottom: 24px">
+    {{this.billId}}
   </div>
-  <div class="billTitle">
-    {{billTitle}}
+  <div style="font-weight: 600; font-size: 12px; line-height: 125%; 
+              color: #000000; letter-spacing: 0.03em; margin-bottom: 24px">
+    {{this.billName}}
   </div>
-  <div class="billContent">
-    <div class="billContentRow">
-      <div class="billContentNum numBox1">
-        <div class="billContentNumInner">{{testimonies}}</div>
-      </div>
-      <div class="billContentNum numBox2">
-        <div class="circle green-circle"></div>
-        <div class="billContentNumInner">{{endorseCount}}</div>
-      </div>
-      <div class="billContentNum numBox3">
-        <div class="circle blue-circle"></div>
-        <div class="billContentNumInner">{{neutralCount}}</div>
-      </div>
-      <div class="billContentNum numBox4">
-        <div class="circle orange-circle"></div>
-        <div class="billContentNumInner">{{opposeCount}}</div>
+  <div style="padding: 12px 0px 12px 36px; background: #EAE7E7;
+              border-radius: 12px; margin-bottom: 36px;">
+    <div>
+      <div style="height: 49px; font-weight: 500; font-size: 39px; line-height: 125%;
+                  letter-spacing: -0.015em; color: #000000; margin: auto; text-align: center">
+        {{addCounts this.endorseCount this.neutralCount this.opposeCount}}
       </div>
     </div>
-    <div class="billContentRow">
-      <div class="billContentTitle">New Testimonies</div>
-      <div class="billContentTitle">Endorse</div>
-      <div class="billContentTitle">Neutral</div>
-      <div class="billContentTitle">Oppose</div>
+    <div style="height: 20px; font-weight: 700; font-size: 16px; line-height: 125%;
+                letter-spacing: 0.015em; color: #3E3E3E; margin: auto; text-align: center">
+      New Testimonies
+    </div>
+    <div style="height: 19px; font-weight: 700; font-size: 14px; line-height: 100%;
+                color: #000000; margin: auto; padding: 16px 0px 26px 0px;
+                text-align: center">
+      <img src="https://mapletestimony.org/email/images_no-svgs/endorse.png" alt="checkmark"
+        style="padding-right: 18px" />
+      {{this.endorseCount}} Endorse
+      <img src="https://mapletestimony.org/email/images_no-svgs/neutral.png" alt="dash" style="padding: 0 18px" />
+      {{this.neutralCount}} Neutral
+      <img src="https://mapletestimony.org/email/images_no-svgs/oppose.png" alt="x-mark" style="padding: 0 18px" />
+      {{this.opposeCount}} Oppose
     </div>
   </div>
 </article>

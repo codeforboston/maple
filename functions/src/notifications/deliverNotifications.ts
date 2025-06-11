@@ -1,93 +1,122 @@
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
-import * as helpers from "../email/helpers"
 import * as fs from "fs"
-import { Timestamp } from "../firebase"
-import { getNextDigestAt, getNotificationStartDate } from "./helpers"
+import { db, Timestamp } from "../firebase"
+//import { auth, db, Timestamp } from "../firebase" // Temporarily using email from the profile to test the non-auth issues
+import {
+  convertHtmlToText,
+  getNextDigestAt,
+  getNotificationStartDate
+} from "./helpers"
 import { startOfDay } from "date-fns"
-import { TestimonySubmissionNotificationFields, User } from "./types"
+import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
   BillDigest,
   NotificationEmailDigest,
   Position,
   UserDigest
-} from "../email/types"
+} from "./emailTypes"
+import { prepareHandlebars } from "../email/handlebarsHelpers"
+import { Frequency } from "../auth/types"
 
-// Get a reference to the Firestore database
-const db = admin.firestore()
-const path = require("path")
-
-// Define Handlebars helper functions
-handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
-handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
-handlebars.registerHelper("isDefined", helpers.isDefined)
-function registerPartials(directoryPath: string) {
-  const filenames = fs.readdirSync(directoryPath)
-
-  filenames.forEach(filename => {
-    const partialPath = path.join(directoryPath, filename)
-    const stats = fs.statSync(partialPath)
-
-    if (stats.isDirectory()) {
-      // Recursive call for directories
-      registerPartials(partialPath)
-    } else if (stats.isFile() && path.extname(filename) === ".handlebars") {
-      // Register partials for .handlebars files
-      const partialName = path.basename(filename, ".handlebars")
-      const partialContent = fs.readFileSync(partialPath, "utf8")
-      handlebars.registerPartial(partialName, partialContent)
-    }
-  })
-}
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
+const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
-const PARTIALS_DIR = "/app/functions/lib/email/partials/"
-const EMAIL_TEMPLATE_PATH = "/app/functions/lib/email/digestEmail.handlebars"
+const path = require("path")
+
+// Temporarily using email from the profile to test the non-auth issues
+// const getVerifiedUserEmail = async (uid: string) => {
+//   const userRecord = await auth.getUser(uid)
+//   if (userRecord && userRecord.email && userRecord.emailVerified) {
+//     return userRecord.email
+//   } else {
+//     return null
+//   }
+// }
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
 const deliverEmailNotifications = async () => {
   const now = Timestamp.fromDate(startOfDay(new Date()))
 
-  const usersSnapshot = await db
-    .collection("users")
+  console.log("Preparing handlebars helpers and partials")
+  prepareHandlebars()
+  console.log("Handlebars helpers and partials prepared")
+
+  const profilesSnapshot = await db
+    .collection("profiles")
     .where("nextDigestAt", "<=", now)
     .get()
 
-  const emailPromises = usersSnapshot.docs.map(async userDoc => {
-    const user = userDoc.data() as User
-    const digestData = await buildDigestData(user, userDoc.id, now)
+  console.log(
+    `Processing ${
+      profilesSnapshot.size
+    } profiles with nextDigestAt <= ${now.toDate()}`
+  )
+
+  const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
+    const profile = profileDoc.data() as Profile
+    if (!profile || !profile.notificationFrequency) {
+      console.log(
+        `User ${profileDoc.id} has no notificationFrequency - skipping`
+      )
+      return
+    }
+
+    // Temporarily using email from the profile to test the non-auth issues
+    const verifiedEmail = profile.email //await getVerifiedUserEmail(profileDoc.id)
+    if (!verifiedEmail) {
+      console.log(
+        `Skipping user ${profileDoc.id} because they have no verified email address`
+      )
+      return
+    }
+
+    const digestData = await buildDigestData(
+      profileDoc.id,
+      now,
+      profile.notificationFrequency
+    )
+
+    const batch = db.batch()
 
     // If there are no new notifications, don't send an email
     if (
       digestData.numBillsWithNewTestimony === 0 &&
       digestData.numUsersWithNewTestimony === 0
     ) {
-      console.log(`No new notifications for ${userDoc.id} - not sending email`)
+      console.log(
+        `No new notifications for ${profileDoc.id} - not sending email`
+      )
     } else {
+      console.log(
+        `Sending email to user ${profileDoc.id} with data: ${digestData}`
+      )
       const htmlString = renderToHtmlString(digestData)
 
-      // Create an email document in /notifications_mails to queue up the send
-      await db.collection("notifications_mails").add({
-        to: [user.email],
+      const email = {
+        to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
-          text: "", // blank because we're sending HTML
+          text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
           html: htmlString
         },
         createdAt: Timestamp.now()
-      })
+      }
+      batch.create(db.collection("emails").doc(), email)
 
-      console.log(`Saved email message to user ${userDoc.id}`)
+      console.log(`Saving email message to user ${profileDoc.id}`)
     }
 
-    const nextDigestAt = getNextDigestAt(user.notificationFrequency)
-    await userDoc.ref.update({ nextDigestAt })
+    const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
+    batch.update(profileDoc.ref, { nextDigestAt })
+    await batch.commit()
 
-    console.log(`Updated nextDigestAt for ${userDoc.id} to ${nextDigestAt}`)
+    console.log(
+      `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
+    )
   })
 
   // Wait for all email documents to be created
@@ -95,8 +124,12 @@ const deliverEmailNotifications = async () => {
 }
 
 // TODO: Unit tests
-const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
-  const startDate = getNotificationStartDate(user.notificationFrequency, now)
+const buildDigestData = async (
+  userId: string,
+  now: Timestamp,
+  notificationFrequency: Frequency
+) => {
+  const startDate = getNotificationStartDate(notificationFrequency, now)
 
   const notificationsSnapshot = await db
     .collection(`users/${userId}/userNotificationFeed`)
@@ -182,7 +215,7 @@ const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
     .sort((a, b) => b.newTestimonyCount - a.newTestimonyCount)
 
   const digestData = {
-    notificationFrequency: user.notificationFrequency,
+    notificationFrequency,
     startDate: startDate.toDate(),
     endDate: now.toDate(),
     bills: bills.slice(0, NUM_BILLS_TO_DISPLAY),
@@ -195,39 +228,16 @@ const buildDigestData = async (user: User, userId: string, now: Timestamp) => {
 }
 
 const renderToHtmlString = (digestData: NotificationEmailDigest) => {
-  // TODO: Can we register these earlier since they're shared across all notifs - maybe at startup?
-  registerPartials(PARTIALS_DIR)
-
-  console.log("DEBUG: Working directory: ", process.cwd())
-  console.log(
-    "DEBUG: Digest template path: ",
-    path.resolve(EMAIL_TEMPLATE_PATH)
-  )
-
   const templateSource = fs.readFileSync(
     path.join(__dirname, EMAIL_TEMPLATE_PATH),
     "utf8"
   )
   const compiledTemplate = handlebars.compile(templateSource)
-  return compiledTemplate({ digestData })
+  return compiledTemplate(digestData)
 }
 
 // Firebase Functions
 export const deliverNotifications = functions.pubsub
   .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
+  .timeZone("America/New_York")
   .onRun(deliverEmailNotifications)
-
-export const httpsDeliverNotifications = functions.https.onRequest(
-  async (request, response) => {
-    try {
-      await deliverEmailNotifications()
-
-      console.log("DEBUG: deliverNotifications completed")
-
-      response.status(200).send("Successfully delivered notifications")
-    } catch (error) {
-      console.error("Error in deliverNotifications:", error)
-      response.status(500).send("Internal server error")
-    }
-  }
-)

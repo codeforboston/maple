@@ -24,5 +24,17 @@
     ],
     // TODO: Fix existing warnings and make them errors going forward
     "i18next/no-literal-string": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "components/moderation/**/*.js",
+        "components/moderation/**/*.ts",
+        "components/moderation/**/*.tsx"
+      ],
+      "rules": {
+        "i18next/no-literal-string": "off"
+      }
+    }
+  ]
 }

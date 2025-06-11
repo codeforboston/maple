@@ -19,7 +19,7 @@ export default function VerifyEmailModal({
             <Image fluid height={`18em`} src="/mailbox.svg" alt="" />
             <h2 className={`fw-bold`}>{t("verifyEmail")}</h2>
             <h6>{t("verifyLinkSent")}</h6>
-            <Internal href="/editprofile" className="view-edit-profile">
+            <Internal href="/edit-profile" className="view-edit-profile">
               <Button onClick={onHide}>{t("setUpProfile")}</Button>
             </Internal>
           </Stack>

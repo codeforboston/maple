@@ -65,3 +65,6 @@ export const decodeHtmlCharCodes = (s: string) =>
   s.replace(/(&#(\d+);)/g, (match, capture, charCode) =>
     String.fromCharCode(charCode)
   )
+
+export const truncateText = (s: string | undefined, maxLength: number) =>
+  !!s && s.length > maxLength ? s.substring(0, maxLength) + "..." : s

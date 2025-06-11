@@ -36,9 +36,6 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  httpsPublishNotifications,
-  httpsDeliverNotifications,
-  httpsCleanupNotifications,
   updateUserNotificationFrequency
 } from "./notifications"
 
@@ -48,6 +45,8 @@ export {
   followUser,
   unfollowUser
 } from "./subscriptions"
+
+export { transcription } from "./webhooks"
 
 export * from "./triggerPubsubFunction"
 

@@ -66,7 +66,7 @@
     "communicatingWithLegislators": "Communicating with Legislators",
     "editProfile": "Edit Profile",
     "faq": "FAQ",
-    "followingTab": "Following Tab",
+    "followingTab": "Followed Content",
     "home": "Home",
     "learnAboutTestimony": "Learn About Testimony",
     "legislativeProcess": "About the MA Legislative Process",
@@ -119,7 +119,9 @@
     "instagram": "Instagram",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
-    "facebook": "Facebook"
+    "facebook": "Facebook",
+    "bluesky": "BlueSky",
+    "mastodon": "Mastodon"
   },
   "table": {
     "page": "Page {{currentPage}}"

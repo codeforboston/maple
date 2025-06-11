@@ -7,7 +7,7 @@
   "functions": {
     "predeploy": ["yarn build:functions"],
     "source": "functions",
-    "runtime": "nodejs16"
+    "runtime": "nodejs18"
   },
   "firestore": {
     "rules": "firestore.rules",
@@ -60,6 +60,6 @@
     "rules": "storage.rules"
   },
   "extensions": {
-    "firestore-send-email": "firebase/firestore-send-email@0.1.26"
+    "firestore-send-email": "firebase/firestore-send-email@0.1.36"
   }
 }

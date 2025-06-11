@@ -93,19 +93,19 @@
     "content": [
       {
         "title": "Filing",
-        "paragraph": "A Representative, Senator, or the Governor must file a bill. Constituents can write to their legislators (typically their own  district's House or Senate member) to propose a bill to be filed. This can be done at any time, but is typically done before the start of the legislative session (i.e. before the third Friday in January of odd-numbered years). Bills filed later, during the legislative session, require special approval."
+        "paragraph": "At the start of each two-year legislative session, Senators and Representatives (and sometimes the Governor or state agencies)  file thousands of bills. This can be done at any time, but is typically done before the start of the legislative session (i.e. before the third Friday in January of odd-numbered years). Bills filed later (after the first month of the session) during the legislative session, require special approval."
       },
       {
-        "title": "Testimony",
-        "paragraph": "All stakeholders have the chance to share their thoughts with the legislature by submitting written testimony. Typically, testimony is submitted to the legislative Committee responsible for the bill in advance of their public hearing. You can also deliver oral testimony by attending a hearing or you can reach out to your legislators and speak to them directly."
+        "title": "Committees",
+        "paragraph": "Each bill is assigned to the committee most relevant to its content (for example, a bill about water quality goes to the Joint Committee on Environment and Natural Resources). Committees are critical; they dictate whether a bill \"fails\" or whether it moves forward in the legislative process. In Massachusetts, bills are usually assigned to \"Joint\" committees - made up of Representatives and Senators. In some other states, House committees and Senate committees work independently, but that is rarely the case in Massachusetts. "
       },
       {
         "title": "Public Hearing",
-        "paragraph": "All bills are formally heard by committees during public hearings which are open to the public and recorded and posted as videos on the legislature's website. While the amount of time available to speak during a public hearing is limited, more detailed comments can be submitted to the committee in written testimony."
+        "paragraph": "All bills are formally heard by committees during public hearings which are open to the public and recorded and posted as videos on the legislature's website. While the amount of time available to speak during a public hearing is limited, more detailed comments can be submitted to the committee in written testimony. All stakeholders have the chance to share their thoughts with the legislature by submitting written testimony. Typically, testimony is submitted to the committee assigned to the bill. You can also deliver oral testimony by attending a hearing or you can reach out to your legislators and speak to them directly."
       },
       {
         "title": "Committee Reports",
-        "paragraph": "Committee reports. Committees must file reports on each bill under their consideration after discussing them in Executive Session following the public hearing. This typically occurs before February of the second year of the legislative session (even-numbered years). The goal for proponents of a bill is that the Committee will recommend they \"ought to pass\" and thereby promote them out of the Committee. Most bills, however are \"sent to study,\" meaning that they will not be passed out of committee in that session. A successful bill may be redrafted or amended by the committee based on testimony received and other deliberations. Many of those bills will be refiled in the next session and can be considered again."
+        "paragraph": "Committees must file reports on each bill under their consideration after discussing them in Executive Session following the public hearing. This typically occurs before February of the second year of the legislative session (even-numbered years). The goal for proponents of a bill is that the Committee will recommend they \"ought to pass\" and thereby promote them out of the Committee. Most bills, however are \"sent to study,\" meaning that they will not be passed out of committee in that session. A successful bill may be redrafted or amended by the committee based on testimony received and other deliberations. Many of those bills will be refiled in the next session and can be considered again."
       },
       {
         "title": "Three Readings",

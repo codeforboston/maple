@@ -14,3 +14,4 @@ dist
 coverage
 storybook-static
 llm
+playwright-report

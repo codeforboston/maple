@@ -29,6 +29,11 @@ service cloud.firestore {
       function doesNotChangeRole() { 
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
       }
+      function doesNotChangeNextDigestAt() {
+        // Only admins/automatic processes should be able to change the
+        // email digest notification times
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['nextDigestAt'])
+      }
       // either the change doesn't include the public field, 
       // or the user is a base user (i.e. not an org)
       function validPublicChange() {
@@ -47,7 +52,7 @@ service cloud.firestore {
 
       // Allow users to make updates except to delete their profile or set the role field.
       // Only admins can delete a user profile or set the user role field. 
-      allow update: if validUser() && doesNotChangeRole() && validPublicChange()
+      allow update: if validUser() && doesNotChangeRole() && validPublicChange() && doesNotChangeNextDigestAt()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
@@ -82,6 +87,17 @@ service cloud.firestore {
         // Publicly readable, for posterity.
         allow read: if true 
         allow read, write: if request.auth.token.get("role", "user") == "admin"
+      }
+    }
+    match /transcriptions/{tid} {
+      // public, read-only
+      allow read: if true
+      allow write: if false
+      
+      // public, read-only
+      match /utterances/{uid} {
+        allow read: if true
+        allow write: if false
       }
     }
   }

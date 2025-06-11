@@ -1,0 +1,50 @@
+<section style="margin: 0 47.5px; padding-bottom: 12px">
+  <div style="margin-bottom: 20px">
+    <h5 style="font-weight: 600; font-size: 25px; line-height: 125%;
+               margin-bottom: 0px;color: #C71E32; margin-right: 20px;
+               display: inline-block;"
+    >
+      Users
+    </h5>
+    <div style="border: 1px solid #C71E32; height: 0px; width: 400px;
+                display: inline-block; margin-bottom: 8px"
+    >
+    </div>
+  </div>
+  <div id="sectionOrgs">
+    {{#each users}}
+      {{> user}}
+    {{else}}  
+      <article style="margin-bottom: 20px">
+        {{> noUpdates }}
+      </article>
+    {{/each}}
+  </div>
+  <div></div>
+    {{#ifGreaterThan numUsersWithNewTestimony 4}}
+      <div style="padding: 12px 0px 12px 36px; background: #EAE7E7;
+                  border-radius: 12px; margin-bottom: 36px;"> 
+        <div style="font-weight: 700; font-size: 14px; line-height: 125%; letter-spacing: 3%; margin-top: 5px">
+          {{#ifGreaterThan numUsersWithNewTestimony 5}}
+            {{minusFour numUsersWithNewTestimony}} other users you follow posted testimony since your last update
+          {{else}}
+            {{minusFour numUsersWithNewTestimony}} other user you follow posted testimony since your last update
+          {{/ifGreaterThan}}
+        </div>
+        <div style="padding: 20px 0 15px 0; margin: auto; text-align: center">
+          <a 
+            style="background-color: #C61E32; padding: 10px 20px;
+                   color: white; text-decoration:none;font-size:14px;
+                   font-family:Roboto,sans-serif;border-radius:5px" 
+            href="https://www.mapletestimony.org/edit-profile/following"
+            target="_blank"
+            rel="noopener noreferrer"
+          > 
+            View All
+          </a>
+        </div>
+      </div>  
+    {{else}}
+    {{/ifGreaterThan}}
+  </div>
+</section>

@@ -1,10 +1,12 @@
+import { useTranslation } from "next-i18next"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Offcanvas } from "../bootstrap"
+import { Button, Offcanvas } from "../bootstrap"
+import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
 import { SearchContainer } from "./SearchContainer"
 
 export const FilterButton = styled(Button)`
@@ -14,6 +16,7 @@ export const FilterButton = styled(Button)`
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   align-self: flex-start;
 `
+
 const useHasRefinements = () => {
   const { results } = useInstantSearch()
   const refinements = results.getRefinements()
@@ -21,8 +24,10 @@ const useHasRefinements = () => {
 }
 
 export const useRefinements = ({
+  hierarchicalMenuProps,
   refinementProps
 }: {
+  hierarchicalMenuProps?: any[]
   refinementProps: any[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
@@ -37,17 +42,39 @@ export const useRefinements = ({
       ))}
     </>
   )
+
+  let hierarchicalMenu = <></>
+
+  if (hierarchicalMenuProps) {
+    hierarchicalMenu = (
+      <>
+        <MultiselectHierarchicalMenu
+          attributes={[
+            hierarchicalMenuProps[0].attribute,
+            hierarchicalMenuProps[1].attribute
+          ]}
+        />
+      </>
+    )
+  }
+
   const hasRefinements = useHasRefinements()
+
+  const { t } = useTranslation("billSearch")
 
   return {
     options: inline ? (
-      <div>{refinements}</div>
+      <>
+        <div>{hierarchicalMenu}</div>
+        <div>{refinements}</div>
+      </>
     ) : (
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Filter</Offcanvas.Title>
+          <Offcanvas.Title>{t("filter")}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
+          <SearchContainer>{hierarchicalMenu}</SearchContainer>
           <SearchContainer>{refinements}</SearchContainer>
         </Offcanvas.Body>
       </Offcanvas>
@@ -59,7 +86,7 @@ export const useRefinements = ({
         onClick={handleOpen}
         className={hasRefinements ? "ais-FilterButton-has-refinements" : ""}
       >
-        <FontAwesomeIcon icon={faFilter} /> Filter
+        <FontAwesomeIcon icon={faFilter} /> {t("filter")}
       </FilterButton>
     )
   }

@@ -1,21 +1,27 @@
-import { Timestamp } from "firebase-admin/firestore"
+import { Timestamp } from "../firebase"
 import { Frequency } from "../auth/types"
-import { startOfDay } from "date-fns"
+import {
+  startOfDay,
+  addMonths,
+  setDate,
+  previousTuesday,
+  nextTuesday,
+  subMonths
+} from "date-fns"
 
-// TODO - Unit tests
+import { JSDOM } from "jsdom"
+
 export const getNextDigestAt = (notificationFrequency: Frequency) => {
   const now = startOfDay(new Date())
   let nextDigestAt = null
   switch (notificationFrequency) {
     case "Weekly":
-      const weekAhead = new Date(now)
-      weekAhead.setDate(weekAhead.getDate() + 7)
-      nextDigestAt = Timestamp.fromDate(weekAhead)
+      nextDigestAt = Timestamp.fromDate(nextTuesday(now))
       break
     case "Monthly":
-      const monthAhead = new Date(now)
-      monthAhead.setMonth(monthAhead.getMonth() + 1)
-      nextDigestAt = Timestamp.fromDate(monthAhead)
+      // Monthly notifications are sent on the 1st of the month
+      const nextMonthFirst = setDate(addMonths(now, 1), 1)
+      nextDigestAt = Timestamp.fromDate(nextMonthFirst)
       break
     case "None":
       nextDigestAt = null
@@ -34,16 +40,19 @@ export const getNotificationStartDate = (
 ) => {
   switch (notificationFrequency) {
     case "Weekly":
-      const weekAgo = new Date(now.toDate())
-      weekAgo.setDate(weekAgo.getDate() - 7)
-      return Timestamp.fromDate(weekAgo)
+      return Timestamp.fromDate(previousTuesday(now.toDate()))
     case "Monthly":
-      const monthAgo = new Date(now.toDate())
-      monthAgo.setMonth(monthAgo.getMonth() - 1)
-      return Timestamp.fromDate(monthAgo)
+      const firstOfMonth = setDate(now.toDate(), 1)
+      const previousFirstOfMonth = subMonths(firstOfMonth, 1)
+      return Timestamp.fromDate(previousFirstOfMonth)
     // We can safely fallthrough here because if the user has no notification frequency set,
     // we won't even send a notification
     default:
       return now
   }
+}
+
+export const convertHtmlToText = (html: string) => {
+  const dom = new JSDOM(html)
+  return dom.window.document.body.textContent || "No content"
 }
