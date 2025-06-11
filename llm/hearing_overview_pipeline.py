@@ -32,13 +32,7 @@ PROMPT_INSTRUCTIONS = "Follow these instructions when creating the prompt: \n" \
 "-Do not repeat any offensive, slanderous, or personally derogatory statements \n" \
 "-Note that the transcripts may contain transcription errors, such as mis-identified homophones, and that names referenced in the hearing may not have been transcribed accurately."
 
-PROMPT = f'''
-Provide a summary of this hearing to a regular person with no special knowledge or expertise of this area. 
-This is a hearing discussing several pending bills. 
-Provide a short summary of the sentiments that were expressed about the bills that were discussed during the hearing.
-You do not need to provide a summary of the bills themselves.
-Here is the hearing transcription:
-'''
+# Set the environment variable for the Google Cloud project
 os.environ["GOOGLE_CLOUD_PROJECT"] = "digital-testimony-dev"
 
 @dataclass()
@@ -48,7 +42,6 @@ class HearingDetails():
     '''
     hearing_id: str = ''
     hearing_text: str = ''
-    invoke_dict: dict = field(default_factory=list)
     summary: str = ''
 
 
@@ -60,25 +53,24 @@ def recieve_hearing(hearing: HearingDetails):
     #Convert the hearing to a JSON object, allows us to access the bill ids
     #that are mentioned during the hearing
     r = requests.get(link, verify=False)
-    print('completed request to hearing API')
     r = r.json()
     bill_numbers = [
     doc["BillNumber"]
     for agenda in r.get("HearingAgendas", [])
     for doc in agenda.get("DocumentsInAgenda", [])
     ]
-    print(f'Found {len(bill_numbers)} bills in the hearing.')
-    db = connect_to_firestore()
-    print('Connected to Firestore')
-    #Code for creating list of bills
+    try:
+        db = connect_to_firestore()
+    except Exception as e:
+        print(f'Error connecting to Firestore: {e}')
+        st.error("Could not connect to Firestore. Please check your configuration.")
+        return hearing_text, {}
 
     bill_summaries = {}
     for number in bill_numbers:
         # Get the bill document from Firestore
-        print(f'Fetching bill {number} from Firestore')
         bill_ref = db.collection("generalCourts").document("194").collection("bills").document(number)
         # Fetch the document
-        print(f'Fetching bill reference for {number}')
         bill_doc = bill_ref.get()
         if bill_doc.exists:
             bill_data = bill_doc.to_dict()
@@ -89,12 +81,10 @@ def recieve_hearing(hearing: HearingDetails):
     return hearing_text, bill_summaries
 
 def connect_to_firestore():
-    creds, project = google.auth.default()
-    print("Project:", project)
-    print("Credentials type:", type(creds))
     firebase_admin.initialize_app()
     db = firestore.client()
     return db
+
 def make_openai_request(prompt: str) -> str:
     """
     Make a request to OpenAI's API to get a response for the given prompt.
@@ -126,7 +116,6 @@ if __name__ == "__main__":
     hearing = HearingDetails(
         hearing_id=4548,
         hearing_text=hearing_text,
-        invoke_dict={"key": "value"},
         summary="This is a sample summary."
     )
     text, summaries = recieve_hearing(hearing)
