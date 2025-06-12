@@ -69,7 +69,7 @@ export const transcription = functions
               // If there is one authenticated event, pull out the parts we want to
               // save and try to save them in the db.
 
-              const { sentences } = await assembly.transcripts.sentences(
+              const { paragraphs } = await assembly.transcripts.paragraphs(
                 transcript.id
               )
               const { id, text, audio_url, utterances } = transcript
@@ -107,16 +107,16 @@ export const transcription = functions
                   await writer.close()
                 }
 
-                if (sentences) {
+                if (paragraphs) {
                   const writer = db.bulkWriter()
-                  for (let sentence of sentences) {
-                    const { confidence, start, end, text } = sentence
+                  for (let paragraph of paragraphs) {
+                    const { confidence, start, end, text } = paragraph
 
                     writer.set(
                       db
                         .collection("transcriptions")
                         .doc(`${transcript.id}`)
-                        .collection("sentences")
+                        .collection("paragraphs")
                         .doc(),
                       { confidence, start, end, text }
                     )
