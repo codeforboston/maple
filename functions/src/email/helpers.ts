@@ -22,6 +22,12 @@ export function isDefined(v: unknown) {
   return v !== undefined
 }
 
+export function formatDate(timestamp: Date) {
+  const date = new Date(timestamp)
+
+  return date.toLocaleDateString()
+}
+
 export function minusFour(value: number) {
   const result = value - 4
   return result

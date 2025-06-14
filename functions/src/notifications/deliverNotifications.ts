@@ -1,9 +1,13 @@
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
 import * as handlebars from "handlebars"
 import * as fs from "fs"
-import { Timestamp } from "../firebase"
-import { getNextDigestAt, getNotificationStartDate } from "./helpers"
+import { db, Timestamp } from "../firebase"
+//import { auth, db, Timestamp } from "../firebase" // Temporarily using email from the profile to test the non-auth issues
+import {
+  convertHtmlToText,
+  getNextDigestAt,
+  getNotificationStartDate
+} from "./helpers"
 import { startOfDay } from "date-fns"
 import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
@@ -13,7 +17,6 @@ import {
   UserDigest
 } from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
-import { getAuth } from "firebase-admin/auth"
 import { Frequency } from "../auth/types"
 
 const NUM_BILLS_TO_DISPLAY = 4
@@ -21,19 +24,17 @@ const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
 const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
-// Get a reference to the Firestore database
-const db = admin.firestore()
-const auth = getAuth()
 const path = require("path")
 
-const getVerifiedUserEmail = async (uid: string) => {
-  const userRecord = await auth.getUser(uid)
-  if (userRecord && userRecord.email && userRecord.emailVerified) {
-    return userRecord.email
-  } else {
-    return null
-  }
-}
+// Temporarily using email from the profile to test the non-auth issues
+// const getVerifiedUserEmail = async (uid: string) => {
+//   const userRecord = await auth.getUser(uid)
+//   if (userRecord && userRecord.email && userRecord.emailVerified) {
+//     return userRecord.email
+//   } else {
+//     return null
+//   }
+// }
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
@@ -49,6 +50,12 @@ const deliverEmailNotifications = async () => {
     .where("nextDigestAt", "<=", now)
     .get()
 
+  console.log(
+    `Processing ${
+      profilesSnapshot.size
+    } profiles with nextDigestAt <= ${now.toDate()}`
+  )
+
   const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
     const profile = profileDoc.data() as Profile
     if (!profile || !profile.notificationFrequency) {
@@ -58,7 +65,8 @@ const deliverEmailNotifications = async () => {
       return
     }
 
-    const verifiedEmail = await getVerifiedUserEmail(profileDoc.id)
+    // Temporarily using email from the profile to test the non-auth issues
+    const verifiedEmail = profile.email //await getVerifiedUserEmail(profileDoc.id)
     if (!verifiedEmail) {
       console.log(
         `Skipping user ${profileDoc.id} because they have no verified email address`
@@ -83,13 +91,16 @@ const deliverEmailNotifications = async () => {
         `No new notifications for ${profileDoc.id} - not sending email`
       )
     } else {
+      console.log(
+        `Sending email to user ${profileDoc.id} with data: ${digestData}`
+      )
       const htmlString = renderToHtmlString(digestData)
 
       const email = {
         to: [verifiedEmail],
         message: {
           subject: "Your Notifications Digest",
-          text: "", // blank because we're sending HTML
+          text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
           html: htmlString
         },
         createdAt: Timestamp.now()
@@ -103,7 +114,9 @@ const deliverEmailNotifications = async () => {
     batch.update(profileDoc.ref, { nextDigestAt })
     await batch.commit()
 
-    console.log(`Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt}`)
+    console.log(
+      `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
+    )
   })
 
   // Wait for all email documents to be created
@@ -220,25 +233,11 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
     "utf8"
   )
   const compiledTemplate = handlebars.compile(templateSource)
-  return compiledTemplate({ digestData })
+  return compiledTemplate(digestData)
 }
 
 // Firebase Functions
 export const deliverNotifications = functions.pubsub
   .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
+  .timeZone("America/New_York")
   .onRun(deliverEmailNotifications)
-
-export const httpsDeliverNotifications = functions.https.onRequest(
-  async (request, response) => {
-    try {
-      await deliverEmailNotifications()
-
-      console.log("DEBUG: deliverNotifications completed")
-
-      response.status(200).send("Successfully delivered notifications")
-    } catch (error) {
-      console.error("Error in deliverNotifications:", error)
-      response.status(500).send("Internal server error")
-    }
-  }
-)

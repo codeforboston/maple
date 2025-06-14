@@ -5,7 +5,7 @@
   "scripts": {
     "build:dev": "MAPLE_ENV=dev next build",
     "build:prod": "MAPLE_ENV=prod next build",
-    "build:functions": "next lint -d functions/src && yarn --cwd functions build",
+    "build:functions": "next lint -d functions/src && yarn --cwd functions build && yarn copy-handlebars",
     "check-formatting": "prettier --check .",
     "check-types": "tsc --noEmit",
     "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions,storage",

@@ -36,8 +36,6 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  httpsDeliverNotifications,
-  httpsCleanupNotifications,
   updateUserNotificationFrequency
 } from "./notifications"
 

@@ -67,22 +67,3 @@ const runCleanupNotifications = async () => {
 export const cleanupNotifications = functions.pubsub
   .schedule("every 24 hours")
   .onRun(runCleanupNotifications)
-
-export const httpsCleanupNotifications = functions.https.onRequest(
-  async (request, response) => {
-    try {
-      console.log("httpsCleanupNotifications triggered")
-      await runCleanupNotifications()
-      console.log("DEBUG: cleanupNotifications completed")
-
-      response
-        .status(200)
-        .send(
-          "Successfully cleaned up old notifications, topic events, and email documents"
-        )
-    } catch (error) {
-      console.error("Error in httpsCleanupNotifications:", error)
-      response.status(500).send("Internal server error")
-    }
-  }
-)
