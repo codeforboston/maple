@@ -1,3 +1,5 @@
+import { BillDigest } from "../notifications/emailTypes"
+
 export function addCounts() {
   let sum = 0
   for (let i = 0; i < arguments.length - 1; i++) {
@@ -55,4 +57,13 @@ export function toLowerCase(aString: unknown) {
   }
   console.error(`toLowerCase received a non-string value: ${aString}`)
   return undefined
+}
+
+// TODO: This will be replaced by I18n logic when we implement it for emails
+export function pluralize(bill: BillDigest): string {
+  if (bill.endorseCount + bill.neutralCount + bill.opposeCount === 1) {
+    return "Testimony"
+  } else {
+    return "Testimonies"
+  }
 }
