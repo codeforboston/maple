@@ -12,6 +12,7 @@ export type AuthFlowStep =
   | "forgotPassword"
   | "verifyEmail"
   | "chooseProfileType"
+  | "protectedpage"
   | null
 
 export interface State {
