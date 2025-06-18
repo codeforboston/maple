@@ -14,7 +14,6 @@ import {
 } from "./events/types"
 import { Timestamp } from "../../common/types"
 import { MemberContent } from "./members/types"
-import path from "path"
 
 /**
  * The MA Legislature website's SSL certificate only contains the first
@@ -29,13 +28,7 @@ function addCertificates() {
   const rootCas = createRootCas()
   // rootCas.addFile(__dirname + "/ssl/DigiCert TLS RSA SHA256 2020 CA1.pem")
   rootCas.addFile(
-    path.resolve(
-      process.cwd(),
-      "functions",
-      "src",
-      "ssl",
-      "DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem"
-    )
+    __dirname + "/ssl/DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem"
   )
   require("https").globalAgent.options.ca = rootCas
 }
