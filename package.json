@@ -76,6 +76,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@google-cloud/firestore": "^7.11.1",
     "@popperjs/core": "^2.11.8",
     "@react-aria/ssr": "^3.2.0",
     "@react-aria/utils": "^3.13.1",

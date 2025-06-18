@@ -1,5 +1,5 @@
+import { DraftTestimony } from "common/testimony/types"
 import { useReducer } from "react"
-import { DraftTestimony } from "./types"
 
 type State = Pick<DraftTestimony, "attachmentId" | "content" | "position">
 

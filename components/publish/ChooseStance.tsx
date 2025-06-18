@@ -1,7 +1,6 @@
 import { ToggleButton, ToggleButtonProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Image, Row, Col } from "../bootstrap"
-import { Position } from "../db"
 import { useAppDispatch } from "../hooks"
 import { positionLabels } from "./content"
 import { usePublishState } from "./hooks"
@@ -10,6 +9,7 @@ import { setPosition } from "./redux"
 import { StepHeader } from "./StepHeader"
 import { useMediaQuery } from "usehooks-ts"
 import { useTranslation } from "react-i18next"
+import { Position } from "common/testimony/types"
 
 export const ChooseStance = styled(({ ...rest }) => {
   const { t } = useTranslation("testimony")

@@ -2,7 +2,7 @@ import { Timestamp } from "common/types"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
 import { Report } from "../types"
-import { BaseTestimony, Testimony } from "components/db"
+import { Testimony } from "common/testimony/types"
 
 export const createFakeTestimonyReport = (uid?: string) => {
   const user = fakeUser(uid)

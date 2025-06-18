@@ -2,13 +2,14 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { User } from "firebase/auth"
 import { currentGeneralCourt } from "common/constants"
 import { nanoid } from "nanoid"
-import { DraftTestimony, Testimony, useEditTestimony } from "."
+import { useEditTestimony } from "."
 import {
   createFakeBill,
   signInUser1,
   signInUser3
 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
+import { DraftTestimony, Testimony } from "common/testimony/types"
 
 let uid: string
 let user: User

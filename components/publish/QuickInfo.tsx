@@ -8,10 +8,10 @@ import { Profile } from "common/profile/types"
 
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   const {
-    content: { Title },
-    city,
-    currentCommittee: committee
-  } = bill,
+      content: { Title },
+      city,
+      currentCommittee: committee
+    } = bill,
     { representative, senator } = profile,
     hasLegislators = Boolean(representative || senator)
   return (

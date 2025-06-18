@@ -1,4 +1,4 @@
-import { Testimony } from "components/db"
+import { Testimony } from "common/testimony/types"
 import { dbService } from "components/db/api"
 import { wrapper } from "components/store"
 import {

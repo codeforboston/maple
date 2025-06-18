@@ -8,11 +8,11 @@ import styled from "styled-components"
 import { CopyButton } from "../buttons"
 import {
   getDraftTestimonyAttachmentInfo,
-  Position,
   getPublishedTestimonyAttachmentInfo,
   AttachmentInfo
 } from "../db"
 import { usePublishState, useTestimonyEmail } from "./hooks"
+import { Position } from "common/testimony/types"
 
 export const positionActions: Record<Position, ReactNode> = {
   neutral: (

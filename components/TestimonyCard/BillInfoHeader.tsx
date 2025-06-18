@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap"
 import { Internal } from "components/links"
-import { Testimony } from "components/db"
+import { Testimony } from "common/testimony/types"
 import { formatBillId } from "components/formatting"
 import { PositionLabel } from "./PositionBug"
 

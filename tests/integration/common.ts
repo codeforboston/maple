@@ -10,7 +10,7 @@ import {
   signInWithEmailAndPassword
 } from "firebase/auth"
 import { currentGeneralCourt } from "common/constants"
-import { Testimony } from "functions/src/testimony/types"
+import { Testimony } from "common/testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"

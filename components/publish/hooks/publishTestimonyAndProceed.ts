@@ -1,6 +1,5 @@
-import { DraftTestimony } from "../../db"
+import { DraftTestimony } from "common/testimony/types"
 import { createAppThunk } from "../../hooks"
-import { setStep } from "../redux"
 
 /** Publishes testimony and forwards the user to the correct next step */
 export const publishTestimonyAndProceed = createAppThunk(

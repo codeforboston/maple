@@ -1,7 +1,7 @@
 import { useMediaQuery } from "usehooks-ts"
-import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
 import { Timestamp } from "common/types"
+import { Testimony } from "common/testimony/types"
 
 const billIdFormat = /^(?<chamber>\D+)(?<number>\d+)$/
 

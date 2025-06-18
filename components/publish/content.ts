@@ -1,4 +1,4 @@
-import type { Position } from "../db"
+import { Position } from "common/testimony/types"
 
 export const positionActions: Record<Position, string> = {
   neutral: "am neutral on",

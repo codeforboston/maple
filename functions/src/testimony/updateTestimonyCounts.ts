@@ -1,5 +1,5 @@
 import { Bill } from "../bills/types"
-import { countsByPositions, Testimony } from "./types"
+import { countsByPositions, Testimony } from "../../../common/testimony/types"
 
 type FieldUpdate = Pick<
   Bill,

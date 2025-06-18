@@ -1,5 +1,5 @@
 import { Card, SeeMore } from "components/Card"
-import { Position } from "components/db"
+import { Position } from "common/testimony/types"
 import { Key } from "react"
 import { OrgAvatar } from "./OrgAvatar"
 import styled from "styled-components"

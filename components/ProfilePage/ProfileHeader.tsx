@@ -66,8 +66,9 @@ export const ProfileHeader = ({
         </div>
       </div>
       <div
-        className={`col-12 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ${isMd ? `col-md-3` : `col-md-2`
-          }`}
+        className={`col-12 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ${
+          isMd ? `col-md-3` : `col-md-2`
+        }`}
       >
         <ProfileButtons
           hideTestimonyButton={false}

@@ -1,7 +1,6 @@
 import { Hit } from "instantsearch.js"
 import { maple } from "components/links"
 import Link from "next/link"
-import { Testimony } from "components/db/testimony"
 import { trimContent } from "components/TestimonyCallout/TestimonyCallout"
 import { formatBillId } from "components/formatting"
 import { useBill } from "components/db/bills"
@@ -10,6 +9,7 @@ import { Image } from "react-bootstrap"
 import { useFlags } from "components/featureFlags"
 import { useAuth } from "components/auth"
 import { useTranslation } from "next-i18next"
+import { Testimony } from "common/testimony/types"
 
 export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
   const url = maple.testimony({ publishedId: hit.id })

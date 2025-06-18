@@ -12,14 +12,8 @@ import { Dispatch, useCallback, useEffect, useMemo, useReducer } from "react"
 import { useAsyncCallback, UseAsyncReturn } from "react-async-hook"
 import { firestore } from "../../firebase"
 import { resolveBillTestimony } from "./resolveTestimony"
-import {
-  deleteTestimony,
-  DraftTestimony,
-  hasDraftChanged,
-  publishTestimony,
-  Testimony,
-  WorkingDraft
-} from "./types"
+import { deleteTestimony, hasDraftChanged, publishTestimony } from "./types"
+import { DraftTestimony, Testimony, WorkingDraft } from "common/testimony/types"
 
 export interface UseEditTestimony {
   /** The last hook error produced in loading the `draft` or `publication`. This

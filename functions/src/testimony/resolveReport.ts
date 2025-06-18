@@ -4,8 +4,8 @@ import { z } from "zod"
 import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
 // import { performDeleteTestimony } from "./deleteTestimony"
 import { first } from "lodash"
-import { Testimony } from "./types"
 import { Profile } from "../../../common/profile/types"
+import { Testimony } from "../../../common/testimony/types"
 
 export type Request = z.infer<typeof Request>
 const Request = z.object({

@@ -6,10 +6,11 @@ import { Card as BootstrapCard, Col, Row } from "react-bootstrap"
 import styled from "styled-components"
 import { Card as MapleCard } from "../Card"
 import { useAuth } from "../auth"
-import { Testimony, UsePublishedTestimonyListing } from "../db"
+import { UsePublishedTestimonyListing } from "../db"
 import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
+import { Testimony } from "common/testimony/types"
 
 const Container = styled.div`
   font-family: Nunito;

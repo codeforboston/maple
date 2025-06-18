@@ -1,6 +1,9 @@
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
-import { Testimony, TestimonySearchRecord } from "./types"
+import {
+  Testimony,
+  TestimonySearchRecord
+} from "../../../common/testimony/types"
 
 export const {
   syncToSearchIndex: syncTestimonyToSearchIndex,

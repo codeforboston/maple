@@ -12,7 +12,7 @@ import {
 } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
-import { DraftTestimony, Testimony } from "./types"
+import { DraftTestimony, Testimony } from "../../../common/testimony/types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const DeleteTestimonyRequest = Record({

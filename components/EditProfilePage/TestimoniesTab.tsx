@@ -4,8 +4,8 @@ import { TitledSectionCard } from "../shared"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { SortTestimonyDropDown } from "components/TestimonyCard/SortTestimonyDropDown"
 import { TestimonyFAQ } from "./TestimonyFAQ"
-import { Testimony } from "../db"
 import { useTranslation } from "next-i18next"
+import { Testimony } from "common/testimony/types"
 
 export const TestimoniesTab = ({
   publishedTestimonies,

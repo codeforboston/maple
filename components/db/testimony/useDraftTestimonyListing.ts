@@ -1,8 +1,8 @@
 import { getDocs, collection } from "firebase/firestore"
 import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
-import { Testimony } from "./types"
 import { useAsync } from "react-async-hook"
+import { Testimony } from "common/testimony/types"
 
 export type UseDraftTestimonyListing = ReturnType<
   typeof useDraftTestimonyListing

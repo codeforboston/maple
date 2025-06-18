@@ -1,4 +1,3 @@
-import { Position } from "components/db"
 import { ViewAttachment } from "components/ViewAttachment"
 import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
@@ -6,6 +5,7 @@ import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { TestimonyContent } from "../TestimonyContent"
 import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
+import { Position } from "common/testimony/types"
 
 const Container = styled.div`
   font-family: "Nunito";

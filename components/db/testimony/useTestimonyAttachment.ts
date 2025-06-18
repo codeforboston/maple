@@ -16,7 +16,7 @@ import {
   useState
 } from "react"
 import { storage } from "../../firebase"
-import { Maybe } from "../common"
+import { Maybe } from "common"
 
 export const draftAttachment = (uid: string, id: string) =>
   ref(storage, `users/${uid}/draftAttachments/${id}`)

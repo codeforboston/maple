@@ -1,6 +1,6 @@
 import { debounce, isEmpty, isEqual, pickBy } from "lodash"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { UseEditTestimony, WorkingDraft } from "../../db"
+import { UseEditTestimony } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import {
   Service,
@@ -10,6 +10,7 @@ import {
   syncTestimony
 } from "../redux"
 import { usePublishState } from "./usePublishState"
+import { WorkingDraft } from "common/testimony/types"
 
 const formDebounceMs = 1000
 

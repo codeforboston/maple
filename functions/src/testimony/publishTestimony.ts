@@ -8,7 +8,7 @@ import { db, FieldValue } from "../firebase"
 import { Timestamp } from "../../../common/types"
 import { supportedGeneralCourts } from "../../../common/constants"
 import { Attachments, PublishedAttachmentState } from "./attachments"
-import { DraftTestimony, Testimony } from "./types"
+import { DraftTestimony, Testimony } from "../../../common/testimony/types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
 
 const PublishTestimonyRequest = Record({

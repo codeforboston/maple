@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios"
 import { useMutation } from "react-query"
-import { Testimony } from "../db"
 import { Report, ReportResponse } from "../server-api/types"
 import { mapleClient } from "./maple-client"
+import { Testimony } from "common/testimony/types"
 
 export async function reportTestimony(testimony: Testimony, report: Report) {
   return mapleClient.post<ReportResponse>(

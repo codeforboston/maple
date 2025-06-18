@@ -1,6 +1,6 @@
 import { FC } from "react"
 import styled from "styled-components"
-import { Position } from "components/db"
+import { Position } from "common/testimony/types"
 
 const ImageContainer = styled.div`
   width: 87px;

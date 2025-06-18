@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore"
 import { first } from "lodash"
 import { firestore } from "../../firebase"
-import { DraftTestimony, Testimony } from "./types"
+import { DraftTestimony, Testimony } from "../../../common/testimony/types"
 
 /** Resolves the current draft and publication refs for a given user and bill. */
 export const resolveBillTestimony = async (

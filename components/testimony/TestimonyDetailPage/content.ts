@@ -1,4 +1,4 @@
-import { Position } from "components/db"
+import { Position } from "common/testimony/types"
 
 export const positionLabels: Record<Position, string> = {
   neutral: "is neutral on",

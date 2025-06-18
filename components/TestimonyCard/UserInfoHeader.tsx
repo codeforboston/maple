@@ -1,7 +1,6 @@
 import { Col, Row, Stack } from "react-bootstrap"
-import { Internal } from "components/links"
 import { Author } from "./Author"
-import { Testimony } from "components/db"
+import { Testimony } from "common/testimony/types"
 import { ProfilePositionLabel } from "./ProfilePositionBug"
 import { useTranslation } from "next-i18next"
 

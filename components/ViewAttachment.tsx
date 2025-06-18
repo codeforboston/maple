@@ -1,7 +1,8 @@
 import { useTranslation } from "next-i18next"
-import { Testimony, usePublishedTestimonyAttachment } from "./db"
+import { usePublishedTestimonyAttachment } from "./db"
 import { External } from "./links"
 import styled from "styled-components"
+import { Testimony } from "common/testimony/types"
 
 const StyledExternal = styled(External)`
   text-decoration: none;

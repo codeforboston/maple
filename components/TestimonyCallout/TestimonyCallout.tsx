@@ -1,10 +1,10 @@
 import { Image } from "react-bootstrap"
 import styled from "styled-components"
-import { Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
 import { useTranslation } from "next-i18next"
 import { CSSProperties } from "react"
+import { Testimony } from "common/testimony/types"
 
 export const voteHandPositionStyles: {
   [position in Testimony["position"]]: CSSProperties

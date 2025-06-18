@@ -1,10 +1,10 @@
 import Link from "next/link"
 import { forwardRef, PropsWithChildren } from "react"
 import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
-import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 import { TFunction } from "next-i18next"
+import { Testimony } from "common/testimony/types"
 
 type LinkProps = PropsWithChildren<{ href: string; className?: string }>
 

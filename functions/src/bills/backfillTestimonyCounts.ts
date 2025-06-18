@@ -2,8 +2,8 @@ import { groupBy } from "lodash"
 import { Array, Optional, Record, String } from "runtypes"
 import { db } from "../firebase"
 import { currentGeneralCourt } from "../../../common/constants"
-import { Testimony } from "../testimony/types"
 import BillProcessor from "./BillProcessor"
+import { Testimony } from "../../../common/testimony/types"
 
 export type PartialTestimony = Pick<Testimony, "court" | "billId" | "position">
 

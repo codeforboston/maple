@@ -11,7 +11,7 @@ import { useEffect, useMemo } from "react"
 import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
-import { Testimony } from "./types"
+import { Testimony } from "common/testimony/types"
 
 type Refinement = {
   senatorId?: string

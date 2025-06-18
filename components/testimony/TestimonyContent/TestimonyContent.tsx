@@ -1,4 +1,3 @@
-import { Testimony } from "components/db"
 import { useMemo } from "react"
 import styled from "styled-components"
 import { formatTestimony, formatTestimonyDiff } from "../formatting"

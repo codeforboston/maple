@@ -1,6 +1,6 @@
+import { Testimony } from "common/testimony/types"
 import { ReportModal } from "components/TestimonyCard/ReportModal"
 import { useReportTestimony } from "components/api/report"
-import { Testimony } from "components/db"
 import { auth, firestore } from "components/firebase"
 import { createFakeTestimony } from "components/moderation"
 import { doc, getDoc } from "firebase/firestore"

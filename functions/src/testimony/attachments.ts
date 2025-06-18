@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid"
 import { fail, Maybe } from "../common"
 import { File, storage } from "../firebase"
-import { DraftTestimony } from "./types"
+import { DraftTestimony } from "../../../common/testimony/types"
 
 export type PublishedAttachmentState = {
   prevId: string | null

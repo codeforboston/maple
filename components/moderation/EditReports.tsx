@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material"
-import { Testimony } from "components/db"
 import {
   Edit,
   TextField,
@@ -9,6 +8,7 @@ import {
 } from "react-admin"
 import { RemoveTestimonyForm } from "./RemoveTestimony"
 import { Report } from "./types"
+import { Testimony } from "common/testimony/types"
 
 export function EditReports() {
   const { record, data } = useEditController<Report>()
