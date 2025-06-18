@@ -9,7 +9,7 @@ import {
   Static,
   String
 } from "runtypes"
-import { Id, Maybe, Nullable, NullStr } from "../types"
+import { Id, Maybe, NullStr } from "../types"
 import { withDefaults } from "../common"
 
 /** Represents a missing timestamp value. This allows documents without values
