@@ -1,7 +1,7 @@
 import { billSiteURL, Wrap } from "components/links"
 import { useContext } from "react"
 import styled from "styled-components"
-import { BillHistory } from "../db"
+import { BillHistory } from "common/bills/types"
 import { CourtContext } from "./Status"
 
 export type HistoryProps = { billHistory: BillHistory }

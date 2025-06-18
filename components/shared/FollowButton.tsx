@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next"
 import { useEffect, useContext } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
-import { Bill } from "../db"
+import { Bill } from "common/bills/types"
 import { TopicQuery, setFollow, setUnfollow } from "./FollowingQueries"
 import { FollowContext } from "./FollowContext"
 

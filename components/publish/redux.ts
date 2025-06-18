@@ -3,7 +3,7 @@ import { createAppThunk } from "components/hooks"
 import { indexOf, isEqual, uniqBy } from "lodash"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
-import { Bill, MemberSearchIndexItem, UseEditTestimony } from "../db"
+import { MemberSearchIndexItem, UseEditTestimony } from "../db"
 import { containsSocialSecurityNumber } from "../db/testimony/validation"
 import { hasDraftChanged } from "../db/testimony"
 import {
@@ -14,6 +14,7 @@ import {
   WorkingDraft
 } from "common/testimony/types"
 import { Maybe } from "common"
+import { Bill } from "common/bills/types"
 
 export type Service = UseEditTestimony
 

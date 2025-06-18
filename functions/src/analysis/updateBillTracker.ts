@@ -1,6 +1,6 @@
 import { runWith } from "firebase-functions"
 import { isEqual } from "lodash"
-import { Bill } from "../bills/types"
+import { Bill } from "../../../common/bills/types"
 import { db } from "../firebase"
 import { predictBillStatus } from "./predictBillStatus"
 import { BillTracker } from "./types"

@@ -9,7 +9,7 @@ import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 import { currentGeneralCourt } from "common/constants"
-import { BillTopic } from "functions/src/bills/types"
+import { BillTopic } from "common/bills/types"
 
 const SummaryContainer = styled(Container)`
   background-color: white;

@@ -1,4 +1,4 @@
-import { BillTopic, CATEGORIES_BY_TOPIC } from "./types"
+import { BillTopic, CATEGORIES_BY_TOPIC } from "../../../common/bills/types"
 
 // The ML model will return a list of topics without categories
 // We need to enrich the topics with the associated topic categories for the hierachical facets

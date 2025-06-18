@@ -1,8 +1,5 @@
 import { BillTracker } from "components/bill/types"
-import { BillHistoryAction } from "functions/src/bills/types"
-import { useEffect, useState } from "react"
 import { useAsync } from "react-async-hook"
-import { Bill, getBill } from "./bills"
 import { loadDoc } from "./common"
 
 export enum Stage {

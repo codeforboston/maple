@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 
 import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
-import { Bill } from "../db"
+import { Bill } from "common/bills/types"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormInfo } from "./hooks"

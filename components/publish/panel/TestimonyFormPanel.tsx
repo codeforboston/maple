@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "../../auth"
-import { Bill } from "../../db"
+import { Bill } from "common/bills/types"
 import { useAppDispatch } from "../../hooks"
 import { resolveBill, usePanelStatus } from "../hooks"
 import {

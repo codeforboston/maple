@@ -13,7 +13,7 @@ import { currentGeneralCourt } from "common/constants"
 import { Testimony } from "common/testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
-import { Bill, BillContent } from "../../functions/src/bills/types"
+import { Bill, BillContent } from "../../common/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
 import { Timestamp } from "common/types"
 import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
@@ -33,10 +33,14 @@ export const signInTestAdmin = () => signInUser("testadmin@example.com")
 export async function createNewBill(props?: Partial<Bill>) {
   const billId = props?.id ?? nanoid()
   const content: BillContent = {
-    Pinslip: null,
+    Pinslip: "",
     Title: "fake",
-    PrimarySponsor: null,
-    Cosponsors: []
+    PrimarySponsor: undefined,
+    Cosponsors: [],
+    BillNumber: "",
+    DocketNumber: "",
+    GeneralCourtNumber: 0,
+    LegislationTypeName: ""
   }
   const bill: Bill = {
     id: billId,

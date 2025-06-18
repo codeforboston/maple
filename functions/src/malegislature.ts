@@ -3,7 +3,7 @@ import { isString } from "lodash"
 import { DateTime } from "luxon"
 import { Array } from "runtypes"
 import { create as createRootCas } from "ssl-root-cas"
-import { BillHistory, BillReference } from "./bills/types"
+import { BillHistory, BillReference } from "../../common/bills/types"
 import { CityBills, CityListing } from "./cities/types"
 import { CommitteeContent, CommitteeListing } from "./committees/types"
 import {

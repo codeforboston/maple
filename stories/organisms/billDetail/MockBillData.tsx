@@ -1,5 +1,5 @@
 import { Timestamp } from "common/types"
-import { Bill, BillContent, BillHistory } from "components/db"
+import { Bill, BillContent, BillHistory } from "common/bills/types"
 
 export const newBillHistory: BillHistory = [
   {
@@ -88,5 +88,6 @@ export const bill: Bill = {
   },
   city: "Boston",
   topics: newBillTopics,
-  summary: "This is the summary"
+  summary: "This is the summary",
+  similar: []
 }

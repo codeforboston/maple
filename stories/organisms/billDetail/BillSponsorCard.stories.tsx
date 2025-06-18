@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { BillProps } from "components/bill/types"
-import { Bill, BillContent, BillHistory } from "components/db"
+import { Bill, BillContent, BillHistory } from "common/bills/types"
 import { Timestamp } from "common/types"
 import { ReactNode } from "react"
 
@@ -98,7 +98,8 @@ const bill: Bill = {
       email: "a@b.com"
     }
   },
-  city: "Boston"
+  city: "Boston",
+  similar: []
 }
 
 Primary.args = {

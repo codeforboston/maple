@@ -1,5 +1,5 @@
 import { Frequency } from "../../../common/auth/types"
-import { BillHistory } from "../bills/types"
+import { BillHistory } from "../../../common/bills/types"
 import { Timestamp } from "../../../common/types"
 
 export interface Notification {

@@ -1,4 +1,4 @@
-import { Bill } from "../bills/types"
+import { Bill } from "../../../common/bills/types"
 import { countsByPositions, Testimony } from "../../../common/testimony/types"
 
 type FieldUpdate = Pick<

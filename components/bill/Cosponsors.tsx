@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { Button, Modal, Table } from "react-bootstrap"
 import styled from "styled-components"
-import { MemberReference, useMember } from "../db"
+import { useMember } from "../db"
 import { memberLink } from "../links"
 import { FC } from "../types"
 import { BillProps } from "./types"
+import { MemberReference } from "common/bills/types"
 
 const CoSponsorRow = ({
   court,

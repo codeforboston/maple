@@ -5,7 +5,7 @@ import { Committee } from "../committees/types"
 import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
-import { Bill } from "./types"
+import { Bill } from "../../../common/bills/types"
 import { currentGeneralCourt } from "../../../common/constants"
 
 export type BillUpdates = Map<string, DocUpdate<Bill>>

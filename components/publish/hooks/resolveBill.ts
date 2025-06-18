@@ -1,4 +1,5 @@
-import { Bill, getBill } from "../../db"
+import { Bill } from "common/bills/types"
+import { getBill } from "../../db"
 import { createAppThunk } from "../../hooks"
 import { setBill } from "../redux"
 

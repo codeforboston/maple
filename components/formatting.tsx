@@ -1,5 +1,5 @@
 import { useMediaQuery } from "usehooks-ts"
-import { Bill, BillContent } from "./db"
+import { Bill, BillContent } from "common/bills/types"
 import { Timestamp } from "common/types"
 import { Testimony } from "common/testimony/types"
 

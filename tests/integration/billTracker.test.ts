@@ -1,5 +1,5 @@
 import { waitFor } from "@testing-library/react"
-import { BillHistory } from "components/db"
+import { BillHistory } from "common/bills/types"
 import { billTrackerPath } from "functions/src/analysis"
 import { predictBillStatus } from "functions/src/analysis/predictBillStatus"
 import { BillTracker, Stage } from "functions/src/analysis/types"

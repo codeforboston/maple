@@ -7,7 +7,7 @@ import {
   setDoc,
   where
 } from "firebase/firestore"
-import { Bill } from "../db"
+import { Bill } from "common/bills/types"
 import { firestore } from "../firebase"
 import { UnfollowModalConfig } from "components/EditProfilePage/UnfollowModal"
 

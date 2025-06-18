@@ -1,7 +1,7 @@
 import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Profile } from "common/profile/types"
 import { Testimony } from "common/testimony/types"
-import { Bill } from "components/db"
+import { Bill } from "common/bills/types"
 import { TestimonyQuery } from "components/db/api"
 import { createAppSelector, useAppSelector } from "components/hooks"
 import { check } from "components/utils"

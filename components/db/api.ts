@@ -16,7 +16,7 @@ import {
   Query
 } from "firebase/firestore"
 import { first } from "lodash"
-import { Bill } from "./bills"
+import { Bill } from "common/bills/types"
 import { Profile } from "common/profile/types"
 import { Testimony } from "common/testimony/types"
 

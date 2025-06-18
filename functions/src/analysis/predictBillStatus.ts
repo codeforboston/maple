@@ -1,4 +1,4 @@
-import { BillHistory } from "../bills/types"
+import { BillHistory } from "../../../common/bills/types"
 import { Stage } from "./types"
 
 const chamberCommittees = [

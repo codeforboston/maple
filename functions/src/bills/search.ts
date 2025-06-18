@@ -1,7 +1,7 @@
 import { isString } from "lodash"
 import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
-import { Bill, BillTopic } from "./types"
+import { Bill, BillTopic } from "../../../common/bills/types"
 
 export const {
   syncToSearchIndex: syncBillToSearchIndex,

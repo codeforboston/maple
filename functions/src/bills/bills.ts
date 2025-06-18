@@ -2,7 +2,7 @@ import { isString } from "lodash"
 import { logFetchError } from "../common"
 import * as api from "../malegislature"
 import { createScraper } from "../scraper"
-import { Bill, MISSING_TIMESTAMP } from "./types"
+import { Bill, MISSING_TIMESTAMP } from "../../../common/bills/types"
 
 /**
  * There are around 8000 documents. With 8 batches per day, 20 parallel

@@ -1,7 +1,7 @@
 import { Timestamp } from "../../common/types"
 import { Record, String, Number } from "runtypes"
 import { Script } from "./types"
-import { Bill, BillContent } from "../../functions/src/bills/types"
+import { Bill, BillContent } from "../../common/bills/types"
 
 const Args = Record({
   court: Number,
@@ -19,9 +19,13 @@ export const script: Script = async ({ db, args }) => {
     const newBillContent: BillContent = {
       Pinslip: "",
       Title: "",
-      PrimarySponsor: null,
+      PrimarySponsor: undefined,
       DocumentText: "",
-      Cosponsors: []
+      Cosponsors: [],
+      BillNumber: "",
+      DocketNumber: "",
+      GeneralCourtNumber: 0,
+      LegislationTypeName: ""
     }
 
     const newBill: Bill = {

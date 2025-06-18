@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
-import { Bill, draftAttachment } from "components/db"
+import { Bill } from "common/bills/types"
 import { BillDetails } from "components/bill/BillDetails"
 import { Timestamp } from "common/types"
 import { Provider } from "react-redux"
@@ -109,7 +109,8 @@ const mockBill: Bill = {
       Branch: "Senate"
     }
   ],
-  city: "Sample City"
+  city: "Sample City",
+  similar: []
 }
 
 // set up Redux mock store with thunk middleware bc resolveBill is thunk
@@ -162,7 +163,7 @@ describe("BillDetails", () => {
     const readMoreButton = screen.getByRole("button", { name: "Read more.." })
     expect(readMoreButton).toBeInTheDocument
     fireEvent.click(readMoreButton)
-    expect(screen.getByText(DocumentText)).toBeInTheDocument
+    expect(screen.getByText(DocumentText ?? "")).toBeInTheDocument()
   })
 
   // below test assumes mockBill contains a primary sponsor

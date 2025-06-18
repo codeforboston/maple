@@ -2,7 +2,7 @@ import clsx from "clsx"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Image } from "../bootstrap"
-import { Bill } from "../db"
+import { Bill } from "common/bills/types"
 import { useTranslation } from "next-i18next"
 import { Profile } from "common/profile/types"
 
