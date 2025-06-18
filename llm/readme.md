@@ -134,20 +134,39 @@ pip3 install -r requirements.txt
 python3 -m flask --app main run
 ```
 
-TODO:
+## Infrastructure notes
 
-- [x] Get an OpenAPI key `firebase functions:secrets:access OPENAI_DEV`
-- [ ] Need to get docker running locally `yarn compose up --build`
-- [x] Try to deploy the function `firebase deploy --only functions:maple-llm`
-- [x] Alphabetize the requirements.txt file
-- [ ] Add some deploying/testing from the command line notes
-```bash
+As of 2025-06-17, the version of `python3` inside the
+`infra/Dockerfile.firebase` is 3.11. Therefore, the `firebase.json` files use
+the `python311` runtime.
+
+## Deploying locally
+
+This is quite tricky due to how we overlay our current source directory to
+`/app` inside the container. You'll need to create and install dependencies from
+**inside** the container. If you are just working on python related code that
+doesn't need to be in Firebase, you **won't** be able to use this environment.
+
+```shell
+# Build the maple-firebase container
+yarn dev:update
+# Start up bash within the maple-firebase container
+docker run -v .:/app -it maple-firebase /bin/bash
+# Build the virtual env and install the dependencies matching the container
+python3 -m venv llm/venv
+source llm/venv/bin/activate
+pip3 install -r llm/requirements.txt
+```
+
+## Deploying to Firebase
+
+```shell
 # not sure if the GOOGLE_APPLICATION_CREDENTIALS is strictly necessary, but I
 # had a number of problems with authorization
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json \
   firebase deploy --only functions:maple-llm --debug
 
-# This is an example curl command for hitting the production function
+# Hit the function in production
 curl \
   -X POST \
   -H "Content-Type: application/json" \
