@@ -13,10 +13,10 @@
       "runtimeConfig": ".runtimeconfig.json"
     },
     {
-      "predeploy": [". llm/venv/bin/activate && python3.10 -m pip install -r llm/requirements.txt"],
+      "predeploy": [". llm/venv/bin/activate && python3 -m pip install -r llm/requirements.txt"],
       "source": "llm",
       "codebase": "maple-llm",
-      "runtime": "python310"
+      "runtime": "python311"
     }
   ],
   "firestore": {
