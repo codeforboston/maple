@@ -7,7 +7,7 @@ import {
   syncBillToSearchIndex,
   syncTestimonyToSearchIndex
 } from "functions/src"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { nanoid } from "nanoid"
 import {
   createNewBill,
@@ -22,7 +22,7 @@ import { firestore, functions } from "../../components/firebase"
 import { expectPermissionDenied, genUserInfo } from "./common"
 import { FirebaseError } from "@firebase/util"
 import { Testimony } from "functions/src/testimony/types"
-import { Timestamp } from "functions/src/firebase"
+import { Timestamp } from "common/types"
 import { Report } from "components/moderation/types"
 import { fakeUser } from "components/moderation/setUp/MockRecords"
 

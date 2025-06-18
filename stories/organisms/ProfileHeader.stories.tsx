@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react"
 import { ProfileHeader } from "components/ProfilePage/ProfileHeader"
-import { Profile } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"

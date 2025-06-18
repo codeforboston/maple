@@ -1,8 +1,10 @@
 import axios, { AxiosError } from "axios"
 import { logger, runWith } from "firebase-functions"
 import { last } from "lodash"
-import { db, DocumentData, FieldValue, Timestamp } from "./firebase"
-import { currentGeneralCourt } from "./shared"
+import { db, FieldValue } from "./firebase"
+import { currentGeneralCourt } from "../../common/constants"
+import { Timestamp } from "../../common/types"
+import { DocumentData } from "firebase-admin/firestore"
 
 /** Batch documents trigger the batch fetch function to scrape `ids` */
 type Batch = {

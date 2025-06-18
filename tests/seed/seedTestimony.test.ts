@@ -1,6 +1,6 @@
 import { testDb } from "../testUtils"
 import { DraftTestimony, publishTestimony } from "../../components/db"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { loremIpsum } from "lorem-ipsum"
 import { signInUser3, signInUser4 } from "../integration/common"
 import { User } from "firebase/auth"

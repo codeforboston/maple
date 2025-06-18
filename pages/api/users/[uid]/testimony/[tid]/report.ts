@@ -7,8 +7,7 @@ import {
   db
 } from "../../../../../../components/server-api/init-firebase-admin"
 import { ensureAuthenticated } from "../../../../../../components/server-api/middleware-fns"
-
-export const Timestamp = admin.firestore.Timestamp
+import { Timestamp } from "common/types"
 
 export default async function handler(
   req: NextApiRequest,

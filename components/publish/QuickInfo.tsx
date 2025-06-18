@@ -2,15 +2,16 @@ import clsx from "clsx"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Image } from "../bootstrap"
-import { Bill, Profile } from "../db"
+import { Bill } from "../db"
 import { useTranslation } from "next-i18next"
+import { Profile } from "common/profile/types"
 
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   const {
-      content: { Title },
-      city,
-      currentCommittee: committee
-    } = bill,
+    content: { Title },
+    city,
+    currentCommittee: committee
+  } = bill,
     { representative, senator } = profile,
     hasLegislators = Boolean(representative || senator)
   return (

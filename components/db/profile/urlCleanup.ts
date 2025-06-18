@@ -1,4 +1,4 @@
-import { SocialLinks } from ".."
+import { SocialLinks } from "../../../common/profile/types"
 
 export function cleanSocialLinks(network: keyof SocialLinks, link: string) {
   let path = link

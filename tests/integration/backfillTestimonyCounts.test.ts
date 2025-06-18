@@ -1,6 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { PartialTestimony } from "../../functions/src/bills/backfillTestimonyCounts"
 import { terminateFirebase, testDb } from "../testUtils"
 import { createFakeBill, getBill } from "./common"

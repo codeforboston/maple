@@ -16,7 +16,7 @@ import {
   rejectOrganizationRequest,
   acceptOrganizationRequest
 } from "components/api/upgrade-org"
-import { Profile } from "components/db"
+import { Profile } from "../../common/profile/types"
 import { Internal } from "components/links"
 
 import { ButtonGroup } from "@mui/material"

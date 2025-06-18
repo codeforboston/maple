@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { useTestimonyListing } from "."
 import { signInUser2, signInUser3 } from "../../../tests/integration/common"
 import { terminateFirebase, testDb } from "../../../tests/testUtils"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 
 // jest.setTimeout(10000)
 

@@ -8,8 +8,8 @@
     has been added to the profiles collection.
 */
 
+import { Profile } from "common/profile/types"
 import { getNextDigestAt } from "../../functions/src/notifications/helpers"
-import { Profile } from "../../components/db/profile/types"
 import { Script } from "./types"
 import { Boolean, Optional, Record } from "runtypes"
 

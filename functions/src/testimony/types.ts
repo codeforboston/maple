@@ -11,7 +11,7 @@ import {
 } from "runtypes"
 import { Role } from "../auth/types"
 import { Id, Maybe, withDefaults } from "../common"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 const maxTestimonyLength = 10_000
 

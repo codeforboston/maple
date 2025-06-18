@@ -1,5 +1,5 @@
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 import { Frequency } from "../auth/types"
 
 describe("getNextDigestAt", () => {

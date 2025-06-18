@@ -14,9 +14,9 @@ import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
 import { useTranslation } from "next-i18next"
-import { isCurrentCourt } from "functions/src/shared"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { isCurrentCourt } from "common"
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";

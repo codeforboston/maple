@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useAppSelector } from "../../hooks"
-import { Profile } from "./types"
+import { Profile } from "../../../common/profile/types"
 
 export interface State {
   loading: boolean

@@ -1,14 +1,9 @@
-import {
-  collection,
-  getDocs,
-  orderBy,
-  Timestamp,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, orderBy, where } from "firebase/firestore"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
 import { midnight, nullableQuery } from "./common"
 import { DateTime } from "luxon"
+import { Timestamp } from "common/types"
 
 /** The timezone used for datetime strings returned by the API. */
 export const timeZone = "America/New_York"

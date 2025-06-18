@@ -1,4 +1,4 @@
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import {
   addDoc,

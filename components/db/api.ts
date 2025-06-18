@@ -17,8 +17,8 @@ import {
 } from "firebase/firestore"
 import { first } from "lodash"
 import { Bill } from "./bills"
-import { Profile } from "./profile"
 import { Testimony } from "./testimony"
+import { Profile } from "common/profile/types"
 
 export type TestimonyQuery = {
   authorUid: string

@@ -3,12 +3,12 @@ import { deleteTestimony } from "components/api/delete-testimony"
 import { resolveReport } from "components/db"
 import { getAuth } from "firebase/auth"
 import { doc, getDoc } from "firebase/firestore"
-import { Timestamp } from "functions/src/firebase"
 import { FormEventHandler, useState } from "react"
 import { useRedirect, useNotify, useRefresh } from "react-admin"
 import { Report, Resolution } from "."
 import { firestore } from "components/firebase"
 import { refreshToken } from "firebase-admin/app"
+import { Timestamp } from "common/types"
 
 export type ReportResponseValues = {
   reportId: string

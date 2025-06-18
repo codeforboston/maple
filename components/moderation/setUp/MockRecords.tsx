@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
 import { Report } from "../types"

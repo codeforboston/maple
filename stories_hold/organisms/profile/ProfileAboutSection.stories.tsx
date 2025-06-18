@@ -1,6 +1,6 @@
 import { ComponentStory } from "@storybook/react"
+import { Profile } from "common/profile/types"
 import { ProfileAboutSection } from "components/ProfilePage/ProfileAboutSection"
-import { Profile } from "components/db"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
 import { Provider as Redux } from "react-redux"

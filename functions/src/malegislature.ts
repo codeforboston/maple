@@ -12,7 +12,7 @@ import {
   SessionContent,
   SpecialEventContent
 } from "./events/types"
-import { Timestamp } from "./firebase"
+import { Timestamp } from "../../common/types"
 import { MemberContent } from "./members/types"
 
 /**

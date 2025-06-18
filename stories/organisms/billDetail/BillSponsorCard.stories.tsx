@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react"
 import { Cosponsors as PreCosponsors } from "components/bill/Cosponsors"
 import { BillProps } from "components/bill/types"
 import { Bill, BillContent, BillHistory } from "components/db"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { ReactNode } from "react"
 
 // TODO: move into components directory

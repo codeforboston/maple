@@ -12,7 +12,7 @@ import Link from "next/link"
 import styled from "styled-components"
 import { Card, Col } from "../../bootstrap"
 import { formatBillId } from "../../formatting"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { dateInFuture } from "components/db/events"
 
 type BillRecord = {
@@ -156,9 +156,8 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                   <span className="blurb">
                     Sponsor: {hit.primarySponsor}{" "}
                     {hit.cosponsorCount > 0
-                      ? `and ${hit.cosponsorCount} other${
-                          hit.cosponsorCount > 1 ? "s" : ""
-                        }`
+                      ? `and ${hit.cosponsorCount} other${hit.cosponsorCount > 1 ? "s" : ""
+                      }`
                       : ""}
                   </span>
                   <span className="blurb">

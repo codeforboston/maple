@@ -4,7 +4,8 @@ import { useMemo } from "react"
 import { GroupBase } from "react-select"
 import AsyncSelect, { AsyncProps } from "react-select/async"
 import { Row, Spinner } from "./bootstrap"
-import { MemberSearchIndexItem, ProfileMember } from "./db"
+import { MemberSearchIndexItem } from "./db"
+import { ProfileMember } from "common/profile/types"
 
 export const Loading = () => (
   <Row>

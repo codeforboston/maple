@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { Bill, BillContent, BillHistory } from "components/db"
 
 export const newBillHistory: BillHistory = [

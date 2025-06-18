@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 
 import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
-import { Bill, Profile } from "../db"
+import { Bill } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
 import { useFormInfo } from "./hooks"
@@ -19,6 +19,7 @@ import { WriteTestimony } from "./WriteTestimony"
 import { Trans, useTranslation } from "react-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"
+import { Profile } from "common/profile/types"
 
 const Background = styled.div`
   background: var(--bs-white);

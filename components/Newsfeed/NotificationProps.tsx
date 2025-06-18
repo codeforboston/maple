@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 
 export type NotificationProps = {
   authorUid: string // Testimony author

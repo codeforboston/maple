@@ -1,6 +1,6 @@
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { getAuth, signOut, User } from "firebase/auth"
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
@@ -16,6 +16,7 @@ import {
   signInUser1,
   signInUser2
 } from "./common"
+import { Timestamp } from "common/types"
 
 type BaseTestimony = {
   billId: string

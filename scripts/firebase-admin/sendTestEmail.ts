@@ -10,7 +10,7 @@ import {
   UserDigest
 } from "functions/src/notifications/emailTypes"
 import { Record, String } from "runtypes"
-import { Timestamp } from "functions/src/firebase"
+import { Timestamp } from "common/types"
 import { Frequency } from "components/auth"
 
 const path = require("path")

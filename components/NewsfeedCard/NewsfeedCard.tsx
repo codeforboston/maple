@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { Card as MapleCard } from "../Card/Card"
 import {
   NewsfeedBillCardBody,

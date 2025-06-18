@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { Meta, StoryObj } from "@storybook/react"
 import { Providers } from "components/providers"
 import { ChooseStance } from "components/publish/ChooseStance"

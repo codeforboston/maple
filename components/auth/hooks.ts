@@ -69,7 +69,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
       )
       await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
 
-      const categories = orgCategory ? [orgCategory] : ""
+      const categories = orgCategory ? [orgCategory] : undefined
 
       if (isOrg) {
         await Promise.all([

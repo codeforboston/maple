@@ -1,7 +1,7 @@
 import { External } from "components/links"
-import { Profile } from "../db"
 import { ContactInfoRow } from "./StyledProfileComponents"
 import { SocialMediaIcons } from "./SocialMediaIcons"
+import { Profile } from "common/profile/types"
 
 export const OrgContactInfo = ({ profile }: { profile?: Profile }) => {
   const {

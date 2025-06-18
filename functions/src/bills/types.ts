@@ -8,7 +8,7 @@ import {
   String
 } from "runtypes"
 import { Id, Maybe, Nullable, NullStr, withDefaults } from "../common"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 export type BillReference = Static<typeof BillReference>
 export const BillReference = Record({

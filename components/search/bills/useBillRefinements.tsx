@@ -1,4 +1,4 @@
-import { generalCourts } from "functions/src/shared"
+import { generalCourts } from "common/constants"
 import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useCallback } from "react"
 import { useRefinements } from "../useRefinements"

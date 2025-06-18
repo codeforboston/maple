@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../hooks"
 import { createService } from "../../service"
 import { profileRef } from "./profile"
 import { profileChanged } from "./redux"
-import { Profile } from "./types"
+import { Profile } from "../../../common/profile/types"
 
 export const { Provider } = createService(() => {
   const uid = useAuth().user?.uid

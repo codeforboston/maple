@@ -6,7 +6,7 @@
 //   version: z.number(),
 // })
 
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 // export type Stage2 = "billIntroduced" | "firstCommittee"
 

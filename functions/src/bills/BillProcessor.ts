@@ -6,7 +6,7 @@ import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
 import { Bill } from "./types"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt } from "../../../common/constants"
 
 export type BillUpdates = Map<string, DocUpdate<Bill>>
 

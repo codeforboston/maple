@@ -1,6 +1,6 @@
 import { pubsub } from "firebase-functions"
 import { db } from "../firebase"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt } from "../../../common/constants"
 
 /** Create a document that aggregates all legislative members for easier
  * searching on the client.  */

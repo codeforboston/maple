@@ -1,7 +1,7 @@
-import { Timestamp } from "firebase/firestore"
 import { useMediaQuery } from "usehooks-ts"
 import { Testimony } from "../functions/src/testimony/types"
 import { Bill, BillContent } from "./db"
+import { Timestamp } from "common/types"
 
 const billIdFormat = /^(?<chamber>\D+)(?<number>\d+)$/
 

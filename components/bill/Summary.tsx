@@ -8,7 +8,7 @@ import { SmartDisclaimer } from "./SmartDisclaimer"
 import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { BillTopic } from "functions/src/bills/types"
 
 const SummaryContainer = styled(Container)`

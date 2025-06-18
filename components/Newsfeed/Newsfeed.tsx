@@ -1,10 +1,10 @@
 import ErrorPage from "next/error"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { useTranslation } from "next-i18next"
 import { useContext, useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
-import { Profile, useProfile, usePublicProfile } from "../db"
+import { useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
 import notificationQuery from "./notification-query"
 import {
@@ -16,6 +16,7 @@ import {
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
+import { Profile } from "common/profile/types"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react"
 import { BillTestimonies } from "components/bill/BillTestimonies"
 import { Providers } from "components/providers"
 import { wrapper } from "components/store"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 import { Provider as Redux } from "react-redux"
 
 const BillTestimonyListCard = BillTestimonies

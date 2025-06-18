@@ -1,6 +1,6 @@
 import { Frequency } from "../auth/types"
 import { BillHistory } from "../bills/types"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 export interface Notification {
   type: string

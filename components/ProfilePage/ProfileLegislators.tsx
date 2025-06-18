@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
-import { ProfileMember } from "../db"
 import { LabeledIcon, TitledSectionCard } from "../shared"
-import { Card as MapleCard } from "components/Card"
 import { useTranslation } from "next-i18next"
+import { ProfileMember } from "common/profile/types"
 
 type ProfileMemberPlus = (ProfileMember & { title: string }) | undefined
 

@@ -8,7 +8,7 @@ import {
   Optional
 } from "runtypes"
 import { Id, Nullable } from "../common"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 export type CommitteeListItem = Static<typeof CommitteeListItem>
 export const CommitteeListItem = Record({

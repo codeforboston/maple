@@ -1,9 +1,10 @@
 import { difference, flatten, flattenDeep } from "lodash"
 import { Hearing } from "../events/types"
-import { db, FieldValue, Timestamp } from "../firebase"
+import { db, FieldValue } from "../firebase"
 import { parseApiDateTime } from "../malegislature"
 import { Member, MemberReference } from "../members/types"
 import BillProcessor, { BillUpdates } from "./BillProcessor"
+import { Timestamp } from "../../../common/types"
 
 /**
  * Updates references to other entities for each bill.

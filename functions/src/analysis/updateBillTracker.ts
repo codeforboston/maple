@@ -1,9 +1,10 @@
 import { runWith } from "firebase-functions"
 import { isEqual } from "lodash"
 import { Bill } from "../bills/types"
-import { db, Timestamp } from "../firebase"
+import { db } from "../firebase"
 import { predictBillStatus } from "./predictBillStatus"
 import { BillTracker } from "./types"
+import { Timestamp } from "../../../common/types"
 
 const currentTrackerVersion = 1
 export const billTrackerPath = (billId: string, court: number) =>

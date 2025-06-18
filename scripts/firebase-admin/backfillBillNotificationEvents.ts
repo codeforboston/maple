@@ -1,4 +1,4 @@
-import { Timestamp } from "functions/src/firebase"
+import { Timestamp } from "common/types"
 import { Script } from "./types"
 import { BillHistoryUpdateNotification } from "functions/src/notifications/types"
 import { Record, Number } from "runtypes"

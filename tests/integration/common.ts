@@ -9,13 +9,13 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "firebase/auth"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { Testimony } from "functions/src/testimony/types"
 import { nanoid } from "nanoid"
 import { auth } from "../../components/firebase"
 import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
-import { Timestamp } from "functions/src/firebase"
+import { Timestamp } from "common/types"
 import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
 
 export async function signInUser(email: string) {

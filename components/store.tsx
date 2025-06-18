@@ -1,5 +1,4 @@
 import { configureStore, isPlain } from "@reduxjs/toolkit"
-import { Timestamp } from "firebase/firestore"
 import React, { useRef } from "react"
 import { Provider as ReduxProvider } from "react-redux"
 import { reducer as auth } from "./auth/redux"
@@ -10,6 +9,7 @@ import { slice as testimonyDetail } from "./testimony/TestimonyDetailPage"
 import { rejectionLogger } from "./utils"
 import { createWrapper } from "next-redux-wrapper"
 import { cloneDeepWith } from "lodash"
+import { Timestamp } from "common/types"
 
 const createStore = () =>
   configureStore({

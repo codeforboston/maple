@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 const RETENTION_PERIOD_DAYS = 60
 

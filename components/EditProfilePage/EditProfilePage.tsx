@@ -6,7 +6,6 @@ import TabContainer from "react-bootstrap/TabContainer"
 import { useAuth } from "../auth"
 import { Container, Row, Spinner } from "../bootstrap"
 import {
-  Profile,
   ProfileHook,
   UseDraftTestimonyListing,
   UsePublishedTestimonyListing,
@@ -26,6 +25,7 @@ import {
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { Profile } from "common/profile/types"
 
 const tabTitle = ["about-you", "testimonies", "following"] as const
 export type TabTitles = (typeof tabTitle)[number]

@@ -2,7 +2,7 @@ import { ComponentStory } from "@storybook/react"
 import React, { useState } from "react"
 import { createMeta } from "stories/utils"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "common/types"
 
 export default createMeta({
   title: "Dashboard/Newsfeed/NewsfeedCard",

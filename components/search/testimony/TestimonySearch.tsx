@@ -10,7 +10,7 @@ import {
   StyledTabContent,
   StyledTabNav
 } from "components/EditProfilePage/StyledEditProfileComponents"
-import { currentGeneralCourt } from "functions/src/shared"
+import { currentGeneralCourt } from "common/constants"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
 import { useState } from "react"
 import { TabContainer, TabPane } from "react-bootstrap"
@@ -109,8 +109,8 @@ const Layout = () => {
         t === "Individuals"
           ? ["user"]
           : t === "Organizations"
-          ? ["organization"]
-          : validRoles
+            ? ["organization"]
+            : validRoles
       return {
         ...prevState,
         refinementList: {

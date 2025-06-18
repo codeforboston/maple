@@ -11,7 +11,12 @@ import { useAsync } from "react-async-hook"
 import { Frequency, OrgCategory, useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
-import { Profile, ProfileMember, SocialLinks, ContactInfo } from "./types"
+import {
+  Profile,
+  ProfileMember,
+  SocialLinks,
+  ContactInfo
+} from "../../../common/profile/types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
 

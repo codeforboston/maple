@@ -3,7 +3,7 @@ import { DocUpdate } from "../common"
 import { db } from "../firebase"
 import { Member } from "../members/types"
 import { Committee } from "./types"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt } from "../../../common/constants"
 
 /** Updates the list of members in each committee.  */
 export const updateCommitteeRosters = runWith({ timeoutSeconds: 120 })

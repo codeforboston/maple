@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material"
 import { Testimony } from "components/db"
-import { Timestamp } from "functions/src/firebase"
 import {
   Edit,
   TextField,

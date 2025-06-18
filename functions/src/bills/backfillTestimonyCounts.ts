@@ -1,7 +1,7 @@
 import { groupBy } from "lodash"
 import { Array, Optional, Record, String } from "runtypes"
 import { db } from "../firebase"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt } from "../../../common/constants"
 import { Testimony } from "../testimony/types"
 import BillProcessor from "./BillProcessor"
 

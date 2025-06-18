@@ -1,6 +1,6 @@
 import { Array, InstanceOf, Record, Static, String } from "runtypes"
 import { Id, NullStr } from "../common"
-import { Timestamp } from "../firebase"
+import { Timestamp } from "../../../common/types"
 
 export type CityListing = Static<typeof CityListing>
 export const CityListing = Array(String)

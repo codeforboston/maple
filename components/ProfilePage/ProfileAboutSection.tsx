@@ -1,4 +1,4 @@
-import { Profile } from "../db"
+import { Profile } from "common/profile/types"
 import { TitledSectionCard } from "../shared"
 import { SocialMediaIcons } from "./SocialMediaIcons"
 import { useTranslation } from "next-i18next"
@@ -31,8 +31,8 @@ export const ProfileAboutSection = ({
   const title = isOrg
     ? t("aboutUs")
     : t("aboutMe", {
-        firstName: profile?.fullName?.split(" ")?.[0] ?? "User"
-      })
+      firstName: profile?.fullName?.split(" ")?.[0] ?? "User"
+    })
 
   return (
     <TitledSectionCard

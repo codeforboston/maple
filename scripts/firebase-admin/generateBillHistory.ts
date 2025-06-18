@@ -1,7 +1,8 @@
-import { Timestamp, FieldValue } from "../../functions/src/firebase"
+import { Timestamp } from "../../common/types"
 import { Record, String, Number } from "runtypes"
 import { Script } from "./types"
 import { BillHistoryAction } from "../../functions/src/bills/types"
+import { FieldValue } from "functions/src/firebase"
 
 const Args = Record({
   court: Number,

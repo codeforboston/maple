@@ -2,12 +2,13 @@ import { useTranslation } from "next-i18next"
 import { useContext, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "../auth"
-import { Profile, useProfile } from "../db"
+import { useProfile } from "../db"
 import { EditProfileButton, ProfileButtons } from "./ProfileButtons"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
 import { ProfileIcon } from "./StyledUserIcons"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { FollowUserButton } from "components/shared/FollowButton"
+import { Profile } from "common/profile/types"
 
 export const ProfileHeader = ({
   isUser,
@@ -65,9 +66,8 @@ export const ProfileHeader = ({
         </div>
       </div>
       <div
-        className={`col-12 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ${
-          isMd ? `col-md-3` : `col-md-2`
-        }`}
+        className={`col-12 d-flex justify-content-center justify-content-md-end align-items-center ms-md-auto ${isMd ? `col-md-3` : `col-md-2`
+          }`}
       >
         <ProfileButtons
           hideTestimonyButton={false}

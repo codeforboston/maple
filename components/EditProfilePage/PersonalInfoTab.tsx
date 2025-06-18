@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Form, Row, Col, Button } from "../bootstrap"
-import { Profile, ProfileHook } from "../db"
+import { ProfileHook } from "../db"
 import Input from "../forms/Input"
 import { TitledSectionCard } from "../shared"
 import { YourLegislators } from "./YourLegislators"
@@ -9,6 +9,7 @@ import { OrgCategory, OrgCategories } from "components/auth"
 import { TooltipButton } from "components/buttons"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { Profile } from "common/profile/types"
 
 type UpdateProfileData = {
   fullName: string

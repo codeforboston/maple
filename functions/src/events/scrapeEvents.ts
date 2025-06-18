@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
 import { logFetchError } from "../common"
-import { db, Timestamp } from "../firebase"
+import { db } from "../firebase"
 import * as api from "../malegislature"
 import {
   BaseEvent,
@@ -16,10 +16,11 @@ import {
   SpecialEvent,
   SpecialEventContent
 } from "./types"
-import { currentGeneralCourt } from "../shared"
+import { currentGeneralCourt } from "../../../common/constants"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
 import { withinCutoff } from "./helpers"
+import { Timestamp } from "../../../common/types"
 
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule

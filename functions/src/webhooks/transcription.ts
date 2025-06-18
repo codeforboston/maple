@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions"
 import { AssemblyAI } from "assemblyai"
-import { db, Timestamp } from "../firebase"
+import { db } from "../firebase"
+import { Timestamp } from "../../../common/types"
 import { sha256 } from "js-sha256"
 
 export const transcription = functions
