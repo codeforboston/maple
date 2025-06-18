@@ -20,7 +20,7 @@ import { Profile } from "../../common/profile/types"
 import { Internal } from "components/links"
 
 import { ButtonGroup } from "@mui/material"
-import { Role } from "components/auth"
+import { Role } from "common/auth/types"
 import { createFakeOrg } from "components/moderation"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"

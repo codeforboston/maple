@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { User } from "firebase/auth"
 import { useAppSelector } from "../hooks"
-import { Claim } from "./types"
+import { Claim } from "common/auth/types"
 import { Maybe } from "common"
 
 export type AuthFlowStep =

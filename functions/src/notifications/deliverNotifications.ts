@@ -14,7 +14,7 @@ import {
 } from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { getAuth } from "firebase-admin/auth"
-import { Frequency } from "../auth/types"
+import { Frequency } from "../../../common/auth/types"
 
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4

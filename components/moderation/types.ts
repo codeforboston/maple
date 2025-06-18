@@ -1,5 +1,5 @@
 import { Timestamp } from "common/types"
-import { Role } from "components/auth"
+import { Role } from "common/auth/types"
 import { functions } from "components/firebase"
 import { httpsCallable } from "firebase/functions"
 

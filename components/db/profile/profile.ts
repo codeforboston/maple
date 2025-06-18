@@ -8,7 +8,7 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useMemo, useReducer, useState } from "react"
 import { useAsync } from "react-async-hook"
-import { Frequency, OrgCategory, useAuth } from "../../auth"
+import { useAuth } from "../../auth"
 import { firestore, storage } from "../../firebase"
 import { useProfileState } from "./redux"
 import {
@@ -19,6 +19,7 @@ import {
 } from "../../../common/profile/types"
 import { cleanSocialLinks, cleanOrgURL } from "./urlCleanup"
 import { updateUserDisplayNameTestimonies } from "../testimony/updateUserTestimonies"
+import { Frequency, OrgCategory } from "common/auth/types"
 
 export type ProfileHook = ReturnType<typeof useProfile>
 

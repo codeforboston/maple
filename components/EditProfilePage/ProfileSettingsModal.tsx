@@ -5,7 +5,7 @@ import { useTranslation } from "next-i18next"
 import { Dispatch, ReactNode, SetStateAction } from "react"
 import type { ModalProps } from "react-bootstrap"
 import Dropdown from "react-bootstrap/Dropdown"
-import { Frequency, Role } from "../auth"
+import { Frequency, Role } from "common/auth/types"
 import { Col, Form, Image, Modal, Row } from "../bootstrap"
 import { ProfileHook } from "../db"
 

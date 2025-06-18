@@ -1,6 +1,6 @@
 import { Record, String } from "runtypes"
 import { setRole } from "../../functions/src/auth"
-import { Role } from "../../functions/src/auth/types"
+import { Role } from "common/auth/types"
 import { Script } from "./types"
 
 const Args = Record({ email: String, role: Role })

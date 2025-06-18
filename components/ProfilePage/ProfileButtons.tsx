@@ -3,7 +3,7 @@ import React, { useContext } from "react"
 import styled from "styled-components"
 import { FillButton, GearIcon, OutlineButton } from "../buttons"
 import { Button } from "../bootstrap"
-import { Role } from "components/auth/types"
+import { Role } from "common/auth/types"
 import { Internal } from "components/links"
 
 export const StyledButton = styled(Button).attrs(props => ({

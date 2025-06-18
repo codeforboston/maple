@@ -7,7 +7,7 @@ import {
   NotificationEmailDigest,
   UserDigest
 } from "functions/src/notifications/emailTypes"
-import { Frequency } from "components/auth"
+import { Frequency } from "common/auth/types"
 
 const meta: Meta = {
   title: "Email Templates/Notifications Digest",

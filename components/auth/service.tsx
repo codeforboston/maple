@@ -7,7 +7,7 @@ import { auth } from "../firebase"
 import { useAppDispatch } from "../hooks"
 import { createService } from "../service"
 import { authChanged, useAuth } from "./redux"
-import { Claim } from "./types"
+import { Claim } from "common/auth/types"
 
 export const { Provider } = createService(() => {
   const dispatch = useAppDispatch()

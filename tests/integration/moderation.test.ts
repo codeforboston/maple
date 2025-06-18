@@ -1,12 +1,8 @@
 import { waitFor } from "@testing-library/react"
-import { Role } from "components/auth"
+import { Role } from "common/auth/types"
 import { resolveReport } from "components/db"
 import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import {
-  syncBillToSearchIndex,
-  syncTestimonyToSearchIndex
-} from "functions/src"
 import { currentGeneralCourt } from "common/constants"
 import { nanoid } from "nanoid"
 import {
@@ -14,17 +10,14 @@ import {
   createNewReport,
   createUser,
   signInTestAdmin,
-  signInUser,
-  signInUser1
+  signInUser
 } from "tests/integration/common"
 import { terminateFirebase, testAuth, testDb } from "tests/testUtils"
 import { firestore, functions } from "../../components/firebase"
 import { expectPermissionDenied, genUserInfo } from "./common"
-import { FirebaseError } from "@firebase/util"
 import { Testimony } from "common/testimony/types"
 import { Timestamp } from "common/types"
 import { Report } from "components/moderation/types"
-import { fakeUser } from "components/moderation/setUp/MockRecords"
 
 const deleteTestimony = httpsCallable<
   { uid: string; publicationId: string },

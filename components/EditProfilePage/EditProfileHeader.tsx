@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import { Role } from "../auth"
+import { Role } from "common/auth/types"
 import { Col, Row } from "../bootstrap"
 import { GearIcon, OutlineButton } from "../buttons"
 import { ProfileEditToggle } from "components/ProfilePage/ProfileButtons"

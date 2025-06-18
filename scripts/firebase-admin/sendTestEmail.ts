@@ -11,7 +11,7 @@ import {
 } from "functions/src/notifications/emailTypes"
 import { Record, String } from "runtypes"
 import { Timestamp } from "common/types"
-import { Frequency } from "components/auth"
+import { Frequency } from "common/auth/types"
 
 const path = require("path")
 

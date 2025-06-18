@@ -1,5 +1,5 @@
-import { Role } from "components/auth"
-import { Timestamp } from "common/types"
+import { Role } from "../auth/types"
+import { Timestamp } from "../types"
 import {
   Array,
   Boolean,
@@ -13,7 +13,7 @@ import {
   Union
 } from "runtypes"
 import { Id, Maybe } from "../types"
-import { withDefaults } from "common/common"
+import { withDefaults } from "../common"
 
 export const maxTestimonyLength = 10_000
 

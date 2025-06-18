@@ -11,7 +11,7 @@ import {
   InstanceOf
 } from "runtypes"
 import { Frequency, OrgCategory, Role } from "../auth/types"
-import { Timestamp } from "common/types"
+import { Timestamp } from "../types"
 
 export const ProfileMember = Record({
   district: String,

@@ -1,7 +1,7 @@
 import type { UserRecord } from "firebase-admin/lib/auth/user-record"
 import { Undefined } from "runtypes"
 import { Auth, Database } from "../types"
-import { Claim, Role } from "./types"
+import { Claim, Role } from "../../../common/auth/types"
 import { Profile } from "../../../common/profile/types"
 
 export const setRole = async ({

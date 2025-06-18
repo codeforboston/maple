@@ -1,5 +1,5 @@
 import { fail } from "assert"
-import { Role, finishSignup } from "components/auth"
+import { finishSignup } from "components/auth"
 import { Report } from "components/moderation/types"
 import { UserRecord } from "firebase-admin/auth"
 import { FirebaseError } from "firebase/app"
@@ -17,6 +17,7 @@ import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
 import { Timestamp } from "common/types"
 import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
+import { Role } from "common/auth/types"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")

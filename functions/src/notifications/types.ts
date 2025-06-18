@@ -1,4 +1,4 @@
-import { Frequency } from "../auth/types"
+import { Frequency } from "../../../common/auth/types"
 import { BillHistory } from "../bills/types"
 import { Timestamp } from "../../../common/types"
 

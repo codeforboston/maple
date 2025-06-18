@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next"
 import ErrorPage from "next/error"
 import { useEffect, useState } from "react"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
-import { Role, useAuth } from "../auth"
+import { useAuth } from "../auth"
 import { Col, Container, Row, Spinner } from "../bootstrap"
 import { usePublicProfile, usePublishedTestimonyListing } from "../db"
 import { Banner } from "../shared/StyledSharedComponents"
@@ -15,6 +15,7 @@ import { ProfileAboutSection } from "./ProfileAboutSection"
 import { ProfileHeader } from "./ProfileHeader"
 import { ProfileLegislators } from "./ProfileLegislators"
 import { VerifyAccountSection } from "./VerifyAccountSection"
+import { Role } from "common/auth/types"
 
 export function ProfilePage(profileprops: {
   id: string

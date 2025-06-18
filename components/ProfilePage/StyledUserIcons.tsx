@@ -1,4 +1,4 @@
-import { Role } from "components/auth"
+import { Role } from "common/auth/types"
 import { Image } from "components/bootstrap"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"

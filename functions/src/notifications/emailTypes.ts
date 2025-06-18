@@ -1,4 +1,4 @@
-import { Frequency } from "../auth/types"
+import { Frequency } from "../../../common/auth/types"
 
 export type BillDigest = {
   billId: string

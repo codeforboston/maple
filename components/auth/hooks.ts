@@ -12,7 +12,8 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
-import { finishSignup, OrgCategory } from "./types"
+import { finishSignup } from "./types"
+import { OrgCategory } from "common/auth/types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",

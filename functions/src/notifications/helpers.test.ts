@@ -1,6 +1,6 @@
 import { getNextDigestAt, getNotificationStartDate } from "./helpers"
 import { Timestamp } from "../../../common/types"
-import { Frequency } from "../auth/types"
+import { Frequency } from "../../../common/auth/types"
 
 describe("getNextDigestAt", () => {
   beforeEach(() => {

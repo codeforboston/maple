@@ -3,7 +3,7 @@ import { db, auth } from "../firebase"
 import { z } from "zod"
 import { checkRequestZod, checkAuth } from "../common"
 import { setRole } from "../auth"
-import { Role } from "../auth/types"
+import { Role } from "../../../common/auth/types"
 
 const CreateProfileRequest = z.object({
   requestedRole: z.enum(["user", "organization", "pendingUpgrade"])

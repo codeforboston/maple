@@ -2,19 +2,10 @@ import { useEffect, useState } from "react"
 import clsx from "clsx"
 import type { ModalProps } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import {
-  Alert,
-  Button,
-  Col,
-  FloatingLabel,
-  Form,
-  Modal,
-  Row,
-  Stack
-} from "../bootstrap"
+import { Alert, Button, Col, Form, Modal, Row, Stack } from "../bootstrap"
 import { LoadingButton } from "../buttons"
 import Input from "../forms/Input"
-import { OrgCategories, OrgCategory } from "./types"
+import { OrgCategories, OrgCategory } from "common/auth/types"
 import PasswordInput from "../forms/PasswordInput"
 import {
   CreateUserWithEmailAndPasswordData,
@@ -79,7 +70,9 @@ export default function OrgSignUpModal({
     }
   }, [tosStep])
 
-  const [category, setCategory] = useState<OrgCategory>(OrgCategories[0])
+  const [category, setCategory] = useState<OrgCategory>(
+    OrgCategories[0] as OrgCategory
+  )
 
   const { t } = useTranslation("auth")
 

@@ -4,7 +4,7 @@ import { z } from "zod"
 import { checkRequestZod, checkAuth, checkAdmin } from "../common"
 import { setRole } from "."
 
-import { ZRole } from "./types"
+import { ZRole } from "../../../common/auth/types"
 
 const Request = z.object({
   uid: z.string(),
