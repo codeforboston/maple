@@ -13,18 +13,20 @@ import { useRouter } from "next/router"
 export default function AuthModal() {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const { authFlowStep: currentModal } = useAuth()
+  const { authFlowStep: currentModal, isFromProtectedPage } = useAuth()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
-  const close = () => dispatch(authStepChanged(null))
-  const closeAndRedirectHome = () => {
+
+  const close = () => {
     dispatch(authStepChanged(null))
-    router.push("/")
+    if (isFromProtectedPage) {
+      router.push("/")
+    }
   }
   return (
     <>
       <StartModal
-        show={currentModal === "start"}
+        show={currentModal === "start" || currentModal === "protectedpage"}
         onHide={close}
         onSignInClick={() => setCurrentModal("signIn")}
         onSignUpClick={() => setCurrentModal("chooseProfileType")}
@@ -56,12 +58,12 @@ export default function AuthModal() {
         onHide={() => setCurrentModal("signIn")}
       />
 
-      <ProtectedPageAuthModal
+      {/* <ProtectedPageAuthModal
         show={currentModal === "protectedpage"}
         onHide={closeAndRedirectHome}
         onSignInClick={() => setCurrentModal("signIn")}
         onSignUpClick={() => setCurrentModal("chooseProfileType")}
-      />
+      /> */}
     </>
   )
 }

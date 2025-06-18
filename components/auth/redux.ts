@@ -24,12 +24,14 @@ export interface State {
   /** True iff user is signed in */
   authenticated: boolean
   authFlowStep: AuthFlowStep
+  isFromProtectedPage: boolean
 }
 
 const initialState: State = {
   authenticated: false,
   user: undefined,
-  authFlowStep: null
+  authFlowStep: null,
+  isFromProtectedPage: false
 }
 
 export const {
@@ -49,6 +51,11 @@ export const {
     },
     authStepChanged(state, action: PayloadAction<AuthFlowStep>) {
       state.authFlowStep = action.payload
+      if (action.payload === "protectedpage") {
+        state.isFromProtectedPage = true
+      } else if (action.payload === "start") {
+        state.isFromProtectedPage = false
+      }
     }
   }
 })
