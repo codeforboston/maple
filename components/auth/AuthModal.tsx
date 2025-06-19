@@ -7,7 +7,6 @@ import VerifyEmailModal from "./VerifyEmailModal"
 import ProfileTypeModal from "./ProfileTypeModal"
 import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import { useAppDispatch } from "components/hooks"
-import ProtectedPageAuthModal from "./ProtectedPageAuthModal"
 import { useRouter } from "next/router"
 
 export default function AuthModal() {
@@ -16,8 +15,11 @@ export default function AuthModal() {
   const { authFlowStep: currentModal, isFromProtectedPage } = useAuth()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
-
   const close = () => {
+    dispatch(authStepChanged(null))
+    window.location.reload()
+  }
+  const closeModal = () => {
     dispatch(authStepChanged(null))
     if (isFromProtectedPage) {
       router.push("/")
@@ -27,29 +29,29 @@ export default function AuthModal() {
     <>
       <StartModal
         show={currentModal === "start" || currentModal === "protectedpage"}
-        onHide={close}
+        onHide={closeModal}
         onSignInClick={() => setCurrentModal("signIn")}
         onSignUpClick={() => setCurrentModal("chooseProfileType")}
       />
       <ProfileTypeModal
         show={currentModal === "chooseProfileType"}
-        onHide={close}
+        onHide={closeModal}
         onIndividualUserClick={() => setCurrentModal("userSignUp")}
         onOrgUserClick={() => setCurrentModal("orgSignUp")}
       />
       <SignInModal
         show={currentModal === "signIn"}
-        onHide={close}
+        onHide={closeModal}
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
       <UserSignUpModal
         show={currentModal === "userSignUp"}
-        onHide={close}
+        onHide={closeModal}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
       <OrgSignUpModal
         show={currentModal === "orgSignUp"}
-        onHide={close}
+        onHide={closeModal}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
       <VerifyEmailModal show={currentModal === "verifyEmail"} onHide={close} />
@@ -57,13 +59,6 @@ export default function AuthModal() {
         show={currentModal === "forgotPassword"}
         onHide={() => setCurrentModal("signIn")}
       />
-
-      {/* <ProtectedPageAuthModal
-        show={currentModal === "protectedpage"}
-        onHide={closeAndRedirectHome}
-        onSignInClick={() => setCurrentModal("signIn")}
-        onSignUpClick={() => setCurrentModal("chooseProfileType")}
-      /> */}
     </>
   )
 }
