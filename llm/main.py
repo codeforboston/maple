@@ -14,8 +14,13 @@ def is_intersection(keys, required_keys):
 
 
 def set_openai_api_key():
-    if os.environ.get("OPENAI_DEV") != None:
-        os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_DEV"]
+    match os.environ.get("MAPLE_DEV"):
+        case "prod":
+            if os.environ.get("OPENAI_PROD") != None:
+                os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_PROD"]
+        case _:  # if "dev" or unspecified, use OPENAI_DEV
+            if os.environ.get("OPENAI_DEV") != None:
+                os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_DEV"]
 
 
 @app.route("/summary", methods=["POST"])
@@ -59,7 +64,9 @@ def ready():
 
 
 @https_fn.on_request(
-    secrets=["OPENAI_DEV"], timeout_sec=300, memory=options.MemoryOption.GB_1
+    secrets=["OPENAI_DEV", "OPENAI_PROD"],
+    timeout_sec=300,
+    memory=options.MemoryOption.GB_1,
 )
 def httpsflaskexample(req: https_fn.Request) -> https_fn.Response:
     with app.request_context(req.environ):
