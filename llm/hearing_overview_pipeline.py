@@ -2,16 +2,16 @@ import json
 import numpy as np
 import os
 import pandas as pd
-import tiktoken
-import streamlit as st
+# import tiktoken
+# import streamlit as st
 import urllib.request
-import chromadb
+# import chromadb
 import re
 import requests
 
-from chromadb.config import Settings
+# from chromadb.config import Settings
 from dataclasses import dataclass, field
-from langchain_text_splitters import TokenTextSplitter
+# from langchain_text_splitters import TokenTextSplitter
 
 from operator import itemgetter
 from pathlib import Path
@@ -23,9 +23,9 @@ from typing import Tuple, List
 from prompts import *
 from tag_categories import *
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
 import openai
-import google.auth
+# import google.auth
 PROMPT_INSTRUCTIONS = "Follow these instructions when creating the prompt: \n" \
 "-Try to provide a balanced summary giving space to multiple sides of an issue that were shared in the hearing \n" \
 "-Try to avoid repeating uncritically the facts that were shared in testimony, as they may not be accurate \n" \
@@ -45,7 +45,7 @@ class HearingDetails():
     summary: str = ''
 
 
-def recieve_hearing(hearing: HearingDetails):
+def receive_hearing(hearing: HearingDetails):
     hearing_text = hearing.hearing_text 
     hearing_id = hearing.hearing_id
     print(f'Receiving hearing with ID: {hearing_id}')
@@ -59,11 +59,12 @@ def recieve_hearing(hearing: HearingDetails):
     for agenda in r.get("HearingAgendas", [])
     for doc in agenda.get("DocumentsInAgenda", [])
     ]
+    print(bill_numbers)
     try:
         db = connect_to_firestore()
     except Exception as e:
         print(f'Error connecting to Firestore: {e}')
-        st.error("Could not connect to Firestore. Please check your configuration.")
+        # st.error("Could not connect to Firestore. Please check your configuration.")
         return hearing_text, {}
 
     bill_summaries = {}
@@ -76,8 +77,8 @@ def recieve_hearing(hearing: HearingDetails):
             bill_data = bill_doc.to_dict()
             # Append the summary to the list
             bill_summaries.update({number: bill_data.get("summary", "")})
-        else:
-            st.warning(f"Bill {number} not found in Firestore.")
+        # else:
+            # st.warning(f"Bill {number} not found in Firestore.")
     return hearing_text, bill_summaries
 
 def connect_to_firestore():
@@ -108,17 +109,17 @@ def make_openai_request(prompt: str) -> str:
 
 if __name__ == "__main__":
     # Example usage
-    data = open('hearing-4548.json',)
+    data = open('./jsons/hearing-4539.json',)
 
     testimony = json.load(data)
 
     hearing_text = testimony['text']
     hearing = HearingDetails(
-        hearing_id=4548,
+        hearing_id=4539,
         hearing_text=hearing_text,
         summary="This is a sample summary."
     )
-    text, summaries = recieve_hearing(hearing)
+    text, summaries = receive_hearing(hearing)
     PROMPT_BILL_SUMMARIES = f'''
 Provide a summary of this hearing to a regular person with no special knowledge or expertise of this area. 
 This is a hearing discussing several pending bills. 
