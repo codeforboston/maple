@@ -26,7 +26,7 @@ import firebase_admin
 from firebase_admin import firestore
 import openai
 # import google.auth
-PROMPT_INSTRUCTIONS = "Follow these instructions when creating the prompt: \n" \
+PROMPT_INSTRUCTIONS = "Follow these instructions when creating the summary: \n" \
 "-Try to provide a balanced summary giving space to multiple sides of an issue that were shared in the hearing \n" \
 "-Try to avoid repeating uncritically the facts that were shared in testimony, as they may not be accurate \n" \
 "-Do not repeat any offensive, slanderous, or personally derogatory statements \n" \
