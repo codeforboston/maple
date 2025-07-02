@@ -281,7 +281,7 @@ const shouldScrapeVideo = async (EventId: number) => {
   if (!eventData) {
     return false
   }
-  if (!eventData.videoFetchedAt) {
+  if (!eventData.videoURL) {
     return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
   }
   return false
