@@ -60,6 +60,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
       if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
+
+      console.log("event in run()", event)
     }
 
     await writer.close()
@@ -278,6 +280,8 @@ const shouldScrapeVideo = async (EventId: number) => {
     .get()
   const eventData = eventInDb.data()
 
+  console.log("eventData in shouldScrapeVideo()", eventData)
+
   if (!eventData) {
     return false
   }
@@ -300,6 +304,8 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
+
+    console.log("content in getEvent()", content)
 
     if (await shouldScrapeVideo(EventId)) {
       try {
