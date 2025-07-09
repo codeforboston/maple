@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
 import { currentGeneralCourt } from "functions/src/shared"

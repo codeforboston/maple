@@ -8,6 +8,7 @@ const config: Config.InitialOptions = {
   clearMocks: true,
   testEnvironment: "./tests/integrationEnvironment.ts",
   rootDir: "..",
+  resolver: "jest-node-exports-resolver",
   testPathIgnorePatterns: [
     "/node_modules/",
     "<rootDir>/tests/system",
