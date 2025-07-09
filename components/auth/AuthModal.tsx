@@ -7,41 +7,51 @@ import VerifyEmailModal from "./VerifyEmailModal"
 import ProfileTypeModal from "./ProfileTypeModal"
 import { AuthFlowStep, authStepChanged, useAuth } from "./redux"
 import { useAppDispatch } from "components/hooks"
+import { useRouter } from "next/router"
 
 export default function AuthModal() {
   const dispatch = useAppDispatch()
-  const { authFlowStep: currentModal } = useAuth()
+  const router = useRouter()
+  const { authFlowStep: currentModal, isFromProtectedPage } = useAuth()
   const setCurrentModal = (step: AuthFlowStep) =>
     dispatch(authStepChanged(step))
-  const close = () => dispatch(authStepChanged(null))
-
+  const close = () => {
+    dispatch(authStepChanged(null))
+  }
+  const closeModal = () => {
+    dispatch(authStepChanged(null))
+    if (isFromProtectedPage) {
+      router.push("/")
+    }
+  }
   return (
     <>
       <StartModal
-        show={currentModal === "start"}
-        onHide={close}
+        show={currentModal === "start" || currentModal === "protectedpage"}
+        onHide={closeModal}
         onSignInClick={() => setCurrentModal("signIn")}
         onSignUpClick={() => setCurrentModal("chooseProfileType")}
       />
       <ProfileTypeModal
         show={currentModal === "chooseProfileType"}
-        onHide={close}
+        onHide={closeModal}
         onIndividualUserClick={() => setCurrentModal("userSignUp")}
         onOrgUserClick={() => setCurrentModal("orgSignUp")}
       />
       <SignInModal
         show={currentModal === "signIn"}
-        onHide={close}
+        onHide={closeModal}
+        onLogin={close}
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
       <UserSignUpModal
         show={currentModal === "userSignUp"}
-        onHide={close}
+        onHide={closeModal}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
       <OrgSignUpModal
         show={currentModal === "orgSignUp"}
-        onHide={close}
+        onHide={closeModal}
         onSuccessfulSubmit={() => setCurrentModal("verifyEmail")}
       />
       <VerifyEmailModal show={currentModal === "verifyEmail"} onHide={close} />

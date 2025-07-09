@@ -92,6 +92,6 @@ export function requireAuth(
  * Redirects user after logging out.
  */
 export async function signOutAndRedirectToHome() {
+  await Router.push("/")
   await auth.signOut()
-  Router.push("/")
 }
