@@ -158,7 +158,9 @@ source llm/venv/bin/activate
 pip3 install -r llm/requirements.txt
 ```
 
-Note: you'll also need to set your `OPENAI_API_KEY` in `llm/.env.local` file
+Note: you'll need to set `OPENAI_DEV` and `OPENAI_PROD` in a
+`llm/.secret.local` file. Get it with `firebase functions:secrets:access
+OPENAI_DEV`. They can be set to the same token.
 
 ## Deploying to Firebase
 
