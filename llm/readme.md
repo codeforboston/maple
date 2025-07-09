@@ -158,6 +158,8 @@ source llm/venv/bin/activate
 pip3 install -r llm/requirements.txt
 ```
 
+Note: you'll also need to set your `OPENAI_API_KEY` in `llm/.env.local` file
+
 ## Deploying to Firebase
 
 ```shell
