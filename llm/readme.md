@@ -160,7 +160,8 @@ pip3 install -r llm/requirements.txt
 
 Note: you'll need to set `OPENAI_DEV` and `OPENAI_PROD` in a
 `llm/.secret.local` file. Get it with `firebase functions:secrets:access
-OPENAI_DEV`. They can be set to the same token.
+OPENAI_DEV`. They can be set to the same token. You can see the function URL
+in the emulator after running `yarn dev:up`.
 
 ## Deploying to Firebase
 
@@ -178,3 +179,17 @@ curl \
   -d '{"bill_id": "1234","bill_title": "A title","bill_text": "Some bill text"}' \
   https://httpsflaskexample-ke6znoupgq-uc.a.run.app/summary
 ```
+
+## Future work
+
+Currently, we are just using the built-in Flask server. We should switch to a
+production WSGI server, like `gunicorn`.
+
+The local emulator installation process is quite cumbersome and ideally the
+virtual environment was built during container instantiation instead of from
+within the Docker container (i.e. the "Deploying locally" docs above).
+
+The current API is a little wonky because we take `bill_id` **and** `bill_text`.
+We could just look up the `bill_text` via the `bill_id` using the Firestore API.
+It might make sense to avoid the HTTP wrapper all-together and figure out how
+JS <-> Python communication works without an HTTP layer.
