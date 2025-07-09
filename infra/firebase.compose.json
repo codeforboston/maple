@@ -12,7 +12,9 @@
       "runtime": "nodejs18"
     },
     {
-      "predeploy": [". llm/venv/bin/activate && python3 -m pip install -r llm/requirements.txt"],
+      "predeploy": [
+        ". llm/venv/bin/activate && python3 -m pip install -r llm/requirements.txt"
+      ],
       "source": "llm",
       "codebase": "maple-llm",
       "runtime": "python311"
