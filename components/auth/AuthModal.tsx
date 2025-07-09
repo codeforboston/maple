@@ -17,7 +17,6 @@ export default function AuthModal() {
     dispatch(authStepChanged(step))
   const close = () => {
     dispatch(authStepChanged(null))
-    window.location.reload()
   }
   const closeModal = () => {
     dispatch(authStepChanged(null))
@@ -42,6 +41,7 @@ export default function AuthModal() {
       <SignInModal
         show={currentModal === "signIn"}
         onHide={closeModal}
+        onLogin={close}
         onForgotPasswordClick={() => setCurrentModal("forgotPassword")}
       />
       <UserSignUpModal

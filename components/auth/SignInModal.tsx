@@ -16,11 +16,13 @@ import { useTranslation } from "next-i18next"
 export default function SignInModal({
   show,
   onHide,
+  onLogin,
   onForgotPasswordClick
 }: {
   show?: boolean
   onForgotPasswordClick: () => void
   onHide: () => void
+  onLogin: () => void
 }) {
   const {
     register,
@@ -41,7 +43,7 @@ export default function SignInModal({
   }, [show, reset])
 
   const onSubmit = handleSubmit(credentials => {
-    signIn.execute(credentials).then(onHide)
+    signIn.execute(credentials).then(onLogin)
   })
 
   const { t } = useTranslation("auth")
