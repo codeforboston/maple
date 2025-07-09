@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { currentGeneralCourt } from "functions/src/shared"
 import { getAuth, signOut, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
