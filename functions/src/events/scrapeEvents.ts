@@ -316,6 +316,15 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             EventId
           })
 
+          // Immediately save video info to prevent reprocessing
+          // since the bulkWriter does not save the video properties
+          // returned from this method.
+          await db.collection("events").doc(`hearing-${EventId}`).update({
+            videoURL: maybeVideoUrl,
+            videoFetchedAt: Timestamp.now(),
+            videoTranscriptionId: transcriptId
+          })
+
           return {
             id: `hearing-${EventId}`,
             type: "hearing",
