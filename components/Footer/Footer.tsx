@@ -4,6 +4,7 @@ import { authStepChanged } from "components/auth/redux"
 import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import { useTranslation } from "next-i18next"
+import { useEffect, useRef } from "react"
 import styled from "styled-components"
 import { NavLink } from "../Navlink"
 import { Button, Col, Image, Container, Row, Nav, Navbar } from "../bootstrap"
@@ -145,6 +146,37 @@ const TermsAndPolicies = () => {
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation(["common", "auth"])
+  const justLoggedOut = useRef(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (!authenticated && user === null) {
+      justLoggedOut.current = true
+      
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      
+      timeoutRef.current = setTimeout(() => {
+        justLoggedOut.current = false
+      }, 2000)
+    }
+  }, [authenticated, user])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleSignInClick = () => {
+    if (!justLoggedOut.current) {
+      dispatch(authStepChanged("start"))
+    }
+  }
+
   return (
     <>
       {authenticated ? (
@@ -163,7 +195,7 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
         </>
       ) : (
         <StyledInternalLink
-          handleClick={() => dispatch(authStepChanged("start"))}
+          handleClick={handleSignInClick}
         >
           {t("signIn", { ns: "auth" })}
         </StyledInternalLink>

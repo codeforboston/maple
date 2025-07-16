@@ -76,13 +76,13 @@ export function requireAuth(
   Component: React.FC<React.PropsWithChildren<{ user: User }>>
 ) {
   return function ProtectedRoute() {
-    const { user } = useAuth()
+    const { user, loading } = useAuth()
     const router = useRouter()
     useEffect(() => {
-      if (user === null) {
+      if (!loading && user === null) {
         router.push({ pathname: "/" })
       }
-    }, [router, user])
+    }, [router, user, loading])
 
     return user ? <Component user={user} /> : null
   }
