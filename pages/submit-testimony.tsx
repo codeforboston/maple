@@ -1,4 +1,3 @@
-import { requireAuth } from "../components/auth"
 import { createPage } from "../components/page"
 import {
   usePublishService,
@@ -6,19 +5,20 @@ import {
 } from "../components/publish/hooks"
 import { SubmitTestimonyForm } from "../components/publish/SubmitTestimonyForm"
 import { createGetStaticTranslationProps } from "components/translations"
+import ProtectedPageWrapper from "components/auth/ProtectedPageWrapper"
 
 export default createPage({
   title: "Submit Testimony",
-  Page: requireAuth(() => {
+  Page: () => {
     useSyncRouterAndStore()
 
     return (
-      <>
+      <ProtectedPageWrapper>
         <usePublishService.Provider />
         <SubmitTestimonyForm />
-      </>
+      </ProtectedPageWrapper>
     )
-  })
+  }
 })
 
 export const getStaticProps = createGetStaticTranslationProps([

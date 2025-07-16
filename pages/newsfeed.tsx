@@ -1,10 +1,15 @@
 import { createPage } from "../components/page"
 import Newsfeed from "components/Newsfeed/Newsfeed"
+import ProtectedPageWrapper from "components/auth/ProtectedPageWrapper"
 
 export default createPage({
   title: "Newsfeed",
   Page: () => {
-    return <Newsfeed />
+    return (
+      <ProtectedPageWrapper>
+        <Newsfeed />
+      </ProtectedPageWrapper>
+    )
   }
 })
 
