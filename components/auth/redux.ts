@@ -22,18 +22,31 @@ export interface State {
   claims?: Claim
   /** True iff user is signed in */
   authenticated: boolean
+  loading: boolean
   authFlowStep: AuthFlowStep
+  isFromProtectedPage: boolean
+  protectedPageUrl?: string
+  justLoggedOut: boolean
 }
 
 const initialState: State = {
   authenticated: false,
   user: undefined,
-  authFlowStep: null
+  loading: true,
+  authFlowStep: null,
+  isFromProtectedPage: false,
+  protectedPageUrl: undefined,
+  justLoggedOut: false
 }
 
 export const {
   reducer,
-  actions: { authChanged, authStepChanged }
+  actions: {
+    authChanged,
+    authStepChanged,
+    setProtectedPageAccess,
+    setJustLoggedOut
+  }
 } = createSlice({
   name: "auth",
   initialState,
@@ -45,9 +58,20 @@ export const {
       state.user = payload.user
       state.claims = payload.claims
       state.authenticated = Boolean(payload.user)
+      state.loading = false
     },
     authStepChanged(state, action: PayloadAction<AuthFlowStep>) {
       state.authFlowStep = action.payload
+    },
+    setProtectedPageAccess(
+      state,
+      action: PayloadAction<{ isFromProtectedPage: boolean; url?: string }>
+    ) {
+      state.isFromProtectedPage = action.payload.isFromProtectedPage
+      state.protectedPageUrl = action.payload.url
+    },
+    setJustLoggedOut(state, action: PayloadAction<boolean>) {
+      state.justLoggedOut = action.payload
     }
   }
 })
