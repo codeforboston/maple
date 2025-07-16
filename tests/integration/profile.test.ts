@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { waitFor } from "@testing-library/react"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"

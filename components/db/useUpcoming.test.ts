@@ -1,7 +1,3 @@
-/**
- * @jest-environment node
- */
-
 import { renderHook, waitFor } from "@testing-library/react"
 import { terminateFirebase, testDb, testTimestamp } from "../../tests/testUtils"
 import { useUpcomingBills } from "./useUpcomingBills"

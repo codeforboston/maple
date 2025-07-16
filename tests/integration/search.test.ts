@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { waitFor } from "@testing-library/react"
 import axios from "axios"
