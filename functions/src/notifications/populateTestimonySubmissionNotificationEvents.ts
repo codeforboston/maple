@@ -5,12 +5,12 @@
 
 // Import necessary Firebase modules
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
+import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import { TestimonySubmissionNotification } from "./types"
 
 // Get a reference to the Firestore database
-const db = admin.firestore()
+const db = getFirestore()
 
 // Define the populateOrgNotificationEvents function
 export const populateTestimonySubmissionNotificationEvents = functions.firestore

@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
 import { logFetchError } from "../common"
-import { admin, db, Timestamp } from "../firebase"
+import { db, storage, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
   BaseEvent,
@@ -182,7 +182,7 @@ const extractAudioFromVideo = async (
   })
 
   // Upload the audio file
-  const bucket = admin.storage().bucket()
+  const bucket = storage.bucket()
   const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
   const file = bucket.file(audioFileName)
 

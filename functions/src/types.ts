@@ -1,10 +1,11 @@
-import type * as firebase from "./firebase"
+import { auth, db } from "./firebase"
 import type * as api from "./malegislature"
+import { app } from "./firebase"
 
-export type Database = typeof firebase.db
-export type Admin = typeof firebase.admin
-export type Auth = typeof firebase.auth
-export type Firebase = typeof firebase
+export type Database = typeof db
+export type Admin = typeof auth
+export type Auth = typeof auth
+export type Firebase = typeof app
 export type Api = typeof api
 
 export type Context = {

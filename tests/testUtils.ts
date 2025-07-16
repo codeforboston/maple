@@ -1,18 +1,24 @@
-import * as admin from "firebase-admin"
+import { initializeApp } from "firebase-admin/app"
+import { getFirestore } from "firebase-admin/firestore"
+import { getStorage } from "firebase-admin/storage"
+import { getAuth } from "firebase-admin/auth"
 import { deleteApp } from "firebase/app"
 import { clearIndexedDbPersistence, terminate } from "firebase/firestore"
 import { app, firestore } from "../components/firebase"
+import { Timestamp } from "functions/src/firebase"
 
-admin.initializeApp({
-  storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`
-})
+const testApp = initializeApp(
+  {
+    storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`
+  },
+  "testApp"
+)
 
-export const testDb = admin.firestore()
-export const testStorage = admin.storage()
-export const testAuth = admin.auth()
+export const testDb = getFirestore(testApp)
+export const testStorage = getStorage(testApp)
+export const testAuth = getAuth(testApp)
 
-export const testTimestamp = admin.firestore.Timestamp
-export { admin as testAdmin }
+export const testTimestamp = Timestamp
 
 export async function terminateFirebase() {
   await deleteApp(app)
@@ -28,5 +34,4 @@ export async function terminateFirebase() {
 
   // Clean up the admin interface
   await testDb.terminate()
-  await admin.firestore().terminate()
 }
