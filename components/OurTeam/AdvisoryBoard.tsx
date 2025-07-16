@@ -28,7 +28,7 @@ export const AdvisoryBoard = () => {
           <SectionContainer className="py-1">
             <MemberItem name="David Fields" descr={t("advisory.DFields")} />
             <Divider />
-            <MemberItem name="John Griffin" descr={t("advisory.JGriffin")} />
+            <MemberItem name="Jerren Chang" descr={t("advisory.JChang")} />
             <Divider />
             <MemberItem name="Marci Harris" descr={t("advisory.MHarris")} />
             <Divider />
@@ -42,6 +42,8 @@ export const AdvisoryBoard = () => {
             <MemberItem name="James Turk" descr={t("advisory.JTurk")} />
             <Divider />
             <MemberItem name="Harlan Weber" descr={t("advisory.HWeber")} />
+            <Divider />
+            <MemberItem name="Liz Barry" descr={t("advisory.LBarry")} />
           </SectionContainer>
         </Col>
       </Row>
