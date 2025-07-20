@@ -45,8 +45,8 @@ export default function LoginPage() {
         <SignInWithButton />
       </div>
       <br />
-      <p>If logged in, try and provide user with link to prior navpoint</p>
-      <p>Current Pathname: {router.pathname}</p>
+      {/* <p>If logged in, try and provide user with link to prior navpoint</p>
+      <p>Current Pathname: {router.pathname}</p> */}
     </div>
   )
 }
