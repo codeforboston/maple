@@ -24,6 +24,7 @@ export default function LoginPage() {
             <div className={`align-items-start fs-5 lh-sm mb-1 text-secondary`}>
               Please consider logging in first:
             </div>
+            <br />
             <div className={`justify-content-center d-flex w-100`}>
               <SignInWithButton />
             </div>
