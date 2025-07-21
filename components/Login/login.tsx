@@ -17,12 +17,11 @@ export default function LoginPage() {
         <div className={`align-items-center d-flex px-2 pt-2 pb-0`}>
           <div className={`px-3 py-0`}>
             <div className={`align-items-start fs-5 lh-sm mb-1 text-secondary`}>
-              You were possibly signed out while trying to go to a page that
-              needs to be signed in to function
+              {t("probablySignedOut")}
             </div>
             <br />
             <div className={`align-items-start fs-5 lh-sm mb-1 text-secondary`}>
-              Please consider logging in first:
+              {t("pleaseConsider")}
             </div>
             <br />
             <div className={`justify-content-center d-flex w-100`}>

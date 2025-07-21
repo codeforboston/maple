@@ -62,8 +62,6 @@ export default function EditProfile({
       />
     )
   }
-
-  // Todo add error handling/404 page?
 }
 
 export function EditProfileForm({

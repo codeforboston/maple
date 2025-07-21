@@ -1,7 +1,7 @@
 import ErrorPage from "next/error"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
@@ -238,9 +238,9 @@ export default function Newsfeed() {
                   <>
                     <div className="pb-4">
                       <NewsfeedCard
-                        header={`No Results`}
+                        header={t("noResults")}
                         timestamp={Timestamp.now()}
-                        bodyText={`There are no news updates for your current followed topics`}
+                        bodyText={t("noNewsUpdates")}
                         type={``}
                       />
                     </div>
