@@ -49,11 +49,7 @@ export default function EditProfile({
   }
 
   if (result.loading) {
-    return (
-      <Row>
-        <LoginPage />
-      </Row>
-    )
+    return <LoginPage />
   }
 
   if (result?.profile && uid) {
