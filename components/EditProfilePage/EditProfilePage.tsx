@@ -27,6 +27,8 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
+import LoginPage from "components/Login/login"
+
 const tabTitle = ["about-you", "testimonies", "following"] as const
 export type TabTitles = (typeof tabTitle)[number]
 
@@ -39,10 +41,18 @@ export default function EditProfile({
   const uid = user?.uid
   const result = useProfile()
 
-  if (result.loading) {
+  if (result.loading && uid) {
     return (
       <Row>
         <Spinner animation="border" className="mx-auto" />
+      </Row>
+    )
+  }
+
+  if (result.loading) {
+    return (
+      <Row>
+        <LoginPage />
       </Row>
     )
   }
