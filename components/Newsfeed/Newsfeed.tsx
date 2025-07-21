@@ -14,10 +14,9 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
+import LoginPage from "components/Login/login"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
-
-import LoginPage from "components/Login/login"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")

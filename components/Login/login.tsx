@@ -1,52 +1,36 @@
-import { Alert, Button, Col, Form, Modal, Stack } from "../bootstrap"
-import { useAppDispatch } from "../hooks"
-import {
-  SignInWithButton,
-  signOutAndRedirectToHome,
-  useAuth
-} from "components/auth"
-import { AuthFlowStep, authStepChanged } from "components/auth/redux"
 import { useTranslation } from "next-i18next"
-import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useLocation } from "react-router-dom"
-import { useRouter } from "next/router"
+import styled from "styled-components"
+import { Container } from "../bootstrap"
+import { SignInWithButton } from "components/auth"
 
 export default function LoginPage() {
   const { t } = useTranslation("auth")
-  // const dispatch = useAppDispatch()
-  // const setCurrentModal = (step: AuthFlowStep) =>
-  //   dispatch(authStepChanged(step))
 
-  // useEffect(() => {
-  //   setCurrentModal("start")
-  // })
-
-  // const navigate = useNavigate()
-  // const handleGoBack = () => {
-  //   navigate(-1) // Navigates back one entry in the history stack
-  // }
-
-  const router = useRouter()
-
-  // const location = useLocation()
+  const StyledContainer = styled(Container)`
+    @media (min-width: 768px) {
+    }
+  `
 
   return (
-    <div>
-      <p>Hello Login World</p>
-      <br />
-      <p>
-        You were possibly signed out while trying to go to a page that needs you
-        to be signed in
-      </p>
-      <br />
-      <div>Please consider logging in first:</div>
-      <div className="" style={{ width: "100px" }}>
-        <SignInWithButton />
+    <StyledContainer>
+      <div className={`bg-white my-3 overflow-hidden rounded-3`}>
+        <div className={`align-items-center d-flex px-2 pt-2 pb-0`}>
+          <div className={`px-3 py-0`}>
+            <div className={`align-items-start fs-5 lh-sm mb-1 text-secondary`}>
+              You were possibly signed out while trying to go to a page that
+              needs to be signed in to function
+            </div>
+            <br />
+            <div className={`align-items-start fs-5 lh-sm mb-1 text-secondary`}>
+              Please consider logging in first:
+            </div>
+            <div className={`justify-content-center d-flex w-100`}>
+              <SignInWithButton />
+            </div>
+            <br />
+          </div>
+        </div>
       </div>
-      <br />
-      {/* <p>If logged in, try and provide user with link to prior navpoint</p>
-      <p>Current Pathname: {router.pathname}</p> */}
-    </div>
+    </StyledContainer>
   )
 }

@@ -25,9 +25,8 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
-import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-
 import LoginPage from "components/Login/login"
+import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 const tabTitle = ["about-you", "testimonies", "following"] as const
 export type TabTitles = (typeof tabTitle)[number]
