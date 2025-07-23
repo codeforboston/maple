@@ -23,7 +23,7 @@ export default function Newsfeed() {
 
   const { user } = useAuth()
   const uid = user?.uid
-  const { result: profile, loading } = usePublicProfile(uid)
+  const result = useProfile()
   const isUser = user?.uid !== undefined
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
@@ -192,20 +192,20 @@ export default function Newsfeed() {
 
   return (
     <>
-      {loading ? (
+      {result.loading && uid ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
       ) : (
         <>
-          {profile ? (
+          {result.profile ? (
             <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
                   <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
-                  <Filters profile={profile} />
+                  <Filters profile={result.profile} />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
