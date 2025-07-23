@@ -1,5 +1,5 @@
 import { createPage } from "../components/page"
-import Login from "components/Login/login"
+import Login from "components/Login/Login"
 
 export default createPage({
   title: "Login",

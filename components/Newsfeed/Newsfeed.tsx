@@ -16,12 +16,11 @@ import {
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
-import { useAuthRedirect } from "components/auth/AuthRedirect"
 
 export default function Newsfeed() {
   const { t } = useTranslation("common")
 
-  const { user, loading: authLoading } = useAuthRedirect()
+  const { user } = useAuth()
   const uid = user?.uid
   const { result: profile, loading } = usePublicProfile(uid)
   const isUser = user?.uid !== undefined
@@ -192,7 +191,7 @@ export default function Newsfeed() {
 
   return (
     <>
-      {authLoading || loading ? (
+      {loading ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
