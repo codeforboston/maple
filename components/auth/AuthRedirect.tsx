@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '../auth'; // Adjust this path to your actual useAuth hook
+import { useAuth } from '../auth'; 
 
 export function useAuthRedirect(isAuthRequired: boolean = true) {
   const { user, loading } = useAuth();
