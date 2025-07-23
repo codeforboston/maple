@@ -32,6 +32,27 @@ export const Avatar = () => {
   )
 }
 
+export const NavbarLink21stCentury: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavDropdown.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : ""}
+        href="/about/testimony-in-the-21st-century"
+        {...other}
+      >
+        {t("navigation.testimony21stCentury")}
+      </NavLink>
+    </NavDropdown.Item>
+  )
+}
+
 export const NavbarLinkAI: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
