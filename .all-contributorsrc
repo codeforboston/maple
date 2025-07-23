@@ -695,6 +695,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gracezhang89",
+      "name": "Grace Zhang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67801289?v=4",
+      "profile": "https://www.grace-zhang.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
