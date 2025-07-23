@@ -677,6 +677,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "chiroptical",
+      "name": "Barry Moore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3086255?v=4",
+      "profile": "https://chiroptical.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ekambains",
+      "name": "ekambains",
+      "avatar_url": "https://avatars.githubusercontent.com/u/182202895?v=4",
+      "profile": "http://www.ekambains.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
