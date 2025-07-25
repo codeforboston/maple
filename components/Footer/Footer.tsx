@@ -1,9 +1,10 @@
 /* use client */
 
-import { authStepChanged } from "components/auth/redux"
+import { authStepChanged, useAuth } from "components/auth/redux"
 import { useAppDispatch } from "components/hooks"
 import { User } from "firebase/auth"
 import { useTranslation } from "next-i18next"
+import { useEffect, useRef } from "react"
 import styled from "styled-components"
 import { NavLink } from "../Navlink"
 import { Button, Col, Image, Container, Row, Nav, Navbar } from "../bootstrap"
@@ -11,6 +12,7 @@ import CustomDropdown, {
   CustomDropdownProps
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
+import { useLogoutWithDelay } from "components/auth/service"
 
 export type PageFooterProps = {
   children?: any
@@ -145,6 +147,15 @@ const TermsAndPolicies = () => {
 const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation(["common", "auth"])
+  const { justLoggedOut } = useAuth()
+  const logoutWithDelay = useLogoutWithDelay()
+
+  const handleSignInClick = () => {
+    if (!justLoggedOut) {
+      dispatch(authStepChanged("start"))
+    }
+  }
+
   return (
     <>
       {authenticated ? (
@@ -157,14 +168,12 @@ const AccountLinks = ({ authenticated, user, signOut }: PageFooterProps) => {
           <StyledInternalLink href={"/newsfeed"}>
             {t("navigation.newsfeed")}
           </StyledInternalLink>
-          <StyledInternalLink handleClick={() => signOut()}>
+          <StyledInternalLink handleClick={() => logoutWithDelay()}>
             {t("signOut", { ns: "auth" })}
           </StyledInternalLink>
         </>
       ) : (
-        <StyledInternalLink
-          handleClick={() => dispatch(authStepChanged("start"))}
-        >
+        <StyledInternalLink handleClick={handleSignInClick}>
           {t("signIn", { ns: "auth" })}
         </StyledInternalLink>
       )}

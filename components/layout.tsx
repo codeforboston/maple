@@ -1,7 +1,7 @@
 import { useTranslation } from "next-i18next"
 import Head from "next/head"
 import React, { FC, useEffect, useState } from "react"
-import { signOutAndRedirectToHome, useAuth } from "./auth"
+import { useLogoutWithDelay, useAuth } from "./auth"
 import AuthModal from "./auth/AuthModal"
 import PageFooter from "./Footer/Footer"
 import { MainNavbar } from "./Navbar"
@@ -23,6 +23,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
 }) => {
   const { authenticated, user } = useAuth()
   const { t } = useTranslation("common")
+  const logoutWithDelay = useLogoutWithDelay()
   const formattedTitle = title
     ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
@@ -52,7 +53,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
               <PageFooter
                 authenticated={authenticated}
                 user={user as any}
-                signOut={signOutAndRedirectToHome}
+                signOut={logoutWithDelay}
               />
             </PageContainer>
           </FollowContext.Provider>
