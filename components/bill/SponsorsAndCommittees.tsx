@@ -113,7 +113,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
               {primary && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
-                  mainText={t("primarySponsor")}
+                  mainText={t("leadSponsor")}
                   subText={
                     <External
                       href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
