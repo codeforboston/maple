@@ -144,7 +144,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               <Col className="left">
                 <div className="d-flex justify-content-between">
                   {hit.court && (
-                    <span className="blurb me-2">Court {hit.court}</span>
+                    <span className="blurb me-2">
+                      {t("bill.court", { court: hit.court })}
+                    </span>
                   )}
                   <span className="blurb">{hit.city}</span>
                   <span style={{ flex: "1" }} />
@@ -156,16 +158,20 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                 </Card.Title>
                 <div className="d-flex justify-content-between flex-column">
                   <span className="blurb">
-                    Sponsor: {hit.primarySponsor}{" "}
-                    {hit.cosponsorCount > 0
-                      ? `and ${hit.cosponsorCount} other${
-                          hit.cosponsorCount > 1 ? "s" : ""
-                        }`
-                      : ""}
+                    {(() => {
+                      const count = hit.cosponsorCount
+                      let title = `${t("sponsor")}: ${hit.primarySponsor}`
+                      if (count > 1) {
+                        title += ` ${t("bill.and_some_others", { count })}`
+                      } else if (count === 1) {
+                        title += ` ${t("bill.and_one_other")}`
+                      }
+                      return title
+                    })()}
                   </span>
                   <span className="blurb">
                     {hit.currentCommittee &&
-                      `Committee: ${hit.currentCommittee}`}
+                      `${t("bill.committee")}: ${hit.currentCommittee}`}
                   </span>
                 </div>
               </Col>
