@@ -73,7 +73,7 @@ export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
         <LabeledContainer className={className}>
           <HearingDate>
             {t("bill.hearing_scheduled_for", {
-              date: tDate(fromUnixTime(bill.nextHearingAt?.seconds), "PPpp")
+              date: tDate(fromUnixTime(bill.nextHearingAt?.seconds), "PPp")
             })}
           </HearingDate>
         </LabeledContainer>

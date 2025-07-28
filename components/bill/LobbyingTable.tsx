@@ -35,12 +35,12 @@ export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
                 <tr>
                   <td>{t("bill.example_name")}</td>
                   <td>{t("bill.pro")}</td>
-                  <td>{tDate("2023-03-29", "PPP")}</td>
+                  <td>{tDate("2023-03-29", "PP")}</td>
                 </tr>
                 <tr>
                   <td>{t("bill.example_name")}</td>
                   <td>{t("bill.neutral")}</td>
-                  <td>{tDate("2023-04-15", "PPP")}</td>
+                  <td>{tDate("2023-04-15", "PP")}</td>
                 </tr>
               </tbody>
             </Table>
