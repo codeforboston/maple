@@ -160,11 +160,14 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                   <span className="blurb">
                     {(() => {
                       const count = hit.cosponsorCount
+                      if (!hit.primarySponsor) {
+                        return `${t("sponsor")}: ${t("bill.cosponsor_count", {
+                          count
+                        })}`
+                      }
                       let title = `${t("sponsor")}: ${hit.primarySponsor}`
-                      if (count > 1) {
-                        title += ` ${t("bill.and_some_others", { count })}`
-                      } else if (count === 1) {
-                        title += ` ${t("bill.and_one_other")}`
+                      if (count) {
+                        title += ` ${t("bill.and_others", { count })}`
                       }
                       return title
                     })()}
