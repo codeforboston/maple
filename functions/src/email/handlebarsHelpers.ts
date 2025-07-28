@@ -14,6 +14,7 @@ export const registerHelpers = () => {
   handlebars.registerHelper("minusFour", helpers.minusFour)
   handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
   handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
+  handlebars.registerHelper("pluralize", helpers.pluralize)
 }
 
 // Register all Handlebars partials

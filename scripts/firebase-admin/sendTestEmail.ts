@@ -26,6 +26,8 @@ handlebars.registerHelper("formatDate", helpers.formatDate)
 handlebars.registerHelper("minusFour", helpers.minusFour)
 handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
 handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
+handlebars.registerHelper("pluralize", helpers.pluralize)
+
 function registerPartials(directoryPath: string) {
   console.log("REGISTERING PARTIALS")
 

@@ -79,7 +79,7 @@ export const Hearing = BaseEvent.extend({
   type: L("hearing"),
   content: HearingContent,
   videoURL: Optional(String),
-  videoAssemblyId: Optional(String),
+  videoTranscriptionId: Optional(String),
   videoFetchedAt: Optional(InstanceOf(Timestamp))
 })
 
