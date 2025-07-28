@@ -17,6 +17,7 @@ interface CardTitleProps {
   isUserMatch?: boolean
   type?: string
   userRole?: string
+  isNewsfeed?: string
 }
 
 export const CardTitle = (props: CardTitleProps) => {
