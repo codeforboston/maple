@@ -30,6 +30,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
   className
 }) => {
   const current = bill.currentCommittee
+  const { t } = useTranslation("common")
   if (!current) return null
   return (
     <Container className={`${className} p-0`}>
@@ -37,7 +38,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
         className={className}
         headerElement={
           <Card.Header className="h4 bg-secondary text-light">
-            {useTranslation("common").t("bill.committee")}
+            {t("bill.committee")}
           </Card.Header>
         }
         body={
