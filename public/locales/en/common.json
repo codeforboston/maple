@@ -2,6 +2,8 @@
   "about": "About",
   "back_to_bills": "back to list of bills",
   "bill": {
+    "and_one_other": "and 1 other",
+    "and_some_others": "and {{count}} others",
     "bill_tracker": "Bill Tracker",
     "bill_cosponsors": "{{billId}} Cosponsors",
     "court": "Court",
@@ -19,7 +21,6 @@
     "committee": "Committee",
     "hearing_scheduled_for": "Hearing Scheduled for {{date}}",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
-    "and_one_other": "and 1 other",
     "read_more": "Read More",
     "download_pdf": "Download PDF",
     "view_bill": "View Bill Text",
@@ -47,7 +48,6 @@
       "transportation_and_public_works": "Transportation and Public Works"
     },
     "seeCosponsors": "See {{count}} Cosponsors",
-    "and_some_others": "and {{count}} others",
     "smart_tag": "AI Smart Tag",
     "smart_summary": "Smart Summary & Tags",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
