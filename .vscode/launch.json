@@ -5,20 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/app.js",
-            "request": "launch",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node"
-        },
-        {
-            "name": "Launch in VSCode (with TypeScript)",
+            "name": "Run and Debug MAPLE",
             "type": "node",
             "request": "launch",
-            "program": "/Users/mrigank/maple/functions/src/notifications/index.ts",  // Replace with path to your main entry point (e.g., "index.js")
-            "sourceMaps": true
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "dev"
+            ],
+            "env": {
+                "NODE_OPTIONS": "--inspect"
+            },
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }
