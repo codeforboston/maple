@@ -1,5 +1,5 @@
 import { fromUnixTime } from "date-fns"
-import { useTranslation } from "components/translations"
+import { useTranslation } from "components/i18n"
 import styled from "styled-components"
 import { Card, Container } from "../bootstrap"
 import { External } from "../links"

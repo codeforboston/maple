@@ -1,4 +1,4 @@
-import { useTranslation } from "components/translations"
+import { useTranslation } from "components/i18n"
 import { Table } from "react-bootstrap"
 import { Card, Container } from "../bootstrap"
 import { Card as MapleCard } from "../Card"
