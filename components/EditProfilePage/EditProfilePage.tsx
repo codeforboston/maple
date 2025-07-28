@@ -25,6 +25,7 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
+import LoginPage from "components/Login/login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 const tabTitle = ["about-you", "testimonies", "following"] as const
@@ -39,12 +40,16 @@ export default function EditProfile({
   const uid = user?.uid
   const result = useProfile()
 
-  if (result.loading) {
+  if (result.loading && uid) {
     return (
       <Row>
         <Spinner animation="border" className="mx-auto" />
       </Row>
     )
+  }
+
+  if (result.loading) {
+    return <LoginPage />
   }
 
   if (result?.profile && uid) {
@@ -57,8 +62,6 @@ export default function EditProfile({
       />
     )
   }
-
-  // Todo add error handling/404 page?
 }
 
 export function EditProfileForm({
