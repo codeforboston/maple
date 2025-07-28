@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { maple } from "components/links"
-import { format, fromUnixTime } from "date-fns"
+import { fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
@@ -14,6 +14,7 @@ import { Card, Col } from "../../bootstrap"
 import { formatBillId } from "../../formatting"
 import { Timestamp } from "firebase/firestore"
 import { dateInFuture } from "components/db/events"
+import { useTranslation } from "components/i18n"
 
 type BillRecord = {
   number: string
@@ -132,6 +133,7 @@ export const DisplayUpcomingHearing = ({
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
+  const { t, tDate } = useTranslation("common")
 
   return (
     <Link href={url} legacyBehavior>
@@ -171,7 +173,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
           </Card.Body>
           {hit.nextHearingAt && dateInFuture(hit.nextHearingAt) ? (
             <Card.Footer className="card-footer">
-              Hearing Scheduled {format(fromUnixTime(hearingDate!), "M/d/y p")}
+              {t("bill.hearing_scheduled_for", {
+                date: tDate(fromUnixTime(hearingDate!), "PPp")
+              })}
             </Card.Footer>
           ) : null}
         </StyledCard>
