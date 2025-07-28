@@ -2,6 +2,21 @@
   "about": "About",
   "back_to_bills": "back to list of bills",
   "bill": {
+    "bill_tracker": "Bill Tracker",
+    "bill_cosponsors": "{{billId}} Cosponsors",
+    "history": "History",
+    "status_and_history": "Status & History",
+    "status_history": "Status History",
+    "branch": "Branch",
+    "lobbying_parties": "Lobbying Parties",
+    "client_name": "Client Name",
+    "position": "Position",
+    "disclosure_date": "Disclosure Date",
+    "example_name": "Example Name",
+    "pro": "Pro",
+    "neutral": "Neutral",
+    "committee": "Committee",
+    "hearing_scheduled_for": "Hearing Scheduled for {{date}}",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
     "read_more": "Read More",
     "download_pdf": "Download PDF",
@@ -29,6 +44,7 @@
       "technology_and_communications": "Technology and Communications",
       "transportation_and_public_works": "Transportation and Public Works"
     },
+    "seeCosponsors": "See {{count}} Cosponsors",
     "smart_tag": "AI Smart Tag",
     "smart_summary": "Smart Summary & Tags",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
@@ -123,6 +139,8 @@
     "bluesky": "BlueSky",
     "mastodon": "Mastodon"
   },
+  "sponsor": "Sponsor",
+  "sponsors": "Sponsors",
   "table": {
     "page": "Page {{currentPage}}"
   },

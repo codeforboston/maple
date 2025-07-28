@@ -1,6 +1,7 @@
-import { format, fromUnixTime } from "date-fns"
+import { fromUnixTime } from "date-fns"
+import { useTranslation } from "components/translations"
 import styled from "styled-components"
-import { Card, Container, Row } from "../bootstrap"
+import { Card, Container } from "../bootstrap"
 import { External } from "../links"
 import { LabeledIcon } from "../shared"
 import { FC } from "../types"
@@ -36,7 +37,7 @@ export const Committees: FC<React.PropsWithChildren<BillProps>> = ({
         className={className}
         headerElement={
           <Card.Header className="h4 bg-secondary text-light">
-            Committee
+            {useTranslation("common").t("bill.committee")}
           </Card.Header>
         }
         body={
@@ -64,13 +65,15 @@ export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   className
 }) => {
+  const { t, tDate } = useTranslation("common")
   return (
     <>
       {bill.nextHearingAt && dateInFuture(bill.nextHearingAt) ? (
         <LabeledContainer className={className}>
           <HearingDate>
-            Hearing Scheduled for{" "}
-            {format(fromUnixTime(bill.nextHearingAt?.seconds), "MMM d, y p")}
+            {t("bill.hearing_scheduled_for", {
+              date: tDate(fromUnixTime(bill.nextHearingAt?.seconds), "PPpp")
+            })}
           </HearingDate>
         </LabeledContainer>
       ) : null}
@@ -86,7 +89,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const more = cosponsors.length > 2
   const isMobile = useMediaQuery("(max-width: 768px)")
-
+  const { t } = useTranslation("common")
   const countShowSponsors = isMobile ? 1 : 2
 
   return (
@@ -95,7 +98,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
         className={className}
         headerElement={
           <Card.Header className="h4 bg-secondary text-light">
-            Sponsors
+            {t("sponsors")}
           </Card.Header>
         }
         body={
@@ -109,7 +112,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
               {primary && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${primary.Id}.jpg`}
-                  mainText="Lead Sponsor"
+                  mainText={t("primarySponsor")}
                   subText={
                     <External
                       href={`https://malegislature.gov/Legislators/Profile/${primary.Id}`}
@@ -126,7 +129,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
                   <LabeledIcon
                     key={s.Id}
                     idImage={`https://malegislature.gov/Legislators/Profile/170/${s.Id}.jpg`}
-                    mainText="Sponsor"
+                    mainText={t("sponsor")}
                     subText={
                       <External
                         href={`https://malegislature.gov/Legislators/Profile/${s.Id}`}
@@ -140,7 +143,7 @@ export const Sponsors: FC<React.PropsWithChildren<BillProps>> = ({
             <div className="d-flex justify-content-center">
               {more && (
                 <Cosponsors bill={bill}>
-                  See {bill.cosponsorCount} Sponsors
+                  {t("bill.seeCosponsors", { count: bill.cosponsorCount })}
                 </Cosponsors>
               )}
             </div>
