@@ -1,7 +1,7 @@
 import ErrorPage from "next/error"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
@@ -14,6 +14,7 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
+import LoginPage from "components/Login/login"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
 
@@ -22,7 +23,7 @@ export default function Newsfeed() {
 
   const { user } = useAuth()
   const uid = user?.uid
-  const { result: profile, loading } = usePublicProfile(uid)
+  const result = useProfile()
   const isUser = user?.uid !== undefined
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
@@ -191,20 +192,20 @@ export default function Newsfeed() {
 
   return (
     <>
-      {loading ? (
+      {result.loading && uid ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
       ) : (
         <>
-          {profile ? (
+          {result.profile ? (
             <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
                   <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
-                  <Filters profile={profile} />
+                  <Filters profile={result.profile} />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
@@ -237,9 +238,9 @@ export default function Newsfeed() {
                   <>
                     <div className="pb-4">
                       <NewsfeedCard
-                        header={`No Results`}
+                        header={t("noResults")}
                         timestamp={Timestamp.now()}
-                        bodyText={`There are no news updates for your current followed topics`}
+                        bodyText={t("noNewsUpdates")}
                         type={``}
                       />
                     </div>
@@ -251,7 +252,8 @@ export default function Newsfeed() {
               </StyledContainer>
             </div>
           ) : (
-            <ErrorPage statusCode={404} withDarkMode={false} />
+            // <ErrorPage statusCode={404} withDarkMode={false} />
+            <LoginPage />
           )}
         </>
       )}
