@@ -1,4 +1,4 @@
-import AdditionalResources from "components/AdditionalResources/AdditionalResources"
+import AdditionalResources from "components/AdditionalResources"
 import { Container } from "../../components/bootstrap"
 import { createPage } from "../../components/page"
 import Legislative from "components/Legislative/Legislative"
