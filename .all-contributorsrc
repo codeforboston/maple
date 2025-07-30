@@ -704,6 +704,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jicruz96",
+      "name": "J.I. Cruz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58642383?v=4",
+      "profile": "http://jicruz.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
