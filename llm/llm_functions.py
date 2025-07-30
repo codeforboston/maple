@@ -278,6 +278,7 @@ def set_my_llm_cache(cache_file: Path=LLM_CACHE) -> SQLiteCache:
     Set an LLM cache, which allows for previously executed completions to be
     loaded from disk instead of repeatedly queried.
     """
+    cache_file.parent.mkdir(exist_ok=True)
     set_llm_cache(SQLiteCache(database_path = cache_file))
 
 @dataclass()

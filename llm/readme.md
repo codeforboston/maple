@@ -122,3 +122,74 @@ This project uses OpenAI's API for various language processing tasks. To use the
    ```python
    import os
    print(os.environ.get('OPENAI_API_KEY'))
+
+# Running the API
+
+Set up a virtual environment and run the Flask app
+
+```
+python3 -m venv venv
+source venv/bin/activate # .fish if using fish
+pip3 install -r requirements.txt
+python3 -m flask --app main run
+```
+
+## Infrastructure notes
+
+As of 2025-06-17, the version of `python3` inside the
+`infra/Dockerfile.firebase` is 3.11. Therefore, the `firebase.json` files use
+the `python311` runtime.
+
+## Deploying locally
+
+This is quite tricky due to how we overlay our current source directory to
+`/app` inside the container. You'll need to create and install dependencies from
+**inside** the container. If you are just working on python related code that
+doesn't need to be in Firebase, you **won't** be able to use this environment.
+
+```shell
+# Build the maple-firebase container
+yarn dev:update
+# Start up bash within the maple-firebase container
+docker run -v .:/app -it maple-firebase /bin/bash
+# Build the virtual env and install the dependencies matching the container
+python3 -m venv llm/venv
+source llm/venv/bin/activate
+pip3 install -r llm/requirements.txt
+```
+
+Note: you'll need to set `OPENAI_DEV` and `OPENAI_PROD` in a
+`llm/.secret.local` file. Get it with `firebase functions:secrets:access
+OPENAI_DEV`. They can be set to the same token. You can see the function URL
+in the emulator after running `yarn dev:up`.
+
+## Deploying to Firebase
+
+```shell
+# not sure if the GOOGLE_APPLICATION_CREDENTIALS is strictly necessary, but I
+# had a number of problems with authorization
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json \
+  firebase deploy --only functions:maple-llm --debug
+
+# Hit the function in production
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -d '{"bill_id": "1234","bill_title": "A title","bill_text": "Some bill text"}' \
+  https://httpsflaskexample-ke6znoupgq-uc.a.run.app/summary
+```
+
+## Future work
+
+Currently, we are just using the built-in Flask server. We should switch to a
+production WSGI server, like `gunicorn`.
+
+The local emulator installation process is quite cumbersome and ideally the
+virtual environment was built during container instantiation instead of from
+within the Docker container (i.e. the "Deploying locally" docs above).
+
+The current API is a little wonky because we take `bill_id` **and** `bill_text`.
+We could just look up the `bill_text` via the `bill_id` using the Firestore API.
+It might make sense to avoid the HTTP wrapper all-together and figure out how
+JS <-> Python communication works without an HTTP layer.
