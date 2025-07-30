@@ -10,7 +10,7 @@ const db = admin.firestore()
 // TODO
 // 1.) Do we actually want to delete old notifications? (check with Matt V)
 // 2.) Do we actually want to delete old notificaiton events? Why not keep the history?
-// 3.) Should we just use the builtin TTL feature for all of these?
+// 3.) We should just use the builtin TTL feature for all of these, right?
 // 4.) Should we use a bulk delete operation for firestore for all of these?
 
 // Delete old notifications from userNotificationFeed collections
