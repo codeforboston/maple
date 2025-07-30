@@ -8,6 +8,7 @@ import { useAppDispatch } from "../hooks"
 import { createService } from "../service"
 import { authChanged, useAuth } from "./redux"
 import { Claim } from "./types"
+import { Row, Spinner } from "../bootstrap"
 
 export const { Provider } = createService(() => {
   const dispatch = useAppDispatch()
@@ -76,13 +77,22 @@ export function requireAuth(
   Component: React.FC<React.PropsWithChildren<{ user: User }>>
 ) {
   return function ProtectedRoute() {
-    const { user } = useAuth()
+    const { user, loading } = useAuth()
     const router = useRouter()
     useEffect(() => {
-      if (user === null) {
-        router.push({ pathname: "/" })
+      if (!loading && !user) {
+        const currentPath = router.asPath
+        router.replace(`/login?redirect=${encodeURIComponent(currentPath)}`)
       }
-    }, [router, user])
+    }, [user, loading, router])
+
+    if (loading) {
+      return (
+        <Row>
+          <Spinner animation="border" className="mx-auto" />
+        </Row>
+      )
+    }
 
     return user ? <Component user={user} /> : null
   }
@@ -92,6 +102,6 @@ export function requireAuth(
  * Redirects user after logging out.
  */
 export async function signOutAndRedirectToHome() {
-  await auth.signOut()
   Router.push("/")
+  await auth.signOut()
 }

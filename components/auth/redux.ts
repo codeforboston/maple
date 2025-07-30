@@ -23,12 +23,14 @@ export interface State {
   /** True iff user is signed in */
   authenticated: boolean
   authFlowStep: AuthFlowStep
+  loading: boolean
 }
 
 const initialState: State = {
   authenticated: false,
   user: undefined,
-  authFlowStep: null
+  authFlowStep: null,
+  loading: true
 }
 
 export const {
@@ -45,6 +47,7 @@ export const {
       state.user = payload.user
       state.claims = payload.claims
       state.authenticated = Boolean(payload.user)
+      state.loading = false
     },
     authStepChanged(state, action: PayloadAction<AuthFlowStep>) {
       state.authFlowStep = action.payload

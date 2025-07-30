@@ -14,7 +14,7 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
-import LoginPage from "components/Login/login"
+import LoginPage from "components/Login/Login"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
 
