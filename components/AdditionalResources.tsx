@@ -36,7 +36,7 @@ const AdditionalResources = () => {
               <Trans
                 t={t}
                 i18nKey={`legislative.${i18nKey}`}
-                components={[<links.External href={href} />]}
+                components={[<links.External href={href} key={i18nKey} />]}
               />
             </p>
           </div>
