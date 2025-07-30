@@ -193,3 +193,14 @@ The current API is a little wonky because we take `bill_id` **and** `bill_text`.
 We could just look up the `bill_text` via the `bill_id` using the Firestore API.
 It might make sense to avoid the HTTP wrapper all-together and figure out how
 JS <-> Python communication works without an HTTP layer.
+
+## Document triggers
+
+- A useful example https://github.com/codeforboston/maple/blob/f531c26b083c902e2cbc24a87e0a99ff0d1c4154/functions/src/notifications/populateBillHistoryNotificationEvents.ts#L17
+- How do I test this?
+  - [ ] pytest
+  - [ ] locally
+- [ ] We probably also want a function for updates that is idempotent on summaries existing
+- [ ] Can `DocumentText` be null, undefined, or `""`?
+- [ ] Can `Title` be null, undefined, or `""`?
+- [ ] Need to extend this to tags
