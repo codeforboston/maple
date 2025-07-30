@@ -230,6 +230,7 @@ export default function Newsfeed() {
                             testimonyId={element.testimonyId}
                             type={element.type}
                             userRole={element.userRole}
+                            isNewsfeed={"enable newsfeed specific subheading"}
                           />
                         </div>
                       ))}

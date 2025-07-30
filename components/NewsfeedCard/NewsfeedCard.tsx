@@ -25,6 +25,7 @@ export const NewsfeedCard = (props: {
   timestamp: Timestamp
   type: string
   userRole?: string
+  isNewsfeed?: string
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
@@ -40,6 +41,7 @@ export const NewsfeedCard = (props: {
       timestamp={formattedTimestamp}
       type={props.type}
       userRole={props.userRole}
+      isNewsfeed={"enable newsfeed specific subheading"}
     />
   )
 
