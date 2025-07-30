@@ -4,8 +4,10 @@ from firebase_functions.firestore_fn import (
     DocumentSnapshot,
 )
 from llm_functions import get_summary_api_function, get_tags_api_function_v2
-from typing import TypedDict
+from typing import TypedDict, NewType
 from collections import deque
+
+Category = NewType("Category", str)
 
 
 # This allows us to type the return of `get_topics`
@@ -13,13 +15,14 @@ class TopicAndCategory(TypedDict):
     # We use the name `tag` in Python, but `topic` in the database
     topic: str
     # Topic can be mapped directly to a category
-    category: str
+    category: Category
 
 
+# Using a 'deque' because appending to lists in Python is slow
 def get_categories_from_topics(
-    topics: list[str], topic_to_category: dict[str, str]
-) -> list[TopicAndCategory]:
-    to_return = deque()
+    topics: list[str], topic_to_category: dict[str, Category]
+) -> deque[TopicAndCategory]:
+    to_return: deque[TopicAndCategory] = deque()
     for topic in topics:
         if topic_to_category.get(topic):
             to_return.append(
@@ -33,52 +36,58 @@ def add_summary_on_document_created(event: Event[DocumentSnapshot]) -> None:
     bill_id = event.params["bill_id"]
     inserted_data = event.data
     inserted_content = inserted_data.to_dict()
-
-    # If the summary was pre-propulated for some reason, we don't want to run the LLM
-    if inserted_content.get("summary"):
-        print(f"bill with id `{bill_id}` has summary")
+    if inserted_content is None:
+        print(f"bill with id `{bill_id}` has no inserted content")
         return
 
-    document_text_exists = inserted_content.get("contents").get("DocumentText")
-    document_title_exists = inserted_content.get("contents").get("Title")
-    if document_text_exists and document_title_exists:
-        document_text = inserted_content["contents"]["DocumentText"]
-        document_title = inserted_content["contents"]["Title"]
+    # If the summary was pre-propulated for some reason, we don't want to run the LLM
+    summary = inserted_content.get("summary")
+    if summary is not None:
+        print(f"bill with id `{bill_id}` already has summary")
+        return
 
-        summary = get_summary_api_function(bill_id, document_title, document_text)
+    document_text = inserted_content.get("contents", {}).get("DocumentText")
+    document_title = inserted_content.get("contents", {}).get("Title")
+    if document_text is None or document_title is None:
+        print(f"bill with id `{bill_id}` unable to fetch document text or title")
+        return
 
-        if summary["status"] in [-1, -2]:
-            print(
-                f"failed to generate summary for bill with id `{bill_id}`, got {summary['status']}"
-            )
-            return
+    summary = get_summary_api_function(bill_id, document_title, document_text)
 
-        inserted_data.reference.update({"summary": summary["summary"]})
-        print(f"Successfully updated summary for bill with id `{bill_id}`")
-
-        # If the topics are pre-propulated for some reason, we don't want to run the LLM
-        if inserted_content.get("topics"):
-            print(f"bill with id `{bill_id}` has topics")
-            return
-
-        tags = get_tags_api_function_v2(bill_id, document_title, summary)
-
-        if tags["status"] != 1:
-            print(
-                f"failed to generate tags for bill with id `{bill_id}`, got {tags['status']}"
-            )
-            return
-        topics_and_categories = get_categories_from_topics(
-            tags["tags"], category_by_topic()
+    if summary["status"] in [-1, -2]:
+        print(
+            f"failed to generate summary for bill with id `{bill_id}`, got {summary['status']}"
         )
-        inserted_data.reference.update({"topics": topics_and_categories})
-        print(f"Successfully updated topics for bill with id `{bill_id}`")
-    else:
-        print(f"unable to find document text or title for bill with id `{bill_id}`")
+        return
+
+    # Set and insert the summary for the categorization step
+    summary = summary["summary"]
+    inserted_data.reference.update({"summary": summary})
+    print(f"Successfully updated summary for bill with id `{bill_id}`")
+
+    # If the topics are pre-propulated for some reason, we don't want to run the LLM
+    topics = inserted_content.get("topics")
+    if topics is not None:
+        print(f"bill with id `{bill_id}` has topics")
+        return
+
+    tags = get_tags_api_function_v2(bill_id, document_title, summary)
+
+    if tags["status"] != 1:
+        print(
+            f"failed to generate tags for bill with id `{bill_id}`, got {tags['status']}"
+        )
+        return
+    topics_and_categories = get_categories_from_topics(
+        tags["tags"], category_by_topic()
+    )
+    inserted_data.reference.update({"topics": topics_and_categories})
+    print(f"Successfully updated topics for bill with id `{bill_id}`")
     return
 
 
-def category_by_topic():
+# Invert 'TOPICS_BY_CATEGORY' into a dictionay
+def category_by_topic() -> dict[str, Category]:
     to_return = {}
     for category, topics in TOPICS_BY_CATEGORY.items():
         for topic in topics:
@@ -86,8 +95,8 @@ def category_by_topic():
     return to_return
 
 
-TOPICS_BY_CATEGORY = {
-    "Commerce": [
+TOPICS_BY_CATEGORY: dict[Category, list[str]] = {
+    Category("Commerce"): [
         "Banking and financial institutions regulation",
         "Consumer protection",
         "Corporation law and goverance",
@@ -99,7 +108,7 @@ TOPICS_BY_CATEGORY = {
         "Retail and wholesale trades",
         "Securities",
     ],
-    "Crime and Law Enforcement": [
+    Category("Crime and Law Enforcement"): [
         "Assault and harassment offenses",
         "Correctional facilities",
         "Crimes against animals and natural resources",
@@ -112,7 +121,7 @@ TOPICS_BY_CATEGORY = {
         "Fraud offenses and financial crimes",
         "Property crimes",
     ],
-    "Economics and Public Finance": [
+    Category("Economics and Public Finance"): [
         "Budget process",
         "Debt collection",
         "Eminent domain",
@@ -121,7 +130,7 @@ TOPICS_BY_CATEGORY = {
         "Government contractors",
         "Pension and retirement benefits",
     ],
-    "Education": [
+    Category("Education"): [
         "Academic performance and assessments",
         "Adult education and literacy",
         "Charter and private schools",
@@ -135,14 +144,14 @@ TOPICS_BY_CATEGORY = {
         "Teachers and educators",
         "Vocational and technical education",
     ],
-    "Emergency Management": [
+    Category("Emergency Management"): [
         "Disaster relief and insurance",
         "Emergency communications systems",
         "Emergency medical services and trauma care",
         "Emergency planning and evacuation",
         "Hazards and emergency operations",
     ],
-    "Energy": [
+    Category("Energy"): [
         "Energy costs assistance",
         "Energy efficiency and conservation",
         "Energy infrastructure and storage",
@@ -150,7 +159,7 @@ TOPICS_BY_CATEGORY = {
         "Energy research",
         "Renewable energy sources",
     ],
-    "Environmental Protection": [
+    Category("Environmental Protection"): [
         "Air quality",
         "Environmental assessment, monitoring, research",
         "Environmental education",
@@ -164,7 +173,7 @@ TOPICS_BY_CATEGORY = {
         "Wetlands",
         "Wildlife conservation",
     ],
-    "Families": [
+    Category("Families"): [
         "Adoption and foster care",
         "Family planning and birth control",
         "Family relationships and status",
@@ -172,7 +181,7 @@ TOPICS_BY_CATEGORY = {
         "Life insurance",
         "Parenting and parental rights",
     ],
-    "Food, Drugs, and Alcohol": [
+    Category("Food, Drugs, and Alcohol"): [
         "Alcoholic beverages and licenses",
         "Drug, alcohol, tobacco use",
         "Drug safety, medical device, and laboratory regulation",
@@ -181,7 +190,7 @@ TOPICS_BY_CATEGORY = {
         "Food supply, safety, and labeling",
         "Nutrition and diet",
     ],
-    "Government Operations and Elections": [
+    Category("Government Operations and Elections"): [
         "Census and government statistics",
         "Government information and archives",
         "Government studies and investigations",
@@ -192,7 +201,7 @@ TOPICS_BY_CATEGORY = {
         "Public-private partnerships",
         "Voting and elections",
     ],
-    "Healthcare": [
+    Category("Healthcare"): [
         "Alternative treatments",
         "Dental care",
         "Health care costs",
@@ -209,7 +218,7 @@ TOPICS_BY_CATEGORY = {
         "Telehealth",
         "Veterinary services and pets",
     ],
-    "Housing and Community Development": [
+    Category("Housing and Community Development"): [
         "Community life and organization",
         "Cooperative and condominium housing",
         "Homelessness and emergency shelter",
@@ -222,13 +231,13 @@ TOPICS_BY_CATEGORY = {
         "Low- and moderate-income housing",
         "Residential rehabilitation and home repair",
     ],
-    "Immigrants and Foreign Nationals": [
+    Category("Immigrants and Foreign Nationals"): [
         "Immigrant health and welfare",
         "Refugees, asylum, displaced persons",
         "Right to shelter",
         "Translation and language services",
     ],
-    "Labor and Employment": [
+    Category("Labor and Employment"): [
         "Employee benefits",
         "Employment discrimination",
         "Employee leave",
@@ -242,7 +251,7 @@ TOPICS_BY_CATEGORY = {
         "Worker safety and health",
         "Youth employment and child labor",
     ],
-    "Law and Judiciary": [
+    Category("Law and Judiciary"): [
         "Civil disturbances",
         "Evidence and witnesses",
         "Judicial and court records",
@@ -250,7 +259,7 @@ TOPICS_BY_CATEGORY = {
         "Jurisdiction and venue",
         "Legal fees and court costs",
     ],
-    "Public and Natural Resources": [
+    Category("Public and Natural Resources"): [
         "Agriculture and aquaculture",
         "Coastal zones and ocean",
         "Forests, forestry, trees",
@@ -258,7 +267,7 @@ TOPICS_BY_CATEGORY = {
         "Watershed and water resources",
         "Wildlife",
     ],
-    "Social Services": [
+    Category("Social Services"): [
         "Child care and development",
         "Domestic violence and child abuse",
         "Food assistance and relief",
@@ -270,7 +279,7 @@ TOPICS_BY_CATEGORY = {
         "Veterans' loans, housing, homeless programs",
         "Veterans' medical care",
     ],
-    "Sports and Recreation": [
+    Category("Sports and Recreation"): [
         "Art and culture",
         "Gambling and lottery",
         "Hunting and fishing",
@@ -279,7 +288,7 @@ TOPICS_BY_CATEGORY = {
         "Public parks",
         "Sports and recreation facilities",
     ],
-    "Taxation": [
+    Category("Taxation"): [
         "Capital gains tax",
         "Corporate tax",
         "Estate tax",
@@ -292,7 +301,7 @@ TOPICS_BY_CATEGORY = {
         "Tax-exempt organizations",
         "Transfer and inheritance taxes",
     ],
-    "Technology and Communications": [
+    Category("Technology and Communications"): [
         "Advanced technology and technological innovations",
         "Atmospheric science and weather",
         "Broadband and internet access",
@@ -306,7 +315,7 @@ TOPICS_BY_CATEGORY = {
         "Telecommunication rates and fees",
         "Telephone and wireless communication",
     ],
-    "Transportation and Public Works": [
+    Category("Transportation and Public Works"): [
         "Aviation and airports",
         "Highways and roads",
         "MBTA & public transportation",
