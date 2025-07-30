@@ -1,76 +1,46 @@
 import { Container } from "react-bootstrap"
-import AdditionalResourcesCard from "./AdditionalResourcesCard"
-import AdditionalResourcesCardContent from "./AdditionalResourcesCardContent"
-
-const content = [
-  {
-    paragraph: {
-      P1: (
-        <>
-          The MA Legislature has an{" "}
-          <a
-            href="https://malegislature.gov/Search/FindMyLegislator"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            online tool
-          </a>{" "}
-          you can use to identify your legislators based on your home address.
-        </>
-      )
-    }
-  },
-  {
-    paragraph: {
-      P1: (
-        <>
-          The MA Legislature publishes a{" "}
-          <a
-            href="https://www.mass.gov/doc/the-legislative-process-0/download"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            document on the legislative process.
-          </a>
-        </>
-      )
-    }
-  },
-  {
-    paragraph: {
-      P1: (
-        <>
-          Mass Legal Services published a 2007 guide to The{" "}
-          <a
-            href="https://www.masslegalservices.org/content/legislative-process-massachusetts-0"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Legislative Process in Massachusetts.
-          </a>
-        </>
-      )
-    }
-  }
-]
+import { useTranslation, Trans } from "next-i18next"
+import * as links from "components/links"
 
 const AdditionalResources = () => {
+  const content = [
+    {
+      i18nKey: "find_legislator",
+      href: "https://malegislature.gov/Search/FindMyLegislator"
+    },
+    {
+      i18nKey: "legislative_doc",
+      href: "https://www.mass.gov/doc/the-legislative-process-0/download"
+    },
+    {
+      i18nKey: "legal_services",
+      href: "https://www.masslegalservices.org/content/legislative-process-massachusetts-0"
+    }
+  ]
+  const { t } = useTranslation("learnComponents")
+
   return (
     <Container fluid="md" className="mt-3">
-      <h1 className={`fs-1 fw-bold text-center text-black`}>
-        Additional Resources
+      <h1 className="fs-1 fw-bold text-center text-black">
+        {t("legislative.additional_resources")}
       </h1>
-      <p className={`fs-4 mx-5 my-3`}>
-        We hope these pages will help you submit effective testimony. You may
-        want to consult these other resources to build a more detailed
-        understanding of the legislative process and how you can contribute.
-      </p>
-      {content.map((value, index) => (
-        <AdditionalResourcesCard key={index}>
-          <AdditionalResourcesCardContent key={index}>
-            {value.paragraph.P1}
-          </AdditionalResourcesCardContent>
-        </AdditionalResourcesCard>
+      <p className="fs-4 mx-5 my-3">{t("legislative.resources_intro")}</p>
+
+      {content.map(({ i18nKey, href }) => (
+        <div
+          key={i18nKey}
+          className="m-4 py-2 px-4 text-bg-light rounded-4 d-flex align-items-center align-items-sm-start"
+        >
+          <div className="d-flex flex-0 justify-content-xs-center p-4">
+            <p className="fs-4">
+              <Trans
+                t={t}
+                i18nKey={`legislative.${i18nKey}`}
+                components={[<links.External href={href} />]}
+              />
+            </p>
+          </div>
+        </div>
       ))}
     </Container>
   )
