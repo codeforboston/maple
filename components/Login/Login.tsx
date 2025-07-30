@@ -4,16 +4,7 @@ import {
   useSignInWithEmailAndPassword,
   SignInWithEmailAndPasswordData
 } from "../auth/hooks"
-import {
-  Form,
-  Stack,
-  Button,
-  Alert,
-  Container,
-  Row,
-  Col,
-  Card
-} from "../bootstrap"
+import { Form, Stack, Alert, Container, Row, Col, Card } from "../bootstrap"
 import Input from "../forms/Input"
 import PasswordInput from "../forms/PasswordInput"
 import { useTranslation } from "next-i18next"
@@ -47,7 +38,7 @@ export default function Login() {
       <Row className="justify-content-center">
         <Col xs={12} sm={10} md={8} lg={6}>
           <Card className="p-4 shadow-lg">
-            <h2 className="text-center mb-4">{t("signInToAccess")}</h2>
+            <h2 className="text-center">{t("signInToAccess")}</h2>
 
             <Form onSubmit={onSubmit} noValidate>
               {signIn.error && (
