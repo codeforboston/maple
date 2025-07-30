@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { SignInWithButton, signOutAndRedirectToHome, useAuth } from "./auth"
+import { SignInWithButton, useLogoutWithDelay, useAuth } from "./auth"
 import { Col, Container, Dropdown, Nav, Navbar, NavDropdown } from "./bootstrap"
 
 import {
@@ -50,6 +50,8 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   `
 
   const ProfileLinks = () => {
+    const logoutWithDelay = useLogoutWithDelay()
+
     return (
       <Nav className="my-4 d-flex align-items-start">
         <NavbarLinkViewProfile />
@@ -68,7 +70,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <NavbarLinkSignOut
           handleClick={() => {
             closeNav()
-            void signOutAndRedirectToHome()
+            void logoutWithDelay()
           }}
         />
       </Nav>
@@ -178,6 +180,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { authenticated } = useAuth()
   const { t } = useTranslation(["common", "auth"])
+  const logoutWithDelay = useLogoutWithDelay()
 
   return (
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
@@ -258,7 +261,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <NavDropdown.Item>
                 <NavbarLinkSignOut
                   handleClick={() => {
-                    void signOutAndRedirectToHome()
+                    void logoutWithDelay()
                   }}
                 />
               </NavDropdown.Item>

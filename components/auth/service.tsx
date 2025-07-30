@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef } from "react"
 import { auth } from "../firebase"
 import { useAppDispatch } from "../hooks"
 import { createService } from "../service"
-import { authChanged, useAuth } from "./redux"
+import { authChanged, useAuth, setJustLoggedOut } from "./redux"
 import { Claim } from "./types"
 
 export const { Provider } = createService(() => {
@@ -76,13 +76,13 @@ export function requireAuth(
   Component: React.FC<React.PropsWithChildren<{ user: User }>>
 ) {
   return function ProtectedRoute() {
-    const { user } = useAuth()
+    const { user, loading, justLoggedOut } = useAuth()
     const router = useRouter()
     useEffect(() => {
-      if (user === null) {
+      if (!loading && user === null) {
         router.push({ pathname: "/" })
       }
-    }, [router, user])
+    }, [router, user, loading])
 
     return user ? <Component user={user} /> : null
   }
@@ -94,4 +94,22 @@ export function requireAuth(
 export async function signOutAndRedirectToHome() {
   await auth.signOut()
   Router.push("/")
+}
+
+/**
+ * Custom hook to handle logout with justLoggedOut flag.
+ */
+export function useLogoutWithDelay() {
+  const dispatch = useAppDispatch()
+  return async () => {
+    dispatch(setJustLoggedOut(true))
+    Router.push("/").then(() => {
+      setTimeout(async () => {
+        await auth.signOut()
+        setTimeout(() => {
+          dispatch(setJustLoggedOut(false))
+        }, 2000)
+      }, 200)
+    })
+  }
 }
