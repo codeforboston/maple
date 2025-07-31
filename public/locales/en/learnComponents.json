@@ -123,6 +123,11 @@
         "title": "Executive Branch",
         "paragraph": "Lastly, the Governor is responsible for signing the enacted and reconciled bill into law. The governor can also veto the bill, return it to the Legislature for changes, or take a number of other less-common actions."
       }
-    ]
+    ],
+    "additional_resources": "Additional Resources",
+    "resources_intro": "We hope these pages will help you submit effective testimony. You may want to consult these other resources to build a more detailed understanding of the legislative process and how you can contribute.",
+    "find_legislator": "The MA Legislature has an <0>online tool</0> you can use to identify your legislators based on your home address.",
+    "legislative_doc": "The MA Legislature publishes a <0>document on the legislative process</0>.",
+    "legal_services": "Mass Legal Services published a 2007 guide to The <0>Legislative Process in Massachusetts</0>."
   }
 }

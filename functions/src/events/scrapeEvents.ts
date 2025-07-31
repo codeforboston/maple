@@ -1,4 +1,4 @@
-import { runWith } from "firebase-functions"
+import { RuntimeOptions, runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
@@ -25,17 +25,23 @@ import fs from "fs"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
+  private memory
 
-  constructor(schedule: string, timeout: number) {
+  constructor(
+    schedule: string,
+    timeout: number,
+    memory: RuntimeOptions["memory"] = "256MB"
+  ) {
     this.schedule = schedule
     this.timeout = timeout
+    this.memory = memory
   }
 
   get function() {
     return runWith({
       timeoutSeconds: this.timeout,
       secrets: ["ASSEMBLY_API_KEY"],
-      memory: "2GB"
+      memory: this.memory
     })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
@@ -60,6 +66,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
       if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
+
+      console.log("event in run()", event)
     }
 
     await writer.close()
@@ -278,6 +286,8 @@ const shouldScrapeVideo = async (EventId: number) => {
     .get()
   const eventData = eventInDb.data()
 
+  console.log("eventData in shouldScrapeVideo()", eventData)
+
   if (!eventData) {
     return false
   }
@@ -289,7 +299,7 @@ const shouldScrapeVideo = async (EventId: number) => {
 
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
-    super("every 60 minutes", 480)
+    super("every 60 minutes", 480, "4GB")
   }
 
   async listEvents() {
@@ -301,6 +311,8 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
 
+    console.log("content in getEvent()", content)
+
     if (await shouldScrapeVideo(EventId)) {
       try {
         const maybeVideoUrl = await getHearingVideoUrl(EventId)
@@ -308,6 +320,15 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           const transcriptId = await submitTranscription({
             maybeVideoUrl,
             EventId
+          })
+
+          // Immediately save video info to prevent reprocessing
+          // since the bulkWriter does not save the video properties
+          // returned from this method.
+          await db.collection("events").doc(`hearing-${EventId}`).update({
+            videoURL: maybeVideoUrl,
+            videoFetchedAt: Timestamp.now(),
+            videoTranscriptionId: transcriptId
           })
 
           return {

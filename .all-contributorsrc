@@ -677,6 +677,51 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "chiroptical",
+      "name": "Barry Moore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3086255?v=4",
+      "profile": "https://chiroptical.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ekambains",
+      "name": "ekambains",
+      "avatar_url": "https://avatars.githubusercontent.com/u/182202895?v=4",
+      "profile": "http://www.ekambains.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gracezhang89",
+      "name": "Grace Zhang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67801289?v=4",
+      "profile": "https://www.grace-zhang.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jicruz96",
+      "name": "J.I. Cruz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58642383?v=4",
+      "profile": "http://jicruz.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "peterschiller",
+      "name": "Peter Schiller",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57169063?v=4",
+      "profile": "https://github.com/peterschiller",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
