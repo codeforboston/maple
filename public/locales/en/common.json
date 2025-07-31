@@ -127,5 +127,17 @@
   "table": {
     "page": "Page {{currentPage}}"
   },
+  "titles": {
+    "admin": "Admin",
+    "bill": "Bill",
+    "our_team": "Our Team",
+    "legislative_process": "How To Have Impact Through Legislative Testimony",
+    "submit_testimony": "Submit Testimony",
+    "support_maple": "How to Support MAPLE",
+    "testimony": "Testimony",
+    "terms_of_service": "Terms of Service",
+    "unsubscribe": "Unsubscribe",
+    "why_use_maple": "Why Use Maple?"
+  },
   "user_updates": "User Updates"
 }
