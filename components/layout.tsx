@@ -13,6 +13,12 @@ export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   return <div className={`vh-100 d-flex flex-column`}>{children}</div>
 }
 
+/**
+ * Props for the Layout component.
+ *
+ * @property {string} [titleI18nKey] - The internationalization key for the title.
+ * This key must be defined in the `common.json` namespace.
+ */
 export type LayoutProps = {
   titleI18nKey?: string
 }
