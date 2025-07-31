@@ -3,7 +3,7 @@ import { createGetStaticTranslationProps } from "components/translations"
 import { OurTeam } from "../../components/OurTeam/OurTeam"
 
 export default createPage({
-  title: "Our Team",
+  titleI18nKey: "titles.our_team",
   Page: () => {
     return (
       <div>

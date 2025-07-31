@@ -8,7 +8,7 @@ import { SubmitTestimonyForm } from "../components/publish/SubmitTestimonyForm"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "Submit Testimony",
+  titleI18nKey: "titles.submit_testimony",
   Page: requireAuth(() => {
     useSyncRouterAndStore()
 

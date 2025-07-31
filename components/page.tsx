@@ -13,17 +13,15 @@ export type AppPropsWithLayout = AppProps & {
 
 export function applyLayout({ Component, pageProps }: AppPropsWithLayout) {
   const page = <Component {...pageProps} />
-  return <Layout title={Component.title}>{page}</Layout>
+  return <Layout titleI18nKey={Component.titleI18nKey}>{page}</Layout>
 }
 
-export type PageOptions<P> = {
-  title?: string
-  fullWidth?: boolean
-  Page: NextPage<P>
-}
-
-export function createPage<P>(options: PageOptions<P>): AppPage<P> {
+export function createPage<P>(
+  options: {
+    Page: NextPage<P>
+  } & LayoutProps
+): AppPage<P> {
   const page: AppPage<P> = options.Page
-  page.title = options.title
+  page.titleI18nKey = options.titleI18nKey
   return page
 }
