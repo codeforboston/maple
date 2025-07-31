@@ -19,12 +19,12 @@ export type LayoutProps = {
 
 export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
   children,
-  titleI18nKey: titleKey
+  titleI18nKey
 }) => {
   const { authenticated, user } = useAuth()
   const { t } = useTranslation("common")
-  let title = titleKey
-    ? `${t(titleKey)} | ${t("maple_abbr")}: ${t("maple_fullName")}`
+  let title = titleI18nKey
+    ? `${t(titleI18nKey)} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
   // isClient used to prevent hydration issues: quite possibly better solutions exist
