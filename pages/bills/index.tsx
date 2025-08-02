@@ -5,7 +5,7 @@ import { BillSearch } from "components/search"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "Browse Bills",
+  titleI18nKey: "navigation.browseBills",
   Page: () => {
     const { t } = useTranslation("billSearch")
 

@@ -13,18 +13,24 @@ export const PageContainer: FC<React.PropsWithChildren<unknown>> = ({
   return <div className={`vh-100 d-flex flex-column`}>{children}</div>
 }
 
+/**
+ * Props for the Layout component.
+ *
+ * @property {string} [titleI18nKey] - The internationalization key for the title.
+ * This key must be defined in the `common.json` namespace.
+ */
 export type LayoutProps = {
-  title?: string
+  titleI18nKey?: string
 }
 
 export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
   children,
-  title
+  titleI18nKey
 }) => {
   const { authenticated, user } = useAuth()
   const { t } = useTranslation("common")
-  const formattedTitle = title
-    ? `${title} | ${t("maple_abbr")}: ${t("maple_fullName")}`
+  let title = titleI18nKey
+    ? `${t(titleI18nKey)} | ${t("maple_abbr")}: ${t("maple_fullName")}`
     : `${t("maple_abbr")}: ${t("maple_fullName")}`
 
   // isClient used to prevent hydration issues: quite possibly better solutions exist
@@ -41,7 +47,7 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
       {isClient ? (
         <>
           <Head>
-            <title>{formattedTitle}</title>
+            <title>{title}</title>
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <FollowContext.Provider value={{ followStatus, setFollowStatus }}>

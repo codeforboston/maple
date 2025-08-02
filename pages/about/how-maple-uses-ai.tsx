@@ -3,7 +3,7 @@ import { createGetStaticTranslationProps } from "components/translations"
 import MapleAI from "components/about/MapleAI/MapleAI"
 
 export default createPage({
-  title: "How Maple Uses AI",
+  titleI18nKey: "navigation.ai",
   Page: () => {
     return (
       <div>
