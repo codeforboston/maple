@@ -6,6 +6,7 @@ import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
+import { NEWSLETTER_SIGNUP_URL } from "components/common"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
@@ -70,7 +71,7 @@ const HeroHeader = ({ authenticated }) => {
                   </p>
                   <p>
                     <a
-                      href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
+                      href={NEWSLETTER_SIGNUP_URL}
                       style={{ color: "white" }}
                       target="_blank"
                       rel="noopener noreferrer"
