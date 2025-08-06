@@ -1,7 +1,14 @@
 {
-  "another_term" : "Try another search term",
-  "browse_bills" : "Browse Bills",
-  "filter" : "Filter",
-  "topics" : "Topics",
-  "zero_results" : "Your search has yielded zero results!"
+  "another_term": "Try another search term",
+  "browse_bills": "Browse Bills",
+  "filter": "Filter",
+  "topics": "Topics",
+  "zero_results": "Your search has yielded zero results!",
+  "sort_by": {
+    "most_recent_testimony": "Sort by Most Recent Testimony",
+    "relevance": "Sort by Relevance",
+    "testimony_count": "Sort by Testimony Count",
+    "cosponsor_count": "Sort by Cosponsor Count",
+    "next_hearing_date": "Sort by Next Hearing Date"
+  }
 }
