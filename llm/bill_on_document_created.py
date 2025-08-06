@@ -31,6 +31,8 @@ def get_categories_from_topics(
     return to_return
 
 
+# When a bill is created for a given session, we want to populate both the
+# summary and the tags for that bill. This is an idempotent function which will
 @on_document_created(document="generalCourts/{session_id}/bills/{bill_id}")
 def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> None:
     bill_id = event.params["bill_id"]
@@ -44,32 +46,29 @@ def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> No
         print(f"bill with id `{bill_id}` has no inserted content")
         return
 
-    # If the summary was pre-propulated for some reason, we don't want to run the LLM
+    # If the summary is already populated, only run the tags code
     summary = inserted_content.get("summary")
-    if summary is not None:
-        print(f"bill with id `{bill_id}` already has summary")
-        return
+    if summary is None:
+        document_text = inserted_content.get("contents", {}).get("DocumentText")
+        document_title = inserted_content.get("contents", {}).get("Title")
+        if document_text is None or document_title is None:
+            print(f"bill with id `{bill_id}` unable to fetch document text or title")
+            return
 
-    document_text = inserted_content.get("contents", {}).get("DocumentText")
-    document_title = inserted_content.get("contents", {}).get("Title")
-    if document_text is None or document_title is None:
-        print(f"bill with id `{bill_id}` unable to fetch document text or title")
-        return
+        summary = get_summary_api_function(bill_id, document_title, document_text)
 
-    summary = get_summary_api_function(bill_id, document_title, document_text)
+        if summary["status"] in [-1, -2]:
+            print(
+                f"failed to generate summary for bill with id `{bill_id}`, got {summary['status']}"
+            )
+            return
 
-    if summary["status"] in [-1, -2]:
-        print(
-            f"failed to generate summary for bill with id `{bill_id}`, got {summary['status']}"
-        )
-        return
+        # Set and insert the summary for the categorization step
+        summary = summary["summary"]
+        inserted_data.reference.update({"summary": summary})
+        print(f"Successfully updated summary for bill with id `{bill_id}`")
 
-    # Set and insert the summary for the categorization step
-    summary = summary["summary"]
-    inserted_data.reference.update({"summary": summary})
-    print(f"Successfully updated summary for bill with id `{bill_id}`")
-
-    # If the topics are pre-propulated for some reason, we don't want to run the LLM
+    # If the topics are already populated, we are done
     topics = inserted_content.get("topics")
     if topics is not None:
         print(f"bill with id `{bill_id}` has topics")
