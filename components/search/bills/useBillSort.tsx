@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next"
 
 export const useBillSort = () => {
   const now = useRef(new Date().getTime())
-  const { t } = useTranslation("billSearch")
+  const { t } = useTranslation("search")
 
   // refer to
   // https://github.com/typesense/typesense-instantsearch-adapter#with-react-instantsearch

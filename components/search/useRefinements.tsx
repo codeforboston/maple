@@ -60,7 +60,7 @@ export const useRefinements = ({
 
   const hasRefinements = useHasRefinements()
 
-  const { t } = useTranslation("billSearch")
+  const { t } = useTranslation("search")
 
   return {
     options: inline ? (
