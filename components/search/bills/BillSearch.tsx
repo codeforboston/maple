@@ -157,7 +157,7 @@ const Layout: FC<
   const refinements = useBillRefinements()
   const status = useSearchStatus()
 
-  const { t } = useTranslation("billSearch")
+  const { t } = useTranslation("search")
 
   return (
     <SearchContainer>
