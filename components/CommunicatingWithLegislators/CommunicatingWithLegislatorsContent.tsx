@@ -1,6 +1,7 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 
 const StyledImage = styled(Image)`
   width: 12.5rem;
@@ -27,9 +28,9 @@ const WritingContent = () => (
   <Row className="align-items-center">
     <Col xs={12} md={8} lg={{ span: 7, offset: 1 }}>
       <p>
-        You can submit your thoughts on a bill to the Committee hearing it
-        before the date of their public hearing. This website, the MAPLE
-        platform, focuses on this mechanism.
+        {useTranslation("learnComponents").t(
+          "communicating.testifyInWriting.content"
+        )}
       </p>
     </Col>
     <Col md={4} lg={3}>
@@ -58,8 +59,9 @@ const OralContent = () => (
       lg={{ span: 7, order: 1 }}
     >
       <p>
-        You can attend a public hearing for a bill of interest to you and sign
-        up for a slot to speak before the Committee.
+        {useTranslation("learnComponents").t(
+          "communicating.testifyOrally.content"
+        )}
       </p>
     </Col>
   </Row>
@@ -69,12 +71,9 @@ const WriteOrCallContent = () => (
   <Row className="align-items-center">
     <Col xs={12} md={8} lg={{ span: 7, offset: 1 }}>
       <p>
-        You can contact your legislators any time by looking up their contact
-        information on the MA Legislature website. Your voice will probably
-        carry the most weight with the House and Senate representatives of your
-        own district, but you are free to contact Committee Chairs or any other
-        member of the legislature with your opinions. You could request a
-        meeting in person.
+        {useTranslation("learnComponents").t(
+          "communicating.writeOrCall.content"
+        )}
       </p>
     </Col>
     <Col md={4} lg={3}>

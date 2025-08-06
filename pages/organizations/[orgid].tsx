@@ -6,7 +6,7 @@ import { ProfilePage } from "components/ProfilePage"
 import { createPage } from "../../components/page"
 
 export default createPage({
-  title: "Organizations",
+  titleI18nKey: "orgs",
   Page: () => {
     const id = useOrgRouting()
 

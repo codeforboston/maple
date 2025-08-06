@@ -2,7 +2,7 @@ import { createPage } from "../components/page"
 import Newsfeed from "components/Newsfeed/Newsfeed"
 
 export default createPage({
-  title: "Newsfeed",
+  titleI18nKey: "navigation.newsfeed",
   Page: () => {
     return <Newsfeed />
   }
