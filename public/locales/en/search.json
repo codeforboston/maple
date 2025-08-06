@@ -6,9 +6,15 @@
   "zero_results": "Your search has yielded zero results!",
   "sort_by": {
     "most_recent_testimony": "Sort by Most Recent Testimony",
+    "newest": "Sort by Old -> New",
+    "oldest": "Sort by New -> Old",
     "relevance": "Sort by Relevance",
     "testimony_count": "Sort by Testimony Count",
     "cosponsor_count": "Sort by Cosponsor Count",
     "next_hearing_date": "Sort by Next Hearing Date"
-  }
+  },
+  "no_results": "No Results",
+  "looks_pretty_empty_here": "Looks Pretty Empty Here",
+  "result_count": "Showing {{pageStart}}-{{pageEnd}} of {{nbHits}} Results",
+  "search_error": "Something went wrong. Please try again. Original message: {{error}}"
 }
