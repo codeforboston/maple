@@ -29,6 +29,10 @@
       "label": "Verify Your Email"
     }
   },
+  "testimonyHit": {
+    "writtenBy": "Written by {{author}}",
+    "bill": "Bill #{{billId}}"
+  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",
