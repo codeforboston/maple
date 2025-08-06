@@ -1,12 +1,19 @@
 import { useTranslation } from "next-i18next"
-import { RefinementList, useInstantSearch } from "react-instantsearch"
+import {
+  RefinementList,
+  RefinementListProps,
+  useInstantSearch
+} from "react-instantsearch"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Offcanvas } from "../bootstrap"
-import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
+import {
+  MultiselectHierarchicalMenu,
+  MultiselectHierarchicalMenuParams
+} from "./HierarchicalMenuWidget"
 import { SearchContainer } from "./SearchContainer"
 
 export const FilterButton = styled(Button)`
@@ -27,8 +34,8 @@ export const useRefinements = ({
   hierarchicalMenuProps,
   refinementProps
 }: {
-  hierarchicalMenuProps?: any[]
-  refinementProps: any[]
+  hierarchicalMenuProps?: MultiselectHierarchicalMenuParams
+  refinementProps: RefinementListProps[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -38,25 +45,16 @@ export const useRefinements = ({
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i} {...(p as any)} />
+        <RefinementList className="mb-4" key={i} {...p} />
       ))}
     </>
   )
 
-  let hierarchicalMenu = <></>
-
-  if (hierarchicalMenuProps) {
-    hierarchicalMenu = (
-      <>
-        <MultiselectHierarchicalMenu
-          attributes={[
-            hierarchicalMenuProps[0].attribute,
-            hierarchicalMenuProps[1].attribute
-          ]}
-        />
-      </>
-    )
-  }
+  const hierarchicalMenu = hierarchicalMenuProps ? (
+    <MultiselectHierarchicalMenu {...hierarchicalMenuProps} />
+  ) : (
+    <></>
+  )
 
   const hasRefinements = useHasRefinements()
 
