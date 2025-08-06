@@ -4,6 +4,22 @@
   "filter": "Filter",
   "topics": "Topics",
   "zero_results": "Your search has yielded zero results!",
+  "refinements": {
+    "bill": {
+      "court": "Legislative Session",
+      "currentCommittee": "Current Committee",
+      "city": "City",
+      "primarySponsor": "Primary Sponsor",
+      "cosponsors": "Cosponsor"
+    },
+    "testimony": {
+      "authorDisplayName": "Author Name",
+      "court": "Legislative Session",
+      "position": "Position",
+      "billId": "Bill",
+      "authorRole": "Author Role"
+    }
+  },
   "sort_by": {
     "most_recent_testimony": "Sort by Most Recent Testimony",
     "newest": "Sort by Old -> New",

@@ -1,7 +1,8 @@
 import { generalCourts } from "functions/src/shared"
 import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { useRefinements } from "../useRefinements"
+import { useTranslation } from "next-i18next"
 
 // for legacy code purposes, things like:
 //
@@ -18,43 +19,34 @@ import { useRefinements } from "../useRefinements"
 
 export const useBillRefinements = () => {
   const baseProps = { limit: 500, searchable: true }
-  const propsList = [
-    {
-      transformItems: useCallback(
-        (i: RefinementListItem[]) =>
-          i
-            .map(i => ({
-              ...i,
-              label: generalCourts[i.value as any]?.Name ?? i.label
-            }))
-            .sort((a, b) => Number(b.value) - Number(a.value)),
-        []
-      ),
-      attribute: "court",
-      searchablePlaceholder: "Legislative Session",
-      ...baseProps
-    },
-    {
-      attribute: "currentCommittee",
-      ...baseProps,
-      searchablePlaceholder: "Current Committee"
-    },
-    {
-      attribute: "city",
-      searchablePlaceholder: "City",
-      ...baseProps
-    },
-    {
-      attribute: "primarySponsor",
-      ...baseProps,
-      searchablePlaceholder: "Primary Sponsor"
-    },
-    {
-      attribute: "cosponsors",
-      ...baseProps,
-      searchablePlaceholder: "Cosponsor"
-    }
-  ]
+  const { t } = useTranslation("search")
+  const propsList = useMemo(
+    () =>
+      [
+        {
+          transformItems: useCallback(
+            (items: RefinementListItem[]) =>
+              items
+                .map(i => ({
+                  ...i,
+                  label: generalCourts[parseInt(i.value, 10)]?.Name ?? i.label
+                }))
+                .sort((a, b) => Number(b.value) - Number(a.value)),
+            []
+          ),
+          attribute: "court"
+        },
+        { attribute: "currentCommittee" },
+        { attribute: "city" },
+        { attribute: "primarySponsor" },
+        { attribute: "cosponsors" }
+      ].map(props => ({
+        searchablePlaceholder: t(`refinements.bill.${props.attribute}`),
+        ...baseProps,
+        ...props
+      })),
+    [t]
+  )
 
   const hierarchicalPropsList = [
     {
