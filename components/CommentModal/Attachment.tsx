@@ -4,6 +4,7 @@ import { ChangeEventHandler, useCallback, useEffect, useState } from "react"
 import { Button, Col, Form, InputGroup, Row, Spinner } from "../bootstrap"
 import { AttachmentInfo, UseDraftTestimonyAttachment } from "../db"
 import { External } from "../links"
+import { useTranslation } from "next-i18next"
 
 export function Attachment({
   attachment,
@@ -65,11 +66,10 @@ const Label = ({
 }: {
   attachment: UseDraftTestimonyAttachment
 }) => {
+  const { t } = useTranslation("attachment")
   return (
     <Form.Label>
-      <span className="me-1">
-        (Optional) Provide your testimony as a file attachment
-      </span>
+      <span className="me-1">{t("provide_testimony_as_file")}</span>
       {status === "loading" && <Spinner animation="border" size="sm" />}
       {status === "error" && (
         <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
@@ -85,13 +85,10 @@ export const AttachmentLink = ({
   attachment: AttachmentInfo
   className?: string
 }) => {
-  const linkLabel = [
-    "Attached",
-    name ?? "Testimony",
-    size ? formatSize(size) : null
-  ]
-    .filter(Boolean)
-    .join(" - ")
+  const { t } = useTranslation("attachment")
+  const linkLabelParts = [t("attached"), name ?? t("testimony")]
+  if (size) linkLabelParts.push(formatSize(size))
+  const linkLabel = linkLabelParts.join(" - ")
   return (
     <External className={className} href={url}>
       {linkLabel}
@@ -106,13 +103,10 @@ const Attached = ({
   attachment: UseDraftTestimonyAttachment
   confirmRemove: boolean
 }) => {
+  const { t } = useTranslation("attachment")
   const { url, name, size, id, remove, status } = attachment
   const onClick = () => {
-    if (
-      !confirmRemove ||
-      confirm("Are you sure you want to remove your attachment?")
-    )
-      remove()
+    if (!confirmRemove || confirm(t("confirm_remove"))) remove()
   }
   return (
     <Row className="align-items-center">
@@ -128,7 +122,7 @@ const Attached = ({
           onClick={onClick}
           disabled={status === "loading"}
         >
-          Remove
+          {t("remove")}
         </Button>
       </Col>
     </Row>
@@ -140,19 +134,18 @@ const StatusMessage = ({
 }: {
   attachment: UseDraftTestimonyAttachment
 }) => {
+  const { t } = useTranslation("attachment")
   if (status === "error") {
     let message: string
     if (error?.code === "storage/unauthorized") {
-      message = "Invalid file. Please upload PDF's less than 10 MB"
+      message = t("error.storage_unauthorized")
     } else {
-      message = "Something went wrong. Please try again."
+      message = t("error.generic")
     }
 
     return <Form.Text className="text-danger">{message}</Form.Text>
   } else if (status === "ok" && !id) {
-    return (
-      <Form.Text>Files must be PDF documents and less than 10 MB.</Form.Text>
-    )
+    return <Form.Text>{t("file_requirements")}</Form.Text>
   } else {
     return null
   }
