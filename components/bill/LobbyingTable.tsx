@@ -1,4 +1,4 @@
-import { useTranslation } from "components/i18n"
+import { useTranslation } from "next-i18next"
 import { Table } from "react-bootstrap"
 import { Card, Container } from "../bootstrap"
 import { Card as MapleCard } from "../Card"
@@ -9,7 +9,7 @@ export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   className
 }) => {
-  const { t, tDate } = useTranslation("common")
+  const { t } = useTranslation("common")
   const current = bill.currentCommittee
   if (!current) return null
   return (
@@ -35,12 +35,12 @@ export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
                 <tr>
                   <td>{t("bill.example_name")}</td>
                   <td>{t("bill.pro")}</td>
-                  <td>{tDate("2023-03-29", "PP")}</td>
+                  <td>{t("date", { date: new Date("2023-04-15") })}</td>
                 </tr>
                 <tr>
                   <td>{t("bill.example_name")}</td>
                   <td>{t("bill.neutral")}</td>
-                  <td>{tDate("2023-04-15", "PP")}</td>
+                  <td>{t("date", { date: new Date("2023-03-29") })}</td>
                 </tr>
               </tbody>
             </Table>

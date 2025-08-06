@@ -1,5 +1,5 @@
 import { fromUnixTime } from "date-fns"
-import { useTranslation } from "components/i18n"
+import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Card, Container } from "../bootstrap"
 import { External } from "../links"
@@ -66,14 +66,14 @@ export const Hearing: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   className
 }) => {
-  const { t, tDate } = useTranslation("common")
+  const { t } = useTranslation("common")
   return (
     <>
       {bill.nextHearingAt && dateInFuture(bill.nextHearingAt) ? (
         <LabeledContainer className={className}>
           <HearingDate>
             {t("bill.hearing_scheduled_for", {
-              date: tDate(fromUnixTime(bill.nextHearingAt?.seconds), "PPp")
+              date: fromUnixTime(bill.nextHearingAt?.seconds)
             })}
           </HearingDate>
         </LabeledContainer>

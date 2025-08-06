@@ -14,7 +14,7 @@ import { Card, Col } from "../../bootstrap"
 import { formatBillId } from "../../formatting"
 import { Timestamp } from "firebase/firestore"
 import { dateInFuture } from "components/db/events"
-import { useTranslation } from "components/i18n"
+import { useTranslation } from "next-i18next"
 
 type BillRecord = {
   number: string
@@ -133,7 +133,7 @@ export const DisplayUpcomingHearing = ({
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
-  const { t, tDate } = useTranslation("common")
+  const { t } = useTranslation("common")
 
   return (
     <Link href={url} legacyBehavior>
@@ -183,7 +183,7 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
           {hit.nextHearingAt && dateInFuture(hit.nextHearingAt) ? (
             <Card.Footer className="card-footer">
               {t("bill.hearing_scheduled_for", {
-                date: tDate(fromUnixTime(hearingDate!), "PPp")
+                date: fromUnixTime(hearingDate!)
               })}
             </Card.Footer>
           ) : null}
