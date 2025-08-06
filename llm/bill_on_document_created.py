@@ -32,9 +32,13 @@ def get_categories_from_topics(
 
 
 @on_document_created(document="generalCourts/{session_id}/bills/{bill_id}")
-def add_summary_on_document_created(event: Event[DocumentSnapshot]) -> None:
+def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> None:
     bill_id = event.params["bill_id"]
     inserted_data = event.data
+    if inserted_data is None:
+        print(f"bill with id `{bill_id}` has no event data")
+        return
+
     inserted_content = inserted_data.to_dict()
     if inserted_content is None:
         print(f"bill with id `{bill_id}` has no inserted content")
@@ -86,7 +90,7 @@ def add_summary_on_document_created(event: Event[DocumentSnapshot]) -> None:
     return
 
 
-# Invert 'TOPICS_BY_CATEGORY' into a dictionay
+# Invert 'TOPICS_BY_CATEGORY' into a dictionary from topics to categories
 def category_by_topic() -> dict[str, Category]:
     to_return = {}
     for category, topics in TOPICS_BY_CATEGORY.items():
