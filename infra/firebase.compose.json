@@ -4,11 +4,22 @@
     "cleanUrls": true,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
-  "functions": {
-    "predeploy": ["yarn build:functions"],
-    "source": "functions",
-    "runtime": "nodejs18"
-  },
+  "functions": [
+    {
+      "predeploy": ["yarn build:functions"],
+      "source": "functions",
+      "codebase": "maple",
+      "runtime": "nodejs18"
+    },
+    {
+      "predeploy": [
+        ". llm/venv/bin/activate && python3 -m pip install -r llm/requirements.txt"
+      ],
+      "source": "llm",
+      "codebase": "maple-llm",
+      "runtime": "python311"
+    }
+  ],
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

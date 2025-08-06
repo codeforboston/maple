@@ -181,15 +181,15 @@ const CommunicatingWithLegislators = () => {
           </h1>
           <p className={"ms-1 fs-4"}>{t("communicating.intro")}</p>
 
-          <CommWithLegCard title={t("communicating.testifyInWriting")}>
+          <CommWithLegCard title={t("communicating.testifyInWriting.title")}>
             <WritingContent />
           </CommWithLegCard>
 
-          <CommWithLegCard title={t("communicating.testifyOrally")}>
+          <CommWithLegCard title={t("communicating.testifyOrally.title")}>
             <OralContent />
           </CommWithLegCard>
 
-          <CommWithLegCard title={t("communicating.writeOrCall")}>
+          <CommWithLegCard title={t("communicating.writeOrCall.title")}>
             <WriteOrCallContent />
           </CommWithLegCard>
         </Col>

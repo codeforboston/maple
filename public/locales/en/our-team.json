@@ -1,6 +1,6 @@
 {
   "advisory": {
-    "title" : "Advisory Board",
+    "title": "Advisory Board",
     "desc": "The Advisory Board provides strategic advice and domain expertise to the MAPLE project. We are grateful to have the support of:",
     "DFields": "David Fields, Ph.D., is Professor of the Practice within the Graduate School of Education at Northeastern University and Senior Fellow with The Burnes Center for Social Change. He brings over 20 years of higher education experience building, launching, and scaling industry aligned programs. At the Burnes Center, his work includes supporting AI for Impact, and its InnovateMA co-op program in partnership with the Commonwealth of Massachusetts.",
     "JChang": "Jerren is the inaugural full-time President & CEO of Partners in Democracy. He is the co-founder of GenUnity - an innovative nonprofit supporting the civic learning and leadership development of hundreds of grassroots residents in Massachusetts communities and now a core pillar of PID's holistic democracy renovation strategy. Before GenUnity, Jerren served in the Chicago Mayor's Office as an economic development policy staffer and worked as a consultant at McKinsey & Company advising public and social sector leaders.",
@@ -27,5 +27,8 @@
     "MBaggett": "Merritt Baggett is a freelance React Front-End Web Developer. He received a Bachelor's Degree in Psychology from Virginia Tech.",
     "KKim": "Kimin Kim is a Lead Front-end Developer at the Data Lab for Tech Impact with a Bachelor's Degree of Computer Science from Northeastern University. His hobbies are playing volleyball/badminton, eating good food, and learning new skills.",
     "MChai": "Minqi Chai is a social scientist and user experience researcher, advocating for human-centered approaches in digital transformation. She received her PhD in Political Science and Government from Cornell University."
+  },
+  "partners": {
+    "title": "Partners"
   }
 }
