@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react"
 import { Alert } from "react-bootstrap"
+import { useTranslation } from "next-i18next"
 
 export class SearchErrorBoundary extends React.Component<{
   children?: ReactNode
@@ -13,13 +14,10 @@ export class SearchErrorBoundary extends React.Component<{
   }
 
   render() {
-    if (this.state.error) {
-      return (
-        <Alert variant="danger">
-          Something went wrong. Please try again. Original message:{" "}
-          {this.state.error}
-        </Alert>
-      )
+    const { t } = useTranslation("search")
+    const { error } = this.state
+    if (error) {
+      return <Alert variant="danger">{t("search_error", { error })}</Alert>
     }
 
     return this.props.children

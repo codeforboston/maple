@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next"
 import { useStats } from "react-instantsearch"
 import styled from "styled-components"
 
@@ -13,7 +14,11 @@ export function ResultCount(props: any) {
 
   return (
     <ResultContainer {...props}>
-      Showing {pageStart}-{pageEnd} of {nbHits} Results
+      {useTranslation("search").t("result_count", {
+        pageStart,
+        pageEnd,
+        nbHits
+      })}
     </ResultContainer>
   )
 }
