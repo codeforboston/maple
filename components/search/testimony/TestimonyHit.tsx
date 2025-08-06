@@ -25,7 +25,7 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
 }
 
 const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
-  const { t } = useTranslation(["auth"])
+  const { t } = useTranslation(["auth", "testimony"])
 
   const date = new Date(
     parseInt(hit.publishedAt.toString())
@@ -37,7 +37,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const { loading, error, result: bill } = useBill(hit.court, hit.billId)
   const committee = bill?.currentCommittee
   const isOrg = hit.authorRole === "organization"
-  const writtenBy =
+  const author =
     isOrg || hit.public ? (
       <Link href={`/profile?id=${hit.authorUid}`}>{hit.fullName}</Link>
     ) : (
@@ -72,7 +72,7 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           width="30px"
         />
         <span style={{ flexGrow: 1 }}>
-          <b>Written by {writtenBy}</b>
+          <b>{t("testimonyHit.writtenBy", { author })}</b>
         </span>
         {hit.public && !isCurrentUser && followOrg && user && (
           <FollowUserButton profileId={hit.authorUid} />
@@ -95,7 +95,11 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
             {/* <Link href={maple.bill({ court: hit.court, id: hit.billId })}> */}
             {/* <a> */}
-            <h2>Bill #{formatBillId(hit.billId)}</h2>
+            <h2>
+              {t("testimonyHit.bill", {
+                billId: formatBillId(hit.billId)
+              })}
+            </h2>
             {/* </a> */}
             {/* </Link> */}
             {committee && (
