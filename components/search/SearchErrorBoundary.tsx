@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react"
 import { Alert } from "react-bootstrap"
-import { useTranslation } from "next-i18next"
+import { withTranslation, WithTranslation } from "next-i18next"
 
-export class SearchErrorBoundary extends React.Component<{
-  children?: ReactNode
-}> {
+class SearchErrorBoundaryBase extends React.Component<
+  { children?: ReactNode } & WithTranslation
+> {
   state: { error: string | null } = { error: null }
 
   promiseRejectionHandler = (event: PromiseRejectionEvent) => {
@@ -14,10 +14,12 @@ export class SearchErrorBoundary extends React.Component<{
   }
 
   render() {
-    const { t } = useTranslation("search")
-    const { error } = this.state
-    if (error) {
-      return <Alert variant="danger">{t("search_error", { error })}</Alert>
+    if (this.state.error) {
+      return (
+        <Alert variant="danger">
+          {this.props.t("search_error", { error: this.state.error })}
+        </Alert>
+      )
     }
 
     return this.props.children
@@ -42,3 +44,7 @@ export class SearchErrorBoundary extends React.Component<{
     )
   }
 }
+
+export const SearchErrorBoundary = withTranslation("search")(
+  SearchErrorBoundaryBase
+)
