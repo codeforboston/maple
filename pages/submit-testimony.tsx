@@ -23,6 +23,7 @@ export default createPage({
 
 export const getStaticProps = createGetStaticTranslationProps([
   "auth",
+  "attachment",
   "common",
   "footer",
   "testimony",
