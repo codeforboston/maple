@@ -11,6 +11,7 @@ import CustomDropdown, {
   CustomDropdownProps
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
+import { NEWSLETTER_SIGNUP_URL } from "components/common"
 
 export type PageFooterProps = {
   children?: any
@@ -282,7 +283,7 @@ const PageFooter = (props: PageFooterProps) => {
           {t("legal.disclaimer")}
           {" - "}
           <a
-            href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
+            href={NEWSLETTER_SIGNUP_URL}
             style={{ color: "white" }}
             target="_blank"
             rel="noopener noreferrer"

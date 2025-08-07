@@ -76,7 +76,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
           setProfile(credentials.user.uid, {
             fullName,
             orgCategories: categories,
-            notificationFrequency: "Monthly",
+            notificationFrequency: "Weekly",
             email: credentials.user.email
           }),
           sendEmailVerification(credentials.user)
@@ -85,7 +85,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         await Promise.all([
           setProfile(credentials.user.uid, {
             fullName,
-            notificationFrequency: "Monthly",
+            notificationFrequency: "Weekly",
             email: credentials.user.email,
             public: true
           }),
@@ -136,7 +136,7 @@ export function useSignInWithPopUp() {
       await Promise.all([
         setProfile(credentials.user.uid, {
           fullName: credentials.user.displayName ?? "New User",
-          notificationFrequency: "Monthly",
+          notificationFrequency: "Weekly",
           email: credentials.user.email,
           public: true
         })

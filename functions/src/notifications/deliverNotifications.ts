@@ -66,7 +66,7 @@ const deliverEmailNotifications = async () => {
     }
 
     // Temporarily using email from the profile to test the non-auth issues
-    const verifiedEmail = profile.email //await getVerifiedUserEmail(profileDoc.id)
+    const verifiedEmail = profile.email || profile.contactInfo?.publicEmail //await getVerifiedUserEmail(profileDoc.id)
     if (!verifiedEmail) {
       console.log(
         `Skipping user ${profileDoc.id} because they have no verified email address`

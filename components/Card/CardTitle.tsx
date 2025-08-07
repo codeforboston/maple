@@ -17,6 +17,7 @@ interface CardTitleProps {
   isUserMatch?: boolean
   type?: string
   userRole?: string
+  isNewsfeed?: string
 }
 
 export const CardTitle = (props: CardTitleProps) => {
@@ -29,7 +30,8 @@ export const CardTitle = (props: CardTitleProps) => {
     isUserMatch,
     subheader,
     type,
-    userRole
+    userRole,
+    isNewsfeed
   } = props
 
   return (
@@ -44,14 +46,18 @@ export const CardTitle = (props: CardTitleProps) => {
           subheader={subheader}
           type={type}
         />
-        <CardTitleFollowing
-          billId={billId}
-          header={header}
-          subheader={subheader}
-          isBillMatch={isBillMatch}
-          isUserMatch={isUserMatch}
-          type={type}
-        />
+        {isNewsfeed ? (
+          <CardTitleFollowing
+            billId={billId}
+            header={header}
+            subheader={subheader}
+            isBillMatch={isBillMatch}
+            isUserMatch={isUserMatch}
+            type={type}
+          />
+        ) : (
+          <></>
+        )}
       </CardBootstrap.Body>
     </CardBootstrap.Body>
   )

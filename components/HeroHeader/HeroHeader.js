@@ -6,6 +6,7 @@ import ScrollTrackingItem from "../ScrollTrackEffect/ScrollTrackerItem"
 import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
+import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "../common"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
@@ -59,7 +60,7 @@ const HeroHeader = ({ authenticated }) => {
                   <p>
                     {t("newcomer")}{" "}
                     <a
-                      href="https://calendar.google.com/calendar/embed?src=998f62323926f0b0076e7f578d3ca72b1bc94c4efa2f24be57b11f52b1b88595%40group.calendar.google.com&ctz=America%2FNew_York"
+                      href={TRAINING_CALENDAR_URL}
                       style={{ color: "white" }}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -70,7 +71,7 @@ const HeroHeader = ({ authenticated }) => {
                   </p>
                   <p>
                     <a
-                      href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
+                      href={NEWSLETTER_SIGNUP_URL}
                       style={{ color: "white" }}
                       target="_blank"
                       rel="noopener noreferrer"

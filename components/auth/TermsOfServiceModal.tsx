@@ -3,6 +3,7 @@ import { Button, Col, Modal, Row, Stack } from "../bootstrap"
 import { External } from "components/links"
 import { NavLink } from "../Navlink"
 import { useTranslation } from "next-i18next"
+import { NEWSLETTER_SIGNUP_URL } from "components/common"
 
 export default function TermsOfServiceModal({
   show,
@@ -80,7 +81,7 @@ export default function TermsOfServiceModal({
               </Row>
               <Row>
                 <NavLink
-                  href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
+                  href={NEWSLETTER_SIGNUP_URL}
                   other={{
                     className: `text-center fs-5 mt-4 text-secondary`,
                     target: "_blank",
