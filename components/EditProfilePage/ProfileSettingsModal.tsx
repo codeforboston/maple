@@ -82,7 +82,7 @@ export default function ProfileSettingsModal({
 
   const handleToggleNotifications = async () => {
     if (notifications === "None") {
-      setNotifications("Monthly")
+      setNotifications("Weekly")
     } else {
       setNotifications("None")
     }
