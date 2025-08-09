@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react"
 import { Alert } from "react-bootstrap"
+import { withTranslation, WithTranslation } from "next-i18next"
 
-export class SearchErrorBoundary extends React.Component<{
-  children?: ReactNode
-}> {
+class SearchErrorBoundaryBase extends React.Component<
+  { children?: ReactNode } & WithTranslation
+> {
   state: { error: string | null } = { error: null }
 
   promiseRejectionHandler = (event: PromiseRejectionEvent) => {
@@ -16,8 +17,7 @@ export class SearchErrorBoundary extends React.Component<{
     if (this.state.error) {
       return (
         <Alert variant="danger">
-          Something went wrong. Please try again. Original message:{" "}
-          {this.state.error}
+          {this.props.t("search_error", { error: this.state.error })}
         </Alert>
       )
     }
@@ -44,3 +44,7 @@ export class SearchErrorBoundary extends React.Component<{
     )
   }
 }
+
+export const SearchErrorBoundary = withTranslation("search")(
+  SearchErrorBoundaryBase
+)

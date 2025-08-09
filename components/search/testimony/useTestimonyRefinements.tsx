@@ -1,41 +1,31 @@
 import { RefinementListItem } from "instantsearch.js/es/connectors/refinement-list/connectRefinementList"
 import { useRefinements } from "../useRefinements"
-import { useCallback } from "react"
+import { useMemo } from "react"
+import { useTranslation } from "next-i18next"
 
 export const useTestimonyRefinements = () => {
-  const baseProps = { limit: 500, searchable: true }
-  const propsList = [
-    {
-      transformItems: useCallback(
-        (i: RefinementListItem[]) => i.filter(i => i.label !== "private"),
-        []
-      ),
-      attribute: "authorDisplayName",
-      ...baseProps,
-      searchablePlaceholder: "Author Name"
-    },
-    {
-      attribute: "court",
-      ...baseProps,
-      searchablePlaceholder: "Court"
-    },
-    {
-      attribute: "position",
-      ...baseProps,
-      searchablePlaceholder: "Position"
-    },
-    {
-      attribute: "billId",
-      ...baseProps,
-      searchablePlaceholder: "Bill"
-    },
-    {
-      attribute: "authorRole",
-      ...baseProps,
-      searchable: false,
-      hidden: true
-    }
-  ]
+  const { t } = useTranslation("search")
 
-  return useRefinements({ refinementProps: propsList })
+  return useRefinements({
+    refinementProps: useMemo(
+      () =>
+        [
+          {
+            transformItems: (i: RefinementListItem[]) =>
+              i.filter(i => i.label !== "private"),
+            attribute: "authorDisplayName"
+          },
+          { attribute: "court" },
+          { attribute: "position" },
+          { attribute: "billId" },
+          { attribute: "authorRole", searchable: false, hidden: true }
+        ].map(props => ({
+          limit: 500,
+          searchable: true,
+          searchablePlaceholder: t(`refinements.testimony.${props.attribute}`),
+          ...props
+        })),
+      [t]
+    )
+  })
 }
