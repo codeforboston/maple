@@ -1,5 +1,4 @@
 import React from "react"
-import { Container, CardImg } from "react-bootstrap"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"
@@ -14,29 +13,29 @@ export const Positions = (props: {
   return (
     <PositionsStyle>
       <PositionStyle>
-        <p className="stanceTitle">Endorse</p>
+        <p className="stanceTitle">{t("counts.endorsements.title")}</p>
         <div>
-          <Image className="svg" alt={t("counts.endorsements")} />
+          <Image className="svg" alt={t("counts.endorsements.alt")} />
           <p>{props.endorseCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
-        <p className="stanceTitle">Neutral</p>
+        <p className="stanceTitle">{t("counts.neutral.title")}</p>
         <div>
           <Image
             className="svg"
-            alt={t("counts.neutral")}
+            alt={t("counts.neutral.alt")}
             src="/thumbs-neutral.svg"
           />
           <p>{props.neutralCount}</p>
         </div>
       </PositionStyle>
       <PositionStyle>
-        <p className="stanceTitle">Oppose</p>
+        <p className="stanceTitle">{t("counts.oppose.title")}</p>
         <div>
           <Image
             className="svg"
-            alt={t("counts.oppose")}
+            alt={t("counts.oppose.alt")}
             src="/thumbs-oppose.svg"
           />
           <p>{props.opposeCount}</p>
