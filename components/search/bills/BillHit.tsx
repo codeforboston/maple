@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { maple } from "components/links"
-import { format, fromUnixTime } from "date-fns"
+import { fromUnixTime } from "date-fns"
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
 import styled from "styled-components"
@@ -14,6 +14,7 @@ import { Card, Col } from "../../bootstrap"
 import { formatBillId } from "../../formatting"
 import { Timestamp } from "firebase/firestore"
 import { dateInFuture } from "components/db/events"
+import { useTranslation } from "next-i18next"
 
 type BillRecord = {
   number: string
@@ -132,6 +133,7 @@ export const DisplayUpcomingHearing = ({
 export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
   const url = maple.bill({ id: hit.number, court: hit.court })
   const hearingDate = hit.nextHearingAt && hit.nextHearingAt / 1000 // convert to seconds
+  const { t } = useTranslation("common")
 
   return (
     <Link href={url} legacyBehavior>
@@ -142,7 +144,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
               <Col className="left">
                 <div className="d-flex justify-content-between">
                   {hit.court && (
-                    <span className="blurb me-2">Court {hit.court}</span>
+                    <span className="blurb me-2">
+                      {t("bill.court", { court: hit.court })}
+                    </span>
                   )}
                   <span className="blurb">{hit.city}</span>
                   <span style={{ flex: "1" }} />
@@ -154,16 +158,23 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
                 </Card.Title>
                 <div className="d-flex justify-content-between flex-column">
                   <span className="blurb">
-                    Sponsor: {hit.primarySponsor}{" "}
-                    {hit.cosponsorCount > 0
-                      ? `and ${hit.cosponsorCount} other${
-                          hit.cosponsorCount > 1 ? "s" : ""
-                        }`
-                      : ""}
+                    {(() => {
+                      const count = hit.cosponsorCount
+                      if (!hit.primarySponsor) {
+                        return `${t("sponsor")}: ${t("bill.cosponsor_count", {
+                          count
+                        })}`
+                      }
+                      let title = `${t("sponsor")}: ${hit.primarySponsor}`
+                      if (count) {
+                        title += ` ${t("bill.and_others", { count })}`
+                      }
+                      return title
+                    })()}
                   </span>
                   <span className="blurb">
                     {hit.currentCommittee &&
-                      `Committee: ${hit.currentCommittee}`}
+                      `${t("bill.committee")}: ${hit.currentCommittee}`}
                   </span>
                 </div>
               </Col>
@@ -171,7 +182,9 @@ export const BillHit = ({ hit }: { hit: Hit<BillRecord> }) => {
           </Card.Body>
           {hit.nextHearingAt && dateInFuture(hit.nextHearingAt) ? (
             <Card.Footer className="card-footer">
-              Hearing Scheduled {format(fromUnixTime(hearingDate!), "M/d/y p")}
+              {t("bill.hearing_scheduled_for", {
+                date: fromUnixTime(hearingDate!)
+              })}
             </Card.Footer>
           ) : null}
         </StyledCard>
