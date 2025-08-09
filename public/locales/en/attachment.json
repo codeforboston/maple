@@ -1,0 +1,9 @@
+{
+    "attached": "Attached",
+    "confirm_remove": "Are you sure you want to remove your attachment?",
+    "error.generic": "Something went wrong. Please try again.",
+    "error.storage_unauthorized": "Invalid file. Please upload PDF's less than 10 MB",
+    "file_requirements": "Files must be PDF documents and less than 10 MB.",
+    "provide_testimony_as_file": "(Optional) Provide your testimony as a file attachment",
+    "remove": "Remove"
+}
