@@ -99,16 +99,6 @@
   "noResults": "No Results",
   "noNewsUpdates": "There are no news updates for your current followed topics",
   "orgs": "Organizations",
-  "partners": {
-    "header": "Our Partners",
-    "desc1": "The project is developed in partnership between the",
-    "desc2": "NuLawLab",
-    "desc3": "and scholars at",
-    "desc4": "Boston College Law School",
-    "desc5": "and",
-    "desc6": "Harvard University's Berkman Klein Center for Internet & Society",
-    "pid": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. Partners In Democracy is building nationwide partnerships and exploring how we can drive democracy renovation efforts forward in states around the country — starting by focusing our efforts here at home in Massachusetts."
-  },
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."

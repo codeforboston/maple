@@ -1,85 +1,63 @@
-import { useTranslation } from "next-i18next"
-import styled from "styled-components"
+import { useTranslation, Trans } from "next-i18next"
 import AboutPagesCard from "../AboutPagesCard/AboutPagesCard"
 import { Col, Container, Row } from "../bootstrap"
-import {
-  CodeForBostonCardContent,
-  NuLawLabCardContent,
-  OpenCollectiveContent
-} from "../OurPartnersCardContent/OurPartnersCardContent"
 import { PageTitle, PageDescr } from "../shared/CommonComponents"
+import Image from "react-bootstrap/Image"
 
-export const OurPartners = () => {
-  const { t } = useTranslation("common")
+const LocalizedContent = (props: {
+  i18nKey: string
+  linkClassName?: string
+}) => (
+  <Trans
+    i18nKey={props.i18nKey}
+    ns="partners"
+    components={{
+      a: (
+        <a
+          href="value-overridden-by-partners-json"
+          target="_blank"
+          rel="noreferrer"
+          className={props.linkClassName}
+        />
+      )
+    }}
+  />
+)
 
+const PartnerContentCard = ({ src, org }: { src: string; org: string }) => {
+  const { t } = useTranslation("partners")
+  const orgTitle = t(`${org}.title`)
   return (
-    <Container>
-      <Row>
-        <Col>
-          <PageTitle>{t("partners.header")}</PageTitle>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="py-3">
-          <PageDescr>
-            {t("partners.desc1")}
-            <StyleLink
-              href="https://www.nulawlab.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {" "}
-              {t("partners.desc2")}
-            </StyleLink>{" "}
-            {t("partners.desc3")}
-            <StyleLink
-              href="https://www.bc.edu/bc-web/schools/law.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {" "}
-              {t("partners.desc4")}
-            </StyleLink>{" "}
-            {t("partners.desc5")}{" "}
-            <StyleLink
-              href="https://cyber.harvard.edu/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("partners.desc6")}
-            </StyleLink>
-            .
-          </PageDescr>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <AboutPagesCard title="NuLawLab">
-            <NuLawLabCardContent />
-          </AboutPagesCard>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <AboutPagesCard title="Code for Boston">
-            <CodeForBostonCardContent />
-          </AboutPagesCard>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <AboutPagesCard title="Partners in Democracy">
-            <Row>
-              <OpenCollectiveContent />
-            </Row>
-          </AboutPagesCard>
-        </Col>
-      </Row>
-    </Container>
+    <Row>
+      <Col>
+        <AboutPagesCard title={orgTitle}>
+          <Row className="mb-3">
+            <Col className="text-center align-self-center" md={3}>
+              <Image fluid src={src} alt={t("logo", { org: orgTitle })} />
+            </Col>
+            <Col className="align-self-center" md={9}>
+              <p className="lh-sm tracking-wide fs-5 pt-4 pt-md-0">
+                <LocalizedContent i18nKey={`${org}.content`} />
+              </p>
+            </Col>
+          </Row>
+        </AboutPagesCard>
+      </Col>
+    </Row>
   )
 }
 
-const StyleLink = styled.a`
-  text-decoration: none;
-  color: var(--bs-blue);
-`
+export const OurPartners = () => (
+  <Container>
+    <PageTitle>{useTranslation("partners").t("title")}</PageTitle>
+    <PageDescr className="py-3">
+      <LocalizedContent i18nKey="desc" linkClassName="text-decoration-none" />
+    </PageDescr>
+    <PartnerContentCard
+      src="/northeastern_school_of_law_logo.svg"
+      org="nulawlab"
+    />
+    <PartnerContentCard src="/codeforbostonicon.png" org="codeforboston" />
+    <PartnerContentCard src="/pid.png" org="pid" />
+  </Container>
+)
