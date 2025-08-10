@@ -6,7 +6,7 @@ import { createGetStaticTranslationProps } from "components/translations"
 
 // TODO: Change
 export default createPage({
-  title: "How To Have Impact Through Legislative Testimony",
+  titleI18nKey: "titles.legislative_process",
   Page: () => {
     return (
       <Container>

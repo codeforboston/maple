@@ -8,7 +8,7 @@ import { useEffect } from "react"
 // return <App />
 
 export default createPage({
-  title: "Admin",
+  titleI18nKey: "titles.admin",
   Page: requireAdmin(() => <App />)
 })
 

@@ -15,7 +15,7 @@ import { z } from "zod"
 import { createPage } from "../../components/page"
 
 export default createPage({
-  title: "Testimony",
+  titleI18nKey: "titles.testimony",
   Page: () => {
     useSyncQueryParameters()
     return <TestimonyDetailPage />
