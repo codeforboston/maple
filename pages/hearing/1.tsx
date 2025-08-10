@@ -3,7 +3,7 @@ import { createPage } from "../../components/page"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "Hearing",
+  titleI18nKey: "Hearing",
   Page: () => {
     return <HearingDetails />
   }
