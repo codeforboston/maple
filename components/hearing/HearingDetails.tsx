@@ -21,13 +21,15 @@ async function HearingData() {
 
   // ignore errors related to: Property X does not exist on type 'DocumentSnapshot<DocumentData>'.
 
-  console.log("hearing", hearing._document.data.value.mapValue.fields)
+  console.log("data:", hearing.data())
 
-  const { videoTranscriptionId, videoURL } = hearing.data()
+  const docData = hearing.data()
+  const content = docData?.content ?? "Default Content"
+  const videoTranscriptionId =
+    docData?.content ?? "Default Video Transcripton Id"
+  const videoURL = docData?.content ?? "Default URL"
 
-  console.log("url", videoURL)
-
-  return hearing
+  return { content, videoTranscriptionId, videoURL }
 }
 
 export const HearingDetails = () => {
