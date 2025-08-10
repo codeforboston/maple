@@ -6,8 +6,6 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
-import singletonRouter from "next/router"
 import {
   StyledTabContent,
   StyledTabNav
@@ -25,10 +23,10 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
+import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
-import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -65,16 +63,8 @@ export const TestimonySearch = () => (
         }
       }}
       searchClient={searchClient}
-      routing={{
-        router: createInstantSearchRouterNext({
-          singletonRouter,
-          routerOptions: {
-            cleanUrlOnDispose: false,
-            createURL: args => searchStateToUrl(args),
-            parseURL: args => pathToSearchState(args)
-          }
-        })
-      }}
+      routing={useRouting()}
+      future={{ preserveSharedStateOnUnmount: true }}
     >
       <VirtualFilters type="testimony" />
       <Layout />
