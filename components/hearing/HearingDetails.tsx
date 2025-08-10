@@ -21,6 +21,7 @@ export const HearingDetails = () => {
   const { t } = useTranslation("common")
   const hearingId = "hearing-5180"
   const [videoURL, setVideoURL] = useState("")
+  const [videoTranscriptionId, setVideoTranscriptionId] = useState("")
 
   const hearingData = useCallback(async () => {
     const hearing = await getDoc(doc(firestore, `events/${hearingId}`))
