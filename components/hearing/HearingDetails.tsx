@@ -39,7 +39,9 @@ export const HearingDetails = () => {
     console.log("content: ", content)
   }, [])
 
-  hearingData()
+  useEffect(() => {
+    hearingData()
+  }, [hearingData])
 
   console.log("Committee: ", committeeName)
   console.log("Id: ", videoTranscriptionId)
