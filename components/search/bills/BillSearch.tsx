@@ -7,23 +7,21 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
-import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
-import singletonRouter from "next/router"
+import { currentGeneralCourt } from "functions/src/shared"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
-import { currentGeneralCourt } from "functions/src/shared"
 import { Col, Container, Row, Spinner } from "../../bootstrap"
 import { NoResults } from "../NoResults"
 import { ResultCount } from "../ResultCount"
 import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
+import { useRouting } from "../useRouting"
 import { BillHit } from "./BillHit"
 import { useBillRefinements } from "./useBillRefinements"
 import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
 import { useBillSort } from "./useBillSort"
 import { FC, useState } from "react"
-import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -72,16 +70,8 @@ export const BillSearch = () => {
           }
         }}
         searchClient={searchClient}
-        routing={{
-          router: createInstantSearchRouterNext({
-            singletonRouter,
-            routerOptions: {
-              cleanUrlOnDispose: false,
-              createURL: args => searchStateToUrl(args),
-              parseURL: args => pathToSearchState(args)
-            }
-          })
-        }}
+        routing={useRouting()}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
         <VirtualFilters type="bill" />
         <Layout items={items} />
