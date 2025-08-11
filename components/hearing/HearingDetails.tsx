@@ -6,12 +6,12 @@ import {
   orderBy,
   query
 } from "firebase/firestore"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
-
 import * as links from "components/links"
 
 const StyledContainer = styled(Container)`
@@ -31,7 +31,6 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation("common")
-  // const hearingId = "hearing-5180"
   const hearingQuery = `hearing-${hearingId}`
 
   console.log("hearing id: ", hearingId)
@@ -63,11 +62,23 @@ export const HearingDetails = ({
 
     console.log("data: ", docData)
     console.log("content: ", content)
-  }, [])
+  }, [hearingQuery])
 
   useEffect(() => {
     hearingData()
   }, [hearingData])
+
+  const router = useRouter()
+  useEffect(() => {
+    if (videoURL === "Default URL") {
+      router.push({ pathname: "/404" })
+    }
+  }, [router, videoURL])
+
+  // pathname: "/404" could possible replaced with a different
+  // page/sequence/message that's more specific to the problem
+  // i.e. "the hearing ID you're trying to reach is not on file,
+  // please choose another"
 
   console.log("Id: ", videoTranscriptionId)
   console.log("url: ", videoURL)
