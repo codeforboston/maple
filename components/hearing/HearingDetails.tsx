@@ -7,7 +7,7 @@ import {
   query
 } from "firebase/firestore"
 import { useRouter } from "next/router"
-import { useTranslation } from "next-i18next"
+import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
@@ -104,7 +104,37 @@ export const HearingDetails = ({
       </links.External>
       <div className={`row mt-4`}>
         <div className={`col-md-8`}>
-          <LegalContainer />
+          <LegalContainer>
+            <Row
+              className={`d-flex align-items-center justify-content-between`}
+              fontSize={"12px"}
+              xs="auto"
+            >
+              <Col>
+                <div className={`fs-6 fw-bold`}>
+                  <Image
+                    src="/images/smart-summary.svg"
+                    alt={t("bill.smart_tag")}
+                    height={`30`}
+                    width={`21`}
+                    className={`me-2`}
+                  />
+                  {t("bill.smart_disclaimer2")}
+                </div>
+              </Col>
+
+              <Col>
+                <Trans
+                  t={t}
+                  i18nKey="bill.smart_disclaimer3"
+                  components={[
+                    // eslint-disable-next-line react/jsx-key
+                    <links.Internal href="/about/how-maple-uses-ai" />
+                  ]}
+                />
+              </Col>
+            </Row>
+          </LegalContainer>
         </div>
         <div className={`col-md-4`}>
           <LegalContainer />
