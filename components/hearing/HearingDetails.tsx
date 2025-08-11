@@ -25,9 +25,17 @@ const CommitteeButton = styled.button`
   font-size: 12px;
 `
 
-export const HearingDetails = () => {
+export const HearingDetails = ({
+  hearingId
+}: {
+  hearingId: string | string[] | undefined
+}) => {
   const { t } = useTranslation("common")
-  const hearingId = "hearing-5180"
+  // const hearingId = "hearing-5180"
+  const hearingQuery = `hearing-${hearingId}`
+
+  console.log("hearing id: ", hearingId)
+  console.log("Q: ", hearingQuery)
 
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
@@ -36,7 +44,7 @@ export const HearingDetails = () => {
   const [videoURL, setVideoURL] = useState("")
 
   const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${hearingId}`))
+    const hearing = await getDoc(doc(firestore, `events/${hearingQuery}`))
     const docData = hearing.data()
     const content = docData?.content ?? "Default Content"
 
@@ -61,9 +69,6 @@ export const HearingDetails = () => {
     hearingData()
   }, [hearingData])
 
-  console.log("Committee: ", committeeName)
-  console.log("Committee Code: ", committeeCode)
-  console.log("General Court Number", generalCourtNumber)
   console.log("Id: ", videoTranscriptionId)
   console.log("url: ", videoURL)
 
