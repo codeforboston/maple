@@ -156,11 +156,6 @@ folder: billDetail
 grouping: Bill Detail
 figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=180%3A7916
 ---
-name: CurrentCommitteeCard
-folder: billDetail
-grouping: Bill Detail
-figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=159%3A4939
----
 name: BillStatus
 folder: billDetail
 grouping: Bill Detail
