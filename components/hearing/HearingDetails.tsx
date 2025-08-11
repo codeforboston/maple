@@ -14,15 +14,21 @@ import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-`
-
 // same as SmartTagButton from bill/summary.tsx
 // consolidate as a shared component when there's time in future?
 const CommitteeButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
+`
+
+const LegalContainer = styled(Container)`
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+`
+
+const StyledContainer = styled(Container)`
+  font-family: "Nunito";
 `
 
 export const HearingDetails = ({
@@ -96,8 +102,14 @@ export const HearingDetails = ({
           &nbsp; {committeeName} &nbsp;
         </CommitteeButton>
       </links.External>
-
-      <>Hello Hearing World, {videoURL}</>
+      <div className={`row mt-4`}>
+        <div className={`col-md-8`}>
+          <LegalContainer />
+        </div>
+        <div className={`col-md-4`}>
+          <LegalContainer />
+        </div>
+      </div>
     </StyledContainer>
   )
 }
