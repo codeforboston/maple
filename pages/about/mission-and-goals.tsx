@@ -3,7 +3,7 @@ import GoalsAndMission from "../../components/GoalsAndMission/GoalsAndMission"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "About",
+  titleI18nKey: "about",
   Page: () => {
     return <GoalsAndMission />
   }

@@ -8,8 +8,8 @@
     "build:functions": "next lint -d functions/src && yarn --cwd functions build && yarn copy-handlebars",
     "check-formatting": "prettier --check .",
     "check-types": "tsc --noEmit",
-    "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions,storage",
-    "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions,storage",
+    "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions:maple,storage",
+    "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions:maple,storage",
     "dev": "next dev",
     "dev:local": "NEXT_PUBLIC_PROJECT_ID_FOR_TEST=demo-dtp NEXT_PUBLIC_USE_EMULATOR=true next dev",
     "dev:ps": "yarn compose ps",
@@ -199,5 +199,6 @@
   },
   "resolutions": {
     "jackspeak": "2.1.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

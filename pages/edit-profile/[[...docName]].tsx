@@ -13,11 +13,12 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Edit Profile",
-  Page: requireAuth(({ user }) => {
+  titleI18nKey: "navigation.editProfile",
+  Page: () => {
+    // Page: requireAuth(({ user }) => {
     const tabTitle = Query.parse(useRouter().query).docName?.[0] || "about-you"
     return <EditProfile tabTitle={tabTitle as TabTitles} />
-  })
+  }
 })
 
 export const getStaticPaths: GetStaticPaths = async ctx => {

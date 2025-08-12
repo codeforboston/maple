@@ -99,6 +99,12 @@ service cloud.firestore {
         allow read: if true
         allow write: if false
       }
+
+      // public, read-only
+      match /paragraphs/{pid} {
+        allow read: if true
+        allow write: if false
+      }
     }
   }
 }

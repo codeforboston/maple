@@ -10,7 +10,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 const Query = z.object({ court: z.coerce.number(), billId: z.string({}) })
 
 export default createPage<{ bill: Bill }>({
-  title: "Bill",
+  titleI18nKey: "titles.bill",
   Page: ({ bill }) => {
     return (
       <>
