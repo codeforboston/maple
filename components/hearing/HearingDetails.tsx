@@ -1,14 +1,7 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  query
-} from "firebase/firestore"
+import { doc, getDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { Trans, useTranslation } from "next-i18next"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
@@ -53,9 +46,6 @@ export const HearingDetails = ({
 }) => {
   const { t } = useTranslation("common")
   const hearingQuery = `hearing-${hearingId}`
-
-  console.log("hearing id: ", hearingId)
-  console.log("Q: ", hearingQuery)
 
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
@@ -153,6 +143,9 @@ export const HearingDetails = ({
           <VideoParent className={`my-3`}>
             <VideoChild src={videoURL} controls />
           </VideoParent>
+          <LegalContainer className={`my-3`}>
+            Transcriptions go here
+          </LegalContainer>
         </Col>
         <div className={`col-md-4`}>
           <LegalContainer className={`py-4`}>
