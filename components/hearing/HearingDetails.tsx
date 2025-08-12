@@ -30,7 +30,7 @@ const StyledContainer = styled(Container)`
   font-family: "Nunito";
 `
 
-const IFrameChild = styled.iframe`
+const VideoChild = styled.video`
   position: absolute;
   top: 0;
   left: 0;
@@ -39,7 +39,7 @@ const IFrameChild = styled.iframe`
   border: none;
 `
 
-const IFrameParent = styled.div`
+const VideoParent = styled.div`
   position: relative;
   width: 100%;
   padding-top: 56.25%; /* For 16:9 aspect ratio */
@@ -118,7 +118,7 @@ export const HearingDetails = ({
         </CommitteeButton>
       </links.External>
       <div className={`row mt-4`}>
-        <div className={`col-md-8`}>
+        <Col className={`col-md-8`}>
           <LegalContainer className={`pb-2`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
@@ -150,10 +150,10 @@ export const HearingDetails = ({
               </Col>
             </Row>
           </LegalContainer>
-          <IFrameParent className={`my-3`}>
-            <IFrameChild src={videoURL} />
-          </IFrameParent>
-        </div>
+          <VideoParent className={`my-3`}>
+            <VideoChild src={videoURL} controls />
+          </VideoParent>
+        </Col>
         <div className={`col-md-4`}>
           <LegalContainer className={`py-4`}>
             <p>2nd Column Placeholder</p>
