@@ -54,7 +54,6 @@ export const HearingDetails = ({
   const hearingData = useCallback(async () => {
     const hearing = await getDoc(doc(firestore, `events/${hearingQuery}`))
     const docData = hearing.data()
-    const content = docData?.content ?? "Default Content"
 
     setCommitteeCode(
       docData?.content.HearingHost.CommitteeCode ?? "Default Committee Code"
@@ -70,7 +69,7 @@ export const HearingDetails = ({
     setVideoURL(docData?.videoURL ?? "Default URL")
 
     console.log("data: ", docData)
-    console.log("content: ", content)
+    console.log("content: ", docData?.content)
   }, [hearingQuery])
 
   useEffect(() => {
