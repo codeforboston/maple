@@ -7,8 +7,6 @@ import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
-// same as SmartTagButton from bill/summary.tsx
-// consolidate as a shared component when there's time in future?
 const CommitteeButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
@@ -90,9 +88,11 @@ export const HearingDetails = ({
   // page/sequence/message that's more specific to the problem
   // i.e. "the hearing ID you're trying to reach is not on file,
   // please choose another"
+  //
+  // see pages/bills/[court]/[billId.tsx] ln 32 - 35 for possible
+  // improved method
 
   console.log("Id: ", videoTranscriptionId)
-  console.log("url: ", videoURL)
 
   return (
     <StyledContainer className="mt-3 mb-3">
