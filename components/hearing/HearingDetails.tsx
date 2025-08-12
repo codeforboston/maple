@@ -95,7 +95,9 @@ export const HearingDetails = ({
 
   return (
     <StyledContainer className="mt-3 mb-3">
-      <h1>{t("hearing_transcription")}</h1>
+      <h1>
+        {t("hearing")} {hearingId}
+      </h1>
 
       <links.External
         href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
