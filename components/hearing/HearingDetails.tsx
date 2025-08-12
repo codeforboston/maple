@@ -24,11 +24,26 @@ const CommitteeButton = styled.button`
 const LegalContainer = styled(Container)`
   background-color: white;
   border-radius: 0.75rem;
-  padding: 1rem;
 `
 
 const StyledContainer = styled(Container)`
   font-family: "Nunito";
+`
+
+const IFrameChild = styled.iframe`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+`
+
+const IFrameParent = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* For 16:9 aspect ratio */
+  overflow: hidden;
 `
 
 export const HearingDetails = ({
@@ -104,26 +119,26 @@ export const HearingDetails = ({
       </links.External>
       <div className={`row mt-4`}>
         <div className={`col-md-8`}>
-          <LegalContainer>
+          <LegalContainer className={`pb-2`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
               fontSize={"12px"}
               xs="auto"
             >
-              <Col>
-                <div className={`fs-6 fw-bold`}>
+              <Col className={`mt-1`}>
+                <div className={`fs-6 fw-bold mt-1`}>
                   <Image
                     src="/images/smart-summary.svg"
                     alt={t("bill.smart_tag")}
-                    height={`30`}
-                    width={`21`}
-                    className={`me-2`}
+                    height={`34`}
+                    width={`24`}
+                    className={`me-2 pb-1`}
                   />
                   {t("bill.smart_disclaimer2")}
                 </div>
               </Col>
 
-              <Col>
+              <Col className={`mt-1`}>
                 <Trans
                   t={t}
                   i18nKey="bill.smart_disclaimer3"
@@ -135,9 +150,15 @@ export const HearingDetails = ({
               </Col>
             </Row>
           </LegalContainer>
+          <IFrameParent className={`my-3`}>
+            <IFrameChild src={videoURL} />
+          </IFrameParent>
         </div>
         <div className={`col-md-4`}>
-          <LegalContainer />
+          <LegalContainer className={`py-4`}>
+            <p>2nd Column Placeholder</p>
+            <p>replace me with sidebar</p>
+          </LegalContainer>
         </div>
       </div>
     </StyledContainer>
