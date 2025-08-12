@@ -2,17 +2,11 @@
   "hosting": {
     "public": "out",
     "cleanUrls": true,
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
   "functions": [
     {
-      "predeploy": [
-        "yarn build:functions"
-      ],
+      "predeploy": ["yarn build:functions"],
       "source": "functions",
       "codebase": "maple",
       "runtime": "nodejs20",
