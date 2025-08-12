@@ -1,9 +1,18 @@
 {
   "counts": {
-    "endorsements": "The total number of testimonies that endorse the bill.",
-    "neutral":"The total number of testimonies that are neutral towards the bill.",
-    "oppose":"The total number of testimonies that oppose the bill."
+    "endorsements": {
+      "title": "Endorse",
+      "alt": "The total number of testimonies that endorse the bill."
     },
+    "neutral": {
+      "title": "Neutral",
+      "alt": "The total number of testimonies that are neutral towards the bill."
+    },
+    "oppose": {
+      "title": "Oppose",
+      "alt": "The total number of testimonies that oppose the bill."
+    }
+  },
   "link": {
     "tweetContent": "I provided testimony on Bill {{billNumber}}. See {{link}} for details.",
     "twitter": "Tweet Your Published Testimony"
@@ -61,7 +70,7 @@
     "reporting": "Reporting",
     "report": "Report",
     "rescind": "You may request that your testimony be deleted by completing this form. Since MAPLE is an archive, deletion requests will only be granted if the testimony was submitted on the wrong bill, if it contained sensitive personal information, or if the user is below 18 years old.",
-    "personalInformation": "Personal Information", 
+    "personalInformation": "Personal Information",
     "wrongBill": "Submitted to wrong bill",
     "offensive": "Offensive",
     "violent": "Violent",
