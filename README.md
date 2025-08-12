@@ -239,6 +239,9 @@ Thanks to all our contributors!
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sashamaryl"><img src="https://avatars.githubusercontent.com/u/30247522?v=4?s=100" width="100px;" alt="sashamaryl"/><br /><sub><b>sashamaryl</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=sashamaryl" title="Code">💻</a> <a href="#mentoring-sashamaryl" title="Mentoring">🧑‍🏫</a> <a href="#research-sashamaryl" title="Research">🔬</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/shannonh800"><img src="https://avatars.githubusercontent.com/u/113308101?v=4?s=100" width="100px;" alt="shannonh800"/><br /><sub><b>shannonh800</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=shannonh800" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yasminekarni"><img src="https://avatars.githubusercontent.com/u/47721405?v=4?s=100" width="100px;" alt="yasminekarni"/><br /><sub><b>yasminekarni</b></sub></a><br /><a href="https://github.com/codeforboston/maple/commits?author=yasminekarni" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
