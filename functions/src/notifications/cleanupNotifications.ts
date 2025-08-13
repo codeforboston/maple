@@ -1,11 +1,11 @@
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
+import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 
 const RETENTION_PERIOD_DAYS = 60
 
 // Get a reference to the Firestore database
-const db = admin.firestore()
+const db = getFirestore()
 
 // TODO
 // 1.) Do we actually want to delete old notifications? (check with Matt V)

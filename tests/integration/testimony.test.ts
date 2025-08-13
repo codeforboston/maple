@@ -1,11 +1,11 @@
 import { currentGeneralCourt } from "functions/src/shared"
-import { getAuth, signOut, User } from "firebase/auth"
+import { signOut, User } from "firebase/auth"
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
 import { auth, firestore, functions, storage } from "../../components/firebase"
-import { terminateFirebase, testAuth, testDb, testStorage } from "../testUtils"
+import { terminateFirebase, testDb, testStorage } from "../testUtils"
 import {
   createFakeBill,
   expectPermissionDenied,
