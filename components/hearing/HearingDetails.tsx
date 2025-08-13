@@ -108,6 +108,7 @@ export const HearingDetails = ({
           &nbsp; {committeeName} &nbsp;
         </CommitteeButton>
       </links.External>
+
       <div className={`row mt-4`}>
         <Col className={`col-md-8`}>
           <LegalContainer className={`pb-2`}>
@@ -141,13 +142,16 @@ export const HearingDetails = ({
               </Col>
             </Row>
           </LegalContainer>
+
           <VideoParent className={`my-3`}>
             <VideoChild src={videoURL} controls />
           </VideoParent>
+
           <LegalContainer className={`my-3`}>
             Transcriptions go here
           </LegalContainer>
         </Col>
+
         <div className={`col-md-4`}>
           <LegalContainer className={`py-4`}>
             <p>2nd Column Placeholder</p>
