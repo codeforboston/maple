@@ -13,7 +13,7 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Edit Profile",
+  titleI18nKey: "navigation.editProfile",
   Page: requireAuth(() => {
     const tabTitle = Query.parse(useRouter().query).docName?.[0] || "about-you"
     return <EditProfile tabTitle={tabTitle as TabTitles} />

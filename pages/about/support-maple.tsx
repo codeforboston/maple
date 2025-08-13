@@ -3,7 +3,7 @@ import SupportMaple from "../../components/about/SupportMaple/SupportMaple"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "How to Support MAPLE",
+  titleI18nKey: "titles.support_maple",
   Page: () => {
     return (
       <div>

@@ -3,7 +3,7 @@ import { FaqPage } from "../../components/Faq/FaqPage"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "About",
+  titleI18nKey: "about",
   Page: () => {
     return <FaqPage />
   }

@@ -144,16 +144,14 @@ export default function Newsfeed() {
     const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
     const [notifications, setNotifications] = useState<
       "Weekly" | "Monthly" | "None"
-    >(notificationFrequency ? notificationFrequency : "Monthly")
+    >(notificationFrequency ? notificationFrequency : "Weekly")
     const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
       isPublic ? isPublic : false
     )
 
     const onSettingsModalOpen = () => {
       setSettingsModal("show")
-      setNotifications(
-        notificationFrequency ? notificationFrequency : "Monthly"
-      )
+      setNotifications(notificationFrequency ? notificationFrequency : "Weekly")
       setIsProfilePublic(isPublic ? isPublic : false)
     }
 
@@ -230,6 +228,7 @@ export default function Newsfeed() {
                             testimonyId={element.testimonyId}
                             type={element.type}
                             userRole={element.userRole}
+                            isNewsfeed={"enable newsfeed specific subheading"}
                           />
                         </div>
                       ))}

@@ -3,7 +3,7 @@ import Newsfeed from "components/Newsfeed/Newsfeed"
 import { requireAuth } from "../components/auth"
 
 export default createPage({
-  title: "Newsfeed",
+  titleI18nKey: "navigation.newsfeed",
   Page: requireAuth(() => {
     return <Newsfeed />
   })
