@@ -1,5 +1,4 @@
 from firebase_functions.firestore_fn import (
-    on_document_created,
     Event,
     DocumentSnapshot,
 )
@@ -32,9 +31,8 @@ def get_categories_from_topics(
 
 
 # When a bill is created for a given session, we want to populate both the
-# summary and the tags for that bill. This is an idempotent function which will
-@on_document_created(document="generalCourts/{session_id}/bills/{bill_id}")
-def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> None:
+# summary and the tags for that bill. This is an idempotent function.
+def run_trigger(event: Event[DocumentSnapshot | None]) -> None:
     bill_id = event.params["bill_id"]
     inserted_data = event.data
     if inserted_data is None:
@@ -84,7 +82,7 @@ def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> No
     topics_and_categories = get_categories_from_topics(
         tags["tags"], category_by_topic()
     )
-    inserted_data.reference.update({"topics": topics_and_categories})
+    inserted_data.reference.update({"topics": list(topics_and_categories)})
     print(f"Successfully updated topics for bill with id `{bill_id}`")
     return
 
