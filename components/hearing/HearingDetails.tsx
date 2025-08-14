@@ -146,9 +146,6 @@ export const HearingDetails = ({
             <VideoChild src={videoURL} controls />
           </VideoParent>
 
-          {/* <LegalContainer className={`my-3`}>
-            Transcriptions go here
-          </LegalContainer> */}
           <Transcriptions videoTranscriptionId={videoTranscriptionId} />
         </Col>
 
