@@ -1,5 +1,4 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
-import { getFunctions } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
@@ -10,6 +9,7 @@ import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
 import { FollowedItem } from "./FollowingTabComponents"
 import { BillElement, UserElement } from "./FollowingTabComponents"
 import { deleteItem } from "components/shared/FollowingQueries"
+import { PaginationButtons } from "../table"
 
 export function FollowingTab({ className }: { className?: string }) {
   const { user } = useAuth()
@@ -29,6 +29,10 @@ export function FollowingTab({ className }: { className?: string }) {
   const [billsFollowing, setBillsFollowing] = useState<BillElement[]>([])
   const [usersFollowing, setUsersFollowing] = useState<UserElement[]>([])
 
+  const [currentBillsPage, setCurrentBillsPage] = useState(1)
+  const [currentUsersPage, setCurrentUsersPage] = useState(1)
+  const itemsPerPage = 10
+
   const billsFollowingQuery = useCallback(async () => {
     if (!subscriptionRef) return // handle the case where subscriptionRef is null
     const billList: BillElement[] = []
@@ -42,14 +46,12 @@ export function FollowingTab({ className }: { className?: string }) {
       // doc.data() is never undefined for query doc snapshots
       billList.push(doc.data().billLookup)
     })
-    if (billsFollowing.length === 0 && billList.length != 0) {
-      setBillsFollowing(billList)
-    }
-  }, [subscriptionRef, uid, billsFollowing])
+    setBillsFollowing(billList)
+  }, [subscriptionRef, uid])
 
   useEffect(() => {
     uid ? billsFollowingQuery() : null
-  })
+  }, [uid, billsFollowingQuery])
 
   const orgsFollowingQuery = useCallback(async () => {
     if (!subscriptionRef) return // handle the case where subscriptionRef is null
@@ -104,6 +106,21 @@ export function FollowingTab({ className }: { className?: string }) {
     setUnfollow(null)
   }
 
+  const getPaginatedBills = () => {
+    const startIndex = (currentBillsPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return billsFollowing.slice(startIndex, endIndex)
+  }
+
+  const getPaginatedUsers = () => {
+    const startIndex = (currentUsersPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return usersFollowing.slice(startIndex, endIndex)
+  }
+
+  const totalBillsPages = Math.ceil(billsFollowing.length / itemsPerPage)
+  const totalUsersPages = Math.ceil(usersFollowing.length / itemsPerPage)
+
   const { t } = useTranslation("editProfile")
 
   return (
@@ -112,7 +129,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2>{t("follow.bills")}</h2>
-            {billsFollowing.map((element: BillElement, index: number) => (
+            {getPaginatedBills().map((element: BillElement, index: number) => (
               <FollowedItem
                 key={index}
                 index={index}
@@ -121,6 +138,18 @@ export function FollowingTab({ className }: { className?: string }) {
                 type={"bill"}
               />
             ))}
+            {billsFollowing.length > 0 && (
+              <PaginationButtons
+                pagination={{
+                  currentPage: currentBillsPage,
+                  hasNextPage: currentBillsPage < totalBillsPages,
+                  hasPreviousPage: currentBillsPage > 1,
+                  nextPage: () => setCurrentBillsPage(prev => prev + 1),
+                  previousPage: () => setCurrentBillsPage(prev => prev - 1),
+                  itemsPerPage
+                }}
+              />
+            )}
           </Stack>
         </div>
       </TitledSectionCard>
@@ -128,7 +157,7 @@ export function FollowingTab({ className }: { className?: string }) {
         <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
           <Stack>
             <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {usersFollowing.map((element: UserElement, index: number) => (
+            {getPaginatedUsers().map((element: UserElement, index: number) => (
               <FollowedItem
                 key={index}
                 index={index}
@@ -137,6 +166,18 @@ export function FollowingTab({ className }: { className?: string }) {
                 type={"org"}
               />
             ))}
+            {usersFollowing.length > 0 && (
+              <PaginationButtons
+                pagination={{
+                  currentPage: currentUsersPage,
+                  hasNextPage: currentUsersPage < totalUsersPages,
+                  hasPreviousPage: currentUsersPage > 1,
+                  nextPage: () => setCurrentUsersPage(prev => prev + 1),
+                  previousPage: () => setCurrentUsersPage(prev => prev - 1),
+                  itemsPerPage
+                }}
+              />
+            )}
           </Stack>
         </div>
       </TitledSectionCard>

@@ -5,7 +5,7 @@
 
 // Import necessary Firebase modules
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
+import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import {
   BillHistoryUpdateNotification,
@@ -16,7 +16,7 @@ import {
 import { cloneDeep } from "lodash"
 
 // Get a reference to the Firestore database
-const db = admin.firestore()
+const db = getFirestore()
 
 const createNotificationFields = (
   entity: BillHistoryUpdateNotification | TestimonySubmissionNotification

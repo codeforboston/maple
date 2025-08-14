@@ -73,7 +73,7 @@ const useSearch = <T extends MemberSearchIndexItem, M extends boolean>(
   index: T[]
 ) => {
   const byId = useMemo(
-    () => Object.fromEntries(index.map(m => [m.MemberCode, m])),
+    () => (index ? Object.fromEntries(index?.map(m => [m.MemberCode, m])) : {}),
     [index]
   )
 

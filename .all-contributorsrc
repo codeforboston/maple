@@ -731,6 +731,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "chaoyi09",
+      "name": "Chaoyi Jiang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117859839?v=4",
+      "profile": "http://chaoyijiang.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
