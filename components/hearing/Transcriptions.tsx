@@ -70,8 +70,8 @@ export const Transcriptions = ({
   return (
     <>
       {videoTranscriptionId ? (
+        // rewire this to check for transcription with actual paragraphs
         <TranscriptionContainer>
-          Hello Transcription World
           {transcriptData.map((element: DocElement, index: number) => (
             <TranscriptItem key={index} index={index} element={element} />
           ))}
