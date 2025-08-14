@@ -9,7 +9,6 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   className: props.className
 }))`
   display: flex;
-  flex-wrap: nowrap;
 
   height: 2.5em;
   margin-bottom: 1rem;
@@ -37,19 +36,6 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
 
   .nav-link:first-child {
     margin-left: 0;
-  }
-
-  @media (width < 768px) {
-    flex-direction: column;
-
-    .nav-item {
-      width: 100%;
-      flex-grow: 0;
-    }
-
-    .nav-link {
-      margin: 0;
-    }
   }
 `
 
