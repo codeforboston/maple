@@ -33,7 +33,10 @@ export const Transcriptions = ({
 }) => {
   console.log("Id: ", videoTranscriptionId)
 
-  let videoTranscriptionURL = videoTranscriptionId || "Default Value"
+  // let videoTranscriptionURL = videoTranscriptionId || "Default Value"
+  // temporarily set to a value that contains `paragraphs` as not all transcriptions do
+
+  let videoTranscriptionURL = "026df538-3a98-4c70-83e3-41e41d2507fd"
 
   const subscriptionRef = collection(
     firestore,
