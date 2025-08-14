@@ -5,7 +5,7 @@ import { z } from "zod"
 import { HearingDetails } from "components/hearing/HearingDetails"
 import { createPage } from "../../components/page"
 
-const Query = z.object({ hearingId: z.string({}) })
+const Query = z.object({ hearingId: z.coerce.number() })
 
 export default createPage<{ hearingId: string }>({
   titleI18nKey: "Hearing",
