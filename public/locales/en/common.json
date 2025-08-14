@@ -2,6 +2,7 @@
   "about": "About",
   "back_to_bills": "back to list of bills",
   "bill": {
+    "bill": "Bill {{billId}}",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
     "read_more": "Read More",
     "download_pdf": "Download PDF",
@@ -36,9 +37,17 @@
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
   "button": {
-    "follow": "Follow",
-    "following": "Following",
-    "followed": "Followed"
+    "follow": {
+      "follow": "Follow",
+      "following": "Following",
+      "unfollow": "Unfollow",
+      "followed": "Followed",
+      "confirmation_modal": {
+        "message": "Are you sure you want to {{action}} {{name}}?",
+        "yes": "Yes",
+        "no": "No"
+      }
+    }
   },
   "calendar": "Our Calendar",
   "hideAns": "Hide Answer",

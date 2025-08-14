@@ -27,8 +27,9 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { FollowersTab } from "./FollowersTab"
 
-const tabTitle = ["about-you", "testimonies", "following"] as const
+const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
 export type TabTitles = (typeof tabTitle)[number]
 
 export default function EditProfile({
@@ -115,6 +116,7 @@ export function EditProfileForm({
   isOrg = isOrg || isPendingUpgrade
 
   const { t } = useTranslation("editProfile")
+  const [followerCount, setFollowerCount] = useState<number | null>(null)
 
   const tabs = [
     {
@@ -145,6 +147,18 @@ export function EditProfileForm({
       title: t("tabs.following"),
       eventKey: "following",
       content: <FollowingTab className="mt-3 mb-4" />
+    },
+    {
+      title: followerCount
+        ? t("tabs.followersWithCount", { count: followerCount })
+        : t("tabs.followers"),
+      eventKey: "followers",
+      content: (
+        <FollowersTab
+          className="mt-3 mb-4"
+          setFollowerCount={setFollowerCount}
+        />
+      )
     }
   ]
 
@@ -172,9 +186,7 @@ export function EditProfileForm({
         >
           <TabNavWrapper>
             {tabs.map((t, i) => (
-              <>
-                <TabNavItem tab={t} i={i} />
-              </>
+              <TabNavItem key={i} tab={t} i={i} />
             ))}
           </TabNavWrapper>
           <StyledTabContent>
