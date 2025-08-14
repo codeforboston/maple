@@ -4,11 +4,15 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
     "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "../shared/topics_by_category.json"
+  ]
 }
