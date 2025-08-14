@@ -77,12 +77,12 @@ export const HearingDetails = ({
     hearingData()
   }, [hearingData])
 
-  const router = useRouter()
-  useEffect(() => {
-    if (videoURL === "Default URL") {
-      router.push({ pathname: "/404" })
-    }
-  }, [router, videoURL])
+  // const router = useRouter()
+  // useEffect(() => {
+  //   if (videoURL === "Default URL") {
+  //     router.push({ pathname: "/404" })
+  //   }
+  // }, [router, videoURL])
 
   // pathname: "/404" could possible replaced with a different
   // page/sequence/message that's more specific to the problem
