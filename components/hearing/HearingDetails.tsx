@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
+import { Transcriptions } from "./Transcriptions"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
@@ -91,8 +92,6 @@ export const HearingDetails = ({
   // see pages/bills/[court]/[billId.tsx] ln 32 - 35 for possible
   // improved method
 
-  console.log("Id: ", videoTranscriptionId)
-
   return (
     <StyledContainer className="mt-3 mb-3">
       <h1>
@@ -147,9 +146,10 @@ export const HearingDetails = ({
             <VideoChild src={videoURL} controls />
           </VideoParent>
 
-          <LegalContainer className={`my-3`}>
+          {/* <LegalContainer className={`my-3`}>
             Transcriptions go here
-          </LegalContainer>
+          </LegalContainer> */}
+          <Transcriptions videoTranscriptionId={videoTranscriptionId} />
         </Col>
 
         <div className={`col-md-4`}>
