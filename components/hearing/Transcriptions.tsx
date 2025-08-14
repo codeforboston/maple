@@ -43,7 +43,7 @@ export const Transcriptions = ({
     `transcriptions/${videoTranscriptionURL}/paragraphs`
   )
 
-  const [transData, setTransData] = useState<DocElement[]>([])
+  const [transcriptData, setTranscriptData] = useState<DocElement[]>([])
 
   const transcriptionData = useCallback(async () => {
     let docList: any[] = []
@@ -56,26 +56,68 @@ export const Transcriptions = ({
       docList.push(doc.data())
     })
 
-    if (transData.length === 0 && docList.length != 0) {
-      setTransData(docList)
+    if (transcriptData.length === 0 && docList.length != 0) {
+      setTranscriptData(docList)
     }
-  }, [subscriptionRef, transData])
+  }, [subscriptionRef, transcriptData])
 
   useEffect(() => {
     transcriptionData()
   }, [transcriptionData])
 
-  console.log("T Data: ", transData)
+  console.log("T Data: ", transcriptData)
 
   return (
     <>
       {videoTranscriptionId ? (
         <TranscriptionContainer>
           Hello Transcription World
+          {transcriptData.map((element: DocElement, index: number) => (
+            <TranscriptItem key={index} index={index} element={element} />
+          ))}
         </TranscriptionContainer>
       ) : (
         <></>
       )}
     </>
+  )
+}
+
+function TranscriptItem({ element }: { index: number; element: DocElement }) {
+  return (
+    // <div className={`fs-3 lh-lg`}>
+    //   <Row className={`align-items-center flex-column flex-md-row`}>
+    //     {isBillElement(element) ? (
+    //       <>
+    //         <Internal href={`/bills/${element.court}/${element.billId}`}>
+    //           {formatBillId(element.billId)}
+    //         </Internal>
+    //         <Col xs={12} md={8} className={`d-flex`}>
+    //           <BillFollowingTitle court={element.court} id={element.billId} />
+    //         </Col>
+    //       </>
+    //     ) : (
+    //       <>
+    //         <Col className={"align-items-center d-flex"}>
+    //           <OrgIconSmall
+    //             className="mr-4 mt-0 mb-0 ms-0"
+    //             profileImage={profile?.profileImage}
+    //           />
+    //           <Internal href={`/profile?id=${element.profileId}`}>
+    //             {profile?.fullName}
+    //           </Internal>
+    //         </Col>
+    //       </>
+    //     )}
+    //     <UnfollowButton
+    //       fullName={profile?.fullName ?? "default"}
+    //       element={element}
+    //       setUnfollow={setUnfollow}
+    //       type={type}
+    //     />
+    //   </Row>
+    //   <hr className={`mt-3`} />
+    // </div>
+    <div>{element.text}</div>
   )
 }
