@@ -5,7 +5,7 @@ import type {
   GetFollowersResponse
 } from "functions/src/subscriptions/getFollowers"
 import { useTranslation } from "next-i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react"
 import { useAuth } from "../auth"
 import { usePublicProfile } from "components/db"
 import { Internal } from "components/links"
@@ -64,33 +64,50 @@ export const FollowersTab = ({
   )
 }
 
-function FollowerCard({ profileId }: { profileId: string }) {
+const FollowerCard = ({ profileId }: { profileId: string }) => {
   const { result: profile, loading } = usePublicProfile(profileId)
-  const { profileImage, fullName } = profile || {}
+  const { t } = useTranslation("profile")
+  if (loading) {
+    return (
+      <FollowerCardWrapper>
+        <Spinner animation="border" className="mx-auto" />
+      </FollowerCardWrapper>
+    )
+  }
+  const { fullName, profileImage, public: isPublic } = profile || {}
+  const displayName = isPublic && fullName ? fullName : t("anonymousUser")
   return (
-    <div className={`fs-3 lh-lg`}>
-      <Row className="align-items-center justify-content-between g-0 w-100">
-        {loading ? (
-          <Spinner animation="border" className="mx-auto" />
+    <FollowerCardWrapper>
+      <Col className="d-flex align-items-center flex-grow-1 p-0 text-start">
+        <OrgIconSmall
+          className="mr-4 mt-0 mb-0 ms-0"
+          profileImage={profileImage}
+        />
+        {isPublic ? (
+          <Internal href={`/profile?id=${profileId}`}>{displayName}</Internal>
         ) : (
-          <>
-            <Col className="d-flex align-items-center flex-grow-1 p-0 text-start">
-              <OrgIconSmall
-                className="mr-4 mt-0 mb-0 ms-0"
-                profileImage={profileImage}
-              />
-              <Internal href={`/profile?id=${profileId}`}>{fullName}</Internal>
-            </Col>
-            <Col
-              xs="auto"
-              className="d-flex justify-content-end ms-auto text-end p-0"
-            >
-              <FollowUserButton profileId={profileId} />
-            </Col>
-          </>
+          <span>{displayName}</span>
         )}
-      </Row>
-      <hr className={`mt-3`} />
-    </div>
+      </Col>
+      {isPublic ? (
+        <Col
+          xs="auto"
+          className="d-flex justify-content-end ms-auto text-end p-0"
+        >
+          <FollowUserButton profileId={profileId} />
+        </Col>
+      ) : (
+        <></>
+      )}
+    </FollowerCardWrapper>
   )
 }
+
+const FollowerCardWrapper = ({ children }: { children: ReactNode }) => (
+  <div className={`fs-3 lh-lg`}>
+    <Row className="align-items-center justify-content-between g-0 w-100">
+      {children}
+    </Row>
+    <hr className={`mt-3`} />
+  </div>
+)
