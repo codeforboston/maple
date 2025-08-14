@@ -85,39 +85,6 @@ export const Transcriptions = ({
 
 function TranscriptItem({ element }: { index: number; element: DocElement }) {
   return (
-    // <div className={`fs-3 lh-lg`}>
-    //   <Row className={`align-items-center flex-column flex-md-row`}>
-    //     {isBillElement(element) ? (
-    //       <>
-    //         <Internal href={`/bills/${element.court}/${element.billId}`}>
-    //           {formatBillId(element.billId)}
-    //         </Internal>
-    //         <Col xs={12} md={8} className={`d-flex`}>
-    //           <BillFollowingTitle court={element.court} id={element.billId} />
-    //         </Col>
-    //       </>
-    //     ) : (
-    //       <>
-    //         <Col className={"align-items-center d-flex"}>
-    //           <OrgIconSmall
-    //             className="mr-4 mt-0 mb-0 ms-0"
-    //             profileImage={profile?.profileImage}
-    //           />
-    //           <Internal href={`/profile?id=${element.profileId}`}>
-    //             {profile?.fullName}
-    //           </Internal>
-    //         </Col>
-    //       </>
-    //     )}
-    //     <UnfollowButton
-    //       fullName={profile?.fullName ?? "default"}
-    //       element={element}
-    //       setUnfollow={setUnfollow}
-    //       type={type}
-    //     />
-    //   </Row>
-    //   <hr className={`mt-3`} />
-    // </div>
     <Row>
       <Col>
         {element.start} - {element.end}
