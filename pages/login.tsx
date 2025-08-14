@@ -2,7 +2,7 @@ import { createPage } from "../components/page"
 import Login from "components/Login/Login"
 
 export default createPage({
-  title: "Login",
+  titleI18nKey: "navigation.login",
   Page: () => <Login />
 })
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"

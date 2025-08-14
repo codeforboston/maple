@@ -1,50 +1,86 @@
+import { useForm } from "react-hook-form"
+import { useRouter } from "next/router"
+import {
+  useSignInWithEmailAndPassword,
+  SignInWithEmailAndPasswordData
+} from "../auth/hooks"
+import { Form, Stack, Alert, Container, Row, Col, Card } from "../bootstrap"
+import Input from "../forms/Input"
+import PasswordInput from "../forms/PasswordInput"
 import { useTranslation } from "next-i18next"
-import styled from "styled-components"
-import { Container } from "../bootstrap"
-import { SignInWithButton } from "components/auth"
+import { LoadingButton } from "../buttons"
+import SocialSignOnButtons from "components/auth/SocialSignOnButtons"
+import Divider from "../Divider/Divider"
 
-export default function LoginPage() {
+export default function Login() {
+  const router = useRouter()
+  const redirect = (router.query.redirect as string) || "/"
   const { t } = useTranslation("auth")
 
-  const StyledContainer = styled(Container)`
-    @media (min-width: 768px) {
-    }
-  `
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<SignInWithEmailAndPasswordData>()
+
+  const signIn = useSignInWithEmailAndPassword()
+
+  const success = () => {
+    const safeRedirect = redirect.startsWith("/") ? redirect : "/"
+    router.replace(safeRedirect)
+  }
+  const onSubmit = handleSubmit(credentials => {
+    signIn.execute(credentials).then(success)
+  })
 
   return (
-    <StyledContainer>
-      <div className={`bg-white my-3 overflow-hidden rounded-3`}>
-        <div
-          className={`align-items-center d-flex justify-content-center px-2 pt-2 pb-0`}
-        >
-          <div className={`px-3 py-0`}>
-            <div
-              className={`align-items-center d-flex fs-5 justify-content-center lh-sm mb-1 text-secondary`}
-            >
-              <div className={`pe-2`}>
-                <img
-                  alt="closed lock with key"
-                  src={`/closed-lock-with-key.png`}
-                  width="32"
-                  height="32"
-                />{" "}
-              </div>
-              {t("almostThere")}
-            </div>
-            <br />
-            <div
-              className={`align-items-start d-flex fs-5 justify-content-center lh-sm mb-1 text-secondary`}
-            >
-              {t("justLogIn")}
-            </div>
-            <br />
-            <div className={`justify-content-center d-flex w-100`}>
-              <SignInWithButton />
-            </div>
-            <br />
-          </div>
-        </div>
-      </div>
-    </StyledContainer>
+    <Container className="py-5">
+      <Row className="justify-content-center">
+        <Col xs={12} sm={10} md={8} lg={6}>
+          <Card className="p-4 shadow-lg">
+            <h2 className="text-center">{t("signInToAccess")}</h2>
+
+            <Form onSubmit={onSubmit} noValidate>
+              {signIn.error && (
+                <Alert variant="danger">{signIn.error.message}</Alert>
+              )}
+
+              <Stack gap={3}>
+                <Input
+                  label={t("email")}
+                  type="email"
+                  {...register("email", {
+                    required: t("emailIsRequired") ?? "Email is required"
+                  })}
+                  error={errors.email?.message}
+                />
+
+                <PasswordInput
+                  label={t("password")}
+                  {...register("password", {
+                    required: t("passwordRequired") ?? "Password is required"
+                  })}
+                  error={errors.password?.message}
+                />
+
+                <LoadingButton
+                  type="submit"
+                  className="w-100"
+                  loading={signIn.loading}
+                >
+                  {t("signIn")}
+                </LoadingButton>
+
+                <Divider className="px-4">{t("or")}</Divider>
+
+                <SocialSignOnButtons
+                  onComplete={() => router.replace(redirect)}
+                />
+              </Stack>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   )
 }
