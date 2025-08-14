@@ -137,7 +137,9 @@ export function EditProfileForm({
       content: (
         <TestimoniesTab
           publishedTestimonies={publishedTestimonies.items.result ?? []}
-          draftTestimonies={draftTestimonies.result ?? []}
+          publishedTestimoniesPagination={publishedTestimonies.pagination}
+          draftTestimonies={draftTestimonies.items.result ?? []}
+          draftTestimoniesPagination={draftTestimonies.pagination}
         />
       )
     },

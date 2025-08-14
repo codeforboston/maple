@@ -23,8 +23,8 @@
     "error": "An error occured. Please refresh the page."
   },
   "follow": {
-    "bills": "Bills You Follow",
-    "orgs": "Users You Follow",
+    "bills": "Bills I Follow",
+    "orgs": "Users I Follow",
     "unfollow": "Unfollow"
   },
   "confirmation": {
