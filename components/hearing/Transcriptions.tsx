@@ -118,6 +118,11 @@ function TranscriptItem({ element }: { index: number; element: DocElement }) {
     //   </Row>
     //   <hr className={`mt-3`} />
     // </div>
-    <div>{element.text}</div>
+    <Row>
+      <Col>
+        {element.start} - {element.end}
+      </Col>
+      <Col>{element.text}</Col>
+    </Row>
   )
 }
