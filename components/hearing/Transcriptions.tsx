@@ -14,6 +14,13 @@ import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
+type DocElement = {
+  confidence: number
+  end: number
+  start: number
+  text: string
+}
+
 const TranscriptionContainer = styled(Container)`
   background-color: white;
   border-radius: 0.75rem;
@@ -24,25 +31,40 @@ export const Transcriptions = ({
 }: {
   videoTranscriptionId: string
 }) => {
-  if (videoTranscriptionId === "Default Video Transcripton Id") {
-    videoTranscriptionId = ""
-  }
-
   console.log("Id: ", videoTranscriptionId)
+
+  let videoTranscriptionURL = videoTranscriptionId || "Default Value"
 
   const subscriptionRef = collection(
     firestore,
-    `transcriptions/${videoTranscriptionId}/paragraghs`
+    `transcriptions/${videoTranscriptionURL}/paragraphs`
   )
 
+  const [transData, setTransData] = useState<DocElement[]>([])
+
   const transcriptionData = useCallback(async () => {
+    let docList: DocElement[] = []
+
     const q = query(subscriptionRef, orderBy("startsAt", "asc"))
     const querySnapshot = await getDocs(q)
+
+    console.log("q: ", querySnapshot)
+
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      docList.push(doc.data().text)
+    })
+
+    if (docList.length != 0) {
+      setTransData(docList)
+    }
   }, [subscriptionRef])
 
   useEffect(() => {
     transcriptionData()
   }, [transcriptionData])
+
+  console.log("T Data: ", transData)
 
   return (
     <>
