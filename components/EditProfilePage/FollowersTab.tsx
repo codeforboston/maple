@@ -89,11 +89,7 @@ function FollowerCard({ profileId }: { profileId: string }) {
               xs="auto"
               className="d-flex justify-content-end ms-auto text-end p-0"
             >
-              <FollowUserButton
-                profileId={profileId}
-                fullName={fullName}
-                modalConfig={{ confirmUnfollow: true }}
-              />
+              <FollowUserButton profileId={profileId} />
             </Col>
           </>
         )}
