@@ -25,12 +25,17 @@
     "error": "An error occured. Please refresh the page."
   },
   "follow": {
-    "bills": "Bills You Follow",
-    "orgs": "Users You Follow",
+    "bills": "Bills I Follow",
+    "orgs": "Users I Follow",
     "your_followers": "Your Followers",
     "unfollow": "Unfollow",
     "follow": "Follow",
-    "follower_info_disclaimer": "Names and follower counts are not publicly available; only visible to you."
+    "follower_info_disclaimer": "Names and follower counts are not publicly available; only visible to you.",
+  },
+  "confirmation": {
+    "unfollowMessage": "Are you sure you want to unfollow",
+    "yes": "Yes",
+    "no": "No"
   },
   "email": {
     "frequencyQuery": "How often would you like to receive emails?",
