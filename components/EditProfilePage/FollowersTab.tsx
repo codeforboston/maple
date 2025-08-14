@@ -15,16 +15,6 @@ import { Col, Row, Spinner, Stack } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 
-export type FollowUserData = {
-  profileId: string
-  fullName?: string
-}
-
-export const getFollowers = httpsCallable<
-  GetFollowersRequest,
-  GetFollowersResponse
->(functions, "getFollowers")
-
 export const FollowersTab = ({
   className,
   setFollowerCount
@@ -39,9 +29,15 @@ export const FollowersTab = ({
   useEffect(() => {
     const fetchFollowers = async (uid: string) => {
       try {
-        const response = await getFollowers({ uid })
-        setFollowerIds(response.data)
-        setFollowerCount(response.data.length)
+        const { data: followerIds } = await httpsCallable<
+          GetFollowersRequest,
+          GetFollowersResponse
+        >(
+          functions,
+          "getFollowers"
+        )({ uid })
+        setFollowerIds(followerIds)
+        setFollowerCount(followerIds.length)
       } catch (err) {
         console.error("Error fetching followerIds", err)
         return
