@@ -2,12 +2,13 @@ import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
+import { dbService } from "components/db/api"
 import { HearingDetails } from "components/hearing/HearingDetails"
 import { createPage } from "../../components/page"
 
 const Query = z.object({ hearingId: z.coerce.number() })
 
-export default createPage<{ hearingId: string }>({
+export default createPage<{ hearingId: number }>({
   titleI18nKey: "Hearing",
   Page: () => {
     const hearingId = useRouter().query.hearingId
@@ -24,8 +25,9 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"
 
   const query = Query.safeParse(ctx.query)
-  console.log("Query: ", query)
   if (!query.success) return { notFound: true }
+  // const hearing = await dbService().getHearing(query.data.hearingId)
+  // if (!hearing) return { notFound: true }
 
   return {
     props: {

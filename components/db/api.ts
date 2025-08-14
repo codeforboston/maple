@@ -101,6 +101,9 @@ export class DbService {
   getBill = ({ court, billId }: BillQuery): Promise<Bill | undefined> =>
     this.getDocData<Bill>("generalCourts", court.toString(), "bills", billId)
 
+  getHearing = (hearingId: number): Promise<number | undefined> =>
+    this.getDocData<number>("hearingId", hearingId.toString())
+
   getProfile = async ({
     uid
   }: ProfileQuery): Promise<UserProfile | undefined> => {
