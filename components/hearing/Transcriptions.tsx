@@ -46,7 +46,7 @@ export const Transcriptions = ({
   const [transData, setTransData] = useState<DocElement[]>([])
 
   const transcriptionData = useCallback(async () => {
-    let docList: DocElement[] = []
+    let docList = []
 
     const q = query(subscriptionRef, orderBy("startsAt", "asc"))
     const querySnapshot = await getDocs(q)
@@ -55,7 +55,7 @@ export const Transcriptions = ({
 
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      docList.push(doc.data().text)
+      docList.push(doc.data())
     })
 
     if (docList.length != 0) {
