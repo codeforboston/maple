@@ -48,7 +48,7 @@ export function FollowingTab({ className }: { className?: string }) {
     })
     if (billsFollowing.length === 0 && billList.length != 0) {
       setBillsFollowing(billList)
-    }
+    } // this limits the code from falling into an infinite loop
   }, [subscriptionRef, uid, billsFollowing])
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function FollowingTab({ className }: { className?: string }) {
 
     if (usersFollowing.length === 0 && usersList.length != 0) {
       setUsersFollowing(usersList)
-    }
+    } // this limits the code from falling into an infinite loop
   }, [subscriptionRef, uid, usersFollowing])
 
   const fetchFollowedItems = useCallback(async () => {
