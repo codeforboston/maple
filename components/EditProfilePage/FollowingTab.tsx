@@ -46,8 +46,10 @@ export function FollowingTab({ className }: { className?: string }) {
       // doc.data() is never undefined for query doc snapshots
       billList.push(doc.data().billLookup)
     })
-    setBillsFollowing(billList)
-  }, [subscriptionRef, uid])
+    if (billsFollowing.length === 0 && billList.length != 0) {
+      setBillsFollowing(billList)
+    }
+  }, [subscriptionRef, uid, billsFollowing])
 
   useEffect(() => {
     uid ? billsFollowingQuery() : null
