@@ -1,13 +1,15 @@
+import { useTranslation } from "next-i18next"
+import { Table } from "react-bootstrap"
 import { Card, Container } from "../bootstrap"
+import { Card as MapleCard } from "../Card"
 import { FC } from "../types"
 import { BillProps } from "./types"
-import { Table } from "react-bootstrap"
-import { Card as MapleCard } from "../Card"
 
 export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   className
 }) => {
+  const { t } = useTranslation("common")
   const current = bill.currentCommittee
   if (!current) return null
   return (
@@ -16,7 +18,7 @@ export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
         className={`${className} bg-white`}
         headerElement={
           <Card.Header className="h4 bg-secondary text-light">
-            Lobbying Parties
+            {t("bill.lobbying_parties")}
           </Card.Header>
         }
         body={
@@ -24,21 +26,21 @@ export const LobbyingTable: FC<React.PropsWithChildren<BillProps>> = ({
             <Table>
               <thead>
                 <tr>
-                  <th>Client Name</th>
-                  <th>Position</th>
-                  <th>Disclosure Date</th>
+                  <th>{t("bill.client_name")}</th>
+                  <th>{t("bill.position")}</th>
+                  <th>{t("bill.disclosure_date")}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Example Name</td>
-                  <td>Pro</td>
-                  <td>April 10, 2023</td>
+                  <td>{t("bill.example_name")}</td>
+                  <td>{t("bill.pro")}</td>
+                  <td>{t("date", { date: new Date("2023-04-15") })}</td>
                 </tr>
                 <tr>
-                  <td>Example Name</td>
-                  <td>Neutral</td>
-                  <td>March 29, 2023</td>
+                  <td>{t("bill.example_name")}</td>
+                  <td>{t("bill.neutral")}</td>
+                  <td>{t("date", { date: new Date("2023-03-29") })}</td>
                 </tr>
               </tbody>
             </Table>

@@ -22,4 +22,4 @@ curl http://localhost:5001/demo-dtp/us-central1/triggerScheduledFunction?name=FU
 
 # Deployment
 
-Functions are deployed manually at this time. Run `yarn deploy:functions` from the root directory.
+Functions are deployed as part of our Github Action suite. Functions are deployed to the development site after merging to the `main` branch, and are deployed to the production site after merging to the `prod` branch

@@ -25,7 +25,7 @@ import {
 } from "./StyledEditProfileComponents"
 import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
-import LoginPage from "components/Login/login"
+import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
 
 const tabTitle = ["about-you", "testimonies", "following"] as const
@@ -137,7 +137,9 @@ export function EditProfileForm({
       content: (
         <TestimoniesTab
           publishedTestimonies={publishedTestimonies.items.result ?? []}
-          draftTestimonies={draftTestimonies.result ?? []}
+          publishedTestimoniesPagination={publishedTestimonies.pagination}
+          draftTestimonies={draftTestimonies.items.result ?? []}
+          draftTestimoniesPagination={draftTestimonies.pagination}
         />
       )
     },
