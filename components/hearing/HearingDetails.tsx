@@ -83,6 +83,11 @@ export const HearingDetails = ({
     hearingData()
   }, [hearingData])
 
+  let committeeCheck = true
+  if (committeeName == "Default Name") {
+    committeeCheck = false
+  }
+
   const router = useRouter()
   useEffect(() => {
     if (videoURL === "Default URL") {
@@ -104,15 +109,19 @@ export const HearingDetails = ({
         {t("hearing")} {hearingId}
       </h1>
 
-      <links.External
-        href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
-      >
-        <CommitteeButton
-          className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+      {committeeCheck ? (
+        <links.External
+          href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
         >
-          &nbsp; {committeeName} &nbsp;
-        </CommitteeButton>
-      </links.External>
+          <CommitteeButton
+            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+          >
+            &nbsp; {committeeName} &nbsp;
+          </CommitteeButton>
+        </links.External>
+      ) : (
+        <></>
+      )}
 
       <div className={`row mt-4`}>
         <Col className={`col-md-8`}>

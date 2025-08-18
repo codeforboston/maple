@@ -21,6 +21,15 @@ type DocElement = {
   text: string
 }
 
+const TimestampButton = styled.button`
+  border-radius: 12px;
+  width: min-content;
+`
+
+const TimestampCol = styled.div`
+  width: 100px;
+`
+
 const TranscriptionContainer = styled(Container)`
   background-color: white;
   border-radius: 0.75rem;
@@ -107,27 +116,32 @@ function TranscriptItem({
 
   return (
     <Row>
-      <Col>
-        <button
-          onClick={() => {
-            handleClick(element.start)
-          }}
-          type="button"
-          value={element.start}
-        >
-          {element.start}
-        </button>{" "}
-        -{" "}
-        <button
-          onClick={() => {
-            handleClick(element.end)
-          }}
-          type="button"
-          value={element.end}
-        >
-          {element.end}
-        </button>
-      </Col>
+      <TimestampCol>
+        <Row className={`d-inline`}>
+          <TimestampButton
+            onClick={() => {
+              handleClick(element.start)
+            }}
+            className={`btn btn-secondary text-nowrap mt-1 mx-1 p-1`}
+            type="button"
+            value={element.start}
+          >
+            {element.start}
+          </TimestampButton>
+          {/* &nbsp; - &nbsp; */}
+        </Row>
+        {/* <Row>
+          <TimestampButton
+            onClick={() => {
+              handleClick(element.end)
+            }}
+            type="button"
+            value={element.end}
+          >
+            {element.end}
+          </TimestampButton>
+        </Row> */}
+      </TimestampCol>
       <Col>{element.text}</Col>
     </Row>
   )
