@@ -44,6 +44,12 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation("common")
+
+  let mainVid = document.getElementById("mainVid") as HTMLVideoElement
+  function setCurTimeVideo(value: number) {
+    mainVid.currentTime = value
+  }
+
   const hearingQuery = `hearing-${hearingId}`
 
   const [committeeCode, setCommitteeCode] = useState("")
@@ -143,10 +149,13 @@ export const HearingDetails = ({
           </LegalContainer>
 
           <VideoParent className={`my-3`}>
-            <VideoChild src={videoURL} controls />
+            <VideoChild id={`mainVid`} src={videoURL} controls muted />
           </VideoParent>
 
-          <Transcriptions videoTranscriptionId={videoTranscriptionId} />
+          <Transcriptions
+            setCurTimeVideo={setCurTimeVideo}
+            videoTranscriptionId={videoTranscriptionId}
+          />
         </Col>
 
         <div className={`col-md-4`}>

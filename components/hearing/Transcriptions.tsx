@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { Trans, useTranslation } from "next-i18next"
-import { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
@@ -27,8 +27,10 @@ const TranscriptionContainer = styled(Container)`
 `
 
 export const Transcriptions = ({
+  setCurTimeVideo,
   videoTranscriptionId
 }: {
+  setCurTimeVideo: any
   videoTranscriptionId: string
 }) => {
   const { t } = useTranslation("common")
@@ -36,9 +38,6 @@ export const Transcriptions = ({
   console.log("Id: ", videoTranscriptionId)
 
   let videoTranscriptionURL = videoTranscriptionId || "Default Value"
-  // temporarily set to a value that contains `paragraphs` as not all transcriptions do
-
-  // let videoTranscriptionURL = "026df538-3a98-4c70-83e3-41e41d2507fd"
 
   const subscriptionRef = collection(
     firestore,
@@ -74,7 +73,12 @@ export const Transcriptions = ({
       {transcriptData.length > 0 ? (
         <TranscriptionContainer>
           {transcriptData.map((element: DocElement, index: number) => (
-            <TranscriptItem key={index} index={index} element={element} />
+            <TranscriptItem
+              key={index}
+              index={index}
+              element={element}
+              setCurTimeVideo={setCurTimeVideo}
+            />
           ))}
         </TranscriptionContainer>
       ) : (
@@ -86,11 +90,32 @@ export const Transcriptions = ({
   )
 }
 
-function TranscriptItem({ element }: { index: number; element: DocElement }) {
+function TranscriptItem({
+  element,
+  setCurTimeVideo
+}: {
+  index: number
+  element: DocElement
+  setCurTimeVideo: any
+}) {
+  const handleClick = (val: number) => {
+    const valSeconds = val / 1000
+    setCurTimeVideo(valSeconds)
+  }
+
   return (
     <Row>
       <Col>
-        {element.start} - {element.end}
+        <button
+          onClick={() => {
+            handleClick(element.start)
+          }}
+          type="button"
+          value={element.start}
+        >
+          {element.start}
+        </button>{" "}
+        - {element.end}
       </Col>
       <Col>{element.text}</Col>
     </Row>
