@@ -2,7 +2,21 @@
   "about": "About",
   "back_to_bills": "back to list of bills",
   "bill": {
+    "and_others_one": "and {{count}} other",
+    "and_others_other": "and {{count}} others",
+    "bill_tracker": "Bill Tracker",
+    "bill_cosponsors": "{{billId}} Cosponsors",
+    "branch": "Branch",
+    "client_name": "Client Name",
+    "committee": "Committee",
+    "cosponsor_count_one": "{{count}} Cosponsor",
+    "cosponsor_count_other": "{{count}} Cosponsors",
+    "court": "Court",
+    "disclosure_date": "Disclosure Date",
     "download_pdf": "Download PDF",
+    "example_name": "Example Name",
+    "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
+    "history": "History",
     "icon": {
       "commerce": "Commerce",
       "crime_and_law_enforcement": "Crime and Law Enforcement",
@@ -26,13 +40,20 @@
       "technology_and_communications": "Technology and Communications",
       "transportation_and_public_works": "Transportation and Public Works"
     },
+    "lobbying_parties": "Lobbying Parties",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
+    "position": "Position",
+    "pro": "Pro",
+    "neutral": "Neutral",
     "read_more": "Read More",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org",
     "smart_disclaimer2": "This transcription was made with generative AI.",
     "smart_disclaimer3": "<0>how MAPLE uses AI</0>",
+    "seeCosponsors": "See {{count}} Cosponsors",
     "smart_summary": "Smart Summary & Tags",
     "smart_tag": "AI Smart Tag",
+    "status_and_history": "Status & History",
+    "status_history": "Status History",
     "view_bill": "View Bill Text" 
   },
   "bill_updates": "Bill Updates",
@@ -45,7 +66,9 @@
   "calendar": "Our Calendar",
   "hearing": "Hearing ",
   "hideAns": "Hide Answer",
+  "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
   "joinTraining": "and join an upcoming training session!",
+  "leadSponsor": "Lead Sponsor",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
   "loading": {
@@ -118,6 +141,8 @@
     "bluesky": "BlueSky",
     "mastodon": "Mastodon"
   },
+  "sponsor": "Sponsor",
+  "sponsors": "Sponsors",
   "table": {
     "page": "Page {{currentPage}}"
   },
