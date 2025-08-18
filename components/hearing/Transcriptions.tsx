@@ -31,12 +31,14 @@ export const Transcriptions = ({
 }: {
   videoTranscriptionId: string
 }) => {
+  const { t } = useTranslation("common")
+
   console.log("Id: ", videoTranscriptionId)
 
-  // let videoTranscriptionURL = videoTranscriptionId || "Default Value"
+  let videoTranscriptionURL = videoTranscriptionId || "Default Value"
   // temporarily set to a value that contains `paragraphs` as not all transcriptions do
 
-  let videoTranscriptionURL = "026df538-3a98-4c70-83e3-41e41d2507fd"
+  // let videoTranscriptionURL = "026df538-3a98-4c70-83e3-41e41d2507fd"
 
   const subscriptionRef = collection(
     firestore,
@@ -69,15 +71,16 @@ export const Transcriptions = ({
 
   return (
     <>
-      {videoTranscriptionId ? (
-        // rewire this to check for transcription with actual paragraphs
+      {transcriptData.length > 0 ? (
         <TranscriptionContainer>
           {transcriptData.map((element: DocElement, index: number) => (
             <TranscriptItem key={index} index={index} element={element} />
           ))}
         </TranscriptionContainer>
       ) : (
-        <></>
+        <TranscriptionContainer className={`fs-6 fw-bold mb-1`}>
+          <div>{t("transcription_not_on_file")}</div>
+        </TranscriptionContainer>
       )}
     </>
   )
