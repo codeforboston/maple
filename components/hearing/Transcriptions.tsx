@@ -27,7 +27,7 @@ const TimestampButton = styled.button`
 `
 
 const TimestampCol = styled.div`
-  width: 100px;
+  width: 200px;
 `
 
 const TranscriptionContainer = styled(Container)`
@@ -143,21 +143,10 @@ function TranscriptItem({
             type="button"
             value={element.start}
           >
-            {formatMilliseconds(element.start)}
+            {formatMilliseconds(element.start)}-{" "}
+            {formatMilliseconds(element.end)}
           </TimestampButton>
-          {/* &nbsp; - &nbsp; */}
         </Row>
-        {/* <Row>
-          <TimestampButton
-            onClick={() => {
-              handleClick(element.end)
-            }}
-            type="button"
-            value={element.end}
-          >
-            {element.end}
-          </TimestampButton>
-        </Row> */}
       </TimestampCol>
       <Col>{element.text}</Col>
     </Row>
