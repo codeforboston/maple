@@ -100,6 +100,8 @@ function TranscriptItem({
 }) {
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
+    // data from backend is in milliseconds
+    // needs to be converted to seconds for <video> element
     setCurTimeVideo(valSeconds)
   }
 
@@ -115,7 +117,16 @@ function TranscriptItem({
         >
           {element.start}
         </button>{" "}
-        - {element.end}
+        -{" "}
+        <button
+          onClick={() => {
+            handleClick(element.end)
+          }}
+          type="button"
+          value={element.end}
+        >
+          {element.end}
+        </button>
       </Col>
       <Col>{element.text}</Col>
     </Row>
