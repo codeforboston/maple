@@ -1,11 +1,7 @@
-import { parseISO, format } from "date-fns"
 import { doc, getDoc } from "firebase/firestore"
-import { useRouter } from "next/router"
-import { Trans, useTranslation } from "next-i18next"
+import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
-import { Transcriptions } from "./Transcriptions"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 import { LabeledIcon } from "components/shared"
@@ -105,11 +101,6 @@ export const HearingSidebar = ({
     committeeCode && generalCourtNumber ? CommitteeData() : null
   }, [committeeCode, CommitteeData, generalCourtNumber])
 
-  console.log("H Chair: ", houseChairperson)
-  console.log("H Name: ", houseChairName)
-  console.log("S Chair: ", senateChairperson?.MemberCode)
-  console.log("S Name: ", senateChairName)
-
   return (
     <>
       <SidebarHeader className={`fs-6 fw-bold px-3 pb-2`}>
@@ -137,13 +128,12 @@ export const HearingSidebar = ({
               {houseChairperson && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${houseChairperson.MemberCode}.jpg`}
-                  // mainText={t("leadSponsor")}
                   mainText={`House Chair`}
                   subText={
                     <links.External
                       href={`https://malegislature.gov/Legislators/Profile/${houseChairperson.MemberCode}`}
                     >
-                      {senateChairName}
+                      {houseChairName}
                     </links.External>
                   }
                 />
@@ -153,7 +143,6 @@ export const HearingSidebar = ({
               {senateChairperson && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${senateChairperson.MemberCode}.jpg`}
-                  // mainText={t("leadSponsor")}
                   mainText={`Senate Chair`}
                   subText={
                     <links.External
