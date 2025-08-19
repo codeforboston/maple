@@ -1,18 +1,9 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  query
-} from "firebase/firestore"
-import { useRouter } from "next/router"
-import { Trans, useTranslation } from "next-i18next"
+import { collection, getDocs, orderBy, query } from "firebase/firestore"
+import { useTranslation } from "next-i18next"
 import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
+import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
-import * as links from "components/links"
 
 type DocElement = {
   confidence: number
@@ -38,8 +29,6 @@ export const Transcriptions = ({
   videoTranscriptionId: string
 }) => {
   const { t } = useTranslation("common")
-
-  console.log("Id: ", videoTranscriptionId)
 
   let videoTranscriptionURL = videoTranscriptionId || "Default Value"
 
@@ -69,8 +58,6 @@ export const Transcriptions = ({
   useEffect(() => {
     transcriptionData()
   }, [transcriptionData])
-
-  console.log("T Data: ", transcriptData)
 
   return (
     <>
@@ -154,7 +141,7 @@ function TranscriptItem({
             onClick={() => {
               handleClick(element.start)
             }}
-            className={`btn btn-secondary text-nowrap mt-1 mx-1 p-1`}
+            className={`btn btn-secondary text-nowrap m-1 p-1`}
             type="button"
             value={element.start}
           >
