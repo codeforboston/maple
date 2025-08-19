@@ -41,8 +41,6 @@ export const HearingSidebar = ({
     year: "numeric"
   })
 
-  console.log("C Code: ", committeeCode)
-
   interface Members {
     id: string
     name: string
@@ -93,8 +91,6 @@ export const HearingSidebar = ({
 
     setHouseChairName(houseName)
     setSenateChairName(senateName)
-
-    console.log("Comm data: ", docData)
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
