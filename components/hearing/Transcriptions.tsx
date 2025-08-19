@@ -12,6 +12,10 @@ type DocElement = {
   text: string
 }
 
+const ErrorContainer = styled(Container)`
+  background-color: white;
+`
+
 const TimestampButton = styled.button`
   border-radius: 12px;
   width: min-content;
@@ -76,9 +80,9 @@ export const Transcriptions = ({
           )}
         </Container>
       ) : (
-        <Container className={`fs-6 fw-bold mb-2`}>
+        <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
           <div>{t("transcription_not_on_file")}</div>
-        </Container>
+        </ErrorContainer>
       )}
     </>
   )

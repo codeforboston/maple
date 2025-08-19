@@ -138,7 +138,7 @@ export const HearingSidebar = ({
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${houseChairperson.MemberCode}.jpg`}
                   // mainText={t("leadSponsor")}
-                  mainText={``}
+                  mainText={`House Chair`}
                   subText={
                     <links.External
                       href={`https://malegislature.gov/Legislators/Profile/${houseChairperson.MemberCode}`}
@@ -154,7 +154,7 @@ export const HearingSidebar = ({
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${senateChairperson.MemberCode}.jpg`}
                   // mainText={t("leadSponsor")}
-                  mainText={``}
+                  mainText={`Senate Chair`}
                   subText={
                     <links.External
                       href={`https://malegislature.gov/Legislators/Profile/${senateChairperson.MemberCode}`}
