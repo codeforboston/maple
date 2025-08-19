@@ -36,7 +36,7 @@ export const LegislatorForm: React.FC<
         <Form.Label>{t("legislator.representative")}</Form.Label>
         <Search
           placeholder={t("legislator.searchRepresentative")}
-          index={index.representatives}
+          index={index?.representatives}
           isLoading={profile.updatingRep}
           memberId={profile.profile?.representative?.id}
           update={profile.updateRep}
@@ -47,7 +47,7 @@ export const LegislatorForm: React.FC<
         <Form.Label>{t("legislator.senator")}</Form.Label>
         <Search
           placeholder={t("legislator.searchSenator")}
-          index={index.senators}
+          index={index?.senators}
           isLoading={profile.updatingSenator}
           memberId={profile.profile?.senator?.id}
           update={profile.updateSenator}

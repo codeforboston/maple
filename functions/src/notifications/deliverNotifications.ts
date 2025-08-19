@@ -1,8 +1,7 @@
 import * as functions from "firebase-functions"
 import * as handlebars from "handlebars"
 import * as fs from "fs"
-import { db, Timestamp } from "../firebase"
-//import { auth, db, Timestamp } from "../firebase" // Temporarily using email from the profile to test the non-auth issues
+import { auth, db, Timestamp } from "../firebase"
 import {
   convertHtmlToText,
   getNextDigestAt,
@@ -26,15 +25,20 @@ const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 const path = require("path")
 
-// Temporarily using email from the profile to test the non-auth issues
-// const getVerifiedUserEmail = async (uid: string) => {
-//   const userRecord = await auth.getUser(uid)
-//   if (userRecord && userRecord.email && userRecord.emailVerified) {
-//     return userRecord.email
-//   } else {
-//     return null
-//   }
-// }
+const getVerifiedUserEmail = async (uid: string) => {
+  // TODO: Try/catch is temporarily while troubleshooting the auth issue
+  try {
+    const userRecord = await auth.getUser(uid)
+    if (userRecord && userRecord.email && userRecord.emailVerified) {
+      return userRecord.email
+    } else {
+      return null
+    }
+  } catch (error) {
+    console.error(`Error getting user email for UID ${uid}:`, error)
+    return null
+  }
+}
 
 // TODO: Batching (at both user + email level)?
 //       Going to wait until we have a better idea of the performance impact
@@ -65,8 +69,11 @@ const deliverEmailNotifications = async () => {
       return
     }
 
-    // Temporarily using email from the profile to test the non-auth issues
-    const verifiedEmail = profile.email || profile.contactInfo?.publicEmail //await getVerifiedUserEmail(profileDoc.id)
+    // TODO: Temporarily using email from the profile to test the non-auth issues
+    //       Should only use email from `auth` once that's working
+    const defaultEmail = profile.email || profile.contactInfo?.publicEmail
+    const verifiedEmail =
+      (await getVerifiedUserEmail(profileDoc.id)) || defaultEmail
     if (!verifiedEmail) {
       console.log(
         `Skipping user ${profileDoc.id} because they have no verified email address`

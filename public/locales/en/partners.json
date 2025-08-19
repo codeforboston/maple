@@ -1,0 +1,17 @@
+{
+  "title": "Our Partners",
+  "logo": "{{org}} logo",
+  "desc": "The project is developed in partnership between the <a href=\"https://www.nulawlab.org/\">NuLawLab</a> and scholars at <a href=\"https://www.bc.edu/bc-web/schools/law.html\">Boston College Law School</a> and <a href=\"https://cyber.harvard.edu/\">Harvard University's Berkman Klein Center for Internet & Society</a>.",
+  "nulawlab": {
+    "title": "NuLawLab",
+    "content": "The <a href=\"https://www.nulawlab.org/\">NuLawLab</a> is the interdisciplinary innovation laboratory at <a href=\"https://law.northeastern.edu/\">Northeastern University School of Law</a>.<br/><br/>The Lab is a leader in the <a href=\"https://dl.designresearchsociety.org/drs-conference-papers/drs2022/editorials/32/\">global legal design movement</a> and incubates projects that advance the democratization of law."
+  },
+  "codeforboston": {
+    "title": "Code for Boston",
+    "content": "Code for Boston addresses local social and civic challenges through creative uses of technology. Despite the name, they are not solely focused on coding!<br/><br/>They foster relationships between government, nonprofit, academic, for-profit companies, residents, civic technologists, analysts, designers, and many more. <a href=\"https://github.com/codeforboston/maple/graphs/contributors\">Code for Boston's volunteer contributors</a> have led the technical implementation and development of this website and platform as an open source project (<a href=\"https://github.com/codeforboston/maple\">see our repository on GitHub</a>)."
+  },
+  "pid": {
+    "title": "Partners in Democracy",
+    "content": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. Partners In Democracy is building nationwide partnerships and exploring how we can drive democracy renovation efforts forward in states around the country — starting by focusing our efforts here at home in Massachusetts."
+  }
+}

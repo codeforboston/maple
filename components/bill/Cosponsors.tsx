@@ -5,6 +5,7 @@ import { MemberReference, useMember } from "../db"
 import { memberLink } from "../links"
 import { FC } from "../types"
 import { BillProps } from "./types"
+import { useTranslation } from "next-i18next"
 
 const CoSponsorRow = ({
   court,
@@ -13,9 +14,6 @@ const CoSponsorRow = ({
   court: number
   coSponsor: MemberReference
 }) => {
-  const url = coSponsor
-    ? `https://malegislature.gov/Legislators/Profile/${coSponsor.Id}`
-    : ""
   const { member, loading } = useMember(court, coSponsor.Id)
   if (loading) {
     return null
@@ -66,7 +64,6 @@ export const Cosponsors: FC<React.PropsWithChildren<BillProps>> = ({
   bill,
   children
 }) => {
-  const billNumber = bill.id
   const court = bill.court
   const coSponsors = bill.content.Cosponsors
   const numCoSponsors = coSponsors ? coSponsors.length : 0
@@ -93,7 +90,11 @@ export const Cosponsors: FC<React.PropsWithChildren<BillProps>> = ({
         size="lg"
       >
         <Modal.Header closeButton onClick={handleCloseBillCosponsors}>
-          <Modal.Title>{billNumber + " CoSponsors"}</Modal.Title>
+          <Modal.Title>
+            {useTranslation("common").t("bill.bill_cosponsors", {
+              billId: bill.id
+            })}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
