@@ -171,7 +171,12 @@ export const HearingDetails = ({
         </Col>
 
         <div className={`col-md-4`}>
-          <HearingSidebar hearingDate={hearingDate} />
+          <HearingSidebar
+            committeeCheck={committeeCheck}
+            committeeCode={committeeCode}
+            generalCourtNumber={generalCourtNumber}
+            hearingDate={hearingDate}
+          />
         </div>
       </div>
     </StyledContainer>
