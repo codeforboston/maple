@@ -30,11 +30,6 @@ const TimestampCol = styled.div`
   width: 100px;
 `
 
-const TranscriptionContainer = styled(Container)`
-  background-color: white;
-  border-radius: 0.75rem;
-`
-
 export const Transcriptions = ({
   setCurTimeVideo,
   videoTranscriptionId
@@ -80,37 +75,48 @@ export const Transcriptions = ({
   return (
     <>
       {transcriptData.length > 0 ? (
-        <TranscriptionContainer>
-          {transcriptData.map((element: DocElement, index: number) => (
-            <TranscriptItem
-              key={index}
-              index={index}
-              element={element}
-              setCurTimeVideo={setCurTimeVideo}
-            />
-          ))}
-        </TranscriptionContainer>
+        <Container className={`mb-2`}>
+          {transcriptData.map(
+            (element: DocElement, index: number, array: DocElement[]) => (
+              <TranscriptItem
+                key={index}
+                index={index}
+                element={element}
+                array={array}
+                setCurTimeVideo={setCurTimeVideo}
+              />
+            )
+          )}
+        </Container>
       ) : (
-        <TranscriptionContainer className={`fs-6 fw-bold mb-1`}>
+        <Container className={`fs-6 fw-bold mb-2`}>
           <div>{t("transcription_not_on_file")}</div>
-        </TranscriptionContainer>
+        </Container>
       )}
     </>
   )
 }
 
 function TranscriptItem({
+  index,
+  array,
   element,
   setCurTimeVideo
 }: {
   index: number
+  array: DocElement[]
   element: DocElement
   setCurTimeVideo: any
 }) {
+  const isLastItem = index === array.length - 1
+
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
-    // data from backend is in milliseconds
-    // needs to be converted to seconds for <video> element
+    /* data from backend is in milliseconds
+     
+       needs to be converted to seconds to 
+       set currentTime property of <video> element */
+
     setCurTimeVideo(valSeconds)
   }
 
@@ -132,7 +138,16 @@ function TranscriptItem({
   }
 
   return (
-    <Row className={`mb-2`}>
+    <Row
+      className={``}
+      style={{
+        backgroundColor: index % 2 === 0 ? "white" : "#c0c4dc",
+        borderTopLeftRadius: index === 0 ? "0.75rem" : "0",
+        borderTopRightRadius: index === 0 ? "0.75rem" : "0",
+        borderBottomLeftRadius: isLastItem ? "0.75rem" : "0",
+        borderBottomRightRadius: isLastItem ? "0.75rem" : "0"
+      }}
+    >
       <TimestampCol>
         <Row className={`d-inline`}>
           <TimestampButton
