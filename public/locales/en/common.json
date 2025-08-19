@@ -65,6 +65,7 @@
   },
   "calendar": "Our Calendar",
   "hearing": "Hearing ",
+  "hearing_details": "Hearing details",
   "hideAns": "Hide Answer",
   "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
   "joinTraining": "and join an upcoming training session!",
@@ -130,8 +131,9 @@
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "primarySponsor": "Primary Sponsor",
+  "recording_date": "Recording date",
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "showAns": "Show Answer",
   "socials": {
     "instagram": "Instagram",

@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
+import { HearingSidebar } from "./HearingSidebar"
 import { Transcriptions } from "./Transcriptions"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
@@ -55,6 +56,7 @@ export const HearingDetails = ({
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [generalCourtNumber, setGeneralCourtNumber] = useState("")
+  const [hearingDate, setHearingDate] = useState("")
   const [videoTranscriptionId, setVideoTranscriptionId] = useState("")
   const [videoURL, setVideoURL] = useState("")
 
@@ -70,6 +72,7 @@ export const HearingDetails = ({
       docData?.content.HearingHost.GeneralCourtNumber ??
         "Default General Court Number"
     )
+    setHearingDate(docData?.content.EventDate ?? "Default Date")
     setVideoTranscriptionId(
       docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
     )
@@ -131,8 +134,8 @@ export const HearingDetails = ({
               fontSize={"12px"}
               xs="auto"
             >
-              <Col className={`mt-1`}>
-                <div className={`fs-6 fw-bold mt-1`}>
+              <Col>
+                <div className={`fs-6 fw-bold mt-2`}>
                   <Image
                     src="/images/smart-summary.svg"
                     alt={t("bill.smart_tag")}
@@ -144,7 +147,7 @@ export const HearingDetails = ({
                 </div>
               </Col>
 
-              <Col className={`mt-1`}>
+              <Col>
                 <Trans
                   t={t}
                   i18nKey="bill.smart_disclaimer3"
@@ -168,10 +171,7 @@ export const HearingDetails = ({
         </Col>
 
         <div className={`col-md-4`}>
-          <LegalContainer className={`py-4`}>
-            <p>2nd Column Placeholder</p>
-            <p>replace me with sidebar</p>
-          </LegalContainer>
+          <HearingSidebar hearingDate={hearingDate} />
         </div>
       </div>
     </StyledContainer>
