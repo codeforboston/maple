@@ -77,9 +77,6 @@ export const HearingDetails = ({
       docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
     )
     setVideoURL(docData?.videoURL)
-
-    console.log("data: ", docData)
-    console.log("content: ", docData?.content)
   }, [hearingQuery])
 
   useEffect(() => {

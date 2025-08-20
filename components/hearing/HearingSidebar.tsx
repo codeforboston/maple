@@ -6,6 +6,12 @@ import { CommitteeButton } from "./HearingDetails"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 import { LabeledIcon } from "components/shared"
+import { bill } from "stories/organisms/billDetail/MockBillData"
+
+interface Doc {
+  BillNumber: string
+  Title: string
+}
 
 interface Legislator {
   Details: string
