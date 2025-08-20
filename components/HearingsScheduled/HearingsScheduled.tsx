@@ -219,8 +219,8 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              prevIcon={<CarouselControlNextIcon aria-hidden="true" />}
-              nextIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              prevIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              nextIcon={<CarouselControlNextIcon aria-hidden="true" />}
             >
               {monthsList?.map(month => {
                 return (
