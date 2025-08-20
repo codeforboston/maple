@@ -22,8 +22,11 @@ const SidebarBody = styled.div`
   background-color: white;
 `
 
-const SidebarSubbody = styled.div`
-  font-size: 0.85rem;
+const SidebarBottom = styled.div`
+  background-color: white;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 11px;
 `
 
 const SidebarHeader = styled.div`
@@ -31,6 +34,10 @@ const SidebarHeader = styled.div`
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
   padding-top: 9px;
+`
+
+const SidebarSubbody = styled.div`
+  font-size: 0.85rem;
 `
 
 export const HearingSidebar = ({
@@ -119,14 +126,7 @@ export const HearingSidebar = ({
       </SidebarBody>
 
       {committeeCheck && (
-        <SidebarBody
-          className={`border-top fs-6 fw-bold px-3 py-3`}
-          style={{
-            borderBottomLeftRadius: "0.75rem",
-            borderBottomRightRadius: "0.75rem"
-          }}
-          // style is temporary until next section is complete
-        >
+        <SidebarBody className={`border-top fs-6 fw-bold px-3 py-3`}>
           {t("committee_members")}
           <SidebarSubbody className={`mb-1 mt-2`}>
             {t("chairs")}
@@ -209,6 +209,7 @@ export const HearingSidebar = ({
           </SidebarSubbody>
         </SidebarBody>
       )}
+      <SidebarBottom />
     </>
   )
 }

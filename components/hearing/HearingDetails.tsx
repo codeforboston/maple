@@ -53,6 +53,7 @@ export const HearingDetails = ({
 
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
+  const [description, setDescription] = useState("")
   const [generalCourtNumber, setGeneralCourtNumber] = useState("")
   const [hearingDate, setHearingDate] = useState("")
   const [videoTranscriptionId, setVideoTranscriptionId] = useState("")
@@ -66,6 +67,7 @@ export const HearingDetails = ({
       docData?.content.HearingHost.CommitteeCode ?? "Default Committee Code"
     )
     setCommitteeName(docData?.content.Name ?? "Default Name")
+    setDescription(docData?.content.Description)
     setGeneralCourtNumber(
       docData?.content.HearingHost.GeneralCourtNumber ??
         "Default General Court Number"
@@ -94,6 +96,8 @@ export const HearingDetails = ({
       <h1>
         {t("hearing")} {hearingId}
       </h1>
+
+      <h5 className={`mb-3`}>{description}</h5>
 
       {committeeCheck ? (
         <links.External
