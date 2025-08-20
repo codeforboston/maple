@@ -128,6 +128,7 @@
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
   "noNewsUpdates": "There are no news updates for your current followed topics",
+  "no_video_on_file": "This hearing does not yet have a video on file",
   "orgs": "Organizations",
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",

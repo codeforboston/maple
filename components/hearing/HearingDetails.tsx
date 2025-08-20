@@ -16,7 +16,6 @@ const CommitteeButton = styled.button`
 
 const LegalContainer = styled(Container)`
   background-color: white;
-  border-radius: 0.75rem;
 `
 
 const StyledContainer = styled(Container)`
@@ -76,7 +75,7 @@ export const HearingDetails = ({
     setVideoTranscriptionId(
       docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
     )
-    setVideoURL(docData?.videoURL ?? "Default URL")
+    setVideoURL(docData?.videoURL)
 
     console.log("data: ", docData)
     console.log("content: ", docData?.content)
@@ -90,21 +89,6 @@ export const HearingDetails = ({
   if (committeeName == "Default Name") {
     committeeCheck = false
   }
-
-  const router = useRouter()
-  useEffect(() => {
-    if (videoURL === "Default URL") {
-      router.push({ pathname: "/404" })
-    }
-  }, [router, videoURL])
-
-  // pathname: "/404" could possible replaced with a different
-  // page/sequence/message that's more specific to the problem
-  // i.e. "the hearing ID you're trying to reach is not on file,
-  // please choose another"
-  //
-  // see pages/bills/[court]/[billId.tsx] ln 32 - 35 for possible
-  // improved method
 
   return (
     <StyledContainer className="mt-3 mb-3">
@@ -128,7 +112,7 @@ export const HearingDetails = ({
 
       <div className={`row mt-4`}>
         <Col className={`col-md-8`}>
-          <LegalContainer className={`pb-2`}>
+          <LegalContainer className={`pb-2 rounded`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
               fontSize={"12px"}
@@ -160,9 +144,15 @@ export const HearingDetails = ({
             </Row>
           </LegalContainer>
 
-          <VideoParent className={`my-3`}>
-            <VideoChild id={`mainVid`} src={videoURL} controls muted />
-          </VideoParent>
+          {videoURL ? (
+            <VideoParent className={`my-3`}>
+              <VideoChild id={`mainVid`} src={videoURL} controls muted />
+            </VideoParent>
+          ) : (
+            <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
+              {t("no_video_on_file")}
+            </LegalContainer>
+          )}
 
           <Transcriptions
             setCurTimeVideo={setCurTimeVideo}
