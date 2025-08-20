@@ -11,8 +11,5 @@
     "target": "es2017",
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*",
-    "../shared/topics_by_category.json"
-  ]
+  "include": ["src/**/*", "../shared/topics_by_category.json"]
 }
