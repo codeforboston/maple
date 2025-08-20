@@ -740,6 +740,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rockyroed",
+      "name": "roed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108738926?v=4",
+      "profile": "https://github.com/rockyroed",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"
