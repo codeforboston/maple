@@ -26,8 +26,6 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
-  // const hearing = await dbService().getHearing(query.data.hearingId)
-  // if (!hearing) return { notFound: true }
 
   return {
     props: {
