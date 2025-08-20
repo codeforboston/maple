@@ -54,6 +54,7 @@ export const HearingSidebar = ({
 
   const [houseChairName, setHouseChairName] = useState<string>("")
   const [houseChairperson, setHouseChairperson] = useState<Legislator>()
+  const [members, setMembers] = useState<Members[]>()
   const [senateChairName, setSenateChairName] = useState<string>("")
   const [senateChairperson, setSenateChairperson] = useState<Legislator>()
 
@@ -69,12 +70,12 @@ export const HearingSidebar = ({
     setHouseChairperson(docData?.content.HouseChairperson)
     setSenateChairperson(docData?.content.SenateChairperson)
 
-    const members: Members[] = docData?.members ?? []
+    const memberData: Members[] = docData?.members ?? []
 
     const houseMembers =
       docData?.content?.HouseChairperson?.MemberCode ?? "Default Code"
     const houseMember =
-      members.find(member => member.id === houseMembers) ?? "Default Member"
+      memberData.find(member => member.id === houseMembers) ?? "Default Member"
     let houseName = "Default Name"
     if (houseMember != "Default Member") {
       houseName = houseMember.name
@@ -83,7 +84,7 @@ export const HearingSidebar = ({
     const senateMembers =
       docData?.content?.SenateChairperson?.MemberCode ?? "Default Code"
     const senateMember =
-      members.find(member => member.id === senateMembers) ?? "Default Member"
+      memberData.find(member => member.id === senateMembers) ?? "Default Member"
     let senateName = "Default Name"
     if (senateMember != "Default Member") {
       senateName = senateMember.name
@@ -91,11 +92,18 @@ export const HearingSidebar = ({
 
     setHouseChairName(houseName)
     setSenateChairName(senateName)
+    setMembers(memberData)
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
     committeeCode && generalCourtNumber ? CommitteeData() : null
   }, [committeeCode, CommitteeData, generalCourtNumber])
+
+  const [showMembers, setShowMembers] = useState(false)
+
+  const toggleMembers = () => {
+    setShowMembers(!showMembers)
+  }
 
   return (
     <>
@@ -152,6 +160,49 @@ export const HearingSidebar = ({
                 />
               )}
             </div>
+
+            {members ? (
+              <>
+                <div className={`d-flex justify-content-end mb-2`}>
+                  <a href={`javascript:;`} onClick={toggleMembers}>
+                    {showMembers ? "Show less" : "Show more"}
+                  </a>
+                </div>
+
+                {showMembers ? (
+                  <>
+                    {t("members")}
+                    <div>
+                      {members.map((member: Members, index: number) => {
+                        if (
+                          member.name !== houseChairName &&
+                          member.name !== senateChairName
+                        ) {
+                          return (
+                            <LabeledIcon
+                              key={index}
+                              idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
+                              mainText={`Member`}
+                              subText={
+                                <links.External
+                                  href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
+                                >
+                                  {member.name}
+                                </links.External>
+                              }
+                            />
+                          )
+                        }
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
           </SidebarSubbody>
         </SidebarBody>
       )}
