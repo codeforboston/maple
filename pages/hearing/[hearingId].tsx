@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
-import { dbService } from "components/db/api"
+import { flags } from "components/featureFlags"
 import { HearingDetails } from "components/hearing/HearingDetails"
 import { createPage } from "../../components/page"
 
@@ -26,6 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
+  if (!flags().hearingsAndTranscriptions) return { notFound: true }
 
   return {
     props: {

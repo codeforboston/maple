@@ -1,5 +1,4 @@
 import { doc, getDoc } from "firebase/firestore"
-import { useRouter } from "next/router"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
