@@ -8,7 +8,7 @@ import { Transcriptions } from "./Transcriptions"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
-const CommitteeButton = styled.button`
+export const CommitteeButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
 `

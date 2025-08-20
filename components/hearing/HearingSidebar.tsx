@@ -2,6 +2,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
+import { CommitteeButton } from "./HearingDetails"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 import { LabeledIcon } from "components/shared"
@@ -57,6 +58,11 @@ export const HearingSidebar = ({
   const [members, setMembers] = useState<Members[]>()
   const [senateChairName, setSenateChairName] = useState<string>("")
   const [senateChairperson, setSenateChairperson] = useState<Legislator>()
+  const [showMembers, setShowMembers] = useState(false)
+
+  const toggleMembers = () => {
+    setShowMembers(!showMembers)
+  }
 
   const CommitteeData = useCallback(async () => {
     const committee = await getDoc(
@@ -98,12 +104,6 @@ export const HearingSidebar = ({
   useEffect(() => {
     committeeCode && generalCourtNumber ? CommitteeData() : null
   }, [committeeCode, CommitteeData, generalCourtNumber])
-
-  const [showMembers, setShowMembers] = useState(false)
-
-  const toggleMembers = () => {
-    setShowMembers(!showMembers)
-  }
 
   return (
     <>
@@ -164,9 +164,12 @@ export const HearingSidebar = ({
             {members ? (
               <>
                 <div className={`d-flex justify-content-end mb-2`}>
-                  <a href={`javascript:;`} onClick={toggleMembers}>
-                    {showMembers ? "Show less" : "Show more"}
-                  </a>
+                  <CommitteeButton
+                    className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+                    onClick={toggleMembers}
+                  >
+                    &nbsp; {showMembers ? "Show less" : "Show more"} &nbsp;
+                  </CommitteeButton>
                 </div>
 
                 {showMembers ? (
