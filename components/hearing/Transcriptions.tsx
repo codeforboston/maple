@@ -25,6 +25,23 @@ const TimestampCol = styled.div`
   width: 100px;
 `
 
+const TranscriptionRow = styled(Row)`
+  &:first-child {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+  &:nth-child(even) {
+    background-color: #c0c4dc;
+  }
+  &:nth-child(odd) {
+    background-color: white;
+  }
+  &:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
+`
+
 export const Transcriptions = ({
   setCurTimeVideo,
   videoTranscriptionId
@@ -67,17 +84,13 @@ export const Transcriptions = ({
     <>
       {transcriptData.length > 0 ? (
         <Container className={`mb-2`}>
-          {transcriptData.map(
-            (element: DocElement, index: number, array: DocElement[]) => (
-              <TranscriptItem
-                key={index}
-                index={index}
-                element={element}
-                array={array}
-                setCurTimeVideo={setCurTimeVideo}
-              />
-            )
-          )}
+          {transcriptData.map((element: DocElement, index: number) => (
+            <TranscriptItem
+              key={index}
+              element={element}
+              setCurTimeVideo={setCurTimeVideo}
+            />
+          ))}
         </Container>
       ) : (
         <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
@@ -89,18 +102,12 @@ export const Transcriptions = ({
 }
 
 function TranscriptItem({
-  index,
-  array,
   element,
   setCurTimeVideo
 }: {
-  index: number
-  array: DocElement[]
   element: DocElement
   setCurTimeVideo: any
 }) {
-  const isLastItem = index === array.length - 1
-
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
     /* data from backend is in milliseconds
@@ -129,16 +136,7 @@ function TranscriptItem({
   }
 
   return (
-    <Row
-      className={``}
-      style={{
-        backgroundColor: index % 2 === 0 ? "white" : "#c0c4dc",
-        borderTopLeftRadius: index === 0 ? "0.75rem" : "0",
-        borderTopRightRadius: index === 0 ? "0.75rem" : "0",
-        borderBottomLeftRadius: isLastItem ? "0.75rem" : "0",
-        borderBottomRightRadius: isLastItem ? "0.75rem" : "0"
-      }}
-    >
+    <TranscriptionRow>
       <TimestampCol>
         <Row className={`d-inline`}>
           <TimestampButton
@@ -154,6 +152,6 @@ function TranscriptItem({
         </Row>
       </TimestampCol>
       <Col>{element.text}</Col>
-    </Row>
+    </TranscriptionRow>
   )
 }
