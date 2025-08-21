@@ -31,7 +31,9 @@ const TranscriptionRow = styled(Row)`
     border-top-right-radius: 0.75rem;
   }
   &:nth-child(even) {
-    background-color: #c0c4dc;
+    /* background-color: #c0c4dc; */
+    /* use #c0c4dc for selected rows when Search is implemented*/
+    background-color: #e8ecf4;
   }
   &:nth-child(odd) {
     background-color: white;
