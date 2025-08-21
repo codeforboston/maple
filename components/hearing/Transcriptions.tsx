@@ -51,9 +51,11 @@ export const Transcriptions = ({
 }) => {
   const { t } = useTranslation("common")
 
+  const vid = videoTranscriptionId || "prevent FirebaseError"
+
   const subscriptionRef = collection(
     firestore,
-    `transcriptions/${videoTranscriptionId}/paragraphs`
+    `transcriptions/${vid}/paragraphs`
   )
 
   const [transcriptData, setTranscriptData] = useState<DocElement[]>([])
