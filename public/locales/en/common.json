@@ -64,10 +64,6 @@
     "followed": "Followed"
   },
   "calendar": "Our Calendar",
-  "chairs": "Chairs",
-  "committee_members": "Committee members",
-  "hearing": "Hearing ",
-  "hearing_details": "Hearing details",
   "hideAns": "Hide Answer",
   "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
   "joinTraining": "and join an upcoming training session!",
@@ -84,7 +80,6 @@
   "logInSignUp": "Log in / Sign up",
   "maple_abbr": "MAPLE",
   "maple_fullName": "Massachusetts Platform for Legislative Engagement",
-  "members": "Members",
   "navigation": {
     "accountProfile": "Profile",
     "additionalResources": "Additional Resources",
@@ -129,14 +124,12 @@
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
   "noNewsUpdates": "There are no news updates for your current followed topics",
-  "no_video_on_file": "This hearing does not yet have a video on file",
   "orgs": "Organizations",
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
   "primarySponsor": "Primary Sponsor",
-  "recording_date": "Recording date",
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "showAns": "Show Answer",
   "socials": {
@@ -152,7 +145,6 @@
   "table": {
     "page": "Page {{currentPage}}"
   },
-  "transcription_not_on_file": "This hearing does not yet have a transcription on file",
   "titles": {
     "admin": "Admin",
     "bill": "Bill",

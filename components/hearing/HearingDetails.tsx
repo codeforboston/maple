@@ -38,7 +38,7 @@ export const HearingDetails = ({
 }: {
   hearingId: string | string[] | undefined
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation(["common", "hearing"])
 
   const videoRef = useRef<HTMLVideoElement>(null)
   function setCurTimeVideo(value: number) {
