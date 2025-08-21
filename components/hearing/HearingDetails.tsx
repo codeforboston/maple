@@ -59,30 +59,18 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
-    setCommitteeCode(
-      docData?.content.HearingHost.CommitteeCode ?? "Default Committee Code"
-    )
-    setCommitteeName(docData?.content.Name ?? "Default Name")
+    setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
+    setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
-    setGeneralCourtNumber(
-      docData?.content.HearingHost.GeneralCourtNumber ??
-        "Default General Court Number"
-    )
-    setHearingDate(docData?.content.EventDate ?? "Default Date")
-    setVideoTranscriptionId(
-      docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
-    )
+    setGeneralCourtNumber(docData?.content.HearingHost.GeneralCourtNumber)
+    setHearingDate(docData?.content.EventDate)
+    setVideoTranscriptionId(docData?.videoTranscriptionId)
     setVideoURL(docData?.videoURL)
   }, [eventId])
 
   useEffect(() => {
     hearingData()
   }, [hearingData])
-
-  let committeeCheck = true
-  if (committeeName == "Default Name") {
-    committeeCheck = false
-  }
 
   return (
     <Container className="mt-3 mb-3">
@@ -92,7 +80,7 @@ export const HearingDetails = ({
 
       <h5 className={`mb-3`}>{description}</h5>
 
-      {committeeCheck ? (
+      {committeeName ? (
         <links.External
           href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
         >
@@ -158,7 +146,6 @@ export const HearingDetails = ({
 
         <div className={`col-md-4`}>
           <HearingSidebar
-            committeeCheck={committeeCheck}
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}

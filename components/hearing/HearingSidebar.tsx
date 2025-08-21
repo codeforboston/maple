@@ -41,12 +41,10 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
-  committeeCheck,
   committeeCode,
   generalCourtNumber,
   hearingDate
 }: {
-  committeeCheck: boolean
   committeeCode: string
   generalCourtNumber: string
   hearingDate: string
@@ -85,23 +83,15 @@ export const HearingSidebar = ({
 
     const memberData: Members[] = docData?.members ?? []
 
-    const houseMembers =
-      docData?.content?.HouseChairperson?.MemberCode ?? "Default Code"
-    const houseMember =
-      memberData.find(member => member.id === houseMembers) ?? "Default Member"
-    let houseName = "Default Name"
-    if (houseMember != "Default Member") {
-      houseName = houseMember.name
-    }
+    const houseMembers = docData?.content?.HouseChairperson?.MemberCode
+    const houseMember = memberData.find(member => member.id === houseMembers)
+    let houseName = ""
+    houseMember && (houseName = houseMember.name)
 
-    const senateMembers =
-      docData?.content?.SenateChairperson?.MemberCode ?? "Default Code"
-    const senateMember =
-      memberData.find(member => member.id === senateMembers) ?? "Default Member"
-    let senateName = "Default Name"
-    if (senateMember != "Default Member") {
-      senateName = senateMember.name
-    }
+    const senateMembers = docData?.content?.SenateChairperson?.MemberCode
+    const senateMember = memberData.find(member => member.id === senateMembers)
+    let senateName = ""
+    senateMember && (senateName = senateMember.name)
 
     setHouseChairName(houseName)
     setSenateChairName(senateName)
@@ -125,7 +115,7 @@ export const HearingSidebar = ({
         <div className={`fw-normal`}>{formattedDate}</div>
       </SidebarBody>
 
-      {committeeCheck && (
+      {committeeCode && (
         <SidebarBody
           className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
         >
