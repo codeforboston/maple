@@ -17,10 +17,6 @@ const LegalContainer = styled(Container)`
   background-color: white;
 `
 
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-`
-
 const VideoChild = styled.video`
   position: absolute;
   top: 0;
@@ -89,7 +85,7 @@ export const HearingDetails = ({
   }
 
   return (
-    <StyledContainer className="mt-3 mb-3">
+    <Container className="mt-3 mb-3">
       <h1>
         {t("hearing")} {hearingId}
       </h1>
@@ -169,6 +165,6 @@ export const HearingDetails = ({
           />
         </div>
       </div>
-    </StyledContainer>
+    </Container>
   )
 }
