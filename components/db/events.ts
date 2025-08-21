@@ -94,7 +94,7 @@ export async function listUpcomingEvents(types?: Event["type"][]) {
       eventsRef,
       types && where("type", "in", types),
       where("startsAt", ">=", midnight()),
-      orderBy("starts", "asc")
+      orderBy("startsAt", "asc")
     )
   )
 
