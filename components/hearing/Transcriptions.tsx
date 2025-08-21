@@ -51,7 +51,7 @@ export const Transcriptions = ({
   setCurTimeVideo: any
   videoTranscriptionId: string
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation(["common", "hearing"])
 
   const vid = videoTranscriptionId || "prevent FirebaseError"
 

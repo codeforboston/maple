@@ -19,7 +19,7 @@ export default createPage<{ hearingId: number }>({
 export const getServerSideProps: GetServerSideProps = async ctx => {
   ctx.res.setHeader(
     "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=10"
+    "public, s-maxage=10, stale-while-revalidate=10."
   )
 
   const locale = ctx.locale ?? ctx.defaultLocale ?? "en"

@@ -49,7 +49,7 @@ export const HearingSidebar = ({
   generalCourtNumber: string
   hearingDate: string
 }) => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation(["common", "hearing"])
 
   const dateObject = new Date(hearingDate)
   const formattedDate = dateObject.toLocaleDateString("en-US", {
