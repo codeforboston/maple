@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
 
-type DocElement = {
+type Paragraph = {
   confidence: number
   end: number
   start: number
@@ -58,9 +58,9 @@ export const Transcriptions = ({
     `transcriptions/${vid}/paragraphs`
   )
 
-  const [transcriptData, setTranscriptData] = useState<DocElement[]>([])
+  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
 
-  const transcriptionData = useCallback(async () => {
+  const fetchTranscriptionData = useCallback(async () => {
     let docList: any[] = []
 
     const q = query(subscriptionRef, orderBy("start"))
@@ -77,14 +77,14 @@ export const Transcriptions = ({
   }, [subscriptionRef, transcriptData])
 
   useEffect(() => {
-    transcriptionData()
-  }, [transcriptionData])
+    fetchTranscriptionData()
+  }, [fetchTranscriptionData])
 
   return (
     <>
       {transcriptData.length > 0 ? (
         <Container className={`mb-2`}>
-          {transcriptData.map((element: DocElement, index: number) => (
+          {transcriptData.map((element: Paragraph, index: number) => (
             <TranscriptItem
               key={index}
               element={element}
@@ -105,7 +105,7 @@ function TranscriptItem({
   element,
   setCurTimeVideo
 }: {
-  element: DocElement
+  element: Paragraph
   setCurTimeVideo: any
 }) {
   const handleClick = (val: number) => {
