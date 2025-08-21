@@ -57,6 +57,10 @@ export const HearingSidebar = ({
     day: "2-digit",
     year: "numeric"
   })
+  let dateCheck = false
+  if (formattedDate !== `Invalid Date`) {
+    dateCheck = true
+  }
 
   const [houseChairName, setHouseChairName] = useState<string>("")
   const [houseChairperson, setHouseChairperson] = useState<Legislator>()
@@ -110,12 +114,16 @@ export const HearingSidebar = ({
         {t("hearing_details")}
       </SidebarHeader>
 
-      <SidebarBody className={`border-bottom fs-6 fw-bold px-3 py-3`}>
-        <SidebarSubbody className={`mb-1`}>
-          {t("recording_date")}
-        </SidebarSubbody>
-        <div className={`fw-normal`}>{formattedDate}</div>
-      </SidebarBody>
+      {dateCheck ? (
+        <SidebarBody className={`border-bottom fs-6 fw-bold px-3 py-3`}>
+          <SidebarSubbody className={`mb-1`}>
+            {t("recording_date")}
+          </SidebarSubbody>
+          <div className={`fw-normal`}>{formattedDate}</div>
+        </SidebarBody>
+      ) : (
+        <></>
+      )}
 
       {committeeCode && (
         <SidebarBody
