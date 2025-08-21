@@ -69,7 +69,7 @@ export const HearingSidebar = ({
     setShowMembers(!showMembers)
   }
 
-  const CommitteeData = useCallback(async () => {
+  const committeeData = useCallback(async () => {
     const committee = await getDoc(
       doc(
         firestore,
@@ -99,8 +99,8 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    committeeCode && generalCourtNumber ? CommitteeData() : null
-  }, [committeeCode, CommitteeData, generalCourtNumber])
+    committeeCode && generalCourtNumber ? committeeData() : null
+  }, [committeeCode, committeeData, generalCourtNumber])
 
   return (
     <>
