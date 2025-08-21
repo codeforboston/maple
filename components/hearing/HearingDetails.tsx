@@ -1,6 +1,6 @@
 import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { HearingSidebar } from "./HearingSidebar"
@@ -15,6 +15,10 @@ export const CommitteeButton = styled.button`
 
 const LegalContainer = styled(Container)`
   background-color: white;
+`
+
+const StyledContainer = styled(Container)`
+  font-family: "Nunito";
 `
 
 const VideoChild = styled.video`
@@ -40,12 +44,12 @@ export const HearingDetails = ({
 }) => {
   const { t } = useTranslation("common")
 
-  let mainVid = document.getElementById("mainVid") as HTMLVideoElement
+  const videoRef = useRef<HTMLVideoElement>(null)
   function setCurTimeVideo(value: number) {
-    mainVid.currentTime = value
+    videoRef.current ? (videoRef.current.currentTime = value) : null
   }
 
-  const eventId = `hearing-${hearingId}`
+  const hearingQuery = `hearing-${hearingId}`
 
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
@@ -56,7 +60,7 @@ export const HearingDetails = ({
   const [videoURL, setVideoURL] = useState("")
 
   const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${eventId}`))
+    const hearing = await getDoc(doc(firestore, `events/${hearingQuery}`))
     const docData = hearing.data()
 
     setCommitteeCode(
@@ -73,7 +77,7 @@ export const HearingDetails = ({
       docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
     )
     setVideoURL(docData?.videoURL)
-  }, [eventId])
+  }, [hearingQuery])
 
   useEffect(() => {
     hearingData()
@@ -85,7 +89,7 @@ export const HearingDetails = ({
   }
 
   return (
-    <Container className="mt-3 mb-3">
+    <StyledContainer className="mt-3 mb-3">
       <h1>
         {t("hearing")} {hearingId}
       </h1>
@@ -142,7 +146,7 @@ export const HearingDetails = ({
 
           {videoURL ? (
             <VideoParent className={`my-3`}>
-              <VideoChild id={`mainVid`} src={videoURL} controls muted />
+              <VideoChild ref={videoRef} src={videoURL} controls muted />
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
@@ -165,6 +169,6 @@ export const HearingDetails = ({
           />
         </div>
       </div>
-    </Container>
+    </StyledContainer>
   )
 }
