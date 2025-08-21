@@ -49,7 +49,7 @@ export const HearingDetails = ({
     mainVid.currentTime = value
   }
 
-  const hearingQuery = `hearing-${hearingId}`
+  const eventId = `hearing-${hearingId}`
 
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
@@ -60,7 +60,7 @@ export const HearingDetails = ({
   const [videoURL, setVideoURL] = useState("")
 
   const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${hearingQuery}`))
+    const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
     setCommitteeCode(
@@ -77,7 +77,7 @@ export const HearingDetails = ({
       docData?.videoTranscriptionId ?? "Default Video Transcripton Id"
     )
     setVideoURL(docData?.videoURL)
-  }, [hearingQuery])
+  }, [eventId])
 
   useEffect(() => {
     hearingData()

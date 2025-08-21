@@ -126,7 +126,9 @@ export const HearingSidebar = ({
       </SidebarBody>
 
       {committeeCheck && (
-        <SidebarBody className={`border-top fs-6 fw-bold px-3 py-3`}>
+        <SidebarBody
+          className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
+        >
           {t("committee_members")}
           <SidebarSubbody className={`mb-1 mt-2`}>
             {t("chairs")}
@@ -209,7 +211,7 @@ export const HearingSidebar = ({
           </SidebarSubbody>
         </SidebarBody>
       )}
-      <SidebarBottom />
+      <SidebarBottom className={`border-top`} />
     </>
   )
 }
