@@ -101,7 +101,7 @@ export const HearingSidebar = ({
     setSenateChairName(senateName)
     setMembers(memberData)
 
-    console.log(docData)
+    console.log("data: ", docData)
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
