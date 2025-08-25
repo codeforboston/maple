@@ -1,7 +1,7 @@
 import { useTranslation } from "next-i18next"
 import { useContext, useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
-import { useAuth } from "../auth"
+import { Frequency, useAuth } from "../auth"
 import { Profile, useProfile } from "../db"
 import { EditProfileButton, ProfileButtons } from "./ProfileButtons"
 import { Header, ProfileDisplayName } from "./StyledProfileComponents"
@@ -30,9 +30,9 @@ export const ProfileHeader = ({
   }: Profile = profile
 
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-  const [notifications, setNotifications] = useState<
-    "Weekly" | "Monthly" | "None"
-  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [notifications, setNotifications] = useState<Frequency>(
+    notificationFrequency ? notificationFrequency : "Monthly"
+  )
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
   )
