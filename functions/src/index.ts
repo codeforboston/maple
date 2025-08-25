@@ -43,7 +43,8 @@ export {
   followBill,
   unfollowBill,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getFollowers
 } from "./subscriptions"
 
 export { transcription } from "./webhooks"

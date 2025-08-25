@@ -26,6 +26,7 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
       { params: { docName: ["about-you"] } },
       { params: { docName: ["testimonies"] } },
       { params: { docName: ["following"] } },
+      { params: { docName: ["followers"] } },
       { params: { docName: [] } }
     ],
     fallback: false
@@ -36,6 +37,7 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "editProfile",
+  "profile",
   "footer",
   "testimony"
 ])

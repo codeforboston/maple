@@ -15,7 +15,9 @@
   "tabs": {
     "personalInfo": "Personal Information",
     "testimonies": "Testimonies",
-    "following": "Following"
+    "following": "Following",
+    "followers": "Followers",
+    "followersWithCount": "Followers ({{count}})"
   },
   "content": {
     "reqPending": "Your request to be an organization account is pending approval",
@@ -25,7 +27,10 @@
   "follow": {
     "bills": "Bills I Follow",
     "orgs": "Users I Follow",
-    "unfollow": "Unfollow"
+    "your_followers": "Your Followers",
+    "unfollow": "Unfollow",
+    "follow": "Follow",
+    "follower_info_disclaimer": "Names and follower counts are not publicly available; only visible to you."
   },
   "confirmation": {
     "unfollowMessage": "Are you sure you want to unfollow",
@@ -38,7 +43,7 @@
     "weekly": "Weekly",
     "monthly": "Monthly"
   },
-  "emailIconAlt":"open envelope with letter, toggles update frequency options",
+  "emailIconAlt": "open envelope with letter, toggles update frequency options",
   "legislator": {
     "representative": "Representative",
     "searchRepresentative": "Search your representative",
