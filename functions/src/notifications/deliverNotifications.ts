@@ -275,6 +275,6 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
 
 // Firebase Functions
 export const deliverNotifications = functions.pubsub
-  .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
+  .schedule("47 9 * * *") // 9:47 AM every day
   .timeZone("America/New_York")
   .onRun(deliverEmailNotifications)

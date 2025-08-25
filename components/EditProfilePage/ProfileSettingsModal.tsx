@@ -15,7 +15,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   role: Role
   setIsProfilePublic: Dispatch<SetStateAction<false | true>>
   notifications: Frequency
-  setNotifications: Dispatch<SetStateAction<"Weekly" | "Monthly" | "None">>
+  setNotifications: Dispatch<SetStateAction<Frequency>>
   onSettingsModalClose: () => void
 }
 

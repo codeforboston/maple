@@ -202,7 +202,7 @@ const Args = Record({ email: String })
 export const script: Script = async ({ db, args }) => {
   const { email } = Args.check(args)
 
-  // Frequency is guaranteed to be Monthly or Weekly,
+  // Frequency is guaranteed to be Monthly, Weekly, or Daily
   // and there must be at least 1 bill OR 1 user with testimony
   // or else a digest wouldn't be generated
   const digestData = generateTestData("Monthly", 4, 4)
