@@ -32,7 +32,6 @@ export const HistoryModal = ({ bill }: BillProps) => {
 }
 
 export const StyledModalTitle = styled(Modal.Title)`
-  font-family: Nunito;
   font-size: 40px;
   font-weight: 700;
   line-height: 55px;
@@ -41,7 +40,6 @@ export const StyledModalTitle = styled(Modal.Title)`
 `
 
 export const StyledBillTitle = styled.div`
-  font-family: Nunito;
   font-size: 32px;
   font-weight: 600;
   line-height: 44px;

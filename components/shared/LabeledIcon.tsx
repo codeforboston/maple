@@ -9,7 +9,6 @@ export const StyledColLabels = styled.div`
   justify-content: center;
   padding-left: 0.75em;
   font-size: 0.75rem;
-  font-family: Nunito;
 
   .main-text {
     font-weight: 500;
