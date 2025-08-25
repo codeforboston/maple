@@ -1,6 +1,6 @@
 import { Hit } from "instantsearch.js"
 import Link from "next/link"
-import { useTranslation } from "next-i18next"
+import { Trans, useTranslation } from "next-i18next"
 import { Image } from "react-bootstrap"
 import { useMediaQuery } from "usehooks-ts"
 
@@ -25,8 +25,6 @@ export const TestimonyHit = ({ hit }: { hit: Hit<Testimony> }) => {
 }
 
 const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
-  const { t } = useTranslation(["auth"])
-
   const date = new Date(
     parseInt(hit.publishedAt.toString())
   ).toLocaleDateString("en-US", {
@@ -37,12 +35,6 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
   const { loading, error, result: bill } = useBill(hit.court, hit.billId)
   const committee = bill?.currentCommittee
   const isOrg = hit.authorRole === "organization"
-  const writtenBy =
-    isOrg || hit.public ? (
-      <Link href={`/profile?id=${hit.authorUid}`}>{hit.fullName}</Link>
-    ) : (
-      hit.fullName
-    )
   const { user } = useAuth()
   const { followOrg } = useFlags()
   const isCurrentUser = user?.uid === hit.authorUid
@@ -67,12 +59,25 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
       >
         <Image
           src={isOrg ? "/profile-org-icon.svg" : "/profile-individual-icon.svg"}
-          alt={t("profileIcon")}
+          alt={useTranslation("auth").t("profileIcon")}
           height="30px"
           width="30px"
         />
         <span style={{ flexGrow: 1 }}>
-          <b>Written by {writtenBy}</b>
+          <b>
+            <Trans
+              ns="testimony"
+              i18nKey="testimonyHit.writtenBy"
+              values={{ author: hit.fullName }}
+              components={[
+                isOrg || hit.public ? (
+                  <Link href={`/profile?id=${hit.authorUid}`} />
+                ) : (
+                  <></>
+                )
+              ]}
+            />
+          </b>
         </span>
         {hit.public && !isCurrentUser && followOrg && user && (
           <FollowUserButton profileId={hit.authorUid} />
@@ -95,7 +100,11 @@ const TestimonyResult = ({ hit }: { hit: Hit<Testimony> }) => {
           <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
             {/* <Link href={maple.bill({ court: hit.court, id: hit.billId })}> */}
             {/* <a> */}
-            <h2>Bill #{formatBillId(hit.billId)}</h2>
+            <h2>
+              {useTranslation("testimony").t("testimonyHit.bill", {
+                billId: formatBillId(hit.billId)
+              })}
+            </h2>
             {/* </a> */}
             {/* </Link> */}
             {committee && (
