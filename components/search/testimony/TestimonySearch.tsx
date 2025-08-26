@@ -75,6 +75,7 @@ export const TestimonySearch = () => (
           }
         })
       }}
+      future={{ preserveSharedStateOnUnmount: true }}
     >
       <VirtualFilters type="testimony" />
       <Layout />

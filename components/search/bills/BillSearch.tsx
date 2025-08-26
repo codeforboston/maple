@@ -82,6 +82,7 @@ export const BillSearch = () => {
             }
           })
         }}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
         <VirtualFilters type="bill" />
         <Layout items={items} />
