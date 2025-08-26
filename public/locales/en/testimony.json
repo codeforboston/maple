@@ -38,6 +38,10 @@
       "label": "Verify Your Email"
     }
   },
+  "testimonyHit": {
+    "writtenBy": "Written by <0>{{author}}</0>",
+    "bill": "Bill #{{billId}}"
+  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",

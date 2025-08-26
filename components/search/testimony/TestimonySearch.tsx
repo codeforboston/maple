@@ -12,7 +12,7 @@ import {
 } from "components/EditProfilePage/StyledEditProfileComponents"
 import { currentGeneralCourt } from "functions/src/shared"
 import { SortByItem } from "instantsearch.js/es/connectors/sort-by/connectSortBy"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { TabContainer, TabPane } from "react-bootstrap"
 import styled from "styled-components"
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter"
@@ -27,6 +27,7 @@ import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
+import { useTranslation } from "next-i18next"
 
 const searchClient = new TypesenseInstantSearchAdapter({
   server: getServerConfig(),
@@ -36,41 +37,49 @@ const searchClient = new TypesenseInstantSearchAdapter({
   }
 }).searchClient
 
-const items: SortByItem[] = [
-  {
-    label: "Sort by New -> Old",
-    value: "publishedTestimony/sort/publishedAt:desc"
-  },
-  {
-    label: "Sort by Old -> New",
-    value: "publishedTestimony/sort/publishedAt:asc"
-  },
-  {
-    label: "Sort by Relevance",
-    value: "publishedTestimony/sort/_text_match:desc,publishedAt:desc"
-  }
-]
+export const useTestimonySort = () => {
+  const { t } = useTranslation("search")
+  const items: SortByItem[] = useMemo(
+    () => [
+      {
+        label: t("sort_by.newest"),
+        value: "publishedTestimony/sort/publishedAt:desc"
+      },
+      {
+        label: t("sort_by.oldest"),
+        value: "publishedTestimony/sort/publishedAt:asc"
+      },
+      {
+        label: t("sort_by.relevance"),
+        value: "publishedTestimony/sort/_text_match:desc,publishedAt:desc"
+      }
+    ],
+    [t]
+  )
+  return items
+}
 
-export const initialSortByValue = items[0].value
-
-export const TestimonySearch = () => (
-  <SearchErrorBoundary>
-    <InstantSearch
-      indexName={initialSortByValue}
-      initialUiState={{
-        [initialSortByValue]: {
-          refinementList: { court: [String(currentGeneralCourt)] }
-        }
-      }}
-      searchClient={searchClient}
-      routing={useRouting()}
-      future={{ preserveSharedStateOnUnmount: true }}
-    >
-      <VirtualFilters type="testimony" />
-      <Layout />
-    </InstantSearch>
-  </SearchErrorBoundary>
-)
+export const TestimonySearch = () => {
+  const initialSortByValue = useTestimonySort()[0].value
+  return (
+    <SearchErrorBoundary>
+      <InstantSearch
+        indexName={initialSortByValue}
+        initialUiState={{
+          [initialSortByValue]: {
+            refinementList: { court: [String(currentGeneralCourt)] }
+          }
+        }}
+        searchClient={searchClient}
+        routing={useRouting()}
+        future={{ preserveSharedStateOnUnmount: true }}
+      >
+        <VirtualFilters type="testimony" />
+        <Layout />
+      </InstantSearch>
+    </SearchErrorBoundary>
+  )
+}
 
 const RefinementRow = styled.div`
   display: inline-flex;
@@ -100,6 +109,7 @@ const Layout = () => {
   const refinements = useTestimonyRefinements()
   const status = useSearchStatus()
   const { indexUiState, setIndexUiState } = useInstantSearch()
+  const { t } = useTranslation("search")
 
   const onTabClick = (t: Tab) => {
     setKey(t)
@@ -157,7 +167,7 @@ const Layout = () => {
             <Col className="d-flex flex-column">
               <RefinementRow>
                 <ResultCount className="flex-grow-1 m-1" />
-                <SortBy items={items} />
+                <SortBy items={useTestimonySort()} />
                 {refinements.show}
               </RefinementRow>
               <CurrentRefinements
@@ -166,9 +176,9 @@ const Layout = () => {
               />
               {status === "empty" ? (
                 <NoResults>
-                  Your search has yielded zero results!
+                  {t("zero_results")}
                   <br />
-                  <b>Try another search term</b>
+                  <b>{t("another_term")}</b>
                 </NoResults>
               ) : (
                 <Hits hitComponent={TestimonyHit} />

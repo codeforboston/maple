@@ -7,7 +7,7 @@ import { createGetStaticTranslationProps } from "components/translations"
 export default createPage({
   titleI18nKey: "navigation.browseBills",
   Page: () => {
-    const { t } = useTranslation("billSearch")
+    const { t } = useTranslation("search")
 
     return (
       <Container fluid="md" className="mt-3">
@@ -20,7 +20,7 @@ export default createPage({
 
 export const getStaticProps = createGetStaticTranslationProps([
   "auth",
-  "billSearch",
+  "search",
   "common",
   "footer",
   "testimony"
