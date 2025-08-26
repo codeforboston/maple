@@ -17,5 +17,6 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
-  "our-team"
+  "our-team",
+  "partners"
 ])

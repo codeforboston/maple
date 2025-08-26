@@ -1,5 +1,7 @@
 export {}
+import { TextEncoder, TextDecoder } from "util"
 
+Object.assign(global, { TextDecoder, TextEncoder })
 jest.mock("../components/db/common", () => {
   const actualModule = jest.requireActual("../components/db/common")
   return {

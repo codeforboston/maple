@@ -3,6 +3,7 @@ import { useContext } from "react"
 import styled from "styled-components"
 import { BillHistory } from "../db"
 import { CourtContext } from "./Status"
+import { useTranslation } from "next-i18next"
 
 export type HistoryProps = { billHistory: BillHistory }
 
@@ -50,14 +51,15 @@ const BillHistoryActionRows = ({ billHistory }: HistoryProps) => {
 }
 
 export const HistoryTable = ({ billHistory }: HistoryProps) => {
+  const { t } = useTranslation("common")
   return (
     <div className="text-center">
       <StyledTable>
         <thead>
           <tr>
             <th></th>
-            <th>Status History</th>
-            <th>Branch</th>
+            <th>{t("bill.status_history")}</th>
+            <th>{t("bill.branch")}</th>
           </tr>
         </thead>
         <tbody>

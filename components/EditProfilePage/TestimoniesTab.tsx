@@ -4,16 +4,21 @@ import { TitledSectionCard } from "../shared"
 import { TestimonyItem } from "components/TestimonyCard/TestimonyItem"
 import { SortTestimonyDropDown } from "components/TestimonyCard/SortTestimonyDropDown"
 import { TestimonyFAQ } from "./TestimonyFAQ"
-import { Testimony } from "../db"
+import { Testimony, DraftTestimony, Pagination } from "../db"
 import { useTranslation } from "next-i18next"
+import { PaginationButtons } from "../table"
 
 export const TestimoniesTab = ({
   publishedTestimonies,
+  publishedTestimoniesPagination,
   draftTestimonies,
+  draftTestimoniesPagination,
   className
 }: {
   publishedTestimonies: Testimony[]
-  draftTestimonies: Testimony[]
+  publishedTestimoniesPagination?: Pagination
+  draftTestimonies: DraftTestimony[]
+  draftTestimoniesPagination?: Pagination
   className?: string
 }) => {
   const [orderBy, setOrderBy] = useState<string>()
@@ -58,17 +63,23 @@ export const TestimoniesTab = ({
                 onProfilePage={true}
               />
             ))}
+            {publishedTestimoniesPagination && (
+              <PaginationButtons pagination={publishedTestimoniesPagination} />
+            )}
           </TitledSectionCard>
           <TitledSectionCard className="mt-3 mb-4">
             <h2>{t("testimonies.draft")}</h2>
             {draftTestimonies.map(t => (
               <TestimonyItem
-                key={t.authorUid + t.billId + t.publishedAt}
-                testimony={t}
+                key={t.billId + t.court + t.position}
+                testimony={t as any}
                 isUser={true}
                 onProfilePage={true}
               />
             ))}
+            {draftTestimoniesPagination && (
+              <PaginationButtons pagination={draftTestimoniesPagination} />
+            )}
           </TitledSectionCard>
         </Col>
         <Col>

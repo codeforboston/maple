@@ -722,6 +722,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "yasminekarni",
+      "name": "yasminekarni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47721405?v=4",
+      "profile": "https://github.com/yasminekarni",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "chaoyi09",
+      "name": "Chaoyi Jiang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117859839?v=4",
+      "profile": "http://chaoyijiang.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rockyroed",
+      "name": "roed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108738926?v=4",
+      "profile": "https://github.com/rockyroed",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs"

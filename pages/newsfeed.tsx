@@ -1,11 +1,12 @@
 import { createPage } from "../components/page"
 import Newsfeed from "components/Newsfeed/Newsfeed"
+import { requireAuth } from "../components/auth"
 
 export default createPage({
   titleI18nKey: "navigation.newsfeed",
-  Page: () => {
+  Page: requireAuth(() => {
     return <Newsfeed />
-  }
+  })
 })
 
 // this must only be on pages in the pages folder
