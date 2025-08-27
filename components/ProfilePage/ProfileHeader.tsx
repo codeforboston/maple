@@ -31,7 +31,7 @@ export const ProfileHeader = ({
 
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
   const [notifications, setNotifications] = useState<Frequency>(
-    notificationFrequency ? notificationFrequency : "Monthly"
+    notificationFrequency || "Weekly"
   )
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
@@ -39,7 +39,7 @@ export const ProfileHeader = ({
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
-    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setNotifications(notificationFrequency || "Weekly")
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
