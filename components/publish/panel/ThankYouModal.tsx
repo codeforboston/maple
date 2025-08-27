@@ -82,6 +82,5 @@ export const ThankYouModal = styled(({ ...rest }) => {
   .thank-you {
     font-weight: bold;
     font-size: 1.25rem;
-    font-family: "Nunito";
   }
 `

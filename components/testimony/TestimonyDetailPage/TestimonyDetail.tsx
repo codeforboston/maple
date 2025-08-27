@@ -8,7 +8,6 @@ import { useFlags } from "components/featureFlags"
 import { useTranslation } from "next-i18next"
 
 const Container = styled.div`
-  font-family: "Nunito";
   background-color: white;
   border-radius: 0.75rem;
   padding: 1rem;
