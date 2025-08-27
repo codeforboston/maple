@@ -193,3 +193,25 @@ The current API is a little wonky because we take `bill_id` **and** `bill_text`.
 We could just look up the `bill_text` via the `bill_id` using the Firestore API.
 It might make sense to avoid the HTTP wrapper all-together and figure out how
 JS <-> Python communication works without an HTTP layer.
+
+## Document triggers
+
+The first trigger is an `@on_document_created` trigger in
+`bill_on_document_created.py`. The goal is to populate the `summary` and
+`topics` fields on bills which don't already have them. I've introduced some
+tests which you can run with `pytest` and additional type safety added with
+`mypy`. If you haven't used `NewType`s before, I explain them below.
+
+### NewType in Python
+
+First, `Category = NewType("Category", str)` creates a wrapper around `str`
+which can be used anywhere in the code as a `str` but is type checked as
+`Category`. This is useful in `get_categories_from_topics` to avoid mixing up
+the topic for the category! These are often called "newtypes". It is important
+to point out that you shouldn't go wrap **every** type this way but they are useful
+when you have functions like,
+
+```python
+def could_easily_goof_up_the_order(topic: str, category: str):
+  return ...
+```
