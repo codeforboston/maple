@@ -4,7 +4,6 @@ from firebase_functions.firestore_fn import (
 )
 from llm_functions import get_summary_api_function, get_tags_api_function_v2
 from typing import TypedDict, NewType
-from collections import deque
 
 Category = NewType("Category", str)
 
@@ -17,17 +16,16 @@ class TopicAndCategory(TypedDict):
     category: Category
 
 
-# Using a 'deque' because appending to lists in Python is slow
+# Get the corresponding categories for every topic if it is present in the
+# topic_to_category list
 def get_categories_from_topics(
     topics: list[str], topic_to_category: dict[str, Category]
-) -> deque[TopicAndCategory]:
-    to_return: deque[TopicAndCategory] = deque()
-    for topic in topics:
-        if topic_to_category.get(topic):
-            to_return.append(
-                TopicAndCategory(topic=topic, category=topic_to_category[topic])
-            )
-    return to_return
+) -> list[TopicAndCategory]:
+    return [
+        TopicAndCategory(topic=topic, category=topic_to_category[topic])
+        for topic in topics
+        if topic_to_category.get(topic)
+    ]
 
 
 # When a bill is created for a given session, we want to populate both the
@@ -79,21 +77,10 @@ def run_trigger(event: Event[DocumentSnapshot | None]) -> None:
             f"failed to generate tags for bill with id `{bill_id}`, got {tags['status']}"
         )
         return
-    topics_and_categories = get_categories_from_topics(
-        tags["tags"], category_by_topic()
-    )
-    inserted_data.reference.update({"topics": list(topics_and_categories)})
+    topics_and_categories = get_categories_from_topics(tags["tags"], CATEGORY_BY_TOPIC)
+    inserted_data.reference.update({"topics": topics_and_categories})
     print(f"Successfully updated topics for bill with id `{bill_id}`")
     return
-
-
-# Invert 'TOPICS_BY_CATEGORY' into a dictionary from topics to categories
-def category_by_topic() -> dict[str, Category]:
-    to_return = {}
-    for category, topics in TOPICS_BY_CATEGORY.items():
-        for topic in topics:
-            to_return[topic] = category
-    return to_return
 
 
 TOPICS_BY_CATEGORY: dict[Category, list[str]] = {
@@ -326,4 +313,10 @@ TOPICS_BY_CATEGORY: dict[Category, list[str]] = {
         "Water storage",
         "Water use and supply",
     ],
+}
+
+CATEGORY_BY_TOPIC: dict[str, Category] = {
+    topic: category
+    for category, topics in TOPICS_BY_CATEGORY.items()
+    for topic in topics
 }
