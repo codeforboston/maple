@@ -25,7 +25,9 @@ export const getNextDigestAt = (notificationFrequency: Frequency) => {
       nextDigestAt = Timestamp.fromDate(nextMonthFirst)
       break
     case "Daily":
+      console.log("helpers.ts version XYZ")
       nextDigestAt = Timestamp.fromDate(addDays(now, 1))
+      break
     case "None":
       nextDigestAt = null
       break

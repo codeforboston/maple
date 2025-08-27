@@ -83,7 +83,7 @@ describe("getNextDigestAt", () => {
   it("should return the day after for daily frequency", () => {
     // Set a fixed date: March 15, 2025
     const fixedDate = new Date(2025, 2, 15)
-    // Next 1st of the month, April 1, 2025
+    // Next day.
     const expectedDate = new Date(2025, 2, 16)
 
     jest.setSystemTime(fixedDate)
@@ -112,7 +112,7 @@ describe("getNotificationStartDate", () => {
 
   it("should return the previous day for daily frequency", () => {
     const fixedDate = Timestamp.fromDate(new Date(2025, 2, 1))
-    const expectedDate = Timestamp.fromDate(new Date(2025, 1, 31))
+    const expectedDate = Timestamp.fromDate(new Date(2025, 1, 28))
 
     const result = getNotificationStartDate("Daily", fixedDate)
     expect(result).toEqual(expectedDate)
