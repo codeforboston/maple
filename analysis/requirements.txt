@@ -62,6 +62,7 @@ pyzmq==23.1.0
 qtconsole==5.3.1
 QtPy==2.1.0
 requests==2.28.0
+rich
 Send2Trash==1.8.0
 six==1.16.0
 soupsieve==2.3.2.post1
@@ -71,6 +72,7 @@ tinycss2==1.1.1
 tomli==2.0.1
 tornado==6.1
 traitlets==5.2.2.post1
+tqdm
 urllib3==1.26.9
 wcwidth==0.2.5
 webencodings==0.5.1
