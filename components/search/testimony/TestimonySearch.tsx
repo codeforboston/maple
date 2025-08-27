@@ -6,6 +6,8 @@ import {
   SearchBox,
   useInstantSearch
 } from "react-instantsearch"
+import { createInstantSearchRouterNext } from "react-instantsearch-router-nextjs"
+import singletonRouter from "next/router"
 import {
   StyledTabContent,
   StyledTabNav
@@ -23,10 +25,10 @@ import { SearchContainer } from "../SearchContainer"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 import { SortBy } from "../SortBy"
 import { getServerConfig, VirtualFilters } from "../common"
-import { useRouting } from "../useRouting"
 import { TestimonyHit } from "./TestimonyHit"
 import { useTestimonyRefinements } from "./useTestimonyRefinements"
 import { FollowContext, OrgFollowStatus } from "components/shared/FollowContext"
+import { pathToSearchState, searchStateToUrl } from "../routingHelpers"
 import { useTranslation } from "next-i18next"
 
 const searchClient = new TypesenseInstantSearchAdapter({
@@ -59,27 +61,35 @@ export const useTestimonySort = () => {
   return items
 }
 
-export const TestimonySearch = () => {
-  const initialSortByValue = useTestimonySort()[0].value
-  return (
-    <SearchErrorBoundary>
-      <InstantSearch
-        indexName={initialSortByValue}
-        initialUiState={{
-          [initialSortByValue]: {
-            refinementList: { court: [String(currentGeneralCourt)] }
+export const initialSortByValue = items[0].value
+
+export const TestimonySearch = () => (
+  <SearchErrorBoundary>
+    <InstantSearch
+      indexName={initialSortByValue}
+      initialUiState={{
+        [initialSortByValue]: {
+          refinementList: { court: [String(currentGeneralCourt)] }
+        }
+      }}
+      searchClient={searchClient}
+      routing={{
+        router: createInstantSearchRouterNext({
+          singletonRouter,
+          routerOptions: {
+            cleanUrlOnDispose: false,
+            createURL: args => searchStateToUrl(args),
+            parseURL: args => pathToSearchState(args)
           }
-        }}
-        searchClient={searchClient}
-        routing={useRouting()}
-        future={{ preserveSharedStateOnUnmount: true }}
-      >
-        <VirtualFilters type="testimony" />
-        <Layout />
-      </InstantSearch>
-    </SearchErrorBoundary>
-  )
-}
+        })
+      }}
+      future={{ preserveSharedStateOnUnmount: true }}
+    >
+      <VirtualFilters type="testimony" />
+      <Layout />
+    </InstantSearch>
+  </SearchErrorBoundary>
+)
 
 const RefinementRow = styled.div`
   display: inline-flex;
