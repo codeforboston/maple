@@ -9,7 +9,7 @@ import {
   NotificationEmailDigest,
   UserDigest
 } from "functions/src/notifications/emailTypes"
-import { Record, String, Undefined } from "runtypes"
+import { Record, String } from "runtypes"
 import { Timestamp } from "functions/src/firebase"
 import { Frequency } from "components/auth"
 import { getNotificationStartDate } from "functions/src/notifications/helpers"
