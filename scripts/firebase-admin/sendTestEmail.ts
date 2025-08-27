@@ -9,9 +9,10 @@ import {
   NotificationEmailDigest,
   UserDigest
 } from "functions/src/notifications/emailTypes"
-import { Record, String } from "runtypes"
+import { Record, String, Undefined } from "runtypes"
 import { Timestamp } from "functions/src/firebase"
 import { Frequency } from "components/auth"
+import { getNotificationStartDate } from "functions/src/notifications/helpers"
 
 const path = require("path")
 
@@ -182,12 +183,13 @@ const generateTestData = (
   numBills: number,
   numUsers: number
 ): NotificationEmailDigest => {
+  const someDay = new Date("2025-04-01T04:00:00Z")
+  const endDate = Timestamp.fromDate(someDay)
+  const startDate = getNotificationStartDate(frequency, endDate)
   return {
     notificationFrequency: frequency,
-    startDate: new Date("2025-04-01T04:00:00Z"),
-    endDate: new Date(
-      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
-    ),
+    startDate: startDate.toDate(),
+    endDate: endDate.toDate(),
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
@@ -195,17 +197,21 @@ const generateTestData = (
   }
 }
 
-const Args = Record({ email: String })
+const Args = Record({ email: String, notificationFrequency: Frequency })
 
 // Send a test email with:
-//   yarn firebase-admin -e dev run-script sendTestEmail --email="youremail@example.com"
+//   yarn firebase-admin -e dev run-script sendTestEmail --email="youremail@example.com" --notificationFrequency="Monthly"
 export const script: Script = async ({ db, args }) => {
-  const { email } = Args.check(args)
+  const DEFAULT_ARGS = { notificationFrequency: "Monthly" }
+  const { email, notificationFrequency } = Args.check({
+    ...DEFAULT_ARGS,
+    ...args
+  })
 
   // Frequency is guaranteed to be Monthly, Weekly, or Daily
   // and there must be at least 1 bill OR 1 user with testimony
   // or else a digest wouldn't be generated
-  const digestData = generateTestData("Monthly", 4, 4)
+  const digestData = generateTestData(notificationFrequency, 4, 4)
 
   // const onlyBills = generateTestData("Weekly", 4, 0)
   // const onlyUsers = generateTestData("Weekly", 0, 4)
@@ -219,7 +225,7 @@ export const script: Script = async ({ db, args }) => {
   console.log("DEBUG: HTML String: ", htmlString)
   console.log("DEBUG: Email: ", email)
 
-  // Create an email document in /notifications_mails to queue up the send
+  // Create an email document in /emails to queue up the send
   const result = await db.collection("emails").add({
     to: [email],
     message: {
