@@ -2,7 +2,7 @@ import ErrorPage from "next/error"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
-import { useAuth } from "../auth"
+import { Frequency, useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
@@ -142,9 +142,9 @@ export default function Newsfeed() {
     }: Profile = profile
 
     const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-    const [notifications, setNotifications] = useState<
-      "Weekly" | "Monthly" | "None"
-    >(notificationFrequency ? notificationFrequency : "Weekly")
+    const [notifications, setNotifications] = useState<Frequency>(
+      notificationFrequency ? notificationFrequency : "Weekly"
+    )
     const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
       isPublic ? isPublic : false
     )

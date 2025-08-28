@@ -3,7 +3,7 @@ import Router from "next/router"
 import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
-import { useAuth } from "../auth"
+import { Frequency, useAuth } from "../auth"
 import { Container, Row, Spinner } from "../bootstrap"
 import {
   Profile,
@@ -87,16 +87,16 @@ export function EditProfileForm({
 
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-  const [notifications, setNotifications] = useState<
-    "Weekly" | "Monthly" | "None"
-  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [notifications, setNotifications] = useState<Frequency>(
+    notificationFrequency || "Weekly"
+  )
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
   )
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
-    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setNotifications(notificationFrequency || "Weekly")
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
