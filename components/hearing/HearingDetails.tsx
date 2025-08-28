@@ -75,7 +75,7 @@ export const HearingDetails = ({
   return (
     <Container className="mt-3 mb-3">
       <h1>
-        {t("hearing")} {hearingId}
+        {t("hearing", { ns: "hearing" })} {hearingId}
       </h1>
 
       <h5 className={`mb-3`}>{description}</h5>
@@ -134,7 +134,7 @@ export const HearingDetails = ({
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
-              {t("no_video_on_file")}
+              {t("no_video_on_file", { ns: "hearing" })}
             </LegalContainer>
           )}
 

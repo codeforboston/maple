@@ -96,7 +96,7 @@ export const Transcriptions = ({
         </Container>
       ) : (
         <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
-          <div>{t("transcription_not_on_file")}</div>
+          <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
         </ErrorContainer>
       )}
     </>

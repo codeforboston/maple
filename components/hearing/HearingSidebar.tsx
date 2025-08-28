@@ -109,13 +109,13 @@ export const HearingSidebar = ({
   return (
     <>
       <SidebarHeader className={`fs-6 fw-bold px-3 pb-2`}>
-        {t("hearing_details")}
+        {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
       {dateCheck ? (
         <SidebarBody className={`border-bottom fs-6 fw-bold px-3 py-3`}>
           <SidebarSubbody className={`mb-1`}>
-            {t("recording_date")}
+            {t("recording_date", { ns: "hearing" })}
           </SidebarSubbody>
           <div className={`fw-normal`}>{formattedDate}</div>
         </SidebarBody>
@@ -127,14 +127,14 @@ export const HearingSidebar = ({
         <SidebarBody
           className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
         >
-          {t("committee_members")}
+          {t("committee_members", { ns: "hearing" })}
           <SidebarSubbody className={`mb-1 mt-2`}>
-            {t("chairs")}
+            {t("chairs", { ns: "hearing" })}
             <div>
               {houseChairperson && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${houseChairperson.MemberCode}.jpg`}
-                  mainText={`House Chair`}
+                  mainText={t("house_chair", { ns: "hearing" })}
                   subText={
                     <links.External
                       href={`https://malegislature.gov/Legislators/Profile/${houseChairperson.MemberCode}`}
@@ -149,7 +149,7 @@ export const HearingSidebar = ({
               {senateChairperson && (
                 <LabeledIcon
                   idImage={`https://malegislature.gov/Legislators/Profile/170/${senateChairperson.MemberCode}.jpg`}
-                  mainText={`Senate Chair`}
+                  mainText={t("senate_chair", { ns: "hearing" })}
                   subText={
                     <links.External
                       href={`https://malegislature.gov/Legislators/Profile/${senateChairperson.MemberCode}`}
@@ -168,13 +168,17 @@ export const HearingSidebar = ({
                     className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
                     onClick={toggleMembers}
                   >
-                    &nbsp; {showMembers ? "Show less" : "Show more"} &nbsp;
+                    &nbsp;{" "}
+                    {showMembers
+                      ? t("show_less", { ns: "hearing" })
+                      : t("show_more", { ns: "hearing" })}
+                    &nbsp;
                   </CommitteeButton>
                 </div>
 
                 {showMembers ? (
                   <>
-                    {t("members")}
+                    {t("members", { ns: "hearing" })}
                     <div>
                       {members.map((member: Members, index: number) => {
                         if (
@@ -185,7 +189,7 @@ export const HearingSidebar = ({
                             <LabeledIcon
                               key={index}
                               idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
-                              mainText={`Member`}
+                              mainText={t("member", { ns: "hearing" })}
                               subText={
                                 <links.External
                                   href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
