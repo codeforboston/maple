@@ -4,6 +4,7 @@ import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import style from "./PolicyPage.module.css"
 import Router from "next/router"
 import classNames from "classnames"
+import { useTranslation } from "next-i18next"
 
 const policies = ["copyright", "privacy-policy", "code-of-conduct"] as const
 export type Policy = (typeof policies)[number]
@@ -13,13 +14,14 @@ export default function PolicyPage({
 }: {
   policy?: Policy
 }) {
+  const { t } = useTranslation(["policies", "common"])
   const handleOnClick = (p: Policy) => {
     Router.push(`/policies/${p}`)
   }
 
   return (
     <Container fluid className={style.policyContent}>
-      <h1>Policies</h1>
+      <h1>{t("common:titles.policies")}</h1>
       <Stack direction="horizontal">
         <Button
           className={`${
@@ -28,14 +30,14 @@ export default function PolicyPage({
           id="privacy-policy"
           onClick={e => handleOnClick("privacy-policy")}
         >
-          Privacy <br /> Policy
+          {t("policies:tabs.privacy.line1")} <br /> {t("policies:tabs.privacy.line2")}
         </Button>
         <Button
           className={`${style[policy === "copyright" ? "currentTab" : "tab"]}`}
           id="copyright"
           onClick={e => handleOnClick("copyright")}
         >
-          Terms of Service <br />
+          {t("policies:tabs.terms.line1")} <br />
         </Button>
 
         <Button
@@ -45,19 +47,17 @@ export default function PolicyPage({
           id="code-of-conduct"
           onClick={e => handleOnClick("code-of-conduct")}
         >
-          Code of <br /> Conduct
+          {t("policies:tabs.conduct.line1")} <br /> {t("policies:tabs.conduct.line2")}
         </Button>
       </Stack>
 
       <PolicyContent policy={policy} />
 
       <div className={style.sharedValues}>
-        <p className={style.subHeading}>Our Shared Values</p>
+        <p className={style.subHeading}>{t("policies:values.heading")}</p>
         <hr className={style.bottomBorder}></hr>
-        <p className={style.text1}>
-          How we interact with each other determines what we can accomplish
-        </p>
-        <p className={style.text2}>On this website, we ask you to act with:</p>
+        <p className={style.text1}>{t("policies:values.description1")}</p>
+        <p className={style.text2}>{t("policies:values.description2")}</p>
       </div>
 
       <Container fluid>
@@ -71,7 +71,7 @@ export default function PolicyPage({
         >
           <Col xs={12} className={style.blueBox}>
             <Image src="/handShake.jpg" alt="" className={style.symbol}></Image>
-            <p className={style.values}>Humility</p>
+            <p className={style.values}>{t("policies:values.humility")}</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
             <Image
@@ -79,11 +79,11 @@ export default function PolicyPage({
               alt=""
               className={style.symbol}
             ></Image>
-            <p className={style.values}>Compassion</p>
+            <p className={style.values}>{t("policies:values.compassion")}</p>
           </Col>
           <Col xs={12} className={style.blueBox}>
             <Image src="/lightBulb.png" alt="" className={style.symbol}></Image>
-            <p className={style.values}>Curiosity</p>
+            <p className={style.values}>{t("policies:values.curiosity")}</p>
           </Col>
         </Row>
       </Container>

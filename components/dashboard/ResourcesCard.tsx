@@ -3,25 +3,25 @@ import { useTranslation } from "next-i18next"
 type Props = {}
 
 export function ResourcesCard({}: Props) {
-  const { t } = useTranslation(["common"])
+  const { t } = useTranslation(["common"]) 
 
   return (
     <Container>
       <Wrapper>
         <LanguagesContainer>
-          <span>Languages</span>
+          <span>{t("languages")}</span>
 
           <Languages>
-            <span>Spanish </span> | <span> English</span>
+            <span>{t("spanish")} </span> | <span> {t("english")}</span>
           </Languages>
         </LanguagesContainer>
 
         <PrivacyContainer>
           <span>
-            <Links href="#">Privacy Policy</Links>
+            <Links href="#">{t("privacyPolicy")}</Links>
           </span>
           <span>
-            <Links href="#">Terms and Conditions </Links>
+            <Links href="#">{t("termsAndConditions")} </Links>
           </span>
         </PrivacyContainer>
         <SocialContainer>
