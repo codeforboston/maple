@@ -15,7 +15,7 @@ export const Provider: React.FC<React.PropsWithChildren<unknown>> = ({
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [dispatch])
 
   return <>{children}</>
 }

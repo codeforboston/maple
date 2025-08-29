@@ -26,7 +26,7 @@ export function ListReports() {
     )
 
     return () => unsubscribe()
-  }, [])
+  }, [firestore, refresh])
   return (
     <>
       {process.env.NEXT_PUBLIC_USE_EMULATOR && <CreateMockReport />}
