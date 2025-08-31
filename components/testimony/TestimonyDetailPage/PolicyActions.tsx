@@ -6,7 +6,7 @@ import { FC, ReactElement, useContext, useEffect } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
-import { TopicQuery } from "components/shared/FollowingQueries"
+import { followsTopic } from "components/shared/FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { FollowContext } from "components/shared/FollowContext"
 
@@ -44,10 +44,8 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
 
   useEffect(() => {
     uid
-      ? TopicQuery(uid, topicName).then(result => {
-          setFollowStatus(prevOrgFollowGroup => {
-            return { ...prevOrgFollowGroup, [topicName]: Boolean(result) }
-          })
+      ? followsTopic(uid, topicName).then(result => {
+          setFollowStatus(prev => ({ ...prev, [topicName]: result }))
         })
       : null
   }, [uid, topicName, setFollowStatus])
