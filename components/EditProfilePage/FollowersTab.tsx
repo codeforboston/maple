@@ -3,7 +3,7 @@ import { httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useAuth } from "../auth"
-import { FollowUserItem, PaginatedListCard, LoadableList } from "./shared"
+import { FollowUserItem, PaginatedListCard, LoadableListState } from "./shared"
 
 export const FollowersTab = ({
   className,
@@ -13,7 +13,7 @@ export const FollowersTab = ({
   setFollowerCount: Dispatch<SetStateAction<number | null>>
 }) => {
   const uid = useAuth().user?.uid
-  const [state, setState] = useState<LoadableList<string>>({
+  const [state, setState] = useState<LoadableListState<string>>({
     items: [],
     loading: true,
     error: null

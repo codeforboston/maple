@@ -8,7 +8,7 @@ import { ComponentProps, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
-import { FollowUserItem, PaginatedListCard, LoadableList } from "./shared"
+import { FollowUserItem, PaginatedListCard, LoadableListState } from "./shared"
 
 export function FollowingTab({ className }: { className?: string }) {
   const uid = useAuth().user?.uid
@@ -57,8 +57,8 @@ function useFollowList<T>({
   subscriptionRef: ReturnType<typeof collection> | null
   uid: string | undefined
   type: "bill" | "testimony"
-}): LoadableList<T> {
-  const [state, setState] = useState<LoadableList<T>>({
+}): LoadableListState<T> {
+  const [state, setState] = useState<LoadableListState<T>>({
     items: [],
     loading: false,
     error: null

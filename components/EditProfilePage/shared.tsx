@@ -8,7 +8,7 @@ import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 
-export type LoadableList<T> = {
+export type LoadableListState<T> = {
   items: readonly T[]
   loading: boolean
   error: string | null
@@ -23,14 +23,11 @@ export function PaginatedListCard<T>({
   loading = false,
   error = null,
   description
-}: {
+}: LoadableListState<T> & {
   className?: string
   title: string | React.ReactNode
-  items: readonly T[]
   itemsPerPage?: number
   ItemCard: React.ComponentType<T>
-  loading?: boolean
-  error?: string | null
   description?: React.ReactNode
 }) {
   const [currentPage, setCurrentPage] = useState(1)
