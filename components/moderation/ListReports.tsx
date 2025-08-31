@@ -14,7 +14,7 @@ import { StatusField } from "./common"
 import { CreateMockReport } from "./setUp/CreateMockReport"
 
 export function ListReports() {
-  const { t } = useTranslation("moderation") 
+  const { t } = useTranslation("moderation")
   const firestore = getFirestore()
   const refresh = useRefresh()
   useEffect(() => {
@@ -40,8 +40,11 @@ export function ListReports() {
           />
           <TextField source="reason" />
           <StatusField label={t("status")} />
-          <TextField source="resolution.resolution" label={t("resolution") } />
-          <TextField source="resolution.moderatorUid" label={t("moderatedBy")} />
+          <TextField source="resolution.resolution" label={t("resolution")} />
+          <TextField
+            source="resolution.moderatorUid"
+            label={t("moderatedBy")}
+          />
           <WithRecord
             label={t("resolveReport")}
             render={(record: Report) => {
@@ -50,7 +53,10 @@ export function ListReports() {
               return hasBeenResolved ? (
                 <div>{t("resolved")}</div>
               ) : (
-                <EditButton label={t("resolveReportAction")} disabled={hasBeenResolved} />
+                <EditButton
+                  label={t("resolveReportAction")}
+                  disabled={hasBeenResolved}
+                />
               )
             }}
           />

@@ -30,7 +30,8 @@ export default function PolicyPage({
           id="privacy-policy"
           onClick={e => handleOnClick("privacy-policy")}
         >
-          {t("policies:tabs.privacy.line1")} <br /> {t("policies:tabs.privacy.line2")}
+          {t("policies:tabs.privacy.line1")} <br />{" "}
+          {t("policies:tabs.privacy.line2")}
         </Button>
         <Button
           className={`${style[policy === "copyright" ? "currentTab" : "tab"]}`}
@@ -47,7 +48,8 @@ export default function PolicyPage({
           id="code-of-conduct"
           onClick={e => handleOnClick("code-of-conduct")}
         >
-          {t("policies:tabs.conduct.line1")} <br /> {t("policies:tabs.conduct.line2")}
+          {t("policies:tabs.conduct.line1")} <br />{" "}
+          {t("policies:tabs.conduct.line2")}
         </Button>
       </Stack>
 

@@ -38,9 +38,7 @@ export const Status = ({ bill }: BillProps) => {
         </StyledButton>
         <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
           <Modal.Header closeButton onClick={handleCloseBillHistory}>
-            <StyledModalTitle>
-              {t("bill.status_and_history")}
-            </StyledModalTitle>
+            <StyledModalTitle>{t("bill.status_and_history")}</StyledModalTitle>
           </Modal.Header>
           <StyledBillTitle>
             {bill.id + " - " + bill.content.Title}

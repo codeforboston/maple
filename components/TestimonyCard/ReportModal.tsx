@@ -96,7 +96,8 @@ export function ReportModal({
             />
           </FloatingLabel>
           <div className="text-muted">
-            {additionalInformation.length}/{ADDITIONAL_INFO_MAX_LENGTH_CHARS} {tCommon("characters")}
+            {additionalInformation.length}/{ADDITIONAL_INFO_MAX_LENGTH_CHARS}{" "}
+            {tCommon("characters")}
           </div>
         </Modal.Body>
         <Modal.Footer>

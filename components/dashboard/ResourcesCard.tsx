@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next"
 type Props = {}
 
 export function ResourcesCard({}: Props) {
-  const { t } = useTranslation(["common"]) 
+  const { t } = useTranslation(["common"])
 
   return (
     <Container>

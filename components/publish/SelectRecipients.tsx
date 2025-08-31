@@ -56,7 +56,8 @@ export const SelectRecipients = styled(props => {
               className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
               format="text/plain"
             >
-              <FontAwesomeIcon icon={faCopy} /> {t("publish.copyEmailRecipients")}
+              <FontAwesomeIcon icon={faCopy} />{" "}
+              {t("publish.copyEmailRecipients")}
             </CopyButton>
           ) : null}
         </Col>
@@ -246,7 +247,9 @@ const SelectLegislatorEmails = ({ className }: { className?: string }) => {
       memberIds={share.recipients.map(m => m.MemberCode)}
       update={m => dispatch(setRecipients(m))}
       getOptionLabel={o =>
-        `${o.Branch === "House" ? t("publish.repShort") : t("publish.senShort")} ${o.Name} | ${o.District}`
+        `${
+          o.Branch === "House" ? t("publish.repShort") : t("publish.senShort")
+        } ${o.Name} | ${o.District}`
       }
       components={{ MultiValueLabel: Label }}
     />
