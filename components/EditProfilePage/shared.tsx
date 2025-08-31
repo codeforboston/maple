@@ -86,7 +86,13 @@ export function PaginatedListCard<T>({
   )
 }
 
-export function FollowUserItem({ profileId }: { profileId: string }) {
+export function FollowUserItem({
+  profileId,
+  confirmUnfollow
+}: {
+  profileId: string
+  confirmUnfollow?: boolean
+}) {
   const { result: profile, loading } = usePublicProfile(profileId)
   const { t } = useTranslation("profile")
 
@@ -120,7 +126,10 @@ export function FollowUserItem({ profileId }: { profileId: string }) {
         </Col>
         {isPublic ? (
           <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
-            <FollowUserButton profileId={profileId} />
+            <FollowUserButton
+              profileId={profileId}
+              confirmUnfollow={confirmUnfollow}
+            />
           </Col>
         ) : null}
       </Row>

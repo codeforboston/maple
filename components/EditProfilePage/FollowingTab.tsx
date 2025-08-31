@@ -36,14 +36,15 @@ export function FollowingTab({ className }: { className?: string }) {
       <PaginatedListCard
         className={className}
         title={t("follow.orgs")}
-        ItemCard={FollowUserItem}
+        ItemCard={({ profileId }) => (
+          <FollowUserItem profileId={profileId} confirmUnfollow={true} />
+        )}
         {...useFollowList<ComponentProps<typeof FollowUserItem>>({
           subscriptionRef,
           uid,
           type: "testimony"
         })}
       />
-      {/* Unfollow modal removed; using Follow buttons directly */}
     </>
   )
 }
@@ -121,7 +122,7 @@ function FollowedBillItem({
           <h6>{bill.content.Title}</h6>
         </Col>
         <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
-          <FollowBillButton bill={bill} />
+          <FollowBillButton bill={bill} confirmUnfollow={true} />
         </Col>
       </Row>
       <hr className={`mt-3`} />
