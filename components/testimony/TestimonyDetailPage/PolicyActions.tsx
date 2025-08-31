@@ -54,12 +54,12 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
 
   const FollowClick = async () => {
     await followAction()
-    setFollowStatus({ ...followStatus, [topicName]: true })
+    setFollowStatus(prev => ({ ...prev, [topicName]: true }))
   }
 
   const UnfollowClick = async () => {
     await unfollowAction()
-    setFollowStatus({ ...followStatus, [topicName]: false })
+    setFollowStatus(prev => ({ ...prev, [topicName]: false }))
   }
 
   const isFollowing = followStatus[topicName]
