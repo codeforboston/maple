@@ -15,7 +15,11 @@ import { TestimonyDetail } from "./TestimonyDetail"
 import { VersionBanner } from "./TestimonyVersionBanner"
 import { useAuth } from "components/auth"
 import { useMediaQuery } from "usehooks-ts"
-import { setFollow, setUnfollow } from "components/shared/FollowingQueries"
+import {
+  billTopicName,
+  followBill,
+  unfollowBill
+} from "components/shared/FollowingQueries"
 
 export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
   const [isReporting, setIsReporting] = useState(false)
@@ -24,18 +28,9 @@ export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { authorUid, revision } = useCurrentTestimonyDetails()
   const { bill } = useCurrentTestimonyDetails()
-  const { user } = useAuth()
-  const isUser = user?.uid === authorUid
-  const handleReporting = (boolean: boolean) => {
-    setIsReporting(boolean)
-  }
+  const uid = useAuth().user?.uid
+  const isUser = uid === authorUid
   const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
-  const uid = user?.uid
-  const { id: billId, court: courtId } = bill
-  const topicName = `bill-${courtId}-${billId}`
-  const followAction = () =>
-    setFollow(uid, topicName, bill, billId, courtId, undefined)
-  const unfollowAction = () => setUnfollow(uid, topicName)
 
   return (
     <>
@@ -56,10 +51,10 @@ export const TestimonyDetailPage: FC<React.PropsWithChildren<unknown>> = () => {
                 className="mb-4"
                 isUser={isUser}
                 isReporting={isReporting}
-                setReporting={handleReporting}
-                topicName={topicName}
-                followAction={followAction}
-                unfollowAction={unfollowAction}
+                setReporting={setIsReporting}
+                topicName={billTopicName(bill.court, bill.id)}
+                followAction={() => followBill(uid, bill)}
+                unfollowAction={() => unfollowBill(uid, bill)}
               />
             )}
             <RevisionHistory />
