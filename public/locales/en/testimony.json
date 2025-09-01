@@ -1,6 +1,6 @@
 {
   "counts": {
-    "total": "Total Testimonies",
+    "total": "{{count}} Total Testimonies",
     "endorsements": {
       "title": "Endorse",
       "alt": "The total number of testimonies that endorse the bill."
