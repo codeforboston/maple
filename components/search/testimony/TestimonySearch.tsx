@@ -61,35 +61,36 @@ export const useTestimonySort = () => {
   return items
 }
 
-export const initialSortByValue = items[0].value
-
-export const TestimonySearch = () => (
-  <SearchErrorBoundary>
-    <InstantSearch
-      indexName={initialSortByValue}
-      initialUiState={{
-        [initialSortByValue]: {
-          refinementList: { court: [String(currentGeneralCourt)] }
-        }
-      }}
-      searchClient={searchClient}
-      routing={{
-        router: createInstantSearchRouterNext({
-          singletonRouter,
-          routerOptions: {
-            cleanUrlOnDispose: false,
-            createURL: args => searchStateToUrl(args),
-            parseURL: args => pathToSearchState(args)
+export const TestimonySearch = () => {
+  const initialSortByValue = useTestimonySort()[0].value
+  return (
+    <SearchErrorBoundary>
+      <InstantSearch
+        indexName={initialSortByValue}
+        initialUiState={{
+          [initialSortByValue]: {
+            refinementList: { court: [String(currentGeneralCourt)] }
           }
-        })
-      }}
-      future={{ preserveSharedStateOnUnmount: true }}
-    >
-      <VirtualFilters type="testimony" />
-      <Layout />
-    </InstantSearch>
-  </SearchErrorBoundary>
-)
+        }}
+        searchClient={searchClient}
+        routing={{
+          router: createInstantSearchRouterNext({
+            singletonRouter,
+            routerOptions: {
+              cleanUrlOnDispose: false,
+              createURL: args => searchStateToUrl(args),
+              parseURL: args => pathToSearchState(args)
+            }
+          })
+        }}
+        future={{ preserveSharedStateOnUnmount: true }}
+      >
+        <VirtualFilters type="testimony" />
+        <Layout />
+      </InstantSearch>
+    </SearchErrorBoundary>
+  )
+}
 
 const RefinementRow = styled.div`
   display: inline-flex;
