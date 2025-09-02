@@ -24,7 +24,7 @@ export const Claim = Record({
 })
 export type Claim = Static<typeof Claim>
 
-export const Frequency = Union(L("Weekly"), L("Monthly"), L("None"))
+export const Frequency = Union(L("Weekly"), L("Monthly"), L("Daily"), L("None"))
 export type Frequency = Static<typeof Frequency>
 
 export const OrgCategories = [
