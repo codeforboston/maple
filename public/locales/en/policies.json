@@ -1,17 +1,9 @@
 {
   "title": "Policies",
   "tabs": {
-    "privacy": {
-      "line1": "Privacy",
-      "line2": "Policy"
-    },
-    "terms": {
-      "line1": "Terms of Service"
-    },
-    "conduct": {
-      "line1": "Code of",
-      "line2": "Conduct"
-    }
+    "privacy-policy": "Privacy Policy",
+    "copyright": "Terms of Service",
+    "code-of-conduct": "Code of Conduct"
   },
   "values": {
     "heading": "Our Shared Values",
@@ -22,4 +14,3 @@
     "curiosity": "Curiosity"
   }
 }
-
