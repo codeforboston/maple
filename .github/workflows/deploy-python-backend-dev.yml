@@ -1,0 +1,36 @@
+name: Deploy the frontend and backend to the Firebase Production environment.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - llm/**
+      - firestore.rules
+      - firestore.indexes.json
+      - firebase.json
+      - storage.rules
+
+jobs:
+  build_and_deploy:
+    # Don't deploy forks, even if actions are enabled
+    if: github.repository_owner == 'codeforboston'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Setup Python environment
+        uses: ./.github/actions/python
+      - run: |
+          python -m venv llm/venv
+          source llm/venv/bin/activate
+          pip3 install -r llm/requirements.txt
+        shell: bash
+      - name: Build and deploy to Firebase
+        uses: w9jds/firebase-action@v13.18.0
+        with:
+          args: deploy --force --only functions:llm
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
+          PROJECT_ID: digital-testimony-dev
