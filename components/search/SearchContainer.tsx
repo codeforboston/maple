@@ -2,10 +2,6 @@ import styled from "styled-components"
 
 /** Customizations of the default search styling. */
 export const SearchContainer = styled.div`
-  & {
-    font-family: "Nunito";
-  }
-
   .ais-CurrentRefinements-list {
     display: inline-flex;
     flex-wrap: wrap;

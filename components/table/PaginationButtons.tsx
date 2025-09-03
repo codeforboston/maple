@@ -43,7 +43,6 @@ export const PaginationButtons = ({
 const SpanStyle = styled(Button)`
   background-color: #1a3185;
   color: white;
-  font-family: nunito;
   margin: 2px;
   border-radius: 0;
 `
