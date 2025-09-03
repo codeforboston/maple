@@ -1,4 +1,4 @@
-name: Deploy the frontend and backend to the Firebase Production environment.
+name: Deploy Python Firebase functions to development environment
 on:
   push:
     branches:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       - name: Setup Python environment
-        uses: ./.github/actions/python
+        uses: ./.github/actions/setup-llm
       - run: |
           python -m venv llm/venv
           source llm/venv/bin/activate
