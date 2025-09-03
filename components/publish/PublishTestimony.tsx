@@ -18,6 +18,7 @@ import { ShareButtons } from "./ShareTestimony"
 import { StepHeader } from "./StepHeader"
 import { YourTestimony } from "./TestimonyPreview"
 import { hasDraftChanged } from "components/db"
+import { useTranslation, Trans } from "next-i18next"
 
 const INITIAL_VERSION = 1,
   MAX_EDITS = 5,
@@ -55,30 +56,30 @@ function usePublishTestimony() {
 }
 
 export const PublishTestimony = styled(({ ...rest }) => {
+  const { t } = useTranslation("testimony")
   const publish = usePublishTestimony(),
     error = publish.publish.error
 
   return (
     <div {...rest}>
-      <StepHeader step={3}>Confirm and Send</StepHeader>
+      <StepHeader step={3}>{t("publish.confirmAndSend")}</StepHeader>
       <SelectRecipients className="mt-4" />
       <YourTestimony type="draft" className="mt-4" />
 
       <EditReason className="mt-4" />
 
-      {error && <div className="mt-2 text-danger">Error: {error.message}</div>}
+      {error && (
+        <div className="mt-2 text-danger">
+          {t("common:errorLabel", { ns: "common" })} {error.message}
+        </div>
+      )}
 
       <nav.FormNavigation
         status
         left={<nav.Previous />}
         right={<PublishAndSend publish={publish} />}
       />
-      <p>
-        After clicking “publish” please click “Send Email” to open your email
-        client (e.g., Outlook) and send the email populated with your testimony!
-        Or, click the “copy” buttons to manually copy the testimony and
-        recipients of your email.
-      </p>
+      <p>{t("publish.instructions")}</p>
     </div>
   )
 })``
@@ -86,19 +87,20 @@ export const PublishTestimony = styled(({ ...rest }) => {
 /** An orange notice with rounded corners that lists the testimony fields that the user has edited. */
 const ChangeNotice = styled(props => {
   const { position, content, attachmentId, publication } = usePublishState()
+  const { t } = useTranslation("testimony")
   if (!publication) return null
 
   const publishedAttachmentId = publication.draftAttachmentId || undefined
 
   const changes = [
-    position !== publication.position && "Position",
-    content !== publication.content && "Content",
-    attachmentId !== publishedAttachmentId && "Attachment"
+    position !== publication.position && t("publish.change.position"),
+    content !== publication.content && t("publish.change.content"),
+    attachmentId !== publishedAttachmentId && t("publish.change.attachment")
   ]
     .filter(Boolean)
     .map((s, i) => (
       <span key={i} className="change">
-        {s} Changed
+        {s} {t("publish.change.changed")}
       </span>
     ))
 
@@ -109,11 +111,12 @@ const ChangeNotice = styled(props => {
       <div className="changes">{changes}</div>
       <p>
         <b>
-          You may edit your testimony up to {editsRemaining} more{" "}
-          {editsRemaining === 1 ? "time" : "times"}.
-        </b>{" "}
-        Before you publish updates to your testimony, please provide a reason
-        for your changes.
+          <Trans
+            t={t}
+            i18nKey="publish.editLimitNotice"
+            values={{ count: editsRemaining }}
+          />
+        </b>
       </p>
     </div>
   )
@@ -137,6 +140,7 @@ const ChangeNotice = styled(props => {
 export const EditReason = styled(props => {
   const { publishedAndDraftChanged, editReason, setEditReason, errors } =
     usePublishTestimony()
+  const { t } = useTranslation("testimony")
   if (!publishedAndDraftChanged) return null
 
   return (
@@ -145,8 +149,8 @@ export const EditReason = styled(props => {
         content={editReason}
         setContent={setEditReason}
         rows={3}
-        label="Reason for Edit"
-        placeholder="Describe the reason for your edit here"
+        label={t("publish.reasonLabel")}
+        placeholder={t("publish.reasonPlaceholder")}
         error={errors.editReason}
       >
         <ChangeNotice />
@@ -169,6 +173,7 @@ const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
 
 const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
   const { ready, mailToUrl } = useTestimonyEmail()
+  const { t } = useTranslation("testimony")
 
   if (!ready) return null
   return (
@@ -183,7 +188,7 @@ const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
         void publish.publish.execute()
       }}
     >
-      Publish {publish.hasRecipients && "and Send"}
+      {t("publish.publish")} {publish.hasRecipients && t("publish.andSend")}
     </LoadingButton>
   )
 }
