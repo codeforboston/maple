@@ -1,122 +1,59 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where
-} from "firebase/firestore"
+import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore"
 import { Bill } from "../db"
 import { firestore } from "../firebase"
-import { UnfollowModalConfig } from "components/EditProfilePage/UnfollowModal"
 
-export type Results = { [key: string]: string[] }
-
-function setSubscriptionRef(uid: string | undefined) {
-  return collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
-}
-
-export async function deleteItem({
-  uid,
-  unfollowItem
-}: {
-  uid: string | undefined
-  unfollowItem: UnfollowModalConfig | null
-}) {
-  const subscriptionRef = setSubscriptionRef(uid)
-
-  if (unfollowItem !== null) {
-    let topicName = ""
-    if (unfollowItem.type == "bill") {
-      topicName = `bill-${unfollowItem.court.toString()}-${unfollowItem.typeId}`
-    } else {
-      topicName = `testimony-${unfollowItem.typeId}`
-    }
-
-    await deleteDoc(doc(subscriptionRef, topicName))
-  }
-}
-
-export async function FollowingQuery(uid: string | undefined) {
-  let results: Results = {
-    bills: [],
-    orgs: []
-  }
-
-  const subscriptionRef = setSubscriptionRef(uid)
-
-  const q1 = query(
-    subscriptionRef,
-    where("uid", "==", `${uid}`),
-    where("type", "==", `bill`)
+function getTopicRef(uid: string | undefined, topicName: string) {
+  return doc(
+    collection(firestore, `/users/${uid}/activeTopicSubscriptions/`),
+    topicName
   )
-  const querySnapshotBills = await getDocs(q1)
-  querySnapshotBills.forEach(doc => {
-    // doc.data() is never undefined for query doc snapshots
-    doc.data().billLookup ? results.bills.push(doc.data().billLookup) : null
-  })
-
-  const q2 = query(
-    subscriptionRef,
-    where("uid", "==", `${uid}`),
-    where("type", "==", `org`)
-  )
-  const querySnapshotOrgs = await getDocs(q2)
-  querySnapshotOrgs.forEach(doc => {
-    // doc.data() is never undefined for query doc snapshots
-    doc.data().userLookup ? results.orgs.push(doc.data().userLookup) : null
-  })
-
-  return results
 }
 
-export async function setFollow(
+export const billTopicName = (court: number, billId: string) =>
+  `bill-${court}-${billId}`
+export const profileTopicName = (profileId: string) => `testimony-${profileId}`
+
+export const followBill = async (uid: string | undefined, bill: Bill) => {
+  const topicName = billTopicName(bill.court, bill.id)
+  await setDoc(getTopicRef(uid, topicName), {
+    topicName,
+    uid,
+    billLookup: {
+      billId: bill.id,
+      court: bill.court
+    },
+    type: "bill"
+  })
+}
+
+export const unfollowTopic = async (
   uid: string | undefined,
-  topicName: string,
-  bill: Bill | undefined,
-  billId: string | undefined,
-  courtId: number | undefined,
-  profileId: string | undefined
-) {
-  const subscriptionRef = setSubscriptionRef(uid)
+  topicName: string
+) => await deleteDoc(getTopicRef(uid, topicName))
+export const unfollowBill = async (
+  uid: string | undefined,
+  bill: Pick<Bill, "id" | "court">
+) => await unfollowTopic(uid, billTopicName(bill.court, bill.id))
 
-  bill
-    ? await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        billLookup: {
-          billId: billId,
-          court: courtId
-        },
-        type: "bill"
-      })
-    : await setDoc(doc(subscriptionRef, topicName), {
-        topicName: topicName,
-        uid: uid,
-        userLookup: {
-          profileId: profileId
-        },
-        type: "testimony"
-      })
-}
-
-export async function setUnfollow(uid: string | undefined, topicName: string) {
-  const subscriptionRef = setSubscriptionRef(uid)
-
-  await deleteDoc(doc(subscriptionRef, topicName))
-}
-
-export async function TopicQuery(uid: string | undefined, topicName: string) {
-  let result = ""
-
-  const subscriptionRef = setSubscriptionRef(uid)
-
-  const q = query(subscriptionRef, where("topicName", "==", topicName))
-  const querySnapshot = await getDocs(q)
-  querySnapshot.forEach(doc => {
-    // doc.data() is never undefined for query doc snapshots
-    result = doc.data().topicName
+export const followProfile = async (
+  uid: string | undefined,
+  profileId: string
+) => {
+  const topicName = profileTopicName(profileId)
+  await setDoc(getTopicRef(uid, topicName), {
+    topicName,
+    uid,
+    userLookup: { profileId },
+    type: "testimony"
   })
-  return result
 }
+
+export const unfollowProfile = async (
+  uid: string | undefined,
+  profileId: string
+) => await unfollowTopic(uid, profileTopicName(profileId))
+
+export const followsTopic = async (
+  uid: string | undefined,
+  topicName: string
+) => !!uid && (await getDoc(getTopicRef(uid, topicName))).exists()
