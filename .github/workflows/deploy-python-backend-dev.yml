@@ -9,6 +9,7 @@ on:
       - firestore.indexes.json
       - firebase.json
       - storage.rules
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
