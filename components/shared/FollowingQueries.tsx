@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   setDoc,
+  Timestamp,
   where
 } from "firebase/firestore"
 import { Bill } from "../db"
@@ -89,7 +90,8 @@ export async function setFollow(
           billId: billId,
           court: courtId
         },
-        type: "bill"
+        type: "bill",
+        nextDigestAt: Timestamp.fromDate(new Date())
       })
     : await setDoc(doc(subscriptionRef, topicName), {
         topicName: topicName,
@@ -97,7 +99,8 @@ export async function setFollow(
         userLookup: {
           profileId: profileId
         },
-        type: "testimony"
+        type: "testimony",
+        nextDigestAt: Timestamp.fromDate(new Date())
       })
 }
 
