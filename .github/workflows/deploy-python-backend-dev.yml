@@ -30,7 +30,7 @@ jobs:
       - name: Build and deploy to Firebase
         uses: w9jds/firebase-action@v13.18.0
         with:
-          args: deploy --force --only functions:llm
+          args: deploy --force --only functions:maple-llm
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
