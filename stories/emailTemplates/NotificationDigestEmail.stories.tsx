@@ -140,16 +140,19 @@ const users = [
 ]
 
 const generateTestData = (
-  frequency: Frequency,
+  frequency: Exclude<Frequency, "None">,
   numBills: number,
   numUsers: number
 ): NotificationEmailDigest => {
+  const endDateDay = {
+    Monthly: "30",
+    Weekly: "07",
+    Daily: "02"
+  }[frequency]
   return {
     notificationFrequency: frequency,
     startDate: new Date("2025-04-01T04:00:00Z"),
-    endDate: new Date(
-      `2025-04-${frequency === "Monthly" ? "30" : "07"}T04:00:00Z`
-    ),
+    endDate: new Date(`2025-04-${endDateDay}T04:00:00Z`),
     bills: bills.slice(0, Math.min(4, numBills)),
     users: users.slice(0, Math.min(4, numUsers)),
     numBillsWithNewTestimony: numBills,
@@ -157,7 +160,7 @@ const generateTestData = (
   }
 }
 
-// Frequency is guaranteed to be Monthly or Weekly,
+// Frequency is guaranteed to be Monthly, Weekly or Daily,
 // and there must be at least 1 bill OR 1 user with testimony
 // or else a digest wouldn't be generated
 const createDigestStory = (context: NotificationEmailDigest) => {
@@ -172,7 +175,9 @@ const createDigestStory = (context: NotificationEmailDigest) => {
 export const FullDigest: Story = createDigestStory(
   generateTestData("Monthly", 4, 4)
 )
-
+export const DailyDigest: Story = createDigestStory(
+  generateTestData("Daily", 5, 5)
+)
 export const OnlyBills: Story = createDigestStory(
   generateTestData("Weekly", 5, 0)
 )

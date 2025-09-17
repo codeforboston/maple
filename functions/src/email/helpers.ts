@@ -1,3 +1,4 @@
+import { Frequency } from "../auth/types"
 import { BillDigest } from "../notifications/emailTypes"
 
 export function addCounts() {
@@ -35,7 +36,7 @@ export function minusFour(value: number) {
   return result
 }
 
-export function noUpdatesFormat(aString: string) {
+export function noUpdatesFormat(aString: Frequency) {
   let result = ""
   switch (aString) {
     case "Monthly":
