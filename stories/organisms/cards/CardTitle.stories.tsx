@@ -1,21 +1,24 @@
-import { Meta, StoryObj } from "@storybook/react"
-import { CardTitle } from "../../../components/Card"
+import { Meta, StoryObj } from "@storybook/react";
+import { CardTitle } from "../../../components/Card";
+import CardBootstrap from "react-bootstrap/Card";
 
-const meta: Meta = {
+const meta: Meta<typeof CardTitle> = {
   title: "Organisms/Cards/CardTitle",
-  component: CardTitle
-}
+  component: CardTitle,
+};
+export default meta;
 
-export default meta
-
-type Story = StoryObj<typeof CardTitle>
+type Story = StoryObj<typeof CardTitle>;
 
 export const Primary: Story = {
   args: {
-    header: "Header",
-    subheader: "Subheader here don't miss it",
-    timestamp: "3:29PM",
-    imgSrc:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/2214px-How_to_use_icon.svg.png"
-  }
-}
+    title: "Header", 
+  },
+  render: ({ title }) => (
+    <CardTitle>
+      <CardBootstrap.Title className="align-items-start fs-6 lh-sm mb-1 text-secondary">
+        <strong>{title}</strong>
+      </CardBootstrap.Title>
+    </CardTitle>
+  ),
+};
