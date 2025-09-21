@@ -25,14 +25,17 @@ const TimestampCol = styled.div`
   width: 100px;
 `
 
+const TranscriptContainer = styled(Container)`
+  max-height: 250px;
+  overflow-y: auto;
+`
+
 const TranscriptionRow = styled(Row)`
   &:first-child {
     border-top-left-radius: 0.75rem;
     border-top-right-radius: 0.75rem;
   }
   &:nth-child(even) {
-    /* background-color: #c0c4dc; */
-    /* use #c0c4dc for selected rows when Search is implemented*/
     background-color: #e8ecf4;
   }
   &:nth-child(odd) {
@@ -42,25 +45,36 @@ const TranscriptionRow = styled(Row)`
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
   }
+
+  .highlighted {
+    background-color: #c0c4dc;
+    /* transition: background-color 0.3s ease-in-out; */
+  }
 `
 
 export const Transcriptions = ({
+  currentTime,
+  setCurrentTime,
   setCurTimeVideo,
+  videoLoaded,
+  videoRef,
   videoTranscriptionId
 }: {
+  currentTime: number
+  setCurrentTime: any
   setCurTimeVideo: any
+  videoLoaded: boolean
+  videoRef: any
   videoTranscriptionId: string
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
   const vid = videoTranscriptionId || "prevent FirebaseError"
-
+  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
   const subscriptionRef = collection(
     firestore,
     `transcriptions/${vid}/paragraphs`
   )
-
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
 
   const fetchTranscriptionData = useCallback(async () => {
     let docList: any[] = []
@@ -82,18 +96,45 @@ export const Transcriptions = ({
     fetchTranscriptionData()
   }, [fetchTranscriptionData])
 
+  useEffect(() => {
+    const handleTimeUpdate = () => {
+      videoRef.current.currentTime
+        ? setCurrentTime(videoRef.current.currentTime)
+        : null
+    }
+
+    const videoElement = videoRef.current
+
+    videoLoaded
+      ? videoElement.addEventListener("timeupdate", handleTimeUpdate)
+      : null
+
+    return () => {
+      videoLoaded
+        ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
+        : null
+    }
+  }, [setCurrentTime, videoLoaded, videoRef])
+
+  console.log("t: ", transcriptData)
+  console.log("VL: ", videoLoaded)
+
   return (
     <>
+      <div>{currentTime}</div>
+
       {transcriptData.length > 0 ? (
-        <Container className={`mb-2`}>
+        <TranscriptContainer className={`mb-2`}>
           {transcriptData.map((element: Paragraph, index: number) => (
             <TranscriptItem
               key={index}
+              className={`bg-warning`}
+              currentTime={currentTime}
               element={element}
               setCurTimeVideo={setCurTimeVideo}
             />
           ))}
-        </Container>
+        </TranscriptContainer>
       ) : (
         <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
           <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
@@ -104,9 +145,13 @@ export const Transcriptions = ({
 }
 
 function TranscriptItem({
+  className,
+  currentTime,
   element,
   setCurTimeVideo
 }: {
+  className?: string
+  currentTime: number
   element: Paragraph
   setCurTimeVideo: any
 }) {
@@ -137,8 +182,31 @@ function TranscriptItem({
     }
   }
 
+  const isHighlighted = element => {
+    return (
+      formatMilliseconds(currentTime) >= formatMilliseconds(element.start) &&
+      formatMilliseconds(currentTime) <= formatMilliseconds(element.end)
+    )
+  }
+
+  // const isHighlighted = useCallback(
+  //   element => {
+  //     console.log("CT: ", formatMilliseconds(currentTime))
+  //     console.log("1: ", formatMilliseconds(element.start))
+  //     return console.log(
+  //       formatMilliseconds(currentTime) >= formatMilliseconds(element.start) &&
+  //         formatMilliseconds(currentTime) <= formatMilliseconds(element.end)
+  //     )
+  //   },
+  //   [currentTime]
+  // )
+
+  // useEffect(() => {
+  //   isHighlighted(element)
+  // }, [element])
+
   return (
-    <TranscriptionRow>
+    <TranscriptionRow className={isHighlighted(element) ? `bg-info` : ``}>
       <TimestampCol>
         <Row className={`d-inline`}>
           <TimestampButton

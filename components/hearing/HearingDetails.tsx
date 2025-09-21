@@ -39,10 +39,17 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+
+  const handleVideoLoad = () => {
+    setVideoLoaded(true)
+  }
+
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
+    setCurrentTime(value)
   }
 
   const eventId = `hearing-${hearingId}`
@@ -130,7 +137,13 @@ export const HearingDetails = ({
 
           {videoURL ? (
             <VideoParent className={`my-3`}>
-              <VideoChild ref={videoRef} src={videoURL} controls muted />
+              <VideoChild
+                ref={videoRef}
+                src={videoURL}
+                onLoadedData={handleVideoLoad}
+                controls
+                muted
+              />
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
@@ -139,7 +152,11 @@ export const HearingDetails = ({
           )}
 
           <Transcriptions
+            currentTime={currentTime}
+            setCurrentTime={setCurrentTime}
             setCurTimeVideo={setCurTimeVideo}
+            videoLoaded={videoLoaded}
+            videoRef={videoRef}
             videoTranscriptionId={videoTranscriptionId}
           />
         </Col>
