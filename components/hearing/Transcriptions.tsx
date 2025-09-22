@@ -59,10 +59,10 @@ export const Transcriptions = ({
   videoTranscriptionId: string
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-
-  const vid = videoTranscriptionId || "prevent FirebaseError"
   const [highlightedId, setHighlightedId] = useState(-1)
   const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+  const vid = videoTranscriptionId || "prevent FirebaseError"
+
   const subscriptionRef = collection(
     firestore,
     `transcriptions/${vid}/paragraphs`
