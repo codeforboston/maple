@@ -90,10 +90,10 @@ export const Transcriptions = ({
 
   useEffect(() => {
     const handleTimeUpdate = () => {
-      const currentParagraph = transcriptData.findIndex(
+      const currentIndex = transcriptData.findIndex(
         element => videoRef.current.currentTime <= element.end / 1000
       )
-      setHighlightedId(currentParagraph)
+      setHighlightedId(currentIndex)
     }
 
     const videoElement = videoRef.current
