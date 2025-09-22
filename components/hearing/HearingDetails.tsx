@@ -48,6 +48,10 @@ export const HearingDetails = ({
   }
 
   function setCurTimeVideo(value: number) {
+    // setting videoRef.current.currentTime to value
+    // lets the timestamp button in the transcription control the video player
+
+    // setCurrentTime is used to sync the transcription highlights to the video player
     videoRef.current ? (videoRef.current.currentTime = value) : null
     setCurrentTime(value)
   }
