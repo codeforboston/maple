@@ -39,13 +39,13 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [videoLoaded, setVideoLoaded] = useState(false)
 
+  const [videoLoaded, setVideoLoaded] = useState(false)
   const handleVideoLoad = () => {
     setVideoLoaded(true)
   }
 
+  const videoRef = useRef<HTMLVideoElement>(null)
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
