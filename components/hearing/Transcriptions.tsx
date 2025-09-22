@@ -26,7 +26,7 @@ const TimestampCol = styled.div`
 `
 
 const TranscriptContainer = styled(Container)`
-  max-height: 250px;
+  max-height: 18rem;
   overflow-y: auto;
 `
 
