@@ -1,6 +1,6 @@
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
@@ -45,11 +45,6 @@ const TranscriptionRow = styled(Row)`
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
   }
-
-  .highlighted {
-    background-color: #c0c4dc;
-    /* transition: background-color 0.3s ease-in-out; */
-  }
 `
 
 export const Transcriptions = ({
@@ -69,7 +64,6 @@ export const Transcriptions = ({
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
-  const paragraphsRef = useRef<HTMLSpanElement>(null)
   const vid = videoTranscriptionId || "prevent FirebaseError"
   const [highlightedId, setHighlightedId] = useState(-1)
   const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
@@ -105,27 +99,12 @@ export const Transcriptions = ({
       )
       setHighlightedId(currentParagraph)
 
-      console.log("CT: ", currentTime)
-      console.log("CP: ", highlightedId)
-
-      // const activeIndex = transcriptData.findIndex(element => {
-      //   console.log("e: ", element.start / 1000)
-      //   console.log("x: ", videoRef.current.currentTime)
-      //   return element.start / 1000 > videoRef.current.currentTime
-      // })
-      // let paragraphElement = paragraphsRef.current?.childNodes[activeIndex]
-      // paragraphElement?.classList.add(`bg-info`)
-
-      // console.log("para: ", paragraphElement)
-      // console.log("I: ", activeIndex)
-
       videoRef.current.currentTime
         ? setCurrentTime(videoRef.current.currentTime)
         : null
     }
 
     const videoElement = videoRef.current
-
     videoLoaded
       ? videoElement.addEventListener("timeupdate", handleTimeUpdate)
       : null
@@ -137,27 +116,18 @@ export const Transcriptions = ({
     }
   }, [currentTime, setCurrentTime, transcriptData, videoLoaded, videoRef])
 
-  console.log("t: ", transcriptData)
-  console.log("VL: ", videoLoaded)
-
   return (
     <>
-      <div>{currentTime}</div>
-
       {transcriptData.length > 0 ? (
         <TranscriptContainer className={`mb-2`}>
           {transcriptData.map((element: Paragraph, index: number) => (
-            // <TranscriptionRow key={index} ref={paragraphsRef}>
             <TranscriptItem
               key={index}
-              className={`bg-warning`}
-              currentTime={currentTime}
               element={element}
               highlightedId={highlightedId}
               index={index}
               setCurTimeVideo={setCurTimeVideo}
             />
-            // </TranscriptionRow>
           ))}
         </TranscriptContainer>
       ) : (
@@ -170,15 +140,11 @@ export const Transcriptions = ({
 }
 
 function TranscriptItem({
-  className,
-  currentTime,
   element,
   highlightedId,
   index,
   setCurTimeVideo
 }: {
-  className?: string
-  currentTime: number
   element: Paragraph
   highlightedId: number
   index: number
@@ -211,35 +177,11 @@ function TranscriptItem({
     }
   }
 
-  // const isHighlighted = element => {
-  //   return (
-  //     formatMilliseconds(currentTime) >= formatMilliseconds(element.start) &&
-  //     formatMilliseconds(currentTime) <= formatMilliseconds(element.end)
-  //   )
-  // }
-
-  // const isHighlighted = useCallback(
-  //   element => {
-  //     console.log("CT: ", formatMilliseconds(currentTime))
-  //     console.log("1: ", formatMilliseconds(element.start))
-  //     return console.log(
-  //       formatMilliseconds(currentTime) >= formatMilliseconds(element.start) &&
-  //         formatMilliseconds(currentTime) <= formatMilliseconds(element.end)
-  //     )
-  //   },
-  //   [currentTime]
-  // )
-
-  // useEffect(() => {
-  //   isHighlighted(element)
-  // }, [element])
-
-  const isHighlighted = index => {
-    return index == highlightedId
+  const isHighlighted = (index: number): boolean => {
+    return index === highlightedId
   }
 
   return (
-    // <TranscriptionRow className={isHighlighted(element) ? `bg-info` : ``}>
     <TranscriptionRow className={isHighlighted(index) ? `bg-info` : ``}>
       <TimestampCol>
         <Row className={`d-inline`}>
@@ -251,7 +193,7 @@ function TranscriptItem({
             type="button"
             value={element.start}
           >
-            {formatMilliseconds(element.start)} {index}
+            {formatMilliseconds(element.start)}
           </TimestampButton>
         </Row>
       </TimestampCol>
