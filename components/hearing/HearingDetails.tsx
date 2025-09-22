@@ -40,7 +40,6 @@ export const HearingDetails = ({
 }) => {
   const { t } = useTranslation(["common", "hearing"])
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [currentTime, setCurrentTime] = useState(0)
   const [videoLoaded, setVideoLoaded] = useState(false)
 
   const handleVideoLoad = () => {
@@ -48,12 +47,7 @@ export const HearingDetails = ({
   }
 
   function setCurTimeVideo(value: number) {
-    // setting videoRef.current.currentTime to value
-    // lets the timestamp button in the transcription control the video player
-
-    // setCurrentTime is used to sync the transcription highlights to the video player
     videoRef.current ? (videoRef.current.currentTime = value) : null
-    setCurrentTime(value)
   }
 
   const eventId = `hearing-${hearingId}`
@@ -156,8 +150,6 @@ export const HearingDetails = ({
           )}
 
           <Transcriptions
-            currentTime={currentTime}
-            setCurrentTime={setCurrentTime}
             setCurTimeVideo={setCurTimeVideo}
             videoLoaded={videoLoaded}
             videoRef={videoRef}

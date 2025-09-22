@@ -48,15 +48,11 @@ const TranscriptionRow = styled(Row)`
 `
 
 export const Transcriptions = ({
-  currentTime,
-  setCurrentTime,
   setCurTimeVideo,
   videoLoaded,
   videoRef,
   videoTranscriptionId
 }: {
-  currentTime: number
-  setCurrentTime: any
   setCurTimeVideo: any
   videoLoaded: boolean
   videoRef: any
@@ -95,13 +91,9 @@ export const Transcriptions = ({
   useEffect(() => {
     const handleTimeUpdate = () => {
       const currentParagraph = transcriptData.findIndex(
-        element => currentTime <= element.end / 1000
+        element => videoRef.current.currentTime <= element.end / 1000
       )
       setHighlightedId(currentParagraph)
-
-      videoRef.current.currentTime
-        ? setCurrentTime(videoRef.current.currentTime)
-        : null
     }
 
     const videoElement = videoRef.current
@@ -114,7 +106,7 @@ export const Transcriptions = ({
         ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
         : null
     }
-  }, [currentTime, setCurrentTime, transcriptData, videoLoaded, videoRef])
+  }, [transcriptData, videoLoaded, videoRef])
 
   return (
     <>
