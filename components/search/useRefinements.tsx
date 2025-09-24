@@ -1,14 +1,25 @@
 import { useTranslation } from "next-i18next"
+<<<<<<< HEAD
 import Image from "react-bootstrap/Image"
 import { RefinementList, useInstantSearch } from "react-instantsearch"
 import { Tooltip } from "react-tooltip"
+=======
+import {
+  RefinementList,
+  RefinementListProps,
+  useInstantSearch
+} from "react-instantsearch"
+>>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Offcanvas } from "../bootstrap"
-import { MultiselectHierarchicalMenu } from "./HierarchicalMenuWidget"
+import {
+  MultiselectHierarchicalMenu,
+  MultiselectHierarchicalMenuParams
+} from "./HierarchicalMenuWidget"
 import { SearchContainer } from "./SearchContainer"
 
 export const FilterButton = styled(Button)`
@@ -64,9 +75,14 @@ export const useRefinements = ({
   refinementProps,
   refinementProps2
 }: {
+<<<<<<< HEAD
   hierarchicalMenuProps?: any[]
   refinementProps: any[]
   refinementProps2?: any[]
+=======
+  hierarchicalMenuProps?: MultiselectHierarchicalMenuParams
+  refinementProps: RefinementListProps[]
+>>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -76,11 +92,12 @@ export const useRefinements = ({
   const refinements = (
     <>
       {refinementProps.map((p, i) => (
-        <RefinementList className="mb-4" key={i} {...(p as any)} />
+        <RefinementList className="mb-4" key={i} {...p} />
       ))}
     </>
   )
 
+<<<<<<< HEAD
   let refinements2 = <></>
 
   if (refinementProps2) {
@@ -107,10 +124,17 @@ export const useRefinements = ({
       </>
     )
   }
+=======
+  const hierarchicalMenu = hierarchicalMenuProps ? (
+    <MultiselectHierarchicalMenu {...hierarchicalMenuProps} />
+  ) : (
+    <></>
+  )
+>>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
 
   const hasRefinements = useHasRefinements()
 
-  const { t } = useTranslation("billSearch")
+  const { t } = useTranslation("search")
 
   return {
     options: inline ? (

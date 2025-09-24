@@ -134,11 +134,6 @@ figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=
 
 # Dashboard Newsfeed
 ---
-name: HotBillCard
-folder: dashboard/newsfeed
-grouping: Dashboard/Newsfeed
-figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=158%3A3865
----
 name: NewsfeedCard
 folder: dashboard/newsfeed
 grouping: Dashboard/Newsfeed
@@ -155,11 +150,6 @@ name: BillTestimonyListCard
 folder: billDetail
 grouping: Bill Detail
 figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=180%3A7916
----
-name: CurrentCommitteeCard
-folder: billDetail
-grouping: Bill Detail
-figmaUrl: https://www.figma.com/file/3ifz37EOwDfmnEG8320KlD/CS1---MAPLE?node-id=159%3A4939
 ---
 name: BillStatus
 folder: billDetail

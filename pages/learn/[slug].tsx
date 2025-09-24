@@ -54,7 +54,7 @@ const tabs: TabsType[] = [
 ]
 
 export default createPage<{ params: IParams }>({
-  title: "Learn",
+  titleI18nKey: "learn",
   Page: props => {
     const router = useRouter()
 

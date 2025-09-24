@@ -45,7 +45,7 @@ const tabs: TabsType[] = [
 ]
 
 export default createPage<{ params: IParams }>({
-  title: "Why Use Maple?",
+  titleI18nKey: "titles.why_use_maple",
   Page: props => {
     const router = useRouter()
 

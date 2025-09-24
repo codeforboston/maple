@@ -1,9 +1,9 @@
-import { runWith } from "firebase-functions"
+import { RuntimeOptions, runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
 import { logFetchError } from "../common"
-import { db, Timestamp } from "../firebase"
+import { db, storage, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
   BaseEvent,
@@ -19,21 +19,29 @@ import {
 import { currentGeneralCourt } from "../shared"
 import { randomBytes } from "node:crypto"
 import { sha256 } from "js-sha256"
-import { withinCutoff } from "./helpers"
-
+import { isValidVideoUrl, withinCutoff } from "./helpers"
+import ffmpeg from "fluent-ffmpeg"
+import fs from "fs"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
+  private memory
 
-  constructor(schedule: string, timeout: number) {
+  constructor(
+    schedule: string,
+    timeout: number,
+    memory: RuntimeOptions["memory"] = "256MB"
+  ) {
     this.schedule = schedule
     this.timeout = timeout
+    this.memory = memory
   }
 
   get function() {
     return runWith({
       timeoutSeconds: this.timeout,
-      secrets: ["ASSEMBLY_API_KEY"]
+      secrets: ["ASSEMBLY_API_KEY"],
+      memory: this.memory
     })
       .pubsub.schedule(this.schedule)
       .onRun(() => this.run())
@@ -58,6 +66,8 @@ abstract class EventScraper<ListItem, Event extends BaseEvent> {
       if (event.startsAt.toMillis() < upcomingOrRecentCutoff.toMillis()) break
 
       writer.set(db.doc(`/events/${event.id}`), event, { merge: true })
+
+      console.log("event in run()", event)
     }
 
     await writer.close()
@@ -94,7 +104,7 @@ class SpecialEventsScraper extends EventScraper<
   SpecialEvent
 > {
   constructor() {
-    super("every 60 minutes", 120)
+    super("every 60 minutes", 540)
   }
 
   async listEvents() {
@@ -136,6 +146,77 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
   }
 }
 
+const extractAudioFromVideo = async (
+  EventId: number,
+  videoUrl: string
+): Promise<string> => {
+  const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.m4a`
+
+  // Stream directly from URL and copy audio codec
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(videoUrl)
+      .noVideo()
+      .audioCodec("copy")
+      .format("mp4")
+      .on("start", commandLine => {
+        console.log(`Spawned FFmpeg with command: ${commandLine}`)
+      })
+      .on("progress", progress => {
+        if (
+          progress &&
+          progress.percent &&
+          Math.round(progress.percent) % 10 === 0
+        ) {
+          console.log(`Processing: ${progress.percent}% done`)
+        }
+      })
+      .on("end", () => {
+        console.log("FFmpeg processing finished successfully")
+        resolve()
+      })
+      .on("error", err => {
+        console.error("FFmpeg error:", err)
+        reject(err)
+      })
+      .save(tmpFilePath)
+  })
+
+  // Upload the audio file
+  const bucket = storage.bucket()
+  const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
+  const file = bucket.file(audioFileName)
+
+  const fileContent = await fs.promises.readFile(tmpFilePath)
+  await file.save(fileContent, {
+    metadata: {
+      contentType: "audio/mp4"
+    }
+  })
+
+  // Clean up temporary file
+  await fs.promises.unlink(tmpFilePath)
+
+  const [url] = await file.getSignedUrl({
+    action: "read",
+    expires: Date.now() + 24 * 60 * 60 * 1000
+  })
+
+  // Delete old files
+  const [files] = await bucket.getFiles({
+    prefix: "hearing-",
+    maxResults: 1000
+  })
+  const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000
+  const oldFiles = files.filter(file => {
+    const timestamp = parseInt(file.name.split("-").pop()?.split(".")[0] || "0")
+    return timestamp < oneDayAgo
+  })
+  await Promise.all(oldFiles.map(file => file.delete()))
+
+  // Return the new audio url
+  return url
+}
+
 const submitTranscription = async ({
   EventId,
   maybeVideoUrl
@@ -148,11 +229,12 @@ const submitTranscription = async ({
   })
 
   const newToken = randomBytes(16).toString("hex")
+  const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
 
   const transcript = await assembly.transcripts.submit({
     audio:
       // test with: "https://assemblyaiusercontent.com/playground/aKUqpEtmYmI.flac",
-      maybeVideoUrl,
+      audioUrl,
     webhook_url:
       // make sure process.env.FUNCTIONS_API_BASE equals
       // https://us-central1-digital-testimony-prod.cloudfunctions.net
@@ -188,7 +270,9 @@ const getHearingVideoUrl = async (EventId: number) => {
         dom.window.document.querySelectorAll("video source")
       if (maybeVideoSource.length && maybeVideoSource[0]) {
         const firstVideoSource = maybeVideoSource[0] as HTMLSourceElement
-        return firstVideoSource.src
+        const maybeVideoUrl = firstVideoSource.src
+
+        return isValidVideoUrl(maybeVideoUrl) ? maybeVideoUrl : null
       }
     }
   }
@@ -202,10 +286,12 @@ const shouldScrapeVideo = async (EventId: number) => {
     .get()
   const eventData = eventInDb.data()
 
+  console.log("eventData in shouldScrapeVideo()", eventData)
+
   if (!eventData) {
     return false
   }
-  if (!eventData.videoFetchedAt) {
+  if (!eventData.videoURL) {
     return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
   }
   return false
@@ -213,7 +299,7 @@ const shouldScrapeVideo = async (EventId: number) => {
 
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
-    super("every 60 minutes", 240)
+    super("every 60 minutes", 480, "4GB")
   }
 
   async listEvents() {
@@ -225,26 +311,46 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
 
-    if (await shouldScrapeVideo(EventId)) {
-      const maybeVideoUrl = await getHearingVideoUrl(EventId)
-      if (maybeVideoUrl) {
-        const transcriptId = await submitTranscription({
-          maybeVideoUrl,
-          EventId
-        })
+    console.log("content in getEvent()", content)
 
+    if (await shouldScrapeVideo(EventId)) {
+      try {
+        const maybeVideoUrl = await getHearingVideoUrl(EventId)
+        if (maybeVideoUrl) {
+          const transcriptId = await submitTranscription({
+            maybeVideoUrl,
+            EventId
+          })
+
+          // Immediately save video info to prevent reprocessing
+          // since the bulkWriter does not save the video properties
+          // returned from this method.
+          await db.collection("events").doc(`hearing-${EventId}`).update({
+            videoURL: maybeVideoUrl,
+            videoFetchedAt: Timestamp.now(),
+            videoTranscriptionId: transcriptId
+          })
+
+          return {
+            id: `hearing-${EventId}`,
+            type: "hearing",
+            content,
+            ...this.timestamps(content),
+            videoURL: maybeVideoUrl,
+            videoFetchedAt: Timestamp.now(),
+            videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
+          } as Hearing
+        }
+      } catch (error) {
+        console.error(`Failed to process audio for hearing ${EventId}:`, error)
         return {
           id: `hearing-${EventId}`,
           type: "hearing",
           content,
-          ...this.timestamps(content),
-          videoURL: maybeVideoUrl,
-          videoFetchedAt: Timestamp.now(),
-          videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
+          ...this.timestamps(content)
         } as Hearing
       }
     }
-
     return {
       id: `hearing-${EventId}`,
       type: "hearing",

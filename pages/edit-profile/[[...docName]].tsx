@@ -13,8 +13,8 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Edit Profile",
-  Page: requireAuth(({ user }) => {
+  titleI18nKey: "navigation.editProfile",
+  Page: requireAuth(() => {
     const tabTitle = Query.parse(useRouter().query).docName?.[0] || "about-you"
     return <EditProfile tabTitle={tabTitle as TabTitles} />
   })
@@ -26,6 +26,7 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
       { params: { docName: ["about-you"] } },
       { params: { docName: ["testimonies"] } },
       { params: { docName: ["following"] } },
+      { params: { docName: ["followers"] } },
       { params: { docName: [] } }
     ],
     fallback: false
@@ -36,6 +37,7 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "editProfile",
+  "profile",
   "footer",
   "testimony"
 ])

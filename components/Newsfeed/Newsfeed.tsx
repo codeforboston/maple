@@ -1,8 +1,8 @@
 import ErrorPage from "next/error"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useContext, useEffect, useState } from "react"
-import { useAuth } from "../auth"
+import { useEffect, useState } from "react"
+import { Frequency, useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
 import { NotificationProps, Notifications } from "./NotificationProps"
@@ -14,6 +14,7 @@ import {
   StyledContainer
 } from "./StyledNewsfeedComponents"
 import ProfileSettingsModal from "components/EditProfilePage/ProfileSettingsModal"
+import LoginPage from "components/Login/Login"
 import { NewsfeedCard } from "components/NewsfeedCard/NewsfeedCard"
 import { ProfileButtons } from "components/ProfilePage/ProfileButtons"
 
@@ -22,7 +23,7 @@ export default function Newsfeed() {
 
   const { user } = useAuth()
   const uid = user?.uid
-  const { result: profile, loading } = usePublicProfile(uid)
+  const result = useProfile()
   const isUser = user?.uid !== undefined
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
@@ -141,18 +142,16 @@ export default function Newsfeed() {
     }: Profile = profile
 
     const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-    const [notifications, setNotifications] = useState<
-      "Weekly" | "Monthly" | "None"
-    >(notificationFrequency ? notificationFrequency : "Monthly")
+    const [notifications, setNotifications] = useState<Frequency>(
+      notificationFrequency ? notificationFrequency : "Weekly"
+    )
     const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
       isPublic ? isPublic : false
     )
 
     const onSettingsModalOpen = () => {
       setSettingsModal("show")
-      setNotifications(
-        notificationFrequency ? notificationFrequency : "Monthly"
-      )
+      setNotifications(notificationFrequency ? notificationFrequency : "Weekly")
       setIsProfilePublic(isPublic ? isPublic : false)
     }
 
@@ -191,20 +190,20 @@ export default function Newsfeed() {
 
   return (
     <>
-      {loading ? (
+      {result.loading && uid ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
       ) : (
         <>
-          {profile ? (
+          {result.profile ? (
             <div className={`d-flex align-self-center`}>
               <StyledContainer>
                 <Header>
                   <HeaderTitle className={`mb-4`}>
                     {t("navigation.newsfeed")}
                   </HeaderTitle>
-                  <Filters profile={profile} />
+                  <Filters profile={result.profile} />
                 </Header>
                 {filteredResults.length > 0 ? (
                   <>
@@ -229,6 +228,7 @@ export default function Newsfeed() {
                             testimonyId={element.testimonyId}
                             type={element.type}
                             userRole={element.userRole}
+                            isNewsfeed={"enable newsfeed specific subheading"}
                           />
                         </div>
                       ))}
@@ -237,9 +237,9 @@ export default function Newsfeed() {
                   <>
                     <div className="pb-4">
                       <NewsfeedCard
-                        header={`No Results`}
+                        header={t("noResults")}
                         timestamp={Timestamp.now()}
-                        bodyText={`There are no news updates for your current followed topics`}
+                        bodyText={t("noNewsUpdates")}
                         type={``}
                       />
                     </div>
@@ -251,7 +251,8 @@ export default function Newsfeed() {
               </StyledContainer>
             </div>
           ) : (
-            <ErrorPage statusCode={404} withDarkMode={false} />
+            // <ErrorPage statusCode={404} withDarkMode={false} />
+            <LoginPage />
           )}
         </>
       )}

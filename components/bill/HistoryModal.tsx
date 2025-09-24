@@ -3,20 +3,22 @@ import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
 import { HistoryTable } from "./HistoryTable"
 import { BillProps } from "./types"
+import { useTranslation } from "next-i18next"
 
 export const HistoryModal = ({ bill }: BillProps) => {
   const [showBillHistory, setShowBillHistory] = useState(false)
   const handleShowBillHistory = () => setShowBillHistory(true)
   const handleCloseBillHistory = () => setShowBillHistory(false)
+  const { t } = useTranslation("common")
 
   return (
     <>
       <Button variant="primary" className="m-1" onClick={handleShowBillHistory}>
-        History
+        {t("bill.history")}
       </Button>
       <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
         <Modal.Header closeButton onClick={handleCloseBillHistory}>
-          <StyledModalTitle>Status & History</StyledModalTitle>
+          <StyledModalTitle>{t("bill.status_and_history")}</StyledModalTitle>
         </Modal.Header>
         <StyledBillTitle>
           {bill.id + " - " + bill.content.Title}
