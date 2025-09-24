@@ -1,15 +1,11 @@
 import { useTranslation } from "next-i18next"
-<<<<<<< HEAD
 import Image from "react-bootstrap/Image"
-import { RefinementList, useInstantSearch } from "react-instantsearch"
-import { Tooltip } from "react-tooltip"
-=======
 import {
   RefinementList,
   RefinementListProps,
   useInstantSearch
 } from "react-instantsearch"
->>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
+import { Tooltip } from "react-tooltip"
 import { faFilter } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useCallback, useState } from "react"
@@ -75,14 +71,9 @@ export const useRefinements = ({
   refinementProps,
   refinementProps2
 }: {
-<<<<<<< HEAD
-  hierarchicalMenuProps?: any[]
-  refinementProps: any[]
-  refinementProps2?: any[]
-=======
   hierarchicalMenuProps?: MultiselectHierarchicalMenuParams
   refinementProps: RefinementListProps[]
->>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
+  refinementProps2?: RefinementListProps[]
 }) => {
   const inline = useMediaQuery("(min-width: 768px)")
   const [show, setShow] = useState(false)
@@ -97,7 +88,6 @@ export const useRefinements = ({
     </>
   )
 
-<<<<<<< HEAD
   let refinements2 = <></>
 
   if (refinementProps2) {
@@ -117,20 +107,13 @@ export const useRefinements = ({
       <>
         <MultiselectHierarchicalMenu
           attributes={[
-            hierarchicalMenuProps[0].attribute,
+            hierarchicalMenuProps[].attribute,
             hierarchicalMenuProps[1].attribute
           ]}
         />
       </>
     )
   }
-=======
-  const hierarchicalMenu = hierarchicalMenuProps ? (
-    <MultiselectHierarchicalMenu {...hierarchicalMenuProps} />
-  ) : (
-    <></>
-  )
->>>>>>> a24ae815bf52ce861713f754761308ae4e91ac62
 
   const hasRefinements = useHasRefinements()
 
