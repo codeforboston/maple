@@ -18,12 +18,14 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
     <InfoContainer>
       <Label>{t("quickInfo.writingAbout")}</Label>
       <Chip className="brown">
-        {Title}&nbsp;({t("common:titles.bill")} {bill.id})
+        {Title}&nbsp;({t("quickInfo.bill")} {bill.id})
       </Chip>
       {city && (
         <>
           <Label>{t("quickInfo.in")}</Label>
-          <Chip>{t("quickInfo.inCityState", { city })}</Chip>
+          <Chip>
+            {t("quickInfo.cityState", { city, state: "Massachusetts" })}
+          </Chip>
         </>
       )}
       <Sponsors bill={bill} />
@@ -97,7 +99,7 @@ export const SponsorList = styled.div`
     }
   `,
   Sponsors = ({ bill }: { bill: Bill }) => {
-    const { t } = useTranslation(["testimony", "common"])
+    const { t } = useTranslation("testimony")
     const { PrimarySponsor: primarySponsor, Cosponsors: cosponsors } =
       bill.content
 
@@ -109,11 +111,11 @@ export const SponsorList = styled.div`
 
     return (
       <>
-        <Label>{t("testimony:quickInfo.sponsoredBy")}</Label>
+        <Label>{t("quickInfo.sponsoredBy")}</Label>
         <SponsorList>
           {primarySponsor && (
             <Chip>
-              <Image alt={t("common:primarySponsor")} src="/star.svg" />
+              <Image alt={t("quickInfo.primarySponsor")} src="/star.svg" />
               {primarySponsor.Name}
             </Chip>
           )}
@@ -122,7 +124,7 @@ export const SponsorList = styled.div`
           ))}
           {!!overflowCount && (
             <Chip className="overflow">
-              {t("testimony:quickInfo.andMore", { count: overflowCount })}
+              {t("quickInfo.andMore", { count: overflowCount })}
             </Chip>
           )}
         </SponsorList>

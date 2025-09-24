@@ -172,9 +172,11 @@
     "emailCta": "Email Your Published Testimony"
   },
   "quickInfo": {
+    "bill": "Bill",
+    "primarySponsor": "Primary Sponsor",
     "writingAbout": "You're writing testimony about",
     "in": "in",
-    "inCityState": "in {{city}}, Massachusetts",
+    "cityState": "{{city}}, {{state}}",
     "committeeIs": "and the committee is",
     "yourLegislatorsAre": "and your legislators are",
     "representative": "Representative",
