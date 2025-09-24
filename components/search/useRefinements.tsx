@@ -100,20 +100,11 @@ export const useRefinements = ({
     )
   }
 
-  let hierarchicalMenu = <></>
-
-  if (hierarchicalMenuProps) {
-    hierarchicalMenu = (
-      <>
-        <MultiselectHierarchicalMenu
-          attributes={[
-            hierarchicalMenuProps[].attribute,
-            hierarchicalMenuProps[1].attribute
-          ]}
-        />
-      </>
-    )
-  }
+  const hierarchicalMenu = hierarchicalMenuProps ? (
+    <MultiselectHierarchicalMenu {...hierarchicalMenuProps} />
+  ) : (
+    <></>
+  )
 
   const hasRefinements = useHasRefinements()
 
