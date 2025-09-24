@@ -17,12 +17,13 @@ const ErrorContainer = styled(Container)`
 `
 
 const TimestampButton = styled.button`
-  border-radius: 12px;
+  font-size: 14px;
   width: min-content;
 `
 
 const TimestampCol = styled.div`
-  width: 100px;
+  text-align: center;
+  width: 140px;
 `
 
 const TranscriptBottom = styled(Row)`
@@ -48,15 +49,17 @@ const TranscriptHeader = styled(Row)`
 // make containers: Search followed by Transcriptions flush per figma
 
 const TranscriptRow = styled(Row)`
-  div {
-    border-left-color: red;
-    border-left-width: 5px;
-  }
   &:nth-child(even) {
     background-color: white;
+    border-left-color: white;
+    border-left-style: solid;
+    border-left-width: 5px;
   }
   &:nth-child(odd) {
     background-color: #e8ecf4;
+    border-left-color: #e8ecf4;
+    border-left-style: solid;
+    border-left-width: 5px;
   }
   &:last-child {
     border-bottom-left-radius: 0.75rem;
@@ -197,7 +200,7 @@ function TranscriptItem({
       className={
         isHighlighted(index)
           ? `bg-info border-5 border-secondary border-start`
-          : ``
+          : `border-5`
       }
     >
       <TimestampCol>
@@ -206,15 +209,17 @@ function TranscriptItem({
             onClick={() => {
               handleClick(element.start)
             }}
-            className={`btn btn-secondary text-nowrap m-1 p-1`}
+            className={`bg-transparent border-0 text-nowrap p-1`}
             type="button"
             value={element.start}
           >
             {formatMilliseconds(element.start)}
+            {" - "}
+            {formatMilliseconds(element.end)}
           </TimestampButton>
         </Row>
       </TimestampCol>
-      <Col>{element.text}</Col>
+      <Col className={`pt-1`}>{element.text}</Col>
     </TranscriptRow>
   )
 }
