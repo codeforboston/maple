@@ -69,6 +69,7 @@
     "browseTestimony": "Browse All Testimony"
   },
   "reportModal": {
+    "character_count": "{{count}}/{{limit}} characters",
     "reportTestimony": "Report Testimony",
     "reason": "Reason",
     "close": "Close",

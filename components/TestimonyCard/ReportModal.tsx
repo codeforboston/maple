@@ -42,7 +42,6 @@ export function ReportModal({
   }
 
   const { t } = useTranslation("testimony", { keyPrefix: "reportModal" })
-  const { t: tCommon } = useTranslation("common")
 
   return (
     <Modal show onHide={onClose}>
@@ -96,8 +95,10 @@ export function ReportModal({
             />
           </FloatingLabel>
           <div className="text-muted">
-            {additionalInformation.length}/{ADDITIONAL_INFO_MAX_LENGTH_CHARS}{" "}
-            {tCommon("characters")}
+            {t("character_count", {
+              count: additionalInformation.length,
+              limit: ADDITIONAL_INFO_MAX_LENGTH_CHARS
+            })}
           </div>
         </Modal.Body>
         <Modal.Footer>
