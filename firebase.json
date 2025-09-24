@@ -14,9 +14,9 @@
     },
     {
       "predeploy": [
-        "python3 -m venv llm/venv",
+        "python3.11 -m venv llm/venv",
         ". llm/venv/bin/activate",
-        "pip3 install -r llm/requirements.txt"
+        "python3.11 -m pip install -r llm/requirements.txt"
       ],
       "source": "llm",
       "codebase": "maple-llm",
