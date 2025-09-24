@@ -26,11 +26,17 @@ export const FilterButton = styled(Button)`
   align-self: flex-start;
 `
 
+const TooltipSpan = styled.span`
+  position: relative;
+  right: 37px;
+  top: 33px;
+`
+
 export const CityTooltip = () => {
   const { t } = useTranslation("billSearch")
 
   return (
-    <>
+    <TooltipSpan>
       <Image
         src="/info2.svg"
         alt=""
@@ -56,7 +62,7 @@ export const CityTooltip = () => {
         </a>
         {t("city_tooltip2")}
       </Tooltip>
-    </>
+    </TooltipSpan>
   )
 }
 
