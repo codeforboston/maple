@@ -25,21 +25,38 @@ const TimestampCol = styled.div`
   width: 100px;
 `
 
+const TranscriptBottom = styled(Row)`
+  background-color: white;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 9px;
+`
+
 const TranscriptContainer = styled(Container)`
   max-height: 18rem;
   overflow-y: auto;
 `
 
-const TranscriptionRow = styled(Row)`
-  &:first-child {
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
+const TranscriptHeader = styled(Row)`
+  background-color: white;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  padding-top: 9px;
+`
+
+// consider removing TranscriptionHeader when Search is implemented to
+// make containers: Search followed by Transcriptions flush per figma
+
+const TranscriptRow = styled(Row)`
+  div {
+    border-left-color: red;
+    border-left-width: 5px;
   }
   &:nth-child(even) {
-    background-color: #e8ecf4;
+    background-color: white;
   }
   &:nth-child(odd) {
-    background-color: white;
+    background-color: #e8ecf4;
   }
   &:last-child {
     border-bottom-left-radius: 0.75rem;
@@ -112,6 +129,7 @@ export const Transcriptions = ({
     <>
       {transcriptData.length > 0 ? (
         <TranscriptContainer className={`mb-2`}>
+          <TranscriptHeader />
           {transcriptData.map((element: Paragraph, index: number) => (
             <TranscriptItem
               key={index}
@@ -121,6 +139,7 @@ export const Transcriptions = ({
               setCurTimeVideo={setCurTimeVideo}
             />
           ))}
+          <TranscriptBottom />
         </TranscriptContainer>
       ) : (
         <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
@@ -174,7 +193,13 @@ function TranscriptItem({
   }
 
   return (
-    <TranscriptionRow className={isHighlighted(index) ? `bg-info` : ``}>
+    <TranscriptRow
+      className={
+        isHighlighted(index)
+          ? `bg-info border-5 border-secondary border-start`
+          : ``
+      }
+    >
       <TimestampCol>
         <Row className={`d-inline`}>
           <TimestampButton
@@ -190,6 +215,6 @@ function TranscriptItem({
         </Row>
       </TimestampCol>
       <Col>{element.text}</Col>
-    </TranscriptionRow>
+    </TranscriptRow>
   )
 }
