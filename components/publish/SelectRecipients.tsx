@@ -56,7 +56,7 @@ export const SelectRecipients = styled(props => {
               className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
               format="text/plain"
             >
-              <FontAwesomeIcon icon={faCopy} />{" "}
+              <FontAwesomeIcon icon={faCopy} />
               {t("publish.copyEmailRecipients")}
             </CopyButton>
           ) : null}
