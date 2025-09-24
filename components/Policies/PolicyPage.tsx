@@ -35,7 +35,7 @@ export default function PolicyPage({
       <div className={style.sharedValues}>
         <p className={style.subHeading}>{t("values.heading")}</p>
         <hr className={style.bottomBorder}></hr>
-        <p className={style.text1}>{t("values.description")}</p>
+        <p className={style.text1}>{t("values.description1")}</p>
         <p className={style.text2}>{t("values.description2")}</p>
       </div>
 
