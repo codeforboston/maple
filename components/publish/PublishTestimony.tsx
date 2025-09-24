@@ -188,7 +188,7 @@ const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
         void publish.publish.execute()
       }}
     >
-      {t("publish.publish")} {publish.hasRecipients && t("publish.andSend")}
+      {publish.hasRecipients ? t("publish.publishAndSend") : t("publish")}
     </LoadingButton>
   )
 }
