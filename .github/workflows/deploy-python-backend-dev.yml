@@ -22,11 +22,6 @@ jobs:
         uses: actions/checkout@v5
       - name: Setup Python environment
         uses: ./.github/actions/setup-llm
-      - run: |
-          python -m venv llm/venv
-          source llm/venv/bin/activate
-          pip3 install -r llm/requirements.txt
-        shell: bash
       - name: Build and deploy to Firebase
         uses: w9jds/firebase-action@v13.18.0
         with:
