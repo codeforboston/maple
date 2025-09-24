@@ -22,6 +22,7 @@ export default function PolicyPage({
           <Button
             className={`${style[policy === p ? "currentTab" : "tab"]}`}
             id={p}
+            key={p}
             onClick={() => Router.push(`/policies/${p}`)}
           >
             {t(`tabs.${p}`)}
