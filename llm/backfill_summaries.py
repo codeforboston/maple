@@ -1,3 +1,8 @@
+# This script fills any missing 'summary' or 'topics' fields on the data model.
+# The document must have a 'Title' and 'DocumentText' field to generate them.
+#
+# Developer notes:
+# - you'll need to set the 'OPENAI_API_KEY' environment variable
 import firebase_admin
 from llm_functions import get_summary_api_function, get_tags_api_function_v2
 from firebase_admin import firestore
