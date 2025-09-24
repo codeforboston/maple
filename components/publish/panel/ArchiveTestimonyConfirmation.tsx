@@ -9,7 +9,6 @@ export const ArchiveTestimonyConfirmation = styled<{
   archiveTestimony: UseAsyncReturn<void, []> | undefined
 }>(({ show, onHide, archiveTestimony, ...props }) => {
   const { t } = useTranslation("testimony")
-  const { t: tCommon } = useTranslation("common")
   return (
     <Collapse in={show}>
       <div>
@@ -27,7 +26,7 @@ export const ArchiveTestimonyConfirmation = styled<{
               {archiveTestimony?.loading ? (
                 <Spinner size="sm" animation="border" />
               ) : (
-                tCommon("yes")
+                t("testimonyItem.yes")
               )}
             </Button>
             <Button className="choice" variant="info" onClick={onHide}>

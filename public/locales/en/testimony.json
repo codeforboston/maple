@@ -133,6 +133,7 @@
   "testimonyItem": {
     "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
     "no": "No",
+    "yes": "Yes",
     "deleteIcon": "Delete testimony icon",
     "expand": "Expand",
     "moreDetails": "More Details",
