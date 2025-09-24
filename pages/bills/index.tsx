@@ -23,5 +23,6 @@ export const getStaticProps = createGetStaticTranslationProps([
   "search",
   "common",
   "footer",
-  "testimony"
+  "testimony",
+  "billSearch"
 ])
