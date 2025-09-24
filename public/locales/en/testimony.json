@@ -192,7 +192,7 @@
     "copyEmailBody": "Copy Email Body"
   },
   "publish": {
-    "errorLabel": "Error:",
+    "errorMessage": "Error: {{message}}",
     "confirmAndSend": "Confirm and Send",
     "instructions": "After clicking “publish” please click “Send Email” to open your email client (e.g., Outlook) and send the email populated with your testimony! Or, click the “copy” buttons to manually copy the testimony and recipients of your email.",
     "reasonLabel": "Reason for Edit",
