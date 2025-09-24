@@ -70,7 +70,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
 
       {error && (
         <div className="mt-2 text-danger">
-          {t("common:errorLabel", { ns: "common" })} {error.message}
+          {t("publish.errorLabel")} {error.message}
         </div>
       )}
 
