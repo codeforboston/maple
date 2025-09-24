@@ -7,6 +7,7 @@ _Add a short summary of the changes, and a reference to the original issue using
 - [ ] On the frontend, I've made my strings translate-able.
 - [ ] If I've added shared components, I've added a storybook story.
 - [ ] I've made pages responsive and look good on mobile.
+- [ ] If I've added new Firestore queries, I've added any new required indexes to `firestore.indexes.json` (Please do not only create indexes through the Firebase Web UI, even though the error messages may reccommend it - indexes created this way may be obliterated by subsequent deploys)
 
 # Screenshots
 
