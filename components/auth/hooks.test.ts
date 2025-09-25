@@ -26,7 +26,7 @@ describe.skip("useCreateUserWithEmailAndPassword", () => {
       fullName: info.fullName,
       role: "user",
       public: false,
-      notificationFrequency: "Monthly",
+      notificationFrequency: "Weekly",
       email: info.email
     })
   })
