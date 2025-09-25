@@ -217,7 +217,7 @@ const extractAudioFromVideo = async (
   return url
 }
 
-const submitTranscription = async ({
+export const submitTranscription = async ({
   EventId,
   maybeVideoUrl
 }: {
@@ -258,7 +258,7 @@ const submitTranscription = async ({
   return transcript.id
 }
 
-const getHearingVideoUrl = async (EventId: number) => {
+export const getHearingVideoUrl = async (EventId: number) => {
   const req = await fetch(
     `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
   )
