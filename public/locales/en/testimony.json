@@ -203,7 +203,8 @@
       "attachment": "Attachment",
       "changed": "Changed"
     },
-    "editLimitNotice": "You may edit your testimony up to {{count}} more {{count, plural, one {time} other {times}}}. Before you publish updates to your testimony, please provide a reason for your changes.",
+    "editLimitNotice_one": "You may edit your testimony up to 1 more time. Before you publish updates to your testimony, please provide a reason for your changes.",
+    "editLimitNotice_other": "You may edit your testimony up to {{count}} more times. Before you publish updates to your testimony, please provide a reason for your changes.",
     "shareHeader": "Share",
     "emailHelp": "Having trouble opening the email draft?",
     "finishWithoutEmailing": "Finish Without Emailing",
