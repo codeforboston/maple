@@ -17,26 +17,49 @@ const ErrorContainer = styled(Container)`
 `
 
 const TimestampButton = styled.button`
-  border-radius: 12px;
+  font-size: 14px;
   width: min-content;
 `
 
 const TimestampCol = styled.div`
-  width: 100px;
+  text-align: center;
+  width: 140px;
 `
 
-const TranscriptionRow = styled(Row)`
-  &:first-child {
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
-  }
+const TranscriptBottom = styled(Row)`
+  background-color: white;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 9px;
+`
+
+const TranscriptContainer = styled(Container)`
+  max-height: 18rem;
+  overflow-y: auto;
+`
+
+const TranscriptHeader = styled(Row)`
+  background-color: white;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  padding-top: 9px;
+`
+
+// consider removing TranscriptionHeader when Search is implemented to
+// make containers: Search followed by Transcriptions flush per figma
+
+const TranscriptRow = styled(Row)`
   &:nth-child(even) {
-    /* background-color: #c0c4dc; */
-    /* use #c0c4dc for selected rows when Search is implemented*/
-    background-color: #e8ecf4;
+    background-color: white;
+    border-left-color: white;
+    border-left-style: solid;
+    border-left-width: 5px;
   }
   &:nth-child(odd) {
-    background-color: white;
+    background-color: #e8ecf4;
+    border-left-color: #e8ecf4;
+    border-left-style: solid;
+    border-left-width: 5px;
   }
   &:last-child {
     border-bottom-left-radius: 0.75rem;
@@ -46,21 +69,24 @@ const TranscriptionRow = styled(Row)`
 
 export const Transcriptions = ({
   setCurTimeVideo,
+  videoLoaded,
+  videoRef,
   videoTranscriptionId
 }: {
   setCurTimeVideo: any
+  videoLoaded: boolean
+  videoRef: any
   videoTranscriptionId: string
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-
+  const [highlightedId, setHighlightedId] = useState(-1)
+  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
   const vid = videoTranscriptionId || "prevent FirebaseError"
 
   const subscriptionRef = collection(
     firestore,
     `transcriptions/${vid}/paragraphs`
   )
-
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
 
   const fetchTranscriptionData = useCallback(async () => {
     let docList: any[] = []
@@ -82,18 +108,42 @@ export const Transcriptions = ({
     fetchTranscriptionData()
   }, [fetchTranscriptionData])
 
+  useEffect(() => {
+    const handleTimeUpdate = () => {
+      const currentIndex = transcriptData.findIndex(
+        element => videoRef.current.currentTime <= element.end / 1000
+      )
+      setHighlightedId(currentIndex)
+    }
+
+    const videoElement = videoRef.current
+    videoLoaded
+      ? videoElement.addEventListener("timeupdate", handleTimeUpdate)
+      : null
+
+    return () => {
+      videoLoaded
+        ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
+        : null
+    }
+  }, [transcriptData, videoLoaded, videoRef])
+
   return (
     <>
       {transcriptData.length > 0 ? (
-        <Container className={`mb-2`}>
+        <TranscriptContainer className={`mb-2`}>
+          <TranscriptHeader />
           {transcriptData.map((element: Paragraph, index: number) => (
             <TranscriptItem
               key={index}
               element={element}
+              highlightedId={highlightedId}
+              index={index}
               setCurTimeVideo={setCurTimeVideo}
             />
           ))}
-        </Container>
+          <TranscriptBottom />
+        </TranscriptContainer>
       ) : (
         <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
           <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
@@ -105,9 +155,13 @@ export const Transcriptions = ({
 
 function TranscriptItem({
   element,
+  highlightedId,
+  index,
   setCurTimeVideo
 }: {
   element: Paragraph
+  highlightedId: number
+  index: number
   setCurTimeVideo: any
 }) {
   const handleClick = (val: number) => {
@@ -137,23 +191,35 @@ function TranscriptItem({
     }
   }
 
+  const isHighlighted = (index: number): boolean => {
+    return index === highlightedId
+  }
+
   return (
-    <TranscriptionRow>
+    <TranscriptRow
+      className={
+        isHighlighted(index)
+          ? `bg-info border-5 border-secondary border-start`
+          : `border-5`
+      }
+    >
       <TimestampCol>
         <Row className={`d-inline`}>
           <TimestampButton
             onClick={() => {
               handleClick(element.start)
             }}
-            className={`btn btn-secondary text-nowrap m-1 p-1`}
+            className={`bg-transparent border-0 text-nowrap p-1`}
             type="button"
             value={element.start}
           >
             {formatMilliseconds(element.start)}
+            {" - "}
+            {formatMilliseconds(element.end)}
           </TimestampButton>
         </Row>
       </TimestampCol>
-      <Col>{element.text}</Col>
-    </TranscriptionRow>
+      <Col className={`pt-1`}>{element.text}</Col>
+    </TranscriptRow>
   )
 }
