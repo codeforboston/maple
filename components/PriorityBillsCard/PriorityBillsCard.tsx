@@ -3,6 +3,7 @@ import { Card as MapleCard } from "../Card/Card"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import clsx from "clsx"
+import { useTranslation } from "next-i18next"
 
 type bill = {
   id: string
@@ -80,12 +81,13 @@ const Position = (stance: string) => {
 }
 
 const EditButton = () => {
+  const { t } = useTranslation("common")
   return (
     <div
       className="d-flex flex-column align-items-center"
       onClick={() => console.log("edit")}
     >
-      <EditBtnStyle className="m-0 editTitle">edit</EditBtnStyle>
+      <EditBtnStyle className="m-0 editTitle">{t("edit")}</EditBtnStyle>
       <div className="d-inline">
         <Image className="svg" alt="" src="/edit-testimony.svg" />
       </div>
