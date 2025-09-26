@@ -38,7 +38,6 @@ const CalloutBalloon = styled.div`
   width: calt(100% - 6rem);
   margin: 0.5rem;
   color: white;
-  font-family: "Nunito";
   position: relative;
   inset: 0;
   display: flex;
@@ -90,7 +89,6 @@ const CalloutBalloon = styled.div`
     padding: 1rem;
     flex: 4;
     color: white;
-    font-family: "Nunito";
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
