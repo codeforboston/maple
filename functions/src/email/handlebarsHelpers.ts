@@ -34,6 +34,8 @@ export const registerPartials = (directoryPath: string) => {
 }
 
 export const prepareHandlebars = () => {
+  console.log("Preparing handlebars helpers and partials")
   registerHelpers()
   registerPartials(path.join(__dirname, PARTIALS_DIR))
+  console.log("Handlebars helpers and partials prepared")
 }

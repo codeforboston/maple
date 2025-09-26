@@ -18,6 +18,7 @@ import {
 import { prepareHandlebars } from "../email/handlebarsHelpers"
 import { Frequency } from "../auth/types"
 
+const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
@@ -45,89 +46,116 @@ const getVerifiedUserEmail = async (uid: string) => {
 const deliverEmailNotifications = async () => {
   const now = Timestamp.fromDate(startOfDay(new Date()))
 
-  console.log("Preparing handlebars helpers and partials")
   prepareHandlebars()
-  console.log("Handlebars helpers and partials prepared")
 
-  const profilesSnapshot = await db
+  let numProfilesProcessed = 0
+
+  let profilesSnapshot = await db
     .collection("profiles")
     .where("nextDigestAt", "<=", now)
+    .limit(PROFILE_BATCH_SIZE)
     .get()
 
-  console.log(
-    `Processing ${
-      profilesSnapshot.size
-    } profiles with nextDigestAt <= ${now.toDate()}`
-  )
-
-  const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
-    const profile = profileDoc.data() as Profile
-    if (!profile || !profile.notificationFrequency) {
-      console.log(
-        `User ${profileDoc.id} has no notificationFrequency - skipping`
-      )
-      return
-    }
-
-    // TODO: Temporarily using email from the profile to test the non-auth issues
-    //       Should only use email from `auth` once that's working
-    const defaultEmail = profile.email || profile.contactInfo?.publicEmail
-    const verifiedEmail =
-      (await getVerifiedUserEmail(profileDoc.id)) || defaultEmail
-    if (!verifiedEmail) {
-      console.log(
-        `Skipping user ${profileDoc.id} because they have no verified email address`
-      )
-      return
-    }
-
-    const digestData = await buildDigestData(
-      profileDoc.id,
-      now,
-      profile.notificationFrequency
-    )
-
-    const batch = db.batch()
-
-    // If there are no new notifications, don't send an email
-    if (
-      digestData.numBillsWithNewTestimony === 0 &&
-      digestData.numUsersWithNewTestimony === 0
-    ) {
-      console.log(
-        `No new notifications for ${profileDoc.id} - not sending email`
-      )
-    } else {
-      console.log(
-        `Sending email to user ${profileDoc.id} with data: ${digestData}`
-      )
-      const htmlString = renderToHtmlString(digestData)
-
-      const email = {
-        to: [verifiedEmail],
-        message: {
-          subject: "Your Notifications Digest",
-          text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
-          html: htmlString
-        },
-        createdAt: Timestamp.now()
-      }
-      batch.create(db.collection("emails").doc(), email)
-
-      console.log(`Saving email message to user ${profileDoc.id}`)
-    }
-
-    const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
-    batch.update(profileDoc.ref, { nextDigestAt })
-    await batch.commit()
-
+  if (profilesSnapshot.empty) {
     console.log(
-      `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
+      `No profiles found with nextDigestAt <= ${now.toDate()} - sending 0 emails`
     )
-  })
+    return
+  }
 
-  // Wait for all email documents to be created
-  await Promise.all(emailPromises)
+  do {
+    console.log(
+      `Processing batch of ${
+        profilesSnapshot.size
+      } profiles with nextDigestAt <= ${now.toDate()} starting with ${
+        profilesSnapshot.docs[0].id
+      }`
+    )
+    numProfilesProcessed += profilesSnapshot.size
+
+    const emailPromises = profilesSnapshot.docs.map(async profileDoc => {
+      const profile = profileDoc.data() as Profile
+      if (
+        !profile ||
+        !profile.notificationFrequency ||
+        profile.notificationFrequency === "None"
+      ) {
+        console.log(
+          `User ${profileDoc.id} has no notificationFrequency - skipping`
+        )
+        return
+      }
+
+      // TODO: Temporarily using email from the profile to test the non-auth issues
+      //       Should only use email from `auth` once that's working
+      const defaultEmail = profile.email || profile.contactInfo?.publicEmail
+      const verifiedEmail =
+        (await getVerifiedUserEmail(profileDoc.id)) || defaultEmail
+      if (!verifiedEmail) {
+        console.log(
+          `Skipping user ${profileDoc.id} because they have no verified email address`
+        )
+        return
+      }
+
+      const digestData = await buildDigestData(
+        profileDoc.id,
+        now,
+        profile.notificationFrequency
+      )
+
+      const batch = db.batch()
+
+      // If there are no new notifications, don't send an email
+      if (
+        digestData.numBillsWithNewTestimony === 0 &&
+        digestData.numUsersWithNewTestimony === 0
+      ) {
+        console.log(
+          `No new notifications for ${profileDoc.id} - not sending email`
+        )
+      } else {
+        console.log(
+          `Sending email to user ${profileDoc.id} with data: ${digestData}`
+        )
+        const htmlString = renderToHtmlString(digestData)
+
+        const email = {
+          to: [verifiedEmail],
+          message: {
+            subject: "Your Notifications Digest",
+            text: convertHtmlToText(htmlString), // TODO: Just make a text template for this
+            html: htmlString
+          },
+          createdAt: Timestamp.now()
+        }
+        batch.create(db.collection("emails").doc(), email)
+
+        console.log(`Saving email message to user ${profileDoc.id}`)
+      }
+
+      const nextDigestAt = getNextDigestAt(profile.notificationFrequency)
+      batch.update(profileDoc.ref, { nextDigestAt })
+      await batch.commit()
+
+      console.log(
+        `Updated nextDigestAt for ${profileDoc.id} to ${nextDigestAt?.toDate()}`
+      )
+    })
+
+    // Wait for all email documents to be created
+    await Promise.all(emailPromises)
+
+    // Fetch the next batch of profiles
+    profilesSnapshot = await db
+      .collection("profiles")
+      .where("nextDigestAt", "<=", now)
+      .startAfter(profilesSnapshot.docs[profilesSnapshot.docs.length - 1])
+      .limit(PROFILE_BATCH_SIZE)
+      .get()
+  } while (!profilesSnapshot.empty)
+
+  console.log(`Finished processing ${numProfilesProcessed} profiles`)
 }
 
 // TODO: Unit tests
@@ -239,12 +267,14 @@ const renderToHtmlString = (digestData: NotificationEmailDigest) => {
     path.join(__dirname, EMAIL_TEMPLATE_PATH),
     "utf8"
   )
+  // TODO: Can we move the compilation up so we only compile the template
+  //       once per job run instead of once per email?
   const compiledTemplate = handlebars.compile(templateSource)
   return compiledTemplate(digestData)
 }
 
 // Firebase Functions
 export const deliverNotifications = functions.pubsub
-  .schedule("47 9 1 * 2") // 9:47 AM on the first day of the month and on Tuesdays
+  .schedule("47 9 * * *") // 9:47 AM every day
   .timeZone("America/New_York")
   .onRun(deliverEmailNotifications)

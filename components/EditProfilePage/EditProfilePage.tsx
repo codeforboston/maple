@@ -3,7 +3,7 @@ import Router from "next/router"
 import { useState } from "react"
 import { TabPane } from "react-bootstrap"
 import TabContainer from "react-bootstrap/TabContainer"
-import { useAuth } from "../auth"
+import { Frequency, useAuth } from "../auth"
 import { Container, Row, Spinner } from "../bootstrap"
 import {
   Profile,
@@ -27,8 +27,9 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import { useFlags } from "components/featureFlags"
 import LoginPage from "components/Login/Login"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
+import { FollowersTab } from "./FollowersTab"
 
-const tabTitle = ["about-you", "testimonies", "following"] as const
+const tabTitle = ["about-you", "testimonies", "following", "followers"] as const
 export type TabTitles = (typeof tabTitle)[number]
 
 export default function EditProfile({
@@ -86,16 +87,16 @@ export function EditProfileForm({
 
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
-  const [notifications, setNotifications] = useState<
-    "Weekly" | "Monthly" | "None"
-  >(notificationFrequency ? notificationFrequency : "Monthly")
+  const [notifications, setNotifications] = useState<Frequency>(
+    notificationFrequency || "Weekly"
+  )
   const [isProfilePublic, setIsProfilePublic] = useState<false | true>(
     isPublic ? isPublic : false
   )
 
   const onSettingsModalOpen = () => {
     setSettingsModal("show")
-    setNotifications(notificationFrequency ? notificationFrequency : "Monthly")
+    setNotifications(notificationFrequency || "Weekly")
     setIsProfilePublic(isPublic ? isPublic : false)
   }
 
@@ -115,6 +116,7 @@ export function EditProfileForm({
   isOrg = isOrg || isPendingUpgrade
 
   const { t } = useTranslation("editProfile")
+  const [followerCount, setFollowerCount] = useState<number | null>(null)
 
   const tabs = [
     {
@@ -147,6 +149,18 @@ export function EditProfileForm({
       title: t("tabs.following"),
       eventKey: "following",
       content: <FollowingTab className="mt-3 mb-4" />
+    },
+    {
+      title: followerCount
+        ? t("tabs.followersWithCount", { count: followerCount })
+        : t("tabs.followers"),
+      eventKey: "followers",
+      content: (
+        <FollowersTab
+          className="mt-3 mb-4"
+          setFollowerCount={setFollowerCount}
+        />
+      )
     }
   ]
 
@@ -174,9 +188,7 @@ export function EditProfileForm({
         >
           <TabNavWrapper>
             {tabs.map((t, i) => (
-              <>
-                <TabNavItem tab={t} i={i} />
-              </>
+              <TabNavItem key={i} tab={t} i={i} />
             ))}
           </TabNavWrapper>
           <StyledTabContent>

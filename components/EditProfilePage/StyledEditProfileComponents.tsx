@@ -41,7 +41,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
 export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
   return (
     <Nav
-      className={`d-flex mb-3 text-center h3 color-dark ${className}`}
+      className={`d-flex w-100 flex-column flex-lg-row flex-lg-nowrap mb-3 text-center h3 color-dark ${className}`}
       {...props}
     >
       {children}
@@ -67,12 +67,11 @@ export const TabNavItem = ({
   className?: string
 }) => {
   return (
-    <Nav.Item
-      className={`flex-grow-1 col-12 col-md-auto ${className}`}
-      key={tab.eventKey}
-    >
+    <Nav.Item className={`flex-lg-fill ${className}`} key={tab.eventKey}>
       <TabNavLink eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
-        <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
+        <p className={`my-0 text-nowrap ${i === 0 ? "" : "mx-4"}`}>
+          {tab.title}
+        </p>
         <hr className={`my-0`} />
       </TabNavLink>
     </Nav.Item>
