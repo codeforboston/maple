@@ -45,8 +45,8 @@ def run_trigger(event: Event[DocumentSnapshot | None]) -> None:
     # If the summary is already populated, only run the tags code
     summary = inserted_content.get("summary")
     if summary is None:
-        document_text = inserted_content.get("contents", {}).get("DocumentText")
-        document_title = inserted_content.get("contents", {}).get("Title")
+        document_text = inserted_content.get("content", {}).get("DocumentText")
+        document_title = inserted_content.get("content", {}).get("Title")
         if document_text is None or document_title is None:
             print(f"bill with id `{bill_id}` unable to fetch document text or title")
             return

@@ -26,7 +26,7 @@ The main functionality is implemented in `llm_functions.py`, which provides meth
 
 ## Requirements
 
-- Python 3.12.0
+- Python 3.11
 - Dependencies listed in `requirements.txt`
 
 ## Usage

@@ -1,6 +1,407 @@
 {
   "indexes": [
-    //// Testimony Listing ////
+    {
+      "collectionGroup": "archivedTestimony",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "billId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "version",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "city",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "content.PrimarySponsor.Id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "currentCommittee.id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cosponsorCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "latestTestimonyAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "nextHearingAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "testimonyCount",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "type",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "startsAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -23,27 +424,6 @@
         }
       ]
     },
-
-    //// Publication cloud functions ////
-    {
-      "collectionGroup": "archivedTestimony",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "billId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "court",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "version",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -58,463 +438,14 @@
         }
       ]
     },
-
-    //// Bill Search ////
-    // No filter
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "latestTestimonyAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "testimonyCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "cosponsorCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "nextHearingAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-
-    // Filter by city
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "latestTestimonyAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "testimonyCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "cosponsorCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "nextHearingAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-
-    // Filter by primary sponsor
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "content.PrimarySponsor.Id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "content.PrimarySponsor.Id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "latestTestimonyAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "content.PrimarySponsor.Id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "testimonyCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "content.PrimarySponsor.Id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "cosponsorCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "content.PrimarySponsor.Id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "nextHearingAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-
-    // Filter by current committee
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "currentCommittee.id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "currentCommittee.id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "latestTestimonyAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "currentCommittee.id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "testimonyCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "currentCommittee.id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "cosponsorCount",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "currentCommittee.id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "nextHearingAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-
-    // Filter by bill ID
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "cosponsorCount",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "latestTestimonyAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "testimonyCount",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "bills",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "nextHearingAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-
-    //// Event Listing ////
-    {
-      "collectionGroup": "events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "type",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "startsAt",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-
-    //// Testimony Search ////
-    // No filters
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
-          "fieldPath": "court",
+          "fieldPath": "authorUid",
           "order": "ASCENDING"
         },
-        {
-          "fieldPath": "publishedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    // Rep
-    {
-      "collectionGroup": "publishedTestimony",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "representativeId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "court",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "publishedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    // Sen
-    {
-      "collectionGroup": "publishedTestimony",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "senatorId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "court",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "publishedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    // bill
-    {
-      "collectionGroup": "publishedTestimony",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -529,11 +460,14 @@
         }
       ]
     },
-    // bill, rep
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -552,11 +486,14 @@
         }
       ]
     },
-    // bill, senator
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -575,22 +512,6 @@
         }
       ]
     },
-    // recent
-    {
-      "collectionGroup": "publishedTestimony",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "authorUid",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "publishedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    // user
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -609,7 +530,20 @@
         }
       ]
     },
-    // user, Rep
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "authorUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -632,7 +566,6 @@
         }
       ]
     },
-    // user, Sen
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
@@ -655,15 +588,10 @@
         }
       ]
     },
-    // user, bill
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
-        {
-          "fieldPath": "authorUid",
-          "order": "ASCENDING"
-        },
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -678,15 +606,10 @@
         }
       ]
     },
-    // user, bill, rep
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
-        {
-          "fieldPath": "authorUid",
-          "order": "ASCENDING"
-        },
         {
           "fieldPath": "billId",
           "order": "ASCENDING"
@@ -705,19 +628,64 @@
         }
       ]
     },
-    // user, bill, senator
     {
       "collectionGroup": "publishedTestimony",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
-          "fieldPath": "authorUid",
-          "order": "ASCENDING"
-        },
-        {
           "fieldPath": "billId",
           "order": "ASCENDING"
         },
+        {
+          "fieldPath": "senatorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "representativeId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "court",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
         {
           "fieldPath": "senatorId",
           "order": "ASCENDING"
@@ -748,57 +716,140 @@
     }
   ],
   "fieldOverrides": [
-    //// backfillTestimonyCounts ////
+    {
+      "collectionGroup": "activeTopicSubscriptions",
+      "fieldPath": "nextDigestAt",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activeTopicSubscriptions",
+      "fieldPath": "topicName",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activeTopicSubscriptions",
+      "fieldPath": "userLookup.profileId",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "fieldPath": "id",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "fieldPath": "authorUid",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
     {
       "collectionGroup": "publishedTestimony",
       "fieldPath": "court",
+      "ttl": false,
       "indexes": [
-        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "DESCENDING" },
-        { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
       ]
     },
-    //// typesense ////
     {
       "collectionGroup": "publishedTestimony",
       "fieldPath": "id",
+      "ttl": false,
       "indexes": [
-        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "DESCENDING" },
-        { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
       ]
     },
     {
       "collectionGroup": "publishedTestimony",
       "fieldPath": "publishedAt",
-      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "DESCENDING" }]
-    },
-    {
-      "collectionGroup": "bills",
-      "fieldPath": "id",
-      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
-    },
-    {
-      "collectionGroup": "publishedTestimony",
-      "fieldPath": "authorUid",
-      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
-    },
-    //// notifications ////
-    {
-      "collectionGroup": "activeTopicSubscriptions",
-      "fieldPath": "nextDigestAt",
-      "indexes": [{ "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }]
-    },
-    {
-      "collectionGroup": "activeTopicSubscriptions",
-      "fieldPath": "topicName",
+      "ttl": false,
       "indexes": [
-        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "ASCENDING" },
-        { "queryScope": "COLLECTION", "order": "DESCENDING" },
-        { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" }
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
       ]
     }
   ]
