@@ -83,7 +83,7 @@ export const BaseFollowButton = ({
   confirmUnfollow?: boolean
   displayName?: string
 }) => {
-  const { t } = useTranslation(["profile", "editProfile"]) // both namespaces used
+  const { t } = useTranslation("common")
   const uid = useAuth().user?.uid
   const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [modalAction, setModalAction] = useState<"follow" | "unfollow" | null>(
@@ -117,7 +117,7 @@ export const BaseFollowButton = ({
       {!hide && (
         <div className="follow-button">
           <Button onClick={onClick} className={`btn btn-lg py-1`}>
-            {t(`button.${modalAction}`)}
+            {t(`button.${isFollowing ? "unfollow" : "follow"}`)}
             {isFollowing && <StyledImage src="/check-white.svg" alt="" />}
           </Button>
         </div>
