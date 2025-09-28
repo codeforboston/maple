@@ -29,8 +29,6 @@
     "cosponsor_count": "Sort by Cosponsor Count",
     "next_hearing_date": "Sort by Next Hearing Date"
   },
-  "no_results": "No Results",
-  "looks_pretty_empty_here": "Looks Pretty Empty Here",
   "result_count": "Showing {{pageStart}}-{{pageEnd}} of {{nbHits}} Results",
   "search_error": "Something went wrong. Please try again. Original message: {{error}}"
 }
