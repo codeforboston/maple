@@ -8,11 +8,11 @@ import { ComponentProps, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
+import { FollowUserCard } from "./FollowUserCard"
 import {
-  FollowUserCard,
-  PaginatedItemsCard,
-  LoadableItemsState
-} from "./shared"
+  LoadableItemsState,
+  PaginatedItemsCard
+} from "components/shared/PaginatedItemsCard"
 
 export function FollowingTab({ className }: { className?: string }) {
   const { t } = useTranslation("editProfile")

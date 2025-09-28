@@ -3,11 +3,11 @@ import { httpsCallable } from "firebase/functions"
 import { useTranslation } from "next-i18next"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useAuth } from "../auth"
+import { FollowUserCard } from "./FollowUserCard"
 import {
-  FollowUserCard,
-  PaginatedItemsCard,
-  LoadableItemsState
-} from "./shared"
+  LoadableItemsState,
+  PaginatedItemsCard
+} from "components/shared/PaginatedItemsCard"
 
 export const FollowersTab = ({
   className,
