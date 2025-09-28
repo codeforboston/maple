@@ -8,62 +8,58 @@ import { ComponentProps, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
-import { FollowUserItem, PaginatedListCard, LoadableListState } from "./shared"
+import {
+  FollowUserCard,
+  PaginatedItemsCard,
+  LoadableItemsState
+} from "./shared"
 
 export function FollowingTab({ className }: { className?: string }) {
-  const uid = useAuth().user?.uid
   const { t } = useTranslation("editProfile")
-  const subscriptionRef = useMemo(
-    () =>
-      // returns new object only if uid changes
-      uid
-        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
-        : null,
-    [uid]
-  )
   return (
     <>
-      <PaginatedListCard
+      <PaginatedItemsCard
         className={className}
         title={t("follow.bills")}
-        ItemCard={FollowedBillItem}
-        {...useFollowList<ComponentProps<typeof FollowedBillItem>>({
-          subscriptionRef,
-          uid,
-          type: "bill"
-        })}
+        ItemCard={FollowedBillCard}
+        {...useFollowedBills()}
       />
-      <PaginatedListCard
+      <PaginatedItemsCard
         className={className}
         title={t("follow.orgs")}
-        ItemCard={({ profileId }) => (
-          <FollowUserItem profileId={profileId} confirmUnfollow={true} />
-        )}
-        {...useFollowList<ComponentProps<typeof FollowUserItem>>({
-          subscriptionRef,
-          uid,
-          type: "testimony"
-        })}
+        ItemCard={item => <FollowUserCard {...item} confirmUnfollow={true} />}
+        {...useFollowedUsers()}
       />
     </>
   )
 }
 
-function useFollowList<T>({
-  subscriptionRef,
-  uid,
-  type
-}: {
-  subscriptionRef: ReturnType<typeof collection> | null
-  uid: string | undefined
+const useFollowedBills = (): LoadableItemsState<
+  ComponentProps<typeof FollowedBillCard>
+> => useTopicSubscription("bill")
+
+const useFollowedUsers = (): LoadableItemsState<
+  ComponentProps<typeof FollowUserCard>
+> => useTopicSubscription("testimony")
+
+function useTopicSubscription<T>(
   type: "bill" | "testimony"
-}): LoadableListState<T> {
-  const [state, setState] = useState<LoadableListState<T>>({
+): LoadableItemsState<T> {
+  const [state, setState] = useState<LoadableItemsState<T>>({
     items: [],
     loading: false,
     error: null
   })
   const { t } = useTranslation("editProfile")
+  const uid = useAuth().user?.uid
+  const subscriptionRef = useMemo(
+    () =>
+      uid
+        ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
+        : null,
+    [uid]
+  )
+  const topicKey = type === "bill" ? "billLookup" : "userLookup"
 
   useEffect(() => {
     if (!subscriptionRef || !uid) return
@@ -72,14 +68,12 @@ function useFollowList<T>({
     const unsubscribe = onSnapshot(
       query(
         subscriptionRef,
-        where("uid", "==", `${uid}`),
+        where("uid", "==", uid),
         where("type", "==", type)
       ),
       snap =>
         setState({
-          items: snap.docs.map(
-            doc => doc.data()[type === "bill" ? "billLookup" : "userLookup"]
-          ),
+          items: snap.docs.map(doc => doc.data()[topicKey]),
           loading: false,
           error: null
         }),
@@ -99,7 +93,7 @@ function useFollowList<T>({
   return state
 }
 
-function FollowedBillItem({
+function FollowedBillCard({
   court,
   billId
 }: {
