@@ -8,13 +8,13 @@ import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
 import { OrgIconSmall } from "./StyledEditProfileComponents"
 
-export type LoadableListState<T> = {
+export type LoadableItemsState<T> = {
   items: readonly T[]
   loading: boolean
   error: string | null
 }
 
-export function PaginatedListCard<T>({
+export function PaginatedItemsCard<T>({
   className,
   title,
   items,
@@ -23,7 +23,7 @@ export function PaginatedListCard<T>({
   loading = false,
   error = null,
   description
-}: LoadableListState<T> & {
+}: LoadableItemsState<T> & {
   className?: string
   title: string | React.ReactNode
   itemsPerPage?: number
@@ -83,7 +83,7 @@ export function PaginatedListCard<T>({
   )
 }
 
-export function FollowUserItem({
+export function FollowUserCard({
   profileId,
   confirmUnfollow
 }: {

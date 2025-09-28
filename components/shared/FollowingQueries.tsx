@@ -26,10 +26,9 @@ export const followBill = async (uid: string | undefined, bill: Bill) => {
   })
 }
 
-export const unfollowTopic = async (
-  uid: string | undefined,
-  topicName: string
-) => await deleteDoc(getTopicRef(uid, topicName))
+const unfollowTopic = async (uid: string | undefined, topicName: string) =>
+  await deleteDoc(getTopicRef(uid, topicName))
+
 export const unfollowBill = async (
   uid: string | undefined,
   bill: Pick<Bill, "id" | "court">
