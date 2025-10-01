@@ -1,18 +1,18 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { CardTitle } from "../../../components/Card";
-import CardBootstrap from "react-bootstrap/Card";
+import { Meta, StoryObj } from "@storybook/react"
+import { CardTitle } from "../../../components/Card"
+import CardBootstrap from "react-bootstrap/Card"
 
 const meta: Meta<typeof CardTitle> = {
   title: "Organisms/Cards/CardTitle",
-  component: CardTitle,
-};
-export default meta;
+  component: CardTitle
+}
+export default meta
 
-type Story = StoryObj<typeof CardTitle>;
+type Story = StoryObj<typeof CardTitle>
 
 export const Primary: Story = {
   args: {
-    title: "Header", 
+    title: "Header"
   },
   render: ({ title }) => (
     <CardTitle>
@@ -20,5 +20,5 @@ export const Primary: Story = {
         <strong>{title}</strong>
       </CardBootstrap.Title>
     </CardTitle>
-  ),
-};
+  )
+}

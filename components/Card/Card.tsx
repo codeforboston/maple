@@ -42,19 +42,19 @@ export const Card = (CardProps: CardProps) => {
     className
   } = CardProps
 
-   const headerContent = header
-    ? (
-      <CardBootstrap.Body className="align-items-center d-flex px-2 pt-2 pb-0">
-        <CardBootstrap.Body className="px-3 py-0">
-          <CardTitle>
-            <CardBootstrap.Title className="align-items-start fs-6 lh-sm mb-1 text-secondary">
-              <strong>{header}</strong>
-            </CardBootstrap.Title>
-          </CardTitle>
-        </CardBootstrap.Body>
+  const headerContent = header ? (
+    <CardBootstrap.Body className="align-items-center d-flex px-2 pt-2 pb-0">
+      <CardBootstrap.Body className="px-3 py-0">
+        <CardTitle>
+          <CardBootstrap.Title className="align-items-start fs-6 lh-sm mb-1 text-secondary">
+            <strong>{header}</strong>
+          </CardBootstrap.Title>
+        </CardTitle>
       </CardBootstrap.Body>
-    )
-    : (headerElement ?? null);
+    </CardBootstrap.Body>
+  ) : (
+    headerElement ?? null
+  )
 
   const bodyContent = body ? (
     body

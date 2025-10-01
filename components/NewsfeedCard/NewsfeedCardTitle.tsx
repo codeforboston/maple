@@ -217,4 +217,4 @@ const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
   }
 }
 
-export default NewsfeedCardTitle;
+export default NewsfeedCardTitle
