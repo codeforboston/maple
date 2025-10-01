@@ -17,21 +17,27 @@ export const FollowersTab = ({
   setFollowerCount: Dispatch<SetStateAction<number | null>>
 }) => {
   const uid = useAuth().user?.uid
-  const [state, setState] = useState<LoadableItemsState<string>>({
-    items: [],
-    loading: true,
-    error: null
-  })
+  const [state, setState] = useState<LoadableItemsState<{ profileId: string }>>(
+    {
+      items: [],
+      loading: true,
+      error: null
+    }
+  )
   const { t } = useTranslation("editProfile")
 
   const fetchFollowers = async () => {
     try {
-      const { data: followerIds } = await httpsCallable<void, string[]>(
+      const { data: profileIds } = await httpsCallable<void, string[]>(
         functions,
         "getFollowers"
       )()
-      setState({ items: followerIds, loading: false, error: null })
-      setFollowerCount(followerIds.length)
+      setState({
+        items: profileIds.map(profileId => ({ profileId })),
+        loading: false,
+        error: null
+      })
+      setFollowerCount(profileIds.length)
     } catch (err) {
       console.error("Error fetching followerIds", err)
       setState({
@@ -54,7 +60,7 @@ export const FollowersTab = ({
       className={className}
       title={t("follow.your_followers")}
       description={t("follow.follower_info_disclaimer")}
-      ItemCard={profileId => <FollowUserCard profileId={profileId} />}
+      ItemCard={FollowUserCard}
       {...state}
     />
   )

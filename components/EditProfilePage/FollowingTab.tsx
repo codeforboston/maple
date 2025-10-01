@@ -42,7 +42,7 @@ const useFollowedUsers = (): LoadableItemsState<
   ComponentProps<typeof FollowUserCard>
 > => useTopicSubscription("testimony")
 
-function useTopicSubscription<T>(
+function useTopicSubscription<T extends object>(
   type: "bill" | "testimony"
 ): LoadableItemsState<T> {
   const [state, setState] = useState<LoadableItemsState<T>>({

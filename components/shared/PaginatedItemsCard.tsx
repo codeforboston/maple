@@ -3,13 +3,13 @@ import { Alert, Spinner, Stack } from "../bootstrap"
 import { TitledSectionCard } from "../shared"
 import { PaginationButtons } from "../table"
 
-export type LoadableItemsState<T> = {
+export type LoadableItemsState<T extends object> = {
   items: readonly T[]
   loading: boolean
   error: string | null
 }
 
-export function PaginatedItemsCard<T>({
+export function PaginatedItemsCard<T extends object>({
   className,
   title,
   items,
