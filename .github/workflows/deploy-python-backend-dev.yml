@@ -20,15 +20,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - name: Install Python 3.11
-        run: |
-          sudo add-apt-repository ppa:deadsnakes/ppa -y
-          sudo apt update
-          sudo apt install python3.11 python3.11-venv python3-pip
-      - name: Build and deploy to Firebase
-        uses: w9jds/firebase-action@v13.18.0
+      - uses: actions/setup-node@v5
+      - uses: actions/setup-python@v6
         with:
-          args: deploy --force --only functions:maple-llm
+          python-version: '3.11'
+      - name: Build and deploy to Firebase
+        uses: w9jds/setup-firebase@main
+        with:
+          tools-version: 13.8.0
+      - run: firebase deploy --force --only functions:maple-llm
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
