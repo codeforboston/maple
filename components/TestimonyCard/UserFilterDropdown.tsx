@@ -43,7 +43,6 @@ const StyledDropdown = styled(Dropdown.Toggle)`
   padding: 5px;
 
   font-size: 1.5rem;
-  font-family: Nunito;
   color: white;
 
   background-color: #1a3185;

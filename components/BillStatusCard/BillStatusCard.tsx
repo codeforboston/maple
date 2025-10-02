@@ -66,7 +66,6 @@ const StatusStyle = styled.div`
   background-color: white;
   color: black;
 
-  font-family: Nunito;
   font-style: normal;
   font-weight: 500;
   font-size: 1.5rem;
