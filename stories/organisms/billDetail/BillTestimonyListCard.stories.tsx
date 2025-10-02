@@ -47,7 +47,8 @@ export const Primary: Story = {
           Branch: "1",
           Action: "1"
         }
-      ]
+      ],
+      similar: []
     }
   },
   name: "BillTestimonyListCard",
