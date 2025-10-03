@@ -8,6 +8,8 @@
   "members": "Members",
   "no_video_on_file": "This hearing does not yet have a video on file",
   "recording_date": "Recording date",
+  "schedule_date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
+  "schedule_time": "{{date, datetime(hour: 'numeric'; minute: '2-digit')}}",
   "senate_chair": "Senate Chair",
   "show_less": "Show less",
   "show_more": "Show more",

@@ -74,6 +74,27 @@ export const NavbarLinkBills: React.FC<
   )
 }
 
+export const NavbarLinkHearings: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <Nav.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : "text-white-50"}
+        href="/hearings"
+        {...other}
+      >
+        {t("navigation.browseHearings")}
+      </NavLink>
+    </Nav.Item>
+  )
+}
+
 export const NavbarLinkEditProfile: React.FC<
   React.PropsWithChildren<{
     handleClick?: any
