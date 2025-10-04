@@ -25,7 +25,6 @@ const TextHeader = styled.h6`
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
-  font-family: Nunito;
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
@@ -33,7 +32,6 @@ const TextHeader = styled.h6`
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
   color: #fff;
-  font-family: Nunito;
   padding: 0.5rem 1rem 0 0;
   margin: 0 0 10px 0;
 
@@ -51,7 +49,6 @@ const BrowseHeader = styled(NavLink)`
 
 const StyledInternalLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.55);
-  font-family: Nunito;
   letter-spacing: -0.63px;
   padding-top: 4;
   margin: 5px 0;

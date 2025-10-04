@@ -159,5 +159,13 @@
     "unsubscribe": "Unsubscribe",
     "why_use_maple": "Why Use Maple?"
   },
-  "user_updates": "User Updates"
+  "user_updates": "User Updates",
+  "copiedToClipboard": "Copied to Clipboard!",
+  "privacyPolicy": "Privacy Policy",
+  "termsAndConditions": "Terms and Conditions",
+  "languages": "Languages",
+  "english": "English",
+  "spanish": "Spanish",
+  "edit": "Edit",
+  "yes": "Yes"
 }

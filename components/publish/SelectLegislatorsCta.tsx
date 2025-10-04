@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "next-i18next"
 import { useProfileState } from "../db/profile/redux"
 import { Loading } from "../legislatorSearch"
 import { External } from "../links"

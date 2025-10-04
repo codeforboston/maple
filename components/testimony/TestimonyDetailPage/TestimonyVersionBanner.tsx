@@ -41,7 +41,6 @@ export const VersionBanner = styled<ContainerProps>(
 
   background-color: var(--bs-orange);
   color: white;
-  font-family: Nunito;
   font-size: 2rem;
 
   button {

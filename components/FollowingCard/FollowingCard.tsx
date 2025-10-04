@@ -20,7 +20,6 @@ const Container = styled.div`
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
-  font-family: Nunito;
   font-size: 20px;
   line-height: 25px;
 `

@@ -137,14 +137,12 @@ const StyledBillStageStrip = styled(BillStageStrip)`
     flex: 1;
   }
   .stage-title {
-    font-family: Nunito;
     font-weight: ${props => (props.currentStage ? 700 : 500)};
     line-height: ${getRem(20)};
     letter-spacing: 0.015em;
     text-align: left;
   }
   .info {
-    font-family: Nunito;
     font-size: ${getRem(12)};
     font-weight: 600;
     line-height: ${getRem(15)};

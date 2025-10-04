@@ -1,0 +1,10 @@
+{
+  "resolved": "resolved",
+  "reportId": "report id",
+  "archivedId": "archived id",
+  "status": "status",
+  "resolution": "resolution",
+  "moderatedBy": "moderated by",
+  "resolveReport": "Resolve Report",
+  "resolveReportAction": "resolve report"
+}
