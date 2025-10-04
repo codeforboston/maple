@@ -6,6 +6,7 @@ import { Bill, Profile } from "../db"
 import { useTranslation } from "next-i18next"
 
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
+  const { t } = useTranslation("testimony")
   const {
       content: { Title },
       city,
@@ -15,34 +16,36 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
     hasLegislators = Boolean(representative || senator)
   return (
     <InfoContainer>
-      <Label>You're writing testimony about</Label>
+      <Label>{t("quickInfo.writingAbout")}</Label>
       <Chip className="brown">
-        {Title}&nbsp;(Bill {bill.id})
+        {Title}&nbsp;({t("quickInfo.bill")} {bill.id})
       </Chip>
       {city && (
         <>
-          <Label>in</Label>
-          <Chip>{city}, Massachusetts</Chip>
+          <Label>{t("quickInfo.in")}</Label>
+          <Chip>
+            {t("quickInfo.cityState", { city, state: "Massachusetts" })}
+          </Chip>
         </>
       )}
       <Sponsors bill={bill} />
       {committee && (
         <>
-          <Label>and the committee is</Label>
+          <Label>{t("quickInfo.committeeIs")}</Label>
           <Chip>{committee.name}</Chip>
         </>
       )}
       {hasLegislators && (
         <>
-          <Label>and your legislators are</Label>
+          <Label>{t("quickInfo.yourLegislatorsAre")}</Label>
           {representative && (
             <Chip>
-              Representative <b>{representative.name}</b>
+              {t("quickInfo.representative")} <b>{representative.name}</b>
             </Chip>
           )}
           {senator && (
             <Chip className={clsx(senator && representative && "mt-2")}>
-              Senator <b>{senator.name}</b>
+              {t("quickInfo.senator")} <b>{senator.name}</b>
             </Chip>
           )}
         </>
@@ -96,7 +99,7 @@ export const SponsorList = styled.div`
     }
   `,
   Sponsors = ({ bill }: { bill: Bill }) => {
-    const { t } = useTranslation("common")
+    const { t } = useTranslation("testimony")
     const { PrimarySponsor: primarySponsor, Cosponsors: cosponsors } =
       bill.content
 
@@ -108,11 +111,11 @@ export const SponsorList = styled.div`
 
     return (
       <>
-        <Label>and it is sponsored by</Label>
+        <Label>{t("quickInfo.sponsoredBy")}</Label>
         <SponsorList>
           {primarySponsor && (
             <Chip>
-              <Image alt={t("primarySponsor")} src="/star.svg" />
+              <Image alt={t("quickInfo.primarySponsor")} src="/star.svg" />
               {primarySponsor.Name}
             </Chip>
           )}
@@ -120,7 +123,9 @@ export const SponsorList = styled.div`
             <Chip key={m.Id}>{m.Name}</Chip>
           ))}
           {!!overflowCount && (
-            <Chip className="overflow">And {overflowCount} more</Chip>
+            <Chip className="overflow">
+              {t("quickInfo.andMore", { count: overflowCount })}
+            </Chip>
           )}
         </SponsorList>
       </>

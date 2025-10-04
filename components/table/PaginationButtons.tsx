@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button } from "../bootstrap"
 import { Pagination } from "../db"
 import styled from "styled-components"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 export const PaginationButtons = ({
   pagination: {

@@ -25,10 +25,12 @@ import {
   setRecipients
 } from "./redux"
 import { isNotNull } from "components/utils"
+import { useTranslation } from "next-i18next"
 
 export const SelectRecipients = styled(props => {
   useEmailRecipients()
   const email = useTestimonyEmail()
+  const { t } = useTranslation("testimony")
 
   const isMobile = useMediaQuery("(max-width: 1199px)")
 
@@ -36,7 +38,7 @@ export const SelectRecipients = styled(props => {
     <div {...props}>
       <Row className="d-flex">
         <Col className="align-self-center fs-4" xl={3} lg={12}>
-          Email Recipients
+          {t("publish.emailRecipients")}
         </Col>
         <Col xl={6} lg={12}>
           <RecipientControls />
@@ -54,7 +56,8 @@ export const SelectRecipients = styled(props => {
               className={`copy py-1 px-2 ${isMobile ? "ms-3" : ""}`}
               format="text/plain"
             >
-              <FontAwesomeIcon icon={faCopy} /> Copy Email Recipients
+              <FontAwesomeIcon icon={faCopy} />
+              {t("publish.copyEmailRecipients")}
             </CopyButton>
           ) : null}
         </Col>
@@ -104,6 +107,7 @@ export const SelectRecipients = styled(props => {
 const RecipientControls = styled(({ className }) => {
   const dispatch = useAppDispatch()
   const { share } = usePublishState()
+  const { t } = useTranslation("testimony")
 
   const email = useTestimonyEmail()
   const buttons = []
@@ -131,7 +135,7 @@ const RecipientControls = styled(({ className }) => {
             variant="outline-secondary"
             onClick={() => dispatch(addCommittee())}
           >
-            Add Relevant Committee Chairs
+            {t("publish.addCommitteeChairs")}
           </Button>
         </Col>
       )
@@ -149,7 +153,7 @@ const RecipientControls = styled(({ className }) => {
             variant="outline-secondary"
             onClick={() => dispatch(removeCommittee())}
           >
-            Remove Relevant Committee Chairs
+            {t("publish.removeCommitteeChairs")}
           </Button>
         </Col>
       )
@@ -177,7 +181,7 @@ const RecipientControls = styled(({ className }) => {
             variant="outline-secondary"
             onClick={() => dispatch(addMyLegislators())}
           >
-            Add My Legislators
+            {t("publish.addMyLegislators")}
           </Button>
         </Col>
       )
@@ -195,7 +199,7 @@ const RecipientControls = styled(({ className }) => {
             variant="outline-secondary"
             onClick={() => dispatch(removeMyLegislators())}
           >
-            Remove My Legislators
+            {t("publish.removeMyLegislators")}
           </Button>
         </Col>
       )
@@ -232,17 +236,20 @@ const Label = (
 const SelectLegislatorEmails = ({ className }: { className?: string }) => {
   const { share } = usePublishState()
   const dispatch = useAppDispatch()
+  const { t } = useTranslation("testimony")
   return share.loading ? (
     <Loading />
   ) : (
     <MultiSearch
       className={className}
-      placeholder="Find your legislators"
+      placeholder={t("publish.findYourLegislators")}
       index={share.options}
       memberIds={share.recipients.map(m => m.MemberCode)}
       update={m => dispatch(setRecipients(m))}
       getOptionLabel={o =>
-        `${o.Branch === "House" ? "Rep." : "Sen."} ${o.Name} | ${o.District}`
+        `${
+          o.Branch === "House" ? t("publish.repShort") : t("publish.senShort")
+        } ${o.Name} | ${o.District}`
       }
       components={{ MultiValueLabel: Label }}
     />

@@ -82,7 +82,3 @@ const Position = (stance: string) => {
     </div>
   )
 }
-
-const EditBtnStyle = styled.p`
-  color: #8999d6;
-`
