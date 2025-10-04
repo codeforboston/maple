@@ -12,6 +12,7 @@ import CustomDropdown, {
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
 import { NEWSLETTER_SIGNUP_URL } from "components/common"
+import { flags } from "../featureFlags"
 
 export type PageFooterProps = {
   children?: any
@@ -220,6 +221,11 @@ const BrowseList = () => {
       <BrowseHeader href="/testimony">
         {t("navigation.browseTestimony")}
       </BrowseHeader>
+      {flags().hearingsAndTranscriptions ? (
+        <BrowseHeader href="/hearings">
+          {t("navigation.browseHearings")}
+        </BrowseHeader>
+      ) : null}
       <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
     </>
   )
