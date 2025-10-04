@@ -1,10 +1,17 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 import { Card, Badge } from "../../bootstrap"
 import { Highlight } from "react-instantsearch"
 import { HearingHitData } from "./HearingSearch"
-import { useState, useMemo } from "react"
+import {
+  useState,
+  useMemo,
+  KeyboardEvent,
+  MouseEvent,
+  useCallback
+} from "react"
 
 const StyledCard = styled(Card)`
   border: none;
@@ -40,6 +47,7 @@ const SectionLabel = styled.span`
 
 export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
   const { t } = useTranslation(["search", "hearing"])
+  const router = useRouter()
   const startsAt = new Date(hit.startsAt)
   const scheduleDate = t("schedule_date", { ns: "hearing", date: startsAt })
   const scheduleTime = t("schedule_time", { ns: "hearing", date: startsAt })
@@ -54,73 +62,90 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
     }))
   }, [hit.billNumbers, hit.billSlugs])
 
+  const navigateToHearing = useCallback(() => {
+    void router.push(`/hearing/${hit.eventId}`)
+  }, [hit.eventId, router])
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      navigateToHearing()
+    }
+  }
+
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    navigateToHearing()
+  }
+
   return (
-    <Link href={`/hearing/${hit.eventId}`} legacyBehavior>
-      <a style={{ all: "unset" }} className="w-100">
-        <StyledCard>
-          <Card.Body className="bg-white">
-            <div className="d-flex flex-column gap-2">
-              <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between">
-                <div className="d-flex flex-column">
-                  <span className="text-uppercase fw-semibold text-secondary">
-                    {scheduleDate}
-                  </span>
-                  <span className="text-secondary">{scheduleTime}</span>
-                </div>
-                {hit.hasVideo ? (
-                  <Badge bg="success" pill>
-                    {t("video_available", { ns: "search" })}
-                  </Badge>
-                ) : null}
-              </div>
-
-              <div>
-                <Card.Title as="h6" className="mb-1">
-                  <Highlight attribute="title" hit={hit} />
-                </Card.Title>
-                {hit.description ? (
-                  <p className="mb-0 text-muted">
-                    <Highlight attribute="description" hit={hit} />
-                  </p>
-                ) : null}
-              </div>
-
-              {hit.locationName || hit.locationCity ? (
-                <div>
-                  <SectionLabel>
-                    {t("location_label", { ns: "search" })}
-                  </SectionLabel>
-                  <span>
-                    {hit.locationName ?? hit.locationCity}
-                    {hit.locationName && hit.locationCity
-                      ? ` · ${hit.locationCity}`
-                      : ""}
-                  </span>
-                </div>
-              ) : null}
-
-              {committeeChairs.length ? (
-                <div className="d-flex align-items-center gap-2">
-                  <SectionLabel>{t("chairs", { ns: "hearing" })}</SectionLabel>
-                  {<span>{committeeChairs.join(", ")}</span>}
-                </div>
-              ) : null}
-
-              {topics.length ? (
-                <div>
-                  <SectionLabel>
-                    {t("agenda_label", { ns: "search" })}
-                  </SectionLabel>
-                  <span>{topics.join(", ")}</span>
-                </div>
-              ) : null}
-
-              <BillsSection bills={bills} />
+    <StyledCard
+      role="link"
+      tabIndex={0}
+      className="w-100"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      aria-label={hit.title}
+    >
+      <Card.Body className="bg-white">
+        <div className="d-flex flex-column gap-2">
+          <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div className="d-flex flex-column">
+              <span className="text-uppercase fw-semibold text-secondary">
+                {scheduleDate}
+              </span>
+              <span className="text-secondary">{scheduleTime}</span>
             </div>
-          </Card.Body>
-        </StyledCard>
-      </a>
-    </Link>
+            {hit.hasVideo ? (
+              <Badge bg="success" pill>
+                {t("video_available", { ns: "search" })}
+              </Badge>
+            ) : null}
+          </div>
+
+          <div>
+            <Card.Title as="h6" className="mb-1">
+              <Highlight attribute="title" hit={hit} />
+            </Card.Title>
+            {hit.description ? (
+              <p className="mb-0 text-muted">
+                <Highlight attribute="description" hit={hit} />
+              </p>
+            ) : null}
+          </div>
+
+          {hit.locationName || hit.locationCity ? (
+            <div>
+              <SectionLabel>
+                {t("location_label", { ns: "search" })}
+              </SectionLabel>
+              <span>
+                {hit.locationName ?? hit.locationCity}
+                {hit.locationName && hit.locationCity
+                  ? ` · ${hit.locationCity}`
+                  : ""}
+              </span>
+            </div>
+          ) : null}
+
+          {committeeChairs.length ? (
+            <div className="d-flex align-items-center gap-2">
+              <SectionLabel>{t("chairs", { ns: "hearing" })}</SectionLabel>
+              {<span>{committeeChairs.join(", ")}</span>}
+            </div>
+          ) : null}
+
+          {topics.length ? (
+            <div>
+              <SectionLabel>{t("agenda_label", { ns: "search" })}</SectionLabel>
+              <span>{topics.join(", ")}</span>
+            </div>
+          ) : null}
+
+          <BillsSection bills={bills} />
+        </div>
+      </Card.Body>
+    </StyledCard>
   )
 }
 
@@ -150,7 +175,17 @@ const BillsSection = ({
           return (
             <span key={`${bill.slug}-${bill.number}-${index}`}>
               <Link href={`/bills/${bill.slug}`} legacyBehavior>
-                <a className="text-decoration-none">{bill.number}</a>
+                <a
+                  className="text-decoration-none"
+                  onClick={event => event.stopPropagation()}
+                  onKeyDown={event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.stopPropagation()
+                    }
+                  }}
+                >
+                  {bill.number}
+                </a>
               </Link>
               {shouldShowComma ? ", " : ""}
             </span>
@@ -160,7 +195,10 @@ const BillsSection = ({
           <button
             type="button"
             className="btn btn-link p-0 align-baseline"
-            onClick={() => setShowAllBills(true)}
+            onClick={event => {
+              event.stopPropagation()
+              setShowAllBills(true)
+            }}
           >
             {t("more_bills", { count: remaining })}
           </button>
