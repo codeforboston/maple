@@ -22,7 +22,7 @@ import { SortBy, SortByWithConfigurationItem } from "../SortBy"
 import { RefinementPanel, RefinementPanelConfig } from "./RefinementPanel"
 import { VirtualRefinements } from "./VirtualRefinements"
 import { ResultsPane } from "./ResultsPane"
-import { server } from "./typesenseConfig"
+import { getServerConfig } from "../common"
 import { SearchErrorBoundary } from "../SearchErrorBoundary"
 
 const RefinementToolbar = styled.div`
@@ -105,7 +105,7 @@ export const SearchPage = <TRecord extends Hit>({
   const searchClient = useMemo(
     () =>
       new TypesenseInstantSearchAdapter({
-        server,
+        server: getServerConfig(),
         additionalSearchParameters: searchParameters
       }).searchClient,
     [searchParameters]
