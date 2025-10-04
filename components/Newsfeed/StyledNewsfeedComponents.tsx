@@ -19,7 +19,6 @@ export const Header = styled(Row)`
 `
 
 export const HeaderTitle = styled(Col)`
-  font-family: "Nunito";
   font-style: normal;
   font-weight: 700;
   font-size: 40px;

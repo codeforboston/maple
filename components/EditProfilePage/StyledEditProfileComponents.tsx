@@ -19,7 +19,6 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   }
 
   text-align: center;
-  font-family: Nunito;
   font-size: 1.25rem;
   color: var(--bs-dark);
 
@@ -82,7 +81,6 @@ export const TabNavItem = ({
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className
 }))`
-  font-family: Nunito;
   font-size: 1.25rem;
   width: auto;
   margin: auto;
@@ -140,7 +138,6 @@ export const StyledHr = styled.hr`
 
 export const Header = styled(Row)`
   font-size: 3rem;
-  font-family: Nunito;
   font-weight: 500;
   margin-top: 3.5rem;
   margin-bottom: 3.5rem;

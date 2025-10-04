@@ -1,5 +1,6 @@
 import { CardTitle, ListItem } from "components/Card"
 import { Card as MapleCard } from "../Card/Card"
+import CardBootstrap from "react-bootstrap/Card"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import clsx from "clsx"
@@ -19,7 +20,9 @@ export const PriorityBillsCard = (props: {
   onClick: (billNumber: string) => void
   editBtn: boolean
 }) => {
-  const items = props.bills?.map((bill, index) => {
+  const { t } = useTranslation("common")
+
+  const items = props.bills?.map(bill => {
     const isSelectedBill = bill.billNumber === props.selectedBillId
 
     return bill.stance ? (
@@ -48,21 +51,21 @@ export const PriorityBillsCard = (props: {
     )
   })
 
-  const header = props.editBtn ? (
-    <CardTitle
-      header="Priority Bills"
-      subheader={`Session ${props.session}`}
-      inHeaderElement={EditButton()}
-    />
-  ) : (
-    <CardTitle header="Priority Bills" subheader={`Session ${props.session}`} />
+  const headerText = t("priority_bills", { defaultValue: "Priority Bills" })
+
+  const header = (
+    <CardTitle>
+      <CardBootstrap.Title className="align-items-start fs-6 lh-sm mb-1 text-secondary">
+        <strong>{headerText}</strong>
+      </CardBootstrap.Title>
+    </CardTitle>
   )
 
   return <MapleCard items={items} headerElement={header} />
 }
 
 const Position = (stance: string) => {
-  var stanceSVG
+  let stanceSVG: string
   switch (stance) {
     case "endorse":
       stanceSVG = "/thumbs-endorse.svg"
@@ -79,22 +82,3 @@ const Position = (stance: string) => {
     </div>
   )
 }
-
-const EditButton = () => {
-  const { t } = useTranslation("common")
-  return (
-    <div
-      className="d-flex flex-column align-items-center"
-      onClick={() => console.log("edit")}
-    >
-      <EditBtnStyle className="m-0 editTitle">{t("edit")}</EditBtnStyle>
-      <div className="d-inline">
-        <Image className="svg" alt="" src="/edit-testimony.svg" />
-      </div>
-    </div>
-  )
-}
-
-const EditBtnStyle = styled.p`
-  color: #8999d6;
-`

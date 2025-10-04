@@ -158,7 +158,6 @@ const NoteContainer = styled.div`
   NoteItem = styled.li`
     margin-top: 20px;
     font-weight: 500;
-    font-family: Nunito;
     font-size: 16px;
     font-weight: 400;
     line-height: 20px;

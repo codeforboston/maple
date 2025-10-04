@@ -11,9 +11,6 @@ import { SortTestimonyDropDown } from "./SortTestimonyDropDown"
 import { Tab, Tabs } from "./Tabs"
 import { TestimonyItem } from "./TestimonyItem"
 
-const Container = styled.div`
-  font-family: Nunito;
-`
 const Head = styled(BootstrapCard.Header)`
   background-color: var(--bs-blue);
   color: white;
@@ -87,75 +84,73 @@ const ViewTestimony = (
   const { t } = useTranslation("testimony")
 
   return (
-    <Container>
-      <MapleCard
-        className={`${className} bg-white`}
-        headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
-        body={
-          <BootstrapCard.Body>
-            {!onProfilePage && (
-              <Row>
-                <Tabs
-                  childTabs={tabs}
-                  onChange={handleTabClick}
-                  selectedTab={activeTab}
-                />
-              </Row>
-            )}
+    <MapleCard
+      className={`${className} bg-white`}
+      headerElement={<Head>{isOrg ? "Our Testimonies" : "Testimonies"}</Head>}
+      body={
+        <BootstrapCard.Body>
+          {!onProfilePage && (
+            <Row>
+              <Tabs
+                childTabs={tabs}
+                onChange={handleTabClick}
+                selectedTab={activeTab}
+              />
+            </Row>
+          )}
 
-            {testimony.length > 0 ? (
-              <div>
-                {onProfilePage && (
-                  <Row className="justify-content-between mb-4">
-                    <ShowPaginationSummary
-                      totalTestimonies={totalTestimonies}
-                      testimony={testimony}
-                      pagination={pagination}
-                      t={t}
+          {testimony.length > 0 ? (
+            <div>
+              {onProfilePage && (
+                <Row className="justify-content-between mb-4">
+                  <ShowPaginationSummary
+                    totalTestimonies={totalTestimonies}
+                    testimony={testimony}
+                    pagination={pagination}
+                    t={t}
+                  />
+
+                  <Col xs="auto">
+                    <SortTestimonyDropDown
+                      orderBy={orderBy}
+                      setOrderBy={setOrderBy}
                     />
+                  </Col>
+                </Row>
+              )}
 
-                    <Col xs="auto">
-                      <SortTestimonyDropDown
-                        orderBy={orderBy}
-                        setOrderBy={setOrderBy}
-                      />
-                    </Col>
-                  </Row>
-                )}
-
-                {testimony
-                  .sort((a, b) =>
-                    orderBy === "Oldest First"
-                      ? a.publishedAt > b.publishedAt
-                        ? 1
-                        : -1
-                      : a.publishedAt < b.publishedAt
+              {testimony
+                .sort((a, b) =>
+                  orderBy === "Oldest First"
+                    ? a.publishedAt > b.publishedAt
                       ? 1
                       : -1
-                  )
-                  .map(t => (
-                    <TestimonyItem
-                      key={t.authorUid + t.billId}
-                      testimony={t}
-                      isUser={t.authorUid === user?.uid}
-                      onProfilePage={onProfilePage}
-                    />
-                  ))}
+                    : a.publishedAt < b.publishedAt
+                    ? 1
+                    : -1
+                )
+                .map(t => (
+                  <TestimonyItem
+                    key={t.authorUid + t.billId}
+                    testimony={t}
+                    isUser={t.authorUid === user?.uid}
+                    onProfilePage={onProfilePage}
+                  />
+                ))}
 
-                {(pagination.hasPreviousPage || pagination.hasNextPage) && (
-                  <PaginationButtons pagination={pagination} />
-                )}
-              </div>
-            ) : (
-              <NoResults>
-                {t("viewTestimony.noTestimonies")}
-                <br />
-              </NoResults>
-            )}
-          </BootstrapCard.Body>
-        }
-      />
-    </Container>
+              {(pagination.hasPreviousPage || pagination.hasNextPage) && (
+                <PaginationButtons pagination={pagination} />
+              )}
+            </div>
+          ) : (
+            <NoResults>
+              {t("viewTestimony.noTestimonies")}
+              <br />
+            </NoResults>
+          )}
+        </BootstrapCard.Body>
+      }
+    />
   )
 }
 
