@@ -1,6 +1,5 @@
 .policyContent {
   margin-top: 1rem;
-  font-family: "Nunito";
 }
 
 .sharedValues {
@@ -45,7 +44,6 @@
 }
 
 .values {
-  font-family: "Nunito";
   font-style: normal;
   font-weight: 700;
   font-size: 1rem;

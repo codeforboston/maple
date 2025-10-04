@@ -34,5 +34,6 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
+  "policies",
   "testimony"
 ])
