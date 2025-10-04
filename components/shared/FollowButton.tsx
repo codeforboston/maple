@@ -145,13 +145,10 @@ function ConfirmFollowModal({
   onCancel: () => void
   onConfirm: () => void | Promise<void>
 }) {
-  const { t } = useTranslation(["editProfile"]) // reuse strings from editProfile
+  const { t } = useTranslation("common")
 
   const title = useMemo(
-    () =>
-      action === "unfollow"
-        ? t("follow.unfollow")
-        : t("follow.follow", { defaultValue: "Follow" }),
+    () => (action === "unfollow" ? t("button.unfollow") : t("button.follow")),
     [action, t]
   )
 
