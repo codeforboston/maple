@@ -23,7 +23,7 @@
     "hearing": {
       "month": "Month",
       "year": "Year",
-      "chairNames": "Chair",
+      "committeeChairs": "Chair",
       "committeeName": "Committee"
     }
   },

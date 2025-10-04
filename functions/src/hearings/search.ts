@@ -16,7 +16,7 @@ type HearingSearchRecord = {
   committeeName?: string
   locationName?: string
   locationCity?: string
-  chairNames?: string[]
+  committeeChairs: string[]
   agendaTopics: string[]
   billNumbers: string[]
   billSlugs: string[]
@@ -44,10 +44,14 @@ export const {
       { name: "committeeName", type: "string", facet: true, optional: true },
       { name: "locationName", type: "string", facet: false, optional: true },
       { name: "locationCity", type: "string", facet: false, optional: true },
-      { name: "chairNames", type: "string[]", facet: true, optional: true },
-      { name: "agendaTopics", type: "string[]", facet: false, optional: true },
-      { name: "billNumbers", type: "string[]", facet: false, optional: true },
-      { name: "billSlugs", type: "string[]", facet: false, optional: true },
+      {
+        name: "committeeChairs",
+        type: "string[]",
+        facet: true
+      },
+      { name: "agendaTopics", type: "string[]", facet: false },
+      { name: "billNumbers", type: "string[]", facet: false },
+      { name: "billSlugs", type: "string[]", facet: false },
       { name: "hasVideo", type: "bool", facet: true }
     ],
     default_sorting_field: "startsAt"
@@ -58,7 +62,7 @@ export const {
       startsAt: startsAtTimestamp,
       id,
       videoURL,
-      committeeChairNames
+      committeeChairs
     } = Hearing.check(data)
     const startsAt = startsAtTimestamp.toMillis()
     const schedule = DateTime.fromMillis(startsAt, { zone: timeZone })
@@ -81,7 +85,7 @@ export const {
       committeeName,
       locationName: content.Location?.LocationName,
       locationCity: content.Location?.City,
-      chairNames: committeeChairNames,
+      committeeChairs,
       agendaTopics: content.HearingAgendas.map(agenda => agenda.Topic),
       billNumbers: bills.map(bill => bill.number),
       billSlugs: bills.map(bill => bill.slug),

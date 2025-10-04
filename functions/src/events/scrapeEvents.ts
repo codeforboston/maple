@@ -346,7 +346,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     console.log("content in getEvent()", content)
 
     const host = content.HearingHost
-    const committeeChairNames =
+    const committeeChairs =
       host?.CommitteeCode && host?.GeneralCourtNumber
         ? await loadCommitteeChairNames(
             host.GeneralCourtNumber,
@@ -379,7 +379,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             ...this.timestamps(content),
             videoURL: maybeVideoUrl,
             videoFetchedAt: Timestamp.now(),
-            committeeChairNames,
+            committeeChairs,
             videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
           } as Hearing
         }
@@ -389,7 +389,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           id: `hearing-${EventId}`,
           type: "hearing",
           content,
-          committeeChairNames,
+          committeeChairs,
           ...this.timestamps(content)
         } as Hearing
       }
@@ -398,7 +398,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
-      committeeChairNames,
+      committeeChairs,
       ...this.timestamps(content)
     } as Hearing
   }

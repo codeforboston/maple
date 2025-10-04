@@ -43,8 +43,8 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
   const startsAt = new Date(hit.startsAt)
   const scheduleDate = t("schedule_date", { ns: "hearing", date: startsAt })
   const scheduleTime = t("schedule_time", { ns: "hearing", date: startsAt })
-  const chairNames = hit.chairNames ?? []
-  const topics = hit.agendaTopics ?? []
+  const committeeChairs = hit.committeeChairs
+  const topics = hit.agendaTopics
   const bills = useMemo(() => {
     const numbers = hit.billNumbers ?? []
     const slugs = hit.billSlugs ?? []
@@ -99,10 +99,10 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
                 </div>
               ) : null}
 
-              {chairNames.length ? (
+              {committeeChairs.length ? (
                 <div className="d-flex align-items-center gap-2">
                   <SectionLabel>{t("chairs", { ns: "hearing" })}</SectionLabel>
-                  {<span>{chairNames.join(", ")}</span>}
+                  {<span>{committeeChairs.join(", ")}</span>}
                 </div>
               ) : null}
 

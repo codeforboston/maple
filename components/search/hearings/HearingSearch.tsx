@@ -15,10 +15,10 @@ type HearingSearchRecord = {
   committeeName?: string
   locationName?: string
   locationCity?: string
-  chairNames?: string[]
-  agendaTopics?: string[]
-  billNumbers?: string[]
-  billSlugs?: string[]
+  committeeChairs: string[]
+  agendaTopics: string[]
+  billNumbers: string[]
+  billSlugs: string[]
   hasVideo: boolean
 }
 
@@ -29,7 +29,7 @@ export const HearingSearch = () => (
     searchType="hearing"
     searchParameters={{
       query_by:
-        "title,description,agendaTopics,billNumbers,chairNames,locationName,locationCity",
+        "title,description,agendaTopics,billNumbers,committeeChairs,locationName,locationCity",
       sort_by: "startsAt:asc"
     }}
     hitComponent={HearingHit}
@@ -39,7 +39,7 @@ export const HearingSearch = () => (
         { attribute: "year" },
         { attribute: "committeeName" },
         {
-          attribute: "chairNames",
+          attribute: "committeeChairs",
           transformItems: items =>
             items.sort((a, b) => a.label.localeCompare(b.label))
         }

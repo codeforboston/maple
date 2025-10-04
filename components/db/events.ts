@@ -45,7 +45,7 @@ type SpecialEventContent = BaseContent
 type Hearing = BaseEvent & {
   type: "hearing"
   content: HearingContent
-  committeeChairNames?: string[]
+  committeeChairs: string[]
 }
 type HearingContent = BaseContent & {
   Description: string

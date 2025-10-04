@@ -104,7 +104,7 @@ export const Hearing = BaseEvent.extend({
   videoURL: Optional(String),
   videoTranscriptionId: Optional(String),
   videoFetchedAt: Optional(InstanceOf(Timestamp)),
-  committeeChairNames: Optional(Array(String))
+  committeeChairs: Array(String)
 })
 
 export type Event = Static<typeof Event>
