@@ -4,7 +4,7 @@ import hash from "object-hash"
 import Collection from "typesense/lib/Typesense/Collection"
 import { ImportResponse } from "typesense/lib/Typesense/Documents"
 import { ImportError, ObjectNotFound } from "typesense/lib/Typesense/Errors"
-import { db, DocumentSnapshot, QuerySnapshot } from "../firebase"
+import { db, DocumentData, DocumentSnapshot, QuerySnapshot } from "../firebase"
 import { createClient } from "./client"
 import { CollectionConfig } from "./config"
 import { z } from "zod"
@@ -28,6 +28,17 @@ export class SearchIndexer {
       unorderedArrays: true
     })
     this.collectionName = `${config.alias}_${schemaHash}`
+  }
+
+  private passesFilter(data: DocumentData | undefined) {
+    if (!data) return false
+    if (!this.config.filter) return true
+    try {
+      return this.config.filter(data)
+    } catch (error) {
+      console.error("Filter function threw", error)
+      return false
+    }
   }
 
   static upgradePath = (alias: string) => `/search/upgrade-${alias}`
@@ -56,18 +67,27 @@ export class SearchIndexer {
   }
 
   async syncDocument(change: Change<DocumentSnapshot>) {
-    if (!change.after.exists) {
-      const { id } = this.config.convert(change.before.data()!)
-      await (await this.getCollection()).documents().delete(id)
-    } else if (!change.before.exists) {
-      await (await this.getCollection())
-        .documents()
-        .upsert(this.config.convert(change.after.data()!))
-    } else {
-      const before = this.config.convert(change.before.data()!)
-      const after = this.config.convert(change.after.data()!)
-      if (!isEqual(before, after))
-        await (await this.getCollection()).documents().upsert(after)
+    const beforeData = change.before.exists ? change.before.data() : undefined
+    const afterData = change.after.exists ? change.after.data() : undefined
+
+    // if no data or doesn't match filter, delete from index
+    if (!afterData || !this.passesFilter(afterData)) {
+      if (beforeData && this.passesFilter(beforeData)) {
+        const { id } = this.config.convert(beforeData)
+        await (await this.getCollection()).documents().delete(id)
+      }
+      return
+    }
+
+    const after = this.config.convert(afterData)
+
+    // update if previous data doesn't exist, didn't match, or if the converted data changed
+    if (
+      !beforeData ||
+      !this.passesFilter(beforeData) ||
+      !isEqual(this.config.convert(beforeData), after)
+    ) {
+      await (await this.getCollection()).documents().upsert(after)
     }
   }
 
@@ -107,7 +127,9 @@ export class SearchIndexer {
 
       const docs = batch.reduce((acc, d) => {
         try {
-          const doc = convert(d.data())
+          const data = d.data()
+          if (!this.passesFilter(data)) return acc
+          const doc = convert(data)
           acc.push(doc)
         } catch (error: any) {
           console.error(`Failed to convert document: ${error.message}`)
