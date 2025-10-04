@@ -21,7 +21,6 @@ const Wrapper = styled.span<{ chamber: Chamber }>`
   color: ${({ chamber }) =>
     chamber === "joint" ? "var(--bs-gray-dark)" : "white"};
   font-size: 12px;
-  font-family: Nunito;
   font-weight: 700;
   line-height: 15px;
   letter-spacing: 0.03em;

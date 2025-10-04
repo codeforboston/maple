@@ -124,6 +124,7 @@
   },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
+  "looksPrettyEmptyHere": "Looks Pretty Empty Here",
   "noNewsUpdates": "There are no news updates for your current followed topics",
   "orgs": "Organizations",
   "pending_upgrade_warning": {
