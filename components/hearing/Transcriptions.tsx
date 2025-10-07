@@ -28,6 +28,13 @@ const TimestampCol = styled.div`
   width: 140px;
 `
 
+const NoResultFound = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 88px;
+`
+
 const TranscriptBottom = styled(Row)`
   background-color: white;
   border-bottom-left-radius: 0.75rem;
@@ -71,16 +78,15 @@ const TranscriptRow = styled(Row)`
 `
 const SearchInput = styled.input`
   width: 100%;
-  padding: 0.75rem 0.5rem;
-  border-radius: 0.2rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
   border: none;
-  background-color: #f2f2f7;
+  background-color: #ffffff;
   font-size: 1rem;
   outline: none;
-
+  color: #1a3185;
   &:focus {
     border-color: #999;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     background-color: #fff;
   }
 
@@ -102,8 +108,8 @@ const SearchIcon = styled(FontAwesomeIcon)`
 const SearchWrapper = styled.div`
   position: relative;
   width: 100%;
-  background-color: white;
-  padding: 1rem;
+  background-color: #8c98c2;
+  padding: 1.5rem 1rem;
 `
 
 export const Transcriptions = ({
@@ -177,9 +183,10 @@ export const Transcriptions = ({
       <SearchWrapper>
         <SearchInput
           type="text"
-          placeholder={
-            t("search_placeholder", { ns: "hearing" }) || "Search..."
-          }
+          placeholder={t("search_placeholder", {
+            ns: "hearing",
+            defaultValue: "Search..."
+          })}
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
@@ -199,9 +206,13 @@ export const Transcriptions = ({
             />
           ))}
           {filteredData.length === 0 && (
-            <div>
-              {t("no_results_found", { ns: "hearing" }) || "No results found"}
-            </div>
+            <NoResultFound>
+              {t("no_results_found", {
+                ns: "hearing",
+                searchTerm,
+                defaultValue: "No result found..."
+              })}
+            </NoResultFound>
           )}
           <TranscriptBottom />
         </TranscriptContainer>
