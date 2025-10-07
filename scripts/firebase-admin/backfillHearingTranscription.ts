@@ -49,19 +49,13 @@ export const script: Script = async ({ db, args }) => {
       console.error(`Failed to process hearing ${eventId}:`, error)
     }
   } else {
-    // Bulk process events
+    // Bulk process events sequentially
     const hearingsSnapshot = await db
       .collection("events")
       .where("type", "==", "hearing")
       .get()
 
-    const writer = db.bulkWriter()
-    let count = 0
-
     for (const doc of hearingsSnapshot.docs) {
-      if (count >= 200) {
-        break // Limit to 200 operations for this run
-      }
       const data = doc.data()
       if (!data.videoTranscriptionId) {
         const EventId = parseInt(doc.id.replace("hearing-", ""))
@@ -76,7 +70,7 @@ export const script: Script = async ({ db, args }) => {
               bucketName
             })
 
-            writer.update(doc.ref, {
+            await doc.ref.update({
               videoURL: maybeVideoUrl,
               videoFetchedAt: Timestamp.now(),
               videoTranscriptionId: transcriptId
@@ -85,16 +79,18 @@ export const script: Script = async ({ db, args }) => {
             console.log(
               `Transcription submitted for hearing ${EventId}: ${transcriptId}`
             )
-            count++
           } else {
             console.log(`No valid video URL found for hearing ${EventId}`)
           }
         } catch (error) {
           console.error(`Failed to process hearing ${EventId}:`, error)
         }
+      } else {
+        console.log(
+          `Skipping hearing ${data.EventId}, already has transcription.`
+        )
       }
     }
-    await writer.close()
     console.log("Done processing hearings without transcriptions.")
   }
 }
