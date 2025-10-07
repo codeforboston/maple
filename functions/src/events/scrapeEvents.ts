@@ -148,7 +148,8 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
 
 const extractAudioFromVideo = async (
   EventId: number,
-  videoUrl: string
+  videoUrl: string,
+  bucketName?: string
 ): Promise<string> => {
   const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.m4a`
 
@@ -182,7 +183,7 @@ const extractAudioFromVideo = async (
   })
 
   // Upload the audio file
-  const bucket = storage.bucket()
+  const bucket = bucketName ? storage.bucket(bucketName) : storage.bucket()
   const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
   const file = bucket.file(audioFileName)
 
@@ -219,17 +220,23 @@ const extractAudioFromVideo = async (
 
 export const submitTranscription = async ({
   EventId,
-  maybeVideoUrl
+  maybeVideoUrl,
+  bucketName
 }: {
   EventId: number
   maybeVideoUrl: string
+  bucketName?: string
 }) => {
   const assembly = new AssemblyAI({
     apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
   })
 
   const newToken = randomBytes(16).toString("hex")
-  const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
+  const audioUrl = await extractAudioFromVideo(
+    EventId,
+    maybeVideoUrl,
+    bucketName
+  )
 
   const transcript = await assembly.transcripts.submit({
     audio:

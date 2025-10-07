@@ -1,14 +1,15 @@
 import { Timestamp } from "../../functions/src/firebase"
-import { Record, Number } from "runtypes"
+import { Record, Number, String } from "runtypes"
 import { Script } from "./types"
 import { getHearingVideoUrl, submitTranscription } from "functions/src/events"
 
 const Args = Record({
-  eventId: Number.optional()
+  eventId: Number.optional(),
+  bucketName: String.optional()
 })
 
 export const script: Script = async ({ db, args }) => {
-  const { eventId } = Args.check(args)
+  const { eventId, bucketName } = Args.check(args)
 
   // Process a single event by eventId
   if (eventId) {
@@ -28,7 +29,8 @@ export const script: Script = async ({ db, args }) => {
       if (maybeVideoUrl) {
         const transcriptId = await submitTranscription({
           maybeVideoUrl,
-          EventId: eventId
+          EventId: eventId,
+          bucketName
         })
 
         await docRef.update({
@@ -70,7 +72,8 @@ export const script: Script = async ({ db, args }) => {
           if (maybeVideoUrl) {
             const transcriptId = await submitTranscription({
               maybeVideoUrl,
-              EventId
+              EventId,
+              bucketName
             })
 
             writer.update(doc.ref, {
