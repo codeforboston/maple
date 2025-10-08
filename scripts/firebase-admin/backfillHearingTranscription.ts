@@ -49,13 +49,17 @@ export const script: Script = async ({ db, args }) => {
       console.error(`Failed to process hearing ${eventId}:`, error)
     }
   } else {
-    // Bulk process events sequentially
+    // Run events sequentially to avoid overloading the transcription service
     const hearingsSnapshot = await db
       .collection("events")
       .where("type", "==", "hearing")
       .get()
+    let count = 0
 
     for (const doc of hearingsSnapshot.docs) {
+      if (count >= 100) {
+        break // Limit to 100 operations for this run
+      }
       const data = doc.data()
       if (!data.videoTranscriptionId) {
         const EventId = parseInt(doc.id.replace("hearing-", ""))
@@ -79,6 +83,7 @@ export const script: Script = async ({ db, args }) => {
             console.log(
               `Transcription submitted for hearing ${EventId}: ${transcriptId}`
             )
+            count++
           } else {
             console.log(`No valid video URL found for hearing ${EventId}`)
           }
