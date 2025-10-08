@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 type Paragraph = {
   confidence: number
@@ -13,7 +13,16 @@ type Paragraph = {
   start: number
   text: string
 }
-
+const ClearButton = styled(FontAwesomeIcon)`
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1a3185;
+  font-size: 1rem;
+  z-index: 1;
+  cursor: pointer;
+`
 const ErrorContainer = styled(Container)`
   background-color: white;
 `
@@ -150,6 +159,10 @@ export const Transcriptions = ({
     }
   }, [subscriptionRef, transcriptData])
 
+  const handleClearInput = () => {
+    setSearchTerm("")
+  }
+
   useEffect(() => {
     fetchTranscriptionData()
   }, [fetchTranscriptionData])
@@ -190,6 +203,9 @@ export const Transcriptions = ({
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
+        {searchTerm && (
+          <ClearButton icon={faTimes} onClick={handleClearInput} />
+        )}
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
       {transcriptData.length > 0 ? (
