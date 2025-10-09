@@ -8,6 +8,10 @@ import { Transcriptions } from "./Transcriptions"
 import { firestore } from "components/firebase"
 import * as links from "components/links"
 
+const ButtonContainer = styled.div`
+  width: fit-content;
+`
+
 export const CommitteeButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
@@ -64,6 +68,8 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
+    console.log("DD: ", docData)
+
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
@@ -86,15 +92,19 @@ export const HearingDetails = ({
       <h5 className={`mb-3`}>{description}</h5>
 
       {committeeName ? (
-        <links.External
-          href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
-        >
-          <CommitteeButton
-            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+        <ButtonContainer>
+          {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
+              the button and strech invisibly across the width of the page */}
+          <links.External
+            href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
           >
-            &nbsp; {committeeName} &nbsp;
-          </CommitteeButton>
-        </links.External>
+            <CommitteeButton
+              className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+            >
+              &nbsp; {committeeName} &nbsp;
+            </CommitteeButton>
+          </links.External>
+        </ButtonContainer>
       ) : (
         <></>
       )}
