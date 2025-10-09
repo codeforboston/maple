@@ -115,9 +115,12 @@ export const HearingSidebar = ({
     committeeCode && generalCourtNumber ? committeeData() : null
   }, [committeeCode, committeeData, generalCourtNumber])
 
+  let billsArray: [string, string | number][] = []
   // convert object to array because
   // Objects are not valid as a React child
-  const billsArray: [string, string | number][] = Object.values(billsInAgenda)
+  if (billsInAgenda) {
+    billsArray = Object.values(billsInAgenda)
+  }
   console.log("Bills: ", billsArray)
 
   return (
