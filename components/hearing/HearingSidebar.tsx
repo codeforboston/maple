@@ -18,6 +18,8 @@ interface Members {
   name: string
 }
 
+const SeeMembersButton = styled.button``
+
 const SidebarBody = styled.div`
   background-color: white;
 `
@@ -167,17 +169,17 @@ export const HearingSidebar = ({
 
             {members ? (
               <>
-                <div className={`d-flex justify-content-end mb-2`}>
-                  <CommitteeButton
-                    className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+                <div className={`d-flex fs-6 justify-content-end mb-2`}>
+                  <SeeMembersButton
+                    className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
                     onClick={toggleMembers}
                   >
-                    &nbsp;{" "}
-                    {showMembers
-                      ? t("show_less", { ns: "hearing" })
-                      : t("show_more", { ns: "hearing" })}
-                    &nbsp;
-                  </CommitteeButton>
+                    <u>
+                      {showMembers
+                        ? t("see_less", { ns: "hearing" })
+                        : t("see_all", { ns: "hearing" })}
+                    </u>
+                  </SeeMembersButton>
                 </div>
 
                 {showMembers ? (
@@ -218,10 +220,11 @@ export const HearingSidebar = ({
         </SidebarBody>
       )}
       {billsInAgenda && (
-        <SidebarBody
-          className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
-        >
-          <div>Bills under consideration ({billsInAgenda.length})</div>
+        <SidebarBody className={`border-bottom border-top fs-6 px-3 py-3`}>
+          <div className={`fw-bold`}>
+            Bills under consideration ({billsInAgenda.length})
+          </div>
+          <div className={`fw-normal`}>Ordered by appearance in hearing</div>
         </SidebarBody>
       )}
       <SidebarBottom className={`border-top`} />
