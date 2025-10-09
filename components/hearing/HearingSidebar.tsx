@@ -41,10 +41,12 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
+  billsInAgenda,
   committeeCode,
   generalCourtNumber,
   hearingDate
 }: {
+  billsInAgenda: never[]
   committeeCode: string
   generalCourtNumber: string
   hearingDate: string
@@ -105,6 +107,8 @@ export const HearingSidebar = ({
   useEffect(() => {
     committeeCode && generalCourtNumber ? committeeData() : null
   }, [committeeCode, committeeData, generalCourtNumber])
+
+  console.log("Bills: ", billsInAgenda)
 
   return (
     <>
@@ -211,6 +215,13 @@ export const HearingSidebar = ({
               <></>
             )}
           </SidebarSubbody>
+        </SidebarBody>
+      )}
+      {billsInAgenda && (
+        <SidebarBody
+          className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
+        >
+          <div>Bills under consideration ({billsInAgenda.length})</div>
         </SidebarBody>
       )}
       <SidebarBottom className={`border-top`} />

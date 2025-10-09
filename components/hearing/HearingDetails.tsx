@@ -56,6 +56,7 @@ export const HearingDetails = ({
 
   const eventId = `hearing-${hearingId}`
 
+  const [billsInAgenda, setBillsInAgenda] = useState([])
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [description, setDescription] = useState("")
@@ -68,8 +69,7 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
-    console.log("DD: ", docData)
-
+    setBillsInAgenda(docData?.content.HearingAgendas[0]?.DocumentsInAgenda)
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
@@ -169,6 +169,7 @@ export const HearingDetails = ({
 
         <div className={`col-md-4`}>
           <HearingSidebar
+            billsInAgenda={billsInAgenda}
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}
