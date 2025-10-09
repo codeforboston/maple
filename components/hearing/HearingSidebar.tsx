@@ -7,6 +7,11 @@ import { firestore } from "components/firebase"
 import * as links from "components/links"
 import { LabeledIcon } from "components/shared"
 
+type Bill = {
+  BillNumber: string
+  Details: string
+  Title: string
+}
 interface Legislator {
   Details: string
   GeneralCourtNumber: number
@@ -110,7 +115,10 @@ export const HearingSidebar = ({
     committeeCode && generalCourtNumber ? committeeData() : null
   }, [committeeCode, committeeData, generalCourtNumber])
 
-  console.log("Bills: ", billsInAgenda)
+  // convert object to array because
+  // Objects are not valid as a React child
+  const billsArray: [string, string | number][] = Object.values(billsInAgenda)
+  console.log("Bills: ", billsArray)
 
   return (
     <>
@@ -222,12 +230,33 @@ export const HearingSidebar = ({
       {billsInAgenda && (
         <SidebarBody className={`border-bottom border-top fs-6 px-3 py-3`}>
           <div className={`fw-bold`}>
-            Bills under consideration ({billsInAgenda.length})
+            {t("bills_consideration", { ns: "hearing" })} (
+            {billsInAgenda.length})
           </div>
-          <div className={`fw-normal`}>Ordered by appearance in hearing</div>
+          <div className={`fw-normal mt-2`}>
+            {t("ordered_by_appearance", { ns: "hearing" })}
+          </div>
+          {billsArray.map((element: any, index: number) => (
+            <AgendaBill key={element.BillNumber} element={element} />
+          ))}
         </SidebarBody>
       )}
       <SidebarBottom className={`border-top`} />
     </>
+  )
+}
+
+function AgendaBill({ element }: { element: Bill }) {
+  return (
+    <div className={`border border-2 my-3 rounded`}>
+      <div className={`m-2`}>
+        <links.External
+          href={`https://malegislature.gov/Bills/191/${element.BillNumber}`}
+        >
+          {element.BillNumber}
+        </links.External>
+        <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
+      </div>
+    </div>
   )
 }

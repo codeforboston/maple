@@ -1,4 +1,5 @@
 {
+  "bills_consideration": "Bills under consideration",
   "chairs": "Chairs",
   "committee_members": "Committee members",
   "hearing": "Hearing ",
@@ -7,6 +8,7 @@
   "member": "Member",
   "members": "Members",
   "no_video_on_file": "This hearing does not yet have a video on file",
+  "ordered_by_appearance": "Ordered by appearance in hearing",
   "recording_date": "Recording date",
   "senate_chair": "Senate Chair",
   "see_all": "See all",
