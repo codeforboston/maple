@@ -23,8 +23,6 @@ interface Members {
   name: string
 }
 
-const SeeMembersButton = styled.button``
-
 const SidebarBody = styled.div`
   background-color: white;
 `
@@ -181,7 +179,7 @@ export const HearingSidebar = ({
             {members ? (
               <>
                 <div className={`d-flex fs-6 justify-content-end mb-2`}>
-                  <SeeMembersButton
+                  <button
                     className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
                     onClick={toggleMembers}
                   >
@@ -190,7 +188,7 @@ export const HearingSidebar = ({
                         ? t("see_less", { ns: "hearing" })
                         : t("see_all", { ns: "hearing" })}
                     </u>
-                  </SeeMembersButton>
+                  </button>
                 </div>
 
                 {showMembers ? (
@@ -239,7 +237,7 @@ export const HearingSidebar = ({
           <div className={`fw-normal mt-2`}>
             {t("ordered_by_appearance", { ns: "hearing" })}
           </div>
-          {billsArray.map((element: any, index: number) => (
+          {billsArray.map((element: any) => (
             <AgendaBill key={element.BillNumber} element={element} />
           ))}
         </SidebarBody>
