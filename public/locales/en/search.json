@@ -1,6 +1,7 @@
 {
   "another_term": "Try another search term",
   "browse_bills": "Browse Bills",
+  "browse_hearings": "Browse Hearings",
   "filter": "Filter",
   "topics": "Topics",
   "zero_results": "Your search has yielded zero results!",
@@ -18,6 +19,12 @@
       "position": "Position",
       "billId": "Bill",
       "authorRole": "Author Role"
+    },
+    "hearing": {
+      "month": "Month",
+      "year": "Year",
+      "committeeChairs": "Chair",
+      "committeeName": "Committee"
     }
   },
   "sort_by": {
@@ -27,8 +34,22 @@
     "relevance": "Sort by Relevance",
     "testimony_count": "Sort by Testimony Count",
     "cosponsor_count": "Sort by Cosponsor Count",
-    "next_hearing_date": "Sort by Next Hearing Date"
+    "next_hearing_date": "Sort by Next Hearing Date",
+    "earliest_hearing": "Sort by Soonest Hearing",
+    "latest_hearing": "Sort by Most Recent Hearing"
   },
   "result_count": "Showing {{pageStart}}-{{pageEnd}} of {{nbHits}} Results",
-  "search_error": "Something went wrong. Please try again. Original message: {{error}}"
+  "search_box": {
+    "placeholder": {
+      "bills": "Search For Bills",
+      "testimony": "Search For Testimony",
+      "hearing": "Search For Hearings"
+    }
+  },
+  "search_error": "Something went wrong. Please try again. Original message: {{error}}",
+  "video_available": "Video available",
+  "location_label": "Location",
+  "agenda_label": "Agenda Topics",
+  "bills_label": "Bills",
+  "more_bills": "and {{count}} others"
 }
