@@ -1,15 +1,19 @@
 import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
+import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
+import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { CommitteeButton } from "./HearingDetails"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
-import { LabeledIcon } from "components/shared"
+import { Col, Form, Image, Modal, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+import { billSiteURL, Internal } from "../links"
+import { LabeledIcon } from "../shared"
 
 type Bill = {
   BillNumber: string
   Details: string
+  GeneralCourtNumber: number
   Title: string
 }
 interface Legislator {
@@ -22,6 +26,13 @@ interface Members {
   id: string
   name: string
 }
+
+const ModalLine = styled.hr`
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+  opacity: 0.1;
+`
 
 const SidebarBody = styled.div`
   background-color: white;
@@ -248,16 +259,100 @@ export const HearingSidebar = ({
 }
 
 function AgendaBill({ element }: { element: Bill }) {
+  const { t } = useTranslation(["common", "hearing"])
+  const BillNumber = element.BillNumber
+  const CourtNumber = element.GeneralCourtNumber
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+
+  const close = () => setSettingsModal(null)
+
+  const committeeRecommendations = useCallback(async () => {
+    const recommendations = await getDoc(
+      doc(firestore, `generalCourts/${CourtNumber}/bills/${BillNumber}`)
+    )
+    const docData = recommendations.data()
+
+    console.log("Bill: ", docData)
+  }, [BillNumber, CourtNumber])
+
+  useEffect(() => {
+    BillNumber && CourtNumber ? committeeRecommendations() : null
+  }, [BillNumber, committeeRecommendations, CourtNumber])
+
   return (
-    <div className={`border border-2 my-3 rounded`}>
-      <div className={`m-2`}>
-        <links.External
-          href={`https://malegislature.gov/Bills/191/${element.BillNumber}`}
-        >
-          {element.BillNumber}
-        </links.External>
-        <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
+    <>
+      <div className={`border border-2 my-3 rounded`}>
+        <div className={`m-2`}>
+          <Internal href={billSiteURL(BillNumber, CourtNumber)}>
+            {BillNumber}
+          </Internal>
+          <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
+          <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+            <button
+              className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
+              onClick={() => setSettingsModal("show")}
+            >
+              <u>{t("view_votes", { ns: "hearing" })}</u>
+            </button>
+          </SidebarSubbody>
+        </div>
       </div>
-    </div>
+      <VotesModal
+        BillNumber={BillNumber}
+        CourtNumber={CourtNumber}
+        onHide={close}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
+      />
+    </>
+  )
+}
+
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  BillNumber: string
+  CourtNumber: number
+  onSettingsModalClose: () => void
+}
+
+function VotesModal({
+  BillNumber,
+  CourtNumber,
+  onHide,
+  onSettingsModalClose,
+  show
+}: Props) {
+  const { t } = useTranslation(["common", "editProfile", "hearing"])
+
+  return (
+    <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
+      <Modal.Header>
+        <Modal.Title id="votes-modal">
+          {BillNumber} {t("votes", { ns: "hearing" })}
+        </Modal.Title>
+        <Image
+          src="/x_cancel.png"
+          alt={t("navigation.closeNavMenu", { ns: "editProfile" })}
+          width="30"
+          height="30"
+          className="ms-2"
+          onClick={onSettingsModalClose}
+        />
+      </Modal.Header>
+      <Modal.Body className={`p-3`}>
+        <ModalLine />
+        <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
+        <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ()</div>
+        <div className={`fw-bold`}>{t("no_action", { ns: "hearing" })} ()</div>
+        <ModalLine />
+        <div className={`d-flex fs-6 justify-content-end`}>
+          <Link
+            href={`/bills/${CourtNumber}/${BillNumber}`}
+            className={`fw-bold justify-content-end link-underline link-underline-opacity-0`}
+          >
+            {t("view_bill", { ns: "hearing" })} &rarr;
+          </Link>
+        </div>
+      </Modal.Body>
+    </Modal>
   )
 }
