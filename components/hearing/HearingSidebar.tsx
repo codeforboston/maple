@@ -130,7 +130,9 @@ export const HearingSidebar = ({
   if (billsInAgenda) {
     billsArray = Object.values(billsInAgenda)
   }
+
   console.log("Bills: ", billsArray)
+  console.log("CommCode: ", committeeCode)
 
   return (
     <>
@@ -249,7 +251,11 @@ export const HearingSidebar = ({
             {t("ordered_by_appearance", { ns: "hearing" })}
           </div>
           {billsArray.map((element: any) => (
-            <AgendaBill key={element.BillNumber} element={element} />
+            <AgendaBill
+              key={element.BillNumber}
+              element={element}
+              committeeCode={committeeCode}
+            />
           ))}
         </SidebarBody>
       )}
@@ -258,26 +264,46 @@ export const HearingSidebar = ({
   )
 }
 
-function AgendaBill({ element }: { element: Bill }) {
+function AgendaBill({
+  committeeCode,
+  element
+}: {
+  committeeCode: string
+  element: Bill
+}) {
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
   const CourtNumber = element.GeneralCourtNumber
+  const [committeeRecommendations, setCommitteeRecommendations] = useState<any>(
+    []
+  )
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
 
   const close = () => setSettingsModal(null)
 
-  const committeeRecommendations = useCallback(async () => {
-    const recommendations = await getDoc(
+  const hearingBill = useCallback(async () => {
+    const bill = await getDoc(
       doc(firestore, `generalCourts/${CourtNumber}/bills/${BillNumber}`)
     )
-    const docData = recommendations.data()
+    const docData = bill.data()
 
-    console.log("Bill: ", docData)
+    setCommitteeRecommendations(docData?.content.CommitteeRecommendations)
   }, [BillNumber, CourtNumber])
 
   useEffect(() => {
-    BillNumber && CourtNumber ? committeeRecommendations() : null
-  }, [BillNumber, committeeRecommendations, CourtNumber])
+    BillNumber && CourtNumber ? hearingBill() : null
+  }, [BillNumber, hearingBill, CourtNumber])
+
+  let committeeActions = []
+
+  committeeRecommendations
+    ? (committeeActions = committeeRecommendations.filter(
+        (action: any) => action.Committee.CommitteeCode === committeeCode
+      ))
+    : null
+
+  console.log("Recs (all committees): ", committeeRecommendations)
+  console.log("Actions (only this hearing's committee): ", committeeActions)
 
   return (
     <>
@@ -287,18 +313,27 @@ function AgendaBill({ element }: { element: Bill }) {
             {BillNumber}
           </Internal>
           <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
-          <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
-            <button
-              className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
-              onClick={() => setSettingsModal("show")}
-            >
-              <u>{t("view_votes", { ns: "hearing" })}</u>
-            </button>
-          </SidebarSubbody>
+          {committeeActions.length ? (
+            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+              <button
+                className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
+                onClick={() => setSettingsModal("show")}
+              >
+                <u>{t("view_votes", { ns: "hearing" })}</u>
+              </button>
+            </SidebarSubbody>
+          ) : (
+            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+              <div className={`d-flex text-secondary mt-1 mx-1 p-1`}>
+                {t("no_recs", { ns: "hearing" })}
+              </div>
+            </SidebarSubbody>
+          )}
         </div>
       </div>
       <VotesModal
         BillNumber={BillNumber}
+        committeeActions={committeeActions}
         CourtNumber={CourtNumber}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
@@ -310,18 +345,22 @@ function AgendaBill({ element }: { element: Bill }) {
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
+  committeeActions: any
   CourtNumber: number
   onSettingsModalClose: () => void
 }
 
 function VotesModal({
   BillNumber,
+  committeeActions,
   CourtNumber,
   onHide,
   onSettingsModalClose,
   show
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
+
+  console.log("Actions:", committeeActions[0]?.Action)
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -340,9 +379,15 @@ function VotesModal({
       </Modal.Header>
       <Modal.Body className={`p-3`}>
         <ModalLine />
-        <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
+
+        {/* <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
         <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ()</div>
-        <div className={`fw-bold`}>{t("no_action", { ns: "hearing" })} ()</div>
+        <div className={`fw-bold`}>{t("no_action", { ns: "hearing" })} ()</div> */}
+
+        {committeeActions.map((element: any, index: number) => (
+          <ActionItem key={index} element={element} />
+        ))}
+
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
           <Link
@@ -354,5 +399,18 @@ function VotesModal({
         </div>
       </Modal.Body>
     </Modal>
+  )
+}
+
+function ActionItem({ element }: { element: any }) {
+  const { t } = useTranslation(["common", "editProfile", "hearing"])
+
+  return (
+    <>
+      <div className={`fw-bold`}>
+        {t("action", { ns: "hearing" })}
+        {`:`} {element.Action}
+      </div>
+    </>
   )
 }
