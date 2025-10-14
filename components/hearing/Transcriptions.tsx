@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "components/firebase"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 type Paragraph = {
   confidence: number
@@ -11,7 +13,16 @@ type Paragraph = {
   start: number
   text: string
 }
-
+const ClearButton = styled(FontAwesomeIcon)`
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1a3185;
+  font-size: 1rem;
+  z-index: 1;
+  cursor: pointer;
+`
 const ErrorContainer = styled(Container)`
   background-color: white;
 `
@@ -26,6 +37,13 @@ const TimestampCol = styled.div`
   width: 140px;
 `
 
+const NoResultFound = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 88px;
+`
+
 const TranscriptBottom = styled(Row)`
   background-color: white;
   border-bottom-left-radius: 0.75rem;
@@ -36,6 +54,7 @@ const TranscriptBottom = styled(Row)`
 const TranscriptContainer = styled(Container)`
   max-height: 18rem;
   overflow-y: auto;
+  background-color: #ffffff;
 `
 
 const TranscriptHeader = styled(Row)`
@@ -66,6 +85,41 @@ const TranscriptRow = styled(Row)`
     border-bottom-right-radius: 0.75rem;
   }
 `
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+  color: #1a3185;
+  &:focus {
+    border-color: #999;
+    background-color: #fff;
+  }
+
+  &::placeholder {
+    color: #aaa;
+  }
+`
+
+const SearchIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  right: 1.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1a3185;
+  font-size: 1rem;
+  z-index: 1;
+`
+
+const SearchWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  background-color: #8c98c2;
+  padding: 1.5rem 1rem;
+`
 
 export const Transcriptions = ({
   setCurTimeVideo,
@@ -81,6 +135,7 @@ export const Transcriptions = ({
   const { t } = useTranslation(["common", "hearing"])
   const [highlightedId, setHighlightedId] = useState(-1)
   const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
   const vid = videoTranscriptionId || "prevent FirebaseError"
 
   const subscriptionRef = collection(
@@ -104,9 +159,17 @@ export const Transcriptions = ({
     }
   }, [subscriptionRef, transcriptData])
 
+  const handleClearInput = () => {
+    setSearchTerm("")
+  }
+
   useEffect(() => {
     fetchTranscriptionData()
   }, [fetchTranscriptionData])
+
+  const filteredData = transcriptData.filter(el =>
+    el.text.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   useEffect(() => {
     const handleTimeUpdate = () => {
@@ -130,18 +193,43 @@ export const Transcriptions = ({
 
   return (
     <>
+      <SearchWrapper>
+        <SearchInput
+          type="text"
+          placeholder={t("search_placeholder", {
+            ns: "hearing",
+            defaultValue: "Search..."
+          })}
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <ClearButton icon={faTimes} onClick={handleClearInput} />
+        )}
+        <SearchIcon icon={faMagnifyingGlass} />
+      </SearchWrapper>
       {transcriptData.length > 0 ? (
         <TranscriptContainer className={`mb-2`}>
           <TranscriptHeader />
-          {transcriptData.map((element: Paragraph, index: number) => (
+          {filteredData.map((element: Paragraph, index: number) => (
             <TranscriptItem
               key={index}
               element={element}
               highlightedId={highlightedId}
               index={index}
               setCurTimeVideo={setCurTimeVideo}
+              searchTerm={searchTerm}
             />
           ))}
+          {filteredData.length === 0 && (
+            <NoResultFound>
+              {t("no_results_found", {
+                ns: "hearing",
+                searchTerm,
+                defaultValue: "No result found..."
+              })}
+            </NoResultFound>
+          )}
           <TranscriptBottom />
         </TranscriptContainer>
       ) : (
@@ -157,12 +245,14 @@ function TranscriptItem({
   element,
   highlightedId,
   index,
-  setCurTimeVideo
+  setCurTimeVideo,
+  searchTerm
 }: {
   element: Paragraph
   highlightedId: number
   index: number
   setCurTimeVideo: any
+  searchTerm: string
 }) {
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
@@ -194,7 +284,13 @@ function TranscriptItem({
   const isHighlighted = (index: number): boolean => {
     return index === highlightedId
   }
-
+  const highlightText = (text: string, term: string) => {
+    if (!term) return text
+    const regex = new RegExp(`(${term})`, "gi")
+    return text
+      .split(regex)
+      .map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : part))
+  }
   return (
     <TranscriptRow
       className={
@@ -219,7 +315,7 @@ function TranscriptItem({
           </TimestampButton>
         </Row>
       </TimestampCol>
-      <Col className={`pt-1`}>{element.text}</Col>
+      <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
     </TranscriptRow>
   )
 }
