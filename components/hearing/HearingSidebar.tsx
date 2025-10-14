@@ -403,14 +403,12 @@ function VotesModal({
 }
 
 function ActionItem({ element }: { element: any }) {
-  const { t } = useTranslation(["common", "editProfile", "hearing"])
+  const { t } = useTranslation(["common", "hearing"])
 
   return (
-    <>
-      <div className={`fw-bold`}>
-        {t("action", { ns: "hearing" })}
-        {`:`} {element.Action}
-      </div>
-    </>
+    <div className={`fw-bold`}>
+      {t("action", { ns: "hearing" })}
+      {`:`} {element.Action}
+    </div>
   )
 }
