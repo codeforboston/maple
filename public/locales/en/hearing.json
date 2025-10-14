@@ -11,5 +11,7 @@
   "senate_chair": "Senate Chair",
   "show_less": "Show less",
   "show_more": "Show more",
-  "transcription_not_on_file": "This hearing does not yet have a transcription on file"
+  "transcription_not_on_file": "This hearing does not yet have a transcription on file",
+  "search_placeholder": "Search translation",
+  "no_results_found": "No Search Results for ”{{searchTerm}}”"
 }
