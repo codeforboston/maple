@@ -21,6 +21,7 @@ def make_bill_summary(bill_id, status, summary, topics):
 
 bills_ref = db.collection("generalCourts/194/bills")
 bills = bills_ref.get()
+# TODO: I need to use csv.writer here to properly escape quotes
 with open("./summaries-and-topics.csv", "w") as f:
     f.write("bill_id,status,summary,topics\n")
     for bill in bills:
