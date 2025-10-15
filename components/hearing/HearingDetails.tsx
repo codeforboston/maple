@@ -2,11 +2,11 @@ import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
 import { HearingSidebar } from "./HearingSidebar"
 import { Transcriptions } from "./Transcriptions"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
+import { Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
 
 const ButtonContainer = styled.div`
   width: fit-content;

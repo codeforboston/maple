@@ -1,11 +1,11 @@
+import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { firestore } from "components/firebase"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { firestore } from "../firebase"
 
 type Paragraph = {
   confidence: number
