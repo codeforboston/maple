@@ -13,6 +13,7 @@ type Paragraph = {
   start: number
   text: string
 }
+
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
   right: 3rem;
@@ -23,6 +24,7 @@ const ClearButton = styled(FontAwesomeIcon)`
   z-index: 1;
   cursor: pointer;
 `
+
 const ErrorContainer = styled(Container)`
   background-color: white;
 `
@@ -44,7 +46,7 @@ const NoResultFound = styled.div`
   height: 88px;
 `
 
-const TranscriptBottom = styled(Row)`
+const TranscriptBottom = styled(Container)`
   background-color: white;
   border-bottom-left-radius: 0.75rem;
   border-bottom-right-radius: 0.75rem;
@@ -56,16 +58,6 @@ const TranscriptContainer = styled(Container)`
   overflow-y: auto;
   background-color: #ffffff;
 `
-
-const TranscriptHeader = styled(Row)`
-  background-color: white;
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-  padding-top: 9px;
-`
-
-// consider removing TranscriptionHeader when Search is implemented to
-// make containers: Search followed by Transcriptions flush per figma
 
 const TranscriptRow = styled(Row)`
   &:nth-child(even) {
@@ -209,31 +201,32 @@ export const Transcriptions = ({
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
       {transcriptData.length > 0 ? (
-        <TranscriptContainer className={`mb-2`}>
-          <TranscriptHeader />
-          {filteredData.map((element: Paragraph, index: number) => (
-            <TranscriptItem
-              key={index}
-              element={element}
-              highlightedId={highlightedId}
-              index={index}
-              setCurTimeVideo={setCurTimeVideo}
-              searchTerm={searchTerm}
-            />
-          ))}
-          {filteredData.length === 0 && (
-            <NoResultFound>
-              {t("no_results_found", {
-                ns: "hearing",
-                searchTerm,
-                defaultValue: "No result found..."
-              })}
-            </NoResultFound>
-          )}
+        <>
+          <TranscriptContainer className={``}>
+            {filteredData.map((element: Paragraph, index: number) => (
+              <TranscriptItem
+                key={index}
+                element={element}
+                highlightedId={highlightedId}
+                index={index}
+                setCurTimeVideo={setCurTimeVideo}
+                searchTerm={searchTerm}
+              />
+            ))}
+            {filteredData.length === 0 && (
+              <NoResultFound>
+                {t("no_results_found", {
+                  ns: "hearing",
+                  searchTerm,
+                  defaultValue: "No result found..."
+                })}
+              </NoResultFound>
+            )}
+          </TranscriptContainer>
           <TranscriptBottom />
-        </TranscriptContainer>
+        </>
       ) : (
-        <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded`}>
+        <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
           <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
         </ErrorContainer>
       )}

@@ -144,7 +144,7 @@ export const HearingDetails = ({
           </LegalContainer>
 
           {videoURL ? (
-            <VideoParent className={`my-3`}>
+            <VideoParent className={`mt-3`}>
               <VideoChild
                 ref={videoRef}
                 src={videoURL}
