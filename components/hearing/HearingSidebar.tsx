@@ -1,12 +1,21 @@
 import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
+import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
+import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { CommitteeButton } from "./HearingDetails"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
-import { LabeledIcon } from "components/shared"
+import { Col, Form, Image, Modal, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+import { billSiteURL, Internal } from "../links"
+import { LabeledIcon } from "../shared"
 
+type Bill = {
+  BillNumber: string
+  Details: string
+  GeneralCourtNumber: number
+  Title: string
+}
 interface Legislator {
   Details: string
   GeneralCourtNumber: number
@@ -17,6 +26,13 @@ interface Members {
   id: string
   name: string
 }
+
+const ModalLine = styled.hr`
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+  opacity: 0.1;
+`
 
 const SidebarBody = styled.div`
   background-color: white;
@@ -41,10 +57,12 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
+  billsInAgenda,
   committeeCode,
   generalCourtNumber,
   hearingDate
 }: {
+  billsInAgenda: never[]
   committeeCode: string
   generalCourtNumber: string
   hearingDate: string
@@ -106,6 +124,16 @@ export const HearingSidebar = ({
     committeeCode && generalCourtNumber ? committeeData() : null
   }, [committeeCode, committeeData, generalCourtNumber])
 
+  let billsArray: [string, string | number][] = []
+  // convert object to array because
+  // Objects are not valid as a React child
+  if (billsInAgenda) {
+    billsArray = Object.values(billsInAgenda)
+  }
+
+  console.log("Bills: ", billsArray)
+  console.log("CommCode: ", committeeCode)
+
   return (
     <>
       <SidebarHeader className={`fs-6 fw-bold px-3 pb-2`}>
@@ -163,17 +191,17 @@ export const HearingSidebar = ({
 
             {members ? (
               <>
-                <div className={`d-flex justify-content-end mb-2`}>
-                  <CommitteeButton
-                    className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+                <div className={`d-flex fs-6 justify-content-end mb-2`}>
+                  <button
+                    className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
                     onClick={toggleMembers}
                   >
-                    &nbsp;{" "}
-                    {showMembers
-                      ? t("show_less", { ns: "hearing" })
-                      : t("show_more", { ns: "hearing" })}
-                    &nbsp;
-                  </CommitteeButton>
+                    <u>
+                      {showMembers
+                        ? t("see_less", { ns: "hearing" })
+                        : t("see_all", { ns: "hearing" })}
+                    </u>
+                  </button>
                 </div>
 
                 {showMembers ? (
@@ -213,7 +241,174 @@ export const HearingSidebar = ({
           </SidebarSubbody>
         </SidebarBody>
       )}
+      {billsInAgenda && (
+        <SidebarBody className={`border-bottom border-top fs-6 px-3 py-3`}>
+          <div className={`fw-bold`}>
+            {t("bills_consideration", { ns: "hearing" })} (
+            {billsInAgenda.length})
+          </div>
+          <div className={`fw-normal mt-2`}>
+            {t("ordered_by_appearance", { ns: "hearing" })}
+          </div>
+          {billsArray.map((element: any) => (
+            <AgendaBill
+              key={element.BillNumber}
+              element={element}
+              committeeCode={committeeCode}
+            />
+          ))}
+        </SidebarBody>
+      )}
       <SidebarBottom className={`border-top`} />
     </>
+  )
+}
+
+function AgendaBill({
+  committeeCode,
+  element
+}: {
+  committeeCode: string
+  element: Bill
+}) {
+  const { t } = useTranslation(["common", "hearing"])
+  const BillNumber = element.BillNumber
+  const CourtNumber = element.GeneralCourtNumber
+  const [committeeRecommendations, setCommitteeRecommendations] = useState<any>(
+    []
+  )
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+
+  const close = () => setSettingsModal(null)
+
+  const hearingBill = useCallback(async () => {
+    const bill = await getDoc(
+      doc(firestore, `generalCourts/${CourtNumber}/bills/${BillNumber}`)
+    )
+    const docData = bill.data()
+
+    setCommitteeRecommendations(docData?.content.CommitteeRecommendations)
+  }, [BillNumber, CourtNumber])
+
+  useEffect(() => {
+    BillNumber && CourtNumber ? hearingBill() : null
+  }, [BillNumber, hearingBill, CourtNumber])
+
+  let committeeActions = []
+
+  committeeRecommendations
+    ? (committeeActions = committeeRecommendations.filter(
+        (action: any) => action.Committee.CommitteeCode === committeeCode
+      ))
+    : null
+
+  console.log("Recs (all committees): ", committeeRecommendations)
+  console.log("Actions (only this hearing's committee): ", committeeActions)
+
+  return (
+    <>
+      <div className={`border border-2 my-3 rounded`}>
+        <div className={`m-2`}>
+          <Internal href={billSiteURL(BillNumber, CourtNumber)}>
+            {BillNumber}
+          </Internal>
+          <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
+          {committeeActions.length ? (
+            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+              <button
+                className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
+                onClick={() => setSettingsModal("show")}
+              >
+                <u>{t("view_votes", { ns: "hearing" })}</u>
+              </button>
+            </SidebarSubbody>
+          ) : (
+            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+              <div className={`d-flex text-secondary mt-1 mx-1 p-1`}>
+                {t("no_recs", { ns: "hearing" })}
+              </div>
+            </SidebarSubbody>
+          )}
+        </div>
+      </div>
+      <VotesModal
+        BillNumber={BillNumber}
+        committeeActions={committeeActions}
+        CourtNumber={CourtNumber}
+        onHide={close}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
+      />
+    </>
+  )
+}
+
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  BillNumber: string
+  committeeActions: any
+  CourtNumber: number
+  onSettingsModalClose: () => void
+}
+
+function VotesModal({
+  BillNumber,
+  committeeActions,
+  CourtNumber,
+  onHide,
+  onSettingsModalClose,
+  show
+}: Props) {
+  const { t } = useTranslation(["common", "editProfile", "hearing"])
+
+  console.log("Actions:", committeeActions[0]?.Action)
+
+  return (
+    <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
+      <Modal.Header>
+        <Modal.Title id="votes-modal">
+          {BillNumber} {t("votes", { ns: "hearing" })}
+        </Modal.Title>
+        <Image
+          src="/x_cancel.png"
+          alt={t("navigation.closeNavMenu", { ns: "editProfile" })}
+          width="30"
+          height="30"
+          className="ms-2"
+          onClick={onSettingsModalClose}
+        />
+      </Modal.Header>
+      <Modal.Body className={`p-3`}>
+        <ModalLine />
+
+        {/* <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
+        <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ()</div>
+        <div className={`fw-bold`}>{t("no_action", { ns: "hearing" })} ()</div> */}
+
+        {committeeActions.map((element: any, index: number) => (
+          <ActionItem key={index} element={element} />
+        ))}
+
+        <ModalLine />
+        <div className={`d-flex fs-6 justify-content-end`}>
+          <Link
+            href={`/bills/${CourtNumber}/${BillNumber}`}
+            className={`fw-bold justify-content-end link-underline link-underline-opacity-0`}
+          >
+            {t("view_bill", { ns: "hearing" })} &rarr;
+          </Link>
+        </div>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
+function ActionItem({ element }: { element: any }) {
+  const { t } = useTranslation(["common", "hearing"])
+
+  return (
+    <div className={`fw-bold`}>
+      {t("action", { ns: "hearing" })}
+      {`:`} {element.Action}
+    </div>
   )
 }
