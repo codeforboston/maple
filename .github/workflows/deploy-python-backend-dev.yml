@@ -26,14 +26,13 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Build and deploy to Firebase
+      - name: Setup Firebase
         # The only tag on this repo is v1.0.0, but it is very old
         # This SHA is main as of 2025-10-21
         uses: w9jds/setup-firebase@869785322147e6a53d463a55db0a5af1b4ce4ba6
         with:
           tools-version: 13.8.0
-      - run: firebase deploy --force --only functions:maple-llm
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
-          PROJECT_ID: digital-testimony-dev
+          gcp_sa_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: digital-testimony-dev
+      - name: Deploy Python firebase functions
+        run: firebase deploy --force --only functions:maple-llm
