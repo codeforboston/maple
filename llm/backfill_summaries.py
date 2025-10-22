@@ -40,12 +40,16 @@ with open("./summaries-and-topics.csv", "w") as csvfile:
 
         # If the summary is already populated move on
         if summary is not None:
-            csv_writer.write(make_bill_summary(bill_id, "previous_summary", None, None))
+            csv_writer.writerow(
+                make_bill_summary(bill_id, "previous_summary", None, None)
+            )
             continue
 
         summary = get_summary_api_function(bill_id, document_title, document_text)
         if summary["status"] in [-1, -2]:
-            csv_writer.write(make_bill_summary(bill_id, "failed_summary", None, None))
+            csv_writer.writerow(
+                make_bill_summary(bill_id, "failed_summary", None, None)
+            )
             continue
         # Note: `normalize_summary` does some post-processing to clean up the summaries
         # As of 2025-10-21 this was necessary due to the LLM prompt
@@ -55,13 +59,15 @@ with open("./summaries-and-topics.csv", "w") as csvfile:
         # If the topics are already populated, just make a note of it
         topics = document.get("topics")
         if topics is not None:
-            csv_writer.write(make_bill_summary(bill_id, "previous_topics", None, None))
+            csv_writer.writerow(
+                make_bill_summary(bill_id, "previous_topics", None, None)
+            )
 
         tags = get_tags_api_function_v2(bill_id, document_title, summary)
         # If the tags fail, make a note and at least write the summary for debugging
         if tags["status"] != 1:
-            csv_writer.write(make_bill_summary(bill_id, "failed_topics", None, None))
-            csv_writer.write(
+            csv_writer.writerow(make_bill_summary(bill_id, "failed_topics", None, None))
+            csv_writer.writerow(
                 make_bill_summary(bill_id, "generated_summary", summary, None)
             )
             continue
@@ -69,7 +75,7 @@ with open("./summaries-and-topics.csv", "w") as csvfile:
             tags["tags"], CATEGORY_BY_TOPIC
         )
         bill.reference.update({"topics": topics_and_categories})
-        csv_writer.write(
+        csv_writer.writerow(
             make_bill_summary(
                 bill_id, "generated_topics", summary, topics_and_categories
             )
