@@ -20,8 +20,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-      - uses: actions/setup-python@v6
+      - name: Setup build environment
+        uses: ./.github/actions/setup-repo
+      - name: Setup python
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Build and deploy to Firebase
