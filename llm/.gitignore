@@ -2,8 +2,4 @@ venv/
 __pycache__/
 databases/
 .secret.local
-fix_csv_summaries.py
-run_normalize_summaries.py
 summaries-and-topics.csv
-summaries-and-topics-fixed.csv
-summaries-and-topics-normalized.csv

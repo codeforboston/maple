@@ -77,6 +77,6 @@ with open("./summaries-and-topics.csv", "w") as csvfile:
         bill.reference.update({"topics": topics_and_categories})
         csv_writer.writerow(
             make_bill_summary(
-                bill_id, "generated_topics", summary, topics_and_categories
+                bill_id, "generated_summary_and_topics", summary, topics_and_categories
             )
         )
