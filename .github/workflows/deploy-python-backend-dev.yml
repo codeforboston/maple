@@ -31,7 +31,7 @@ jobs:
         # This SHA is main as of 2025-10-21
         uses: w9jds/setup-firebase@869785322147e6a53d463a55db0a5af1b4ce4ba6
         with:
-          tools-version: 13.8.0
+          tools-version: 13.18.0
           gcp_sa_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           project_id: digital-testimony-dev
       - name: Deploy Python firebase functions
