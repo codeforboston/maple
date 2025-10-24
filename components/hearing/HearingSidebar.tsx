@@ -27,6 +27,46 @@ interface Members {
   name: string
 }
 
+function MemberItem({
+  generalCourtNumber,
+  member,
+}: {
+  generalCourtNumber: string
+  member: Members
+}) {
+  const [branch, setBranch] = useState<string>("")
+
+  const memberData = useCallback(async () => {
+    const memberList = await getDoc(
+      doc(
+        firestore,
+        `generalCourts/${generalCourtNumber}/members/${member.id}`
+      )
+    )
+    const docData = memberList.data()
+
+    setBranch(docData?.content.Branch)
+  }, [])
+
+  useEffect(() => {
+    generalCourtNumber ? memberData() : null
+  }, [])
+  
+  console.log("Branch: ", branch)
+
+  return (<LabeledIcon
+    idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
+    mainText={branch}
+    subText={
+      <links.External
+        href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
+      >
+        {member.name}
+      </links.External>
+    }
+  />)
+}
+
 const ModalLine = styled.hr`
   border-color: #000000;
   border-style: solid;
@@ -215,17 +255,10 @@ export const HearingSidebar = ({
                           member.name !== senateChairName
                         ) {
                           return (
-                            <LabeledIcon
-                              key={index}
-                              idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
-                              mainText={t("member", { ns: "hearing" })}
-                              subText={
-                                <links.External
-                                  href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
-                                >
-                                  {member.name}
-                                </links.External>
-                              }
+                            <MemberItem
+                              key={member.id}
+                              generalCourtNumber={generalCourtNumber}
+                              member={member}
                             />
                           )
                         }
@@ -253,6 +286,7 @@ export const HearingSidebar = ({
               key={element.BillNumber}
               element={element}
               committeeCode={committeeCode}
+              members={members}
             />
           ))}
         </SidebarBody>
@@ -264,10 +298,12 @@ export const HearingSidebar = ({
 
 function AgendaBill({
   committeeCode,
-  element
+  element,
+  members
 }: {
   committeeCode: string
   element: Bill
+  members: Members[] | undefined
 }) {
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
@@ -300,8 +336,8 @@ function AgendaBill({
       ))
     : null
 
-  console.log("Recs (all committees): ", committeeRecommendations)
-  console.log("Actions (only this hearing's committee): ", committeeActions)
+  // console.log("Recs (all committees): ", committeeRecommendations)
+  // console.log("Actions (only this hearing's committee): ", committeeActions)
 
   return (
     <>
@@ -329,6 +365,7 @@ function AgendaBill({
         BillNumber={BillNumber}
         committeeActions={committeeActions}
         CourtNumber={CourtNumber}
+        members={members}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         show={settingsModal === "show"}
@@ -341,6 +378,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
   committeeActions: any
   CourtNumber: number
+  members: Members[] | undefined
   onSettingsModalClose: () => void
 }
 
@@ -348,13 +386,12 @@ function VotesModal({
   BillNumber,
   committeeActions,
   CourtNumber,
+  members,
   onHide,
   onSettingsModalClose,
   show
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
-
-  console.log("Votes:", committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable)
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -375,17 +412,25 @@ function VotesModal({
         <div className={`fw-bold`}>{committeeActions[0]?.Votes[0]?.Question}</div>
         <ModalLine />
         <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})</div>
-
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map((element: any, index: number) => (
+          <Vote key={index} element={element} members={members} />
+        ))}
 
         <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})</div>
-
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map((element: any, index: number) => (
+          <Vote key={index} element={element} members={members} />
+        ))}
 
         <div className={`fw-bold`}>{t("no_vote", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})</div>
-
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map((element: any, index: number) => (
+          <Vote key={index} element={element} members={members} />
+        ))}
 
         <div className={`fw-bold`}>{t("reserve_right", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})</div>
-
-
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map((element: any, index: number) => (
+          <Vote key={index} element={element} members={members} />
+        ))}
+        
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
           <Link
@@ -397,5 +442,26 @@ function VotesModal({
         </div>
       </Modal.Body>
     </Modal>
+  )
+}
+
+function Vote({ element, members }: { element: any 
+  members: Members[] | undefined 
+}) {
+  const { t } = useTranslation(["common", "hearing"])
+
+  const votingMember = members?.find(member => member.id === element.MemberCode)
+  let votingMemberName = ""
+  votingMember && (votingMemberName = votingMember.name)
+
+  // console.log("Members: ", members)
+  // console.log("MC: ", element.MemberCode)
+  // console.log("MName: ", votingMemberName)
+
+  return (
+    <div className={``}>
+      {t("yes", { ns: "hearing" })}
+      {votingMemberName}
+    </div>
   )
 }
