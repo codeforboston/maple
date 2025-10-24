@@ -77,6 +77,7 @@ const TranscriptRow = styled(Row)`
     border-bottom-right-radius: 0.75rem;
   }
 `
+
 const SearchInput = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;

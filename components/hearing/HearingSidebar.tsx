@@ -386,40 +386,40 @@ function VotesModal({
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
-      <Modal.Header>
+      <Modal.Header className={`px-3 py-1`}>
         <Modal.Title id="votes-modal">
           {BillNumber} {t("votes", { ns: "hearing" })}
         </Modal.Title>
         <Image
           src="/x_cancel.png"
           alt={t("navigation.closeNavMenu", { ns: "editProfile" })}
-          width="30"
-          height="30"
+          width="25"
+          height="25"
           className="ms-2"
           onClick={onSettingsModalClose}
         />
       </Modal.Header>
-      <Modal.Body className={`p-3`}>
+      <Modal.Body className={`bg-white p-3`}>
         <div className={`fw-bold`}>{committeeActions[0]?.Votes[0]?.Question}</div>
         <ModalLine />
         <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map((element: any, index: number) => (
-          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} value={`yes`}/>
         ))}
 
         <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map((element: any, index: number) => (
-          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} value={`no`}/>
         ))}
 
         <div className={`fw-bold`}>{t("no_vote", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map((element: any, index: number) => (
-          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} value={`no_record`}/>
         ))}
 
         <div className={`fw-bold`}>{t("reserve_right", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map((element: any, index: number) => (
-          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} value={`reserve`}/>
         ))}
         
         <ModalLine />
@@ -436,9 +436,26 @@ function VotesModal({
   )
 }
 
-function Vote({ element, generalCourtNumber }: { element: any
-  generalCourtNumber: string 
+const VoteRow = styled.div`
+  &:nth-child(even) {
+    background-color: #eae7e7;
+  &:nth-child(odd) {
+    background-color: white;
+  }
+`
 
+const VoteValue = styled.div`
+  width: 80px;
+`
+
+function Vote({ 
+  element,
+  generalCourtNumber,
+  value 
+}: { 
+  element: any
+  generalCourtNumber: string 
+  value: string
 }) {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -463,14 +480,18 @@ function Vote({ element, generalCourtNumber }: { element: any
   }, [])
   
   return (
-    <div className={``}>
-      {t("yes", { ns: "hearing" })}
-      <links.External
-        href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
-      >
-        {memberName}
-      </links.External>
-      {branch}
-    </div>
+    <VoteRow className={`d-flex justify-content-between`}>
+      <VoteValue className={`ms-4`}>{t(value, { ns: "hearing" })}</VoteValue>
+      <Col className={`d-flex justify-content-start `} xs={5}>
+        <div>
+          <links.External
+            href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
+          >
+            {memberName}
+          </links.External>
+        </div>
+      </Col>
+      <div className={`me-4`}>{branch}</div>
+    </VoteRow>
   )
 }
