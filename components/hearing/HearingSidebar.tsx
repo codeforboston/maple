@@ -29,7 +29,7 @@ interface Members {
 }
 
 function MemberItem({
-  generalCourtNumber,
+  generalCourtNumber,  
   member,
 }: {
   generalCourtNumber: string
