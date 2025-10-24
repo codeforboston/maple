@@ -16,6 +16,7 @@ type Bill = {
   GeneralCourtNumber: number
   Title: string
 }
+
 interface Legislator {
   Details: string
   GeneralCourtNumber: number
