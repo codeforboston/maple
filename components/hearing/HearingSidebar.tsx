@@ -311,7 +311,7 @@ function AgendaBill({
             {BillNumber}
           </Internal>
           <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
-          {committeeActions.length ? (
+          {committeeActions[0]?.Votes[0]?.Question ? (
             <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
               <button
                 className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
@@ -354,7 +354,7 @@ function VotesModal({
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
 
-  console.log("Q:", committeeActions[0]?.Votes[0]?.Question)
+  console.log("Votes:", committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable)
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -374,14 +374,17 @@ function VotesModal({
       <Modal.Body className={`p-3`}>
         <div className={`fw-bold`}>{committeeActions[0]?.Votes[0]?.Question}</div>
         <ModalLine />
+        <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})</div>
 
-        {/* <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
-        <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ()</div>
-        <div className={`fw-bold`}>{t("no_action", { ns: "hearing" })} ()</div> */}
 
-        {committeeActions.map((element: any, index: number) => (
-          <ActionItem key={index} element={element} />
-        ))}
+        <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})</div>
+
+
+        <div className={`fw-bold`}>{t("no_vote", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})</div>
+
+
+        <div className={`fw-bold`}>{t("reserve_right", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})</div>
+
 
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
@@ -394,16 +397,5 @@ function VotesModal({
         </div>
       </Modal.Body>
     </Modal>
-  )
-}
-
-function ActionItem({ element }: { element: any }) {
-  const { t } = useTranslation(["common", "hearing"])
-
-  return (
-    <div className={`fw-bold`}>
-      {t("action", { ns: "hearing" })}
-      {`:`} {element.Action}
-    </div>
   )
 }
