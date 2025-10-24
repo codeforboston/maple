@@ -105,18 +105,18 @@ export const HearingSidebar = ({
 
     const memberData: Members[] = docData?.members ?? []
 
-    const houseMembers = docData?.content?.HouseChairperson?.MemberCode
-    const houseMember = memberData.find(member => member.id === houseMembers)
-    let houseName = ""
-    houseMember && (houseName = houseMember.name)
+    const houseChairCode = docData?.content?.HouseChairperson?.MemberCode
+    const houseChair = memberData.find(member => member.id === houseChairCode)
+    let houseChairName = ""
+    houseChair && (houseChairName = houseChair.name)
 
-    const senateMembers = docData?.content?.SenateChairperson?.MemberCode
-    const senateMember = memberData.find(member => member.id === senateMembers)
-    let senateName = ""
-    senateMember && (senateName = senateMember.name)
+    const senateChairCode = docData?.content?.SenateChairperson?.MemberCode
+    const senateChair = memberData.find(member => member.id === senateChairCode)
+    let senateChairName = ""
+    senateChair && (senateChairName = senateChair.name)
 
-    setHouseChairName(houseName)
-    setSenateChairName(senateName)
+    setHouseChairName(houseChairName)
+    setSenateChairName(senateChairName)
     setMembers(memberData)
   }, [committeeCode, generalCourtNumber])
 
@@ -131,6 +131,7 @@ export const HearingSidebar = ({
     billsArray = Object.values(billsInAgenda)
   }
 
+  console.log("Members: ", members)
   console.log("Bills: ", billsArray)
   console.log("CommCode: ", committeeCode)
 
@@ -246,9 +247,6 @@ export const HearingSidebar = ({
           <div className={`fw-bold`}>
             {t("bills_consideration", { ns: "hearing" })} (
             {billsInAgenda.length})
-          </div>
-          <div className={`fw-normal mt-2`}>
-            {t("ordered_by_appearance", { ns: "hearing" })}
           </div>
           {billsArray.map((element: any) => (
             <AgendaBill
