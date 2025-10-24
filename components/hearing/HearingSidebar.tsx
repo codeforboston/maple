@@ -52,8 +52,6 @@ function MemberItem({
     generalCourtNumber ? memberData() : null
   }, [])
   
-  console.log("Branch: ", branch)
-
   return (<LabeledIcon
     idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
     mainText={branch}
@@ -171,10 +169,6 @@ export const HearingSidebar = ({
     billsArray = Object.values(billsInAgenda)
   }
 
-  console.log("Members: ", members)
-  console.log("Bills: ", billsArray)
-  console.log("CommCode: ", committeeCode)
-
   return (
     <>
       <SidebarHeader className={`fs-6 fw-bold px-3 pb-2`}>
@@ -286,7 +280,7 @@ export const HearingSidebar = ({
               key={element.BillNumber}
               element={element}
               committeeCode={committeeCode}
-              members={members}
+              generalCourtNumber={generalCourtNumber}
             />
           ))}
         </SidebarBody>
@@ -299,11 +293,11 @@ export const HearingSidebar = ({
 function AgendaBill({
   committeeCode,
   element,
-  members
+  generalCourtNumber,
 }: {
   committeeCode: string
   element: Bill
-  members: Members[] | undefined
+  generalCourtNumber: string
 }) {
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
@@ -336,9 +330,6 @@ function AgendaBill({
       ))
     : null
 
-  // console.log("Recs (all committees): ", committeeRecommendations)
-  // console.log("Actions (only this hearing's committee): ", committeeActions)
-
   return (
     <>
       <div className={`border border-2 my-3 rounded`}>
@@ -365,7 +356,7 @@ function AgendaBill({
         BillNumber={BillNumber}
         committeeActions={committeeActions}
         CourtNumber={CourtNumber}
-        members={members}
+        generalCourtNumber={generalCourtNumber}
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         show={settingsModal === "show"}
@@ -378,7 +369,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
   committeeActions: any
   CourtNumber: number
-  members: Members[] | undefined
+  generalCourtNumber: string
   onSettingsModalClose: () => void
 }
 
@@ -386,7 +377,7 @@ function VotesModal({
   BillNumber,
   committeeActions,
   CourtNumber,
-  members,
+  generalCourtNumber,
   onHide,
   onSettingsModalClose,
   show
@@ -413,22 +404,22 @@ function VotesModal({
         <ModalLine />
         <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map((element: any, index: number) => (
-          <Vote key={index} element={element} members={members} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
         ))}
 
         <div className={`fw-bold`}>{t("no", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map((element: any, index: number) => (
-          <Vote key={index} element={element} members={members} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
         ))}
 
         <div className={`fw-bold`}>{t("no_vote", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map((element: any, index: number) => (
-          <Vote key={index} element={element} members={members} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
         ))}
 
         <div className={`fw-bold`}>{t("reserve_right", { ns: "hearing" })} ({committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})</div>
         {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map((element: any, index: number) => (
-          <Vote key={index} element={element} members={members} />
+          <Vote key={index} element={element} generalCourtNumber={generalCourtNumber} />
         ))}
         
         <ModalLine />
@@ -445,23 +436,41 @@ function VotesModal({
   )
 }
 
-function Vote({ element, members }: { element: any 
-  members: Members[] | undefined 
+function Vote({ element, generalCourtNumber }: { element: any
+  generalCourtNumber: string 
+
 }) {
   const { t } = useTranslation(["common", "hearing"])
 
-  const votingMember = members?.find(member => member.id === element.MemberCode)
-  let votingMemberName = ""
-  votingMember && (votingMemberName = votingMember.name)
+  const [branch, setBranch] = useState<string>("")
+  const [memberName, setMemberName] = useState<string>("")
 
-  // console.log("Members: ", members)
-  // console.log("MC: ", element.MemberCode)
-  // console.log("MName: ", votingMemberName)
+  const memberData = useCallback(async () => {
+    const memberList = await getDoc(
+      doc(
+        firestore,
+        `generalCourts/${generalCourtNumber}/members/${element.MemberCode}`
+      )
+    )
+    const docData = memberList.data()
 
+    setBranch(docData?.content.Branch)
+    setMemberName(docData?.content.Name)
+  }, [])
+
+  useEffect(() => {
+    generalCourtNumber ? memberData() : null
+  }, [])
+  
   return (
     <div className={``}>
       {t("yes", { ns: "hearing" })}
-      {votingMemberName}
+      <links.External
+        href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
+      >
+        {memberName}
+      </links.External>
+      {branch}
     </div>
   )
 }
