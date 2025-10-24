@@ -354,7 +354,7 @@ function VotesModal({
 }: Props) {
   const { t } = useTranslation(["common", "editProfile", "hearing"])
 
-  console.log("Actions:", committeeActions[0]?.Action)
+  console.log("Q:", committeeActions[0]?.Votes[0]?.Question)
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
@@ -372,6 +372,7 @@ function VotesModal({
         />
       </Modal.Header>
       <Modal.Body className={`p-3`}>
+        <div className={`fw-bold`}>{committeeActions[0]?.Votes[0]?.Question}</div>
         <ModalLine />
 
         {/* <div className={`fw-bold`}>{t("yes", { ns: "hearing" })} ()</div>
