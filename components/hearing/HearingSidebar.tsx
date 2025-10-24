@@ -321,11 +321,7 @@ function AgendaBill({
               </button>
             </SidebarSubbody>
           ) : (
-            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
-              <div className={`d-flex text-secondary mt-1 mx-1 p-1`}>
-                {t("no_recs", { ns: "hearing" })}
-              </div>
-            </SidebarSubbody>
+            <></>
           )}
         </div>
       </div>
