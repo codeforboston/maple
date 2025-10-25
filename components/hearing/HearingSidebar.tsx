@@ -243,7 +243,7 @@ export const HearingSidebar = ({
                   <>
                     {t("members", { ns: "hearing" })}
                     <div>
-                      {members.map((member: Members, index: number) => {
+                      {members.map((member: Members) => {
                         if (
                           member.name !== houseChairName &&
                           member.name !== senateChairName
