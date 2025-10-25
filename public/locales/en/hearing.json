@@ -1,4 +1,6 @@
 {
+  "action": "Action",
+  "bills_consideration": "Bills under consideration",
   "chairs": "Chairs",
   "committee_members": "Committee members",
   "hearing": "Hearing ",
@@ -6,12 +8,21 @@
   "house_chair": "House Chair",
   "member": "Member",
   "members": "Members",
+  "no": "No",
+  "no_record": "No Record",
+  "no_results_found": "No Search Results for ”{{searchTerm}}”",
   "no_video_on_file": "This hearing does not yet have a video on file",
+  "no_vote": "No Vote Recorded",
   "recording_date": "Recording date",
-  "senate_chair": "Senate Chair",
-  "show_less": "Show less",
-  "show_more": "Show more",
-  "transcription_not_on_file": "This hearing does not yet have a transcription on file",
+  "reserve": "Reserve",
+  "reserve_right": "Reserve Right",
   "search_placeholder": "Search translation",
-  "no_results_found": "No Search Results for ”{{searchTerm}}”"
+  "see_all": "See all",
+  "see_less": "See less",
+  "senate_chair": "Senate Chair",
+  "transcription_not_on_file": "This hearing does not yet have a transcription on file",
+  "view_bill": "View Bill Details",
+  "view_votes": "View hearing votes",
+  "votes": "Votes",
+  "yes": "Yes"
 }
