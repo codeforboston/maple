@@ -5,23 +5,21 @@ test.beforeEach(async ({ page }) => {
   const billpage = new BillPage(page)
   await billpage.goto()
   await billpage.removePresetCourtfilter()
-
- 
 })
 
 test.describe("Search result test", () => {
   test("should search for bills", async ({ page }) => {
-    const billpage = new BillPage(page);
+    const billpage = new BillPage(page)
 
-    const searchTerm = billpage.searchWord;
-    
-    await billpage.search(searchTerm);
-    
-    await expect(billpage.queryFilter).toBeVisible();
-    
-    await expect(billpage.queryFilter).toContainText(searchTerm);
+    const searchTerm = billpage.searchWord
 
-    await expect(billpage.firstBill).toBeVisible();
+    await billpage.search(searchTerm)
+
+    await expect(billpage.queryFilter).toBeVisible()
+
+    await expect(billpage.queryFilter).toContainText(searchTerm)
+
+    await expect(billpage.firstBill).toBeVisible()
   })
 
   test("should show search query", async ({ page }) => {

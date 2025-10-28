@@ -103,32 +103,32 @@ test.describe("Testimony Filtering", () => {
   })
 
   test("should filter by position: endorse", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    testimonyPage.removePresetCourtfilter();
-    
-    const endorseCheckbox = page.getByRole("checkbox", { name: /endorse/i }); 
-    await endorseCheckbox.check({ timeout: 30000 });
-    
-    await expect(testimonyPage.positionFilterItem).toContainText("endorse");
-    await expect(page).toHaveURL(/.*position%5D%5B0%5D=endorse/);
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
+    const endorseCheckbox = page.getByRole("checkbox", { name: /endorse/i })
+    await endorseCheckbox.check({ timeout: 30000 })
+
+    await expect(testimonyPage.positionFilterItem).toContainText("endorse")
+    await expect(page).toHaveURL(/.*position%5D%5B0%5D=endorse/)
   })
 
   test("should filter by position: neutral", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    testimonyPage.removePresetCourtfilter();
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
 
-    const checkNeutral = page.getByRole("checkbox", { name: "neutral" });
-    await checkNeutral.check({timeout:30000});
-    await page.getByRole("checkbox", { name: "neutral" }).check();
-    
-    await expect(testimonyPage.positionFilterItem).toContainText("neutral");
-    await expect(page).toHaveURL(/.*position%5D%5B0%5D=neutral/);
+    const checkNeutral = page.getByRole("checkbox", { name: "neutral" })
+    await checkNeutral.check({ timeout: 30000 })
+    await page.getByRole("checkbox", { name: "neutral" }).check()
+
+    await expect(testimonyPage.positionFilterItem).toContainText("neutral")
+    await expect(page).toHaveURL(/.*position%5D%5B0%5D=neutral/)
   })
 
   test("should filter by bill", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    testimonyPage.removePresetCourtfilter();
-    
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
     const billCheckbox = page.getByLabel(/^[S|H]\d{1,4}$/).first()
     const billId = await billCheckbox.inputValue()
     expect(billId).toBeTruthy()
@@ -141,9 +141,9 @@ test.describe("Testimony Filtering", () => {
   })
 
   test("should filter by author", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    testimonyPage.removePresetCourtfilter();
-    
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
     const writtenByText = await page
       .getByText(/Written by/)
       .first()
@@ -165,16 +165,16 @@ test.describe("Testimony Filtering", () => {
 
 test.describe("Testimony Sorting", () => {
   test("should sort by new -> old", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    await testimonyPage.sort("Sort by New -> Old");
-    const sortValue = page.getByText("Sort by New -> Old", { exact: true });
-    await expect(sortValue).toBeVisible();
+    const testimonyPage = new TestimonyPage(page)
+    await testimonyPage.sort("Sort by New -> Old")
+    const sortValue = page.getByText("Sort by New -> Old", { exact: true })
+    await expect(sortValue).toBeVisible()
   })
 
   test("should sort by old -> new", async ({ page }) => {
-    const testimonyPage = new TestimonyPage(page);
-    await testimonyPage.sort("Sort by Old -> New");
-    const sortValue = page.getByText("Sort by Old -> New", { exact: true });
-    await expect(sortValue).toBeVisible();
+    const testimonyPage = new TestimonyPage(page)
+    await testimonyPage.sort("Sort by Old -> New")
+    const sortValue = page.getByText("Sort by Old -> New", { exact: true })
+    await expect(sortValue).toBeVisible()
   })
 })

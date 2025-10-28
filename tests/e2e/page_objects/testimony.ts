@@ -39,18 +39,20 @@ export class TestimonyPage {
 
   async sort(option: string) {
     // previoud code: await this.page.getByText("Sort by New -> Old").click()
-    await this.page.getByText(/Sort by/i).first().click();
+    await this.page
+      .getByText(/Sort by/i)
+      .first()
+      .click()
     await this.page.getByRole("option", { name: option }).click()
   }
 
   async removePresetCourtfilter() {
-    const activeCourtCheckbox = this.page 
-        .locator('div, span, label', { has: this.page.getByText(/Court/i) })
-        .getByRole('checkbox', { checked: true });
-    
-    await activeCourtCheckbox.click({ noWaitAfter: true, timeout: 0 });
+    const activeCourtCheckbox = this.page
+      .locator("div, span, label", { has: this.page.getByText(/Court/i) })
+      .getByRole("checkbox", { checked: true })
 
-    await this.resultsCountText.waitFor({ state: 'visible', timeout: 60000 });
-    
+    await activeCourtCheckbox.click({ noWaitAfter: true, timeout: 0 })
+
+    await this.resultsCountText.waitFor({ state: "visible", timeout: 60000 })
   }
 }

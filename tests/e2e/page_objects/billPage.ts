@@ -14,7 +14,6 @@ export class BillPage {
   readonly billPageBackToList: Locator
   readonly resultsCountText: Locator
 
-
   constructor(page: Page) {
     this.page = page
     this.searchWord = "health"
@@ -29,22 +28,20 @@ export class BillPage {
     this.currentCategorySelector = ".ais-CurrentRefinements-item"
     this.basicCategorySelector = "div.ais-RefinementList.mb-4"
     this.resultsCountText = page.getByText("Results").first()
-
   }
 
   async goto() {
     await this.page.goto("http://localhost:3000/bills")
-    await this.resultCount.waitFor({ state: 'visible', timeout: 30000 });    
-// await this.page.waitForSelector("li.ais-Hits-item a",{timeout:90000})
-    
+    await this.resultCount.waitFor({ state: "visible", timeout: 30000 })
+    // await this.page.waitForSelector("li.ais-Hits-item a",{timeout:90000})
   }
 
   async search(query: string) {
-    await this.searchBar.focus();
+    await this.searchBar.focus()
     await this.searchBar.fill(query)
-    const activeQueryFilter = this.page.getByText(`Query: ${query}`).first(); 
-    
-    await activeQueryFilter.waitFor({ state: 'visible', timeout: 50000 });
+    const activeQueryFilter = this.page.getByText(`Query: ${query}`).first()
+
+    await activeQueryFilter.waitFor({ state: "visible", timeout: 50000 })
   }
 
   async sort(option: string) {
@@ -154,15 +151,17 @@ export class BillPage {
 
     return filterLabel
   }
-  
-  async removePresetCourtfilter() {
-    const activeCourtCheckbox = this.page 
-        .locator('div, span, label', { has: this.page.getByText(/Court/i) })
-        .getByRole('checkbox', { checked: true });
-    
-    await activeCourtCheckbox.click({ noWaitAfter: true, timeout: 0 });
 
-    await this.page.getByText("Results").first().waitFor({ state: 'visible', timeout: 60000 });
-    
+  async removePresetCourtfilter() {
+    const activeCourtCheckbox = this.page
+      .locator("div, span, label", { has: this.page.getByText(/Court/i) })
+      .getByRole("checkbox", { checked: true })
+
+    await activeCourtCheckbox.click({ noWaitAfter: true, timeout: 0 })
+
+    await this.page
+      .getByText("Results")
+      .first()
+      .waitFor({ state: "visible", timeout: 60000 })
   }
 }
