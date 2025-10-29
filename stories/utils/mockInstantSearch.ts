@@ -12,10 +12,11 @@ type MockHit = {
   month: string
   year: number
   committeeName?: string
-  committeeChairs: string[]
+  chairNames: string[]
   agendaTopics: string[]
   billNumbers: string[]
   billSlugs: string[]
+  court: number
   locationName?: string
   locationCity?: string
   hasVideo: boolean
@@ -143,13 +144,14 @@ export const getDefaultHearingHits = (): MockHit[] => {
       month: "Apr",
       year: 2024,
       committeeName: "Joint Committee on Education",
-      committeeChairs: ["Rep. Alice Johnson", "Sen. Mark Rivera"],
+      chairNames: ["Rep. Alice Johnson", "Sen. Mark Rivera"],
       agendaTopics: ["Education", "Budget"],
-      billNumbers: ["H.1234", "S.5678"],
-      billSlugs: ["h-1234", "s-5678"],
+      billNumbers: ["H1234", "S5678"],
+      billSlugs: ["194/H1234", "194/S5678"],
       locationName: "State House - Gardner Auditorium",
       locationCity: "Boston",
       hasVideo: true,
+      court: 194,
       _highlightResult: {
         title: makeHighlight("Budget Hearing on Education"),
         description: makeHighlight(
@@ -170,13 +172,14 @@ export const getDefaultHearingHits = (): MockHit[] => {
       year: 2024,
       committeeName:
         "Joint Committee on Environment, Natural Resources and Agriculture",
-      committeeChairs: ["Sen. Lila Shah"],
+      chairNames: ["Sen. Lila Shah"],
       agendaTopics: ["Climate", "Infrastructure"],
-      billNumbers: ["H.4321"],
-      billSlugs: ["h-4321"],
+      billNumbers: ["H4321"],
+      billSlugs: ["194/H4321"],
       locationName: "State House - Room B-2",
       locationCity: "Boston",
       hasVideo: false,
+      court: 194,
       _highlightResult: {
         title: makeHighlight("Climate Resilience Oversight"),
         description: makeHighlight(
@@ -198,13 +201,14 @@ export const getDefaultHearingHits = (): MockHit[] => {
       month: "May",
       year: 2024,
       committeeName: "Joint Committee on Health Care Financing",
-      committeeChairs: ["Rep. Jordan Lee"],
+      chairNames: ["Rep. Jordan Lee"],
       agendaTopics: ["Health", "Primary Care"],
-      billNumbers: ["H.2450", "H.2451"],
-      billSlugs: ["h-2450", "h-2451"],
+      billNumbers: ["H2450", "H2451"],
+      billSlugs: ["193/H2450", "193/H2451"],
       locationName: "Springfield City Hall",
       locationCity: "Springfield",
       hasVideo: true,
+      court: 193,
       _highlightResult: {
         title: makeHighlight("Healthcare Access Listening Session"),
         description: makeHighlight(
@@ -220,6 +224,10 @@ export const getDefaultHearingHits = (): MockHit[] => {
 }
 
 export const getDefaultHearingFacets = (): FacetMap => ({
+  court: {
+    "194": 2,
+    "193": 1
+  },
   month: {
     Apr: 2,
     May: 1
@@ -232,7 +240,7 @@ export const getDefaultHearingFacets = (): FacetMap => ({
     "Joint Committee on Environment, Natural Resources and Agriculture": 1,
     "Joint Committee on Health Care Financing": 1
   },
-  committeeChairs: {
+  chairNames: {
     "Rep. Alice Johnson": 1,
     "Sen. Mark Rivera": 1,
     "Sen. Lila Shah": 1,

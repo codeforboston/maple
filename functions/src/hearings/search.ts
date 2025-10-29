@@ -3,6 +3,7 @@ import { db } from "../firebase"
 import { createSearchIndexer } from "../search"
 import { Hearing } from "../events/types"
 import { timeZone } from "../malegislature"
+import { generalCourts, currentGeneralCourt } from "../shared/constants"
 
 type HearingSearchRecord = {
   id: string
@@ -16,10 +17,11 @@ type HearingSearchRecord = {
   committeeName?: string
   locationName?: string
   locationCity?: string
-  committeeChairs: string[]
+  chairNames: string[]
   agendaTopics: string[]
   billNumbers: string[]
   billSlugs: string[]
+  court: number
   hasVideo: boolean
 }
 
@@ -44,35 +46,56 @@ export const {
       { name: "committeeName", type: "string", facet: true, optional: true },
       { name: "locationName", type: "string", facet: false, optional: true },
       { name: "locationCity", type: "string", facet: false, optional: true },
-      {
-        name: "committeeChairs",
-        type: "string[]",
-        facet: true
-      },
+      { name: "chairNames", type: "string[]", facet: true },
       { name: "agendaTopics", type: "string[]", facet: false },
       { name: "billNumbers", type: "string[]", facet: false },
       { name: "billSlugs", type: "string[]", facet: false },
+      { name: "court", type: "int32", facet: true },
       { name: "hasVideo", type: "bool", facet: true }
     ],
     default_sorting_field: "startsAt"
   },
   convert: data => {
-    const {
-      content,
-      startsAt: startsAtTimestamp,
-      id,
-      videoURL,
-      committeeChairs
-    } = Hearing.check(data)
+    const hearing = Hearing.check(data)
+    const { content, startsAt: startsAtTimestamp, id, videoURL } = hearing
     const startsAt = startsAtTimestamp.toMillis()
     const schedule = DateTime.fromMillis(startsAt, { zone: timeZone })
-    const bills = content.HearingAgendas?.flatMap(({ DocumentsInAgenda }) =>
-      DocumentsInAgenda.map(doc => ({
-        number: doc.BillNumber,
-        slug: `${doc.GeneralCourtNumber}/${doc.BillNumber}`
-      }))
-    )
+
+    const agendaTopics = (content.HearingAgendas ?? [])
+      .map(agenda => agenda.Topic)
+      .filter((topic): topic is string => Boolean(topic))
+
+    const billEntries = (content.HearingAgendas ?? [])
+      .flatMap(({ DocumentsInAgenda }) =>
+        (DocumentsInAgenda ?? []).map(doc => ({
+          number: doc.BillNumber,
+          slug:
+            doc.BillNumber && doc.GeneralCourtNumber
+              ? `${doc.GeneralCourtNumber}/${doc.BillNumber}`
+              : ""
+        }))
+      )
+      .filter(entry => Boolean(entry.number))
+
+    const dedupedBills: { number: string; slug: string }[] = []
+    const seenBillKeys = new Set<string>()
+
+    for (const entry of billEntries) {
+      const key = entry.slug || entry.number
+      if (seenBillKeys.has(key)) continue
+      seenBillKeys.add(key)
+      dedupedBills.push(entry)
+    }
+
     const committeeName = content.Name
+    const courtEntry =
+      Object.values(generalCourts).find(
+        (court): court is NonNullable<typeof court> =>
+          Boolean(court) &&
+          schedule.year >= court!.FirstYear &&
+          schedule.year <= court!.SecondYear
+      ) ?? generalCourts[currentGeneralCourt]
+    const courtNumber = courtEntry?.Number ?? currentGeneralCourt
     return {
       id: id,
       eventId: content.EventId,
@@ -85,10 +108,13 @@ export const {
       committeeName,
       locationName: content.Location?.LocationName,
       locationCity: content.Location?.City,
-      committeeChairs,
-      agendaTopics: content.HearingAgendas.map(agenda => agenda.Topic),
-      billNumbers: bills.map(bill => bill.number),
-      billSlugs: bills.map(bill => bill.slug),
+      chairNames: hearing.committeeChairs ?? [],
+      agendaTopics,
+      billNumbers: dedupedBills.map(bill => bill.number),
+      billSlugs: dedupedBills.map(
+        bill => bill.slug || `${courtNumber}/${bill.number}`
+      ),
+      court: courtNumber,
       hasVideo: Boolean(videoURL)
     }
   }

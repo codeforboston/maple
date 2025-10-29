@@ -21,9 +21,10 @@
       "authorRole": "Author Role"
     },
     "hearing": {
+      "court": "Legislative Session",
       "month": "Month",
       "year": "Year",
-      "committeeChairs": "Chair",
+      "chairNames": "Chair",
       "committeeName": "Committee"
     }
   },
