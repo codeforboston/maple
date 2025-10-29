@@ -1,8 +1,21 @@
-# This script fills any missing 'summary' or 'topics' fields on the data model.
-# The document must have a 'Title' and 'DocumentText' field to generate them.
-#
-# Developer notes:
-# - you'll need to set the 'OPENAI_API_KEY' environment variable
+"""This script fills any missing 'summary' or 'topics' fields on the data model.
+
+The document must have a 'Title' and 'DocumentText' field to generate them. The
+script queries only the general court 194 bills, modifies the firebase database
+in-place, and generates a CSV with a description of what happened. The header for
+the CSV is `bill_id,status,summary,topics`. The possible statuses are,
+
+- `skipped` - the bill doesn't have either a title or text, skip it
+- `previous_summary` - the bill previously had a summary, skip it
+- `failed_summary` - something went wrong when trying to summarize, skip it
+- `previous_topics` - the bill previously had topics, skip it
+- `failed_topics` - something went wrong when trying to generate topics, skip it
+- `generated_summary` - both the summary and topics were generated successfully
+
+Developer notes:
+- you'll need to set the 'OPENAI_API_KEY' environment variable
+"""
+
 import firebase_admin
 from llm_functions import get_summary_api_function, get_tags_api_function_v2
 from firebase_admin import firestore
@@ -10,20 +23,27 @@ from bill_on_document_created import get_categories_from_topics, CATEGORY_BY_TOP
 import csv
 from normalize_summaries import normalize_summary
 
+# Module constants
+FIREBASE_COLLECTION_PATH = "generalCourts/194/bills"
+CSV_SUMMARY_OUTPUT = "./summaries-and-topics.csv"
+
 # Application Default credentials are automatically created.
 app = firebase_admin.initialize_app()
 db = firestore.client()
 
 
-# Conceptually, we want to return a very consistent format when generated status reports.
-# It would allow us to skip LLM regeneration when moving from dev to production.
 def make_bill_summary(bill_id, status, summary, topics):
+    """Generate a row for csv.writerow
+
+    The goal with this function is to not forget all the arguments to subsequent
+    csv.writerow calls.
+    """
     return [f"{bill_id}", f"{status}", f"{summary}", f"{topics}"]
 
 
-bills_ref = db.collection("generalCourts/194/bills")
+bills_ref = db.collection(FIREBASE_COLLECTION_PATH)
 bills = bills_ref.get()
-with open("./summaries-and-topics.csv", "w") as csvfile:
+with open(CSV_SUMMARY_OUTPUT, "w") as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(["bill_id", "status", "summary", "topics"])
     for bill in bills:
@@ -33,8 +53,8 @@ with open("./summaries-and-topics.csv", "w") as csvfile:
         document_title = document.get("content", {}).get("Title")
         summary = document.get("summary")
 
-        # No document text, skip it because we can't summarize it
-        if document_text is None:
+        # No document text or title, skip it because we can't summarize it
+        if document_text is None or document_title is None:
             csv_writer.writerow(make_bill_summary(bill_id, "skipped", None, None))
             continue
 
