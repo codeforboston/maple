@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 import { Internal } from "components/links"
-import { Trans, useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "next-i18next"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   const { t } = useTranslation("testimony")
@@ -158,7 +158,6 @@ const NoteContainer = styled.div`
   NoteItem = styled.li`
     margin-top: 20px;
     font-weight: 500;
-    font-family: Nunito;
     font-size: 16px;
     font-weight: 400;
     line-height: 20px;

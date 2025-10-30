@@ -1,0 +1,16 @@
+{
+  "title": "Policies",
+  "tabs": {
+    "privacy-policy": "Privacy Policy",
+    "copyright": "Terms of Service",
+    "code-of-conduct": "Code of Conduct"
+  },
+  "values": {
+    "heading": "Our Shared Values",
+    "description1": "How we interact with each other determines what we can accomplish",
+    "description2": "On this website, we ask you to act with:",
+    "humility": "Humility",
+    "compassion": "Compassion",
+    "curiosity": "Curiosity"
+  }
+}

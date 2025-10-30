@@ -9,7 +9,6 @@ export const StyledButton = styled(Button)`
   margin: 0;
   margin-bottom: 1rem;
   text-align: left;
-  font-family: Nunito;
 
   p {
     font-size: 16px;

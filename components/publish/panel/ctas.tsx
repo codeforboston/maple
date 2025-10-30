@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { SignInWithButton, useAuth } from "../../auth"
 import { Wrap } from "../../links"
 import { formUrl, usePublishState } from "../hooks"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 const Styled = styled.div`
   display: flex;

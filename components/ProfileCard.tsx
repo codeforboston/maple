@@ -35,7 +35,6 @@ const Container = styled.div`
   margin: 20px;
   border-radius: 20px;
   color: white;
-  font-family: "Nunito";
 `
 
 const Wrapper = styled.div`

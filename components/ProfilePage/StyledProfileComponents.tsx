@@ -13,7 +13,6 @@ export const Header = styled("div").attrs(props => ({
 
 export const ContactInfoRow = styled(Row)`
   font-size: 1.375rem;
-  font-family: Nunito;
   font-weight: 500;
 `
 

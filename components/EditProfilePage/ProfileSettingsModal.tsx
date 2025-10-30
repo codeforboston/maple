@@ -146,6 +146,9 @@ export default function ProfileSettingsModal({
                     variant="outline-secondary"
                   />
                   <Dropdown.Menu className={`col-12 bg-white `}>
+                    <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                      {t("email.daily")}
+                    </Dropdown.Item>
                     <Dropdown.Item onClick={() => setNotifications("Weekly")}>
                       {t("email.weekly")}
                     </Dropdown.Item>

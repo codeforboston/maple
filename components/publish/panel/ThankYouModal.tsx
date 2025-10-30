@@ -4,7 +4,7 @@ import { Image, Modal } from "../../bootstrap"
 import { useAppDispatch } from "../../hooks"
 import { usePublishState } from "../hooks"
 import { setShowThankYou } from "../redux"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 const modalDurationMs = 2000
 
@@ -82,6 +82,5 @@ export const ThankYouModal = styled(({ ...rest }) => {
   .thank-you {
     font-weight: bold;
     font-size: 1.25rem;
-    font-family: "Nunito";
   }
 `
