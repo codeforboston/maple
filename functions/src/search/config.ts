@@ -11,6 +11,7 @@ export type CollectionConfig<T extends BaseRecord = BaseRecord> = {
   readonly documentTrigger: string
   readonly idField: string
   readonly convert: (data: DocumentData) => T
+  readonly filter?: (data: DocumentData) => boolean
 }
 
 const registered: CollectionConfig[] = []
