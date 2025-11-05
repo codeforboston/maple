@@ -2,11 +2,15 @@ import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
 import { HearingSidebar } from "./HearingSidebar"
 import { Transcriptions } from "./Transcriptions"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
+import { Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+
+const ButtonContainer = styled.div`
+  width: fit-content;
+`
 
 export const CommitteeButton = styled.button`
   border-radius: 12px;
@@ -52,6 +56,7 @@ export const HearingDetails = ({
 
   const eventId = `hearing-${hearingId}`
 
+  const [billsInAgenda, setBillsInAgenda] = useState([])
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [description, setDescription] = useState("")
@@ -64,6 +69,7 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
+    setBillsInAgenda(docData?.content.HearingAgendas[0]?.DocumentsInAgenda)
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
@@ -86,15 +92,19 @@ export const HearingDetails = ({
       <h5 className={`mb-3`}>{description}</h5>
 
       {committeeName ? (
-        <links.External
-          href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
-        >
-          <CommitteeButton
-            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+        <ButtonContainer>
+          {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
+              the button and strech invisibly across the width of the page */}
+          <links.External
+            href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
           >
-            &nbsp; {committeeName} &nbsp;
-          </CommitteeButton>
-        </links.External>
+            <CommitteeButton
+              className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+            >
+              &nbsp; {committeeName} &nbsp;
+            </CommitteeButton>
+          </links.External>
+        </ButtonContainer>
       ) : (
         <></>
       )}
@@ -134,7 +144,7 @@ export const HearingDetails = ({
           </LegalContainer>
 
           {videoURL ? (
-            <VideoParent className={`my-3`}>
+            <VideoParent className={`mt-3`}>
               <VideoChild
                 ref={videoRef}
                 src={videoURL}
@@ -159,6 +169,7 @@ export const HearingDetails = ({
 
         <div className={`col-md-4`}>
           <HearingSidebar
+            billsInAgenda={billsInAgenda}
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}

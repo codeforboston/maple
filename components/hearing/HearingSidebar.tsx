@@ -1,11 +1,21 @@
 import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
+import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
+import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { CommitteeButton } from "./HearingDetails"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
-import { LabeledIcon } from "components/shared"
+import { Col, Image, Modal } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+import { billSiteURL, Internal } from "../links"
+import { LabeledIcon } from "../shared"
+
+type Bill = {
+  BillNumber: string
+  Details: string
+  GeneralCourtNumber: number
+  Title: string
+}
 
 interface Legislator {
   Details: string
@@ -17,6 +27,50 @@ interface Members {
   id: string
   name: string
 }
+
+function MemberItem({
+  generalCourtNumber,
+  member
+}: {
+  generalCourtNumber: string
+  member: Members
+}) {
+  const [branch, setBranch] = useState<string>("")
+
+  const memberData = useCallback(async () => {
+    const memberList = await getDoc(
+      doc(firestore, `generalCourts/${generalCourtNumber}/members/${member.id}`)
+    )
+    const docData = memberList.data()
+
+    setBranch(docData?.content.Branch)
+  }, [])
+
+  useEffect(() => {
+    generalCourtNumber ? memberData() : null
+  }, [])
+
+  return (
+    <LabeledIcon
+      idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
+      mainText={branch}
+      subText={
+        <links.External
+          href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
+        >
+          {member.name}
+        </links.External>
+      }
+    />
+  )
+}
+
+const ModalLine = styled.hr`
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+  opacity: 0.1;
+`
 
 const SidebarBody = styled.div`
   background-color: white;
@@ -41,10 +95,12 @@ const SidebarSubbody = styled.div`
 `
 
 export const HearingSidebar = ({
+  billsInAgenda,
   committeeCode,
   generalCourtNumber,
   hearingDate
 }: {
+  billsInAgenda: never[]
   committeeCode: string
   generalCourtNumber: string
   hearingDate: string
@@ -87,24 +143,31 @@ export const HearingSidebar = ({
 
     const memberData: Members[] = docData?.members ?? []
 
-    const houseMembers = docData?.content?.HouseChairperson?.MemberCode
-    const houseMember = memberData.find(member => member.id === houseMembers)
-    let houseName = ""
-    houseMember && (houseName = houseMember.name)
+    const houseChairCode = docData?.content?.HouseChairperson?.MemberCode
+    const houseChair = memberData.find(member => member.id === houseChairCode)
+    let houseChairName = ""
+    houseChair && (houseChairName = houseChair.name)
 
-    const senateMembers = docData?.content?.SenateChairperson?.MemberCode
-    const senateMember = memberData.find(member => member.id === senateMembers)
-    let senateName = ""
-    senateMember && (senateName = senateMember.name)
+    const senateChairCode = docData?.content?.SenateChairperson?.MemberCode
+    const senateChair = memberData.find(member => member.id === senateChairCode)
+    let senateChairName = ""
+    senateChair && (senateChairName = senateChair.name)
 
-    setHouseChairName(houseName)
-    setSenateChairName(senateName)
+    setHouseChairName(houseChairName)
+    setSenateChairName(senateChairName)
     setMembers(memberData)
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
     committeeCode && generalCourtNumber ? committeeData() : null
   }, [committeeCode, committeeData, generalCourtNumber])
+
+  let billsArray: [string, string | number][] = []
+  // convert object to array because
+  // Objects are not valid as a React child
+  if (billsInAgenda) {
+    billsArray = Object.values(billsInAgenda)
+  }
 
   return (
     <>
@@ -163,40 +226,33 @@ export const HearingSidebar = ({
 
             {members ? (
               <>
-                <div className={`d-flex justify-content-end mb-2`}>
-                  <CommitteeButton
-                    className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+                <div className={`d-flex fs-6 justify-content-end mb-2`}>
+                  <button
+                    className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
                     onClick={toggleMembers}
                   >
-                    &nbsp;{" "}
-                    {showMembers
-                      ? t("show_less", { ns: "hearing" })
-                      : t("show_more", { ns: "hearing" })}
-                    &nbsp;
-                  </CommitteeButton>
+                    <u>
+                      {showMembers
+                        ? t("see_less", { ns: "hearing" })
+                        : t("see_all", { ns: "hearing" })}
+                    </u>
+                  </button>
                 </div>
 
                 {showMembers ? (
                   <>
                     {t("members", { ns: "hearing" })}
                     <div>
-                      {members.map((member: Members, index: number) => {
+                      {members.map((member: Members) => {
                         if (
                           member.name !== houseChairName &&
                           member.name !== senateChairName
                         ) {
                           return (
-                            <LabeledIcon
-                              key={index}
-                              idImage={`https://malegislature.gov/Legislators/Profile/170/${member.id}.jpg`}
-                              mainText={t("member", { ns: "hearing" })}
-                              subText={
-                                <links.External
-                                  href={`https://malegislature.gov/Legislators/Profile/${member.id}`}
-                                >
-                                  {member.name}
-                                </links.External>
-                              }
+                            <MemberItem
+                              key={member.id}
+                              generalCourtNumber={generalCourtNumber}
+                              member={member}
                             />
                           )
                         }
@@ -213,7 +269,270 @@ export const HearingSidebar = ({
           </SidebarSubbody>
         </SidebarBody>
       )}
+      {billsInAgenda && (
+        <SidebarBody className={`border-bottom border-top fs-6 px-3 py-3`}>
+          <div className={`fw-bold`}>
+            {t("bills_consideration", { ns: "hearing" })} (
+            {billsInAgenda.length})
+          </div>
+          {billsArray.map((element: any) => (
+            <AgendaBill
+              key={element.BillNumber}
+              element={element}
+              committeeCode={committeeCode}
+              generalCourtNumber={generalCourtNumber}
+            />
+          ))}
+        </SidebarBody>
+      )}
       <SidebarBottom className={`border-top`} />
     </>
+  )
+}
+
+function AgendaBill({
+  committeeCode,
+  element,
+  generalCourtNumber
+}: {
+  committeeCode: string
+  element: Bill
+  generalCourtNumber: string
+}) {
+  const { t } = useTranslation(["common", "hearing"])
+  const BillNumber = element.BillNumber
+  const CourtNumber = element.GeneralCourtNumber
+  const [committeeRecommendations, setCommitteeRecommendations] = useState<any>(
+    []
+  )
+  const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+
+  const close = () => setSettingsModal(null)
+
+  const hearingBill = useCallback(async () => {
+    const bill = await getDoc(
+      doc(firestore, `generalCourts/${CourtNumber}/bills/${BillNumber}`)
+    )
+    const docData = bill.data()
+
+    setCommitteeRecommendations(docData?.content.CommitteeRecommendations)
+  }, [BillNumber, CourtNumber])
+
+  useEffect(() => {
+    BillNumber && CourtNumber ? hearingBill() : null
+  }, [BillNumber, hearingBill, CourtNumber])
+
+  let committeeActions = []
+
+  committeeRecommendations
+    ? (committeeActions = committeeRecommendations.filter(
+        (action: any) => action.Committee.CommitteeCode === committeeCode
+      ))
+    : null
+
+  return (
+    <>
+      <div className={`border border-2 my-3 rounded`}>
+        <div className={`m-2`}>
+          <Internal href={billSiteURL(BillNumber, CourtNumber)}>
+            {BillNumber}
+          </Internal>
+          <SidebarSubbody className={`my-2`}>{element.Title}</SidebarSubbody>
+          {committeeActions[0]?.Votes[0]?.Question ? (
+            <SidebarSubbody className={`d-flex justify-content-end mb-2`}>
+              <button
+                className={`bg-transparent border-0 d-flex text-nowrap text-secondary mt-1 mx-1 p-1`}
+                onClick={() => setSettingsModal("show")}
+              >
+                <u>{t("view_votes", { ns: "hearing" })}</u>
+              </button>
+            </SidebarSubbody>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+      <VotesModal
+        BillNumber={BillNumber}
+        committeeActions={committeeActions}
+        CourtNumber={CourtNumber}
+        generalCourtNumber={generalCourtNumber}
+        onHide={close}
+        onSettingsModalClose={() => setSettingsModal(null)}
+        show={settingsModal === "show"}
+      />
+    </>
+  )
+}
+
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  BillNumber: string
+  committeeActions: any
+  CourtNumber: number
+  generalCourtNumber: string
+  onSettingsModalClose: () => void
+}
+
+function VotesModal({
+  BillNumber,
+  committeeActions,
+  CourtNumber,
+  generalCourtNumber,
+  onHide,
+  onSettingsModalClose,
+  show
+}: Props) {
+  const { t } = useTranslation(["common", "editProfile", "hearing"])
+
+  return (
+    <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
+      <Modal.Header className={`px-3 py-1`}>
+        <Modal.Title id="votes-modal">
+          {BillNumber} {t("votes", { ns: "hearing" })}
+        </Modal.Title>
+        <Image
+          src="/x_cancel.png"
+          alt={t("navigation.closeNavMenu", { ns: "editProfile" })}
+          width="25"
+          height="25"
+          className="ms-2"
+          onClick={onSettingsModalClose}
+        />
+      </Modal.Header>
+      <Modal.Body className={`bg-white p-3`}>
+        <div className={`fw-bold`}>
+          {committeeActions[0]?.Votes[0]?.Question}
+        </div>
+        <ModalLine />
+        <div className={`fw-bold`}>
+          {t("yes", { ns: "hearing" })} (
+          {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})
+        </div>
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
+          (element: any, index: number) => (
+            <Vote
+              key={index}
+              element={element}
+              generalCourtNumber={generalCourtNumber}
+              value={`yes`}
+            />
+          )
+        )}
+
+        <div className={`fw-bold`}>
+          {t("no", { ns: "hearing" })} (
+          {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})
+        </div>
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
+          (element: any, index: number) => (
+            <Vote
+              key={index}
+              element={element}
+              generalCourtNumber={generalCourtNumber}
+              value={`no`}
+            />
+          )
+        )}
+
+        <div className={`fw-bold`}>
+          {t("no_vote", { ns: "hearing" })} (
+          {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})
+        </div>
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
+          (element: any, index: number) => (
+            <Vote
+              key={index}
+              element={element}
+              generalCourtNumber={generalCourtNumber}
+              value={`no_record`}
+            />
+          )
+        )}
+
+        <div className={`fw-bold`}>
+          {t("reserve_right", { ns: "hearing" })} (
+          {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})
+        </div>
+        {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
+          (element: any, index: number) => (
+            <Vote
+              key={index}
+              element={element}
+              generalCourtNumber={generalCourtNumber}
+              value={`reserve`}
+            />
+          )
+        )}
+
+        <ModalLine />
+        <div className={`d-flex fs-6 justify-content-end`}>
+          <Link
+            href={`/bills/${CourtNumber}/${BillNumber}`}
+            className={`fw-bold justify-content-end link-underline link-underline-opacity-0`}
+          >
+            {t("view_bill", { ns: "hearing" })} &rarr;
+          </Link>
+        </div>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
+const VoteRow = styled.div`
+  &:nth-child(even) {
+    background-color: #eae7e7;
+  &:nth-child(odd) {
+    background-color: white;
+  }
+`
+
+const VoteValue = styled.div`
+  width: 80px;
+`
+
+function Vote({
+  element,
+  generalCourtNumber,
+  value
+}: {
+  element: any
+  generalCourtNumber: string
+  value: string
+}) {
+  const { t } = useTranslation(["common", "hearing"])
+  const [branch, setBranch] = useState<string>("")
+  const [memberName, setMemberName] = useState<string>("")
+
+  const memberData = useCallback(async () => {
+    const memberList = await getDoc(
+      doc(
+        firestore,
+        `generalCourts/${generalCourtNumber}/members/${element.MemberCode}`
+      )
+    )
+    const docData = memberList.data()
+
+    setBranch(docData?.content.Branch)
+    setMemberName(docData?.content.Name)
+  }, [])
+
+  useEffect(() => {
+    generalCourtNumber ? memberData() : null
+  }, [])
+
+  return (
+    <VoteRow className={`d-flex justify-content-between`}>
+      <VoteValue className={`ms-4`}>{t(value, { ns: "hearing" })}</VoteValue>
+      <Col className={`d-flex justify-content-start `} xs={5}>
+        <div>
+          <links.External
+            href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
+          >
+            {memberName}
+          </links.External>
+        </div>
+      </Col>
+      <div className={`me-4`}>{branch}</div>
+    </VoteRow>
   )
 }
