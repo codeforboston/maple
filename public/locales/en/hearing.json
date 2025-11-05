@@ -16,6 +16,8 @@
   "recording_date": "Recording date",
   "reserve": "Reserve",
   "reserve_right": "Reserve Right",
+  "schedule_date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
+  "schedule_time": "{{date, datetime(hour: 'numeric'; minute: '2-digit')}}",
   "search_placeholder": "Search translation",
   "see_all": "See all",
   "see_less": "See less",
