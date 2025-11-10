@@ -54,7 +54,7 @@ const TranscriptBottom = styled(Container)`
 `
 
 const TranscriptContainer = styled(Container)`
-  max-height: 18rem;
+  max-height: 460px;
   overflow-y: auto;
   background-color: #ffffff;
 `
