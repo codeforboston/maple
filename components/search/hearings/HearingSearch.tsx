@@ -34,32 +34,30 @@ export type HearingHitData = Hit<HearingSearchRecord>
 
 const useHearingSort = () => {
   const now = useRef(new Date().getTime())
-
-  return [
-    {
-      labelKey: "sort_by.next_hearing_date",
-      value: "hearings/sort/startsAt:asc",
-      configure: {
-        numericRefinements: {
-          nextHearingAt: {
-            ">=": [now.current]
-          } as any
+  return useMemo(
+    () => [
+      {
+        labelKey: "sort_by.newest",
+        value: "hearings/sort/startsAt:desc"
+      },
+      {
+        labelKey: "sort_by.next_hearing_date",
+        value: "hearings/sort/startsAt:asc",
+        configure: {
+          numericRefinements: {
+            startsAt: {
+              ">=": [now.current]
+            }
+          }
         }
+      },
+      {
+        labelKey: "sort_by.relevance",
+        value: "hearings/sort/_text_match:desc,startsAt:asc"
       }
-    },
-    {
-      labelKey: "sort_by.relevance",
-      value: "hearings/sort/_text_match:desc,startsAt:asc"
-    },
-    {
-      labelKey: "sort_by.oldest",
-      value: "hearings/sort/startsAt:asc"
-    },
-    {
-      labelKey: "sort_by.newest",
-      value: "hearings/sort/startsAt:desc"
-    }
-  ]
+    ],
+    []
+  )
 }
 
 export const HearingSearch = () => {
@@ -68,6 +66,7 @@ export const HearingSearch = () => {
     <SearchPage
       searchType="hearing"
       header={<HearingSearchHeader />}
+      currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
       initialUiState={{
         [sortOptions[0].value]: {
           refinementList: { court: [String(CURRENT_COURT_NUMBER)] }
