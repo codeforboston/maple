@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import { Col, Image, Modal } from "../bootstrap"
+import { Col, Image, Modal, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
@@ -64,6 +64,24 @@ function MemberItem({
     />
   )
 }
+
+const BillsBody = styled.div`
+  background-color: white;
+  max-height: 672px;
+  overflow-y: auto;
+
+  @media (max-width: 1400px) {
+    max-height: 605px;
+  }
+
+  @media (max-width: 1200px) {
+    max-height: 537px;
+  }
+
+  @media (max-width: 992px) {
+    max-height: 471px;
+  }
+`
 
 const ModalLine = styled.hr`
   border-color: #000000;
@@ -171,7 +189,7 @@ export const HearingSidebar = ({
 
   return (
     <>
-      <SidebarHeader className={`fs-6 fw-bold px-3 pb-2`}>
+      <SidebarHeader className={`fs-6 fw-bold mt-4 px-3 pb-2`}>
         {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
@@ -270,7 +288,7 @@ export const HearingSidebar = ({
         </SidebarBody>
       )}
       {billsInAgenda && (
-        <SidebarBody className={`border-bottom border-top fs-6 px-3 py-3`}>
+        <BillsBody className={`border-bottom border-top fs-6 px-3 py-3`}>
           <div className={`fw-bold`}>
             {t("bills_consideration", { ns: "hearing" })} (
             {billsInAgenda.length})
@@ -283,7 +301,7 @@ export const HearingSidebar = ({
               generalCourtNumber={generalCourtNumber}
             />
           ))}
-        </SidebarBody>
+        </BillsBody>
       )}
       <SidebarBottom className={`border-top`} />
     </>
@@ -502,6 +520,7 @@ function Vote({
   const { t } = useTranslation(["common", "hearing"])
   const [branch, setBranch] = useState<string>("")
   const [memberName, setMemberName] = useState<string>("")
+  const [party, setParty] = useState<string>("")
 
   const memberData = useCallback(async () => {
     const memberList = await getDoc(
@@ -514,6 +533,7 @@ function Vote({
 
     setBranch(docData?.content.Branch)
     setMemberName(docData?.content.Name)
+    setParty(docData?.content.Party)
   }, [])
 
   useEffect(() => {
@@ -523,14 +543,17 @@ function Vote({
   return (
     <VoteRow className={`d-flex justify-content-between`}>
       <VoteValue className={`ms-4`}>{t(value, { ns: "hearing" })}</VoteValue>
-      <Col className={`d-flex justify-content-start `} xs={5}>
-        <div>
+      <Col className={`d-block justify-content-start `} xs={5}>
+        <Row>
           <links.External
             href={`https://malegislature.gov/Legislators/Profile/${element.MemberCode}`}
           >
             {memberName}
           </links.External>
-        </div>
+        </Row>
+        <Row className={`ps-4`}>
+          <em>{party}</em>
+        </Row>
       </Col>
       <div className={`me-4`}>{branch}</div>
     </VoteRow>

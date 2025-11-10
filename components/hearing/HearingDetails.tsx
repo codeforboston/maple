@@ -109,8 +109,8 @@ export const HearingDetails = ({
         <></>
       )}
 
-      <div className={`row mt-4`}>
-        <Col className={`col-md-8`}>
+      <Row>
+        <Col className={`col-md-8 mt-4`}>
           <LegalContainer className={`pb-2 rounded`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
@@ -175,7 +175,7 @@ export const HearingDetails = ({
             hearingDate={hearingDate}
           />
         </div>
-      </div>
+      </Row>
     </Container>
   )
 }
