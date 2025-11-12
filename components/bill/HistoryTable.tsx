@@ -73,7 +73,6 @@ export const HistoryTable = ({ billHistory }: HistoryProps) => {
 const StyledTable = styled.table`
   table-layout: auto;
   width: 100%;
-  font-family: "Nunito";
 
   th {
     font-size: 16px;

@@ -17,6 +17,10 @@ export {
 } from "./committees"
 export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
 export {
+  syncHearingToSearchIndex,
+  upgradeHearingSearchIndex
+} from "./hearings/search"
+export {
   createMemberSearchIndex,
   fetchMemberBatch,
   startMemberBatches
@@ -43,7 +47,8 @@ export {
   followBill,
   unfollowBill,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getFollowers
 } from "./subscriptions"
 
 export { transcription } from "./webhooks"

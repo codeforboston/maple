@@ -1,5 +1,6 @@
 {
   "counts": {
+    "total": "{{count}} Total Testimonies",
     "endorsements": {
       "title": "Endorse",
       "alt": "The total number of testimonies that endorse the bill."
@@ -38,6 +39,10 @@
       "label": "Verify Your Email"
     }
   },
+  "testimonyHit": {
+    "writtenBy": "Written by <0>{{author}}</0>",
+    "bill": "Bill #{{billId}}"
+  },
   "testimonyDetail": {
     "what": "What",
     "says": "says",
@@ -64,6 +69,7 @@
     "browseTestimony": "Browse All Testimony"
   },
   "reportModal": {
+    "character_count": "{{count}}/{{limit}} characters",
     "reportTestimony": "Report Testimony",
     "reason": "Reason",
     "close": "Close",
@@ -128,6 +134,7 @@
   "testimonyItem": {
     "deleteTestimonyConfirmation": "Are you sure you want to delete your testimony?",
     "no": "No",
+    "yes": "Yes",
     "deleteIcon": "Delete testimony icon",
     "expand": "Expand",
     "moreDetails": "More Details",
@@ -164,5 +171,59 @@
     "title": "Your Testimony",
     "draft": "Draft",
     "emailCta": "Email Your Published Testimony"
+  },
+  "quickInfo": {
+    "bill": "Bill",
+    "primarySponsor": "Primary Sponsor",
+    "writingAbout": "You're writing testimony about",
+    "in": "in",
+    "cityState": "{{city}}, {{state}}",
+    "committeeIs": "and the committee is",
+    "yourLegislatorsAre": "and your legislators are",
+    "representative": "Representative",
+    "senator": "Senator",
+    "sponsoredBy": "and it is sponsored by",
+    "andMore": "And {{count}} more"
+  },
+  "preview": {
+    "neutral": "You are <1>neutral</1> on this bill",
+    "endorse": "You <1>support</1> this bill",
+    "oppose": "You <1>oppose</1> this bill",
+    "copyEmailBody": "Copy Email Body"
+  },
+  "publish": {
+    "errorMessage": "Error: {{message}}",
+    "confirmAndSend": "Confirm and Send",
+    "instructions": "After clicking “publish” please click “Send Email” to open your email client (e.g., Outlook) and send the email populated with your testimony! Or, click the “copy” buttons to manually copy the testimony and recipients of your email.",
+    "reasonLabel": "Reason for Edit",
+    "reasonPlaceholder": "Describe the reason for your edit here",
+    "change": {
+      "position": "Position",
+      "content": "Content",
+      "attachment": "Attachment",
+      "changed": "Changed"
+    },
+    "editLimitNotice_one": "You may edit your testimony up to 1 more time. Before you publish updates to your testimony, please provide a reason for your changes.",
+    "editLimitNotice_other": "You may edit your testimony up to {{count}} more times. Before you publish updates to your testimony, please provide a reason for your changes.",
+    "shareHeader": "Share",
+    "emailHelp": "Having trouble opening the email draft?",
+    "finishWithoutEmailing": "Finish Without Emailing",
+    "finishWithoutEmailingQuestion": "Finish Without Emailing?",
+    "finishWithoutEmailingBody": "Are you sure you want to finish without emailing your testimony? Engaging with your legislators helps them help you.",
+    "finishWithoutEmailingConfirm": "Yes, Finish Without Emailing",
+    "continueSharing": "Continue Sharing",
+    "finishedBackToBill": "Finished! Back to Bill",
+    "publish": "Publish",
+    "publishAndSend": "Publish and Send",
+    "emailRecipients": "Email Recipients",
+    "copyEmailRecipients": "Copy Email Recipients",
+    "findYourLegislators": "Find your legislators",
+    "repShort": "Rep.",
+    "senShort": "Sen.",
+    "addCommitteeChairs": "Add Relevant Committee Chairs",
+    "removeCommitteeChairs": "Remove Relevant Committee Chairs",
+    "addMyLegislators": "Add My Legislators",
+    "removeMyLegislators": "Remove My Legislators",
+    "sendEmail": "Send Email"
   }
 }

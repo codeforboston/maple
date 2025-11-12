@@ -3,7 +3,7 @@ import { Container, Carousel, Spinner } from "react-bootstrap"
 import styled from "styled-components"
 import { Col, Row } from "../bootstrap"
 import { useCalendarEvents } from "./calendarEvents"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 export type EventData = {
   index: number
@@ -219,8 +219,8 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              prevIcon={<CarouselControlNextIcon aria-hidden="true" />}
-              nextIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              prevIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              nextIcon={<CarouselControlNextIcon aria-hidden="true" />}
             >
               {monthsList?.map(month => {
                 return (
