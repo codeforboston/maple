@@ -22,6 +22,7 @@ import { sha256 } from "js-sha256"
 import { isValidVideoUrl, withinCutoff } from "./helpers"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
+import { Committee } from "../committees/types"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
@@ -148,7 +149,8 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
 
 const extractAudioFromVideo = async (
   EventId: number,
-  videoUrl: string
+  videoUrl: string,
+  bucketName?: string
 ): Promise<string> => {
   const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.m4a`
 
@@ -182,7 +184,7 @@ const extractAudioFromVideo = async (
   })
 
   // Upload the audio file
-  const bucket = storage.bucket()
+  const bucket = bucketName ? storage.bucket(bucketName) : storage.bucket()
   const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
   const file = bucket.file(audioFileName)
 
@@ -217,19 +219,25 @@ const extractAudioFromVideo = async (
   return url
 }
 
-const submitTranscription = async ({
+export const submitTranscription = async ({
   EventId,
-  maybeVideoUrl
+  maybeVideoUrl,
+  bucketName
 }: {
   EventId: number
   maybeVideoUrl: string
+  bucketName?: string
 }) => {
   const assembly = new AssemblyAI({
     apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
   })
 
   const newToken = randomBytes(16).toString("hex")
-  const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
+  const audioUrl = await extractAudioFromVideo(
+    EventId,
+    maybeVideoUrl,
+    bucketName
+  )
 
   const transcript = await assembly.transcripts.submit({
     audio:
@@ -258,7 +266,7 @@ const submitTranscription = async ({
   return transcript.id
 }
 
-const getHearingVideoUrl = async (EventId: number) => {
+export const getHearingVideoUrl = async (EventId: number) => {
   const req = await fetch(
     `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
   )
@@ -297,6 +305,37 @@ const shouldScrapeVideo = async (EventId: number) => {
   return false
 }
 
+const loadCommitteeChairNames = async (
+  generalCourtNumber: number,
+  committeeCode: string
+) => {
+  try {
+    const committeeSnap = await db
+      .collection(`generalCourts/${generalCourtNumber}/committees`)
+      .doc(committeeCode)
+      .get()
+
+    if (!committeeSnap.exists) return [] as string[]
+
+    const { members, content } = Committee.check(committeeSnap.data())
+    const chairCodes = new Set<string>()
+    const maybeHouse = content.HouseChairperson?.MemberCode
+    const maybeSenate = content.SenateChairperson?.MemberCode
+
+    if (maybeHouse) chairCodes.add(maybeHouse)
+    if (maybeSenate) chairCodes.add(maybeSenate)
+    return (members ?? [])
+      .filter(member => chairCodes.has(member.id))
+      .map(member => member.name)
+  } catch (error) {
+    console.warn(
+      `Failed to load committee chairs for ${committeeCode} (${generalCourtNumber}):`,
+      error
+    )
+    return [] as string[]
+  }
+}
+
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
   constructor() {
     super("every 60 minutes", 480, "4GB")
@@ -312,6 +351,15 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     const content = HearingContent.check(data)
 
     console.log("content in getEvent()", content)
+
+    const host = content.HearingHost
+    const committeeChairs =
+      host?.CommitteeCode && host?.GeneralCourtNumber
+        ? await loadCommitteeChairNames(
+            host.GeneralCourtNumber,
+            host.CommitteeCode
+          )
+        : undefined
 
     if (await shouldScrapeVideo(EventId)) {
       try {
@@ -338,6 +386,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             ...this.timestamps(content),
             videoURL: maybeVideoUrl,
             videoFetchedAt: Timestamp.now(),
+            committeeChairs,
             videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
           } as Hearing
         }
@@ -347,6 +396,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           id: `hearing-${EventId}`,
           type: "hearing",
           content,
+          committeeChairs,
           ...this.timestamps(content)
         } as Hearing
       }
@@ -355,6 +405,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
+      committeeChairs,
       ...this.timestamps(content)
     } as Hearing
   }

@@ -2,11 +2,15 @@ import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Image, Row } from "../bootstrap"
 import { HearingSidebar } from "./HearingSidebar"
 import { Transcriptions } from "./Transcriptions"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
+import { Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+
+const ButtonContainer = styled.div`
+  width: fit-content;
+`
 
 export const CommitteeButton = styled.button`
   border-radius: 12px;
@@ -40,6 +44,11 @@ export const HearingDetails = ({
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
+  const [videoLoaded, setVideoLoaded] = useState(false)
+  const handleVideoLoad = () => {
+    setVideoLoaded(true)
+  }
+
   const videoRef = useRef<HTMLVideoElement>(null)
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
@@ -47,6 +56,7 @@ export const HearingDetails = ({
 
   const eventId = `hearing-${hearingId}`
 
+  const [billsInAgenda, setBillsInAgenda] = useState([])
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [description, setDescription] = useState("")
@@ -59,6 +69,7 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
+    setBillsInAgenda(docData?.content.HearingAgendas[0]?.DocumentsInAgenda)
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
@@ -81,21 +92,25 @@ export const HearingDetails = ({
       <h5 className={`mb-3`}>{description}</h5>
 
       {committeeName ? (
-        <links.External
-          href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
-        >
-          <CommitteeButton
-            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+        <ButtonContainer>
+          {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
+              the button and strech invisibly across the width of the page */}
+          <links.External
+            href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
           >
-            &nbsp; {committeeName} &nbsp;
-          </CommitteeButton>
-        </links.External>
+            <CommitteeButton
+              className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
+            >
+              &nbsp; {committeeName} &nbsp;
+            </CommitteeButton>
+          </links.External>
+        </ButtonContainer>
       ) : (
         <></>
       )}
 
-      <div className={`row mt-4`}>
-        <Col className={`col-md-8`}>
+      <Row>
+        <Col className={`col-md-8 mt-4`}>
           <LegalContainer className={`pb-2 rounded`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
@@ -129,8 +144,14 @@ export const HearingDetails = ({
           </LegalContainer>
 
           {videoURL ? (
-            <VideoParent className={`my-3`}>
-              <VideoChild ref={videoRef} src={videoURL} controls muted />
+            <VideoParent className={`mt-3`}>
+              <VideoChild
+                ref={videoRef}
+                src={videoURL}
+                onLoadedData={handleVideoLoad}
+                controls
+                muted
+              />
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
@@ -140,18 +161,21 @@ export const HearingDetails = ({
 
           <Transcriptions
             setCurTimeVideo={setCurTimeVideo}
+            videoLoaded={videoLoaded}
+            videoRef={videoRef}
             videoTranscriptionId={videoTranscriptionId}
           />
         </Col>
 
         <div className={`col-md-4`}>
           <HearingSidebar
+            billsInAgenda={billsInAgenda}
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}
           />
         </div>
-      </div>
+      </Row>
     </Container>
   )
 }

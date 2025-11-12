@@ -1,7 +1,8 @@
 import { Row, Col } from "../bootstrap"
 import Image from "react-bootstrap/Image"
 import { SignInWithButton } from "../auth"
-import { useTranslation } from "next-i18next"
+import * as links from "../links"
+import { Trans, useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
 import styled from "styled-components"
 
@@ -113,7 +114,15 @@ const OurMissionCardContent = () => {
           lg={8}
           className={`fs-6 fs-sm-5 tracking-tight text-start lh-sm pt-4 pb-3 pb-sm-4 p-md-0`}
         >
-          <p>{t("mission.disclosure")}</p>
+          <p>
+            {t("mission.disclosure")}
+            <links.External
+              href={`https://malegislature.gov/PressRoom/Detail?pressReleaseId=214`}
+            >
+              {t("mission.disclosureLink")}
+            </links.External>
+            {t("mission.disclosure2")}
+          </p>
         </Col>
       </Row>
       <Row>

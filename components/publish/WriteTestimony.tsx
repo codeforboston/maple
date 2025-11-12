@@ -12,7 +12,7 @@ import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
 import { useFormRedirection, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
-import { Trans, useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "next-i18next"
 type TabKey = "text" | "import"
 type UseWriteTestimony = ReturnType<typeof useWriteTestimony>
 

@@ -26,6 +26,7 @@ export const TestimonyContent = styled<Props>(
 
   p {
     margin-top: 0rem;
+    overflow-wrap: break-word;
   }
 
   .added {

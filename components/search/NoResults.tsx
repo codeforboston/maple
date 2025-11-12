@@ -19,11 +19,11 @@ const Container = styled.div`
 export const NoResults: React.FC<React.PropsWithChildren<unknown>> = ({
   children
 }) => {
-  const { t } = useTranslation("search")
+  const { t } = useTranslation("common")
   return (
     <Container>
-      <Image src="/no-results.svg" alt={t("no_results")} />
-      <div className="fs-3">{t("looks_pretty_empty_here")}</div>
+      <Image src="/no-results.svg" alt={t("noResults")} />
+      <div className="fs-3">{t("looksPrettyEmptyHere")}</div>
       <div className="text-center">{children}</div>
     </Container>
   )

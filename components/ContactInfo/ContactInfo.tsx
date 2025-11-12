@@ -7,7 +7,6 @@ export const Container = styled.div`
   align-items: flex-end;
   gap: 5px;
   font-size: 22;
-  font-family: Nunito;
 `
 export const Link = styled.a`
   color: inherit;
