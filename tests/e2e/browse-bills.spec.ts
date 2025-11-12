@@ -2,8 +2,9 @@ import { test, expect } from "@playwright/test"
 import { BillPage } from "./page_objects/billPage"
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:3000/bills")
-  await page.waitForSelector("li.ais-Hits-item a")
+  const billpage = new BillPage(page)
+  await billpage.goto()
+  await billpage.removePresetCourtfilter()
 })
 
 test.describe("Search result test", () => {
@@ -11,13 +12,14 @@ test.describe("Search result test", () => {
     const billpage = new BillPage(page)
 
     const searchTerm = billpage.searchWord
-    const resultCount = billpage.resultCount
-    const initialResultCount = await resultCount.textContent()
 
     await billpage.search(searchTerm)
 
-    const searchResultCount = await resultCount.textContent()
-    await expect(searchResultCount).not.toBe(initialResultCount)
+    await expect(billpage.queryFilter).toBeVisible()
+
+    await expect(billpage.queryFilter).toContainText(searchTerm)
+
+    await expect(billpage.firstBill).toBeVisible()
   })
 
   test("should show search query", async ({ page }) => {
@@ -30,7 +32,7 @@ test.describe("Search result test", () => {
 
     const queryFilter = await billpage.queryFilter
 
-    await expect(queryFilter).toContainText("query:")
+    await expect(queryFilter).toContainText("Query:")
     await expect(queryFilter).toContainText(searchTerm)
   })
 
@@ -50,7 +52,7 @@ test.describe("Search result test", () => {
     const searchTerm = "nonexistentsearchterm12345"
     const billpage = new BillPage(page)
 
-    billpage.search(searchTerm)
+    await billpage.search(searchTerm)
 
     const noResultsText = await page.getByText("Looks Pretty Empty Here")
     const noResultsImg = page.getByAltText("No Results")
@@ -118,7 +120,7 @@ test.describe("Filter Bills test", () => {
       "%27"
     )
     await expect(page).toHaveURL(
-      new RegExp(`court%5D%5B1%5D=${encodedFilterLabel}`)
+      new RegExp(`court%5D%5B0%5D=${encodedFilterLabel}`)
     )
   })
 

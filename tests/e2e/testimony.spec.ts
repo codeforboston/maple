@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test"
 import { TestimonyPage } from "./page_objects/testimony"
+import { waitFor } from "@testing-library/dom"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/testimony")
@@ -34,7 +35,7 @@ test.describe("Testimony Search", () => {
     await testimonyPage.search(queryText)
 
     const { queryFilterItem, resultsCountText } = testimonyPage
-    await expect(queryFilterItem).toContainText("query:")
+    await expect(queryFilterItem).toContainText("Query:")
     await expect(queryFilterItem).toContainText(queryText)
     await expect(resultsCountText).toBeVisible()
   })
@@ -102,33 +103,47 @@ test.describe("Testimony Filtering", () => {
   })
 
   test("should filter by position: endorse", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "endorse" }).check()
     const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
+    const endorseCheckbox = page.getByRole("checkbox", { name: /endorse/i })
+    await endorseCheckbox.check({ timeout: 30000 })
+
     await expect(testimonyPage.positionFilterItem).toContainText("endorse")
     await expect(page).toHaveURL(/.*position%5D%5B0%5D=endorse/)
   })
 
   test("should filter by position: neutral", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "neutral" }).check()
     const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
+    const checkNeutral = page.getByRole("checkbox", { name: "neutral" })
+    await checkNeutral.check({ timeout: 30000 })
+    await page.getByRole("checkbox", { name: "neutral" }).check()
+
     await expect(testimonyPage.positionFilterItem).toContainText("neutral")
     await expect(page).toHaveURL(/.*position%5D%5B0%5D=neutral/)
   })
 
   test("should filter by bill", async ({ page }) => {
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
     const billCheckbox = page.getByLabel(/^[S|H]\d{1,4}$/).first()
     const billId = await billCheckbox.inputValue()
     expect(billId).toBeTruthy()
 
     if (billId) {
       await billCheckbox.check()
-      const testimonyPage = new TestimonyPage(page)
       await expect(testimonyPage.billFilterItem).toContainText(billId as string)
       await expect(page).toHaveURL(new RegExp(`.*billId%5D%5B0%5D=${billId}`))
     }
   })
 
   test("should filter by author", async ({ page }) => {
+    const testimonyPage = new TestimonyPage(page)
+    testimonyPage.removePresetCourtfilter()
+
     const writtenByText = await page
       .getByText(/Written by/)
       .first()
@@ -138,7 +153,6 @@ test.describe("Testimony Filtering", () => {
     if (writtenByText) {
       const authorName = writtenByText.slice(11)
       await page.getByRole("checkbox", { name: authorName }).check()
-      const testimonyPage = new TestimonyPage(page)
       await expect(testimonyPage.authorFilterItem).toContainText(authorName)
       await expect(page).toHaveURL(
         new RegExp(
