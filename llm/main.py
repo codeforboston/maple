@@ -45,7 +45,7 @@ def summary():
     if summary["status"] in [-1, -2]:
         abort(500, description="Unable to generate summary")
 
-    return jsonify(normalize_summary(summary["summary"]))
+    return jsonify(summary["summary"])
 
 
 @app.route("/tags", methods=["POST"])

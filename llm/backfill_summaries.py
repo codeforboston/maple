@@ -21,7 +21,6 @@ from llm_functions import get_summary_api_function, get_tags_api_function_v2
 from firebase_admin import firestore
 from bill_on_document_created import get_categories_from_topics, CATEGORY_BY_TOPIC
 import csv
-from normalize_summaries import normalize_summary
 
 # Module constants
 FIREBASE_COLLECTION_PATH = "generalCourts/194/bills"
@@ -73,7 +72,7 @@ with open(CSV_SUMMARY_OUTPUT, "w") as csvfile:
             continue
         # Note: `normalize_summary` does some post-processing to clean up the summaries
         # As of 2025-10-21 this was necessary due to the LLM prompt
-        summary = normalize_summary(summary["summary"])
+        summary = summary["summary"]
         bill.reference.update({"summary": summary})
 
         # If the topics are already populated, just make a note of it
