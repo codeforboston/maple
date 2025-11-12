@@ -10,6 +10,7 @@ from firebase_functions.firestore_fn import (
     DocumentSnapshot,
 )
 import bill_on_document_created
+from normalize_summaries import normalize_summary
 
 initialize_app()
 app = Flask(__name__)
@@ -22,10 +23,10 @@ def is_intersection(keys, required_keys):
 def set_openai_api_key():
     match os.environ.get("MAPLE_DEV"):
         case "prod":
-            if os.environ.get("OPENAI_PROD") != None:
+            if os.environ.get("OPENAI_PROD") is not None:
                 os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_PROD"]
         case _:  # if "dev" or unspecified, use OPENAI_DEV
-            if os.environ.get("OPENAI_DEV") != None:
+            if os.environ.get("OPENAI_DEV") is not None:
                 os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_DEV"]
 
 
@@ -44,7 +45,7 @@ def summary():
     if summary["status"] in [-1, -2]:
         abort(500, description="Unable to generate summary")
 
-    return jsonify(summary["summary"])
+    return jsonify(normalize_summary(summary["summary"]))
 
 
 @app.route("/tags", methods=["POST"])
@@ -81,6 +82,8 @@ def httpsflaskexample(req: https_fn.Request) -> https_fn.Response:
 
 @on_document_created(
     secrets=["OPENAI_DEV", "OPENAI_PROD"],
+    timeout_sec=300,
+    memory=options.MemoryOption.GB_1,
     document="generalCourts/{session_id}/bills/{bill_id}",
 )
 def add_summary_on_document_created(event: Event[DocumentSnapshot | None]) -> None:

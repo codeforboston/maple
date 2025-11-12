@@ -4,6 +4,7 @@ from firebase_functions.firestore_fn import (
 )
 from llm_functions import get_summary_api_function, get_tags_api_function_v2
 from typing import TypedDict, NewType
+from normalize_summaries import normalize_summary
 
 Category = NewType("Category", str)
 
@@ -60,7 +61,7 @@ def run_trigger(event: Event[DocumentSnapshot | None]) -> None:
             return
 
         # Set and insert the summary for the categorization step
-        summary = summary["summary"]
+        summary = normalize_summary(summary["summary"])
         inserted_data.reference.update({"summary": summary})
         print(f"Successfully updated summary for bill with id `{bill_id}`")
 
