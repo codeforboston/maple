@@ -10,7 +10,6 @@ from firebase_functions.firestore_fn import (
     DocumentSnapshot,
 )
 import bill_on_document_created
-from normalize_summaries import normalize_summary
 
 initialize_app()
 app = Flask(__name__)
