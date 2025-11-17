@@ -17,7 +17,7 @@
   "reserve_right": "Reserve Right",
   "schedule_date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
   "schedule_time": "{{date, datetime(hour: 'numeric'; minute: '2-digit')}}",
-  "search_placeholder": "Search translation",
+  "search_placeholder": "Search transcription",
   "see_all": "See all",
   "see_less": "See less",
   "senate_chair": "Senate Chair",

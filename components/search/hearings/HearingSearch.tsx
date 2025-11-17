@@ -7,7 +7,7 @@ import {
   formatCourtFilterLabel,
   formatCourtSubtitle
 } from "../courtSessions"
-import { useMemo } from "react"
+import { useMemo, useRef } from "react"
 
 /* carbon copy of type in functions/src/hearings/search.ts */
 type HearingSearchRecord = {
@@ -32,62 +32,78 @@ type HearingSearchRecord = {
 
 export type HearingHitData = Hit<HearingSearchRecord>
 
-const sortOptions = [
-  {
-    labelKey: "sort_by.earliest_hearing",
-    value: "hearings/sort/startsAt:asc"
-  },
-  {
-    labelKey: "sort_by.latest_hearing",
-    value: "hearings/sort/startsAt:desc"
-  },
-  {
-    labelKey: "sort_by.relevance",
-    value: "hearings/sort/_text_match:desc,startsAt:asc"
-  }
-]
-
-export const HearingSearch = () => (
-  <SearchPage
-    searchType="hearing"
-    header={<HearingSearchHeader />}
-    initialUiState={{
-      [sortOptions[0].value]: {
-        refinementList: { court: [String(CURRENT_COURT_NUMBER)] }
-      }
-    }}
-    searchParameters={{
-      query_by:
-        "title,description,agendaTopics,billNumbers,chairNames,locationName,locationCity",
-      sort_by: "startsAt:asc"
-    }}
-    hitComponent={HearingHit}
-    filterPanelConfig={{
-      filters: [
-        {
-          attribute: "court",
-          transformItems: items =>
-            items
-              .map(item => ({
-                ...item,
-                label: formatCourtFilterLabel(parseInt(item.value, 10))
-              }))
-              .sort((a, b) => Number(b.value) - Number(a.value))
-        },
-        { attribute: "month" },
-        { attribute: "year" },
-        { attribute: "committeeName" },
-        {
-          attribute: "chairNames",
-          transformItems: items =>
-            items.sort((a, b) => a.label.localeCompare(b.label))
+const useHearingSort = () => {
+  const now = useRef(new Date().getTime())
+  return useMemo(
+    () => [
+      {
+        labelKey: "sort_by.newest",
+        value: "hearings/sort/startsAt:desc"
+      },
+      {
+        labelKey: "sort_by.next_hearing_date",
+        value: "hearings/sort/startsAt:asc",
+        configure: {
+          numericRefinements: {
+            startsAt: {
+              ">=": [now.current]
+            }
+          }
         }
-      ]
-    }}
-    sortOptions={sortOptions}
-  />
-)
+      },
+      {
+        labelKey: "sort_by.relevance",
+        value: "hearings/sort/_text_match:desc,startsAt:asc"
+      }
+    ],
+    []
+  )
+}
 
+export const HearingSearch = () => {
+  const sortOptions = useHearingSort()
+  return (
+    <SearchPage
+      searchType="hearing"
+      header={<HearingSearchHeader />}
+      currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
+      initialUiState={{
+        [sortOptions[0].value]: {
+          refinementList: { court: [String(CURRENT_COURT_NUMBER)] }
+        }
+      }}
+      searchParameters={{
+        query_by:
+          "title,description,agendaTopics,billNumbers,chairNames,locationName,locationCity",
+        sort_by: "startsAt:asc"
+      }}
+      hitComponent={HearingHit}
+      filterPanelConfig={{
+        filters: [
+          {
+            attribute: "court",
+            transformItems: items =>
+              items
+                .map(item => ({
+                  ...item,
+                  label: formatCourtFilterLabel(parseInt(item.value, 10))
+                }))
+                .sort((a, b) => Number(b.value) - Number(a.value))
+          },
+          { attribute: "month" },
+          { attribute: "year" },
+          { attribute: "committeeName" },
+          {
+            attribute: "chairNames",
+            transformItems: items =>
+              items.sort((a, b) => a.label.localeCompare(b.label))
+          }
+        ]
+      }}
+      sortOptions={sortOptions}
+    />
+  )
+}
 const HearingSearchHeader = () => {
   const { indexUiState } = useInstantSearch()
 
