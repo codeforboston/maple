@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { Container } from "../bootstrap"
+import * as links from "../links"
 
 export const MemberItem = ({
   name,
@@ -21,28 +22,10 @@ export const MemberItem = ({
   )
 }
 
-const StyledContainer = styled(Container)`
-  //border-top: 1px solid #979797;
-  background: white;
-  border-radius: 0 0 10px 10px;
+export const Back = styled(links.Internal)`
+  margin-right: auto;
 `
-const EmailContainer = styled.a`
-  color: #1a3185;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 25px;
-  letter-spacing: 0em;
-  text-align: left;
-  text-decoration: underline;
-`
-export const NameContainer = styled.div`
-  color: #1a3185;
-  font-size: 25px;
-  font-weight: 600;
-  line-height: 31px;
-  letter-spacing: 0em;
-  text-align: left;
-`
+
 export const DescrContainer = styled.div`
   font-size: 16px;
   font-weight: 500;
@@ -56,6 +39,25 @@ export const Divider = styled.hr`
   margin: 0;
 `
 
+const EmailContainer = styled.a`
+  color: #1a3185;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 25px;
+  letter-spacing: 0em;
+  text-align: left;
+  text-decoration: underline;
+`
+
+export const NameContainer = styled.div`
+  color: #1a3185;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 31px;
+  letter-spacing: 0em;
+  text-align: left;
+`
+
 export const PageDescr = styled.div`
   font-weight: 700;
   font-size: 25px;
@@ -65,6 +67,7 @@ export const PageTitle = styled.div`
   font-weight: 600;
   font-size: 60px;
 `
+
 export const SectionContainer = styled.div`
   border-radius: 10px;
   background: white;
@@ -76,4 +79,10 @@ export const SectionTitle = styled.div`
   font-weight: 500;
   font-size: 26px;
   border-radius: 10px 10px 0 0;
+`
+
+const StyledContainer = styled(Container)`
+  //border-top: 1px solid #979797;
+  background: white;
+  border-radius: 0 0 10px 10px;
 `
