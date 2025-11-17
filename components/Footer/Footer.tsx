@@ -279,21 +279,17 @@ const PageFooter = (props: PageFooterProps) => {
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
-      <div
-        className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
-      >
-        <Col className="text-white col-md-auto">
-          {t("legal.disclaimer")}
-          {" - "}
-          <a
-            href={NEWSLETTER_SIGNUP_URL}
-            style={{ color: "white" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("newsletter")}
-          </a>
-        </Col>
+      <div className={`col-12 order-md-3 text-center text-md-start text-white`}>
+        {t("legal.disclaimer")}
+        {" - "}
+        <a
+          href={NEWSLETTER_SIGNUP_URL}
+          style={{ color: "white" }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t("newsletter")}
+        </a>
       </div>
     </FooterContainer>
   )
