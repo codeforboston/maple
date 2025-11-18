@@ -192,9 +192,13 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <NavbarLinkBills />
       </div>
 
-      <div className={`align-self-center px-2`}>
-        {flags().hearingsAndTranscriptions ? <NavbarLinkHearings /> : null}
-      </div>
+      {flags().hearingsAndTranscriptions ? (
+        <div className={`align-self-center px-2`}>
+          <NavbarLinkHearings />
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className="align-self-center px-2">
         <NavbarLinkTestimony />
