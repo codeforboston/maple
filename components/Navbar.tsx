@@ -185,7 +185,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { t } = useTranslation(["common", "auth"])
 
   return (
-    <Container fluid className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}>
+    <Container
+      fluid
+      className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}
+    >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
       </div>
