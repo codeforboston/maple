@@ -188,15 +188,14 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
       <NavbarLinkLogo />
 
-      <div className={`align-self-center flex-grow-1 invisible`}>
-        <button className={`bg-light col my-2 w-100`}>
-          <div className={`text-dark`}>{"Placeholder Search Widget"}</div>
-        </button>
-      </div>
-
-      <div className={`align-self-center ms-3`}>
+      <div className={`align-self-center`}>
         <Nav>
           <NavbarLinkBills />
+        </Nav>
+      </div>
+
+      <div className={`align-self-center`}>
+        <Nav>
           {flags().hearingsAndTranscriptions ? <NavbarLinkHearings /> : null}
         </Nav>
       </div>
@@ -232,7 +231,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center justify-content-end`}>
+      <div className={`align-self-center`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("learn")}
@@ -246,7 +245,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       </div>
 
       {authenticated ? (
-        <div className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center ms-auto`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
               <Avatar />
@@ -272,7 +271,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown>
         </div>
       ) : (
-        <div className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center ms-auto`}>
           <SignInWithButton />
         </div>
       )}
