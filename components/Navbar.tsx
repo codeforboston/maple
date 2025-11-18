@@ -188,29 +188,21 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
       <NavbarLinkLogo />
 
-      <div className={`align-self-center`}>
-        <Nav>
-          <NavbarLinkBills />
-        </Nav>
+      <div className={`align-self-center px-2`}>
+        <NavbarLinkBills />
       </div>
 
-      <div className={`align-self-center`}>
-        <Nav>
-          {flags().hearingsAndTranscriptions ? <NavbarLinkHearings /> : null}
-        </Nav>
+      <div className={`align-self-center px-2`}>
+        {flags().hearingsAndTranscriptions ? <NavbarLinkHearings /> : null}
       </div>
 
-      <div className="align-self-center">
-        <Nav>
-          <NavbarLinkTestimony />
-        </Nav>
+      <div className="align-self-center px-2">
+        <NavbarLinkTestimony />
       </div>
 
       {authenticated ? (
-        <div className="align-self-center">
-          <Nav>
-            <NavbarLinkNewsfeed />
-          </Nav>
+        <div className="align-self-center px-2">
+          <NavbarLinkNewsfeed />
         </div>
       ) : (
         <></>
