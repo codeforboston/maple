@@ -1,6 +1,7 @@
 {
   "about": "About",
   "back_to_bills": "back to list of bills",
+  "back_to_hearings": "back to list of hearings",
   "bill": {
     "and_others_one": "and {{count}} other",
     "and_others_other": "and {{count}} others",

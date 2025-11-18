@@ -7,12 +7,13 @@ import { Transcriptions } from "./Transcriptions"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
+import { Back } from "../shared/CommonComponents"
 
 const ButtonContainer = styled.div`
   width: fit-content;
 `
 
-export const CommitteeButton = styled.button`
+export const FeatureCalloutButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
 `
@@ -43,6 +44,11 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
+  const [transcriptData, setTranscriptData] = useState(null)
+
+  const handleTranscriptData = (data: any) => {
+    setTranscriptData(data)
+  }
 
   const [videoLoaded, setVideoLoaded] = useState(false)
   const handleVideoLoad = () => {
@@ -85,29 +91,31 @@ export const HearingDetails = ({
 
   return (
     <Container className="mt-3 mb-3">
-      <h1>
-        {t("hearing", { ns: "hearing" })} {hearingId}
-      </h1>
+      <Row className={`mb-3`}>
+        <Col>
+          <Back href="/hearings">{t("back_to_hearings")}</Back>
+        </Col>
+      </Row>
 
-      <h5 className={`mb-3`}>{description}</h5>
-
-      {committeeName ? (
-        <ButtonContainer>
+      {transcriptData ? (
+        <ButtonContainer className={`mb-2`}>
           {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
               the button and strech invisibly across the width of the page */}
-          <links.External
-            href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
+          <FeatureCalloutButton
+            className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
           >
-            <CommitteeButton
-              className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
-            >
-              &nbsp; {committeeName} &nbsp;
-            </CommitteeButton>
-          </links.External>
+            &nbsp;{" "}
+            {t("video_and_transcription_feature_callout", { ns: "hearing" })}{" "}
+            &nbsp;
+          </FeatureCalloutButton>
         </ButtonContainer>
       ) : (
         <></>
       )}
+
+      {committeeName ? <h1>{committeeName}</h1> : <></>}
+
+      <h5 className={`mb-3`}>{description}</h5>
 
       <Row>
         <Col className={`col-md-8 mt-4`}>
@@ -160,6 +168,7 @@ export const HearingDetails = ({
           )}
 
           <Transcriptions
+            handleTranscriptData={handleTranscriptData}
             setCurTimeVideo={setCurTimeVideo}
             videoLoaded={videoLoaded}
             videoRef={videoRef}
