@@ -185,8 +185,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { t } = useTranslation(["common", "auth"])
 
   return (
-    <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
-      <NavbarLinkLogo />
+    <Container fluid className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}>
+      <div className={`me-auto`}>
+        <NavbarLinkLogo />
+      </div>
 
       <div className={`align-self-center px-2`}>
         <NavbarLinkBills />
@@ -241,7 +243,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       </div>
 
       {authenticated ? (
-        <div className={`align-self-center ms-auto`}>
+        <div className={`align-self-center`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
               <Avatar />
@@ -267,7 +269,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown>
         </div>
       ) : (
-        <div className={`align-self-center ms-auto`}>
+        <div className={`align-self-center`}>
           <SignInWithButton />
         </div>
       )}
