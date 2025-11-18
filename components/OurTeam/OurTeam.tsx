@@ -1,4 +1,3 @@
-import styled from "styled-components"
 import { useState } from "react"
 import { Col, Row, Container } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
@@ -13,7 +12,7 @@ import { useTranslation } from "next-i18next"
 export const OurTeam = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   return (
-    <StyledContainer className="ptx-4">
+    <Container className="ptx-4">
       <Tab.Container defaultActiveKey="steering_committee">
         {isMobile ? <TabDropdown /> : <TabGroup />}
         <Row className="p-3 g-0">
@@ -32,7 +31,7 @@ export const OurTeam = () => {
           </Col>
         </Row>
       </Tab.Container>
-    </StyledContainer>
+    </Container>
   )
 }
 
@@ -112,7 +111,3 @@ const TabDropdown = () => {
     </Row>
   )
 }
-
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-`

@@ -9,7 +9,7 @@ import { FormNavigation, Next } from "./NavigationButtons"
 import { setPosition } from "./redux"
 import { StepHeader } from "./StepHeader"
 import { useMediaQuery } from "usehooks-ts"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 export const ChooseStance = styled(({ ...rest }) => {
   const { t } = useTranslation("testimony")

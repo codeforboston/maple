@@ -63,6 +63,8 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from prompts import *
 from tag_categories import *
 
+from normalize_summaries import normalize_summary
+
 GPT_MDOEL_VERSION = 'gpt-4o-mini'
 MAX_TOKEN_LIMIT = 128000
 
@@ -434,7 +436,7 @@ def get_summary_api_function(bill_id: str, bill_title: str, bill_text: str) -> d
     if status_code != 1: 
         return {'status': status_code, 'summary': ''}
     else: 
-        return {'status': status_code, 'summary': results.response}
+        return {'status': status_code, 'summary': normalize_summary(results.response)}
 
 def get_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
     

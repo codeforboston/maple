@@ -1,6 +1,7 @@
 {
   "about": "About",
   "back_to_bills": "back to list of bills",
+  "back_to_hearings": "back to list of hearings",
   "bill": {
     "and_others_one": "and {{count}} other",
     "and_others_other": "and {{count}} others",
@@ -85,6 +86,7 @@
     "additionalResources": "Additional Resources",
     "ai": "How MAPLE Uses AI",
     "browseBills": "Browse Bills",
+    "browseHearings": "Browse Hearings",
     "browseTestimony": "Browse Testimony",
     "closeNavMenu": "Close Navigation Menu",
     "closeProfileMenu": "Close Profile Menu",
@@ -123,6 +125,7 @@
   },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
+  "looksPrettyEmptyHere": "Looks Pretty Empty Here",
   "noNewsUpdates": "There are no news updates for your current followed topics",
   "orgs": "Organizations",
   "pending_upgrade_warning": {
@@ -157,5 +160,13 @@
     "unsubscribe": "Unsubscribe",
     "why_use_maple": "Why Use Maple?"
   },
-  "user_updates": "User Updates"
+  "user_updates": "User Updates",
+  "copiedToClipboard": "Copied to Clipboard!",
+  "privacyPolicy": "Privacy Policy",
+  "termsAndConditions": "Terms and Conditions",
+  "languages": "Languages",
+  "english": "English",
+  "spanish": "Spanish",
+  "edit": "Edit",
+  "yes": "Yes"
 }
