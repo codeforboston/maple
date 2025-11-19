@@ -115,11 +115,13 @@ const SearchWrapper = styled.div`
 `
 
 export const Transcriptions = ({
+  handleTranscriptData,
   setCurTimeVideo,
   videoLoaded,
   videoRef,
   videoTranscriptionId
 }: {
+  handleTranscriptData: (data: any) => void
   setCurTimeVideo: any
   videoLoaded: boolean
   videoRef: any
@@ -149,6 +151,7 @@ export const Transcriptions = ({
 
     if (transcriptData.length === 0 && docList.length != 0) {
       setTranscriptData(docList)
+      handleTranscriptData(docList)
     }
   }, [subscriptionRef, transcriptData])
 
