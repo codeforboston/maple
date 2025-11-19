@@ -1,7 +1,6 @@
 {
   "another_term": "Try another search term",
   "browse_bills": "Browse Bills",
-  "browse_hearings": "Browse Hearings",
   "filter": "Filter",
   "topics": "Topics",
   "zero_results": "Your search has yielded zero results!",
@@ -30,8 +29,8 @@
   },
   "sort_by": {
     "most_recent_testimony": "Sort by Most Recent Testimony",
-    "newest": "Sort by Old -> New",
-    "oldest": "Sort by New -> Old",
+    "newest": "Sort by Newest",
+    "oldest": "Sort by Oldest",
     "relevance": "Sort by Relevance",
     "testimony_count": "Sort by Testimony Count",
     "cosponsor_count": "Sort by Cosponsor Count",
