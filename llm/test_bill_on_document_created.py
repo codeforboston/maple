@@ -3,7 +3,6 @@ from bill_on_document_created import (
     get_categories_from_topics,
     TopicAndCategory,
 )
-from collections import deque
 
 
 def test_get_categories_from_topics_empty():

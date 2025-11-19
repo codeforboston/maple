@@ -3,6 +3,20 @@ name: Repo Checks
 on: ["push", "pull_request"]
 
 jobs:
+  check_python_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -r llm/requirements.txt
+      - run: ruff check llm/
+      - run: ruff format --check llm/
+      - run: pytest llm/
+
   check_code_quality:
     name: Code Quality
     runs-on: ubuntu-latest
