@@ -317,6 +317,7 @@ export const Bill = withDefaults(
     opposeCount: Number,
     nextHearingAt: Optional(InstanceOf(Timestamp)),
     nextHearingId: Optional(Id),
+    hearingIds: Optional(Array(String)),
     latestTestimonyAt: Optional(InstanceOf(Timestamp)),
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp),
@@ -339,6 +340,7 @@ export const Bill = withDefaults(
     fetchedAt: MISSING_TIMESTAMP,
     history: [],
     similar: [],
-    topics: []
+    topics: [],
+    hearingIds: []
   }
 )
