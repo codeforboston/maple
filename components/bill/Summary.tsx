@@ -3,7 +3,11 @@ import * as links from "components/links"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import styled from "styled-components"
-import { Button, Col, Container, Modal, Row } from "../bootstrap"
+import { Button, Col, Container, Modal, Row, Stack } from "../bootstrap"
+import {
+  ButtonContainer,
+  FeatureCalloutButton
+} from "../shared/CommonComponents"
 import { SmartDisclaimer } from "./SmartDisclaimer"
 import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
@@ -69,6 +73,13 @@ const SmartTag = ({ topic }: { topic: BillTopic }) => {
   )
 }
 
+export const ViewButton = styled.button`
+  border-radius: 4px;
+  border-width: 2px;
+  height: fit-content;
+  width: fit-content;
+`
+
 export const Summary = ({
   bill,
   className
@@ -125,6 +136,40 @@ export const Summary = ({
         <Divider className={`my-2`} xs="auto" />
         <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
+        </Col>
+        <Divider className={`my-2`} xs="auto" />
+
+        {/* Add breakpoints
+        Add empty sets
+        Connect to backend */}
+
+        <Col className={`d-flex mt-3`} xs="auto">
+          <Stack>
+            <Row className={`d-flex flex-nowrap`}>
+              <ButtonContainer className={`mb-2 pe-1`}>
+                <FeatureCalloutButton
+                  className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-0`}
+                >
+                  &nbsp; {t("new_feature", { ns: "common" })} &nbsp;
+                </FeatureCalloutButton>
+              </ButtonContainer>
+              <div className={`d-flex justify-content-start ps-0`}>
+                Hearing Video + Transcript
+              </div>
+            </Row>
+            <div>View the hearing for this bill, complete</div>
+            <div>with a generative AI transcript.</div>
+          </Stack>
+        </Col>
+        <Col className={`d-flex`} xs="auto">
+          <ButtonContainer
+            className={`d-flex align-self-center justify-content-end`}
+          >
+            {/* <ButtonContainer className={`mb-2 pe-1`}></ButtonContainer> */}
+            <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
+              View
+            </ViewButton>
+          </ButtonContainer>
         </Col>
       </Row>
       {showLLMFeatures ? (
