@@ -1,9 +1,10 @@
-import { useFlags } from "components/featureFlags"
-import * as links from "components/links"
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
 import styled from "styled-components"
+import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Modal, Row, Stack } from "../bootstrap"
+import { useFlags } from "../featureFlags"
+import * as links from "../links"
 import {
   ButtonContainer,
   FeatureCalloutButton
@@ -77,7 +78,20 @@ export const ViewButton = styled.button`
   border-radius: 4px;
   border-width: 2px;
   height: fit-content;
+  margin-top: 16px;
   width: fit-content;
+
+  @media (max-width: 425px) {
+    margin-top: 32px;
+  }
+`
+
+export const ViewMessage = styled.div`
+  width: 300px;
+
+  @media (max-width: 425px) {
+    width: auto;
+  }
 `
 
 export const Summary = ({
@@ -92,6 +106,7 @@ export const Summary = ({
   const { showLLMFeatures } = useFlags()
 
   const { t } = useTranslation("common")
+  const isMobile = useMediaQuery("(max-width: 991px)")
 
   return (
     <SummaryContainer className={className}>
@@ -137,13 +152,19 @@ export const Summary = ({
         <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
-        <Divider className={`my-2`} xs="auto" />
+        {isMobile ? (
+          <div>
+            <hr className={`m-0 border-bottom border-2`} />
+          </div>
+        ) : (
+          <Divider className={`my-2`} xs="auto" />
+        )}
 
-        {/* Add breakpoints
-        Add empty sets
-        Connect to backend */}
+        {/* Add translations
+        Connect to backend
+        Add link/model */}
 
-        <Col className={`d-flex mt-3`} xs="auto">
+        <Col className={`d-flex my-3`} xs="auto">
           <Stack>
             <Row className={`d-flex flex-nowrap`}>
               <ButtonContainer className={`mb-2 pe-1`}>
@@ -157,19 +178,18 @@ export const Summary = ({
                 Hearing Video + Transcript
               </div>
             </Row>
-            <div>View the hearing for this bill, complete</div>
-            <div>with a generative AI transcript.</div>
+            <ViewMessage>
+              View the hearing for this bill, complete with a generative AI
+              transcript.
+            </ViewMessage>
           </Stack>
-        </Col>
-        <Col className={`d-flex`} xs="auto">
-          <ButtonContainer
-            className={`d-flex align-self-center justify-content-end`}
-          >
-            {/* <ButtonContainer className={`mb-2 pe-1`}></ButtonContainer> */}
-            <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
-              View
-            </ViewButton>
-          </ButtonContainer>
+          <Stack className={`ms-3`}>
+            <ButtonContainer className={`d-flex align-self-center`}>
+              <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
+                View
+              </ViewButton>
+            </ButtonContainer>
+          </Stack>
         </Col>
       </Row>
       {showLLMFeatures ? (
