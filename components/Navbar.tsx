@@ -185,33 +185,33 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { t } = useTranslation(["common", "auth"])
 
   return (
-    <Container fluid className={`bg-secondary d-flex py-2 sticky-top`}>
-      <NavbarLinkLogo />
-
-      <div className={`align-self-center flex-grow-1 invisible`}>
-        <button className={`bg-light col my-2 w-100`}>
-          <div className={`text-dark`}>{"Placeholder Search Widget"}</div>
-        </button>
+    <Container
+      fluid
+      className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}
+    >
+      <div className={`me-auto`}>
+        <NavbarLinkLogo />
       </div>
 
-      <div className={`align-self-center ms-3`}>
-        <Nav>
-          <NavbarLinkBills />
-          {flags().hearingsAndTranscriptions ? <NavbarLinkHearings /> : null}
-        </Nav>
+      <div className={`align-self-center px-2`}>
+        <NavbarLinkBills />
       </div>
 
-      <div className="align-self-center">
-        <Nav>
-          <NavbarLinkTestimony />
-        </Nav>
+      {flags().hearingsAndTranscriptions ? (
+        <div className={`align-self-center px-2`}>
+          <NavbarLinkHearings />
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <div className="align-self-center px-2">
+        <NavbarLinkTestimony />
       </div>
 
       {authenticated ? (
-        <div className="align-self-center">
-          <Nav>
-            <NavbarLinkNewsfeed />
-          </Nav>
+        <div className="align-self-center px-2">
+          <NavbarLinkNewsfeed />
         </div>
       ) : (
         <></>
@@ -232,7 +232,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center justify-content-end`}>
+      <div className={`align-self-center`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("learn")}
@@ -246,7 +246,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       </div>
 
       {authenticated ? (
-        <div className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center`}>
           <Dropdown>
             <Dropdown.Toggle className={`btn-secondary`}>
               <Avatar />
@@ -272,7 +272,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           </Dropdown>
         </div>
       ) : (
-        <div className={`align-self-center justify-content-end`}>
+        <div className={`align-self-center`}>
           <SignInWithButton />
         </div>
       )}
