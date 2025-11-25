@@ -6,13 +6,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { firestore } from "../firebase"
-
-type Paragraph = {
-  confidence: number
-  end: number
-  start: number
-  text: string
-}
+import { Paragraph, formatMilliseconds } from "./transcription"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -54,7 +48,7 @@ const TranscriptBottom = styled(Container)`
 `
 
 const TranscriptContainer = styled(Container)`
-  max-height: 460px;
+  max-height: 483px;
   overflow-y: auto;
   background-color: #ffffff;
 `
@@ -259,23 +253,6 @@ function TranscriptItem({
        set currentTime property of <video> element */
 
     setCurTimeVideo(valSeconds)
-  }
-
-  const formatMilliseconds = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000)
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
-
-    const formattedHours = String(hours).padStart(2, "0")
-    const formattedMinutes = String(minutes).padStart(2, "0")
-    const formattedSeconds = String(seconds).padStart(2, "0")
-
-    if (hours >= 1) {
-      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
-    } else {
-      return `${formattedMinutes}:${formattedSeconds}`
-    }
   }
 
   const isHighlighted = (index: number): boolean => {

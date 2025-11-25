@@ -8,6 +8,7 @@ import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { Back } from "../shared/CommonComponents"
+import { Paragraph } from "./transcription"
 
 const ButtonContainer = styled.div`
   width: fit-content;
@@ -46,7 +47,7 @@ export const HearingDetails = ({
   const { t } = useTranslation(["common", "hearing"])
   const [transcriptData, setTranscriptData] = useState(null)
 
-  const handleTranscriptData = (data: any) => {
+  const handleTranscriptData = (data: Paragraph[]) => {
     setTranscriptData(data)
   }
 
@@ -182,6 +183,8 @@ export const HearingDetails = ({
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}
+            hearingId={hearingId}
+            transcriptData={transcriptData}
           />
         </div>
       </Row>

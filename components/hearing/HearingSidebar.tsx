@@ -4,11 +4,13 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
+import Papa from "papaparse"
 import { Col, Image, Modal, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
+import { Paragraph, formatMilliseconds } from "./transcription"
 
 type Bill = {
   BillNumber: string
@@ -65,6 +67,53 @@ function MemberItem({
   )
 }
 
+function TranscriptDownload({
+  hearingId,
+  transcriptData
+}: {
+  hearingId: string | string[] | undefined
+  transcriptData: Paragraph[]
+}) {
+  const [downloadName, setDownloadName] = useState<string>("hearing.csv")
+  const [downloadURL, setDownloadURL] = useState<string>("")
+
+  const { t } = useTranslation(["common", "hearing"])
+
+  useEffect(() => {
+    if (!hearingId) {
+      setDownloadName("hearing.csv")
+    } else {
+      setDownloadName(`hearing-${hearingId}.csv`)
+    }
+  }, [hearingId])
+
+  useEffect(() => {
+    if (!transcriptData) return
+    const csv_objects = transcriptData.map(doc => ({
+      start: formatMilliseconds(doc.start),
+      text: doc.text
+    }))
+    const csv = Papa.unparse(csv_objects)
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    setDownloadURL(url)
+
+    return () => {
+      URL.revokeObjectURL(url)
+    }
+  }, [transcriptData])
+
+  return downloadURL !== "" && hearingId !== undefined ? (
+    <a
+      href={downloadURL}
+      download={downloadName}
+      className="text-blue-600 underline"
+    >
+      {t("download_transcript", { ns: "hearing" })}
+    </a>
+  ) : null
+}
+
 const BillsBody = styled.div`
   background-color: white;
   max-height: 672px;
@@ -116,12 +165,16 @@ export const HearingSidebar = ({
   billsInAgenda,
   committeeCode,
   generalCourtNumber,
-  hearingDate
+  hearingDate,
+  hearingId,
+  transcriptData
 }: {
   billsInAgenda: never[]
   committeeCode: string
   generalCourtNumber: string
   hearingDate: string
+  hearingId: undefined | string | string[]
+  transcriptData: null | Paragraph[]
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -193,16 +246,24 @@ export const HearingSidebar = ({
         {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
-      {dateCheck ? (
-        <SidebarBody className={`border-bottom fs-6 fw-bold px-3 py-3`}>
-          <SidebarSubbody className={`mb-1`}>
-            {t("recording_date", { ns: "hearing" })}
-          </SidebarSubbody>
-          <div className={`fw-normal`}>{formattedDate}</div>
-        </SidebarBody>
-      ) : (
-        <></>
-      )}
+      <SidebarBody className={`border-bottom fs-6 fw-bold px-3 py-3`}>
+        {dateCheck ? (
+          <>
+            <SidebarSubbody className={`mb-1`}>
+              {t("recording_date", { ns: "hearing" })}
+            </SidebarSubbody>
+            <div className={`fw-normal`}>{formattedDate}</div>
+          </>
+        ) : (
+          <></>
+        )}
+        <div className={`fw-normal`}>
+          <TranscriptDownload
+            hearingId={hearingId}
+            transcriptData={transcriptData}
+          />
+        </div>
+      </SidebarBody>
 
       {committeeCode && (
         <SidebarBody
