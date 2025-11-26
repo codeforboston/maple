@@ -26,6 +26,10 @@ export const Back = styled(links.Internal)`
   margin-right: auto;
 `
 
+export const ButtonContainer = styled.div`
+  width: fit-content;
+`
+
 export const DescrContainer = styled.div`
   font-size: 16px;
   font-weight: 500;
@@ -47,6 +51,11 @@ const EmailContainer = styled.a`
   letter-spacing: 0em;
   text-align: left;
   text-decoration: underline;
+`
+
+export const FeatureCalloutButton = styled.button`
+  border-radius: 16px;
+  font-size: 12px;
 `
 
 export const NameContainer = styled.div`

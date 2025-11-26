@@ -2,21 +2,16 @@ import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { HearingSidebar } from "./HearingSidebar"
-import { Transcriptions } from "./Transcriptions"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
-import { Back } from "../shared/CommonComponents"
-
-const ButtonContainer = styled.div`
-  width: fit-content;
-`
-
-export const FeatureCalloutButton = styled.button`
-  border-radius: 12px;
-  font-size: 12px;
-`
+import {
+  Back,
+  ButtonContainer,
+  FeatureCalloutButton
+} from "../shared/CommonComponents"
+import { HearingSidebar } from "./HearingSidebar"
+import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
   background-color: white;
