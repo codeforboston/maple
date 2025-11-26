@@ -115,7 +115,7 @@ export const Transcriptions = ({
   videoRef,
   videoTranscriptionId
 }: {
-  handleTranscriptData: (data: any) => void
+  handleTranscriptData: (data: Paragraph[]) => void
   setCurTimeVideo: any
   videoLoaded: boolean
   videoRef: any

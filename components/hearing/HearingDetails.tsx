@@ -45,7 +45,7 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const [transcriptData, setTranscriptData] = useState(null)
+  const [transcriptData, setTranscriptData] = useState<Paragraph[] | null>(null)
 
   const handleTranscriptData = (data: Paragraph[]) => {
     setTranscriptData(data)
