@@ -1,7 +1,6 @@
-import { difference, flatten, flattenDeep } from "lodash"
+import { difference, flatten } from "lodash"
 import { Hearing } from "../events/types"
 import { db, FieldValue, Timestamp } from "../firebase"
-import { parseApiDateTime } from "../malegislature"
 import { Member, MemberReference } from "../members/types"
 import BillProcessor, { BillUpdates } from "./BillProcessor"
 
@@ -33,7 +32,7 @@ class UpdateBillReferences extends BillProcessor {
   }
 
   override get billFields() {
-    return ["id"]
+    return ["id", "nextHearingId"]
   }
 
   getCityUpdates(): BillUpdates {
@@ -92,53 +91,72 @@ class UpdateBillReferences extends BillProcessor {
   async getEventUpdates(): Promise<BillUpdates> {
     const hearings = await db
       .collection(`/events`)
-      .where("startsAt", ">=", new Date())
       .where("type", "==", "hearing")
       .get()
       .then(this.load(Hearing))
     const updates: BillUpdates = new Map()
 
-    // Set the next hearing on every bill referenced by upcoming hearings.
-    const billEvents = flattenDeep<{
-      startsAt: Timestamp
-      billId: string
-      hearingId: string
-      court: number
-    }>(
-      hearings.map(hearing =>
-        hearing.content.HearingAgendas.map(agenda =>
-          agenda.DocumentsInAgenda.map(doc => ({
-            startsAt: parseApiDateTime(agenda.StartTime),
-            billId: doc.BillNumber,
-            court: doc.GeneralCourtNumber,
-            hearingId: hearing.id
-          }))
-        )
-      )
-    )
-    billEvents.forEach(event => {
-      const existing = updates.get(event.billId)
-      if (!existing || event.startsAt < (existing.nextHearingAt as Timestamp)) {
-        updates.set(event.billId, {
-          nextHearingAt: event.startsAt,
-          nextHearingId: event.hearingId
+    // Build mapping from billId -> hearingIds and compute earliest upcoming hearing
+    const hearingIdsByBill = new Map<string, Set<string>>()
+
+    const now = Timestamp.fromMillis(Date.now())
+
+    hearings.forEach(hearing => {
+      const hearingId = hearing.id
+      const startsAt = hearing.startsAt
+
+      hearing.content.HearingAgendas.forEach(agenda => {
+        agenda.DocumentsInAgenda.forEach(doc => {
+          const billId = doc.BillNumber
+
+          if (!hearingIdsByBill.has(billId))
+            hearingIdsByBill.set(billId, new Set())
+          hearingIdsByBill.get(billId)!.add(hearingId)
+
+          // Track next upcoming hearing per bill (startsAt in the future)
+          if (startsAt.toMillis() >= now.toMillis()) {
+            const existing = updates.get(billId)
+            if (
+              !existing ||
+              (existing.nextHearingAt as Timestamp | undefined)?.toMillis?.()! >
+                startsAt.toMillis()
+            ) {
+              updates.set(billId, {
+                nextHearingAt: startsAt,
+                nextHearingId: hearingId
+              })
+            }
+          }
         })
-      }
+      })
     })
 
-    // Remove the next hearing on any bills that reference upcoming hearings but
-    // aren't on the agenda.
-    const hearingIds = new Set(billEvents.map(e => e.hearingId)),
-      billsWithEvents = billEvents.map(e => e.billId),
-      existingBillsWithEvents = this.bills
-        .filter(b => hearingIds.has(b.nextHearingId))
-        .map(b => b.id as string),
-      billsWithRemovedEvents = difference(
-        existingBillsWithEvents,
-        billsWithEvents
-      )
+    hearingIdsByBill.forEach((ids, billId) => {
+      const existing = updates.get(billId) ?? {}
+      updates.set(billId, {
+        ...existing,
+        hearingIds: Array.from(ids)
+      })
+    })
+
+    // Remove the next hearing on any bills that previously had an upcoming hearing
+    // but are no longer on any upcoming hearing agendas.
+    const upcomingHearingBillIds = new Set<string>()
+    updates.forEach((u, id) => {
+      if ((u.nextHearingAt as Timestamp | undefined)?.toMillis?.())
+        upcomingHearingBillIds.add(id)
+    })
+    const existingBillsWithEvents = this.bills
+      .filter(b => !!b.nextHearingId)
+      .map(b => b.id as string)
+    const billsWithRemovedEvents = difference(
+      existingBillsWithEvents,
+      Array.from(upcomingHearingBillIds)
+    )
     billsWithRemovedEvents.forEach(id => {
+      const existing = updates.get(id) ?? {}
       updates.set(id, {
+        ...existing,
         nextHearingAt: FieldValue.delete(),
         nextHearingId: FieldValue.delete()
       })
