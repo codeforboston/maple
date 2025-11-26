@@ -1,6 +1,5 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
