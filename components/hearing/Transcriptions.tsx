@@ -5,14 +5,7 @@ import { useTranslation } from "next-i18next"
 import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { firestore } from "../firebase"
-
-type Paragraph = {
-  confidence: number
-  end: number
-  start: number
-  text: string
-}
+import { Paragraph, formatMilliseconds } from "./transcription"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -54,7 +47,7 @@ const TranscriptBottom = styled(Container)`
 `
 
 const TranscriptContainer = styled(Container)`
-  max-height: 460px;
+  max-height: 483px;
   overflow-y: auto;
   background-color: #ffffff;
 `
@@ -115,57 +108,30 @@ const SearchWrapper = styled.div`
 `
 
 export const Transcriptions = ({
-  handleTranscriptData,
+  transcriptData,
   setCurTimeVideo,
   videoLoaded,
   videoRef,
-  videoTranscriptionId
 }: {
-  handleTranscriptData: (data: any) => void
+  transcriptData: Paragraph[]
   setCurTimeVideo: any
   videoLoaded: boolean
   videoRef: any
-  videoTranscriptionId: string
 }) => {
   const { t } = useTranslation(["common", "hearing"])
   const [highlightedId, setHighlightedId] = useState(-1)
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
   const [searchTerm, setSearchTerm] = useState("")
-  const vid = videoTranscriptionId || "prevent FirebaseError"
-
-  const subscriptionRef = collection(
-    firestore,
-    `transcriptions/${vid}/paragraphs`
-  )
-
-  const fetchTranscriptionData = useCallback(async () => {
-    let docList: any[] = []
-
-    const q = query(subscriptionRef, orderBy("start"))
-    const querySnapshot = await getDocs(q)
-
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      docList.push(doc.data())
-    })
-
-    if (transcriptData.length === 0 && docList.length != 0) {
-      setTranscriptData(docList)
-      handleTranscriptData(docList)
-    }
-  }, [subscriptionRef, transcriptData])
+  const [filteredData, setFilteredData] = useState([])
 
   const handleClearInput = () => {
     setSearchTerm("")
   }
 
   useEffect(() => {
-    fetchTranscriptionData()
-  }, [fetchTranscriptionData])
-
-  const filteredData = transcriptData.filter(el =>
+    setFilteredData(transcriptData.filter(el =>
     el.text.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    ))
+  }, [transcriptData, searchTerm])
 
   useEffect(() => {
     const handleTimeUpdate = () => {
@@ -259,23 +225,6 @@ function TranscriptItem({
        set currentTime property of <video> element */
 
     setCurTimeVideo(valSeconds)
-  }
-
-  const formatMilliseconds = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000)
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
-
-    const formattedHours = String(hours).padStart(2, "0")
-    const formattedMinutes = String(minutes).padStart(2, "0")
-    const formattedSeconds = String(seconds).padStart(2, "0")
-
-    if (hours >= 1) {
-      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
-    } else {
-      return `${formattedMinutes}:${formattedSeconds}`
-    }
   }
 
   const isHighlighted = (index: number): boolean => {
