@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin"
 import { Number, Record, String } from "runtypes"
 import { Script } from "./types"
+import { Timestamp } from "../../functions/src/firebase"
 
 function getDevServiceAccount(path: string) {
   return require(path)
@@ -17,6 +18,19 @@ function initDevApp(devServiceAccountPath: string) {
   )
 }
 
+function convertTimestamps(obj: any): any {
+  if (obj instanceof Timestamp) {
+    return Timestamp.fromMillis(obj.toMillis())
+  } else if (Array.isArray(obj)) {
+    return obj.map(convertTimestamps)
+  } else if (obj && typeof obj === "object") {
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [k, convertTimestamps(v)])
+    )
+  }
+  return obj
+}
+
 const Args = Record({
   sourceProject: String,
   hearing: Number.optional()
@@ -30,6 +44,11 @@ export const script: Script = async ({ db, args }) => {
     )
     process.exit(1)
   }
+
+  // Clear emulator environment variables to avoid connecting to emulators when creating secondary instance
+  delete process.env.FIRESTORE_EMULATOR_HOST
+  delete process.env.FIREBASE_AUTH_EMULATOR_HOST
+  delete process.env.FIREBASE_STORAGE_EMULATOR_HOST
 
   // Initialize dev app and db (digital-testimony-dev)
   const devApp = initDevApp(sourceProject)
@@ -71,14 +90,29 @@ export const script: Script = async ({ db, args }) => {
 
       if (devTranscriptionData) {
         // Create transcription in target project instead of setting, in case it already exists, which will throw an error
+        const convertedData = convertTimestamps(devTranscriptionData)
         try {
+          console.log(`Creating transcription ${transcriptionId}...`)
           await db
             .collection("transcriptions")
             .doc(transcriptionId)
-            .create(devTranscriptionData)
+            .create(convertedData)
         } catch (err) {
           console.error(`Error creating transcription ${transcriptionId}:`, err)
           return
+        }
+
+        const subcollections = await devTranscriptionDoc.ref.listCollections()
+        for (const subcol of subcollections) {
+          const docs = await subcol.get()
+          for (const doc of docs.docs) {
+            await db
+              .collection("transcriptions")
+              .doc(transcriptionId)
+              .collection(subcol.id)
+              .doc(doc.id)
+              .set(doc.data())
+          }
         }
       } else {
         console.error(
@@ -86,11 +120,14 @@ export const script: Script = async ({ db, args }) => {
         )
       }
 
-      await db.collection("events").doc(hearingId).update({
-        videoURL: devData.videoURL,
-        videoFetchedAt: devData.videoFetchedAt,
-        videoTranscriptionId: devData.videoTranscriptionId
-      })
+      await db
+        .collection("events")
+        .doc(hearingId)
+        .update({
+          videoURL: devData.videoURL,
+          videoFetchedAt: Timestamp.fromMillis(devData.videoFetchedAt),
+          videoTranscriptionId: devData.videoTranscriptionId
+        })
       console.log(`Migration complete for hearing ${hearingId}.`)
     }
   } else {
@@ -100,6 +137,7 @@ export const script: Script = async ({ db, args }) => {
       .where("type", "==", "hearing")
       .get()
 
+    const limit = 100
     let migrated = 0,
       skipped = 0,
       failed = 0
@@ -107,9 +145,14 @@ export const script: Script = async ({ db, args }) => {
     const bulkWriter = db.bulkWriter()
 
     for (const devDoc of devHearingsSnapshot.docs) {
+      if (migrated >= limit) {
+        console.log(`Migration limit of ${limit} reached. Stopping.`)
+        break
+      }
       const devData = devDoc.data()
       if (!devData.videoTranscriptionId) {
         skipped++
+        console.log(`${devDoc.id} has no transcription to migrate.`)
         continue
       }
 
@@ -118,11 +161,13 @@ export const script: Script = async ({ db, args }) => {
 
       if (!targetData) {
         skipped++
+        console.log(`${devDoc.id} not found in target project.`)
         continue
       }
 
       // Only migrate if hearing in target environment does not have a transcription yet
       if (!targetData?.videoTranscriptionId) {
+        console.log(`Migrating ${devDoc.id}...`)
         const transcriptionId = devData.videoTranscriptionId
         const devTranscriptionDoc = await devDb
           .collection("transcriptions")
@@ -135,10 +180,12 @@ export const script: Script = async ({ db, args }) => {
 
         if (devTranscriptionData) {
           // Create transcription in target project instead of setting, in case it already exists, which will throw an error
+          const convertedData = convertTimestamps(devTranscriptionData)
           try {
+            console.log(`Creating transcription ${transcriptionId}...`)
             bulkWriter.create(
               db.collection("transcriptions").doc(transcriptionId),
-              devTranscriptionData
+              convertedData
             )
           } catch (err) {
             failed++
@@ -148,6 +195,19 @@ export const script: Script = async ({ db, args }) => {
             )
             continue
           }
+
+          const subcollections = await devTranscriptionDoc.ref.listCollections()
+          for (const subcol of subcollections) {
+            const docs = await subcol.get()
+            for (const doc of docs.docs) {
+              await db
+                .collection("transcriptions")
+                .doc(transcriptionId)
+                .collection(subcol.id)
+                .doc(doc.id)
+                .set(doc.data())
+            }
+          }
         } else {
           failed++
           console.error(
@@ -156,13 +216,15 @@ export const script: Script = async ({ db, args }) => {
           continue
         }
 
+        console.log(`Updating ${devDoc.id}...`)
         bulkWriter.update(db.collection("events").doc(devDoc.id), {
           videoURL: devData.videoURL,
-          videoFetchedAt: devData.videoFetchedAt,
+          videoFetchedAt: Timestamp.fromMillis(devData.videoFetchedAt),
           videoTranscriptionId: devData.videoTranscriptionId
         })
         migrated++
       } else {
+        console.log(`${devDoc.id} already has a transcription, skipping.`)
         skipped++
       }
     }
