@@ -111,7 +111,7 @@ export const Transcriptions = ({
   transcriptData,
   setCurTimeVideo,
   videoLoaded,
-  videoRef,
+  videoRef
 }: {
   transcriptData: Paragraph[]
   setCurTimeVideo: any
@@ -121,16 +121,18 @@ export const Transcriptions = ({
   const { t } = useTranslation(["common", "hearing"])
   const [highlightedId, setHighlightedId] = useState(-1)
   const [searchTerm, setSearchTerm] = useState("")
-  const [filteredData, setFilteredData] = useState([])
+  const [filteredData, setFilteredData] = useState<Paragraph[]>([])
 
   const handleClearInput = () => {
     setSearchTerm("")
   }
 
   useEffect(() => {
-    setFilteredData(transcriptData.filter(el =>
-    el.text.toLowerCase().includes(searchTerm.toLowerCase())
-    ))
+    setFilteredData(
+      transcriptData.filter(el =>
+        el.text.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
   }, [transcriptData, searchTerm])
 
   useEffect(() => {

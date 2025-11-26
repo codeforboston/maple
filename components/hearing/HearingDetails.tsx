@@ -83,7 +83,7 @@ export const HearingDetails = ({
   }, [eventId])
 
   useEffect(() => {
-    (async function() {
+    ;(async function () {
       if (!videoTranscriptionId || transcriptData.length !== 0) return
       const docList = await fetchTranscriptionData(videoTranscriptionId)
       setTranscriptData(docList)

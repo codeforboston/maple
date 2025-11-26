@@ -8,13 +8,15 @@ export type Paragraph = {
   text: string
 }
 
-export async function fetchTranscriptionData(videoTranscriptionId: string): Paragraph[] {
+export async function fetchTranscriptionData(
+  videoTranscriptionId: string
+): Promise<Paragraph[]> {
   const subscriptionRef = collection(
     firestore,
     `transcriptions/${videoTranscriptionId}/paragraphs`
   )
 
-  let docList: Paragraph[] = []
+  let docList: any[] = []
 
   const q = query(subscriptionRef, orderBy("start"))
   const querySnapshot = await getDocs(q)
@@ -43,5 +45,3 @@ export function formatMilliseconds(ms: number): string {
     return `${formattedMinutes}:${formattedSeconds}`
   }
 }
-
-
