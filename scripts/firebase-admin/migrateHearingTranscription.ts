@@ -20,7 +20,15 @@ function initDevApp(devServiceAccountPath: string) {
 
 function convertTimestamps(obj: any): any {
   if (obj instanceof Timestamp) {
-    return Timestamp.fromMillis(obj.toMillis())
+    return obj
+  } else if (
+    obj &&
+    typeof obj === "object" &&
+    typeof obj._seconds === "number" &&
+    typeof obj._nanoseconds === "number"
+  ) {
+    // Convert plain object to admin Timestamp
+    return Timestamp.fromMillis(obj._seconds * 1000 + obj._nanoseconds / 1e6)
   } else if (Array.isArray(obj)) {
     return obj.map(convertTimestamps)
   } else if (obj && typeof obj === "object") {
@@ -125,7 +133,7 @@ export const script: Script = async ({ db, args }) => {
         .doc(hearingId)
         .update({
           videoURL: devData.videoURL,
-          videoFetchedAt: Timestamp.fromMillis(devData.videoFetchedAt),
+          videoFetchedAt: convertTimestamps(devData.videoFetchedAt),
           videoTranscriptionId: devData.videoTranscriptionId
         })
       console.log(`Migration complete for hearing ${hearingId}.`)
@@ -219,7 +227,7 @@ export const script: Script = async ({ db, args }) => {
         console.log(`Updating ${devDoc.id}...`)
         bulkWriter.update(db.collection("events").doc(devDoc.id), {
           videoURL: devData.videoURL,
-          videoFetchedAt: Timestamp.fromMillis(devData.videoFetchedAt),
+          videoFetchedAt: convertTimestamps(devData.videoFetchedAt),
           videoTranscriptionId: devData.videoTranscriptionId
         })
         migrated++
