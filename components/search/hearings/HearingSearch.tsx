@@ -90,9 +90,9 @@ export const HearingSearch = () => {
                 }))
                 .sort((a, b) => Number(b.value) - Number(a.value))
           },
+          { attribute: "committeeName" },
           { attribute: "month" },
           { attribute: "year" },
-          { attribute: "committeeName" },
           {
             attribute: "chairNames",
             transformItems: items =>
