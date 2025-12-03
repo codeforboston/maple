@@ -11,6 +11,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
+import { Paragraph, fetchTranscriptionData } from "./transcription"     
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
@@ -39,11 +40,7 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const [transcriptData, setTranscriptData] = useState(null)
-
-  const handleTranscriptData = (data: any) => {
-    setTranscriptData(data)
-  }
+  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
 
   const [videoLoaded, setVideoLoaded] = useState(false)
   const handleVideoLoad = () => {
@@ -79,6 +76,14 @@ export const HearingDetails = ({
     setVideoTranscriptionId(docData?.videoTranscriptionId)
     setVideoURL(docData?.videoURL)
   }, [eventId])
+
+  useEffect(() => {
+    ;(async function () {
+      if (!videoTranscriptionId || transcriptData.length !== 0) return
+      const docList = await fetchTranscriptionData(videoTranscriptionId)
+      setTranscriptData(docList)
+    })()
+  }, [videoTranscriptionId])
 
   useEffect(() => {
     hearingData()
@@ -163,11 +168,10 @@ export const HearingDetails = ({
           )}
 
           <Transcriptions
-            handleTranscriptData={handleTranscriptData}
+            transcriptData={transcriptData}
             setCurTimeVideo={setCurTimeVideo}
             videoLoaded={videoLoaded}
             videoRef={videoRef}
-            videoTranscriptionId={videoTranscriptionId}
           />
         </Col>
 
@@ -177,6 +181,8 @@ export const HearingDetails = ({
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}
+            hearingId={hearingId}
+            transcriptData={transcriptData}
           />
         </div>
       </Row>
