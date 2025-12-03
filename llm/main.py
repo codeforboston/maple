@@ -1,7 +1,11 @@
-from llm_functions import get_summary_api_function, get_tags_api_function
-import json
+"""
+The module contains all of the Python based Firebase functions
+
+* add_summary_on_document_created - when new bills are written to the database, this function will trigger via on_document_created
+"""
+
 from firebase_admin import initialize_app
-from firebase_functions import https_fn, options
+from firebase_functions import options
 import os
 from firebase_functions.firestore_fn import (
     on_document_created,
