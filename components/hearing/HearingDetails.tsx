@@ -11,11 +11,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-<<<<<<< HEAD
 import { Paragraph, fetchTranscriptionData } from "./transcription"
-=======
-import { Paragraph, fetchTranscriptionData } from "./transcription"     
->>>>>>> dbf2530abf3c03089003118ff1a2fe5142592b23
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
