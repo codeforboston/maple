@@ -1,10 +1,12 @@
 import { useTranslation } from "next-i18next"
 import { useState } from "react"
+import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
-import { Button, Col, Container, Modal, Row, Stack } from "../bootstrap"
+import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
 import { useFlags } from "../featureFlags"
 import * as links from "../links"
+import { Internal } from "../links"
 import {
   ButtonContainer,
   FeatureCalloutButton
@@ -188,11 +190,7 @@ export const Summary = ({
               </Stack>
               <Stack className={`ms-3`}>
                 <ButtonContainer className={`d-flex align-self-center`}>
-                  <ViewButton
-                    className={`btn btn-outline-secondary fw-bold p-1`}
-                  >
-                    {t("view", { ns: "common" })}
-                  </ViewButton>
+                  <ViewChild bill={bill} />
                 </ButtonContainer>
               </Stack>
             </Col>
@@ -222,5 +220,65 @@ export const Summary = ({
         <></>
       )}
     </SummaryContainer>
+  )
+}
+
+const ViewChild = ({ bill }: BillProps) => {
+  const { t } = useTranslation("common")
+  const hearingIds = bill.hearingIds
+
+  const [hearingsModal, setHearingsModal] = useState<"show" | null>(null)
+
+  const close = () => setHearingsModal(null)
+
+  return (
+    <>
+      {hearingIds?.length === 1 ? (
+        <Internal href={`/hearing/${hearingIds}`} className="">
+          <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
+            {t("view", { ns: "common" })}
+          </ViewButton>
+        </Internal>
+      ) : (
+        <ViewButton
+          className={`btn btn-outline-secondary fw-bold p-1`}
+          onClick={() => setHearingsModal("show")}
+        >
+          {t("view", { ns: "common" })}
+        </ViewButton>
+      )}
+      <HearingsModal
+        onHide={close}
+        onHearingsModalClose={() => setHearingsModal(null)}
+        show={hearingsModal === "show"}
+      />
+    </>
+  )
+}
+
+type Props = Pick<ModalProps, "show" | "onHide"> & {
+  onHearingsModalClose: () => void
+}
+
+function HearingsModal({ onHide, onHearingsModalClose, show }: Props) {
+  const { t } = useTranslation(["common"])
+
+  return (
+    <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
+      <Modal.Header className={`px-3 py-1`}>
+        <Modal.Title id="votes-modal">
+          {/* {BillNumber} {t("votes", { ns: "hearing" })} */}
+          Test
+        </Modal.Title>
+        <Image
+          src="/x_cancel.png"
+          alt={t("navigation.closeNavMenu", { ns: "editProfile" })}
+          width="25"
+          height="25"
+          className="ms-2"
+          onClick={onHearingsModalClose}
+        />
+      </Modal.Header>
+    </Modal>
   )
 }
