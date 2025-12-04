@@ -166,9 +166,7 @@ export const Summary = ({
               <Divider className={`my-2`} xs="auto" />
             )}
 
-            {/* Add translations
-        Connect to backend
-        Add link/model */}
+            {/* Add link/model   */}
 
             <Col className={`d-flex my-3`} xs="auto">
               <Stack>
@@ -177,16 +175,15 @@ export const Summary = ({
                     <FeatureCalloutButton
                       className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-0`}
                     >
-                      &nbsp; {t("new_feature", { ns: "common" })} &nbsp;
+                      &nbsp; {t("new_feature")} &nbsp;
                     </FeatureCalloutButton>
                   </ButtonContainer>
                   <div className={`d-flex justify-content-start ps-0`}>
-                    Hearing Video + Transcript
+                    {t("bill.hearing_video_and_transcript", { ns: "common" })}
                   </div>
                 </Row>
                 <ViewMessage>
-                  View the hearing for this bill, complete with a generative AI
-                  transcript.
+                  {t("view_the_hearing", { ns: "common" })}
                 </ViewMessage>
               </Stack>
               <Stack className={`ms-3`}>
@@ -194,7 +191,7 @@ export const Summary = ({
                   <ViewButton
                     className={`btn btn-outline-secondary fw-bold p-1`}
                   >
-                    View
+                    {t("view", { ns: "common" })}
                   </ViewButton>
                 </ButtonContainer>
               </Stack>

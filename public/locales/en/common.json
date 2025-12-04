@@ -17,6 +17,7 @@
     "download_pdf": "Download PDF",
     "example_name": "Example Name",
     "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
+    "hearing_video_and_transcript" : "Hearing Video + Transcript", 
     "history": "History",
     "icon": {
       "commerce": "Commerce",
@@ -65,9 +66,13 @@
     "followed": "Followed"
   },
   "calendar": "Our Calendar",
+  "copiedToClipboard": "Copied to Clipboard!",
   "hideAns": "Hide Answer",
   "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
+  "edit": "Edit",
+  "english": "English",
   "joinTraining": "and join an upcoming training session!",
+  "languages": "Languages",
   "leadSponsor": "Lead Sponsor",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
@@ -134,6 +139,7 @@
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
   "primarySponsor": "Primary Sponsor",
+  "privacyPolicy": "Privacy Policy",
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "showAns": "Show Answer",
   "socials": {
@@ -144,11 +150,13 @@
     "bluesky": "BlueSky",
     "mastodon": "Mastodon"
   },
+  "spanish": "Spanish",
   "sponsor": "Sponsor",
   "sponsors": "Sponsors",
   "table": {
     "page": "Page {{currentPage}}"
   },
+  "termsAndConditions": "Terms and Conditions",
   "titles": {
     "admin": "Admin",
     "bill": "Bill",
@@ -162,12 +170,7 @@
     "why_use_maple": "Why Use Maple?"
   },
   "user_updates": "User Updates",
-  "copiedToClipboard": "Copied to Clipboard!",
-  "privacyPolicy": "Privacy Policy",
-  "termsAndConditions": "Terms and Conditions",
-  "languages": "Languages",
-  "english": "English",
-  "spanish": "Spanish",
-  "edit": "Edit",
+  "view": "View",
+  "view_the_hearing" : "View the hearing for this bill, complete with a generative AI transcript.",
   "yes": "Yes"
 }
