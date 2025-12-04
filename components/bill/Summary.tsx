@@ -16,22 +16,6 @@ import { BillProps } from "./types"
 import { currentGeneralCourt } from "functions/src/shared"
 import { BillTopic } from "functions/src/bills/types"
 
-const SummaryContainer = styled(Container)`
-  background-color: white;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  background-image: url("/quote-left.svg");
-  background-repeat: no-repeat;
-  background-size: 4rem;
-  background-position: 0.5rem 0.5rem;
-`
-
-const TitleFormat = styled(Col)`
-  margin-top: 1rem;
-  font-style: italic;
-  font-size: 1.25rem;
-`
-
 const Divider = styled(Col)`
   width: 2px;
   padding: 0;
@@ -39,21 +23,8 @@ const Divider = styled(Col)`
   align-self: stretch;
 `
 
-const StyledButton = styled(Button)`
-  :focus {
-    box-shadow: none;
-  }
-  padding: 0;
-  margin: 0;
-`
-
 const FormattedBillDetails = styled(Col)`
   white-space: pre-wrap;
-`
-
-const SmartTagButton = styled.button`
-  border-radius: 12px;
-  font-size: 12px;
 `
 
 const SmartTag = ({ topic }: { topic: BillTopic }) => {
@@ -73,6 +44,35 @@ const SmartTag = ({ topic }: { topic: BillTopic }) => {
     </links.Internal>
   )
 }
+
+const SmartTagButton = styled.button`
+  border-radius: 12px;
+  font-size: 12px;
+`
+
+const StyledButton = styled(Button)`
+  :focus {
+    box-shadow: none;
+  }
+  padding: 0;
+  margin: 0;
+`
+
+const SummaryContainer = styled(Container)`
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-image: url("/quote-left.svg");
+  background-repeat: no-repeat;
+  background-size: 4rem;
+  background-position: 0.5rem 0.5rem;
+`
+
+const TitleFormat = styled(Col)`
+  margin-top: 1rem;
+  font-style: italic;
+  font-size: 1.25rem;
+`
 
 export const ViewButton = styled.button`
   border-radius: 4px;
@@ -102,11 +102,14 @@ export const Summary = ({
   const handleShowBillDetails = () => setShowBillDetails(true)
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
+  const hearingIds = bill?.hearingIds
 
   const { showLLMFeatures } = useFlags()
 
   const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 991px)")
+
+  console.log("hearings: ", hearingIds)
 
   return (
     <SummaryContainer className={className}>
@@ -152,45 +155,54 @@ export const Summary = ({
         <Col className={`d-flex`} xs="auto">
           <TestimonyCounts bill={bill} />
         </Col>
-        {isMobile ? (
-          <div>
-            <hr className={`m-0 border-bottom border-2`} />
-          </div>
-        ) : (
-          <Divider className={`my-2`} xs="auto" />
-        )}
 
-        {/* Add translations
+        {hearingIds ? (
+          <>
+            {isMobile ? (
+              <div>
+                <hr className={`m-0 border-bottom border-2`} />
+              </div>
+            ) : (
+              <Divider className={`my-2`} xs="auto" />
+            )}
+
+            {/* Add translations
         Connect to backend
         Add link/model */}
 
-        <Col className={`d-flex my-3`} xs="auto">
-          <Stack>
-            <Row className={`d-flex flex-nowrap`}>
-              <ButtonContainer className={`mb-2 pe-1`}>
-                <FeatureCalloutButton
-                  className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-0`}
-                >
-                  &nbsp; {t("new_feature", { ns: "common" })} &nbsp;
-                </FeatureCalloutButton>
-              </ButtonContainer>
-              <div className={`d-flex justify-content-start ps-0`}>
-                Hearing Video + Transcript
-              </div>
-            </Row>
-            <ViewMessage>
-              View the hearing for this bill, complete with a generative AI
-              transcript.
-            </ViewMessage>
-          </Stack>
-          <Stack className={`ms-3`}>
-            <ButtonContainer className={`d-flex align-self-center`}>
-              <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
-                View
-              </ViewButton>
-            </ButtonContainer>
-          </Stack>
-        </Col>
+            <Col className={`d-flex my-3`} xs="auto">
+              <Stack>
+                <Row className={`d-flex flex-nowrap`}>
+                  <ButtonContainer className={`mb-2 pe-1`}>
+                    <FeatureCalloutButton
+                      className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-0`}
+                    >
+                      &nbsp; {t("new_feature", { ns: "common" })} &nbsp;
+                    </FeatureCalloutButton>
+                  </ButtonContainer>
+                  <div className={`d-flex justify-content-start ps-0`}>
+                    Hearing Video + Transcript
+                  </div>
+                </Row>
+                <ViewMessage>
+                  View the hearing for this bill, complete with a generative AI
+                  transcript.
+                </ViewMessage>
+              </Stack>
+              <Stack className={`ms-3`}>
+                <ButtonContainer className={`d-flex align-self-center`}>
+                  <ViewButton
+                    className={`btn btn-outline-secondary fw-bold p-1`}
+                  >
+                    View
+                  </ViewButton>
+                </ButtonContainer>
+              </Stack>
+            </Col>
+          </>
+        ) : (
+          <></>
+        )}
       </Row>
       {showLLMFeatures ? (
         <>

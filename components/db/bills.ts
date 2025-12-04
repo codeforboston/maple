@@ -59,6 +59,7 @@ export type Bill = {
   city?: string
   topics?: BillTopic[]
   summary?: string
+  hearingIds?: string[]
 }
 
 export function useBill(court: number, id: string) {
