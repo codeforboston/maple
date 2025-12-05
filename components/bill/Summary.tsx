@@ -15,8 +15,8 @@ import { SmartDisclaimer } from "./SmartDisclaimer"
 import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
-import { currentGeneralCourt } from "functions/src/shared"
 import { BillTopic } from "functions/src/bills/types"
+import { currentGeneralCourt } from "functions/src/shared"
 
 const Divider = styled(Col)`
   width: 2px;
@@ -264,11 +264,15 @@ function HearingsModal({ onHide, onHearingsModalClose, show }: Props) {
   const { t } = useTranslation(["common"])
 
   return (
-    <Modal show={show} onHide={onHide} aria-labelledby="votes-modal" centered>
+    <Modal
+      show={show}
+      onHide={onHide}
+      aria-labelledby="hearings-modal"
+      centered
+    >
       <Modal.Header className={`px-3 py-1`}>
-        <Modal.Title id="votes-modal">
-          {/* {BillNumber} {t("votes", { ns: "hearing" })} */}
-          Test
+        <Modal.Title id="hearings-modal">
+          <b>Select a Hearing</b>
         </Modal.Title>
         <Image
           src="/x_cancel.png"
