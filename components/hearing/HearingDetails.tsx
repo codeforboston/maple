@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
+import { committeeURL, External } from "../links"
 import {
   Back,
   ButtonContainer,
@@ -113,7 +114,15 @@ export const HearingDetails = ({
         <></>
       )}
 
-      {committeeName ? <h1>{committeeName}</h1> : <></>}
+      {committeeName ? (
+        <h1>
+          <External href={committeeURL(committeeCode)}>
+            {committeeName}
+          </External>
+        </h1>
+      ) : (
+        <></>
+      )}
 
       <h5 className={`mb-3`}>{description}</h5>
 

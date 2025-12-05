@@ -1,12 +1,14 @@
+import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
 import { useFlags } from "../featureFlags"
+import { firestore } from "../firebase"
 import * as links from "../links"
-import { Internal } from "../links"
+import { committeeURL, Internal, External } from "../links"
 import {
   ButtonContainer,
   FeatureCalloutButton
@@ -111,8 +113,6 @@ export const Summary = ({
   const { t } = useTranslation("common")
   const isMobile = useMediaQuery("(max-width: 991px)")
 
-  console.log("hearings: ", hearingIds)
-
   return (
     <SummaryContainer className={className}>
       <Row>
@@ -167,8 +167,6 @@ export const Summary = ({
             ) : (
               <Divider className={`my-2`} xs="auto" />
             )}
-
-            {/* Add link/model   */}
 
             <Col className={`d-flex my-3`} xs="auto">
               <Stack>
@@ -248,6 +246,7 @@ const ViewChild = ({ bill }: BillProps) => {
         </ViewButton>
       )}
       <HearingsModal
+        hearingIds={hearingIds}
         onHide={close}
         onHearingsModalClose={() => setHearingsModal(null)}
         show={hearingsModal === "show"}
@@ -257,10 +256,16 @@ const ViewChild = ({ bill }: BillProps) => {
 }
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
+  hearingIds: string[] | undefined
   onHearingsModalClose: () => void
 }
 
-function HearingsModal({ onHide, onHearingsModalClose, show }: Props) {
+function HearingsModal({
+  hearingIds,
+  onHide,
+  onHearingsModalClose,
+  show
+}: Props) {
   const { t } = useTranslation(["common"])
 
   return (
@@ -283,6 +288,83 @@ function HearingsModal({ onHide, onHearingsModalClose, show }: Props) {
           onClick={onHearingsModalClose}
         />
       </Modal.Header>
+      <Modal.Body className={`bg-white p-3`}>
+        <hr className={`m-0 border-bottom border-2`} />
+        <p className={`fw-bold fs-6`}>
+          This bill was featured in multiple hearings
+        </p>
+        {hearingIds?.map((element: any, index: number) => (
+          <Hearing key={index} hearingId={element} />
+        ))}
+      </Modal.Body>
     </Modal>
+  )
+}
+
+const HearingRow = styled.div`
+  &:nth-child(odd) {
+    background-color: #eae7e7;
+  &:nth-child(even) {
+    background-color: white;
+  }
+`
+
+function Hearing({ hearingId }: { hearingId: string }) {
+  const { t } = useTranslation("common")
+  const eventId = `hearing-${hearingId}`
+
+  const [committeeCode, setCommitteeCode] = useState("")
+  const [committeeName, setCommitteeName] = useState("")
+  const [eventDate, setEventDate] = useState("")
+  const [generalCourtNumber, setGeneralCourtNumber] = useState("")
+
+  const hearingData = useCallback(async () => {
+    const hearing = await getDoc(doc(firestore, `events/${eventId}`))
+    const docData = hearing.data()
+
+    setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
+    setCommitteeName(docData?.content.Name)
+    setEventDate(docData?.content.EventDate)
+    setGeneralCourtNumber(docData?.content.HearingHost.GeneralCourtNumber)
+  }, [eventId])
+
+  useEffect(() => {
+    hearingId ? hearingData() : null
+  }, [])
+
+  const [branch, setBranch] = useState("")
+
+  const committeeData = useCallback(async () => {
+    const committee = await getDoc(
+      doc(
+        firestore,
+        `generalCourts/${generalCourtNumber}/committees/${committeeCode}`
+      )
+    )
+    const docData = committee.data()
+    setBranch(docData?.content?.Branch)
+  }, [committeeCode, generalCourtNumber])
+
+  useEffect(() => {
+    committeeCode && generalCourtNumber ? committeeData() : null
+  }, [committeeCode, committeeData, generalCourtNumber])
+
+  const date = new Date(eventDate)
+  const month = (date.getMonth() + 1).toString().padStart(2, "0")
+  const day = date.getDate().toString().padStart(2, "0")
+  const year = date.getFullYear()
+
+  return (
+    <HearingRow className={`d-flex justify-content-between w-auto`}>
+      <Col xs={3} className={`mx-2`}>
+        {`${month}-${day}-${year}`}
+      </Col>
+      <Col xs={7} className={`me-2`}>
+        <External href={committeeURL(committeeCode)}>{committeeName}</External>
+      </Col>
+      <Col xs={2} className={``}>
+        {branch}
+      </Col>
+    </HearingRow>
   )
 }
