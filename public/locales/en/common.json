@@ -43,11 +43,13 @@
       "transportation_and_public_works": "Transportation and Public Works"
     },
     "lobbying_parties": "Lobbying Parties",
+    "multiple_hearings": "This bill was featured in multiple hearings",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
     "position": "Position",
     "pro": "Pro",
     "neutral": "Neutral",
     "read_more": "Read More",
+    "select_hearing": "Select a Hearing",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org",
     "smart_disclaimer2": "This transcription was made with generative AI.",
     "smart_disclaimer3": "<0>how MAPLE uses AI</0>",

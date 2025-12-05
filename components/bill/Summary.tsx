@@ -276,7 +276,7 @@ function HearingsModal({
     >
       <Modal.Header className={`px-3 py-1`}>
         <Modal.Title id="hearings-modal">
-          <b>Select a Hearing</b>
+          <b>{t("bill.select_hearing", { ns: "common" })}</b>
         </Modal.Title>
         <Image
           src="/x_cancel.png"
@@ -290,7 +290,7 @@ function HearingsModal({
       <Modal.Body className={`bg-white p-3`}>
         <hr className={`m-0 border-bottom border-2`} />
         <p className={`fw-bold fs-6`}>
-          This bill was featured in multiple hearings
+          {t("bill.multiple_hearings", { ns: "common" })}
         </p>
         {hearingIds?.map((element: any, index: number) => (
           <Hearing key={index} hearingId={element} />
