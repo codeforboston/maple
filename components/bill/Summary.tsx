@@ -8,7 +8,6 @@ import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
 import { useFlags } from "../featureFlags"
 import { firestore } from "../firebase"
 import * as links from "../links"
-import { committeeURL, Internal, External } from "../links"
 import {
   ButtonContainer,
   FeatureCalloutButton
@@ -232,11 +231,11 @@ const ViewChild = ({ bill }: BillProps) => {
   return (
     <>
       {hearingIds?.length === 1 ? (
-        <Internal href={`/hearing/${hearingIds}`} className="">
+        <links.Internal href={`/hearing/${hearingIds}`} className="">
           <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
             {t("view", { ns: "common" })}
           </ViewButton>
-        </Internal>
+        </links.Internal>
       ) : (
         <ViewButton
           className={`btn btn-outline-secondary fw-bold p-1`}
@@ -310,7 +309,6 @@ const HearingRow = styled.div`
 `
 
 function Hearing({ hearingId }: { hearingId: string }) {
-  const { t } = useTranslation("common")
   const eventId = `hearing-${hearingId}`
 
   const [committeeCode, setCommitteeCode] = useState("")
@@ -360,7 +358,9 @@ function Hearing({ hearingId }: { hearingId: string }) {
         {`${month}-${day}-${year}`}
       </Col>
       <Col xs={7} className={`me-2`}>
-        <External href={committeeURL(committeeCode)}>{committeeName}</External>
+        <links.Internal href={`/hearing/${hearingId}`}>
+          {committeeName}
+        </links.Internal>
       </Col>
       <Col xs={2} className={``}>
         {branch}
