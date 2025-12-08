@@ -44,7 +44,7 @@ const defaults: Record<Env, FeatureFlags> = {
     followOrg: true,
     lobbyingTable: false,
     showLLMFeatures: true,
-    hearingsAndTranscriptions: false
+    hearingsAndTranscriptions: true
   },
   test: {
     testimonyDiffing: false,
