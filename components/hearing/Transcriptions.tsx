@@ -147,9 +147,9 @@ export const Transcriptions = ({
       const currentIndex = transcriptData.findIndex(
         element => videoRef.current.currentTime <= element.end / 1000
       )
-      if (currentIndex !== -1 && containerRef.current && currentIndex !== highlightedId) {
+      if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
-        if (!searchTerm) {
+        if (currentIndex !== -1 && !searchTerm) {
           const container = containerRef.current
           const elem = transcriptRefs.current.get(currentIndex)
           const elemTop = elem.offsetTop - container.offsetTop
