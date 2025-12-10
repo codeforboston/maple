@@ -100,7 +100,11 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
               <Badge bg="success" pill>
                 {t("video_available", { ns: "search" })}
               </Badge>
-            ) : null}
+            ) : (
+              <Badge bg="info" text="dark" pill>
+                {t("video_unavailable", { ns: "search" })}
+              </Badge>
+            )}
           </div>
 
           <div>
