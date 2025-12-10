@@ -1,7 +1,13 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
-import React, { useCallback, useEffect, useState } from "react"
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { Paragraph, formatMilliseconds } from "./transcription"
@@ -118,7 +124,9 @@ export const Transcriptions = ({
   videoRef: any
 }) => {
   const { t } = useTranslation(["common", "hearing"])
+  const containerRef = useRef<any | null>(null)
   const [highlightedId, setHighlightedId] = useState(-1)
+  const transcriptRefs = useRef(new Map())
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredData, setFilteredData] = useState<Paragraph[]>([])
 
@@ -139,7 +147,29 @@ export const Transcriptions = ({
       const currentIndex = transcriptData.findIndex(
         element => videoRef.current.currentTime <= element.end / 1000
       )
-      setHighlightedId(currentIndex)
+      if (containerRef.current && currentIndex !== highlightedId) {
+        setHighlightedId(currentIndex)
+        if (currentIndex !== -1 && !searchTerm) {
+          const container = containerRef.current
+          const elem = transcriptRefs.current.get(currentIndex)
+          const elemTop = elem.offsetTop - container.offsetTop
+          const elemBottom = elemTop + elem.offsetHeight
+          const viewTop = container.scrollTop
+          const viewBottom = viewTop + container.clientHeight
+
+          if (elemTop < viewTop) {
+            container.scrollTo({
+              top: elemTop,
+              behavior: "smooth"
+            })
+          } else if (elemBottom > viewBottom) {
+            container.scrollTo({
+              top: elemBottom - container.clientHeight,
+              behavior: "smooth"
+            })
+          }
+        }
+      }
     }
 
     const videoElement = videoRef.current
@@ -152,7 +182,7 @@ export const Transcriptions = ({
         ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
         : null
     }
-  }, [transcriptData, videoLoaded, videoRef])
+  }, [highlightedId, transcriptData, videoLoaded, videoRef, searchTerm])
 
   return (
     <>
@@ -173,13 +203,20 @@ export const Transcriptions = ({
       </SearchWrapper>
       {transcriptData.length > 0 ? (
         <>
-          <TranscriptContainer className={``}>
+          <TranscriptContainer ref={containerRef}>
             {filteredData.map((element: Paragraph, index: number) => (
               <TranscriptItem
                 key={index}
                 element={element}
                 highlightedId={highlightedId}
                 index={index}
+                ref={elem => {
+                  if (elem) {
+                    transcriptRefs.current.set(index, elem)
+                  } else {
+                    transcriptRefs.current.delete(index)
+                  }
+                }}
                 setCurTimeVideo={setCurTimeVideo}
                 searchTerm={searchTerm}
               />
@@ -205,19 +242,23 @@ export const Transcriptions = ({
   )
 }
 
-function TranscriptItem({
-  element,
-  highlightedId,
-  index,
-  setCurTimeVideo,
-  searchTerm
-}: {
-  element: Paragraph
-  highlightedId: number
-  index: number
-  setCurTimeVideo: any
-  searchTerm: string
-}) {
+// forwardRef must be updated for React 19 migration
+const TranscriptItem = forwardRef(function TranscriptItem(
+  {
+    element,
+    highlightedId,
+    index,
+    setCurTimeVideo,
+    searchTerm
+  }: {
+    element: Paragraph
+    highlightedId: number
+    index: number
+    setCurTimeVideo: any
+    searchTerm: string
+  },
+  ref: any
+) {
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
     /* data from backend is in milliseconds
@@ -245,6 +286,7 @@ function TranscriptItem({
           ? `bg-info border-5 border-secondary border-start`
           : `border-5`
       }
+      ref={ref}
     >
       <TimestampCol>
         <Row className={`d-inline`}>
@@ -265,4 +307,4 @@ function TranscriptItem({
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
     </TranscriptRow>
   )
-}
+})
