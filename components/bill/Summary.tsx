@@ -2,7 +2,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
-import styled from "styled-components"
+import styled, { ThemeConsumer } from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Button, Col, Container, Image, Modal, Row, Stack } from "../bootstrap"
 import { useFlags } from "../featureFlags"
@@ -222,16 +222,30 @@ export const Summary = ({
 
 const ViewChild = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
+
   const hearingIds = bill.hearingIds
 
+  const [hearingNums, setHearingNums] = useState(bill.hearingIds)
   const [hearingsModal, setHearingsModal] = useState<"show" | null>(null)
 
   const close = () => setHearingsModal(null)
 
+  const substringToRemove = "hearing-"
+  const removeSubstring = () => {
+    const editedHearingIds = hearingIds?.map(str =>
+      str.replace(new RegExp(substringToRemove, "g"), "")
+    )
+    setHearingNums(editedHearingIds)
+  }
+
+  useEffect(() => {
+    hearingIds ? removeSubstring() : null
+  }, [])
+
   return (
     <>
       {hearingIds?.length === 1 ? (
-        <links.Internal href={`/hearing/${hearingIds}`} className="">
+        <links.Internal href={`/hearing/${hearingNums}`} className="">
           <ViewButton className={`btn btn-outline-secondary fw-bold p-1`}>
             {t("view", { ns: "common" })}
           </ViewButton>
@@ -245,7 +259,7 @@ const ViewChild = ({ bill }: BillProps) => {
         </ViewButton>
       )}
       <HearingsModal
-        hearingIds={hearingIds}
+        hearingNums={hearingNums}
         onHide={close}
         onHearingsModalClose={() => setHearingsModal(null)}
         show={hearingsModal === "show"}
@@ -255,12 +269,12 @@ const ViewChild = ({ bill }: BillProps) => {
 }
 
 type Props = Pick<ModalProps, "show" | "onHide"> & {
-  hearingIds: string[] | undefined
+  hearingNums: string[] | undefined
   onHearingsModalClose: () => void
 }
 
 function HearingsModal({
-  hearingIds,
+  hearingNums,
   onHide,
   onHearingsModalClose,
   show
@@ -292,7 +306,7 @@ function HearingsModal({
         <p className={`fw-bold fs-6`}>
           {t("bill.multiple_hearings", { ns: "common" })}
         </p>
-        {hearingIds?.map((element: any, index: number) => (
+        {hearingNums?.map((element: any, index: number) => (
           <Hearing key={index} hearingId={element} />
         ))}
       </Modal.Body>
@@ -315,7 +329,7 @@ function Hearing({ hearingId }: { hearingId: string }) {
   const [generalCourtNumber, setGeneralCourtNumber] = useState("")
 
   const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${hearingId}`))
+    const hearing = await getDoc(doc(firestore, `events/hearing-${hearingId}`))
     const docData = hearing.data()
 
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
