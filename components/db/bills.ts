@@ -51,7 +51,6 @@ export type Bill = {
   opposeCount: number
   neutralCount: number
   nextHearingAt?: Timestamp
-  hearingIds?: string[]
   latestTestimonyAt?: Timestamp
   latestTestimonyId?: string
   fetchedAt: Timestamp
