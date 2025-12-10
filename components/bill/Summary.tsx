@@ -309,22 +309,20 @@ const HearingRow = styled.div`
 `
 
 function Hearing({ hearingId }: { hearingId: string }) {
-  const eventId = `hearing-${hearingId}`
-
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [eventDate, setEventDate] = useState("")
   const [generalCourtNumber, setGeneralCourtNumber] = useState("")
 
   const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${eventId}`))
+    const hearing = await getDoc(doc(firestore, `events/${hearingId}`))
     const docData = hearing.data()
 
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setEventDate(docData?.content.EventDate)
     setGeneralCourtNumber(docData?.content.HearingHost.GeneralCourtNumber)
-  }, [eventId])
+  }, [hearingId])
 
   useEffect(() => {
     hearingId ? hearingData() : null
