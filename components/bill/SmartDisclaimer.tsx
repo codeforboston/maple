@@ -3,7 +3,6 @@ import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
-import { NavLink } from "components/Navlink"
 import * as links from "../links"
 
 const SmartTagDesc = styled(Row)`
