@@ -64,11 +64,11 @@ export const HearingLocation = Record({
 export type HearingContent = Static<typeof HearingContent>
 export const HearingContent = BaseEventContent.extend({
   Description: String,
-  Name: String,
+  Name: Nullable(String),
   Status: String,
   HearingHost: Record({
-    CommitteeCode: String,
-    GeneralCourtNumber: Number
+    CommitteeCode: Nullable(String),
+    GeneralCourtNumber: Nullable(Number)
   }),
   Location: HearingLocation,
   HearingAgendas: Array(
