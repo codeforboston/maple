@@ -21,6 +21,10 @@ export {
   upgradeHearingSearchIndex
 } from "./hearings/search"
 export {
+  backfillHearingTranscriptionHttp,
+  backfillHearingTranscription
+} from "./hearings"
+export {
   createMemberSearchIndex,
   fetchMemberBatch,
   startMemberBatches
