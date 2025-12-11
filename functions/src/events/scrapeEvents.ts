@@ -414,3 +414,6 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function
 export const scrapeHearings = new HearingScraper().function
+const hearingScraper = new HearingScraper()
+export const getEvent = hearingScraper.getEvent.bind(hearingScraper)
+export const listEvents = hearingScraper.listEvents.bind(hearingScraper)
