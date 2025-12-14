@@ -1,13 +1,7 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react"
+import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
 import { Paragraph, formatMilliseconds } from "./transcription"
