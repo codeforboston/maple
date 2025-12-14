@@ -27,53 +27,11 @@ const ErrorContainer = styled(Container)`
   background-color: white;
 `
 
-const TimestampButton = styled.button`
-  font-size: 14px;
-  width: min-content;
-`
-
-const TimestampCol = styled.div`
-  text-align: center;
-  width: 140px;
-`
-
 const NoResultFound = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 88px;
-`
-
-const TranscriptBottom = styled(Container)`
-  background-color: white;
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  height: 9px;
-`
-
-const TranscriptContainer = styled(Container)`
-  max-height: 483px;
-  overflow-y: auto;
-  background-color: #ffffff;
-`
-
-const TranscriptRow = styled(Row)`
-  &:nth-child(even) {
-    background-color: white;
-    border-left-color: white;
-    border-left-style: solid;
-    border-left-width: 5px;
-  }
-  &:nth-child(odd) {
-    background-color: #e8ecf4;
-    border-left-color: #e8ecf4;
-    border-left-style: solid;
-    border-left-width: 5px;
-  }
-  &:last-child {
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-  }
 `
 
 const SearchInput = styled.input`
@@ -110,6 +68,52 @@ const SearchWrapper = styled.div`
   width: 100%;
   background-color: #8c98c2;
   padding: 1.5rem 1rem;
+`
+
+const TimestampButton = styled.button`
+  font-size: 14px;
+  width: min-content;
+  &:hover {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+`
+
+const TimestampCol = styled.div`
+  text-align: center;
+  width: 140px;
+`
+
+const TranscriptBottom = styled(Container)`
+  background-color: white;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 9px;
+`
+
+const TranscriptContainer = styled(Container)`
+  max-height: 483px;
+  overflow-y: auto;
+  background-color: #ffffff;
+`
+
+const TranscriptRow = styled(Row)`
+  &:nth-child(even) {
+    background-color: white;
+    border-left-color: white;
+    border-left-style: solid;
+    border-left-width: 5px;
+  }
+  &:nth-child(odd) {
+    background-color: #e8ecf4;
+    border-left-color: #e8ecf4;
+    border-left-style: solid;
+    border-left-width: 5px;
+  }
+  &:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
 `
 
 export const Transcriptions = ({
@@ -279,6 +283,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
       .split(regex)
       .map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : part))
   }
+
   return (
     <TranscriptRow
       className={
