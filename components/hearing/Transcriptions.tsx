@@ -23,6 +23,15 @@ const ClearButton = styled(FontAwesomeIcon)`
   cursor: pointer;
 `
 
+const ResultNumText = styled.div`
+  position: absolute;
+  right: 4rem;
+  top: 50%;
+  user-select: none;
+  transform: translateY(-50%);
+  color: #979797;
+`
+
 const ErrorContainer = styled(Container)`
   background-color: white;
 `
@@ -197,7 +206,15 @@ export const Transcriptions = ({
           onChange={e => setSearchTerm(e.target.value)}
         />
         {searchTerm && (
-          <ClearButton icon={faTimes} onClick={handleClearInput} />
+          <>
+            <ResultNumText>
+              {t("num_results", {
+                ns: "hearing",
+                count: filteredData.length
+              })}
+            </ResultNumText>
+            <ClearButton icon={faTimes} onClick={handleClearInput} />
+          </>
         )}
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
