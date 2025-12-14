@@ -13,6 +13,8 @@
   "no_results_found": "No Search Results for ”{{searchTerm}}”",
   "no_video_on_file": "This hearing does not yet have a video on file",
   "no_vote": "No Vote Recorded",
+  "num_results_one": "{{count}} result",
+  "num_results_other": "{{count}} results",
   "recording_date": "Recording date",
   "reserve": "Reserve",
   "reserve_right": "Reserve Right",
