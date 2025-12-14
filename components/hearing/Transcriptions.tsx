@@ -207,7 +207,12 @@ export const Transcriptions = ({
         />
         {searchTerm && (
           <>
-            <ResultNumText>{filteredData.length} results</ResultNumText>
+            <ResultNumText>
+              {t("num_results", {
+                ns: "hearing",
+                numResults: filteredData.length
+              })}
+            </ResultNumText>
             <ClearButton icon={faTimes} onClick={handleClearInput} />
           </>
         )}
