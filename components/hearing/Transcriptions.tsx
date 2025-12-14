@@ -210,7 +210,7 @@ export const Transcriptions = ({
             <ResultNumText>
               {t("num_results", {
                 ns: "hearing",
-                numResults: filteredData.length
+                count: filteredData.length
               })}
             </ResultNumText>
             <ClearButton icon={faTimes} onClick={handleClearInput} />
