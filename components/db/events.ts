@@ -49,11 +49,11 @@ type Hearing = BaseEvent & {
 }
 type HearingContent = BaseContent & {
   Description: string
-  Name: string
+  Name: string | null
   Status: string
   HearingHost: {
-    CommitteeCode: string
-    GeneralCourtNumber: number
+    CommitteeCode: string | null
+    GeneralCourtNumber: number | null
   }
   Location: HearingLocation
   HearingAgendas: {
