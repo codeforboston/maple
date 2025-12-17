@@ -2,22 +2,18 @@ import { doc, getDoc } from "firebase/firestore"
 import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { HearingSidebar } from "./HearingSidebar"
-import { Transcriptions } from "./Transcriptions"
 import { Col, Container, Image, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
-import { Back } from "../shared/CommonComponents"
+import { committeeURL, External } from "../links"
+import {
+  Back,
+  ButtonContainer,
+  FeatureCalloutButton
+} from "../shared/CommonComponents"
+import { HearingSidebar } from "./HearingSidebar"
 import { Paragraph, fetchTranscriptionData } from "./transcription"
-
-const ButtonContainer = styled.div`
-  width: fit-content;
-`
-
-export const FeatureCalloutButton = styled.button`
-  border-radius: 12px;
-  font-size: 12px;
-`
+import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
   background-color: white;
@@ -118,7 +114,15 @@ export const HearingDetails = ({
         <></>
       )}
 
-      {committeeName ? <h1>{committeeName}</h1> : <></>}
+      {committeeName ? (
+        <h1>
+          <External href={committeeURL(committeeCode)}>
+            {committeeName}
+          </External>
+        </h1>
+      ) : (
+        <></>
+      )}
 
       <h5 className={`mb-3`}>{description}</h5>
 
