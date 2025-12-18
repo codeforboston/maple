@@ -77,7 +77,7 @@ export const HearingContent = BaseEventContent.extend({
         Record({
           BillNumber: String,
           GeneralCourtNumber: Number,
-          PrimarySponsor: Nullable(Record({ Id: String })),
+          PrimarySponsor: Nullable(Record({ Id: Nullable(String) })),
           Title: String
         })
       ),
