@@ -44,7 +44,7 @@ export const useCalendarEvents = () => {
           type: e.type,
           name: e.content.Name ?? "Hearing",
           id: e.content.EventId,
-          location: e.content.Location.LocationName,
+          location: e.content.Location?.LocationName ?? undefined,
           fullDate: eventDate.toJSDate(),
           year: date.year,
           month: date.month,
