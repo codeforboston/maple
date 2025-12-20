@@ -23,7 +23,7 @@ export class EditProfilePage {
     })
 
     this.editProfileButton = page.getByRole("button", { name: "Edit Profile" })
-    this.editName = page.getByLabel("Full Name", { exact: true })
+    this.editName = page.locator('input[name="fullName"]')
 
     this.editWriteAboutSelf = page.getByPlaceholder(
       "Write something about yourself"

@@ -53,7 +53,9 @@ test.describe.serial("Edit Page", () => {
     }
   })
 
-  test("Assures user can add to blank profile page", async ({ browser }) => {
+  test.only("Assures user can add to blank profile page", async ({
+    browser
+  }) => {
     /*
     Fills blank fields with same sample data and
     confirms edits were saved. 
@@ -73,13 +75,19 @@ test.describe.serial("Edit Page", () => {
     const sampleTwitter = "jdoe"
     const sampleLinkedIn = "https://www.linkedIn.com/in/jdoe"
     const sampleRepresentative = "Alan Silvia"
+    // const sampleRepresentative = "Aaron L. Saunders"   //NOTE: names with middle initials need a space after initial
     const sampleSenator = "Adam Gomez"
-
-    await expect(page).toHaveURL(/.*\/edit-profile\/about-you/)
+    // const sampleSenator = "Bruce E. Tarr"
 
     // clear and fill with sample data
-    // await expect(editPage.editName.first()).toBeVisible()
-    await editPage.editName.fill(sampleName, { timeout: 50000 }) //fickle
+    await expect(editPage.editName).toHaveCount(1, { timeout: 100_000 })
+    await expect(editPage.editName).toBeVisible({ timeout: 50_000 })
+    await expect(editPage.editName).toBeEnabled()
+    await editPage.editName.waitFor({ state: "attached", timeout: 50_000 })
+    await editPage.editName.click()
+    await editPage.editName.fill("")
+    await editPage.editName.fill(sampleName)
+    await expect(editPage.editName).toHaveValue(sampleName, { timeout: 50_000 })
     await editPage.editWriteAboutSelf.clear()
     await editPage.editWriteAboutSelf.fill(sampleText)
     await editPage.editTwitterUsername.clear()
@@ -89,34 +97,37 @@ test.describe.serial("Edit Page", () => {
     await editPage.editRepresentative.pressSequentially(sampleRepresentative, {
       delay: 50
     })
+    await page.waitForTimeout(50)
     await page.keyboard.press("Enter")
     await editPage.editSenator.pressSequentially(sampleSenator, { delay: 50 })
-    await editPage.editSenator.click()
+    await page.waitForTimeout(50)
+    await page.keyboard.press("Enter")
 
     // save
-    await page.keyboard.press("Enter")
+    await editPage.saveChangesButton.click()
+    await page.keyboard.press("Enter") //save-button activated -rerouting to profile page
 
     //assertion: Assure it saved
     //name
     await expect(page.getByText(sampleName)).toHaveText(sampleName, {
       timeout: 50000
-    }) //fickle
+    })
     //(about) text
     await expect(page.getByText(sampleText, { exact: true })).toHaveText(
       sampleText
     )
     //representative
-    const repRow = page.locator("div", {
-      has: page.locator(".main-text", { hasText: "Representative" })
-    })
-    await expect(repRow.getByText(sampleRepresentative)).toHaveText(
+    const repRow = page.locator(
+      'div:has(> .main-text:has-text("Representative"))'
+    )
+    await expect(repRow.locator("p.sub-text")).toContainText(
       sampleRepresentative
     )
+
     //senator
     const senRow = page
       .locator(".main-text", { hasText: "Senator" })
       .locator('xpath=following-sibling::p[contains(@class,"sub-text")]')
-
     await removeSpecialChar(senRow, sampleSenator)
 
     //twitter
@@ -128,8 +139,10 @@ test.describe.serial("Edit Page", () => {
       "href",
       new RegExp(sampleTwitterNewPage)
     )
+
+    await context.close()
   })
-  
+
   test("User can enable and disable notification settings", async ({
     browser
   }) => {
