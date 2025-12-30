@@ -5,14 +5,14 @@ import { z } from "zod"
 import { flags } from "components/featureFlags"
 import { HearingDetails } from "components/hearing/HearingDetails"
 import { createPage } from "../../components/page"
+import { fetchHearingData, HearingData } from "components/hearing/hearing"
 
 const Query = z.object({ hearingId: z.coerce.number() })
 
 export default createPage<{ hearingId: number }>({
   titleI18nKey: "Hearing",
-  Page: () => {
-    const hearingId = useRouter().query.hearingId
-    return <HearingDetails hearingId={hearingId} />
+  Page: ({ hearingData }) => {
+    return <HearingDetails hearingData={hearingData} />
   }
 })
 
@@ -28,8 +28,14 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   if (!query.success) return { notFound: true }
   if (!flags().hearingsAndTranscriptions) return { notFound: true }
 
+  if (!ctx.params) return { notFound: true }
+  const hearingId = ctx.params.hearingId
+  const hearingData = await fetchHearingData(hearingId)
+  if (!hearingData) return { notFound: true }
+
   return {
     props: {
+      hearingData: hearingData,
       ...(await serverSideTranslations(locale, [
         "auth",
         "common",

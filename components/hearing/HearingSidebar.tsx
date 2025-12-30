@@ -10,7 +10,7 @@ import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatMilliseconds } from "./transcription"
+import { Paragraph, formatMilliseconds } from "./hearing"
 
 type Bill = {
   BillNumber: string

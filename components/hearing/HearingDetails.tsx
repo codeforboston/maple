@@ -12,7 +12,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import { Paragraph, fetchTranscriptionData } from "./transcription"
+import { HearingData, Paragraph, fetchHearingData, fetchTranscriptionData } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
@@ -36,9 +36,19 @@ const VideoParent = styled.div`
 `
 
 export const HearingDetails = ({
-  hearingId
+  hearingData: {
+    billsInAgenda,
+    committeeCode,
+    committeeName,
+    description,
+    generalCourtNumber,
+    hearingDate,
+    hearingId,
+    videoTranscriptionId,
+    videoURL
+  }
 }: {
-  hearingId: string | string[] | undefined
+  hearingData: HearingData
 }) => {
   const { t } = useTranslation(["common", "hearing"])
   const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
@@ -52,32 +62,7 @@ export const HearingDetails = ({
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
-
-  const eventId = `hearing-${hearingId}`
-
-  const [billsInAgenda, setBillsInAgenda] = useState([])
-  const [committeeCode, setCommitteeCode] = useState("")
-  const [committeeName, setCommitteeName] = useState("")
-  const [description, setDescription] = useState("")
-  const [generalCourtNumber, setGeneralCourtNumber] = useState("")
-  const [hearingDate, setHearingDate] = useState("")
-  const [videoTranscriptionId, setVideoTranscriptionId] = useState("")
-  const [videoURL, setVideoURL] = useState("")
-
-  const hearingData = useCallback(async () => {
-    const hearing = await getDoc(doc(firestore, `events/${eventId}`))
-    const docData = hearing.data()
-
-    setBillsInAgenda(docData?.content.HearingAgendas[0]?.DocumentsInAgenda)
-    setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
-    setCommitteeName(docData?.content.Name)
-    setDescription(docData?.content.Description)
-    setGeneralCourtNumber(docData?.content.HearingHost.GeneralCourtNumber)
-    setHearingDate(docData?.content.EventDate)
-    setVideoTranscriptionId(docData?.videoTranscriptionId)
-    setVideoURL(docData?.videoURL)
-  }, [eventId])
-
+  
   useEffect(() => {
     ;(async function () {
       if (!videoTranscriptionId || transcriptData.length !== 0) return
@@ -85,10 +70,6 @@ export const HearingDetails = ({
       setTranscriptData(docList)
     })()
   }, [videoTranscriptionId])
-
-  useEffect(() => {
-    hearingData()
-  }, [hearingData])
 
   return (
     <Container className="mt-3 mb-3">
@@ -128,37 +109,41 @@ export const HearingDetails = ({
 
       <Row>
         <Col className={`col-md-8 mt-4`}>
-          <LegalContainer className={`pb-2 rounded`}>
-            <Row
-              className={`d-flex align-items-center justify-content-between`}
-              fontSize={"12px"}
-              xs="auto"
-            >
-              <Col>
-                <div className={`fs-6 fw-bold mt-2`}>
-                  <Image
-                    src="/images/smart-summary.svg"
-                    alt={t("bill.smart_tag")}
-                    height={`34`}
-                    width={`24`}
-                    className={`me-2 pb-1`}
-                  />
-                  {t("bill.smart_disclaimer2")}
-                </div>
-              </Col>
+          {transcriptData ?
+            (
+            <LegalContainer className={`pb-2 rounded`}>
+              <Row
+                className={`d-flex align-items-center justify-content-between`}
+                fontSize={"12px"}
+                xs="auto"
+              >
+                <Col>
+                  <div className={`fs-6 fw-bold mt-2`}>
+                    <Image
+                      src="/images/smart-summary.svg"
+                      alt={t("bill.smart_tag")}
+                      height={`34`}
+                      width={`24`}
+                      className={`me-2 pb-1`}
+                    />
+                    {t("bill.smart_disclaimer2")}
+                  </div>
+                </Col>
 
-              <Col>
-                <Trans
-                  t={t}
-                  i18nKey="bill.smart_disclaimer3"
-                  components={[
-                    // eslint-disable-next-line react/jsx-key
-                    <links.Internal href="/about/how-maple-uses-ai" />
-                  ]}
-                />
-              </Col>
-            </Row>
-          </LegalContainer>
+                <Col>
+                  <Trans
+                    t={t}
+                    i18nKey="bill.smart_disclaimer3"
+                    components={[
+                      // eslint-disable-next-line react/jsx-key
+                      <links.Internal href="/about/how-maple-uses-ai" />
+                    ]}
+                  />
+                </Col>
+              </Row>
+            </LegalContainer>
+            )
+          : <></>}
 
           {videoURL ? (
             <VideoParent className={`mt-3`}>

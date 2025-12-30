@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { Paragraph, formatMilliseconds } from "./transcription"
+import { Paragraph, formatMilliseconds } from "./hearing"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
