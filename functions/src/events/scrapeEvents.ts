@@ -359,7 +359,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             host.GeneralCourtNumber,
             host.CommitteeCode
           )
-        : undefined
+        : []
 
     if (await shouldScrapeVideo(EventId)) {
       try {
@@ -413,4 +413,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
 
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function
-export const scrapeHearings = new HearingScraper().function
+const hearingScraper = new HearingScraper()
+export const scrapeHearings = hearingScraper.function
+export const getEvent = hearingScraper.getEvent.bind(hearingScraper)
+export const listEvents = hearingScraper.listEvents.bind(hearingScraper)
