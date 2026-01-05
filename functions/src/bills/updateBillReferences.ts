@@ -32,7 +32,7 @@ class UpdateBillReferences extends BillProcessor {
   }
 
   override get billFields() {
-    return ["id", "nextHearingId"]
+    return ["id", "court", "nextHearingId"]
   }
 
   getCityUpdates(): BillUpdates {
@@ -96,6 +96,14 @@ class UpdateBillReferences extends BillProcessor {
       .then(this.load(Hearing))
     const updates: BillUpdates = new Map()
 
+    // Build a map of billId -> court for matching
+    const billCourtMap = new Map<string, number>()
+    this.bills.forEach(bill => {
+      if (bill.id && bill.court !== undefined) {
+        billCourtMap.set(bill.id, bill.court)
+      }
+    })
+
     // Build mapping from billId -> hearingIds and compute earliest upcoming hearing
     const hearingIdsByBill = new Map<string, Set<string>>()
 
@@ -108,6 +116,13 @@ class UpdateBillReferences extends BillProcessor {
       hearing.content.HearingAgendas.forEach(agenda => {
         agenda.DocumentsInAgenda.forEach(doc => {
           const billId = doc.BillNumber
+          const docCourtNumber = doc.GeneralCourtNumber
+
+          // Only match hearings with bills from the same general court
+          const billCourt = billCourtMap.get(billId)
+          if (billCourt === undefined || billCourt !== docCourtNumber) {
+            return
+          }
 
           if (!hearingIdsByBill.has(billId))
             hearingIdsByBill.set(billId, new Set())
