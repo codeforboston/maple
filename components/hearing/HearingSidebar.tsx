@@ -127,7 +127,7 @@ export const HearingSidebar = ({
   generalCourtNumber: string
   hearingDate: string
   hearingId: undefined | string | string[]
-  transcriptData: Paragraph[]
+  transcriptData: Paragraph[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
@@ -193,7 +193,7 @@ export const HearingSidebar = ({
   }, [hearingId])
 
   useEffect(() => {
-    if (transcriptData.length === 0) return
+    if (!transcriptData) return
     const csv_objects = transcriptData.map(doc => ({
       start: formatMilliseconds(doc.start),
       text: doc.text

@@ -51,7 +51,7 @@ export const HearingDetails = ({
   hearingData: HearingData
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+  const [transcriptData, setTranscriptData] = useState<Paragraph[] | null>(null)
 
   const [videoLoaded, setVideoLoaded] = useState(false)
   const handleVideoLoad = () => {
@@ -161,12 +161,19 @@ export const HearingDetails = ({
             </LegalContainer>
           )}
 
-          <Transcriptions
-            transcriptData={transcriptData}
-            setCurTimeVideo={setCurTimeVideo}
-            videoLoaded={videoLoaded}
-            videoRef={videoRef}
-          />
+          {transcriptData ? (
+              <Transcriptions
+                transcriptData={transcriptData}
+                setCurTimeVideo={setCurTimeVideo}
+                videoLoaded={videoLoaded}
+                videoRef={videoRef}
+              />
+            ) : (
+              <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+                <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
+              </LegalContainer>
+            )
+          }
         </Col>
 
         <div className={`col-md-4`}>

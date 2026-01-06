@@ -191,7 +191,7 @@ export const Transcriptions = ({
     }
   }, [highlightedId, transcriptData, videoLoaded, videoRef, searchTerm])
 
-  return (
+  return
     <>
       <SearchWrapper>
         <SearchInput
@@ -216,45 +216,36 @@ export const Transcriptions = ({
         )}
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
-      {transcriptData.length > 0 ? (
-        <>
-          <TranscriptContainer ref={containerRef}>
-            {filteredData.map((element: Paragraph, index: number) => (
-              <TranscriptItem
-                key={index}
-                element={element}
-                highlightedId={highlightedId}
-                index={index}
-                ref={elem => {
-                  if (elem) {
-                    transcriptRefs.current.set(index, elem)
-                  } else {
-                    transcriptRefs.current.delete(index)
-                  }
-                }}
-                setCurTimeVideo={setCurTimeVideo}
-                searchTerm={searchTerm}
-              />
-            ))}
-            {filteredData.length === 0 && (
-              <NoResultFound>
-                {t("no_results_found", {
-                  ns: "hearing",
-                  searchTerm,
-                  defaultValue: "No result found..."
-                })}
-              </NoResultFound>
-            )}
-          </TranscriptContainer>
-          <TranscriptBottom />
-        </>
-      ) : (
-        <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
-          <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
-        </ErrorContainer>
-      )}
+      <TranscriptContainer ref={containerRef}>
+        {filteredData.map((element: Paragraph, index: number) => (
+          <TranscriptItem
+            key={index}
+            element={element}
+            highlightedId={highlightedId}
+            index={index}
+            ref={elem => {
+              if (elem) {
+                transcriptRefs.current.set(index, elem)
+              } else {
+                transcriptRefs.current.delete(index)
+              }
+            }}
+            setCurTimeVideo={setCurTimeVideo}
+            searchTerm={searchTerm}
+          />
+        ))}
+        {filteredData.length === 0 && (
+          <NoResultFound>
+            {t("no_results_found", {
+              ns: "hearing",
+              searchTerm,
+              defaultValue: "No result found..."
+            })}
+          </NoResultFound>
+        )}
+      </TranscriptContainer>
+      <TranscriptBottom />
     </>
-  )
 }
 
 // forwardRef must be updated for React 19 migration
