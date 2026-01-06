@@ -34,7 +34,7 @@ function MemberItem({
   generalCourtNumber,
   member
 }: {
-  generalCourtNumber: string
+  generalCourtNumber: string | null
   member: Members
 }) {
   const [branch, setBranch] = useState<string>("")
@@ -122,23 +122,25 @@ export const HearingSidebar = ({
   hearingId,
   transcriptData
 }: {
-  billsInAgenda: never[]
-  committeeCode: string
-  generalCourtNumber: string
-  hearingDate: string
-  hearingId: undefined | string | string[]
+  billsInAgenda: any[] | null
+  committeeCode: string | null
+  generalCourtNumber: string | null
+  hearingDate: string | null
+  hearingId: string | null
   transcriptData: Paragraph[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
-  const dateObject = new Date(hearingDate)
-  const formattedDate = dateObject.toLocaleDateString("en-US", {
-    month: "long",
-    day: "2-digit",
-    year: "numeric"
-  })
+  const dateObject = hearingDate ? new Date(hearingDate) : null
+  const formattedDate = dateObject
+    ? dateObject.toLocaleDateString("en-US", {
+        month: "long",
+        day: "2-digit",
+        year: "numeric"
+      })
+    : null
   let dateCheck = false
-  if (formattedDate !== `Invalid Date`) {
+  if (formattedDate && formattedDate !== `Invalid Date`) {
     dateCheck = true
   }
 
@@ -364,9 +366,9 @@ function AgendaBill({
   element,
   generalCourtNumber
 }: {
-  committeeCode: string
+  committeeCode: string | null
   element: Bill
-  generalCourtNumber: string
+  generalCourtNumber: string | null
 }) {
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
@@ -438,7 +440,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
   committeeActions: any
   CourtNumber: number
-  generalCourtNumber: string
+  generalCourtNumber: string | null
   onSettingsModalClose: () => void
 }
 
@@ -565,7 +567,7 @@ function Vote({
   value
 }: {
   element: any
-  generalCourtNumber: string
+  generalCourtNumber: string | null
   value: string
 }) {
   const { t } = useTranslation(["common", "hearing"])

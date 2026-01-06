@@ -12,7 +12,12 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import { HearingData, Paragraph, fetchHearingData, fetchTranscriptionData } from "./hearing"
+import {
+  HearingData,
+  Paragraph,
+  fetchHearingData,
+  fetchTranscriptionData
+} from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
@@ -62,10 +67,10 @@ export const HearingDetails = ({
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
-  
+
   useEffect(() => {
     ;(async function () {
-      if (!videoTranscriptionId || transcriptData.length !== 0) return
+      if (!videoTranscriptionId || transcriptData !== null) return
       const docList = await fetchTranscriptionData(videoTranscriptionId)
       setTranscriptData(docList)
     })()
@@ -96,11 +101,17 @@ export const HearingDetails = ({
       )}
 
       {committeeName ? (
-        <h1>
-          <External href={committeeURL(committeeCode)}>
+        committeeCode ? (
+          <h1>
+            <External href={committeeURL(committeeCode)}>
+              {committeeName}
+            </External>
+          </h1>
+        ) : (
+          <h1>
             {committeeName}
-          </External>
-        </h1>
+          </h1>
+        )
       ) : (
         <></>
       )}
@@ -109,8 +120,7 @@ export const HearingDetails = ({
 
       <Row>
         <Col className={`col-md-8 mt-4`}>
-          {transcriptData ?
-            (
+          {transcriptData ? (
             <LegalContainer className={`pb-2 rounded`}>
               <Row
                 className={`d-flex align-items-center justify-content-between`}
@@ -142,8 +152,9 @@ export const HearingDetails = ({
                 </Col>
               </Row>
             </LegalContainer>
-            )
-          : <></>}
+          ) : (
+            <></>
+          )}
 
           {videoURL ? (
             <VideoParent className={`mt-3`}>
@@ -162,18 +173,17 @@ export const HearingDetails = ({
           )}
 
           {transcriptData ? (
-              <Transcriptions
-                transcriptData={transcriptData}
-                setCurTimeVideo={setCurTimeVideo}
-                videoLoaded={videoLoaded}
-                videoRef={videoRef}
-              />
-            ) : (
-              <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
-                <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
-              </LegalContainer>
-            )
-          }
+            <Transcriptions
+              transcriptData={transcriptData}
+              setCurTimeVideo={setCurTimeVideo}
+              videoLoaded={videoLoaded}
+              videoRef={videoRef}
+            />
+          ) : (
+            <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+              <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
+            </LegalContainer>
+          )}
         </Col>
 
         <div className={`col-md-4`}>

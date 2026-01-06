@@ -1,18 +1,25 @@
 import { firestore } from "../firebase"
-import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query
+} from "firebase/firestore"
 import { DateTime } from "luxon"
 
 export type HearingData = {
-  billsInAgenda: string[] | null
+  billsInAgenda: any[] | null
   committeeCode: string | null
   committeeName: string | null
   description: string | null
   generalCourtNumber: string | null
   // Date and DateTime cannot be sent through getServerSideProps
   hearingDate: string | null
-  hearingId: number
+  hearingId: string
   videoTranscriptionId: string | null
-  videoURL: URL | null
+  videoURL: string | null
 }
 
 export type Paragraph = {
@@ -23,26 +30,33 @@ export type Paragraph = {
 }
 
 export async function fetchHearingData(
-  hearingId: number
+  hearingId: string
 ): Promise<HearingData | null> {
   const hearing = await getDoc(doc(firestore, `events/hearing-${hearingId}`))
-  if (!hearing.exists()) { return null }
-  const docData = hearing.data();
-  
-  const maybeDate = docData?.content.EventDate
+  if (!hearing.exists()) {
+    return null
+  }
+
+  const docData = hearing.data()
+
+  const maybeDate = docData.content?.EventDate
   // Event has no provided timezone
-  const hearingDate = maybeDate ? DateTime.fromISO(maybeDate, { zone: "America/New_York" }).toISO() : null
-  
+  const hearingDate = maybeDate
+    ? DateTime.fromISO(maybeDate, { zone: "America/New_York" }).toISO()
+    : null
+
   return {
-    billsInAgenda: docData?.content.HearingAgendas[0]?.DocumentsInAgenda ?? null,
-    committeeCode: docData?.content.HearingHost.CommitteeCode ?? null,
-    committeeName: docData?.content.Name ?? null,
-    description: docData?.content.Description ?? null,
-    generalCourtNumber: docData?.content.HearingHost.GeneralCourtNumber ?? null,
+    billsInAgenda:
+      docData.content?.HearingAgendas[0]?.DocumentsInAgenda ?? null,
+    committeeCode: docData.content?.HearingHost?.CommitteeCode ?? null,
+    committeeName: docData.content?.Name ?? null,
+    description: docData.content?.Description ?? null,
+    generalCourtNumber:
+      docData.content?.HearingHost?.GeneralCourtNumber ?? null,
     hearingDate: hearingDate,
     hearingId: hearingId,
-    videoTranscriptionId: docData?.videoTranscriptionId ?? null,
-    videoURL: docData?.videoURL ?? null
+    videoTranscriptionId: docData.videoTranscriptionId ?? null,
+    videoURL: docData.videoURL ?? null
   }
 }
 

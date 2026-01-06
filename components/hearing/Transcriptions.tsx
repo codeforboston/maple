@@ -191,7 +191,7 @@ export const Transcriptions = ({
     }
   }, [highlightedId, transcriptData, videoLoaded, videoRef, searchTerm])
 
-  return
+  return (
     <>
       <SearchWrapper>
         <SearchInput
@@ -246,6 +246,7 @@ export const Transcriptions = ({
       </TranscriptContainer>
       <TranscriptBottom />
     </>
+  )
 }
 
 // forwardRef must be updated for React 19 migration
