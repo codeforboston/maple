@@ -163,7 +163,7 @@ export const HearingDetails = ({
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
-              {t("no_video_on_file", { ns: "hearing" })}
+              {transcriptData ? t("no_video_on_file", { ns: "hearing" }) : t("no_video_or_transcript", { ns: "hearing" })}
             </LegalContainer>
           )}
 
@@ -175,9 +175,11 @@ export const HearingDetails = ({
               videoRef={videoRef}
             />
           ) : (
-            <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
-              <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
-            </LegalContainer>
+            videoURL ? (
+              <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+                <div>{t("no_transcript_on_file", { ns: "hearing" })}</div>
+              </LegalContainer>
+            ) : null
           )}
         </Col>
 

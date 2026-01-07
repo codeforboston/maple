@@ -34,7 +34,7 @@ function MemberItem({
   generalCourtNumber,
   member
 }: {
-  generalCourtNumber: string | null
+  generalCourtNumber: string
   member: Members
 }) {
   const [branch, setBranch] = useState<string>("")
@@ -48,9 +48,7 @@ function MemberItem({
     setBranch(docData?.content.Branch)
   }, [])
 
-  useEffect(() => {
-    generalCourtNumber ? memberData() : null
-  }, [])
+  useEffect(() => { memberData() }, [])
 
   return (
     <LabeledIcon
@@ -253,7 +251,7 @@ export const HearingSidebar = ({
         <></>
       )}
 
-      {committeeCode && (
+      {committeeCode && generalCourtNumber && (
         <SidebarBody
           className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
         >
@@ -475,7 +473,7 @@ function VotesModal({
           {t("yes", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
+        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
           (element: any, index: number) => (
             <Vote
               key={index}
@@ -490,7 +488,7 @@ function VotesModal({
           {t("no", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
+        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
           (element: any, index: number) => (
             <Vote
               key={index}
@@ -505,7 +503,7 @@ function VotesModal({
           {t("no_vote", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
+        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
           (element: any, index: number) => (
             <Vote
               key={index}
@@ -520,7 +518,7 @@ function VotesModal({
           {t("reserve_right", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
+        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
           (element: any, index: number) => (
             <Vote
               key={index}
@@ -563,7 +561,7 @@ function Vote({
   value
 }: {
   element: any
-  generalCourtNumber: string | null
+  generalCourtNumber: string
   value: string
 }) {
   const { t } = useTranslation(["common", "hearing"])
@@ -586,7 +584,7 @@ function Vote({
   }, [])
 
   useEffect(() => {
-    generalCourtNumber ? memberData() : null
+    memberData()
   }, [])
 
   return (
