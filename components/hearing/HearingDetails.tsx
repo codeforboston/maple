@@ -103,9 +103,7 @@ export const HearingDetails = ({
             </External>
           </h1>
         ) : (
-          <h1>
-            {committeeName}
-          </h1>
+          <h1>{committeeName}</h1>
         )
       ) : (
         <></>
@@ -163,7 +161,9 @@ export const HearingDetails = ({
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
-              {transcriptData ? t("no_video_on_file", { ns: "hearing" }) : t("no_video_or_transcript", { ns: "hearing" })}
+              {transcriptData
+                ? t("no_video_on_file", { ns: "hearing" })
+                : t("no_video_or_transcript", { ns: "hearing" })}
             </LegalContainer>
           )}
 
@@ -174,13 +174,11 @@ export const HearingDetails = ({
               videoLoaded={videoLoaded}
               videoRef={videoRef}
             />
-          ) : (
-            videoURL ? (
-              <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
-                <div>{t("no_transcript_on_file", { ns: "hearing" })}</div>
-              </LegalContainer>
-            ) : null
-          )}
+          ) : videoURL ? (
+            <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+              <div>{t("no_transcript_on_file", { ns: "hearing" })}</div>
+            </LegalContainer>
+          ) : null}
         </Col>
 
         <div className={`col-md-4`}>

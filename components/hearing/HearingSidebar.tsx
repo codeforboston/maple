@@ -48,7 +48,9 @@ function MemberItem({
     setBranch(docData?.content.Branch)
   }, [])
 
-  useEffect(() => { memberData() }, [])
+  useEffect(() => {
+    memberData()
+  }, [])
 
   return (
     <LabeledIcon
@@ -473,61 +475,65 @@ function VotesModal({
           {t("yes", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})
         </div>
-        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`yes`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`yes`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("no", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})
         </div>
-        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`no`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`no`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("no_vote", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})
         </div>
-        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`no_record`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`no_record`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("reserve_right", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})
         </div>
-        {generalCourtNumber && committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`reserve`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`reserve`}
+              />
+            )
+          )}
 
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
