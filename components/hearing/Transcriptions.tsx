@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { Paragraph, formatMilliseconds } from "./transcription"
+import { Paragraph, formatMilliseconds } from "./hearing"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -24,10 +24,6 @@ const ResultNumText = styled.div`
   user-select: none;
   transform: translateY(-50%);
   color: #979797;
-`
-
-const ErrorContainer = styled(Container)`
-  background-color: white;
 `
 
 const NoResultFound = styled.div`
@@ -216,43 +212,35 @@ export const Transcriptions = ({
         )}
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
-      {transcriptData.length > 0 ? (
-        <>
-          <TranscriptContainer ref={containerRef}>
-            {filteredData.map((element: Paragraph, index: number) => (
-              <TranscriptItem
-                key={index}
-                element={element}
-                highlightedId={highlightedId}
-                index={index}
-                ref={elem => {
-                  if (elem) {
-                    transcriptRefs.current.set(index, elem)
-                  } else {
-                    transcriptRefs.current.delete(index)
-                  }
-                }}
-                setCurTimeVideo={setCurTimeVideo}
-                searchTerm={searchTerm}
-              />
-            ))}
-            {filteredData.length === 0 && (
-              <NoResultFound>
-                {t("no_results_found", {
-                  ns: "hearing",
-                  searchTerm,
-                  defaultValue: "No result found..."
-                })}
-              </NoResultFound>
-            )}
-          </TranscriptContainer>
-          <TranscriptBottom />
-        </>
-      ) : (
-        <ErrorContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
-          <div>{t("transcription_not_on_file", { ns: "hearing" })}</div>
-        </ErrorContainer>
-      )}
+      <TranscriptContainer ref={containerRef}>
+        {filteredData.map((element: Paragraph, index: number) => (
+          <TranscriptItem
+            key={index}
+            element={element}
+            highlightedId={highlightedId}
+            index={index}
+            ref={elem => {
+              if (elem) {
+                transcriptRefs.current.set(index, elem)
+              } else {
+                transcriptRefs.current.delete(index)
+              }
+            }}
+            setCurTimeVideo={setCurTimeVideo}
+            searchTerm={searchTerm}
+          />
+        ))}
+        {filteredData.length === 0 && (
+          <NoResultFound>
+            {t("no_results_found", {
+              ns: "hearing",
+              searchTerm,
+              defaultValue: "No result found..."
+            })}
+          </NoResultFound>
+        )}
+      </TranscriptContainer>
+      <TranscriptBottom />
     </>
   )
 }

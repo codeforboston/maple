@@ -10,7 +10,7 @@ import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatMilliseconds } from "./transcription"
+import { Paragraph, formatMilliseconds } from "./hearing"
 
 type Bill = {
   BillNumber: string
@@ -49,7 +49,7 @@ function MemberItem({
   }, [])
 
   useEffect(() => {
-    generalCourtNumber ? memberData() : null
+    memberData()
   }, [])
 
   return (
@@ -122,23 +122,25 @@ export const HearingSidebar = ({
   hearingId,
   transcriptData
 }: {
-  billsInAgenda: never[]
-  committeeCode: string
-  generalCourtNumber: string
-  hearingDate: string
-  hearingId: undefined | string | string[]
-  transcriptData: Paragraph[]
+  billsInAgenda: any[] | null
+  committeeCode: string | null
+  generalCourtNumber: string | null
+  hearingDate: string | null
+  hearingId: string
+  transcriptData: Paragraph[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
 
-  const dateObject = new Date(hearingDate)
-  const formattedDate = dateObject.toLocaleDateString("en-US", {
-    month: "long",
-    day: "2-digit",
-    year: "numeric"
-  })
+  const dateObject = hearingDate ? new Date(hearingDate) : null
+  const formattedDate = dateObject
+    ? dateObject.toLocaleDateString("en-US", {
+        month: "long",
+        day: "2-digit",
+        year: "numeric"
+      })
+    : null
   let dateCheck = false
-  if (formattedDate !== `Invalid Date`) {
+  if (formattedDate && formattedDate !== `Invalid Date`) {
     dateCheck = true
   }
 
@@ -185,15 +187,11 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    if (!hearingId) {
-      setDownloadName("hearing.csv")
-    } else {
-      setDownloadName(`hearing-${hearingId}.csv`)
-    }
+    setDownloadName(`hearing-${hearingId}.csv`)
   }, [hearingId])
 
   useEffect(() => {
-    if (transcriptData.length === 0) return
+    if (!transcriptData) return
     const csv_objects = transcriptData.map(doc => ({
       start: formatMilliseconds(doc.start),
       text: doc.text
@@ -225,7 +223,7 @@ export const HearingSidebar = ({
         {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
-      {dateCheck || (downloadURL !== "" && hearingId !== undefined) ? (
+      {dateCheck || downloadURL !== "" ? (
         <SidebarBody className={`border-bottom fs-6 px-3 py-3`}>
           {dateCheck ? (
             <>
@@ -237,7 +235,7 @@ export const HearingSidebar = ({
           ) : (
             <></>
           )}
-          {downloadURL !== "" && hearingId !== undefined ? (
+          {downloadURL !== "" ? (
             <div>
               <a
                 href={downloadURL}
@@ -255,7 +253,7 @@ export const HearingSidebar = ({
         <></>
       )}
 
-      {committeeCode && (
+      {committeeCode && generalCourtNumber && (
         <SidebarBody
           className={`border-bottom border-top fs-6 fw-bold px-3 py-3`}
         >
@@ -364,9 +362,9 @@ function AgendaBill({
   element,
   generalCourtNumber
 }: {
-  committeeCode: string
+  committeeCode: string | null
   element: Bill
-  generalCourtNumber: string
+  generalCourtNumber: string | null
 }) {
   const { t } = useTranslation(["common", "hearing"])
   const BillNumber = element.BillNumber
@@ -438,7 +436,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   BillNumber: string
   committeeActions: any
   CourtNumber: number
-  generalCourtNumber: string
+  generalCourtNumber: string | null
   onSettingsModalClose: () => void
 }
 
@@ -477,61 +475,65 @@ function VotesModal({
           {t("yes", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`yes`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.Favorable.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`yes`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("no", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`no`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.Adverse.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`no`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("no_vote", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`no_record`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.NoVoteRecorded.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`no_record`}
+              />
+            )
+          )}
 
         <div className={`fw-bold`}>
           {t("reserve_right", { ns: "hearing" })} (
           {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.length})
         </div>
-        {committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
-          (element: any, index: number) => (
-            <Vote
-              key={index}
-              element={element}
-              generalCourtNumber={generalCourtNumber}
-              value={`reserve`}
-            />
-          )
-        )}
+        {generalCourtNumber &&
+          committeeActions[0]?.Votes[0]?.Vote[0]?.ReserveRight.map(
+            (element: any, index: number) => (
+              <Vote
+                key={index}
+                element={element}
+                generalCourtNumber={generalCourtNumber}
+                value={`reserve`}
+              />
+            )
+          )}
 
         <ModalLine />
         <div className={`d-flex fs-6 justify-content-end`}>
@@ -588,7 +590,7 @@ function Vote({
   }, [])
 
   useEffect(() => {
-    generalCourtNumber ? memberData() : null
+    memberData()
   }, [])
 
   return (
