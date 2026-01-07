@@ -12,12 +12,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import {
-  HearingData,
-  Paragraph,
-  fetchHearingData,
-  fetchTranscriptionData
-} from "./hearing"
+import { HearingData, Paragraph, fetchTranscriptionData } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`

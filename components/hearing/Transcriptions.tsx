@@ -26,10 +26,6 @@ const ResultNumText = styled.div`
   color: #979797;
 `
 
-const ErrorContainer = styled(Container)`
-  background-color: white;
-`
-
 const NoResultFound = styled.div`
   display: flex;
   justify-content: center;

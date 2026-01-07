@@ -126,7 +126,7 @@ export const HearingSidebar = ({
   committeeCode: string | null
   generalCourtNumber: string | null
   hearingDate: string | null
-  hearingId: string | null
+  hearingId: string
   transcriptData: Paragraph[] | null
 }) => {
   const { t } = useTranslation(["common", "hearing"])
@@ -187,11 +187,7 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    if (!hearingId) {
-      setDownloadName("hearing.csv")
-    } else {
-      setDownloadName(`hearing-${hearingId}.csv`)
-    }
+    setDownloadName(`hearing-${hearingId}.csv`)
   }, [hearingId])
 
   useEffect(() => {
@@ -227,7 +223,7 @@ export const HearingSidebar = ({
         {t("hearing_details", { ns: "hearing" })}
       </SidebarHeader>
 
-      {dateCheck || (downloadURL !== "" && hearingId !== undefined) ? (
+      {dateCheck || downloadURL !== "" ? (
         <SidebarBody className={`border-bottom fs-6 px-3 py-3`}>
           {dateCheck ? (
             <>
@@ -239,7 +235,7 @@ export const HearingSidebar = ({
           ) : (
             <></>
           )}
-          {downloadURL !== "" && hearingId !== undefined ? (
+          {downloadURL !== "" ? (
             <div>
               <a
                 href={downloadURL}
