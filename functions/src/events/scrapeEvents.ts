@@ -1,8 +1,9 @@
+import * as functions from "firebase-functions"
 import { RuntimeOptions, runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
-import { logFetchError } from "../common"
+import { checkAuth, checkAdmin, logFetchError } from "../common"
 import { db, storage, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
@@ -22,6 +23,7 @@ import { sha256 } from "js-sha256"
 import { isValidVideoUrl, withinCutoff } from "./helpers"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
+import { Committee } from "../committees/types"
 abstract class EventScraper<ListItem, Event extends BaseEvent> {
   private schedule
   private timeout
@@ -148,7 +150,8 @@ class SessionScraper extends EventScraper<SessionContent, Session> {
 
 const extractAudioFromVideo = async (
   EventId: number,
-  videoUrl: string
+  videoUrl: string,
+  bucketName?: string
 ): Promise<string> => {
   const tmpFilePath = `/tmp/hearing-${EventId}-${Date.now()}.m4a`
 
@@ -182,7 +185,7 @@ const extractAudioFromVideo = async (
   })
 
   // Upload the audio file
-  const bucket = storage.bucket()
+  const bucket = bucketName ? storage.bucket(bucketName) : storage.bucket()
   const audioFileName = `hearing-${EventId}-${Date.now()}.m4a`
   const file = bucket.file(audioFileName)
 
@@ -217,19 +220,25 @@ const extractAudioFromVideo = async (
   return url
 }
 
-const submitTranscription = async ({
+export const submitTranscription = async ({
   EventId,
-  maybeVideoUrl
+  maybeVideoUrl,
+  bucketName
 }: {
   EventId: number
   maybeVideoUrl: string
+  bucketName?: string
 }) => {
   const assembly = new AssemblyAI({
     apiKey: process.env.ASSEMBLY_API_KEY ? process.env.ASSEMBLY_API_KEY : ""
   })
 
   const newToken = randomBytes(16).toString("hex")
-  const audioUrl = await extractAudioFromVideo(EventId, maybeVideoUrl)
+  const audioUrl = await extractAudioFromVideo(
+    EventId,
+    maybeVideoUrl,
+    bucketName
+  )
 
   const transcript = await assembly.transcripts.submit({
     audio:
@@ -258,7 +267,7 @@ const submitTranscription = async ({
   return transcript.id
 }
 
-const getHearingVideoUrl = async (EventId: number) => {
+export const getHearingVideoUrl = async (EventId: number) => {
   const req = await fetch(
     `https://malegislature.gov/Events/Hearings/Detail/${EventId}`
   )
@@ -279,7 +288,10 @@ const getHearingVideoUrl = async (EventId: number) => {
   return null
 }
 
-const shouldScrapeVideo = async (EventId: number) => {
+const shouldScrapeVideo = async (
+  EventId: number,
+  ignoreCutoff: boolean = false
+) => {
   const eventInDb = await db
     .collection("events")
     .doc(`hearing-${String(EventId)}`)
@@ -292,9 +304,43 @@ const shouldScrapeVideo = async (EventId: number) => {
     return false
   }
   if (!eventData.videoURL) {
-    return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    return (
+      ignoreCutoff ||
+      withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    )
   }
   return false
+}
+
+const loadCommitteeChairNames = async (
+  generalCourtNumber: number,
+  committeeCode: string
+) => {
+  try {
+    const committeeSnap = await db
+      .collection(`generalCourts/${generalCourtNumber}/committees`)
+      .doc(committeeCode)
+      .get()
+
+    if (!committeeSnap.exists) return [] as string[]
+
+    const { members, content } = Committee.check(committeeSnap.data())
+    const chairCodes = new Set<string>()
+    const maybeHouse = content.HouseChairperson?.MemberCode
+    const maybeSenate = content.SenateChairperson?.MemberCode
+
+    if (maybeHouse) chairCodes.add(maybeHouse)
+    if (maybeSenate) chairCodes.add(maybeSenate)
+    return (members ?? [])
+      .filter(member => chairCodes.has(member.id))
+      .map(member => member.name)
+  } catch (error) {
+    console.warn(
+      `Failed to load committee chairs for ${committeeCode} (${generalCourtNumber}):`,
+      error
+    )
+    return [] as string[]
+  }
 }
 
 class HearingScraper extends EventScraper<HearingListItem, Hearing> {
@@ -307,13 +353,25 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     return events.filter(HearingListItem.guard)
   }
 
-  async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
+  async getEvent(
+    { EventId }: HearingListItem /* e.g. 4962 */,
+    { ignoreCutoff = false }: { ignoreCutoff?: boolean } = {}
+  ) {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
 
     console.log("content in getEvent()", content)
 
-    if (await shouldScrapeVideo(EventId)) {
+    const host = content.HearingHost
+    const committeeChairs =
+      host?.CommitteeCode && host?.GeneralCourtNumber
+        ? await loadCommitteeChairNames(
+            host.GeneralCourtNumber,
+            host.CommitteeCode
+          )
+        : []
+
+    if (await shouldScrapeVideo(EventId, ignoreCutoff)) {
       try {
         const maybeVideoUrl = await getHearingVideoUrl(EventId)
         if (maybeVideoUrl) {
@@ -338,6 +396,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             ...this.timestamps(content),
             videoURL: maybeVideoUrl,
             videoFetchedAt: Timestamp.now(),
+            committeeChairs,
             videoTranscriptionId: transcriptId // using the assembly Id as our transcriptionId
           } as Hearing
         }
@@ -347,6 +406,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
           id: `hearing-${EventId}`,
           type: "hearing",
           content,
+          committeeChairs,
           ...this.timestamps(content)
         } as Hearing
       }
@@ -355,10 +415,66 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
       id: `hearing-${EventId}`,
       type: "hearing",
       content,
+      committeeChairs,
       ...this.timestamps(content)
     } as Hearing
   }
 }
+
+/**
+ * Callable cloud function to scrape a single hearing by EventId.
+ * Requires authentication to prevent abuse of API call limits.
+ *
+ * @param data - Object containing the EventId (e.g., 1234)
+ * @param context - Firebase callable context with auth information
+ */
+export const scrapeSingleHearing = functions
+  .runWith({
+    timeoutSeconds: 480,
+    secrets: ["ASSEMBLY_API_KEY"],
+    memory: "4GB"
+  })
+  .https.onCall(async (data: { eventId: number }, context) => {
+    // Require admin authentication
+    checkAuth(context, false)
+    checkAdmin(context)
+
+    const { eventId } = data
+
+    if (!eventId || typeof eventId !== "number") {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "The function must be called with a valid eventId (number)."
+      )
+    }
+
+    try {
+      // Create a temporary scraper instance to reuse the existing logic
+      const scraper = new HearingScraper()
+      const hearing = await scraper.getEvent(
+        { EventId: eventId },
+        { ignoreCutoff: true }
+      )
+
+      // Save the hearing to Firestore
+      await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
+
+      console.log(`Successfully scraped hearing ${eventId}`, hearing)
+
+      return {
+        status: "success",
+        message: `Successfully scraped hearing ${eventId}`,
+        hearingId: hearing.id
+      }
+    } catch (error: any) {
+      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      throw new functions.https.HttpsError(
+        "internal",
+        `Failed to scrape hearing ${eventId}`,
+        { details: error.message }
+      )
+    }
+  })
 
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function

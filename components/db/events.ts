@@ -42,14 +42,18 @@ type SpecialEvent = BaseEvent & {
 }
 type SpecialEventContent = BaseContent
 
-type Hearing = BaseEvent & { type: "hearing"; content: HearingContent }
+type Hearing = BaseEvent & {
+  type: "hearing"
+  content: HearingContent
+  committeeChairs: string[]
+}
 type HearingContent = BaseContent & {
   Description: string
-  Name: string
+  Name: string | null
   Status: string
   HearingHost: {
-    CommitteeCode: string
-    GeneralCourtNumber: number
+    CommitteeCode: string | null
+    GeneralCourtNumber: number | null
   }
   Location: HearingLocation
   HearingAgendas: {

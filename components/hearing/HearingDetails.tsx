@@ -3,15 +3,17 @@ import { Trans, useTranslation } from "next-i18next"
 import { useCallback, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
+import { firestore } from "../firebase"
+import * as links from "../links"
+import { committeeURL, External } from "../links"
+import {
+  Back,
+  ButtonContainer,
+  FeatureCalloutButton
+} from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
+import { Paragraph, fetchTranscriptionData } from "./transcription"
 import { Transcriptions } from "./Transcriptions"
-import { firestore } from "components/firebase"
-import * as links from "components/links"
-
-export const CommitteeButton = styled.button`
-  border-radius: 12px;
-  font-size: 12px;
-`
 
 const LegalContainer = styled(Container)`
   background-color: white;
@@ -39,6 +41,12 @@ export const HearingDetails = ({
   hearingId: string | string[] | undefined
 }) => {
   const { t } = useTranslation(["common", "hearing"])
+  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+
+  const [videoLoaded, setVideoLoaded] = useState(false)
+  const handleVideoLoad = () => {
+    setVideoLoaded(true)
+  }
 
   const videoRef = useRef<HTMLVideoElement>(null)
   function setCurTimeVideo(value: number) {
@@ -47,6 +55,7 @@ export const HearingDetails = ({
 
   const eventId = `hearing-${hearingId}`
 
+  const [billsInAgenda, setBillsInAgenda] = useState([])
   const [committeeCode, setCommitteeCode] = useState("")
   const [committeeName, setCommitteeName] = useState("")
   const [description, setDescription] = useState("")
@@ -59,6 +68,7 @@ export const HearingDetails = ({
     const hearing = await getDoc(doc(firestore, `events/${eventId}`))
     const docData = hearing.data()
 
+    setBillsInAgenda(docData?.content.HearingAgendas[0]?.DocumentsInAgenda)
     setCommitteeCode(docData?.content.HearingHost.CommitteeCode)
     setCommitteeName(docData?.content.Name)
     setDescription(docData?.content.Description)
@@ -69,33 +79,55 @@ export const HearingDetails = ({
   }, [eventId])
 
   useEffect(() => {
+    ;(async function () {
+      if (!videoTranscriptionId || transcriptData.length !== 0) return
+      const docList = await fetchTranscriptionData(videoTranscriptionId)
+      setTranscriptData(docList)
+    })()
+  }, [videoTranscriptionId])
+
+  useEffect(() => {
     hearingData()
   }, [hearingData])
 
   return (
     <Container className="mt-3 mb-3">
-      <h1>
-        {t("hearing", { ns: "hearing" })} {hearingId}
-      </h1>
+      <Row className={`mb-3`}>
+        <Col>
+          <Back href="/hearings">{t("back_to_hearings")}</Back>
+        </Col>
+      </Row>
 
-      <h5 className={`mb-3`}>{description}</h5>
-
-      {committeeName ? (
-        <links.External
-          href={`https://malegislature.gov/Committees/Detail/${committeeCode}/${generalCourtNumber}`}
-        >
-          <CommitteeButton
+      {transcriptData ? (
+        <ButtonContainer className={`mb-2`}>
+          {/* ButtonContainer contrains clickable area of link so that it doesn't exceed
+              the button and strech invisibly across the width of the page */}
+          <FeatureCalloutButton
             className={`btn btn-secondary d-flex text-nowrap mt-1 mx-1 p-1`}
           >
-            &nbsp; {committeeName} &nbsp;
-          </CommitteeButton>
-        </links.External>
+            &nbsp;{" "}
+            {t("video_and_transcription_feature_callout", { ns: "hearing" })}{" "}
+            &nbsp;
+          </FeatureCalloutButton>
+        </ButtonContainer>
       ) : (
         <></>
       )}
 
-      <div className={`row mt-4`}>
-        <Col className={`col-md-8`}>
+      {committeeName ? (
+        <h1>
+          <External href={committeeURL(committeeCode)}>
+            {committeeName}
+          </External>
+        </h1>
+      ) : (
+        <></>
+      )}
+
+      <h5 className={`mb-3`}>{description}</h5>
+
+      <Row>
+        <Col className={`col-md-8 mt-4`}>
           <LegalContainer className={`pb-2 rounded`}>
             <Row
               className={`d-flex align-items-center justify-content-between`}
@@ -129,8 +161,14 @@ export const HearingDetails = ({
           </LegalContainer>
 
           {videoURL ? (
-            <VideoParent className={`my-3`}>
-              <VideoChild ref={videoRef} src={videoURL} controls muted />
+            <VideoParent className={`mt-3`}>
+              <VideoChild
+                ref={videoRef}
+                src={videoURL}
+                onLoadedData={handleVideoLoad}
+                controls
+                muted
+              />
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
@@ -139,19 +177,24 @@ export const HearingDetails = ({
           )}
 
           <Transcriptions
+            transcriptData={transcriptData}
             setCurTimeVideo={setCurTimeVideo}
-            videoTranscriptionId={videoTranscriptionId}
+            videoLoaded={videoLoaded}
+            videoRef={videoRef}
           />
         </Col>
 
         <div className={`col-md-4`}>
           <HearingSidebar
+            billsInAgenda={billsInAgenda}
             committeeCode={committeeCode}
             generalCourtNumber={generalCourtNumber}
             hearingDate={hearingDate}
+            hearingId={hearingId}
+            transcriptData={transcriptData}
           />
         </div>
-      </div>
+      </Row>
     </Container>
   )
 }

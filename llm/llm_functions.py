@@ -1,20 +1,20 @@
 """
 This code implements text summarization, category selection and tagging bills using templated LLM prompts.
 
-The main functions and their objectives are: 
-1. get_summary_api_function: Function used to summarize a bill - It takes in bill id, bill title and bill text 
+The main functions and their objectives are:
+1. get_summary_api_function: Function used to summarize a bill - It takes in bill id, bill title and bill text
                             and returns summary of the bill.
 
 2. get_tags_api_function:    Function used to tag a bill with pre specified tags - It takes in bill id, bill title
                             and bill text and returns the selected tags from specified tags.
-                            
-3. get_summaries_and_tags_api_function: Combined function that generates both summary and tags in a single call - 
-                            It takes in bill id, bill title and bill text, first generates a summary, and then 
-                            uses this summary to generate relevant tags. This approach ensures tags are based on 
+
+3. get_summaries_and_tags_api_function: Combined function that generates both summary and tags in a single call -
+                            It takes in bill id, bill title and bill text, first generates a summary, and then
+                            uses this summary to generate relevant tags. This approach ensures tags are based on
                             the distilled information in the summary rather than the full bill text.
 
-4. get_tags_api_function_v2: Optimized version of tag generation that works with bill summaries - It takes in 
-                            bill id, bill title and bill summary (instead of full text) to generate tags. This 
+4. get_tags_api_function_v2: Optimized version of tag generation that works with bill summaries - It takes in
+                            bill id, bill title and bill summary (instead of full text) to generate tags. This
                             version provides more focused tagging by working with already-distilled information.
 
 Note:
@@ -23,18 +23,14 @@ Note:
     - Templates for prompts are maintained separately to ensure consistency across different parts of the application
 
 """
-import json
+
 import numpy as np
-import os
 import pandas as pd
 import tiktoken
-import streamlit as st
-import urllib.request
 import chromadb
 import re
 import requests
 
-from chromadb.config import Settings
 from dataclasses import dataclass, field
 
 from langchain.globals import set_llm_cache
@@ -53,25 +49,37 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 
 from operator import itemgetter
 from pathlib import Path
-from rouge_score import rouge_scorer
 from requests.exceptions import RequestException
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from typing import Tuple, List
+from typing import List
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from prompts import *
-from tag_categories import *
+from prompts import (
+    TAGGING_PROMPT_LARGE,
+    TAGGING_PROMPT_SMALL,
+    CATEGORIZATION_PROMPT_SMALL,
+    SUMMARIZATION_PROMPT_SMALL,
+    CATEGORIZATION_PROMPT_LARGE,
+    SUMMARIZATION_PROMPT_LARGE,
+    TAGGING_PROMPT_USING_SUMMARIES,
+)
+from tag_categories import (
+    new_categories_for_bill_list,
+    new_tags,
+    new_tags_for_bill_dict,
+)
 
-GPT_MDOEL_VERSION = 'gpt-4o-mini'
+from normalize_summaries import normalize_summary
+
+GPT_MDOEL_VERSION = "gpt-4o-mini"
 MAX_TOKEN_LIMIT = 128000
 
 CHROMA_DB_PATH = "./databases/chroma_db"
 LLM_CACHE = Path("./databases/llm_cache.db")
 
-API_KEY = '' # Optional: Add API Key here if you want to use legacy functions
+API_KEY = ""  # Optional: Add API Key here if you want to use legacy functions
 
-def extract_sections(bill_text: str) -> list[tuple[str, str]]: 
+
+def extract_sections(bill_text: str) -> list[tuple[str, str]]:
     """
     Extracts chapters and sections from a bill using regular expressions.
 
@@ -84,99 +92,106 @@ def extract_sections(bill_text: str) -> list[tuple[str, str]]:
     regex = ""
     chapter = ""
     section = ""
-    
-    
+
     check_list = ["section", "chapter"]
-    #Regex to extract strings containing "section# of chapter#, 'section# of said chapter#' , 'section#' or 'chapter#' in a list
-    regex = re.findall(r'(section)(\s+\d+[a-zA-Z]+|\s+\d+)\s+(of|of\ssaid)\s(chapter)(\s+\d+[a-zA-Z]+|\s\d+)|(section|chapter)(\s+\d+[a-zA-Z]+|\s\d+)',str(bill_text), re.IGNORECASE)
-            
-    lists_with_both =[]
+    # Regex to extract strings containing "section# of chapter#, 'section# of said chapter#' , 'section#' or 'chapter#' in a list
+    regex = re.findall(
+        r"(section)(\s+\d+[a-zA-Z]+|\s+\d+)\s+(of|of\ssaid)\s(chapter)(\s+\d+[a-zA-Z]+|\s\d+)|(section|chapter)(\s+\d+[a-zA-Z]+|\s\d+)",
+        str(bill_text),
+        re.IGNORECASE,
+    )
+
+    lists_with_both = []
     current_chapter = ""
 
-    #iterate over regex list that contains both chapters and sections
-    for x in regex:  
+    # iterate over regex list that contains both chapters and sections
+    for x in regex:
         items = []
-        #iterate over extracted lists
+        # iterate over extracted lists
         for item in x:
             item = item.casefold()
-            items.append(item) 
+            items.append(item)
         if all(name in items for name in check_list):
             for i, j in enumerate(x):
-        
                 if j.casefold() == "section":
-                    section = x[i+1].strip()
-        
-                if j.casefold() == "chapter":
-                    chapter = x[i+1].strip()
+                    section = x[i + 1].strip()
 
-                    #save current chapter in order to use it for pairing with sections mentioned later
-                    current_chapter = chapter 
-                    
-                    #add chapter and section to the list
+                if j.casefold() == "chapter":
+                    chapter = x[i + 1].strip()
+
+                    # save current chapter in order to use it for pairing with sections mentioned later
+                    current_chapter = chapter
+
+                    # add chapter and section to the list
                     list_with_both = [chapter, section]
-                    
-                    #only keep new/unique chapter and section pairs
+
+                    # only keep new/unique chapter and section pairs
                     if list_with_both not in lists_with_both:
                         lists_with_both.append(list_with_both)
 
         else:
-            #iterate over list that contains only sections or chapters
+            # iterate over list that contains only sections or chapters
             for i, j in enumerate(x):
-                #ignore SECTION with caps as it indicates sections from the bills and not the MGL
-                if j == "SECTION": 
+                # ignore SECTION with caps as it indicates sections from the bills and not the MGL
+                if j == "SECTION":
                     continue
                 if j == "":
                     continue
-                
+
                 else:
                     if j.casefold() == "chapter":
-                        current_chapter = x[i+1].strip() #keep track of current chapter
-                    
+                        current_chapter = x[
+                            i + 1
+                        ].strip()  # keep track of current chapter
+
                     if j.casefold() == "section":
-                        if x[i+1] == "":
+                        if x[i + 1] == "":
                             continue
                         else:
-                            section = x[i+1].strip()
-                        
+                            section = x[i + 1].strip()
+
                         list_with_both = [current_chapter, section]
                         if list_with_both not in lists_with_both:
                             lists_with_both.append(list_with_both)
-                            
+
     return lists_with_both
 
+
 def query_section_text(chapter_section_list: tuple[str, str]) -> str | float:
-    """ 
+    """
     Makes an API call to retrieve text data based on the provided chapter and section.
-        
+
     Parameters:
     - chapter_section_list (list): A list containing two elements - chapter and section, e.g., ['2', '15D'].
-        
+
     Returns:
     - result (str): The text data retrieved from the API.
-        
+
     Note:
     - This function uses the malegislature.gov API to fetch text data for a specific chapter and section.
-        
-    """ 
+
+    """
 
     result = """"""
-    
+
     try:
         # unpack section and chapter for example: ['2', '15D']
         chapter, section = chapter_section_list
-        link = f'https://malegislature.gov/api/Chapters/{chapter}/Sections/{section}'
+        link = f"https://malegislature.gov/api/Chapters/{chapter}/Sections/{section}"
         r = requests.get(link, verify=False)
         r = r.json()
-    
+
         # fields to extract
-        result =  r.get("Text", np.nan)
+        result = r.get("Text", np.nan)
 
         return result
-    except RequestException as e:
-
+    except RequestException:
         pass
 
-def query_section_text_all_bills(chapter_section_lists: list[tuple[str, str]]) -> tuple[list[str], list[tuple[str, str]]]:
+
+def query_section_text_all_bills(
+    chapter_section_lists: list[tuple[str, str]],
+) -> tuple[list[str], list[tuple[str, str]]]:
     """
     Retrieves text data for each chapter-section pair in the given sample; prints chapter-section numbers to keep track of the progress.
 
@@ -185,14 +200,14 @@ def query_section_text_all_bills(chapter_section_lists: list[tuple[str, str]]) -
 
     Returns:
     - formatted_data(list): A list containing formatted text data for each non-empty chapter-section pair in the sample.
-    - empty_responses(list): A list containing chapter section pairs where API doesn't return anything 
+    - empty_responses(list): A list containing chapter section pairs where API doesn't return anything
 
     Note:
     - This function prints the provided chapter-section pairs and retrieves text data for each pair using the `make_api_call` function.
     - The function skips empty or None pairs and ignores pairs with empty or NaN text data.
     - The formatted text data for each non-empty pair is stored in a list, which is then returned.
     """
-    
+
     # Storing and printing each pair
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     formatted_data = []
@@ -203,36 +218,39 @@ def query_section_text_all_bills(chapter_section_lists: list[tuple[str, str]]) -
 
     if str(chapter_section_lists) == "nan":
         return
-       
+
     # Iterate through each pair in the chapter_section_lists
     for pair in chapter_section_lists:
-        
         if len(pair) == 0:
             continue
         else:
             string = query_section_text(pair)
             if string in {None, np.nan, "", "nan"}:
-                empty_responses.append(pair) #get a list of chapter-section pair where the API call returns an empty list
+                empty_responses.append(
+                    pair
+                )  # get a list of chapter-section pair where the API call returns an empty list
                 continue
             else:
                 result += string
         formatted_data.append(result)
-        
+
     return formatted_data, empty_responses
 
-def get_chap_sec_names_internal(chap_sec_lists: list, mgl_names_file_path: str = "./chapter_section_names.pq") -> str:
-    
+
+def get_chap_sec_names_internal(
+    chap_sec_lists: list, mgl_names_file_path: str = "./chapter_section_names.pq"
+) -> str:
     """
-    Fetches chapter and section names for a given bill number from a local parquet file.    
+    Fetches chapter and section names for a given bill number from a local parquet file.
     TODO delete this function after we setup a robust database backend with the MGL data.
-    
+
     Args:
         chap_sec_lists (list): list of tuples containing chapter number and section numbers.
         mgl_names_file_path (str): path for the file containing chapter and section names. Expected columns are `Chapter_Number`, `Section_Number`, `Chapter`, `Section Name`
-    
+
     Returns:
         str: All chapter and section names pairs concatenated together.
-        
+
     The function assumes the DataFrame has the necessary columns.
     """
 
@@ -243,15 +261,24 @@ def get_chap_sec_names_internal(chap_sec_lists: list, mgl_names_file_path: str =
     for tup in chap_sec_lists:
         chap, sec = tup
         try:
-            chapter_name = names_df[(names_df["Chapter_Number"] == chap) & (names_df["Section_Number"] == sec)]['Chapter'].values[0]
-            section_name = names_df[(names_df["Chapter_Number"] == chap) & (names_df["Section_Number"] == sec)]['Section Name'].values[0]
+            chapter_name = names_df[
+                (names_df["Chapter_Number"] == chap)
+                & (names_df["Section_Number"] == sec)
+            ]["Chapter"].values[0]
+            section_name = names_df[
+                (names_df["Chapter_Number"] == chap)
+                & (names_df["Section_Number"] == sec)
+            ]["Section Name"].values[0]
             names[chapter_name] = section_name
-        except Exception as e:
+        except Exception:
             continue
 
     return ", ".join([f"{key}: {value}" for key, value in names.items()])
 
-def count_tokens(bill_title:str, bill_text:str, mgl_ref:str, mgl_names:str, committee_info:str):
+
+def count_tokens(
+    bill_title: str, bill_text: str, mgl_ref: str, mgl_names: str, committee_info: str
+):
     """
     Outputs the number of tokens for the given documents
 
@@ -265,69 +292,80 @@ def count_tokens(bill_title:str, bill_text:str, mgl_ref:str, mgl_names:str, comm
     Returns:
         int: token_count
     """
-    
+
     encoding = tiktoken.encoding_for_model(GPT_MDOEL_VERSION)
 
-    text = str(bill_title) + str(bill_text) + str(mgl_ref) + str(mgl_names) + str(committee_info)
+    text = (
+        str(bill_title)
+        + str(bill_text)
+        + str(mgl_ref)
+        + str(mgl_names)
+        + str(committee_info)
+    )
     token_count = len(encoding.encode(text))
     print(f"The text contains {token_count} tokens.")
     return token_count
 
-def set_my_llm_cache(cache_file: Path=LLM_CACHE) -> SQLiteCache:
+
+def set_my_llm_cache(cache_file: Path = LLM_CACHE) -> SQLiteCache:
     """
     Set an LLM cache, which allows for previously executed completions to be
     loaded from disk instead of repeatedly queried.
     """
     cache_file.parent.mkdir(exist_ok=True)
-    set_llm_cache(SQLiteCache(database_path = cache_file))
+    set_llm_cache(SQLiteCache(database_path=cache_file))
+
 
 @dataclass()
-class BillDetails():
-    '''
-    A class to store all the details pertaining to a bill. 
-    '''
+class BillDetails:
+    """
+    A class to store all the details pertaining to a bill.
+    """
 
-    bill_id: str = ''
-    bill_title: str = ''
-    bill_text: str = ''
-    mgl_ref: str = ''
-    committee_info: str = ''
-    mgl_names: str = ''
+    bill_id: str = ""
+    bill_title: str = ""
+    bill_text: str = ""
+    mgl_ref: str = ""
+    committee_info: str = ""
+    mgl_names: str = ""
     invoke_dict: dict = field(default_factory=list)
-    summary: str = ''
+    summary: str = ""
+
 
 @dataclass()
-class LLMResults: 
-
-    '''
+class LLMResults:
+    """
     A class to store the results of the LLM.
-    '''
-    query: str = ''
-    response: str = ''
+    """
 
-def extract_bill_context(bill_text: str) -> tuple: 
+    query: str = ""
+    response: str = ""
 
-    '''
+
+def extract_bill_context(bill_text: str) -> tuple:
+    """
     This function takes in bill text, extracts the referenced MGL sections and returns them
 
-    Arguments: 
+    Arguments:
         bill_text (str): Actual bill text
 
     Returns:
         A tuple of (combined_mgl, mgl_names)
         combined_mgl (str): All the relevant MGL section strings concatenated to a big string
         mgl_names (tuple): Tuple of referenced MGL section numbers
-    '''
+    """
     sections = extract_sections(bill_text)
     mgl_list, empty_responses = query_section_text_all_bills(sections)
 
-    combined_mgl = ' '.join(mgl_list) if len(mgl_list) != 0 else "None"
+    combined_mgl = " ".join(mgl_list) if len(mgl_list) != 0 else "None"
     mgl_names = get_chap_sec_names_internal(sections)
 
     return combined_mgl, mgl_names
 
-def get_summaries_and_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
 
+def get_summaries_and_tags_api_function(
+    bill_id: str, bill_title: str, bill_text: str
+) -> dict:
     """
     Generates both a summary and relevant tags for a given legislative bill in a single API call.
 
@@ -335,8 +373,8 @@ def get_summaries_and_tags_api_function(bill_id: str, bill_title: str, bill_text
     1. Generates a summary of the bill using get_summary_api_function
     2. Uses this summary to generate relevant tags using get_tags_api_function_v2
 
-    The sequential processing ensures that tags are generated based on the distilled 
-    information in the summary rather than the full bill text, potentially improving 
+    The sequential processing ensures that tags are generated based on the distilled
+    information in the summary rather than the full bill text, potentially improving
     tagging accuracy and consistency.
 
     Args:
@@ -364,31 +402,29 @@ def get_summaries_and_tags_api_function(bill_id: str, bill_title: str, bill_text
         - If summary generation fails, tag generation is not attempted
     """
 
-    response_obj = {
-        'status': -1,
-        'summary': '',
-        'tags': []
-    }
+    response_obj = {"status": -1, "summary": "", "tags": []}
 
     # Get the summary
     summary_response = get_summary_api_function(bill_id, bill_title, bill_text)
 
     response_obj.update(summary_response)
 
-    if response_obj['summary'] == '' or response_obj['status'] != 1: 
+    if response_obj["summary"] == "" or response_obj["status"] != 1:
         return response_obj
 
     # Get tags
-    tags_response = get_tags_api_function_v2(bill_id, bill_title, response_obj['summary'])
+    tags_response = get_tags_api_function_v2(
+        bill_id, bill_title, response_obj["summary"]
+    )
     response_obj.update(tags_response)
     return response_obj
 
-def get_summary_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
 
+def get_summary_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
     """
     Generates a summary for a given legislative bill.
 
-    This function processes the input bill information, extracts relevant context from the 
+    This function processes the input bill information, extracts relevant context from the
     Massachusetts General Laws (MGL), and uses a language model to generate a concise summary.
 
     Args:
@@ -416,32 +452,32 @@ def get_summary_api_function(bill_id: str, bill_title: str, bill_text: str) -> d
     """
     # extract relevant mgl text
     combined_mgl, mgl_names = extract_bill_context(bill_text)
-    
+
     # create bill_details object
     bill_details = BillDetails(
-        bill_id = bill_id,
-        bill_title = bill_title, 
-        bill_text = bill_text, 
-        mgl_ref = combined_mgl, 
-        committee_info = 'None:None', 
-        mgl_names = mgl_names, 
+        bill_id=bill_id,
+        bill_title=bill_title,
+        bill_text=bill_text,
+        mgl_ref=combined_mgl,
+        committee_info="None:None",
+        mgl_names=mgl_names,
     )
 
     # call the summary function
     status_code, results = get_summary(bill_details)
 
     # return response attribute of returned value
-    if status_code != 1: 
-        return {'status': status_code, 'summary': ''}
-    else: 
-        return {'status': status_code, 'summary': results.response}
+    if status_code != 1:
+        return {"status": status_code, "summary": ""}
+    else:
+        return {"status": status_code, "summary": normalize_summary(results.response)}
+
 
 def get_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict:
-    
     """
     Generates relevant tags for a given legislative bill.
 
-    This function processes the input bill information, extracts relevant context from the 
+    This function processes the input bill information, extracts relevant context from the
     Massachusetts General Laws (MGL), and uses a language model to generate appropriate tags.
 
     Args:
@@ -470,28 +506,28 @@ def get_tags_api_function(bill_id: str, bill_title: str, bill_text: str) -> dict
 
     # extract relevant mgl text
     combined_mgl, mgl_names = extract_bill_context(bill_text)
-    
+
     # create bill_details object
     bill_details = BillDetails(
-        bill_id = bill_id,
-        bill_title = bill_title, 
-        bill_text = bill_text, 
-        mgl_ref = combined_mgl, 
-        committee_info = 'None:None', 
-        mgl_names = mgl_names, 
+        bill_id=bill_id,
+        bill_title=bill_title,
+        bill_text=bill_text,
+        mgl_ref=combined_mgl,
+        committee_info="None:None",
+        mgl_names=mgl_names,
     )
 
     # call the summary function
     status_code, results = get_tags(bill_details)
 
     # return response attribute of returned value
-    if status_code != 1: 
-        return {'status': status_code, 'tags': []}
-    else: 
-        return {'status': status_code, 'tags': results.response}
+    if status_code != 1:
+        return {"status": status_code, "tags": []}
+    else:
+        return {"status": status_code, "tags": results.response}
+
 
 def get_tags_api_function_v2(bill_id: str, bill_title: str, bill_summary: str) -> dict:
-
     """
     Generates tags for a legislative bill using its summary instead of full text.
 
@@ -527,26 +563,25 @@ def get_tags_api_function_v2(bill_id: str, bill_title: str, bill_summary: str) -
     """
 
     bill_details = BillDetails(
-        bill_id = bill_id,
-        bill_title = bill_title, 
-        summary = bill_summary
+        bill_id=bill_id, bill_title=bill_title, summary=bill_summary
     )
     status_code, results = get_tags_v2(bill_details)
 
-    if status_code != 1: 
-        return {'status': status_code, 'tags': []}
-    else: 
-        return {'status': status_code, 'tags': results.response}
+    if status_code != 1:
+        return {"status": status_code, "tags": []}
+    else:
+        return {"status": status_code, "tags": results.response}
+
 
 def get_llm_call_type(bill_details: BillDetails) -> str:
     """
     This function calculates number of tokens and decides on weather to use RAG or not. It reutrns a string output
-    that specifies how to call the LLM. 
+    that specifies how to call the LLM.
 
-    Args: 
+    Args:
         bill_details (BillDetails): object consisting of bill_text, bill_title, mgl_ref, commottee_info, mgl_names
 
-    Returns: 
+    Returns:
         str: 'large' or 'small' depeneding upon token count
 
     """
@@ -558,44 +593,53 @@ def get_llm_call_type(bill_details: BillDetails) -> str:
     mgl_names = getattr(bill_details, "mgl_names")
 
     num_tokens = count_tokens(bill_title, bill_text, mgl_ref, mgl_names, committee_info)
-    
-    return 'small' if num_tokens < MAX_TOKEN_LIMIT - 5000 else 'large'
+
+    return "small" if num_tokens < MAX_TOKEN_LIMIT - 5000 else "large"
+
 
 def get_category_tags(categories: List) -> List:
     """
-    This function takes in list of categories and returns tags pertinant to that specifc categories only. 
+    This function takes in list of categories and returns tags pertinant to that specifc categories only.
 
-    Args: 
+    Args:
 
         categories (List(str)): List of category strings.
 
-    Returns: 
-        List of all tags specific to those of categories.  
+    Returns:
+        List of all tags specific to those of categories.
     """
 
-    tags_tuple = itemgetter(*set.intersection(set(categories), set(new_categories_for_bill_list)))(new_tags_for_bill_dict)
-    
-    if isinstance(tags_tuple, list): return tags_tuple
+    tags_tuple = itemgetter(
+        *set.intersection(set(categories), set(new_categories_for_bill_list))
+    )(new_tags_for_bill_dict)
+
+    if isinstance(tags_tuple, list):
+        return tags_tuple
 
     category_tags = []
-    for cts in tags_tuple: category_tags += cts
+    for cts in tags_tuple:
+        category_tags += cts
     return category_tags
 
-def get_summary(bill_details: BillDetails) -> tuple[int, LLMResults]:
-    '''
-    This function takes in bill details object (bill title, bill text and reference mgl section text) and summarizes the bill. 
 
-    Arguments: 
+def get_summary(bill_details: BillDetails) -> tuple[int, LLMResults]:
+    """
+    This function takes in bill details object (bill title, bill text and reference mgl section text) and summarizes the bill.
+
+    Arguments:
 
     bill_details (BillDetails): Object containing information about the bill - bill_text, bill_title, mgl_ref, commottee_info, mgl_names
 
-    Returns: 
+    Returns:
         A tuple of status_code and an LLMResults object containing query, response from the LLM
         status_code can take these following values {1: Success, -1: Necessary details not found}
 
-    '''
+    """
 
-    if not all(hasattr(bill_details, attr) for attr in ("bill_text", 'bill_title', 'mgl_names', 'committee_info')): 
+    if not all(
+        hasattr(bill_details, attr)
+        for attr in ("bill_text", "bill_title", "mgl_names", "committee_info")
+    ):
         return -1, LLMResults()
 
     set_my_llm_cache()
@@ -604,8 +648,8 @@ def get_summary(bill_details: BillDetails) -> tuple[int, LLMResults]:
     query = get_query_for_summarization(bill_details, llm_call_type)
     return 1, call_llm(bill_details, query, llm_call_type)
 
-def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
 
+def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
     """
     Tags a legislative bill using a two-step process involving categorization and LLM-based tag selection.
 
@@ -634,7 +678,10 @@ def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
         The function requires all necessary bill details to be present in the BillDetails object for successful execution.
     """
 
-    if not all(hasattr(bill_details, attr) for attr in ("bill_text", 'bill_title', 'mgl_names', 'committee_info')): 
+    if not all(
+        hasattr(bill_details, attr)
+        for attr in ("bill_text", "bill_title", "mgl_names", "committee_info")
+    ):
         return -1, LLMResults()
 
     set_my_llm_cache()
@@ -650,12 +697,14 @@ def get_tags(bill_details: BillDetails) -> tuple[int, LLMResults]:
     tag_response = call_llm(bill_details, query_2, llm_call_type)
 
     # parses the response from LLM and removes hallucinated tags
-    tag_response.response = list(set(extract_categories_tags(tag_response.response)) & set(category_tags))
+    tag_response.response = list(
+        set(extract_categories_tags(tag_response.response)) & set(category_tags)
+    )
 
     return 1, tag_response
 
-def get_tags_v2(bill_details: BillDetails) -> LLMResults:
 
+def get_tags_v2(bill_details: BillDetails) -> LLMResults:
     """
     Helper function that generates tags for a bill using its summary.
 
@@ -690,24 +739,26 @@ def get_tags_v2(bill_details: BillDetails) -> LLMResults:
        - Relies on TAGGING_PROMPT_USING_SUMMARIES template from prompts.py
     """
 
-    if not all(hasattr(bill_details, attr) for attr in ("summary", "bill_title")): 
+    if not all(hasattr(bill_details, attr) for attr in ("summary", "bill_title")):
         return -2, LLMResults()
 
     set_my_llm_cache()
-    llm_call_type = 'small'
+    llm_call_type = "small"
     query = TAGGING_PROMPT_USING_SUMMARIES
     bill_details.invoke_dict = {
-        'bill_title': bill_details.bill_title,
-        'context': [Document(page_content = f"```{bill_details.summary}```")],
-        'tags': new_tags
+        "bill_title": bill_details.bill_title,
+        "context": [Document(page_content=f"```{bill_details.summary}```")],
+        "tags": new_tags,
     }
 
     tag_response = call_llm(bill_details, query, llm_call_type)
-    tag_response.response = list(set(extract_categories_tags(tag_response.response)) & set(new_tags))
+    tag_response.response = list(
+        set(extract_categories_tags(tag_response.response)) & set(new_tags)
+    )
     return 1, tag_response
 
-def extract_categories_tags(response: str) -> list:
 
+def extract_categories_tags(response: str) -> list:
     """
     Extracts categories or tags from a string response.
 
@@ -729,43 +780,51 @@ def extract_categories_tags(response: str) -> list:
         Empty elements (resulting from consecutive '#' characters) will be removed from the final list.
     """
 
-    response = response.split('#')
+    response = response.split("#")
     return [i.strip() for i in response]
+
 
 def prepare_invoke_dict(bill_details: BillDetails) -> dict:
     """
-    This function prepares the dict object that is used in chain.invoke function to call the LLM with prompt and 
-    required details. 
+    This function prepares the dict object that is used in chain.invoke function to call the LLM with prompt and
+    required details.
 
-    Args: 
+    Args:
         bill_details (BillDetails): Object containing information about the bill - bill_text, bill_title, mgl_ref, commottee_info, mgl_names
 
-    Returns: 
-        dict object containing all the necessary keys and values required for invoke call. 
+    Returns:
+        dict object containing all the necessary keys and values required for invoke call.
 
     """
-    text_splitter = CharacterTextSplitter(chunk_size = 90000, chunk_overlap = 1000)
+    text_splitter = CharacterTextSplitter(chunk_size=90000, chunk_overlap=1000)
 
     return {
-                "title": bill_details.bill_title, 
-                "context": [Document(page_content = f"```{x}```") for x in text_splitter.split_text(bill_details.bill_text)],
-                "names": bill_details.mgl_names, 
-                "mgl_sections": [Document(page_content = f"```{x}```") for x in text_splitter.split_text(bill_details.mgl_ref)],
-                "committee_info": bill_details.committee_info
-            }
+        "title": bill_details.bill_title,
+        "context": [
+            Document(page_content=f"```{x}```")
+            for x in text_splitter.split_text(bill_details.bill_text)
+        ],
+        "names": bill_details.mgl_names,
+        "mgl_sections": [
+            Document(page_content=f"```{x}```")
+            for x in text_splitter.split_text(bill_details.mgl_ref)
+        ],
+        "committee_info": bill_details.committee_info,
+    }
+
 
 def get_query_for_summarization(bill_details: BillDetails, llm_call_type: str) -> str:
     """
     Prepares a prompt for bill summarization based on the specified LLM call type.
 
-    This function constructs a query string for summarizing a legislative bill. It uses 
-    predefined templates for small and large LLM call types, ensuring consistency across 
+    This function constructs a query string for summarizing a legislative bill. It uses
+    predefined templates for small and large LLM call types, ensuring consistency across
     different parts of the application.
 
     Args:
-        bill_details (BillDetails): Object containing bill information. This object may 
+        bill_details (BillDetails): Object containing bill information. This object may
                                     be modified in place for 'small' call types.
-        llm_call_type (str): Specifies the type of LLM call to make. 
+        llm_call_type (str): Specifies the type of LLM call to make.
                              Can be either "small" (standard approach) or "large" (RAG approach).
 
     Returns:
@@ -773,16 +832,16 @@ def get_query_for_summarization(bill_details: BillDetails, llm_call_type: str) -
              for bill summarization.
 
     Note:
-        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of 
+        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of
         the `bill_details` object.
     """
-    
-    if llm_call_type == 'large':
+
+    if llm_call_type == "large":
         query = SUMMARIZATION_PROMPT_LARGE.format(
             bill_title=getattr(bill_details, "bill_title"),
             bill_text=getattr(bill_details, "bill_text"),
             mgl_names=getattr(bill_details, "mgl_names"),
-            committee_info=getattr(bill_details, "committee_info")
+            committee_info=getattr(bill_details, "committee_info"),
         )
     else:
         bill_details.invoke_dict = prepare_invoke_dict(bill_details)
@@ -790,19 +849,19 @@ def get_query_for_summarization(bill_details: BillDetails, llm_call_type: str) -
 
     return query
 
-def get_query_for_categorizing(bill_details: BillDetails, llm_call_type: str) -> str: 
 
+def get_query_for_categorizing(bill_details: BillDetails, llm_call_type: str) -> str:
     """
     Prepares a prompt for bill categorization based on the specified LLM call type.
 
-    This function constructs a query string for categorizing a legislative bill. It uses 
-    predefined templates for small and large LLM call types, ensuring consistency across 
+    This function constructs a query string for categorizing a legislative bill. It uses
+    predefined templates for small and large LLM call types, ensuring consistency across
     different parts of the application.
 
     Args:
-        bill_details (BillDetails): Object containing bill information. This object may 
+        bill_details (BillDetails): Object containing bill information. This object may
                                     be modified in place for 'small' call types.
-        llm_call_type (str): Specifies the type of LLM call to make. 
+        llm_call_type (str): Specifies the type of LLM call to make.
                              Can be either "small" (standard approach) or "large" (RAG approach).
 
     Returns:
@@ -810,39 +869,45 @@ def get_query_for_categorizing(bill_details: BillDetails, llm_call_type: str) ->
              for bill categorization.
 
     Note:
-        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of 
+        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of
         the `bill_details` object inplace.
     """
 
-    if llm_call_type == 'large':
+    if llm_call_type == "large":
         query = CATEGORIZATION_PROMPT_LARGE.format(
-            categories=getattr(bill_details, 'categories', new_categories_for_bill_list),
-            bill_title=getattr(bill_details, 'bill_title'),
-            bill_text=getattr(bill_details, 'bill_text'),
-            committee_info=getattr(bill_details, 'committee_info'),
-            mgl_names=getattr(bill_details, "mgl_names")
+            categories=getattr(
+                bill_details, "categories", new_categories_for_bill_list
+            ),
+            bill_title=getattr(bill_details, "bill_title"),
+            bill_text=getattr(bill_details, "bill_text"),
+            committee_info=getattr(bill_details, "committee_info"),
+            mgl_names=getattr(bill_details, "mgl_names"),
         )
-    else: 
+    else:
         query = CATEGORIZATION_PROMPT_SMALL
         bill_details.invoke_dict = prepare_invoke_dict(bill_details)
-        bill_details.invoke_dict['categories'] = getattr(bill_details, 'categories', new_categories_for_bill_list)
+        bill_details.invoke_dict["categories"] = getattr(
+            bill_details, "categories", new_categories_for_bill_list
+        )
 
     return query
 
-def get_query_for_tagging(bill_details: BillDetails, category_tags: list, llm_call_type: str) -> str: 
 
+def get_query_for_tagging(
+    bill_details: BillDetails, category_tags: list, llm_call_type: str
+) -> str:
     """
     Prepares a prompt for bill tagging based on the specified LLM call type.
 
-    This function constructs a query string for tagging a legislative bill. It uses 
-    predefined templates for small and large LLM call types, ensuring consistency across 
+    This function constructs a query string for tagging a legislative bill. It uses
+    predefined templates for small and large LLM call types, ensuring consistency across
     different parts of the application.
 
     Args:
-        bill_details (BillDetails): Object containing bill information. This object may 
+        bill_details (BillDetails): Object containing bill information. This object may
                                     be modified in place for 'small' call types.
         category_tags (list): List of tags that the model has to filter from.
-        llm_call_type (str): Specifies the type of LLM call to make. 
+        llm_call_type (str): Specifies the type of LLM call to make.
                              Can be either "small" (standard approach) or "large" (RAG approach).
 
     Returns:
@@ -850,80 +915,86 @@ def get_query_for_tagging(bill_details: BillDetails, category_tags: list, llm_ca
              for bill tagging.
 
     Note:
-        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of 
+        If llm_call_type is 'small', this function will update the `invoke_dict` attribute of
         the `bill_details` object.
     """
 
-    if llm_call_type == 'large':
+    if llm_call_type == "large":
         query = TAGGING_PROMPT_LARGE.format(
-            category_tags=', '.join(category_tags),
-            bill_title=getattr(bill_details, 'bill_title'),
-            bill_text=getattr(bill_details, 'bill_text'),
-            committee_info=getattr(bill_details, 'committee_info'),
-            mgl_names=getattr(bill_details, "mgl_names")
+            category_tags=", ".join(category_tags),
+            bill_title=getattr(bill_details, "bill_title"),
+            bill_text=getattr(bill_details, "bill_text"),
+            committee_info=getattr(bill_details, "committee_info"),
+            mgl_names=getattr(bill_details, "mgl_names"),
         )
 
-    else: 
-
-        query =TAGGING_PROMPT_SMALL
+    else:
+        query = TAGGING_PROMPT_SMALL
         bill_details.invoke_dict = prepare_invoke_dict(bill_details)
-        bill_details.invoke_dict['category_tags'] = category_tags
+        bill_details.invoke_dict["category_tags"] = category_tags
 
     return query
 
-def call_llm(bill_details: BillDetails, query: str, llm_call_type: str = 'small') -> LLMResults: 
+
+def call_llm(
+    bill_details: BillDetails, query: str, llm_call_type: str = "small"
+) -> LLMResults:
     """
-        
+
     This is a generic function that calls the LLM with given query
 
-    Args: 
+    Args:
         bill_details (BillDetails): Object containing information about the bill - bill_text, bill_title, mgl_ref, commottee_info, mgl_names
-        query (str): Query string containing details on what model has to do. 
-        llm_call_type (str): This argument can take 2 values ("small": No use of RAG, "large": Use RAG) 
+        query (str): Query string containing details on what model has to do.
+        llm_call_type (str): This argument can take 2 values ("small": No use of RAG, "large": Use RAG)
 
-    Returns: 
+    Returns:
         LLMResults: Object containing query, response (Raw unformatted response from model) and metrics (If requested)
 
     """
 
-    llm = ChatOpenAI(temperature = 0, model = GPT_MDOEL_VERSION, model_kwargs = {'seed': 42})
+    llm = ChatOpenAI(temperature=0, model=GPT_MDOEL_VERSION, model_kwargs={"seed": 42})
 
-    if llm_call_type == 'small': 
+    if llm_call_type == "small":
         response = small_docs(bill_details, query, llm)
-    else: 
+    else:
         response = large_docs(bill_details, query, llm)
 
-    return_obj = LLMResults(query = query, response = response)
+    return_obj = LLMResults(query=query, response=response)
 
     return return_obj
 
+
 def small_docs(bill_details: BillDetails, query: str, llm: ChatOpenAI) -> str:
     """
-        
+
     This function calls the LLM without using RAG - Generally used if token count is less than 128k
 
-    Args: 
+    Args:
         bill_details (BillDetails): Object containing information about the bill - bill_text, bill_title, mgl_ref, commottee_info, mgl_names
-        query (str): Query string containing details on what model has to do. 
+        query (str): Query string containing details on what model has to do.
         llm (ChatOpenAI): LLM call object
 
-    Returns: 
-        (str): Raw response of the LLM. 
+    Returns:
+        (str): Raw response of the LLM.
 
     """
 
     prompt = PromptTemplate.from_template(query)
     chain = create_stuff_documents_chain(llm, prompt)
-    with get_openai_callback() as cb:
+    with get_openai_callback() as _cb:
         response = chain.invoke(bill_details.invoke_dict)
 
     return response
 
+
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbeddings) -> chromadb.PersistentClient: 
 
+def get_or_create_embeddings(
+    bill_details: BillDetails, emb_api: OpenAIEmbeddings
+) -> chromadb.PersistentClient:
     """
     Retrieves existing embeddings or creates new ones for a given bill.
 
@@ -950,8 +1021,8 @@ def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbedding
 
     bill_id = bill_details.bill_id
     client = chromadb.PersistentClient(CHROMA_DB_PATH)
-    collection = client.get_or_create_collection(name = "bills_collection")
-    
+    collection = client.get_or_create_collection(name="bills_collection")
+
     existing_docs = collection.get(where={"bill_id": bill_id})
 
     if not existing_docs["ids"]:
@@ -964,8 +1035,7 @@ def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbedding
         #    the model's context window, as opposed to larger chunks that might contain
         #    irrelevant information and waste context space.
         text_splitter = TokenTextSplitter.from_tiktoken_encoder(
-            chunk_size = 2000,
-            chunk_overlap = 200
+            chunk_size=2000, chunk_overlap=200
         )
 
         if len(bill_details.mgl_ref) > 1e06:
@@ -976,47 +1046,51 @@ def get_or_create_embeddings(bill_details: BillDetails, emb_api: OpenAIEmbedding
         embeddings = emb_api.embed_documents(documents)
 
         collection.add(
-            documents = documents,
-            embeddings = embeddings,
-            metadatas = [{"bill_id": bill_id} for _ in documents],
-            ids = [f"{bill_id}_{i}" for i in range(len(documents))]
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=[{"bill_id": bill_id} for _ in documents],
+            ids=[f"{bill_id}_{i}" for i in range(len(documents))],
         )
     return client
 
+
 def large_docs(bill_details: BillDetails, query: str, llm: ChatOpenAI) -> str:
     """
-        
+
     This function calls the LLM using RAG - Generally used if token count is greater than 128k
 
-    Args: 
+    Args:
         bill_details (BillDetails): Object containing information about the bill - bill_text, bill_title, mgl_ref, commottee_info, mgl_names
-        query (str): Query string containing details on what model has to do. 
+        query (str): Query string containing details on what model has to do.
         llm (ChatOpenAI): LLM call object
 
-    Returns: 
-        (str): Raw response of the LLM. 
+    Returns:
+        (str): Raw response of the LLM.
 
     """
 
     emb_api = OpenAIEmbeddings()
     chroma_client = get_or_create_embeddings(bill_details, emb_api)
-    
+
     vectorstore = Chroma(
         client=chroma_client,
         collection_name="bills_collection",
-        embedding_function=emb_api
+        embedding_function=emb_api,
     )
 
-    retrieval_doc_count = min((MAX_TOKEN_LIMIT - count_tokens('', bill_details.bill_text, '', '', ''))//2000 - 2, 7)
-    
+    retrieval_doc_count = min(
+        (MAX_TOKEN_LIMIT - count_tokens("", bill_details.bill_text, "", "", "")) // 2000
+        - 2,
+        7,
+    )
+
     retriever = vectorstore.as_retriever(
-        search_type="similarity", 
+        search_type="similarity",
         search_kwargs={
             "k": retrieval_doc_count,
-            "filter": {"bill_id": bill_details.bill_id}
-        }
+            "filter": {"bill_id": bill_details.bill_id},
+        },
     )
-    
 
     # retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 12})
 
@@ -1036,10 +1110,10 @@ def large_docs(bill_details: BillDetails, query: str, llm: ChatOpenAI) -> str:
         | StrOutputParser()
     )
 
-    try: 
-        with get_openai_callback() as cb:
+    try:
+        with get_openai_callback() as _cb:
             response = rag_chain.invoke(query)
-    except Exception as e: 
+    except Exception as e:
         print(e)
 
     return response

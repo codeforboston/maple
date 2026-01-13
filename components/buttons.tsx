@@ -310,6 +310,7 @@ export const CopyButton = ({
   tooltipDurationMs?: number
   format?: string
 }) => {
+  const { t } = useTranslation("common")
   const [show, setShow] = useState(false)
   const target = useRef(null)
   const closeTimeout = useRef<any>()
@@ -334,7 +335,7 @@ export const CopyButton = ({
         </Button>
       </CopyToClipboard>
       <Overlay target={target} show={show} placement="top">
-        {props => <Tooltip {...props}>Copied to Clipboard!</Tooltip>}
+        {props => <Tooltip {...props}>{t("copiedToClipboard")}</Tooltip>}
       </Overlay>
     </>
   )
