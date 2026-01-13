@@ -369,7 +369,7 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             host.GeneralCourtNumber,
             host.CommitteeCode
           )
-        : undefined
+        : []
 
     if (await shouldScrapeVideo(EventId, ignoreCutoff)) {
       try {
