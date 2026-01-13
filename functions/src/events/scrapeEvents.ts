@@ -304,7 +304,10 @@ const shouldScrapeVideo = async (
     return false
   }
   if (!eventData.videoURL) {
-    return ignoreCutoff || withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    return (
+      ignoreCutoff ||
+      withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    )
   }
   return false
 }
