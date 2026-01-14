@@ -20,7 +20,6 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
     email,
     public: isPublic
   } = data
-  let role: Role = requestedRole
 
   // Only an admin can approve organizations, after they've signed up initially
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
