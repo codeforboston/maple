@@ -11,7 +11,7 @@ const Query = z.object({
 })
 
 export default createPage({
-  title: "Terms of Service",
+  titleI18nKey: "titles.policies",
   Page: () => {
     const policy =
       Query.parse(useRouter().query).docName?.[0] || "privacy-policy"
@@ -34,5 +34,6 @@ export const getStaticProps = createGetStaticTranslationProps([
   "auth",
   "common",
   "footer",
+  "policies",
   "testimony"
 ])

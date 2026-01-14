@@ -23,7 +23,7 @@ export const NoResults: React.FC<React.PropsWithChildren<unknown>> = ({
   return (
     <Container>
       <Image src="/no-results.svg" alt={t("noResults")} />
-      <div className="fs-3">Looks Pretty Empty Here</div>
+      <div className="fs-3">{t("looksPrettyEmptyHere")}</div>
       <div className="text-center">{children}</div>
     </Container>
   )

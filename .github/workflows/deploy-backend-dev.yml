@@ -22,9 +22,9 @@ jobs:
       - name: Setup Build Environment
         uses: ./.github/actions/setup-repo
       - name: Build and Deploy to Firebase
-        uses: w9jds/firebase-action@v13.0.2
+        uses: w9jds/firebase-action@v13.18.0
         with:
-          args: deploy --force --only firestore,functions,storage
+          args: deploy --force --only firestore,functions:maple,storage
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}

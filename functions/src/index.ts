@@ -15,7 +15,16 @@ export {
   startCommitteeBatches,
   updateCommitteeRosters
 } from "./committees"
-export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
+export {
+  scrapeHearings,
+  scrapeSessions,
+  scrapeSpecialEvents,
+  scrapeSingleHearing
+} from "./events"
+export {
+  syncHearingToSearchIndex,
+  upgradeHearingSearchIndex
+} from "./hearings/search"
 export {
   createMemberSearchIndex,
   fetchMemberBatch,
@@ -36,8 +45,6 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  httpsDeliverNotifications,
-  httpsCleanupNotifications,
   updateUserNotificationFrequency
 } from "./notifications"
 
@@ -45,7 +52,8 @@ export {
   followBill,
   unfollowBill,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getFollowers
 } from "./subscriptions"
 
 export { transcription } from "./webhooks"

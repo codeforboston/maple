@@ -7,7 +7,7 @@ import { ProfilePage } from "../components/ProfilePage"
 import { createGetStaticTranslationProps } from "components/translations"
 
 export default createPage({
-  title: "Profile",
+  titleI18nKey: "navigation.accountProfile",
   Page: () => {
     const { id, loading } = useProfileRouting()
     const { authenticated, user } = useAuth()

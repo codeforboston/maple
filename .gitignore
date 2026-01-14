@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .yarn*
+package-lock.json
 
 # testing
 /coverage
@@ -81,3 +82,8 @@ build-storybook.log
 /token
 
 cert.txt
+
+# vscode
+
+# lets each user define their own vscode settings
+.vscode/settings.json

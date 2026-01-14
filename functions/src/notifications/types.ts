@@ -65,6 +65,10 @@ export interface BillHistoryUpdateNotificationFields {
 }
 
 export interface Profile {
+  email?: string
   notificationFrequency?: Frequency
   nextDigestAt?: FirebaseFirestore.Timestamp
+  contactInfo?: {
+    publicEmail?: string
+  }
 }

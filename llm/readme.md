@@ -26,7 +26,7 @@ The main functionality is implemented in `llm_functions.py`, which provides meth
 
 ## Requirements
 
-- Python 3.12.0
+- Python 3.11
 - Dependencies listed in `requirements.txt`
 
 ## Usage
@@ -122,3 +122,80 @@ This project uses OpenAI's API for various language processing tasks. To use the
    ```python
    import os
    print(os.environ.get('OPENAI_API_KEY'))
+
+# Running the API
+
+Set up a virtual environment and run the Flask app
+
+```
+python3 -m venv venv
+source venv/bin/activate # .fish if using fish
+pip3 install -r requirements.txt
+python3 -m flask --app main run
+```
+
+## Infrastructure notes
+
+As of 2025-06-17, the version of `python3` inside the
+`infra/Dockerfile.firebase` is 3.11. Therefore, the `firebase.json` files use
+the `python311` runtime.
+
+## Deploying locally
+
+This is quite tricky due to how we overlay our current source directory to
+`/app` inside the container. You'll need to create and install dependencies from
+**inside** the container. If you are just working on python related code that
+doesn't need to be in Firebase, you **won't** be able to use this environment.
+
+```shell
+# Build the maple-firebase container
+yarn dev:update
+# Start up bash within the maple-firebase container
+docker run -v .:/app -it maple-firebase /bin/bash
+# Build the virtual env and install the dependencies matching the container
+python3 -m venv llm/venv
+source llm/venv/bin/activate
+pip3 install -r llm/requirements.txt
+```
+
+Note: you'll need to set `OPENAI_DEV` and `OPENAI_PROD` in a
+`llm/.secret.local` file. Get it with `firebase functions:secrets:access
+OPENAI_DEV`. They can be set to the same token. You can see the function URL
+in the emulator after running `yarn dev:up`.
+
+## Deploying to Firebase
+
+```shell
+# not sure if the GOOGLE_APPLICATION_CREDENTIALS is strictly necessary, but I
+# had a number of problems with authorization
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json \
+  firebase deploy --only functions:maple-llm --debug
+```
+
+## Future work
+
+The local emulator installation process is quite cumbersome and ideally the
+virtual environment was built during container instantiation instead of from
+within the Docker container (i.e. the "Deploying locally" docs above).
+
+## Document triggers
+
+The first trigger is an `@on_document_created` trigger in
+`bill_on_document_created.py`. The goal is to populate the `summary` and
+`topics` fields on bills which don't already have them. I've introduced some
+tests which you can run with `pytest` and additional type safety added with
+`mypy`. If you haven't used `NewType`s before, I explain them below.
+
+### NewType in Python
+
+First, `Category = NewType("Category", str)` creates a wrapper around `str`
+which can be used anywhere in the code as a `str` but is type checked as
+`Category`. This is useful in `get_categories_from_topics` to avoid mixing up
+the topic for the category! These are often called "newtypes". It is important
+to point out that you shouldn't go wrap **every** type this way but they are useful
+when you have functions like,
+
+```python
+def could_easily_goof_up_the_order(topic: str, category: str):
+  return ...
+```

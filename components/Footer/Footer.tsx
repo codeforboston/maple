@@ -11,6 +11,8 @@ import CustomDropdown, {
   CustomDropdownProps
 } from "components/Footer/CustomFooterDropdown"
 import { FooterContainer } from "./FooterContainer"
+import { NEWSLETTER_SIGNUP_URL } from "components/common"
+import { flags } from "../featureFlags"
 
 export type PageFooterProps = {
   children?: any
@@ -23,7 +25,6 @@ const TextHeader = styled.h6`
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
-  font-family: Nunito;
   padding: 0.5rem 1rem 0 0;
   margin: 0;
 `
@@ -31,7 +32,6 @@ const TextHeader = styled.h6`
 const BrowseHeader = styled(NavLink)`
   font-size: 1rem;
   color: #fff;
-  font-family: Nunito;
   padding: 0.5rem 1rem 0 0;
   margin: 0 0 10px 0;
 
@@ -49,7 +49,6 @@ const BrowseHeader = styled(NavLink)`
 
 const StyledInternalLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.55);
-  font-family: Nunito;
   letter-spacing: -0.63px;
   padding-top: 4;
   margin: 5px 0;
@@ -219,6 +218,11 @@ const BrowseList = () => {
       <BrowseHeader href="/testimony">
         {t("navigation.browseTestimony")}
       </BrowseHeader>
+      {flags().hearingsAndTranscriptions ? (
+        <BrowseHeader href="/hearings">
+          {t("navigation.browseHearings")}
+        </BrowseHeader>
+      ) : null}
       <BrowseHeader href="/bills">{t("navigation.browseBills")}</BrowseHeader>
     </>
   )
@@ -275,21 +279,17 @@ const PageFooter = (props: PageFooterProps) => {
         </Col>
       </div>
       <MapleContainer className={`col-auto order-md-2 justify-self-end `} />
-      <div
-        className={`d-flex flex-column gap-2 flex-md-row flex-wrap col-12 flex-shrink-0 order-md-3 text-center text-md-start`}
-      >
-        <Col className="text-white col-md-auto">
-          {t("legal.disclaimer")}
-          {" - "}
-          <a
-            href="https://cdn.forms-content.sg-form.com/d049f1ab-b547-11ee-9605-72ceb6b6e337"
-            style={{ color: "white" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("newsletter")}
-          </a>
-        </Col>
+      <div className={`col-12 order-md-3 text-center text-md-start text-white`}>
+        {t("legal.disclaimer")}
+        {" - "}
+        <a
+          href={NEWSLETTER_SIGNUP_URL}
+          style={{ color: "white" }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t("newsletter")}
+        </a>
       </div>
     </FooterContainer>
   )

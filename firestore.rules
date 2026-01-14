@@ -89,5 +89,22 @@ service cloud.firestore {
         allow read, write: if request.auth.token.get("role", "user") == "admin"
       }
     }
+    match /transcriptions/{tid} {
+      // public, read-only
+      allow read: if true
+      allow write: if false
+      
+      // public, read-only
+      match /utterances/{uid} {
+        allow read: if true
+        allow write: if false
+      }
+
+      // public, read-only
+      match /paragraphs/{pid} {
+        allow read: if true
+        allow write: if false
+      }
+    }
   }
 }

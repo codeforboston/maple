@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap"
 import { TestimonyCardList } from "components/LearnTestimonyComponents/TestimonyCardComponents"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 const LegislativeContent = [
   {

@@ -19,7 +19,6 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
   }
 
   text-align: center;
-  font-family: Nunito;
   font-size: 1.25rem;
   color: var(--bs-dark);
 
@@ -42,7 +41,7 @@ export const StyledTabNav = styled(Nav).attrs(props => ({
 export const TabNavWrapper = ({ children, className, ...props }: NavProps) => {
   return (
     <Nav
-      className={`d-flex mb-3 text-center h3 color-dark ${className}`}
+      className={`d-flex w-100 flex-column flex-lg-row flex-lg-nowrap mb-3 text-center h3 color-dark ${className}`}
       {...props}
     >
       {children}
@@ -68,12 +67,11 @@ export const TabNavItem = ({
   className?: string
 }) => {
   return (
-    <Nav.Item
-      className={`flex-grow-1 col-12 col-md-auto ${className}`}
-      key={tab.eventKey}
-    >
+    <Nav.Item className={`flex-lg-fill ${className}`} key={tab.eventKey}>
       <TabNavLink eventKey={tab.eventKey} className={`rounded-top m-0 p-0`}>
-        <p className={`my-0 ${i === 0 ? "" : "mx-4"}`}>{tab.title}</p>
+        <p className={`my-0 text-nowrap ${i === 0 ? "" : "mx-4"}`}>
+          {tab.title}
+        </p>
         <hr className={`my-0`} />
       </TabNavLink>
     </Nav.Item>
@@ -83,7 +81,6 @@ export const TabNavItem = ({
 export const StyledDropdownNav = styled(NavDropdown).attrs(props => ({
   className: props.className
 }))`
-  font-family: Nunito;
   font-size: 1.25rem;
   width: auto;
   margin: auto;
@@ -141,7 +138,6 @@ export const StyledHr = styled.hr`
 
 export const Header = styled(Row)`
   font-size: 3rem;
-  font-family: Nunito;
   font-weight: 500;
   margin-top: 3.5rem;
   margin-bottom: 3.5rem;

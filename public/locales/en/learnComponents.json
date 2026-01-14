@@ -83,9 +83,18 @@
   "communicating": {
     "title": "Communicating with Legislators",
     "intro": "There are multiple ways to share your perspective and knowledge with your legislators.",
-    "testifyInWriting": "Testify in writing",
-    "testifyOrally": "Testify orally",
-    "writeOrCall": "Write or call them"
+    "testifyInWriting": {
+      "title": "Testify in writing",
+      "content": "You can submit your thoughts on a bill to the Committee hearing it before the date of their public hearing. This website, the MAPLE platform, focuses on this mechanism."
+    },
+    "testifyOrally": {
+      "title": "Testify orally",
+      "content": "You can attend a public hearing for a bill of interest to you and sign up for a slot to speak before the Committee."
+    },
+    "writeOrCall": {
+      "title": "Write or call them",
+      "content": "You can contact your legislators any time by looking up their contact information on the MA Legislature website. Your voice will probably carry the most weight with the House and Senate representatives of your own district, but you are free to contact Committee Chairs or any other member of the legislature with your opinions. You could request a meeting in person."
+    }
   },
   "legislative": {
     "title": "Understanding the Massachusetts Legislative Process",
@@ -123,6 +132,11 @@
         "title": "Executive Branch",
         "paragraph": "Lastly, the Governor is responsible for signing the enacted and reconciled bill into law. The governor can also veto the bill, return it to the Legislature for changes, or take a number of other less-common actions."
       }
-    ]
+    ],
+    "additional_resources": "Additional Resources",
+    "resources_intro": "We hope these pages will help you submit effective testimony. You may want to consult these other resources to build a more detailed understanding of the legislative process and how you can contribute.",
+    "find_legislator": "The MA Legislature has an <0>online tool</0> you can use to identify your legislators based on your home address.",
+    "legislative_doc": "The MA Legislature publishes a <0>document on the legislative process</0>.",
+    "legal_services": "Mass Legal Services published a 2007 guide to The <0>Legislative Process in Massachusetts</0>."
   }
 }

@@ -3,14 +3,14 @@ import { Container, Carousel, Spinner } from "react-bootstrap"
 import styled from "styled-components"
 import { Col, Row } from "../bootstrap"
 import { useCalendarEvents } from "./calendarEvents"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 export type EventData = {
   index: number
   type: "hearing" | "session"
   name: string
   id: number
-  location: string
+  location?: string
   fullDate: Date // TODO: Could be a timestamp
   year: string
   month: string
@@ -132,7 +132,7 @@ export const EventCard = ({
               )}
             </p>
             <p className={`lh-sm mb-3 ms-2 text-secondary`}>
-              {truncateEntry(location)}
+              {truncateEntry(location ?? "")}
             </p>
           </div>
         </div>
@@ -219,8 +219,8 @@ export const HearingsScheduled = () => {
               wrap={false}
               activeIndex={monthIndex}
               onSelect={handleSelect}
-              prevIcon={<CarouselControlNextIcon aria-hidden="true" />}
-              nextIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              prevIcon={<CarouselControlPrevIcon aria-hidden="true" />}
+              nextIcon={<CarouselControlNextIcon aria-hidden="true" />}
             >
               {monthsList?.map(month => {
                 return (

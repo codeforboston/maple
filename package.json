@@ -5,11 +5,11 @@
   "scripts": {
     "build:dev": "MAPLE_ENV=dev next build",
     "build:prod": "MAPLE_ENV=prod next build",
-    "build:functions": "next lint -d functions/src && yarn --cwd functions build",
+    "build:functions": "next lint -d functions/src && yarn --cwd functions build && yarn copy-handlebars",
     "check-formatting": "prettier --check .",
     "check-types": "tsc --noEmit",
-    "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions,storage",
-    "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions,storage",
+    "deploy:backend:dev": "firebase --project=default deploy --only firestore,functions:maple,storage",
+    "deploy:backend:prod": "firebase --project=prod deploy --only firestore,functions:maple,storage",
     "dev": "next dev",
     "dev:local": "NEXT_PUBLIC_PROJECT_ID_FOR_TEST=demo-dtp NEXT_PUBLIC_USE_EMULATOR=true next dev",
     "dev:ps": "yarn compose ps",
@@ -50,7 +50,7 @@
     "setRole": "ts-node -P tsconfig.script.json scripts/firebase-admin/setRole.ts"
   },
   "engines": {
-    "node": ">=18",
+    "node": "^20",
     "yarn": "^1.22.19"
   },
   "browserslist": {
@@ -91,9 +91,10 @@
     "dompurify": "^2.3.10",
     "express": "^4.18.2",
     "firebase": "9.6.10",
+    "firebase-admin": "^11.11.1",
     "fuse.js": "6.5.3",
     "handlebars": "^4.7.8",
-    "i18next": "^23.5.1",
+    "i18next": "^23.10.0",
     "i18next-http-backend": "^2.2.2",
     "instantsearch.css": "^7.4.5",
     "instantsearch.js": "^4.43.0",
@@ -104,7 +105,7 @@
     "marked": "^4.2.5",
     "nanoid": "^3.3.1",
     "next": "^14.0.4",
-    "next-i18next": "^13.1.5",
+    "next-i18next": "^15.4.2",
     "next-redux-wrapper": "^8.1.0",
     "papaparse": "^5.3.0",
     "react": "^18.2.0",
@@ -118,6 +119,7 @@
     "react-i18next": "^13.2.2",
     "react-inlinesvg": "^3.0.1",
     "react-instantsearch": "^7.12.4",
+    "react-instantsearch-router-nextjs": "^7.15.5",
     "react-is": "^18.2.0",
     "react-markdown": "^8.0.4",
     "react-overlays": "^5.1.1",
@@ -126,7 +128,7 @@
     "react-select": "^5.2.2",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^3.1.0",
-    "runtypes": "6.5.1",
+    "runtypes": "6.6.0",
     "sidebar-v2": "^0.4.0",
     "styled-components": "^5.3.3",
     "typesense": "^1.2.2",
@@ -176,8 +178,7 @@
     "eslint-plugin-i18next": "^6.0.3",
     "eslint-plugin-jsx-a11y": "^6.9.0",
     "file-loader": "^6.2.0",
-    "firebase-admin": "^10",
-    "firebase-tools": "^11.16.0",
+    "firebase-tools": "^13.18.0",
     "ini": "^1.3.5",
     "inquirer": "^6.5.1",
     "jest": "^27.5.1",
@@ -199,5 +200,6 @@
   },
   "resolutions": {
     "jackspeak": "2.1.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

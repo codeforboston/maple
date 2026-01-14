@@ -5,7 +5,7 @@ import {
   NewsfeedBillCardBody,
   NewsfeedTestimonyCardBody
 } from "./NewsfeedCardBody"
-import { CardTitle } from "components/Card"
+import NewsfeedCardTitle from "./NewsfeedCardTitle"
 
 const Container = styled.div`
   max-width: 700px;
@@ -25,11 +25,12 @@ export const NewsfeedCard = (props: {
   timestamp: Timestamp
   type: string
   userRole?: string
+  isNewsfeed?: string
 }) => {
   const date = props.timestamp.toDate()
   const formattedTimestamp = `${date.toLocaleDateString()}`
   const header = (
-    <CardTitle
+    <NewsfeedCardTitle
       authorUid={props.authorUid}
       billId={props.billId}
       court={props.court}
@@ -40,6 +41,7 @@ export const NewsfeedCard = (props: {
       timestamp={formattedTimestamp}
       type={props.type}
       userRole={props.userRole}
+      isNewsfeed={"enable newsfeed specific subheading"}
     />
   )
 

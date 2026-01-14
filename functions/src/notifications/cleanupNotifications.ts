@@ -1,16 +1,16 @@
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
+import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 
 const RETENTION_PERIOD_DAYS = 60
 
 // Get a reference to the Firestore database
-const db = admin.firestore()
+const db = getFirestore()
 
 // TODO
 // 1.) Do we actually want to delete old notifications? (check with Matt V)
 // 2.) Do we actually want to delete old notificaiton events? Why not keep the history?
-// 3.) Should we just use the builtin TTL feature for all of these?
+// 3.) We should just use the builtin TTL feature for all of these, right?
 // 4.) Should we use a bulk delete operation for firestore for all of these?
 
 // Delete old notifications from userNotificationFeed collections
@@ -67,22 +67,3 @@ const runCleanupNotifications = async () => {
 export const cleanupNotifications = functions.pubsub
   .schedule("every 24 hours")
   .onRun(runCleanupNotifications)
-
-export const httpsCleanupNotifications = functions.https.onRequest(
-  async (request, response) => {
-    try {
-      console.log("httpsCleanupNotifications triggered")
-      await runCleanupNotifications()
-      console.log("DEBUG: cleanupNotifications completed")
-
-      response
-        .status(200)
-        .send(
-          "Successfully cleaned up old notifications, topic events, and email documents"
-        )
-    } catch (error) {
-      console.error("Error in httpsCleanupNotifications:", error)
-      response.status(500).send("Internal server error")
-    }
-  }
-)

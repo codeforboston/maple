@@ -15,7 +15,7 @@ type Props = Pick<ModalProps, "show" | "onHide"> & {
   role: Role
   setIsProfilePublic: Dispatch<SetStateAction<false | true>>
   notifications: Frequency
-  setNotifications: Dispatch<SetStateAction<"Weekly" | "Monthly" | "None">>
+  setNotifications: Dispatch<SetStateAction<Frequency>>
   onSettingsModalClose: () => void
 }
 
@@ -82,7 +82,7 @@ export default function ProfileSettingsModal({
 
   const handleToggleNotifications = async () => {
     if (notifications === "None") {
-      setNotifications("Monthly")
+      setNotifications("Weekly")
     } else {
       setNotifications("None")
     }
@@ -146,6 +146,9 @@ export default function ProfileSettingsModal({
                     variant="outline-secondary"
                   />
                   <Dropdown.Menu className={`col-12 bg-white `}>
+                    <Dropdown.Item onClick={() => setNotifications("Daily")}>
+                      {t("email.daily")}
+                    </Dropdown.Item>
                     <Dropdown.Item onClick={() => setNotifications("Weekly")}>
                       {t("email.weekly")}
                     </Dropdown.Item>

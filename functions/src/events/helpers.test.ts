@@ -1,5 +1,5 @@
 import { addDays, subDays } from "date-fns"
-import { withinCutoff } from "./helpers"
+import { isValidVideoUrl, withinCutoff } from "./helpers"
 
 describe("withinCutoff true", () => {
   beforeEach(() => {
@@ -34,6 +34,29 @@ describe("withinCutoff true", () => {
     const threeDaysAgo = addDays(now, 2)
 
     const result = withinCutoff(threeDaysAgo)
+    expect(result).toEqual(false)
+  })
+})
+
+describe("isValidVideoUrl", () => {
+  it("should return true for a valid video URL", () => {
+    const validUrl = "https://example.com/video.mp4"
+    const result = isValidVideoUrl(validUrl)
+    expect(result).toEqual(true)
+  })
+
+  it("should return false for a missing URL", () => {
+    const result = isValidVideoUrl(null)
+    expect(result).toEqual(false)
+  })
+
+  it("should return false for a URL with no file format", () => {
+    const result = isValidVideoUrl("https://example.com/video")
+    expect(result).toEqual(false)
+  })
+
+  it("should return false for a URL with an unsupported format", () => {
+    const result = isValidVideoUrl("https://example.com/video.m3u8")
     expect(result).toEqual(false)
   })
 })

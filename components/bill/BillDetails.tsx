@@ -1,10 +1,8 @@
-import { useFlags } from "components/featureFlags"
-import styled from "styled-components"
+import { useTranslation } from "next-i18next"
 import { useAuth } from "../auth"
-import { Col, Container, Image, Row } from "../bootstrap"
+import { Col, Container, Row } from "../bootstrap"
 import { TestimonyFormPanel } from "../publish"
 import { Banner } from "../shared/StyledSharedComponents"
-import { Back } from "./Back"
 import { BillNumber, Styled } from "./BillNumber"
 import { BillTestimonies } from "./BillTestimonies"
 import BillTrackerConnectedView from "./BillTracker"
@@ -13,14 +11,11 @@ import { Committees, Hearing, Sponsors } from "./SponsorsAndCommittees"
 import { Status } from "./Status"
 import { Summary } from "./Summary"
 import { BillProps } from "./types"
-import { useTranslation } from "next-i18next"
-import { isCurrentCourt } from "functions/src/shared"
+import { Back } from "components/shared/CommonComponents"
+import { useFlags } from "components/featureFlags"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-`
+import { isCurrentCourt } from "functions/src/shared"
 
 export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
@@ -37,7 +32,7 @@ export const BillDetails = ({ bill }: BillProps) => {
         <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
       )}
 
-      <StyledContainer className="mt-3 mb-3">
+      <Container className="mt-3 mb-3">
         <Row>
           <Col>
             <Back href="/bills">{t("back_to_bills")}</Back>
@@ -104,7 +99,7 @@ export const BillDetails = ({ bill }: BillProps) => {
             )}
           </Col>
         </Row>
-      </StyledContainer>
+      </Container>
     </>
   )
 }

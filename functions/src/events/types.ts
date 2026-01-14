@@ -52,20 +52,43 @@ export type Session = Static<typeof Session>
 export const Session = BaseEvent.extend({
   type: L("session")
 })
-
+export type HearingLocation = Static<typeof HearingLocation>
+export const HearingLocation = Record({
+  AddressLine1: Nullable(String),
+  AddressLine2: Nullable(String),
+  City: Nullable(String),
+  LocationName: Nullable(String),
+  State: Nullable(String),
+  ZipCode: Nullable(String)
+})
 export type HearingContent = Static<typeof HearingContent>
 export const HearingContent = BaseEventContent.extend({
-  RescheduledHearing: Nullable(
-    Record({
-      EventDate: String,
-      StartTime: String
-    })
-  ),
+  Description: String,
+  Name: Nullable(String),
+  Status: String,
+  HearingHost: Record({
+    CommitteeCode: Nullable(String),
+    GeneralCourtNumber: Nullable(Number)
+  }),
+  Location: HearingLocation,
   HearingAgendas: Array(
     Record({
       DocumentsInAgenda: Array(
-        Record({ BillNumber: String, GeneralCourtNumber: Number })
+        Record({
+          BillNumber: String,
+          GeneralCourtNumber: Number,
+          PrimarySponsor: Nullable(Record({ Id: Nullable(String) })),
+          Title: String
+        })
       ),
+      StartTime: String,
+      EndTime: String,
+      Topic: String
+    })
+  ),
+  RescheduledHearing: Nullable(
+    Record({
+      EventDate: String,
       StartTime: String
     })
   )
@@ -79,8 +102,9 @@ export const Hearing = BaseEvent.extend({
   type: L("hearing"),
   content: HearingContent,
   videoURL: Optional(String),
-  videoAssemblyId: Optional(String),
-  videoFetchedAt: Optional(InstanceOf(Timestamp))
+  videoTranscriptionId: Optional(String),
+  videoFetchedAt: Optional(InstanceOf(Timestamp)),
+  committeeChairs: Optional(Array(String))
 })
 
 export type Event = Static<typeof Event>

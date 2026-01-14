@@ -5,12 +5,12 @@
 
 // Import necessary Firebase modules
 import * as functions from "firebase-functions"
-import * as admin from "firebase-admin"
+import { getFirestore } from "firebase-admin/firestore"
 import { Timestamp } from "../firebase"
 import { BillHistoryUpdateNotification } from "./types"
 
 // Get a reference to the Firestore database
-const db = admin.firestore()
+const db = getFirestore()
 
 // Define the populateBillNotificationEvents function
 export const populateBillHistoryNotificationEvents = functions.firestore

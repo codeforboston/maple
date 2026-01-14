@@ -1,11 +1,24 @@
 {
   "about": "About",
   "back_to_bills": "back to list of bills",
+  "back_to_hearings": "back to list of hearings",
   "bill": {
-    "old_session": "this bill is from session {{billCourt}} - not the current session",
-    "read_more": "Read More",
+    "and_others_one": "and {{count}} other",
+    "and_others_other": "and {{count}} others",
+    "bill_tracker": "Bill Tracker",
+    "bill_cosponsors": "{{billId}} Cosponsors",
+    "branch": "Branch",
+    "client_name": "Client Name",
+    "committee": "Committee",
+    "cosponsor_count_one": "{{count}} Cosponsor",
+    "cosponsor_count_other": "{{count}} Cosponsors",
+    "court": "Court",
+    "disclosure_date": "Disclosure Date",
     "download_pdf": "Download PDF",
-    "view_bill": "View Bill Text",
+    "example_name": "Example Name",
+    "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
+    "hearing_video_and_transcript" : "Hearing Video + Transcript", 
+    "history": "History",
     "icon": {
       "commerce": "Commerce",
       "crime_and_law_enforcement": "Crime and Law Enforcement",
@@ -29,9 +42,23 @@
       "technology_and_communications": "Technology and Communications",
       "transportation_and_public_works": "Transportation and Public Works"
     },
-    "smart_tag": "AI Smart Tag",
+    "lobbying_parties": "Lobbying Parties",
+    "multiple_hearings": "This bill was featured in multiple hearings",
+    "old_session": "this bill is from session {{billCourt}} - not the current session",
+    "position": "Position",
+    "pro": "Pro",
+    "neutral": "Neutral",
+    "read_more": "Read More",
+    "select_hearing": "Select a Hearing",
+    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org",
+    "smart_disclaimer2": "This transcription was made with generative AI.",
+    "smart_disclaimer3": "<0>How MAPLE uses AI</0>",
+    "seeCosponsors": "See {{count}} Cosponsors",
     "smart_summary": "Smart Summary & Tags",
-    "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org"
+    "smart_tag": "AI Smart Tag",
+    "status_and_history": "Status & History",
+    "status_history": "Status History",
+    "view_bill": "View Bill Text" 
   },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
@@ -41,8 +68,14 @@
     "followed": "Followed"
   },
   "calendar": "Our Calendar",
+  "copiedToClipboard": "Copied to Clipboard!",
   "hideAns": "Hide Answer",
+  "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
+  "edit": "Edit",
+  "english": "English",
   "joinTraining": "and join an upcoming training session!",
+  "languages": "Languages",
+  "leadSponsor": "Lead Sponsor",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
   "loading": {
@@ -60,6 +93,7 @@
     "additionalResources": "Additional Resources",
     "ai": "How MAPLE Uses AI",
     "browseBills": "Browse Bills",
+    "browseHearings": "Browse Hearings",
     "browseTestimony": "Browse Testimony",
     "closeNavMenu": "Close Navigation Menu",
     "closeProfileMenu": "Close Profile Menu",
@@ -79,8 +113,10 @@
     "supportMaple": "Support MAPLE",
     "aboutTestimony": "About Testimony",
     "viewProfile": "View Profile",
-    "whyUseMaple": "Why Use MAPLE"
+    "whyUseMaple": "Why Use MAPLE",
+    "login": "Login"
   },
+  "new_feature": "*NEW*",
   "newcomer": "New to MAPLE? For extra support, check",
   "newsletter": "Click Here to Subscribe to Our Newsletter",
   "newsfeed": {
@@ -97,23 +133,16 @@
   },
   "notInCommittee": "Bill not currently in committee",
   "noResults": "No Results",
+  "looksPrettyEmptyHere": "Looks Pretty Empty Here",
+  "noNewsUpdates": "There are no news updates for your current followed topics",
   "orgs": "Organizations",
-  "partners": {
-    "header": "Our Partners",
-    "desc1": "The project is developed in partnership between the",
-    "desc2": "NuLawLab",
-    "desc3": "and scholars at",
-    "desc4": "Boston College Law School",
-    "desc5": "and",
-    "desc6": "Harvard University's Berkman Klein Center for Internet & Society",
-    "pid": "MAPLE is an initiative of Partners in Democracy - Education, a 501(c)(3) non profit organization. Partners In Democracy is building nationwide partnerships and exploring how we can drive democracy renovation efforts forward in states around the country — starting by focusing our efforts here at home in Massachusetts."
-  },
   "pending_upgrade_warning": {
     "header": "Organization Request In Progress",
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
-  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "primarySponsor": "Primary Sponsor",
+  "privacyPolicy": "Privacy Policy",
+  "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "showAns": "Show Answer",
   "socials": {
     "instagram": "Instagram",
@@ -123,8 +152,27 @@
     "bluesky": "BlueSky",
     "mastodon": "Mastodon"
   },
+  "spanish": "Spanish",
+  "sponsor": "Sponsor",
+  "sponsors": "Sponsors",
   "table": {
     "page": "Page {{currentPage}}"
   },
-  "user_updates": "User Updates"
+  "termsAndConditions": "Terms and Conditions",
+  "titles": {
+    "admin": "Admin",
+    "bill": "Bill",
+    "our_team": "Our Team",
+    "legislative_process": "How To Have Impact Through Legislative Testimony",
+    "submit_testimony": "Submit Testimony",
+    "support_maple": "How to Support MAPLE",
+    "testimony": "Testimony",
+    "policies": "Policies",
+    "unsubscribe": "Unsubscribe",
+    "why_use_maple": "Why Use Maple?"
+  },
+  "user_updates": "User Updates",
+  "view": "View",
+  "view_the_hearing" : "View the hearing for this bill, complete with a generative AI transcript.",
+  "yes": "Yes"
 }

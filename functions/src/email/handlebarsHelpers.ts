@@ -14,6 +14,7 @@ export const registerHelpers = () => {
   handlebars.registerHelper("minusFour", helpers.minusFour)
   handlebars.registerHelper("noUpdatesFormat", helpers.noUpdatesFormat)
   handlebars.registerHelper("toLowerCase", helpers.toLowerCase)
+  handlebars.registerHelper("pluralize", helpers.pluralize)
 }
 
 // Register all Handlebars partials
@@ -33,6 +34,8 @@ export const registerPartials = (directoryPath: string) => {
 }
 
 export const prepareHandlebars = () => {
+  console.log("Preparing handlebars helpers and partials")
   registerHelpers()
   registerPartials(path.join(__dirname, PARTIALS_DIR))
+  console.log("Handlebars helpers and partials prepared")
 }

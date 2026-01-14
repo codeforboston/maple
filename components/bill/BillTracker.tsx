@@ -3,6 +3,7 @@ import { Stage, useBillTracker } from "components/db/useBillStatus"
 import styled from "styled-components"
 import { BillProps, BillTracker } from "./types"
 import { Row } from "react-bootstrap"
+import { useTranslation } from "next-i18next"
 
 export default function BillTrackerConnectedView({
   bill,
@@ -31,7 +32,13 @@ export const BillTrackerView = ({
       ))}
     </Row>
   )
-  return <MapleCard className={className} header="Bill Tracker" body={body} />
+  return (
+    <MapleCard
+      className={className}
+      header={useTranslation("common").t("bill.bill_tracker")}
+      body={body}
+    />
+  )
 }
 
 export const BillStageStrip = ({
@@ -130,14 +137,12 @@ const StyledBillStageStrip = styled(BillStageStrip)`
     flex: 1;
   }
   .stage-title {
-    font-family: Nunito;
     font-weight: ${props => (props.currentStage ? 700 : 500)};
     line-height: ${getRem(20)};
     letter-spacing: 0.015em;
     text-align: left;
   }
   .info {
-    font-family: Nunito;
     font-size: ${getRem(12)};
     font-weight: 600;
     line-height: ${getRem(15)};

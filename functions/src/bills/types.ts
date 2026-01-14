@@ -59,6 +59,9 @@ export const BillTopic = Record({
  * to appear in results when sorting by that value. */
 export const MISSING_TIMESTAMP = Timestamp.fromMillis(0)
 
+/**
+ * If you update this you also need to update `llm/bill_on_document_created.py`
+ */
 export const TOPICS_BY_CATEGORY = {
   Commerce: [
     "Banking and financial institutions regulation",
@@ -314,6 +317,7 @@ export const Bill = withDefaults(
     opposeCount: Number,
     nextHearingAt: Optional(InstanceOf(Timestamp)),
     nextHearingId: Optional(Id),
+    hearingIds: Optional(Array(String)),
     latestTestimonyAt: Optional(InstanceOf(Timestamp)),
     latestTestimonyId: Optional(Id),
     fetchedAt: InstanceOf(Timestamp),
@@ -336,6 +340,7 @@ export const Bill = withDefaults(
     fetchedAt: MISSING_TIMESTAMP,
     history: [],
     similar: [],
-    topics: []
+    topics: [],
+    hearingIds: []
   }
 )

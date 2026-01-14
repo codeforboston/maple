@@ -1,4 +1,3 @@
-import styled from "styled-components"
 import { useState } from "react"
 import { Col, Row, Container } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
@@ -8,11 +7,12 @@ import { SteeringCommittee } from "./SteeringCommittee"
 import { AdvisoryBoard } from "./AdvisoryBoard"
 import { OurPartners } from "./Partners"
 import { useMediaQuery } from "usehooks-ts"
+import { useTranslation } from "next-i18next"
 
 export const OurTeam = () => {
   const isMobile = useMediaQuery("(max-width: 768px)")
   return (
-    <StyledContainer className="ptx-4">
+    <Container className="ptx-4">
       <Tab.Container defaultActiveKey="steering_committee">
         {isMobile ? <TabDropdown /> : <TabGroup />}
         <Row className="p-3 g-0">
@@ -31,18 +31,19 @@ export const OurTeam = () => {
           </Col>
         </Row>
       </Tab.Container>
-    </StyledContainer>
+    </Container>
   )
 }
 
 const TabGroup = () => {
+  const { t } = useTranslation("our-team")
   return (
     <Row className="p-3 g-0">
       <Col md={4} className="text-center">
         <Nav className="our-team-tab flex-column">
           <Nav.Item>
             <Nav.Link eventKey="steering_committee">
-              Steering Committee
+              {t("steering.title")}
             </Nav.Link>
           </Nav.Item>
         </Nav>
@@ -50,14 +51,14 @@ const TabGroup = () => {
       <Col md={4} className="text-center">
         <Nav className="our-team-tab flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="advisory_board">Advisory Board</Nav.Link>
+            <Nav.Link eventKey="advisory_board">{t("advisory.title")}</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
         <Nav className="our-team-tab flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="partners">Partners</Nav.Link>
+            <Nav.Link eventKey="partners">{t("partners.title")}</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
@@ -66,6 +67,7 @@ const TabGroup = () => {
 }
 
 const TabDropdown = () => {
+  const { t } = useTranslation("our-team")
   const [selectedTab, setSelectedTab] = useState<string>("Steering Committee")
 
   const handleTabClick = (tabTitle: string) => {
@@ -85,7 +87,7 @@ const TabDropdown = () => {
               eventKey="steering_committee"
               onClick={() => handleTabClick("Steering Committee")}
             >
-              Steering Committee
+              {t("steering.title")}
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item
@@ -93,7 +95,7 @@ const TabDropdown = () => {
               eventKey="advisory_board"
               onClick={() => handleTabClick("Advisory Board")}
             >
-              Advisory Board
+              {t("advisory.title")}
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item
@@ -101,7 +103,7 @@ const TabDropdown = () => {
               eventKey="partners"
               onClick={() => handleTabClick("Partners")}
             >
-              Partners
+              {t("partners.title")}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -109,7 +111,3 @@ const TabDropdown = () => {
     </Row>
   )
 }
-
-const StyledContainer = styled(Container)`
-  font-family: "Nunito";
-`

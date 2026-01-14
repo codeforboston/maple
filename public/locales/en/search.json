@@ -1,0 +1,54 @@
+{
+  "another_term": "Try another search term",
+  "browse_bills": "Browse Bills",
+  "filter": "Filter",
+  "topics": "Topics",
+  "zero_results": "Your search has yielded zero results!",
+  "refinements": {
+    "bill": {
+      "court": "Legislative Session",
+      "currentCommittee": "Current Committee",
+      "city": "City",
+      "primarySponsor": "Primary Sponsor",
+      "cosponsors": "Cosponsor"
+    },
+    "testimony": {
+      "authorDisplayName": "Author Name",
+      "court": "Legislative Session",
+      "position": "Position",
+      "billId": "Bill",
+      "authorRole": "Author Role"
+    },
+    "hearing": {
+      "court": "Legislative Session",
+      "month": "Month",
+      "year": "Year",
+      "chairNames": "Chair",
+      "committeeName": "Committee"
+    }
+  },
+  "sort_by": {
+    "most_recent_testimony": "Sort by Most Recent Testimony",
+    "newest": "Sort by Newest",
+    "oldest": "Sort by Oldest",
+    "relevance": "Sort by Relevance",
+    "testimony_count": "Sort by Testimony Count",
+    "cosponsor_count": "Sort by Cosponsor Count",
+    "next_hearing_date": "Sort by Next Hearing Date"
+  },
+  "result_count": "Showing {{pageStart}}-{{pageEnd}} of {{nbHits}} Results",
+  "search_box": {
+    "placeholder": {
+      "bills": "Search For Bills",
+      "testimony": "Search For Testimony",
+      "hearing": "Search For Hearings"
+    }
+  },
+  "search_error": "Something went wrong. Please try again. Original message: {{error}}",
+  "video_available": "Video available",
+  "video_unavailable": "Video and transcript not yet available",
+  "location_label": "Location",
+  "agenda_label": "Agenda Topics",
+  "bills_label": "Bills",
+  "more_bills": "and {{count}} others"
+}
