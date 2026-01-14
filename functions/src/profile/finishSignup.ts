@@ -25,7 +25,7 @@ export const finishSignup = functions.https.onCall(async (data, context) => {
   // There's a nextjs api route: PATCH /users/<uid> {"role": <role>}
   if (requestedRole === "organization") {
     await setRole({
-      role: "pendingUpgrade",
+      role: "organization",
       auth,
       db,
       uid,
