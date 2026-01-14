@@ -12,6 +12,7 @@ export class BillPage {
   readonly currentCategorySelector: string
   readonly basicCategorySelector: string
   readonly billPageBackToList: Locator
+  readonly resultsCountText: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -26,23 +27,21 @@ export class BillPage {
       "li:nth-child(2) input.ais-RefinementList-checkbox"
     this.currentCategorySelector = ".ais-CurrentRefinements-item"
     this.basicCategorySelector = "div.ais-RefinementList.mb-4"
+    this.resultsCountText = page.getByText("Results").first()
   }
 
   async goto() {
     await this.page.goto("http://localhost:3000/bills")
-    await this.page.waitForSelector("li.ais-Hits-item a")
+    await this.resultCount.waitFor({ state: "visible", timeout: 30000 })
+    // await this.page.waitForSelector("li.ais-Hits-item a",{timeout:90000})
   }
 
   async search(query: string) {
-    const initialResult = await this.firstBill.textContent()
+    await this.searchBar.focus()
     await this.searchBar.fill(query)
-    await this.page.waitForFunction(initialResult => {
-      const searchResult = document.querySelector("li.ais-Hits-item a")
-      return (
-        !searchResult ||
-        (searchResult && searchResult.textContent != initialResult)
-      )
-    }, initialResult)
+    const activeQueryFilter = this.page.getByText(`Query: ${query}`).first()
+
+    await activeQueryFilter.waitFor({ state: "visible", timeout: 50000 })
   }
 
   async sort(option: string) {
@@ -151,5 +150,18 @@ export class BillPage {
     await filterItem.click()
 
     return filterLabel
+  }
+
+  async removePresetCourtfilter() {
+    const activeCourtCheckbox = this.page
+      .locator("div, span, label", { has: this.page.getByText(/Court/i) })
+      .getByRole("checkbox", { checked: true })
+
+    await activeCourtCheckbox.click({ noWaitAfter: true, timeout: 0 })
+
+    await this.page
+      .getByText("Results")
+      .first()
+      .waitFor({ state: "visible", timeout: 60000 })
   }
 }

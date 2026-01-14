@@ -50,7 +50,7 @@
     "setRole": "ts-node -P tsconfig.script.json scripts/firebase-admin/setRole.ts"
   },
   "engines": {
-    "node": ">=20",
+    "node": "^20",
     "yarn": "^1.22.19"
   },
   "browserslist": {
@@ -128,7 +128,7 @@
     "react-select": "^5.2.2",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^3.1.0",
-    "runtypes": "6.5.1",
+    "runtypes": "6.6.0",
     "sidebar-v2": "^0.4.0",
     "styled-components": "^5.3.3",
     "typesense": "^1.2.2",

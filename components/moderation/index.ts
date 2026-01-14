@@ -3,6 +3,7 @@ export * from "./ListPublishedTestimony"
 export * from "./ListReports"
 export * from "./EditReports"
 export * from "./ListProfiles"
+export * from "./ScrapeHearing"
 
 import dynamic from "next/dynamic"
 

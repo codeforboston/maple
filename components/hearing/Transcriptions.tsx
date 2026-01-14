@@ -1,18 +1,10 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { firestore } from "../firebase"
-
-type Paragraph = {
-  confidence: number
-  end: number
-  start: number
-  text: string
-}
+import { Paragraph, formatMilliseconds } from "./transcription"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -25,18 +17,17 @@ const ClearButton = styled(FontAwesomeIcon)`
   cursor: pointer;
 `
 
+const ResultNumText = styled.div`
+  position: absolute;
+  right: 4rem;
+  top: 50%;
+  user-select: none;
+  transform: translateY(-50%);
+  color: #979797;
+`
+
 const ErrorContainer = styled(Container)`
   background-color: white;
-`
-
-const TimestampButton = styled.button`
-  font-size: 14px;
-  width: min-content;
-`
-
-const TimestampCol = styled.div`
-  text-align: center;
-  width: 140px;
 `
 
 const NoResultFound = styled.div`
@@ -44,38 +35,6 @@ const NoResultFound = styled.div`
   justify-content: center;
   align-items: center;
   height: 88px;
-`
-
-const TranscriptBottom = styled(Container)`
-  background-color: white;
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  height: 9px;
-`
-
-const TranscriptContainer = styled(Container)`
-  max-height: 460px;
-  overflow-y: auto;
-  background-color: #ffffff;
-`
-
-const TranscriptRow = styled(Row)`
-  &:nth-child(even) {
-    background-color: white;
-    border-left-color: white;
-    border-left-style: solid;
-    border-left-width: 5px;
-  }
-  &:nth-child(odd) {
-    background-color: #e8ecf4;
-    border-left-color: #e8ecf4;
-    border-left-style: solid;
-    border-left-width: 5px;
-  }
-  &:last-child {
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-  }
 `
 
 const SearchInput = styled.input`
@@ -114,62 +73,110 @@ const SearchWrapper = styled.div`
   padding: 1.5rem 1rem;
 `
 
+const TimestampButton = styled.button`
+  font-size: 14px;
+  width: min-content;
+  &:hover {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+`
+
+const TimestampCol = styled.div`
+  text-align: center;
+  width: 140px;
+`
+
+const TranscriptBottom = styled(Container)`
+  background-color: white;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 9px;
+`
+
+const TranscriptContainer = styled(Container)`
+  max-height: 483px;
+  overflow-y: auto;
+  background-color: #ffffff;
+`
+
+const TranscriptRow = styled(Row)`
+  &:nth-child(even) {
+    background-color: white;
+    border-left-color: white;
+    border-left-style: solid;
+    border-left-width: 5px;
+  }
+  &:nth-child(odd) {
+    background-color: #e8ecf4;
+    border-left-color: #e8ecf4;
+    border-left-style: solid;
+    border-left-width: 5px;
+  }
+  &:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
+`
+
 export const Transcriptions = ({
+  transcriptData,
   setCurTimeVideo,
   videoLoaded,
-  videoRef,
-  videoTranscriptionId
+  videoRef
 }: {
+  transcriptData: Paragraph[]
   setCurTimeVideo: any
   videoLoaded: boolean
   videoRef: any
-  videoTranscriptionId: string
 }) => {
   const { t } = useTranslation(["common", "hearing"])
+  const containerRef = useRef<any | null>(null)
   const [highlightedId, setHighlightedId] = useState(-1)
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+  const transcriptRefs = useRef(new Map())
   const [searchTerm, setSearchTerm] = useState("")
-  const vid = videoTranscriptionId || "prevent FirebaseError"
-
-  const subscriptionRef = collection(
-    firestore,
-    `transcriptions/${vid}/paragraphs`
-  )
-
-  const fetchTranscriptionData = useCallback(async () => {
-    let docList: any[] = []
-
-    const q = query(subscriptionRef, orderBy("start"))
-    const querySnapshot = await getDocs(q)
-
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      docList.push(doc.data())
-    })
-
-    if (transcriptData.length === 0 && docList.length != 0) {
-      setTranscriptData(docList)
-    }
-  }, [subscriptionRef, transcriptData])
+  const [filteredData, setFilteredData] = useState<Paragraph[]>([])
 
   const handleClearInput = () => {
     setSearchTerm("")
   }
 
   useEffect(() => {
-    fetchTranscriptionData()
-  }, [fetchTranscriptionData])
-
-  const filteredData = transcriptData.filter(el =>
-    el.text.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    setFilteredData(
+      transcriptData.filter(el =>
+        el.text.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
+  }, [transcriptData, searchTerm])
 
   useEffect(() => {
     const handleTimeUpdate = () => {
       const currentIndex = transcriptData.findIndex(
         element => videoRef.current.currentTime <= element.end / 1000
       )
-      setHighlightedId(currentIndex)
+      if (containerRef.current && currentIndex !== highlightedId) {
+        setHighlightedId(currentIndex)
+        if (currentIndex !== -1 && !searchTerm) {
+          const container = containerRef.current
+          const elem = transcriptRefs.current.get(currentIndex)
+          const elemTop = elem.offsetTop - container.offsetTop
+          const elemBottom = elemTop + elem.offsetHeight
+          const viewTop = container.scrollTop
+          const viewBottom = viewTop + container.clientHeight
+
+          if (elemTop < viewTop) {
+            container.scrollTo({
+              top: elemTop,
+              behavior: "smooth"
+            })
+          } else if (elemBottom > viewBottom) {
+            container.scrollTo({
+              top: elemBottom - container.clientHeight,
+              behavior: "smooth"
+            })
+          }
+        }
+      }
     }
 
     const videoElement = videoRef.current
@@ -182,7 +189,7 @@ export const Transcriptions = ({
         ? videoElement.removeEventListener("timeupdate", handleTimeUpdate)
         : null
     }
-  }, [transcriptData, videoLoaded, videoRef])
+  }, [highlightedId, transcriptData, videoLoaded, videoRef, searchTerm])
 
   return (
     <>
@@ -197,19 +204,34 @@ export const Transcriptions = ({
           onChange={e => setSearchTerm(e.target.value)}
         />
         {searchTerm && (
-          <ClearButton icon={faTimes} onClick={handleClearInput} />
+          <>
+            <ResultNumText>
+              {t("num_results", {
+                ns: "hearing",
+                count: filteredData.length
+              })}
+            </ResultNumText>
+            <ClearButton icon={faTimes} onClick={handleClearInput} />
+          </>
         )}
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchWrapper>
       {transcriptData.length > 0 ? (
         <>
-          <TranscriptContainer className={``}>
+          <TranscriptContainer ref={containerRef}>
             {filteredData.map((element: Paragraph, index: number) => (
               <TranscriptItem
                 key={index}
                 element={element}
                 highlightedId={highlightedId}
                 index={index}
+                ref={elem => {
+                  if (elem) {
+                    transcriptRefs.current.set(index, elem)
+                  } else {
+                    transcriptRefs.current.delete(index)
+                  }
+                }}
                 setCurTimeVideo={setCurTimeVideo}
                 searchTerm={searchTerm}
               />
@@ -235,19 +257,23 @@ export const Transcriptions = ({
   )
 }
 
-function TranscriptItem({
-  element,
-  highlightedId,
-  index,
-  setCurTimeVideo,
-  searchTerm
-}: {
-  element: Paragraph
-  highlightedId: number
-  index: number
-  setCurTimeVideo: any
-  searchTerm: string
-}) {
+// forwardRef must be updated for React 19 migration
+const TranscriptItem = forwardRef(function TranscriptItem(
+  {
+    element,
+    highlightedId,
+    index,
+    setCurTimeVideo,
+    searchTerm
+  }: {
+    element: Paragraph
+    highlightedId: number
+    index: number
+    setCurTimeVideo: any
+    searchTerm: string
+  },
+  ref: any
+) {
   const handleClick = (val: number) => {
     const valSeconds = val / 1000
     /* data from backend is in milliseconds
@@ -258,33 +284,24 @@ function TranscriptItem({
     setCurTimeVideo(valSeconds)
   }
 
-  const formatMilliseconds = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000)
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
-
-    const formattedHours = String(hours).padStart(2, "0")
-    const formattedMinutes = String(minutes).padStart(2, "0")
-    const formattedSeconds = String(seconds).padStart(2, "0")
-
-    if (hours >= 1) {
-      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
-    } else {
-      return `${formattedMinutes}:${formattedSeconds}`
-    }
-  }
-
   const isHighlighted = (index: number): boolean => {
     return index === highlightedId
   }
   const highlightText = (text: string, term: string) => {
     if (!term) return text
-    const regex = new RegExp(`(${term})`, "gi")
-    return text
-      .split(regex)
-      .map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : part))
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const regex = new RegExp(`(${escaped})`, "gi")
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? (
+        <mark key={i} className={`p-0`}>
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    )
   }
+
   return (
     <TranscriptRow
       className={
@@ -292,6 +309,7 @@ function TranscriptItem({
           ? `bg-info border-5 border-secondary border-start`
           : `border-5`
       }
+      ref={ref}
     >
       <TimestampCol>
         <Row className={`d-inline`}>
@@ -312,4 +330,4 @@ function TranscriptItem({
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
     </TranscriptRow>
   )
-}
+})

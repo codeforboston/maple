@@ -1,6 +1,7 @@
 {
   "about": "About",
   "back_to_bills": "back to list of bills",
+  "back_to_hearings": "back to list of hearings",
   "bill": {
     "and_others_one": "and {{count}} other",
     "and_others_other": "and {{count}} others",
@@ -16,6 +17,7 @@
     "download_pdf": "Download PDF",
     "example_name": "Example Name",
     "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
+    "hearing_video_and_transcript" : "Hearing Video + Transcript", 
     "history": "History",
     "icon": {
       "commerce": "Commerce",
@@ -41,14 +43,16 @@
       "transportation_and_public_works": "Transportation and Public Works"
     },
     "lobbying_parties": "Lobbying Parties",
+    "multiple_hearings": "This bill was featured in multiple hearings",
     "old_session": "this bill is from session {{billCourt}} - not the current session",
     "position": "Position",
     "pro": "Pro",
     "neutral": "Neutral",
     "read_more": "Read More",
+    "select_hearing": "Select a Hearing",
     "smart_disclaimer": "This content has been generated using artificial intelligence and may not accurately reflect the details of the legislation. Learn more about <0>how MAPLE uses AI</0>. To report an inaccuracy or to suggest an improvement, please email admin@mapletestimony.org",
     "smart_disclaimer2": "This transcription was made with generative AI.",
-    "smart_disclaimer3": "<0>how MAPLE uses AI</0>",
+    "smart_disclaimer3": "<0>How MAPLE uses AI</0>",
     "seeCosponsors": "See {{count}} Cosponsors",
     "smart_summary": "Smart Summary & Tags",
     "smart_tag": "AI Smart Tag",
@@ -64,9 +68,13 @@
     "followed": "Followed"
   },
   "calendar": "Our Calendar",
+  "copiedToClipboard": "Copied to Clipboard!",
   "hideAns": "Hide Answer",
   "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
+  "edit": "Edit",
+  "english": "English",
   "joinTraining": "and join an upcoming training session!",
+  "languages": "Languages",
   "leadSponsor": "Lead Sponsor",
   "learn": "Learn",
   "let_your_voice_be_heard": "Let your voice be heard!",
@@ -108,6 +116,7 @@
     "whyUseMaple": "Why Use MAPLE",
     "login": "Login"
   },
+  "new_feature": "*NEW*",
   "newcomer": "New to MAPLE? For extra support, check",
   "newsletter": "Click Here to Subscribe to Our Newsletter",
   "newsfeed": {
@@ -132,6 +141,7 @@
     "content": "Your request to be upgraded to an organization is currently in progress. You will be notified by email when your request has been reviewed."
   },
   "primarySponsor": "Primary Sponsor",
+  "privacyPolicy": "Privacy Policy",
   "short_description": "MAPLE makes it easy for anyone to view and submit testimony to the Massachusetts Legislature about the bills that will shape our future.",
   "showAns": "Show Answer",
   "socials": {
@@ -142,11 +152,13 @@
     "bluesky": "BlueSky",
     "mastodon": "Mastodon"
   },
+  "spanish": "Spanish",
   "sponsor": "Sponsor",
   "sponsors": "Sponsors",
   "table": {
     "page": "Page {{currentPage}}"
   },
+  "termsAndConditions": "Terms and Conditions",
   "titles": {
     "admin": "Admin",
     "bill": "Bill",
@@ -160,12 +172,7 @@
     "why_use_maple": "Why Use Maple?"
   },
   "user_updates": "User Updates",
-  "copiedToClipboard": "Copied to Clipboard!",
-  "privacyPolicy": "Privacy Policy",
-  "termsAndConditions": "Terms and Conditions",
-  "languages": "Languages",
-  "english": "English",
-  "spanish": "Spanish",
-  "edit": "Edit",
+  "view": "View",
+  "view_the_hearing" : "View the hearing for this bill, complete with a generative AI transcript.",
   "yes": "Yes"
 }

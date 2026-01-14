@@ -1,19 +1,20 @@
 import { GetStaticProps } from "next"
-import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { useTranslation } from "next-i18next"
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
+
 import { Container } from "components/bootstrap"
-import { HearingSearch } from "components/search"
-import { createPage } from "components/page"
 import { flags } from "components/featureFlags"
+import { createPage } from "components/page"
+import { HearingSearch } from "components/search"
 
 const HearingsPage = createPage({
   titleI18nKey: "navigation.browseHearings",
   Page: () => {
-    const { t } = useTranslation("search")
+    const { t } = useTranslation("common")
 
     return (
       <Container fluid="md" className="mt-3">
-        <h1>{t("browse_hearings")}</h1>
+        <h1>{t("navigation.browseHearings")}</h1>
         <HearingSearch />
       </Container>
     )
@@ -31,10 +32,10 @@ export const getStaticProps: GetStaticProps = async ctx => {
     props: {
       ...(await serverSideTranslations(locale, [
         "auth",
-        "search",
         "common",
         "footer",
-        "hearing"
+        "hearing",
+        "search"
       ]))
     }
   }
