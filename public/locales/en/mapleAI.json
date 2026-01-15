@@ -9,8 +9,8 @@
     "desc2Main": "We use AI to generate concise summaries for each piece of legislation. These summaries help you grasp the essentials of a bill without wading through dense legal text.",
     "desc3Bold": "Topic Tags",
     "desc3Main": "AI tags each bill with relevant topics, making it easier for you to find related legislation and understand the broader context. These tags categorize bills by subject matter, allowing for efficient searching and filtering.",
-    "desc3Bold": "Hearing transcriptions",
-    "desc3Main": "AI transcribes video recordings of oral hearings held at the legislature to generate a searchable text transcript.."
+    "desc4Bold": "Hearing transcriptions",
+    "desc4Main": "AI transcribes video recordings of oral hearings held at the legislature to generate a searchable text transcript.."
   },
   "section2": {
     "title": "Our Guiding Principles",
@@ -44,10 +44,10 @@
       "desc3Main": "AI generates summaries as new bills are filed or updated.",
       "desc4Bold": "Dynamic Tagging:",
       "desc4Main": "Bills are tagged with multiple relevant topics, helping you find similar legislation quickly.",
-      "desc4Bold": "Transcriptions:",
-      "desc4Main": "Oral hearing recordings are transcribed to text, making it easier to find discussion about particular bills and issues.",
-      "desc5Bold": "Scalability:",
-      "desc5Main": "Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
+      "desc5Bold": "Transcriptions:",
+      "desc5Main": "Oral hearing recordings are transcribed to text, making it easier to find discussion about particular bills and issues.",
+      "desc6Bold": "Scalability:",
+      "desc6Main": "Our system is designed to handle the large volume of bills in each legislative session, ensuring timely and accurate updates."
     },
     "sub2": {
       "title": "Technical details",
