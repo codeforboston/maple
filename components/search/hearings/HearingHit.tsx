@@ -139,13 +139,6 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
             </div>
           ) : null}
 
-          {topics.length ? (
-            <div>
-              <SectionLabel>{t("agenda_label", { ns: "search" })}</SectionLabel>
-              <span>{topics.join(", ")}</span>
-            </div>
-          ) : null}
-
           <BillsSection bills={bills} />
         </div>
       </Card.Body>
