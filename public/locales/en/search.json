@@ -34,7 +34,9 @@
     "relevance": "Sort by Relevance",
     "testimony_count": "Sort by Testimony Count",
     "cosponsor_count": "Sort by Cosponsor Count",
-    "next_hearing_date": "Sort by Next Hearing Date"
+    "past_newest": "Past (Most recent first)",
+    "past_oldest": "Past (Oldest First)",
+    "upcoming": "Upcoming"
   },
   "result_count": "Showing {{pageStart}}-{{pageEnd}} of {{nbHits}} Results",
   "search_box": {
