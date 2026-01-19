@@ -37,11 +37,18 @@ const useHearingSort = () => {
   return useMemo(
     () => [
       {
-        labelKey: "sort_by.newest",
-        value: "hearings/sort/startsAt:desc"
+        labelKey: "sort_by.past_newest",
+        value: "hearings/sort/startsAt:desc",
+        configure: {
+          numericRefinements: {
+            startsAt: {
+              "<=": [now.current]
+            }
+          }
+        }
       },
       {
-        labelKey: "sort_by.next_hearing_date",
+        labelKey: "sort_by.upcoming",
         value: "hearings/sort/startsAt:asc",
         configure: {
           numericRefinements: {
@@ -52,8 +59,15 @@ const useHearingSort = () => {
         }
       },
       {
-        labelKey: "sort_by.relevance",
-        value: "hearings/sort/_text_match:desc,startsAt:asc"
+        labelKey: "sort_by.past_oldest",
+        value: "hearings/sort/startsAt:asc,startsAt:asc",
+        configure: {
+          numericRefinements: {
+            startsAt: {
+              "<=": [now.current]
+            }
+          }
+        }
       }
     ],
     []
