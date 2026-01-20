@@ -67,24 +67,31 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         email,
         password
       )
+      await finishSignup({ requestedRole: isOrg ? "organization" : "user" })
+
+      const categories = orgCategory ? [orgCategory] : ""
+
       if (isOrg) {
-        await finishSignup({
-          requestedRole: "organization",
-          fullName,
-          orgCategories: orgCategory ? [orgCategory] : "",
-          notificationFrequency: "Weekly",
-          email: credentials.user.email
-        })
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            fullName,
+            orgCategories: categories,
+            notificationFrequency: "Weekly",
+            email: credentials.user.email
+          }),
+          sendEmailVerification(credentials.user)
+        ])
       } else {
-        await finishSignup({
-          requestedRole: "user",
-          fullName,
-          notificationFrequency: "Weekly",
-          email: credentials.user.email,
-          public: true
-        })
+        await Promise.all([
+          setProfile(credentials.user.uid, {
+            fullName,
+            notificationFrequency: "Weekly",
+            email: credentials.user.email,
+            public: true
+          }),
+          sendEmailVerification(credentials.user)
+        ])
       }
-      await sendEmailVerification(credentials.user)
 
       return credentials
     }

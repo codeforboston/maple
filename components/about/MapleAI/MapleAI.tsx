@@ -41,9 +41,6 @@ const MapleAI = () => {
                 <li>
                   <b>{t("section1.desc3Bold")}</b> {t("section1.desc3Main")}
                 </li>
-                <li>
-                  <b>{t("section1.desc4Bold")}</b> {t("section1.desc4Main")}
-                </li>
               </ul>
             </DescrContainer>
             <DescrContainer className="pb-3 px-4">
@@ -131,10 +128,6 @@ const MapleAI = () => {
                 <li>
                   <b>{t("section4.sub1.desc5Bold")}</b>{" "}
                   {t("section4.sub1.desc5Main")}
-                </li>
-                <li>
-                  <b>{t("section4.sub1.desc6Bold")}</b>{" "}
-                  {t("section4.sub1.desc6Main")}
                 </li>
               </ul>
             </DescrContainer>

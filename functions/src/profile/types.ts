@@ -26,14 +26,6 @@ export const Profile = Record({
   about: Optional(String),
   social: Optional(Dictionary(String)),
   organization: Optional(Boolean),
-  orgCategories: Optional(Array(String.Or(Null))),
-  email: Optional(String.Or(Null)),
-  notificationFrequency: Optional(String),
-  nextDigestAt: Optional(String),
-  profileImage: Optional(String),
-  billsFollowing: Optional(Array(String)),
-  contactInfo: Optional(Dictionary(String)),
-  location: Optional(String)
+  orgCategories: Optional(Array(String.Or(Null)))
 })
-
 export type Profile = Static<typeof Profile>
