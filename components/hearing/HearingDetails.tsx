@@ -15,6 +15,8 @@ import { HearingSidebar } from "./HearingSidebar"
 import { HearingData, Paragraph, fetchTranscriptionData } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
+import { useRouter } from "next/router"
+
 const LegalContainer = styled(Container)`
   background-color: white;
 `
@@ -62,6 +64,59 @@ export const HearingDetails = ({
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
+
+  const router = useRouter()
+
+  console.log("vref current: ", videoRef.current)
+
+  const updateUrlWithTimestamp = () => {
+    if (videoRef.current) {
+      const timeInSeconds = Math.floor(videoRef.current.currentTime)
+      console.log("TIS: ", timeInSeconds)
+      router.push(`${hearingId}?t=${timeInSeconds}`, undefined, {
+        shallow: true
+      })
+    }
+  }
+
+  useEffect(() => {
+    videoRef.current
+      ? videoRef.current.addEventListener("pause", updateUrlWithTimestamp)
+      : null
+
+    return () => {
+      videoRef.current
+        ? videoRef.current.removeEventListener("pause", updateUrlWithTimestamp)
+        : null
+    }
+  }, [videoRef.current])
+
+  useEffect(() => {
+    const startTime = router.query.t
+
+    const convertToString = (value: string | string[] | undefined): string => {
+      if (Array.isArray(value)) {
+        return value.join(", ")
+      }
+      return value ?? ""
+    }
+
+    const resultString: string = convertToString(startTime)
+
+    console.log("result string", parseInt(resultString, 10))
+
+    if (startTime && videoRef.current) {
+      // if (startTime && videoRef.current) {
+      console.log("test 3")
+      setCurTimeVideo(parseInt(resultString, 10))
+      // Wait for video metadata to load before seeking
+      videoRef.current.addEventListener("loadedmetadata", () => {
+        // if (videoRef.current !== null)
+        //   videoRef.current.currentTime = parseInt(resultString, 10)
+        // console.log("test 2", videoRef.current.currentTime)
+      })
+    }
+  }, [router.query.t, videoRef.current])
 
   useEffect(() => {
     ;(async function () {
