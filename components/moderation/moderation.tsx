@@ -4,6 +4,7 @@ import { FirebaseDataProvider } from "react-admin-firebase"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { EditReports, ListReports } from "./"
 import { ListProfiles } from "./ListProfiles"
+import { ScrapeHearingList } from "./ScrapeHearing"
 import {
   createMyOne,
   getMyListGroup,
@@ -47,6 +48,11 @@ const App = () => {
           name="profiles"
           list={ListProfiles}
           options={{ label: "Upgrade Requests" }}
+        />
+        <Resource
+          name="scrape-hearing"
+          list={ScrapeHearingList}
+          options={{ label: "Scrape Hearing" }}
         />
       </Admin>
     </QueryClientProvider>

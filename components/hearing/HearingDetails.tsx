@@ -12,7 +12,7 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import { Paragraph, fetchTranscriptionData } from "./transcription"
+import { HearingData, Paragraph, fetchTranscriptionData } from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 import { useRouter } from "next/router"
@@ -38,12 +38,22 @@ const VideoParent = styled.div`
 `
 
 export const HearingDetails = ({
-  hearingId
+  hearingData: {
+    billsInAgenda,
+    committeeCode,
+    committeeName,
+    description,
+    generalCourtNumber,
+    hearingDate,
+    hearingId,
+    videoTranscriptionId,
+    videoURL
+  }
 }: {
-  hearingId: string | string[] | undefined
+  hearingData: HearingData
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const [transcriptData, setTranscriptData] = useState<Paragraph[]>([])
+  const [transcriptData, setTranscriptData] = useState<Paragraph[] | null>(null)
 
   const [videoLoaded, setVideoLoaded] = useState(false)
   const handleVideoLoad = () => {
@@ -135,15 +145,11 @@ export const HearingDetails = ({
 
   useEffect(() => {
     ;(async function () {
-      if (!videoTranscriptionId || transcriptData.length !== 0) return
+      if (!videoTranscriptionId || transcriptData !== null) return
       const docList = await fetchTranscriptionData(videoTranscriptionId)
       setTranscriptData(docList)
     })()
   }, [videoTranscriptionId])
-
-  useEffect(() => {
-    hearingData()
-  }, [hearingData])
 
   return (
     <Container className="mt-3 mb-3">
@@ -170,11 +176,15 @@ export const HearingDetails = ({
       )}
 
       {committeeName ? (
-        <h1>
-          <External href={committeeURL(committeeCode)}>
-            {committeeName}
-          </External>
-        </h1>
+        committeeCode ? (
+          <h1>
+            <External href={committeeURL(committeeCode)}>
+              {committeeName}
+            </External>
+          </h1>
+        ) : (
+          <h1>{committeeName}</h1>
+        )
       ) : (
         <></>
       )}
@@ -183,37 +193,41 @@ export const HearingDetails = ({
 
       <Row>
         <Col className={`col-md-8 mt-4`}>
-          <LegalContainer className={`pb-2 rounded`}>
-            <Row
-              className={`d-flex align-items-center justify-content-between`}
-              fontSize={"12px"}
-              xs="auto"
-            >
-              <Col>
-                <div className={`fs-6 fw-bold mt-2`}>
-                  <Image
-                    src="/images/smart-summary.svg"
-                    alt={t("bill.smart_tag")}
-                    height={`34`}
-                    width={`24`}
-                    className={`me-2 pb-1`}
-                  />
-                  {t("bill.smart_disclaimer2")}
-                </div>
-              </Col>
+          {transcriptData ? (
+            <LegalContainer className={`pb-2 rounded`}>
+              <Row
+                className={`d-flex align-items-center justify-content-between`}
+                fontSize={"12px"}
+                xs="auto"
+              >
+                <Col>
+                  <div className={`fs-6 fw-bold mt-2`}>
+                    <Image
+                      src="/images/smart-summary.svg"
+                      alt={t("bill.smart_tag")}
+                      height={`34`}
+                      width={`24`}
+                      className={`me-2 pb-1`}
+                    />
+                    {t("bill.smart_disclaimer2")}
+                  </div>
+                </Col>
 
-              <Col>
-                <Trans
-                  t={t}
-                  i18nKey="bill.smart_disclaimer3"
-                  components={[
-                    // eslint-disable-next-line react/jsx-key
-                    <links.Internal href="/about/how-maple-uses-ai" />
-                  ]}
-                />
-              </Col>
-            </Row>
-          </LegalContainer>
+                <Col>
+                  <Trans
+                    t={t}
+                    i18nKey="bill.smart_disclaimer3"
+                    components={[
+                      // eslint-disable-next-line react/jsx-key
+                      <links.Internal href="/about/how-maple-uses-ai" />
+                    ]}
+                  />
+                </Col>
+              </Row>
+            </LegalContainer>
+          ) : (
+            <></>
+          )}
 
           {videoURL ? (
             <VideoParent className={`mt-3`}>
@@ -227,16 +241,24 @@ export const HearingDetails = ({
             </VideoParent>
           ) : (
             <LegalContainer className={`fs-6 fw-bold my-3 py-2 rounded`}>
-              {t("no_video_on_file", { ns: "hearing" })}
+              {transcriptData
+                ? t("no_video_on_file", { ns: "hearing" })
+                : t("no_video_or_transcript", { ns: "hearing" })}
             </LegalContainer>
           )}
 
-          <Transcriptions
-            transcriptData={transcriptData}
-            setCurTimeVideo={setCurTimeVideo}
-            videoLoaded={videoLoaded}
-            videoRef={videoRef}
-          />
+          {transcriptData ? (
+            <Transcriptions
+              transcriptData={transcriptData}
+              setCurTimeVideo={setCurTimeVideo}
+              videoLoaded={videoLoaded}
+              videoRef={videoRef}
+            />
+          ) : videoURL ? (
+            <LegalContainer className={`fs-6 fw-bold mb-2 py-2 rounded-bottom`}>
+              <div>{t("no_transcript_on_file", { ns: "hearing" })}</div>
+            </LegalContainer>
+          ) : null}
         </Col>
 
         <div className={`col-md-4`}>

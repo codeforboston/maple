@@ -10,7 +10,7 @@ export type EventData = {
   type: "hearing" | "session"
   name: string
   id: number
-  location: string
+  location?: string
   fullDate: Date // TODO: Could be a timestamp
   year: string
   month: string
@@ -132,7 +132,7 @@ export const EventCard = ({
               )}
             </p>
             <p className={`lh-sm mb-3 ms-2 text-secondary`}>
-              {truncateEntry(location)}
+              {truncateEntry(location ?? "")}
             </p>
           </div>
         </div>

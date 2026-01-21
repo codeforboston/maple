@@ -15,7 +15,12 @@ export {
   startCommitteeBatches,
   updateCommitteeRosters
 } from "./committees"
-export { scrapeHearings, scrapeSessions, scrapeSpecialEvents } from "./events"
+export {
+  scrapeHearings,
+  scrapeSessions,
+  scrapeSpecialEvents,
+  scrapeSingleHearing
+} from "./events"
 export {
   syncHearingToSearchIndex,
   upgradeHearingSearchIndex

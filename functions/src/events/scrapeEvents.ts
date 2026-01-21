@@ -1,8 +1,9 @@
+import * as functions from "firebase-functions"
 import { RuntimeOptions, runWith } from "firebase-functions"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
-import { logFetchError } from "../common"
+import { checkAuth, checkAdmin, logFetchError } from "../common"
 import { db, storage, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
@@ -287,7 +288,10 @@ export const getHearingVideoUrl = async (EventId: number) => {
   return null
 }
 
-const shouldScrapeVideo = async (EventId: number) => {
+const shouldScrapeVideo = async (
+  EventId: number,
+  ignoreCutoff: boolean = false
+) => {
   const eventInDb = await db
     .collection("events")
     .doc(`hearing-${String(EventId)}`)
@@ -300,7 +304,10 @@ const shouldScrapeVideo = async (EventId: number) => {
     return false
   }
   if (!eventData.videoURL) {
-    return withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    return (
+      ignoreCutoff ||
+      withinCutoff(new Date(Hearing.check(eventData).startsAt.toDate()))
+    )
   }
   return false
 }
@@ -346,7 +353,10 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     return events.filter(HearingListItem.guard)
   }
 
-  async getEvent({ EventId }: HearingListItem /* e.g. 4962 */) {
+  async getEvent(
+    { EventId }: HearingListItem /* e.g. 4962 */,
+    { ignoreCutoff = false }: { ignoreCutoff?: boolean } = {}
+  ) {
     const data = await api.getHearing(EventId)
     const content = HearingContent.check(data)
 
@@ -359,9 +369,9 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
             host.GeneralCourtNumber,
             host.CommitteeCode
           )
-        : undefined
+        : []
 
-    if (await shouldScrapeVideo(EventId)) {
+    if (await shouldScrapeVideo(EventId, ignoreCutoff)) {
       try {
         const maybeVideoUrl = await getHearingVideoUrl(EventId)
         if (maybeVideoUrl) {
@@ -410,6 +420,61 @@ class HearingScraper extends EventScraper<HearingListItem, Hearing> {
     } as Hearing
   }
 }
+
+/**
+ * Callable cloud function to scrape a single hearing by EventId.
+ * Requires authentication to prevent abuse of API call limits.
+ *
+ * @param data - Object containing the EventId (e.g., 1234)
+ * @param context - Firebase callable context with auth information
+ */
+export const scrapeSingleHearing = functions
+  .runWith({
+    timeoutSeconds: 480,
+    secrets: ["ASSEMBLY_API_KEY"],
+    memory: "4GB"
+  })
+  .https.onCall(async (data: { eventId: number }, context) => {
+    // Require admin authentication
+    checkAuth(context, false)
+    checkAdmin(context)
+
+    const { eventId } = data
+
+    if (!eventId || typeof eventId !== "number") {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "The function must be called with a valid eventId (number)."
+      )
+    }
+
+    try {
+      // Create a temporary scraper instance to reuse the existing logic
+      const scraper = new HearingScraper()
+      const hearing = await scraper.getEvent(
+        { EventId: eventId },
+        { ignoreCutoff: true }
+      )
+
+      // Save the hearing to Firestore
+      await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
+
+      console.log(`Successfully scraped hearing ${eventId}`, hearing)
+
+      return {
+        status: "success",
+        message: `Successfully scraped hearing ${eventId}`,
+        hearingId: hearing.id
+      }
+    } catch (error: any) {
+      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      throw new functions.https.HttpsError(
+        "internal",
+        `Failed to scrape hearing ${eventId}`,
+        { details: error.message }
+      )
+    }
+  })
 
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function
