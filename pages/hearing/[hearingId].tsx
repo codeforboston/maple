@@ -1,5 +1,4 @@
 import { GetServerSideProps } from "next"
-import { useRouter } from "next/router"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
 import { flags } from "components/featureFlags"
