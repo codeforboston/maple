@@ -79,7 +79,7 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
   }
 
   var yesterday = new Date()
-  yesterday.setDate(yesterday.getDate()-1)
+  yesterday.setDate(yesterday.getDate() - 1)
 
   return (
     <StyledCard
