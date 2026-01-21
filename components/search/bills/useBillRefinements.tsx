@@ -36,8 +36,29 @@ export const useBillRefinements = () => {
 
             attribute: "court"
           },
-          { attribute: "currentCommittee" },
-          { attribute: "city" },
+          { attribute: "currentCommittee" }
+        ].map(props => ({
+          limit: 500,
+          searchable: true,
+          searchablePlaceholder: t(`refinements.bill.${props.attribute}`),
+          ...props
+        })),
+      [t]
+    ),
+    refinementProps2: useMemo(
+      () =>
+        [
+          {
+            transformItems: (items: RefinementListItem[]) =>
+              items
+                .map(i => ({
+                  ...i,
+                  label: generalCourts[parseInt(i.value, 10)]?.Name ?? i.label
+                }))
+                .sort((a, b) => Number(b.value) - Number(a.value)),
+
+            attribute: "city"
+          },
           { attribute: "primarySponsor" },
           { attribute: "cosponsors" }
         ].map(props => ({
