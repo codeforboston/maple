@@ -22,7 +22,11 @@ export const script: Script = async ({ db, args }) => {
       Title: "",
       PrimarySponsor: null,
       DocumentText: "",
-      Cosponsors: []
+      Cosponsors: [],
+      BillNumber: "",
+      DocketNumber: "",
+      GeneralCourtNumber: 0,
+      LegislationTypeName: ""
     }
 
     const newBill: Bill = {

@@ -35,7 +35,11 @@ export async function createNewBill(props?: Partial<Bill>) {
     Pinslip: null,
     Title: "fake",
     PrimarySponsor: null,
-    Cosponsors: []
+    Cosponsors: [],
+    BillNumber: "",
+    DocketNumber: "",
+    GeneralCourtNumber: 0,
+    LegislationTypeName: ""
   }
   const bill: Bill = {
     id: billId,
@@ -160,7 +164,11 @@ export const setNewProfile = (user: {
  * Returns functions to get, remove, and check where the testimony is.
  */
 
-export const createNewTestimony = async (uid: string, billId: string) => {
+export const createNewTestimony = async (
+  uid: string,
+  billId: string,
+  court: number = 193
+) => {
   const tid = nanoid(6)
 
   const currentUserEmail = auth.currentUser?.email
@@ -178,7 +186,7 @@ export const createNewTestimony = async (uid: string, billId: string) => {
     billId,
     publishedAt: testTimestamp.now(),
     updatedAt: testTimestamp.now(),
-    court: 192,
+    court: court,
     position: "oppose",
     content: "testimony content",
     public: true
@@ -332,8 +340,11 @@ export const testCreatePendingOrgWithEmailAndPassword = async (
   return userCreds
 }
 
-export const deleteUser = async (user: { uid: string }) => {
-  await testAuth.deleteUser(user.uid)
+export const deleteUser = async (uid: string) => {
+  const userDoc = await testDb.doc(`/users/${uid}`).get()
+  const userData = userDoc.data()
+  await testAuth.deleteUser(uid)
+  await testDb.doc(`/users/${uid}`).delete()
 }
 
 export const expectUser = async (

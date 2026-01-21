@@ -1,11 +1,4 @@
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  Timestamp,
-  where
-} from "firebase/firestore"
+import { collection, getDocs, limit, orderBy, where } from "firebase/firestore"
 import { useAsync } from "react-async-hook"
 import type {
   BillHistory,
@@ -14,6 +7,7 @@ import type {
 import { firestore } from "../firebase"
 import { loadDoc, midnight, nullableQuery } from "./common"
 import { currentGeneralCourt } from "functions/src/shared"
+import { Timestamp } from "functions/src/firebase"
 export type { BillHistory } from "../../functions/src/bills/types"
 
 export type MemberReference = {
@@ -26,14 +20,14 @@ export type MemberReference = {
 
 export type BillContent = {
   Title: string
+  Pinslip: string | null
   BillNumber: string
   DocketNumber: string
   GeneralCourtNumber: number
-  PrimarySponsor?: MemberReference
+  PrimarySponsor: MemberReference | null
   Cosponsors: MemberReference[]
   LegislationTypeName: string
-  Pinslip: string
-  DocumentText: string
+  DocumentText?: string | null
 }
 
 export type BillTopic = {
@@ -51,10 +45,12 @@ export type Bill = {
   opposeCount: number
   neutralCount: number
   nextHearingAt?: Timestamp
+  nextHearingId?: string
   latestTestimonyAt?: Timestamp
   latestTestimonyId?: string
   fetchedAt: Timestamp
   history: BillHistory
+  similar: string[]
   currentCommittee?: CurrentCommittee
   city?: string
   topics?: BillTopic[]
