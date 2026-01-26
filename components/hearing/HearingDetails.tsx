@@ -64,27 +64,6 @@ export const HearingDetails = ({
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
 
-  const updateUrlWithTimestamp = () => {
-    if (videoRef.current) {
-      const timeInSeconds = Math.floor(videoRef.current.currentTime)
-      router.push(`${hearingId}?t=${timeInSeconds}`, undefined, {
-        shallow: true
-      })
-    }
-  }
-
-  useEffect(() => {
-    videoRef.current
-      ? videoRef.current.addEventListener("pause", updateUrlWithTimestamp)
-      : null
-
-    return () => {
-      videoRef.current
-        ? videoRef.current.removeEventListener("pause", updateUrlWithTimestamp)
-        : null
-    }
-  }, [videoRef.current])
-
   useEffect(() => {
     const startTime = router.query.t
 
