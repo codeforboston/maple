@@ -4,14 +4,18 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { Paragraph, formatMilliseconds, formatTotalSeconds } from "./hearing"
+import {
+  Paragraph,
+  convertToString,
+  formatMilliseconds,
+  formatTotalSeconds
+} from "./hearing"
 import { CopyButton } from "components/buttons"
-
-import { useRouter } from "next/router"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -156,13 +160,6 @@ export const Transcriptions = ({
 
   const router = useRouter()
   const startTime = router.query.t
-  const convertToString = (value: string | string[] | undefined): string => {
-    if (Array.isArray(value)) {
-      return value.join(", ")
-    }
-    return value ?? ""
-  }
-
   const resultString: string = convertToString(startTime)
 
   let currentIndex = transcriptData.findIndex(

@@ -29,6 +29,15 @@ export type Paragraph = {
   text: string
 }
 
+export const convertToString = (
+  value: string | string[] | undefined
+): string => {
+  if (Array.isArray(value)) {
+    return value.join(", ")
+  }
+  return value ?? ""
+}
+
 export async function fetchHearingData(
   hearingId: string
 ): Promise<HearingData | null> {

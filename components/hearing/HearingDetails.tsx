@@ -11,7 +11,12 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import { HearingData, Paragraph, fetchTranscriptionData } from "./hearing"
+import {
+  HearingData,
+  Paragraph,
+  convertToString,
+  fetchTranscriptionData
+} from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
@@ -66,14 +71,6 @@ export const HearingDetails = ({
 
   useEffect(() => {
     const startTime = router.query.t
-
-    const convertToString = (value: string | string[] | undefined): string => {
-      if (Array.isArray(value)) {
-        return value.join(", ")
-      }
-      return value ?? ""
-    }
-
     const resultString: string = convertToString(startTime)
 
     if (startTime && videoRef.current) {
