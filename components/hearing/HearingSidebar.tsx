@@ -9,7 +9,7 @@ import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatVTTTimestamp} from "./hearing"
+import { Paragraph, formatVTTTimestamp } from "./hearing"
 
 type Bill = {
   BillNumber: string
