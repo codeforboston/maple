@@ -97,3 +97,10 @@ export function formatMilliseconds(ms: number): string {
     return `${formattedMinutes}:${formattedSeconds}`
   }
 }
+
+export function formatTotalSeconds(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000)
+  const formattedSeconds = String(totalSeconds)
+
+  return `${formattedSeconds}`
+}

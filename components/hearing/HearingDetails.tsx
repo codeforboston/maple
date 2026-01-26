@@ -208,6 +208,7 @@ export const HearingDetails = ({
 
           {transcriptData ? (
             <Transcriptions
+              hearingId={hearingId}
               transcriptData={transcriptData}
               setCurTimeVideo={setCurTimeVideo}
               videoLoaded={videoLoaded}

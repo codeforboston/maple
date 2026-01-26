@@ -1,10 +1,15 @@
-import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
+import {
+  faMagnifyingGlass,
+  faShareAlt,
+  faTimes
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { Paragraph, formatMilliseconds } from "./hearing"
+import { Paragraph, formatMilliseconds, formatTotalSeconds } from "./hearing"
+import { CopyButton } from "components/buttons"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -116,11 +121,13 @@ const TranscriptRow = styled(Row)`
 `
 
 export const Transcriptions = ({
+  hearingId,
   transcriptData,
   setCurTimeVideo,
   videoLoaded,
   videoRef
 }: {
+  hearingId: string
   transcriptData: Paragraph[]
   setCurTimeVideo: any
   videoLoaded: boolean
@@ -217,6 +224,7 @@ export const Transcriptions = ({
           <TranscriptItem
             key={index}
             element={element}
+            hearingId={hearingId}
             highlightedId={highlightedId}
             index={index}
             ref={elem => {
@@ -249,12 +257,14 @@ export const Transcriptions = ({
 const TranscriptItem = forwardRef(function TranscriptItem(
   {
     element,
+    hearingId,
     highlightedId,
     index,
     setCurTimeVideo,
     searchTerm
   }: {
     element: Paragraph
+    hearingId: string
     highlightedId: number
     index: number
     setCurTimeVideo: any
@@ -316,6 +326,19 @@ const TranscriptItem = forwardRef(function TranscriptItem(
         </Row>
       </TimestampCol>
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
+      <Col xs="1">
+        <CopyButton
+          key="copy"
+          variant="outline-secondary"
+          text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
+            element.start
+          )}`}
+          className={`copy my-1 px-1 py-0`}
+          format="text/plain"
+        >
+          <FontAwesomeIcon icon={faShareAlt} />
+        </CopyButton>
+      </Col>
     </TranscriptRow>
   )
 })
