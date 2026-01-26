@@ -11,6 +11,8 @@ import { Col, Container, Row } from "../bootstrap"
 import { Paragraph, formatMilliseconds, formatTotalSeconds } from "./hearing"
 import { CopyButton } from "components/buttons"
 
+import { useRouter } from "next/router"
+
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
   right: 3rem;
@@ -152,11 +154,38 @@ export const Transcriptions = ({
     )
   }, [transcriptData, searchTerm])
 
+  const router = useRouter()
+  const startTime = router.query.t
+  const convertToString = (value: string | string[] | undefined): string => {
+    if (Array.isArray(value)) {
+      return value.join(", ")
+    }
+    return value ?? ""
+  }
+
+  const resultString: string = convertToString(startTime)
+
+  let currentIndex = transcriptData.findIndex(
+    element => parseInt(resultString, 10) <= element.end / 1000
+  )
+
+  // this useEffect sets highlighter on inital page load
+  // the next useEffect handles general video usage
+  // both are needed
+
+  useEffect(() => {
+    if (containerRef.current && currentIndex !== highlightedId) {
+      setHighlightedId(currentIndex)
+    }
+  }, [videoLoaded])
+
   useEffect(() => {
     const handleTimeUpdate = () => {
-      const currentIndex = transcriptData.findIndex(
-        element => videoRef.current.currentTime <= element.end / 1000
-      )
+      videoLoaded
+        ? (currentIndex = transcriptData.findIndex(
+            element => videoRef.current.currentTime <= element.end / 1000
+          ))
+        : null
       if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
         if (currentIndex !== -1 && !searchTerm) {
@@ -285,6 +314,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
   const isHighlighted = (index: number): boolean => {
     return index === highlightedId
   }
+
   const highlightText = (text: string, term: string) => {
     if (!term) return text
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
