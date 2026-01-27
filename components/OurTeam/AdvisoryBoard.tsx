@@ -33,7 +33,7 @@ export const AdvisoryBoard = () => {
             <MemberItem name="Marci Harris" descr={t("advisory.MHarris")} />
             <Divider />
             <MemberItem
-              name="Jake Hirsh-Allen"
+              name="Jake Hirsch-Allen"
               descr={t("advisory.JakeHirshAllen")}
             />
             <Divider />
