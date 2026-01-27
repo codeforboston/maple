@@ -6,7 +6,6 @@ import Leaf from "../components/Leaf/Leaf"
 import { createPage } from "../components/page"
 import TestimonyCalloutSection from "../components/TestimonyCallout/TestimonyCalloutSection"
 import { createGetStaticTranslationProps } from "components/translations"
-import { Banner } from "components/shared/StyledSharedComponents"
 
 export default createPage({
   Page: () => {
