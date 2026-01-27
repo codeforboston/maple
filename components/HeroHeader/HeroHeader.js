@@ -7,12 +7,16 @@ import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
 import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "../common"
+import AnouncementBanner from "components/AnnouncementBanner/AnouncementBanner.tsx"
+import TranscriptAnouncement from "components/AnnouncementBanner/TranscriptAnouncement"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
   return (
     <Container fluid className={`${styles.container}`}>
+      <TranscriptAnouncement/>
       <ScrollTrackerContainer>
+        
         <Row>
           <ScrollTrackingItem
             className={`${styles.skylineContainer}`}
@@ -36,6 +40,7 @@ const HeroHeader = ({ authenticated }) => {
           </ScrollTrackingItem>
           <Col style={{ zIndex: "10" }}>
             <Row>
+            
               <Col
                 className={`d-grid align-items-center justify-content-center`}
                 xs={{ order: "last", span: 12 }}
@@ -53,6 +58,7 @@ const HeroHeader = ({ authenticated }) => {
                 md={{ order: "last", span: 6 }}
               >
                 <div className={`m-5`}>
+                
                   <div className={styles.title}>
                     {t("common:let_your_voice_be_heard")}
                   </div>
