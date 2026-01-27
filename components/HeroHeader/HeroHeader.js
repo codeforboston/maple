@@ -7,13 +7,13 @@ import styles from "./HeroHeader.module.css"
 import { useTranslation } from "next-i18next"
 import { capitalize } from "lodash"
 import { NEWSLETTER_SIGNUP_URL, TRAINING_CALENDAR_URL } from "../common"
-import TranscriptAnouncement from "components/AnnouncementBanner/TranscriptAnouncement"
+import TranscriptAnnouncement from "components/AnnouncementBanner/TranscriptAnnouncement"
 
 const HeroHeader = ({ authenticated }) => {
   const { t } = useTranslation("common")
   return (
     <Container fluid className={`${styles.container}`}>
-      <TranscriptAnouncement />
+      <TranscriptAnnouncement />
       <ScrollTrackerContainer>
         <Row>
           <ScrollTrackingItem

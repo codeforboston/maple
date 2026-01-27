@@ -1,13 +1,13 @@
 import { StoryObj } from "@storybook/react"
-import AnouncementBanner from "components/AnnouncementBanner/AnouncementBanner.tsx"
+import AnnouncementBanner from "components/AnnouncementBanner/AnnouncementBanner"
 import { createMeta } from "stories/utils"
 
 export default createMeta({
   title: "components/AnnouncementBanner",
-  component: AnouncementBanner
+  component: AnnouncementBanner
 })
 
-type Story = StoryObj<typeof AnouncementBanner>
+type Story = StoryObj<typeof AnnouncementBanner>
 
 export const Primary: Story = {
   args: {

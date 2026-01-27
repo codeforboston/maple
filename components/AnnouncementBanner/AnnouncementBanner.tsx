@@ -1,10 +1,9 @@
 import { Row } from "react-bootstrap"
-import styles from "./AnouncementBanner.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
 
-function AnouncementBanner({
+function AnnouncementBanner({
   endDate,
   children
 }: {
@@ -19,7 +18,6 @@ function AnouncementBanner({
   }
 
   const now: Date = new Date()
-  console.log(open, isOpen)
   if (now < endDate && !closed) {
     return (
       <Row
@@ -45,4 +43,4 @@ function AnouncementBanner({
   }
 }
 
-export default AnouncementBanner
+export default AnnouncementBanner

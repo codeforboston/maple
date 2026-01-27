@@ -1,6 +1,6 @@
-import AnouncementBanner from "./AnouncementBanner.tsx"
+import AnouncementBanner from "./AnnouncementBanner"
 
-function TranscriptAnouncement() {
+function TranscriptAnnouncement() {
   return (
     <AnouncementBanner endDate={new Date("2026-03-01T12:00:00.000Z")}>
       <p className="mb-0">
@@ -18,4 +18,4 @@ function TranscriptAnouncement() {
   )
 }
 
-export default TranscriptAnouncement
+export default TranscriptAnnouncement
