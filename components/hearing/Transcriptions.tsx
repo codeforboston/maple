@@ -145,9 +145,38 @@ export const Transcriptions = ({
   const transcriptRefs = useRef(new Map())
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredData, setFilteredData] = useState<Paragraph[]>([])
+  const [initialScrollTarget, setInitialScrollTarget] = useState<number | null>(
+    null
+  )
+  const hasScrolledToInitial = useRef(false)
 
   const handleClearInput = () => {
     setSearchTerm("")
+  }
+
+  // Shared function to scroll to a transcript index
+  const scrollToTranscript = (index: number) => {
+    const container = containerRef.current
+    const elem = transcriptRefs.current.get(index)
+
+    if (elem && container) {
+      const elemTop = elem.offsetTop - container.offsetTop
+      const elemBottom = elemTop + elem.offsetHeight
+      const viewTop = container.scrollTop
+      const viewBottom = viewTop + container.clientHeight
+
+      if (elemTop < viewTop) {
+        container.scrollTo({
+          top: elemTop,
+          behavior: "smooth"
+        })
+      } else if (elemBottom > viewBottom) {
+        container.scrollTo({
+          top: elemBottom - container.clientHeight,
+          behavior: "smooth"
+        })
+      }
+    }
   }
 
   useEffect(() => {
@@ -166,15 +195,31 @@ export const Transcriptions = ({
     element => parseInt(resultString, 10) <= element.end / 1000
   )
 
-  // this useEffect sets highlighter on inital page load
-  // the next useEffect handles general video usage
-  // both are needed
-
+  // Set the initial scroll target when we have a startTime and transcripts
   useEffect(() => {
-    if (containerRef.current && currentIndex !== highlightedId) {
-      setHighlightedId(currentIndex)
+    if (
+      startTime &&
+      transcriptData.length > 0 &&
+      currentIndex !== -1 &&
+      !hasScrolledToInitial.current
+    ) {
+      setInitialScrollTarget(currentIndex)
     }
-  }, [videoLoaded])
+  }, [startTime, transcriptData, currentIndex])
+
+  // Scroll to the initial target when the ref becomes available
+  useEffect(() => {
+    if (initialScrollTarget !== null && !searchTerm) {
+      const elem = transcriptRefs.current.get(initialScrollTarget)
+
+      if (elem) {
+        setHighlightedId(initialScrollTarget)
+        scrollToTranscript(initialScrollTarget)
+        hasScrolledToInitial.current = true
+        setInitialScrollTarget(null)
+      }
+    }
+  }, [initialScrollTarget, transcriptRefs.current.size, searchTerm])
 
   useEffect(() => {
     const handleTimeUpdate = () => {
@@ -186,24 +231,7 @@ export const Transcriptions = ({
       if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
         if (currentIndex !== -1 && !searchTerm) {
-          const container = containerRef.current
-          const elem = transcriptRefs.current.get(currentIndex)
-          const elemTop = elem.offsetTop - container.offsetTop
-          const elemBottom = elemTop + elem.offsetHeight
-          const viewTop = container.scrollTop
-          const viewBottom = viewTop + container.clientHeight
-
-          if (elemTop < viewTop) {
-            container.scrollTo({
-              top: elemTop,
-              behavior: "smooth"
-            })
-          } else if (elemBottom > viewBottom) {
-            container.scrollTo({
-              top: elemBottom - container.clientHeight,
-              behavior: "smooth"
-            })
-          }
+          scrollToTranscript(currentIndex)
         }
       }
     }
