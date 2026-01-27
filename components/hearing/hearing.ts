@@ -112,4 +112,17 @@ export function formatTotalSeconds(ms: number): string {
   const formattedSeconds = String(totalSeconds)
 
   return `${formattedSeconds}`
+export function formatVTTTimestamp(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000)
+  const milliseconds = ms % 1000
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  const formattedHours = String(hours).padStart(2, "0")
+  const formattedMinutes = String(minutes).padStart(2, "0")
+  const formattedSeconds = String(seconds).padStart(2, "0")
+  const formattedMilliseconds = String(milliseconds).padStart(3, "0")
+
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`
 }
