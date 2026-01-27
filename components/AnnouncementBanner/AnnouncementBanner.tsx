@@ -14,7 +14,6 @@ function AnnouncementBanner({
 
   const close = () => {
     setOpen(false)
-    localStorage.setItem("isBannerClosed", "true")
   }
 
   const now: Date = new Date()
