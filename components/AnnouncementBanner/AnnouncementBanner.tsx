@@ -1,7 +1,7 @@
 import { Row } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useLocalStorage } from "usehooks-ts"
 
 function AnnouncementBanner({
   endDate,
@@ -10,15 +10,15 @@ function AnnouncementBanner({
   endDate: Date
   children: React.ReactElement
 }) {
-  const isOpen = localStorage.getItem("isBannerClosed")
-  const [closed, setClosed] = useState<boolean>(isOpen != null)
+  const [open, setOpen] = useLocalStorage<boolean>("bannerOpen", true)
+
   const close = () => {
-    setClosed(true)
+    setOpen(false)
     localStorage.setItem("isBannerClosed", "true")
   }
 
   const now: Date = new Date()
-  if (now < endDate && !closed) {
+  if (now < endDate && open) {
     return (
       <Row
         style={{ zIndex: 100 }}
