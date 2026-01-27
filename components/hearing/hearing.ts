@@ -112,8 +112,11 @@ export function formatTotalSeconds(ms: number): string {
   const formattedSeconds = String(totalSeconds)
 
   return `${formattedSeconds}`
+<<<<<<< HEAD
 }
 
+=======
+>>>>>>> 5e54701fee2a979206b7bde3806e04e4ecd0e4bd
 export function formatVTTTimestamp(ms: number): string {
   const totalSeconds = Math.floor(ms / 1000)
   const milliseconds = ms % 1000
