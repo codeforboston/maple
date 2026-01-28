@@ -1,5 +1,11 @@
 {
   "about": "About",
+  "announcement": {
+    "headingBold": "New on MAPLE:", 
+    "headingBody": "Looking to learn about the latest action in a committee?", 
+    "description": "MAPLE now has searchable transcripts for all legislative hearings.", 
+    "link": "Try it out!"
+  }, 
   "back_to_bills": "back to list of bills",
   "back_to_hearings": "back to list of hearings",
   "bill": {
