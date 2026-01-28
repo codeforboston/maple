@@ -78,6 +78,9 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
     navigateToHearing()
   }
 
+  var yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+
   return (
     <StyledCard
       role="link"
@@ -99,6 +102,10 @@ export const HearingHit = ({ hit }: { hit: HearingHitData }) => {
             {hit.hasVideo ? (
               <Badge bg="success" pill>
                 {t("video_available", { ns: "search" })}
+              </Badge>
+            ) : startsAt > yesterday ? (
+              <Badge bg="info" text="dark" pill>
+                {t("video_upcoming", { ns: "search" })}
               </Badge>
             ) : (
               <Badge bg="info" text="dark" pill>
