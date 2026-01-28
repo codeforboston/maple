@@ -21,6 +21,7 @@
     },
     "hearing": {
       "court": "Legislative Session",
+      "hasVideo": "Video Available",
       "month": "Month",
       "year": "Year",
       "chairNames": "Chair",
