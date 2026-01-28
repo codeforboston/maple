@@ -71,7 +71,8 @@
   "button": {
     "follow": "Follow",
     "following": "Following",
-    "followed": "Followed"
+    "followed": "Followed",
+    "unfollow": "Unfollow"
   },
   "calendar": "Our Calendar",
   "copiedToClipboard": "Copied to Clipboard!",
