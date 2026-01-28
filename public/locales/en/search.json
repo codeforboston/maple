@@ -49,7 +49,7 @@
   },
   "search_error": "Something went wrong. Please try again. Original message: {{error}}",
   "video_available": "Video available",
-  "video_upcoming": "Coming soon: Video and transcript",
+  "video_upcoming": "Video not yet posted by the legislature; transcript will be generated once it is available",
   "video_unavailable": "Not available: Video and transcript",
   "location_label": "Location",
   "agenda_label": "Agenda Topics",
