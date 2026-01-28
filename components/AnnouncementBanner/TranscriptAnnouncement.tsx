@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next"
-import AnouncementBanner from "./AnnouncementBanner"
+import AnnouncementBanner from "./AnnouncementBanner"
 
 function TranscriptAnnouncement() {
   const { t } = useTranslation("common")
   return (
-    <AnouncementBanner endDate={new Date("2026-03-01T12:00:00.000Z")}>
+    <AnnouncementBanner endDate={new Date("2026-03-01T12:00:00.000Z")}>
       <p className="mb-0">
         <span className="fw-bold">{t("announcement.headingBold")}</span>{" "}
         <span>
@@ -16,7 +16,7 @@ function TranscriptAnnouncement() {
           </a>
         </span>
       </p>
-    </AnouncementBanner>
+    </AnnouncementBanner>
   )
 }
 
