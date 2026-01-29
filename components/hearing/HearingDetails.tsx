@@ -1,9 +1,8 @@
-import { doc, getDoc } from "firebase/firestore"
+import { useRouter } from "next/router"
 import { Trans, useTranslation } from "next-i18next"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Image, Row } from "../bootstrap"
-import { firestore } from "../firebase"
 import * as links from "../links"
 import { committeeURL, External } from "../links"
 import {
@@ -12,7 +11,12 @@ import {
   FeatureCalloutButton
 } from "../shared/CommonComponents"
 import { HearingSidebar } from "./HearingSidebar"
-import { HearingData, Paragraph, fetchTranscriptionData } from "./hearing"
+import {
+  HearingData,
+  Paragraph,
+  convertToString,
+  fetchTranscriptionData
+} from "./hearing"
 import { Transcriptions } from "./Transcriptions"
 
 const LegalContainer = styled(Container)`
@@ -51,9 +55,11 @@ export const HearingDetails = ({
   hearingData: HearingData
 }) => {
   const { t } = useTranslation(["common", "hearing"])
-  const [transcriptData, setTranscriptData] = useState<Paragraph[] | null>(null)
+  const router = useRouter()
 
+  const [transcriptData, setTranscriptData] = useState<Paragraph[] | null>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
+
   const handleVideoLoad = () => {
     setVideoLoaded(true)
   }
@@ -62,6 +68,15 @@ export const HearingDetails = ({
   function setCurTimeVideo(value: number) {
     videoRef.current ? (videoRef.current.currentTime = value) : null
   }
+
+  useEffect(() => {
+    const startTime = router.query.t
+    const resultString: string = convertToString(startTime)
+
+    if (startTime && videoRef.current) {
+      setCurTimeVideo(parseInt(resultString, 10))
+    }
+  }, [router.query.t, videoRef.current])
 
   useEffect(() => {
     ;(async function () {
@@ -169,6 +184,7 @@ export const HearingDetails = ({
 
           {transcriptData ? (
             <Transcriptions
+              hearingId={hearingId}
               transcriptData={transcriptData}
               setCurTimeVideo={setCurTimeVideo}
               videoLoaded={videoLoaded}
