@@ -341,6 +341,48 @@ export const CopyButton = ({
   )
 }
 
+export const ShareLinkButton = ({
+  text,
+  tooltipDurationMs = 1000,
+  children,
+  format = "text/html",
+  ...props
+}: ButtonProps & {
+  text: string
+  tooltipDurationMs?: number
+  format?: string
+}) => {
+  const { t } = useTranslation("common")
+  const [show, setShow] = useState(false)
+  const target = useRef(null)
+  const closeTimeout = useRef<any>()
+  return (
+    <>
+      <CopyToClipboard
+        text={text}
+        options={{ format: format }}
+        onCopy={(_, success) => {
+          if (success) {
+            clearTimeout(closeTimeout.current)
+            setShow(true)
+            closeTimeout.current = setTimeout(
+              () => setShow(false),
+              tooltipDurationMs
+            )
+          }
+        }}
+      >
+        <Button ref={target} style={{ color: "#737373" }} variant="" {...props}>
+          {children}
+        </Button>
+      </CopyToClipboard>
+      <Overlay target={target} show={show} placement="top">
+        {props => <Tooltip {...props}>{t("copiedToClipboard")}</Tooltip>}
+      </Overlay>
+    </>
+  )
+}
+
 export const GearIcon = (
   <div className={`py-0`}>
     <svg

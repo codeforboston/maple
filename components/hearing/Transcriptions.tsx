@@ -8,14 +8,17 @@ import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Col, Container, Row } from "../bootstrap"
+import { Button, Col, Container, Row } from "../bootstrap"
 import {
   Paragraph,
   convertToString,
   formatMilliseconds,
   formatTotalSeconds
 } from "./hearing"
-import { CopyButton } from "components/buttons"
+import { ShareLinkButton } from "components/buttons"
+
+import ShareIcon from "@mui/icons-material/Share"
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -355,6 +358,8 @@ const TranscriptItem = forwardRef(function TranscriptItem(
     )
   }
 
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <TranscriptRow
       className={
@@ -381,19 +386,22 @@ const TranscriptItem = forwardRef(function TranscriptItem(
         </Row>
       </TimestampCol>
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
-      <Col xs="1">
+      <Col xs="1" className={`my-1 px-0`}>
         {isHighlighted(index) ? (
-          <CopyButton
-            key="copy"
-            // variant="outline-secondary"
-            text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
-              element.start
-            )}`}
-            className={`copy border-0 my-1 px-1 py-0`}
-            format="text/plain"
-          >
-            <FontAwesomeIcon icon={faShareAlt} />
-          </CopyButton>
+          <>
+            <ShareLinkButton
+              key="copy"
+              text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
+                element.start
+              )}`}
+              className={`copy my-1 px-1 py-0`}
+              format="text/plain"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {isHovered ? <ShareIcon /> : <ShareOutlinedIcon />}
+            </ShareLinkButton>
+          </>
         ) : (
           <></>
         )}
