@@ -1,14 +1,12 @@
-import {
-  faMagnifyingGlass,
-  faShareAlt,
-  faTimes
-} from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ShareIcon from "@mui/icons-material/Share"
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Button, Col, Container, Row } from "../bootstrap"
+import { Col, Container, Row } from "../bootstrap"
 import {
   Paragraph,
   convertToString,
@@ -16,9 +14,6 @@ import {
   formatTotalSeconds
 } from "./hearing"
 import { ShareLinkButton } from "components/buttons"
-
-import ShareIcon from "@mui/icons-material/Share"
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
