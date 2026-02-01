@@ -382,17 +382,21 @@ const TranscriptItem = forwardRef(function TranscriptItem(
       </TimestampCol>
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
       <Col xs="1">
-        <CopyButton
-          key="copy"
-          variant="outline-secondary"
-          text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
-            element.start
-          )}`}
-          className={`copy my-1 px-1 py-0`}
-          format="text/plain"
-        >
-          <FontAwesomeIcon icon={faShareAlt} />
-        </CopyButton>
+        {isHighlighted(index) ? (
+          <CopyButton
+            key="copy"
+            // variant="outline-secondary"
+            text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
+              element.start
+            )}`}
+            className={`copy border-0 my-1 px-1 py-0`}
+            format="text/plain"
+          >
+            <FontAwesomeIcon icon={faShareAlt} />
+          </CopyButton>
+        ) : (
+          <></>
+        )}
       </Col>
     </TranscriptRow>
   )
