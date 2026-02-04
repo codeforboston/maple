@@ -1,10 +1,19 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ShareIcon from "@mui/icons-material/Share"
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-i18next"
 import React, { forwardRef, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Col, Container, Row } from "../bootstrap"
-import { Paragraph, formatMilliseconds } from "./hearing"
+import {
+  Paragraph,
+  convertToString,
+  formatMilliseconds,
+  formatTotalSeconds
+} from "./hearing"
+import { ShareLinkButton } from "components/buttons"
 
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
@@ -116,11 +125,13 @@ const TranscriptRow = styled(Row)`
 `
 
 export const Transcriptions = ({
+  hearingId,
   transcriptData,
   setCurTimeVideo,
   videoLoaded,
   videoRef
 }: {
+  hearingId: string
   transcriptData: Paragraph[]
   setCurTimeVideo: any
   videoLoaded: boolean
@@ -132,9 +143,38 @@ export const Transcriptions = ({
   const transcriptRefs = useRef(new Map())
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredData, setFilteredData] = useState<Paragraph[]>([])
+  const [initialScrollTarget, setInitialScrollTarget] = useState<number | null>(
+    null
+  )
+  const hasScrolledToInitial = useRef(false)
 
   const handleClearInput = () => {
     setSearchTerm("")
+  }
+
+  // Shared function to scroll to a transcript index
+  const scrollToTranscript = (index: number) => {
+    const container = containerRef.current
+    const elem = transcriptRefs.current.get(index)
+
+    if (elem && container) {
+      const elemTop = elem.offsetTop - container.offsetTop
+      const elemBottom = elemTop + elem.offsetHeight
+      const viewTop = container.scrollTop
+      const viewBottom = viewTop + container.clientHeight
+
+      if (elemTop < viewTop) {
+        container.scrollTo({
+          top: elemTop,
+          behavior: "smooth"
+        })
+      } else if (elemBottom > viewBottom) {
+        container.scrollTo({
+          top: elemBottom - container.clientHeight,
+          behavior: "smooth"
+        })
+      }
+    }
   }
 
   useEffect(() => {
@@ -145,32 +185,51 @@ export const Transcriptions = ({
     )
   }, [transcriptData, searchTerm])
 
+  const router = useRouter()
+  const startTime = router.query.t
+  const resultString: string = convertToString(startTime)
+
+  let currentIndex = transcriptData.findIndex(
+    element => parseInt(resultString, 10) <= element.end / 1000
+  )
+
+  // Set the initial scroll target when we have a startTime and transcripts
+  useEffect(() => {
+    if (
+      startTime &&
+      transcriptData.length > 0 &&
+      currentIndex !== -1 &&
+      !hasScrolledToInitial.current
+    ) {
+      setInitialScrollTarget(currentIndex)
+    }
+  }, [startTime, transcriptData, currentIndex])
+
+  // Scroll to the initial target when the ref becomes available
+  useEffect(() => {
+    if (initialScrollTarget !== null && !searchTerm) {
+      const elem = transcriptRefs.current.get(initialScrollTarget)
+
+      if (elem) {
+        setHighlightedId(initialScrollTarget)
+        scrollToTranscript(initialScrollTarget)
+        hasScrolledToInitial.current = true
+        setInitialScrollTarget(null)
+      }
+    }
+  }, [initialScrollTarget, transcriptRefs.current.size, searchTerm])
+
   useEffect(() => {
     const handleTimeUpdate = () => {
-      const currentIndex = transcriptData.findIndex(
-        element => videoRef.current.currentTime <= element.end / 1000
-      )
+      videoLoaded
+        ? (currentIndex = transcriptData.findIndex(
+            element => videoRef.current.currentTime <= element.end / 1000
+          ))
+        : null
       if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
         if (currentIndex !== -1 && !searchTerm) {
-          const container = containerRef.current
-          const elem = transcriptRefs.current.get(currentIndex)
-          const elemTop = elem.offsetTop - container.offsetTop
-          const elemBottom = elemTop + elem.offsetHeight
-          const viewTop = container.scrollTop
-          const viewBottom = viewTop + container.clientHeight
-
-          if (elemTop < viewTop) {
-            container.scrollTo({
-              top: elemTop,
-              behavior: "smooth"
-            })
-          } else if (elemBottom > viewBottom) {
-            container.scrollTo({
-              top: elemBottom - container.clientHeight,
-              behavior: "smooth"
-            })
-          }
+          scrollToTranscript(currentIndex)
         }
       }
     }
@@ -217,6 +276,7 @@ export const Transcriptions = ({
           <TranscriptItem
             key={index}
             element={element}
+            hearingId={hearingId}
             highlightedId={highlightedId}
             index={index}
             ref={elem => {
@@ -249,12 +309,14 @@ export const Transcriptions = ({
 const TranscriptItem = forwardRef(function TranscriptItem(
   {
     element,
+    hearingId,
     highlightedId,
     index,
     setCurTimeVideo,
     searchTerm
   }: {
     element: Paragraph
+    hearingId: string
     highlightedId: number
     index: number
     setCurTimeVideo: any
@@ -275,6 +337,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
   const isHighlighted = (index: number): boolean => {
     return index === highlightedId
   }
+
   const highlightText = (text: string, term: string) => {
     if (!term) return text
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
@@ -289,6 +352,8 @@ const TranscriptItem = forwardRef(function TranscriptItem(
       )
     )
   }
+
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <TranscriptRow
@@ -316,6 +381,26 @@ const TranscriptItem = forwardRef(function TranscriptItem(
         </Row>
       </TimestampCol>
       <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
+      <Col xs="1" className={`my-1 px-0`}>
+        {isHighlighted(index) ? (
+          <>
+            <ShareLinkButton
+              key="copy"
+              text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
+                element.start
+              )}`}
+              className={`copy my-1 px-1 py-0`}
+              format="text/plain"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {isHovered ? <ShareIcon /> : <ShareOutlinedIcon />}
+            </ShareLinkButton>
+          </>
+        ) : (
+          <></>
+        )}
+      </Col>
     </TranscriptRow>
   )
 })

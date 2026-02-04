@@ -72,10 +72,14 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@emotion/weak-memoize": "^0.3.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "@popperjs/core": "^2.11.8",
     "@react-aria/ssr": "^3.2.0",
     "@react-aria/utils": "^3.13.1",
