@@ -386,7 +386,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
           <>
             <ShareLinkButton
               key="copy"
-              text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
+              text={`http://www.mapletestimony.org/hearing/${hearingId}?t=${formatTotalSeconds(
                 element.start
               )}`}
               className={`copy my-1 px-1 py-0`}
