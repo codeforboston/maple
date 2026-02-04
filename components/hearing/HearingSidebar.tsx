@@ -4,13 +4,12 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import type { ModalProps } from "react-bootstrap"
 import styled from "styled-components"
-import Papa from "papaparse"
 import { Col, Image, Modal, Row } from "../bootstrap"
 import { firestore } from "../firebase"
 import * as links from "../links"
 import { billSiteURL, Internal } from "../links"
 import { LabeledIcon } from "../shared"
-import { Paragraph, formatMilliseconds } from "./hearing"
+import { Paragraph, formatVTTTimestamp } from "./hearing"
 
 type Bill = {
   BillNumber: string
@@ -144,7 +143,7 @@ export const HearingSidebar = ({
     dateCheck = true
   }
 
-  const [downloadName, setDownloadName] = useState<string>("hearing.csv")
+  const [downloadName, setDownloadName] = useState<string>("hearing.vtt")
   const [downloadURL, setDownloadURL] = useState<string>("")
   const [houseChairName, setHouseChairName] = useState<string>("")
   const [houseChairperson, setHouseChairperson] = useState<Legislator>()
@@ -187,17 +186,28 @@ export const HearingSidebar = ({
   }, [committeeCode, generalCourtNumber])
 
   useEffect(() => {
-    setDownloadName(`hearing-${hearingId}.csv`)
+    setDownloadName(`hearing-${hearingId}.vtt`)
   }, [hearingId])
 
   useEffect(() => {
     if (!transcriptData) return
-    const csv_objects = transcriptData.map(doc => ({
-      start: formatMilliseconds(doc.start),
-      text: doc.text
-    }))
-    const csv = Papa.unparse(csv_objects)
-    const blob = new Blob([csv], { type: "text/csv" })
+    const vttLines = ["WEBVTT", ""]
+
+    transcriptData.forEach((paragraph, index) => {
+      const cueNumber = index + 1
+      const startTime = formatVTTTimestamp(paragraph.start)
+      const endTime = formatVTTTimestamp(paragraph.end)
+
+      vttLines.push(
+        String(cueNumber),
+        `${startTime} --> ${endTime}`,
+        paragraph.text,
+        ""
+      )
+    })
+
+    const vtt = vttLines.join("\n")
+    const blob = new Blob([vtt], { type: "text/vtt" })
     const url = URL.createObjectURL(blob)
     setDownloadURL(url)
 

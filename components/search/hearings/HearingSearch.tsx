@@ -83,7 +83,10 @@ export const HearingSearch = () => {
       currentRefinementsProps={{ excludedAttributes: ["startsAt"] }}
       initialUiState={{
         [sortOptions[0].value]: {
-          refinementList: { court: [String(CURRENT_COURT_NUMBER)] }
+          refinementList: {
+            court: [String(CURRENT_COURT_NUMBER)],
+            hasVideo: ["true"]
+          }
         }
       }}
       searchParameters={{
@@ -103,6 +106,14 @@ export const HearingSearch = () => {
                   label: formatCourtFilterLabel(parseInt(item.value, 10))
                 }))
                 .sort((a, b) => Number(b.value) - Number(a.value))
+          },
+          {
+            attribute: "hasVideo",
+            transformItems: items =>
+              items.map(item => ({
+                ...item,
+                label: item.value === "true" ? "Yes" : "No"
+              }))
           },
           { attribute: "committeeName" },
           { attribute: "month" },
