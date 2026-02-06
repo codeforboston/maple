@@ -1,5 +1,6 @@
-import * as functions from "firebase-functions"
-import { RuntimeOptions, runWith } from "firebase-functions"
+import * as functions from "firebase-functions/v1"
+import { RuntimeOptions, runWith } from "firebase-functions/v1"
+import { onCall, CallableRequest } from "firebase-functions/v2/https"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
@@ -475,6 +476,52 @@ export const scrapeSingleHearing = functions
       )
     }
   })
+
+export const scrapeSingleHearingv2 = onCall(
+  { timeoutSeconds: 480, memory: "4GiB", secrets: ["ASSEMBLY_API_KEY"] },
+  async (request: CallableRequest) => {
+    // Require admin authentication
+    // Check how to integrate the new object with these helper functions
+    checkAuth(request, false)
+    checkAdmin(request)
+
+    const { eventId } = request.data
+
+    if (!eventId || typeof eventId !== "number") {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "The function must be called with a valid eventId (number)."
+      )
+    }
+
+    try {
+      // Create a temporary scraper instance to reuse the existing logic
+      const scraper = new HearingScraper()
+      const hearing = await scraper.getEvent(
+        { EventId: eventId },
+        { ignoreCutoff: true }
+      )
+
+      // Save the hearing to Firestore
+      await db.doc(`/events/${hearing.id}`).set(hearing, { merge: true })
+
+      console.log(`Successfully scraped hearing ${eventId}`, hearing)
+
+      return {
+        status: "success",
+        message: `Successfully scraped hearing ${eventId}`,
+        hearingId: hearing.id
+      }
+    } catch (error: any) {
+      console.error(`Failed to scrape hearing ${eventId}:`, error)
+      throw new functions.https.HttpsError(
+        "internal",
+        `Failed to scrape hearing ${eventId}`,
+        { details: error.message }
+      )
+    }
+  }
+)
 
 export const scrapeSpecialEvents = new SpecialEventsScraper().function
 export const scrapeSessions = new SessionScraper().function
