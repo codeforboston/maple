@@ -130,25 +130,5 @@ services:
     volumes:
       - ..:/app
 
-  backfill-user-emails:
-    build:
-      context: ..
-      dockerfile: infra/Dockerfile.firebase
-    command: yarn backfill-user-emails
-    depends_on:
-      - firebase
-    volumes:
-      - ..:/app
-
-  backfill-user-nf:
-    build:
-      context: ..
-      dockerfile: infra/Dockerfile.firebase
-    command: yarn backfill-user-nf
-    depends_on:
-      - firebase
-    volumes:
-      - ..:/app
-
 volumes:
   search: {}
