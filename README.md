@@ -6,7 +6,7 @@ We are creating a new web platform called MAPLE (the Massachusetts Platform for 
 
 ## Essentials
 
-Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#maple-testimony` channel. Ask to join the Zenhub project and to be added as a collaborator on Github, and provide your Github username.
+Join the [Code for Boston Slack](https://communityinviter.com/apps/cfb-public/default-badge) and our `#maple-testimony` channel. Ask to be added as a collaborator on Github, and provide your Github username.
 
 Attend a [weekly hack night at Code for Boston](https://www.meetup.com/code-for-boston/events/) and join our group.
 
@@ -16,7 +16,7 @@ Check out the [Contributing](./Contributing.md) docs for how to contribute to th
 
 ## Links
 
-- [Zenhub project board](https://app.zenhub.com/workspaces/design-and-development-629389aa02e9d200139c90b8/board), where issues are organized
+- [GitHub issues](https://github.com/codeforboston/maple/issues), where issues are organized
 - [Figma Designs](<https://www.figma.com/file/oMNmgiqDGTMco2v54gOW3b/MAPLE-Soft-Launch-(Mar-2023)?t=N7wquH4vslGiB1tK-0>), where UI designs are organized
 - [Chromatic Storybook Library](https://www.chromatic.com/library?appId=634f3926f2a0d0f0195eefd7&branch=main), where our React UI component library is documented.
 - [Maple Documentation on the Wiki](https://github.com/codeforboston/maple/wiki)
@@ -253,4 +253,4 @@ Thanks to all our contributors!
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This table follows the [All Contributors](https://allcontributors.org/) specification and is managed by the @all-contributors bot. You can add yourself or another contributor by [commenting on an issue or a pull request](https://allcontributors.org/docs/en/bot/usage).
+This table follows the [All Contributors](https://allcontributors.org/) specification and is managed by the @all-contributors bot. You can add yourself or another contributor by [commenting on an issue or a pull request](https://allcontributors.org/bot/usage/).
