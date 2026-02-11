@@ -253,4 +253,4 @@ Thanks to all our contributors!
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This table follows the [All Contributors](https://allcontributors.org/) specification and is managed by the @all-contributors bot. You can add yourself or another contributor by [commenting on an issue or a pull request](https://allcontributors.org/docs/en/bot/usage).
+This table follows the [All Contributors](https://allcontributors.org/) specification and is managed by the @all-contributors bot. You can add yourself or another contributor by [commenting on an issue or a pull request](https://allcontributors.org/bot/usage/).
