@@ -12,14 +12,16 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
-import { finishSignup, OrgCategory } from "./types"
+import { completePhoneVerification, finishSignup, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
   "auth/email-already-in-use": "You already have an account.",
   "auth/wrong-password": "Your password is wrong.",
   "auth/invalid-email": "The email you provided is not a valid email.",
-  "auth/user-not-found": "You don't have an account."
+  "auth/user-not-found": "You don't have an account.",
+  "functions/failed-precondition":
+    "Phone number is not linked to this account. Complete phone verification first."
 }
 
 function getErrorMessage(errorCode?: string) {
@@ -39,7 +41,9 @@ function useFirebaseFunction<Params, Result>(
       console.log(err)
 
       const message = getErrorMessage(
-        err instanceof FirebaseError ? err.code : undefined
+        err instanceof FirebaseError
+          ? err.code
+          : (err as { code?: string })?.code
       )
       throw new Error(message)
     }
@@ -102,6 +106,13 @@ export function useSignInWithEmailAndPassword() {
 
 export function useSendEmailVerification() {
   return useFirebaseFunction((user: User) => sendEmailVerification(user))
+}
+
+/** Call after the user has linked a phone number via linkWithPhoneNumber + confirm. */
+export function useCompletePhoneVerification() {
+  return useFirebaseFunction<void, { phoneVerified: true }>(
+    async () => (await completePhoneVerification()).data
+  )
 }
 
 export type SendPasswordResetEmailData = { email: string }
