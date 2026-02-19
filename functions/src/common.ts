@@ -1,7 +1,10 @@
 import { FieldValue } from "@google-cloud/firestore"
 import axios from "axios"
 import { https, logger } from "firebase-functions"
-import { CallableRequest } from "firebase-functions/v2/https"
+import {
+  CallableRequest,
+  HttpsError as HttpsErrorV2
+} from "firebase-functions/v2/https"
 import {
   Null,
   Nullish,
@@ -39,7 +42,7 @@ export function checkRequestZod<T extends ZodTypeAny>(
 
 /** Return the authenticated user's id or fail if they are not authenticated. */
 export function checkAuth(
-  context: https.CallableContext | CallableRequest,
+  context: https.CallableContext,
   checkEmailVerification = false
 ) {
   const uid = context.auth?.uid
@@ -59,19 +62,56 @@ export function checkAuth(
   return uid
 }
 
+/** Return the authenticated user's id or fail if they are not authenticated. (Firebase v2 compatible) */
+export function checkAuthv2(
+  request: CallableRequest,
+  checkEmailVerification = false
+) {
+  const uid = request.auth?.uid
+
+  if (!uid) {
+    throw failv2("unauthenticated", "Caller must be signed in")
+  }
+
+  if (checkEmailVerification && process.env.FUNCTIONS_EMULATOR !== "true") {
+    const email_verified = request.auth?.token?.email_verified
+
+    if (!email_verified) {
+      throw failv2("permission-denied", "You must verify an account first")
+    }
+  }
+
+  return uid
+}
+
 /**
  * Checks that the caller is an admin.
  */
-export function checkAdmin(context: https.CallableContext | CallableRequest) {
+export function checkAdmin(context: https.CallableContext) {
   const callerRole = context.auth?.token.role
   if (callerRole !== "admin") {
     throw fail("permission-denied", "You must be an admin")
   }
 }
 
+/**
+ * Checks that the caller is an admin. (Firebase v2 compatible)
+ */
+export function checkAdminv2(request: CallableRequest) {
+  const callerRole = request.auth?.token.role
+  if (callerRole !== "admin") {
+    throw failv2("permission-denied", "You must be an admin")
+  }
+}
+
 /** Constructs a new HTTPS error */
 export function fail(code: https.FunctionsErrorCode, message: string) {
   return new https.HttpsError(code, message)
+}
+
+/** Constructs a new HTTPS error (Firebase v2 compatible) */
+export function failv2(code: string, message: string) {
+  return new HttpsErrorV2(code as any, message)
 }
 
 /** Catch handler to log axios errors and return undefined. */

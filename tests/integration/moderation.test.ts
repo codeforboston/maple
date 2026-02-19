@@ -1,6 +1,7 @@
 import { waitFor } from "@testing-library/react"
 import { Role } from "components/auth"
 import { resolveReport } from "components/db"
+import { resolveReportv2 } from "components/db"
 import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import {
@@ -82,7 +83,7 @@ describe("moderate testimony", () => {
 
     expect((await pubRef.get()).exists).toBeTruthy()
 
-    const result = await resolveReport({
+    const result = await resolveReportv2({
       reportId,
       resolution: "remove-testimony",
       reason: "important reason"
@@ -167,6 +168,11 @@ const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   "modifyAccount"
 )
 
+const modifyAccountv2 = httpsCallable<{ uid: string; role: Role }, void>(
+  functions,
+  "modifyAccountv2"
+)
+
 describe("admins can modify user accounts", () => {
   it("allows admins to modify user roles ", async () => {
     const userInfo = genUserInfo()
@@ -174,7 +180,7 @@ describe("admins can modify user accounts", () => {
     testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
 
     await signInTestAdmin()
-    await modifyAccount({ uid: user.uid, role: "admin" })
+    await modifyAccountv2({ uid: user.uid, role: "admin" })
 
     expect((await testAuth.getUser(user.uid)).customClaims?.role).toEqual(
       "admin"
@@ -189,7 +195,7 @@ describe("admins can modify user accounts", () => {
     // tries to run modifyAccount as a regular "user" role
     await signInUser(userInfo.email)
     await expectPermissionDenied(
-      modifyAccount({ uid: user.uid, role: "legislator" })
+      modifyAccountv2({ uid: user.uid, role: "legislator" })
     )
   })
 })

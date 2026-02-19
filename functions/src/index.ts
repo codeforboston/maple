@@ -1,4 +1,11 @@
-export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
+export {
+  modifyAccount,
+  modifyAccountv2,
+  createFakeOrg,
+  createFakeOrgv2,
+  createFakeTestimony,
+  createFakeTestimonyv2
+} from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
@@ -38,7 +45,8 @@ export {
   publishTestimony,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReport as adminResolveReport
+  resolveReport as adminResolveReport,
+  resolveReportv2 as adminResolveReportv2
 } from "./testimony"
 export {
   publishNotifications,

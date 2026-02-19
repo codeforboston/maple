@@ -3,6 +3,7 @@ import { useReportTestimony } from "components/api/report"
 import { Testimony } from "components/db"
 import { auth, firestore } from "components/firebase"
 import { createFakeTestimony } from "components/moderation"
+import { createFakeTestimonyv2 } from "components/moderation"
 import { doc, getDoc } from "firebase/firestore"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
@@ -21,7 +22,7 @@ export const CreateMockReport = () => {
     const fullName = loremIpsum({ count: 2, units: "words" })
     const email = `${uid}@example.com`
 
-    const result = await createFakeTestimony({
+    const result = await createFakeTestimonyv2({
       uid,
       fullName,
       email

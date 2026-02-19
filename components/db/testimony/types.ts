@@ -97,3 +97,7 @@ export const resolveReport = httpsCallable<report.Request, report.Response>(
   functions,
   "adminResolveReport"
 )
+export const resolveReportv2 = httpsCallable<report.Request, report.Response>(
+  functions,
+  "adminResolveReportv2"
+)
