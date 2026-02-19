@@ -4,7 +4,13 @@ import { onCall, CallableRequest } from "firebase-functions/v2/https"
 import { DateTime } from "luxon"
 import { JSDOM } from "jsdom"
 import { AssemblyAI } from "assemblyai"
-import { checkAuth, checkAdmin, logFetchError } from "../common"
+import {
+  checkAuth,
+  checkAdmin,
+  logFetchError,
+  checkAdminv2,
+  checkAuthv2
+} from "../common"
 import { db, storage, Timestamp } from "../firebase"
 import * as api from "../malegislature"
 import {
@@ -482,8 +488,8 @@ export const scrapeSingleHearingv2 = onCall(
   async (request: CallableRequest) => {
     // Require admin authentication
     // Check how to integrate the new object with these helper functions
-    checkAuth(request, false)
-    checkAdmin(request)
+    checkAuthv2(request, false)
+    checkAdminv2(request)
 
     const { eventId } = request.data
 
