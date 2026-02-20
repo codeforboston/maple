@@ -7,13 +7,17 @@ import { ProfileEditToggle } from "components/ProfilePage/ProfileButtons"
 export const EditProfileHeader = ({
   formUpdated,
   onSettingsModalOpen,
+  onGetVerifiedClick,
   uid,
-  role
+  role,
+  phoneVerified
 }: {
   formUpdated: boolean
   onSettingsModalOpen: () => void
+  onGetVerifiedClick?: () => void
   uid: string
   role: Role
+  phoneVerified?: boolean
 }) => {
   const { t } = useTranslation("editProfile")
 
@@ -30,6 +34,24 @@ export const EditProfileHeader = ({
           onClick={() => onSettingsModalOpen()}
         />
         <ProfileEditToggle formUpdated={formUpdated} role={role} uid={uid} />
+        {phoneVerified === true ? (
+          <div className="d-flex align-items-center justify-content-center gap-1 py-1 col-12 text-capitalize text-nowrap">
+            <span className="text-secondary">{t("verifiedUser")}</span>
+            <img
+              src="/images/verifiedUser.png"
+              alt={t("verifiedUserBadgeAlt")}
+              width={24}
+              height={24}
+              className="flex-shrink-0"
+            />
+          </div>
+        ) : onGetVerifiedClick ? (
+          <OutlineButton
+            className={`py-1`}
+            label={t("getVerified")}
+            onClick={onGetVerifiedClick}
+          />
+        ) : null}
       </Col>
     </Row>
   )

@@ -1,5 +1,8 @@
 {
   "header": "Edit Profile",
+  "getVerified": "Get Verified",
+  "verifiedUser": "Verified User",
+  "verifiedUserBadgeAlt": "Verified user badge",
   "setting": "Settings",
   "privacySetting": "Privacy Settings",
   "save": "Save",

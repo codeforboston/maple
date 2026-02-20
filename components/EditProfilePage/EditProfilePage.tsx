@@ -87,6 +87,8 @@ export function EditProfileForm({
 
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+  const [showPhoneVerificationModal, setShowPhoneVerificationModal] =
+    useState(false)
   const [notifications, setNotifications] = useState<Frequency>(
     notificationFrequency || "Weekly"
   )
@@ -178,8 +180,10 @@ export function EditProfileForm({
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
+          onGetVerifiedClick={() => setShowPhoneVerificationModal(true)}
           uid={uid}
           role={profile.role}
+          phoneVerified={profile.phoneVerified}
         />
         <TabContainer
           defaultActiveKey="about-you"
