@@ -17,6 +17,7 @@ import {
 import { EditProfileHeader } from "./EditProfileHeader"
 import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
+import PhoneVerificationModal from "./PhoneVerificationModal"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
   StyledTabContent,
@@ -214,6 +215,10 @@ export function EditProfileForm({
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         show={settingsModal === "show"}
+      />
+      <PhoneVerificationModal
+        show={showPhoneVerificationModal}
+        onHide={() => setShowPhoneVerificationModal(false)}
       />
     </>
   )

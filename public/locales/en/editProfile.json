@@ -1,6 +1,7 @@
 {
   "header": "Edit Profile",
   "getVerified": "Get Verified",
+  "phoneVerificationModalTitle": "Verify your phone number",
   "verifiedUser": "Verified User",
   "verifiedUserBadgeAlt": "Verified user badge",
   "setting": "Settings",
