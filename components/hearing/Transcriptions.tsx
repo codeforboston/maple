@@ -342,6 +342,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
        set currentTime property of <video> element */
 
     setCurTimeVideo(valSeconds)
+    setIsHovered(false)
   }
 
   const isHighlighted = (index: number): boolean => {
