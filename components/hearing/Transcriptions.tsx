@@ -433,12 +433,12 @@ const TranscriptItem = forwardRef(function TranscriptItem(
           <Col className={`pt-1`}>
             {highlightText(element.text, searchTerm)}
           </Col>
-          <Col xs="1" className={`my-1 px-0`}>
+          <Col xs="1" className={`d-flex align-items-center my-1 px-0`}>
             <TimestampButton
               onClick={() => {
                 handleClick(element.start)
               }}
-              className={`bg-transparent border-0 text-nowrap p-1`}
+              className={`bg-transparent border-0 p-1 text-nowrap `}
               type="button"
               value={element.start}
             >
