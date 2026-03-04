@@ -370,7 +370,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
     <>
       {isHighlighted(index) ? (
         <TranscriptRowActive
-          className={`bg-info border-5 border-start`}
+          className={`bg-info border-5 border-secondary border-start`}
           ref={ref}
         >
           <TimestampCol>
