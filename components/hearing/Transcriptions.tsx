@@ -15,6 +15,8 @@ import {
 } from "./hearing"
 import { ShareLinkButton } from "components/buttons"
 
+import { siteUrl } from "components/links"
+
 const ClearButton = styled(FontAwesomeIcon)`
   position: absolute;
   right: 3rem;
@@ -386,9 +388,9 @@ const TranscriptItem = forwardRef(function TranscriptItem(
           <>
             <ShareLinkButton
               key="copy"
-              text={`http://localhost:3000/hearing/${hearingId}?t=${formatTotalSeconds(
-                element.start
-              )}`}
+              text={siteUrl(
+                `hearing/${hearingId}?t=${formatTotalSeconds(element.start)}`
+              )}
               className={`copy my-1 px-1 py-0`}
               format="text/plain"
               onMouseEnter={() => setIsHovered(true)}
