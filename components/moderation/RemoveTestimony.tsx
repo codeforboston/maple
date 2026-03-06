@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, Stack } from "@mui/material"
-import { deleteTestimony } from "components/api/delete-testimony"
+import { deleteTestimonyv2 } from "components/api/delete-testimony"
 import { resolveReport } from "components/db"
 import { resolveReportv2 } from "components/db"
 import { getAuth } from "firebase/auth"
@@ -37,7 +37,7 @@ export const onSubmitReport = async (
 
   if (resolution === "remove-testimony") {
     // If removing testimony, call deleteTestimony to move testimony from 'published' to 'archived'
-    const res = await deleteTestimony(authorUid, testimonyId)
+    const res = await deleteTestimonyv2(authorUid, testimonyId)
   }
   refresh()
 }

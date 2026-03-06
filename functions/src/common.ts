@@ -3,8 +3,9 @@ import axios from "axios"
 import { https, logger } from "firebase-functions"
 import {
   CallableRequest,
-  HttpsError as HttpsErrorV2
+  HttpsError as HttpsErrorv2
 } from "firebase-functions/v2/https"
+
 import {
   Null,
   Nullish,
@@ -111,7 +112,7 @@ export function fail(code: https.FunctionsErrorCode, message: string) {
 
 /** Constructs a new HTTPS error (Firebase v2 compatible) */
 export function failv2(code: string, message: string) {
-  return new HttpsErrorV2(code as any, message)
+  return new HttpsErrorv2(code as any, message)
 }
 
 /** Catch handler to log axios errors and return undefined. */

@@ -14,9 +14,11 @@ import { firestore } from "../../firebase"
 import { resolveBillTestimony } from "./resolveTestimony"
 import {
   deleteTestimony,
+  deleteTestimonyv2,
   DraftTestimony,
   hasDraftChanged,
   publishTestimony,
+  publishTestimonyv2,
   Testimony,
   WorkingDraft
 } from "./types"
@@ -175,7 +177,7 @@ function usePublishTestimony(
       DraftTestimony.check(workingDraft)
       // TODO: don't publish again if draft.publishedVersion is defined
       if (draftRef) {
-        const result = await publishTestimony({ draftId: draftRef.id })
+        const result = await publishTestimonyv2({ draftId: draftRef.id })
         dispatch({ type: "resolvePublication", id: result.data.publicationId })
       }
     }, [dispatch, draftRef, workingDraft]),
@@ -190,7 +192,7 @@ function useDeleteTestimony(
   return useAsyncCallback(
     useCallback(async () => {
       if (publicationRef) {
-        const result = await deleteTestimony({
+        const result = await deleteTestimonyv2({
           publicationId: publicationRef.id
         })
         if (result.data.deleted) dispatch({ type: "deletePublication" })

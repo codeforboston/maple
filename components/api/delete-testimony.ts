@@ -9,6 +9,6 @@ import { mapleClient } from "./maple-client"
  * @param tid testimony id
  * @returns 204 response (no body) if successful, or 4XX if not.
  */
-export async function deleteTestimony(uid: string, tid: string) {
+export async function deleteTestimonyv2(uid: string, tid: string) {
   return mapleClient.delete(`/api/users/${uid}/testimony/${tid}`)
 }
