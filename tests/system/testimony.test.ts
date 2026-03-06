@@ -17,10 +17,20 @@ const publishTestimony = httpsCallable<
   { publicationId: string }
 >(functions, "publishTestimony")
 
+const publishTestimonyv2 = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimonyv2")
+
 const deleteTestimony = httpsCallable<
   { publicationId: string },
   { deleted: boolean }
 >(functions, "deleteTestimony")
+
+const deleteTestimonyv2 = httpsCallable<
+  { publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimonyv2")
 
 jest.setTimeout(30000)
 
@@ -79,7 +89,7 @@ async function expectCreateDraft(draft?: any) {
 }
 
 async function expectPublish(draft: any, draftRef: DocumentReference) {
-  const result = await publishTestimony({ draftId: draftRef.id })
+  const result = await publishTestimonyv2({ draftId: draftRef.id })
 
   const publication = await getDoc(
     doc(
@@ -95,7 +105,7 @@ async function expectPublish(draft: any, draftRef: DocumentReference) {
 }
 
 async function expectDelete(publicationId: string) {
-  const result = await deleteTestimony({ publicationId: publicationId })
+  const result = await deleteTestimonyv2({ publicationId: publicationId })
   const deletedDoc = await getDoc(
     doc(firestore, `/users/${uid}/publishedTestimony/${publicationId}`)
   )

@@ -4,7 +4,7 @@ import { populateBillHistoryNotificationEvents } from "./populateBillHistoryNoti
 import { populateTestimonySubmissionNotificationEvents } from "./populateTestimonySubmissionNotificationEvents"
 import { cleanupNotifications } from "./cleanupNotifications"
 import { deliverNotifications } from "./deliverNotifications"
-import { updateUserNotificationFrequency } from "./updateUserNotificationFrequency"
+import { updateUserNotificationFrequencyv2 } from "./updateUserNotificationFrequency"
 
 // Export the functions
 export {
@@ -13,5 +13,5 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  updateUserNotificationFrequency
+  updateUserNotificationFrequencyv2
 }

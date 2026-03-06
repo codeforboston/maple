@@ -38,11 +38,13 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { finishSignup } from "./profile"
+export { finishSignup, finishSignupv2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,
+  deleteTestimonyv2,
   publishTestimony,
+  publishTestimonyv2,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
   resolveReport as adminResolveReport,
@@ -54,7 +56,7 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  updateUserNotificationFrequency
+  updateUserNotificationFrequencyv2
 } from "./notifications"
 
 export {
