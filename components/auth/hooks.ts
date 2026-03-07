@@ -21,10 +21,18 @@ const errorMessages: Record<string, string | undefined> = {
   "auth/invalid-email": "The email you provided is not a valid email.",
   "auth/user-not-found": "You don't have an account.",
   "functions/failed-precondition":
-    "Phone number is not linked to this account. Complete phone verification first."
+    "Phone number is not linked to this account. Complete phone verification first.",
+  "auth/credential-already-in-use":
+    "This phone number is already linked to another account.",
+  "auth/provider-already-linked":
+    "This account already has a phone number linked.",
+  "auth/invalid-phone-number":
+    "Please enter a valid phone number (e.g. 617 555-1234).",
+  "auth/operation-not-allowed":
+    "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org."
 }
 
-function getErrorMessage(errorCode?: string) {
+export function getErrorMessage(errorCode?: string) {
   const niceErrorMessage = errorCode ? errorMessages[errorCode] : undefined
   return niceErrorMessage || "Something went wrong!"
 }
