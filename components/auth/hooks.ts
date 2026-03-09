@@ -24,6 +24,8 @@ const errorMessages: Record<string, string | undefined> = {
     "Phone number is not linked to this account. Complete phone verification first.",
   "auth/credential-already-in-use":
     "This phone number is already linked to another account.",
+  "auth/account-exists-with-different-credential":
+    "This phone number is already linked to another account.",
   "auth/provider-already-linked":
     "This account already has a phone number linked.",
   "auth/invalid-phone-number":

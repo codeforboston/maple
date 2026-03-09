@@ -17,7 +17,10 @@ import { useTranslation } from "next-i18next"
 const US_REGEX = /^(\([2-9][0-9]{2}\)|[2-9][0-9]{2})[- ]?([0-9]{3})[- ]?([0-9]{4})$/;
 
 const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
-  "auth/credential-already-in-use": "phoneVerification.errors.credentialAlreadyInUse",
+  "auth/credential-already-in-use":
+    "phoneVerification.errors.credentialAlreadyInUse",
+  "auth/account-exists-with-different-credential":
+    "phoneVerification.errors.credentialAlreadyInUse",
   "auth/provider-already-linked": "phoneVerification.errors.providerAlreadyLinked",
   "auth/invalid-phone-number": "phoneVerification.errors.invalidPhoneNumber",
   "auth/operation-not-allowed": "phoneVerification.errors.operationNotAllowed"
