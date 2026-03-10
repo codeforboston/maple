@@ -7,6 +7,7 @@ import {
   DateInput,
   Edit,
   EditButton,
+  FunctionField,
   List,
   SelectInput,
   SimpleForm,
@@ -44,6 +45,12 @@ export function ListNews() {
         <TextField source="author" label="Author" />
         <TextField source="type" label="Type" />
         <DateField source="publishDate" label="Publish Date" />
+        <FunctionField
+          label="Created At"
+          render={(record: any) => {
+            return record.createdAt.toLocaleString()
+          }}
+        />
         <EditButton label="Edit" />
       </Datagrid>
     </List>
@@ -67,7 +74,7 @@ export function EditNews() {
 
 export function CreateNews() {
   return (
-    <Create transform={(data: Record<string, unknown>) => ({ ...data, createdAt: new Date() })}>
+    <Create redirect="list" transform={(data: Record<string, unknown>) => ({ ...data, createdAt: new Date() })}>
       <SimpleForm>
         <TextInput source="url" fullWidth />
         <SelectInput source="type" choices={typeChoices} />
