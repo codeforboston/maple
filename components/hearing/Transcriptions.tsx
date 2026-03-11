@@ -1,5 +1,6 @@
 import { faMagnifyingGlass, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ArrowRightAlt from "@mui/icons-material/ArrowRightAlt"
 import ShareIcon from "@mui/icons-material/Share"
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import { useRouter } from "next/router"
@@ -14,7 +15,6 @@ import {
   formatTotalSeconds
 } from "./hearing"
 import { ShareLinkButton } from "components/buttons"
-
 import { siteUrl } from "components/links"
 
 const ClearButton = styled(FontAwesomeIcon)`
@@ -124,7 +124,15 @@ const TranscriptRow = styled(Row)`
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
   }
+  &:hover {
+    background-color: #d9dfea;
+    border-color: #1a3185;
+    border-style: solid;
+    border-width: 5px;
+  }
 `
+
+const TranscriptRowActive = styled(Row)``
 
 export const Transcriptions = ({
   hearingId,
@@ -334,6 +342,7 @@ const TranscriptItem = forwardRef(function TranscriptItem(
        set currentTime property of <video> element */
 
     setCurTimeVideo(valSeconds)
+    setIsHovered(false)
   }
 
   const isHighlighted = (index: number): boolean => {
@@ -358,34 +367,32 @@ const TranscriptItem = forwardRef(function TranscriptItem(
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <TranscriptRow
-      className={
-        isHighlighted(index)
-          ? `bg-info border-5 border-secondary border-start`
-          : `border-5`
-      }
-      ref={ref}
-    >
-      <TimestampCol>
-        <Row className={`d-inline`}>
-          <TimestampButton
-            onClick={() => {
-              handleClick(element.start)
-            }}
-            className={`bg-transparent border-0 text-nowrap p-1`}
-            type="button"
-            value={element.start}
-          >
-            {formatMilliseconds(element.start)}
-            {" - "}
-            {formatMilliseconds(element.end)}
-          </TimestampButton>
-        </Row>
-      </TimestampCol>
-      <Col className={`pt-1`}>{highlightText(element.text, searchTerm)}</Col>
-      <Col xs="1" className={`my-1 px-0`}>
-        {isHighlighted(index) ? (
-          <>
+    <>
+      {isHighlighted(index) ? (
+        <TranscriptRowActive
+          className={`bg-info border-5 border-secondary border-start`}
+          ref={ref}
+        >
+          <TimestampCol>
+            <Row className={`d-inline`}>
+              <TimestampButton
+                onClick={() => {
+                  handleClick(element.start)
+                }}
+                className={`bg-transparent border-0 text-nowrap p-1`}
+                type="button"
+                value={element.start}
+              >
+                {formatMilliseconds(element.start)}
+                {" - "}
+                {formatMilliseconds(element.end)}
+              </TimestampButton>
+            </Row>
+          </TimestampCol>
+          <Col className={`pt-1`}>
+            {highlightText(element.text, searchTerm)}
+          </Col>
+          <Col xs="1" className={`my-1 px-0`}>
             <ShareLinkButton
               key="copy"
               text={siteUrl(
@@ -398,11 +405,52 @@ const TranscriptItem = forwardRef(function TranscriptItem(
             >
               {isHovered ? <ShareIcon /> : <ShareOutlinedIcon />}
             </ShareLinkButton>
-          </>
-        ) : (
-          <></>
-        )}
-      </Col>
-    </TranscriptRow>
+          </Col>
+        </TranscriptRowActive>
+      ) : (
+        <TranscriptRow
+          className={`border-5`}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          ref={ref}
+        >
+          <TimestampCol>
+            <Row className={`d-inline`}>
+              <TimestampButton
+                onClick={() => {
+                  handleClick(element.start)
+                }}
+                className={`bg-transparent border-0 text-nowrap p-1`}
+                type="button"
+                value={element.start}
+              >
+                {formatMilliseconds(element.start)}
+                {" - "}
+                {formatMilliseconds(element.end)}
+              </TimestampButton>
+            </Row>
+          </TimestampCol>
+          <Col className={`pt-1`}>
+            {highlightText(element.text, searchTerm)}
+          </Col>
+          <Col xs="1" className={`d-flex align-items-center my-1 px-0`}>
+            <TimestampButton
+              onClick={() => {
+                handleClick(element.start)
+              }}
+              className={`bg-transparent border-0 p-1 text-nowrap `}
+              type="button"
+              value={element.start}
+            >
+              {isHovered ? (
+                <ArrowRightAlt fontSize="large" style={{ color: "#737373" }} />
+              ) : (
+                <></>
+              )}
+            </TimestampButton>
+          </Col>
+        </TranscriptRow>
+      )}
+    </>
   )
 })
