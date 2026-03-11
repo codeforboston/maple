@@ -15194,6 +15194,11 @@ react-overlays@^5.1.1:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
+react-pretty-email-wrap@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/react-pretty-email-wrap/-/react-pretty-email-wrap-0.1.4.tgz#de78418b6002e192f272114e1ce458bd17bd2ea1"
+  integrity sha512-J/INGlIDT6F9Mzn102IHw2WMdg7RfsoJ5EotlI00sTouJ4vP/GtayAttLgVFngVQX4Q0AQLgdqkhEUrdlRDajA==
+
 react-query@^3.32.1, react-query@^3.39.3:
   version "3.39.3"
   resolved "https://registry.npmjs.org/react-query/-/react-query-3.39.3.tgz"
