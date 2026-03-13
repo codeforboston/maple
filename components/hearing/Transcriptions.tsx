@@ -253,12 +253,14 @@ export const Transcriptions = ({
         }
       }
     }
-    if (!videoRef.current) return
 
-    videoRef.current.addEventListener("timeupdate", handleTimeUpdate)
+    const videoElement = videoRef.current
+    if (!videoElement) return
+
+    videoElement.addEventListener("timeupdate", handleTimeUpdate)
 
     return () => {
-      videoRef.current.removeEventListener("timeupdate", handleTimeUpdate)
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate)
     }
   }, [highlightedId, activeVideo, filteredData, videoRef])
 
