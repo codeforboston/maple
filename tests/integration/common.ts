@@ -57,7 +57,7 @@ export async function createNewBill(props?: Partial<Bill>) {
 
   expect(Bill.validate(bill).success).toBeTruthy()
 
-  testDb
+  await testDb
     .doc(`/generalCourts/${currentGeneralCourt}/bills/${billId}`)
     .create({
       ...bill,
