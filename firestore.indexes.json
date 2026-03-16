@@ -727,6 +727,14 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "ballotQuestions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "electionYear", "order": "ASCENDING" },
+        { "fieldPath": "ballotStatus", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [
