@@ -69,7 +69,13 @@ export function EditNews() {
 
 export function CreateNews() {
   return (
-    <Create redirect="list" transform={(data: Record<string, unknown>) => ({ ...data, createdAt: new Date() })}>
+    <Create
+      redirect="list"
+      transform={(data: Record<string, unknown>) => ({
+        ...data,
+        createdAt: new Date()
+      })}
+    >
       <SimpleForm>
         <TextInput source="url" fullWidth />
         <SelectInput source="type" choices={typeChoices} />
