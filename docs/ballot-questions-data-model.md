@@ -65,7 +65,6 @@ Ballot question documents are defined as YAML files committed to the repo:
 ```
 ballotQuestions/
   25-14.yaml
-  25-37.yaml
   ...
 ```
 
@@ -81,9 +80,30 @@ ballotQuestionNumber: null
 relatedBillIds: []
 ```
 
-A sync script (`scripts/sync-ballot-questions.ts`) upserts these to Firestore on deploy. Git history is the audit trail; PRs provide review before changes go live.
+A sync script (`scripts/firebase-admin/syncBallotQuestions.ts`) upserts these to Firestore. Git history is the audit trail; PRs provide review before changes go live.
 
-**Note:** Non-technical staff cannot update ballot status without a git commit. If that becomes a problem, an admin UI can be added later without changing the data model.
+### Running the sync script
+
+The script is a manual admin operation, run against whichever environment you need:
+
+```bash
+# Local emulator
+yarn firebase-admin -e local run-script syncBallotQuestions
+
+# Staging
+yarn firebase-admin -e dev run-script syncBallotQuestions
+
+# Production (requires GOOGLE_APPLICATION_CREDENTIALS or gcloud ADC)
+yarn firebase-admin -e prod run-script syncBallotQuestions
+```
+
+By default the script reads from `ballotQuestions/` at the repo root. To point it elsewhere:
+
+```bash
+yarn firebase-admin -e prod run-script syncBallotQuestions --dir=/path/to/yamls
+```
+
+The script validates each YAML against the `BallotQuestion` type (`functions/src/ballotQuestions/types.ts`) before writing and will throw on malformed input. Run it after adding or editing any YAML file.
 
 ---
 
@@ -98,7 +118,7 @@ A sync script (`scripts/sync-ballot-questions.ts`) upserts these to Firestore on
 
 ## Security
 
-Add this to `firestore.rules`:
+`firestore.rules` contains:
 
 ```
 match /ballotQuestions/{id} {
@@ -154,7 +174,7 @@ Firestore auto-indexes single fields. Composite indexes (multiple fields in one 
 
 The listing query (`electionYear == 2026`) is a single equality filter — Firestore handles it automatically. The filtered listing adds a second field, so it needs a composite index.
 
-Add to the `indexes` array in `firestore.indexes.json`:
+`firestore.indexes.json` already declares this index:
 
 ```json
 {
