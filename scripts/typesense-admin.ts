@@ -1,7 +1,7 @@
 import { execSync } from "child_process"
 import repl from "repl"
 import { Client } from "typesense"
-import yargs from "yargs"
+import yargs, { Arguments } from "yargs"
 import { hideBin } from "yargs/helpers"
 import { createClient } from "../functions/src/search/client"
 
@@ -21,13 +21,13 @@ const envs: Record<string, { url: string; key?: string; alias?: string }> = {
   }
 }
 
-type Args = { url?: string; key?: string; env?: string }
+type Args = Arguments<{ url?: string; key?: string; env?: string }>
 yargs(hideBin(process.argv))
   .scriptName("typesense-admin")
   .command(
     "console",
     "start a node repl with an initialized client",
-    () => {},
+    {},
     (args: Args) => {
       globalThis.client = resolveClient(args)
       repl.start({}).setupHistory("typesense-admin.history", () => {})
@@ -36,7 +36,7 @@ yargs(hideBin(process.argv))
   .command(
     "create-search-key",
     "create a new search key",
-    () => {},
+    {},
     async (args: Args) => {
       const client = resolveClient(args)
       const key = await client.keys().create({
@@ -50,7 +50,7 @@ yargs(hideBin(process.argv))
   .command(
     "list-keys",
     "list keys",
-    () => {},
+    {},
     async (args: Args) => {
       const client = resolveClient(args)
       console.log(await client.keys().retrieve())
@@ -59,8 +59,8 @@ yargs(hideBin(process.argv))
   .command(
     "delete-key <id>",
     "list keys",
-    () => {},
-    async (args: Args & { id: string }) => {
+    {},
+    async (args: Args & { id?: string }) => {
       const client = resolveClient(args)
       console.log(await client.keys(Number(args.id)).delete())
     }
