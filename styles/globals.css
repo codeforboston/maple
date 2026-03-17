@@ -159,3 +159,18 @@
   letter-spacing: 0.015em;
   padding: 7px, 8px, 7px, 8px;
 }
+
+/* Custom style in "In The News" Page */
+.in-the-news .nav-item .nav-link {
+  color: black;
+  font-weight: 600;
+  border-bottom: 3px solid;
+  border-color: #0000001a;
+}
+.in-the-news .nav-item .nav-link:hover {
+  color: #15276A;
+}
+.in-the-news .nav-item .nav-link.active {
+  color: #15276A;
+  border-color: #15276A;
+}

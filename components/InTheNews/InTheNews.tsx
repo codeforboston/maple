@@ -6,10 +6,14 @@ import Dropdown from "react-bootstrap/Dropdown"
 import { useMediaQuery } from "usehooks-ts"
 import { useTranslation } from "next-i18next"
 
+
+
 export const InTheNews = () => {
+  const { t } = useTranslation("inTheNews")
   const isMobile = useMediaQuery("(max-width: 768px)")
   return (
     <Container className="ptx-4">
+      <h1 className="fw-bold m-5">{t("title")}</h1>
       <Tab.Container defaultActiveKey="media">
         {isMobile ? <TabDropdown /> : <TabGroup />}
         <Row className="p-3 g-0">
@@ -43,23 +47,21 @@ const TabGroup = () => {
   return (
     <Row className="p-3 g-0">
       <Col md={4} className="text-center">
-        <Nav className="our-team-tab flex-column">
+        <Nav className="in-the-news flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="media">
-              {t("media.title")}
-            </Nav.Link>
+            <Nav.Link eventKey="media">{t("media.title")}</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
-        <Nav className="our-team-tab flex-column">
+        <Nav className="in-the-news flex-column">
           <Nav.Item>
             <Nav.Link eventKey="awards">{t("awards.title")}</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
-        <Nav className="our-team-tab flex-column">
+        <Nav className="in-the-news flex-column">
           <Nav.Item>
             <Nav.Link eventKey="books">{t("books.title")}</Nav.Link>
           </Nav.Item>
