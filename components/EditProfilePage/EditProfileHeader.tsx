@@ -3,6 +3,7 @@ import { Role } from "../auth"
 import { Col, Row } from "../bootstrap"
 import { GearIcon, OutlineButton } from "../buttons"
 import { ProfileEditToggle } from "components/ProfilePage/ProfileButtons"
+import { useFlags } from "components/featureFlags"
 
 export const EditProfileHeader = ({
   formUpdated,
@@ -20,6 +21,7 @@ export const EditProfileHeader = ({
   phoneVerified?: boolean
 }) => {
   const { t } = useTranslation("editProfile")
+  const { phoneVerificationUI } = useFlags()
 
   return (
     <Row className={`my-5`}>
@@ -34,24 +36,25 @@ export const EditProfileHeader = ({
           onClick={() => onSettingsModalOpen()}
         />
         <ProfileEditToggle formUpdated={formUpdated} role={role} uid={uid} />
-        {phoneVerified === true ? (
-          <div className="d-flex align-items-center justify-content-center gap-1 py-1 col-12 text-capitalize text-nowrap">
-            <span className="text-secondary">{t("verifiedUser")}</span>
-            <img
-              src="/images/verifiedUser.png"
-              alt={t("verifiedUserBadgeAlt")}
-              width={24}
-              height={24}
-              className="flex-shrink-0"
+        {phoneVerificationUI &&
+          (phoneVerified === true ? (
+            <div className="d-flex align-items-center justify-content-center gap-1 py-1 col-12 text-capitalize text-nowrap">
+              <span className="text-secondary">{t("verifiedUser")}</span>
+              <img
+                src="/images/verifiedUser.png"
+                alt={t("verifiedUserBadgeAlt")}
+                width={24}
+                height={24}
+                className="flex-shrink-0"
+              />
+            </div>
+          ) : onGetVerifiedClick ? (
+            <OutlineButton
+              className={`py-1`}
+              label={t("getVerified")}
+              onClick={onGetVerifiedClick}
             />
-          </div>
-        ) : onGetVerifiedClick ? (
-          <OutlineButton
-            className={`py-1`}
-            label={t("getVerified")}
-            onClick={onGetVerifiedClick}
-          />
-        ) : null}
+          ) : null)}
       </Col>
     </Row>
   )
