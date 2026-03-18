@@ -15,16 +15,28 @@ The document ID is the **petition number** (e.g. `25-14`), which is what mass.go
 ```typescript
 interface BallotQuestion {
   id: string                 // petition number: "25-14"
-  billId: string             // H-bill in the existing bills collection: "H5004"
+  billId: string | null      // H-bill in the existing bills collection: "H5004"; null for pre-legislature (future)
   court: number              // General Court when referred: 194
   electionYear: number       // Target election year: 2026
   type: "initiative_statute" | "initiative_constitutional"
        | "legislative_referral" | "constitutional_amendment" | "advisory"
-  ballotStatus: "legislature" | "ballot" | "enacted" | "failed" | "withdrawn"
+  ballotStatus: "legislature" | "qualifying" | "certified" | "ballot" | "enacted" | "failed" | "withdrawn"
   ballotQuestionNumber: number | null  // "Question 1" — null until SoS certifies
   relatedBillIds: string[]             // admin-curated, format: "194/H1234"
 }
 ```
+
+### `ballotStatus` lifecycle
+
+| Status | Meaning |
+|---|---|
+| `legislature` | Assigned H-bill, before SJ42; legislature can still enact it directly |
+| `qualifying` | Legislature didn't act; petitioners gathering ~50k signatures for SoS certification |
+| `certified` | SoS certified; ballot question number assigned |
+| `ballot` | Voting in progress / election cycle |
+| `enacted` | Terminal: passed by voters (or enacted directly by legislature) |
+| `failed` | Terminal: failed at any stage (signatures, ballot, etc.) |
+| `withdrawn` | Terminal: petitioners withdrew |
 
 The page at `/ballotQuestions/[id]` fetches both this document **and** the bill at `billId` — title, full text, hearing schedule, and testimony all come from the bill. Nothing is duplicated.
 
@@ -107,12 +119,36 @@ The script validates each YAML against the `BallotQuestion` type (`functions/src
 
 ---
 
+## Testimony and ballot questions
+
+Testimony has an optional `ballotQuestionId` field that distinguishes the two audience-distinct phases:
+
+- **`ballotQuestionId` absent** — legislative testimony, submitted via the bill page while `ballotStatus == "legislature"`. Addressed to legislators.
+- **`ballotQuestionId` present** — electorate testimony, submitted via the ballot question page when `ballotStatus` is `qualifying`, `certified`, or `ballot`. Addressed to voters.
+
+The ballot question page shows no testimony form when `ballotStatus == "legislature"` — it links to the bill page instead. Terminal states (`enacted`, `failed`, `withdrawn`) are read-only; no new testimony is accepted.
+
+The ballot question page can display both types (bill testimony for legislative history, ballot testimony via `ballotQuestionId`) but they are stored separately with no overlap.
+
+### Querying ballot question testimony
+
+```ts
+collection("publishedTestimony")
+  .where("ballotQuestionId", "==", "25-14")
+  .orderBy("publishedAt", "desc")
+```
+
+A composite index on `(ballotQuestionId ASC, publishedAt DESC)` is declared in `firestore.indexes.json`.
+
+---
+
 ## What does NOT change
 
 - Bill documents — no new fields
 - Bill ingestion — no changes
 - Hearing sync — no changes
-- Testimony — no changes; testimony targets `billId` directly
+- Firestore security rules for testimony
+- `testimonyCount` and related counters on Bill documents
 
 ---
 

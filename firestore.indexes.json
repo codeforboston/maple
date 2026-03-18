@@ -735,6 +735,14 @@
         { "fieldPath": "electionYear", "order": "ASCENDING" },
         { "fieldPath": "ballotStatus", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "publishedTestimony",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "ballotQuestionId", "order": "ASCENDING" },
+        { "fieldPath": "publishedAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [

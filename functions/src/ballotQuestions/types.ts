@@ -11,7 +11,7 @@ import {
 
 export const BallotQuestion = Record({
   id: String,
-  billId: String,
+  billId: Union(String, Null),
   court: Number,
   electionYear: Number,
   type: Union(
@@ -23,6 +23,8 @@ export const BallotQuestion = Record({
   ),
   ballotStatus: Union(
     L("legislature"),
+    L("qualifying"),
+    L("certified"),
     L("ballot"),
     L("enacted"),
     L("failed"),
