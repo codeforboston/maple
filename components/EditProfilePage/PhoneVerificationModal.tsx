@@ -14,14 +14,16 @@ import { useCompletePhoneVerification } from "../auth/hooks"
 import { auth } from "../firebase"
 import { useTranslation } from "next-i18next"
 
-const US_REGEX = /^(\([2-9][0-9]{2}\)|[2-9][0-9]{2})[- ]?([0-9]{3})[- ]?([0-9]{4})$/;
+const US_REGEX =
+  /^(\([2-9][0-9]{2}\)|[2-9][0-9]{2})[- ]?([0-9]{3})[- ]?([0-9]{4})$/
 
 const AUTH_ERROR_CODE_TO_KEY: Record<string, string> = {
   "auth/credential-already-in-use":
     "phoneVerification.errors.credentialAlreadyInUse",
   "auth/account-exists-with-different-credential":
     "phoneVerification.errors.credentialAlreadyInUse",
-  "auth/provider-already-linked": "phoneVerification.errors.providerAlreadyLinked",
+  "auth/provider-already-linked":
+    "phoneVerification.errors.providerAlreadyLinked",
   "auth/invalid-phone-number": "phoneVerification.errors.invalidPhoneNumber",
   "auth/operation-not-allowed": "phoneVerification.errors.operationNotAllowed"
 }
@@ -83,8 +85,8 @@ export default function PhoneVerificationModal({
       setError(getModalErrorMessage("auth/invalid-phone-number"))
       return
     }
-    const phoneDigits = trimmed.replace(/\D/g, "");
-    const firebasePhoneFormat = `+1${phoneDigits}`;
+    const phoneDigits = trimmed.replace(/\D/g, "")
+    const firebasePhoneFormat = `+1${phoneDigits}`
 
     if (!user) {
       setError(t("phoneVerification.signedInRequired"))
