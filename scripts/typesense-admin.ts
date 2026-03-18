@@ -1,12 +1,11 @@
 import { execSync } from "child_process"
 import repl from "repl"
-import { Client } from "typesense"
 import yargs, { Arguments } from "yargs"
 import { hideBin } from "yargs/helpers"
 import { createClient } from "../functions/src/search/client"
 
 declare global {
-  var client: Client
+  var client: ReturnType<typeof createClient>
 }
 
 const envs: Record<string, { url: string; key?: string; alias?: string }> = {
@@ -47,15 +46,10 @@ yargs(hideBin(process.argv))
       console.log("Created", key.value)
     }
   )
-  .command(
-    "list-keys",
-    "list keys",
-    {},
-    async (args: Args) => {
-      const client = resolveClient(args)
-      console.log(await client.keys().retrieve())
-    }
-  )
+  .command("list-keys", "list keys", {}, async (args: Args) => {
+    const client = resolveClient(args)
+    console.log(await client.keys().retrieve())
+  })
   .command(
     "delete-key <id>",
     "list keys",

@@ -63,6 +63,7 @@ const argv = yargs(hideBin(process.argv))
     default: paths.defaultStoriesConfig,
     describe:
       "Path to a multi-document yaml file with story configs. Each config is a map with name, folder, grouping, and figmaUrl fields."
-  }).parseSync()
+  })
+  .parseSync()
 
 generateStories(argv.template, argv.stories)
