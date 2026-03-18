@@ -18,9 +18,7 @@ export const VerifyAccountSection = ({
   return (
     <TitledSectionCard title={"Verify Your Account"} className={className}>
       <div>
-        <p className="fw-bold text-secondary">
-          {t("verifyAccountSection.verifyAccount")}
-        </p>
+        <p className="fw-bold">{t("verifyAccountSection.verifyAccount")}</p>
 
         {sendEmailVerification.status === "success" ? (
           <Alert variant="success">
