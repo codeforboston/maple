@@ -20,6 +20,10 @@ it("syncs YAML files to Firestore", async () => {
   expect(snap.exists).toBe(true)
   expect(snap.data()?.billId).toBe("H5099")
   expect(snap.data()?.electionYear).toBe(2099)
+  expect(snap.data()?.description).toBeTruthy()
+  expect(snap.data()?.atAGlance).toBeInstanceOf(Array)
+  expect(snap.data()?.pdfUrl).toMatch(/^https?:\/\//)
+  expect(snap.data()?.fullSummary).toBeTruthy()
 })
 
 it("can query by electionYear", async () => {

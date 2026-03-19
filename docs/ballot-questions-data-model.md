@@ -23,8 +23,29 @@ interface BallotQuestion {
   ballotStatus: "legislature" | "qualifying" | "certified" | "ballot" | "enacted" | "failed" | "withdrawn"
   ballotQuestionNumber: number | null  // "Question 1" — null until SoS certifies
   relatedBillIds: string[]             // admin-curated, format: "194/H1234"
+
+  // Manually curated voter-facing content (all optional until ready)
+  description: string | null           // "What this question would do" — short voter-friendly prose
+  atAGlance: { label: string; value: string }[] | null  // "Key Details" bullet list
+  fullSummary: string | null           // "Final Summary" — voter guide quality language
+  pdfUrl: string | null                // Link to the initiative petition PDF
 }
 ```
+
+### Manually curated content
+
+Four fields are written by hand in YAML and synced to Firestore. All are optional (`null` until ready).
+
+| Field | Figma element | Quality standard |
+|---|---|---|
+| `description` | "What this question would do" | 1–3 sentences of plain voter-friendly prose. Avoid legalese. |
+| `atAGlance` | "Key Details" bullets | Structured `label`/`value` pairs, 3–6 items. Scannable at a glance. |
+| `fullSummary` | "Final Summary" | Official voter-guide quality language. May be sourced from the SoS voter guide. |
+| `pdfUrl` | PDF link | Direct URL to the initiative petition PDF (usually from mass.gov). |
+
+Fields can be added to a YAML at any time and will be live after the next sync.
+
+---
 
 ### `ballotStatus` lifecycle
 
@@ -90,6 +111,10 @@ type: initiative_statute
 ballotStatus: legislature
 ballotQuestionNumber: null
 relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: null
+pdfUrl: null
 ```
 
 A sync script (`scripts/firebase-admin/syncBallotQuestions.ts`) upserts these to Firestore. Git history is the audit trail; PRs provide review before changes go live.

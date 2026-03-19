@@ -6,32 +6,66 @@ This document describes how to build the ballot question detail page (`/ballotQu
 
 ---
 
-## Page: `/ballotQuestions/[id]`
+## Page layout: `/ballotQuestions/[id]`
 
-The page has two tabs: a voter-facing **Ballot Question** tab and a legislative-record **Bill & Legislature** tab.
+The page is divided into a header card and a two-column section below it. Only the **Overview** and **Testimonies** tabs need to be wired for the initial build. The remaining nav items (Synthesis & Insights, For & Against, News & Media, Academia, Campaign Financials, Map) are placeholders.
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Header: "Question 3 · Initiative — Statute · 2026" │
-│  Status banner (see below)                           │
-├──────────────────────────────────────────────────────┤
-│  [Ballot Question]  [Bill & Legislature]             │
-├──────────────────────────────────────────────────────┤
-│                                                      │
-│  TAB 1: Ballot Question (voter-facing)               │
-│  ─ Description / what this would do                  │
-│  ─ Testimony form OR CTA based on ballotStatus       │
-│  ─ Ballot testimony feed (ballotQuestionId filter)   │
-│                                                      │
-│  TAB 2: Bill & Legislature                           │
-│  ─ Bill number, title, summary                       │
-│  ─ Hearing schedule                                  │
-│  ─ Sponsors / committees                             │
-│  ─ Bill testimony form (when legislature only)       │
-│  ─ Bill testimony feed (billId/court filter)         │
-│                                                      │
-└──────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│  « Return to ballot questions                    [Follow]        │
+│                                                                   │
+│  Question N  |  Short name                   ┌──────────────────┐│
+│  Type: Law ⓘ                                 │  Your Testimony  ││
+│                                               │                  ││
+│  Full title (large)                           │  [Create         ││
+│                                               │   testimony]     ││
+│  ┌──────────────────────────────────────┐     └──────────────────┘│
+│  │ What this question would do:          │                        │
+│  │ <description>                         │  [PDF link] [Bill link]│
+│  └──────────────────────────────────────┘                        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌───────────────┬──────────────────────────────────────────────────┐
+│  Overview ●   │  Overview                                        │
+│               │  The ballot question at a high-level             │
+│  Testimonies  │                                                  │
+│           42  │  Key Details                                     │
+│               │  ┌──────────────────────────────┐               │
+│  Synthesis &  │  │ At a glance:                  │               │
+│  Insights     │  │ • Who: ...                    │               │
+│               │  │ • How: ...                    │               │
+│  For &        │  └──────────────────────────────┘               │
+│  Against      │                                                  │
+│               │  Final Summary ⓘ                                 │
+│  News &       │  <full summary text>                             │
+│  Media    20  │                                                  │
+│               │  Committee Hearing                               │
+│  Academia  20 │  <hearing explainer copy>                        │
+│               │  • Status: Occurred / Scheduled                  │
+│  Campaign     │  • Date: [date]                                  │
+│  Financials   │                                                  │
+│               │  Watch the committee hearing here. [link]        │
+│  Map          │                                                  │
+└───────────────┴──────────────────────────────────────────────────┘
 ```
+
+---
+
+## Data model additions needed
+
+The Figma requires several curated fields not yet in the `BallotQuestion` schema. These should be added to `functions/src/ballotQuestions/types.ts` and the YAML files:
+
+```typescript
+interface BallotQuestion {
+  // ... existing fields ...
+  description: string             // "What this question would do" — header card + DescriptionBox
+  atAGlance: { label: string; value: string }[]   // Key Details bullet list in Overview
+  fullSummary: string             // Final Summary section in Overview
+  pdfUrl: string | null           // Link to the initiative petition PDF
+}
+```
+
+`billId` (already in the schema) provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition.
 
 ---
 
@@ -41,16 +75,27 @@ The page has two tabs: a voter-facing **Ballot Question** tab and a legislative-
 const ballotQuestion = await dbService().getBallotQuestion({ id })
 if (!ballotQuestion) return { notFound: true }
 
-// billId can be null (pre-legislature scope); hide bill tab when undefined
+// billId can be null (pre-legislature); hide bill link and hearing section when null
 const bill = ballotQuestion.billId
   ? await dbService().getBill({
       court: ballotQuestion.court,
       billId: ballotQuestion.billId,
     })
-  : undefined
+  : null
+
+// Fetch hearing documents for the Overview tab.
+// bill.hearingIds contains eventId strings; documents are at /events/hearing-{eventId}.
+// SJ42 petitions typically have 0–1 hearings so fetching all is cheap.
+const hearings = bill?.hearingIds?.length
+  ? await Promise.all(
+      bill.hearingIds.map(id =>
+        dbService().getDocData<Hearing>("events", `hearing-${id}`)
+      )
+    ).then(results => results.filter(Boolean))
+  : []
 
 return {
-  props: { ballotQuestion, bill: bill ?? null },
+  props: { ballotQuestion, bill, hearings },
   headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=300" },
 }
 ```
@@ -59,93 +104,149 @@ Cache is shorter than bills because `ballotStatus` changes during election seaso
 
 ---
 
-## Status banners (voter education)
+## Header card
 
-Each `ballotStatus` gets a distinct banner explaining the process, not just the state. The banner drives what CTA appears in Tab 1.
+The header always shows:
 
-| `ballotStatus` | Banner message | Tab 1 CTA |
-|---|---|---|
-| `legislature` | "Before the Legislature — legislators can enact or reject this directly. Add your voice to the legislative record." | Link to bill tab testimony form |
-| `qualifying` | "Gathering Signatures — petitioners need ~50k certified signatures for this to reach the ballot. Tell people whether they should sign." | Active testimony form (`ballotQuestionId` set) |
-| `certified` | "Certified for [year] Ballot — the Secretary of State has certified this as Question [N]." | Active testimony form (`ballotQuestionId` set) |
-| `ballot` | "On the Ballot — voting is underway in the [year] election." | Active testimony form (`ballotQuestionId` set) |
-| `enacted` | "Enacted — this passed." | None (read-only) |
-| `failed` | "Did not pass." | None (read-only) |
-| `withdrawn` | "Withdrawn by petitioners." | None (read-only) |
+- Back link ("Return to ballot questions")
+- Follow button
+- Question number + short name (from `ballotQuestion.id` + type label)
+- Full title (from `bill.Title`, or a standalone title field if `billId` is null)
+- "What this question would do" description box (`ballotQuestion.description`)
+- **Your Testimony** panel (right side) — see testimony routing below
+- PDF link (`ballotQuestion.pdfUrl`) — open in new tab; hidden if null
+- Bill link — `/bills/{court}/{billId}` — hidden if `billId` is null
 
 ---
 
 ## Testimony routing by status
 
-| `ballotStatus` | Tab 1 (Ballot Question) | Tab 2 (Bill & Legislature) |
+The **Your Testimony** panel lives in the header card, not inside a tab. It is always visible.
+
+| `ballotStatus` | Your Testimony panel | Testimonies tab feed |
 |---|---|---|
-| `legislature` | No form. "Testify on the bill →" link. Ballot feed empty. | **Active** form + bill testimony feed |
-| `qualifying` | **Active** form (`ballotQuestionId` set) + ballot feed | Bill feed read-only, no form |
-| `certified` | **Active** form (`ballotQuestionId` set) + ballot feed | Bill feed read-only, no form |
-| `ballot` | **Active** form (`ballotQuestionId` set) + ballot feed | Bill feed read-only, no form |
-| `enacted` / `failed` / `withdrawn` | No form. Ballot feed read-only. | Bill feed read-only, no form |
+| `legislature` | "Testify on the bill →" link (no form here) | Bill feed (`billId` + `court`) read-only |
+| `qualifying` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
+| `certified` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
+| `ballot` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
+| `enacted` / `failed` / `withdrawn` | No form. Read-only notice. | Ballot feed read-only |
 
 Active `ballotQuestionId` testimony phases: `qualifying | certified | ballot`.
 
 ---
 
+## Overview tab
+
+Three sections, in order:
+
+### 1. Key Details
+
+Renders `ballotQuestion.atAGlance` as a list of `label: value` pairs inside a card. This is manually curated in the YAML file.
+
+### 2. Final Summary
+
+Renders `ballotQuestion.fullSummary` as body text. Manually curated.
+
+### 3. Committee Hearing
+
+Reads from `hearings` (fetched server-side from `bill.hearingIds`). If no hearings exist, this section is hidden.
+
+For each relevant hearing, display:
+- **Status**: "Occurred" if `hearing.content.startsAt` is in the past, "Scheduled" if in the future
+- **Date**: formatted from `hearing.content.startsAt`
+- **Watch link**: "Watch the committee hearing here." linked to `hearing.videoURL` — hidden if no video
+
+Since ballot questions are always under SJ42 and typically have one hearing, render a single hearing block. If there are multiple, render them in reverse chronological order (most recent first).
+
+**Hearing data model recap:**
+- `bill.hearingIds?: string[]` — event IDs; doc path is `/events/hearing-{id}`
+- `bill.nextHearingAt?: Timestamp` — convenience field for upcoming hearing only (not sufficient alone — we need date + videoURL from the full document)
+- `hearing.videoURL?: string` — link for the "Watch" CTA
+- `hearing.content.startsAt` — determines "Occurred" vs. "Scheduled" status
+
+No new components are needed for hearing display — build a simple `CommitteeHearing` component local to `components/ballotquestions/`.
+
+---
+
 ## Component reuse map
 
-These components are used unchanged — just pass `bill` (fetched server-side) or `ballotQuestionId` as props:
-
-| Component | File | Used in | Props |
+| Component | File | Used where | Props |
 |---|---|---|---|
-| `TestimonyCounts` | `components/bill/TestimonyCounts.tsx` | Tab 2 | `{ bill: Bill }` |
-| `ViewTestimony` / `TestimonyItem` | various | Both tabs | unchanged — reused as-is in both feeds |
+| `ViewTestimony` / `TestimonyItem` | various | Testimonies tab | unchanged |
+| `TestimonyCounts` | `components/bill/TestimonyCounts.tsx` | Testimonies tab label (count badge) | `{ bill: Bill }` |
+
+`SponsorsAndCommittees` is **not** reused here. The hearing display in Overview is custom (`CommitteeHearing`) because the Figma shows a richer layout (status badge, explanatory copy, video link) than what `SponsorsAndCommittees` renders.
 
 ---
 
-## Data flow: two parallel testimony feeds
-
-The page runs two independent testimony queries simultaneously:
-
-- **Ballot testimony feed** (Tab 1): filtered by `ballotQuestionId`
-- **Bill testimony feed** (Tab 2): filtered by `billId` + `court`
-
-Both use the same `usePublishedTestimonyListing` hook — different parameters, different Firestore queries, same renderer. The Firestore index on `ballotQuestionId` is already deployed.
-
----
-
-## UI files that need changes when the page is built
-
-### New files
+## New files
 
 ```
 pages/
   ballotQuestions/
-    [id].tsx                    ← page entry point + getServerSideProps
+    [id].tsx                      ← page entry point + getServerSideProps
 
 components/
   ballotquestions/
-    BallotQuestionDetails.tsx   ← top-level layout, receives { ballotQuestion, bill }
-    BallotQuestionHeader.tsx    ← "Question N · type badge · year" heading
-    StatusBanner.tsx            ← status-conditional banner + CTA (see table above)
-    BallotQuestionTabs.tsx      ← tab switcher (Tab 1 / Tab 2)
-    DescriptionBox.tsx          ← "What this question would do" card
+    BallotQuestionDetails.tsx     ← top-level layout, receives { ballotQuestion, bill, hearings }
+    BallotQuestionHeader.tsx      ← header card: title, description box, testimony panel, PDF/bill links
+    BallotQuestionNav.tsx         ← vertical left nav (Overview, Testimonies, + placeholder items)
+    DescriptionBox.tsx            ← "What this question would do" card
+    OverviewTab.tsx               ← Key Details + Final Summary + CommitteeHearing
+    CommitteeHearing.tsx          ← hearing status, date, and watch link
+    TestimoniesTab.tsx            ← testimony feed, wired to usePublishedTestimonyListing
+    YourTestimonyPanel.tsx        ← header-right testimony CTA, status-conditional (see routing table)
 ```
+
+---
+
+## Existing files that need changes
 
 ### `components/publish/panel/TestimonyFormPanel.tsx`
 
-Add an optional `ballotQuestionId` prop. When present, persist it into the draft write at `DraftTestimony.ballotQuestionId`. The publish cloud function picks it up from the draft — no server-side changes needed since `BaseTestimony` already has the field.
+Add an optional `ballotQuestionId` prop. When present, persist it into the draft write at `DraftTestimony.ballotQuestionId`.
 
 ```typescript
-// Tab 1 (ballot question tab) — ballotQuestionId active phases only
+// YourTestimonyPanel — active ballot question phases
 <TestimonyFormPanel bill={bill} ballotQuestionId={ballotQuestion.id} />
 
-// Tab 2 (bill tab) — legislature phase only
-<TestimonyFormPanel bill={bill} />
+// legislature phase — links to bill page instead, no form rendered here
 ```
 
-Internally the form just needs to write `ballotQuestionId` into the draft. The draft type (`DraftTestimony extends BaseTestimony`) already has the field.
+### `functions/src/testimony/publishTestimony.ts`
+
+Two changes required in `PublishTestimonyTransaction`:
+
+**1. Validate `ballotQuestionId` in `resolveDraft()`**
+
+After the existing bill existence check (lines 175–183), add a parallel check for ballot question. `ballotQuestionId` is user-supplied and must be validated at publish time, same as `billId`:
+
+```typescript
+if (draft.ballotQuestionId) {
+  const bqSnap = await db.doc(`/ballotQuestions/${draft.ballotQuestionId}`).get()
+  if (!bqSnap.exists) {
+    throw fail(
+      "failed-precondition",
+      `Draft testimony has invalid ballot question ID ${draft.ballotQuestionId}`
+    )
+  }
+}
+```
+
+**2. Propagate `ballotQuestionId` into `newPublication` in `run()`**
+
+The field is on `BaseTestimony` (which both `DraftTestimony` and `Testimony` extend) but is not currently copied from draft to publication. Add it to the `newPublication` object:
+
+```typescript
+const newPublication: Testimony = {
+  // ... existing fields ...
+  ballotQuestionId: this.draft.ballotQuestionId ?? null,
+}
+```
 
 ### `components/bill/BillTestimonies.tsx`
 
-`BillTestimonies` is a thin wrapper around `usePublishedTestimonyListing` + `ViewTestimony`. Generalize it to accept either `{ bill: Bill }` or `{ ballotQuestionId: string }` so both tabs can use the same component with different queries. Consider renaming to `Testimonies` (the bill-specific name is an accident of where it was first used).
+Generalize to accept either `{ bill: Bill }` or `{ ballotQuestionId: string }` so the Testimonies tab can use it with a ballot question filter. Consider renaming to `Testimonies` (the bill-specific name is an accident of where it was first used).
 
 ### `components/db/testimony/usePublishedTestimonyListing.ts`
 
@@ -167,5 +268,6 @@ if (ballotQuestionId)
 - Testimony Firestore paths or collection structure
 - `testimonyCount` / position counts on `Bill` documents
 - `TestimonyFormPanel` internal publish flow (draft → cloud function)
-- `ViewTestimony` renderer, `TestimonyItem` — reused as-is in both tabs
+- `ViewTestimony` renderer, `TestimonyItem` — reused as-is
 - All existing bill pages and their testimony behavior
+- Hearing sync — no changes to `/events` collection or ingestion
