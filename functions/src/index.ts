@@ -59,13 +59,7 @@ export {
   updateUserNotificationFrequencyv2
 } from "./notifications"
 
-export {
-  followBill,
-  unfollowBill,
-  followUser,
-  unfollowUser,
-  getFollowers
-} from "./subscriptions"
+export { getFollowers } from "./subscriptions"
 
 export { transcription } from "./webhooks"
 
