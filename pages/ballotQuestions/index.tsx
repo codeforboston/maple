@@ -31,7 +31,7 @@ export default createPage({
     const { t } = useTranslation("search")
 
     return (
-      <Container className="mt-3 mb-4" style={{ maxWidth: "1080px" }}>
+      <Container fluid="xl" className="mt-3 mb-4">
         <h1>{t("browse_ballot_questions")}</h1>
         <BrowseBallotQuestions items={items} year={electionYear} />
       </Container>
