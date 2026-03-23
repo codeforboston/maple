@@ -153,7 +153,7 @@ Testimony has an optional `ballotQuestionId` field that distinguishes the two au
 
 The ballot question page shows no testimony form when `ballotStatus == "legislature"` — it links to the bill page instead. Terminal states (`enacted`, `failed`, `withdrawn`) are read-only; no new testimony is accepted.
 
-The ballot question page does not display legislative bill testimony. Users who want to read testimony submitted to the legislature should click through to the corresponding bill page. Bill testimony and ballot-question testimony are still stored separately with no overlap.
+The ballot question page does not display legislative bill testimony. It always displays ballot-question-scoped testimony (`ballotQuestionId`) only. During `legislature`, that feed/count will typically be empty because electorate testimony is not yet accepted. Users who want to read testimony submitted to the legislature should click through to the corresponding bill page. Bill testimony and ballot-question testimony are still stored separately with no overlap.
 
 ### Querying ballot question testimony
 

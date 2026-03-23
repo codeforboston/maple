@@ -125,7 +125,7 @@ The **Your Testimony** panel lives in the header card, not inside a tab. It is a
 
 | `ballotStatus` | Your Testimony panel | Testimonies tab feed |
 |---|---|---|
-| `legislature` | "Testify on the bill →" link (no form here) | No testimony shown here. Link to the corresponding bill page to browse legislative testimony. |
+| `legislature` | "Testify on the bill →" link (no form here) | Ballot feed (`ballotQuestionId`). This will typically be empty / count `0` because ballot-question testimony is not yet accepted. |
 | `qualifying` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
 | `certified` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
 | `ballot` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
@@ -133,7 +133,7 @@ The **Your Testimony** panel lives in the header card, not inside a tab. It is a
 
 Active `ballotQuestionId` testimony phases: `qualifying | certified | ballot`.
 
-During `legislature`, the ballot question page should not embed bill testimony. If the user wants to read legislative testimony, they should click through to the corresponding bill page.
+During `legislature`, the ballot question page should not embed bill testimony. It should still show ballot-question testimony counts/feed, which will normally be empty because electorate testimony is not yet available. If the user wants to read legislative testimony, they should click through to the corresponding bill page.
 
 ---
 
