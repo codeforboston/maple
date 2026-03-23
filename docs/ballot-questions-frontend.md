@@ -125,13 +125,15 @@ The **Your Testimony** panel lives in the header card, not inside a tab. It is a
 
 | `ballotStatus` | Your Testimony panel | Testimonies tab feed |
 |---|---|---|
-| `legislature` | "Testify on the bill →" link (no form here) | Bill feed (`billId` + `court`) read-only |
+| `legislature` | "Testify on the bill →" link (no form here) | No testimony shown here. Link to the corresponding bill page to browse legislative testimony. |
 | `qualifying` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
 | `certified` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
 | `ballot` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
 | `enacted` / `failed` / `withdrawn` | No form. Read-only notice. | Ballot feed read-only |
 
 Active `ballotQuestionId` testimony phases: `qualifying | certified | ballot`.
+
+During `legislature`, the ballot question page should not embed bill testimony. If the user wants to read legislative testimony, they should click through to the corresponding bill page.
 
 ---
 
@@ -173,7 +175,6 @@ No new components are needed for hearing display — build a simple `CommitteeHe
 | Component | File | Used where | Props |
 |---|---|---|---|
 | `ViewTestimony` / `TestimonyItem` | various | Testimonies tab | unchanged |
-| `TestimonyCounts` | `components/bill/TestimonyCounts.tsx` | Testimonies tab label (count badge) | `{ bill: Bill }` |
 
 `SponsorsAndCommittees` is **not** reused here. The hearing display in Overview is custom (`CommitteeHearing`) because the Figma shows a richer layout (status badge, explanatory copy, video link) than what `SponsorsAndCommittees` renders.
 
