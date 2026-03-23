@@ -11,7 +11,7 @@
   "bill": {
     "and_others_one": "and {{count}} other",
     "and_others_other": "and {{count}} others",
-    "ballot_initiative": "This is a ballot initiative",
+    "ballot_initiative": "This bill corresponds to a ballot initiative. The bill is currently before the Legislature, which may choose to enact it directly instead of sending it to voters.",
     "bill_tracker": "Bill Tracker",
     "bill_cosponsors": "{{billId}} Cosponsors",
     "branch": "Branch",
