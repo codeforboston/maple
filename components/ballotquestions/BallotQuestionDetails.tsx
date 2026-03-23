@@ -69,7 +69,7 @@ export const BallotQuestionDetails = ({
   return (
     <>
       <BallotQuestionHeader ballotQuestion={ballotQuestion} bill={bill} />
-      <Container className="my-4 pb-5" style={{ maxWidth: "1080px" }}>
+      <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
           <Col lg={3} md={4} className="mb-4">
             <BallotQuestionNav

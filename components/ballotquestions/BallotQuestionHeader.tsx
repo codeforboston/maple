@@ -38,7 +38,7 @@ export const BallotQuestionHeader = ({
   }
 
   return (
-    <Container className="mt-4" style={{ maxWidth: "1080px" }}>
+    <Container fluid="xl" className="mt-4">
       <div className="rounded border bg-white px-4 py-4 shadow-sm">
         <Row className="g-4 align-items-start">
           <Col lg={8}>
