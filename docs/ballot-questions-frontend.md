@@ -51,21 +51,21 @@ The page is divided into a header card and a two-column section below it. Only t
 
 ---
 
-## Data model additions needed
+## Data model
 
-The Figma requires several curated fields not yet in the `BallotQuestion` schema. These should be added to `functions/src/ballotQuestions/types.ts` and the YAML files:
+The voter-facing fields are already in `functions/src/ballotQuestions/types.ts`:
 
 ```typescript
 interface BallotQuestion {
   // ... existing fields ...
-  description: string             // "What this question would do" — header card + DescriptionBox
-  atAGlance: { label: string; value: string }[]   // Key Details bullet list in Overview
-  fullSummary: string             // Final Summary section in Overview
+  description: string | null      // "What this question would do" — header card + DescriptionBox
+  atAGlance: { label: string; value: string }[] | null  // Key Details bullet list in Overview
+  fullSummary: string | null      // Final Summary section in Overview
   pdfUrl: string | null           // Link to the initiative petition PDF
 }
 ```
 
-`billId` (already in the schema) provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition.
+`billId` (already in the schema) provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition. All four fields are nullable — render their sections only when the value is non-null.
 
 ---
 
@@ -267,7 +267,7 @@ if (ballotQuestionId)
 
 - Testimony Firestore paths or collection structure
 - `testimonyCount` / position counts on `Bill` documents
-- `TestimonyFormPanel` internal publish flow (draft → cloud function)
+- How `TestimonyFormPanel` triggers the cloud function (draft ID passed to `publishTestimony` callable — no change to that invocation)
 - `ViewTestimony` renderer, `TestimonyItem` — reused as-is
 - All existing bill pages and their testimony behavior
 - Hearing sync — no changes to `/events` collection or ingestion
