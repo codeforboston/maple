@@ -26,7 +26,8 @@ const MainPanel = styled(({ ...rest }) => {
   const { draft, deleteTestimony, publication } = usePublishService() ?? {}
   const unpublishedDraft = hasDraftChanged(draft, publication)
   const [showConfirm, setShowConfirm] = useState(false)
-  const bill = usePublishState().bill!
+  const { bill, ballotQuestionId } = usePublishState()
+  if (!bill) return null
 
   return (
     <div {...rest}>
@@ -36,6 +37,7 @@ const MainPanel = styled(({ ...rest }) => {
           className="me-1"
           billId={bill.id}
           court={bill.court}
+          ballotQuestionId={ballotQuestionId}
         />
         {/*Delete testimony removed until ready */}
         {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
@@ -126,9 +128,13 @@ const TwitterButton = (props: ClsProps) => {
 
 const EmailButton = (props: ClsProps) => {
   const { t } = useTranslation("testimony")
-  const { publication, bill: { id: billId, court } = {} } = usePublishState()
+  const {
+    publication,
+    ballotQuestionId,
+    bill: { id: billId, court } = {}
+  } = usePublishState()
   return publication ? (
-    <Wrap href={formUrl(billId!, court!, "share")}>
+    <Wrap href={formUrl(billId!, court!, "share", ballotQuestionId)}>
       <Cta {...props}>{t("yourTestimony.emailCta")} </Cta>
     </Wrap>
   ) : null

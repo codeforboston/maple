@@ -20,19 +20,22 @@ type Refinement = {
   uid?: string
   court?: number
   billId?: string
+  ballotQuestionId?: string
 }
 
 const initialRefinement = (
   uid?: string,
   court?: number,
-  billId?: string
+  billId?: string,
+  ballotQuestionId?: string
 ): Refinement => ({
   representativeId: undefined,
   senatorId: undefined,
   authorRole: undefined,
   uid,
   court,
-  billId
+  billId,
+  ballotQuestionId
 })
 
 const useTable = createTableHook<Testimony, Refinement, unknown>({
@@ -52,21 +55,24 @@ export type UsePublishedTestimonyListing = ReturnType<
 export function usePublishedTestimonyListing({
   uid,
   court,
-  billId
+  billId,
+  ballotQuestionId
 }: {
   uid?: string
   court?: number
   billId?: string
+  ballotQuestionId?: string
 } = {}) {
   const { pagination, items, refine, refinement } = useTable(
-    initialRefinement(uid, court, billId)
+    initialRefinement(uid, court, billId, ballotQuestionId)
   )
 
   useEffect(() => {
     if (refinement.uid !== uid) refine({ uid })
     if (refinement.billId !== billId) refine({ billId })
     if (refinement.court !== court) refine({ court })
-  }, [billId, court, refine, refinement, uid])
+    if (refinement.ballotQuestionId !== ballotQuestionId) refine({ ballotQuestionId })
+  }, [ballotQuestionId, billId, court, refine, refinement, uid])
 
   return useMemo(() => {
     return {
@@ -89,7 +95,8 @@ function getWhere({
   authorRole,
   representativeId,
   court,
-  senatorId
+  senatorId,
+  ballotQuestionId
 }: Refinement): QueryConstraint[] {
   const constraints: Parameters<typeof where>[] = []
   const singularUserRoles: string[] = [
@@ -100,6 +107,7 @@ function getWhere({
   ]
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
+  if (ballotQuestionId) constraints.push(["ballotQuestionId", "==", ballotQuestionId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
@@ -128,5 +136,17 @@ async function listTestimony(
       startAfterKey !== null && startAfter(startAfterKey)
     )
   )
-  return result.docs.map(d => d.data() as Testimony)
+  return result.docs
+    .map(d => d.data() as Testimony)
+    .filter(testimony => matchesBallotQuestionScope(testimony, refinement))
+}
+
+function matchesBallotQuestionScope(
+  testimony: Pick<Testimony, "ballotQuestionId">,
+  refinement: Refinement
+) {
+  const value = testimony.ballotQuestionId ?? undefined
+  if (refinement.ballotQuestionId) return value === refinement.ballotQuestionId
+  if (refinement.billId) return !value
+  return true
 }

@@ -1,6 +1,7 @@
 import {
   collection,
   collectionGroup,
+  DocumentData,
   getDocs,
   query,
   where
@@ -13,30 +14,47 @@ import { DraftTestimony, Testimony } from "./types"
 export const resolveBillTestimony = async (
   uid: string,
   court: number,
-  billId: string
+  billId: string,
+  ballotQuestionId?: string
 ) => {
-  const published = await getPublishedTestimony(uid, court, billId)
-  const draft = await getDraftTestimony(uid, billId)
+  const published = await getPublishedTestimony(
+    uid,
+    court,
+    billId,
+    ballotQuestionId
+  )
+  const draft = await getDraftTestimony(uid, billId, ballotQuestionId)
   return {
-    draft: first(draft.docs)?.ref,
-    publication: first(published.docs)?.ref
+    draft: first(draft)?.ref,
+    publication: first(published)?.ref
   }
 }
 
 export const getBillTestimony = async (
   uid: string,
   court: number,
-  billId: string
+  billId: string,
+  ballotQuestionId?: string
 ) => {
-  const published = await getPublishedTestimony(uid, court, billId)
-  const draft = await getDraftTestimony(uid, billId)
+  const published = await getPublishedTestimony(
+    uid,
+    court,
+    billId,
+    ballotQuestionId
+  )
+  const draft = await getDraftTestimony(uid, billId, ballotQuestionId)
   return {
-    draft: first(draft.docs)?.data() as DraftTestimony | undefined,
-    publication: first(published.docs)?.data() as Testimony | undefined
+    draft: first(draft)?.data() as DraftTestimony | undefined,
+    publication: first(published)?.data() as Testimony | undefined
   }
 }
 
-function getPublishedTestimony(uid: string, court: number, billId: string) {
+function getPublishedTestimony(
+  uid: string,
+  court: number,
+  billId: string,
+  ballotQuestionId?: string
+) {
   return getDocs(
     query(
       collectionGroup(firestore, "publishedTestimony"),
@@ -44,14 +62,34 @@ function getPublishedTestimony(uid: string, court: number, billId: string) {
       where("billId", "==", billId),
       where("court", "==", court)
     )
+  ).then(snapshot =>
+    snapshot.docs.filter(doc =>
+      matchesBallotQuestionScope(doc.data(), ballotQuestionId)
+    )
   )
 }
 
-function getDraftTestimony(uid: string, billId: string) {
+function getDraftTestimony(
+  uid: string,
+  billId: string,
+  ballotQuestionId?: string
+) {
   return getDocs(
     query(
       collection(firestore, `users/${uid}/draftTestimony`),
       where("billId", "==", billId)
     )
+  ).then(snapshot =>
+    snapshot.docs.filter(doc =>
+      matchesBallotQuestionScope(doc.data(), ballotQuestionId)
+    )
   )
+}
+
+function matchesBallotQuestionScope(
+  data: DocumentData | undefined,
+  ballotQuestionId?: string
+) {
+  const value = data?.ballotQuestionId ?? undefined
+  return ballotQuestionId ? value === ballotQuestionId : !value
 }
