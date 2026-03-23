@@ -1,5 +1,9 @@
 {
   "another_term": "Try another search term",
+  "browse_ballot_questions": "Browse Ballot Questions",
+  "browse_ballot_questions_empty": "No ballot questions are available for {{year}}.",
+  "ballot_question_document_id": "Document ID: {{id}}",
+  "ballot_question_election_year": "Election {{year}}",
   "browse_bills": "Browse Bills",
   "filter": "Filter",
   "topics": "Topics",
