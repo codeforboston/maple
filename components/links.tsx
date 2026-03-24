@@ -78,12 +78,19 @@ export const maple = {
   userTestimony: ({
     authorUid,
     billId,
-    court
+    court,
+    ballotQuestionId
   }: {
     authorUid: string
     billId: string
     court: number
-  }) => `/testimony/${authorUid}/${court}/${billId}`
+    ballotQuestionId?: string
+  }) =>
+    `/testimony/${authorUid}/${court}/${billId}${
+      ballotQuestionId
+        ? `?${new URLSearchParams({ ballotQuestionId }).toString()}`
+        : ""
+    }`
 }
 
 export function billSiteURL(billNumber: string, court: number) {

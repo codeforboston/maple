@@ -27,6 +27,7 @@ export type TestimonyQuery = {
   authorUid: string
   billId: string
   court: number
+  ballotQuestionId?: string
 }
 
 export type BillQuery = {
@@ -69,7 +70,8 @@ export class DbService {
   getArchivedTestimony = async ({
     authorUid,
     billId,
-    court
+    court,
+    ballotQuestionId
   }: TestimonyQuery): Promise<Testimony[]> => {
     const result = await this.getDocs(
       query(
@@ -81,6 +83,12 @@ export class DbService {
     )
     const archive = result.docs
       .map(snap => snap.data())
+      .filter(testimony =>
+        matchesBallotQuestionScope(
+          testimony as Testimony | undefined,
+          ballotQuestionId
+        )
+      )
       .filter(isNotNull) as Testimony[]
     return archive
   }
@@ -116,14 +124,20 @@ export class DbService {
     }
   }
 
-  getBallotQuestion = ({ id }: { id: string }): Promise<BallotQuestion | undefined> =>
+  getBallotQuestion = ({
+    id
+  }: {
+    id: string
+  }): Promise<BallotQuestion | undefined> =>
     this.getDocData<BallotQuestion>("ballotQuestions", id)
 
   getBallotQuestions = async (): Promise<BallotQuestion[]> => {
     const result = await this.getDocs(
       query(collection(firestore, "ballotQuestions"))
     )
-    return result.docs.map(snap => snap.data()).filter(isNotNull) as BallotQuestion[]
+    return result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as BallotQuestion[]
   }
 }
 
@@ -139,4 +153,12 @@ export class ApiResponse {
     error: { status: 404, data: message }
   })
   static ok = <T>(data: T) => ({ data })
+}
+
+function matchesBallotQuestionScope(
+  testimony: Pick<Testimony, "ballotQuestionId"> | undefined,
+  ballotQuestionId?: string
+) {
+  const value = testimony?.ballotQuestionId ?? undefined
+  return ballotQuestionId ? value === ballotQuestionId : !value
 }
