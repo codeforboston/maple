@@ -44,7 +44,7 @@ export const OverviewTab = ({
               href={`/bills/${bill.court}/${bill.id}`}
               className="d-inline-block mt-3 small fw-semibold text-decoration-none text-secondary"
             >
-              View bill ({bill.content.BillNumber})
+              View complete text
             </Link>
           )}
         </div>
