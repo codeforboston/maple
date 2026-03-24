@@ -1,10 +1,12 @@
 import { BallotQuestion, Bill } from "../db"
 import { TestimonyFormPanel } from "../publish/panel/TestimonyFormPanel"
+import { EditTestimonyButton } from "../publish/panel/EditTestimonyButton"
 import Link from "next/link"
 import {
   isActiveBallotQuestionPhase,
   isTerminalBallotQuestionPhase
 } from "./status"
+import { usePanelStatus, usePublishState } from "../publish/hooks"
 
 export const YourTestimonyPanel = ({
   ballotQuestion,
@@ -18,18 +20,33 @@ export const YourTestimonyPanel = ({
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
   )
-  const showSectionTitle = !(isActivePhase && bill)
+  const panelStatus = usePanelStatus()
+  const { bill: resolvedBill, ballotQuestionId: resolvedBallotQuestionId } =
+    usePublishState()
+  const showInlineEditButton =
+    isActivePhase &&
+    !!bill &&
+    resolvedBill?.id === bill.id &&
+    resolvedBallotQuestionId === ballotQuestion.id &&
+    (panelStatus === "published" || panelStatus === "editInProgress")
 
   return (
     <div className="h-100">
-      {showSectionTitle && (
+      <div className="d-flex align-items-center justify-content-between mb-3">
         <div
-          className="fw-semibold text-secondary mb-3"
+          className="fw-semibold text-secondary"
           style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
         >
           Your Testimony
         </div>
-      )}
+        {showInlineEditButton && bill ? (
+          <EditTestimonyButton
+            billId={bill.id}
+            court={bill.court}
+            ballotQuestionId={ballotQuestion.id}
+          />
+        ) : null}
+      </div>
       {isLegislaturePhase && bill ? (
         <div>
           <div
