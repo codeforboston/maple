@@ -16,6 +16,11 @@ const scrapeSingleHearing = httpsCallable<
   ScrapeHearingResponse
 >(functions, "scrapeSingleHearing")
 
+const scrapeSingleHearingv2 = httpsCallable<
+  ScrapeHearingRequest,
+  ScrapeHearingResponse
+>(functions, "scrapeSingleHearingv2")
+
 export const ScrapeHearingForm = () => {
   const [eventId, setEventId] = useState("")
   const [loading, setLoading] = useState(false)
@@ -39,7 +44,7 @@ export const ScrapeHearingForm = () => {
 
     setLoading(true)
     try {
-      const response = await scrapeSingleHearing({ eventId: parsedEventId })
+      const response = await scrapeSingleHearingv2({ eventId: parsedEventId })
       setResult({
         type: "success",
         message: `${response.data.message} (ID: ${response.data.hearingId})`

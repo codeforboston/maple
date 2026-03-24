@@ -35,3 +35,7 @@ export const currentGeneralCourt = supportedGeneralCourts[0]
 
 export const isCurrentCourt = (courtNumber: number) =>
   courtNumber === currentGeneralCourt
+
+// Only applicable for court 193/194, but by the time we have another general court,
+// the full ballot initiative feature should be available and we can remove this check
+export const currentBallotInitiativeCommittee = "SJ42"

@@ -29,6 +29,15 @@ export type Paragraph = {
   text: string
 }
 
+export const convertToString = (
+  value: string | string[] | undefined
+): string => {
+  if (Array.isArray(value)) {
+    return value.join(", ")
+  }
+  return value ?? ""
+}
+
 export async function fetchHearingData(
   hearingId: string
 ): Promise<HearingData | null> {
@@ -96,6 +105,13 @@ export function formatMilliseconds(ms: number): string {
   } else {
     return `${formattedMinutes}:${formattedSeconds}`
   }
+}
+
+export function formatTotalSeconds(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000)
+  const formattedSeconds = String(totalSeconds)
+
+  return `${formattedSeconds}`
 }
 
 export function formatVTTTimestamp(ms: number): string {

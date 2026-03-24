@@ -2,7 +2,7 @@ import { runWith } from "firebase-functions"
 import { getRegisteredConfigs } from "./config"
 import { SearchIndexer } from "./SearchIndexer"
 
-/** Schedules index upgrades for each config if necessary. Requires a message
+/** Schedules index upgrades for each config/alias(bills/hearing/testimony) if necessary. Requires a message
  * wtih content `{ "check": true}` */
 export const checkSearchIndexVersion = runWith({
   secrets: ["TYPESENSE_API_KEY"]

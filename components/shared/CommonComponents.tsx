@@ -1,3 +1,4 @@
+import { PrettyEmailWrap } from "react-pretty-email-wrap"
 import styled from "styled-components"
 import { Container } from "../bootstrap"
 import * as links from "../links"
@@ -15,7 +16,9 @@ export const MemberItem = ({
     <StyledContainer className="py-3 px-4">
       <NameContainer>{name}</NameContainer>
       {email ? (
-        <EmailContainer href={"mailto:" + email}>{email}</EmailContainer>
+        <EmailContainer href={"mailto:" + email}>
+          <PrettyEmailWrap>{email}</PrettyEmailWrap>
+        </EmailContainer>
       ) : null}
       <DescrContainer className="my-3">{descr}</DescrContainer>
     </StyledContainer>

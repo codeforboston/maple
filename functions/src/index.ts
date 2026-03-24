@@ -19,7 +19,8 @@ export {
   scrapeHearings,
   scrapeSessions,
   scrapeSpecialEvents,
-  scrapeSingleHearing
+  scrapeSingleHearing,
+  scrapeSingleHearingv2
 } from "./events"
 export {
   syncHearingToSearchIndex,

@@ -23,3 +23,12 @@ jobs:
           GCP_SA_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
           PROJECT_ID: digital-testimony-prod
+
+      # Update Typesense Schema
+      - uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Update Typesense Schema
+        run: |
+          gcloud pubsub topics publish --project=digital-testimony-prod checkSearchIndexVersion --message='{"check": true}'

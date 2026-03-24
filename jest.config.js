@@ -10,6 +10,9 @@ const createJestConfig = nextJest({
 const config = {
   coverageProvider: "v8",
   testEnvironment: "jsdom",
+  testEnvironmentOptions: {
+    customExportConditions: ["node", "node-addons"]
+  },
   moduleNameMapper: {
     "^components/(.*)$": "<rootDir>/components/$1"
   }

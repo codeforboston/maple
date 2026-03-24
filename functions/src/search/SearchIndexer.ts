@@ -48,7 +48,9 @@ export class SearchIndexer {
     const { alias } = this.config
     const isCollectionUpToDate =
       this.collectionName === (await this.getCurrentCollectionName())
+    console.log(`Index for alias ${alias} up to date: ${isCollectionUpToDate}`)
     if (!isCollectionUpToDate) {
+      console.log(`Scheduling upgrade for alias ${alias}`)
       const upgradeDoc = db.doc(SearchIndexer.upgradePath(alias))
       await upgradeDoc.delete()
       await upgradeDoc.create({

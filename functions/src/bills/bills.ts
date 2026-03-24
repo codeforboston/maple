@@ -28,6 +28,10 @@ export const { fetchBatch: fetchBillBatch, startBatches: startBillBatches } =
         .getSimilarBills(court, id)
         .catch(logFetchError("similar bills", id))
         .then(bills => bills?.map(b => b.BillNumber).filter(isString) ?? [])
+      if (content.DocumentText == null) {
+        delete content.DocumentText
+      }
+
       const resource: Partial<Bill> = {
         content,
         history,

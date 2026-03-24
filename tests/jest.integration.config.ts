@@ -7,6 +7,9 @@ runAgainstEmulators()
 const config: Config.InitialOptions = {
   clearMocks: true,
   testEnvironment: "./tests/integrationEnvironment.ts",
+  testEnvironmentOptions: {
+    customExportConditions: ["node", "node-addons"]
+  },
   rootDir: "..",
   testPathIgnorePatterns: [
     "/node_modules/",

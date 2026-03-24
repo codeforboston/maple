@@ -33,7 +33,7 @@ export type BillContent = {
   Cosponsors: MemberReference[]
   LegislationTypeName: string
   Pinslip: string
-  DocumentText: string
+  DocumentText?: string
 }
 
 export type BillTopic = {

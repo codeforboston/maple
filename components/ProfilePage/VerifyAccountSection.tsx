@@ -18,9 +18,7 @@ export const VerifyAccountSection = ({
   return (
     <TitledSectionCard title={"Verify Your Account"} className={className}>
       <div>
-        <p className="fw-bold text-info">
-          {t("verifyAccountSection.verifyAccount")}
-        </p>
+        <p className="fw-bold">{t("verifyAccountSection.verifyAccount")}</p>
 
         {sendEmailVerification.status === "success" ? (
           <Alert variant="success">
@@ -35,7 +33,7 @@ export const VerifyAccountSection = ({
 
         {sendEmailVerification.status !== "success" ? (
           <LoadingButton
-            variant="info"
+            variant="secondary"
             className="text-white"
             loading={sendEmailVerification.loading}
             onClick={() => sendEmailVerification.execute(user)}
