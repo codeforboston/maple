@@ -69,6 +69,8 @@ export function siteUrl(path?: string) {
 export const maple = {
   home: () => "/",
   billSearch: () => `/bills`,
+  ballotQuestionSearch: () => `/ballotQuestions`,
+  ballotQuestion: ({ id }: { id: string }) => `/ballotQuestions/${id}`,
   bill: ({ court, id }: { court: number; id: string }) =>
     `/bills/${court}/${id}`,
   testimony: ({ publishedId }: { publishedId: string }) =>
