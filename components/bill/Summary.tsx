@@ -220,7 +220,9 @@ export const Summary = ({
             <></>
           )}
           {bill.summary !== undefined && isBallotMeasure ? (
-            <BallotSummaryRow className={`mx-1 mb-3`}>{bill.summary}</BallotSummaryRow>
+            <BallotSummaryRow className={`mx-1 mb-3`}>
+              {bill.summary}
+            </BallotSummaryRow>
           ) : (
             <Row className="mx-1 mb-3">{bill.summary}</Row>
           )}
