@@ -1,12 +1,5 @@
 import { DateTime } from "luxon"
-
-type Hearing = {
-  id: string
-  videoURL?: string
-  content: {
-    startsAt: string | number | Date
-  }
-}
+import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   const startsAt = new Date(hearing.content.startsAt)

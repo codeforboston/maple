@@ -1,21 +1,18 @@
 import { dbService } from "components/db/api"
+import { Testimony } from "components/db/testimony"
 import { firestore } from "components/firebase"
-import { doc, getDoc } from "firebase/firestore"
+import { collectionGroup, doc, getDoc, getDocs, query, where } from "firebase/firestore"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BallotQuestionDetails } from "../../components/ballotquestions/BallotQuestionDetails"
+import {
+  BallotQuestionTestimonySummary,
+  Hearing
+} from "../../components/ballotquestions/types"
 import { BallotQuestion, Bill } from "../../components/db"
 import { createPage } from "../../components/page"
 import { usePublishService } from "../../components/publish/hooks"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-
-type Hearing = {
-  id: string
-  videoURL?: string
-  content: {
-    startsAt: string | number | Date
-  }
-}
 
 const Query = z.object({ id: z.string() })
 
@@ -28,9 +25,10 @@ export default createPage<{
   ballotQuestion: BallotQuestion
   bill: Bill | null
   hearings: Hearing[]
+  testimonySummary: BallotQuestionTestimonySummary
 }>({
   titleI18nKey: "titles.ballotQuestion",
-  Page: ({ ballotQuestion, bill, hearings }) => {
+  Page: ({ ballotQuestion, bill, hearings, testimonySummary }) => {
     return (
       <>
         <usePublishService.Provider />
@@ -38,6 +36,7 @@ export default createPage<{
           ballotQuestion={ballotQuestion}
           bill={bill}
           hearings={hearings}
+          testimonySummary={testimonySummary}
         />
       </>
     )
@@ -60,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   let bill: Bill | null = null
   let hearings: Hearing[] = []
+  const testimonySummary = await getBallotQuestionTestimonySummary(query.data.id)
 
   if (ballotQuestion.billId) {
     bill =
@@ -80,6 +80,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       ballotQuestion: JSON.parse(JSON.stringify(ballotQuestion)),
       bill: bill ? JSON.parse(JSON.stringify(bill)) : null,
       hearings: JSON.parse(JSON.stringify(hearings)),
+      testimonySummary,
       ...(await serverSideTranslations(locale, [
         "auth",
         "common",
@@ -89,4 +90,34 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       ]))
     }
   }
+}
+
+async function getBallotQuestionTestimonySummary(
+  ballotQuestionId: string
+): Promise<BallotQuestionTestimonySummary> {
+  const result = await getDocs(
+    query(
+      collectionGroup(firestore, "publishedTestimony"),
+      where("ballotQuestionId", "==", ballotQuestionId)
+    )
+  )
+
+  return result.docs.reduce<BallotQuestionTestimonySummary>(
+    (summary, snap) => {
+      const testimony = snap.data() as Testimony
+      summary.testimonyCount += 1
+
+      if (testimony.position === "endorse") summary.endorseCount += 1
+      if (testimony.position === "neutral") summary.neutralCount += 1
+      if (testimony.position === "oppose") summary.opposeCount += 1
+
+      return summary
+    },
+    {
+      testimonyCount: 0,
+      endorseCount: 0,
+      neutralCount: 0,
+      opposeCount: 0
+    }
+  )
 }

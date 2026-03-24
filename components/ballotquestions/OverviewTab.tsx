@@ -1,14 +1,7 @@
 import { Image } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
 import { CommitteeHearing } from "./CommitteeHearing"
-
-type Hearing = {
-  id: string
-  videoURL?: string
-  content: {
-    startsAt: string | number | Date
-  }
-}
+import { Hearing } from "./types"
 
 export const OverviewTab = ({
   ballotQuestion,

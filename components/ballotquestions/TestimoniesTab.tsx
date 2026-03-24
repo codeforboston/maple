@@ -7,26 +7,23 @@ import {
   UsePublishedTestimonyListing
 } from "../db"
 import { isActiveBallotQuestionPhase } from "./status"
+import { BallotQuestionTestimonySummary } from "./types"
 
 export const TestimoniesTab = ({
   ballotQuestion,
   bill,
-  testimony
+  testimony,
+  testimonySummary
 }: {
   ballotQuestion: BallotQuestion
   bill: Bill | null
   testimony: UsePublishedTestimonyListing
+  testimonySummary: BallotQuestionTestimonySummary
 }) => {
   const isLegislaturePhase = ballotQuestion.ballotStatus === "legislature"
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
-  const entries = testimony.items.result ?? []
-  const counts = entries.reduce(
-    (acc, item) => {
-      acc[item.position] += 1
-      return acc
-    },
-    { endorse: 0, neutral: 0, oppose: 0 }
-  )
+  const totalLabel =
+    testimonySummary.testimonyCount === 1 ? "1 total testimony" : `${testimonySummary.testimonyCount} total testimonies`
 
   return (
     <div className="d-grid gap-4">
@@ -54,7 +51,7 @@ export const TestimoniesTab = ({
                 Testimonies
               </h2>
               <p className="text-body-secondary small mb-0">
-                {entries.length} total testimony
+                {totalLabel}
               </p>
             </div>
           </div>
@@ -63,19 +60,19 @@ export const TestimoniesTab = ({
         <div className="d-flex flex-wrap gap-5 align-items-center border-top pt-3">
           <SummaryItem
             label="Endorse"
-            count={counts.endorse}
+            count={testimonySummary.endorseCount}
             icon="/thumbs-endorse.svg"
             color="var(--bs-green)"
           />
           <SummaryItem
             label="Neutral"
-            count={counts.neutral}
+            count={testimonySummary.neutralCount}
             icon="/thumbs-neutral.svg"
             color="var(--bs-blue)"
           />
           <SummaryItem
             label="Oppose"
-            count={counts.oppose}
+            count={testimonySummary.opposeCount}
             icon="/thumbs-oppose.svg"
             color="var(--bs-orange)"
           />
@@ -101,6 +98,7 @@ export const TestimoniesTab = ({
         onProfilePage={false}
         variant="ballotQuestion"
         allowEdit={allowEdit}
+        totalTestimonies={testimonySummary.testimonyCount}
       />
     </div>
   )
