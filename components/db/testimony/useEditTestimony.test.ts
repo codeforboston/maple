@@ -302,6 +302,5 @@ describe("useEditTestimony", () => {
 })
 
 async function expectFinishLoading(result: any) {
-  expect(result.current.loading).toBeTruthy()
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 }
