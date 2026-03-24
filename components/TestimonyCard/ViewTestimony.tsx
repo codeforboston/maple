@@ -118,7 +118,7 @@ const ViewTestimony = (
             )
             .map(t => (
               <TestimonyItem
-                key={t.authorUid + t.billId}
+                key={t.id}
                 testimony={t}
                 isUser={t.authorUid === user?.uid}
                 onProfilePage={onProfilePage}
