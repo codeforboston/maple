@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query"
 import { EditReports, ListReports } from "./"
 import { ListProfiles } from "./ListProfiles"
 import { ScrapeHearingList } from "./ScrapeHearing"
+import { ListNews, EditNews, CreateNews } from "./"
 import {
   createMyOne,
   getMyListGroup,
@@ -53,6 +54,13 @@ const App = () => {
           name="scrape-hearing"
           list={ScrapeHearingList}
           options={{ label: "Scrape Hearing" }}
+        />
+        <Resource
+          name="news"
+          list={ListNews}
+          edit={EditNews}
+          create={CreateNews}
+          options={{ label: "In the News" }}
         />
       </Admin>
     </QueryClientProvider>
