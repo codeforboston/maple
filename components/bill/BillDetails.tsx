@@ -15,7 +15,10 @@ import { Back } from "components/shared/CommonComponents"
 import { useFlags } from "components/featureFlags"
 import { FollowBillButton } from "components/shared/FollowButton"
 import { PendingUpgradeBanner } from "components/PendingUpgradeBanner"
-import { isCurrentCourt } from "functions/src/shared"
+import {
+  currentBallotInitiativeCommittee,
+  isCurrentCourt
+} from "functions/src/shared"
 
 export const BillDetails = ({ bill }: BillProps) => {
   const { t } = useTranslation("common")
@@ -27,7 +30,7 @@ export const BillDetails = ({ bill }: BillProps) => {
   let isBallotMeasure = false
   const curComm = bill?.currentCommittee?.id
 
-  if (curComm == "SJ42") {
+  if (curComm === currentBallotInitiativeCommittee) {
     isBallotMeasure = true
   }
 

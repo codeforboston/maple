@@ -162,7 +162,7 @@ describe("BillDetails", () => {
     const readMoreButton = screen.getByRole("button", { name: "Read more.." })
     expect(readMoreButton).toBeInTheDocument
     fireEvent.click(readMoreButton)
-    expect(screen.getByText(DocumentText)).toBeInTheDocument
+    expect(screen.getByText(DocumentText!)).toBeInTheDocument
   })
 
   // below test assumes mockBill contains a primary sponsor
