@@ -9,39 +9,27 @@ import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
-
-type Hearing = {
-  id: string
-  videoURL?: string
-  content: {
-    startsAt: string | number | Date
-  }
-}
-
-type Tab =
-  | "overview"
-  | "testimonies"
-  | "synthesis"
-  | "for_against"
-  | "news"
-  | "academia"
-  | "financials"
-  | "map"
+import {
+  BallotQuestionTab,
+  BallotQuestionTestimonySummary,
+  Hearing
+} from "./types"
 
 export const BallotQuestionDetails = ({
   ballotQuestion,
   bill,
-  hearings
+  hearings,
+  testimonySummary
 }: {
   ballotQuestion: BallotQuestion
   bill: Bill | null
   hearings: Hearing[]
+  testimonySummary: BallotQuestionTestimonySummary
 }) => {
-  const [activeTab, setActiveTab] = useState<Tab>("overview")
+  const [activeTab, setActiveTab] = useState<BallotQuestionTab>("overview")
   const testimony = usePublishedTestimonyListing({
     ballotQuestionId: ballotQuestion.id
   })
-  const testimonyCount = testimony.items.result?.length ?? 0
 
   const renderContent = () => {
     switch (activeTab) {
@@ -59,6 +47,7 @@ export const BallotQuestionDetails = ({
             ballotQuestion={ballotQuestion}
             bill={bill}
             testimony={testimony}
+            testimonySummary={testimonySummary}
           />
         )
       default:
@@ -75,7 +64,7 @@ export const BallotQuestionDetails = ({
             <BallotQuestionNav
               activeTab={activeTab}
               onTabChange={setActiveTab}
-              testimonyCount={testimonyCount}
+              testimonyCount={testimonySummary.testimonyCount}
             />
           </Col>
           <Col lg={9} md={8}>{renderContent()}</Col>

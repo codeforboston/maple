@@ -1,18 +1,17 @@
 import { Nav } from "react-bootstrap"
-
-type Tab = "overview" | "testimonies" | "synthesis" | "for_against" | "news" | "academia" | "financials" | "map"
+import { BallotQuestionTab } from "./types"
 
 export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
   testimonyCount
 }: {
-  activeTab: Tab | string
-  onTabChange: (tab: Tab) => void
+  activeTab: BallotQuestionTab | string
+  onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
 }) => {
   const navItems: Array<{
-    id: Tab
+    id: BallotQuestionTab
     label: string
     badge?: number
     enabled: boolean
