@@ -1,4 +1,11 @@
-export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
+export {
+  modifyAccount,
+  modifyAccountv2,
+  createFakeOrg,
+  createFakeOrgv2,
+  createFakeTestimony,
+  createFakeTestimonyv2
+} from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
@@ -31,14 +38,17 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { finishSignup } from "./profile"
+export { finishSignup, finishSignupv2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,
+  deleteTestimonyv2,
   publishTestimony,
+  publishTestimonyv2,
   syncTestimonyToSearchIndex,
   upgradeTestimonySearchIndex,
-  resolveReport as adminResolveReport
+  resolveReport as adminResolveReport,
+  resolveReportv2 as adminResolveReportv2
 } from "./testimony"
 export {
   publishNotifications,
@@ -46,7 +56,7 @@ export {
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
   deliverNotifications,
-  updateUserNotificationFrequency
+  updateUserNotificationFrequencyv2
 } from "./notifications"
 
 export {

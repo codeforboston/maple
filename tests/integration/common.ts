@@ -17,6 +17,7 @@ import { Bill, BillContent } from "../../functions/src/bills/types"
 import { testAuth, testDb, testTimestamp } from "../testUtils"
 import { Timestamp } from "functions/src/firebase"
 import { Timestamp as FirestoreTimestamp } from "@google-cloud/firestore"
+import { finishSignupv2 } from "components/auth"
 
 export async function signInUser(email: string) {
   const { user } = await signInWithEmailAndPassword(auth, email, "password")
@@ -309,7 +310,7 @@ export const testCreatePendingOrgWithEmailAndPassword = async (
 
   expectCurrentUser(userCreds.user)
 
-  await finishSignup({ requestedRole: "organization" })
+  await finishSignupv2({ requestedRole: "organization" })
 
   expect(
     (await testAuth.getUser(userCreds.user.uid)).customClaims

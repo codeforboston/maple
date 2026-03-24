@@ -32,6 +32,10 @@ export const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   functions,
   "modifyAccount"
 )
+export const modifyAccountv2 = httpsCallable<{ uid: string; role: Role }, void>(
+  functions,
+  "modifyAccountv2"
+)
 
 type Request = { uid: string; fullName: string; email: string }
 type Response = { uid: string; tid: string }
@@ -41,7 +45,16 @@ export const createFakeOrg = httpsCallable<Request, void>(
   "createFakeOrg"
 )
 
+export const createFakeOrgv2 = httpsCallable<Request, void>(
+  functions,
+  "createFakeOrg"
+)
+
 export const createFakeTestimony = httpsCallable<Request, Response>(
   functions,
   "createFakeTestimony"
+)
+export const createFakeTestimonyv2 = httpsCallable<Request, Response>(
+  functions,
+  "createFakeTestimonyv2"
 )

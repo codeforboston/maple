@@ -1,9 +1,17 @@
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
+import { CallableRequest, onCall } from "firebase-functions/v2/https"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
 import { Bill } from "../bills/types"
-import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
+import {
+  checkAuth,
+  checkAuthv2,
+  checkRequest,
+  DocUpdate,
+  fail,
+  Id
+} from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
 import { supportedGeneralCourts } from "../shared"
 import { Attachments, PublishedAttachmentState } from "./attachments"
@@ -22,6 +30,27 @@ export const publishTestimony = https.onCall(async (data, context) => {
   const checkEmailVerification = true
   const uid = checkAuth(context, checkEmailVerification)
   const { draftId } = checkRequest(PublishTestimonyRequest, data)
+
+  let output: TransactionOutput
+  try {
+    output = await db.runTransaction(t =>
+      new PublishTestimonyTransaction(t, draftId, uid).run()
+    )
+  } catch (e) {
+    logger.info("Publication transaction failed.", e)
+    throw e
+  }
+
+  let attachments = new Attachments()
+  await attachments.applyPublish(output.attachments)
+
+  return { publicationId: output.publicationId }
+})
+
+export const publishTestimonyv2 = onCall(async (request: CallableRequest) => {
+  const checkEmailVerification = true
+  const uid = checkAuthv2(request, checkEmailVerification)
+  const { draftId } = checkRequest(PublishTestimonyRequest, request.data)
 
   let output: TransactionOutput
   try {

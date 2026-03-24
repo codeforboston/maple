@@ -63,10 +63,20 @@ const deleteTestimony = httpsCallable<
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
+const deleteTestimonyv2 = httpsCallable<
+  { uid: string; publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimonyv2")
+
 const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
+
+const publishTestimonyv2 = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimonyv2")
 
 let uid: string
 let user: User
@@ -123,7 +133,7 @@ describe("draftTestimony", () => {
 describe("publishTestimony", () => {
   it("Fails if draft doesn't exist", async () => {
     await expect(
-      publishTestimony({ draftId: "nonexistant-id" })
+      publishTestimonyv2({ draftId: "nonexistant-id" })
     ).rejects.toThrow("No draft found with id")
   })
 
@@ -132,7 +142,7 @@ describe("publishTestimony", () => {
       content: "",
       position: "asdfasdf"
     })
-    await expect(publishTestimony({ draftId })).rejects.toThrow(
+    await expect(publishTestimonyv2({ draftId })).rejects.toThrow(
       "failed validation"
     )
   })
@@ -143,13 +153,13 @@ describe("publishTestimony", () => {
       billId = await createFakeBill()
     }
     const { draftId } = await createDraft(uid, billId, currentGeneralCourt)
-    const res = await publishTestimony({ draftId })
+    const res = await publishTestimonyv2({ draftId })
     const publication = await getPublication(uid, res.data.publicationId)
     expect(publication).toBeDefined()
   })
 
   it("Publishes new testimony", async () => {
-    const res = await publishTestimony({ draftId }),
+    const res = await publishTestimonyv2({ draftId }),
       publicationId = res.data.publicationId
 
     expect(publicationId).toBeDefined()
@@ -170,7 +180,7 @@ describe("publishTestimony", () => {
   })
 
   it("Updates bill metadata on publish", async () => {
-    const res = await publishTestimony({ draftId })
+    const res = await publishTestimonyv2({ draftId })
     const bill = await getBill(billId)
     const published = await getPublication(uid, res.data.publicationId)
 
@@ -181,7 +191,7 @@ describe("publishTestimony", () => {
   })
 
   it("Archives testimony on publish", async () => {
-    const res = await publishTestimony({ draftId })
+    const res = await publishTestimonyv2({ draftId })
 
     const archived = await testDb
         .collection(`/users/${uid}/archivedTestimony`)
@@ -194,7 +204,7 @@ describe("publishTestimony", () => {
   })
 
   it("Updates existing testimony", async () => {
-    const res1 = await publishTestimony({ draftId })
+    const res1 = await publishTestimonyv2({ draftId })
 
     let bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(1)
@@ -207,7 +217,7 @@ describe("publishTestimony", () => {
     }
     await setDoc(refs.draftTestimony(uid, draftId), updatedDraft)
 
-    const res = await publishTestimony({ draftId }),
+    const res = await publishTestimonyv2({ draftId }),
       published = await getPublication(uid, res.data.publicationId),
       { publishedVersion: draftPublishedVersion } = await getDraft(uid, draftId)
 
@@ -222,19 +232,22 @@ describe("publishTestimony", () => {
   })
 
   it("Supports multiple users", async () => {
-    const res1 = await publishTestimony({ draftId })
+    const res1 = await publishTestimonyv2({ draftId })
 
     const { uid: uid2 } = await signInTestAdmin()
     await createDraft(uid2, billId)
 
-    const res2 = await publishTestimony({ draftId })
+    const res2 = await publishTestimonyv2({ draftId })
 
     let bill = await getBill(billId)
     expect(bill.testimonyCount).toBe(2)
     expect(bill.endorseCount).toBe(2)
     expect(bill.latestTestimonyId).toBe(res2.data.publicationId)
 
-    await deleteTestimony({ uid: uid2, publicationId: res2.data.publicationId })
+    await deleteTestimonyv2({
+      uid: uid2,
+      publicationId: res2.data.publicationId
+    })
 
     await signOut(auth)
 
@@ -281,7 +294,7 @@ describe("publishTestimony", () => {
       await createDraftAttachment(uid, attachmentId, "test-pdf")
       await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
 
-      const res = await publishTestimony({ draftId }),
+      const res = await publishTestimonyv2({ draftId }),
         { publication, attachments } = await getPublicationAndAttachments(
           uid,
           res.data.publicationId
@@ -298,7 +311,7 @@ describe("publishTestimony", () => {
       let attachmentId = nanoid()
       await createDraftAttachment(uid, attachmentId, "test-pdf-1")
       await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
-      const r1 = await publishTestimony({ draftId })
+      const r1 = await publishTestimonyv2({ draftId })
       const p1 = await getPublication(uid, r1.data.publicationId)
 
       // Publish 2
@@ -309,7 +322,7 @@ describe("publishTestimony", () => {
         attachmentId,
         editReason: "changed attachment"
       })
-      const r = await publishTestimony({ draftId })
+      const r = await publishTestimonyv2({ draftId })
 
       const { attachments } = await getPublicationAndAttachments(
         uid,
@@ -329,14 +342,14 @@ describe("publishTestimony", () => {
       const expectedContent = "test-pdf-1"
       await createDraftAttachment(uid, attachmentId, expectedContent)
       await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
-      let r = await publishTestimony({ draftId })
+      let r = await publishTestimonyv2({ draftId })
       const publication = await getPublication(uid, r.data.publicationId)
 
       // Publish 2
       await updateDoc(refs.draftTestimony(uid, draftId), {
         editReason: "changed"
       })
-      r = await publishTestimony({ draftId })
+      r = await publishTestimonyv2({ draftId })
       const { attachments, publication: publication2 } =
         await getPublicationAndAttachments(uid, r.data.publicationId)
 
@@ -351,7 +364,7 @@ describe("publishTestimony", () => {
       const expectedContent = "test-pdf-1"
       await createDraftAttachment(uid, attachmentId, expectedContent)
       await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
-      let r = await publishTestimony({ draftId })
+      let r = await publishTestimonyv2({ draftId })
       const publication = await getPublication(uid, r.data.publicationId)
 
       // Publish 2
@@ -359,7 +372,7 @@ describe("publishTestimony", () => {
         attachmentId: null,
         editReason: "removed attachment"
       })
-      r = await publishTestimony({ draftId })
+      r = await publishTestimonyv2({ draftId })
       const { attachments, publication: publication2 } =
         await getPublicationAndAttachments(uid, r.data.publicationId)
 
@@ -383,11 +396,11 @@ describe("deleteTestimony", () => {
     const normalUid = uid
 
     // Publish as user 1
-    let res = await publishTestimony({ draftId })
+    let res = await publishTestimonyv2({ draftId })
 
     // Delete as admin
     await getSignedInAdmin()
-    const deleted = await deleteTestimony({
+    const deleted = await deleteTestimonyv2({
       uid: normalUid,
       publicationId: res.data.publicationId
     })
@@ -410,11 +423,11 @@ describe("deleteTestimony", () => {
 
   it("Retains archives", async () => {
     // Publish as user 1
-    const res1 = await publishTestimony({ draftId })
+    const res1 = await publishTestimonyv2({ draftId })
 
     await getSignedInAdmin()
     // Delete as admin
-    await deleteTestimony({ uid, publicationId: res1.data.publicationId })
+    await deleteTestimonyv2({ uid, publicationId: res1.data.publicationId })
 
     // Publish again as user 1
     await signInUser1()
@@ -424,7 +437,7 @@ describe("deleteTestimony", () => {
       editReason: "edit reason"
     }
     await setDoc(refs.draftTestimony(uid, draftId), updatedDraft)
-    const res2 = await publishTestimony({ draftId }),
+    const res2 = await publishTestimonyv2({ draftId }),
       published = await getPublication(uid, res2.data.publicationId)
     expect(published.version).toBe(2)
 
@@ -441,12 +454,12 @@ describe("deleteTestimony", () => {
       let attachmentId = nanoid()
       await createDraftAttachment(uid, attachmentId, "test-pdf-1")
       await updateDoc(refs.draftTestimony(uid, draftId), { attachmentId })
-      const r = await publishTestimony({ draftId })
+      const r = await publishTestimonyv2({ draftId })
       const p = await getPublication(uid, r.data.publicationId)
 
       // Delete as admin
       await getSignedInAdmin()
-      await deleteTestimony({ uid, publicationId: r.data.publicationId })
+      await deleteTestimonyv2({ uid, publicationId: r.data.publicationId })
 
       expect(p.attachmentId).toBeDefined()
       await expect(

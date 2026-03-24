@@ -8,12 +8,15 @@ import {
   DocUpdate,
   Id,
   Maybe,
-  checkAdmin
+  checkAdmin,
+  checkAuthv2,
+  checkAdminv2
 } from "../common"
 import { db, FieldValue } from "../firebase"
 import { Attachments } from "./attachments"
 import { DraftTestimony, Testimony } from "./types"
 import { updateTestimonyCounts } from "./updateTestimonyCounts"
+import { onCall, CallableRequest } from "firebase-functions/v2/https"
 
 const DeleteTestimonyRequest = Record({
   uid: Id,
@@ -23,12 +26,22 @@ const DeleteTestimonyRequest = Record({
 export const deleteTestimony = https.onCall(async (data, context) => {
   checkAuth(context)
 
-  // Only admins can delete testimony. Previously we used the caller's UID to
-  // select the testimony to delete, but admins need to be able to delete other
-  // users testimony so we require the uid to be specified in the request.
   checkAdmin(context)
 
   const { uid, publicationId } = checkRequest(DeleteTestimonyRequest, data)
+
+  return performDeleteTestimony(uid, publicationId)
+})
+
+export const deleteTestimonyv2 = onCall(async (request: CallableRequest) => {
+  checkAuthv2(request)
+
+  checkAdminv2(request)
+
+  const { uid, publicationId } = checkRequest(
+    DeleteTestimonyRequest,
+    request.data
+  )
 
   return performDeleteTestimony(uid, publicationId)
 })

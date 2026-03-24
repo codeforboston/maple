@@ -88,12 +88,26 @@ export const deleteTestimony = httpsCallable<
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
+export const deleteTestimonyv2 = httpsCallable<
+  { publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimonyv2")
+
 export const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
 
+export const publishTestimonyv2 = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimonyv2")
+
 export const resolveReport = httpsCallable<report.Request, report.Response>(
   functions,
   "adminResolveReport"
+)
+export const resolveReportv2 = httpsCallable<report.Request, report.Response>(
+  functions,
+  "adminResolveReportv2"
 )
