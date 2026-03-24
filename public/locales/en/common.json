@@ -65,7 +65,8 @@
     "smart_tag": "AI Smart Tag",
     "status_and_history": "Status & History",
     "status_history": "Status History",
-    "view_bill": "View Bill Text" 
+    "view_bill": "View Bill Text",
+    "view_full_summary": "View Full Summary"
   },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
