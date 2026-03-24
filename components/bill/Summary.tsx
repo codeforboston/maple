@@ -104,11 +104,14 @@ export const ViewMessage = styled.div`
   }
 `
 
+const BALLOT_SUMMARY_CHAR_LIMIT = 1000
+
 export const Summary = ({
   bill,
   className
 }: BillProps & { className?: string }) => {
   const [showBillDetails, setShowBillDetails] = useState(false)
+  const [showFullSummary, setShowFullSummary] = useState(false)
   const handleShowBillDetails = () => setShowBillDetails(true)
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
@@ -221,7 +224,36 @@ export const Summary = ({
           )}
           {bill.summary !== undefined && isBallotMeasure ? (
             <BallotSummaryRow className={`mx-1 mb-3`}>
-              {bill.summary}
+              {bill.summary.length > BALLOT_SUMMARY_CHAR_LIMIT ? (
+                <>
+                  {bill.summary.slice(0, BALLOT_SUMMARY_CHAR_LIMIT)}…{" "}
+                  <StyledButton
+                    variant="link"
+                    onClick={() => setShowFullSummary(true)}
+                  >
+                    {t("bill.view_full_summary")}
+                  </StyledButton>
+                  <Modal
+                    show={showFullSummary}
+                    onHide={() => setShowFullSummary(false)}
+                    size="lg"
+                  >
+                    <Modal.Header
+                      closeButton
+                      onClick={() => setShowFullSummary(false)}
+                    >
+                      <Modal.Title>{bill?.id}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="bg-white">
+                      <FormattedBillDetails>
+                        {bill.summary}
+                      </FormattedBillDetails>
+                    </Modal.Body>
+                  </Modal>
+                </>
+              ) : (
+                bill.summary
+              )}
             </BallotSummaryRow>
           ) : (
             <Row className="mx-1 mb-3">{bill.summary}</Row>

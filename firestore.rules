@@ -69,6 +69,12 @@ service cloud.firestore {
       // Only admins can do anything with it
       allow read, write: if request.auth.token.get("role", "user") == "admin"
     }
+    
+    // Admin-managed news collection used by the admin UI and public news page
+    match /news/{nid} {
+      allow read: if true;
+      allow write: if request.auth.token.get("role", "user") == "admin";
+    }
     match /users/{uid} {
       allow read, write: if request.auth.token.get("role", "user") == "admin"
       match /draftTestimony/{id} {
