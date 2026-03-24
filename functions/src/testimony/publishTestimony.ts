@@ -58,6 +58,7 @@ class PublishTestimonyTransaction {
 
   private draftSnap!: DocumentSnapshot
   private draft!: DraftTestimony
+  private bqId!: string | null
   private billSnap!: DocumentSnapshot
   private bill!: Bill
   private publicationRef!: DocumentReference
@@ -93,7 +94,8 @@ class PublishTestimonyTransaction {
       attachmentId: this.attachments.id,
       draftAttachmentId: this.attachments.draftId,
       fullName: this.profile?.fullName ?? "Anonymous",
-      public: this.profile?.public ?? true
+      public: this.profile?.public ?? true,
+      ballotQuestionId: this.bqId
     }
     if (this.profile?.representative?.id) {
       newPublication.representativeId = this.profile.representative.id
@@ -183,6 +185,7 @@ class PublishTestimonyTransaction {
     }
 
     this.draft = draft
+    this.bqId = draft.ballotQuestionId ?? null
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
@@ -240,6 +243,7 @@ class PublishTestimonyTransaction {
         .collection(`/users/${this.uid}/archivedTestimony`)
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
+        .where("ballotQuestionId", "==", this.bqId)
         .orderBy("version", "desc")
         .limit(1)
     )
@@ -263,6 +267,7 @@ class PublishTestimonyTransaction {
         .collection(`/users/${this.uid}/publishedTestimony`)
         .where("billId", "==", this.draft.billId)
         .where("court", "==", this.draft.court)
+        .where("ballotQuestionId", "==", this.bqId)
         .limit(1)
     )
 
