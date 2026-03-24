@@ -82,32 +82,24 @@ export const BallotQuestionHeader = ({
           </Col>
         </Row>
 
-        <div className="border-top mt-4 pt-4">
-          {ballotQuestion.description && (
-            <DescriptionBox description={ballotQuestion.description} />
-          )}
+        {(ballotQuestion.description || ballotQuestion.pdfUrl) && (
+          <div className="border-top mt-4 pt-4">
+            {ballotQuestion.description && (
+              <DescriptionBox description={ballotQuestion.description} />
+            )}
 
-          <div className="d-flex flex-wrap gap-4 mt-4 small">
             {ballotQuestion.pdfUrl && (
               <a
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-decoration-none text-secondary fw-semibold"
+                className="d-inline-block mt-4 small text-decoration-none text-secondary fw-semibold"
               >
                 View petition PDF
               </a>
             )}
-            {bill && (
-              <Link
-                href={`/bills/${bill.court}/${bill.id}`}
-                className="text-decoration-none text-secondary fw-semibold"
-              >
-                View bill ({bill.content.BillNumber})
-              </Link>
-            )}
           </div>
-        </div>
+        )}
       </div>
     </Container>
   )

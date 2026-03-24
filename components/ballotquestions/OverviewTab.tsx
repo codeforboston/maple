@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Image } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
 import { CommitteeHearing } from "./CommitteeHearing"
@@ -38,6 +39,14 @@ export const OverviewTab = ({
           <p className="text-body-secondary small mb-0">
             The ballot question at a high-level.
           </p>
+          {bill && (
+            <Link
+              href={`/bills/${bill.court}/${bill.id}`}
+              className="d-inline-block mt-3 small fw-semibold text-decoration-none text-secondary"
+            >
+              View bill ({bill.content.BillNumber})
+            </Link>
+          )}
         </div>
       </div>
 
