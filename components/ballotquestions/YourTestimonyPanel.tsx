@@ -18,15 +18,18 @@ export const YourTestimonyPanel = ({
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
   )
+  const showSectionTitle = !(isActivePhase && bill)
 
   return (
     <div className="h-100">
-      <div
-        className="fw-semibold text-secondary mb-3"
-        style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
-      >
-        Your Testimony
-      </div>
+      {showSectionTitle && (
+        <div
+          className="fw-semibold text-secondary mb-3"
+          style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
+        >
+          Your Testimony
+        </div>
+      )}
       {isLegislaturePhase && bill ? (
         <div>
           <div
