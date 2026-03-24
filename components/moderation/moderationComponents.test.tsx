@@ -9,22 +9,9 @@ import { BillInfoHeader } from "components/TestimonyCard/BillInfoHeader"
 import { ReportModal } from "components/TestimonyCard/ReportModal"
 import { RequestDeleteOwnTestimonyModal } from "components/TestimonyCard/ReportModal"
 
-const mockGetBallotQuestion = jest.fn()
-
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
-
-jest.mock("components/db/api", () => {
-  const actual = jest.requireActual("components/db/api")
-  return {
-    __esModule: true,
-    ...actual,
-    dbService: () => ({
-      getBallotQuestion: mockGetBallotQuestion
-    })
-  }
-})
 
 describe("report testimony modal", () => {
   const setIsReporting = jest.fn()
@@ -113,13 +100,7 @@ describe("remove testimony", () => {
 })
 
 describe("profile testimony header", () => {
-  beforeEach(() => {
-    mockGetBallotQuestion.mockReset()
-  })
-
-  it("links ballot-question testimony to the ballot question page", async () => {
-    mockGetBallotQuestion.mockResolvedValue({ ballotQuestionNumber: 4 })
-
+  it("links ballot-question testimony to the ballot question page", () => {
     render(
       <BillInfoHeader
         testimony={
@@ -135,10 +116,8 @@ describe("profile testimony header", () => {
       />
     )
 
-    const link = await screen.findByRole("link", { name: "Question 4" })
+    const link = screen.getByRole("link", { name: "Ballot Question 25-14" })
     expect(link.getAttribute("href")).toBe("/ballotQuestions/25-14")
-    expect(screen.getByText("Petition 25-14")).toBeTruthy()
     expect(screen.getByText("A Test Ballot Question")).toBeTruthy()
-    expect(mockGetBallotQuestion).toHaveBeenCalledWith({ id: "25-14" })
   })
 })

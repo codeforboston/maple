@@ -26,9 +26,9 @@
   },
   "legislators": "Legislators",
   "position": {
-    "endorse":"The author of the submitted testimony endorses the bill.",
-    "neutral":"The author of the submitted testimony is neutral towards the bill.",
-    "oppose": "The author of the submitted testimony opposes the bill."
+    "endorse":"Supports this testimony.",
+    "neutral":"Neutral testimony.",
+    "oppose": "Opposes this testimony."
   },
   "profileMenu": "Open/Close Profile Menu",
   "representative": "Representative",
