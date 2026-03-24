@@ -33,6 +33,10 @@ const FormattedBillDetails = styled(Col)`
   white-space: pre-wrap;
 `
 
+const BallotSummaryRow = styled(Row)`
+  white-space: pre-wrap;
+`
+
 const SmartTag = ({ topic }: { topic: BillTopic }) => {
   return (
     <links.Internal
@@ -215,7 +219,11 @@ export const Summary = ({
           ) : (
             <></>
           )}
-          <Row className="mx-1 mb-3">{bill.summary}</Row>
+          {bill.summary !== undefined && isBallotMeasure ? (
+            <BallotSummaryRow className={`mx-1 mb-3`}>{bill.summary}</BallotSummaryRow>
+          ) : (
+            <Row className="mx-1 mb-3">{bill.summary}</Row>
+          )}
           <Row className={`d-flex mx-0 my-1`} xs="auto">
             {bill.topics?.map(t => (
               <SmartTag key={t.topic} topic={t} />
