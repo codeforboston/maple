@@ -22,8 +22,14 @@ export const BillDetails = ({ bill }: BillProps) => {
 
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
   const flags = useFlags()
-
   const { user } = useAuth()
+
+  let isBallotMeasure = false
+  const curComm = bill?.currentCommittee?.id
+
+  if (curComm == "SJ42") {
+    isBallotMeasure = true
+  }
 
   return (
     <>
@@ -31,6 +37,7 @@ export const BillDetails = ({ bill }: BillProps) => {
       {!isCurrentCourt(bill.court) && (
         <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>
       )}
+      {isBallotMeasure && <Banner>{t("bill.ballot_initiative")}</Banner>}
 
       <Container className="mt-3 mb-3">
         <Row>
@@ -74,14 +81,19 @@ export const BillDetails = ({ bill }: BillProps) => {
             </Col>
           </Row>
         )}
-        <Row className="mt-2">
+        <Row className="my-2">
           <Col>
             <Summary bill={bill} />
           </Col>
         </Row>
-        <Row>
+        <Row className="mt-4">
           <Col md={8}>
-            <Sponsors bill={bill} className="mt-4 pb-1" />
+            {isBallotMeasure ? (
+              <></>
+            ) : (
+              <Sponsors bill={bill} className="pb-1" />
+            )}
+
             <BillTestimonies bill={bill} className="mt-4" />
             {flags.lobbyingTable && (
               <LobbyingTable bill={bill} className="mt-4 pb-1" />
