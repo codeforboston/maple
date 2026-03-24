@@ -17,7 +17,10 @@ import { SmartIcon } from "./SmartIcon"
 import { TestimonyCounts } from "./TestimonyCounts"
 import { BillProps } from "./types"
 import { BillTopic } from "functions/src/bills/types"
-import { currentGeneralCourt } from "functions/src/shared"
+import {
+  currentBallotInitiativeCommittee,
+  currentGeneralCourt
+} from "functions/src/shared"
 
 const Divider = styled(Col)`
   width: 2px;
@@ -106,6 +109,8 @@ export const Summary = ({
   const handleHideBillDetails = () => setShowBillDetails(false)
   const billText = bill?.content?.DocumentText
   const hearingIds = bill?.hearingIds
+  const isBallotMeasure =
+    bill?.currentCommittee?.id === currentBallotInitiativeCommittee
 
   const { showLLMFeatures } = useFlags()
 
@@ -202,6 +207,10 @@ export const Summary = ({
             <>
               <hr className={`m-0 border-bottom border-2`} />
               <SmartDisclaimer />
+            </>
+          ) : bill.summary !== undefined && isBallotMeasure ? (
+            <>
+              <hr className={`m-0 mb-3 border-bottom border-2`} />
             </>
           ) : (
             <></>
