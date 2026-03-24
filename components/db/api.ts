@@ -19,6 +19,7 @@ import { first } from "lodash"
 import { Bill } from "./bills"
 import { Profile } from "./profile"
 import { Testimony } from "./testimony"
+import { matchesBallotQuestionScope } from "./testimony/ballotQuestionScope"
 import type { BallotQuestion } from "functions/src/ballotQuestions/types"
 
 export type { BallotQuestion }
@@ -78,18 +79,11 @@ export class DbService {
         collection(firestore, `/users/${authorUid}/archivedTestimony`),
         where("billId", "==", billId),
         where("court", "==", court),
+        where("ballotQuestionId", "==", ballotQuestionId ?? null),
         orderBy("version", "desc")
       )
     )
-    const archive = result.docs
-      .map(snap => snap.data())
-      .filter(testimony =>
-        matchesBallotQuestionScope(
-          testimony as Testimony | undefined,
-          ballotQuestionId
-        )
-      )
-      .filter(isNotNull) as Testimony[]
+    const archive = result.docs.map(snap => snap.data()).filter(isNotNull) as Testimony[]
     return archive
   }
 
@@ -153,12 +147,4 @@ export class ApiResponse {
     error: { status: 404, data: message }
   })
   static ok = <T>(data: T) => ({ data })
-}
-
-function matchesBallotQuestionScope(
-  testimony: Pick<Testimony, "ballotQuestionId"> | undefined,
-  ballotQuestionId?: string
-) {
-  const value = testimony?.ballotQuestionId ?? undefined
-  return ballotQuestionId ? value === ballotQuestionId : !value
 }
