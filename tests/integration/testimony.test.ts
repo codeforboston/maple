@@ -371,6 +371,17 @@ describe("publishTestimony", () => {
   })
 
   describe("ballotQuestionId", () => {
+    beforeAll(async () => {
+      await testDb
+        .collection("ballotQuestions")
+        .doc("bq-test-1")
+        .set({ id: "bq-test-1" })
+    })
+
+    afterAll(async () => {
+      await testDb.collection("ballotQuestions").doc("bq-test-1").delete()
+    })
+
     it("Copies ballotQuestionId from draft to published testimony", async () => {
       const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
       const res = await publishTestimony({ draftId })
@@ -412,6 +423,18 @@ describe("publishTestimony", () => {
       const pubB = await getPublication(uid, publicationIdB)
       expect(pubA.ballotQuestionId).toBe("bq-test-1")
       expect(pubB.ballotQuestionId ?? null).toBeNull()
+    })
+
+    it("Fails to publish testimony with a non-existent ballotQuestionId", async () => {
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "nonexistent-bq"
+      )
+      await expect(publishTestimony({ draftId: bqDraftId })).rejects.toThrow(
+        "invalid ballotQuestionId"
+      )
     })
 
     it("Re-publishing ballot question testimony updates the same doc", async () => {

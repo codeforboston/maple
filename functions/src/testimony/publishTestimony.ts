@@ -174,18 +174,27 @@ class PublishTestimonyTransaction {
 
     await this.checkValidCourt(draft.court)
 
-    const billSnap = await db
-      .doc(`/generalCourts/${draft.court}/bills/${draft.billId}`)
-      .get()
+    const bqId = draft.ballotQuestionId ?? null
+    const [billSnap, bqSnap] = await Promise.all([
+      db.doc(`/generalCourts/${draft.court}/bills/${draft.billId}`).get(),
+      bqId !== null ? db.doc(`/ballotQuestions/${bqId}`).get() : Promise.resolve(null)
+    ])
+
     if (!billSnap.exists) {
       throw fail(
         "failed-precondition",
         `Draft testimony has invalid bill ID ${draft.billId}`
       )
     }
+    if (bqSnap !== null && !bqSnap.exists) {
+      throw fail(
+        "failed-precondition",
+        `Draft testimony has invalid ballotQuestionId ${bqId}`
+      )
+    }
 
     this.draft = draft
-    this.bqId = draft.ballotQuestionId ?? null
+    this.bqId = bqId
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
