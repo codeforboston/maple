@@ -34,7 +34,7 @@ export function useFormSync(edit: Service) {
     [saveDraft.execute]
   )
 
-  const empty = isEmpty(pickBy(form)),
+  const empty = !hasMeaningfulDraftContent(form),
     loading = docsLoading || saveDraft?.loading,
     exists = persisted !== undefined,
     saved = isEqual(form, persisted) || (empty && !exists)
@@ -91,6 +91,14 @@ function useSyncTestimonyToStore(edit: UseEditTestimony) {
 }
 
 type DraftContent = ReturnType<typeof useFormDraft>
+
+export function hasMeaningfulDraftContent({
+  ballotQuestionId,
+  ...draftContent
+}: DraftContent) {
+  return !isEmpty(pickBy(draftContent))
+}
+
 function useFormDraft() {
   const {
     attachmentId,
