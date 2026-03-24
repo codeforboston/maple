@@ -74,3 +74,4 @@ jobs:
           tests/integration/auth.test.ts
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
+          tests/integration/notifications.test.ts
