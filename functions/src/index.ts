@@ -31,7 +31,7 @@ export {
   fetchMemberBatch,
   startMemberBatches
 } from "./members"
-export { finishSignup } from "./profile"
+export { completePhoneVerification, finishSignup } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,

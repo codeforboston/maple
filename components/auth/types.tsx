@@ -9,3 +9,8 @@ export const finishSignup = httpsCallable<
   { requestedRole: Role } | Partial<Profile>,
   void
 >(functions, "finishSignup")
+
+export const completePhoneVerification = httpsCallable<
+  void,
+  { phoneVerified: true }
+>(functions, "completePhoneVerification")
