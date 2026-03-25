@@ -24,6 +24,8 @@ const ViewTestimony = (
     onProfilePage?: boolean
     className?: string
     isOrg?: boolean
+    variant?: "default" | "ballotQuestion"
+    allowEdit?: boolean
   }
 ) => {
   const {
@@ -33,7 +35,9 @@ const ViewTestimony = (
     onProfilePage = false,
     className,
     pagination,
-    isOrg
+    isOrg,
+    variant = "default",
+    allowEdit = true
   } = props
 
   const { user } = useAuth()
@@ -83,6 +87,88 @@ const ViewTestimony = (
 
   const { t } = useTranslation("testimony")
 
+  const listContent =
+    testimony.length > 0 ? (
+      <div>
+        {onProfilePage && (
+          <Row className="justify-content-between mb-4">
+            <ShowPaginationSummary
+              totalTestimonies={totalTestimonies}
+              testimony={testimony}
+              pagination={pagination}
+              t={t}
+            />
+
+            <Col xs="auto">
+              <SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />
+            </Col>
+          </Row>
+        )}
+
+        <FeedList>
+          {testimony
+            .sort((a, b) =>
+              orderBy === "Oldest First"
+                ? a.publishedAt > b.publishedAt
+                  ? 1
+                  : -1
+                : a.publishedAt < b.publishedAt
+                ? 1
+                : -1
+            )
+            .map(t => (
+              <TestimonyItem
+                key={t.id}
+                testimony={t}
+                isUser={t.authorUid === user?.uid}
+                onProfilePage={onProfilePage}
+                variant={variant}
+                allowEdit={allowEdit}
+              />
+            ))}
+        </FeedList>
+
+        {(pagination.hasPreviousPage || pagination.hasNextPage) && (
+          <PaginationButtons pagination={pagination} />
+        )}
+      </div>
+    ) : (
+      <NoResults>
+        {t("viewTestimony.noTestimonies")}
+        <br />
+      </NoResults>
+    )
+
+  if (variant === "ballotQuestion") {
+    return (
+      <FeedShell className={`${className ?? ""} bg-white`}>
+        {!onProfilePage && (
+          <>
+            <Tabs
+              childTabs={tabs}
+              onChange={handleTabClick}
+              selectedTab={activeTab}
+              variant="ballotQuestion"
+            />
+            <ControlsRow className="justify-content-between align-items-center mb-4">
+              <Col>
+                <BrowseTitle>Browse Testimony</BrowseTitle>
+              </Col>
+              <Col xs="auto">
+                <SortTestimonyDropDown
+                  orderBy={orderBy}
+                  setOrderBy={setOrderBy}
+                  variant="ballotQuestion"
+                />
+              </Col>
+            </ControlsRow>
+          </>
+        )}
+        {listContent}
+      </FeedShell>
+    )
+  }
+
   return (
     <MapleCard
       className={`${className} bg-white`}
@@ -91,63 +177,10 @@ const ViewTestimony = (
         <BootstrapCard.Body>
           {!onProfilePage && (
             <Row>
-              <Tabs
-                childTabs={tabs}
-                onChange={handleTabClick}
-                selectedTab={activeTab}
-              />
+              <Tabs childTabs={tabs} onChange={handleTabClick} selectedTab={activeTab} />
             </Row>
           )}
-
-          {testimony.length > 0 ? (
-            <div>
-              {onProfilePage && (
-                <Row className="justify-content-between mb-4">
-                  <ShowPaginationSummary
-                    totalTestimonies={totalTestimonies}
-                    testimony={testimony}
-                    pagination={pagination}
-                    t={t}
-                  />
-
-                  <Col xs="auto">
-                    <SortTestimonyDropDown
-                      orderBy={orderBy}
-                      setOrderBy={setOrderBy}
-                    />
-                  </Col>
-                </Row>
-              )}
-
-              {testimony
-                .sort((a, b) =>
-                  orderBy === "Oldest First"
-                    ? a.publishedAt > b.publishedAt
-                      ? 1
-                      : -1
-                    : a.publishedAt < b.publishedAt
-                    ? 1
-                    : -1
-                )
-                .map(t => (
-                  <TestimonyItem
-                    key={t.authorUid + t.billId}
-                    testimony={t}
-                    isUser={t.authorUid === user?.uid}
-                    onProfilePage={onProfilePage}
-                  />
-                ))}
-
-              {(pagination.hasPreviousPage || pagination.hasNextPage) && (
-                <PaginationButtons pagination={pagination} />
-              )}
-            </div>
-          ) : (
-            <NoResults>
-              {t("viewTestimony.noTestimonies")}
-              <br />
-            </NoResults>
-          )}
+          {listContent}
         </BootstrapCard.Body>
       }
     />
@@ -155,6 +188,27 @@ const ViewTestimony = (
 }
 
 export default ViewTestimony
+
+const FeedShell = styled.div`
+  border: 1px solid #dee2e6;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(15, 23, 42, 0.06);
+`
+
+const ControlsRow = styled(Row)`
+  row-gap: 0.75rem;
+`
+
+const BrowseTitle = styled.div`
+  font-size: 0.95rem;
+  font-weight: 700;
+`
+
+const FeedList = styled.div`
+  display: grid;
+  gap: 0;
+`
 
 function ShowPaginationSummary({
   totalTestimonies,

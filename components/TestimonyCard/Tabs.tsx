@@ -35,10 +35,11 @@ export const Tab = (props: {
   active: boolean
   action?: () => void
   onClick?: MouseEventHandler
+  variant?: "default" | "ballotQuestion"
 }) => {
-  const { label, onClick, active } = props
+  const { label, onClick, active, variant = "default" } = props
   return (
-    <TabStyle onClick={onClick} active={active}>
+    <TabStyle onClick={onClick} active={active} variant={variant}>
       <p> {label}</p>
     </TabStyle>
   )
@@ -48,13 +49,14 @@ export const Tabs = (props: {
   childTabs: ReactElement[]
   onChange: onClickEventFunction
   selectedTab: number
+  variant?: "default" | "ballotQuestion"
 }) => {
   const containerRef = useRef(null)
   const tabRefs = useRef<Array<HTMLDivElement | null>>([])
-  const { childTabs, onChange, selectedTab } = props
+  const { childTabs, onChange, selectedTab, variant = "default" } = props
   const [sliderWidth, setSliderWidth] = useState(0)
   const [viewportWidth, setViewportWidth] = useState(
-    typeof window ? undefined : window.innerWidth
+    typeof window === "undefined" ? undefined : window.innerWidth
   )
   const [resizing, setResizing] = useState(false)
   const [sliderPos, setSliderPos] = useState(0)
@@ -77,9 +79,11 @@ export const Tabs = (props: {
     const selected = tabRefs.current[selectedTab - 1]
     if (selected) {
       setSliderWidth(selected.clientWidth)
-      setSliderPos(selected.offsetLeft - 16)
+      setSliderPos(
+        selected.offsetLeft - (variant === "ballotQuestion" ? 0 : 16)
+      )
     }
-  }, [selectedTab, viewportWidth])
+  }, [selectedTab, viewportWidth, variant])
 
   const tabs = childTabs?.map((child, index) => {
     const handleClick = (e: Event) => {
@@ -92,17 +96,18 @@ export const Tabs = (props: {
       <div ref={el => (tabRefs.current[index] = el)} key={child.props.label}>
         {React.cloneElement(child, {
           active: child.props.value === selectedTab,
-          onClick: handleClick
+          onClick: handleClick,
+          variant
         })}
       </div>
     )
   })
 
   return (
-    <ComponentContainer ref={containerRef}>
-      <TabsContainer>{tabs}</TabsContainer>
+    <ComponentContainer ref={containerRef} variant={variant}>
+      <TabsContainer variant={variant}>{tabs}</TabsContainer>
       <TabSliderContainer>
-        <TabSliderTrackStyle />
+        <TabSliderTrackStyle variant={variant} />
         <TabSlider
           width={sliderWidth}
           position={sliderPos}
@@ -113,28 +118,50 @@ export const Tabs = (props: {
   )
 }
 
-const ComponentContainer = styled.div`
-  margin-bottom: 2%;
+const ComponentContainer = styled.div<{ variant: "default" | "ballotQuestion" }>`
+  margin-bottom: ${props => (props.variant === "ballotQuestion" ? "1.25rem" : "2%")};
+  position: relative;
 `
-const TabsContainer = styled.div`
+const TabsContainer = styled.div<{ variant: "default" | "ballotQuestion" }>`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  margin: 0;
-  margin-top: 15px;
+  gap: ${props => (props.variant === "ballotQuestion" ? "2rem" : "0")};
+  justify-content: ${props =>
+    props.variant === "ballotQuestion" ? "flex-start" : "space-around"};
+  margin: ${props =>
+    props.variant === "ballotQuestion" ? "0 0 0.75rem" : "0"};
+  margin-top: ${props => (props.variant === "ballotQuestion" ? "0" : "15px")};
+  overflow-x: ${props => (props.variant === "ballotQuestion" ? "auto" : "visible")};
 `
 
-const TabStyle = styled.div<{ active: boolean }>`
+const TabStyle = styled.div<{
+  active: boolean
+  variant: "default" | "ballotQuestion"
+}>`
   background: none;
-  color: ${props => (props.active ? "#C71E32" : "black")};
+  color: ${props =>
+    props.variant === "ballotQuestion"
+      ? props.active
+        ? "#c71e32"
+        : "#212529"
+      : props.active
+      ? "#C71E32"
+      : "black"};
   border: none;
   font: inherit;
-  font-size: 1.5rem;
+  font-size: ${props => (props.variant === "ballotQuestion" ? "0.95rem" : "1.5rem")};
+  font-weight: ${props =>
+    props.variant === "ballotQuestion" ? (props.active ? 700 : 500) : 400};
   cursor: pointer;
   outline: none;
+  white-space: ${props => (props.variant === "ballotQuestion" ? "nowrap" : "normal")};
 
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: ${props => (props.variant === "ballotQuestion" ? "0.95rem" : "1rem")};
+  }
+
+  p {
+    margin: ${props => (props.variant === "ballotQuestion" ? "0" : "initial")};
   }
 `
 const TabSliderContainerStyle = styled.div`
@@ -144,17 +171,18 @@ const TabSliderContainerStyle = styled.div`
   height: 1px;
   position: absolute;
 `
-const TabSliderTrackStyle = styled.div`
+const TabSliderTrackStyle = styled.div<{ variant: "default" | "ballotQuestion" }>`
   background-color: #f1f1f1;
   align-self: center;
-  width: 75%;
+  width: ${props => (props.variant === "ballotQuestion" ? "100%" : "75%")};
   height: 1px;
   margin: 0;
   padding: 0;
   position: absolute;
   z-index: 9;
-  left: 50%;
-  transform: translateX(-55%);
+  left: ${props => (props.variant === "ballotQuestion" ? "0" : "50%")};
+  transform: ${props =>
+    props.variant === "ballotQuestion" ? "none" : "translateX(-55%)"};
 `
 
 export const TabSliderStyle = styled.div<{

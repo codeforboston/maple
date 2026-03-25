@@ -10,51 +10,67 @@ import { ArchiveTestimonyButton } from "./ArchiveTestimonyButton"
 import { ArchiveTestimonyConfirmation } from "./ArchiveTestimonyConfirmation"
 import { useTranslation } from "next-i18next"
 
-export const YourTestimony = () => {
+export const YourTestimony = ({
+  variant = "default"
+}: {
+  variant?: "default" | "ballotQuestion"
+}) => {
   const synced = usePublishState().sync === "synced"
   return synced ? (
     <Stack gap={4}>
-      <MainPanel />
+      <MainPanel variant={variant} />
       <TwitterButton className="mx-2" />
       <EmailButton className="mx-2" />
     </Stack>
   ) : null
 }
 
-const MainPanel = styled(({ ...rest }) => {
+const MainPanel = styled(
+  ({
+    variant = "default",
+    ...rest
+  }: { variant?: "default" | "ballotQuestion"; className?: string }) => {
   const { t } = useTranslation("testimony")
   const { draft, deleteTestimony, publication } = usePublishService() ?? {}
   const unpublishedDraft = hasDraftChanged(draft, publication)
   const [showConfirm, setShowConfirm] = useState(false)
-  const bill = usePublishState().bill!
+  const { bill, ballotQuestionId } = usePublishState()
+  const showHeader = variant !== "ballotQuestion"
+  if (!bill) return null
 
   return (
     <div {...rest}>
-      <div className="d-flex">
-        <span className="title">{t("yourTestimony.title")}</span>
-        <EditTestimonyButton
-          className="me-1"
-          billId={bill.id}
-          court={bill.court}
-        />
-        {/*Delete testimony removed until ready */}
-        {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
-      </div>
-      {/*Delete testimony confirmation-dropdown removed until ready */}
-      {/* <ArchiveTestimonyConfirmation
-        className="mt-2"
-        show={showConfirm}
-        onHide={() => setShowConfirm(false)}
-        archiveTestimony={deleteTestimony}
-      /> */}
-      <div className="divider mt-3 mb-3" />
+      {showHeader ? (
+        <>
+          <div className="d-flex">
+            <span className="title">{t("yourTestimony.title")}</span>
+            <EditTestimonyButton
+              className="me-1"
+              billId={bill.id}
+              court={bill.court}
+              ballotQuestionId={ballotQuestionId}
+            />
+            {/*Delete testimony removed until ready */}
+            {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
+          </div>
+          {/*Delete testimony confirmation-dropdown removed until ready */}
+          {/* <ArchiveTestimonyConfirmation
+            className="mt-2"
+            show={showConfirm}
+            onHide={() => setShowConfirm(false)}
+            archiveTestimony={deleteTestimony}
+          /> */}
+          <div className="divider mt-3 mb-3" />
+        </>
+      ) : null}
       <TestimonyPreview type="draft" className="mb-2" />
       {unpublishedDraft && (
         <div className="draft-badge">{t("yourTestimony.draft")}</div>
       )}
     </div>
   )
-})`
+}
+)`
   --previewPadding: 1rem;
   background-color: white;
   border-radius: 1rem;
@@ -126,9 +142,13 @@ const TwitterButton = (props: ClsProps) => {
 
 const EmailButton = (props: ClsProps) => {
   const { t } = useTranslation("testimony")
-  const { publication, bill: { id: billId, court } = {} } = usePublishState()
+  const {
+    publication,
+    ballotQuestionId,
+    bill: { id: billId, court } = {}
+  } = usePublishState()
   return publication ? (
-    <Wrap href={formUrl(billId!, court!, "share")}>
+    <Wrap href={formUrl(billId!, court!, "share", ballotQuestionId)}>
       <Cta {...props}>{t("yourTestimony.emailCta")} </Cta>
     </Wrap>
   ) : null

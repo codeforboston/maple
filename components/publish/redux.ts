@@ -58,6 +58,9 @@ export type State = {
   /** Current bill */
   bill?: Bill
 
+  /** Current ballot question ID (for ballot question testimony) */
+  ballotQuestionId?: string
+
   /** Current step in the testimony form */
   step: Step
 
@@ -140,7 +143,8 @@ export const {
     setPublicationInfo,
     setSyncState,
     bindService,
-    setBill
+    setBill,
+    setBallotQuestionId
   }
 } = createSlice({
   name: "publish",
@@ -193,6 +197,9 @@ export const {
       const bill = action.payload
       if (isEqual(state.bill, bill)) return state
       return resetForm({ ...state, bill })
+    },
+    setBallotQuestionId(state, action: PayloadAction<string | undefined>) {
+      state.ballotQuestionId = action.payload
     },
     setPublicationInfo(
       state,
@@ -342,6 +349,7 @@ const validateForm = ({
 const resetForm = (state: State) => ({
   ...initialState,
   bill: state.bill,
+  ballotQuestionId: state.ballotQuestionId,
   authorUid: state.authorUid,
   service: state.service
 })

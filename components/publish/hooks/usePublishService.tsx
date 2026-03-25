@@ -18,23 +18,32 @@ function Provider() {
     billId = state.bill?.id,
     court = state.bill?.court,
     uid = state.authorUid,
-    key = `${billId}-${uid}`
+    ballotQuestionId = state.ballotQuestionId,
+    key = `${billId}-${uid}-${ballotQuestionId}`
 
   return billId && uid && court ? (
-    <Binder billId={billId} court={court} uid={uid} key={key} />
+    <Binder
+      billId={billId}
+      court={court}
+      uid={uid}
+      ballotQuestionId={ballotQuestionId}
+      key={key}
+    />
   ) : null
 }
 
 function Binder({
   billId,
   court,
-  uid
+  uid,
+  ballotQuestionId
 }: {
   billId: string
   court: number
   uid: string
+  ballotQuestionId?: string
 }) {
-  const edit = useEditTestimony(uid, court, billId)
+  const edit = useEditTestimony(uid, court, billId, ballotQuestionId)
   useBinding(edit)
   useFormSync(edit)
 

@@ -1,14 +1,16 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
+import { dbService } from "components/db/api"
 import { useFlags } from "components/featureFlags"
 import { formatBillId } from "components/formatting"
 import { formUrl } from "components/publish"
-import { FC, ReactElement, useContext, useEffect } from "react"
+import { FC, ReactElement, useContext, useEffect, useState } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
 import { TopicQuery } from "components/shared/FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { FollowContext } from "components/shared/FollowContext"
+import { isActiveBallotQuestionPhase } from "components/ballotquestions/status"
 
 interface PolicyActionsProps {
   className?: string
@@ -33,7 +35,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   followAction,
   unfollowAction
 }) => {
-  const { bill } = useCurrentTestimonyDetails(),
+  const { bill, revision } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
   const { notifications } = useFlags()
 
@@ -41,6 +43,8 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   const uid = user?.uid
 
   const { followStatus, setFollowStatus } = useContext(FollowContext)
+  const [canEditBallotQuestionTestimony, setCanEditBallotQuestionTestimony] =
+    useState(!revision.ballotQuestionId)
 
   useEffect(() => {
     uid
@@ -51,6 +55,31 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
         })
       : null
   }, [uid, topicName, setFollowStatus])
+
+  useEffect(() => {
+    if (!revision.ballotQuestionId) {
+      setCanEditBallotQuestionTestimony(true)
+      return
+    }
+
+    let active = true
+    dbService()
+      .getBallotQuestion({ id: revision.ballotQuestionId })
+      .then(ballotQuestion => {
+        if (!active) return
+        setCanEditBallotQuestionTestimony(
+          !!ballotQuestion &&
+            isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
+        )
+      })
+      .catch(() => {
+        if (active) setCanEditBallotQuestionTestimony(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [revision.ballotQuestionId])
 
   const FollowClick = async () => {
     await followAction()
@@ -88,13 +117,19 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       onClick={() => setReporting(!isReporting)}
     />
   )
-  items.push(
-    <PolicyActionItem
-      key="add-testimony"
-      billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
-      href={formUrl(bill.id, bill.court)}
-    />
-  )
+  if (canEditBallotQuestionTestimony)
+    items.push(
+      <PolicyActionItem
+        key="add-testimony"
+        billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
+        href={formUrl(
+          bill.id,
+          bill.court,
+          "position",
+          revision.ballotQuestionId ?? undefined
+        )}
+      />
+    )
 
   const { t } = useTranslation("testimony")
 

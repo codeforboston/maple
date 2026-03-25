@@ -8,8 +8,12 @@ import { setStep, Step } from "../redux"
 export const formUrl = (
   billId: string,
   court: number,
-  step: Step = "position"
-) => `/submit-testimony?billId=${billId}&court=${court}&step=${step}`
+  step: Step = "position",
+  ballotQuestionId?: string
+) =>
+  `/submit-testimony?billId=${billId}&court=${court}&step=${step}${
+    ballotQuestionId ? `&ballotQuestionId=${ballotQuestionId}` : ""
+  }`
 
 /** Changes to the appropriate form step if users access a step that is
  * currently invalid (i.e. entering content before position, trying to share
@@ -69,11 +73,11 @@ export const useSyncRouterAndStore = () => {
 
   useEffect(() => {
     dispatch(routeChanged())
-  }, [router.query.billId, dispatch, router.query.step])
+  }, [router.query.billId, router.query.ballotQuestionId, dispatch, router.query.step])
 
   useEffect(() => {
     dispatch(storeChanged())
-  }, [state.bill?.id, state.step, dispatch])
+  }, [state.bill?.id, state.ballotQuestionId, state.step, dispatch])
 }
 
 const routeChanged = createAppThunk(
@@ -81,9 +85,20 @@ const routeChanged = createAppThunk(
   async (_, { getState, dispatch }) => {
     const route = currentRoute()
 
-    const billId = getState().publish.bill?.id
-    if (route.billId && route.billId !== billId) {
-      await dispatch(resolveBill({ court: route.court, billId: route.billId }))
+    const state = getState().publish
+    const billId = state.bill?.id
+    const ballotQuestionId = state.ballotQuestionId
+    if (
+      route.billId &&
+      (route.billId !== billId || route.ballotQuestionId !== ballotQuestionId)
+    ) {
+      await dispatch(
+        resolveBill({
+          court: route.court,
+          billId: route.billId,
+          ballotQuestionId: route.ballotQuestionId
+        })
+      )
     }
 
     const step = getState().publish.step
@@ -100,12 +115,19 @@ const storeChanged = createAppThunk(
       billId = state.publish.bill?.id,
       step = state.publish.step,
       court = state.publish.bill?.court,
+      ballotQuestionId = state.publish.ballotQuestionId,
       route = currentRoute()
 
-    if (billId && !isEqual(route, { billId, court, step })) {
-      Router.push(`?billId=${billId}&court=${court}&step=${step}`, undefined, {
-        shallow: true
-      })
+    if (billId && !isEqual(route, { billId, court, step, ballotQuestionId })) {
+      Router.push(
+        `?billId=${billId}&court=${court}&step=${step}${
+          ballotQuestionId ? `&ballotQuestionId=${ballotQuestionId}` : ""
+        }`,
+        undefined,
+        {
+          shallow: true
+        }
+      )
     }
   }
 )
@@ -113,5 +135,6 @@ const storeChanged = createAppThunk(
 const currentRoute = () => ({
   court: numberOrUndefined(Router.query.court),
   billId: stringOrUndefined(Router.query.billId),
-  step: stringOrUndefined(Router.query.step)
+  step: stringOrUndefined(Router.query.step),
+  ballotQuestionId: stringOrUndefined(Router.query.ballotQuestionId)
 })

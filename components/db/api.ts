@@ -19,12 +19,16 @@ import { first } from "lodash"
 import { Bill } from "./bills"
 import { Profile } from "./profile"
 import { Testimony } from "./testimony"
-import { BallotQuestion } from "functions/src/ballotQuestions/types"
+import { matchesBallotQuestionScope } from "./testimony/ballotQuestionScope"
+import type { BallotQuestion } from "functions/src/ballotQuestions/types"
+
+export type { BallotQuestion }
 
 export type TestimonyQuery = {
   authorUid: string
   billId: string
   court: number
+  ballotQuestionId?: string
 }
 
 export type BillQuery = {
@@ -67,19 +71,19 @@ export class DbService {
   getArchivedTestimony = async ({
     authorUid,
     billId,
-    court
+    court,
+    ballotQuestionId
   }: TestimonyQuery): Promise<Testimony[]> => {
     const result = await this.getDocs(
       query(
         collection(firestore, `/users/${authorUid}/archivedTestimony`),
         where("billId", "==", billId),
         where("court", "==", court),
+        where("ballotQuestionId", "==", ballotQuestionId ?? null),
         orderBy("version", "desc")
       )
     )
-    const archive = result.docs
-      .map(snap => snap.data())
-      .filter(isNotNull) as Testimony[]
+    const archive = result.docs.map(snap => snap.data()).filter(isNotNull) as Testimony[]
     return archive
   }
 
@@ -102,16 +106,6 @@ export class DbService {
   getBill = ({ court, billId }: BillQuery): Promise<Bill | undefined> =>
     this.getDocData<Bill>("generalCourts", court.toString(), "bills", billId)
 
-  getBallotQuestion = ({ id }: { id: string }): Promise<BallotQuestion | undefined> =>
-    this.getDocData<BallotQuestion>("ballotQuestions", id)
-
-  getBallotQuestions = async (): Promise<BallotQuestion[]> => {
-    const result = await this.getDocs(
-      query(collection(firestore, "ballotQuestions"))
-    )
-    return result.docs.map(snap => snap.data()).filter(isNotNull) as BallotQuestion[]
-  }
-
   getProfile = async ({
     uid
   }: ProfileQuery): Promise<UserProfile | undefined> => {
@@ -122,6 +116,22 @@ export class DbService {
       // Existing private profiles cause a permission-denied error
       return undefined
     }
+  }
+
+  getBallotQuestion = ({
+    id
+  }: {
+    id: string
+  }): Promise<BallotQuestion | undefined> =>
+    this.getDocData<BallotQuestion>("ballotQuestions", id)
+
+  getBallotQuestions = async (): Promise<BallotQuestion[]> => {
+    const result = await this.getDocs(
+      query(collection(firestore, "ballotQuestions"))
+    )
+    return result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as BallotQuestion[]
   }
 }
 

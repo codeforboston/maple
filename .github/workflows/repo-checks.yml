@@ -75,3 +75,4 @@ jobs:
           tests/integration/moderation.test.ts
           tests/integration/profile.test.ts
           tests/integration/ballotQuestions.test.ts
+          tests/integration/backfillTestimonyBallotQuestionId.test.ts

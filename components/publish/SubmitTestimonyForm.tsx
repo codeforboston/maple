@@ -7,7 +7,7 @@ import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
-import { useFormInfo } from "./hooks"
+import { useFormInfo, usePublishState } from "./hooks"
 import { KeepNote, KeepNoteMobile } from "./KeepNote"
 import { ProgressBar } from "./ProgressBar"
 import { PublishTestimony } from "./PublishTestimony"
@@ -116,6 +116,7 @@ export const Form = ({
   synced: boolean
 }) => {
   const { t } = useTranslation("testimony")
+  const { ballotQuestionId } = usePublishState()
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
     selectLegislators: <SelectLegislatorsCta />,
@@ -124,14 +125,17 @@ export const Form = ({
     share: <ShareTestimony />
   }
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const backHref = ballotQuestionId
+    ? links.maple.ballotQuestion({ id: ballotQuestionId })
+    : links.maple.bill(bill)
+  const backLabel = ballotQuestionId
+    ? t("submitTestimonyForm.backToBallotQuestion", { ballotQuestionId })
+    : t("submitTestimonyForm.backToBill", { billId: bill.id })
 
   return (
     <FormContainer>
-      <links.Internal
-        href={links.maple.bill(bill)}
-        className={clsx(!synced && "pe-none")}
-      >
-        {t("submitTestimonyForm.backToBill", { billId: bill.id })}
+      <links.Internal href={backHref} className={clsx(!synced && "pe-none")}>
+        {backLabel}
       </links.Internal>
       <Overview className="mt-3" />
       {isMobile && (step == "write" || step == "publish" || step == "share") ? (
