@@ -200,7 +200,7 @@ export const Transcriptions = ({
   const resultString: string = convertToString(startTime)
 
   let currentIndex = transcriptData.findIndex(
-    element => parseInt(resultString, 10) <= element.end / 1000
+    element => parseInt(resultString, 10) < element.end / 1000
   )
 
   // Set the initial scroll target when we have a startTime and transcripts
@@ -233,7 +233,7 @@ export const Transcriptions = ({
     const handleTimeUpdate = () => {
       videoLoaded
         ? (currentIndex = transcriptData.findIndex(
-            element => videoRef.current.currentTime <= element.end / 1000
+            element => videoRef.current.currentTime < element.end / 1000
           ))
         : null
       if (containerRef.current && currentIndex !== highlightedId) {
