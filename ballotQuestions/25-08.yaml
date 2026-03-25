@@ -1,0 +1,36 @@
+# ballotQuestions/25-08.yaml
+id: "25-08"
+billId: "H5001"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: "This proposed law would permit eligible individuals to register to vote or update their
+voter registration address on Election Day.
+An individual who is eligible to vote could register to vote on Election Day by going to
+the polling place in the precinct where they live during voting hours and presenting proof of
+residency and signing a written oath. Proof of residency could be a valid photo identification, or
+documentation showing the individual’s name and the address where the individual resides, such
+as a current utility bill, bank statement, government check, residential lease, wireless telephone
+statement, paycheck, current student fee statement or other document from a post-secondary
+school, or another government document or correspondence. The written oath would require the
+individual to certify that they are a citizen of the United States, are at least 18 years old, are not
+legally prohibited from voting, and have not and will not vote in the same election at another
+location. The oath would require the individual to acknowledge that providing false information
+is a felony punishable by not more than 5 years imprisonment or a fine of not more than $10,000,
+or both.
+If an individual did not present proof of residency, they would be allowed to cast a
+provisional ballot, which would be counted only if the individual returned to provide the required
+information before the close of polls for a municipal election; within two days after a state
+primary; or within six days after a state election.
+Individuals who register to vote on Election Day would be registered to vote in future
+elections as well as in the election taking place that day.
+9 of 10
+Individuals who are already registered to vote would not be able to change their political
+party affiliation on Election Day.
+The proposed law would take effect on January 1, 2028."
+pdfUrl: "https://malegislature.gov/Bills/194/H5001.pdf"

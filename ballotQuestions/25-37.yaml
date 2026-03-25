@@ -1,0 +1,56 @@
+# ballotQuestions/25-37.yaml
+id: "25-37"
+billId: "H5010"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: "This proposed law would change the method for calculating stipends paid to certain state
+  legislators on top of their base salaries.
+
+  Under the proposed law, legislators would receive stipends, subject to appropriation,
+  based on their leadership positions and/or committee membership. The Senate President and
+  Speaker of the House (Group 1) would receive a stipend of up to 75% of their base salaries. The
+  floor leaders of the two largest parties in each house of the legislature and the chairs of each
+  house’s ways and means committee (Group 2) would receive a stipend of up to 50% of their base
+  salaries. The assistant and second assistant floor leaders of the two largest parties in each house,
+  the third assistant floor leaders of the minority party in each house, and the vice chairs and
+  ranking minority members of each house’s ways and means committee (Group 3) and the chairs
+  of eligible committees (Group 4) would receive a stipend of up to 33% of their base salaries.
+  Legislators who are not in Groups 1-4 who are members of an eligible committee would receive
+  a stipend of up to 20% of their base salaries. A committee would be “eligible” under the
+  proposed law if it was established by the joint rules of the House and Senate and had more than
+  50 bills referred to it before March 1 of the first year of the legislative session.
+
+  The proposed law would provide a further 20% stipend to three categories of senators: (1)
+  any senator in Group 2 or Group 3 who is a member of one or more eligible committees, (2) any
+  senator in Group 4 who is a member of more than one eligible committee, or (3) any senator not
+  in Groups 1-4 who is a member of more than four eligible committees.
+
+  Under the proposed law, no senator could receive a stipend for more than two positions,
+  and no representative could receive a stipend for more than one position.
+
+  This proposed law would also establish various terms and conditions for the payment of
+  legislative compensation. A Group 4 leader would receive 50% of the leader’s stipend in
+  biweekly paychecks; the leader would receive the other 50% in the last paycheck of the year if
+  the leader’s eligible committee had achieved compliance that year. Under the proposed law,
+  “compliance” would mean that, on or before the first Monday in December (in the first year of
+  the legislative session) or on or before the last Friday in May (in the second year of the session),
+  an eligible committee had (1) held a public hearing and public mark-up session on each bill
+  referred to it before a specified cutoff date and (2) approved all of its reports by a majority vote
+  at a public meeting with a quorum present. A Group 1-3 leader would receive 50% of the
+  leader’s stipend in biweekly paychecks; the leader would receive the other 50%, multiplied by
+  the percentage of eligible committees achieving compliance in that year, in the last paycheck of
+  the year. The proposed law would require the House and Senate clerks to jointly certify
+  compliance and to calculate the compliance percentage each legislative year. Except as otherwise
+  provided, legislators would receive their compensation on a biweekly basis.
+
+  Legislators who served in a qualifying position for less than the full biennial session
+  would receive prorated stipends.
+
+  The proposed law would take effect on January 6, 2027."
+pdfUrl: "https://malegislature.gov/Bills/194/H5010.pdf"

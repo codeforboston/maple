@@ -1,0 +1,18 @@
+# ballotQuestions/25-14.yaml
+id: "25-14"
+billId: "H5004"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: "This proposed law would make most records held by the Legislature and the Office of the
+Governor public records under the Massachusetts Public Records Law. This proposed law would
+exempt documents related to the development of public policy and communications between
+legislators and their constituents, if those communications are reasonably related to a
+constituent’s request for assistance in obtaining government-provided benefits or services or
+interacting with a government agency."
+pdfUrl: "https://malegislature.gov/Bills/194/H5004.pdf"
