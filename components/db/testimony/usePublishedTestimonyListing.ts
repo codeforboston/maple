@@ -12,6 +12,7 @@ import { firestore } from "../../firebase"
 import { nullableQuery } from "../common"
 import { createTableHook } from "../createTableHook"
 import { Testimony } from "./types"
+import { matchesBallotQuestionScope } from "./ballotQuestionScope"
 
 type Refinement = {
   senatorId?: string
@@ -138,15 +139,10 @@ async function listTestimony(
   )
   return result.docs
     .map(d => d.data() as Testimony)
-    .filter(testimony => matchesBallotQuestionScope(testimony, refinement))
-}
-
-function matchesBallotQuestionScope(
-  testimony: Pick<Testimony, "ballotQuestionId">,
-  refinement: Refinement
-) {
-  const value = testimony.ballotQuestionId ?? undefined
-  if (refinement.ballotQuestionId) return value === refinement.ballotQuestionId
-  if (refinement.billId) return !value
-  return true
+    .filter(testimony => {
+      if (refinement.ballotQuestionId)
+        return matchesBallotQuestionScope(testimony, refinement.ballotQuestionId)
+      if (refinement.billId) return matchesBallotQuestionScope(testimony)
+      return true
+    })
 }

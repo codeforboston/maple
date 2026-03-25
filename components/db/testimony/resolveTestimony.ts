@@ -1,13 +1,13 @@
 import {
   collection,
   collectionGroup,
-  DocumentData,
   getDocs,
   query,
   where
 } from "firebase/firestore"
 import { first } from "lodash"
 import { firestore } from "../../firebase"
+import { matchesBallotQuestionScope } from "./ballotQuestionScope"
 import { DraftTestimony, Testimony } from "./types"
 
 /** Resolves the current draft and publication refs for a given user and bill. */
@@ -84,12 +84,4 @@ function getDraftTestimony(
       matchesBallotQuestionScope(doc.data(), ballotQuestionId)
     )
   )
-}
-
-function matchesBallotQuestionScope(
-  data: DocumentData | undefined,
-  ballotQuestionId?: string
-) {
-  const value = data?.ballotQuestionId ?? undefined
-  return ballotQuestionId ? value === ballotQuestionId : !value
 }

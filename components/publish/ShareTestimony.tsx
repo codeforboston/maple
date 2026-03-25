@@ -46,13 +46,17 @@ export const ShareButtons = ({
   initialSent?: boolean
 }) => {
   const { t } = useTranslation("testimony")
-  const { share, bill } = usePublishState()
+  const { share, bill, ballotQuestionId } = usePublishState()
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const redirectToBill = useCallback(() => {
+  const redirectToPolicy = useCallback(() => {
     dispatch(setShowThankYou(true))
-    router.push(maple.bill(bill!))
-  }, [bill, dispatch, router])
+    router.push(
+      ballotQuestionId
+        ? maple.ballotQuestion({ id: ballotQuestionId })
+        : maple.bill(bill!)
+    )
+  }, [ballotQuestionId, bill, dispatch, router])
   const [sent, setSent] = useState(initialSent)
 
   const buttons = []
@@ -69,7 +73,7 @@ export const ShareButtons = ({
     buttons.push(
       <FinishWithoutEmailing
         key="finish-without-saving"
-        onConfirm={redirectToBill}
+        onConfirm={redirectToPolicy}
       />
     )
   }
@@ -79,9 +83,11 @@ export const ShareButtons = ({
       <Button
         variant="success"
         className="form-navigation-btn text-white"
-        onClick={redirectToBill}
+        onClick={redirectToPolicy}
       >
-        {t("publish.finishedBackToBill")}
+        {ballotQuestionId
+          ? t("publish.finishedBackToBallotQuestion")
+          : t("publish.finishedBackToBill")}
       </Button>
     )
   }

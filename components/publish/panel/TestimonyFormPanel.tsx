@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "../../auth"
+import { Spinner } from "../../bootstrap"
 import { Bill } from "../../db"
 import { useAppDispatch } from "../../hooks"
 import { resolveBill, usePanelStatus } from "../hooks"
@@ -41,7 +42,7 @@ const Panel = ({ variant }: { variant: PanelCtaVariant }) => {
 
   switch (status) {
     case "loading":
-      return null
+      return <LoadingPanel variant={variant} />
     case "signedOut":
       return <SignedOut variant={variant} />
     case "unverified":
@@ -53,6 +54,19 @@ const Panel = ({ variant }: { variant: PanelCtaVariant }) => {
     case "pendingUpgrade":
       return <PendingUpgrade variant={variant} />
     default:
-      return <YourTestimony />
+      return <YourTestimony variant={variant} />
   }
 }
+
+const LoadingPanel = ({ variant }: { variant: PanelCtaVariant }) => (
+  <div
+    className={
+      variant === "ballotQuestion"
+        ? "rounded border bg-light px-3 py-3 small text-body-secondary d-flex align-items-center gap-2"
+        : "rounded border bg-light px-3 py-3 text-body-secondary d-flex align-items-center gap-2"
+    }
+  >
+    <Spinner animation="border" size="sm" />
+    <span>Loading your testimony...</span>
+  </div>
+)
