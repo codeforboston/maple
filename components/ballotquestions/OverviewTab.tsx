@@ -77,7 +77,7 @@ export const OverviewTab = ({
       {ballotQuestion.fullSummary && (
         <section className="mb-4">
           <h3 className="h6 fw-semibold mb-3">Final Summary</h3>
-          <p className="small lh-lg mb-0">{ballotQuestion.fullSummary}</p>
+          <p className="small lh-lg mb-0" style={{ whiteSpace: "pre-wrap" }}>{ballotQuestion.fullSummary}</p>
         </section>
       )}
 
