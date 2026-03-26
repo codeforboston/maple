@@ -7,8 +7,18 @@ type: initiative_statute
 ballotStatus: legislature
 ballotQuestionNumber: null
 relatedBillIds: []
-description: null
-atAGlance: null
+description: "This proposal would allow persons over the age of 21 to possess small quantities of marijuana without civil or criminal penalties."
+atAGlance: 
+  - label: "Possession limits for persons > 21 years of age"
+    value: "1 ounce or less or marijuana (including no more than 5 grams of concentrate). Possessing between 1 and 2 ounces is subject to a civil penalty"
+  - label: "Possession limits for persons < 21 years of age"
+    value: "No legal posession. Posession of < 2 ounces is subject to a civil penalty and forfeiture"
+  - label: "Civil penalty for persons > 18 years of age"
+    value: "$100"
+  - label: "Possession limits for persons < 18 years of age"
+    value: "No legal posession. Posession of < 2 ounces is subject to a civil infraction, forfeiture, and notification of legal guardian"
+  - label: "Civil penalty for persons < 18 years of age"
+    value: "$100, increasing to $1000 if failing to complete community service and drug awareness program within 1 year of infraction"
 fullSummary: "The proposed law would change the type and amount of marijuana that may legally be
 possessed in Massachusetts by repealing the laws that legalize, regulate, and tax the retail sale of
 adult recreational use marijuana in Massachusetts. The proposed law would also permit persons
