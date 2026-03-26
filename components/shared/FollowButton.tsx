@@ -1,5 +1,6 @@
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { useEffect, useContext } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
@@ -19,6 +20,7 @@ export const BaseFollowButton = ({
   hide?: boolean
 }) => {
   const { t } = useTranslation(["profile"])
+  const router = useRouter()
 
   const { user } = useAuth()
   const uid = user?.uid
@@ -50,8 +52,14 @@ export const BaseFollowButton = ({
   const checkmark = isFollowing ? (
     <StyledImage src="/check-white.svg" alt="" />
   ) : null
-  const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+
+    if (!uid) {
+      router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
+      return
+    }
+
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
