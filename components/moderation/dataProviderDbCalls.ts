@@ -136,9 +136,13 @@ export async function createMyOne(
 ): Promise<CreateResult> {
   console.log("creating my one")
   const { data, meta } = params
-  const ref = doc(firestore, resource, data.id)
-  await setDoc(ref, data)
-  return { data: data }
+  const ref = data.id
+    ? doc(firestore, resource, data.id)
+    : doc(collection(firestore, resource))
+  const id = ref.id
+  const newData = { ...data, id }
+  await setDoc(ref, newData)
+  return { data: newData }
 }
 
 export const getMyListGroup = async (

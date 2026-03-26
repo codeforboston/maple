@@ -43,4 +43,5 @@ export type Profile = {
   contactInfo?: ContactInfo
   location?: string
   orgCategories?: OrgCategory[] | ""
+  phoneVerified?: boolean
 }

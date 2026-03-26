@@ -11,6 +11,7 @@
   "bill": {
     "and_others_one": "and {{count}} other",
     "and_others_other": "and {{count}} others",
+    "ballot_initiative": "This bill corresponds to a ballot initiative. The bill is currently before the Legislature, which may choose to enact it directly instead of sending it to voters.",
     "bill_tracker": "Bill Tracker",
     "bill_cosponsors": "{{billId}} Cosponsors",
     "branch": "Branch",
@@ -64,7 +65,8 @@
     "smart_tag": "AI Smart Tag",
     "status_and_history": "Status & History",
     "status_history": "Status History",
-    "view_bill": "View Bill Text" 
+    "view_bill": "View Bill Text",
+    "view_full_summary": "View Full Summary"
   },
   "bill_updates": "Bill Updates",
   "browse_bills": "browse bills",
