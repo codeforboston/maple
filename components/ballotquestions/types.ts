@@ -1,9 +1,7 @@
 export type Hearing = {
   id: string
   videoURL?: string
-  content: {
-    startsAt: string | number | Date
-  }
+  startsAt: number // milliseconds since epoch, converted from Firestore Timestamp server-side
 }
 
 export type BallotQuestionTab =

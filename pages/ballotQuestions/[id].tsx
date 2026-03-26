@@ -17,8 +17,14 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 const Query = z.object({ id: z.string() })
 
 async function getHearing(id: string): Promise<Hearing | null> {
-  const snap = await getDoc(doc(firestore, "events", `hearing-${id}`))
-  return snap.exists() ? (snap.data() as Hearing) : null
+  const snap = await getDoc(doc(firestore, "events", id))
+  if (!snap.exists()) return null
+  const data = snap.data()
+  return {
+    id,
+    videoURL: data.videoURL ?? undefined,
+    startsAt: data.startsAt?.toMillis() ?? 0
+  }
 }
 
 export default createPage<{
