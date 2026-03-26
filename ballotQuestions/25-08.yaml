@@ -4,11 +4,20 @@ billId: "H5001"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
-ballotQuestionNumber: null
+ballotStatus: ballot
+ballotQuestionNumber: 2
 relatedBillIds: []
-description: null
-atAGlance: null
+description: "This proposal would allow eligible individuals to register to vote or to update their voter registration address on Election Day by going to their polling place and presenting proof of residency."
+atAGlance: 
+  - label: "Who"
+    value: "Individuals who are eligible to vote"
+  - label: "Valid proofs of residency"
+    value: "Valid photo identification OR current utility bill, bank statement, government check, residential lease, wireless telephone
+statement, paycheck, current student fee statement or other document from a post-secondary
+school, or another government document or correspondence"
+  - label: "What if you don't have proof of residency?"
+    value: "Cast a provisional ballot to be counted only if proof of residency can be provided within 1-6 days depending on the election level"
+
 fullSummary: "This proposed law would permit eligible individuals to register to vote or update their
 voter registration address on Election Day.
 
