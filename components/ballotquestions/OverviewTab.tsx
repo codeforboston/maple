@@ -13,10 +13,7 @@ export const OverviewTab = ({
   bill: Bill | null
   hearings: Hearing[]
 }) => {
-  const sortedHearings = [...hearings].sort(
-    (a, b) =>
-      new Date(b.content.startsAt).getTime() - new Date(a.content.startsAt).getTime()
-  )
+  const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
 
   return (
     <div className="rounded border bg-white px-4 py-4 shadow-sm">
@@ -92,7 +89,11 @@ export const OverviewTab = ({
           </p>
           <div className="d-grid gap-3">
             {sortedHearings.map(hearing => (
-              <CommitteeHearing key={hearing.id} hearing={hearing} />
+              <CommitteeHearing
+                key={hearing.id}
+                hearing={hearing}
+                ballotQuestionNumber={ballotQuestion.ballotQuestionNumber}
+              />
             ))}
           </div>
         </section>

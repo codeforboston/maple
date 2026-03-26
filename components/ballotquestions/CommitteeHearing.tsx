@@ -1,8 +1,14 @@
 import { DateTime } from "luxon"
 import { Hearing } from "./types"
 
-export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
-  const startsAt = new Date(hearing.content.startsAt)
+export const CommitteeHearing = ({
+  hearing,
+  ballotQuestionNumber
+}: {
+  hearing: Hearing
+  ballotQuestionNumber?: number | null
+}) => {
+  const startsAt = new Date(hearing.startsAt)
   const now = new Date()
   const isOccurred = startsAt < now
   const status = isOccurred ? "Occurred" : "Scheduled"
@@ -32,7 +38,11 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
           rel="noopener noreferrer"
           className="fw-semibold text-decoration-none"
         >
-          Watch the committee hearing here.
+          Watch the committee hearing
+          {ballotQuestionNumber != null
+            ? ` for Question ${ballotQuestionNumber}`
+            : ""}
+          {" here."}
         </a>
       )}
     </div>
