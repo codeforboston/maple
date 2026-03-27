@@ -1,5 +1,6 @@
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { useEffect, useContext } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
@@ -22,6 +23,7 @@ export const BaseFollowButton = ({
 
   const { user } = useAuth()
   const uid = user?.uid
+  const router = useRouter()
 
   const { followStatus, setFollowStatus } = useContext(FollowContext)
 
@@ -52,6 +54,11 @@ export const BaseFollowButton = ({
   ) : null
   const handleClick = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!uid) {
+      const currentPath = router.asPath
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
+      return
+    }
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
