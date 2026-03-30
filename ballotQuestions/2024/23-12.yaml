@@ -1,0 +1,29 @@
+# ballotQuestions/23-12.yaml
+id: "23-12"
+billId: "H4254"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: "This proposed law would gradually increase the minimum hourly wage an
+employer must pay a tipped worker, over the course of five years, on the following
+schedule: - To 64% of the state minimum wage on January 1, 2025; - To 73% of
+the state minimum wage on January 1, 2026; - To 82% of the state minimum wage
+on January 1, 2027; - To 91% of the state minimum wage on January 1, 2028; and
+- To 100% of the state minimum wage on January 1, 2029. The proposed law
+would require employers to continue to pay tipped workers the difference between
+the state minimum wage and the total amount a tipped worker receives in hourly
+wages plus tips through the end of 2028. The proposed law would also permit
+employers to calculate this difference over the entire weekly or bi-weekly payroll
+period. The requirement to pay this difference would cease when the required
+hourly wage for tipped workers would become 100% of the state minimum wage
+on January 1, 2029. Under the proposed law, if an employer pays its workers an
+hourly wage that is at least the state minimum wage, the employer would be
+permitted to administer a “tip pool” that combines all the tips given by customers to
+tipped workers and distributes them among all the workers, including non-tipped
+workers."
+pdfUrl: "https://malegislature.gov/Bills/193/H4254.pdf"
