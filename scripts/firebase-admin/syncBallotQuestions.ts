@@ -10,7 +10,9 @@ export const script: Script = async ({ db, args }) => {
       ? args.dir
       : path.resolve(process.cwd(), "ballotQuestions")
 
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".yaml"))
+  const files = (fs.readdirSync(dir, { recursive: true }) as string[]).filter(
+    f => f.endsWith(".yaml")
+  )
 
   if (files.length === 0) {
     console.log(`No YAML files found in ${dir}`)
@@ -28,5 +30,5 @@ export const script: Script = async ({ db, args }) => {
   }
 
   await batch.commit()
-  console.log(`Committed ${files.length} ballot question(s).`)
+  console.log(`Committed ${files.length} ballot question(s) from directory tree.`)
 }
