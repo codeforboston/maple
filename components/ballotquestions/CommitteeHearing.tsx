@@ -44,19 +44,6 @@ export const CommitteeHearing = ({
             : ""}
           {" here."}
         </Internal>
-      ) : hearing.videoURL ? (
-        <a
-          href={hearing.videoURL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="fw-semibold text-decoration-none"
-        >
-          Watch the committee hearing
-          {ballotQuestionNumber != null
-            ? ` for Question ${ballotQuestionNumber}`
-            : ""}
-          {" here."}
-        </a>
       ) : null}
     </div>
   )
