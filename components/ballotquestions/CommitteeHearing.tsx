@@ -1,3 +1,4 @@
+import { Internal } from "components/links"
 import { DateTime } from "luxon"
 import { Hearing } from "./types"
 
@@ -12,6 +13,7 @@ export const CommitteeHearing = ({
   const now = new Date()
   const isOccurred = startsAt < now
   const status = isOccurred ? "Occurred" : "Scheduled"
+  const hearingId = hearing.id.replace(/^hearing-/, "")
 
   const dateStr = DateTime.fromJSDate(startsAt).toLocaleString({
     year: "numeric",
@@ -31,11 +33,9 @@ export const CommitteeHearing = ({
           <strong>Date:</strong> {dateStr}
         </li>
       </ul>
-      {hearing.videoURL && (
-        <a
-          href={hearing.videoURL}
-          target="_blank"
-          rel="noopener noreferrer"
+      {hearingId ? (
+        <Internal
+          href={`/hearing/${hearingId}`}
           className="fw-semibold text-decoration-none"
         >
           Watch the committee hearing
@@ -43,8 +43,8 @@ export const CommitteeHearing = ({
             ? ` for Question ${ballotQuestionNumber}`
             : ""}
           {" here."}
-        </a>
-      )}
+        </Internal>
+      ) : null}
     </div>
   )
 }
