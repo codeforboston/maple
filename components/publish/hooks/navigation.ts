@@ -35,7 +35,7 @@ export function useFormRedirection() {
 }
 
 type Validator = (state: PublishState) => Step | void
-function validateStep(state: PublishState): Step | void {
+export function validateStep(state: PublishState): Step | void {
   return validators[state.step](state)
 }
 
