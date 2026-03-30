@@ -100,7 +100,20 @@ describe("validateStep", () => {
     ).toBe("write")
   })
 
-  it("redirects ballot-question deep links away from share", () => {
+  it("redirects unpublished ballot-question deep links away from share", () => {
+    expect(
+      validateStep(
+        makePublishState({
+          step: "share",
+          ballotQuestionId: "25-14",
+          position: "endorse",
+          content: "Testimony"
+        })
+      )
+    ).toBe("publish")
+  })
+
+  it("redirects published ballot-question deep links away from share", () => {
     expect(
       validateStep(
         makePublishState({
