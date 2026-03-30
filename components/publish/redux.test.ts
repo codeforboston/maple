@@ -107,7 +107,8 @@ describe("validateStep", () => {
           step: "share",
           ballotQuestionId: "25-14",
           position: "endorse",
-          content: "Testimony"
+          content: "Testimony",
+          publication: { id: "pub-1" }
         })
       )
     ).toBe("publish")
