@@ -5,7 +5,12 @@ import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
-import { useFormRedirection, usePublishState, useTestimonyEmail } from "./hooks"
+import {
+  useFormRedirection,
+  usePublishMode,
+  usePublishState,
+  useTestimonyEmail
+} from "./hooks"
 import * as nav from "./NavigationButtons"
 import { setShowThankYou } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
@@ -17,7 +22,9 @@ import { useTranslation } from "next-i18next"
 /** Allow sharing a user's published testimony. */
 export const ShareTestimony = styled(({ ...rest }) => {
   useFormRedirection()
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const { t } = useTranslation("testimony")
+  if (isBallotQuestion) return null
   return (
     <div {...rest}>
       <StepHeader>{t("publish.shareHeader")}</StepHeader>

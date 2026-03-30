@@ -7,7 +7,7 @@ import { Col, Image, Row, Spinner, Collapse } from "../bootstrap"
 import { Bill, Profile } from "../db"
 import * as links from "../links"
 import { ChooseStance } from "./ChooseStance"
-import { useFormInfo, usePublishState } from "./hooks"
+import { useFormInfo, usePublishCopy, usePublishState } from "./hooks"
 import { KeepNote, KeepNoteMobile } from "./KeepNote"
 import { ProgressBar } from "./ProgressBar"
 import { PublishTestimony } from "./PublishTestimony"
@@ -78,6 +78,7 @@ const PolicyDetailsStyle = styled.div`
 
 const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
   const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
   const [isCollapsed, setCollapsed] = useState(false)
 
   return (
@@ -97,7 +98,10 @@ const PolicyDetails = ({ bill, profile }: { bill: Bill; profile: Profile }) => {
           </div>
         ) : (
           <div>
-            {t("submitTestimonyForm.viewMore")}
+            {copy(
+              "submitTestimonyForm.viewMore",
+              "ballotQuestion.submitTestimonyForm.viewMore"
+            )}
             <FontAwesomeIcon icon={faCaretDown} />
           </div>
         )}
@@ -148,15 +152,23 @@ export const Form = ({
 }
 
 const Overview = ({ className }: { className: string }) => {
-  const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
   return (
     <div className={clsx("d-flex", className)}>
       <Row className="align-items-center">
         <Col md={10} xs={12}>
-          <h1>{t("submitTestimonyForm.overview.title")}</h1>
+          <h1>
+            {copy(
+              "submitTestimonyForm.overview.title",
+              "ballotQuestion.submitTestimonyForm.overview.title"
+            )}
+          </h1>
           <Divider className="me-5" />
           <div className="mt-2" style={{ fontWeight: "bolder" }}>
-            {t("submitTestimonyForm.overview.description")}
+            {copy(
+              "submitTestimonyForm.overview.description",
+              "ballotQuestion.submitTestimonyForm.overview.description"
+            )}
           </div>
         </Col>
         <Col md={2} xs={12}>

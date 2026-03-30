@@ -10,7 +10,7 @@ import * as links from "../links"
 import * as nav from "./NavigationButtons"
 import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
-import { useFormRedirection, usePublishState } from "./hooks"
+import { useFormRedirection, usePublishMode, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
 import { Trans, useTranslation } from "next-i18next"
 type TabKey = "text" | "import"
@@ -38,6 +38,7 @@ function useWriteTestimony() {
 
 export const WriteTestimony = styled(props => {
   const { t } = useTranslation("testimony")
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const write = useWriteTestimony()
   // const tabs = useTabs(write)
 
@@ -46,7 +47,7 @@ export const WriteTestimony = styled(props => {
   return (
     <div {...props}>
       <StepHeader step={2}>{t("submitTestimonyForm.write.header")}</StepHeader>
-      <SelectRecipients className="my-4" />
+      {!isBallotQuestion && <SelectRecipients className="my-4" />}
 
       <div className="divider" />
 
