@@ -1,11 +1,7 @@
 import Link from "next/link"
 import { Image } from "react-bootstrap"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
-import {
-  BallotQuestion,
-  Bill,
-  UsePublishedTestimonyListing
-} from "../db"
+import { BallotQuestion, Bill, UsePublishedTestimonyListing } from "../db"
 import { isActiveBallotQuestionPhase } from "./status"
 import { BallotQuestionTestimonySummary } from "./types"
 
@@ -23,7 +19,9 @@ export const TestimoniesTab = ({
   const isLegislaturePhase = ballotQuestion.ballotStatus === "legislature"
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const totalLabel =
-    testimonySummary.testimonyCount === 1 ? "1 total testimony" : `${testimonySummary.testimonyCount} total testimonies`
+    testimonySummary.testimonyCount === 1
+      ? "1 total testimony"
+      : `${testimonySummary.testimonyCount} total testimonies`
 
   return (
     <div className="d-grid gap-4">
@@ -39,20 +37,19 @@ export const TestimoniesTab = ({
                 backgroundColor: "var(--bs-blue-100)"
               }}
             >
-              <Image
-                src="/bill-thank-you.svg"
-                alt=""
-                width={22}
-                height={18}
-              />
+              <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
             </div>
             <div>
-              <h2 className="h4 mb-1 text-secondary">
-                Testimonies
-              </h2>
-              <p className="text-body-secondary small mb-0">
-                {totalLabel}
-              </p>
+              <h2 className="h4 mb-1 text-secondary">Testimonies</h2>
+              <p className="text-body-secondary small mb-0">{totalLabel}</p>
+              {bill && (
+                <Link
+                  href={`/bills/${bill.court}/${bill.id}#testimonies`}
+                  className="d-inline-block mt-3 small fw-semibold text-decoration-none text-secondary"
+                >
+                  View legislature-phase testimony
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -82,13 +79,6 @@ export const TestimoniesTab = ({
           <div className="mt-4 rounded border bg-light p-3 small text-muted">
             Ballot-question testimony is not yet open during the legislature
             stage, so this feed will stay empty until the question advances.
-            {" "}
-            <Link
-              href={`/bills/${bill.court}/${bill.id}`}
-              className="fw-semibold text-decoration-none"
-            >
-              View the related bill to read legislative testimony.
-            </Link>
           </div>
         )}
       </div>

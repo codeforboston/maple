@@ -17,7 +17,12 @@ export const BallotQuestionNav = ({
     enabled: boolean
   }> = [
     { id: "overview", label: "Overview", enabled: true },
-    { id: "testimonies", label: "Testimonies", enabled: true, badge: testimonyCount },
+    {
+      id: "testimonies",
+      label: "Testimonies",
+      enabled: true,
+      badge: testimonyCount
+    },
     { id: "synthesis", label: "Synthesis & Insights", enabled: false },
     { id: "for_against", label: "For & Against", enabled: false },
     { id: "news", label: "News & Media", enabled: false },
@@ -25,24 +30,22 @@ export const BallotQuestionNav = ({
     { id: "financials", label: "Campaign Financials", enabled: false },
     { id: "map", label: "Map", enabled: false }
   ]
+  const visibleItems = navItems.filter(item => item.enabled)
 
   return (
     <div className="rounded border bg-white p-3 shadow-sm">
       <Nav variant="pills" className="flex-column gap-1">
-        {navItems.map(item => {
+        {visibleItems.map(item => {
           const isActive = activeTab === item.id
           return (
             <Nav.Item key={item.id}>
               <Nav.Link
                 active={false}
                 aria-current={isActive ? "page" : undefined}
-                onClick={() => item.enabled && onTabChange(item.id)}
-                disabled={!item.enabled}
-                className={`rounded px-3 py-2 d-flex align-items-center justify-content-between small fw-medium ${
-                  !item.enabled ? "text-muted" : ""
-                }`}
+                onClick={() => onTabChange(item.id)}
+                className="rounded px-3 py-2 d-flex align-items-center justify-content-between small fw-medium"
                 style={{
-                  cursor: item.enabled ? "pointer" : "default",
+                  cursor: "pointer",
                   backgroundColor: isActive
                     ? "var(--bs-blue-100)"
                     : "transparent",
