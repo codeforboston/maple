@@ -69,7 +69,7 @@ jobs:
           key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
       - name: Smoke Test Firebase Admin CLI
         run: >
-          firebase --project demo-dtp emulators:exec
+          ./node_modules/.bin/firebase --project demo-dtp emulators:exec
           --only auth,firestore
           --import tests/integration/exportedTestData
           "yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env local"
