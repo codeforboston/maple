@@ -4,15 +4,33 @@ import * as yaml from "js-yaml"
 import { BallotQuestion } from "../../functions/src/ballotQuestions/types"
 import { Script } from "./types"
 
+const listYamlFiles = (dir: string, baseDir = dir): string[] => {
+  const files: string[] = []
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      files.push(...listYamlFiles(entryPath, baseDir))
+      continue
+    }
+
+    if (entry.isFile() && entry.name.endsWith(".yaml")) {
+      files.push(path.relative(baseDir, entryPath))
+    }
+  }
+
+  return files
+}
+
 export const script: Script = async ({ db, args }) => {
   const dir =
     typeof args.dir === "string"
       ? args.dir
       : path.resolve(process.cwd(), "ballotQuestions")
 
-  const files = (fs.readdirSync(dir, { recursive: true }) as string[]).filter(
-    f => f.endsWith(".yaml")
-  )
+  const files = listYamlFiles(dir)
 
   if (files.length === 0) {
     console.log(`No YAML files found in ${dir}`)
