@@ -31,5 +31,7 @@ export const script: Script = async ({ db, args }) => {
   }
 
   await batch.commit()
-  console.log(`Committed ${files.length} ballot question(s) from directory tree.`)
+  console.log(
+    `Committed ${files.length} ballot question(s) from directory tree.`
+  )
 }

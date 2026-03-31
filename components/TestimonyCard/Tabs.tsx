@@ -118,8 +118,11 @@ export const Tabs = (props: {
   )
 }
 
-const ComponentContainer = styled.div<{ variant: "default" | "ballotQuestion" }>`
-  margin-bottom: ${props => (props.variant === "ballotQuestion" ? "1.25rem" : "2%")};
+const ComponentContainer = styled.div<{
+  variant: "default" | "ballotQuestion"
+}>`
+  margin-bottom: ${props =>
+    props.variant === "ballotQuestion" ? "1.25rem" : "2%"};
   position: relative;
 `
 const TabsContainer = styled.div<{ variant: "default" | "ballotQuestion" }>`
@@ -131,7 +134,8 @@ const TabsContainer = styled.div<{ variant: "default" | "ballotQuestion" }>`
   margin: ${props =>
     props.variant === "ballotQuestion" ? "0 0 0.75rem" : "0"};
   margin-top: ${props => (props.variant === "ballotQuestion" ? "0" : "15px")};
-  overflow-x: ${props => (props.variant === "ballotQuestion" ? "auto" : "visible")};
+  overflow-x: ${props =>
+    props.variant === "ballotQuestion" ? "auto" : "visible"};
 `
 
 const TabStyle = styled.div<{
@@ -149,15 +153,18 @@ const TabStyle = styled.div<{
       : "black"};
   border: none;
   font: inherit;
-  font-size: ${props => (props.variant === "ballotQuestion" ? "0.95rem" : "1.5rem")};
+  font-size: ${props =>
+    props.variant === "ballotQuestion" ? "0.95rem" : "1.5rem"};
   font-weight: ${props =>
     props.variant === "ballotQuestion" ? (props.active ? 700 : 500) : 400};
   cursor: pointer;
   outline: none;
-  white-space: ${props => (props.variant === "ballotQuestion" ? "nowrap" : "normal")};
+  white-space: ${props =>
+    props.variant === "ballotQuestion" ? "nowrap" : "normal"};
 
   @media (max-width: 768px) {
-    font-size: ${props => (props.variant === "ballotQuestion" ? "0.95rem" : "1rem")};
+    font-size: ${props =>
+      props.variant === "ballotQuestion" ? "0.95rem" : "1rem"};
   }
 
   p {
@@ -171,7 +178,9 @@ const TabSliderContainerStyle = styled.div`
   height: 1px;
   position: absolute;
 `
-const TabSliderTrackStyle = styled.div<{ variant: "default" | "ballotQuestion" }>`
+const TabSliderTrackStyle = styled.div<{
+  variant: "default" | "ballotQuestion"
+}>`
   background-color: #f1f1f1;
   align-self: center;
   width: ${props => (props.variant === "ballotQuestion" ? "100%" : "75%")};

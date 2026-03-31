@@ -159,7 +159,9 @@ describe("useEditTestimony", () => {
       ballotQuestionId
     })
 
-    const legislativeDraft = testDb.doc(`users/${uid}/draftTestimony/${nanoid()}`)
+    const legislativeDraft = testDb.doc(
+      `users/${uid}/draftTestimony/${nanoid()}`
+    )
     await legislativeDraft.create({
       ...draft,
       content: "legislative draft",

@@ -1,10 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col } from "react-bootstrap"
-import {
-  BallotQuestion,
-  Bill,
-  usePublishedTestimonyListing
-} from "../db"
+import { BallotQuestion, Bill, usePublishedTestimonyListing } from "../db"
 import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
@@ -67,7 +63,9 @@ export const BallotQuestionDetails = ({
               testimonyCount={testimonySummary.testimonyCount}
             />
           </Col>
-          <Col lg={9} md={8}>{renderContent()}</Col>
+          <Col lg={9} md={8}>
+            {renderContent()}
+          </Col>
         </Row>
       </Container>
     </>

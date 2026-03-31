@@ -42,7 +42,6 @@ jobs:
         if: always()
         run: yarn check-types
 
-
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest

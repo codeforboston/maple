@@ -1,7 +1,14 @@
 import { dbService } from "components/db/api"
 import { Testimony } from "components/db/testimony"
 import { firestore } from "components/firebase"
-import { collectionGroup, doc, getDoc, getDocs, query, where } from "firebase/firestore"
+import {
+  collectionGroup,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where
+} from "firebase/firestore"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BallotQuestionDetails } from "../../components/ballotquestions/BallotQuestionDetails"
@@ -60,18 +67,22 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const query = Query.safeParse(ctx.query)
   if (!query.success) return { notFound: true }
 
-  const ballotQuestion = await dbService().getBallotQuestion({ id: query.data.id })
+  const ballotQuestion = await dbService().getBallotQuestion({
+    id: query.data.id
+  })
   if (!ballotQuestion) return { notFound: true }
 
   let bill: Bill | null = null
   let hearings: Hearing[] = []
-  const testimonySummary = await getBallotQuestionTestimonySummary(query.data.id)
+  const testimonySummary = await getBallotQuestionTestimonySummary(
+    query.data.id
+  )
 
   if (ballotQuestion.billId) {
     bill =
       (await dbService().getBill({
-      court: ballotQuestion.court,
-      billId: ballotQuestion.billId
+        court: ballotQuestion.court,
+        billId: ballotQuestion.billId
       })) ?? null
 
     if (bill?.hearingIds?.length) {
