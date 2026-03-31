@@ -42,13 +42,17 @@ export const TestimoniesTab = ({
             <div>
               <h2 className="h4 mb-1 text-secondary">Testimonies</h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
-              {bill && (
-                <Link
-                  href={`/bills/${bill.court}/${bill.id}#testimonies`}
-                  className="d-inline-block mt-3 small fw-semibold text-decoration-none text-secondary"
-                >
-                  View legislature-phase testimony
-                </Link>
+              {!isLegislaturePhase && bill && (
+                <p className="small text-body-secondary mt-3 mb-0">
+                  You can review testimony on the related bill{" "}
+                  <Link
+                    href={`/bills/${bill.court}/${bill.id}#testimonies`}
+                    className="fw-semibold text-decoration-none"
+                  >
+                    here
+                  </Link>
+                  .
+                </p>
               )}
             </div>
           </div>
@@ -77,8 +81,15 @@ export const TestimoniesTab = ({
 
         {isLegislaturePhase && bill && (
           <div className="mt-4 rounded border bg-light p-3 small text-muted">
-            Ballot-question testimony is not yet open during the legislature
-            stage, so this feed will stay empty until the question advances.
+            This petition is still before the legislature. Submit testimony on
+            the{" "}
+            <Link
+              href={`/bills/${bill.court}/${bill.id}`}
+              className="fw-semibold text-decoration-none"
+            >
+              related bill
+            </Link>{" "}
+            for this phase.
           </div>
         )}
       </div>

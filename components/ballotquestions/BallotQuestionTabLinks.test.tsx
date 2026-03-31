@@ -16,6 +16,11 @@ const ballotQuestion = {
   fullSummary: "Summary"
 } as any
 
+const ballotPhaseQuestion = {
+  ...ballotQuestion,
+  ballotStatus: "ballot"
+} as any
+
 const bill = {
   id: "H5005",
   court: 194
@@ -30,7 +35,7 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByText("View complete text")).not.toBeInTheDocument()
   })
 
-  it("links the testimonies tab to legislature-phase testimony without bill wording", () => {
+  it("shows the legislature-phase bill submission link in legislature phase", () => {
     render(
       <TestimoniesTab
         ballotQuestion={ballotQuestion}
@@ -46,12 +51,41 @@ describe("Ballot question tab links", () => {
     )
 
     const link = screen.getByRole("link", {
-      name: "View legislature-phase testimony"
+      name: "related bill"
     })
+
+    expect(link).toHaveAttribute("href", "/bills/194/H5005")
+    expect(
+      screen.getByText(/This petition is still before the legislature\./)
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/You can review testimony on the related bill/)
+    ).not.toBeInTheDocument()
+  })
+
+  it("links to legislature-phase testimony during ballot phase", () => {
+    render(
+      <TestimoniesTab
+        ballotQuestion={ballotPhaseQuestion}
+        bill={bill}
+        testimony={{ items: { result: [] }, pagination: {} } as any}
+        testimonySummary={{
+          testimonyCount: 0,
+          endorseCount: 0,
+          neutralCount: 0,
+          opposeCount: 0
+        }}
+      />
+    )
+
+    const link = screen.getByRole("link", { name: "here" })
 
     expect(link).toHaveAttribute("href", "/bills/194/H5005#testimonies")
     expect(
-      screen.queryByText("View the related bill to read legislative testimony.")
+      screen.getByText(/You can review testimony on the related bill/)
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/This petition is still before the legislature\./)
     ).not.toBeInTheDocument()
   })
 
