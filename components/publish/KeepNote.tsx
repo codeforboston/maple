@@ -3,10 +3,12 @@ import { useState } from "react"
 import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 import { Internal } from "components/links"
+import { usePublishMode } from "./hooks"
 import { Trans, useTranslation } from "next-i18next"
 
 export const KeepNote = (props: { currentStep: Step }) => {
   const { t } = useTranslation("testimony")
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   return (
     <NoteContainer className="p-0">
       <HeaderContainer>
@@ -14,7 +16,11 @@ export const KeepNote = (props: { currentStep: Step }) => {
       </HeaderContainer>
       {props.currentStep == "selectLegislators" ||
       props.currentStep == "write" ? (
-        <YourTestimony />
+        isBallotQuestion ? (
+          <BallotQuestionYourTestimony />
+        ) : (
+          <YourTestimony />
+        )
       ) : (
         <PublishingToMAPLE />
       )}
@@ -24,6 +30,7 @@ export const KeepNote = (props: { currentStep: Step }) => {
 
 export const KeepNoteMobile = () => {
   const { t } = useTranslation("testimony")
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const [showYourTestimony, setShowYourTestimony] = useState(false)
   const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false)
 
@@ -63,7 +70,11 @@ export const KeepNoteMobile = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <YourTestimony />
+          {isBallotQuestion ? (
+            <BallotQuestionYourTestimony />
+          ) : (
+            <YourTestimony />
+          )}
         </Modal.Body>
       </Modal>
 
@@ -108,8 +119,39 @@ export const YourTestimony = () => {
   )
 }
 
+export const BallotQuestionYourTestimony = () => {
+  const { t } = useTranslation("testimony")
+  return (
+    <NoteContent>
+      <div className="text-center">
+        <Image
+          className="px-5"
+          alt=""
+          src="/mailbox.svg"
+          style={{ transform: "scaleY(0.85)" }}
+        />
+      </div>
+      <NoteSubtitle>
+        {t("submitTestimonyForm.keepNote.keepInMind")}
+      </NoteSubtitle>
+      <ul>
+        <NoteItem>
+          {t("ballotQuestion.submitTestimonyForm.keepNote.emailPreview")}
+        </NoteItem>
+        <NoteItem>
+          {t("ballotQuestion.submitTestimonyForm.keepNote.shareEmail")}
+        </NoteItem>
+        <NoteItem>
+          {t("ballotQuestion.submitTestimonyForm.keepNote.thankYou")}
+        </NoteItem>
+      </ul>
+    </NoteContent>
+  )
+}
+
 export const PublishingToMAPLE = () => {
   const { t } = useTranslation("testimony")
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   return (
     <NoteContent>
       <div className="text-center">
@@ -128,7 +170,9 @@ export const PublishingToMAPLE = () => {
             components={[<Internal href="/about/faq-page" />]}
           />
         </NoteItem>
-        <NoteItem>{t("submitTestimonyForm.keepNote.emailReminder")}</NoteItem>
+        {!isBallotQuestion && (
+          <NoteItem>{t("submitTestimonyForm.keepNote.emailReminder")}</NoteItem>
+        )}
       </ul>
     </NoteContent>
   )

@@ -11,6 +11,10 @@ export const useTestimonyEmail = () => {
     usePublishState()
   const { profile } = useProfile()
 
+  if (ballotQuestionId) {
+    return { ready: false } as const
+  }
+
   const to = share.recipients
       .map(r => `${r.Name} <${r.EmailAddress}>`)
       .join(";"),

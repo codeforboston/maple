@@ -3,6 +3,7 @@ import Router, { useRouter } from "next/router"
 import { useEffect } from "react"
 import { PublishState, resolveBill, usePublishState } from "."
 import { createAppThunk, useAppDispatch } from "../../hooks"
+import { getPublishMode } from "../mode"
 import { setStep, Step } from "../redux"
 
 export const formUrl = (
@@ -34,13 +35,15 @@ export function useFormRedirection() {
 }
 
 type Validator = (state: PublishState) => Step | void
-function validateStep(state: PublishState): Step | void {
+export function validateStep(state: PublishState): Step | void {
   return validators[state.step](state)
 }
 
 const validators: Record<Step, Validator> = {
   position() {},
   selectLegislators(state) {
+    if (getPublishMode(state.ballotQuestionId) === "ballotQuestion")
+      return "write"
     return this.write(state)
   },
   write({ position, errors }) {
@@ -52,6 +55,8 @@ const validators: Record<Step, Validator> = {
     if (!state.content || state.errors.content) return "write"
   },
   share(state) {
+    if (getPublishMode(state.ballotQuestionId) === "ballotQuestion")
+      return "publish"
     const { publication } = state
     if (!publication) {
       const formError = this.publish(state)
@@ -73,7 +78,12 @@ export const useSyncRouterAndStore = () => {
 
   useEffect(() => {
     dispatch(routeChanged())
-  }, [router.query.billId, router.query.ballotQuestionId, dispatch, router.query.step])
+  }, [
+    router.query.billId,
+    router.query.ballotQuestionId,
+    dispatch,
+    router.query.step
+  ])
 
   useEffect(() => {
     dispatch(storeChanged())

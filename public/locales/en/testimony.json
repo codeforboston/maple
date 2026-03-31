@@ -173,6 +173,33 @@
     "draft": "Draft",
     "emailCta": "Email Your Published Testimony"
   },
+  "ballotQuestion": {
+    "submitTestimonyForm": {
+      "viewMore": "View Question Details",
+      "overview": {
+        "title": "Write and Publish Your Testimony",
+        "description": "Your voice matters. MAPLE helps you 1) write testimony and 2) publish it to our community so others can learn from it."
+      },
+      "keepNote": {
+        "emailPreview": "Your testimony will be published on MAPLE after you click publish.",
+        "shareEmail": "Ballot-question testimony is published on MAPLE so others can read and learn from it.",
+        "thankYou": "Thank you for sharing your perspective with the MAPLE community."
+      }
+    },
+    "quickInfo": {
+      "reference": "Ballot Question {{ballotQuestionId}}"
+    },
+    "preview": {
+      "neutral": "You are <1>neutral</1> on this ballot question",
+      "endorse": "You <1>support</1> this ballot question",
+      "oppose": "You <1>oppose</1> this ballot question"
+    },
+    "publish": {
+      "confirmAndPublish": "Confirm and Publish",
+      "instructions": "After clicking “publish,” your testimony will be published on MAPLE.",
+      "update": "Update Testimony"
+    }
+  },
   "quickInfo": {
     "bill": "Bill",
     "primarySponsor": "Primary Sponsor",

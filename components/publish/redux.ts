@@ -3,6 +3,7 @@ import { createAppThunk } from "components/hooks"
 import { indexOf, isEqual, uniqBy } from "lodash"
 import { Literal as L, Static, Union } from "runtypes"
 import { authChanged } from "../auth/redux"
+import { getPublishMode } from "./mode"
 import {
   Bill,
   DraftTestimony,
@@ -28,6 +29,18 @@ export const Step = Union(
 )
 export type Step = Static<typeof Step>
 export const stepsInOrder = Step.alternatives.map(s => s.value)
+export const ballotQuestionStepsInOrder: Step[] = [
+  "position",
+  "write",
+  "publish"
+]
+
+const stepsInOrderForState = ({
+  ballotQuestionId
+}: Pick<State, "ballotQuestionId">) =>
+  getPublishMode(ballotQuestionId) === "ballotQuestion"
+    ? ballotQuestionStepsInOrder
+    : stepsInOrder
 
 export const isComplete = (current: Step, step: Step) => {
   return !!current && stepsInOrder.indexOf(current) > stepsInOrder.indexOf(step)
@@ -357,15 +370,17 @@ const resetForm = (state: State) => ({
 export const nextStep = createAppThunk("publish/nextStep", async (_, api) => {
   const {
     profile: { profile },
-    publish: { step }
+    publish
   } = api.getState()
+  const { step } = publish
   const hasLegislators = Boolean(profile?.representative && profile.senator)
+  const orderedSteps = stepsInOrderForState(publish)
 
-  let i = indexOf(stepsInOrder, step)
-  let nextStep = i !== -1 && stepsInOrder[i + 1]
+  let i = indexOf(orderedSteps, step)
+  let nextStep = i !== -1 && orderedSteps[i + 1]
 
   if (nextStep === "selectLegislators" && hasLegislators)
-    nextStep = stepsInOrder[i + 2]
+    nextStep = orderedSteps[i + 2]
 
   if (nextStep) api.dispatch(setStep(nextStep))
 })
@@ -375,15 +390,17 @@ export const previousStep = createAppThunk(
   async (_, api) => {
     const {
       profile: { profile },
-      publish: { step }
+      publish
     } = api.getState()
+    const { step } = publish
     const hasLegislators = Boolean(profile?.representative && profile.senator)
+    const orderedSteps = stepsInOrderForState(publish)
 
-    let i = indexOf(stepsInOrder, step)
-    let nextStep = stepsInOrder[i - 1]
+    let i = indexOf(orderedSteps, step)
+    let nextStep = orderedSteps[i - 1]
 
     if (nextStep === "selectLegislators" && hasLegislators)
-      nextStep = stepsInOrder[i - 2]
+      nextStep = orderedSteps[i - 2]
 
     if (nextStep) api.dispatch(setStep(nextStep))
   }
