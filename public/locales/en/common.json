@@ -73,10 +73,16 @@
   "button": {
     "follow": "Follow",
     "following": "Following",
-    "followed": "Followed"
+    "followed": "Followed",
+    "unfollow": "Unfollow"
   },
   "calendar": "Our Calendar",
   "copiedToClipboard": "Copied to Clipboard!",
+  "confirmation": {
+    "unfollowMessage": "Are you sure you want to unfollow?",
+    "yes": "Yes",
+    "no": "No"
+  },
   "hideAns": "Hide Answer",
   "date": "{{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric')}}",
   "edit": "Edit",
