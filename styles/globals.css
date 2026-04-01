@@ -159,3 +159,13 @@
   letter-spacing: 0.015em;
   padding: 7px, 8px, 7px, 8px;
 }
+
+.ballot-question-tab-button {
+  border: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.ballot-question-tab-button:focus-visible {
+  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline-offset: 2px;
+}
