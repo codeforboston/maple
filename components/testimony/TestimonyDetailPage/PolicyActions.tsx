@@ -5,6 +5,7 @@ import { formUrl } from "components/publish"
 import { FC, ReactElement, useContext, useEffect } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import { useAuth } from "components/auth"
 import { TopicQuery } from "components/shared/FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
@@ -39,6 +40,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
 
   const { user } = useAuth()
   const uid = user?.uid
+  const router = useRouter()
 
   const { followStatus, setFollowStatus } = useContext(FollowContext)
 
@@ -69,6 +71,12 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   ) : null
   const handleClick = (event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault()
+
+    if (!uid) {
+      router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`)
+      return
+    }
+
     isFollowing ? UnfollowClick() : FollowClick()
   }
 
