@@ -1,5 +1,25 @@
 {
   "header": "Edit Profile",
+  "getVerified": "Get Verified",
+  "phoneVerificationModalTitle": "Verify your phone number",
+  "phoneVerification": {
+    "phoneLabel": "Phone number (Ex 617 555-1234)",
+    "phonePlaceholder": "617 555-1234",
+    "continue": "Continue",
+    "codeLabel": "Verification code",
+    "codePlaceholder": "Enter 6-digit code",
+    "verify": "Verify",
+    "errors": {
+      "credentialAlreadyInUse": "This phone number is already linked to another account.",
+      "providerAlreadyLinked": "This account already has a phone number linked.",
+      "invalidPhoneNumber": "Please enter a valid phone number\n(e.g. 617 555-1234).",
+      "operationNotAllowed": "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org."
+    },
+    "signedInRequired": "You must be signed in to verify your phone.",
+    "enterVerificationCode": "Please enter the verification code."
+  },
+  "verifiedUser": "Verified User",
+  "verifiedUserBadgeAlt": "Verified user badge",
   "setting": "Settings",
   "privacySetting": "Privacy Settings",
   "save": "Save",
@@ -31,11 +51,6 @@
     "unfollow": "Unfollow",
     "follow": "Follow",
     "follower_info_disclaimer": "Names and follower counts are not publicly available; only visible to you."
-  },
-  "confirmation": {
-    "unfollowMessage": "Are you sure you want to unfollow",
-    "yes": "Yes",
-    "no": "No"
   },
   "email": {
     "frequencyQuery": "How often would you like to receive emails?",

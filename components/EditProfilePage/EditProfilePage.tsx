@@ -17,6 +17,7 @@ import {
 import { EditProfileHeader } from "./EditProfileHeader"
 import { FollowingTab } from "./FollowingTab"
 import { PersonalInfoTab } from "./PersonalInfoTab"
+import PhoneVerificationModal from "./PhoneVerificationModal"
 import ProfileSettingsModal from "./ProfileSettingsModal"
 import {
   StyledTabContent,
@@ -87,6 +88,8 @@ export function EditProfileForm({
 
   const [formUpdated, setFormUpdated] = useState(false)
   const [settingsModal, setSettingsModal] = useState<"show" | null>(null)
+  const [showPhoneVerificationModal, setShowPhoneVerificationModal] =
+    useState(false)
   const [notifications, setNotifications] = useState<Frequency>(
     notificationFrequency || "Weekly"
   )
@@ -178,8 +181,10 @@ export function EditProfileForm({
         <EditProfileHeader
           formUpdated={formUpdated}
           onSettingsModalOpen={onSettingsModalOpen}
+          onGetVerifiedClick={() => setShowPhoneVerificationModal(true)}
           uid={uid}
           role={profile.role}
+          phoneVerified={profile.phoneVerified}
         />
         <TabContainer
           defaultActiveKey="about-you"
@@ -210,6 +215,10 @@ export function EditProfileForm({
         onHide={close}
         onSettingsModalClose={() => setSettingsModal(null)}
         show={settingsModal === "show"}
+      />
+      <PhoneVerificationModal
+        show={showPhoneVerificationModal}
+        onHide={() => setShowPhoneVerificationModal(false)}
       />
     </>
   )

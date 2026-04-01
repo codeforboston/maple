@@ -39,6 +39,7 @@ export {
   startMemberBatches
 } from "./members"
 export { finishSignup, finishSignupv2 } from "./profile"
+export { completePhoneVerification, finishSignup, finishSignupv2 } from "./profile"
 export { checkSearchIndexVersion, searchHealthCheck } from "./search"
 export {
   deleteTestimony,

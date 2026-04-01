@@ -34,6 +34,10 @@ service cloud.firestore {
         // email digest notification times
         return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['nextDigestAt'])
       }
+      function doesNotChangePhoneVerified() {
+        // Only the completePhoneVerification cloud function (Admin SDK) sets phoneVerified
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['phoneVerified'])
+      }
       // either the change doesn't include the public field, 
       // or the user is a base user (i.e. not an org)
       function validPublicChange() {
@@ -52,7 +56,7 @@ service cloud.firestore {
 
       // Allow users to make updates except to delete their profile or set the role field.
       // Only admins can delete a user profile or set the user role field. 
-      allow update: if validUser() && doesNotChangeRole() && validPublicChange() && doesNotChangeNextDigestAt()
+      allow update: if validUser() && doesNotChangeRole() && validPublicChange() && doesNotChangeNextDigestAt() && doesNotChangePhoneVerified()
     }
     // Allow querying publications individually or with a collection group.
     match /{path=**}/publishedTestimony/{id} {
@@ -68,6 +72,12 @@ service cloud.firestore {
       allow create: if true
       // Only admins can do anything with it
       allow read, write: if request.auth.token.get("role", "user") == "admin"
+    }
+    
+    // Admin-managed news collection used by the admin UI and public news page
+    match /news/{nid} {
+      allow read: if true;
+      allow write: if request.auth.token.get("role", "user") == "admin";
     }
     match /users/{uid} {
       allow read, write: if request.auth.token.get("role", "user") == "admin"
