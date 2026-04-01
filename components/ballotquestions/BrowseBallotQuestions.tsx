@@ -1,11 +1,10 @@
-import { Form } from "components/bootstrap"
+import { Button, Card, Form, Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { useDeferredValue, useState } from "react"
 import styled from "styled-components"
-import { Card, Image } from "../bootstrap"
-import { maple } from "../links"
 import type { BallotQuestion } from "../db"
+import { maple } from "../links"
 
 export type BallotQuestionBrowseItem = {
   id: string
@@ -14,81 +13,71 @@ export type BallotQuestionBrowseItem = {
   electionYear: number
   court: number
   ballotStatus: BallotQuestion["ballotStatus"]
+  ballotQuestionNumber: number | null
   endorseCount: number
   neutralCount: number
   opposeCount: number
 }
 
-const List = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-`
+const STATUS_LABELS: Record<BallotQuestion["ballotStatus"], string> = {
+  legislature: "Legislature",
+  qualifying: "Qualifying",
+  certified: "Certified",
+  ballot: "On Ballot",
+  enacted: "Enacted",
+  failed: "Failed",
+  withdrawn: "Withdrawn"
+}
 
-const StyledCard = styled(Card)`
-  border: none;
-  border-radius: 4px;
-  overflow: hidden;
-  outline-color: var(--bs-blue);
-  outline-style: solid;
-  outline-width: 0;
-  transition: outline-width 0.1s;
-
-  &:hover {
-    outline-width: 2px;
+const STATUS_STYLES: Record<
+  BallotQuestion["ballotStatus"],
+  { background: string; color: string; border: string }
+> = {
+  legislature: {
+    background: "#e8efff",
+    color: "#1d3f8a",
+    border: "#c9d8ff"
+  },
+  qualifying: {
+    background: "#fff3d9",
+    color: "#865300",
+    border: "#f5d78a"
+  },
+  certified: {
+    background: "#e6f6ee",
+    color: "#0b6a42",
+    border: "#bae6d0"
+  },
+  ballot: {
+    background: "#fde8ef",
+    color: "#902141",
+    border: "#f4bfd0"
+  },
+  enacted: {
+    background: "#e8f6ea",
+    color: "#1d5d2d",
+    border: "#c8e7cf"
+  },
+  failed: {
+    background: "#f1f5f9",
+    color: "#475569",
+    border: "#d7e0ea"
+  },
+  withdrawn: {
+    background: "#fff0e0",
+    color: "#92400e",
+    border: "#f5d0a7"
   }
+}
 
-  &:active {
-    outline-width: 4px;
-  }
-
-  .card-body {
-    padding: 0.75rem 1rem;
-  }
-`
-
-const MetaRow = styled.div`
-  color: var(--bs-blue);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8rem;
-  justify-content: space-between;
-  margin-bottom: 0.35rem;
-`
-
-const SentimentRow = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-`
-
-const SentimentStat = styled.span`
-  display: inline-flex;
-  align-items: center;
-  color: var(--bs-blue);
-  font-size: 0.8rem;
-  font-weight: 600;
-  gap: 0.35rem;
-
-  img {
-    width: 18px;
-    height: 18px;
-  }
-`
-
-const ElectionYear = styled.span`
-  white-space: nowrap;
-`
-
-const Controls = styled.div`
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(15, 23, 42, 0.06);
+const Controls = styled.section`
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #d9e2ec;
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
   display: grid;
-  gap: 0.9rem;
-  margin-bottom: 1.25rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   padding: 1rem;
 `
 
@@ -106,43 +95,206 @@ const ControlsGrid = styled.div`
   }
 `
 
-const MetaStack = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.65rem;
-  margin-top: 0.35rem;
-`
-
-const MetaItem = styled.span`
-  color: #6c757d;
-  font-size: 0.82rem;
-`
-
-const EmptyState = styled.div`
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(15, 23, 42, 0.06);
-  color: #6c757d;
-  padding: 1rem;
-`
-
 const FilterLabel = styled(Form.Label)`
-  color: #495057;
+  color: #334155;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 0.35rem;
 `
 
-const STATUS_LABELS: Record<BallotQuestion["ballotStatus"], string> = {
-  legislature: "Legislature",
-  qualifying: "Qualifying",
-  certified: "Certified",
-  ballot: "On Ballot",
-  enacted: "Enacted",
-  failed: "Failed",
-  withdrawn: "Withdrawn"
-}
+const ResultsBar = styled.div`
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+`
+
+const ResultsSummary = styled.p.attrs({
+  role: "status",
+  "aria-live": "polite"
+})`
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+`
+
+const List = styled.div.attrs({ role: "list" })`
+  display: grid;
+  gap: 1.15rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const ListItem = styled.div.attrs({ role: "listitem" })`
+  min-width: 0;
+`
+
+const StyledCard = styled(Card)`
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  border: 1px solid #d9e2ec;
+  border-radius: 1rem;
+  box-shadow: 0 0.3rem 1rem rgba(15, 23, 42, 0.06);
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.16s ease, box-shadow 0.16s ease,
+    border-color 0.16s ease;
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    padding: 1.1rem 1.15rem 1rem;
+  }
+`
+
+const CardLink = styled.a`
+  color: inherit;
+  display: block;
+  height: 100%;
+  text-decoration: none;
+
+  &:hover ${StyledCard} {
+    border-color: #bfd0e2;
+    box-shadow: 0 0.65rem 1.35rem rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    border-radius: 1rem;
+    outline: 3px solid var(--bs-blue);
+    outline-offset: 4px;
+  }
+`
+
+const TopRow = styled.div`
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+`
+
+const StatusBadge = styled.span<{ $status: BallotQuestion["ballotStatus"] }>`
+  background: ${({ $status }) => STATUS_STYLES[$status].background};
+  border: 1px solid ${({ $status }) => STATUS_STYLES[$status].border};
+  border-radius: 999px;
+  color: ${({ $status }) => STATUS_STYLES[$status].color};
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 0.4rem 0.62rem;
+  white-space: nowrap;
+`
+
+const DocumentId = styled.span`
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+`
+
+const TitleBlock = styled.div`
+  display: grid;
+  gap: 0.45rem;
+`
+
+const QuestionEyebrow = styled.span`
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+`
+
+const QuestionTitle = styled(Card.Title)`
+  color: #102a43;
+  font-size: 1.24rem;
+  line-height: 1.34;
+  margin: 0;
+`
+
+const Summary = styled.p`
+  color: #52606d;
+  display: -webkit-box;
+  font-size: 0.98rem;
+  line-height: 1.66;
+  margin: 0;
+  min-height: 6.9rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+`
+
+const MetaStack = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+`
+
+const MetaItem = styled.span`
+  background: #f5f8fb;
+  border: 1px solid #dce5ee;
+  border-radius: 999px;
+  color: #486581;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.24rem 0.55rem;
+`
+
+const FooterRow = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.1rem;
+`
+
+const SentimentRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`
+
+const SentimentStat = styled.span`
+  align-items: center;
+  background: #f7f9fc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  color: #284b7a;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  padding: 0.32rem 0.55rem;
+
+  img {
+    height: 16px;
+    width: 16px;
+  }
+`
+
+const EmptyState = styled.div`
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #d9e2ec;
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
+  color: #52606d;
+  padding: 1rem;
+`
 
 export const BrowseBallotQuestions = ({
   items,
@@ -194,9 +346,22 @@ export const BrowseBallotQuestions = ({
     return matchesYear && matchesCourt && matchesStatus && matchesSearch
   })
 
+  const hasActiveFilters =
+    searchQuery.length > 0 ||
+    selectedYear !== String(currentYear) ||
+    selectedCourt !== "all" ||
+    selectedStatus !== "all"
+
+  const resetFilters = () => {
+    setSearchQuery("")
+    setSelectedYear(String(currentYear))
+    setSelectedCourt("all")
+    setSelectedStatus("all")
+  }
+
   return (
     <>
-      <Controls>
+      <Controls aria-label="Filter ballot questions">
         <ControlsGrid>
           <div>
             <FilterLabel htmlFor="ballot-question-search">
@@ -273,6 +438,26 @@ export const BrowseBallotQuestions = ({
             </Form.Select>
           </div>
         </ControlsGrid>
+
+        <ResultsBar>
+          <ResultsSummary>
+            {t("ballot_question_results_summary", {
+              ns: "search",
+              count: filteredItems.length,
+              total: items.length
+            })}
+          </ResultsSummary>
+
+          {hasActiveFilters ? (
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={resetFilters}
+            >
+              {t("ballot_question_reset_filters", { ns: "search" })}
+            </Button>
+          ) : null}
+        </ResultsBar>
       </Controls>
 
       {filteredItems.length === 0 ? (
@@ -282,67 +467,91 @@ export const BrowseBallotQuestions = ({
       ) : (
         <List>
           {filteredItems.map(item => (
-            <Link
-              key={item.id}
-              href={maple.ballotQuestion({ id: item.id })}
-              className="text-decoration-none text-reset"
-            >
-              <StyledCard>
-                <Card.Body className="bg-white">
-                  <MetaRow>
-                    <span>
-                      {t("ballot_question_document_id", {
-                        ns: "search",
-                        id: item.id
-                      })}
-                    </span>
-                    <SentimentRow>
-                      <SentimentStat>
-                        <Image
-                          src="/thumbs-endorse.svg"
-                          alt={t("counts.endorsements.alt", {
-                            ns: "testimony"
+            <ListItem key={item.id}>
+              <Link href={maple.ballotQuestion({ id: item.id })} legacyBehavior>
+                <CardLink
+                  aria-label={`${item.title} (${
+                    STATUS_LABELS[item.ballotStatus]
+                  })`}
+                >
+                  <StyledCard>
+                    <Card.Body>
+                      <TopRow>
+                        <StatusBadge $status={item.ballotStatus}>
+                          {STATUS_LABELS[item.ballotStatus]}
+                        </StatusBadge>
+                        <SentimentRow>
+                          <SentimentStat>
+                            <Image
+                              src="/thumbs-endorse.svg"
+                              alt={t("counts.endorsements.alt", {
+                                ns: "testimony"
+                              })}
+                            />
+                            {item.endorseCount}
+                          </SentimentStat>
+                          <SentimentStat>
+                            <Image
+                              src="/thumbs-neutral.svg"
+                              alt={t("counts.neutral.alt", { ns: "testimony" })}
+                            />
+                            {item.neutralCount}
+                          </SentimentStat>
+                          <SentimentStat>
+                            <Image
+                              src="/thumbs-oppose.svg"
+                              alt={t("counts.oppose.alt", { ns: "testimony" })}
+                            />
+                            {item.opposeCount}
+                          </SentimentStat>
+                        </SentimentRow>
+                      </TopRow>
+
+                      <TitleBlock>
+                        {item.ballotQuestionNumber ? (
+                          <QuestionEyebrow>
+                            {t("ballot_question_number", {
+                              ns: "search",
+                              number: item.ballotQuestionNumber
+                            })}
+                          </QuestionEyebrow>
+                        ) : null}
+                        <QuestionTitle as="h2">{item.title}</QuestionTitle>
+                      </TitleBlock>
+
+                      <Summary>
+                        {item.fullSummary ||
+                          t("ballot_question_no_summary", { ns: "search" })}
+                      </Summary>
+
+                      <MetaStack>
+                        <MetaItem>
+                          {t("ballot_question_election_year", {
+                            ns: "search",
+                            year: item.electionYear
                           })}
-                        />
-                        {item.endorseCount}
-                      </SentimentStat>
-                      <SentimentStat>
-                        <Image
-                          src="/thumbs-neutral.svg"
-                          alt={t("counts.neutral.alt", { ns: "testimony" })}
-                        />
-                        {item.neutralCount}
-                      </SentimentStat>
-                      <SentimentStat>
-                        <Image
-                          src="/thumbs-oppose.svg"
-                          alt={t("counts.oppose.alt", { ns: "testimony" })}
-                        />
-                        {item.opposeCount}
-                      </SentimentStat>
-                    </SentimentRow>
-                  </MetaRow>
-                  <Card.Title as="h5" className="mb-2">
-                    {item.title}
-                  </Card.Title>
-                  <MetaStack>
-                    <ElectionYear>
-                      {t("ballot_question_election_year", {
-                        ns: "search",
-                        year: item.electionYear
-                      })}
-                    </ElectionYear>
-                    <MetaItem>
-                      {t("ballot_question_court", {
-                        ns: "search",
-                        court: item.court
-                      })}
-                    </MetaItem>
-                    <MetaItem>{STATUS_LABELS[item.ballotStatus]}</MetaItem>
-                  </MetaStack>
-                </Card.Body>
-              </StyledCard>
-            </Link>
+                        </MetaItem>
+                        <MetaItem>
+                          {t("ballot_question_court", {
+                            ns: "search",
+                            court: item.court
+                          })}
+                        </MetaItem>
+                      </MetaStack>
+
+                      <FooterRow>
+                        <DocumentId>
+                          {t("ballot_question_document_id", {
+                            ns: "search",
+                            id: item.id
+                          })}
+                        </DocumentId>
+                      </FooterRow>
+                    </Card.Body>
+                  </StyledCard>
+                </CardLink>
+              </Link>
+            </ListItem>
           ))}
         </List>
       )}
