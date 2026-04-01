@@ -177,7 +177,9 @@ class PublishTestimonyTransaction {
     const bqId = draft.ballotQuestionId ?? null
     const [billSnap, bqSnap] = await Promise.all([
       db.doc(`/generalCourts/${draft.court}/bills/${draft.billId}`).get(),
-      bqId !== null ? db.doc(`/ballotQuestions/${bqId}`).get() : Promise.resolve(null)
+      bqId !== null
+        ? db.doc(`/ballotQuestions/${bqId}`).get()
+        : Promise.resolve(null)
     ])
 
     if (!billSnap.exists) {

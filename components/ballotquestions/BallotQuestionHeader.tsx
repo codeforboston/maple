@@ -75,7 +75,9 @@ export const BallotQuestionHeader = ({
           <Col lg={4}>
             <div className="border-start ps-lg-4 h-100">
               <div className="mb-3">
-                {bill && notifications && user && <FollowBillButton bill={bill} />}
+                {bill && notifications && user && (
+                  <FollowBillButton bill={bill} />
+                )}
               </div>
               <YourTestimonyPanel ballotQuestion={ballotQuestion} bill={bill} />
             </div>

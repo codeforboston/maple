@@ -33,19 +33,29 @@ describe("CommitteeHearing", () => {
   it("shows video link with question number when both are present", () => {
     render(
       <CommitteeHearing
-        hearing={{ id: "1", startsAt: PAST_MS, videoURL: "https://example.com/video" }}
+        hearing={{
+          id: "1",
+          startsAt: PAST_MS,
+          videoURL: "https://example.com/video"
+        }}
         ballotQuestionNumber={4}
       />
     )
     const link = screen.getByRole("link")
     expect(link).toHaveAttribute("href", "https://example.com/video")
-    expect(link).toHaveTextContent("Watch the committee hearing for Question 4 here.")
+    expect(link).toHaveTextContent(
+      "Watch the committee hearing for Question 4 here."
+    )
   })
 
   it("shows generic video link text when no question number", () => {
     render(
       <CommitteeHearing
-        hearing={{ id: "1", startsAt: PAST_MS, videoURL: "https://example.com/video" }}
+        hearing={{
+          id: "1",
+          startsAt: PAST_MS,
+          videoURL: "https://example.com/video"
+        }}
       />
     )
     const link = screen.getByRole("link")
