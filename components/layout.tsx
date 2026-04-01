@@ -52,14 +52,23 @@ export const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
           </Head>
           <FollowContext.Provider value={{ followStatus, setFollowStatus }}>
             <PageContainer>
-              <MainNavbar />
+              <a href="#main-content" className="skip-link">
+                Skip to main content
+              </a>
+              <header>
+                <MainNavbar />
+              </header>
               <AuthModal />
-              <div className={`col`}>{children}</div>
-              <PageFooter
-                authenticated={authenticated}
-                user={user as any}
-                signOut={signOutAndRedirectToHome}
-              />
+              <main id="main-content" className="col" tabIndex={-1}>
+                {children}
+              </main>
+              <footer>
+                <PageFooter
+                  authenticated={authenticated}
+                  user={user as any}
+                  signOut={signOutAndRedirectToHome}
+                />
+              </footer>
             </PageContainer>
           </FollowContext.Provider>
         </>
