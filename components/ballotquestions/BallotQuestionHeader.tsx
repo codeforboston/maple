@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { BallotQuestion, Bill } from "../db"
 import { useFlags } from "../featureFlags"
-import { FollowBillButton } from "../shared/FollowButton"
+import { FollowBallotQuestionButton } from "../shared/FollowButton"
 import { DescriptionBox } from "./DescriptionBox"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
 
@@ -75,8 +75,8 @@ export const BallotQuestionHeader = ({
           <Col lg={4}>
             <div className="border-start ps-lg-4 h-100">
               <div className="mb-3">
-                {bill && notifications && user && (
-                  <FollowBillButton bill={bill} />
+                {notifications && user && (
+                  <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
                 )}
               </div>
               <YourTestimonyPanel ballotQuestion={ballotQuestion} bill={bill} />

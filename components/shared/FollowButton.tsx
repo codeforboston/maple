@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next"
 import { useEffect, useContext, useMemo, useState } from "react"
 import { Button } from "react-bootstrap"
 import { useAuth } from "../auth"
-import { Bill } from "../db"
+import { BallotQuestion, Bill } from "../db"
 import {
   followsTopic,
   followBill,
@@ -11,7 +11,10 @@ import {
   unfollowBill,
   unfollowProfile,
   billTopicName,
-  profileTopicName
+  profileTopicName,
+  ballotQuestionTopicName,
+  followBallotQuestion,
+  unfollowBallotQuestion
 } from "./FollowingQueries"
 import { FollowContext } from "./FollowContext"
 import { Modal } from "components/bootstrap"
@@ -183,5 +186,24 @@ function ConfirmFollowModal({
         </div>
       </Modal.Body>
     </Modal>
+  )
+}
+
+export function FollowBallotQuestionButton({
+  ballotQuestion
+}: {
+  ballotQuestion: BallotQuestion
+}) {
+  const uid = useAuth().user?.uid
+  const topicName = ballotQuestionTopicName(
+    ballotQuestion.court,
+    ballotQuestion.id
+  )
+  return (
+    <BaseFollowButton
+      topicName={topicName}
+      followAction={() => followBallotQuestion(uid, ballotQuestion)}
+      unfollowAction={() => unfollowBallotQuestion(uid, ballotQuestion)}
+    />
   )
 }
