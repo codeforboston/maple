@@ -1,4 +1,5 @@
-import { Image } from "react-bootstrap"
+import type { ReactNode } from "react"
+import { Col, Image, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
 import { CommitteeHearing } from "./CommitteeHearing"
 import { Hearing } from "./types"
@@ -15,64 +16,99 @@ export const OverviewTab = ({
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
 
   return (
-    <div className="rounded border bg-white px-4 py-4 shadow-sm">
-      <div className="d-flex align-items-start gap-3 mb-4">
-        <div
-          className="rounded border d-flex align-items-center justify-content-center flex-shrink-0"
-          style={{
-            width: "2.5rem",
-            height: "2.5rem",
-            borderColor: "var(--bs-blue-300)",
-            backgroundColor: "var(--bs-blue-100)"
-          }}
-        >
-          <Image src="/speaker-with-thumbs.svg" alt="" width={22} height={22} />
-        </div>
-        <div>
-          <h2 className="h4 mb-1 text-secondary">Overview</h2>
-          <p className="text-body-secondary small mb-0">
-            The ballot question at a high-level.
-          </p>
-        </div>
-      </div>
-
-      {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
-        <section className="mb-4">
-          <h3 className="h6 fw-semibold mb-3">Key Details</h3>
+    <div className="d-grid gap-4">
+      <SectionCard>
+        <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded border px-3 py-3"
+            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
-              backgroundColor: "var(--bs-blue-100)",
-              borderColor: "var(--bs-blue-300)"
+              width: "2.75rem",
+              height: "2.75rem",
+              borderColor: "rgba(94, 114, 228, 0.18)",
+              backgroundColor: "rgba(94, 114, 228, 0.08)"
             }}
           >
-            <div className="small fw-semibold mb-2">At a glance:</div>
-            <ul className="mb-0 ps-3 small">
-              {ballotQuestion.atAGlance.map(
-                (item: { label: string; value: string }, idx: number) => (
-                  <li key={idx}>
-                    <strong>{item.label}:</strong> {item.value}
-                  </li>
-                )
-              )}
-            </ul>
+            <Image
+              src="/speaker-with-thumbs.svg"
+              alt=""
+              width={22}
+              height={22}
+            />
           </div>
-        </section>
+          <div>
+            <h2 className="h4 mb-1 text-secondary">Overview</h2>
+            <p className="text-body-secondary small mb-0">
+              Understand the question, key details, and legislature-phase
+              context in one place.
+            </p>
+          </div>
+        </div>
+      </SectionCard>
+
+      {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark">Key Details</h3>
+          <Row className="g-3">
+            {ballotQuestion.atAGlance.map((item, idx) => (
+              <Col key={idx} md={6}>
+                <div
+                  className="rounded-4 border h-100 px-3 py-3"
+                  style={{
+                    backgroundColor: "rgba(248, 250, 252, 0.9)",
+                    borderColor: "rgba(15, 23, 42, 0.08)"
+                  }}
+                >
+                  <div
+                    className="text-uppercase fw-semibold mb-2"
+                    style={{
+                      fontSize: "0.72rem",
+                      letterSpacing: "0.08em",
+                      color: "#64748b"
+                    }}
+                  >
+                    {item.label}
+                  </div>
+                  <div
+                    style={{
+                      color: "#1e293b",
+                      fontSize: "0.98rem",
+                      lineHeight: 1.5
+                    }}
+                  >
+                    {item.value}
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </SectionCard>
       )}
 
       {ballotQuestion.fullSummary && (
-        <section className="mb-4">
-          <h3 className="h6 fw-semibold mb-3">Final Summary</h3>
-          <p className="small lh-lg mb-0" style={{ whiteSpace: "pre-wrap" }}>
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark">Final Summary</h3>
+          <p
+            className="mb-0"
+            style={{
+              color: "#334155",
+              fontSize: "0.98rem",
+              lineHeight: 1.8,
+              maxWidth: "68ch",
+              whiteSpace: "pre-wrap"
+            }}
+          >
             {ballotQuestion.fullSummary}
           </p>
-        </section>
+        </SectionCard>
       )}
 
       {bill && sortedHearings.length > 0 && (
-        <section>
-          <h3 className="h6 fw-semibold mb-3">Committee Hearing</h3>
-          <p className="small text-body-secondary mb-3">
+        <SectionCard>
+          <h3 className="h5 mb-2 text-dark">Committee Hearing</h3>
+          <p
+            className="small text-body-secondary mb-4"
+            style={{ maxWidth: "62ch" }}
+          >
             Committee hearings are public meetings where legislators examine a
             proposed law, ask questions, and hear testimony from the public and
             experts. What happens at a hearing can influence whether a proposal
@@ -87,8 +123,22 @@ export const OverviewTab = ({
               />
             ))}
           </div>
-        </section>
+        </SectionCard>
       )}
     </div>
+  )
+}
+
+function SectionCard({ children }: { children: ReactNode }) {
+  return (
+    <section
+      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
+      style={{
+        borderColor: "rgba(15, 23, 42, 0.08)",
+        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+      }}
+    >
+      {children}
+    </section>
   )
 }

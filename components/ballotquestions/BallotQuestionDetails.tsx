@@ -1,10 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col } from "react-bootstrap"
-import {
-  BallotQuestion,
-  Bill,
-  usePublishedTestimonyListing
-} from "../db"
+import { BallotQuestion, Bill, usePublishedTestimonyListing } from "../db"
 import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
@@ -61,13 +57,17 @@ export const BallotQuestionDetails = ({
       <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
           <Col lg={3} md={4} className="mb-4">
-            <BallotQuestionNav
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              testimonyCount={testimonySummary.testimonyCount}
-            />
+            <div className="sticky-top" style={{ top: "1rem" }}>
+              <BallotQuestionNav
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                testimonyCount={testimonySummary.testimonyCount}
+              />
+            </div>
           </Col>
-          <Col lg={9} md={8}>{renderContent()}</Col>
+          <Col lg={9} md={8}>
+            {renderContent()}
+          </Col>
         </Row>
       </Container>
     </>
