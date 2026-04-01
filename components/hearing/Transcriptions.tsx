@@ -216,7 +216,7 @@ export const Transcriptions = ({
     const resultString: string = convertToString(startTime)
     const currentIndex = transcripts[activeVideo]
       ? transcripts[activeVideo]!.transcript.findIndex(
-          element => parseInt(resultString, 10) <= element.end / 1000
+          element => parseInt(resultString, 10) < element.end / 1000
         )
       : -1
     if (startTime && currentIndex !== -1 && !hasScrolledToInitial.current) {
@@ -244,7 +244,7 @@ export const Transcriptions = ({
       if (videoRef.current.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
         return
       const currentIndex = filteredData.findIndex(
-        paragraph => videoRef.current.currentTime <= paragraph.end / 1000
+        paragraph => videoRef.current.currentTime < paragraph.end / 1000
       )
       if (containerRef.current && currentIndex !== highlightedId) {
         setHighlightedId(currentIndex)
