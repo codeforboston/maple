@@ -1,5 +1,5 @@
 import { testDb } from "../testUtils"
-import { DraftTestimony, publishTestimony } from "../../components/db"
+import { DraftTestimony, publishTestimonyv2 } from "../../components/db"
 import { currentGeneralCourt } from "functions/src/shared"
 import { loremIpsum } from "lorem-ipsum"
 import { signInUser3, signInUser4 } from "../integration/common"
@@ -55,7 +55,7 @@ async function seedUserTestimony(
 
   if (type === "draft") return
 
-  await publishTestimony({ draftId: draftRef.id })
+  await publishTestimonyv2({ draftId: draftRef.id })
 
   if (type === "both") return
 

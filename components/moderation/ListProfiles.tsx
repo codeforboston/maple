@@ -22,6 +22,7 @@ import { Internal } from "components/links"
 import { ButtonGroup } from "@mui/material"
 import { Role } from "components/auth"
 import { createFakeOrg } from "components/moderation"
+import { createFakeOrgv2 } from "components/moderation"
 import { loremIpsum } from "lorem-ipsum"
 import { nanoid } from "nanoid"
 
@@ -46,7 +47,7 @@ const UserRoleToolBar = () => {
     const fullName = loremIpsum({ count: 2, units: "words" })
     const email = `${uid}@example.com`
 
-    await createFakeOrg({ uid, fullName, email })
+    await createFakeOrgv2({ uid, fullName, email })
 
     if (filterValues["role"] === "organization")
       setFilters({ role: "pendingUpgrade" }, [])

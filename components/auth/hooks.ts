@@ -12,7 +12,7 @@ import {
 import { useAsyncCallback } from "react-async-hook"
 import { setProfile } from "../db"
 import { auth } from "../firebase"
-import { completePhoneVerification, finishSignup, OrgCategory } from "./types"
+import { completePhoneVerification, finishSignup, finishSignupv2, OrgCategory } from "./types"
 
 const errorMessages: Record<string, string | undefined> = {
   "auth/email-already-exists": "You already have an account.",
@@ -82,7 +82,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
         password
       )
       if (isOrg) {
-        await finishSignup({
+        await finishSignupv2({
           requestedRole: "organization",
           fullName,
           orgCategories: orgCategory ? [orgCategory] : "",
@@ -90,7 +90,7 @@ export function useCreateUserWithEmailAndPassword(isOrg: boolean) {
           email: credentials.user.email
         })
       } else {
-        await finishSignup({
+        await finishSignupv2({
           requestedRole: "user",
           fullName,
           notificationFrequency: "Weekly",
@@ -146,7 +146,7 @@ export function useSignInWithPopUp() {
     const { claims } = await credentials.user.getIdTokenResult()
     if (!claims?.role) {
       // The user has not yet finished signing up
-      await finishSignup({ requestedRole: "user" })
+      await finishSignupv2({ requestedRole: "user" })
       await Promise.all([
         setProfile(credentials.user.uid, {
           fullName: credentials.user.displayName ?? "New User",

@@ -1,6 +1,7 @@
 import { waitFor } from "@testing-library/react"
 import { Role } from "components/auth"
 import { resolveReport } from "components/db"
+import { resolveReportv2 } from "components/db"
 import { doc, setDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import {
@@ -31,10 +32,20 @@ const deleteTestimony = httpsCallable<
   { deleted: boolean }
 >(functions, "deleteTestimony")
 
+const deleteTestimonyv2 = httpsCallable<
+  { uid: string; publicationId: string },
+  { deleted: boolean }
+>(functions, "deleteTestimonyv2")
+
 const publishTestimony = httpsCallable<
   { draftId: string },
   { publicationId: string }
 >(functions, "publishTestimony")
+
+const publishTestimonyv2 = httpsCallable<
+  { draftId: string },
+  { publicationId: string }
+>(functions, "publishTestimonyv2")
 
 let adminUid: string
 let billId: string
@@ -67,7 +78,7 @@ describe("moderate testimony", () => {
 
     await setDoc(draftRef, draft)
 
-    const pubId = (await publishTestimony({ draftId })).data.publicationId
+    const pubId = (await publishTestimonyv2({ draftId })).data.publicationId
 
     await signInTestAdmin()
 
@@ -82,7 +93,7 @@ describe("moderate testimony", () => {
 
     expect((await pubRef.get()).exists).toBeTruthy()
 
-    const result = await resolveReport({
+    const result = await resolveReportv2({
       reportId,
       resolution: "remove-testimony",
       reason: "important reason"
@@ -113,7 +124,7 @@ describe("moderate testimony", () => {
 
     await setDoc(draftRef, draft)
 
-    const pubId = (await publishTestimony({ draftId })).data.publicationId
+    const pubId = (await publishTestimonyv2({ draftId })).data.publicationId
 
     await signInTestAdmin()
     const pubRef = testDb.collection(`/users/${authorUid}/publishedTestimony`)
@@ -121,7 +132,7 @@ describe("moderate testimony", () => {
 
     expect(pubTest.size).toEqual(1)
 
-    await deleteTestimony({ uid: authorUid, publicationId: pubId })
+    await deleteTestimonyv2({ uid: authorUid, publicationId: pubId })
 
     pubTest = await pubRef.where("id", "==", pubId).get()
 
@@ -145,12 +156,12 @@ describe("moderate testimony", () => {
     const archSize = (await archRef.get()).size
 
     await setDoc(draftRef, draft)
-    const r = await publishTestimony({ draftId })
+    const r = await publishTestimonyv2({ draftId })
     const pubId = r.data.publicationId
 
     await signInTestAdmin()
 
-    await deleteTestimony({ uid: authorUid, publicationId: pubId })
+    await deleteTestimonyv2({ uid: authorUid, publicationId: pubId })
 
     expect((await archRef.get()).size).toEqual(archSize + 1)
     await waitFor(
@@ -167,6 +178,11 @@ const modifyAccount = httpsCallable<{ uid: string; role: Role }, void>(
   "modifyAccount"
 )
 
+const modifyAccountv2 = httpsCallable<{ uid: string; role: Role }, void>(
+  functions,
+  "modifyAccountv2"
+)
+
 describe("admins can modify user accounts", () => {
   it("allows admins to modify user roles ", async () => {
     const userInfo = genUserInfo()
@@ -174,7 +190,7 @@ describe("admins can modify user accounts", () => {
     testDb.doc(`profiles/${user.uid}`).set({ role: "user" }, { merge: true })
 
     await signInTestAdmin()
-    await modifyAccount({ uid: user.uid, role: "admin" })
+    await modifyAccountv2({ uid: user.uid, role: "admin" })
 
     expect((await testAuth.getUser(user.uid)).customClaims?.role).toEqual(
       "admin"
@@ -189,7 +205,7 @@ describe("admins can modify user accounts", () => {
     // tries to run modifyAccount as a regular "user" role
     await signInUser(userInfo.email)
     await expectPermissionDenied(
-      modifyAccount({ uid: user.uid, role: "legislator" })
+      modifyAccountv2({ uid: user.uid, role: "legislator" })
     )
   })
 })
