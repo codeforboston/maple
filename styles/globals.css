@@ -164,7 +164,7 @@
 .in-the-news .nav-item .nav-link {
   color: black;
   font-weight: 600;
-  border-bottom: 3px solid;
+  border-bottom: 2px solid;
   border-color: #0000001a;
 }
 .in-the-news .nav-item .nav-link:hover {
@@ -172,5 +172,6 @@
 }
 .in-the-news .nav-item .nav-link.active {
   color: #15276A;
+  border-bottom: 4px solid;
   border-color: #15276A;
 }
