@@ -64,11 +64,11 @@ export const NavbarLinkBills: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : "text-white"}
         href="/bills"
         {...other}
       >
-        {t("navigation.browseBills")}
+        {t("navigation.bills")}
       </NavLink>
     </Nav.Item>
   )
@@ -85,11 +85,11 @@ export const NavbarLinkBallotQuestions: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : "text-white"}
         href="/ballotQuestions"
         {...other}
       >
-        {t("navigation.browseBallotQuestions")}
+        {t("navigation.ballotQuestions")}
       </NavLink>
     </Nav.Item>
   )
@@ -106,11 +106,11 @@ export const NavbarLinkHearings: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : "text-white"}
         href="/hearings"
         {...other}
       >
-        {t("navigation.browseHearings")}
+        {t("navigation.hearings")}
       </NavLink>
     </Nav.Item>
   )
@@ -244,7 +244,7 @@ export const NavbarLinkNewsfeed: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : "text-white"}
         href="/newsfeed"
         {...other}
       >
@@ -347,11 +347,11 @@ export const NavbarLinkTestimony: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={isMobile ? "navLink-primary" : "text-white"}
         href="/testimony"
         {...other}
       >
-        {t("navigation.browseTestimony")}
+        {t("navigation.testimony")}
       </NavLink>
     </Nav.Item>
   )

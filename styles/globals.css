@@ -32,6 +32,22 @@
   top: 1rem;
 }
 
+.mobile-nav-trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: white;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.mobile-nav-trigger:focus-visible {
+  border-radius: 999px;
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
 .btn {
   padding: 1rem;
 }
