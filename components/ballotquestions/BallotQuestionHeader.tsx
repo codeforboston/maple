@@ -101,10 +101,13 @@ export const BallotQuestionHeader = ({
               className="d-flex flex-wrap gap-2 gap-lg-3 mb-4"
               style={{ maxWidth: "42rem" }}
             >
-              <MetaPill label={getTypeLabel()} />
-              <MetaPill label={`Election ${ballotQuestion.electionYear}`} />
-              <MetaPill label={`Court ${ballotQuestion.court}`} />
-              <MetaPill label={`Document ${ballotQuestion.id}`} />
+              <MetaFact label="Type" value={getTypeLabel()} />
+              <MetaFact
+                label="Election"
+                value={ballotQuestion.electionYear.toString()}
+              />
+              <MetaFact label="Court" value={ballotQuestion.court.toString()} />
+              <MetaFact label="Document" value={ballotQuestion.id} />
             </div>
           </Col>
 
@@ -165,17 +168,40 @@ export const BallotQuestionHeader = ({
   )
 }
 
-function MetaPill({ label }: { label: string }) {
+function MetaFact({
+  label,
+  value
+}: {
+  label: string
+  value: string
+}) {
   return (
-    <span
-      className="rounded-pill px-3 py-2 small fw-semibold"
+    <div
+      className="d-flex flex-column"
       style={{
-        color: "#475569",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        border: "1px solid rgba(15, 23, 42, 0.08)"
+        minWidth: "6.5rem"
       }}
     >
-      {label}
-    </span>
+      <span
+        className="text-uppercase fw-semibold"
+        style={{
+          fontSize: "0.72rem",
+          letterSpacing: "0.08em",
+          color: "#64748b"
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          color: "#334155",
+          fontSize: "1.05rem",
+          fontWeight: 650,
+          lineHeight: 1.3
+        }}
+      >
+        {value}
+      </span>
+    </div>
   )
 }
