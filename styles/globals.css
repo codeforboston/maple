@@ -159,3 +159,19 @@
   letter-spacing: 0.015em;
   padding: 7px, 8px, 7px, 8px;
 }
+
+.ballot-question-back-link {
+  color: #475569;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.ballot-question-back-link:hover {
+  color: var(--bs-secondary);
+  transform: translateX(-2px);
+}
+
+.ballot-question-back-link:focus-visible {
+  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline-offset: 3px;
+  border-radius: 999px;
+}

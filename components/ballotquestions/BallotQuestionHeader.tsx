@@ -21,6 +21,7 @@ export const BallotQuestionHeader = ({
   const questionLabel = ballotQuestion.ballotQuestionNumber
     ? `Question ${ballotQuestion.ballotQuestionNumber}`
     : `Question ${ballotQuestion.id}`
+  const hasDescription = Boolean(ballotQuestion.description)
 
   const getTypeLabel = () => {
     switch (ballotQuestion.type) {
@@ -54,8 +55,7 @@ export const BallotQuestionHeader = ({
           <Col lg={8}>
             <Link
               href="/ballotQuestions"
-              className="text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
-              style={{ color: "#475569" }}
+              className="ballot-question-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
               <span>Back to ballot questions</span>
@@ -136,9 +136,9 @@ export const BallotQuestionHeader = ({
           </Col>
         </Row>
 
-        {(ballotQuestion.description || ballotQuestion.pdfUrl) && (
-          <div className="mt-4 pt-2 mt-lg-5">
-            {ballotQuestion.description && (
+        {(hasDescription || ballotQuestion.pdfUrl) && (
+          <div>
+            {hasDescription && (
               <DescriptionBox description={ballotQuestion.description} />
             )}
 
@@ -147,7 +147,7 @@ export const BallotQuestionHeader = ({
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="d-inline-flex align-items-center gap-2 mt-4 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold"
+                className="d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
                 style={{
                   color: "var(--bs-secondary)",
                   borderColor: "rgba(94, 114, 228, 0.18)",
