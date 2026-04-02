@@ -283,14 +283,8 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <NavbarLinkViewProfile dropdown />
-              <NavbarLinkEditProfile
-                dropdown
-                tab={"navigation.editProfile"}
-              />
-              <NavbarLinkEditProfile
-                dropdown
-                tab={"navigation.followingTab"}
-              />
+              <NavbarLinkEditProfile dropdown tab={"navigation.editProfile"} />
+              <NavbarLinkEditProfile dropdown tab={"navigation.followingTab"} />
               <NavbarLinkSignOut
                 dropdown
                 handleClick={() => {

@@ -1,12 +1,14 @@
 import Link from "next/link"
-import { forwardRef, PropsWithChildren } from "react"
+import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react"
 import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 import { TFunction } from "next-i18next"
 
-type LinkProps = PropsWithChildren<{ href: string; className?: string }>
+type LinkProps = PropsWithChildren<
+  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+>
 
 export const Internal = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, className, ...rest }: LinkProps, ref) => {
