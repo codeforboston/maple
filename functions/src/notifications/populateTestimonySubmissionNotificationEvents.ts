@@ -31,13 +31,9 @@ export const populateTestimonySubmissionNotificationEvents = functions.firestore
       console.log("New document created")
 
       const bqId: string | null = newData?.ballotQuestionId ?? null
-      let bqCourt: number | null = null
-      if (bqId) {
-        const bqSnap = await db.doc(`/ballotQuestions/${bqId}`).get()
-        bqCourt = bqSnap.exists
-          ? (bqSnap.data()?.court as number) ?? null
-          : null
-      }
+      const bqCourt: number | null = bqId
+        ? (newData?.court as number) ?? null
+        : null
 
       const newNotificationEvent: TestimonySubmissionNotification = {
         type: "testimony",
