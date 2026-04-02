@@ -1,0 +1,13 @@
+# ballotQuestions/23-34.yaml
+id: "23-34"
+billId: "H4251"
+court: 193
+electionYear: 2024
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: 1
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: "This proposed law would specify that the State Auditor has the authority to audit the Legislature."
+pdfUrl: "https://malegislature.gov/Bills/193/H4251.pdf"

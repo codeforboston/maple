@@ -107,6 +107,7 @@
     "additionalResources": "Additional Resources",
     "ai": "How MAPLE Uses AI",
     "browseBills": "Browse Bills",
+    "browseBallotQuestions": "Browse Ballot Questions",
     "browseHearings": "Browse Hearings",
     "browseTestimony": "Browse Testimony",
     "closeNavMenu": "Close Navigation Menu",
@@ -175,6 +176,7 @@
   "termsAndConditions": "Terms and Conditions",
   "titles": {
     "admin": "Admin",
+    "ballotQuestion": "Ballot Question",
     "bill": "Bill",
     "our_team": "Our Team",
     "legislative_process": "How To Have Impact Through Legislative Testimony",

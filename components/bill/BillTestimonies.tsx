@@ -14,12 +14,12 @@ export const BillTestimonies = (
   })
 
   return (
-    <>
+    <div id="testimonies">
       <ViewTestimony
         {...testimony}
         className={props.className}
         onProfilePage={false}
       />
-    </>
+    </div>
   )
 }

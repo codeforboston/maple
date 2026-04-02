@@ -1,18 +1,22 @@
 import { isRejected } from "@reduxjs/toolkit"
 import { isEmpty } from "lodash"
+import { maple } from "components/links"
 import Input, { TextArea } from "components/forms/Input"
 import { useAsyncCallback } from "react-async-hook"
+import { useRouter } from "next/router"
 import styled from "styled-components"
 import { LoadingButton } from "../buttons"
 import { useAppDispatch } from "../hooks"
 import {
   publishTestimonyAndProceed,
+  usePublishCopy,
+  usePublishMode,
   useFormRedirection,
   usePublishState,
   useTestimonyEmail
 } from "./hooks"
 import * as nav from "./NavigationButtons"
-import { setEditReason } from "./redux"
+import { setEditReason, setShowThankYou } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
 import { ShareButtons } from "./ShareTestimony"
 import { StepHeader } from "./StepHeader"
@@ -57,13 +61,20 @@ function usePublishTestimony() {
 
 export const PublishTestimony = styled(({ ...rest }) => {
   const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const publish = usePublishTestimony(),
     error = publish.publish.error
 
   return (
     <div {...rest}>
-      <StepHeader step={3}>{t("publish.confirmAndSend")}</StepHeader>
-      <SelectRecipients className="mt-4" />
+      <StepHeader step={3}>
+        {copy(
+          "publish.confirmAndSend",
+          "ballotQuestion.publish.confirmAndPublish"
+        )}
+      </StepHeader>
+      {!isBallotQuestion && <SelectRecipients className="mt-4" />}
       <YourTestimony type="draft" className="mt-4" />
 
       <EditReason className="mt-4" />
@@ -79,7 +90,9 @@ export const PublishTestimony = styled(({ ...rest }) => {
         left={<nav.Previous />}
         right={<PublishAndSend publish={publish} />}
       />
-      <p>{t("publish.instructions")}</p>
+      <p>
+        {copy("publish.instructions", "ballotQuestion.publish.instructions")}
+      </p>
     </div>
   )
 })``
@@ -164,6 +177,16 @@ export const EditReason = styled(props => {
 `
 
 const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
+
+  if (isBallotQuestion) {
+    return publish.canShare ? (
+      <FinishPublishedBallotQuestion />
+    ) : (
+      <PublishButton publish={publish} />
+    )
+  }
+
   if (publish.canShare) {
     return <ShareButtons initialSent />
   } else {
@@ -172,10 +195,11 @@ const PublishAndSend = ({ publish }: { publish: UsePublishTestimony }) => {
 }
 
 const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const { ready, mailToUrl } = useTestimonyEmail()
   const { t } = useTranslation("testimony")
 
-  if (!ready) return null
+  if (!isBallotQuestion && !ready) return null
   return (
     <LoadingButton
       disabled={!publish.synced || !publish.valid}
@@ -183,14 +207,38 @@ const PublishButton = ({ publish }: { publish: UsePublishTestimony }) => {
       className="form-navigation-btn"
       variant="danger"
       onClick={() => {
-        if (publish.hasRecipients)
+        if (!isBallotQuestion && publish.hasRecipients)
           window.open(mailToUrl, "_blank", "noopener,noreferrer")
         void publish.publish.execute()
       }}
     >
-      {publish.hasRecipients
+      {isBallotQuestion && publish.publishedAndDraftChanged
+        ? t("ballotQuestion.publish.update")
+        : !isBallotQuestion && publish.hasRecipients
         ? t("publish.publishAndSend")
         : t("publish.publish")}
+    </LoadingButton>
+  )
+}
+
+const FinishPublishedBallotQuestion = () => {
+  const { t } = useTranslation("testimony")
+  const { ballotQuestionId } = usePublishState()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  if (!ballotQuestionId) return null
+
+  return (
+    <LoadingButton
+      className="form-navigation-btn"
+      variant="success"
+      onClick={() => {
+        dispatch(setShowThankYou(true))
+        void router.push(maple.ballotQuestion({ id: ballotQuestionId }))
+      }}
+    >
+      {t("publish.finishedBackToBallotQuestion")}
     </LoadingButton>
   )
 }

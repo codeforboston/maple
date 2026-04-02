@@ -34,7 +34,7 @@ export function useFormSync(edit: Service) {
     [saveDraft.execute]
   )
 
-  const empty = isEmpty(pickBy(form)),
+  const empty = !hasMeaningfulDraftContent(form),
     loading = docsLoading || saveDraft?.loading,
     exists = persisted !== undefined,
     saved = isEqual(form, persisted) || (empty && !exists)
@@ -91,21 +91,49 @@ function useSyncTestimonyToStore(edit: UseEditTestimony) {
 }
 
 type DraftContent = ReturnType<typeof useFormDraft>
+
+export function hasMeaningfulDraftContent({
+  ballotQuestionId,
+  ...draftContent
+}: DraftContent) {
+  return !isEmpty(pickBy(draftContent))
+}
+
 function useFormDraft() {
-  const { attachmentId, content, position, recipientMemberCodes, editReason } =
-    usePublishState()
-  return { attachmentId, content, position, recipientMemberCodes, editReason }
+  const {
+    attachmentId,
+    content,
+    position,
+    recipientMemberCodes,
+    editReason,
+    ballotQuestionId
+  } = usePublishState()
+  return {
+    attachmentId,
+    content,
+    position,
+    recipientMemberCodes,
+    editReason,
+    ballotQuestionId
+  }
 }
 
 function usePersistedDraft(draft?: WorkingDraft): DraftContent | undefined {
   if (!draft) return
-  const { attachmentId, content, position, recipientMemberCodes, editReason } =
-    draft
+  const {
+    attachmentId,
+    content,
+    position,
+    recipientMemberCodes,
+    editReason,
+    ballotQuestionId
+  } = draft
   return {
     attachmentId: attachmentId ?? undefined,
     content,
     position,
     recipientMemberCodes: recipientMemberCodes ?? undefined,
-    editReason: editReason ?? undefined
+    editReason: editReason ?? undefined,
+    ballotQuestionId: ballotQuestionId ?? undefined
   }
 }

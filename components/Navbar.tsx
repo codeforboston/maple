@@ -9,6 +9,7 @@ import { flags } from "./featureFlags"
 
 import {
   Avatar,
+  NavbarLinkBallotQuestions,
   NavbarLinkAI,
   NavbarLinkBills,
   NavbarLinkHearings,
@@ -81,6 +82,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
+        <NavbarLinkBallotQuestions handleClick={closeNav} />
         {flags().hearingsAndTranscriptions ? (
           <NavbarLinkHearings handleClick={closeNav} />
         ) : null}
@@ -195,6 +197,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center px-2`}>
         <NavbarLinkBills />
+      </div>
+
+      <div className={`align-self-center px-2`}>
+        <NavbarLinkBallotQuestions />
       </div>
 
       {flags().hearingsAndTranscriptions ? (

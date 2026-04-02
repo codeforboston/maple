@@ -5,7 +5,12 @@ import { useCallback, useState } from "react"
 import styled from "styled-components"
 import { Button, Modal } from "../bootstrap"
 import { useAppDispatch } from "../hooks"
-import { useFormRedirection, usePublishState, useTestimonyEmail } from "./hooks"
+import {
+  useFormRedirection,
+  usePublishMode,
+  usePublishState,
+  useTestimonyEmail
+} from "./hooks"
 import * as nav from "./NavigationButtons"
 import { setShowThankYou } from "./redux"
 import { SelectRecipients } from "./SelectRecipients"
@@ -17,7 +22,9 @@ import { useTranslation } from "next-i18next"
 /** Allow sharing a user's published testimony. */
 export const ShareTestimony = styled(({ ...rest }) => {
   useFormRedirection()
+  const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const { t } = useTranslation("testimony")
+  if (isBallotQuestion) return null
   return (
     <div {...rest}>
       <StepHeader>{t("publish.shareHeader")}</StepHeader>
@@ -46,13 +53,17 @@ export const ShareButtons = ({
   initialSent?: boolean
 }) => {
   const { t } = useTranslation("testimony")
-  const { share, bill } = usePublishState()
+  const { share, bill, ballotQuestionId } = usePublishState()
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const redirectToBill = useCallback(() => {
+  const redirectToPolicy = useCallback(() => {
     dispatch(setShowThankYou(true))
-    router.push(maple.bill(bill!))
-  }, [bill, dispatch, router])
+    router.push(
+      ballotQuestionId
+        ? maple.ballotQuestion({ id: ballotQuestionId })
+        : maple.bill(bill!)
+    )
+  }, [ballotQuestionId, bill, dispatch, router])
   const [sent, setSent] = useState(initialSent)
 
   const buttons = []
@@ -69,7 +80,7 @@ export const ShareButtons = ({
     buttons.push(
       <FinishWithoutEmailing
         key="finish-without-saving"
-        onConfirm={redirectToBill}
+        onConfirm={redirectToPolicy}
       />
     )
   }
@@ -79,9 +90,11 @@ export const ShareButtons = ({
       <Button
         variant="success"
         className="form-navigation-btn text-white"
-        onClick={redirectToBill}
+        onClick={redirectToPolicy}
       >
-        {t("publish.finishedBackToBill")}
+        {ballotQuestionId
+          ? t("publish.finishedBackToBallotQuestion")
+          : t("publish.finishedBackToBill")}
       </Button>
     )
   }

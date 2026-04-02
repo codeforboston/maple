@@ -6,14 +6,16 @@ import { useTranslation } from "next-i18next"
 export const EditTestimonyButton = ({
   className,
   billId,
-  court
+  court,
+  ballotQuestionId
 }: {
   className?: string
   billId: string
   court: number
+  ballotQuestionId?: string
 }) => {
   const { t } = useTranslation("testimony")
-  const url = formUrl(billId, court)
+  const url = formUrl(billId, court, "position", ballotQuestionId)
 
   return (
     <ImageButton

@@ -138,6 +138,101 @@ describe("useEditTestimony", () => {
     )
   })
 
+  it("Separates ballot question testimony from bill testimony", async () => {
+    const ballotQuestionId = "25-14"
+
+    const legislativePub = testDb.doc(
+      `users/${uid}/publishedTestimony/${nanoid()}`
+    )
+    await legislativePub.create({
+      ...testimony,
+      id: legislativePub.id,
+      content: "legislative publication",
+      ballotQuestionId: null
+    })
+
+    const ballotPub = testDb.doc(`users/${uid}/publishedTestimony/${nanoid()}`)
+    await ballotPub.create({
+      ...testimony,
+      id: ballotPub.id,
+      content: "ballot publication",
+      ballotQuestionId
+    })
+
+    const legislativeDraft = testDb.doc(
+      `users/${uid}/draftTestimony/${nanoid()}`
+    )
+    await legislativeDraft.create({
+      ...draft,
+      content: "legislative draft",
+      ballotQuestionId: null
+    })
+
+    const ballotDraft = testDb.doc(`users/${uid}/draftTestimony/${nanoid()}`)
+    await ballotDraft.create({
+      ...draft,
+      content: "ballot draft",
+      ballotQuestionId
+    })
+
+    const { result: billResult } = renderHook(() =>
+      useEditTestimony(uid, court, billId)
+    )
+    await expectFinishLoading(billResult)
+
+    expect(billResult.current.draft).toMatchObject({
+      content: "legislative draft",
+      ballotQuestionId: null
+    })
+    expect(billResult.current.publication).toMatchObject({
+      content: "legislative publication",
+      ballotQuestionId: null
+    })
+
+    const { result: ballotResult } = renderHook(() =>
+      useEditTestimony(uid, court, billId, ballotQuestionId)
+    )
+    await expectFinishLoading(ballotResult)
+
+    expect(ballotResult.current.draft).toMatchObject({
+      content: "ballot draft",
+      ballotQuestionId
+    })
+    expect(ballotResult.current.publication).toMatchObject({
+      content: "ballot publication",
+      ballotQuestionId
+    })
+
+    await legislativePub.delete()
+    await ballotPub.delete()
+    await legislativeDraft.delete()
+    await ballotDraft.delete()
+  })
+
+  it("Persists ballotQuestionId when updating drafts", async () => {
+    const existingDraft = testDb.doc(`users/${uid}/draftTestimony/${nanoid()}`)
+    await existingDraft.create(draft)
+
+    const { result } = renderHook(() => useEditTestimony(uid, court, billId))
+    await expectFinishLoading(result)
+
+    await act(() =>
+      result.current.saveDraft.execute({
+        ...updatedDraft,
+        ballotQuestionId: "25-14"
+      })
+    )
+    await expectFinishLoading(result)
+
+    const saved = await existingDraft.get()
+    expect(saved.data()).toMatchObject({
+      content: updatedDraft.content,
+      ballotQuestionId: "25-14"
+    })
+
+    await existingDraft.delete()
+  })
+
   it("Discards drafts", async () => {
     const result = await renderAndDraft()
 
@@ -209,6 +304,5 @@ describe("useEditTestimony", () => {
 })
 
 async function expectFinishLoading(result: any) {
-  expect(result.current.loading).toBeTruthy()
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 }

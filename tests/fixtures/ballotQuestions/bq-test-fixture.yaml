@@ -1,0 +1,18 @@
+id: "test-99-99"
+billId: "H5099"
+court: 194
+electionYear: 2099
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: "This proposal would allow adults 21 and older to grow, possess, and use certain natural psychedelic substances under limited and regulated conditions."
+atAGlance:
+  - label: "Who"
+    value: "Adults 21 and older"
+  - label: "How"
+    value: "Limited personal use and supervised use at approved locations"
+  - label: "Retail sales"
+    value: "Not allowed"
+pdfUrl: "https://example.com/petition-test-99-99.pdf"
+fullSummary: "This proposed law would allow persons aged 21 and older to grow, possess, and use certain natural psychedelic substances in certain circumstances."

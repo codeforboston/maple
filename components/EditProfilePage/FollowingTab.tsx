@@ -1,10 +1,15 @@
+import { dbService } from "components/db/api"
 import { useBill } from "components/db"
 import { formatBillId } from "components/formatting"
 import { Internal } from "components/links"
-import { FollowBillButton } from "components/shared/FollowButton"
+import {
+  FollowBallotQuestionButton,
+  FollowBillButton
+} from "components/shared/FollowButton"
 import { collection, onSnapshot, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import { ComponentProps, useEffect, useMemo, useState } from "react"
+import { useAsync } from "react-async-hook"
 import { useAuth } from "../auth"
 import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
@@ -26,6 +31,12 @@ export function FollowingTab({ className }: { className?: string }) {
       />
       <PaginatedItemsCard
         className={className}
+        title={t("follow.ballotQuestions")}
+        ItemCard={FollowedBallotQuestionCard}
+        {...useFollowedBallotQuestions()}
+      />
+      <PaginatedItemsCard
+        className={className}
         title={t("follow.orgs")}
         ItemCard={item => <FollowUserCard {...item} confirmUnfollow={true} />}
         {...useFollowedUsers()}
@@ -38,12 +49,16 @@ const useFollowedBills = (): LoadableItemsState<
   ComponentProps<typeof FollowedBillCard>
 > => useTopicSubscription("bill")
 
+const useFollowedBallotQuestions = (): LoadableItemsState<
+  ComponentProps<typeof FollowedBallotQuestionCard>
+> => useTopicSubscription("ballotQuestion")
+
 const useFollowedUsers = (): LoadableItemsState<
   ComponentProps<typeof FollowUserCard>
 > => useTopicSubscription("testimony")
 
 function useTopicSubscription<T extends object>(
-  type: "bill" | "testimony"
+  type: "bill" | "ballotQuestion" | "testimony"
 ): LoadableItemsState<T> {
   const [state, setState] = useState<LoadableItemsState<T>>({
     items: [],
@@ -59,7 +74,12 @@ function useTopicSubscription<T extends object>(
         : null,
     [uid]
   )
-  const topicKey = type === "bill" ? "billLookup" : "userLookup"
+  const topicKey =
+    type === "bill"
+      ? "billLookup"
+      : type === "ballotQuestion"
+      ? "ballotQuestionLookup"
+      : "userLookup"
 
   useEffect(() => {
     if (!subscriptionRef || !uid) return
@@ -88,7 +108,7 @@ function useTopicSubscription<T extends object>(
     )
 
     return () => unsubscribe()
-  }, [subscriptionRef, uid, type])
+  }, [subscriptionRef, uid, type, topicKey, t])
 
   return state
 }
@@ -117,6 +137,46 @@ function FollowedBillCard({
         </Col>
         <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
           <FollowBillButton bill={bill} confirmUnfollow={true} />
+        </Col>
+      </Row>
+      <hr className={`mt-3`} />
+    </div>
+  )
+}
+
+function FollowedBallotQuestionCard({
+  ballotQuestionId,
+  court
+}: {
+  ballotQuestionId: string
+  court: number
+}) {
+  const { t } = useTranslation("editProfile")
+  const {
+    loading,
+    error,
+    result: bq
+  } = useAsync(
+    () => dbService().getBallotQuestion({ id: ballotQuestionId }),
+    [ballotQuestionId]
+  )
+  if (loading) return <Spinner animation="border" className="mx-auto" />
+  if (error) return <Alert variant="danger">{t("content.error")}</Alert>
+  if (!bq) return null
+
+  const label =
+    bq.ballotQuestionNumber != null
+      ? `Question ${bq.ballotQuestionNumber}`
+      : bq.description ?? ballotQuestionId
+
+  return (
+    <div className={`fs-3 lh-lg`}>
+      <Row className={`align-items-center flex-column flex-md-row`}>
+        <Internal href={`/ballotQuestions/${ballotQuestionId}`}>
+          {label}
+        </Internal>
+        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
+          <FollowBallotQuestionButton ballotQuestion={bq} />
         </Col>
       </Row>
       <hr className={`mt-3`} />

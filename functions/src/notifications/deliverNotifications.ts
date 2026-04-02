@@ -10,6 +10,7 @@ import {
 import { startOfDay } from "date-fns"
 import { TestimonySubmissionNotificationFields, Profile } from "./types"
 import {
+  BallotQuestionDigest,
   BillDigest,
   NotificationEmailDigest,
   Position,
@@ -22,12 +23,12 @@ const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
 const NUM_USERS_TO_DISPLAY = 4
 const NUM_TESTIMONIES_TO_DISPLAY = 6
+const NUM_BALLOT_QUESTIONS_TO_DISPLAY = 4
 const EMAIL_TEMPLATE_PATH = "../email/digestEmail.handlebars"
 
 const path = require("path")
 
 const getVerifiedUserEmail = async (uid: string) => {
-  // TODO: Try/catch is temporarily while troubleshooting the auth issue
   try {
     const userRecord = await auth.getUser(uid)
     if (userRecord && userRecord.email && userRecord.emailVerified) {
@@ -42,7 +43,6 @@ const getVerifiedUserEmail = async (uid: string) => {
 }
 
 // TODO: Batching (at both user + email level)?
-//       Going to wait until we have a better idea of the performance impact
 const deliverEmailNotifications = async () => {
   const now = Timestamp.fromDate(startOfDay(new Date()))
 
@@ -86,8 +86,6 @@ const deliverEmailNotifications = async () => {
         return
       }
 
-      // TODO: Temporarily using email from the profile to test the non-auth issues
-      //       Should only use email from `auth` once that's working
       const defaultEmail = profile.email || profile.contactInfo?.publicEmail
       const verifiedEmail =
         (await getVerifiedUserEmail(profileDoc.id)) || defaultEmail
@@ -106,10 +104,10 @@ const deliverEmailNotifications = async () => {
 
       const batch = db.batch()
 
-      // If there are no new notifications, don't send an email
       if (
         digestData.numBillsWithNewTestimony === 0 &&
-        digestData.numUsersWithNewTestimony === 0
+        digestData.numUsersWithNewTestimony === 0 &&
+        digestData.numBallotQuestionsWithNewTestimony === 0
       ) {
         console.log(
           `No new notifications for ${profileDoc.id} - not sending email`
@@ -143,10 +141,8 @@ const deliverEmailNotifications = async () => {
       )
     })
 
-    // Wait for all email documents to be created
     await Promise.all(emailPromises)
 
-    // Fetch the next batch of profiles
     profilesSnapshot = await db
       .collection("profiles")
       .where("nextDigestAt", "<=", now)
@@ -158,8 +154,7 @@ const deliverEmailNotifications = async () => {
   console.log(`Finished processing ${numProfilesProcessed} profiles`)
 }
 
-// TODO: Unit tests
-const buildDigestData = async (
+export const buildDigestData = async (
   userId: string,
   now: Timestamp,
   notificationFrequency: Frequency
@@ -175,6 +170,7 @@ const buildDigestData = async (
 
   const billsById: { [billId: string]: BillDigest } = {}
   const usersById: { [userId: string]: UserDigest } = {}
+  const ballotQuestionsById: { [bqId: string]: BallotQuestionDigest } = {}
 
   notificationsSnapshot.docs.forEach(notificationDoc => {
     const { notification } =
@@ -229,6 +225,35 @@ const buildDigestData = async (
         }
       }
     }
+
+    if (notification.isBallotQuestionMatch && notification.ballotQuestionId) {
+      const bqId = notification.ballotQuestionId
+      if (ballotQuestionsById[bqId]) {
+        const bq = ballotQuestionsById[bqId]
+        switch (notification.position) {
+          case "endorse":
+            bq.endorseCount++
+            break
+          case "neutral":
+            bq.neutralCount++
+            break
+          case "oppose":
+            bq.opposeCount++
+            break
+          default:
+            console.error(`Unknown position: ${notification.position}`)
+            break
+        }
+      } else {
+        ballotQuestionsById[bqId] = {
+          ballotQuestionId: bqId,
+          description: notification.header,
+          endorseCount: notification.position === "endorse" ? 1 : 0,
+          neutralCount: notification.position === "neutral" ? 1 : 0,
+          opposeCount: notification.position === "oppose" ? 1 : 0
+        }
+      }
+    }
   })
 
   const bills = Object.values(billsById).sort((a, b) => {
@@ -249,26 +274,35 @@ const buildDigestData = async (
     })
     .sort((a, b) => b.newTestimonyCount - a.newTestimonyCount)
 
-  const digestData = {
+  const ballotQuestions = Object.values(ballotQuestionsById).sort((a, b) => {
+    return (
+      b.endorseCount +
+      b.neutralCount +
+      b.opposeCount -
+      (a.endorseCount + a.neutralCount + a.opposeCount)
+    )
+  })
+
+  return {
     notificationFrequency,
     startDate: startDate.toDate(),
     endDate: now.toDate(),
     bills: bills.slice(0, NUM_BILLS_TO_DISPLAY),
     numBillsWithNewTestimony: bills.length,
     users: users.slice(0, NUM_USERS_TO_DISPLAY),
-    numUsersWithNewTestimony: users.length
+    numUsersWithNewTestimony: users.length,
+    ballotQuestions: ballotQuestions.slice(0, NUM_BALLOT_QUESTIONS_TO_DISPLAY),
+    numBallotQuestionsWithNewTestimony: ballotQuestions.length
   }
-
-  return digestData
 }
 
+// TODO: Unit tests
 const renderToHtmlString = (digestData: NotificationEmailDigest) => {
+  // TODO: Can we move the compilation up so we only compile the template once?
   const templateSource = fs.readFileSync(
     path.join(__dirname, EMAIL_TEMPLATE_PATH),
     "utf8"
   )
-  // TODO: Can we move the compilation up so we only compile the template
-  //       once per job run instead of once per email?
   const compiledTemplate = handlebars.compile(templateSource)
   return compiledTemplate(digestData)
 }

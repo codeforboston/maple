@@ -5,8 +5,13 @@ import { cleanup, render, act } from "@testing-library/react"
 import { screen } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { AdminContext } from "react-admin"
+import { BillInfoHeader } from "components/TestimonyCard/BillInfoHeader"
 import { ReportModal } from "components/TestimonyCard/ReportModal"
 import { RequestDeleteOwnTestimonyModal } from "components/TestimonyCard/ReportModal"
+
+jest.mock("next-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key })
+}))
 
 describe("report testimony modal", () => {
   const setIsReporting = jest.fn()
@@ -91,5 +96,28 @@ describe("remove testimony", () => {
     await userEvent.type(textBox, "this is a textBox")
 
     cleanup()
+  })
+})
+
+describe("profile testimony header", () => {
+  it("links ballot-question testimony to the ballot question page", () => {
+    render(
+      <BillInfoHeader
+        testimony={
+          {
+            billId: "H123",
+            billTitle: "A Test Ballot Question",
+            ballotQuestionId: "25-14",
+            position: "endorse"
+          } as any
+        }
+        billLink="/bills/194/H123"
+        publishedDate="3/24/2026"
+      />
+    )
+
+    const link = screen.getByRole("link", { name: "Ballot Question 25-14" })
+    expect(link.getAttribute("href")).toBe("/ballotQuestions/25-14")
+    expect(screen.getByText("A Test Ballot Question")).toBeTruthy()
   })
 })

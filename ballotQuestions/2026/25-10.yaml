@@ -1,0 +1,37 @@
+# ballotQuestions/25-10.yaml
+id: "25-10"
+billId: "H5002"
+court: 194
+electionYear: 2026
+type: initiative_statute
+ballotStatus: legislature
+ballotQuestionNumber: null
+relatedBillIds: []
+description: null
+atAGlance: null
+fullSummary: |-
+  The proposed law would change the type and amount of marijuana that may legally be
+  possessed in Massachusetts by repealing the laws that legalize, regulate, and tax the retail sale of
+  adult recreational use marijuana in Massachusetts. The proposed law would also permit persons
+  21 years of age and older to possess 1 ounce or less of marijuana including no more than 5 grams
+  in the form of concentrate, and to gift or transfer to another person 21 years of age and older 1
+  ounce or less of marijuana including no more than 5 grams in the form of concentrate. The
+  proposed law would also impose a civil penalty of $100 and forfeiture of the marijuana for the
+  possession of marijuana between the weight of 1 and 2 ounces.
+
+  For persons 21 years of age and younger, the proposed law would make the possession of
+  2 ounces or less of marijuana a civil infraction subject to a $100 fine, forfeiture of the marijuana,
+  completion of a drug awareness program and community service, and notification to their parents
+  or legal guardian of the offense and penalties.
+
+  The proposed law would allow currently licensed adult recreational marijuana businesses to apply
+  on an expedited basis to become a licensed medical marijuana dispensary and to sell their remaining
+  inventory of adult recreational marijuana to medical marijuana dispensaries. The proposed law would
+  retain the Cannabis Control Commission but modify its authority so it would regulate only the medical
+  marijuana market.
+
+  The proposed law states that, if any of its parts were declared invalid, the other parts would stay
+  in effect.
+
+  The proposed law would take effect on January 1, 2028.
+pdfUrl: "https://malegislature.gov/Bills/194/H5002.pdf"

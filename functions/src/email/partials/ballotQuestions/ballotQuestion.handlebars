@@ -1,0 +1,31 @@
+<article id="ballotQuestion">
+  <div style="font-weight: 600; font-size: 16px; line-height: 125%;
+              color: #000000; letter-spacing: 0.03em; margin-bottom: 24px">
+    <a href="https://mapletestimony.org/ballotQuestions/{{this.ballotQuestionId}}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline">{{this.description}}</a>
+  </div>
+  <a href="https://mapletestimony.org/ballotQuestions/{{this.ballotQuestionId}}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit">
+    <div style="padding: 12px 0px 12px 12px; background: #EAE7E7;
+                border-radius: 12px; margin-bottom: 12px; text-align: center">
+      <div>
+        <div style="height: 49px; font-weight: 500; font-size: 39px; line-height: 125%;
+                    letter-spacing: -0.015em; color: #000000; margin: auto; text-align: center">
+          {{addCounts this.endorseCount this.neutralCount this.opposeCount}}
+        </div>
+      </div>
+      <div style="height: 20px; font-weight: 700; font-size: 16px; line-height: 125%;
+                  letter-spacing: 0.015em; color: #3E3E3E; margin: auto; text-align: center">
+        New {{pluralize this}}
+      </div>
+      <div style="height: 19px; font-weight: 700; font-size: 14px; line-height: 100%;
+                  color: #000000; margin: auto; padding: 16px 0px 26px 0px;
+                  text-align: center">
+        <img src="https://mapletestimony.org/email/images_no-svgs/endorse.png" alt="checkmark" style="padding-right: 18px"/>
+        {{this.endorseCount}} Endorse
+        <img src="https://mapletestimony.org/email/images_no-svgs/neutral.png" alt="dash" style="padding: 0 18px"/>
+        {{this.neutralCount}} Neutral
+        <img src="https://mapletestimony.org/email/images_no-svgs/oppose.png" alt="x-mark" style="padding: 0 18px"/>
+        {{this.opposeCount}} Oppose
+      </div>
+    </div>
+  </a>
+</article>
