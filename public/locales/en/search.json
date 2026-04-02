@@ -15,6 +15,15 @@
   "ballot_question_all_years": "All years",
   "ballot_question_all_courts": "All courts",
   "ballot_question_all_statuses": "All statuses",
+  "ballot_question_status": {
+    "legislature": "Legislature",
+    "qualifying": "Qualifying",
+    "certified": "Certified",
+    "ballot": "On Ballot",
+    "enacted": "Enacted",
+    "failed": "Failed",
+    "withdrawn": "Withdrawn"
+  },
   "ballot_question_results_summary": "Showing {{count}} of {{total}} ballot questions",
   "ballot_question_reset_filters": "Reset filters",
   "ballot_question_no_summary": "No summary available yet.",

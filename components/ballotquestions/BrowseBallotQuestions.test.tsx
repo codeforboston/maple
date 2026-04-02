@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom"
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { cloneElement, isValidElement } from "react"
-import type { ReactElement, ReactNode } from "react"
+import type { ReactNode } from "react"
 import { BrowseBallotQuestions } from "./BrowseBallotQuestions"
 
 jest.mock("next-i18next", () => ({
@@ -16,6 +15,13 @@ jest.mock("next-i18next", () => ({
         ballot_question_all_years: "All years",
         ballot_question_all_courts: "All courts",
         ballot_question_all_statuses: "All statuses",
+        "ballot_question_status.legislature": "Legislature",
+        "ballot_question_status.qualifying": "Qualifying",
+        "ballot_question_status.certified": "Certified",
+        "ballot_question_status.ballot": "On Ballot",
+        "ballot_question_status.enacted": "Enacted",
+        "ballot_question_status.failed": "Failed",
+        "ballot_question_status.withdrawn": "Withdrawn",
         ballot_question_results_summary: `Showing ${params?.count ?? ""} of ${
           params?.total ?? ""
         } ballot questions`,
@@ -38,10 +44,19 @@ jest.mock("next-i18next", () => ({
 
 jest.mock("next/link", () => ({
   __esModule: true,
-  default: ({ href, children }: { href: string; children: ReactNode }) =>
-    isValidElement(children)
-      ? cloneElement(children as ReactElement<{ href: string }>, { href })
-      : children
+  default: ({
+    href,
+    children,
+    ...props
+  }: {
+    href: string
+    children: ReactNode
+    [key: string]: unknown
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  )
 }))
 
 const items = [
