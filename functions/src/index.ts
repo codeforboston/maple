@@ -42,6 +42,7 @@ export {
 } from "./testimony"
 export {
   publishNotifications,
+  populateBallotQuestionNotificationEvents,
   populateBillHistoryNotificationEvents,
   populateTestimonySubmissionNotificationEvents,
   cleanupNotifications,
