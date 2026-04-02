@@ -195,3 +195,58 @@
   outline: 3px solid rgba(94, 114, 228, 0.35);
   outline-offset: 3px;
 }
+
+.ballot-question-nav-link {
+  cursor: pointer;
+  background-color: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #334155;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.ballot-question-nav-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(94, 114, 228, 0.24) !important;
+  background-color: rgba(94, 114, 228, 0.04) !important;
+  color: var(--bs-secondary);
+  box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08);
+}
+
+.ballot-question-nav-link:focus-visible {
+  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline-offset: 3px;
+}
+
+.ballot-question-nav-link.is-active {
+  background-color: rgba(94, 114, 228, 0.08);
+  border-color: rgba(94, 114, 228, 0.35);
+  color: var(--bs-secondary);
+}
+
+.ballot-question-nav-link.is-active:hover {
+  background-color: rgba(94, 114, 228, 0.12) !important;
+  border-color: rgba(94, 114, 228, 0.42) !important;
+}
+
+.ballot-question-nav-badge {
+  min-width: 1.5rem;
+  font-weight: 600;
+  background-color: rgba(15, 23, 42, 0.08);
+  color: #334155;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ballot-question-nav-link:hover .ballot-question-nav-badge {
+  background-color: rgba(94, 114, 228, 0.14);
+  color: var(--bs-secondary);
+}
+
+.ballot-question-nav-badge.is-active {
+  background-color: var(--bs-secondary);
+  color: white;
+}
