@@ -13,7 +13,7 @@ afterAll(async () => {
 it("syncs YAML files to Firestore", async () => {
   await script({
     db: testDb,
-    args: { env: "local", argv: [], dir: FIXTURES_DIR },
+    args: { env: "local", argv: [], dir: FIXTURES_DIR }
   } as any)
 
   const snap = await testDb.collection("ballotQuestions").doc(TEST_ID).get()

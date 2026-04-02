@@ -100,7 +100,10 @@ const ViewTestimony = (
             />
 
             <Col xs="auto">
-              <SortTestimonyDropDown orderBy={orderBy} setOrderBy={setOrderBy} />
+              <SortTestimonyDropDown
+                orderBy={orderBy}
+                setOrderBy={setOrderBy}
+              />
             </Col>
           </Row>
         )}
@@ -177,7 +180,11 @@ const ViewTestimony = (
         <BootstrapCard.Body>
           {!onProfilePage && (
             <Row>
-              <Tabs childTabs={tabs} onChange={handleTabClick} selectedTab={activeTab} />
+              <Tabs
+                childTabs={tabs}
+                onChange={handleTabClick}
+                selectedTab={activeTab}
+              />
             </Row>
           )}
           {listContent}

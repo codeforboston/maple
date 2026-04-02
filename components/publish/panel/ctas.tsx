@@ -41,13 +41,7 @@ const Cta = ({
   )
 }
 
-const CompactPanel = ({
-  title,
-  cta
-}: {
-  title: string
-  cta: ReactElement
-}) => (
+const CompactPanel = ({ title, cta }: { title: string; cta: ReactElement }) => (
   <div className="d-grid gap-3">
     <div className="rounded border bg-light px-3 py-3 small text-body-secondary fw-semibold">
       {title}
@@ -77,7 +71,11 @@ export const CreateTestimony = ({
   const cta = (
     <OpenForm
       label={t("panel.createTestimony.label")}
-      className={variant === "ballotQuestion" ? "w-100 py-2 small fw-semibold" : undefined}
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : undefined
+      }
     />
   )
 
@@ -155,7 +153,11 @@ export const UnverifiedEmail = ({
     <Wrap href={`/profile?id=${id}`}>
       <Button
         variant="primary"
-        className={variant === "ballotQuestion" ? "w-100 py-2 small fw-semibold" : undefined}
+        className={
+          variant === "ballotQuestion"
+            ? "w-100 py-2 small fw-semibold"
+            : undefined
+        }
       >
         {t("panel.unverifiedEmail.label")}
       </Button>
@@ -179,7 +181,11 @@ export const PendingUpgrade = ({
     <Button
       variant="primary"
       disabled
-      className={variant === "ballotQuestion" ? "w-100 py-2 small fw-semibold" : undefined}
+      className={
+        variant === "ballotQuestion"
+          ? "w-100 py-2 small fw-semibold"
+          : undefined
+      }
     >
       {t("panel.pendingUpgrade.label")}
     </Button>

@@ -83,7 +83,9 @@ export class DbService {
         orderBy("version", "desc")
       )
     )
-    const archive = result.docs.map(snap => snap.data()).filter(isNotNull) as Testimony[]
+    const archive = result.docs
+      .map(snap => snap.data())
+      .filter(isNotNull) as Testimony[]
     return archive
   }
 

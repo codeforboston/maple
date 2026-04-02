@@ -256,7 +256,8 @@ function useSaveDraft(
             editReason: editReason ?? null,
             recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null,
-            ballotQuestionId: requestBallotQuestionId ?? ballotQuestionId ?? null
+            ballotQuestionId:
+              requestBallotQuestionId ?? ballotQuestionId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),

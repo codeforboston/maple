@@ -9,8 +9,9 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
-fullSummary: "This proposed law would specify that employees of the Committee for Public Counsel
-Services (“CPCS”) are permitted to engage in collective bargaining with their employer. It would
-also require CPCS, after executing a collective bargaining agreement, to request the
-appropriation necessary to fund such agreement from the Governor."
+fullSummary: |-
+  This proposed law would specify that employees of the Committee for Public Counsel
+  Services (“CPCS”) are permitted to engage in collective bargaining with their employer. It would
+  also require CPCS, after executing a collective bargaining agreement, to request the
+  appropriation necessary to fund such agreement from the Governor.
 pdfUrl: "https://malegislature.gov/Bills/194/H5009.pdf"

@@ -72,7 +72,8 @@ export function usePublishedTestimonyListing({
     if (refinement.uid !== uid) refine({ uid })
     if (refinement.billId !== billId) refine({ billId })
     if (refinement.court !== court) refine({ court })
-    if (refinement.ballotQuestionId !== ballotQuestionId) refine({ ballotQuestionId })
+    if (refinement.ballotQuestionId !== ballotQuestionId)
+      refine({ ballotQuestionId })
   }, [ballotQuestionId, billId, court, refine, refinement, uid])
 
   return useMemo(() => {
@@ -108,7 +109,8 @@ function getWhere({
   ]
   if (uid) constraints.push(["authorUid", "==", uid])
   if (billId) constraints.push(["billId", "==", billId])
-  if (ballotQuestionId) constraints.push(["ballotQuestionId", "==", ballotQuestionId])
+  if (ballotQuestionId)
+    constraints.push(["ballotQuestionId", "==", ballotQuestionId])
   if (representativeId)
     constraints.push(["representativeId", "==", representativeId])
   if (senatorId) constraints.push(["senatorId", "==", senatorId])
@@ -141,7 +143,10 @@ async function listTestimony(
     .map(d => d.data() as Testimony)
     .filter(testimony => {
       if (refinement.ballotQuestionId)
-        return matchesBallotQuestionScope(testimony, refinement.ballotQuestionId)
+        return matchesBallotQuestionScope(
+          testimony,
+          refinement.ballotQuestionId
+        )
       if (refinement.billId) return matchesBallotQuestionScope(testimony)
       return true
     })

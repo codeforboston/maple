@@ -22,7 +22,6 @@
     "emulators:start": "firebase --project demo-dtp emulators:start --only auth,functions,pubsub,firestore,storage --import tests/integration/exportedTestData",
     "typesense-admin": "ts-node --swc -P tsconfig.script.json scripts/typesense-admin.ts",
     "firebase-admin": "ts-node --swc -P tsconfig.script.json scripts/firebase-admin",
-
     "generate-stories": "ts-node -P tsconfig.script.json scripts/generate-stories",
     "compose": "docker compose -f infra/docker-compose.yml",
     "dev:functions": "yarn --cwd functions dev",
