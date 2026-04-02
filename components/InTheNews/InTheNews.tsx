@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Col, Row, Container } from "../bootstrap"
+import { Col, Row, Container, Badge } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
 import Nav from "react-bootstrap/Nav"
 import Dropdown from "react-bootstrap/Dropdown"
@@ -11,7 +11,13 @@ import { NewsType, NewsItem, useNews } from "components/db/news"
 
 type NewsFeedProps = {
   type: NewsType
-  newsItems : NewsItem[]
+  newsItems: NewsItem[]
+}
+
+type TabCounts = {
+  media: number
+  awards: number
+  books: number
 }
 
 const NewsFeed = ({
@@ -44,13 +50,19 @@ export const InTheNews = () => {
   ] as unknown as NewsItem[]
 
 
+  const counts: TabCounts = {
+    media: newsItems.filter(item => item.type === "article").length,
+    awards: newsItems.filter(item => item.type === "award").length,
+    books: newsItems.filter(item => item.type === "book").length
+  }
+
   return (
-    <Container className="ptx-4 pt-5 gap-4">
-      <h1 className="fw-bold m-3">{t("title")}</h1>
-      <div className="bg-white rounded my-5">
+    <Container className="ptx-4 pt-5 gap-4 min-vh-100">
+      <h1 className="fw-bold m-3" style={{ fontSize: "5rem" }}>{t("title")}</h1>
+      <div className="d-flex flex-column bg-white rounded-4 my-5 gap-4 p-4">
         <Tab.Container defaultActiveKey="media">
-          {isMobile ? <TabDropdown /> : <TabGroup />}
-          <Row className="p-3 g-0">
+          {isMobile ? <TabDropdown counts={counts} /> : <TabGroup counts={counts} />}
+          <Row className="g-0">
             <Col>
               <Tab.Content>
                 <Tab.Pane eventKey="media">
@@ -77,28 +89,43 @@ export const InTheNews = () => {
   )
 }
 
-const TabGroup = () => {
+const TabGroup = ({ counts }: { counts: TabCounts }) => {
   const { t } = useTranslation("inTheNews")
   return (
-    <Row className="p-3 g-0 fs-4">
+    <Row className="g-0 fs-4 fw-semibold">
       <Col md={4} className="text-center">
         <Nav className="in-the-news flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="media">{t("media.title")}</Nav.Link>
+            <Nav.Link eventKey="media">
+              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
+                {t("media.title")}
+                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.media}</Badge>
+              </div>
+            </Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
         <Nav className="in-the-news flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="awards">{t("awards.title")}</Nav.Link>
+            <Nav.Link eventKey="awards">
+              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
+                {t("awards.title")}
+                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.awards}</Badge>
+              </div>
+            </Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
       <Col md={4} className="text-center">
         <Nav className="in-the-news flex-column">
           <Nav.Item>
-            <Nav.Link eventKey="books">{t("books.title")}</Nav.Link>
+            <Nav.Link eventKey="books">
+              <div className="d-flex justify-content-center align-items-center gap-3 p-4">
+                {t("books.title")}
+                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.books}</Badge>
+              </div>
+            </Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>
@@ -106,7 +133,7 @@ const TabGroup = () => {
   )
 }
 
-const TabDropdown = () => {
+const TabDropdown = ({ counts }: { counts: TabCounts }) => {
   const { t } = useTranslation("inTheNews")
   const [selectedTab, setSelectedTab] = useState<string>("Media")
 
