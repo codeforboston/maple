@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Col, Row, Container, Badge } from "../bootstrap"
+import { Col, Row, Container, Badge, Spinner } from "../bootstrap"
 import Tab from "react-bootstrap/Tab"
 import Nav from "react-bootstrap/Nav"
 import Dropdown from "react-bootstrap/Dropdown"
@@ -37,14 +37,15 @@ const NewsFeed = ({
 export const InTheNews = () => {
   const { t } = useTranslation("inTheNews")
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const { result: newsItems = [] as NewsItem[] } = useNews()
+  const { result: newsItems, loading } = useNews()
 
-
-  const counts: TabCounts = {
-    media: newsItems.filter(item => item.type === "article").length,
-    awards: newsItems.filter(item => item.type === "award").length,
-    books: newsItems.filter(item => item.type === "book").length
-  }
+  const counts: TabCounts | null = newsItems
+    ? {
+        media: newsItems.filter(item => item.type === "article").length,
+        awards: newsItems.filter(item => item.type === "award").length,
+        books: newsItems.filter(item => item.type === "book").length
+      }
+    : null
 
   return (
     <Container className="ptx-4 pt-5 gap-4 min-vh-100">
@@ -54,23 +55,31 @@ export const InTheNews = () => {
           {isMobile ? <TabDropdown counts={counts} /> : <TabGroup counts={counts} />}
           <Row className="g-0">
             <Col>
-              <Tab.Content>
-                <Tab.Pane eventKey="media">
-                  <div className="d-flex flex-column align-items-center">
-                    <NewsFeed type="article" newsItems={newsItems} />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="awards">
-                  <div className="d-flex flex-column align-items-center">
-                    <NewsFeed type="award" newsItems={newsItems} />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="books">
-                  <div className="d-flex flex-column align-items-center">
-                    <NewsFeed type="book" newsItems={newsItems} />
-                  </div>
-                </Tab.Pane>
-              </Tab.Content>
+              {loading ? (
+                <div className="d-flex justify-content-center p-5">
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              ) : (
+                <Tab.Content>
+                  <Tab.Pane eventKey="media">
+                    <div className="d-flex flex-column align-items-center">
+                      <NewsFeed type="article" newsItems={newsItems ?? []} />
+                    </div>
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="awards">
+                    <div className="d-flex flex-column align-items-center">
+                      <NewsFeed type="award" newsItems={newsItems ?? []} />
+                    </div>
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="books">
+                    <div className="d-flex flex-column align-items-center">
+                      <NewsFeed type="book" newsItems={newsItems ?? []} />
+                    </div>
+                  </Tab.Pane>
+                </Tab.Content>
+              )}
             </Col>
           </Row>
         </Tab.Container>
@@ -79,7 +88,7 @@ export const InTheNews = () => {
   )
 }
 
-const TabGroup = ({ counts }: { counts: TabCounts }) => {
+const TabGroup = ({ counts }: { counts: TabCounts | null }) => {
   const { t } = useTranslation("inTheNews")
   return (
     <Row className="g-0 fs-4 fw-semibold">
@@ -89,7 +98,11 @@ const TabGroup = ({ counts }: { counts: TabCounts }) => {
             <Nav.Link eventKey="media">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("media.title")}
-                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.media}</Badge>
+                <Badge bg="secondary" className="rounded-pill px-4 fw-bold"
+                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
+                  >
+                  {counts ? counts.media : 0}
+                </Badge>
               </div>
             </Nav.Link>
           </Nav.Item>
@@ -101,7 +114,12 @@ const TabGroup = ({ counts }: { counts: TabCounts }) => {
             <Nav.Link eventKey="awards">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("awards.title")}
-                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.awards}</Badge>
+                <Badge bg="secondary"
+                  className="rounded-pill px-4 fw-bold"
+                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
+                  >
+                  {counts ? counts.awards : 0}
+                </Badge>
               </div>
             </Nav.Link>
           </Nav.Item>
@@ -113,7 +131,12 @@ const TabGroup = ({ counts }: { counts: TabCounts }) => {
             <Nav.Link eventKey="books">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("books.title")}
-                <Badge bg="secondary" className="rounded-pill px-4 fw-bold" style={{ fontSize: "20px" }}>{counts.books}</Badge>
+                <Badge bg="secondary"
+                  className="rounded-pill px-4 fw-bold"
+                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
+                  >
+                  {counts ? counts.books : 0}
+                </Badge>
               </div>
             </Nav.Link>
           </Nav.Item>
@@ -123,7 +146,7 @@ const TabGroup = ({ counts }: { counts: TabCounts }) => {
   )
 }
 
-const TabDropdown = ({ counts }: { counts: TabCounts }) => {
+const TabDropdown = ({ counts }: { counts: TabCounts | null }) => {
   const { t } = useTranslation("inTheNews")
   const [selectedTab, setSelectedTab] = useState<string>("Media")
 
