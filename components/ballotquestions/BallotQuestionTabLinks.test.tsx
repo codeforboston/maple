@@ -4,9 +4,13 @@ import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
 
-jest.mock("../TestimonyCard/ViewTestimony", () => () => (
-  <div data-testid="view-testimony" />
-))
+jest.mock("../TestimonyCard/ViewTestimony", () => {
+  const MockViewTestimony = () => <div data-testid="view-testimony" />
+
+  MockViewTestimony.displayName = "MockViewTestimony"
+
+  return MockViewTestimony
+})
 
 const ballotQuestion = {
   id: "25-15",

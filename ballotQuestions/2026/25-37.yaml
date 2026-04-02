@@ -9,7 +9,8 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
-fullSummary: "This proposed law would change the method for calculating stipends paid to certain state
+fullSummary:
+  "This proposed law would change the method for calculating stipends paid to certain state
   legislators on top of their base salaries.
 
   Under the proposed law, legislators would receive stipends, subject to appropriation,

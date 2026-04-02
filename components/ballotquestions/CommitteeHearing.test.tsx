@@ -30,31 +30,20 @@ describe("CommitteeHearing", () => {
     expect(screen.getByText(/December 14, 2025/)).toBeInTheDocument()
   })
 
-  it("shows video link with question number when both are present", () => {
+  it("shows a hearing page link when an id is present", () => {
     render(
       <CommitteeHearing
-        hearing={{ id: "1", startsAt: PAST_MS, videoURL: "https://example.com/video" }}
-        ballotQuestionNumber={4}
+        hearing={{ id: "hearing-1", startsAt: PAST_MS }}
       />
     )
-    const link = screen.getByRole("link")
-    expect(link).toHaveAttribute("href", "https://example.com/video")
-    expect(link).toHaveTextContent("Watch the committee hearing for Question 4 here.")
-  })
-
-  it("shows generic video link text when no question number", () => {
-    render(
-      <CommitteeHearing
-        hearing={{ id: "1", startsAt: PAST_MS, videoURL: "https://example.com/video" }}
-      />
+    expect(screen.getByRole("link", { name: /Open hearing page/i })).toHaveAttribute(
+      "href",
+      "/hearing/1"
     )
-    const link = screen.getByRole("link")
-    expect(link).toHaveTextContent("Watch the committee hearing here.")
-    expect(link).not.toHaveTextContent("Question")
   })
 
-  it("hides video link when no videoURL", () => {
-    render(<CommitteeHearing hearing={{ id: "1", startsAt: PAST_MS }} />)
+  it("hides the hearing page link when no hearing id is available", () => {
+    render(<CommitteeHearing hearing={{ id: "", startsAt: PAST_MS }} />)
     expect(screen.queryByRole("link")).not.toBeInTheDocument()
   })
 })

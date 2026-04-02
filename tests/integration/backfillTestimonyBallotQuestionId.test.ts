@@ -3,10 +3,18 @@ import { script } from "../../scripts/firebase-admin/backfillTestimonyBallotQues
 
 afterAll(async () => {
   await Promise.all([
-    testDb.doc("users/backfill-test-user/publishedTestimony/legacy-pub").delete(),
-    testDb.doc("users/backfill-test-user/archivedTestimony/legacy-arch").delete(),
-    testDb.doc("users/backfill-test-user2/publishedTestimony/has-null").delete(),
-    testDb.doc("users/backfill-test-user2/publishedTestimony/has-value").delete()
+    testDb
+      .doc("users/backfill-test-user/publishedTestimony/legacy-pub")
+      .delete(),
+    testDb
+      .doc("users/backfill-test-user/archivedTestimony/legacy-arch")
+      .delete(),
+    testDb
+      .doc("users/backfill-test-user2/publishedTestimony/has-null")
+      .delete(),
+    testDb
+      .doc("users/backfill-test-user2/publishedTestimony/has-value")
+      .delete()
   ])
   await terminateFirebase()
 })

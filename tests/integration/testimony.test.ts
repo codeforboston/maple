@@ -395,7 +395,12 @@ describe("publishTestimony", () => {
       const publicationIdA = resA.data.publicationId
 
       // Publish ballot question testimony for same bill
-      const { draftId: bqDraftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
       const resB = await publishTestimony({ draftId: bqDraftId })
       const publicationIdB = resB.data.publicationId
 
@@ -409,7 +414,12 @@ describe("publishTestimony", () => {
 
     it("Regular bill testimony does not overwrite existing ballot question testimony", async () => {
       // Publish ballot question testimony first
-      const { draftId: bqDraftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
       const resA = await publishTestimony({ draftId: bqDraftId })
       const publicationIdA = resA.data.publicationId
 
@@ -438,7 +448,12 @@ describe("publishTestimony", () => {
     })
 
     it("Re-publishing ballot question testimony updates the same doc", async () => {
-      const { draftId: bqDraftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const { draftId: bqDraftId } = await createDraft(
+        uid,
+        billId,
+        undefined,
+        "bq-test-1"
+      )
       const res1 = await publishTestimony({ draftId: bqDraftId })
 
       await updateDoc(refs.draftTestimony(uid, bqDraftId), {

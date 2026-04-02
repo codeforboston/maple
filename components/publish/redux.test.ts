@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit"
+import type { AppDispatch } from "../store"
 import { validateStep } from "./hooks/navigation"
 import { nextStep, previousStep, reducer as publish, setStep } from "./redux"
 
@@ -17,7 +18,7 @@ const makeStore = ({
     ? ({ representative: { id: "rep" }, senator: { id: "sen" } } as any)
     : undefined
 
-  return configureStore({
+  const store = configureStore({
     reducer: {
       publish,
       profile: (state = { loading: false, profile }) => state
@@ -31,6 +32,7 @@ const makeStore = ({
       profile: { loading: false, profile }
     } as any
   })
+  return store as Omit<typeof store, "dispatch"> & { dispatch: AppDispatch }
 }
 
 const currentStep = (store: ReturnType<typeof makeStore>) =>

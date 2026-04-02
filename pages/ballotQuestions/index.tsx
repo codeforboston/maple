@@ -24,6 +24,9 @@ export default createPage({
     return (
       <Container fluid="xl" className="mt-3 mb-4">
         <h1>{t("browse_ballot_questions")}</h1>
+        <p className="text-muted mb-4 col-lg-8 px-0">
+          {t("browse_ballot_questions_intro")}
+        </p>
         <BrowseBallotQuestions items={items} currentYear={currentYear} />
       </Container>
     )
@@ -61,6 +64,7 @@ export const getServerSideProps: GetServerSideProps<
         electionYear: ballotQuestion.electionYear,
         court: ballotQuestion.court,
         ballotStatus: ballotQuestion.ballotStatus,
+        ballotQuestionNumber: ballotQuestion.ballotQuestionNumber,
         ...counts
       }
     })

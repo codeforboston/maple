@@ -26,7 +26,9 @@ export const BillInfoHeader = ({
     : formatBillId(testimony.billId)
   const policyTitle =
     testimony.billTitle ||
-    (ballotQuestionId ? formatBallotQuestionLabel(ballotQuestionId) : "Bill Title")
+    (ballotQuestionId
+      ? formatBallotQuestionLabel(ballotQuestionId)
+      : "Bill Title")
 
   return (
     <>

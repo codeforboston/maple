@@ -10,6 +10,7 @@ export const script: Script = async ({ db, args }) => {
       ? args.dir
       : path.resolve(process.cwd(), "ballotQuestions")
 
+  // @ts-expect-error Node supports recursive readdir here; the repo's fs typings do not.
   const files = (fs.readdirSync(dir, { recursive: true }) as string[]).filter(
     f => f.endsWith(".yaml")
   )
@@ -30,5 +31,7 @@ export const script: Script = async ({ db, args }) => {
   }
 
   await batch.commit()
-  console.log(`Committed ${files.length} ballot question(s) from directory tree.`)
+  console.log(
+    `Committed ${files.length} ballot question(s) from directory tree.`
+  )
 }

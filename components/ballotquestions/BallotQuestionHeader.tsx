@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap"
 import { useAuth } from "../auth"
 import { BallotQuestion, Bill } from "../db"
 import { useFlags } from "../featureFlags"
-import { FollowBillButton } from "../shared/FollowButton"
+import { FollowBallotQuestionButton } from "../shared/FollowButton"
 import { DescriptionBox } from "./DescriptionBox"
 import { getBallotQuestionStatusLabel } from "./status"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
@@ -21,6 +21,7 @@ export const BallotQuestionHeader = ({
   const questionLabel = ballotQuestion.ballotQuestionNumber
     ? `Question ${ballotQuestion.ballotQuestionNumber}`
     : `Question ${ballotQuestion.id}`
+  const hasDescription = Boolean(ballotQuestion.description)
 
   const getTypeLabel = () => {
     switch (ballotQuestion.type) {
@@ -54,8 +55,7 @@ export const BallotQuestionHeader = ({
           <Col lg={8}>
             <Link
               href="/ballotQuestions"
-              className="text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
-              style={{ color: "#475569" }}
+              className="ballot-question-back-link text-decoration-none small fw-semibold d-inline-flex align-items-center gap-2 mb-4"
             >
               <span aria-hidden="true">←</span>
               <span>Back to ballot questions</span>
@@ -63,13 +63,23 @@ export const BallotQuestionHeader = ({
 
             <div className="d-flex flex-wrap align-items-center gap-2 gap-lg-3 mb-3">
               <span
-                className="badge rounded-pill px-3 py-2"
+                className="d-inline-flex align-items-center gap-2 fw-semibold"
                 style={{
-                  backgroundColor: "rgba(94, 114, 228, 0.12)",
                   color: "var(--bs-secondary)",
-                  fontWeight: 700
+                  fontSize: "0.95rem",
+                  lineHeight: 1.2
                 }}
               >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: "0.6rem",
+                    height: "0.6rem",
+                    borderRadius: "999px",
+                    backgroundColor: "var(--bs-secondary)",
+                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                  }}
+                />
                 {statusLabel}
               </span>
               <span
@@ -101,10 +111,13 @@ export const BallotQuestionHeader = ({
               className="d-flex flex-wrap gap-2 gap-lg-3 mb-4"
               style={{ maxWidth: "42rem" }}
             >
-              <MetaPill label={getTypeLabel()} />
-              <MetaPill label={`Election ${ballotQuestion.electionYear}`} />
-              <MetaPill label={`Court ${ballotQuestion.court}`} />
-              <MetaPill label={`Document ${ballotQuestion.id}`} />
+              <MetaFact label="Type" value={getTypeLabel()} />
+              <MetaFact
+                label="Election"
+                value={ballotQuestion.electionYear.toString()}
+              />
+              <MetaFact label="Court" value={ballotQuestion.court.toString()} />
+              <MetaFact label="Document" value={ballotQuestion.id} />
             </div>
           </Col>
 
@@ -127,8 +140,8 @@ export const BallotQuestionHeader = ({
                 Take part
               </div>
               <div className="mb-3">
-                {bill && notifications && user && (
-                  <FollowBillButton bill={bill} />
+                {notifications && user && (
+                  <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
                 )}
               </div>
               <YourTestimonyPanel ballotQuestion={ballotQuestion} bill={bill} />
@@ -136,9 +149,9 @@ export const BallotQuestionHeader = ({
           </Col>
         </Row>
 
-        {(ballotQuestion.description || ballotQuestion.pdfUrl) && (
-          <div className="mt-4 pt-2 mt-lg-5">
-            {ballotQuestion.description && (
+        {(hasDescription || ballotQuestion.pdfUrl) && (
+          <div>
+            {hasDescription && (
               <DescriptionBox description={ballotQuestion.description} />
             )}
 
@@ -147,7 +160,7 @@ export const BallotQuestionHeader = ({
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="d-inline-flex align-items-center gap-2 mt-4 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold"
+                className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
                 style={{
                   color: "var(--bs-secondary)",
                   borderColor: "rgba(94, 114, 228, 0.18)",
@@ -165,17 +178,40 @@ export const BallotQuestionHeader = ({
   )
 }
 
-function MetaPill({ label }: { label: string }) {
+function MetaFact({
+  label,
+  value
+}: {
+  label: string
+  value: string
+}) {
   return (
-    <span
-      className="rounded-pill px-3 py-2 small fw-semibold"
+    <div
+      className="d-flex flex-column"
       style={{
-        color: "#475569",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        border: "1px solid rgba(15, 23, 42, 0.08)"
+        minWidth: "6.5rem"
       }}
     >
-      {label}
-    </span>
+      <span
+        className="text-uppercase fw-semibold"
+        style={{
+          fontSize: "0.72rem",
+          letterSpacing: "0.08em",
+          color: "#64748b"
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          color: "#334155",
+          fontSize: "1.05rem",
+          fontWeight: 650,
+          lineHeight: 1.3
+        }}
+      >
+        {value}
+      </span>
+    </div>
   )
 }

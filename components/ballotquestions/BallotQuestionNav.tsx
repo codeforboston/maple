@@ -119,30 +119,16 @@ export const BallotQuestionNav = ({
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => onTabChange(item.id)}
                 onKeyDown={event => handleKeyDown(event, itemIndex)}
-                className="ballot-question-tab-button rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 w-100 text-start"
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: isActive
-                    ? "rgba(94, 114, 228, 0.08)"
-                    : "#f8fafc",
-                  border: isActive
-                    ? "1px solid rgba(94, 114, 228, 0.35)"
-                    : "1px solid rgba(15, 23, 42, 0.08)",
-                  color: isActive ? "var(--bs-secondary)" : "#334155"
-                }}
+                className={`ballot-question-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 w-100 text-start ${
+                  isActive ? "is-active" : ""
+                }`}
               >
                 <span>{item.label}</span>
                 {item.badge !== undefined && (
                   <span
-                    className="badge rounded-pill"
-                    style={{
-                      backgroundColor: isActive
-                        ? "var(--bs-secondary)"
-                        : "rgba(15, 23, 42, 0.08)",
-                      color: isActive ? "white" : "#334155",
-                      fontWeight: 600,
-                      minWidth: "1.5rem"
-                    }}
+                    className={`ballot-question-nav-badge badge rounded-pill ${
+                      isActive ? "is-active" : ""
+                    }`}
                   >
                     {item.badge}
                   </span>

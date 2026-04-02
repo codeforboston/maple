@@ -58,10 +58,10 @@ The voter-facing fields are already in `functions/src/ballotQuestions/types.ts`:
 ```typescript
 interface BallotQuestion {
   // ... existing fields ...
-  description: string | null      // "What this question would do" — header card + DescriptionBox
-  atAGlance: { label: string; value: string }[] | null  // Key Details bullet list in Overview
-  fullSummary: string | null      // Final Summary section in Overview
-  pdfUrl: string | null           // Link to the initiative petition PDF
+  description: string | null // "What this question would do" — header card + DescriptionBox
+  atAGlance: { label: string; value: string }[] | null // Key Details bullet list in Overview
+  fullSummary: string | null // Final Summary section in Overview
+  pdfUrl: string | null // Link to the initiative petition PDF
 }
 ```
 
@@ -79,7 +79,7 @@ if (!ballotQuestion) return { notFound: true }
 const bill = ballotQuestion.billId
   ? await dbService().getBill({
       court: ballotQuestion.court,
-      billId: ballotQuestion.billId,
+      billId: ballotQuestion.billId
     })
   : null
 
@@ -96,7 +96,7 @@ const hearings = bill?.hearingIds?.length
 
 return {
   props: { ballotQuestion, bill, hearings },
-  headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=300" },
+  headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=300" }
 }
 ```
 
@@ -123,13 +123,13 @@ The header always shows:
 
 The **Your Testimony** panel lives in the header card, not inside a tab. It is always visible.
 
-| `ballotStatus` | Your Testimony panel | Testimonies tab feed |
-|---|---|---|
-| `legislature` | "Testify on the bill →" link (no form here) | Ballot feed (`ballotQuestionId`). This will typically be empty / count `0` because ballot-question testimony is not yet accepted. |
-| `qualifying` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
-| `certified` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
-| `ballot` | **Active** form (`ballotQuestionId` set) | Ballot feed (`ballotQuestionId`) |
-| `enacted` / `failed` / `withdrawn` | No form. Read-only notice. | Ballot feed read-only |
+| `ballotStatus`                     | Your Testimony panel                        | Testimonies tab feed                                                                                                              |
+| ---------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `legislature`                      | "Testify on the bill →" link (no form here) | Ballot feed (`ballotQuestionId`). This will typically be empty / count `0` because ballot-question testimony is not yet accepted. |
+| `qualifying`                       | **Active** form (`ballotQuestionId` set)    | Ballot feed (`ballotQuestionId`)                                                                                                  |
+| `certified`                        | **Active** form (`ballotQuestionId` set)    | Ballot feed (`ballotQuestionId`)                                                                                                  |
+| `ballot`                           | **Active** form (`ballotQuestionId` set)    | Ballot feed (`ballotQuestionId`)                                                                                                  |
+| `enacted` / `failed` / `withdrawn` | No form. Read-only notice.                  | Ballot feed read-only                                                                                                             |
 
 Active `ballotQuestionId` testimony phases: `qualifying | certified | ballot`.
 
@@ -154,6 +154,7 @@ Renders `ballotQuestion.fullSummary` as body text. Manually curated.
 Reads from `hearings` (fetched server-side from `bill.hearingIds`). If no hearings exist, this section is hidden.
 
 For each relevant hearing, display:
+
 - **Status**: "Occurred" if `hearing.content.startsAt` is in the past, "Scheduled" if in the future
 - **Date**: formatted from `hearing.content.startsAt`
 - **Watch link**: "Watch the committee hearing here." linked to `hearing.videoURL` — hidden if no video
@@ -161,6 +162,7 @@ For each relevant hearing, display:
 Since ballot questions are always under SJ42 and typically have one hearing, render a single hearing block. If there are multiple, render them in reverse chronological order (most recent first).
 
 **Hearing data model recap:**
+
 - `bill.hearingIds?: string[]` — event IDs; doc path is `/events/hearing-{id}`
 - `bill.nextHearingAt?: Timestamp` — convenience field for upcoming hearing only (not sufficient alone — we need date + videoURL from the full document)
 - `hearing.videoURL?: string` — link for the "Watch" CTA
@@ -172,8 +174,8 @@ No new components are needed for hearing display — build a simple `CommitteeHe
 
 ## Component reuse map
 
-| Component | File | Used where | Props |
-|---|---|---|---|
+| Component                         | File    | Used where      | Props     |
+| --------------------------------- | ------- | --------------- | --------- |
 | `ViewTestimony` / `TestimonyItem` | various | Testimonies tab | unchanged |
 
 `SponsorsAndCommittees` is **not** reused here. The hearing display in Overview is custom (`CommitteeHearing`) because the Figma shows a richer layout (status badge, explanatory copy, video link) than what `SponsorsAndCommittees` renders.
@@ -224,7 +226,9 @@ After the existing bill existence check (lines 175–183), add a parallel check 
 
 ```typescript
 if (draft.ballotQuestionId) {
-  const bqSnap = await db.doc(`/ballotQuestions/${draft.ballotQuestionId}`).get()
+  const bqSnap = await db
+    .doc(`/ballotQuestions/${draft.ballotQuestionId}`)
+    .get()
   if (!bqSnap.exists) {
     throw fail(
       "failed-precondition",
@@ -241,7 +245,7 @@ The field is on `BaseTestimony` (which both `DraftTestimony` and `Testimony` ext
 ```typescript
 const newPublication: Testimony = {
   // ... existing fields ...
-  ballotQuestionId: this.draft.ballotQuestionId ?? null,
+  ballotQuestionId: this.draft.ballotQuestionId ?? null
 }
 ```
 
