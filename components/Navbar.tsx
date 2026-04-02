@@ -282,22 +282,21 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <NavDropdown.Item>
-                <NavbarLinkViewProfile />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.editProfile"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.followingTab"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkSignOut
-                  handleClick={() => {
-                    void signOutAndRedirectToHome()
-                  }}
-                />
-              </NavDropdown.Item>
+              <NavbarLinkViewProfile dropdown />
+              <NavbarLinkEditProfile
+                dropdown
+                tab={"navigation.editProfile"}
+              />
+              <NavbarLinkEditProfile
+                dropdown
+                tab={"navigation.followingTab"}
+              />
+              <NavbarLinkSignOut
+                dropdown
+                handleClick={() => {
+                  void signOutAndRedirectToHome()
+                }}
+              />
             </Dropdown.Menu>
           </Dropdown>
         </div>
