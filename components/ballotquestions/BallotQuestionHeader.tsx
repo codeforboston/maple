@@ -63,13 +63,23 @@ export const BallotQuestionHeader = ({
 
             <div className="d-flex flex-wrap align-items-center gap-2 gap-lg-3 mb-3">
               <span
-                className="badge rounded-pill px-3 py-2"
+                className="d-inline-flex align-items-center gap-2 fw-semibold"
                 style={{
-                  backgroundColor: "rgba(94, 114, 228, 0.12)",
                   color: "var(--bs-secondary)",
-                  fontWeight: 700
+                  fontSize: "0.95rem",
+                  lineHeight: 1.2
                 }}
               >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: "0.6rem",
+                    height: "0.6rem",
+                    borderRadius: "999px",
+                    backgroundColor: "var(--bs-secondary)",
+                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                  }}
+                />
                 {statusLabel}
               </span>
               <span
@@ -150,7 +160,7 @@ export const BallotQuestionHeader = ({
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
+                className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
                 style={{
                   color: "var(--bs-secondary)",
                   borderColor: "rgba(94, 114, 228, 0.18)",
