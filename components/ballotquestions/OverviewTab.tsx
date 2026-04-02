@@ -112,11 +112,7 @@ export const OverviewTab = ({
           </p>
           <div className="d-grid gap-3">
             {sortedHearings.map(hearing => (
-              <CommitteeHearing
-                key={hearing.id}
-                hearing={hearing}
-                ballotQuestionNumber={ballotQuestion.ballotQuestionNumber}
-              />
+              <CommitteeHearing key={hearing.id} hearing={hearing} />
             ))}
           </div>
         </SectionCard>

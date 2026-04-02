@@ -3,11 +3,9 @@ import { DateTime } from "luxon"
 import { Hearing } from "./types"
 
 export const CommitteeHearing = ({
-  hearing,
-  ballotQuestionNumber
+  hearing
 }: {
   hearing: Hearing
-  ballotQuestionNumber?: number | null
 }) => {
   const startsAt = new Date(hearing.startsAt)
   const now = new Date()
@@ -32,8 +30,8 @@ export const CommitteeHearing = ({
         borderColor: "rgba(15, 23, 42, 0.08)"
       }}
     >
-      <div className="d-flex flex-wrap align-items-start justify-content-between gap-3">
-        <div className="d-flex gap-3 align-items-start">
+      <div className="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3 gap-xl-4">
+        <div className="d-flex gap-3 align-items-start flex-grow-1">
           <div
             className="rounded-4 border px-3 py-2 text-center flex-shrink-0"
             style={{
@@ -55,50 +53,56 @@ export const CommitteeHearing = ({
             <div className="fw-semibold text-secondary">{dateBadge}</div>
           </div>
 
-          <div>
-            <div className="d-flex flex-wrap align-items-center gap-2 mb-2">
-              <span
-                className="badge rounded-pill px-3 py-2"
-                style={{
-                  backgroundColor: isOccurred
-                    ? "rgba(15, 23, 42, 0.08)"
-                    : "rgba(94, 114, 228, 0.12)",
-                  color: isOccurred ? "#475569" : "var(--bs-secondary)",
-                  fontWeight: 700
-                }}
-              >
-                {status}
-              </span>
+          <div className="flex-grow-1">
+            <div style={{ minWidth: "16rem" }}>
+              <div className="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <span
+                  className="d-inline-flex align-items-center gap-2 fw-semibold"
+                  style={{
+                    color: isOccurred ? "#475569" : "var(--bs-secondary)",
+                    fontSize: "0.92rem",
+                    lineHeight: 1.2
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: "0.55rem",
+                      height: "0.55rem",
+                      borderRadius: "999px",
+                      backgroundColor: isOccurred
+                        ? "rgba(15, 23, 42, 0.45)"
+                        : "var(--bs-secondary)",
+                      boxShadow: isOccurred
+                        ? "0 0 0 4px rgba(15, 23, 42, 0.08)"
+                        : "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                    }}
+                  />
+                  {status}
+                </span>
+              </div>
+              <div className="fw-semibold mb-1 text-dark">Committee hearing</div>
+              <div className="small text-body-secondary">{dateStr}</div>
             </div>
-            <div className="fw-semibold mb-1 text-dark">Committee hearing</div>
-            <div className="small text-body-secondary">{dateStr}</div>
           </div>
         </div>
 
         {hearingId ? (
-          <div
-            className="rounded-pill border px-3 py-2"
+          <Internal
+            href={`/hearing/${hearingId}`}
+            className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start align-self-xl-center small fw-semibold text-decoration-none flex-shrink-0"
             style={{
               borderColor: "rgba(94, 114, 228, 0.18)",
-              backgroundColor: "rgba(248, 250, 255, 1)"
+              backgroundColor: "rgba(248, 250, 255, 1)",
+              color: "var(--bs-secondary)",
+              minHeight: "3.25rem"
             }}
           >
-            <Internal
-              href={`/hearing/${hearingId}`}
-              className="d-inline-flex align-items-center gap-2 small fw-semibold text-decoration-none"
-            >
-              <span>Open hearing page</span>
-              <span aria-hidden="true">→</span>
-            </Internal>
-          </div>
+            <span>Open hearing page</span>
+            <span aria-hidden="true">→</span>
+          </Internal>
         ) : null}
       </div>
-
-      {ballotQuestionNumber != null && (
-        <p className="small text-body-secondary mb-0 mt-3">
-          Review the committee hearing tied to Question {ballotQuestionNumber}.
-        </p>
-      )}
     </div>
   )
 }

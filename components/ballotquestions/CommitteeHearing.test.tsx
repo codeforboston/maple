@@ -34,7 +34,6 @@ describe("CommitteeHearing", () => {
     render(
       <CommitteeHearing
         hearing={{ id: "1", startsAt: PAST_MS, videoURL: "https://example.com/video" }}
-        ballotQuestionNumber={4}
       />
     )
     const link = screen.getByRole("link")
