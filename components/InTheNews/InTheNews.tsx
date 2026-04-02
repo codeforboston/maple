@@ -8,7 +8,6 @@ import { useTranslation } from "next-i18next"
 import { NewsCard } from "./NewsCard"
 import { NewsType, NewsItem, useNews } from "components/db/news"
 
-
 type NewsFeedProps = {
   type: NewsType
   newsItems: NewsItem[]
@@ -20,17 +19,15 @@ type TabCounts = {
   books: number
 }
 
-const NewsFeed = ({
-  type,
-  newsItems
-}: NewsFeedProps) =>
-{
+const NewsFeed = ({ type, newsItems }: NewsFeedProps) => {
   return (
-      <div className="d-flex flex-column align-items-left gap-1 w-100">
-        {newsItems.filter(item => item.type === type).map((item, index) => (
+    <div className="d-flex flex-column align-items-left gap-1 w-100">
+      {newsItems
+        .filter(item => item.type === type)
+        .map((item, index) => (
           <NewsCard key={index} newsItem={item} />
         ))}
-      </div>
+    </div>
   )
 }
 
@@ -49,10 +46,16 @@ export const InTheNews = () => {
 
   return (
     <Container className="ptx-4 pt-5 gap-4 min-vh-100">
-      <h1 className="fw-bold m-3" style={{ fontSize: "5rem" }}>{t("title")}</h1>
+      <h1 className="fw-bold m-3" style={{ fontSize: "5rem" }}>
+        {t("title")}
+      </h1>
       <div className="d-flex flex-column bg-white rounded-4 my-5 gap-4 p-4">
         <Tab.Container defaultActiveKey="media">
-          {isMobile ? <TabDropdown counts={counts} /> : <TabGroup counts={counts} />}
+          {isMobile ? (
+            <TabDropdown counts={counts} />
+          ) : (
+            <TabGroup counts={counts} />
+          )}
           <Row className="g-0">
             <Col>
               {loading ? (
@@ -98,9 +101,14 @@ const TabGroup = ({ counts }: { counts: TabCounts | null }) => {
             <Nav.Link eventKey="media">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("media.title")}
-                <Badge bg="secondary" className="rounded-pill px-4 fw-bold"
-                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
-                  >
+                <Badge
+                  bg="secondary"
+                  className="rounded-pill px-4 fw-bold"
+                  style={{
+                    fontSize: "20px",
+                    visibility: counts ? "visible" : "hidden"
+                  }}
+                >
                   {counts ? counts.media : 0}
                 </Badge>
               </div>
@@ -114,10 +122,14 @@ const TabGroup = ({ counts }: { counts: TabCounts | null }) => {
             <Nav.Link eventKey="awards">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("awards.title")}
-                <Badge bg="secondary"
+                <Badge
+                  bg="secondary"
                   className="rounded-pill px-4 fw-bold"
-                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
-                  >
+                  style={{
+                    fontSize: "20px",
+                    visibility: counts ? "visible" : "hidden"
+                  }}
+                >
                   {counts ? counts.awards : 0}
                 </Badge>
               </div>
@@ -131,10 +143,14 @@ const TabGroup = ({ counts }: { counts: TabCounts | null }) => {
             <Nav.Link eventKey="books">
               <div className="d-flex justify-content-center align-items-center gap-3 p-4">
                 {t("books.title")}
-                <Badge bg="secondary"
+                <Badge
+                  bg="secondary"
                   className="rounded-pill px-4 fw-bold"
-                  style={{ fontSize: "20px", visibility: counts ? "visible" : "hidden" }}
-                  >
+                  style={{
+                    fontSize: "20px",
+                    visibility: counts ? "visible" : "hidden"
+                  }}
+                >
                   {counts ? counts.books : 0}
                 </Badge>
               </div>

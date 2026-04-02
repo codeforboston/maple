@@ -88,12 +88,12 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <NavbarLinkTestimony handleClick={closeNav} />
         {authenticated ? <NavbarLinkNewsfeed handleClick={closeNav} /> : <></>}
         <NavDropdown className={"navLink-primary"} title={t("about")}>
-           <NavbarLinkGoals handleClick={closeNav} />
-           <NavbarLinkTeam handleClick={closeNav} />
-           <NavbarLinkSupport handleClick={closeNav} />
-           <NavbarLinkFAQ handleClick={closeNav} />
-           <NavbarLinkAI handleClick={closeNav} />
-           <NavbarLinkInTheNews handleClick={closeNav} />
+          <NavbarLinkGoals handleClick={closeNav} />
+          <NavbarLinkTeam handleClick={closeNav} />
+          <NavbarLinkSupport handleClick={closeNav} />
+          <NavbarLinkFAQ handleClick={closeNav} />
+          <NavbarLinkAI handleClick={closeNav} />
+          <NavbarLinkInTheNews handleClick={closeNav} />
         </NavDropdown>
 
         <NavDropdown className={"navLink-primary"} title={t("learn")}>
