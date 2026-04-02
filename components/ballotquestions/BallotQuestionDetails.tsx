@@ -57,13 +57,11 @@ export const BallotQuestionDetails = ({
       <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
           <Col lg={3} md={4} className="mb-4">
-            <div className="sticky-top" style={{ top: "1rem" }}>
-              <BallotQuestionNav
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                testimonyCount={testimonySummary.testimonyCount}
-              />
-            </div>
+            <BallotQuestionNav
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              testimonyCount={testimonySummary.testimonyCount}
+            />
           </Col>
           <Col lg={9} md={8}>
             {renderContent()}
