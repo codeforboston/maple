@@ -37,17 +37,7 @@ const NewsFeed = ({
 export const InTheNews = () => {
   const { t } = useTranslation("inTheNews")
   const isMobile = useMediaQuery("(max-width: 768px)")
-  // const { result: newsItems = [] as NewsItem[] } = useNews()
-
-  const newsItems = [
-    { id: "1", title: "MAPLE Launches New Platform", url: "https://example.com/1", author: "Jane Smith", type: "article", publishDate: "2024-01-15", createdAt: null, description: "MAPLE has launched a new platform to enhance civic engagement and streamline public participation in government processes. MAPLE has launched a new platform to enhance civic engagement and streamline public participation in government processes." },
-    { id: "2", title: "Civic Tech Innovation Award", url: "https://example.com/2", author: "Award Committee", type: "award", publishDate: "2024-02-20", createdAt: null, description: "The Civic Tech Innovation Award recognizes outstanding contributions to the field of civic technology." },
-    { id: "3", title: "Democracy in the Digital Age", url: "https://example.com/3", author: "John Doe", type: "book", publishDate: "2024-03-10", createdAt: null, description: "A comprehensive look at how digital technologies are reshaping democratic processes." },
-    { id: "4", title: "The Engaged Citizen", url: "https://example.com/4", author: "Alice Brown", type: "book", publishDate: "2024-04-05", createdAt: null, description: "Exploring the role of active citizenship in modern democracies." },
-    { id: "5", title: "The Engaged Citizen", url: "https://example.com/4", author: "Alice Brown", type: "book", publishDate: "2024-04-05", createdAt: null, description: "Exploring the role of active citizenship in modern democracies." },
-    { id: "6", title: "The Engaged Citizen", url: "https://example.com/4", author: "Alice Brown", type: "book", publishDate: "2024-04-05", createdAt: null, description: "Exploring the role of active citizenship in modern democracies." },
-    { id: "7", title: "The Engaged Citizen", url: "https://example.com/4", author: "Alice Brown", type: "book", publishDate: "2024-04-05", createdAt: null, description: "Exploring the role of active citizenship in modern democracies." },
-  ] as unknown as NewsItem[]
+  const { result: newsItems = [] as NewsItem[] } = useNews()
 
 
   const counts: TabCounts = {
