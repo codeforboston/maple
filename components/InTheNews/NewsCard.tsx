@@ -1,12 +1,13 @@
 import ArrowForward from "@mui/icons-material/ArrowForward"
+import { useTranslation } from "next-i18next"
 import { NewsItem } from "components/db"
-import { Col, Row, Stack } from "../bootstrap"
 
 type NewsCardProps = {
   newsItem: NewsItem
 }
 
 export const NewsCard = ({ newsItem }: NewsCardProps) => {
+  const { t } = useTranslation("inTheNews")
   return (
     <div
       className="d-flex flex-row flex-fill gap-5 p-4"
@@ -58,7 +59,7 @@ export const NewsCard = ({ newsItem }: NewsCardProps) => {
           rel="noopener noreferrer"
           style={{ color: "#1587D3", fontWeight: 800 }}
         >
-          READ MORE
+          {t("readMoreButton")}
           <ArrowForward />
         </a>
       </div>
