@@ -1,4 +1,5 @@
-import { Image } from "react-bootstrap"
+import type { ReactNode } from "react"
+import { Col, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
 import { CommitteeHearing } from "./CommitteeHearing"
 import { Hearing } from "./types"
@@ -13,66 +14,97 @@ export const OverviewTab = ({
   hearings: Hearing[]
 }) => {
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
+  const sectionCopyStyle = {
+    color: "#334155",
+    fontSize: "0.98rem",
+    lineHeight: 1.8,
+    maxWidth: "75ch"
+  } as const
 
   return (
-    <div className="rounded border bg-white px-4 py-4 shadow-sm">
-      <div className="d-flex align-items-start gap-3 mb-4">
-        <div
-          className="rounded border d-flex align-items-center justify-content-center flex-shrink-0"
-          style={{
-            width: "2.5rem",
-            height: "2.5rem",
-            borderColor: "var(--bs-blue-300)",
-            backgroundColor: "var(--bs-blue-100)"
-          }}
-        >
-          <Image src="/speaker-with-thumbs.svg" alt="" width={22} height={22} />
-        </div>
-        <div>
-          <h2 className="h4 mb-1 text-secondary">Overview</h2>
-          <p className="text-body-secondary small mb-0">
-            The ballot question at a high-level.
-          </p>
-        </div>
-      </div>
-
-      {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
-        <section className="mb-4">
-          <h3 className="h6 fw-semibold mb-3">Key Details</h3>
+    <div className="d-grid gap-4">
+      <SectionCard>
+        <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded border px-3 py-3"
+            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
-              backgroundColor: "var(--bs-blue-100)",
-              borderColor: "var(--bs-blue-300)"
+              width: "3rem",
+              height: "3rem",
+              borderColor: "rgba(94, 114, 228, 0.16)",
+              background:
+                "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
             }}
           >
-            <div className="small fw-semibold mb-2">At a glance:</div>
-            <ul className="mb-0 ps-3 small">
-              {ballotQuestion.atAGlance.map(
-                (item: { label: string; value: string }, idx: number) => (
-                  <li key={idx}>
-                    <strong>{item.label}:</strong> {item.value}
-                  </li>
-                )
-              )}
-            </ul>
+            <BallotGlyph />
           </div>
-        </section>
+          <div>
+            <h2 className="h4 mb-1 text-secondary">Overview</h2>
+            <p className="text-body-secondary small mb-0">
+              Understand the question, key details, and legislature-phase
+              context in one place.
+            </p>
+          </div>
+        </div>
+      </SectionCard>
+
+      {ballotQuestion.atAGlance && ballotQuestion.atAGlance.length > 0 && (
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark">Key Details</h3>
+          <Row className="g-3">
+            {ballotQuestion.atAGlance.map((item, idx) => (
+              <Col key={idx} md={6}>
+                <div
+                  className="rounded-4 border h-100 px-3 py-3"
+                  style={{
+                    backgroundColor: "rgba(248, 250, 252, 0.9)",
+                    borderColor: "rgba(15, 23, 42, 0.08)"
+                  }}
+                >
+                  <div
+                    className="text-uppercase fw-semibold mb-2"
+                    style={{
+                      fontSize: "0.72rem",
+                      letterSpacing: "0.08em",
+                      color: "#64748b"
+                    }}
+                  >
+                    {item.label}
+                  </div>
+                  <div
+                    style={{
+                      color: "#1e293b",
+                      fontSize: "0.98rem",
+                      lineHeight: 1.5
+                    }}
+                  >
+                    {item.value}
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </SectionCard>
       )}
 
       {ballotQuestion.fullSummary && (
-        <section className="mb-4">
-          <h3 className="h6 fw-semibold mb-3">Final Summary</h3>
-          <p className="small lh-lg mb-0" style={{ whiteSpace: "pre-wrap" }}>
+        <SectionCard>
+          <h3 className="h5 mb-3 text-dark">Final Summary</h3>
+          <p
+            className="mb-0"
+            style={{
+              ...sectionCopyStyle,
+              whiteSpace: "pre-wrap"
+            }}
+          >
             {ballotQuestion.fullSummary}
           </p>
-        </section>
+        </SectionCard>
       )}
 
       {bill && sortedHearings.length > 0 && (
-        <section>
-          <h3 className="h6 fw-semibold mb-3">Committee Hearing</h3>
-          <p className="small text-body-secondary mb-3">
+        <SectionCard>
+          <h3 className="h5 mb-2 text-dark">Committee Hearing</h3>
+          <p className="mb-4" style={sectionCopyStyle}>
             Committee hearings are public meetings where legislators examine a
             proposed law, ask questions, and hear testimony from the public and
             experts. What happens at a hearing can influence whether a proposal
@@ -80,15 +112,84 @@ export const OverviewTab = ({
           </p>
           <div className="d-grid gap-3">
             {sortedHearings.map(hearing => (
-              <CommitteeHearing
-                key={hearing.id}
-                hearing={hearing}
-                ballotQuestionNumber={ballotQuestion.ballotQuestionNumber}
-              />
+              <CommitteeHearing key={hearing.id} hearing={hearing} />
             ))}
           </div>
-        </section>
+        </SectionCard>
       )}
     </div>
+  )
+}
+
+function BallotGlyph() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{
+        display: "block",
+        transform: "translateY(-1px)"
+      }}
+    >
+      <path
+        d="M8 4.75H14.4L18.25 8.6V17.75C18.25 18.9926 17.2426 20 16 20H8C6.75736 20 5.75 18.9926 5.75 17.75V7C5.75 5.75736 6.75736 4.75 8 4.75Z"
+        fill="rgba(255, 255, 255, 0.94)"
+        stroke="rgba(50, 73, 179, 0.24)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M14.25 4.75V7.85C14.25 8.49015 14.7598 9 15.4 9H18.25"
+        stroke="rgba(50, 73, 179, 0.24)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <rect
+        x="8.3"
+        y="10.1"
+        width="2.7"
+        height="2.7"
+        rx="0.7"
+        fill="rgba(94, 114, 228, 0.14)"
+        stroke="#3249b3"
+        strokeWidth="1.2"
+      />
+      <path
+        d="M9.1 11.45L9.8 12.15L10.95 10.95"
+        stroke="#3249b3"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12.6 10.9H15.95"
+        stroke="#3249b3"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+      />
+      <path
+        d="M8.3 15.2H15.95"
+        stroke="#94A3B8"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function SectionCard({ children }: { children: ReactNode }) {
+  return (
+    <section
+      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
+      style={{
+        borderColor: "rgba(15, 23, 42, 0.08)",
+        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+      }}
+    >
+      {children}
+    </section>
   )
 }

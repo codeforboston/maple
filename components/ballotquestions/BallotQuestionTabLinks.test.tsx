@@ -6,6 +6,9 @@ import { TestimoniesTab } from "./TestimoniesTab"
 
 jest.mock("../TestimonyCard/ViewTestimony", () => {
   const MockViewTestimony = () => <div data-testid="view-testimony" />
+
+  MockViewTestimony.displayName = "MockViewTestimony"
+
   return MockViewTestimony
 })
 

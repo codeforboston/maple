@@ -25,16 +25,22 @@ export const TestimoniesTab = ({
 
   return (
     <div className="d-grid gap-4">
-      <div className="rounded border bg-white p-4 shadow-sm">
+      <div
+        className="rounded-4 border bg-white p-4 shadow-sm"
+        style={{
+          borderColor: "rgba(15, 23, 42, 0.08)",
+          boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+        }}
+      >
         <div className="d-flex flex-wrap justify-content-between gap-3 mb-4">
           <div className="d-flex align-items-start gap-3">
             <div
-              className="rounded border d-flex align-items-center justify-content-center flex-shrink-0"
+              className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
               style={{
-                width: "2.5rem",
-                height: "2.5rem",
-                borderColor: "var(--bs-blue-300)",
-                backgroundColor: "var(--bs-blue-100)"
+                width: "2.75rem",
+                height: "2.75rem",
+                borderColor: "rgba(94, 114, 228, 0.18)",
+                backgroundColor: "rgba(94, 114, 228, 0.08)"
               }}
             >
               <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
@@ -43,7 +49,10 @@ export const TestimoniesTab = ({
               <h2 className="h4 mb-1 text-secondary">Testimonies</h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
               {!isLegislaturePhase && bill && (
-                <p className="small text-body-secondary mt-3 mb-0">
+                <p
+                  className="small text-body-secondary mt-3 mb-0"
+                  style={{ maxWidth: "44rem" }}
+                >
                   You can review testimony on the related bill{" "}
                   <Link
                     href={`/bills/${bill.court}/${bill.id}#testimonies`}
@@ -58,29 +67,47 @@ export const TestimoniesTab = ({
           </div>
         </div>
 
-        <div className="d-flex flex-wrap gap-5 align-items-center border-top pt-3">
-          <SummaryItem
-            label="Endorse"
-            count={testimonySummary.endorseCount}
-            icon="/thumbs-endorse.svg"
-            color="var(--bs-green)"
-          />
-          <SummaryItem
-            label="Neutral"
-            count={testimonySummary.neutralCount}
-            icon="/thumbs-neutral.svg"
-            color="var(--bs-blue)"
-          />
-          <SummaryItem
-            label="Oppose"
-            count={testimonySummary.opposeCount}
-            icon="/thumbs-oppose.svg"
-            color="var(--bs-orange)"
-          />
+        <div
+          className="border-top pt-4"
+          style={{ borderColor: "rgba(15, 23, 42, 0.08)" }}
+        >
+          <div className="row g-3">
+            <div className="col-md-4">
+              <SummaryItem
+                label="Endorse"
+                count={testimonySummary.endorseCount}
+                icon="/thumbs-endorse.svg"
+                color="var(--bs-green)"
+              />
+            </div>
+            <div className="col-md-4">
+              <SummaryItem
+                label="Neutral"
+                count={testimonySummary.neutralCount}
+                icon="/thumbs-neutral.svg"
+                color="var(--bs-blue)"
+              />
+            </div>
+            <div className="col-md-4">
+              <SummaryItem
+                label="Oppose"
+                count={testimonySummary.opposeCount}
+                icon="/thumbs-oppose.svg"
+                color="var(--bs-orange)"
+              />
+            </div>
+          </div>
         </div>
 
         {isLegislaturePhase && bill && (
-          <div className="mt-4 rounded border bg-light p-3 small text-muted">
+          <div
+            className="mt-4 rounded-4 border p-3 p-lg-4 small"
+            style={{
+              backgroundColor: "rgba(248, 250, 252, 0.9)",
+              borderColor: "rgba(15, 23, 42, 0.08)",
+              color: "#475569"
+            }}
+          >
             This petition is still before the legislature. Submit testimony on
             the{" "}
             <Link
@@ -117,12 +144,44 @@ function SummaryItem({
   color: string
 }) {
   return (
-    <div className="d-flex align-items-center gap-2 small">
-      <Image src={icon} alt="" width={18} height={18} />
-      <div className="fw-semibold" style={{ color }}>
-        {count}
+    <div
+      className="rounded-4 border h-100 px-3 py-3"
+      style={{
+        backgroundColor: "rgba(248, 250, 252, 0.9)",
+        borderColor: "rgba(15, 23, 42, 0.08)"
+      }}
+    >
+      <div className="d-flex align-items-center justify-content-between gap-3">
+        <div>
+          <div
+            className="text-uppercase fw-semibold mb-1"
+            style={{
+              fontSize: "0.72rem",
+              letterSpacing: "0.08em",
+              color: "#64748b"
+            }}
+          >
+            {label}
+          </div>
+          <div
+            className="fw-semibold"
+            style={{ color, fontSize: "1.75rem", lineHeight: 1 }}
+          >
+            {count}
+          </div>
+        </div>
+        <div
+          className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+          style={{
+            width: "2.5rem",
+            height: "2.5rem",
+            backgroundColor: "white",
+            border: "1px solid rgba(15, 23, 42, 0.08)"
+          }}
+        >
+          <Image src={icon} alt="" width={18} height={18} />
+        </div>
       </div>
-      <div className="text-muted">{label}</div>
     </div>
   )
 }

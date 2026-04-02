@@ -33,37 +33,52 @@ export const BallotQuestionNav = ({
   const visibleItems = navItems.filter(item => item.enabled)
 
   return (
-    <div className="rounded border bg-white p-3 shadow-sm">
-      <Nav variant="pills" className="flex-column gap-1">
+    <div
+      className="rounded-4 border bg-white p-3 p-lg-4 shadow-sm"
+      style={{
+        borderColor: "rgba(15, 23, 42, 0.08)",
+        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+      }}
+    >
+      <div className="mb-3 mb-lg-4">
+        <div
+          className="text-uppercase fw-semibold mb-1"
+          style={{
+            fontSize: "0.75rem",
+            letterSpacing: "0.08em",
+            color: "#64748b"
+          }}
+        >
+          Explore
+        </div>
+        <p className="mb-0 small text-body-secondary">
+          Move between the question overview and public testimony.
+        </p>
+      </div>
+
+      <Nav
+        variant="pills"
+        className="flex-row flex-lg-column gap-2"
+        aria-label="Ballot question sections"
+      >
         {visibleItems.map(item => {
           const isActive = activeTab === item.id
           return (
-            <Nav.Item key={item.id}>
+            <Nav.Item key={item.id} className="flex-fill">
               <Nav.Link
                 active={false}
                 aria-current={isActive ? "page" : undefined}
                 onClick={() => onTabChange(item.id)}
-                className="rounded px-3 py-2 d-flex align-items-center justify-content-between small fw-medium"
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: isActive
-                    ? "var(--bs-blue-100)"
-                    : "transparent",
-                  border: isActive
-                    ? "1px solid var(--bs-blue-300)"
-                    : "1px solid transparent",
-                  color: isActive ? "var(--bs-secondary)" : undefined
-                }}
+                className={`ballot-question-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 ${
+                  isActive ? "is-active" : ""
+                }`}
               >
                 <span>{item.label}</span>
                 {item.badge !== undefined && (
                   <span
-                    className="badge rounded-pill"
-                    style={{
-                      backgroundColor: "var(--bs-secondary)",
-                      color: "white",
-                      minWidth: "1.5rem"
-                    }}
+                    className={`ballot-question-nav-badge badge rounded-pill ${
+                      isActive ? "is-active" : ""
+                    }`}
                   >
                     {item.badge}
                   </span>
