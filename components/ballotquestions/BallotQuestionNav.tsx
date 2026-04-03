@@ -1,9 +1,9 @@
 import { KeyboardEvent, useRef } from "react"
+import { BallotQuestionTab } from "./types"
 import {
-  BallotQuestionTab,
-  getBallotQuestionPanelId,
-  getBallotQuestionTabId
-} from "./types"
+  BallotQuestionNavItem,
+  BallotQuestionTabButton
+} from "./BallotQuestionTabButton"
 
 export const BallotQuestionNav = ({
   activeTab,
@@ -15,12 +15,7 @@ export const BallotQuestionNav = ({
   testimonyCount?: number
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
-  const navItems: Array<{
-    id: BallotQuestionTab
-    label: string
-    badge?: number
-    enabled: boolean
-  }> = [
+  const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
     { id: "overview", label: "Overview", enabled: true },
     {
       id: "testimonies",
@@ -107,33 +102,15 @@ export const BallotQuestionNav = ({
           const isActive = activeTab === item.id
           return (
             <div key={item.id} className="flex-fill">
-              <button
+              <BallotQuestionTabButton
                 ref={element => {
                   tabRefs.current[itemIndex] = element
                 }}
-                type="button"
-                role="tab"
-                id={getBallotQuestionTabId(item.id)}
-                aria-selected={isActive}
-                aria-controls={getBallotQuestionPanelId(item.id)}
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => onTabChange(item.id)}
+                item={item}
+                isActive={isActive}
+                onSelect={onTabChange}
                 onKeyDown={event => handleKeyDown(event, itemIndex)}
-                className={`ballot-question-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 w-100 text-start ${
-                  isActive ? "is-active" : ""
-                }`}
-              >
-                <span>{item.label}</span>
-                {item.badge !== undefined && (
-                  <span
-                    className={`ballot-question-nav-badge badge rounded-pill ${
-                      isActive ? "is-active" : ""
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </button>
+              />
             </div>
           )
         })}
