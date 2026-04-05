@@ -27,9 +27,9 @@ export const Status = ({ bill }: BillProps) => {
   const today = new Date().toISOString()
   const target = "Hearing scheduled for "
 
-  let hearingDateString = ""
+  let hearingDate = ""
   if (history?.Date) {
-    hearingDateString = history.Date
+    hearingDate = history.Date
   }
 
   let hearingCheck = false
@@ -38,7 +38,7 @@ export const Status = ({ bill }: BillProps) => {
   }
 
   let dateCheck = false
-  if (hearingDateString < today) {
+  if (hearingDate < today) {
     dateCheck = true
   }
 
