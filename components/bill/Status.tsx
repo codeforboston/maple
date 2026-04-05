@@ -24,6 +24,23 @@ export const Status = ({ bill }: BillProps) => {
   const handleShowBillHistory = () => setShowBillHistory(true)
   const handleCloseBillHistory = () => setShowBillHistory(false)
   const history = last(bill.history)
+  const today = new Date().toISOString()
+  const target = "Hearing scheduled for "
+
+  let hearingDate = ""
+  if (history?.Date) {
+    hearingDate = history.Date
+  }
+
+  let hearingCheck = false
+  if (history?.Action.startsWith(target)) {
+    hearingCheck = true
+  }
+
+  let dateCheck = false
+  if (hearingDate < today) {
+    dateCheck = true
+  }
 
   if (!history) return null
   return (
@@ -34,7 +51,7 @@ export const Status = ({ bill }: BillProps) => {
           className="text-truncate ps-4"
           onClick={handleShowBillHistory}
         >
-          {history.Action}
+          {hearingCheck && dateCheck ? "Hearing Held" : history.Action}
         </StyledButton>
         <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
           <Modal.Header closeButton onClick={handleCloseBillHistory}>
