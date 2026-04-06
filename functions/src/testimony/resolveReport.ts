@@ -5,7 +5,6 @@ import { fail, checkRequestZod, checkAuth, checkAdmin } from "../common"
 // import { performDeleteTestimony } from "./deleteTestimony"
 import { first } from "lodash"
 import { Testimony } from "./types"
-import { Profile } from "../profile/types"
 
 export type Request = z.infer<typeof Request>
 const Request = z.object({
@@ -45,12 +44,10 @@ export const resolveReport = functions.https.onCall(
 
     // 3. Get the moderator's profile document
     const moderatorUid = context.auth!.uid
-    const moderator = Profile.check(
-      await db
-        .doc(`profiles/${moderatorUid}`)
-        .get()
-        .then(d => d.data())
-    )
+    const moderatorName = await db
+      .doc(`profiles/${moderatorUid}`)
+      .get()
+      .then(d => d.data()?.fullName)
 
     // ***archived testiomny Id === published testimony Id***
 
@@ -76,7 +73,7 @@ export const resolveReport = functions.https.onCall(
       archivedTestimonyId: testimonyId
     }
     if (reason) resolutionObj.reason = reason
-    if (moderator.fullName) resolutionObj.moderatorName = moderator.fullName
+    if (moderatorName) resolutionObj.moderatorName = moderatorName
 
     await reportRef.update({
       resolution: resolutionObj
