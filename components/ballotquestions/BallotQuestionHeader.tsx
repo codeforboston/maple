@@ -4,6 +4,7 @@ import { useAuth } from "../auth"
 import { BallotQuestion, Bill } from "../db"
 import { useFlags } from "../featureFlags"
 import { FollowBallotQuestionButton } from "../shared/FollowButton"
+import { QuestionTooltip } from "../tooltip"
 import { DescriptionBox } from "./DescriptionBox"
 import { getBallotQuestionStatusLabel } from "./status"
 import { YourTestimonyPanel } from "./YourTestimonyPanel"
@@ -82,30 +83,38 @@ export const BallotQuestionHeader = ({
                 />
                 {statusLabel}
               </span>
-              <span
-                className="text-uppercase fw-semibold"
-                style={{
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.08em",
-                  color: "#64748b"
-                }}
-              >
-                {questionLabel}
-              </span>
             </div>
 
             <h1
-              className="mb-3 text-dark"
+              className="mb-2 text-dark d-flex align-items-center gap-2"
               style={{
                 fontSize: "clamp(2rem, 4vw, 3.1rem)",
                 lineHeight: 1.08,
                 fontWeight: 650,
-                letterSpacing: "-0.02em",
-                maxWidth: "20ch"
+                letterSpacing: "-0.02em"
+              }}
+            >
+              Question{" "}
+              {ballotQuestion.ballotQuestionNumber ? (
+                ballotQuestion.ballotQuestionNumber
+              ) : (
+                <>
+                  #
+                  <QuestionTooltip text="The exact question number will be assigned this summer by the Secretary of State" />
+                </>
+              )}
+            </h1>
+
+            <p
+              className="mb-3 text-dark"
+              style={{
+                fontSize: "1.1rem",
+                lineHeight: 1.4,
+                maxWidth: "25ch"
               }}
             >
               {bill?.content.Title || ballotQuestion.id}
-            </h1>
+            </p>
 
             <div
               className="d-flex flex-wrap gap-2 gap-lg-3 mb-4"

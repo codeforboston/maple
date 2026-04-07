@@ -1,10 +1,11 @@
-import { Button, Card, Form, Image } from "components/bootstrap"
+import { Alert, Button, Card, Form, Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { useDeferredValue, useState } from "react"
 import styled from "styled-components"
 import type { BallotQuestion } from "../db"
 import { maple } from "../links"
+import { QuestionTooltip } from "../tooltip"
 
 type BallotQuestionStatus = BallotQuestion["ballotStatus"]
 
@@ -74,7 +75,7 @@ const STATUS_STYLES: Record<
   }
 }
 
-const Controls = styled.section`
+const Controls = styled.section<{ $expanded: boolean }>`
   background: linear-gradient(
     180deg,
     var(--bs-white) 0%,
@@ -84,15 +85,31 @@ const Controls = styled.section`
   border-radius: 1rem;
   box-shadow: ${BROWSE_SHADOWS.soft};
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
-  padding: 1rem;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
 `
 
-const ControlsGrid = styled.div`
+const SearchToggle = styled(Button)`
+  align-self: flex-start;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-blue);
+    outline-offset: 2px;
+  }
+`
+
+const ControlsGrid = styled.div<{ $expanded: boolean }>`
   display: grid;
   gap: 0.75rem;
   grid-template-columns: minmax(0, 2.4fr) repeat(3, minmax(0, 1fr));
+  max-height: ${props => (props.$expanded ? "500px" : "0")};
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: ${props => (props.$expanded ? 1 : 0)};
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr 1fr;
@@ -163,9 +180,9 @@ const StyledCard = styled(Card)`
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     height: 100%;
-    padding: 1.1rem 1.15rem 1rem;
+    padding: 0.8rem 0.9rem;
   }
 `
 
@@ -223,18 +240,18 @@ const TitleBlock = styled.div`
   gap: 0.45rem;
 `
 
-const QuestionEyebrow = styled.span`
-  color: var(--bs-gray-700);
-  font-size: 0.76rem;
+const QuestionNumber = styled.h2`
+  color: var(--bs-dark-blue);
+  font-size: 1.3rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
 `
 
-const QuestionTitle = styled(Card.Title)`
-  color: var(--bs-dark-blue);
-  font-size: 1.24rem;
-  line-height: 1.34;
+const QuestionTitle = styled.p`
+  color: var(--bs-gray-700);
+  font-size: 0.95rem;
+  line-height: 1.4;
   margin: 0;
 `
 
@@ -326,6 +343,8 @@ export const BrowseBallotQuestions = ({
   const [selectedYear, setSelectedYear] = useState(String(currentYear))
   const [selectedCourt, setSelectedCourt] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const [searchExpanded, setSearchExpanded] = useState(true)
+  const [showInfo, setShowInfo] = useState(true)
   const deferredQuery = useDeferredValue(searchQuery.trim().toLowerCase())
 
   if (items.length === 0) {
@@ -379,8 +398,27 @@ export const BrowseBallotQuestions = ({
 
   return (
     <>
-      <Controls aria-label="Filter ballot questions">
-        <ControlsGrid>
+      {showInfo && (
+        <Alert
+          variant="info"
+          dismissible
+          onClose={() => setShowInfo(false)}
+          className="mb-3"
+        >
+          The exact question number will be assigned this summer by the Secretary of State
+        </Alert>
+      )}
+
+      <Controls $expanded={searchExpanded} aria-label="Filter ballot questions">
+        <SearchToggle
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => setSearchExpanded(!searchExpanded)}
+        >
+          {searchExpanded ? "Hide filters" : "Show filters"}
+        </SearchToggle>
+
+        <ControlsGrid $expanded={searchExpanded}>
           <div>
             <FilterLabel htmlFor="ballot-question-search">
               {t("ballot_question_search_label", { ns: "search" })}
@@ -526,45 +564,21 @@ export const BrowseBallotQuestions = ({
                     </TopRow>
 
                     <TitleBlock>
-                      {item.ballotQuestionNumber ? (
-                        <QuestionEyebrow>
-                          {t("ballot_question_number", {
-                            ns: "search",
-                            number: item.ballotQuestionNumber
-                          })}
-                        </QuestionEyebrow>
-                      ) : null}
-                      <QuestionTitle as="h2">{item.title}</QuestionTitle>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <QuestionNumber>
+                          Question{" "}
+                          {item.ballotQuestionNumber ? (
+                            item.ballotQuestionNumber
+                          ) : (
+                            <>
+                              #
+                              <QuestionTooltip text="The exact question number will be assigned this summer by the Secretary of State" />
+                            </>
+                          )}
+                        </QuestionNumber>
+                      </div>
+                      <QuestionTitle>{item.title}</QuestionTitle>
                     </TitleBlock>
-
-                    <Summary>
-                      {item.fullSummary ||
-                        t("ballot_question_no_summary", { ns: "search" })}
-                    </Summary>
-
-                    <MetaStack>
-                      <MetaItem>
-                        {t("ballot_question_election_year", {
-                          ns: "search",
-                          year: item.electionYear
-                        })}
-                      </MetaItem>
-                      <MetaItem>
-                        {t("ballot_question_court", {
-                          ns: "search",
-                          court: item.court
-                        })}
-                      </MetaItem>
-                    </MetaStack>
-
-                    <FooterRow>
-                      <DocumentId>
-                        {t("ballot_question_document_id", {
-                          ns: "search",
-                          id: item.id
-                        })}
-                      </DocumentId>
-                    </FooterRow>
                   </Card.Body>
                 </StyledCard>
               </CardLink>
