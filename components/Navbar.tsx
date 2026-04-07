@@ -189,41 +189,41 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}
+      className={`bg-secondary d-flex py-2 sticky-top justify-content-end gap-2`}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <NavbarLinkBills />
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <NavbarLinkBallotQuestions />
       </div>
 
       {flags().hearingsAndTranscriptions ? (
-        <div className={`align-self-center px-2`}>
+        <div className={`align-self-center`}>
           <NavbarLinkHearings />
         </div>
       ) : (
         <></>
       )}
 
-      <div className="align-self-center px-2">
+      <div className="align-self-center">
         <NavbarLinkTestimony />
       </div>
 
       {authenticated ? (
-        <div className="align-self-center px-2">
+        <div className="align-self-center">
           <NavbarLinkNewsfeed />
         </div>
       ) : (
         <></>
       )}
 
-      <div className={`align-self-center`}>
+      <div className={`align-self-center px-2`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("about")}
@@ -238,7 +238,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center`}>
+      <div className={`align-self-center px-2`}>
         <Dropdown>
           <Dropdown.Toggle className={`btn-secondary text-white-50`}>
             {t("learn")}
