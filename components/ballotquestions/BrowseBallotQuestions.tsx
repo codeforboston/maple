@@ -405,7 +405,8 @@ export const BrowseBallotQuestions = ({
           onClose={() => setShowInfo(false)}
           className="mb-3"
         >
-          The exact question number will be assigned this summer by the Secretary of State
+          The exact question number will be assigned this summer by the
+          Secretary of State
         </Alert>
       )}
 
@@ -414,11 +415,17 @@ export const BrowseBallotQuestions = ({
           variant="outline-secondary"
           size="sm"
           onClick={() => setSearchExpanded(!searchExpanded)}
+          aria-controls="ballot-question-filters"
+          aria-expanded={searchExpanded}
         >
           {searchExpanded ? "Hide filters" : "Show filters"}
         </SearchToggle>
 
-        <ControlsGrid $expanded={searchExpanded}>
+        <ControlsGrid
+          id="ballot-question-filters"
+          $expanded={searchExpanded}
+          hidden={!searchExpanded}
+        >
           <div>
             <FilterLabel htmlFor="ballot-question-search">
               {t("ballot_question_search_label", { ns: "search" })}
@@ -564,7 +571,13 @@ export const BrowseBallotQuestions = ({
                     </TopRow>
 
                     <TitleBlock>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem"
+                        }}
+                      >
                         <QuestionNumber>
                           Question{" "}
                           {item.ballotQuestionNumber ? (
