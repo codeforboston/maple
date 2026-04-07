@@ -50,10 +50,10 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             <div className="fw-semibold mb-3 text-dark">Committee Hearing</div>
             <div className="small text-body-secondary lh-lg mb-3">
               Committee hearings are public meetings where legislators reviewed
-              the proposed ballot question, asked questions, and heard
-              testimony from the public and experts. At this stage, the
-              Legislature had the opportunity to pass the proposal into law
-              instead of sending it to voters.
+              the proposed ballot question, asked questions, and heard testimony
+              from the public and experts. At this stage, the Legislature had
+              the opportunity to pass the proposal into law instead of sending
+              it to voters.
             </div>
             <div className="small text-body-secondary">{dateStr}</div>
           </div>
