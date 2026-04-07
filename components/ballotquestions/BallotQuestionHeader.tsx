@@ -21,7 +21,8 @@ export const BallotQuestionHeader = ({
   const questionLabel = ballotQuestion.ballotQuestionNumber
     ? `Question ${ballotQuestion.ballotQuestionNumber}`
     : `Question ${ballotQuestion.id}`
-  const hasDescription = Boolean(ballotQuestion.description)
+  const description = ballotQuestion.description
+  const hasDescription = Boolean(description)
 
   const getTypeLabel = () => {
     switch (ballotQuestion.type) {
@@ -151,9 +152,7 @@ export const BallotQuestionHeader = ({
 
         {(hasDescription || ballotQuestion.pdfUrl) && (
           <div>
-            {hasDescription && (
-              <DescriptionBox description={ballotQuestion.description} />
-            )}
+            {description && <DescriptionBox description={description} />}
 
             {ballotQuestion.pdfUrl && (
               <a
@@ -178,13 +177,7 @@ export const BallotQuestionHeader = ({
   )
 }
 
-function MetaFact({
-  label,
-  value
-}: {
-  label: string
-  value: string
-}) {
+function MetaFact({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="d-flex flex-column"
