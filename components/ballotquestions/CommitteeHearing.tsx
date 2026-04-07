@@ -2,11 +2,7 @@ import { Internal } from "components/links"
 import { DateTime } from "luxon"
 import { Hearing } from "./types"
 
-export const CommitteeHearing = ({
-  hearing
-}: {
-  hearing: Hearing
-}) => {
+export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   const startsAt = new Date(hearing.startsAt)
   const now = new Date()
   const isOccurred = startsAt < now
@@ -81,7 +77,9 @@ export const CommitteeHearing = ({
                   {status}
                 </span>
               </div>
-              <div className="fw-semibold mb-1 text-dark">Committee hearing</div>
+              <div className="fw-semibold mb-1 text-dark">
+                Committee hearing
+              </div>
               <div className="small text-body-secondary">{dateStr}</div>
             </div>
           </div>
