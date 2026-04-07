@@ -1,12 +1,8 @@
-import { Internal } from "components/links"
+import Link from "next/link"
 import { DateTime } from "luxon"
 import { Hearing } from "./types"
 
-export const CommitteeHearing = ({
-  hearing
-}: {
-  hearing: Hearing
-}) => {
+export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   const startsAt = new Date(hearing.startsAt)
   const now = new Date()
   const isOccurred = startsAt < now
@@ -81,26 +77,29 @@ export const CommitteeHearing = ({
                   {status}
                 </span>
               </div>
-              <div className="fw-semibold mb-1 text-dark">Committee hearing</div>
+              <div className="fw-semibold mb-1 text-dark">
+                Committee hearing
+              </div>
               <div className="small text-body-secondary">{dateStr}</div>
             </div>
           </div>
         </div>
 
         {hearingId ? (
-          <Internal
-            href={`/hearing/${hearingId}`}
-            className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start align-self-xl-center small fw-semibold text-decoration-none flex-shrink-0"
-            style={{
-              borderColor: "rgba(94, 114, 228, 0.18)",
-              backgroundColor: "rgba(248, 250, 255, 1)",
-              color: "var(--bs-secondary)",
-              minHeight: "3.25rem"
-            }}
-          >
-            <span>Open hearing page</span>
-            <span aria-hidden="true">→</span>
-          </Internal>
+          <Link href={`/hearing/${hearingId}`} legacyBehavior>
+            <a
+              className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start align-self-xl-center small fw-semibold text-decoration-none flex-shrink-0"
+              style={{
+                borderColor: "rgba(94, 114, 228, 0.18)",
+                backgroundColor: "rgba(248, 250, 255, 1)",
+                color: "var(--bs-secondary)",
+                minHeight: "3.25rem"
+              }}
+            >
+              <span>Open hearing page</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </Link>
         ) : null}
       </div>
     </div>

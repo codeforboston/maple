@@ -151,7 +151,7 @@ export const BallotQuestionHeader = ({
 
         {(hasDescription || ballotQuestion.pdfUrl) && (
           <div>
-            {hasDescription && (
+            {ballotQuestion.description && (
               <DescriptionBox description={ballotQuestion.description} />
             )}
 
@@ -178,13 +178,7 @@ export const BallotQuestionHeader = ({
   )
 }
 
-function MetaFact({
-  label,
-  value
-}: {
-  label: string
-  value: string
-}) {
+function MetaFact({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="d-flex flex-column"

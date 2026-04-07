@@ -194,11 +194,8 @@
 }
 
 .ballot-question-pdf-link {
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .ballot-question-pdf-link:hover {
@@ -218,12 +215,8 @@
   background-color: #f8fafc;
   border: 1px solid rgba(15, 23, 42, 0.08);
   color: #334155;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease,
-    color 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .ballot-question-nav-link:hover {

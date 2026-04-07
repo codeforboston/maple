@@ -32,14 +32,11 @@ describe("CommitteeHearing", () => {
 
   it("shows a hearing page link when an id is present", () => {
     render(
-      <CommitteeHearing
-        hearing={{ id: "hearing-1", startsAt: PAST_MS }}
-      />
+      <CommitteeHearing hearing={{ id: "hearing-1", startsAt: PAST_MS }} />
     )
-    expect(screen.getByRole("link", { name: /Open hearing page/i })).toHaveAttribute(
-      "href",
-      "/hearing/1"
-    )
+    expect(
+      screen.getByRole("link", { name: /Open hearing page/i })
+    ).toHaveAttribute("href", "/hearing/1")
   })
 
   it("hides the hearing page link when no hearing id is available", () => {
