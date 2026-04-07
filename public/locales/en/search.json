@@ -16,13 +16,10 @@
   "ballot_question_all_courts": "All courts",
   "ballot_question_all_statuses": "All statuses",
   "ballot_question_status": {
-    "legislature": "Legislature",
-    "qualifying": "Qualifying",
-    "certified": "Certified",
-    "ballot": "On Ballot",
-    "enacted": "Enacted",
-    "failed": "Failed",
-    "withdrawn": "Withdrawn"
+    "expectedOnBallot": "Expected on ballot",
+    "failedToAppear": "Failed to appear on ballot",
+    "rejected": "Rejected",
+    "accepted": "Accepted"
   },
   "ballot_question_results_summary": "Showing {{count}} of {{total}} ballot questions",
   "ballot_question_reset_filters": "Reset filters",

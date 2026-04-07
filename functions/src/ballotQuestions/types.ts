@@ -22,13 +22,10 @@ export const BallotQuestion = Record({
     L("advisory")
   ),
   ballotStatus: Union(
-    L("legislature"),
-    L("qualifying"),
-    L("certified"),
-    L("ballot"),
-    L("enacted"),
-    L("failed"),
-    L("withdrawn")
+    L("expectedOnBallot"),
+    L("failedToAppear"),
+    L("rejected"),
+    L("accepted")
   ),
   ballotQuestionNumber: Union(Number, Null),
   relatedBillIds: Array(String),

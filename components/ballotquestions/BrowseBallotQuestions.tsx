@@ -37,40 +37,25 @@ const STATUS_STYLES: Record<
   BallotQuestionStatus,
   { background: string; color: string; border: string }
 > = {
-  legislature: {
+  expectedOnBallot: {
     background: "#e8efff",
     color: "#1d3f8a",
     border: "#c9d8ff"
   },
-  qualifying: {
-    background: "#fff3d9",
-    color: "#865300",
-    border: "#f5d78a"
-  },
-  certified: {
-    background: "#e6f6ee",
-    color: "#0b6a42",
-    border: "#bae6d0"
-  },
-  ballot: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
-  },
-  enacted: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "#c8e7cf"
-  },
-  failed: {
+  failedToAppear: {
     background: "#f1f5f9",
     color: "#475569",
     border: "#d7e0ea"
   },
-  withdrawn: {
-    background: "#fff0e0",
-    color: "#92400e",
-    border: "#f5d0a7"
+  rejected: {
+    background: "#fde8ef",
+    color: "#902141",
+    border: "#f4bfd0"
+  },
+  accepted: {
+    background: "#e8f6ea",
+    color: "#1d5d2d",
+    border: "#c8e7cf"
   }
 }
 
@@ -541,30 +526,6 @@ export const BrowseBallotQuestions = ({
                       {item.fullSummary ||
                         t("ballot_question_no_summary", { ns: "search" })}
                     </Summary>
-
-                    <MetaStack>
-                      <MetaItem>
-                        {t("ballot_question_election_year", {
-                          ns: "search",
-                          year: item.electionYear
-                        })}
-                      </MetaItem>
-                      <MetaItem>
-                        {t("ballot_question_court", {
-                          ns: "search",
-                          court: item.court
-                        })}
-                      </MetaItem>
-                    </MetaStack>
-
-                    <FooterRow>
-                      <DocumentId>
-                        {t("ballot_question_document_id", {
-                          ns: "search",
-                          id: item.id
-                        })}
-                      </DocumentId>
-                    </FooterRow>
                   </Card.Body>
                 </StyledCard>
               </CardLink>
