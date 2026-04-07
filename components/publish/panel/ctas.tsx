@@ -68,9 +68,10 @@ export const CreateTestimony = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
+  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const cta = (
     <OpenForm
-      label={t("panel.createTestimony.label")}
+      label={t(`${namespace}.createTestimony.label`)}
       className={
         variant === "ballotQuestion"
           ? "w-100 py-2 small fw-semibold"
@@ -80,9 +81,9 @@ export const CreateTestimony = ({
   )
 
   return variant === "ballotQuestion" ? (
-    <CompactPanel title={t("panel.createTestimony.title")} cta={cta} />
+    <CompactPanel title={t(`${namespace}.createTestimony.title`)} cta={cta} />
   ) : (
-    <Cta title={t("panel.createTestimony.title")} cta={cta} />
+    <Cta title={t(`${namespace}.createTestimony.title`)} cta={cta} />
   )
 }
 
@@ -92,9 +93,10 @@ export const CompleteTestimony = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
+  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const cta = (
     <OpenForm
-      label={t("panel.completeTestimony.label")}
+      label={t(`${namespace}.completeTestimony.label`)}
       variant="info"
       className={
         variant === "ballotQuestion"
@@ -105,10 +107,10 @@ export const CompleteTestimony = ({
   )
 
   return variant === "ballotQuestion" ? (
-    <CompactPanel title={t("panel.completeTestimony.title")} cta={cta} />
+    <CompactPanel title={t(`${namespace}.completeTestimony.title`)} cta={cta} />
   ) : (
     <Cta
-      title={t("panel.completeTestimony.title")}
+      title={t(`${namespace}.completeTestimony.title`)}
       cta={cta}
       className="text-info"
     />
@@ -121,14 +123,15 @@ export const SignedOut = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
+  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const title =
     variant === "ballotQuestion"
-      ? t("panel.createTestimony.title")
+      ? t(`${namespace}.createTestimony.title`)
       : t("panel.signedOut.title")
   const cta =
     variant === "ballotQuestion" ? (
       <SignInWithButton
-        label={t("panel.createTestimony.label")}
+        label={t(`${namespace}.createTestimony.label`)}
         buttonClassName="py-2 small fw-semibold"
       />
     ) : (

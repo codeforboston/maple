@@ -20,8 +20,8 @@ export const TestimoniesTab = ({
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const totalLabel =
     testimonySummary.testimonyCount === 1
-      ? "1 total testimony"
-      : `${testimonySummary.testimonyCount} total testimonies`
+      ? "1 perspective"
+      : `${testimonySummary.testimonyCount} perspectives`
 
   return (
     <div className="d-grid gap-4">
@@ -46,7 +46,7 @@ export const TestimoniesTab = ({
               <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
             </div>
             <div>
-              <h2 className="h4 mb-1 text-secondary">Testimonies</h2>
+              <h2 className="h4 mb-1 text-secondary">Perspectives</h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
               {!isLegislaturePhase && bill && (
                 <p

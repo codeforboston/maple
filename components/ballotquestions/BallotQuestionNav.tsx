@@ -19,7 +19,7 @@ export const BallotQuestionNav = ({
     { id: "overview", label: "Overview", enabled: true },
     {
       id: "testimonies",
-      label: "Testimonies",
+      label: "Perspectives",
       enabled: true,
       badge: testimonyCount
     },
@@ -52,7 +52,7 @@ export const BallotQuestionNav = ({
           Explore
         </div>
         <p className="mb-0 small text-body-secondary">
-          Move between the question overview and public testimony.
+          Move between the question overview and public perspectives.
         </p>
       </div>
 
