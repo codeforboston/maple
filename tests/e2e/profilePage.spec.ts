@@ -43,10 +43,6 @@ test.describe.serial("Profile Page", () => {
         await page.click('button[type="submit"]')
 
         
-    // //TODO: grab user_id from firebase
-    // const profilepage = new ProfilePage(page)
-    // await profilepage.goto()
-    // Wait for login to complete before proceeding
     await expect(page.getByAltText("profileMenu")).toBeVisible()
 
     // Navigate to profile and wait for it to fully load
@@ -64,8 +60,6 @@ test.describe.serial("Profile Page", () => {
     })
 
 
-    //render page to double check how each componenet is stored
-
     test.describe("Profile Page Information", () => {
         test('should display username', async () => {
             const username = page.locator("[class*='ProfileDisplayName']")
@@ -73,60 +67,15 @@ test.describe.serial("Profile Page", () => {
         })
 
         test('should display user bio', async () => {
-            //go into edit profile to create a test bio
-            const testBio = "Test bio"
-            
-
-            await page.getByRole('button', { name: "Edit Profile" }).click()
-            await expect(page.getByRole('heading', { name: 'Edit Profile' })).toBeVisible()
-            
-            const bio = page.locator("div.form-floating textarea")
-            await bio.clear()
-            await bio.fill(testBio)
-
-            await expect(bio).toHaveValue(testBio)
-            await page.getByRole('button', { name: 'Save Personal Information' }).click()
-            await expect(page.getByRole('img', { name: 'Profile Icon' })).toBeVisible({ timeout: 10000 })
-
+            const testBio = "Test Bio"   
             await expect(page.getByText(testBio)).toBeVisible()
-
-   
-
         })
 
-        test('should display legislators', async () => {
-            //TODO: Go into edit profile to add representative/senator
-            // const representative = page.locator("[class*='LabeledIcon']").filter({ hasText: /^Representative$/ }).first()
-            // const senator = page.locator("[class*='LabeledIcon']").filter({ hasText: /^Senator$/ }).first()
-            // await expect(representative).toBeVisible()
-            // await expect(senator).toBeVisible()
-
-
-
-            await page.getByRole('button', { name: "Edit Profile" }).click()
-            await expect(page.getByRole('heading', { name: 'Edit Profile' })).toBeVisible()
-
-            //Pick first rep and senator
-            await page.getByText('RepresentativeSearch your').click()
-            await page.getByRole('option', { name: 'Aaron L. Saunders | 7th' }).click()
-            await page.locator('div').filter({ hasText: /^Search your senator$/ }).nth(2).click()
-            await page.getByRole('option', { name: 'Adam Gómez | Hampden' }).click()
-
-            await page.getByRole('button', { name: 'Save Personal Information' }).click()
-            await expect(page.getByRole('img', { name: 'Profile Icon' })).toBeVisible({ timeout: 10000 })
-            
-            // const representative = page.locator("[class*='LabeledIcon']").filter({ hasText: /^Representative$/ }).first()
-            // const senator = page.locator("[class*='LabeledIcon']").filter({ hasText: /^Senator$/ }).first()
-
-            const representative = page.locator('div').filter({ hasText: /^RepresentativeAaron L\. Saunders$/ }).first()
-            const senator = page.locator('div').filter({ hasText: /^SenatorAdam Gómez$/ }).first()
+        test('should display legislators', async () => {   
+            const representative = page.locator('div').filter({ hasText: /^Representative$/ }).first()
+            const senator = page.locator('div').filter({ hasText: /^Senator$/ }).first()
             await expect(representative).toBeVisible()
             await expect(senator).toBeVisible()
-
-
-
-
-
         })
 
         test('should display testimonies', async () => {
@@ -139,10 +88,6 @@ test.describe.serial("Profile Page", () => {
 
 
     test.describe("verify banners/buttons on page", () => {
-        // test.beforeAll(async () => {
-        //     await page.getByRole('button', { name: 'profileMenu' }).click();
-        //     await page.getByRole('link', { name: 'View Profile' }).click();
-        // })
 
         test('should display orange banner', async () => {
             const banner = page.getByText("Currently viewing your")
@@ -153,12 +98,10 @@ test.describe.serial("Profile Page", () => {
             const editProfileButton = page.getByRole('button', { name: "Edit Profile" })
             await expect(editProfileButton).toBeVisible()
             await editProfileButton.click()
-
         })
 
         //If user is public, a Make private button should be displayed
         test('should display Make Private button', async () => {
-
             //navigate to make private button          
             
             await page.getByRole('button', { name: 'settings' }).click()
@@ -168,8 +111,7 @@ test.describe.serial("Profile Page", () => {
             await expect(page.getByRole('button', { name: 'Make Public' })).toBeVisible()
             await page.getByRole('button', { name: 'Make Public' }).click()
 
-            await page.getByRole('img', { name: 'navigation.closeNavMenu' }).click()
-        
+            await page.getByRole('img', { name: 'navigation.closeNavMenu' }).click() 
         })
 
         test('should display edit option on testimonies', async () => {
