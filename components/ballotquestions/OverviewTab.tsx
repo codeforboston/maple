@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { Col, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
+import { QuestionTooltip } from "../tooltip"
 import { CommitteeHearing } from "./CommitteeHearing"
 import { Hearing } from "./types"
 
@@ -88,7 +89,10 @@ export const OverviewTab = ({
 
       {ballotQuestion.fullSummary && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark">Final Summary</h3>
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center">
+            Official summary by the Massachusetts Attorney General
+            <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
+          </h3>
           <p
             className="mb-0"
             style={{
