@@ -99,6 +99,10 @@ service cloud.firestore {
         allow read, write: if request.auth.token.get("role", "user") == "admin"
       }
     }
+    match /ballotQuestions/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /transcriptions/{tid} {
       // public, read-only
       allow read: if true
