@@ -68,7 +68,8 @@ export const CreateTestimony = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
-  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const cta = (
     <OpenForm
       label={t(`${namespace}.createTestimony.label`)}
@@ -93,7 +94,8 @@ export const CompleteTestimony = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
-  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const cta = (
     <OpenForm
       label={t(`${namespace}.completeTestimony.label`)}
@@ -123,7 +125,8 @@ export const SignedOut = ({
   variant?: PanelCtaVariant
 }) => {
   const { t } = useTranslation("testimony")
-  const namespace = variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
+  const namespace =
+    variant === "ballotQuestion" ? "ballotQuestion.panel" : "panel"
   const title =
     variant === "ballotQuestion"
       ? t(`${namespace}.createTestimony.title`)
