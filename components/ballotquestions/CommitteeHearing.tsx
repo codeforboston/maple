@@ -1,5 +1,6 @@
-import Link from "next/link"
+import { Internal } from "components/links"
 import { DateTime } from "luxon"
+import Image from "next/image"
 import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
@@ -26,80 +27,53 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
         borderColor: "rgba(15, 23, 42, 0.08)"
       }}
     >
-      <div className="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3 gap-xl-4">
-        <div className="d-flex gap-3 align-items-start flex-grow-1">
+      <div className="d-flex flex-column flex-xl-row align-items-xl-start justify-content-between gap-4 gap-xl-4">
+        <div className="d-flex gap-4 align-items-start flex-grow-1">
           <div
-            className="rounded-4 border px-3 py-2 text-center flex-shrink-0"
+            className="rounded-4 border p-3 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
-              minWidth: "4.75rem",
+              width: "5rem",
+              height: "5rem",
               backgroundColor: "rgba(94, 114, 228, 0.06)",
               borderColor: "rgba(94, 114, 228, 0.18)"
             }}
           >
-            <div
-              className="text-uppercase fw-semibold"
-              style={{
-                fontSize: "0.72rem",
-                letterSpacing: "0.08em",
-                color: "#64748b"
-              }}
-            >
-              Hearing
-            </div>
-            <div className="fw-semibold text-secondary">{dateBadge}</div>
+            <Image
+              src="/speaker-podium.svg"
+              alt="Committee hearing"
+              width={40}
+              height={40}
+            />
           </div>
 
           <div className="flex-grow-1">
-            <div style={{ minWidth: "16rem" }}>
-              <div className="d-flex flex-wrap align-items-center gap-2 mb-2">
-                <span
-                  className="d-inline-flex align-items-center gap-2 fw-semibold"
-                  style={{
-                    color: isOccurred ? "#475569" : "var(--bs-secondary)",
-                    fontSize: "0.92rem",
-                    lineHeight: 1.2
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: "0.55rem",
-                      height: "0.55rem",
-                      borderRadius: "999px",
-                      backgroundColor: isOccurred
-                        ? "rgba(15, 23, 42, 0.45)"
-                        : "var(--bs-secondary)",
-                      boxShadow: isOccurred
-                        ? "0 0 0 4px rgba(15, 23, 42, 0.08)"
-                        : "0 0 0 4px rgba(94, 114, 228, 0.12)"
-                    }}
-                  />
-                  {status}
-                </span>
-              </div>
-              <div className="fw-semibold mb-1 text-dark">
-                Committee hearing
-              </div>
-              <div className="small text-body-secondary">{dateStr}</div>
+            <div className="fw-semibold mb-3 text-dark">Committee Hearing</div>
+            <div className="small text-body-secondary lh-lg mb-3">
+              Committee hearings are public meetings where legislators reviewed
+              the proposed ballot question, asked questions, and heard
+              testimony from the public and experts. At this stage, the
+              Legislature had the opportunity to pass the proposal into law
+              instead of sending it to voters.
             </div>
+            <div className="small text-body-secondary">{dateStr}</div>
           </div>
         </div>
 
         {hearingId ? (
-          <Link href={`/hearing/${hearingId}`} legacyBehavior>
-            <a
-              className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start align-self-xl-center small fw-semibold text-decoration-none flex-shrink-0"
-              style={{
-                borderColor: "rgba(94, 114, 228, 0.18)",
-                backgroundColor: "rgba(248, 250, 255, 1)",
-                color: "var(--bs-secondary)",
-                minHeight: "3.25rem"
-              }}
-            >
-              <span>Open hearing page</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </Link>
+          <Internal
+            href={`/hearing/${hearingId}`}
+            className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
+            style={{
+              borderColor: "rgba(94, 114, 228, 0.18)",
+              backgroundColor: "rgba(248, 250, 255, 1)",
+              color: "var(--bs-secondary)",
+              minHeight: "3.25rem",
+              whiteSpace: "nowrap"
+            }}
+          >
+            <span>Open hearing page</span>
+            <span aria-hidden="true">→</span>
+          </Internal>
         ) : null}
       </div>
     </div>
