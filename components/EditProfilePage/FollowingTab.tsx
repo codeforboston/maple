@@ -1,195 +1,125 @@
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { useBill } from "components/db"
+import { formatBillId } from "components/formatting"
+import { Internal } from "components/links"
+import { FollowBillButton } from "components/shared/FollowButton"
+import { collection, onSnapshot, query, where } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { ComponentProps, useEffect, useMemo, useState } from "react"
 import { useAuth } from "../auth"
-import { Stack } from "../bootstrap"
+import { Alert, Col, Row, Spinner } from "../bootstrap"
 import { firestore } from "../firebase"
-import { TitledSectionCard } from "../shared"
-import UnfollowItem, { UnfollowModalConfig } from "./UnfollowModal"
-import { FollowedItem } from "./FollowingTabComponents"
-import { BillElement, UserElement } from "./FollowingTabComponents"
-import { deleteItem } from "components/shared/FollowingQueries"
-import { PaginationButtons } from "../table"
+import { FollowUserCard } from "./FollowUserCard"
+import {
+  LoadableItemsState,
+  PaginatedItemsCard
+} from "components/shared/PaginatedItemsCard"
 
 export function FollowingTab({ className }: { className?: string }) {
-  const { user } = useAuth()
-  const uid = user?.uid
+  const { t } = useTranslation("editProfile")
+  return (
+    <>
+      <PaginatedItemsCard
+        className={className}
+        title={t("follow.bills")}
+        ItemCard={FollowedBillCard}
+        {...useFollowedBills()}
+      />
+      <PaginatedItemsCard
+        className={className}
+        title={t("follow.orgs")}
+        ItemCard={item => <FollowUserCard {...item} confirmUnfollow={true} />}
+        {...useFollowedUsers()}
+      />
+    </>
+  )
+}
+
+const useFollowedBills = (): LoadableItemsState<
+  ComponentProps<typeof FollowedBillCard>
+> => useTopicSubscription("bill")
+
+const useFollowedUsers = (): LoadableItemsState<
+  ComponentProps<typeof FollowUserCard>
+> => useTopicSubscription("testimony")
+
+function useTopicSubscription<T extends object>(
+  type: "bill" | "testimony"
+): LoadableItemsState<T> {
+  const [state, setState] = useState<LoadableItemsState<T>>({
+    items: [],
+    loading: false,
+    error: null
+  })
+  const { t } = useTranslation("editProfile")
+  const uid = useAuth().user?.uid
   const subscriptionRef = useMemo(
     () =>
-      // returns new object only if uid changes
       uid
         ? collection(firestore, `/users/${uid}/activeTopicSubscriptions/`)
         : null,
     [uid]
   )
-
-  const [unfollow, setUnfollow] = useState<UnfollowModalConfig | null>(null)
-  const close = () => setUnfollow(null)
-
-  const [billsFollowing, setBillsFollowing] = useState<BillElement[]>([])
-  const [usersFollowing, setUsersFollowing] = useState<UserElement[]>([])
-
-  const [currentBillsPage, setCurrentBillsPage] = useState(1)
-  const [currentUsersPage, setCurrentUsersPage] = useState(1)
-  const itemsPerPage = 10
-
-  const billsFollowingQuery = useCallback(async () => {
-    if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const billList: BillElement[] = []
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "bill")
-    )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      billList.push(doc.data().billLookup)
-    })
-    if (billsFollowing.length === 0 && billList.length != 0) {
-      setBillsFollowing(billList)
-    } // this limits the code from falling into an infinite loop
-  }, [subscriptionRef, uid, billsFollowing])
+  const topicKey = type === "bill" ? "billLookup" : "userLookup"
 
   useEffect(() => {
-    uid ? billsFollowingQuery() : null
-  }, [uid, billsFollowingQuery])
+    if (!subscriptionRef || !uid) return
 
-  const orgsFollowingQuery = useCallback(async () => {
-    if (!subscriptionRef) return // handle the case where subscriptionRef is null
-    const usersList: UserElement[] = []
-    const q = query(
-      subscriptionRef,
-      where("uid", "==", `${uid}`),
-      where("type", "==", "testimony")
+    setState(prev => ({ ...prev, loading: true, error: null }))
+    const unsubscribe = onSnapshot(
+      query(
+        subscriptionRef,
+        where("uid", "==", uid),
+        where("type", "==", type)
+      ),
+      snap =>
+        setState({
+          items: snap.docs.map(doc => doc.data()[topicKey]),
+          loading: false,
+          error: null
+        }),
+      err => {
+        console.error(`Error listening to followed ${type}`, err)
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error: t("content.error")
+        }))
+      }
     )
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      usersList.push(doc.data().userLookup)
-    })
 
-    if (usersFollowing.length === 0 && usersList.length != 0) {
-      setUsersFollowing(usersList)
-    } // this limits the code from falling into an infinite loop
-  }, [subscriptionRef, uid, usersFollowing])
+    return () => unsubscribe()
+  }, [subscriptionRef, uid, type])
 
-  const fetchFollowedItems = useCallback(async () => {
-    if (uid) {
-      billsFollowingQuery()
-      orgsFollowingQuery()
-    }
-  }, [uid, billsFollowingQuery, orgsFollowingQuery])
+  return state
+}
 
-  useEffect(() => {
-    fetchFollowedItems()
-  }, [billsFollowing, usersFollowing, fetchFollowedItems])
-
-  const handleUnfollowClick = async (unfollow: UnfollowModalConfig | null) => {
-    if (!unfollow || !unfollow.typeId) {
-      // handle the case where unfollow is null or unfollow.typeId is undefined
-      console.error(
-        "handleUnfollowClick was called but unfollow or unfollow.typeId is undefined"
-      )
-      return
-    }
-
-    if (unfollow === null) {
-      return
-    }
-    try {
-      deleteItem({ uid, unfollowItem: unfollow })
-    } catch (error: any) {
-      console.log(error.message)
-    }
-
-    setBillsFollowing([])
-    setUsersFollowing([])
-    setUnfollow(null)
-  }
-
-  const getPaginatedBills = () => {
-    const startIndex = (currentBillsPage - 1) * itemsPerPage
-    const endIndex = startIndex + itemsPerPage
-    return billsFollowing.slice(startIndex, endIndex)
-  }
-
-  const getPaginatedUsers = () => {
-    const startIndex = (currentUsersPage - 1) * itemsPerPage
-    const endIndex = startIndex + itemsPerPage
-    return usersFollowing.slice(startIndex, endIndex)
-  }
-
-  const totalBillsPages = Math.ceil(billsFollowing.length / itemsPerPage)
-  const totalUsersPages = Math.ceil(usersFollowing.length / itemsPerPage)
-
+function FollowedBillCard({
+  court,
+  billId
+}: {
+  court: number
+  billId: string
+}) {
+  const { loading, error, result: bill } = useBill(court, billId)
   const { t } = useTranslation("editProfile")
+  if (loading) return <Spinner animation="border" className="mx-auto" />
+  if (error) return <Alert variant="danger">{t("content.error")}</Alert>
+  if (!bill) return null
 
   return (
-    <>
-      <TitledSectionCard className={className}>
-        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-          <Stack>
-            <h2>{t("follow.bills")}</h2>
-            {getPaginatedBills().map((element: BillElement, index: number) => (
-              <FollowedItem
-                key={index}
-                index={index}
-                element={element}
-                setUnfollow={setUnfollow}
-                type={"bill"}
-              />
-            ))}
-            {billsFollowing.length > 0 && (
-              <PaginationButtons
-                pagination={{
-                  currentPage: currentBillsPage,
-                  hasNextPage: currentBillsPage < totalBillsPages,
-                  hasPreviousPage: currentBillsPage > 1,
-                  nextPage: () => setCurrentBillsPage(prev => prev + 1),
-                  previousPage: () => setCurrentBillsPage(prev => prev - 1),
-                  itemsPerPage
-                }}
-              />
-            )}
-          </Stack>
-        </div>
-      </TitledSectionCard>
-      <TitledSectionCard className={`${className}`}>
-        <div className={`mx-4 mt-3 d-flex flex-column gap-3`}>
-          <Stack>
-            <h2 className="pb-3">{t("follow.orgs")}</h2>
-            {getPaginatedUsers().map((element: UserElement, index: number) => (
-              <FollowedItem
-                key={index}
-                index={index}
-                element={element}
-                setUnfollow={setUnfollow}
-                type={"org"}
-              />
-            ))}
-            {usersFollowing.length > 0 && (
-              <PaginationButtons
-                pagination={{
-                  currentPage: currentUsersPage,
-                  hasNextPage: currentUsersPage < totalUsersPages,
-                  hasPreviousPage: currentUsersPage > 1,
-                  nextPage: () => setCurrentUsersPage(prev => prev + 1),
-                  previousPage: () => setCurrentUsersPage(prev => prev - 1),
-                  itemsPerPage
-                }}
-              />
-            )}
-          </Stack>
-        </div>
-      </TitledSectionCard>
-      <UnfollowItem
-        handleUnfollowClick={handleUnfollowClick}
-        onHide={close}
-        onUnfollowClose={() => setUnfollow(null)}
-        show={unfollow ? true : false}
-        unfollowItem={unfollow}
-      />
-    </>
+    <div className={`fs-3 lh-lg`}>
+      <Row className={`align-items-center flex-column flex-md-row`}>
+        <Internal href={`/bills/${court}/${billId}`}>
+          {formatBillId(billId)}
+        </Internal>
+        <Col xs={12} md={8} className={`d-flex`}>
+          <h6>{bill.content.Title}</h6>
+        </Col>
+        <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
+          <FollowBillButton bill={bill} confirmUnfollow={true} />
+        </Col>
+      </Row>
+      <hr className={`mt-3`} />
+    </div>
   )
 }

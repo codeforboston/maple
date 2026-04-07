@@ -15,7 +15,9 @@ export const FeatureFlags = z.object({
   /** LLM Bill Summary and Tags **/
   showLLMFeatures: z.boolean().default(false),
   /** Hearings and Transcriptions **/
-  hearingsAndTranscriptions: z.boolean().default(false)
+  hearingsAndTranscriptions: z.boolean().default(false),
+  /** Phone Verification UI changes **/
+  phoneVerificationUI: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -35,7 +37,8 @@ const defaults: Record<Env, FeatureFlags> = {
     followOrg: true,
     lobbyingTable: false,
     showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: true
   },
   production: {
     testimonyDiffing: false,
@@ -44,7 +47,8 @@ const defaults: Record<Env, FeatureFlags> = {
     followOrg: true,
     lobbyingTable: false,
     showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: false
   },
   test: {
     testimonyDiffing: false,
@@ -53,7 +57,8 @@ const defaults: Record<Env, FeatureFlags> = {
     followOrg: true,
     lobbyingTable: false,
     showLLMFeatures: true,
-    hearingsAndTranscriptions: true
+    hearingsAndTranscriptions: true,
+    phoneVerificationUI: true
   }
 }
 
