@@ -82,19 +82,56 @@ const Controls = styled.section<{ $expanded: boolean }>`
     var(--bs-body-bg) 100%
   );
   border: 1px solid ${BROWSE_BORDERS.chrome};
-  border-radius: 1rem;
+  border-radius: var(--bs-border-radius-xl);
   box-shadow: ${BROWSE_SHADOWS.soft};
-  display: grid;
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${props => (props.$expanded ? "0.75rem" : "0")};
   margin-bottom: 1.5rem;
-  padding: 0.75rem;
+  padding: 1rem;
   transition: all 0.3s ease;
 `
 
-const SearchToggle = styled(Button)`
-  align-self: flex-start;
-  padding: 0.4rem 0.6rem;
+const ControlsHeader = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.75rem;
+
+  @media (max-width: 576px) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+`
+
+const ControlsSummary = styled.div`
+  flex: 1 1 auto;
+  min-width: 0;
+`
+
+const ControlsActions = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-left: auto;
+  flex-wrap: nowrap;
+
+  @media (max-width: 576px) {
+    margin-left: 0;
+    width: 100%;
+  }
+`
+
+const ControlsButton = styled(Button)`
+  flex: 0 0 auto;
+  padding: 0.375rem 0.5rem;
   font-size: 0.9rem;
+  white-space: nowrap;
+  width: fit-content;
 
   &:focus-visible {
     outline: 2px solid var(--bs-blue);
@@ -106,9 +143,12 @@ const ControlsGrid = styled.div<{ $expanded: boolean }>`
   display: grid;
   gap: 0.75rem;
   grid-template-columns: minmax(0, 2.4fr) repeat(3, minmax(0, 1fr));
+  width: 100%;
   max-height: ${props => (props.$expanded ? "500px" : "0")};
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: clip;
+  transform: translateY(${props => (props.$expanded ? "0" : "-10px")});
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
   opacity: ${props => (props.$expanded ? 1 : 0)};
 
   @media (max-width: 992px) {
@@ -125,14 +165,6 @@ const FilterLabel = styled(Form.Label)`
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 0.35rem;
-`
-
-const ResultsBar = styled.div`
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: space-between;
 `
 
 const ResultsSummary = styled.p.attrs({
@@ -170,7 +202,7 @@ const StyledCard = styled(Card)`
     var(--bs-body-bg) 100%
   );
   border: 1px solid ${BROWSE_BORDERS.chrome};
-  border-radius: 1rem;
+  border-radius: var(--bs-border-radius-xl);
   box-shadow: ${BROWSE_SHADOWS.card};
   height: 100%;
   overflow: hidden;
@@ -182,6 +214,7 @@ const StyledCard = styled(Card)`
     flex-direction: column;
     gap: 0.75rem;
     height: 100%;
+    border-radius: var(--bs-border-radius-xl);
     padding: 0.8rem 0.9rem;
   }
 `
@@ -343,7 +376,7 @@ export const BrowseBallotQuestions = ({
   const [selectedYear, setSelectedYear] = useState(String(currentYear))
   const [selectedCourt, setSelectedCourt] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
-  const [searchExpanded, setSearchExpanded] = useState(true)
+  const [searchExpanded, setSearchExpanded] = useState(false)
   const [showInfo, setShowInfo] = useState(true)
   const deferredQuery = useDeferredValue(searchQuery.trim().toLowerCase())
 
@@ -403,7 +436,7 @@ export const BrowseBallotQuestions = ({
           variant="info"
           dismissible
           onClose={() => setShowInfo(false)}
-          className="mb-3"
+          className="mb-3 rounded-4 ballot-question-info-alert"
         >
           The exact question number will be assigned this summer by the
           Secretary of State
@@ -411,20 +444,10 @@ export const BrowseBallotQuestions = ({
       )}
 
       <Controls $expanded={searchExpanded} aria-label="Filter ballot questions">
-        <SearchToggle
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => setSearchExpanded(!searchExpanded)}
-          aria-controls="ballot-question-filters"
-          aria-expanded={searchExpanded}
-        >
-          {searchExpanded ? "Hide filters" : "Show filters"}
-        </SearchToggle>
-
         <ControlsGrid
           id="ballot-question-filters"
           $expanded={searchExpanded}
-          hidden={!searchExpanded}
+          aria-hidden={!searchExpanded}
         >
           <div>
             <FilterLabel htmlFor="ballot-question-search">
@@ -434,6 +457,7 @@ export const BrowseBallotQuestions = ({
               id="ballot-question-search"
               type="search"
               value={searchQuery}
+              disabled={!searchExpanded}
               placeholder={t("ballot_question_search_placeholder", {
                 ns: "search"
               })}
@@ -448,6 +472,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-year"
               value={selectedYear}
+              disabled={!searchExpanded}
               onChange={e => setSelectedYear(e.target.value)}
             >
               <option value="all">
@@ -468,6 +493,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-court"
               value={selectedCourt}
+              disabled={!searchExpanded}
               onChange={e => setSelectedCourt(e.target.value)}
             >
               <option value="all">
@@ -488,6 +514,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-status"
               value={selectedStatus}
+              disabled={!searchExpanded}
               onChange={e => setSelectedStatus(e.target.value)}
             >
               <option value="all">
@@ -502,25 +529,38 @@ export const BrowseBallotQuestions = ({
           </div>
         </ControlsGrid>
 
-        <ResultsBar>
-          <ResultsSummary>
-            {t("ballot_question_results_summary", {
-              ns: "search",
-              count: filteredItems.length,
-              total: items.length
-            })}
-          </ResultsSummary>
+        <ControlsHeader>
+          <ControlsSummary>
+            <ResultsSummary>
+              {t("ballot_question_results_summary", {
+                ns: "search",
+                count: filteredItems.length,
+                total: items.length
+              })}
+            </ResultsSummary>
+          </ControlsSummary>
 
-          {hasActiveFilters ? (
-            <Button
+          <ControlsActions>
+            {hasActiveFilters ? (
+              <ControlsButton
+                variant="outline-secondary"
+                size="sm"
+                onClick={resetFilters}
+              >
+                {t("ballot_question_reset_filters", { ns: "search" })}
+              </ControlsButton>
+            ) : null}
+            <ControlsButton
               variant="outline-secondary"
               size="sm"
-              onClick={resetFilters}
+              onClick={() => setSearchExpanded(!searchExpanded)}
+              aria-controls="ballot-question-filters"
+              aria-expanded={searchExpanded}
             >
-              {t("ballot_question_reset_filters", { ns: "search" })}
-            </Button>
-          ) : null}
-        </ResultsBar>
+              {searchExpanded ? "Hide filters" : "Show filters"}
+            </ControlsButton>
+          </ControlsActions>
+        </ControlsHeader>
       </Controls>
 
       {filteredItems.length === 0 ? (
