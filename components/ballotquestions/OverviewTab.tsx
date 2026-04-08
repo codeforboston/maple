@@ -40,8 +40,7 @@ export const OverviewTab = ({
           <div>
             <h2 className="h4 mb-1 text-secondary">Overview</h2>
             <p className="text-body-secondary small mb-0">
-              Understand the question, key details, and legislature-phase
-              context in one place.
+              Understand the question, key details, and ballot context.
             </p>
           </div>
         </div>
