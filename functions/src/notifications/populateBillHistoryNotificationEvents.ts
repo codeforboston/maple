@@ -45,8 +45,13 @@ export const populateBillHistoryNotificationEvents = functions.firestore
       return
     }
 
-    const oldLength = oldData?.history.length
-    const newLength = newData?.history.length
+    const oldLength = oldData?.history.length ?? 0
+    const newLength = newData?.history.length ?? 0
+
+    if (newLength < 1) {
+      console.log("New bill history empty, skipping notification event creation.")
+      return
+    }
 
     const historyChanged = oldLength !== newLength
     console.log(`oldLength: ${oldLength}, newLength: ${newLength}`)
