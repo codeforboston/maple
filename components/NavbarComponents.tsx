@@ -411,10 +411,11 @@ export const NavbarLinkTestimony: React.FC<
 
 export const NavbarLinkViewProfile: React.FC<
   React.PropsWithChildren<{
+    handleClick?: any
     other?: any
     dropdown?: boolean
   }>
-> = ({ other, dropdown = false }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const { user } = useAuth()
   const userLink = "/profile?id=" + user?.uid
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -431,6 +432,7 @@ export const NavbarLinkViewProfile: React.FC<
   return (
     <NavLink
       className={isMobile ? "navLink-primary" : ""}
+      handleClick={handleClick}
       href={userLink}
       {...other}
     >
