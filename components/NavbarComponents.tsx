@@ -1,11 +1,11 @@
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
-import { Wrap } from "./links"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -14,13 +14,24 @@ const NavbarDropdownLink: React.FC<
     className?: string
     other?: any
   }>
-> = ({ href, handleClick, className, children, other }) => (
-  <Wrap href={href}>
-    <NavDropdown.Item onClick={handleClick} className={className} {...other}>
+> = ({ href, handleClick, className, children, other }) => {
+  const router = useRouter()
+  const isActive =
+    router.asPath.split("?")[0] === href.split("?")[0] ||
+    router.pathname === href
+
+  return (
+    <NavDropdown.Item
+      href={href}
+      active={isActive}
+      onClick={handleClick}
+      className={className}
+      {...other}
+    >
       {children}
     </NavDropdown.Item>
-  </Wrap>
-)
+  )
+}
 
 const NavbarDropdownAction: React.FC<
   React.PropsWithChildren<{
@@ -341,13 +352,18 @@ export const NavbarLinkSignOut: React.FC<
   }
 
   return (
-    <NavLink
-      className={isMobile ? "navLink-primary" : ""}
-      handleClick={handleClick}
-      {...other}
-    >
-      {t("navigation.signOut")}
-    </NavLink>
+    <Nav.Item>
+      <button
+        type="button"
+        onClick={handleClick}
+        className={`nav-link border-0 bg-transparent p-0 ${
+          isMobile ? "navLink-primary" : ""
+        }`}
+        {...other}
+      >
+        {t("navigation.signOut")}
+      </button>
+    </Nav.Item>
   )
 }
 
@@ -416,10 +432,11 @@ export const NavbarLinkTestimony: React.FC<
 
 export const NavbarLinkViewProfile: React.FC<
   React.PropsWithChildren<{
+    handleClick?: any
     other?: any
     dropdown?: boolean
   }>
-> = ({ other, dropdown = false }) => {
+> = ({ handleClick, other, dropdown = false }) => {
   const { user } = useAuth()
   const userLink = "/profile?id=" + user?.uid
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -436,6 +453,7 @@ export const NavbarLinkViewProfile: React.FC<
   return (
     <NavLink
       className={isMobile ? "navLink-primary" : ""}
+      handleClick={handleClick}
       href={userLink}
       {...other}
     >

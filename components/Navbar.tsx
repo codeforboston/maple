@@ -55,7 +55,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
-        <NavbarLinkViewProfile />
+        <NavbarLinkViewProfile handleClick={closeNav} />
         <NavbarLinkEditProfile
           handleClick={() => {
             closeNav()
