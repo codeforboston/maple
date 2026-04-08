@@ -1,4 +1,4 @@
-import { collection, getDocs, orderBy, Timestamp } from "firebase/firestore"
+import { collection, getDocs, orderBy, query, Timestamp } from "firebase/firestore"
 import { useAsync } from "react-async-hook"
 import { firestore } from "../firebase"
 
@@ -17,7 +17,8 @@ export type NewsItem = {
 
 export async function listNews(): Promise<NewsItem[]> {
   const newsRef = collection(firestore, "news")
-  const result = await getDocs(newsRef)
+  const q = query(newsRef, orderBy("publishDate", "desc"))
+  const result = await getDocs(q)
   return result.docs.map(d => ({ id: d.id, ...d.data() } as NewsItem))
 }
 
