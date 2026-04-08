@@ -92,7 +92,9 @@ export const OverviewTab = ({
             Official summary by the Massachusetts Attorney General
             <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
           </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          >
             {ballotQuestion.fullSummary.split(/\n\n+/).map((para, i) => (
               <p
                 key={i}

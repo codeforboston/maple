@@ -49,7 +49,9 @@ export const populateBillHistoryNotificationEvents = functions.firestore
     const newLength = newData?.history.length ?? 0
 
     if (newLength < 1) {
-      console.log("New bill history empty, skipping notification event creation.")
+      console.log(
+        "New bill history empty, skipping notification event creation."
+      )
       return
     }
 
