@@ -333,13 +333,18 @@ export const NavbarLinkSignOut: React.FC<
   }
 
   return (
-    <NavLink
-      className={isMobile ? "navLink-primary" : ""}
-      handleClick={handleClick}
-      {...other}
-    >
-      {t("navigation.signOut")}
-    </NavLink>
+    <Nav.Item>
+      <button
+        type="button"
+        onClick={handleClick}
+        className={`nav-link border-0 bg-transparent p-0 ${
+          isMobile ? "navLink-primary" : ""
+        }`}
+        {...other}
+      >
+        {t("navigation.signOut")}
+      </button>
+    </Nav.Item>
   )
 }
 
