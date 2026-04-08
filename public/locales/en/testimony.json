@@ -173,41 +173,41 @@
     "draft": "Draft",
     "emailCta": "Email Your Published Testimony"
   },
-  “ballotQuestion”: {
-    “panel”: {
-      “createTestimony”: {
-        “title”: “Share Your Perspective”,
-        “label”: “Share Your Perspective”
+  "ballotQuestion": {
+    "panel": {
+      "createTestimony": {
+        "title": "Share Your Perspective",
+        "label": "Share Your Perspective"
       },
-      “completeTestimony”: {
-        “title”: “Complete Your Perspective”,
-        “label”: “Complete Your Perspective”
+      "completeTestimony": {
+        "title": "Complete Your Perspective",
+        "label": "Complete Your Perspective"
       }
     },
-    “submitTestimonyForm”: {
-      “viewMore”: “View Question Details”,
-      “overview”: {
-        “title”: “Share Your Perspective”,
-        “description”: “Your voice matters. MAPLE helps you 1) write your perspective and 2) publish it to our community so others can learn from it.”
+    "submitTestimonyForm": {
+      "viewMore": "View Question Details",
+      "overview": {
+        "title": "Share Your Perspective",
+        "description": "Your voice matters. MAPLE helps you 1) write your perspective and 2) publish it to our community so others can learn from it."
       },
-      “keepNote”: {
-        “emailPreview”: “Your perspective will be published on MAPLE after you click publish.”,
-        “shareEmail”: “Your perspective is published on MAPLE so others can read and learn from it.”,
-        “thankYou”: “Thank you for sharing your perspective with the MAPLE community.”
+      "keepNote": {
+        "emailPreview": "Your perspective will be published on MAPLE after you click publish.",
+        "shareEmail": "Your perspective is published on MAPLE so others can read and learn from it.",
+        "thankYou": "Thank you for sharing your perspective with the MAPLE community."
       }
     },
-    “quickInfo”: {
-      “reference”: “Ballot Question {{ballotQuestionId}}”
+    "quickInfo": {
+      "reference": "Ballot Question {{ballotQuestionId}}"
     },
-    “preview”: {
-      “neutral”: “You are <1>neutral</1> on this ballot question”,
-      “endorse”: “You <1>support</1> this ballot question”,
-      “oppose”: “You <1>oppose</1> this ballot question”
+    "preview": {
+      "neutral": "You are <1>neutral</1> on this ballot question",
+      "endorse": "You <1>support</1> this ballot question",
+      "oppose": "You <1>oppose</1> this ballot question"
     },
-    “publish”: {
-      “confirmAndPublish”: “Confirm and Publish”,
-      “instructions”: “After clicking “publish,” your perspective will be published on MAPLE.”,
-      “update”: “Update Your Perspective”
+    "publish": {
+      "confirmAndPublish": "Confirm and Publish",
+      "instructions": "After clicking \"publish,\" your perspective will be published on MAPLE.",
+      "update": "Update Your Perspective"
     }
   },
   "quickInfo": {
