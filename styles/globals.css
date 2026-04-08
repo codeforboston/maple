@@ -74,6 +74,24 @@
   outline-offset: 4px;
 }
 
+@media (min-width: 766px) and (max-width: 1020px) {
+  .desktop-navbar {
+    gap: 0.25rem !important;
+  }
+
+  .desktop-navbar-link {
+    font-size: 0.95rem;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .desktop-navbar-dropdown {
+    font-size: 0.95rem;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
 #basic-navbar-nav .dropdown-menu {
   box-sizing: border-box;
   max-width: calc(100vw - 3rem);

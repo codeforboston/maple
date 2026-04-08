@@ -213,7 +213,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`bg-secondary d-flex py-2 sticky-top justify-content-end gap-2`}
+      className={`desktop-navbar bg-secondary d-flex py-2 sticky-top justify-content-end gap-2`}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
@@ -249,7 +249,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white`}>
+          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary text-white`}>
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -264,7 +264,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white`}>
+          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary text-white`}>
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -278,7 +278,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle className={`btn-secondary`}>
+            <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary`}>
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
