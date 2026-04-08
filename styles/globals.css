@@ -12,7 +12,16 @@
 }
 
 .navLink-primary {
+  color: rgba(255, 255, 255, 0.88) !important;
   font-weight: bold;
+}
+
+.navLink-primary:hover,
+.navLink-primary:focus,
+.navLink-primary:active,
+.navLink-primary.active,
+.navLink-primary.show {
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 .skip-link {
