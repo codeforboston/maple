@@ -64,7 +64,9 @@ export const NavbarLinkBills: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={
+          isMobile ? "navLink-primary" : "text-white-50 rounded px-3 py-1"
+        }
         href="/bills"
         {...other}
       >
@@ -85,7 +87,9 @@ export const NavbarLinkBallotQuestions: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={
+          isMobile ? "navLink-primary" : "text-white-50 rounded px-3 py-1"
+        }
         href="/ballotQuestions"
         {...other}
       >
@@ -106,7 +110,9 @@ export const NavbarLinkHearings: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={
+          isMobile ? "navLink-primary" : "text-white-50 rounded px-3 py-1"
+        }
         href="/hearings"
         {...other}
       >
@@ -244,7 +250,9 @@ export const NavbarLinkNewsfeed: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={
+          isMobile ? "navLink-primary" : "text-white-50 rounded px-3 py-1"
+        }
         href="/newsfeed"
         {...other}
       >
@@ -347,7 +355,9 @@ export const NavbarLinkTestimony: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={isMobile ? "navLink-primary" : "text-white-50"}
+        className={
+          isMobile ? "navLink-primary" : "text-white-50 rounded px-3 py-1"
+        }
         href="/testimony"
         {...other}
       >
