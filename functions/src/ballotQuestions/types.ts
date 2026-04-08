@@ -32,7 +32,8 @@ export const BallotQuestion = Record({
   description: Union(String, Null),
   atAGlance: Union(Array(Record({ label: String, value: String })), Null),
   fullSummary: Union(String, Null),
-  pdfUrl: Union(String, Null)
+  pdfUrl: Union(String, Null),
+  title: Union(String, Null)
 })
 
 export type BallotQuestion = Static<typeof BallotQuestion>

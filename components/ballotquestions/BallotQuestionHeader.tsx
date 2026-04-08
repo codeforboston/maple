@@ -114,7 +114,8 @@ export const BallotQuestionHeader = ({
                 maxWidth: "25ch"
               }}
             >
-              {bill?.content.Title || ballotQuestion.id}
+<<<<<<< HEAD
+              {ballotQuestion.title || bill?.content.Title || ballotQuestion.id}
             </p>
 
             <div
