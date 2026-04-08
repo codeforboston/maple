@@ -249,7 +249,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary text-white`}>
+          <Dropdown.Toggle
+            className={`desktop-navbar-dropdown btn-secondary text-white`}
+          >
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -264,7 +266,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary text-white`}>
+          <Dropdown.Toggle
+            className={`desktop-navbar-dropdown btn-secondary text-white`}
+          >
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -278,7 +282,9 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle className={`desktop-navbar-dropdown btn-secondary`}>
+            <Dropdown.Toggle
+              className={`desktop-navbar-dropdown btn-secondary`}
+            >
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
