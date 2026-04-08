@@ -98,6 +98,13 @@
   }
 }
 
+@media (min-width: 766px) and (max-width: 815px) {
+  .desktop-navbar .me-auto img {
+    width: 56px !important;
+    height: 56px !important;
+  }
+}
+
 #basic-navbar-nav .dropdown-menu {
   box-sizing: border-box;
   max-width: calc(100vw - 3rem);
