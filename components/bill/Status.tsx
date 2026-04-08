@@ -28,11 +28,6 @@ export const Status = ({ bill }: BillProps) => {
   const target1 = "Hearing scheduled for "
   const target2 = "Hearing rescheduled to "
 
-  let hearingDate = ""
-  if (history?.Date) {
-    hearingDate = history.Date
-  }
-
   let hearingCheck = false
   if (
     history?.Action.startsWith(target1) ||
@@ -41,6 +36,10 @@ export const Status = ({ bill }: BillProps) => {
     hearingCheck = true
   }
 
+  let hearingDate = ""
+  if (history?.Date) {
+    hearingDate = history.Date
+  }
   let dateCheck = false
   if (hearingDate < today) {
     dateCheck = true
