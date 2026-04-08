@@ -1,5 +1,9 @@
-import { Nav } from "react-bootstrap"
+import { KeyboardEvent, useRef } from "react"
 import { BallotQuestionTab } from "./types"
+import {
+  BallotQuestionNavItem,
+  BallotQuestionTabButton
+} from "./BallotQuestionTabButton"
 
 export const BallotQuestionNav = ({
   activeTab,
@@ -10,12 +14,8 @@ export const BallotQuestionNav = ({
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
 }) => {
-  const navItems: Array<{
-    id: BallotQuestionTab
-    label: string
-    badge?: number
-    enabled: boolean
-  }> = [
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
     { id: "overview", label: "Overview", enabled: true },
     {
       id: "testimonies",
@@ -31,6 +31,43 @@ export const BallotQuestionNav = ({
     { id: "map", label: "Map", enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)
+
+  const moveFocus = (index: number) => {
+    const nextItem = visibleItems[index]
+    if (!nextItem) return
+    onTabChange(nextItem.id)
+    tabRefs.current[index]?.focus()
+  }
+
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentIndex: number
+  ) => {
+    switch (event.key) {
+      case "ArrowDown":
+      case "ArrowRight":
+        event.preventDefault()
+        moveFocus((currentIndex + 1) % visibleItems.length)
+        break
+      case "ArrowUp":
+      case "ArrowLeft":
+        event.preventDefault()
+        moveFocus(
+          (currentIndex - 1 + visibleItems.length) % visibleItems.length
+        )
+        break
+      case "Home":
+        event.preventDefault()
+        moveFocus(0)
+        break
+      case "End":
+        event.preventDefault()
+        moveFocus(visibleItems.length - 1)
+        break
+      default:
+        break
+    }
+  }
 
   return (
     <div
@@ -56,38 +93,28 @@ export const BallotQuestionNav = ({
         </p>
       </div>
 
-      <Nav
-        variant="pills"
-        className="flex-row flex-lg-column gap-2"
+      <div
+        role="tablist"
+        className="d-flex flex-row flex-lg-column gap-2"
         aria-label="Ballot question sections"
       >
-        {visibleItems.map(item => {
+        {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id
           return (
-            <Nav.Item key={item.id} className="flex-fill">
-              <Nav.Link
-                active={false}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => onTabChange(item.id)}
-                className={`ballot-question-nav-link rounded-3 px-3 py-3 d-flex align-items-center justify-content-between gap-3 small fw-medium h-100 ${
-                  isActive ? "is-active" : ""
-                }`}
-              >
-                <span>{item.label}</span>
-                {item.badge !== undefined && (
-                  <span
-                    className={`ballot-question-nav-badge badge rounded-pill ${
-                      isActive ? "is-active" : ""
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </Nav.Link>
-            </Nav.Item>
+            <div key={item.id} className="flex-fill">
+              <BallotQuestionTabButton
+                ref={element => {
+                  tabRefs.current[itemIndex] = element
+                }}
+                item={item}
+                isActive={isActive}
+                onSelect={onTabChange}
+                onKeyDown={event => handleKeyDown(event, itemIndex)}
+              />
+            </div>
           )
         })}
-      </Nav>
+      </div>
     </div>
   )
 }

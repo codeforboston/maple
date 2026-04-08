@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
@@ -110,5 +110,54 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByText("Academia")).not.toBeInTheDocument()
     expect(screen.queryByText("Campaign Financials")).not.toBeInTheDocument()
     expect(screen.queryByText("Map")).not.toBeInTheDocument()
+  })
+
+  it("exposes the ballot question navigation as tabs", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+      />
+    )
+
+    const tabs = screen.getAllByRole("tab")
+
+    expect(screen.getByRole("tablist")).toBeInTheDocument()
+    expect(tabs).toHaveLength(2)
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    )
+    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+      "aria-selected",
+      "false"
+    )
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+      "aria-controls",
+      "ballot-question-panel-overview"
+    )
+    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+      "aria-controls",
+      "ballot-question-panel-testimonies"
+    )
+  })
+
+  it("supports arrow-key navigation between ballot question tabs", () => {
+    const onTabChange = jest.fn()
+
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={onTabChange}
+        testimonyCount={5}
+      />
+    )
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "Overview" }), {
+      key: "ArrowRight"
+    })
+
+    expect(onTabChange).toHaveBeenCalledWith("testimonies")
   })
 })
