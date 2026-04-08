@@ -37,7 +37,7 @@ export const YourTestimonyPanel = ({
           className="fw-semibold text-secondary"
           style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
         >
-          Your Testimony
+          Your Perspective
         </div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
@@ -82,7 +82,7 @@ export const YourTestimonyPanel = ({
             borderColor: "var(--bs-blue-300)"
           }}
         >
-          Testimony is no longer accepted for this ballot question.
+          Perspectives are no longer being accepted for this ballot question.
         </div>
       ) : (
         <div
@@ -92,7 +92,7 @@ export const YourTestimonyPanel = ({
             borderColor: "var(--bs-blue-300)"
           }}
         >
-          Testimony is not available for this ballot question yet.
+          Perspectives are not available for this ballot question yet.
         </div>
       )}
     </div>
