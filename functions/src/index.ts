@@ -2,6 +2,7 @@ export { modifyAccount, createFakeOrg, createFakeTestimony } from "./auth"
 export {
   backfillTestimonyCounts,
   fetchBillBatch,
+  generateBillSummary,
   startBillBatches,
   syncBillToSearchIndex,
   updateBillReferences,

@@ -1,4 +1,5 @@
 export * from "./backfillTestimonyCounts"
+export * from "./billSummaries"
 export * from "./bills"
 export * from "./search"
 export * from "./updateBillReferences"
