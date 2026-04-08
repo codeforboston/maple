@@ -74,6 +74,13 @@
   outline-offset: 4px;
 }
 
+#basic-navbar-nav .dropdown-menu {
+  box-sizing: border-box;
+  max-width: calc(100vw - 3rem);
+  min-width: 0;
+  width: fit-content;
+}
+
 .btn {
   padding: 1rem;
 }
