@@ -51,7 +51,7 @@ export const Status = ({ bill }: BillProps) => {
           className="text-truncate ps-4"
           onClick={handleShowBillHistory}
         >
-          {hearingCheck && dateCheck ? "Hearing Held" : history.Action}
+          {hearingCheck && dateCheck ? t("bill.hearing_held") : history.Action}
         </StyledButton>
         <Modal show={showBillHistory} onHide={handleCloseBillHistory} size="lg">
           <Modal.Header closeButton onClick={handleCloseBillHistory}>
