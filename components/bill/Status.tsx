@@ -25,7 +25,8 @@ export const Status = ({ bill }: BillProps) => {
   const handleCloseBillHistory = () => setShowBillHistory(false)
   const history = last(bill.history)
   const today = new Date().toISOString()
-  const target = "Hearing scheduled for "
+  const target1 = "Hearing scheduled for "
+  const target2 = "Hearing rescheduled to "
 
   let hearingDate = ""
   if (history?.Date) {
@@ -33,7 +34,10 @@ export const Status = ({ bill }: BillProps) => {
   }
 
   let hearingCheck = false
-  if (history?.Action.startsWith(target)) {
+  if (
+    history?.Action.startsWith(target1) ||
+    history?.Action.startsWith(target2)
+  ) {
     hearingCheck = true
   }
 
