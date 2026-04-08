@@ -104,22 +104,20 @@ export const OverviewTab = ({
         </SectionCard>
       )}
 
-      {bill && sortedHearings.length > 0 && (
-        <SectionCard>
-          <h3 className="h5 mb-2 text-dark">Committee Hearing</h3>
-          <p className="mb-4" style={sectionCopyStyle}>
-            Committee hearings are public meetings where legislators examine a
-            proposed law, ask questions, and hear testimony from the public and
-            experts. What happens at a hearing can influence whether a proposal
-            moves forward, is revised, or does not advance.
-          </p>
-          <div className="d-grid gap-3">
-            {sortedHearings.map(hearing => (
-              <CommitteeHearing key={hearing.id} hearing={hearing} />
-            ))}
-          </div>
-        </SectionCard>
-      )}
+      {bill &&
+        sortedHearings.length > 0 &&
+        sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
+          <SectionCard>
+            <h3 className="h5 mb-4 text-dark">Committee Hearing</h3>
+            <div className="d-grid gap-3">
+              {sortedHearings
+                .filter(h => new Date(h.startsAt) < new Date())
+                .map(hearing => (
+                  <CommitteeHearing key={hearing.id} hearing={hearing} />
+                ))}
+            </div>
+          </SectionCard>
+        )}
     </div>
   )
 }
