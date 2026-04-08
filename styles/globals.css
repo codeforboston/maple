@@ -83,6 +83,7 @@
     font-size: 0.95rem;
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
+    white-space: nowrap;
   }
 
   .desktop-navbar-dropdown {
