@@ -1,11 +1,11 @@
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 import Image from "react-bootstrap/Image"
 import { useMediaQuery } from "usehooks-ts"
 import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
-import { Wrap } from "./links"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -14,13 +14,24 @@ const NavbarDropdownLink: React.FC<
     className?: string
     other?: any
   }>
-> = ({ href, handleClick, className, children, other }) => (
-  <Wrap href={href}>
-    <NavDropdown.Item onClick={handleClick} className={className} {...other}>
+> = ({ href, handleClick, className, children, other }) => {
+  const router = useRouter()
+  const isActive =
+    router.asPath.split("?")[0] === href.split("?")[0] ||
+    router.pathname === href
+
+  return (
+    <NavDropdown.Item
+      href={href}
+      active={isActive}
+      onClick={handleClick}
+      className={className}
+      {...other}
+    >
       {children}
     </NavDropdown.Item>
-  </Wrap>
-)
+  )
+}
 
 const NavbarDropdownAction: React.FC<
   React.PropsWithChildren<{
