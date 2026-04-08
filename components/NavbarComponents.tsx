@@ -6,6 +6,7 @@ import { useAuth } from "./auth"
 import { Nav, NavDropdown } from "./bootstrap"
 import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
+import { Wrap } from "./links"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -21,15 +22,16 @@ const NavbarDropdownLink: React.FC<
     router.pathname === href
 
   return (
-    <NavDropdown.Item
-      href={href}
-      active={isActive}
-      onClick={handleClick}
-      className={className}
-      {...other}
-    >
-      {children}
-    </NavDropdown.Item>
+    <Wrap href={href}>
+      <NavDropdown.Item
+        active={isActive}
+        onClick={handleClick}
+        className={className}
+        {...other}
+      >
+        {children}
+      </NavDropdown.Item>
+    </Wrap>
   )
 }
 
