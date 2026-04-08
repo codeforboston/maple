@@ -11,8 +11,18 @@
   font-weight: bold;
 }
 
+:root {
+  --mobile-nav-link-color: rgba(255, 255, 255, 0.92);
+  --mobile-nav-link-color-active: rgba(255, 255, 255, 1);
+}
+
 .navLink-primary {
-  color: rgba(255, 255, 255, 0.88) !important;
+  color: var(--mobile-nav-link-color) !important;
+  font-weight: bold;
+}
+
+.navLink-primary .dropdown-toggle {
+  color: var(--mobile-nav-link-color) !important;
   font-weight: bold;
 }
 
@@ -21,7 +31,14 @@
 .navLink-primary:active,
 .navLink-primary.active,
 .navLink-primary.show {
-  color: rgba(255, 255, 255, 1) !important;
+  color: var(--mobile-nav-link-color-active) !important;
+}
+
+.navLink-primary .dropdown-toggle:hover,
+.navLink-primary .dropdown-toggle:focus,
+.navLink-primary .dropdown-toggle:active,
+.navLink-primary.show .dropdown-toggle {
+  color: var(--mobile-nav-link-color-active) !important;
 }
 
 .skip-link {
