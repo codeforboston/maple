@@ -79,6 +79,11 @@
     gap: 0.25rem !important;
   }
 
+  .desktop-navbar .me-auto img {
+    width: 68px !important;
+    height: 68px !important;
+  }
+
   .desktop-navbar-link {
     font-size: 0.95rem;
     padding-left: 0.5rem !important;
