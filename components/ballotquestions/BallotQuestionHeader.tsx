@@ -19,9 +19,8 @@ export const BallotQuestionHeader = ({
   const { notifications } = useFlags()
   const { user } = useAuth()
   const statusLabel = getBallotQuestionStatusLabel(ballotQuestion.ballotStatus)
-  const questionLabel = ballotQuestion.ballotQuestionNumber
-    ? `Question ${ballotQuestion.ballotQuestionNumber}`
-    : `Question ${ballotQuestion.id}`
+  const questionNumberDisclaimer =
+    "Question numbers are assigned by the Secretary of State in the summer prior to an election"
   const description = ballotQuestion.description
   const hasDescription = Boolean(description)
 
@@ -96,12 +95,12 @@ export const BallotQuestionHeader = ({
               }}
             >
               Question{" "}
-              {ballotQuestion.ballotQuestionNumber ? (
+              {ballotQuestion.ballotQuestionNumber != null ? (
                 ballotQuestion.ballotQuestionNumber
               ) : (
                 <>
                   #
-                  <QuestionTooltip text="The exact question number will be assigned this summer by the Secretary of State" />
+                  <QuestionTooltip text={questionNumberDisclaimer} />
                 </>
               )}
             </h1>

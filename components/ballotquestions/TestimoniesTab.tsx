@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Image } from "react-bootstrap"
 import ViewTestimony from "../TestimonyCard/ViewTestimony"
 import { BallotQuestion, Bill, UsePublishedTestimonyListing } from "../db"
@@ -7,7 +6,6 @@ import { BallotQuestionTestimonySummary } from "./types"
 
 export const TestimoniesTab = ({
   ballotQuestion,
-  bill,
   testimony,
   testimonySummary
 }: {
@@ -16,8 +14,6 @@ export const TestimoniesTab = ({
   testimony: UsePublishedTestimonyListing
   testimonySummary: BallotQuestionTestimonySummary
 }) => {
-  const isExpectedOnBallotPhase =
-    ballotQuestion.ballotStatus === "expectedOnBallot"
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const totalLabel =
     testimonySummary.testimonyCount === 1
@@ -49,21 +45,6 @@ export const TestimoniesTab = ({
             <div>
               <h2 className="h4 mb-1 text-secondary">Perspectives</h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
-              {isExpectedOnBallotPhase && bill && (
-                <p
-                  className="small text-body-secondary mt-3 mb-0"
-                  style={{ maxWidth: "44rem" }}
-                >
-                  You can review testimony on the related bill{" "}
-                  <Link
-                    href={`/bills/${bill.court}/${bill.id}#testimonies`}
-                    className="fw-semibold text-decoration-none"
-                  >
-                    here
-                  </Link>
-                  .
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -99,26 +80,6 @@ export const TestimoniesTab = ({
             </div>
           </div>
         </div>
-
-        {isExpectedOnBallotPhase && bill && (
-          <div
-            className="mt-4 rounded-4 border p-3 p-lg-4 small"
-            style={{
-              backgroundColor: "rgba(248, 250, 252, 0.9)",
-              borderColor: "rgba(15, 23, 42, 0.08)",
-              color: "#475569"
-            }}
-          >
-            This question is expected on the ballot. Submit testimony on the{" "}
-            <Link
-              href={`/bills/${bill.court}/${bill.id}`}
-              className="fw-semibold text-decoration-none"
-            >
-              related bill
-            </Link>{" "}
-            for this phase.
-          </div>
-        )}
       </div>
 
       <ViewTestimony

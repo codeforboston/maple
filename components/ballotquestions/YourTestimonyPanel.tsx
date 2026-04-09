@@ -1,7 +1,6 @@
 import { BallotQuestion, Bill } from "../db"
 import { TestimonyFormPanel } from "../publish/panel/TestimonyFormPanel"
 import { EditTestimonyButton } from "../publish/panel/EditTestimonyButton"
-import Link from "next/link"
 import {
   isActiveBallotQuestionPhase,
   isTerminalBallotQuestionPhase
@@ -15,8 +14,6 @@ export const YourTestimonyPanel = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
-  const isExpectedOnBallotPhase =
-    ballotQuestion.ballotStatus === "expectedOnBallot"
   const isActivePhase = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
@@ -48,26 +45,7 @@ export const YourTestimonyPanel = ({
           />
         ) : null}
       </div>
-      {isExpectedOnBallotPhase && bill ? (
-        <div>
-          <div
-            className="rounded border px-3 py-3 small text-body-secondary mb-3"
-            style={{
-              backgroundColor: "var(--bs-blue-100)",
-              borderColor: "var(--bs-blue-300)"
-            }}
-          >
-            This question is expected on the ballot. Submit testimony on the
-            related bill for this phase.
-          </div>
-          <Link
-            href={`/bills/${bill.court}/${bill.id}`}
-            className="btn btn-primary w-100 py-2 small fw-semibold"
-          >
-            Testify on the bill
-          </Link>
-        </div>
-      ) : isActivePhase && bill ? (
+      {isActivePhase && bill ? (
         <>
           <TestimonyFormPanel
             bill={bill}

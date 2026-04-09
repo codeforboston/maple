@@ -304,6 +304,7 @@ const QuestionNumber = styled.h2`
 const QuestionTitle = styled.p`
   color: var(--bs-gray-700);
   font-size: 0.95rem;
+  font-weight: 700;
   line-height: 1.4;
   margin: 0;
 `
@@ -448,6 +449,8 @@ export const BrowseBallotQuestions = ({
     setSelectedCourt("all")
     setSelectedStatus("all")
   }
+  const questionNumberDisclaimer =
+    "Question numbers are assigned by the Secretary of State in the summer prior to an election"
 
   return (
     <>
@@ -458,8 +461,7 @@ export const BrowseBallotQuestions = ({
           onClose={() => setShowInfo(false)}
           className="mb-3 rounded-4 ballot-question-info-alert"
         >
-          The exact question number will be assigned this summer by the
-          Secretary of State
+          {questionNumberDisclaimer}
         </Alert>
       )}
 
@@ -639,13 +641,14 @@ export const BrowseBallotQuestions = ({
                         }}
                       >
                         <QuestionNumber>
-                          Question{" "}
-                          {item.ballotQuestionNumber ? (
-                            item.ballotQuestionNumber
+                          {item.ballotQuestionNumber != null ? (
+                            `Question ${item.ballotQuestionNumber}`
                           ) : (
                             <>
-                              #
-                              <QuestionTooltip text="The exact question number will be assigned this summer by the Secretary of State" />
+                              Question #
+                              <QuestionTooltip
+                                text={questionNumberDisclaimer}
+                              />
                             </>
                           )}
                         </QuestionNumber>
