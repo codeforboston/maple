@@ -1,11 +1,12 @@
 # ballotQuestions/23-12.yaml
 id: "23-12"
 billId: "H4254"
+title: "Minimum Wage for Tipped Workers"
 court: 193
 electionYear: 2024
 type: initiative_statute
-ballotStatus: legislature
-ballotQuestionNumber: null
+ballotStatus: rejected
+ballotQuestionNumber: 5
 relatedBillIds: []
 description: null
 atAGlance: null

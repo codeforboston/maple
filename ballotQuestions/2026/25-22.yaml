@@ -1,10 +1,11 @@
 # ballotQuestions/25-22.yaml
 id: "25-22"
 billId: "H5009"
+title: "To labor relations policies for committee for public counsel services employees"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

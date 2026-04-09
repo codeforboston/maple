@@ -1,10 +1,11 @@
 # ballotQuestions/25-14.yaml
 id: "25-14"
 billId: "H5004"
+title: "To improve access to public records"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

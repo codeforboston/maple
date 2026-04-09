@@ -1,10 +1,11 @@
 # ballotQuestions/25-08.yaml
 id: "25-08"
 billId: "H5001"
+title: "To election day registration"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

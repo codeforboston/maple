@@ -1,10 +1,11 @@
 # ballotQuestions/25-12.yaml
 id: "25-12"
 billId: "H5003"
+titie: "To implement all-party state primaries"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

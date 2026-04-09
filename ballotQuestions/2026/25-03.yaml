@@ -1,10 +1,11 @@
 # ballotQuestions/25-03.yaml
 id: "25-03"
 billId: "H5000"
+title: "To allow single-family homes on small lots in areas with adequate infrastructure"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

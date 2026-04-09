@@ -1,16 +1,17 @@
 # ballotQuestions/25-21.yaml
 id: "25-21"
 billId: "H5008"
+title: "To protect tenants by limiting rent increases"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
 fullSummary: |-
-  TThis proposed law would limit the annual rent increase for residential units in
+  This proposed law would limit the annual rent increase for residential units in
   Massachusetts to the annual increase in the Consumer Price Index for a 12-month period, or 5%,
   whichever is lower. The law would not apply to units in owner-occupied buildings with four or
   fewer units; units that are subject to regulation by a public authority; units rented to transient

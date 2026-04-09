@@ -1,10 +1,11 @@
 # ballotQuestions/25-15.yaml
 id: "25-15"
 billId: "H5005"
+title: "To protect water and nature"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
