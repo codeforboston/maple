@@ -1,7 +1,7 @@
 {
   "another_term": "Try another search term",
   "browse_ballot_questions": "Browse Ballot Questions",
-  "browse_ballot_questions_intro": "Track ballot questions by year, court, and status, then open each question for testimony, hearings, and context.",
+  "browse_ballot_questions_intro": "Track ballot questions by year, court, and status, then open each question for voter perspective, hearings, and context.",
   "browse_ballot_questions_empty": "No ballot questions are available for {{year}}.",
   "ballot_question_document_id": "Document ID: {{id}}",
   "ballot_question_election_year": "Election {{year}}",
@@ -28,7 +28,7 @@
     "rejected": "Rejected",
     "accepted": "Accepted"
   },
-  "ballot_question_results_summary": "Showing {{count}} of {{total}} ballot questions",
+  "ballot_question_results_summary": "showing {{count}} questions",
   "ballot_question_reset_filters": "Reset filters",
   "ballot_question_no_summary": "No summary available yet.",
   "ballot_question_no_results": "No ballot questions match the current filters.",

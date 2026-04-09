@@ -58,9 +58,7 @@ export const getServerSideProps: GetServerSideProps<
         title:
           ballotQuestion.title ??
           bill?.content.Title ??
-          `Question ${
-            ballotQuestion.ballotQuestionNumber ?? ballotQuestion.id
-          }`,
+          `Question ${ballotQuestion.ballotQuestionNumber ?? "#"}`,
         fullSummary: ballotQuestion.fullSummary ?? "",
         electionYear: ballotQuestion.electionYear,
         court: ballotQuestion.court,

@@ -21,9 +21,9 @@ jest.mock("next-i18next", () => ({
         "ballot_question_status.failedToAppear": "Failed to appear on ballot",
         "ballot_question_status.rejected": "Rejected",
         "ballot_question_status.accepted": "Accepted",
-        ballot_question_results_summary: `Showing ${params?.count ?? ""} of ${
-          params?.total ?? ""
-        } ballot questions`,
+        ballot_question_results_summary: `showing ${
+          params?.count ?? ""
+        } questions`,
         ballot_question_reset_filters: "Reset filters",
         ballot_question_no_results:
           "No ballot questions match the current filters.",
@@ -97,17 +97,22 @@ const items = [
   }
 ]
 
+const showFilters = () => {
+  fireEvent.click(screen.getByRole("button", { name: "Show filters" }))
+}
+
 describe("BrowseBallotQuestions", () => {
   it("defaults to the current year and shows the result summary", () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
 
+    showFilters()
+
     expect(screen.getByRole("combobox", { name: "Year" })).toHaveValue("2026")
-    expect(
-      screen.getByText("Showing 2 of 3 ballot questions")
-    ).toBeInTheDocument()
+    expect(screen.getByText("showing 2 questions")).toBeInTheDocument()
     expect(screen.getByText("Nature for All")).toBeInTheDocument()
     expect(screen.getByText("Collective Bargaining")).toBeInTheDocument()
     expect(screen.queryByText("Tipped Wage")).not.toBeInTheDocument()
+    expect(screen.getByText("Question #")).toBeInTheDocument()
     expect(screen.getByText("Question 3")).toBeInTheDocument()
     expect(
       screen.getByText("Public counsel labor rights question.")
@@ -116,6 +121,8 @@ describe("BrowseBallotQuestions", () => {
 
   it("can switch to another year and reset back to the default filters", () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
+
+    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Year" }), {
       target: { value: "2024" }
@@ -136,6 +143,8 @@ describe("BrowseBallotQuestions", () => {
 
   it("filters by court and status and searches title and final summary", async () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
+
+    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
       target: { value: "expectedOnBallot" }
@@ -168,6 +177,8 @@ describe("BrowseBallotQuestions", () => {
 
   it("can search across older years after widening the year filter", async () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
+
+    showFilters()
 
     fireEvent.change(screen.getByRole("combobox", { name: "Year" }), {
       target: { value: "all" }
