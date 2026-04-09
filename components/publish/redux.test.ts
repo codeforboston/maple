@@ -1,7 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import type { AppDispatch } from "../store"
 import { validateStep } from "./hooks/navigation"
-import { nextStep, previousStep, reducer as publish, setStep } from "./redux"
+import {
+  nextStep,
+  previousStep,
+  reducer as publish,
+  setContent,
+  setStep
+} from "./redux"
 
 type StoreOptions = {
   ballotQuestionId?: string
@@ -89,6 +95,16 @@ describe("publish flow steps", () => {
 })
 
 describe("validateStep", () => {
+  it("uses perspective copy for ballot-question content validation", () => {
+    const store = makeStore({ ballotQuestionId: "25-14" })
+
+    store.dispatch(setContent(""))
+
+    expect(store.getState().publish.errors.content).toBe(
+      "Perspective content must not be empty"
+    )
+  })
+
   it("redirects ballot-question deep links away from selectLegislators", () => {
     expect(
       validateStep(

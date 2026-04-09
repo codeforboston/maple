@@ -12,7 +12,12 @@ import {
   getPublishedTestimonyAttachmentInfo,
   AttachmentInfo
 } from "../db"
-import { usePublishMode, usePublishState, useTestimonyEmail } from "./hooks"
+import {
+  usePublishCopy,
+  usePublishMode,
+  usePublishState,
+  useTestimonyEmail
+} from "./hooks"
 import { useTranslation, Trans } from "next-i18next"
 
 export const positionActions = (
@@ -101,11 +106,13 @@ export const CopyTestimony = styled(props => {
 
 export const YourTestimony = styled<{ type: "draft" | "published" }>(
   ({ className, children, type }) => {
-    const { t } = useTranslation("testimony")
+    const { copy } = usePublishCopy()
     return (
       <div className={className}>
         <div className="d-flex justify-content-between mb-2">
-          <div className="title fs-4">{t("yourTestimony.title")}</div>
+          <div className="title fs-4">
+            {copy("yourTestimony.title", "ballotQuestion.yourTestimony.title")}
+          </div>
           <CopyTestimony />
         </div>
         <TestimonyPreview type={type} />

@@ -16,11 +16,14 @@ export const EditTestimonyButton = ({
 }) => {
   const { t } = useTranslation("testimony")
   const url = formUrl(billId, court, "position", ballotQuestionId)
+  const editLabel = ballotQuestionId
+    ? t("ballotQuestion.testimonyItem.edit")
+    : t("testimonyItem.edit")
 
   return (
     <ImageButton
-      alt={t("testimonyItem.edit")}
-      tooltip={t("testimonyItem.edit")}
+      alt={editLabel}
+      tooltip={editLabel}
       src="/edit-testimony.svg"
       href={url}
       className={clsx("testimony-button", className)}

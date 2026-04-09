@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Image, Button, Modal, Col, Row } from "../bootstrap"
 import { Step } from "./redux"
 import { Internal } from "components/links"
-import { usePublishMode } from "./hooks"
+import { usePublishCopy, usePublishMode } from "./hooks"
 import { Trans, useTranslation } from "next-i18next"
 
 export const KeepNote = (props: { currentStep: Step }) => {
@@ -29,7 +29,7 @@ export const KeepNote = (props: { currentStep: Step }) => {
 }
 
 export const KeepNoteMobile = () => {
-  const { t } = useTranslation("testimony")
+  const { t, copy } = usePublishCopy()
   const isBallotQuestion = usePublishMode() === "ballotQuestion"
   const [showYourTestimony, setShowYourTestimony] = useState(false)
   const [showPublishingToMAPLE, setShowPublishingToMAPLE] = useState(false)
@@ -44,13 +44,19 @@ export const KeepNoteMobile = () => {
     <Col className="py-1">
       <Row xs={12}>
         <p style={{ fontWeight: "bolder" }}>
-          {t("submitTestimonyForm.keepNote.about")}
+          {copy(
+            "submitTestimonyForm.keepNote.about",
+            "ballotQuestion.submitTestimonyForm.keepNote.about"
+          )}
         </p>
       </Row>
 
       <Row xs={12} className="my-3">
         <Button variant="outline-secondary" onClick={handleShowYourTestimony}>
-          {t("submitTestimonyForm.keepNote.howTestimoniesWork")}
+          {copy(
+            "submitTestimonyForm.keepNote.howTestimoniesWork",
+            "ballotQuestion.submitTestimonyForm.keepNote.howTestimoniesWork"
+          )}
         </Button>
       </Row>
 
@@ -66,7 +72,10 @@ export const KeepNoteMobile = () => {
       <Modal show={showYourTestimony} onHide={handleCloseYourTestimony}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {t("submitTestimonyForm.keepNote.howTestimoniesWork")}
+            {copy(
+              "submitTestimonyForm.keepNote.howTestimoniesWork",
+              "ballotQuestion.submitTestimonyForm.keepNote.howTestimoniesWork"
+            )}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -150,22 +159,33 @@ export const BallotQuestionYourTestimony = () => {
 }
 
 export const PublishingToMAPLE = () => {
-  const { t } = useTranslation("testimony")
-  const isBallotQuestion = usePublishMode() === "ballotQuestion"
+  const { t, copy, isBallotQuestion } = usePublishCopy()
   return (
     <NoteContent>
       <div className="text-center">
         <Image className="mx-auto" alt="" src="/computertextblob.svg" />
       </div>
       <NoteSubtitle>
-        {t("submitTestimonyForm.keepNote.rulesHeader")}
+        {copy(
+          "submitTestimonyForm.keepNote.rulesHeader",
+          "ballotQuestion.submitTestimonyForm.keepNote.rulesHeader"
+        )}
       </NoteSubtitle>
       <ul style={{ color: "var(--bs-blue)" }}>
-        <NoteItem>{t("submitTestimonyForm.keepNote.editLimit")}</NoteItem>
+        <NoteItem>
+          {copy(
+            "submitTestimonyForm.keepNote.editLimit",
+            "ballotQuestion.submitTestimonyForm.keepNote.editLimit"
+          )}
+        </NoteItem>
         <NoteItem>
           <Trans
             t={t}
-            i18nKey="submitTestimonyForm.keepNote.cannotDelete"
+            i18nKey={
+              isBallotQuestion
+                ? "ballotQuestion.submitTestimonyForm.keepNote.cannotDelete"
+                : "submitTestimonyForm.keepNote.cannotDelete"
+            }
             // eslint-disable-next-line react/jsx-key
             components={[<Internal href="/about/faq-page" />]}
           />

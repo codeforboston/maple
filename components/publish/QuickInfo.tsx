@@ -3,11 +3,12 @@ import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
 import { Image } from "../bootstrap"
 import { Bill, Profile } from "../db"
-import { usePublishState } from "./hooks"
+import { usePublishCopy, usePublishState } from "./hooks"
 import { useTranslation } from "next-i18next"
 
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   const { t } = useTranslation("testimony")
+  const { copy } = usePublishCopy()
   const { ballotQuestionId } = usePublishState()
   const isBallotQuestion = Boolean(ballotQuestionId)
   const {
@@ -19,7 +20,12 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
     hasLegislators = Boolean(representative || senator)
   return (
     <InfoContainer>
-      <Label>{t("quickInfo.writingAbout")}</Label>
+      <Label>
+        {copy(
+          "quickInfo.writingAbout",
+          "ballotQuestion.quickInfo.writingAbout"
+        )}
+      </Label>
       <Chip className="brown">
         {Title}
         {isBallotQuestion

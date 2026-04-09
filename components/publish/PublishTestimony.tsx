@@ -100,7 +100,7 @@ export const PublishTestimony = styled(({ ...rest }) => {
 /** An orange notice with rounded corners that lists the testimony fields that the user has edited. */
 const ChangeNotice = styled(props => {
   const { position, content, attachmentId, publication } = usePublishState()
-  const { t } = useTranslation("testimony")
+  const { t, isBallotQuestion } = usePublishCopy()
   if (!publication) return null
 
   const publishedAttachmentId = publication.draftAttachmentId || undefined
@@ -126,7 +126,11 @@ const ChangeNotice = styled(props => {
         <b>
           <Trans
             t={t}
-            i18nKey="publish.editLimitNotice"
+            i18nKey={
+              isBallotQuestion
+                ? "ballotQuestion.publish.editLimitNotice"
+                : "publish.editLimitNotice"
+            }
             values={{ count: editsRemaining }}
           />
         </b>

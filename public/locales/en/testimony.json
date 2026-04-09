@@ -27,6 +27,7 @@
       "title": "You Have Draft Testimony",
       "label": "Complete Testimony"
     },
+    "loading": "Loading your testimony...",
     "pendingUpgrade": {
       "title": "Pending Upgrade",
       "label": "Your Organization Registration is Pending"
@@ -127,6 +128,7 @@
       "testimonyLabel": "Testimony",
       "testimonyPlaceholder": "Add your testimony here",
       "testimonyHelp": "Testimony is limited to 10,000 characters.",
+      "attachmentLabel": "(Optional) Provide your testimony as a file attachment",
       "tips": "Need help? Read our <0>testimony writing tips</0>",
       "codeOfConduct": "View our code of conduct",
       "confirmRemoveAttachment": "Are you sure you want to remove your attachment?"
@@ -140,6 +142,7 @@
     "expand": "Expand",
     "moreDetails": "More Details",
     "edit": "Edit Testimony",
+    "emptyDraft": "This draft has no content. Click Edit to add your testimony.",
     "rescind": "Rescind",
     "toast": {
       "successful": {
@@ -163,6 +166,7 @@
   },
   "viewAttached": "View Attached Testimony PDF",
   "viewTestimony": {
+    "allTestimonies": "All Testimonies",
     "showing": "Showing",
     "showing1": "Showing 1 - ",
     "outOf": " out of ",
@@ -182,23 +186,53 @@
       "completeTestimony": {
         "title": "Complete Your Perspective",
         "label": "Complete Your Perspective"
-      }
+      },
+      "loading": "Loading your perspective..."
     },
     "submitTestimonyForm": {
       "viewMore": "View Question Details",
+      "chooseStance": "Choose Your Position",
       "overview": {
         "title": "Share Your Perspective",
         "description": "Your voice matters. MAPLE helps you 1) write your perspective and 2) publish it to our community so others can learn from it."
       },
       "keepNote": {
+        "about": "About MAPLE Perspectives",
+        "howTestimoniesWork": "How MAPLE Perspectives Work",
         "emailPreview": "Your perspective will be published on MAPLE after you click publish.",
         "shareEmail": "Your perspective is published on MAPLE so others can read and learn from it.",
-        "thankYou": "Thank you for sharing your perspective with the MAPLE community."
+        "thankYou": "Thank you for sharing your perspective with the MAPLE community.",
+        "rulesHeader": "Rules for Perspectives on MAPLE:",
+        "editLimit": "You can edit your perspective up to 5 times but the previous versions will remain available.",
+        "cannotDelete": "Since MAPLE is an archive, you cannot remove your perspective from the site. You may request a deletion in certain circumstances (see our <0>FAQ page</0>)"
+      },
+      "write": {
+        "header": "Write Your Perspective",
+        "testimonyLabel": "Perspective",
+        "testimonyPlaceholder": "Add your perspective here",
+        "testimonyHelp": "Perspective is limited to 10,000 characters.",
+        "attachmentLabel": "(Optional) Provide your perspective as a file attachment",
+        "tips": "Need help? Read our <0>perspective writing tips</0>"
       }
     },
     "quickInfo": {
+      "writingAbout": "You're writing a perspective about",
       "reference": "Ballot Question {{ballotQuestionId}}"
     },
+    "viewTestimony": {
+      "allPerspectives": "All Perspectives",
+      "browsePerspectives": "Browse Perspectives",
+      "noPerspectives": "There are no perspectives"
+    },
+    "yourTestimony": {
+      "title": "Your Perspective"
+    },
+    "testimonyItem": {
+      "edit": "Edit Perspective",
+      "emptyDraft": "This draft has no content. Click Edit to add your perspective."
+    },
+    "thankYouModal": "Thank You For Sharing Your Perspective!",
+    "viewAttached": "View Attached Perspective PDF",
     "preview": {
       "neutral": "You are <1>neutral</1> on this ballot question",
       "endorse": "You <1>support</1> this ballot question",
@@ -207,6 +241,8 @@
     "publish": {
       "confirmAndPublish": "Confirm and Publish",
       "instructions": "After clicking \"publish,\" your perspective will be published on MAPLE.",
+      "editLimitNotice_one": "You may edit your perspective up to 1 more time. Before you publish updates to your perspective, please provide a reason for your changes.",
+      "editLimitNotice_other": "You may edit your perspective up to {{count}} more times. Before you publish updates to your perspective, please provide a reason for your changes.",
       "update": "Update Your Perspective"
     }
   },

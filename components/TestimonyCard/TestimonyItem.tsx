@@ -68,9 +68,16 @@ export const TestimonyItem = ({
   const reportMutation = useReportTestimony()
   const didReport = reportMutation.isError || reportMutation.isSuccess
 
+  const { t } = useTranslation("testimony")
+  const isBallotQuestion = variant === "ballotQuestion"
+  const editLabel = isBallotQuestion
+    ? t("ballotQuestion.testimonyItem.edit")
+    : t("testimonyItem.edit")
   const testimonyContent =
     testimony.content ??
-    "This draft has no content. Click Edit to add your testimony."
+    (isBallotQuestion
+      ? t("ballotQuestion.testimonyItem.emptyDraft")
+      : t("testimonyItem.emptyDraft"))
 
   const snippetChars = 500
   const [showAllTestimony, setShowAllTestimony] = useState(false)
@@ -79,10 +86,8 @@ export const TestimonyItem = ({
     : trimContent(testimonyContent.slice(0, snippetChars), snippetChars)
   const canExpand = snippet.length !== testimonyContent.length
 
-  const { t } = useTranslation("testimony")
-
   const IconSpacer = () => {
-    if (variant === "ballotQuestion") return null
+    if (isBallotQuestion) return null
     return (
       <Image
         className="ms-auto align-self-center"
@@ -117,7 +122,7 @@ export const TestimonyItem = ({
               <Image
                 className="px-2 ms-auto align-self-center"
                 src="/edit-testimony.svg"
-                alt={t("testimonyItem.edit")}
+                alt={editLabel}
                 height={50}
                 width={50}
               />
@@ -200,11 +205,11 @@ export const TestimonyItem = ({
                     testimony.ballotQuestionId ?? undefined
                   )}
                 >
-                  {t("testimonyItem.edit")}
+                  {editLabel}
                   <Image
                     className="px-2 ms-auto align-self-center"
                     src="/edit-testimony.svg"
-                    alt={t("")}
+                    alt={editLabel}
                     height={40}
                     width={40}
                   />
