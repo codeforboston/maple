@@ -7,7 +7,15 @@ import { FC, ReactElement, useContext, useEffect, useState } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
 import { useTranslation } from "next-i18next"
 import { useAuth } from "components/auth"
-import { followsTopic } from "components/shared/FollowingQueries"
+import {
+  ballotQuestionTopicName,
+  billTopicName,
+  followBallotQuestion,
+  followBill,
+  followsTopic,
+  unfollowBallotQuestion,
+  unfollowBill
+} from "components/shared/FollowingQueries"
 import { StyledImage } from "components/ProfilePage/StyledProfileComponents"
 import { FollowContext } from "components/shared/FollowContext"
 import { isActiveBallotQuestionPhase } from "components/ballotquestions/status"
@@ -17,9 +25,6 @@ interface PolicyActionsProps {
   isUser?: boolean
   isReporting: boolean
   setReporting: (boolean: boolean) => void
-  topicName: string
-  followAction: () => Promise<void>
-  unfollowAction: () => Promise<void>
 }
 
 const PolicyActionItem: FC<React.PropsWithChildren<ListItemProps>> = props => (
@@ -30,10 +35,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   className,
   isUser,
   isReporting,
-  setReporting,
-  topicName,
-  followAction,
-  unfollowAction
+  setReporting
 }) => {
   const { bill, revision } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
@@ -41,10 +43,20 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
 
   const { user } = useAuth()
   const uid = user?.uid
+  const ballotQuestionId = revision.ballotQuestionId ?? undefined
+  const ballotQuestionTopic = ballotQuestionId
+    ? { court: bill.court, id: ballotQuestionId }
+    : null
+  const policyLabel = ballotQuestionTopic
+    ? `Ballot Question ${ballotQuestionTopic.id}`
+    : billLabel
+  const topicName = ballotQuestionTopic
+    ? ballotQuestionTopicName(ballotQuestionTopic.court, ballotQuestionTopic.id)
+    : billTopicName(bill.court, bill.id)
 
   const { followStatus, setFollowStatus } = useContext(FollowContext)
   const [canEditBallotQuestionTestimony, setCanEditBallotQuestionTestimony] =
-    useState(!revision.ballotQuestionId)
+    useState(!ballotQuestionId)
 
   useEffect(() => {
     uid
@@ -55,14 +67,14 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   }, [uid, topicName, setFollowStatus])
 
   useEffect(() => {
-    if (!revision.ballotQuestionId) {
+    if (!ballotQuestionId) {
       setCanEditBallotQuestionTestimony(true)
       return
     }
 
     let active = true
     dbService()
-      .getBallotQuestion({ id: revision.ballotQuestionId })
+      .getBallotQuestion({ id: ballotQuestionId })
       .then(ballotQuestion => {
         if (!active) return
         setCanEditBallotQuestionTestimony(
@@ -77,15 +89,23 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     return () => {
       active = false
     }
-  }, [revision.ballotQuestionId])
+  }, [ballotQuestionId])
 
   const FollowClick = async () => {
-    await followAction()
+    if (ballotQuestionTopic) {
+      await followBallotQuestion(uid, ballotQuestionTopic)
+    } else {
+      await followBill(uid, bill)
+    }
     setFollowStatus(prev => ({ ...prev, [topicName]: true }))
   }
 
   const UnfollowClick = async () => {
-    await unfollowAction()
+    if (ballotQuestionTopic) {
+      await unfollowBallotQuestion(uid, ballotQuestionTopic)
+    } else {
+      await unfollowBill(uid, bill)
+    }
     setFollowStatus(prev => ({ ...prev, [topicName]: false }))
   }
 
@@ -105,7 +125,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       <PolicyActionItem
         onClick={e => handleClick(e)}
         key="follow"
-        billName={`${text} ${billLabel}`}
+        billName={`${text} ${policyLabel}`}
       />
     )
   items.push(
@@ -119,13 +139,8 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     items.push(
       <PolicyActionItem
         key="add-testimony"
-        billName={`${isUser ? "Edit" : "Add"} Testimony for ${billLabel}`}
-        href={formUrl(
-          bill.id,
-          bill.court,
-          "position",
-          revision.ballotQuestionId ?? undefined
-        )}
+        billName={`${isUser ? "Edit" : "Add"} Testimony for ${policyLabel}`}
+        href={formUrl(bill.id, bill.court, "position", ballotQuestionId)}
       />
     )
 
