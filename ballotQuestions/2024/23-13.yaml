@@ -1,11 +1,12 @@
 # ballotQuestions/23-13.yaml
 id: "23-13"
 billId: "H4255"
+title: "Limited Legalization and Regulation of Certain Natural Psychedelic Substances"
 court: 193
 electionYear: 2024
 type: initiative_statute
-ballotStatus: legislature
-ballotQuestionNumber: null
+ballotStatus: rejected
+ballotQuestionNumber: 4
 relatedBillIds: []
 description: null
 atAGlance: null

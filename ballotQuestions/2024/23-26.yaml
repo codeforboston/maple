@@ -1,10 +1,11 @@
 # ballotQuestions/23-26.yaml
 id: "23-26"
 billId: "H4252"
+title: "Elimination of MCAS as High School Graduation Requirement"
 court: 193
 electionYear: 2024
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: accepted
 ballotQuestionNumber: 2
 relatedBillIds: []
 description: null

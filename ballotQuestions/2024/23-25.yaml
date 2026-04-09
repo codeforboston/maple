@@ -1,11 +1,12 @@
 # ballotQuestions/23-25.yaml
 id: "23-25"
 billId: "H4253"
+title: "Unionization for Transportation Network Drivers"
 court: 193
 electionYear: 2024
 type: initiative_statute
-ballotStatus: legislature
-ballotQuestionNumber: null
+ballotStatus: accepted
+ballotQuestionNumber: 3
 relatedBillIds: []
 description: null
 atAGlance: null

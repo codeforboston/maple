@@ -1,10 +1,11 @@
 # ballotQuestions/23-34.yaml
 id: "23-34"
 billId: "H4251"
+title: "State Auditor’s Authority to Audit the Legislature"
 court: 193
 electionYear: 2024
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: accepted
 ballotQuestionNumber: 1
 relatedBillIds: []
 description: null
