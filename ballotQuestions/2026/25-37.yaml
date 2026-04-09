@@ -10,8 +10,8 @@ ballotQuestionNumber: null
 relatedBillIds: []
 description: null
 atAGlance: null
-fullSummary:
-  "This proposed law would change the method for calculating stipends paid to certain state
+fullSummary: |-
+  This proposed law would change the method for calculating stipends paid to certain state
   legislators on top of their base salaries.
 
   Under the proposed law, legislators would receive stipends, subject to appropriation,
@@ -54,5 +54,5 @@ fullSummary:
   Legislators who served in a qualifying position for less than the full biennial session
   would receive prorated stipends.
 
-  The proposed law would take effect on January 6, 2027."
+  The proposed law would take effect on January 6, 2027.
 pdfUrl: "https://malegislature.gov/Bills/194/H5010.pdf"
