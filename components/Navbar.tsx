@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next"
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import Image from "react-bootstrap/Image"
 import styled from "styled-components"
 import { useMediaQuery } from "usehooks-ts"
@@ -55,7 +55,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   const ProfileLinks = () => {
     return (
       <Nav className="my-4 d-flex align-items-start">
-        <NavbarLinkViewProfile />
+        <NavbarLinkViewProfile handleClick={closeNav} />
         <NavbarLinkEditProfile
           handleClick={() => {
             closeNav()
@@ -139,39 +139,63 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       expanded={isExpanded}
     >
       <Col className="ms-3 ps-2">
-        <Navbar.Brand onClick={toggleSite}>
+        <button
+          type="button"
+          onClick={toggleSite}
+          aria-controls="basic-navbar-nav"
+          aria-expanded={isExpanded && whichMenu === "site"}
+          aria-label={
+            isExpanded && whichMenu === "site"
+              ? t("navigation.closeNavMenu")
+              : t("navigation.openNavMenu")
+          }
+          className="mobile-nav-trigger"
+        >
           {isExpanded && whichMenu == "site" ? (
             <Image
               src="/Union.svg"
-              alt={t("navigation.closeNavMenu")}
+              alt=""
+              aria-hidden="true"
               width="35"
               height="35"
               className="ms-2"
             />
           ) : (
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <span className="navbar-toggler-icon" aria-hidden="true" />
           )}
-        </Navbar.Brand>
+        </button>
       </Col>
       <Col className="d-flex justify-content-center">
         <NavbarLinkLogo handleClick={closeNav} />
       </Col>
       <Col className="d-flex justify-content-end me-3 pe-2">
         {authenticated ? (
-          <Navbar.Brand onClick={toggleAvatar}>
-            <Nav.Link className="p-0 text-white">
+          <button
+            type="button"
+            onClick={toggleAvatar}
+            aria-controls="basic-navbar-nav"
+            aria-expanded={isExpanded && whichMenu === "profile"}
+            aria-label={
+              isExpanded && whichMenu === "profile"
+                ? t("navigation.closeProfileMenu")
+                : t("navigation.openProfileMenu")
+            }
+            className="mobile-nav-trigger"
+          >
+            <span className="p-0 text-white d-inline-flex">
               {isExpanded && whichMenu == "profile" ? (
                 <Image
                   src="/Union.svg"
-                  alt={t("navigation.closeProfileMenu")}
+                  alt=""
+                  aria-hidden="true"
                   width="35"
                   height="35"
                 />
               ) : (
                 <Avatar />
               )}
-            </Nav.Link>
-          </Navbar.Brand>
+            </span>
+          </button>
         ) : (
           <SignInWithButton />
         )}
@@ -189,43 +213,45 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`bg-secondary d-flex py-2 sticky-top justify-content-end`}
+      className={`desktop-navbar bg-secondary d-flex py-2 sticky-top justify-content-end gap-2`}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <NavbarLinkBills />
       </div>
 
-      <div className={`align-self-center px-2`}>
+      <div className={`align-self-center`}>
         <NavbarLinkBallotQuestions />
       </div>
 
       {flags().hearingsAndTranscriptions ? (
-        <div className={`align-self-center px-2`}>
+        <div className={`align-self-center`}>
           <NavbarLinkHearings />
         </div>
       ) : (
         <></>
       )}
 
-      <div className="align-self-center px-2">
+      <div className="align-self-center">
         <NavbarLinkTestimony />
       </div>
 
       {authenticated ? (
-        <div className="align-self-center px-2">
+        <div className="align-self-center">
           <NavbarLinkNewsfeed />
         </div>
       ) : (
         <></>
       )}
 
-      <div className={`align-self-center`}>
+      <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+          <Dropdown.Toggle
+            className={`desktop-navbar-dropdown btn-secondary text-white`}
+          >
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -238,9 +264,11 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         </Dropdown>
       </div>
 
-      <div className={`align-self-center`}>
+      <div className={`align-self-center px-2`}>
         <Dropdown>
-          <Dropdown.Toggle className={`btn-secondary text-white-50`}>
+          <Dropdown.Toggle
+            className={`desktop-navbar-dropdown btn-secondary text-white`}
+          >
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -254,26 +282,21 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle className={`btn-secondary`}>
+            <Dropdown.Toggle
+              className={`desktop-navbar-dropdown btn-secondary`}
+            >
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <NavDropdown.Item>
-                <NavbarLinkViewProfile />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.editProfile"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkEditProfile tab={"navigation.followingTab"} />
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <NavbarLinkSignOut
-                  handleClick={() => {
-                    void signOutAndRedirectToHome()
-                  }}
-                />
-              </NavDropdown.Item>
+              <NavbarLinkViewProfile dropdown />
+              <NavbarLinkEditProfile dropdown tab={"navigation.editProfile"} />
+              <NavbarLinkEditProfile dropdown tab={"navigation.followingTab"} />
+              <NavbarLinkSignOut
+                dropdown
+                handleClick={() => {
+                  void signOutAndRedirectToHome()
+                }}
+              />
             </Dropdown.Menu>
           </Dropdown>
         </div>
