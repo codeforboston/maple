@@ -28,7 +28,7 @@
     "rejected": "Rejected",
     "accepted": "Accepted"
   },
-  "ballot_question_results_summary": "showing {{count}} questions",
+  "ballot_question_results_summary": "Showing {{count}} questions",
   "ballot_question_reset_filters": "Reset filters",
   "ballot_question_no_summary": "No summary available yet.",
   "ballot_question_no_results": "No ballot questions match the current filters.",

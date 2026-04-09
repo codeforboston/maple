@@ -21,7 +21,7 @@ jest.mock("next-i18next", () => ({
         "ballot_question_status.failedToAppear": "Failed to appear on ballot",
         "ballot_question_status.rejected": "Rejected",
         "ballot_question_status.accepted": "Accepted",
-        ballot_question_results_summary: `showing ${
+        ballot_question_results_summary: `Showing ${
           params?.count ?? ""
         } questions`,
         ballot_question_reset_filters: "Reset filters",
@@ -108,7 +108,7 @@ describe("BrowseBallotQuestions", () => {
     showFilters()
 
     expect(screen.getByRole("combobox", { name: "Year" })).toHaveValue("2026")
-    expect(screen.getByText("showing 2 questions")).toBeInTheDocument()
+    expect(screen.getByText("Showing 2 questions")).toBeInTheDocument()
     expect(screen.getByText("Nature for All")).toBeInTheDocument()
     expect(screen.getByText("Collective Bargaining")).toBeInTheDocument()
     expect(screen.queryByText("Tipped Wage")).not.toBeInTheDocument()
