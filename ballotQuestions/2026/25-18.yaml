@@ -1,10 +1,11 @@
 # ballotQuestions/25-18.yaml
 id: "25-18"
 billId: "H5007"
+title: "To reducing the state personal income tax rate from 5% to 4%"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

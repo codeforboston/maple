@@ -1,10 +1,11 @@
 # ballotQuestions/25-10.yaml
 id: "25-10"
 billId: "H5002"
+title: "To restore a sensible marijuana policy"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

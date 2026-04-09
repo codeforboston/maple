@@ -1,10 +1,11 @@
 # ballotQuestions/25-21.yaml
 id: "25-21"
 billId: "H5008"
+title: "To protect tenants by limiting rent increases"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

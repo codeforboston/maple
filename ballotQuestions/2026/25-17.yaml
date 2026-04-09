@@ -1,10 +1,11 @@
 # ballotQuestions/25-17.yaml
 id: "25-17"
 billId: "H5006"
+title: "To limiting state tax collection growth and returning surpluses to taxpayers"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null

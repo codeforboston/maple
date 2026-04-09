@@ -1,10 +1,11 @@
 # ballotQuestions/25-37.yaml
 id: "25-37"
 billId: "H5010"
+title: "To reform and regulate legislative stipends"
 court: 194
 electionYear: 2026
 type: initiative_statute
-ballotStatus: legislature
+ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
