@@ -20,3 +20,9 @@ export type BallotQuestionTestimonySummary = {
   neutralCount: number
   opposeCount: number
 }
+
+export const getBallotQuestionTabId = (tab: BallotQuestionTab) =>
+  `ballot-question-tab-${tab}`
+
+export const getBallotQuestionPanelId = (tab: BallotQuestionTab) =>
+  `ballot-question-panel-${tab}`

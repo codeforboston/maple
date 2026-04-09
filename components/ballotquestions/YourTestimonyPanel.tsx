@@ -15,7 +15,8 @@ export const YourTestimonyPanel = ({
   ballotQuestion: BallotQuestion
   bill: Bill | null
 }) => {
-  const isLegislaturePhase = ballotQuestion.ballotStatus === "legislature"
+  const isExpectedOnBallotPhase =
+    ballotQuestion.ballotStatus === "expectedOnBallot"
   const isActivePhase = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const isTerminalPhase = isTerminalBallotQuestionPhase(
     ballotQuestion.ballotStatus
@@ -37,7 +38,7 @@ export const YourTestimonyPanel = ({
           className="fw-semibold text-secondary"
           style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
         >
-          Your Testimony
+          Your Perspective
         </div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
@@ -47,7 +48,7 @@ export const YourTestimonyPanel = ({
           />
         ) : null}
       </div>
-      {isLegislaturePhase && bill ? (
+      {isExpectedOnBallotPhase && bill ? (
         <div>
           <div
             className="rounded border px-3 py-3 small text-body-secondary mb-3"
@@ -56,8 +57,8 @@ export const YourTestimonyPanel = ({
               borderColor: "var(--bs-blue-300)"
             }}
           >
-            This petition is still before the legislature. Submit testimony on
-            the related bill for this phase.
+            This question is expected on the ballot. Submit testimony on the
+            related bill for this phase.
           </div>
           <Link
             href={`/bills/${bill.court}/${bill.id}`}
@@ -82,7 +83,7 @@ export const YourTestimonyPanel = ({
             borderColor: "var(--bs-blue-300)"
           }}
         >
-          Testimony is no longer accepted for this ballot question.
+          Perspectives are no longer being accepted for this ballot question.
         </div>
       ) : (
         <div
@@ -92,7 +93,7 @@ export const YourTestimonyPanel = ({
             borderColor: "var(--bs-blue-300)"
           }}
         >
-          Testimony is not available for this ballot question yet.
+          Perspectives are not available for this ballot question yet.
         </div>
       )}
     </div>

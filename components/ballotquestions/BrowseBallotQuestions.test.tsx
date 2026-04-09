@@ -15,13 +15,12 @@ jest.mock("next-i18next", () => ({
         ballot_question_all_years: "All years",
         ballot_question_all_courts: "All courts",
         ballot_question_all_statuses: "All statuses",
-        "ballot_question_status.legislature": "Legislature",
+        "ballot_question_status.expectedOnBallot": "Expected on ballot",
         "ballot_question_status.qualifying": "Qualifying",
         "ballot_question_status.certified": "Certified",
-        "ballot_question_status.ballot": "On Ballot",
-        "ballot_question_status.enacted": "Enacted",
-        "ballot_question_status.failed": "Failed",
-        "ballot_question_status.withdrawn": "Withdrawn",
+        "ballot_question_status.failedToAppear": "Failed to appear on ballot",
+        "ballot_question_status.rejected": "Rejected",
+        "ballot_question_status.accepted": "Accepted",
         ballot_question_results_summary: `Showing ${params?.count ?? ""} of ${
           params?.total ?? ""
         } ballot questions`,
@@ -66,7 +65,7 @@ const items = [
     fullSummary: "Conserves land and expands access to nature.",
     electionYear: 2026,
     court: 194,
-    ballotStatus: "legislature" as const,
+    ballotStatus: "rejected" as const,
     ballotQuestionNumber: null,
     endorseCount: 1,
     neutralCount: 0,
@@ -78,7 +77,7 @@ const items = [
     fullSummary: "Public counsel labor rights question.",
     electionYear: 2026,
     court: 194,
-    ballotStatus: "ballot" as const,
+    ballotStatus: "expectedOnBallot" as const,
     ballotQuestionNumber: 3,
     endorseCount: 2,
     neutralCount: 1,
@@ -90,7 +89,7 @@ const items = [
     fullSummary: "Raises the tipped minimum wage over time.",
     electionYear: 2024,
     court: 193,
-    ballotStatus: "failed" as const,
+    ballotStatus: "failedToAppear" as const,
     ballotQuestionNumber: 1,
     endorseCount: 3,
     neutralCount: 0,
@@ -139,7 +138,7 @@ describe("BrowseBallotQuestions", () => {
     render(<BrowseBallotQuestions items={items} currentYear={2026} />)
 
     fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
-      target: { value: "ballot" }
+      target: { value: "expectedOnBallot" }
     })
 
     expect(screen.getByText("Collective Bargaining")).toBeInTheDocument()
