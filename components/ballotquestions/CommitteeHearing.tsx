@@ -1,6 +1,6 @@
 import { Internal } from "components/links"
 import { DateTime } from "luxon"
-import Image from "next/image"
+import { Image } from "components/bootstrap"
 import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
