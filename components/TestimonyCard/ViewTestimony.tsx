@@ -69,7 +69,7 @@ const ViewTestimony = (
       label={
         isBallotQuestion
           ? t("ballotQuestion.viewTestimony.allPerspectives")
-          : "All Testimonies"
+          : t("viewTestimony.allTestimonies")
       }
       active={false}
       value={1}
