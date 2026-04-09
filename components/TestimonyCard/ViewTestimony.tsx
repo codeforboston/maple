@@ -41,6 +41,8 @@ const ViewTestimony = (
   } = props
 
   const { user } = useAuth()
+  const { t } = useTranslation("testimony")
+  const isBallotQuestion = variant === "ballotQuestion"
   const testimony = items.result ?? []
   const [orderBy, setOrderBy] = useState<string>()
   const [activeTab, setActiveTab] = useState(1)
@@ -64,7 +66,11 @@ const ViewTestimony = (
   const tabs = [
     <Tab
       key="at"
-      label="All Testimonies"
+      label={
+        isBallotQuestion
+          ? t("ballotQuestion.viewTestimony.allPerspectives")
+          : "All Testimonies"
+      }
       active={false}
       value={1}
       action={() => handleFilter("")}
@@ -84,8 +90,6 @@ const ViewTestimony = (
       action={() => handleFilter("organization")}
     />
   ]
-
-  const { t } = useTranslation("testimony")
 
   const listContent =
     testimony.length > 0 ? (
@@ -137,7 +141,11 @@ const ViewTestimony = (
       </div>
     ) : (
       <NoResults>
-        {t("viewTestimony.noTestimonies")}
+        {t(
+          isBallotQuestion
+            ? "ballotQuestion.viewTestimony.noPerspectives"
+            : "viewTestimony.noTestimonies"
+        )}
         <br />
       </NoResults>
     )
@@ -155,7 +163,9 @@ const ViewTestimony = (
             />
             <ControlsRow className="justify-content-between align-items-center mb-4">
               <Col>
-                <BrowseTitle>Browse Testimony</BrowseTitle>
+                <BrowseTitle>
+                  {t("ballotQuestion.viewTestimony.browsePerspectives")}
+                </BrowseTitle>
               </Col>
               <Col xs="auto">
                 <SortTestimonyDropDown

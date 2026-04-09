@@ -339,22 +339,26 @@ const validateForm = ({
   editReason,
   publication,
   draft,
-  errors
+  errors,
+  ballotQuestionId
 }: State) => {
+  const isBallotQuestion = Boolean(ballotQuestionId)
+  const contentNoun = isBallotQuestion ? "Perspective" : "Testimony"
+  const editNoun = isBallotQuestion ? "perspective" : "testimony"
   const validated = Position.validate(position)
   if (!validated.success) errors.position = "Invalid position"
   else errors.position = undefined
 
-  if (!content) errors.content = "Testimony content must not be empty"
+  if (!content) errors.content = `${contentNoun} content must not be empty`
   else if (content && content.length > maxTestimonyLength)
-    errors.content = "Testimony content is too long"
+    errors.content = `${contentNoun} content is too long`
   else if (containsSocialSecurityNumber(content)) {
     // TODO: include the offending number(s) in the error string.
-    errors.content = "Testimony must not contain social security numbers"
+    errors.content = `${contentNoun} must not contain social security numbers`
   } else errors.content = undefined
 
   if (hasDraftChanged(draft, publication) && !editReason)
-    errors.editReason = "You must provide a reason for editing your testimony"
+    errors.editReason = `You must provide a reason for editing your ${editNoun}`
   else errors.editReason = undefined
 }
 

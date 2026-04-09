@@ -14,6 +14,7 @@ import {
 } from "./ctas"
 import { ThankYouModal } from "./ThankYouModal"
 import { YourTestimony } from "./YourTestimony"
+import { useTranslation } from "next-i18next"
 
 export const TestimonyFormPanel = ({
   bill,
@@ -58,15 +59,23 @@ const Panel = ({ variant }: { variant: PanelCtaVariant }) => {
   }
 }
 
-const LoadingPanel = ({ variant }: { variant: PanelCtaVariant }) => (
-  <div
-    className={
-      variant === "ballotQuestion"
-        ? "rounded border bg-light px-3 py-3 small text-body-secondary d-flex align-items-center gap-2"
-        : "rounded border bg-light px-3 py-3 text-body-secondary d-flex align-items-center gap-2"
-    }
-  >
-    <Spinner animation="border" size="sm" />
-    <span>Loading your testimony...</span>
-  </div>
-)
+const LoadingPanel = ({ variant }: { variant: PanelCtaVariant }) => {
+  const { t } = useTranslation("testimony")
+  const loadingText =
+    variant === "ballotQuestion"
+      ? t("ballotQuestion.panel.loading")
+      : t("panel.loading")
+
+  return (
+    <div
+      className={
+        variant === "ballotQuestion"
+          ? "rounded border bg-light px-3 py-3 small text-body-secondary d-flex align-items-center gap-2"
+          : "rounded border bg-light px-3 py-3 text-body-secondary d-flex align-items-center gap-2"
+      }
+    >
+      <Spinner animation="border" size="sm" />
+      <span>{loadingText}</span>
+    </div>
+  )
+}

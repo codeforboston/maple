@@ -10,7 +10,7 @@ import * as links from "../links"
 import * as nav from "./NavigationButtons"
 import { SelectRecipients } from "./SelectRecipients"
 import { StepHeader } from "./StepHeader"
-import { useFormRedirection, usePublishMode, usePublishState } from "./hooks"
+import { useFormRedirection, usePublishCopy, usePublishState } from "./hooks"
 import { setAttachmentId, setContent } from "./redux"
 import { Trans, useTranslation } from "next-i18next"
 type TabKey = "text" | "import"
@@ -37,8 +37,7 @@ function useWriteTestimony() {
 }
 
 export const WriteTestimony = styled(props => {
-  const { t } = useTranslation("testimony")
-  const isBallotQuestion = usePublishMode() === "ballotQuestion"
+  const { t, copy, isBallotQuestion } = usePublishCopy()
   const write = useWriteTestimony()
   // const tabs = useTabs(write)
 
@@ -46,7 +45,12 @@ export const WriteTestimony = styled(props => {
 
   return (
     <div {...props}>
-      <StepHeader step={2}>{t("submitTestimonyForm.write.header")}</StepHeader>
+      <StepHeader step={2}>
+        {copy(
+          "submitTestimonyForm.write.header",
+          "ballotQuestion.submitTestimonyForm.write.header"
+        )}
+      </StepHeader>
       {!isBallotQuestion && <SelectRecipients className="my-4" />}
 
       <div className="divider" />
@@ -56,15 +60,28 @@ export const WriteTestimony = styled(props => {
           setContent={write.setContent}
           content={write.content}
           error={write.error}
-          label={t("submitTestimonyForm.write.testimonyLabel")}
-          placeholder={t("submitTestimonyForm.write.testimonyPlaceholder")}
-          help={t("submitTestimonyForm.write.testimonyHelp")}
+          label={copy(
+            "submitTestimonyForm.write.testimonyLabel",
+            "ballotQuestion.submitTestimonyForm.write.testimonyLabel"
+          )}
+          placeholder={copy(
+            "submitTestimonyForm.write.testimonyPlaceholder",
+            "ballotQuestion.submitTestimonyForm.write.testimonyPlaceholder"
+          )}
+          help={copy(
+            "submitTestimonyForm.write.testimonyHelp",
+            "ballotQuestion.submitTestimonyForm.write.testimonyHelp"
+          )}
           className="text-container"
         />
         <div>
           <Trans
             t={t}
-            i18nKey="submitTestimonyForm.write.tips"
+            i18nKey={
+              isBallotQuestion
+                ? "ballotQuestion.submitTestimonyForm.write.tips"
+                : "submitTestimonyForm.write.tips"
+            }
             components={[
               // eslint-disable-next-line react/jsx-key
               <links.Internal href="/learn/writing-effective-testimony" />
@@ -82,6 +99,10 @@ export const WriteTestimony = styled(props => {
           className="mt-3"
           attachment={write.attachment}
           confirmRemove={true}
+          label={copy(
+            "submitTestimonyForm.write.attachmentLabel",
+            "ballotQuestion.submitTestimonyForm.write.attachmentLabel"
+          )}
         />
       </div>
 
