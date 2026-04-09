@@ -24,11 +24,7 @@ interface BallotQuestion {
     | "legislative_referral"
     | "constitutional_amendment"
     | "advisory"
-  ballotStatus:
-    | "expectedOnBallot"
-    | "failedToAppear"
-    | "accepted"
-    | "rejected"
+  ballotStatus: "expectedOnBallot" | "failedToAppear" | "accepted" | "rejected"
   ballotQuestionNumber: number | null // "Question 1" — null until SoS certifies
   relatedBillIds: string[] // admin-curated, format: "194/H1234"
 
@@ -44,12 +40,12 @@ interface BallotQuestion {
 
 Four fields are written by hand in YAML and synced to Firestore. All are optional (`null` until ready).
 
-| Field         | Figma element                 | Quality standard                                                                |
-| ------------- | ----------------------------- | ------------------------------------------------------------------------------- |
-| `description` | "What this question would do" | 1–3 sentences of plain voter-friendly prose. Avoid legalese.                    |
-| `atAGlance`   | "Key Details" bullets         | Structured `label`/`value` pairs, 3–6 items. Scannable at a glance.             |
+| Field         | Figma element                 | Quality standard                                                                    |
+| ------------- | ----------------------------- | ----------------------------------------------------------------------------------- |
+| `description` | "What this question would do" | 1–3 sentences of plain voter-friendly prose. Avoid legalese.                        |
+| `atAGlance`   | "Key Details" bullets         | Structured `label`/`value` pairs, 3–6 items. Scannable at a glance.                 |
 | `fullSummary` | "Final Summary"               | Official voter-guide quality language. May be sourced from the initiative petition. |
-| `pdfUrl`      | PDF link                      | Direct URL to the initiative petition PDF (usually from mass.gov).              |
+| `pdfUrl`      | PDF link                      | Direct URL to the initiative petition PDF (usually from mass.gov).                  |
 
 Fields can be added to a YAML at any time and will be live after the next sync.
 
@@ -57,12 +53,12 @@ Fields can be added to a YAML at any time and will be live after the next sync.
 
 ### `ballotStatus` lifecycle
 
-| Status        | Meaning                                                                                                                          |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `expectedOnBallot` | Default status for ballot questions working their way through legislature or after legislature has failed to pass bill      |
-| `failedToAppear`  | Terminal; ballot question has been removed from the ballot for any reason (e.g., legal challenge, failure to collect signatures, etc.) |
-| `accepted`   | Terminal; ballot has received a majority of 'yes' votes at election                                                                         |
-| `rejected`      | Terminal; ballot has received a majority of 'no' votes at election                                                                       |
+| Status             | Meaning                                                                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `expectedOnBallot` | Default status for ballot questions working their way through legislature or after legislature has failed to pass bill                 |
+| `failedToAppear`   | Terminal; ballot question has been removed from the ballot for any reason (e.g., legal challenge, failure to collect signatures, etc.) |
+| `accepted`         | Terminal; ballot has received a majority of 'yes' votes at election                                                                    |
+| `rejected`         | Terminal; ballot has received a majority of 'no' votes at election                                                                     |
 
 The page at `/ballotQuestions/[id]` fetches both this document **and** the bill at `billId` — title, full text, hearing schedule, and testimony all come from the bill. Nothing is duplicated.
 
@@ -86,11 +82,11 @@ Both sets should have ballot question docs — past petitions remain discoverabl
 
 The MA Legislature API does not expose:
 
-| Field                               | Reason                                             |
-| ----------------------------------- | -------------------------------------------------- |
+| Field                                       | Reason                                             |
+| ------------------------------------------- | -------------------------------------------------- |
 | `ballotStatus: "failedToAppear"` and beyond | Secretary of State process, not in legislature API |
-| `ballotQuestionNumber`              | Assigned by SoS when certified, not in API         |
-| Petition number (`25-14`)           | Hearing descriptions are inconsistently formatted  |
+| `ballotQuestionNumber`                      | Assigned by SoS when certified, not in API         |
+| Petition number (`25-14`)                   | Hearing descriptions are inconsistently formatted  |
 
 All fields are admin-controlled. With ~11 petitions per 2-year cycle this is minimal effort.
 
