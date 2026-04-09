@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
@@ -14,7 +14,7 @@ jest.mock("../TestimonyCard/ViewTestimony", () => {
 
 const ballotQuestion = {
   id: "25-15",
-  ballotStatus: "legislature",
+  ballotStatus: "expectedOnBallot",
   ballotQuestionNumber: null,
   atAGlance: null,
   fullSummary: "Summary"
@@ -22,7 +22,7 @@ const ballotQuestion = {
 
 const ballotPhaseQuestion = {
   ...ballotQuestion,
-  ballotStatus: "ballot"
+  ballotStatus: "failedToAppear"
 } as any
 
 const bill = {
@@ -39,7 +39,7 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByText("View complete text")).not.toBeInTheDocument()
   })
 
-  it("shows the legislature-phase bill submission link in legislature phase", () => {
+  it("shows the bill submission link in expected-on-ballot phase", () => {
     render(
       <TestimoniesTab
         ballotQuestion={ballotQuestion}
@@ -60,14 +60,14 @@ describe("Ballot question tab links", () => {
 
     expect(link).toHaveAttribute("href", "/bills/194/H5005")
     expect(
-      screen.getByText(/This petition is still before the legislature\./)
+      screen.getByText(/This question is expected on the ballot\./)
     ).toBeInTheDocument()
     expect(
-      screen.queryByText(/You can review testimony on the related bill/)
-    ).not.toBeInTheDocument()
+      screen.getByText(/You can review testimony on the related bill/)
+    ).toBeInTheDocument()
   })
 
-  it("links to legislature-phase testimony during ballot phase", () => {
+  it("hides the bill submission note in terminal phases", () => {
     render(
       <TestimoniesTab
         ballotQuestion={ballotPhaseQuestion}
@@ -82,14 +82,12 @@ describe("Ballot question tab links", () => {
       />
     )
 
-    const link = screen.getByRole("link", { name: "here" })
-
-    expect(link).toHaveAttribute("href", "/bills/194/H5005#testimonies")
+    expect(screen.queryByRole("link", { name: "here" })).not.toBeInTheDocument()
     expect(
-      screen.getByText(/You can review testimony on the related bill/)
-    ).toBeInTheDocument()
+      screen.queryByText(/You can review testimony on the related bill/)
+    ).not.toBeInTheDocument()
     expect(
-      screen.queryByText(/This petition is still before the legislature\./)
+      screen.queryByText(/This question is expected on the ballot\./)
     ).not.toBeInTheDocument()
   })
 
@@ -110,5 +108,54 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByText("Academia")).not.toBeInTheDocument()
     expect(screen.queryByText("Campaign Financials")).not.toBeInTheDocument()
     expect(screen.queryByText("Map")).not.toBeInTheDocument()
+  })
+
+  it("exposes the ballot question navigation as tabs", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+      />
+    )
+
+    const tabs = screen.getAllByRole("tab")
+
+    expect(screen.getByRole("tablist")).toBeInTheDocument()
+    expect(tabs).toHaveLength(2)
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    )
+    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+      "aria-selected",
+      "false"
+    )
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+      "aria-controls",
+      "ballot-question-panel-overview"
+    )
+    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+      "aria-controls",
+      "ballot-question-panel-testimonies"
+    )
+  })
+
+  it("supports arrow-key navigation between ballot question tabs", () => {
+    const onTabChange = jest.fn()
+
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={onTabChange}
+        testimonyCount={5}
+      />
+    )
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "Overview" }), {
+      key: "ArrowRight"
+    })
+
+    expect(onTabChange).toHaveBeenCalledWith("testimonies")
   })
 })

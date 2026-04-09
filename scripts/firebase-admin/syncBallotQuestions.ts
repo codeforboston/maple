@@ -24,7 +24,7 @@ export const script: Script = async ({ db, args }) => {
 
   for (const file of files) {
     const raw = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
-    const doc = BallotQuestion.check(raw)
+    const doc = BallotQuestion.checkWithDefaults(raw)
     const ref = db.collection("ballotQuestions").doc(doc.id)
     batch.set(ref, doc)
     console.log(`Queued upsert: ballotQuestions/${doc.id}`)

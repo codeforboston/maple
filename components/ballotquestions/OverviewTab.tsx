@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { Col, Row } from "react-bootstrap"
 import { BallotQuestion, Bill } from "../db"
+import { QuestionTooltip } from "../tooltip"
 import { CommitteeHearing } from "./CommitteeHearing"
 import { Hearing } from "./types"
 
@@ -40,8 +41,7 @@ export const OverviewTab = ({
           <div>
             <h2 className="h4 mb-1 text-secondary">Overview</h2>
             <p className="text-body-secondary small mb-0">
-              Understand the question, key details, and legislature-phase
-              context in one place.
+              Understand the question, key details, and ballot context.
             </p>
           </div>
         </div>
@@ -88,35 +88,40 @@ export const OverviewTab = ({
 
       {ballotQuestion.fullSummary && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark">Final Summary</h3>
-          <p
-            className="mb-0"
-            style={{
-              ...sectionCopyStyle,
-              whiteSpace: "pre-wrap"
-            }}
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center">
+            Official summary by the Massachusetts Attorney General
+            <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
+          </h3>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            {ballotQuestion.fullSummary}
-          </p>
-        </SectionCard>
-      )}
-
-      {bill && sortedHearings.length > 0 && (
-        <SectionCard>
-          <h3 className="h5 mb-2 text-dark">Committee Hearing</h3>
-          <p className="mb-4" style={sectionCopyStyle}>
-            Committee hearings are public meetings where legislators examine a
-            proposed law, ask questions, and hear testimony from the public and
-            experts. What happens at a hearing can influence whether a proposal
-            moves forward, is revised, or does not advance.
-          </p>
-          <div className="d-grid gap-3">
-            {sortedHearings.map(hearing => (
-              <CommitteeHearing key={hearing.id} hearing={hearing} />
+            {ballotQuestion.fullSummary.split(/\n\n+/).map((para, i) => (
+              <p
+                key={i}
+                className="small lh-lg mb-0"
+                style={{ ...sectionCopyStyle, whiteSpace: "pre-wrap" }}
+              >
+                {para}
+              </p>
             ))}
           </div>
         </SectionCard>
       )}
+
+      {bill &&
+        sortedHearings.length > 0 &&
+        sortedHearings.some(h => new Date(h.startsAt) < new Date()) && (
+          <SectionCard>
+            <h3 className="h5 mb-4 text-dark">Committee Hearing</h3>
+            <div className="d-grid gap-3">
+              {sortedHearings
+                .filter(h => new Date(h.startsAt) < new Date())
+                .map(hearing => (
+                  <CommitteeHearing key={hearing.id} hearing={hearing} />
+                ))}
+            </div>
+          </SectionCard>
+        )}
     </div>
   )
 }

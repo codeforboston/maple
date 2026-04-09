@@ -1,10 +1,11 @@
-import { Button, Card, Form, Image } from "components/bootstrap"
+import { Alert, Button, Card, Form, Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import Link from "next/link"
 import { useDeferredValue, useState } from "react"
 import styled from "styled-components"
 import type { BallotQuestion } from "../db"
 import { maple } from "../links"
+import { QuestionTooltip } from "../tooltip"
 
 type BallotQuestionStatus = BallotQuestion["ballotStatus"]
 
@@ -38,24 +39,24 @@ const STATUS_STYLES: Record<
   { background: string; color: string; border: string }
 > = {
   legislature: {
+    background: "#fff4db",
+    color: "#7a4b00",
+    border: "#f6d58a"
+  },
+  qualifying: {
+    background: "#eef7ff",
+    color: "#16537e",
+    border: "#b9ddf8"
+  },
+  certified: {
+    background: "#e9f8ef",
+    color: "#17633a",
+    border: "#bee8cd"
+  },
+  ballot: {
     background: "#e8efff",
     color: "#1d3f8a",
     border: "#c9d8ff"
-  },
-  qualifying: {
-    background: "#fff3d9",
-    color: "#865300",
-    border: "#f5d78a"
-  },
-  certified: {
-    background: "#e6f6ee",
-    color: "#0b6a42",
-    border: "#bae6d0"
-  },
-  ballot: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
   },
   enacted: {
     background: "#e8f6ea",
@@ -63,36 +64,112 @@ const STATUS_STYLES: Record<
     border: "#c8e7cf"
   },
   failed: {
+    background: "#fde8ef",
+    color: "#902141",
+    border: "#f4bfd0"
+  },
+  withdrawn: {
     background: "#f1f5f9",
     color: "#475569",
     border: "#d7e0ea"
   },
-  withdrawn: {
-    background: "#fff0e0",
-    color: "#92400e",
-    border: "#f5d0a7"
+  expectedOnBallot: {
+    background: "#e8efff",
+    color: "#1d3f8a",
+    border: "#c9d8ff"
+  },
+  failedToAppear: {
+    background: "#f1f5f9",
+    color: "#475569",
+    border: "#d7e0ea"
+  },
+  rejected: {
+    background: "#fde8ef",
+    color: "#902141",
+    border: "#f4bfd0"
+  },
+  accepted: {
+    background: "#e8f6ea",
+    color: "#1d5d2d",
+    border: "#c8e7cf"
   }
 }
 
-const Controls = styled.section`
+const Controls = styled.section<{ $expanded: boolean }>`
   background: linear-gradient(
     180deg,
     var(--bs-white) 0%,
     var(--bs-body-bg) 100%
   );
   border: 1px solid ${BROWSE_BORDERS.chrome};
-  border-radius: 1rem;
+  border-radius: var(--bs-border-radius-xl);
   box-shadow: ${BROWSE_SHADOWS.soft};
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${props => (props.$expanded ? "0.75rem" : "0")};
   margin-bottom: 1.5rem;
   padding: 1rem;
+  transition: all 0.3s ease;
 `
 
-const ControlsGrid = styled.div`
+const ControlsHeader = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.75rem;
+
+  @media (max-width: 576px) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+`
+
+const ControlsSummary = styled.div`
+  flex: 1 1 auto;
+  min-width: 0;
+`
+
+const ControlsActions = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-left: auto;
+  flex-wrap: nowrap;
+
+  @media (max-width: 576px) {
+    margin-left: 0;
+    width: 100%;
+  }
+`
+
+const ControlsButton = styled(Button)`
+  flex: 0 0 auto;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  width: fit-content;
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-blue);
+    outline-offset: 2px;
+  }
+`
+
+const ControlsGrid = styled.div<{ $expanded: boolean }>`
   display: grid;
   gap: 0.75rem;
   grid-template-columns: minmax(0, 2.4fr) repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-height: ${props => (props.$expanded ? "500px" : "0")};
+  overflow: clip;
+  transform: translateY(${props => (props.$expanded ? "0" : "-10px")});
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+  opacity: ${props => (props.$expanded ? 1 : 0)};
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr 1fr;
@@ -108,14 +185,6 @@ const FilterLabel = styled(Form.Label)`
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 0.35rem;
-`
-
-const ResultsBar = styled.div`
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: space-between;
 `
 
 const ResultsSummary = styled.p.attrs({
@@ -153,7 +222,7 @@ const StyledCard = styled(Card)`
     var(--bs-body-bg) 100%
   );
   border: 1px solid ${BROWSE_BORDERS.chrome};
-  border-radius: 1rem;
+  border-radius: var(--bs-border-radius-xl);
   box-shadow: ${BROWSE_SHADOWS.card};
   height: 100%;
   overflow: hidden;
@@ -163,9 +232,10 @@ const StyledCard = styled(Card)`
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     height: 100%;
-    padding: 1.1rem 1.15rem 1rem;
+    border-radius: var(--bs-border-radius-xl);
+    padding: 0.8rem 0.9rem;
   }
 `
 
@@ -223,18 +293,18 @@ const TitleBlock = styled.div`
   gap: 0.45rem;
 `
 
-const QuestionEyebrow = styled.span`
-  color: var(--bs-gray-700);
-  font-size: 0.76rem;
+const QuestionNumber = styled.h2`
+  color: var(--bs-dark-blue);
+  font-size: 1.3rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
 `
 
-const QuestionTitle = styled(Card.Title)`
-  color: var(--bs-dark-blue);
-  font-size: 1.24rem;
-  line-height: 1.34;
+const QuestionTitle = styled.p`
+  color: var(--bs-gray-700);
+  font-size: 0.95rem;
+  line-height: 1.4;
   margin: 0;
 `
 
@@ -326,6 +396,8 @@ export const BrowseBallotQuestions = ({
   const [selectedYear, setSelectedYear] = useState(String(currentYear))
   const [selectedCourt, setSelectedCourt] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const [searchExpanded, setSearchExpanded] = useState(false)
+  const [showInfo, setShowInfo] = useState(true)
   const deferredQuery = useDeferredValue(searchQuery.trim().toLowerCase())
 
   if (items.length === 0) {
@@ -379,8 +451,24 @@ export const BrowseBallotQuestions = ({
 
   return (
     <>
-      <Controls aria-label="Filter ballot questions">
-        <ControlsGrid>
+      {showInfo && (
+        <Alert
+          variant="info"
+          dismissible
+          onClose={() => setShowInfo(false)}
+          className="mb-3 rounded-4 ballot-question-info-alert"
+        >
+          The exact question number will be assigned this summer by the
+          Secretary of State
+        </Alert>
+      )}
+
+      <Controls $expanded={searchExpanded} aria-label="Filter ballot questions">
+        <ControlsGrid
+          id="ballot-question-filters"
+          $expanded={searchExpanded}
+          aria-hidden={!searchExpanded}
+        >
           <div>
             <FilterLabel htmlFor="ballot-question-search">
               {t("ballot_question_search_label", { ns: "search" })}
@@ -389,6 +477,7 @@ export const BrowseBallotQuestions = ({
               id="ballot-question-search"
               type="search"
               value={searchQuery}
+              disabled={!searchExpanded}
               placeholder={t("ballot_question_search_placeholder", {
                 ns: "search"
               })}
@@ -403,6 +492,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-year"
               value={selectedYear}
+              disabled={!searchExpanded}
               onChange={e => setSelectedYear(e.target.value)}
             >
               <option value="all">
@@ -423,6 +513,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-court"
               value={selectedCourt}
+              disabled={!searchExpanded}
               onChange={e => setSelectedCourt(e.target.value)}
             >
               <option value="all">
@@ -443,6 +534,7 @@ export const BrowseBallotQuestions = ({
             <Form.Select
               id="ballot-question-status"
               value={selectedStatus}
+              disabled={!searchExpanded}
               onChange={e => setSelectedStatus(e.target.value)}
             >
               <option value="all">
@@ -457,25 +549,38 @@ export const BrowseBallotQuestions = ({
           </div>
         </ControlsGrid>
 
-        <ResultsBar>
-          <ResultsSummary>
-            {t("ballot_question_results_summary", {
-              ns: "search",
-              count: filteredItems.length,
-              total: items.length
-            })}
-          </ResultsSummary>
+        <ControlsHeader>
+          <ControlsSummary>
+            <ResultsSummary>
+              {t("ballot_question_results_summary", {
+                ns: "search",
+                count: filteredItems.length,
+                total: items.length
+              })}
+            </ResultsSummary>
+          </ControlsSummary>
 
-          {hasActiveFilters ? (
-            <Button
+          <ControlsActions>
+            {hasActiveFilters ? (
+              <ControlsButton
+                variant="outline-secondary"
+                size="sm"
+                onClick={resetFilters}
+              >
+                {t("ballot_question_reset_filters", { ns: "search" })}
+              </ControlsButton>
+            ) : null}
+            <ControlsButton
               variant="outline-secondary"
               size="sm"
-              onClick={resetFilters}
+              onClick={() => setSearchExpanded(!searchExpanded)}
+              aria-controls="ballot-question-filters"
+              aria-expanded={searchExpanded}
             >
-              {t("ballot_question_reset_filters", { ns: "search" })}
-            </Button>
-          ) : null}
-        </ResultsBar>
+              {searchExpanded ? "Hide filters" : "Show filters"}
+            </ControlsButton>
+          </ControlsActions>
+        </ControlsHeader>
       </Controls>
 
       {filteredItems.length === 0 ? (
@@ -526,45 +631,31 @@ export const BrowseBallotQuestions = ({
                     </TopRow>
 
                     <TitleBlock>
-                      {item.ballotQuestionNumber ? (
-                        <QuestionEyebrow>
-                          {t("ballot_question_number", {
-                            ns: "search",
-                            number: item.ballotQuestionNumber
-                          })}
-                        </QuestionEyebrow>
-                      ) : null}
-                      <QuestionTitle as="h2">{item.title}</QuestionTitle>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem"
+                        }}
+                      >
+                        <QuestionNumber>
+                          Question{" "}
+                          {item.ballotQuestionNumber ? (
+                            item.ballotQuestionNumber
+                          ) : (
+                            <>
+                              #
+                              <QuestionTooltip text="The exact question number will be assigned this summer by the Secretary of State" />
+                            </>
+                          )}
+                        </QuestionNumber>
+                      </div>
+                      <QuestionTitle>{item.title}</QuestionTitle>
                     </TitleBlock>
-
                     <Summary>
                       {item.fullSummary ||
                         t("ballot_question_no_summary", { ns: "search" })}
                     </Summary>
-
-                    <MetaStack>
-                      <MetaItem>
-                        {t("ballot_question_election_year", {
-                          ns: "search",
-                          year: item.electionYear
-                        })}
-                      </MetaItem>
-                      <MetaItem>
-                        {t("ballot_question_court", {
-                          ns: "search",
-                          court: item.court
-                        })}
-                      </MetaItem>
-                    </MetaStack>
-
-                    <FooterRow>
-                      <DocumentId>
-                        {t("ballot_question_document_id", {
-                          ns: "search",
-                          id: item.id
-                        })}
-                      </DocumentId>
-                    </FooterRow>
                   </Card.Body>
                 </StyledCard>
               </CardLink>

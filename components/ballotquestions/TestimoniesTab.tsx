@@ -16,12 +16,13 @@ export const TestimoniesTab = ({
   testimony: UsePublishedTestimonyListing
   testimonySummary: BallotQuestionTestimonySummary
 }) => {
-  const isLegislaturePhase = ballotQuestion.ballotStatus === "legislature"
+  const isExpectedOnBallotPhase =
+    ballotQuestion.ballotStatus === "expectedOnBallot"
   const allowEdit = isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
   const totalLabel =
     testimonySummary.testimonyCount === 1
-      ? "1 total testimony"
-      : `${testimonySummary.testimonyCount} total testimonies`
+      ? "1 perspective"
+      : `${testimonySummary.testimonyCount} perspectives`
 
   return (
     <div className="d-grid gap-4">
@@ -46,9 +47,9 @@ export const TestimoniesTab = ({
               <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
             </div>
             <div>
-              <h2 className="h4 mb-1 text-secondary">Testimonies</h2>
+              <h2 className="h4 mb-1 text-secondary">Perspectives</h2>
               <p className="text-body-secondary small mb-0">{totalLabel}</p>
-              {!isLegislaturePhase && bill && (
+              {isExpectedOnBallotPhase && bill && (
                 <p
                   className="small text-body-secondary mt-3 mb-0"
                   style={{ maxWidth: "44rem" }}
@@ -99,7 +100,7 @@ export const TestimoniesTab = ({
           </div>
         </div>
 
-        {isLegislaturePhase && bill && (
+        {isExpectedOnBallotPhase && bill && (
           <div
             className="mt-4 rounded-4 border p-3 p-lg-4 small"
             style={{
@@ -108,8 +109,7 @@ export const TestimoniesTab = ({
               color: "#475569"
             }}
           >
-            This petition is still before the legislature. Submit testimony on
-            the{" "}
+            This question is expected on the ballot. Submit testimony on the{" "}
             <Link
               href={`/bills/${bill.court}/${bill.id}`}
               className="fw-semibold text-decoration-none"

@@ -8,7 +8,9 @@ import { TestimoniesTab } from "./TestimoniesTab"
 import {
   BallotQuestionTab,
   BallotQuestionTestimonySummary,
-  Hearing
+  Hearing,
+  getBallotQuestionPanelId,
+  getBallotQuestionTabId
 } from "./types"
 
 export const BallotQuestionDetails = ({
@@ -64,7 +66,13 @@ export const BallotQuestionDetails = ({
             />
           </Col>
           <Col lg={9} md={8}>
-            {renderContent()}
+            <div
+              role="tabpanel"
+              id={getBallotQuestionPanelId(activeTab)}
+              aria-labelledby={getBallotQuestionTabId(activeTab)}
+            >
+              {renderContent()}
+            </div>
           </Col>
         </Row>
       </Container>
