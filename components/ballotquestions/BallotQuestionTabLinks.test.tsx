@@ -39,7 +39,7 @@ describe("Ballot question tab links", () => {
     expect(screen.queryByText("View complete text")).not.toBeInTheDocument()
   })
 
-  it("does not show the bill submission note in expected-on-ballot phase", () => {
+  it("shows the bill submission link in expected-on-ballot phase", () => {
     render(
       <TestimoniesTab
         ballotQuestion={ballotQuestion}
@@ -54,13 +54,17 @@ describe("Ballot question tab links", () => {
       />
     )
 
-    expect(screen.queryByRole("link", { name: "here" })).not.toBeInTheDocument()
+    const link = screen.getByRole("link", {
+      name: "related bill"
+    })
+
+    expect(link).toHaveAttribute("href", "/bills/194/H5005")
     expect(
-      screen.queryByText(/This question is expected on the ballot\./)
-    ).not.toBeInTheDocument()
+      screen.getByText(/This question is expected on the ballot\./)
+    ).toBeInTheDocument()
     expect(
-      screen.queryByText(/You can review testimony on the related bill/)
-    ).not.toBeInTheDocument()
+      screen.getByText(/You can review testimony on the related bill/)
+    ).toBeInTheDocument()
   })
 
   it("hides the bill submission note in terminal phases", () => {
