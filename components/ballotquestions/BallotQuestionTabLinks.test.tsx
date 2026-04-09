@@ -101,7 +101,7 @@ describe("Ballot question tab links", () => {
     )
 
     expect(screen.getByText("Overview")).toBeInTheDocument()
-    expect(screen.getByText("Testimonies")).toBeInTheDocument()
+    expect(screen.getByText("Perspectives")).toBeInTheDocument()
     expect(screen.queryByText("Synthesis & Insights")).not.toBeInTheDocument()
     expect(screen.queryByText("For & Against")).not.toBeInTheDocument()
     expect(screen.queryByText("News & Media")).not.toBeInTheDocument()
@@ -127,7 +127,7 @@ describe("Ballot question tab links", () => {
       "aria-selected",
       "true"
     )
-    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: /Perspectives/ })).toHaveAttribute(
       "aria-selected",
       "false"
     )
@@ -135,7 +135,7 @@ describe("Ballot question tab links", () => {
       "aria-controls",
       "ballot-question-panel-overview"
     )
-    expect(screen.getByRole("tab", { name: /Testimonies/ })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: /Perspectives/ })).toHaveAttribute(
       "aria-controls",
       "ballot-question-panel-testimonies"
     )
