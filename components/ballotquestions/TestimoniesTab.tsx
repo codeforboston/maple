@@ -100,25 +100,7 @@ export const TestimoniesTab = ({
           </div>
         </div>
 
-        {isExpectedOnBallotPhase && bill && (
-          <div
-            className="mt-4 rounded-4 border p-3 p-lg-4 small"
-            style={{
-              backgroundColor: "rgba(248, 250, 252, 0.9)",
-              borderColor: "rgba(15, 23, 42, 0.08)",
-              color: "#475569"
-            }}
-          >
-            This question is expected on the ballot. Submit testimony on the{" "}
-            <Link
-              href={`/bills/${bill.court}/${bill.id}`}
-              className="fw-semibold text-decoration-none"
-            >
-              related bill
-            </Link>{" "}
-            for this phase.
-          </div>
-        )}
+
       </div>
 
       <ViewTestimony

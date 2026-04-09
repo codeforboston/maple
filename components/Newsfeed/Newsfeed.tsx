@@ -28,6 +28,8 @@ export default function Newsfeed() {
 
   const [isShowingOrgs, setIsShowingOrgs] = useState<boolean>(true)
   const [isShowingBills, setIsShowingBills] = useState<boolean>(true)
+  const [isShowingBallotQuestions, setIsShowingBallotQuestions] =
+    useState<boolean>(true)
 
   const [allResults, setAllResults] = useState<Notifications>([])
   const [filteredResults, setFilteredResults] = useState<Notifications>([])
@@ -36,11 +38,13 @@ export default function Newsfeed() {
     const results = allResults.filter(result => {
       if (isShowingOrgs && result.type == `testimony`) return true
       if (isShowingBills && result.type == `bill`) return true
+      if (isShowingBallotQuestions && result.type == `ballotQuestion`)
+        return true
       return false
     })
 
     setFilteredResults(results)
-  }, [isShowingOrgs, isShowingBills, allResults])
+  }, [isShowingOrgs, isShowingBills, isShowingBallotQuestions, allResults])
 
   const onOrgFilterChange = (isShowing: boolean) => {
     setIsShowingOrgs(isShowing)
@@ -48,6 +52,10 @@ export default function Newsfeed() {
 
   const onBillFilterChange = (isShowing: boolean) => {
     setIsShowingBills(isShowing)
+  }
+
+  const onBallotQuestionFilterChange = (isShowing: boolean) => {
+    setIsShowingBallotQuestions(isShowing)
   }
 
   useEffect(() => {
@@ -74,8 +82,12 @@ export default function Newsfeed() {
         onBillFilterChange={(isShowing: boolean) => {
           onBillFilterChange(isShowing)
         }}
+        onBallotQuestionFilterChange={(isShowing: boolean) => {
+          onBallotQuestionFilterChange(isShowing)
+        }}
         isShowingOrgs={isShowingOrgs}
         isShowingBills={isShowingBills}
+        isShowingBallotQuestions={isShowingBallotQuestions}
         profile={profile}
       />
     )
@@ -84,14 +96,18 @@ export default function Newsfeed() {
   function FilterBoxes({
     isShowingBills,
     isShowingOrgs,
+    isShowingBallotQuestions,
     onBillFilterChange,
     onOrgFilterChange,
+    onBallotQuestionFilterChange,
     profile
   }: {
     isShowingBills: boolean
     isShowingOrgs: boolean
+    isShowingBallotQuestions: boolean
     onBillFilterChange: any
     onOrgFilterChange: any
+    onBallotQuestionFilterChange: any
     profile: Profile
   }) {
     const { t } = useTranslation("common")
@@ -127,6 +143,20 @@ export default function Newsfeed() {
             />
             <label className="form-check-label" htmlFor="billCheck">
               {t("bill_updates")}
+            </label>
+          </BillCol>
+          <BillCol className="form-check checkbox mt-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="ballotQuestionCheck"
+              onChange={event => {
+                onBallotQuestionFilterChange(event.target.checked)
+              }}
+              checked={isShowingBallotQuestions}
+            />
+            <label className="form-check-label" htmlFor="ballotQuestionCheck">
+              Ballot Question Updates
             </label>
           </BillCol>
           <Buttons profile={profile} />
@@ -222,12 +252,17 @@ export default function Newsfeed() {
                             header={element.header}
                             isBillMatch={element.isBillMatch}
                             isUserMatch={element.isUserMatch}
+                            isBallotQuestionMatch={
+                              element.isBallotQuestionMatch
+                            }
                             position={element.position}
                             subheader={element.subheader}
                             timestamp={element.timestamp}
                             testimonyId={element.testimonyId}
                             type={element.type}
                             userRole={element.userRole}
+                            ballotQuestionId={element.ballotQuestionId}
+                            ballotStatus={element.ballotStatus}
                             isNewsfeed={"enable newsfeed specific subheading"}
                           />
                         </div>

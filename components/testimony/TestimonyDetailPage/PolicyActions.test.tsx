@@ -38,6 +38,11 @@ jest.mock("./testimonyDetailSlice", () => ({
       id: "H123",
       court: 194
     },
+    ballotQuestion: {
+      id: "25-14",
+      title: "Should we do the thing?",
+      description: null
+    },
     revision: {
       ballotQuestionId: "25-14"
     }
@@ -103,9 +108,13 @@ describe("PolicyActions", () => {
       )
     })
 
-    expect(screen.getByText("Follow Ballot Question 25-14")).toBeInTheDocument()
+    expect(
+      screen.getByText("Follow Ballot Question 25-14: Should we do the thing?")
+    ).toBeInTheDocument()
 
-    fireEvent.click(screen.getByText("Follow Ballot Question 25-14"))
+    fireEvent.click(
+      screen.getByText("Follow Ballot Question 25-14: Should we do the thing?")
+    )
 
     await waitFor(() => {
       expect(mockFollowBallotQuestion).toHaveBeenCalledWith("user-1", {

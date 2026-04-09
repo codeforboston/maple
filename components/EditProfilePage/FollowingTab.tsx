@@ -175,6 +175,9 @@ function FollowedBallotQuestionCard({
         <Internal href={`/ballotQuestions/${ballotQuestionId}`}>
           {label}
         </Internal>
+        <Col xs={12} md={8} className={`d-flex`}>
+          <h6>{bq.title ?? bq.description}</h6>
+        </Col>
         <Col xs="auto" className="d-flex justify-content-end ms-auto p-0">
           <FollowBallotQuestionButton ballotQuestion={bq} />
         </Col>

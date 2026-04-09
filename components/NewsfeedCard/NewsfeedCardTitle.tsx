@@ -13,6 +13,7 @@ interface NewsfeedCardTitleProps {
   timestamp?: string
   imgSrc?: string
   inHeaderElement?: ReactElement
+  isBallotQuestionMatch?: boolean
   isBillMatch?: boolean
   isUserMatch?: boolean
   type?: string
@@ -27,6 +28,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
     court,
     header,
     isBillMatch,
+    isBallotQuestionMatch,
     isUserMatch,
     subheader,
     type,
@@ -50,6 +52,7 @@ export const NewsfeedCardTitle = (props: NewsfeedCardTitleProps) => {
           <CardTitleFollowing
             billId={billId}
             header={header}
+            isBallotQuestionMatch={isBallotQuestionMatch}
             subheader={subheader}
             isBillMatch={isBillMatch}
             isUserMatch={isUserMatch}
@@ -152,11 +155,36 @@ const CardTitleHeadline = (props: NewsfeedCardTitleProps) => {
 }
 
 const CardTitleFollowing = (props: NewsfeedCardTitleProps) => {
-  const { billId, header, isBillMatch, isUserMatch, subheader, type } = props
+  const {
+    billId,
+    header,
+    isBallotQuestionMatch,
+    isBillMatch,
+    isUserMatch,
+    subheader,
+    type
+  } = props
   const { t } = useTranslation("common")
 
   if (type == ``) {
     return <></>
+  } else if (type === `ballotQuestion`) {
+    return (
+      <>
+        {header && (
+          <CardBootstrap.Title
+            className={`align-items-start fs-6 lh-sm mb-1 text-body-tertiary`}
+          >
+            {isBallotQuestionMatch ? (
+              <>{t("newsfeed.follow")}</>
+            ) : (
+              <>{t("newsfeed.notFollow")}</>
+            )}
+            <strong>{header}</strong>
+          </CardBootstrap.Title>
+        )}
+      </>
+    )
   } else if (type === `bill`) {
     return (
       <>

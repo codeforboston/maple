@@ -41,11 +41,13 @@ const Cta = ({
   )
 }
 
-const CompactPanel = ({ title, cta }: { title: string; cta: ReactElement }) => (
+const CompactPanel = ({ title, cta }: { title?: string; cta: ReactElement }) => (
   <div className="d-grid gap-3">
-    <div className="rounded border bg-light px-3 py-3 small text-body-secondary fw-semibold">
-      {title}
-    </div>
+    {title && (
+      <div className="rounded border bg-light px-3 py-3 small text-body-secondary fw-semibold">
+        {title}
+      </div>
+    )}
     {cta}
   </div>
 )
@@ -82,7 +84,7 @@ export const CreateTestimony = ({
   )
 
   return variant === "ballotQuestion" ? (
-    <CompactPanel title={t(`${namespace}.createTestimony.title`)} cta={cta} />
+    <CompactPanel cta={cta} />
   ) : (
     <Cta title={t(`${namespace}.createTestimony.title`)} cta={cta} />
   )
@@ -99,17 +101,17 @@ export const CompleteTestimony = ({
   const cta = (
     <OpenForm
       label={t(`${namespace}.completeTestimony.label`)}
-      variant="info"
+      variant={variant === "ballotQuestion" ? "primary" : "info"}
       className={
         variant === "ballotQuestion"
-          ? "w-100 py-2 small fw-semibold text-white"
+          ? "w-100 py-2 small fw-semibold"
           : "text-white"
       }
     />
   )
 
   return variant === "ballotQuestion" ? (
-    <CompactPanel title={t(`${namespace}.completeTestimony.title`)} cta={cta} />
+    <CompactPanel cta={cta} />
   ) : (
     <Cta
       title={t(`${namespace}.completeTestimony.title`)}
@@ -142,7 +144,7 @@ export const SignedOut = ({
     )
 
   return variant === "ballotQuestion" ? (
-    <CompactPanel title={title} cta={cta} />
+    <CompactPanel cta={cta} />
   ) : (
     <Cta title={title} cta={cta} />
   )

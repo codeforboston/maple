@@ -5,6 +5,41 @@ import { Col, Row } from "../bootstrap"
 import { Internal } from "components/links"
 import { truncateText } from "components/formatting"
 
+export const NewsfeedBallotQuestionCardBody = ({
+  ballotQuestionId,
+  ballotStatus,
+  header,
+  timestamp
+}: {
+  ballotQuestionId?: string
+  ballotStatus?: string
+  header?: string
+  timestamp?: string
+}) => {
+  const { t } = useTranslation("common")
+  return (
+    <CardBootstrap.Body className="p-2">
+      {ballotStatus && (
+        <CardBootstrap.Text className="text-body-secondary small mb-2">
+          Status updated to: <strong>{ballotStatus}</strong>
+        </CardBootstrap.Text>
+      )}
+      <CardBootstrap.Text className="text-body-secondary small mb-0">
+        {t("newsfeed.actionTaken")}
+        {timestamp}
+      </CardBootstrap.Text>
+      {ballotQuestionId && (
+        <Internal
+          href={`/ballotQuestions/${ballotQuestionId}`}
+          className="small"
+        >
+          View ballot question
+        </Internal>
+      )}
+    </CardBootstrap.Body>
+  )
+}
+
 interface NewsfeedCardBodyProps {
   billText?: string
   position?: string

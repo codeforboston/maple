@@ -7,10 +7,11 @@ export type NotificationProps = {
   court: string
   createdAt: Timestamp
   delivered: boolean
-  header: string // Bill Title
+  header: string // Bill Title or BQ description
   id: number
   isBillMatch: boolean // Is subscribed to Bill
   isUserMatch: boolean // is subscribed to User/Org
+  isBallotQuestionMatch?: boolean
   position: string
   subheader: string
   testimonyId: string
@@ -18,6 +19,10 @@ export type NotificationProps = {
   topicName: string
   type: string
   userRole: string
+  // Ballot question fields
+  ballotQuestionId?: string
+  ballotQuestionCourt?: number
+  ballotStatus?: string
 }
 
 export type Notifications = NotificationProps[]

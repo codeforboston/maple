@@ -50,6 +50,8 @@ yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env prod
 
 Upserts ballot question records from local YAML files into the `ballotQuestions` Firestore collection. Each file is validated against the `BallotQuestion` type before being written; invalid files abort with an error. All writes are committed atomically in a single Firestore batch.
 
+Persisted testimony counters on existing ballot-question documents are preserved during sync so YAML refreshes do not wipe live testimony data.
+
 ```sh
 # Uses ./ballotQuestions/ directory by default
 yarn firebase-admin run-script syncBallotQuestions --env local
@@ -59,6 +61,22 @@ yarn firebase-admin run-script syncBallotQuestions --env dev -- --dir /path/to/y
 ```
 
 YAML files must export a document whose shape matches the `BallotQuestion` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
+
+---
+
+#### `backfillBallotQuestionTestimonyCounts`
+
+Computes and stores `testimonyCount`, `endorseCount`, `neutralCount`, and `opposeCount` on every ballot-question document from `publishedTestimony`.
+
+**Why it exists:** Ballot-question pages now read persisted counters from the ballot-question document instead of recomputing them on every request. Existing environments need a one-time backfill so legacy ballot questions start with correct stored counts.
+
+**Idempotent:** The script overwrites only the four counter fields based on current published testimony, so it is safe to re-run.
+
+```sh
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env local
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env dev
+yarn firebase-admin run-script backfillBallotQuestionTestimonyCounts --env prod
+```
 
 ---
 

@@ -74,9 +74,11 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   let bill: Bill | null = null
   let hearings: Hearing[] = []
-  const testimonySummary = await getBallotQuestionTestimonySummary(
-    query.data.id
+  const testimonySummary = hasStoredBallotQuestionTestimonySummary(
+    ballotQuestion
   )
+    ? getStoredBallotQuestionTestimonySummary(ballotQuestion)
+    : await getBallotQuestionTestimonySummary(query.data.id)
 
   if (ballotQuestion.billId) {
     bill =
@@ -137,4 +139,26 @@ async function getBallotQuestionTestimonySummary(
       opposeCount: 0
     }
   )
+}
+
+function hasStoredBallotQuestionTestimonySummary(
+  ballotQuestion: BallotQuestion
+): boolean {
+  return [
+    ballotQuestion.testimonyCount,
+    ballotQuestion.endorseCount,
+    ballotQuestion.neutralCount,
+    ballotQuestion.opposeCount
+  ].every(count => typeof count === "number")
+}
+
+function getStoredBallotQuestionTestimonySummary(
+  ballotQuestion: BallotQuestion
+): BallotQuestionTestimonySummary {
+  return {
+    testimonyCount: ballotQuestion.testimonyCount ?? 0,
+    endorseCount: ballotQuestion.endorseCount ?? 0,
+    neutralCount: ballotQuestion.neutralCount ?? 0,
+    opposeCount: ballotQuestion.opposeCount ?? 0
+  }
 }
