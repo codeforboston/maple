@@ -99,8 +99,6 @@ export const TestimoniesTab = ({
             </div>
           </div>
         </div>
-
-
       </div>
 
       <ViewTestimony

@@ -41,7 +41,13 @@ const Cta = ({
   )
 }
 
-const CompactPanel = ({ title, cta }: { title?: string; cta: ReactElement }) => (
+const CompactPanel = ({
+  title,
+  cta
+}: {
+  title?: string
+  cta: ReactElement
+}) => (
   <div className="d-grid gap-3">
     {title && (
       <div className="rounded border bg-light px-3 py-3 small text-body-secondary fw-semibold">
