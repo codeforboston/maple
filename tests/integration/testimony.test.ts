@@ -372,10 +372,21 @@ describe("publishTestimony", () => {
 
   describe("ballotQuestionId", () => {
     beforeAll(async () => {
-      await testDb
-        .collection("ballotQuestions")
-        .doc("bq-test-1")
-        .set({ id: "bq-test-1" })
+      await testDb.collection("ballotQuestions").doc("bq-test-1").set({
+        id: "bq-test-1",
+        billId: null,
+        court: currentGeneralCourt,
+        electionYear: 2026,
+        type: "initiative_statute",
+        ballotStatus: "expectedOnBallot",
+        ballotQuestionNumber: null,
+        relatedBillIds: [],
+        description: null,
+        atAGlance: null,
+        fullSummary: null,
+        pdfUrl: null,
+        title: "Test ballot question"
+      })
     })
 
     afterAll(async () => {
