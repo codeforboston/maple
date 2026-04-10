@@ -45,9 +45,17 @@ export const BallotQuestion = withDefaults(
     atAGlance: Union(Array(Record({ label: String, value: String })), Null),
     fullSummary: Union(String, Null),
     pdfUrl: Union(String, Null),
-    title: Union(String, Null)
+    title: Union(String, Null),
+    testimonyCount: Number,
+    endorseCount: Number,
+    neutralCount: Number,
+    opposeCount: Number
   }),
   {
-    title: null
+    title: null,
+    testimonyCount: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0
   }
 )

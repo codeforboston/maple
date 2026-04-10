@@ -50,7 +50,9 @@ export const getServerSideProps: GetServerSideProps<
               billId: ballotQuestion.billId
             })
           : Promise.resolve(undefined),
-        getBallotQuestionCounts(ballotQuestion.id)
+        hasStoredBallotQuestionCounts(ballotQuestion)
+          ? Promise.resolve(getStoredBallotQuestionCounts(ballotQuestion))
+          : getBallotQuestionCounts(ballotQuestion.id)
       ])
 
       return {
@@ -112,6 +114,24 @@ async function getBallotQuestionCounts(ballotQuestionId: string) {
     },
     { endorseCount: 0, neutralCount: 0, opposeCount: 0 }
   )
+}
+
+function hasStoredBallotQuestionCounts(
+  ballotQuestion: BallotQuestion
+): boolean {
+  return [
+    ballotQuestion.endorseCount,
+    ballotQuestion.neutralCount,
+    ballotQuestion.opposeCount
+  ].every(count => typeof count === "number")
+}
+
+function getStoredBallotQuestionCounts(ballotQuestion: BallotQuestion) {
+  return {
+    endorseCount: ballotQuestion.endorseCount ?? 0,
+    neutralCount: ballotQuestion.neutralCount ?? 0,
+    opposeCount: ballotQuestion.opposeCount ?? 0
+  }
 }
 
 function sortBallotQuestions(a: BallotQuestion, b: BallotQuestion) {

@@ -1,4 +1,3 @@
-import { Internal } from "components/links"
 import { DateTime } from "luxon"
 import { Image } from "components/bootstrap"
 import { Hearing } from "./types"
@@ -60,8 +59,10 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
         </div>
 
         {hearingId ? (
-          <Internal
+          <a
             href={`/hearing/${hearingId}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
             style={{
               borderColor: "rgba(94, 114, 228, 0.18)",
@@ -72,8 +73,8 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             }}
           >
             <span>Open hearing page</span>
-            <span aria-hidden="true">→</span>
-          </Internal>
+            <span aria-hidden="true">↗</span>
+          </a>
         ) : null}
       </div>
     </div>

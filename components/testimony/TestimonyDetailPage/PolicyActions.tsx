@@ -27,6 +27,19 @@ interface PolicyActionsProps {
   setReporting: (boolean: boolean) => void
 }
 
+function formatBallotQuestionPolicyLabel(
+  ballotQuestionId: string,
+  ballotQuestion?: {
+    title?: string | null
+    description?: string | null
+  } | null
+) {
+  const title = ballotQuestion?.title ?? ballotQuestion?.description
+  return title
+    ? `Ballot Question ${ballotQuestionId}: ${title}`
+    : `Ballot Question ${ballotQuestionId}`
+}
+
 const PolicyActionItem: FC<React.PropsWithChildren<ListItemProps>> = props => (
   <ListItem action active={false} variant="secondary" {...props} />
 )
@@ -37,7 +50,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   isReporting,
   setReporting
 }) => {
-  const { bill, revision } = useCurrentTestimonyDetails(),
+  const { bill, revision, ballotQuestion } = useCurrentTestimonyDetails(),
     billLabel = formatBillId(bill.id)
   const { notifications } = useFlags()
 
@@ -48,7 +61,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     ? { court: bill.court, id: ballotQuestionId }
     : null
   const policyLabel = ballotQuestionTopic
-    ? `Ballot Question ${ballotQuestionTopic.id}`
+    ? formatBallotQuestionPolicyLabel(ballotQuestionTopic.id, ballotQuestion)
     : billLabel
   const topicName = ballotQuestionTopic
     ? ballotQuestionTopicName(ballotQuestionTopic.court, ballotQuestionTopic.id)
@@ -72,6 +85,13 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       return
     }
 
+    if (ballotQuestion) {
+      setCanEditBallotQuestionTestimony(
+        isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
+      )
+      return
+    }
+
     let active = true
     dbService()
       .getBallotQuestion({ id: ballotQuestionId })
@@ -89,7 +109,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     return () => {
       active = false
     }
-  }, [ballotQuestionId])
+  }, [ballotQuestion, ballotQuestionId])
 
   const FollowClick = async () => {
     if (ballotQuestionTopic) {

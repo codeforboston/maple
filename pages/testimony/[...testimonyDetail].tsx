@@ -146,11 +146,14 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
   }
 
   const bill = await db.getBill({ billId, court }),
-    author = await db.getProfile({ uid: authorUid })
+    author = await db.getProfile({ uid: authorUid }),
+    ballotQuestion = ballotQuestionId
+      ? await db.getBallotQuestion({ id: ballotQuestionId })
+      : null
 
   if (!bill) return
 
-  return { bill, author, archive, testimony }
+  return { bill, author, archive, testimony, ballotQuestion }
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -190,6 +193,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       pageDataLoaded({
         testimony: docs.testimony,
         bill: docs.bill,
+        ballotQuestion: docs.ballotQuestion ?? null,
         author: docs.author ?? null,
         archive: docs.archive,
         version: q.version
