@@ -130,6 +130,10 @@ export default function PhoneVerificationModal({
     setVerifying(true)
     try {
       await confirmationResult.confirm(code.trim())
+
+      // Force fresh token to ensure context.auth is populated
+      await auth.currentUser?.getIdToken(true)
+
       if (completePhoneVerification.execute) {
         await completePhoneVerification.execute()
       }
