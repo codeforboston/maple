@@ -23,8 +23,9 @@
     "disclosure_date": "Disclosure Date",
     "download_pdf": "Download PDF",
     "example_name": "Example Name",
+    "hearing_held": "Hearing Held",
     "hearing_scheduled_for": "Hearing Scheduled for {{date, datetime(year: 'numeric'; month: 'long'; day: 'numeric'; hour: 'numeric'; minute: 'numeric')}}",
-    "hearing_video_and_transcript" : "Hearing Video + Transcript", 
+    "hearing_video_and_transcript" : "Hearing Video + Transcript",
     "history": "History",
     "icon": {
       "commerce": "Commerce",
