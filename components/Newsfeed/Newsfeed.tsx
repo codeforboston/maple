@@ -2,7 +2,7 @@ import ErrorPage from "next/error"
 import { flags } from "../featureFlags"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Frequency, useAuth } from "../auth"
 import { Col, Row, Spinner } from "../bootstrap"
 import { Profile, useProfile, usePublicProfile } from "../db"
@@ -33,19 +33,17 @@ export default function Newsfeed() {
     useState<boolean>(true)
 
   const [allResults, setAllResults] = useState<Notifications>([])
-  const [filteredResults, setFilteredResults] = useState<Notifications>([])
+  const [notificationsLoading, setNotificationsLoading] = useState(true)
 
-  useEffect(() => {
-    const results = allResults.filter(result => {
-      if (isShowingOrgs && result.type == `testimony`) return true
-      if (isShowingBills && result.type == `bill`) return true
-      if (isShowingBallotQuestions && result.type == `ballotQuestion`)
+  const filteredResults = useMemo(() => {
+    return allResults.filter(result => {
+      if (isShowingOrgs && result.type === "testimony") return true
+      if (isShowingBills && result.type === "bill") return true
+      if (isShowingBallotQuestions && result.type == "ballotQuestion")
         return true
       return false
     })
-
-    setFilteredResults(results)
-  }, [isShowingOrgs, isShowingBills, isShowingBallotQuestions, allResults])
+  }, [allResults, isShowingOrgs, isShowingBallotQuestions, isShowingBills])
 
   const onOrgFilterChange = (isShowing: boolean) => {
     setIsShowingOrgs(isShowing)
@@ -65,12 +63,14 @@ export default function Newsfeed() {
         if (uid) {
           const notifications = await notificationQuery(uid)
           setAllResults(notifications)
-          setFilteredResults(notifications)
         }
       } catch (error) {
         console.error("Error fetching notifications: " + error)
+      } finally {
+        setNotificationsLoading(false)
       }
     }
+    setNotificationsLoading(true)
     fetchNotifications()
   }, [uid])
 
@@ -223,7 +223,7 @@ export default function Newsfeed() {
 
   return (
     <>
-      {result.loading && uid ? (
+      {(uid && result.loading) || notificationsLoading ? (
         <Row>
           <Spinner animation="border" className="mx-auto" />
         </Row>
