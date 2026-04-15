@@ -58,9 +58,9 @@ export const getServerSideProps: GetServerSideProps<
         court: ballotQuestion.court,
         ballotStatus: ballotQuestion.ballotStatus,
         ballotQuestionNumber: ballotQuestion.ballotQuestionNumber,
-        endorseCount: ballotQuestion.endorseCount,
-        neutralCount: ballotQuestion.neutralCount,
-        opposeCount: ballotQuestion.opposeCount
+        endorseCount: ballotQuestion.endorseCount ?? 0,
+        neutralCount: ballotQuestion.neutralCount ?? 0,
+        opposeCount: ballotQuestion.opposeCount ?? 0
       }
     })
   )

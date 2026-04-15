@@ -67,10 +67,10 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   let bill: Bill | null = null
   let hearings: Hearing[] = []
   const testimonySummary: BallotQuestionTestimonySummary = {
-    testimonyCount: ballotQuestion.testimonyCount,
-    endorseCount: ballotQuestion.endorseCount,
-    neutralCount: ballotQuestion.neutralCount,
-    opposeCount: ballotQuestion.opposeCount
+    testimonyCount: ballotQuestion.testimonyCount ?? 0,
+    endorseCount: ballotQuestion.endorseCount ?? 0,
+    neutralCount: ballotQuestion.neutralCount ?? 0,
+    opposeCount: ballotQuestion.opposeCount ?? 0
   }
 
   if (ballotQuestion.billId) {
