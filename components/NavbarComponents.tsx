@@ -378,3 +378,24 @@ export const NavbarLinkWhyUse: React.FC<
     </NavDropdown.Item>
   )
 }
+
+export const NavbarLinkInTheNews: React.FC<
+  React.PropsWithChildren<{
+    handleClick?: any
+    other?: any
+  }>
+> = ({ handleClick, other }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const { t } = useTranslation(["common", "auth"])
+  return (
+    <NavDropdown.Item onClick={handleClick}>
+      <NavLink
+        className={isMobile ? "navLink-primary" : ""}
+        href="/about/in-the-news"
+        {...other}
+      >
+        {t("navigation.inTheNews")}
+      </NavLink>
+    </NavDropdown.Item>
+  )
+}
