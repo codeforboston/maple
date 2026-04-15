@@ -2,6 +2,7 @@ import { dbService } from "components/db/api"
 import { doc, getDoc } from "firebase/firestore"
 import { firestore } from "components/firebase"
 import { GetServerSideProps } from "next"
+import { flags } from "components/featureFlags"
 import { z } from "zod"
 import { BallotQuestionDetails } from "../../components/ballotquestions/BallotQuestionDetails"
 import {
@@ -49,6 +50,7 @@ export default createPage<{
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
+  if (!flags().ballotQuestions) return { notFound: true }
   ctx.res.setHeader(
     "Cache-Control",
     "public, s-maxage=60, stale-while-revalidate=300"

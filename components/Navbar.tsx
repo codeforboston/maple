@@ -83,7 +83,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     return (
       <Nav className="my-4">
         <NavbarLinkBills handleClick={closeNav} />
-        <NavbarLinkBallotQuestions handleClick={closeNav} />
+        {flags().ballotQuestions ? (
+          <NavbarLinkBallotQuestions handleClick={closeNav} />
+        ) : null}
         {flags().hearingsAndTranscriptions ? (
           <NavbarLinkHearings handleClick={closeNav} />
         ) : null}
@@ -225,9 +227,11 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
         <NavbarLinkBills />
       </div>
 
-      <div className={`align-self-center`}>
-        <NavbarLinkBallotQuestions />
-      </div>
+      {flags().ballotQuestions ? (
+        <div className={`align-self-center`}>
+          <NavbarLinkBallotQuestions />
+        </div>
+      ) : null}
 
       {flags().hearingsAndTranscriptions ? (
         <div className={`align-self-center`}>

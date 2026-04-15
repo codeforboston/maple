@@ -1,3 +1,4 @@
+import { flags } from "components/featureFlags"
 import { dbService } from "components/db/api"
 import { useBill } from "components/db"
 import { formatBillId } from "components/formatting"
@@ -21,6 +22,7 @@ import {
 
 export function FollowingTab({ className }: { className?: string }) {
   const { t } = useTranslation("editProfile")
+  const followedBallotQuestions = useFollowedBallotQuestions()
   return (
     <>
       <PaginatedItemsCard
@@ -29,12 +31,14 @@ export function FollowingTab({ className }: { className?: string }) {
         ItemCard={FollowedBillCard}
         {...useFollowedBills()}
       />
-      <PaginatedItemsCard
-        className={className}
-        title={t("follow.ballotQuestions")}
-        ItemCard={FollowedBallotQuestionCard}
-        {...useFollowedBallotQuestions()}
-      />
+      {flags().ballotQuestions && (
+        <PaginatedItemsCard
+          className={className}
+          title={t("follow.ballotQuestions")}
+          ItemCard={FollowedBallotQuestionCard}
+          {...followedBallotQuestions}
+        />
+      )}
       <PaginatedItemsCard
         className={className}
         title={t("follow.orgs")}

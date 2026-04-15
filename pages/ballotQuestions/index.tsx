@@ -7,6 +7,7 @@ import type { BallotQuestion } from "components/db"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { GetServerSideProps } from "next"
+import { flags } from "components/featureFlags"
 
 type BrowseBallotQuestionsPageProps = {
   currentYear: number
@@ -33,6 +34,7 @@ export default createPage({
 export const getServerSideProps: GetServerSideProps<
   BrowseBallotQuestionsPageProps
 > = async ({ locale, res }) => {
+  if (!flags().ballotQuestions) return { notFound: true }
   const currentYear = new Date().getFullYear()
   const ballotQuestions = (await dbService().getBallotQuestions()).sort(
     sortBallotQuestions

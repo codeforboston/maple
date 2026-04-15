@@ -1,4 +1,5 @@
 import ErrorPage from "next/error"
+import { flags } from "../featureFlags"
 import { Timestamp } from "firebase/firestore"
 import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
@@ -145,20 +146,22 @@ export default function Newsfeed() {
               {t("bill_updates")}
             </label>
           </BillCol>
-          <BillCol className="form-check checkbox mt-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="ballotQuestionCheck"
-              onChange={event => {
-                onBallotQuestionFilterChange(event.target.checked)
-              }}
-              checked={isShowingBallotQuestions}
-            />
-            <label className="form-check-label" htmlFor="ballotQuestionCheck">
-              Ballot Question Updates
-            </label>
-          </BillCol>
+          {flags().ballotQuestions && (
+            <BillCol className="form-check checkbox mt-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="ballotQuestionCheck"
+                onChange={event => {
+                  onBallotQuestionFilterChange(event.target.checked)
+                }}
+                checked={isShowingBallotQuestions}
+              />
+              <label className="form-check-label" htmlFor="ballotQuestionCheck">
+                Ballot Question Updates
+              </label>
+            </BillCol>
+          )}
           <Buttons profile={profile} />
         </Row>
       </>
