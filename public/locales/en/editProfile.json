@@ -1,13 +1,15 @@
 {
   "header": "Edit Profile",
   "getVerified": "Get Verified",
-  "phoneVerificationModalTitle": "Verify your phone number",
+  "phoneVerificationModalTitle": "Verify Phone",
   "phoneVerification": {
-    "phoneLabel": "Phone number (Ex 617 555-1234)",
-    "phonePlaceholder": "617 555-1234",
-    "continue": "Continue",
-    "codeLabel": "Verification code",
-    "codePlaceholder": "Enter 6-digit code",
+    "stepOne": "Step one.",
+    "stepOneDescription": "Enter your phone number below.",
+    "phonePlaceholder": "Enter your 10-digit phone number",
+    "receiveCode": "Receive code",
+    "stepTwo": "Step two.",
+    "stepTwoDescription": "Enter the code that was sent to your phone.",
+    "codePlaceholder": "Enter six-digit code",
     "verify": "Verify",
     "errors": {
       "credentialAlreadyInUse": "This phone number is already linked to another account.",
@@ -16,7 +18,8 @@
       "operationNotAllowed": "Phone verification is not enabled. Please try again later or contact us at info@mapletestimony.org."
     },
     "signedInRequired": "You must be signed in to verify your phone.",
-    "enterVerificationCode": "Please enter the verification code."
+    "enterVerificationCode": "Please enter the verification code.",
+    "successMessage": "Success! Your phone number has been verified."
   },
   "verifiedUser": "Verified User",
   "verifiedUserBadgeAlt": "Verified user badge",
