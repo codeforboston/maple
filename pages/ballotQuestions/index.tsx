@@ -3,10 +3,7 @@ import { dbService } from "components/db"
 import { BrowseBallotQuestions } from "components/ballotquestions/BrowseBallotQuestions"
 import type { BallotQuestionBrowseItem } from "components/ballotquestions/BrowseBallotQuestions"
 import { createPage } from "components/page"
-import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import type { BallotQuestion } from "components/db"
-import type { Testimony } from "components/db/testimony"
-import { firestore } from "components/firebase"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { GetServerSideProps } from "next"
@@ -43,17 +40,12 @@ export const getServerSideProps: GetServerSideProps<
 
   const items = await Promise.all(
     ballotQuestions.map(async ballotQuestion => {
-      const [bill, counts] = await Promise.all([
-        ballotQuestion.billId
-          ? dbService().getBill({
-              court: ballotQuestion.court,
-              billId: ballotQuestion.billId
-            })
-          : Promise.resolve(undefined),
-        hasStoredBallotQuestionCounts(ballotQuestion)
-          ? Promise.resolve(getStoredBallotQuestionCounts(ballotQuestion))
-          : getBallotQuestionCounts(ballotQuestion.id)
-      ])
+      const bill = ballotQuestion.billId
+        ? await dbService().getBill({
+            court: ballotQuestion.court,
+            billId: ballotQuestion.billId
+          })
+        : undefined
 
       return {
         id: ballotQuestion.id,
@@ -66,7 +58,9 @@ export const getServerSideProps: GetServerSideProps<
         court: ballotQuestion.court,
         ballotStatus: ballotQuestion.ballotStatus,
         ballotQuestionNumber: ballotQuestion.ballotQuestionNumber,
-        ...counts
+        endorseCount: ballotQuestion.endorseCount ?? 0,
+        neutralCount: ballotQuestion.neutralCount ?? 0,
+        opposeCount: ballotQuestion.opposeCount ?? 0
       }
     })
   )
@@ -85,52 +79,6 @@ export const getServerSideProps: GetServerSideProps<
         "testimony"
       ]))
     }
-  }
-}
-
-async function getBallotQuestionCounts(ballotQuestionId: string) {
-  const snapshot = await getDocs(
-    query(
-      collectionGroup(firestore, "publishedTestimony"),
-      where("ballotQuestionId", "==", ballotQuestionId)
-    )
-  )
-
-  return snapshot.docs.reduce(
-    (counts, doc) => {
-      const testimony = doc.data() as Testimony
-      switch (testimony.position) {
-        case "endorse":
-          counts.endorseCount += 1
-          break
-        case "neutral":
-          counts.neutralCount += 1
-          break
-        case "oppose":
-          counts.opposeCount += 1
-          break
-      }
-      return counts
-    },
-    { endorseCount: 0, neutralCount: 0, opposeCount: 0 }
-  )
-}
-
-function hasStoredBallotQuestionCounts(
-  ballotQuestion: BallotQuestion
-): boolean {
-  return [
-    ballotQuestion.endorseCount,
-    ballotQuestion.neutralCount,
-    ballotQuestion.opposeCount
-  ].every(count => typeof count === "number")
-}
-
-function getStoredBallotQuestionCounts(ballotQuestion: BallotQuestion) {
-  return {
-    endorseCount: ballotQuestion.endorseCount ?? 0,
-    neutralCount: ballotQuestion.neutralCount ?? 0,
-    opposeCount: ballotQuestion.opposeCount ?? 0
   }
 }
 
